@@ -659,6 +659,9 @@ img {
 .result_label {
     margin-top: 5px;
 }
+tr.total td {
+    font-weight: bold;
+}
 
 /* Chatbox */
 #chatbox {
@@ -683,6 +686,10 @@ img {
 
 .minimum {
     width: 1px;
+}
+
+.minimumTable {
+    width: auto;
 }
 
 .deleteColumn {

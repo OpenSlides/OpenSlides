@@ -146,8 +146,6 @@ class AssignmentViewSet(ModelViewSet):
         """
         user = self.get_user_from_request_data(request)
         assignment = self.get_object()
-        if assignment.is_elected(user):
-            raise ValidationError({'detail': _('User %s is already elected.') % user})
         if request.method == 'POST':
             message = self.nominate_other(request, user, assignment)
         else:
@@ -156,15 +154,14 @@ class AssignmentViewSet(ModelViewSet):
         return Response({'detail': message})
 
     def nominate_other(self, request, user, assignment):
+        if assignment.is_elected(user):
+            raise ValidationError({'detail': _('User %s is already elected.') % user})
         if assignment.phase == assignment.PHASE_FINISHED:
             detail = _('You can not nominate someone to this election because it is finished.')
             raise ValidationError({'detail': detail})
         if assignment.phase == assignment.PHASE_VOTING and not request.user.has_perm('assignments.can_manage'):
             # To nominate another user during voting you have to be a manager.
             self.permission_denied(request)
-        if not request.user.has_perm('assignments.can_manage'):
-            if assignment.is_elected(user):
-                raise ValidationError({'detail': _('User %s is already elected.') % user})
         if assignment.is_candidate(user):
             raise ValidationError({'detail': _('User %s is already nominated.') % user})
         assignment.set_candidate(user)
@@ -177,7 +174,7 @@ class AssignmentViewSet(ModelViewSet):
         if assignment.phase == assignment.PHASE_FINISHED:
             detail = _('You can not delete someones candidature to this election because it is finished.')
             raise ValidationError({'detail': detail})
-        if not assignment.is_candidate(user):
+        if not assignment.is_candidate(user) and not assignment.is_elected(user):
             raise ValidationError({'detail': _('User %s has no status in this election.') % user})
         assignment.delete_related_user(user)
         return _('Candidate %s was withdrawn successfully.') % user

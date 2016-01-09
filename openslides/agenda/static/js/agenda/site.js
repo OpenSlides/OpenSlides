@@ -189,7 +189,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     function ($scope, $filter, $http, Agenda, User, item) {
         Agenda.bindOne(item.id, $scope, 'item');
         User.bindAll({}, $scope, 'users');
-        $scope.speaker = {};
+        $scope.speakerSelectBox = {};
         $scope.alert = {};
         $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
         $scope.$watch(function () {
@@ -208,9 +208,11 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 .success(function(data){
                     $scope.alert.show = false;
                     $scope.speakers = item.speakers;
+                    $scope.speakerSelectBox = {};
                 })
                 .error(function(data){
                     $scope.alert = { type: 'danger', msg: data.detail, show: true };
+                    $scope.speakerSelectBox = {};
                 });
         };
         // delete speaker(!) from list of speakers

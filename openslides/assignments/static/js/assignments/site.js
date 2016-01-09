@@ -245,29 +245,22 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         User.bindAll({}, $scope, 'users');
         Assignment.bindOne(assignment.id, $scope, 'assignment');
         Assignment.loadRelations(assignment, 'agenda_item');
-        $scope.candidate = {};
+        $scope.candidateSelectBox = {};
         $scope.alert = {};
         // add (nominate) candidate
         $scope.addCandidate = function (userId) {
             $http.post('/rest/assignments/assignment/' + assignment.id + '/candidature_other/', {'user': userId})
                 .success(function(data){
                     $scope.alert.show = false;
+                    $scope.candidateSelectBox = {};
                 })
                 .error(function(data){
                     $scope.alert = { type: 'danger', msg: data.detail, show: true };
+                    $scope.candidateSelectBox = {};
                 });
         };
         // remove candidate
         $scope.removeCandidate = function (userId) {
-            $http.delete('/rest/assignments/assignment/' + assignment.id + '/candidature_other/',
-                    {headers: {'Content-Type': 'application/json'},
-                     data: JSON.stringify({user: userId})})
-                .error(function(data){
-                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
-                });
-        };
-        // remove blocked candidate from "block-list"
-        $scope.removeBlockedCandidate = function (userId) {
             $http.delete('/rest/assignments/assignment/' + assignment.id + '/candidature_other/',
                     {headers: {'Content-Type': 'application/json'},
                      data: JSON.stringify({user: userId})})
@@ -316,7 +309,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     $scope.alert = { type: 'danger', msg: data.detail, show: true };
                 });
         };
-        // delete ballt
+        // delete ballot
         $scope.deleteBallot = function (poll) {
             poll.DSDestroy();
         }
@@ -352,6 +345,18 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 }
                 $scope.alert = { type: 'danger', msg: message, show: true };
             });
+        };
+        // mark candidate as (not) elected
+        $scope.markElected = function (user, reverse) {
+            if (reverse) {
+                $http.delete(
+                    '/rest/assignments/assignment/' + assignment.id + '/mark_elected/',
+                    {headers: {'Content-Type': 'application/json'},
+                     data: JSON.stringify({user: user})})
+            } else {
+                $http.post('/rest/assignments/assignment/' + assignment.id + '/mark_elected/', {'user': user})
+            }
+
         };
 
         // Just mark some vote value strings for translation.
