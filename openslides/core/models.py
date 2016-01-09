@@ -130,7 +130,6 @@ class CustomSlide(RESTModelMixin, models.Model):
         default=0)
     attachments = models.ManyToManyField(
         Mediafile,
-        verbose_name=ugettext_lazy('Attachments'),
         blank=True)
 
     class Meta:

@@ -7,14 +7,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mediafiles', '0004_auto_20151210_0016'),
-        ('core', '0008_auto_20151210_0016'),
+        ('mediafiles', '0002_auto_20160110_0103'),
+        ('core', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='customslide',
             name='attachments',
-            field=models.ManyToManyField(to='mediafiles.Mediafile', verbose_name='Attachments', blank=True),
+            field=models.ManyToManyField(to='mediafiles.Mediafile', blank=True),
         ),
     ]
