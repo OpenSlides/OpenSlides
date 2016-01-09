@@ -112,6 +112,23 @@ class UserUpdate(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(User.objects.get(pk=1).username, 'New name Ohy4eeyei5')
 
+    def test_update_deactivate_yourselfself(self):
+        """
+        Tests that an user can not deactivate himself.
+        """
+        admin_client = APIClient()
+        admin_client.login(username='admin', password='admin')
+        # This is the builtin user 'Administrator'. The pk is valid.
+        user_pk = 1
+
+        response = admin_client.patch(
+            reverse('user-detail', args=[user_pk]),
+            {'username': 'admin',
+             'is_active': False},
+            format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 
 class UserDelete(TestCase):
     """
@@ -126,6 +143,16 @@ class UserDelete(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(User.objects.filter(username='Test name bo3zieT3iefahng0ahqu').exists())
+
+    def test_delete_yourself(self):
+        admin_client = APIClient()
+        admin_client.login(username='admin', password='admin')
+        # This is the builtin user 'Administrator'. The pk is valid.
+        admin_user_pk = 1
+
+        response = admin_client.delete(reverse('user-detail', args=[admin_user_pk]))
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class UserResetPassword(TestCase):

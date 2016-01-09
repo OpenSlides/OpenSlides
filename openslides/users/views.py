@@ -105,6 +105,9 @@ class UserViewSet(ModelViewSet):
         # Check manager perms
         if (request.user.has_perm('users.can_see_extra_data') and
                 request.user.has_perm('users.can_manage')):
+            if request.data.get('is_active') is False and self.get_object() == request.user:
+                # A user can not deactivate himself.
+                raise ValidationError({'detail': _('You can not deactivate yourself.')})
             response = super().update(request, *args, **kwargs)
         else:
             # Get user.
@@ -133,6 +136,18 @@ class UserViewSet(ModelViewSet):
             serializer.save()
             response = Response(serializer.data)
         return response
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Customized view endpoint to delete an user.
+
+        Ensures that no one can delete himself.
+        """
+        instance = self.get_object()
+        if instance == self.request.user:
+            raise ValidationError({'detail': _('You can not delete yourself.')})
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @detail_route(methods=['post'])
     def reset_password(self, request, pk=None):
