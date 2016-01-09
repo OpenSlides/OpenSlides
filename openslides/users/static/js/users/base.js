@@ -8,8 +8,9 @@ angular.module('OpenSlidesApp.users', [])
     'User',
     'Group',
     'loadGlobalData',
-    function(User, Group, loadGlobalData) {
-        var operatorChangeCallbacks = [];
+    'autoupdate',
+    function (User, Group, loadGlobalData, autoupdate) {
+        var operatorChangeCallbacks = [autoupdate.reconnect];
         var operator = {
             user: null,
             perms: [],
@@ -33,6 +34,10 @@ angular.module('OpenSlidesApp.users', [])
                     });
                 } else {
                     operator.user = null;
+                    operator.perms = [];
+                    _.forEach(operatorChangeCallbacks, function (callback) {
+                        callback();
+                    });
                     Group.find(1).then(function(group) {
                         operator.perms = group.permissions;
                         _.forEach(operatorChangeCallbacks, function (callback) {
