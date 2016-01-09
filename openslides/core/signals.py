@@ -75,6 +75,14 @@ def setup_general_config(sender, **kwargs):
         group=ugettext_lazy('General'),
         subgroup=ugettext_lazy('System'))
 
+    yield ConfigVariable(
+        name='general_login_info_text',
+        default_value='',
+        label=ugettext_lazy('Show this text on the login page.'),
+        weight=140,
+        group=ugettext_lazy('General'),
+        subgroup=ugettext_lazy('System'))
+
     # Projector
 
     yield ConfigVariable(

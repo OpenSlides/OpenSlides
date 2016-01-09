@@ -191,7 +191,7 @@ class UserLoginView(APIView):
     """
     Login the user.
     """
-    http_method_names = ['post']
+    http_method_names = ['get', 'post']
 
     def post(self, *args, **kwargs):
         form = AuthenticationForm(self.request, data=self.request.data)
@@ -202,7 +202,36 @@ class UserLoginView(APIView):
         return super().post(*args, **kwargs)
 
     def get_context_data(self, **context):
-        context['user_id'] = self.user.pk
+        """
+        Adds some context.
+
+        For GET requests adds login info text to context. This info text is
+        taken from the config. If this value is empty, a special text is used
+        if the admin user has the password 'admin'.
+
+        For POST requests adds the id of the current user to the context.
+        """
+        if self.request.method == 'GET':
+            if config['general_login_info_text']:
+                context['info_text'] = config['general_login_info_text']
+            else:
+                try:
+                    user = User.objects.get(username='admin')
+                except User.DoesNotExist:
+                    context['info_text'] = ''
+                else:
+                    if user.check_password('admin'):
+                        context['info_text'] = _(
+                            'Installation was successfully. Use {username} and '
+                            '{password} for first login. Important: Please change '
+                            'your password!'.format(
+                                username='<strong>admin</strong>',
+                                password='<strong>admin</strong>'))
+                    else:
+                        context['info_text'] = ''
+        else:
+            # self.request.method == 'POST'
+            context['user_id'] = self.user.pk
         return super().get_context_data(**context)
 
 
