@@ -1,4 +1,4 @@
-from django.conf.urls import include, patterns, url
+from django.conf.urls import include, url
 from django.views.generic import RedirectView
 
 from openslides.utils.plugins import get_all_plugin_urlpatterns
@@ -6,8 +6,7 @@ from openslides.utils.rest_api import router
 
 urlpatterns = get_all_plugin_urlpatterns()
 
-urlpatterns += patterns(
-    '',
+urlpatterns += [
     url(r'^(?P<url>.*[^/])$', RedirectView.as_view(url='/%(url)s/', permanent=True)),
     url(r'^rest/', include(router.urls)),
     url(r'^agenda/', include('openslides.agenda.urls')),
@@ -18,4 +17,4 @@ urlpatterns += patterns(
     # The urls.py of the core app has to be the last entry. It contains the
     # main entry points for OpenSlides' browser clients.
     url(r'^', include('openslides.core.urls')),
-)
+]

@@ -20,16 +20,23 @@ class HandleConfigTest(TestCase):
         self.assertEqual(config['integer_var'], 3)
         self.assertEqual(config['choices_var'], '1')
         self.assertEqual(config['none_config_var'], None)
-        self.assertRaisesMessage(expected_exception=ConfigNotFound,
-                                 expected_message='The config variable unknown_config_var was not found.',
-                                 callable_obj=self.get_config_var, key='unknown_config_var')
+        with self.assertRaisesMessage(
+                ConfigNotFound,
+                'The config variable unknown_config_var was not found.'):
+            self.get_config_var('unknown_config_var')
 
     def test_get_multiple_config_var_error(self):
-        config_signal.connect(set_simple_config_view_multiple_vars, dispatch_uid='set_simple_config_view_multiple_vars_for_testing')
-        self.assertRaisesMessage(expected_exception=ConfigError,
-                                 expected_message='Too many values for config variable multiple_config_var found.',
-                                 callable_obj=config.setup_cache)
-        config_signal.disconnect(set_simple_config_view_multiple_vars, dispatch_uid='set_simple_config_view_multiple_vars_for_testing')
+        config_signal.connect(
+            set_simple_config_view_multiple_vars,
+            dispatch_uid='set_simple_config_view_multiple_vars_for_testing')
+
+        with self.assertRaisesMessage(
+                ConfigError,
+                'Too many values for config variable multiple_config_var found.'):
+            config.setup_cache()
+        config_signal.disconnect(
+            set_simple_config_view_multiple_vars,
+            dispatch_uid='set_simple_config_view_multiple_vars_for_testing')
 
     def test_database_queries(self):
         """
@@ -67,13 +74,16 @@ class HandleConfigTest(TestCase):
         message.
         """
         # TODO: use right exception
-        self.assertRaisesMessage(
-            Exception,
-            'Change callback dhcnfg34dlg06kdg successfully called.',
-            self.set_config_var,
-            key='var_with_callback_ghvnfjd5768gdfkwg0hm2',
-            value='new_string_kbmbnfhdgibkdjshg452bc')
-        self.assertEqual(config['var_with_callback_ghvnfjd5768gdfkwg0hm2'], 'new_string_kbmbnfhdgibkdjshg452bc')
+        with self.assertRaisesMessage(
+                Exception,
+                'Change callback dhcnfg34dlg06kdg successfully called.'):
+            self.set_config_var(
+                key='var_with_callback_ghvnfjd5768gdfkwg0hm2',
+                value='new_string_kbmbnfhdgibkdjshg452bc')
+
+        self.assertEqual(
+            config['var_with_callback_ghvnfjd5768gdfkwg0hm2'],
+            'new_string_kbmbnfhdgibkdjshg452bc')
 
 
 @receiver(config_signal, dispatch_uid='set_grouped_config_view_for_testing')

@@ -1,10 +1,8 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from . import views
 
-urlpatterns = patterns(
-    '',
-
+urlpatterns = [
     # Auth
     url(r'^login/$',
         views.UserLoginView.as_view(),
@@ -30,4 +28,4 @@ urlpatterns = patterns(
     url(r'^passwords/print/$',
         views.UsersPasswordsPDF.as_view(),
         name='user_passwordspdf'),
-)
+]

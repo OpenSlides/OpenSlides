@@ -35,9 +35,11 @@ class Motion(RESTModelMixin, models.Model):
     Name of the callback for the slide-system.
     """
 
-    active_version = models.ForeignKey('MotionVersion', null=True,
-                                       related_name="active_version",
-                                       on_delete=models.SET_NULL)
+    active_version = models.ForeignKey(
+        'MotionVersion',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="active_version")
     """
     Points to a specific version.
 
@@ -46,7 +48,10 @@ class Motion(RESTModelMixin, models.Model):
     version. Like the sighted versions on Wikipedia.
     """
 
-    state = models.ForeignKey('State', null=True)  # TODO: Check whether null=True is necessary.
+    state = models.ForeignKey(
+        'State',
+        on_delete=models.SET_NULL,
+        null=True)  # TODO: Check whether null=True is necessary.
     """
     The related state object.
 
@@ -66,7 +71,11 @@ class Motion(RESTModelMixin, models.Model):
     Needed to find the next free motion identifier.
     """
 
-    category = models.ForeignKey('Category', null=True, blank=True)
+    category = models.ForeignKey(
+        'Category',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True)
     """
     ForeignKey to one category of motions.
     """
@@ -76,7 +85,12 @@ class Motion(RESTModelMixin, models.Model):
     Many to many relation to mediafile objects.
     """
 
-    parent = models.ForeignKey('self', null=True, blank=True, related_name='amendments')
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='amendments')
     """
     Field for amendments to reference to the motion that should be altered.
 
@@ -557,7 +571,10 @@ class MotionVersion(RESTModelMixin, models.Model):
     A MotionVersion object saves some date of the motion.
     """
 
-    motion = models.ForeignKey(Motion, related_name='versions')
+    motion = models.ForeignKey(
+        Motion,
+        on_delete=models.CASCADE,
+        related_name='versions')
     """The motion to which the version belongs."""
 
     version_number = models.PositiveIntegerField(default=1)
@@ -623,7 +640,10 @@ class Category(RESTModelMixin, models.Model):
 class MotionLog(RESTModelMixin, models.Model):
     """Save a logmessage for a motion."""
 
-    motion = models.ForeignKey(Motion, related_name='log_messages')
+    motion = models.ForeignKey(
+        Motion,
+        on_delete=models.CASCADE,
+        related_name='log_messages')
     """The motion to witch the object belongs."""
 
     message_list = JSONField()
@@ -631,7 +651,10 @@ class MotionLog(RESTModelMixin, models.Model):
     The log message. It should be a list of strings in English.
     """
 
-    person = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
+    person = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True)
     """A user object, who created the log message. Optional."""
 
     time = models.DateTimeField(auto_now=True)
@@ -665,7 +688,9 @@ class MotionVote(RESTModelMixin, BaseVote):
     There should allways be three MotionVote objects for each poll,
     one for 'yes', 'no', and 'abstain'."""
 
-    option = models.ForeignKey('MotionOption')
+    option = models.ForeignKey(
+        'MotionOption',
+        on_delete=models.CASCADE)
     """The option object, to witch the vote belongs."""
 
     class Meta:
@@ -683,7 +708,9 @@ class MotionOption(RESTModelMixin, BaseOption):
 
     There should be one MotionOption object for each poll."""
 
-    poll = models.ForeignKey('MotionPoll')
+    poll = models.ForeignKey(
+        'MotionPoll',
+        on_delete=models.CASCADE)
     """The poll object, to witch the object belongs."""
 
     vote_class = MotionVote
@@ -705,7 +732,10 @@ class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):
     slide_callback_name = 'motionpoll'
     """Name of the callback for the slide-system."""
 
-    motion = models.ForeignKey(Motion, related_name='polls')
+    motion = models.ForeignKey(
+        Motion,
+        on_delete=models.CASCADE,
+        related_name='polls')
     """The motion to witch the object belongs."""
 
     option_class = MotionOption
@@ -759,7 +789,10 @@ class State(RESTModelMixin, models.Model):
     action_word = models.CharField(max_length=255)
     """An alternative string to be used for a button to switch to this state."""
 
-    workflow = models.ForeignKey('Workflow', related_name='states')
+    workflow = models.ForeignKey(
+        'Workflow',
+        on_delete=models.CASCADE,
+        related_name='states')
     """A many-to-one relation to a workflow."""
 
     next_states = models.ManyToManyField('self', symmetrical=False)
@@ -850,7 +883,11 @@ class Workflow(RESTModelMixin, models.Model):
     name = models.CharField(max_length=255)
     """A string representing the workflow."""
 
-    first_state = models.OneToOneField(State, related_name='+', null=True)
+    first_state = models.OneToOneField(
+        State,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        null=True)
     """A one-to-one relation to a state, the starting point for the workflow."""
 
     class Meta:

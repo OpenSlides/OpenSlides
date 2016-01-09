@@ -40,10 +40,6 @@ TIME_ZONE = 'Europe/Berlin'
 
 MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, '')
 
-TEMPLATE_DIRS = (
-    os.path.join(OPENSLIDES_USER_DATA_PATH, 'templates'),
-)
-
 STATICFILES_DIRS.insert(0, os.path.join(OPENSLIDES_USER_DATA_PATH, 'static'))
 
 SEARCH_INDEX = 'ram'

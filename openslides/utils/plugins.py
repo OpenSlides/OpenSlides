@@ -1,9 +1,9 @@
 import os
 import pkgutil
 import sys
+from importlib import import_module
 
 from django.conf import settings
-from django.utils.importlib import import_module
 from pkg_resources import iter_entry_points
 
 from openslides.utils.main import (

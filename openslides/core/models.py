@@ -217,6 +217,7 @@ class ChatMessage(RESTModelMixin, models.Model):
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
         verbose_name=ugettext_lazy('User'))
 
     class Meta:

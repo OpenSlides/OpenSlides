@@ -29,7 +29,7 @@ Other:
 - New OpenSlides logo.
 - New design for web interface.
 - Added multiple countdown support.
-- Changed supported Python version to >= 3.3.
+- Changed supported Python version to >= 3.4.
 - Used Django 1.7 as lowest requirement.
 - Added Django's application configuration. Refactored loading of signals
   and projector elements/slides.
@@ -56,6 +56,7 @@ Other:
 - Used setup.cfg for development tools.
 - Removed code for Windows portable version with GUI. Used new repository for
   this.
+- Django 1.9 is supported
 Translations:
 - Added DE and FR translations.
 

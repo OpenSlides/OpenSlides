@@ -21,7 +21,12 @@ class Mediafile(RESTModelMixin, models.Model):
     title = models.CharField(max_length=255, unique=True, blank=True, verbose_name=ugettext_lazy('Title'))
     """A string representing the title of the file."""
 
-    uploader = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, verbose_name=ugettext_lazy('Uploaded by'))
+    uploader = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=ugettext_lazy('Uploaded by'))
     """A user – the uploader of a file."""
 
     timestamp = models.DateTimeField(auto_now_add=True)

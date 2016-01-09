@@ -54,12 +54,6 @@ STATICFILES_FINDERS = (
 STATICFILES_DIRS = [
     os.path.join(SITE_ROOT, 'static')]
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
-
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
