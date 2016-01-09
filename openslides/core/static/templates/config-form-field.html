@@ -6,6 +6,7 @@
         type="{{ type }}" class="form-control">
 
     <textarea ng-if="type == 'textarea'" ng-model="value" ng-change="save(configOption.key, value)" id="{{ key }}" class="form-control">
+    </textarea>
 
     <select ng-if="type == 'choice'" ng-model="value" ng-change="save(configOption.key, value)" id="{{ key }}"
         class="form-control" ng-options="option.value as option.display_name for option in choices">
