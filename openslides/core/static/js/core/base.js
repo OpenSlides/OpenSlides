@@ -267,6 +267,20 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+.filter('osFilter', [
+    '$filter',
+    function ($filter) {
+        return function (array, string, getFilterString) {
+            if (!string) {
+                return array;
+            }
+            return Array.prototype.filter.call(array, function (item) {
+                return getFilterString(item).toLowerCase().indexOf(string.toLowerCase()) > -1;
+            });
+        }
+    }
+])
+
 /* Options for CKEditor used in various create and edit views. */
 .value('CKEditorOptions', {
     allowedContent:

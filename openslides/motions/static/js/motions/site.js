@@ -284,12 +284,24 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         $scope.filterPresent = '';
         $scope.reverse = false;
         // function to sort by clicked column
-        $scope.toggleSort = function ( column ) {
+        $scope.toggleSort = function (column) {
             if ( $scope.sortColumn === column ) {
                 $scope.reverse = !$scope.reverse;
             }
             $scope.sortColumn = column;
         };
+        $scope.getFilterString = function (motion) {
+            if (motion.category) {
+                var category = motion.category.name;
+            } else {
+                var category = ''
+            }
+            return [
+                motion.getTitle(),
+                motion.getText(),
+                _.map(motion.submitters, function (submitter) {return submitter.get_short_name()}).join(" "),
+                category].join(" ");
+        }
 
         // collect all states of all workflows
         // TODO: regard workflows only which are used by motions
