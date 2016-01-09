@@ -55,12 +55,20 @@ def setup_general_config(sender, **kwargs):
         group=ugettext_lazy('General'),
         subgroup=ugettext_lazy('Event'))
 
-    # TODO: Check whether this variable is ever used.
     yield ConfigVariable(
         name='general_event_organizer',
         default_value='',
         label=ugettext_lazy('Event organizer'),
         weight=130,
+        group=ugettext_lazy('General'),
+        subgroup=ugettext_lazy('Event'))
+
+    yield ConfigVariable(
+        name='general_event_legal_notes',
+        default_value='',
+        input_type='text',
+        label=ugettext_lazy('Legal notes'),
+        weight=132,
         group=ugettext_lazy('General'),
         subgroup=ugettext_lazy('Event'))
 
