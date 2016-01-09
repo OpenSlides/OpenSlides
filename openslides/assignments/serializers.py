@@ -7,6 +7,7 @@ from openslides.utils.rest_api import (
     ListField,
     ListSerializer,
     ModelSerializer,
+    SerializerMethodField,
     ValidationError,
 )
 
@@ -47,10 +48,17 @@ class AssignmentOptionSerializer(ModelSerializer):
     Serializer for assignment.models.AssignmentOption objects.
     """
     votes = AssignmentVoteSerializer(many=True, read_only=True)
+    is_elected = SerializerMethodField()
 
     class Meta:
         model = AssignmentOption
-        fields = ('id', 'candidate', 'votes', 'poll')
+        fields = ('id', 'candidate', 'is_elected', 'votes', 'poll')
+
+    def get_is_elected(self, obj):
+        """
+        Returns the election status of the candidate of this option.
+        """
+        return obj.poll.assignment.is_elected(obj.candidate)
 
 
 class FilterPollListSerializer(ListSerializer):
@@ -81,6 +89,7 @@ class AssignmentAllPollSerializer(ModelSerializer):
             child=IntegerField(min_value=-2)),
         write_only=True,
         required=False)
+    has_votes = SerializerMethodField()
 
     class Meta:
         model = AssignmentPoll
@@ -94,8 +103,15 @@ class AssignmentAllPollSerializer(ModelSerializer):
             'votesinvalid',
             'votescast',
             'votes',
+            'has_votes',
             'assignment')  # js-data needs the assignment-id in the nested object to define relations.
         read_only_fields = ('yesnoabstain',)
+
+    def get_has_votes(self, obj):
+        """
+        Returns True if this poll has some votes.
+        """
+        return obj.has_votes()
 
     @transaction.atomic
     def update(self, instance, validated_data):
@@ -142,7 +158,7 @@ class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
     """
     Serializer for assignment.models.AssignmentPoll objects.
 
-    Serializes only short polls.
+    Serializes only short polls (excluded unpublished polls).
     """
     class Meta:
         list_serializer_class = FilterPollListSerializer
