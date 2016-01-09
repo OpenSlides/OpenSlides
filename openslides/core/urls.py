@@ -1,9 +1,8 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from . import views
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^core/url_patterns/$',
         views.UrlPatternsView.as_view(),
         name='core_url_patterns'),
@@ -23,7 +22,11 @@ urlpatterns = patterns(
     # View for the projectors are handelt by angular.
     url(r'^projector.*$', views.ProjectorView.as_view()),
 
+    url(r'^search/$',
+        views.SearchView.as_view(),
+        name='core_search'),
+
     # Main entry point for all angular pages.
     # Has to be the last entry in the urls.py
     url(r'^.*$', views.IndexView.as_view()),
-)
+]

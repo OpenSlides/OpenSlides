@@ -10,6 +10,8 @@ from django.contrib.auth.models import (
 from django.db import models
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
+from openslides.utils.search import user_name_helper
+
 from ..core.config import config
 from ..utils.models import RESTModelMixin
 from .exceptions import UsersError
@@ -182,7 +184,7 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         structure = '(%s)' % self.structure_level if self.structure_level else ''
         return ' '.join((self.title, self.get_short_name(), structure)).strip()
 
-    def get_short_name(self):
+    def get_short_name(self, sort_by_first_name=None):
         """
         Returns only the name of the user.
 
@@ -195,7 +197,9 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
 
         # The user has a last_name and a first_name
         if first_name and last_name:
-            if config['users_sort_users_by_first_name']:
+            if sort_by_first_name is None:
+                sort_by_first_name = config['users_sort_users_by_first_name']
+            if sort_by_first_name:
                 name = ' '.join((first_name, last_name))
             else:
                 name = ', '.join((last_name, first_name))
@@ -214,3 +218,12 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         """
         from .views import UserViewSet
         return UserViewSet
+
+    def get_search_index_string(self):
+        """
+        Returns a string that can be indexed for the search.
+        """
+        return " ".join((
+            user_name_helper(self),
+            self.structure_level,
+            self.about_me))

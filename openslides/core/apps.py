@@ -18,6 +18,7 @@ class CoreAppConfig(AppConfig):
         from openslides.core.signals import config_signal
         from openslides.utils.autoupdate import inform_changed_data_receiver
         from openslides.utils.rest_api import router
+        from openslides.utils.search import index_add_instance, index_del_instance
         from .signals import setup_general_config
         from .views import (
             ChatMessageViewSet,
@@ -45,3 +46,14 @@ class CoreAppConfig(AppConfig):
         signals.post_delete.connect(
             inform_changed_data_receiver,
             dispatch_uid='inform_changed_data_receiver')
+
+        # Update the search when a model is saved or deleted
+        signals.post_save.connect(
+            index_add_instance,
+            dispatch_uid='index_add_instance')
+        signals.post_delete.connect(
+            index_del_instance,
+            dispatch_uid='index_del_instance')
+        signals.m2m_changed.connect(
+            index_add_instance,
+            dispatch_uid='m2m_index_add_instance')

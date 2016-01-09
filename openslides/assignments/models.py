@@ -16,6 +16,7 @@ from openslides.poll.models import (
 )
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
+from openslides.utils.search import user_name_helper
 
 
 class AssignmentRelatedUser(RESTModelMixin, models.Model):
@@ -317,6 +318,16 @@ class Assignment(RESTModelMixin, models.Model):
         Returns the id of the agenda item object related to this object.
         """
         return self.agenda_item.pk
+
+    def get_search_index_string(self):
+        """
+        Returns a string that can be indexed for the search.
+        """
+        return " ".join((
+            self.title,
+            self.description,
+            user_name_helper(self.related_users.all()),
+            " ".join(tag.name for tag in self.tags.all())))
 
 
 class AssignmentVote(RESTModelMixin, BaseVote):

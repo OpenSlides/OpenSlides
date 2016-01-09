@@ -39,3 +39,11 @@ class RESTModelMixin:
         root_instance = self.get_root_rest_element()
         rest_url = '%s-detail' % type(root_instance)._meta.object_name.lower()
         return reverse(rest_url, args=[str(root_instance.pk)])
+
+    def get_collection_string(self):
+        """
+        Returns the string representing the name of the collection.
+        """
+        # TODO: find a way not to use the url. See #1791
+        from .rest_api import get_collection_and_id_from_url
+        return get_collection_and_id_from_url(self.get_root_rest_url())[0]

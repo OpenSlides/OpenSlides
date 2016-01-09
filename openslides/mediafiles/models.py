@@ -3,6 +3,8 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
+from openslides.utils.search import user_name_helper
+
 from ..utils.models import RESTModelMixin
 
 
@@ -61,3 +63,11 @@ class Mediafile(RESTModelMixin, models.Model):
                 kB = size / 1024
                 size_string = '%d kB' % kB
         return size_string
+
+    def get_search_index_string(self):
+        """
+        Returns a string that can be indexed for the search.
+        """
+        return " ".join((
+            self.title,
+            user_name_helper(self.uploader)))

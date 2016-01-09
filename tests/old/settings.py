@@ -46,7 +46,7 @@ TEMPLATE_DIRS = (
 
 STATICFILES_DIRS.insert(0, os.path.join(OPENSLIDES_USER_DATA_PATH, 'static'))
 
-HAYSTACK_CONNECTIONS['default']['STORAGE'] = 'ram'
+SEARCH_INDEX = 'ram'
 
 
 # Special test settings
