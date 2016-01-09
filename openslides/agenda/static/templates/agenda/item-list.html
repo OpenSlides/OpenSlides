@@ -40,7 +40,7 @@
           <!-- project agenda button -->
           <a os-perms="core.can_manage_projector"
               class="btn btn-default form-control"
-              title="'Project agenda'|translate"
+              title="{{ 'Project agenda' | translate }}"
               ng-click="projectAgenda()"
               ng-class="{ 'btn-primary': isAgendaProjected() }">
             <i class="fa fa-video-camera"></i>
@@ -75,11 +75,11 @@
   <div uib-collapse="!isFilterOpen" class="row spacer">
     <div class="col-sm-12 text-right">
       <!-- hidden item filter -->
-      <input type="checkbox" ng-model="filter.noHiddenItems" ng-true-value="1" ng-false-value="">
-      <translate> Hide internal items</translate>
+      <input type="checkbox" ng-model="filter.showHiddenItems" ng-true-value="" ng-false-value="false">
+      <translate> Show internal items</translate>
       <!-- closed filter -->
-      <input type="checkbox" ng-model="filter.noClosedItems" ng-true-value="false" ng-false-value="">
-      <translate> Hide closed items</translate>
+      <input type="checkbox" ng-model="filter.showClosedItems" ng-true-value="" ng-false-value="false">
+      <translate> Show closed items</translate>
     </div>
   </div>
   <div uib-collapse="!isDeleteMode" class="row spacer">
@@ -115,10 +115,10 @@
         <th class="minimum">
           <translate>Done</translate>
     <tbody>
-      <tr ng-repeat="item in items | filter: filter.search |  filter: {type: filter.noHiddenItems}
-          |  filter: {closed: filter.noClosedItems}"
+      <tr ng-repeat="item in items | filter: filter.search |  filter: {is_hidden: filter.showHiddenItems}
+          |  filter: {closed: filter.showClosedItems}"
           class="animate-item"
-          ng-class="{ 'activeline': item.isProjected(), 'selected': item.selected, 'hiddenrow': item.type == 2}">
+          ng-class="{ 'activeline': item.isProjected(), 'selected': item.selected, 'hiddenrow': item.is_hidden}">
         <!-- projector column -->
         <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
           <a class="btn btn-default btn-sm"
@@ -132,13 +132,13 @@
           <input type="checkbox" ng-model="item.selected">
         <!-- agenda data columns -->
         <td ng-if="!item.quickEdit" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false">
-          <span ng-if="item.type == 2" title="'Hidden item'|translate"><i class="fa fa-ban"></i></span>
           <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&ndash;</span>
           <strong>
             <a href="" ng-click="open(item)">
               {{ item.getTitle() }}
             </a>
           </strong>
+          <span ng-if="item.is_hidden" title="{{ 'Internal item' | translate }}"><i class="fa fa-ban"></i></span>
           <div ng-if="item.comment">
             <small><i class="fa fa-info-circle"></i> {{ item.comment }}</small>
           </div>

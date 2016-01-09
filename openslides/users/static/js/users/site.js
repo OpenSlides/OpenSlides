@@ -370,7 +370,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     templateOptions: {
                         label: gettextCatalog.getString('Is active'),
                         description: gettextCatalog.getString(
-                            'Designates whether this user should be treated as '
+                            'Designates whether this user should be treated as ' +
                             'active. Unselect this instead of deleting the account.')
                     }
                 }];

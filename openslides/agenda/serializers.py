@@ -56,6 +56,7 @@ class ItemSerializer(ModelSerializer):
             'comment',
             'closed',
             'type',
+            'is_hidden',
             'duration',
             'speakers',
             'speaker_list_closed',
