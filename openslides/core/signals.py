@@ -65,12 +65,35 @@ def setup_general_config(sender, **kwargs):
 
     yield ConfigVariable(
         name='general_event_legal_notice',
-        default_value=_('<a href="http://www.openslides.org">OpenSlides</a> is a free web based presentation and assembly system for visualizing and controlling agenda, motions and elections of an assembly.'),
+        default_value=_(
+            '<a href="http://www.openslides.org">OpenSlides</a> is a free web based '
+            'presentation and assembly system for visualizing and controlling agenda, '
+            'motions and elections of an assembly.'),
         input_type='text',
         label=ugettext_lazy('Legal notice'),
         weight=132,
         group=ugettext_lazy('General'),
-        subgroup=ugettext_lazy('Event'))
+        subgroup=ugettext_lazy('Event'),
+        translatable=True)
+
+    yield ConfigVariable(
+        name='general_event_welcome_title',
+        default_value=_('Welcome to OpenSlides'),
+        label=ugettext_lazy('Front page title'),
+        weight=134,
+        group=ugettext_lazy('General'),
+        subgroup=ugettext_lazy('Event'),
+        translatable=True)
+
+    yield ConfigVariable(
+        name='general_event_welcome_text',
+        default_value=_('[Space for your welcome text.]'),
+        input_type='text',
+        label=ugettext_lazy('Front page text'),
+        weight=136,
+        group=ugettext_lazy('General'),
+        subgroup=ugettext_lazy('Event'),
+        translatable=True)
 
     # General System
 
@@ -79,7 +102,7 @@ def setup_general_config(sender, **kwargs):
         default_value=False,
         input_type='boolean',
         label=ugettext_lazy('Allow access for anonymous guest users'),
-        weight=135,
+        weight=138,
         group=ugettext_lazy('General'),
         subgroup=ugettext_lazy('System'))
 
@@ -135,23 +158,6 @@ def setup_general_config(sender, **kwargs):
         help_text=ugettext_lazy('Use web color names like "red" or hex numbers like "#ff0000".'),
         weight=170,
         group=ugettext_lazy('Projector'))
-
-    yield ConfigVariable(
-        name='projector_welcome_title',
-        default_value=_('Welcome to OpenSlides'),
-        label=ugettext_lazy('Title'),
-        help_text=ugettext_lazy('Also used for the default welcome slide.'),
-        weight=175,
-        group=ugettext_lazy('Projector'),
-        translatable=True)
-
-    yield ConfigVariable(
-        name='projector_welcome_text',
-        default_value=_('[Space for your welcome text.]'),
-        label=ugettext_lazy('Welcome text'),
-        weight=180,
-        group=ugettext_lazy('Projector'),
-        translatable=True)
 
     yield ConfigVariable(
         name='projector_default_countdown',
