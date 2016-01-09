@@ -846,6 +846,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         $scope.guestAllowed = $stateParams.guest_enabled;
         // login
         $scope.login = function () {
+            $scope.alerts = [];
             $http.post(
                 '/users/login/',
                 {'username': $scope.username, 'password': $scope.password}
