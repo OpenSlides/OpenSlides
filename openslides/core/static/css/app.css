@@ -696,7 +696,7 @@ th.sortable:hover, tr.pointer:hover, .pointer {
 
 /* background colors for table rows */
 tr.hiddenrow td {
-    background-color: #e5e5e5;
+    background-color: #F5DCDC;
 }
 
 tr.activeline td, li.activeline, .projected {

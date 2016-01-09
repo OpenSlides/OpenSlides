@@ -85,7 +85,7 @@ angular.module('OpenSlidesApp.assignments', [])
                 if (!this.phases) {
                     this.phases = $http({ 'method': 'OPTIONS', 'url': '/rest/assignments/assignment/' });
                 }
-                return phases;
+                return this.phases;
             },
             methods: {
                 getResourceName: function () {
