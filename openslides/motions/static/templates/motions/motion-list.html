@@ -112,7 +112,7 @@
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
     <tbody>
-      <tr ng-repeat="motion in motions | filter: filter.search | filter: {state_id: stateFilter} |
+      <tr ng-repeat="motion in motions | osFilter: filter.search : getFilterString | filter: {state_id: stateFilter} |
           orderBy: sortColumn:reverse"
           class="animate-item"
           ng-class="{ 'activeline': motion.isProjected(), 'selected': motion.selected }">
