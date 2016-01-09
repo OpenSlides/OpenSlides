@@ -7,8 +7,8 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
 .config([
     'slidesProvider',
     function(slidesProvider) {
-        slidesProvider.registerSlide('agenda/item', {
-            template: 'static/templates/agenda/slide-item-detail.html',
+        slidesProvider.registerSlide('agenda/list-of-speakers', {
+            template: 'static/templates/agenda/slide-list-of-speakers.html',
         });
         slidesProvider.registerSlide('agenda/item-list', {
             template: 'static/templates/agenda/slide-item-list.html',
@@ -16,7 +16,7 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
     }
 ])
 
-.controller('SlideItemDetailCtrl', [
+.controller('SlideListOfSpeakersCtrl', [
     '$scope',
     'Agenda',
     'User',

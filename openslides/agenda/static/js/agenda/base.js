@@ -80,18 +80,18 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 projectListOfSpeakers: function() {
                     return $http.post(
                         '/rest/core/projector/1/prune_elements/',
-                        [{name: 'agenda/item', id: this.id}]
+                        [{name: 'agenda/list-of-speakers', id: this.id}]
                     );
                 },
                 // check if list of speakers is projected
                 isListOfSpeakersProjected: function () {
                     // Returns true if there is a projector element with the
-                    // name 'agenda/item' and the same id.
+                    // name 'agenda/list-of-speakers' and the same id.
                     var projector = Projector.get(1);
                     if (typeof projector === 'undefined') return false;
                     var self = this;
                     var predicate = function (element) {
-                        return element.name == 'agenda/item' &&
+                        return element.name == 'agenda/list-of-speakers' &&
                                typeof element.id !== 'undefined' &&
                                element.id == self.id;
                     };

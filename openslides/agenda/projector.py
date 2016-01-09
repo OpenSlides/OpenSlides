@@ -40,13 +40,13 @@ class ItemListSlide(ProjectorElement):
             view_action='list')
 
 
-class ItemDetailSlide(ProjectorElement):
+class ListOfSpeakersSlide(ProjectorElement):
     """
     Slide definitions for Item model.
 
     This is only for list of speakers slide. You have to set 'id'.
     """
-    name = 'agenda/item'
+    name = 'agenda/list-of-speakers'
 
     def get_context(self):
         pk = self.config_entry.get('id')
