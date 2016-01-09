@@ -65,7 +65,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                     console.error("Error for slide " + element.name + ": " + element.error);
                 }
             });
-            $scope.scroll = -10 * Projector.get(1).scroll;
+            $scope.scroll = -5 * Projector.get(1).scroll;
             $scope.scale = 100 + 20 * Projector.get(1).scale;
         });
     });
