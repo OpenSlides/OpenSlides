@@ -65,7 +65,7 @@
   </strong>
 
   <h3 translate>Next speakers:</h3>
-  <div class="row">
+  <div class="row" ng-show="speakers.length > 0">
     <div ui-tree="treeOptions" class="col-sm-6">
       <ol ui-tree-nodes="" ng-model="speakers">
         <li ng-repeat="speaker in speakers | filter: {begin_time: null}" ui-tree-node>
