@@ -24,15 +24,6 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
     """
     Many to Many table between an assignment and user.
     """
-    STATUS_CANDIDATE = 1
-    STATUS_ELECTED = 2
-    STATUS_BLOCKED = 3
-    STATUSES = (
-        (STATUS_CANDIDATE, ugettext_lazy('candidate')),
-        (STATUS_ELECTED, ugettext_lazy('elected')),
-        (STATUS_BLOCKED, ugettext_lazy('blocked')),
-    )
-
     assignment = models.ForeignKey(
         'Assignment',
         on_delete=models.CASCADE,
@@ -40,9 +31,7 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE)
-    status = models.IntegerField(
-        choices=STATUSES,
-        default=STATUS_CANDIDATE)
+    elected = models.BooleanField(default=False)
 
     class Meta:
         default_permissions = ()
@@ -106,9 +95,9 @@ class Assignment(RESTModelMixin, models.Model):
         settings.AUTH_USER_MODEL,
         through='AssignmentRelatedUser')
     """
-    Users that are candidates, elected or blocked as candidate.
+    Users that are candidates or elected.
 
-    See AssignmentRelatedUser for more infos.
+    See AssignmentRelatedUser for more information.
     """
 
     tags = models.ManyToManyField(Tag, blank=True)
@@ -145,7 +134,7 @@ class Assignment(RESTModelMixin, models.Model):
         Queryset that represents the candidates for the assignment.
         """
         return self.related_users.filter(
-            assignmentrelateduser__status=AssignmentRelatedUser.STATUS_CANDIDATE)
+            assignmentrelateduser__elected=False)
 
     @property
     def elected(self):
@@ -153,15 +142,7 @@ class Assignment(RESTModelMixin, models.Model):
         Queryset that represents all elected users for the assignment.
         """
         return self.related_users.filter(
-            assignmentrelateduser__status=AssignmentRelatedUser.STATUS_ELECTED)
-
-    @property
-    def blocked(self):
-        """
-        Queryset that represents all blocked users for the assignment.
-        """
-        return self.related_users.filter(
-            assignmentrelateduser__status=AssignmentRelatedUser.STATUS_BLOCKED)
+            assignmentrelateduser__elected=True)
 
     def is_candidate(self, user):
         """
@@ -179,21 +160,13 @@ class Assignment(RESTModelMixin, models.Model):
         """
         return self.elected.filter(pk=user.pk).exists()
 
-    def is_blocked(self, user):
-        """
-        Returns True if the user is blocked for candidature.
-
-        Costs one database query.
-        """
-        return self.blocked.filter(pk=user.pk).exists()
-
     def set_candidate(self, user):
         """
         Adds the user as candidate.
         """
         related_user, __ = self.assignment_related_users.update_or_create(
             user=user,
-            defaults={'status': AssignmentRelatedUser.STATUS_CANDIDATE})
+            defaults={'elected': False})
 
     def set_elected(self, user):
         """
@@ -201,15 +174,7 @@ class Assignment(RESTModelMixin, models.Model):
         """
         related_user, __ = self.assignment_related_users.update_or_create(
             user=user,
-            defaults={'status': AssignmentRelatedUser.STATUS_ELECTED})
-
-    def set_blocked(self, user):
-        """
-        Block user from this assignment, so he can not get an candidate.
-        """
-        related_user, __ = self.assignment_related_users.update_or_create(
-            user=user,
-            defaults={'status': AssignmentRelatedUser.STATUS_BLOCKED})
+            defaults={'elected': True})
 
     def delete_related_user(self, user):
         """

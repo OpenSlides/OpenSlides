@@ -29,7 +29,7 @@ class AssignmentRelatedUserSerializer(ModelSerializer):
         fields = (
             'id',
             'user',
-            'status',
+            'elected',
             'assignment')  # js-data needs the assignment-id in the nested object to define relations.
 
 

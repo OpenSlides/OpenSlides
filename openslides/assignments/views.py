@@ -107,7 +107,7 @@ class AssignmentViewSet(ModelViewSet):
         return _('You were nominated successfully.')
 
     def withdraw_self(self, request, assignment):
-        # Withdraw candidature and set self blocked.
+        # Withdraw candidature.
         if assignment.phase == assignment.PHASE_FINISHED:
             raise ValidationError({'detail': _('You can not withdraw your candidature to this election because it is finished.')})
         if assignment.phase == assignment.PHASE_VOTING and not request.user.has_perm('assignments.can_manage'):
@@ -115,16 +115,14 @@ class AssignmentViewSet(ModelViewSet):
             self.permission_denied(request)
         if not assignment.is_candidate(request.user):
             raise ValidationError({'detail': _('You are not a candidate of this election.')})
-        assignment.set_blocked(request.user)
-        return _(
-            'You have withdrawn your candidature successfully. '
-            'You can not be nominated by other participants anymore.')
+        assignment.delete_related_user(request.user)
+        return _('You have withdrawn your candidature successfully.')
 
     def get_user_from_request_data(self, request):
         """
         Helper method to get a specific user from request data (not the
         request.user) so that the views self.candidature_other or
-        self.mark_elected can play with him.
+        self.mark_elected can play with it.
         """
         if not isinstance(request.data, dict):
             detail = _('Invalid data. Expected dictionary, got %s.') % type(request.data)
@@ -165,8 +163,6 @@ class AssignmentViewSet(ModelViewSet):
             # To nominate another user during voting you have to be a manager.
             self.permission_denied(request)
         if not request.user.has_perm('assignments.can_manage'):
-            if assignment.is_blocked(user):
-                raise ValidationError({'detail': _('User %s does not want to be a candidate. Only a manager can do this.') % user})
             if assignment.is_elected(user):
                 raise ValidationError({'detail': _('User %s is already elected.') % user})
         if assignment.is_candidate(user):
@@ -181,10 +177,10 @@ class AssignmentViewSet(ModelViewSet):
         if assignment.phase == assignment.PHASE_FINISHED:
             detail = _('You can not delete someones candidature to this election because it is finished.')
             raise ValidationError({'detail': detail})
-        if not assignment.is_candidate(user) and not assignment.is_blocked(user):
+        if not assignment.is_candidate(user):
             raise ValidationError({'detail': _('User %s has no status in this election.') % user})
         assignment.delete_related_user(user)
-        return _('Candidate %s was withdrawn/unblocked successfully.') % user
+        return _('Candidate %s was withdrawn successfully.') % user
 
     @detail_route(methods=['post', 'delete'])
     def mark_elected(self, request, pk=None):
