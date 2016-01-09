@@ -38,6 +38,7 @@ Other:
   for generic Django REST Framework views in OpenSlides apps.
 - Removed most of the Django views and templates.
 - Removed Django error pages.
+- Added page for legal notes.
 - Refactored projector API using metaclasses now.
 - Renamed SignalConnectMetaClass classmethod get_all_objects to get_all
   (private API).

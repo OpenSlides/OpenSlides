@@ -1,12 +1,16 @@
 <div class="header">
   <div class="title">
-    <h1 translate>Version</h1>
+    <h1 translate>Legal Notes and Version</h1>
   </div>
 </div>
 
 <div class="details">
-  <p class="lead">OpenSlides {{ core_version }}
+  <p class="lead" translate>Legal Notes</p>
+  {{ config('general_event_legal_notes') }}
+</div>
 
+<div class="details">
+  <p class="lead">OpenSlides {{ core_version }}
   <div ng-show="plugins.length">
     <p translate>Installed plugins:</p>
     <ol>

@@ -321,6 +321,7 @@ angular.module('OpenSlidesApp.core.site', [
     function getHtmlType(type) {
         return {
             string: 'text',
+            text: 'textarea',
             integer: 'number',
             boolean: 'checkbox',
             choice: 'choice',
