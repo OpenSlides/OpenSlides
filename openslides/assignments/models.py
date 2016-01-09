@@ -72,29 +72,25 @@ class Assignment(RESTModelMixin, models.Model):
     )
 
     title = models.CharField(
-        max_length=100,
-        verbose_name=ugettext_lazy("Title"))
+        max_length=100)
     """
     Title of the assignment.
     """
 
     description = models.TextField(
-        blank=True,
-        verbose_name=ugettext_lazy("Description"))
+        blank=True)
     """
     Text to describe the assignment.
     """
 
-    open_posts = models.PositiveSmallIntegerField(
-        verbose_name=ugettext_lazy("Number of members to be elected"))
+    open_posts = models.PositiveSmallIntegerField()
     """
     The number of members to be elected.
     """
 
     poll_description_default = models.CharField(
         max_length=79,
-        blank=True,
-        verbose_name=ugettext_lazy("Default comment on the ballot paper"))
+        blank=True)
     """
     Default text for the poll description.
     """
@@ -384,8 +380,7 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
     yesnoabstain = models.BooleanField(default=False)
     description = models.CharField(
         max_length=79,
-        blank=True,
-        verbose_name=ugettext_lazy("Comment on the ballot paper"))
+        blank=True)
 
     class Meta:
         default_permissions = ()

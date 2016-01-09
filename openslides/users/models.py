@@ -8,7 +8,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
-from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext_noop
 
 from openslides.utils.search import user_name_helper
 
@@ -98,67 +98,48 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
     USERNAME_FIELD = 'username'
 
     username = models.CharField(
-        ugettext_lazy('Username'),
         max_length=255,
         unique=True,
         blank=True)
 
     first_name = models.CharField(
-        ugettext_lazy('First name'),
         max_length=255,
         blank=True)
 
     last_name = models.CharField(
-        ugettext_lazy('Last name'),
         max_length=255,
         blank=True)
 
     # TODO: Try to remove the default argument in the following fields.
 
     structure_level = models.CharField(
-        ugettext_lazy('Structure level'),
         max_length=255,
         blank=True,
-        default='',
-        help_text=ugettext_lazy('Will be shown after the name.'))
+        default='')
 
     title = models.CharField(
-        ugettext_lazy('Title'),
         max_length=50,
         blank=True,
-        default='',
-        help_text=ugettext_lazy('Will be shown before the name.'))
+        default='')
 
     about_me = models.TextField(
-        ugettext_lazy('About me'),
         blank=True,
-        default='',
-        help_text=ugettext_lazy('Profile text.'))
+        default='')
 
     comment = models.TextField(
-        ugettext_lazy('Comment'),
         blank=True,
-        default='',
-        help_text=ugettext_lazy('Only for notes.'))
+        default='')
 
     default_password = models.CharField(
-        ugettext_lazy('Default password'),
         max_length=100,
         blank=True,
         default='')
 
     is_active = models.BooleanField(
-        ugettext_lazy('Active'),
-        default=True,
-        help_text=ugettext_lazy(
-            'Designates whether this user should be treated as '
-            'active. Unselect this instead of deleting the account.'))
+        default=True)
 
     is_present = models.BooleanField(
-        ugettext_lazy('Present'),
-        default=False,
-        help_text=ugettext_lazy(
-            'Designates whether this user is in the room or not.'))
+        default=False)
 
     objects = UserManager()
 

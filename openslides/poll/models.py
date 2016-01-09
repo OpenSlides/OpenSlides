@@ -78,12 +78,9 @@ class CollectDefaultVotesMixin(models.Model):
     Mixin for a poll to collect the default vote values for valid votes,
     invalid votes and votes cast.
     """
-    votesvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2,
-                                    verbose_name=ugettext_lazy('Valid votes'))
-    votesinvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2,
-                                      verbose_name=ugettext_lazy('Invalid votes'))
-    votescast = MinMaxIntegerField(null=True, blank=True, min_value=-2,
-                                   verbose_name=ugettext_lazy('Votes cast'))
+    votesvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2)
+    votesinvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2)
+    votescast = MinMaxIntegerField(null=True, blank=True, min_value=-2)
 
     class Meta:
         abstract = True

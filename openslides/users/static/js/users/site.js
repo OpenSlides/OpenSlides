@@ -289,6 +289,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     type: 'input',
                     templateOptions: {
                         label: gettextCatalog.getString('Title'),
+                        description: gettextCatalog.getString('Will be shown before the name.')
                     }
                 },
                 {
@@ -309,7 +310,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     key: 'structure_level',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Structure level')
+                        label: gettextCatalog.getString('Structure level'),
+                        description: gettextCatalog.getString('Will be shown after the name.')
                     }
                 },
                 {
@@ -341,14 +343,16 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     key: 'comment',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Comment')
+                        label: gettextCatalog.getString('Comment'),
+                        description: gettextCatalog.getString('Only for notes.')
                     }
                 },
                 {
                     key: 'about_me',
                     type: 'textarea',
                     templateOptions: {
-                        label: gettextCatalog.getString('About me')
+                        label: gettextCatalog.getString('About me'),
+                        description: gettextCatalog.getString('Profile text.')
                     },
                     ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
                 },
@@ -356,14 +360,18 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     key: 'is_present',
                     type: 'checkbox',
                     templateOptions: {
-                        label: gettextCatalog.getString('Is present')
+                        label: gettextCatalog.getString('Is present'),
+                        description: gettextCatalog.getString('Designates whether this user is in the room or not.')
                     }
                 },
                 {
                     key: 'is_active',
                     type: 'checkbox',
                     templateOptions: {
-                        label: gettextCatalog.getString('Is active')
+                        label: gettextCatalog.getString('Is active'),
+                        description: gettextCatalog.getString(
+                            'Designates whether this user should be treated as '
+                            'active. Unselect this instead of deleting the account.')
                     }
                 }];
             }

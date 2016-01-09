@@ -164,25 +164,24 @@ class Item(RESTModelMixin, models.Model):
         (AGENDA_ITEM, ugettext_lazy('Agenda item')),
         (HIDDEN_ITEM, ugettext_lazy('Hidden item')))
 
-    item_number = models.CharField(blank=True, max_length=255, verbose_name=ugettext_lazy("Number"))
+    item_number = models.CharField(blank=True, max_length=255)
     """
     Number of agenda item.
     """
 
-    comment = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Comment"))
+    comment = models.TextField(null=True, blank=True)
     """
     Optional comment to the agenda item. Will not be shoun to normal users.
     """
 
-    closed = models.BooleanField(default=False, verbose_name=ugettext_lazy("Closed"))
+    closed = models.BooleanField(default=False)
     """
     Flag, if the item is finished.
     """
 
     type = models.IntegerField(
         choices=ITEM_TYPE,
-        default=AGENDA_ITEM,
-        verbose_name=ugettext_lazy("Type"))
+        default=AGENDA_ITEM)
     """
     Type of the agenda item.
 
@@ -204,7 +203,7 @@ class Item(RESTModelMixin, models.Model):
     The parent item in the agenda tree.
     """
 
-    weight = models.IntegerField(default=0, verbose_name=ugettext_lazy("Weight"))
+    weight = models.IntegerField(default=0)
     """
     Weight to sort the item in the agenda.
     """
@@ -229,7 +228,7 @@ class Item(RESTModelMixin, models.Model):
     """
 
     speaker_list_closed = models.BooleanField(
-        default=False, verbose_name=ugettext_lazy("List of speakers is closed"))
+        default=False)
     """
     True, if the list of speakers is closed.
     """
