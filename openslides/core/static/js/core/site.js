@@ -343,6 +343,11 @@ angular.module('OpenSlidesApp.core.site', [
             $scope.key = 'field-' + field.key;
             $scope.value = config.value;
             $scope.help_text = field.help_text;
+            $scope.default_value = field.default_value;
+            $scope.reset = function () {
+                $scope.value = $scope.default_value;
+                $scope.save(field.key, $scope.value);
+            }
         }
     };
 })

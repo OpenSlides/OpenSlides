@@ -77,9 +77,10 @@ class ConfigHandler:
                 raise ConfigError(e.messages[0])
 
         # Save the new value to the database.
-        updated_rows = ConfigStore.objects.filter(key=key).update(value=value)
-        if not updated_rows:
-            ConfigStore.objects.create(key=key, value=value)
+        config_store, created = ConfigStore.objects.get_or_create(key=key, defaults={'value': value})
+        if not created:
+            config_store.value = value
+            config_store.save()
 
         # Update cache.
         if hasattr(self, '_cache'):

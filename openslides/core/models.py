@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_noop
 from jsonfield import JSONField
@@ -197,6 +198,12 @@ class ConfigStore(models.Model):
         default_permissions = ()
         permissions = (
             ('can_manage_config', ugettext_noop('Can manage configuration')),)
+
+    def get_root_rest_url(self):
+        """
+        Returns the detail url of config value.
+        """
+        return reverse('config-detail', args=[str(self.key)])
 
 
 class ChatMessage(RESTModelMixin, models.Model):

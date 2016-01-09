@@ -2,18 +2,27 @@
   <label>{{ label }}</label>
 
   <div class="input-group">
-    <input ng-if="type != 'choice' && type != 'textarea'" ng-model="value" ng-change="save(configOption.key, value)" id="{{ key }}"
+    <input ng-if="type != 'choice' && type != 'textarea'"
+           ng-model="$parent.value"
+           ng-change="save(configOption.key, $parent.value)"
+           id="{{ key }}"
         type="{{ type }}" class="form-control">
 
-    <textarea ng-if="type == 'textarea'" ng-model="value" ng-change="save(configOption.key, value)" id="{{ key }}" class="form-control">
+    <textarea ng-if="type == 'textarea'"
+              ng-model="$parent.value"
+              ng-change="save(configOption.key, $parent.value)"
+              id="{{ key }}" class="form-control">
     </textarea>
 
-    <select ng-if="type == 'choice'" ng-model="value" ng-change="save(configOption.key, value)" id="{{ key }}"
+    <select ng-if="type == 'choice'"
+            ng-model="$parent.value"
+            ng-change="save(configOption.key, $parent.value)"
+            id="{{ key }}"
         class="form-control" ng-options="option.value as option.display_name for option in choices">
     </select>
 
     <span class="input-group-btn">
-      <button ng-click="value=configOption.default_value; save(configOption.key, configOption.default_value)" class="btn btn-default" translate>
+      <button ng-click="reset()" class="btn btn-default" title="{{ default_value }}" translate>
         <i class="fa fa-undo"></i>
         <translate>Reset</translate>
       </button>
