@@ -321,7 +321,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                         label: gettextCatalog.getString('Groups'),
                         optionsAttr: 'bs-options',
                         options: Group.getAll(),
-                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
+                        ngOptions: 'option[to.valueProp] as option in to.options | ' +
+                                   'filter: {id: "!1"} | filter: {id: "!2"} | ' +
+                                   'filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'name',
                         placeholder: gettextCatalog.getString('Select or search a group ...')

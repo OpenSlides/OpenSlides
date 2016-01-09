@@ -58,7 +58,6 @@ angular.module('OpenSlidesApp.core', [
             },
             reconnect: function () {
                 socket.close();
-                DS.clear();
                 Autoupdate.connect();
             }
         };
