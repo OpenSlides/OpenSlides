@@ -67,17 +67,26 @@ angular.module('OpenSlidesApp.assignments', [])
 ])
 
 .factory('Assignment', [
+    '$http',
     'DS',
     'AssignmentRelatedUser',
     'AssignmentPoll',
     'jsDataModel',
     'gettext',
-    function (DS, AssignmentRelatedUser, AssignmentPoll, jsDataModel, gettext) {
+    function ($http, DS, AssignmentRelatedUser, AssignmentPoll, jsDataModel, gettext) {
         var name = 'assignments/assignment';
+        var phases;
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
             agendaSupplement: gettext('Election'),
+            phases: phases,
+            getPhases: function () {
+                if (!this.phases) {
+                    this.phases = $http({ 'method': 'OPTIONS', 'url': '/rest/assignments/assignment/' });
+                }
+                return phases;
+            },
             methods: {
                 getResourceName: function () {
                     return name;
