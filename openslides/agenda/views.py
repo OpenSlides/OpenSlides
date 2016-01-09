@@ -292,10 +292,13 @@ class AgendaPDF(PDFView):
                 yield from walk_tree(element['children'], ancestors + 1)
 
         for item, ancestors in walk_tree(tree):
+            item_number = "{} ".format(item.item_number) if item.item_number else ''
             if ancestors:
                 space = "&nbsp;" * 6 * ancestors
                 story.append(Paragraph(
-                    "%s%s" % (space, escape(item.title)),
+                    "%s%s%s" % (space, item_number, escape(item.title)),
                     stylesheet['Subitem']))
             else:
-                story.append(Paragraph(escape(item.title), stylesheet['Item']))
+                story.append(Paragraph(
+                    "%s%s" % (item_number, escape(item.title)),
+                    stylesheet['Item']))

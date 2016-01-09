@@ -197,9 +197,9 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
                 getAgendaTitle: function () {
                     var value = '';
                     if (this.identifier) {
-                        value = this.identifier + ' | ';
+                        value = ' ' + this.identifier;
                     }
-                    return value + this.getTitle();
+                    return value + ': ' + this.getTitle();
                 },
                 isAllowed: function (action) {
                     /*

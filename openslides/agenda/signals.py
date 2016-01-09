@@ -56,6 +56,7 @@ def setup_agenda_config(sender, **kwargs):
         name='agenda_number_prefix',
         default_value='',
         label=ugettext_lazy('Numbering prefix for agenda items'),
+        help_text=ugettext_lazy('This prefix will be set if you run the automatic agenda numbering.'),
         weight=240,
         group=ugettext_lazy('Agenda'),
         validators=(MaxLengthValidator(20),))

@@ -53,7 +53,10 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                         title = this.title;
                     }
                     if (this.getContentResource().agendaSupplement) {
-                        title = title + ' (' + gettextCatalog.getString(this.getContentResource().agendaSupplement) + ')';
+                        title = gettextCatalog.getString(this.getContentResource().agendaSupplement) + ' ' + title;
+                    }
+                    if (this.item_number) {
+                        title = this.item_number + ' ' + title;
                     }
                     return title;
                 },

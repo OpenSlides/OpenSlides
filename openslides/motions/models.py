@@ -128,7 +128,7 @@ class Motion(RESTModelMixin, models.Model):
         Return a human readable name of this motion.
         """
         if self.identifier:
-            string = '%s | %s' % (self.identifier, self.title)
+            string = '%s: %s' % (self.identifier, self.title)
         else:
             string = self.title
         return string

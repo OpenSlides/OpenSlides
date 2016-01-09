@@ -133,9 +133,9 @@
         <!-- agenda data columns -->
         <td ng-if="!item.quickEdit" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false">
           <span ng-if="item.type == 2" title="'Hidden item'|translate"><i class="fa fa-ban"></i></span>
+          <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&ndash;</span>
           <strong>
             <a href="" ng-click="open(item)">
-              <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&ndash;</span>
               {{ item.getTitle() }}
             </a>
           </strong>
