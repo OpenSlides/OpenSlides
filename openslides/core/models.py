@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.translation import ugettext_noop
 from jsonfield import JSONField
 
+from openslides.mediafiles.models import Mediafile
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.projector import ProjectorElement
 
@@ -127,6 +128,10 @@ class CustomSlide(RESTModelMixin, models.Model):
         blank=True)
     weight = models.IntegerField(
         default=0)
+    attachments = models.ManyToManyField(
+        Mediafile,
+        verbose_name=ugettext_lazy('Attachments'),
+        blank=True)
 
     class Meta:
         default_permissions = ()

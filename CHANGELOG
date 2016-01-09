@@ -13,6 +13,7 @@ Agenda:
 - Changed API of related objects. All assignments, motions and custom slides
   are now agenda items and can be hidden.
 - Removed mptt.
+- Added attachments to custom slides.
 Assignments:
 - Renamed app from assignment to assignments.
 - Removed possibility to block candidates.
