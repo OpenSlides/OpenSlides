@@ -51,7 +51,12 @@
               <div id="chatbox-form">
                 <form ng-submit="sendMessage()">
                   <div class="input-group">
-                    <input ng-model="newMessage" id="messageInput" class="form-control" type="text">
+                    <input
+                      ng-model="newMessage"
+                      id="messageInput"
+                      class="form-control"
+                      type="text"
+                      autocomplete="off">
                     <span class="input-group-btn">
                       <button type="submit" class="btn btn-default" id="messageSendButton">
                         <i class="fa fa-comment"></i>
