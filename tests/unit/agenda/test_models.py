@@ -14,16 +14,6 @@ class TestItemTitle(TestCase):
             item.title,
             'related_title')
 
-    @patch('openslides.agenda.models.Item.item_no', '5')
-    @patch('openslides.agenda.models.Item.content_object')
-    def test_title_with_item_no(self, content_object):
-        item = Item()
-        content_object.get_agenda_title.return_value = 'related_title'
-
-        self.assertEqual(
-            item.title,
-            '5 related_title')
-
     @patch('openslides.agenda.models.Item.content_object')
     def test_title_invalid_related(self, content_object):
         item = Item()

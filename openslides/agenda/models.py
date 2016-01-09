@@ -139,7 +139,11 @@ class ItemManager(models.Manager):
                     item_number = str(index + 1)
                     if number is not None:
                         item_number = '.'.join((number, item_number))
-                tree_element['item'].item_number = item_number
+                if config['agenda_number_prefix']:
+                    item_number_tmp = "%s %s" % (config['agenda_number_prefix'], item_number)
+                else:
+                    item_number_tmp = item_number
+                tree_element['item'].item_number = item_number_tmp
                 tree_element['item'].save()
                 walk_tree(tree_element['children'], item_number)
 
@@ -261,11 +265,10 @@ class Item(RESTModelMixin, models.Model):
         Return get_agenda_title() from the content_object.
         """
         try:
-            title = self.content_object.get_agenda_title()
+            return self.content_object.get_agenda_title()
         except AttributeError:
             raise NotImplementedError('You have to provide a get_agenda_title '
                                       'method on your related model.')
-        return '%s %s' % (self.item_no, title) if self.item_no else title
 
     def is_hidden(self):
         """
@@ -286,16 +289,6 @@ class Item(RESTModelMixin, models.Model):
         except IndexError:
             # The list of speakers is empty.
             return None
-
-    @property
-    def item_no(self):
-        item_no = None
-        if self.item_number:
-            if config['agenda_number_prefix']:
-                item_no = '%s %s' % (config['agenda_number_prefix'], self.item_number)
-            else:
-                item_no = str(self.item_number)
-        return item_no
 
 
 class SpeakerManager(models.Manager):
