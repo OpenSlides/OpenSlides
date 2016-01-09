@@ -1,6 +1,7 @@
 from cgi import escape
 
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from reportlab.platypus import Paragraph
@@ -48,7 +49,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             result = (self.request.user.has_perm('agenda.can_see') and
                       self.request.user.has_perm('agenda.can_see_hidden_items') and
                       self.request.user.has_perm('agenda.can_manage'))
-        elif self.action in ('speak', 'numbering'):
+        elif self.action in ('speak', 'sort_speakers', 'numbering'):
             result = (self.request.user.has_perm('agenda.can_see') and
                       self.request.user.has_perm('agenda.can_manage'))
         else:
@@ -194,6 +195,44 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
 
         # Initiate response.
         return Response({'detail': message})
+
+    @detail_route(methods=['POST'])
+    def sort_speakers(self, request, pk=None):
+        """
+        Special view endpoint to sort the list of speakers.
+
+        Expects a list of IDs of the speakers.
+        """
+        # Retrieve item.
+        item = self.get_object()
+
+        # Check data
+        speaker_ids = request.data.get('speakers')
+        if not isinstance(speaker_ids, list):
+            raise ValidationError(
+                {'detail': _('Invalid data.')})
+
+        # Get all speakers
+        speakers = {}
+        for speaker in item.speakers.filter(begin_time=None):
+            speakers[speaker.pk] = speaker
+
+        # Check and sort speakers
+        valid_speakers = []
+        for speaker_id in speaker_ids:
+            if not isinstance(speaker_id, int) or speakers.get(speaker_id) is None:
+                raise ValidationError(
+                    {'detail': _('Invalid data.')})
+            valid_speakers.append(speakers[speaker_id])
+        weight = 0
+        with transaction.atomic():
+            for speaker in valid_speakers:
+                speaker.weight = weight
+                speaker.save()
+                weight += 1
+
+        # Initiate response.
+        return Response({'detail': _('List of speakers successfully sorted.')})
 
     @list_route(methods=['get', 'put'])
     def tree(self, request):
