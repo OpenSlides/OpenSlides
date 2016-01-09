@@ -821,13 +821,15 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     function ($scope, $http, $stateParams, operator, gettextCatalog, Config) {
         $scope.alerts = [];
 
-        // TODO: add welcome message only on first time (or if admin password not changed)
-        $scope.alerts.push({
-            type: 'success',
-            msg: gettextCatalog.getString("Installation was successfully.") + "<br>" +
-                 gettextCatalog.getString("Use <strong>admin</strong> and <strong>admin</strong> for first login.") + "<br>" +
-                 gettextCatalog.getString("Important: Please change your password!")
-        });
+        // get login info-text from server
+        $http.get('/users/login/').success(function(data) {
+            if(data.info_text) {
+                $scope.alerts.push({
+                    type: 'success',
+                    msg: data.info_text
+                });
+            }
+        })
         // close alert function
         $scope.closeAlert = function(index) {
             $scope.alerts.splice(index, 1);
