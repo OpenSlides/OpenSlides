@@ -65,7 +65,6 @@ class CanidatureSelf(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Assignment.objects.get(pk=self.assignment.pk).candidates.filter(username='admin').exists())
-        self.assertTrue(Assignment.objects.get(pk=self.assignment.pk).blocked.filter(username='admin').exists())
 
     def test_withdraw_self_twice(self):
         response = self.client.delete(reverse('assignment-candidature-self', args=[self.assignment.pk]))
@@ -90,7 +89,6 @@ class CanidatureSelf(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Assignment.objects.get(pk=self.assignment.pk).candidates.exists())
-        self.assertTrue(Assignment.objects.get(pk=self.assignment.pk).blocked.filter(username='admin').exists())
 
     def test_withdraw_self_during_voting_non_admin(self):
         self.assignment.set_candidate(get_user_model().objects.get(username='admin'))

@@ -15,6 +15,7 @@ Agenda:
 - Removed mptt.
 Assignments:
 - Renamed app from assignment to assignments.
+- Removed possibility to block candidates.
 - Massive refactoring and cleanup of the app.
 Motions:
 - Renamed app from motion to motions.
