@@ -64,10 +64,10 @@ def setup_general_config(sender, **kwargs):
         subgroup=ugettext_lazy('Event'))
 
     yield ConfigVariable(
-        name='general_event_legal_notes',
-        default_value='',
+        name='general_event_legal_notice',
+        default_value=_('<a href="http://www.openslides.org">OpenSlides</a> is a free web based presentation and assembly system for visualizing and controlling agenda, motions and elections of an assembly.'),
         input_type='text',
-        label=ugettext_lazy('Legal notes'),
+        label=ugettext_lazy('Legal notice'),
         weight=132,
         group=ugettext_lazy('General'),
         subgroup=ugettext_lazy('Event'))

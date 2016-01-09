@@ -205,10 +205,10 @@ angular.module('OpenSlidesApp.core.site', [
             abstract: true,
             template: "<ui-view/>",
         })
-        // version
-        .state('version', {
-            url: '/version',
-            controller: 'VersionCtrl',
+        // legal notice and version
+        .state('legalnotice', {
+            url: '/legalnotice',
+            controller: 'LegalNoticeCtrl',
         })
         //config
         .state('config', {
@@ -425,8 +425,8 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-// Version Controller
-.controller('VersionCtrl', [
+// Legal Notice Controller
+.controller('LegalNoticeCtrl', [
     '$scope',
     '$http',
     function ($scope, $http) {
