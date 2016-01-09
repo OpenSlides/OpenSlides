@@ -26,7 +26,7 @@ Installation on GNU/Linux or Mac OS X
 
 1. Check requirements
 
-   Make sure that you have installed Python Programming Language 3 (>= 3.3)
+   Make sure that you have installed Python Programming Language 3 (>= 3.4)
    on your system. You will also need the Python development headers.
 
    For example for Ubuntu run::
@@ -73,7 +73,7 @@ portable version you should observe the following install steps.*
 
 1. Check requirements
 
-   Make sure that you have installed Python Programming Language 3 (>= 3.3)
+   Make sure that you have installed Python Programming Language 3 (>= 3.4)
    and Setuptools on your system.
 
    a. Download and run the latest `Python 3.4 32-bit MSI installer
@@ -170,7 +170,7 @@ Installation and start of the development version
 
 1. Check requirements
 
-   You need to have `Python 3 (>=3.3) <https://www.python.org/>`_, `Node.js
+   You need to have `Python 3 (>=3.4) <https://www.python.org/>`_, `Node.js
    (>=0.10) <https://nodejs.org/>`_ and `Git <http://git-scm.com/>`_
    installed. See also step 1 in the correspondent instruction in section
    III.

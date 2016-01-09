@@ -190,7 +190,12 @@ class Item(RESTModelMixin, models.Model):
     The intended duration for the topic.
     """
 
-    parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='children')
     """
     The parent item in the agenda tree.
     """
@@ -200,7 +205,11 @@ class Item(RESTModelMixin, models.Model):
     Weight to sort the item in the agenda.
     """
 
-    content_type = models.ForeignKey(ContentType, null=True, blank=True)
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True)
     """
     Field for generic relation to a related object. Type of the object.
     """
@@ -318,12 +327,17 @@ class Speaker(RESTModelMixin, models.Model):
 
     objects = SpeakerManager()
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE)
     """
     ForeinKey to the user who speaks.
     """
 
-    item = models.ForeignKey(Item, related_name='speakers')
+    item = models.ForeignKey(
+        Item,
+        on_delete=models.CASCADE,
+        related_name='speakers')
     """
     ForeinKey to the agenda item to which the user want to speak.
     """

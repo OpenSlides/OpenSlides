@@ -1,5 +1,5 @@
 import random
-from cgi import escape
+from html import escape
 from operator import attrgetter
 
 from bs4 import BeautifulSoup

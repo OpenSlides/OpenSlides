@@ -1,7 +1,8 @@
+from collections import OrderedDict
+
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
@@ -34,9 +35,11 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
 
     assignment = models.ForeignKey(
         'Assignment',
-        db_index=True,
+        on_delete=models.CASCADE,
         related_name='assignment_related_users')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, db_index=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE)
     status = models.IntegerField(
         choices=STATUSES,
         default=STATUS_CANDIDATE)
@@ -272,7 +275,7 @@ class Assignment(RESTModelMixin, models.Model):
         Returns a table represented as a list with all candidates from all
         related polls and their vote results.
         """
-        vote_results_dict = SortedDict()
+        vote_results_dict = OrderedDict()
 
         polls = self.polls.all()
         if only_published:
@@ -331,7 +334,10 @@ class Assignment(RESTModelMixin, models.Model):
 
 
 class AssignmentVote(RESTModelMixin, BaseVote):
-    option = models.ForeignKey('AssignmentOption', related_name='votes')
+    option = models.ForeignKey(
+        'AssignmentOption',
+        on_delete=models.CASCADE,
+        related_name='votes')
 
     class Meta:
         default_permissions = ()
@@ -344,8 +350,13 @@ class AssignmentVote(RESTModelMixin, BaseVote):
 
 
 class AssignmentOption(RESTModelMixin, BaseOption):
-    poll = models.ForeignKey('AssignmentPoll', related_name='options')
-    candidate = models.ForeignKey(settings.AUTH_USER_MODEL)
+    poll = models.ForeignKey(
+        'AssignmentPoll',
+        on_delete=models.CASCADE,
+        related_name='options')
+    candidate = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE)
     vote_class = AssignmentVote
 
     class Meta:
@@ -366,7 +377,10 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
     slide_callback_name = 'assignmentpoll'
     option_class = AssignmentOption
 
-    assignment = models.ForeignKey(Assignment, related_name='polls')
+    assignment = models.ForeignKey(
+        Assignment,
+        on_delete=models.CASCADE,
+        related_name='polls')
     yesnoabstain = models.BooleanField(default=False)
     description = models.CharField(
         max_length=79,

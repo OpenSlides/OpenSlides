@@ -1,4 +1,4 @@
-from cgi import escape
+from html import escape
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
