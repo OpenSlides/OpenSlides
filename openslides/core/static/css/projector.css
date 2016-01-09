@@ -213,17 +213,9 @@ tr.elected td {
     background-color: #BED4DE !important;
 }
 
-/*** Table list ***/
-.tablelist {
-    font-size: 130%;
+/*** Agenda list ***/
+.agendalist p {
+    font-size: 140%;
 }
-.tablelist td {
-    padding: 5px;
-}
-.tablelist .leftcolumn {
-    padding-right: 15px;
-    vertical-align: top;
-}
-.tablelist td.closed {
-    text-decoration: line-through;
-}
+.spacer-top {
+   margin-top: 25px;
