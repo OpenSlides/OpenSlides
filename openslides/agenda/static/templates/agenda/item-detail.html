@@ -69,7 +69,7 @@
     <div ui-tree="treeOptions" class="col-sm-6">
       <ol ui-tree-nodes="" ng-model="speakers">
         <li ng-repeat="speaker in speakers | filter: {begin_time: null}" ui-tree-node>
-          <i ui-tree-handle="" class="fa fa-arrows-v"></i>
+          <i os-perms="agenda.can_manage" ui-tree-handle="" class="fa fa-arrows-v"></i>
           {{ $index + 1 }}.
           {{ speaker.user.get_full_name() }}
           <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"

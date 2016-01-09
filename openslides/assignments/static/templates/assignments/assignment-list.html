@@ -23,8 +23,8 @@
     <div class="col-sm-6">
       <form class="form-inline">
         <!-- delete mode -->
-        <button os-perms-lite="assignments.can_manage" class="btn btn-default"
-            ng-click="isDeleteMode = !isDeleteMode; uncheckAll()">
+        <button os-perms="assignments.can_manage" class="btn btn-default"
+            ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
           <i class="fa fa-check-square-o"></i>
           <translate>Select ...</translate>
         </button>
@@ -78,8 +78,8 @@
         <!-- projector column -->
         <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="minimum">
         <!-- delete selection column -->
-        <th ng-show="isDeleteMode" os-perms-lite="assignments.can_manage" class="minimum deleteColumn">
-          <input type="checkbox" ng-model="selectedAll" ng-change="checkAll()">
+        <th ng-show="isDeleteMode" os-perms="assignments.can_manage" class="minimum deleteColumn">
+          <input type="checkbox" ng-model="$parent.selectedAll" ng-change="checkAll()">
         <th ng-click="toggleSort('title')" class="sortable">
           <translate>Title</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'title' && header.sortable != false"
@@ -101,7 +101,7 @@
           class="animate-item"
           ng-class="{ 'activeline': assignment.isProjected(), 'selected': assignment.selected }">
         <!-- projector column -->
-        <td ng-show="!isDeleteMode" os-perms-lite="core.can_manage_projector">
+        <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
           <a class="btn btn-default btn-sm"
               ng-class="{ 'btn-primary': assignment.isProjected() }"
               ng-click="assignment.project()"

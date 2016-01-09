@@ -31,8 +31,8 @@
     <div class="col-sm-6">
       <form class="form-inline">
         <!-- delete mode -->
-        <button os-perms-lite="agenda.can_manage" class="btn btn-default"
-            ng-click="isDeleteMode = !isDeleteMode; uncheckAll()">
+        <button os-perms="agenda.can_manage" class="btn btn-default"
+            ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
           <i class="fa fa-check-square-o"></i>
           <translate>Select ...</translate>
         </button>
@@ -104,13 +104,13 @@
         <!-- projector column -->
         <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="minimum"></th>
         <!-- delete selection column -->
-        <th ng-show="isDeleteMode" os-perms-lite="agenda.can_manage" class="minimum deleteColumn"
+        <th ng-show="isDeleteMode" os-perms="agenda.can_manage" class="minimum deleteColumn"
             ng-click="$event.stopPropagation();">
-          <input type="checkbox" ng-model="selectedAll" ng-change="checkAll()">
+          <input type="checkbox" ng-model="$parent.selectedAll" ng-change="checkAll()">
         <!-- agenda item column -->
         <th>
           <translate>Agenda item</translate>
-        <th os-perms="agenda.can_manage">
+        <th os-perms="agenda.can_see_hidden_items">
           <translate>Duration</translate>
         <th class="minimum">
           <translate>Done</translate>
@@ -153,13 +153,13 @@
                 ng-bootbox-confirm-action="deleteRelatedItem(item)" translate>Delete</a>
             </span>
           </div>
-        <td ng-if="!item.quickEdit" class="optional">
+        <td ng-show="!item.quickEdit" os-perms="agenda.can_see_hidden_items" class="optional">
           {{ item.duration }}
           <span ng-if="item.duration" translate-comment="'h' means time in hours" translate>h</span>
         <td ng-if="!item.quickEdit">
           <input type="checkbox" ng-model="item.closed" ng-change="save(item.id);">
         <!-- quickEdit columns -->
-        <td ng-if="item.quickEdit" os-perms-lite="agenda.can_manage" colspan="3">
+        <td ng-if="$parent.item.quickEdit" os-perms="agenda.can_manage" colspan="3">
           <form ng-submit="save(item)">
           <h4>{{ item.getTitle() }} <span class="text-muted">&ndash; QuickEdit</span></h4>
             <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
