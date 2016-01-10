@@ -53,11 +53,11 @@
     <tbody>
       <tr ng-repeat="mediafile in mediafiles | filter: filter.search |
           orderBy: sortColumn:reverse">
-        <td><a ng-href="/media/{{ mediafile.mediafile.name }}" target="_self">{{ mediafile.title_or_filename }}</a>
+        <td><a ng-href="{{ mediafile.mediafileUrl }}" target="_blank">{{ mediafile.title_or_filename }}</a>
         <td class="optional">{{ mediafile.mediafile.type }}
         <td>{{ mediafile.filesize }}
         <td>{{ mediafile.timestamp }}
-        <td>{{ mediafile.uploader }}
+        <td>{{ mediafile.uploader.get_full_name() }}
         <td os-perms="mediafiles.can_manage core.can_manage_projector" class="nobr">
           <!-- projector, TODO: add link to activate slide -->
           <a href="#TODO" ng-if="mediafile.is_presentable" os-perms-lite="core.can_manage_projector"

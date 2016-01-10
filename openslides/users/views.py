@@ -37,9 +37,9 @@ class UserViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve', 'partial_update'):
+        if self.action in ('metadata', 'list', 'retrieve', 'update', 'partial_update'):
             result = self.request.user.has_perm('users.can_see_name')
-        elif self.action in ('create', 'update', 'destroy', 'reset_password'):
+        elif self.action in ('create', 'destroy', 'reset_password'):
             result = (self.request.user.has_perm('users.can_see_name') and
                       self.request.user.has_perm('users.can_see_extra_data') and
                       self.request.user.has_perm('users.can_manage'))
@@ -121,12 +121,13 @@ class UserViewSet(ModelViewSet):
                 'title',
                 'first_name',
                 'last_name',
-                'structure_level'
+                'structure_level',
                 'about_me',)
-            for data in request.data.keys():
-                if data not in whitelist:
-                    # Non-staff users are allowed to send only some data.
-                    self.permission_denied(request)
+            keys = list(request.data.keys())
+            for key in keys:
+                if key not in whitelist:
+                    # Non-staff users are allowed to send only some data. Ignore other data.
+                    del request.data[key]
             # Validate data and update user.
             serializer = self.get_serializer(
                 user,

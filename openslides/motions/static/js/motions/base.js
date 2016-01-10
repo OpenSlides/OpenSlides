@@ -164,7 +164,7 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
     'operator',
     'Config',
     function(DS, MotionPoll, jsDataModel, gettext, operator, Config) {
-        var name = 'motions/motion'
+        var name = 'motions/motion';
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,

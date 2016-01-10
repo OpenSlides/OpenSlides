@@ -546,7 +546,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     function($scope, $state, User, user) {
         $scope.user = user;  // autoupdate is not activated
         $scope.save = function (user) {
-            User.save(user).then(
+            User.save(user, { method: 'PATCH' }).then(
                 function(success) {
                     $state.go('users.user.list');
                 },
