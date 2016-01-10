@@ -82,22 +82,39 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
     };
 })
 
-.controller('MediafileCreateCtrl', function($scope, $state, $timeout, Upload) {
-    $scope.mediafile = {};
-    $scope.save = uploadFile($timeout, $scope, $state, Upload);
-})
+.controller('MediafileCreateCtrl', [
+    '$scope',
+    '$state',
+    '$timeout',
+    'operator',
+    'Upload',
+    function($scope, $state, $timeout, operator, Upload) {
+        $scope.mediafile = {};
+        $scope.save = uploadFile($timeout, $scope, $state, operator, Upload);
+    }
+])
 
-.controller('MediafileUpdateCtrl', function($scope, $state, $timeout, Upload, Mediafile, mediafile) {
-    $scope.mediafile = mediafile;
-    $scope.save = uploadFile($timeout, $scope, $state, Upload, mediafile);
-});
+.controller('MediafileUpdateCtrl', [
+    '$scope',
+    '$state',
+    '$timeout',
+    'operator',
+    'Upload',
+    'Mediafile',
+    'mediafile',
+    function($scope, $state, $timeout, operator, Upload, Mediafile, mediafile) {
+        $scope.mediafile = mediafile;
+        $scope.save = uploadFile($timeout, $scope, $state, operator, Upload, mediafile);
+    }
+]);
 
-function uploadFile($timeout, $scope, $state, Upload, mediafile) {
+function uploadFile($timeout, $scope, $state, operator, Upload, mediafile) {
+    console.log(operator.user);
     return function(file) {
         file.upload = Upload.upload({
             url: '/rest/mediafiles/mediafile/' + (mediafile ? mediafile.id : ''),
             method: mediafile ? 'PUT' : 'POST',
-            data: {mediafile: file.newFile, title: file.title}
+            data: {mediafile: file.newFile, title: file.title, uploader_id: operator.user.id}
         });
 
         file.upload.then(function (response) {

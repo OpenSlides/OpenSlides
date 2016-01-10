@@ -71,11 +71,11 @@
     </div>
     <div class="col-sm-4">
         <!-- Category -->
-        <h3 translate>Category</h3>
-        {{ motion.category.name }}</a>
+        <h3 ng-if="motion.category" translate>Category</h3>
+        {{ motion.category.name }}
 
         <!-- Tags -->
-        <h3 translate>Tags</h3>
+        <h3 ng-if="motion.tags.length > 0" translate>Tags</h3>
         <span ng-repeat="tag in motion.tags">
           {{ tag.name }}{{$last ? '' : ', '}}
         </span>
@@ -100,11 +100,11 @@
         </div>
     </div>
     <div class="col-sm-3">
-        <h3 translate>Voting result</h3>
+        <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
         <ol class="slimlist">
           <li ng-repeat="poll in motion.polls" class="spacer">
             <translate>Vote</translate>
-            <button os-perms-lite="motions.can_manage" ng-click="poll.isEditMode=true;"
+            <button os-perms="motions.can_manage" ng-click="$parent.poll.isEditMode=true;"
                 class="btn btn-default btn-xs">
               <i class="fa fa-pencil"></i>
             </button>
@@ -163,7 +163,7 @@
                 </div>
               </form>
             </div>
-            <div ng-show="!poll.isEditMode && poll.yes >= -2" class="pollresults">
+            <div ng-show="!poll.isEditMode" class="pollresults">
               <!-- yes -->
               <div class="result_label">
                 <i class="fa fa-thumbs-up"></i>
@@ -240,16 +240,16 @@
         <div class="white-space-pre-line" ng-bind-html="motion.getReason()"></div>
       </div>
 
-      <!-- attachments
-      TODO: make 'motion.attachments' useable and itteratable in template
-      <div ng-if="motion.attachments">
-        <h3 translate>Attachments</h3>
-      </div>
-      -->
+      <!-- attachments -->
+      <h3 ng-if="motion.attachments.length > 0" translate>Attachments</h3>
+      <ul>
+        <li ng-repeat="attachment in motion.attachments">
+          <a href="{{ attachment.mediafileUrl }}" target="_blank">{{ attachment.title_or_filename }}</a>
+      </ul>
 
       <!-- log -->
       <button type="button" class="btn btn-default spacer" ng-click="isCollapsed = !isCollapsed" translate>
-        Show log
+        Show history
       </button>
       <div uib-collapse="isCollapsed">
         <div class="well well-sm">

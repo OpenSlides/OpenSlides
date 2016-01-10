@@ -1,5 +1,6 @@
 import mimetypes
 
+from django.conf import settings
 from django.db import models as dbmodels
 
 from ..utils.rest_api import FileField, ModelSerializer, SerializerMethodField
@@ -26,6 +27,7 @@ class MediafileSerializer(ModelSerializer):
     """
     Serializer for mediafile.models.Mediafile objects.
     """
+    media_url_prefix = SerializerMethodField()
     filesize = SerializerMethodField()
 
     def __init__(self, *args, **kwargs):
@@ -42,9 +44,13 @@ class MediafileSerializer(ModelSerializer):
             'id',
             'title',
             'mediafile',
+            'media_url_prefix',
             'uploader',
             'filesize',
             'timestamp',)
 
     def get_filesize(self, mediafile):
         return mediafile.get_filesize()
+
+    def get_media_url_prefix(self, mediafile):
+        return settings.MEDIA_URL
