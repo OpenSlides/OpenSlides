@@ -302,8 +302,7 @@ class SpeakerManager(models.Manager):
         """
         if self.filter(user=user, item=item, begin_time=None).exists():
             raise OpenSlidesError(
-                _('%(user)s is already on the list of speakers of %(id)s.')
-                % {'user': user, 'id': item.id})
+                _('{user} is already on the list of speakers.').format(user=user)
         if isinstance(user, AnonymousUser):
             raise OpenSlidesError(
                 _('An anonymous user can not be on lists of speakers.'))
