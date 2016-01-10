@@ -40,8 +40,8 @@
   <div class="row">
     <div class="col-sm-6">
       <!-- delete mode -->
-      <button os-perms-lite="users.can_manage" class="btn btn-default"
-          ng-click="isDeleteMode = !isDeleteMode; uncheckAll()">
+      <button os-perms="users.can_manage" class="btn btn-default"
+          ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
         <i class="fa fa-check-square-o"></i>
         <translate>Select ...</translate>
       </button>
@@ -92,8 +92,8 @@
         <!-- projector column -->
         <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="firstColumn">
         <!-- delete selection column -->
-        <th ng-show="isDeleteMode" os-perms-lite="users.can_manage" class="firstColumn deleteColumn">
-          <input type="checkbox" ng-model="selectedAll" ng-change="checkAll()">
+        <th ng-show="isDeleteMode" os-perms="users.can_manage" class="firstColumn deleteColumn">
+          <input type="checkbox" ng-model="$parent.selectedAll" ng-change="checkAll()">
         <th ng-click="toggleSort('first_name')" class="sortable">
           <translate>Name</translate>
           <!-- TODO: sort by first OR last name -->
@@ -148,6 +148,10 @@
           <div ng-repeat="group in user.groups">
             {{ (groups | filter: {id: group})[0].name }}
           </div>
-        <td><input type="checkbox" ng-model="user.is_present" ng-click="save(user)">
+        <td>
+          <span os-perms="!users.can_manage">
+            <i ng-if="user.is_present" class="fa fa-check-square-o"></i>
+          </span>
+          <input os-perms="users.can_manage" type="checkbox" ng-model="user.is_present" ng-click="save(user)">
   </table>
 </div>
