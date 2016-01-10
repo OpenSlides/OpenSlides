@@ -44,24 +44,54 @@
 <!-- TODO:
    * show only 'add me' OR 'remove me' button
 -->
-  <button class="btn btn-default btn-sm" ng-click="showOldSpeakers = !showOldSpeakers">
-    Show all old speakers
-  </button>
-  <div uib-collapse="!showOldSpeakers">
-  <h3 translate>Old speakers:</h3>
-    <ol>
-      <li ng-repeat="speaker in item.speakers | filter: {end_time: '!!'}">
-        {{ speaker.user.get_full_name() }}
-        <small class="grey">
-          [{{speaker.begin_time | date:'yyyy-MM-dd HH:mm:ss'}} –
-          {{speaker.end_time | date:'yyyy-MM-dd HH:mm:ss'}}]
-        </small>
-    </ol>
+  <div os-perms="agenda.can_manage">
+    <button ng-click="beginSpeech()"
+        class="btn btn-primary">
+      <i class="fa fa-play"></i>
+      <translate>Start next speaker</translate>
+    </button>
+    <button ng-click="endSpeech()"
+        class="btn btn-default">
+      <i class="fa fa-stop"></i>
+      <translate>Stop current speaker</translate>
+    </button>
   </div>
 
-  <h3 translate>Current speaker:</h3>
+  <div>
+    <button ng-click="showOldSpeakers = !showOldSpeakers"
+        class="btn btn-sm btn-default spacer">
+      <i ng-if="!showOldSpeakers" class="fa fa-toggle-off"></i>
+      <i ng-if="showOldSpeakers"class="fa fa-toggle-on"></i>
+      <translate>Show all speakers</translate>
+    </button>
+    <div uib-collapse="!showOldSpeakers">
+      <h3 translate>Old speakers:</h3>
+      <ol>
+        <li ng-repeat="speaker in item.speakers | filter: {end_time: '!!'}">
+          {{ speaker.user.get_full_name() }}
+          <small class="grey">
+            [{{ speaker.begin_time | date:'yyyy-MM-dd HH:mm:ss' }} –
+             {{ speaker.end_time | date:'yyyy-MM-dd HH:mm:ss' }}]
+          </small>
+          <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"
+              class="btn btn-default btn-xs">
+            <i class="fa fa-times"></i>
+          </button>
+      </ol>
+    </div>
+  </div>
+
+  <h3 translate class="">Current speaker:</h3>
   <strong ng-repeat="speaker in item.speakers | filter: {end_time: null, begin_time: '!!'}">
     {{ speaker.user.get_full_name() }}
+    <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"
+        class="btn btn-default btn-xs">
+      <i class="fa fa-times"></i>
+    </button>
+    <button os-perms="agenda.can_manage" ng-click="endSpeech()"
+        class="btn btn-default btn-xs">
+      <i class="fa fa-stop"></i>
+    </button>
   </strong>
 
   <h3 translate>Next speakers:</h3>
@@ -86,7 +116,7 @@
 
   <div class="form-group spacer">
     <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-      {{alert.msg}}
+      {{ alert.msg }}
     </alert>
     <div os-perms="agenda.can_manage" class="input-group">
       <ui-select ng-model="speakerSelectBox.selected" ng-change="addSpeaker(speakerSelectBox.selected.id)">
@@ -111,17 +141,6 @@
       <button ng-click="removeSpeaker()" class="btn btn-default">
         <i class="fa fa-minus"></i>
         <translate>Remove me</translate>
-      </button>
-    <p os-perms="agenda.can_manage">
-      <button ng-click="beginSpeech()"
-          class="btn btn-primary">
-        <i class="fa fa-play"></i>
-        <translate>Start next speaker</translate>
-      </button>
-      <button ng-click="endSpeech()"
-          class="btn btn-default">
-        <i class="fa fa-stop"></i>
-        <translate>Stop current speaker</translate>
       </button>
   </div>
 </div>
