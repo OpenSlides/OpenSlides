@@ -167,11 +167,13 @@ angular.module('OpenSlidesApp.core', [
 .factory('Customslide', [
     'DS',
     'jsDataModel',
-    function(DS, jsDataModel) {
+    'gettext',
+    function(DS, jsDataModel, gettext) {
         var name = 'core/customslide';
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
+            verboseName: gettext('Agenda item'),
             methods: {
                 getResourceName: function () {
                     return name;

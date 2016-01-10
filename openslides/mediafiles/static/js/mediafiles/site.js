@@ -109,7 +109,6 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
 ]);
 
 function uploadFile($timeout, $scope, $state, operator, Upload, mediafile) {
-    console.log(operator.user);
     return function(file) {
         file.upload = Upload.upload({
             url: '/rest/mediafiles/mediafile/' + (mediafile ? mediafile.id : ''),

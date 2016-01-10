@@ -79,7 +79,8 @@ angular.module('OpenSlidesApp.assignments', [])
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
-            agendaSupplement: gettext('Election'),
+            verboseName: gettext('Election'),
+            agendaSupplement: this.verboseName,
             phases: phases,
             getPhases: function () {
                 if (!this.phases) {

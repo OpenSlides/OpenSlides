@@ -1,10 +1,9 @@
 <div class="header">
   <div class="title">
-    <!-- TODO: show list of speakers controls for { motion.agenda_item } -->
     <div class="submenu">
       <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
         <i class="fa fa-angle-double-left fa-lg"></i>
-        <translate>Back to overview</translate>
+        <translate>All motions</translate>
       </a>
       <a ui-sref="motions_single_pdf({pk: motion.id})" target="_blank" class="btn btn-default btn-sm">
         <i class="fa fa-file-pdf-o fa-lg"></i>
@@ -23,7 +22,7 @@
         <i class="fa fa-video-camera"></i>
       </a>
       <!-- edit -->
-      <a ng-if="motion.isAllowed('update')" ui-sref="motions.motion.detail.update({id: motion.id })"
+      <a ng-if="motion.isAllowed('update')" ng-click="openDialog(motion)"
           class="btn btn-default btn-sm"
           title="{{ 'Edit' | translate}}">
         <i class="fa fa-pencil"></i>
@@ -33,8 +32,10 @@
     <h2>
         <translate>Motion</translate> {{ motion.identifier }}
         <span ng-if="motion.versions.length > 1" >| Version {{ motion.active_version }}</span>
-        &ndash;
-        <translate>Agenda</translate>: {{ motion.agenda_item.item_number }}
+        <span ng-if="motion.agenda_item.item_number">
+          &ndash;
+          <translate>Agenda</translate>: {{ motion.agenda_item.item_number }}
+        </span>
     </h2>
   </div>
 </div>
@@ -86,24 +87,22 @@
           {{ motion.state.name | translate }}
         </span>
         <div ng-if="motion.isAllowed('change_state')" class="spacer">
-          <div class="btn-group-vertical spacer" role="group">
-            <button ng-repeat="state in motion.state.getNextStates()" ng-click="update_state(state)"
-                class="btn btn-default btn-sm">
-              {{state.action_word}}
-            </button>
-            <button ng-if="motion.isAllowed('reset_state')" ng-click="reset_state()"
-                class="btn btn-danger btn-xs">
-              <i class="fa fa-exclamation-triangle"></i>
-              <translate>Reset state</translate>
-            </button>
-          </div>
+          <select ng-if="motion.state.getNextStates().length > 0" ng-model="stateSelect" class="form-control" ng-change="updateState(stateSelect)">
+            <option value="" translate>--- Set next state ---</option>
+            <option ng-repeat="state in motion.state.getNextStates()" value="{{ state.id }}">{{ state.action_word }}</option>
+          </select>
+          <button ng-if="motion.isAllowed('reset_state')" ng-click="reset_state()"
+              class="btn btn-danger btn-xs spacer">
+            <i class="fa fa-exclamation-triangle"></i>
+            <translate>Reset state</translate>
+          </button>
         </div>
     </div>
     <div class="col-sm-3">
         <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
         <ol class="slimlist">
           <li ng-repeat="poll in motion.polls" class="spacer">
-            <translate>Vote</translate>
+            <translate translate-context="ballot">Vote</translate>
             <button os-perms="motions.can_manage" ng-click="$parent.poll.isEditMode=true;"
                 class="btn btn-default btn-xs">
               <i class="fa fa-pencil"></i>
