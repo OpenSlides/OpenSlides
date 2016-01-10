@@ -21,8 +21,8 @@ from tornado.wsgi import WSGIContainer
 
 from .rest_api import get_collection_and_id_from_url
 
-RUNNING_PORT = None
 RUNNING_HOST = None
+RUNNING_PORT = None
 
 
 class DjangoStaticFileHandler(StaticFileHandler):
@@ -132,9 +132,9 @@ def run_tornado(addr, port, *args, **kwargs):
     It runs in one thread.
     """
     # Save the port and the addr in a global var
-    global RUNNING_PORT, RUNNING_HOST
-    RUNNING_PORT = port
+    global RUNNING_HOST, RUNNING_PORT
     RUNNING_HOST = addr
+    RUNNING_PORT = port
 
     # Don't try to read the command line args from openslides
     parse_command_line(args=[])
@@ -156,9 +156,9 @@ def run_tornado(addr, port, *args, **kwargs):
     server.listen(port=port, address=addr)
     IOLoop.instance().start()
 
-    # reset the global vars
-    RUNNING_PORT = None
+    # Reset the global vars
     RUNNING_HOST = None
+    RUNNING_PORT = None
 
 
 def inform_changed_data(*args):
