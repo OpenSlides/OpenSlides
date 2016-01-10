@@ -24,8 +24,7 @@
 <!-- Nested node template -->
 <script type="text/ng-template" id="nodes_renderer.html">
   <div ui-tree-handle>
-    {{ item.item.item_number }}
-    {{ item.item.title }}
+    {{ item.item.getTitle() }}
   </div>
   <ol ui-tree-nodes="" ng-model="item.children">
     <li ng-repeat="item in item.children" ui-tree-node ng-include="'nodes_renderer.html'">

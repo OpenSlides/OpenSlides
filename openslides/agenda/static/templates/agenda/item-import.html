@@ -99,7 +99,7 @@ Keep each item in a single line.</p>
             <span ng-if="item.title_error" title="{{ item.title_error | translate }}">
               <i class="fa fa-exclamation-triangle"></i>
             </span>
-            {{ item.title }}
+            {{ item.getTitle() }}
           <td>{{ item.text | limitTo:80 }}{{ item.text.length > 80 ? '...' : '' }}
     </table>
 
