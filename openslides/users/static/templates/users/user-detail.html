@@ -35,7 +35,7 @@
           {{ (groups | filter: {id: group})[0].name }}
         </div>
       <label translate>About me</label>
-        <div class="white-space-pre-line">{{ user.about_me }}</div>
+        <div class="white-space-pre-line" ng-bind-html="user.about_me"></div>
     </fieldset>
 
     <fieldset os-perms="users.can_manage">

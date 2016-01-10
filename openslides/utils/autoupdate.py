@@ -21,6 +21,9 @@ from tornado.wsgi import WSGIContainer
 
 from .rest_api import get_collection_and_id_from_url
 
+RUNNING_HOST = None
+RUNNING_PORT = None
+
 
 class DjangoStaticFileHandler(StaticFileHandler):
     """
@@ -94,8 +97,9 @@ class OpenSlidesSockJSConnection(SockJSConnection):
         object_url.
         """
         # Join network location with object URL.
-        # TODO: Use host and port as given in the start script
-        wsgi_network_location = settings.OPENSLIDES_WSGI_NETWORK_LOCATION or 'http://localhost:8000'
+        wsgi_network_location = (
+            settings.OPENSLIDES_WSGI_NETWORK_LOCATION or
+            'http://{}:{}'.format(RUNNING_HOST, RUNNING_PORT))
         url = ''.join((wsgi_network_location, object_url))
 
         # Send out internal HTTP request to get data from the REST api.
@@ -127,6 +131,11 @@ def run_tornado(addr, port, *args, **kwargs):
 
     It runs in one thread.
     """
+    # Save the port and the addr in a global var
+    global RUNNING_HOST, RUNNING_PORT
+    RUNNING_HOST = addr
+    RUNNING_PORT = port
+
     # Don't try to read the command line args from openslides
     parse_command_line(args=[])
 
@@ -146,6 +155,10 @@ def run_tornado(addr, port, *args, **kwargs):
     server = HTTPServer(tornado_app)
     server.listen(port=port, address=addr)
     IOLoop.instance().start()
+
+    # Reset the global vars
+    RUNNING_HOST = None
+    RUNNING_PORT = None
 
 
 def inform_changed_data(*args):
