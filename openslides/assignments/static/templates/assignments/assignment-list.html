@@ -86,7 +86,7 @@
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
         <th ng-click="toggleSort('open_posts')" class="sortable optional">
-          <translate>Candidates</translate> / <translate>Posts</translate>
+          <translate>Candidates</translate> &middot; <translate>Posts</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'open_posts' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
@@ -122,7 +122,10 @@
                 ng-bootbox-confirm="Are you sure you want to delete <b>{{ assignment.title }}</b>?"
                 ng-bootbox-confirm-action="delete(assignment)" translate>Delete</a>
           </div>
-        <td ng-if="!assignment.quickEdit" class="optional"><span class="badge">{{ assignment.open_posts }}</span>
+        <td ng-if="!assignment.quickEdit" class="optional">
+          <span class="badge">{{ assignment.assignment_related_users.length }}</span>
+          /
+          <span class="badge">{{ assignment.open_posts }}</span>
         <td ng-if="!assignment.quickEdit" class="optional">
           <span class="label" ng-class="{'label-primary': assignment.phase == 0,
                                          'label-warning': assignment.phase == 1,
