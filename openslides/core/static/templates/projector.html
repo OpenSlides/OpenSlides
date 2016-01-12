@@ -8,25 +8,12 @@
 <link rel="icon" href="/static/img/favicon.png">
 <script src="static/js/openslides-libs.js"></script>
 
-<style type="text/css" ng-if="config('projector_backgroundcolor2')">
-  #header {
-    background-image: -moz-linear-gradient(top, {{ config('projector_backgroundcolor1') }}, {{ config('projector_backgroundcolor2') }});
-    background-image: -ms-linear-gradient(top, {{ config('projector_backgroundcolor1') }}, {{ config('projector_backgroundcolor2') }});
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from({{ config('projector_backgroundcolor1') }}), to({{ config('projector_backgroundcolor2') }}));
-    background-image: -webkit-linear-gradient(top, {{ config('projector_backgroundcolor1') }}, {{ config('projector_backgroundcolor2') }});
-    background-image: -o-linear-gradient(top, {{ config('projector_backgroundcolor1') }}, {{ config('projector_backgroundcolor2') }});
-    background-image: linear-gradient(top, {{ config('projector_backgroundcolor1') }}, {{ config('projector_backgroundcolor2') }});
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='{{ config('projector_backgroundcolor1') }}', encColorstr='{{ config('projector_backgroundcolor2') }}')"; /* IE 8+ */
+<style type="text/css">
+  #header, #footer {
+    background-color: {{ config('projector_backgroundcolor') }};
   }
-</style>
-<style type="text/css" ng-if="!config('projector_backgroundcolor2')">
-  #header {
-    background-color: {{ config('projector_backgroundcolor1') }};
-  }
-</style>
-<style type="text/css" ng-if="config('projector_fontcolor')">
-  #eventdata {
-    color: {{ config('projector_fontcolor') }};
+  h1 {
+    color: {{ config('projector_backgroundcolor') }};
   }
 </style>
 
@@ -55,4 +42,15 @@
   </div>
 </div>
 
+<div id="footer">
+  <span ng-if="config('general_event_date')">
+    {{ config('general_event_date') }}
+  </span>
+  <span ng-if="config('general_event_date') && config('general_event_location')">
+    |
+  </span>
+  <span ng-if="config('general_event_location')">
+    {{ config('general_event_location') }}
+  </span>
+</div>
 <script src="/angular_js/projector/"></script>
