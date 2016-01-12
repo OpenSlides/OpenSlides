@@ -288,11 +288,12 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     $scope.alert = { type: 'danger', msg: data.detail, show: true };
                 });
         };
-        // check if current user is already a candidate (status=1)
+        // check if current user is already a candidate (elected==false)
         $scope.isCandidate = function () {
             var check = assignment.assignment_related_users.map( function(candidate) {
-                if ( candidate.status == 1)
+                if ( !candidate.elected ) {
                     return candidate.user_id;
+                }
             }).indexOf(operator.user.id);
             if (check > -1)
                 return true;
