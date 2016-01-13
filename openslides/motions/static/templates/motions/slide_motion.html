@@ -1,12 +1,30 @@
 <div ng-controller="SlideMotionCtrl" class="content scrollcontent">
-  <h1>{{ motion.getTitle() }}</h1>
+
+  <div id="sidebox">
+    <!-- State -->
+    <h3 translate>State</h3>
+    {{ motion.state.name }}
+
+    <!-- Submitters -->
+    <h3 ng-if="motion.submitters.length > 0" translate>Submitters</h3>
+    <div ng-repeat="submitter in motion.submitters">
+      {{ submitter.get_full_name() }}<br>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div id="title">
+    <h1>{{ motion.getTitle() }}</h1>
+    <h2>
+      <translate>Motion</translate> {{ motion.identifier }}
+      <span ng-if="motion.versions.length > 1" >| Version {{ motion.active_version }}</span>
+    </h2>
+  </div>
+
+  <!-- Text -->
   <div ng-bind-html="motion.getText()"></div>
 
+  <!-- Reason -->
   <h2 ng-if="motion.getReason()" translate>Reason</h2>
   <div ng-bind-html="motion.getReason()"></div>
-
-  <h2 ng-if="motion.submitters" translate>Submitters</h2>
-  <div ng-repeat="submitter in motion.submitters">
-    {{ submitter.get_full_name() }}<br>
-  </div>
 </div>

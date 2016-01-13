@@ -22,5 +22,10 @@ root directory.
 "OpenSlides Blue" color values
 ==============================
 
+Dark blue:
 * RGB: 0/43/66
 * Hex: #002c42
+
+Bright blue:
+* RGB: 49/119/150
+* Hex: #317796

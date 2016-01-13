@@ -7,6 +7,8 @@ body{
     font-size: 20px !important;
     line-height: 24px !important;
     overflow: hidden;
+    font-family: "Open Sans",Helvetica,Arial,sans-serif;
+    color: #222;
 }
 
 /*** HEADER ***/
@@ -17,18 +19,19 @@ body{
 }
 #logo {
     position: relative;
-    left: 75px;
-    top: 4px;
-    height: 60px;
+    left: 50px;
+    top: 10px;
+    height: 50px;
     margin-right: 35px;
     float: left;
 }
 #eventdata {
     position: relative;
-    left: 75px;
+    left: 30px;
     top: 12px;
     height: 50px;
     overflow: hidden;
+    color: #F5F5F5;
 }
 #eventdata .title {
     font-size: 26px;
@@ -40,58 +43,90 @@ body{
 }
 #eventdata .description {
     font-size: 18px;
-    opacity: 0.5;
+    opacity: 0.8;
 }
 #currentTime {
-    border:0 solid #000000;
-    font-size:24px;
-    position:absolute;
-    text-align:right;
-    top:110px;
-    right:40px;
-    padding-left:30px;
+    border: 0 solid #000000;
+    font-size: 24px;
+    position: absolute;
+    text-align: right;
+    top: 25px;
+    right: 50px;
+    padding-left: 30px;
+    color: #fff;
+}
+#footer {
+    position: fixed;
+    bottom: 0;
+    height: 35px;
+    color: #F5F5F5;
+    opacity: 0.8;
+    width: 100%;
+    font-size: 16px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 5px;
+    overflow: hidden;
+    text-align: right;
 }
 
 /*** CONTENT with base style elements ***/
 .content {
     position: absolute;
-    left: 75px;
+    left: 50px;
     top: 150px;
-    right: 40px;
+    right: 50px;
     z-index: -1;
-    line-height: normal;
+    line-height: 28px;
 }
 .scrollcontent {
     transition-property: margin, font-size;
     transition-duration: 1s;
 }
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Roboto Condensed",Helvetica,Arial,sans-serif;
+    font-weight: normal;
+}
+
 h1 {
     font-size: 2.25em;
-    margin-bottom: 40px;
     line-height: 1.1em;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e6e6e6;
 }
-h1.title_only {
-    text-align: center;
-    font-size: 2.75em;
-    line-height: 1.3em;
-    border: 0px;
-    padding: 40px;
-    margin-left: -35px; /* see #content position 'left' - 'right' for real centering */
-}
-h1 small {
-    font-size: 0.55em;
+h2 {
+    font-size: 28px;
     margin-top: 15px;
     display: block;
+    color: #9a9898;
 }
 h3 {
-    font-size: 1.2em;
+    color: #222;
+    margin-bottom: 2px
 }
-#sidebar {
-    width: 255px;
+#title {
+    width: calc(100% - 230px);
+    border-bottom: 5px solid #d3d3d3;
+    margin-bottom: 40px;
+}
+#title h1 {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+#title h2 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+#sidebox {
+    width: 260px;
     float: right;
-    margin: 0 0 20px 10px;
+    margin: 44px -50px 20px 10px;
+    right: 0;
+    background: #d3d3d3;
+    border-radius: 7px 0 0 7px;
+    padding: 3px 7px 10px 19px;
+}
+#sidebox h3 {
+    margin-top: 10px;
+    margin-bottom: 0px;
 }
 ul, ol {
     margin: 0 0 10px 2em;
@@ -99,16 +134,10 @@ ul, ol {
 li {
     line-height: normal;
 }
-.well h4 {
-    margin: 20px 0 2px 0;
-}
-.well h4.first {
-    margin-top: 0;
-}
-.well .result {
+.result {
     line-height: 30px;
 }
-.well .result hr {
+.result hr {
     border-top: 1px solid;
     margin: 5px 0;
     width: 10em;
@@ -133,29 +162,32 @@ hr {
 
 /*** Overlay ***/
 .countdown {
+    min-width: 260px;
     position: fixed;
     margin: 0;
-    top: 0;
+    top: 90px;
     right: 0px;
-    padding: 19px 20px 5px 19px;
+    padding: 23px 47px 0px 19px;
     min-height: 72px;
-    font-size: 4em;
+    font-size: 3.7em;
     font-weight: bold;
-    text-align: center;
-    border-radius: 0.2em 0 0 0.2em;
+    text-align: right;
+    border-radius: 7px 0 0 7px;
     z-index: 200;
+    font-family: "Roboto Condensed",Helvetica,Arial,sans-serif;
 }
 .countdown .description {
     font-weight: normal;
-    font-size: 0.2em;
+    font-size: 18px;
     margin-top: 20px;
+    padding-right: 5px;
 }
 .countdown.negative {
     color: #CC0000;
 }
 .message_background {
     background-color: #777777;
-    opacity: 0.6;
+    opacity: 0.8;
     position: absolute;
     top: 0;
     left: 0;
@@ -164,12 +196,14 @@ hr {
     z-index: 300;
 }
 .message {
+    font-family: "Roboto Condensed",Helvetica,Arial,sans-serif;
+    font-weight: normal;
     position: fixed;
     top: 35%;
     left: 10%;
     width: 80%;
     text-align: center;
-    border-radius: 0.5em;
+    border-radius: 0.2em;
     background: #FFFFFF;
     font-size: 2.75em;
     padding: 0.2em 0;
