@@ -154,6 +154,14 @@ class ConfigViewSet(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, {'detail': 'Invalid input.'})
 
+    def test_update_only_with_key(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+        response = self.client.put(
+            reverse('config-detail', args=['test_var_Xeiizi7ooH8Thuk5aida']))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'detail': 'Invalid input. Config value is missing.'})
+
 
 def validator_for_testing(value):
     """

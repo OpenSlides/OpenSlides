@@ -475,7 +475,9 @@ class ConfigViewSet(ViewSet):
         Example: {"value": 42}
         """
         key = kwargs['pk']
-        value = request.data['value']
+        value = request.data.get('value')
+        if value is None:
+            raise ValidationError({'detail': 'Invalid input. Config value is missing.'})
 
         # Validate and change value.
         try:
