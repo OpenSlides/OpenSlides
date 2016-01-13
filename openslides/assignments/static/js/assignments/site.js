@@ -50,24 +50,54 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 }
             }
         })
+        // redirects to assignment detail and opens assignment edit form dialog, uses edit url,
+        // used by ui-sref links from agenda only
+        // (from assignment controller use AssignmentForm factory instead to open dialog in front
+        // of current view without redirect)
         .state('assignments.assignment.detail.update', {
-            onEnter: ['$stateParams', 'ngDialog', 'Assignment', function($stateParams, ngDialog, Assignment) {
-                ngDialog.open({
-                    template: 'static/templates/assignments/assignment-form.html',
-                    controller: 'AssignmentUpdateCtrl',
-                    className: 'ngdialog-theme-default wide-form',
-                    resolve: { assignment: function() {
-                        return Assignment.find($stateParams.id) }}
-                });
-            }]
+            onEnter: ['$stateParams', '$state', 'ngDialog', 'Assignment',
+                function($stateParams, $state, ngDialog, Assignment) {
+                    ngDialog.open({
+                        template: 'static/templates/assignments/assignment-form.html',
+                        controller: 'AssignmentUpdateCtrl',
+                        className: 'ngdialog-theme-default wide-form',
+                        closeByEscape: false,
+                        closeByDocument: false,
+                        resolve: {
+                            assignment: function() {return Assignment.find($stateParams.id)}
+                        },
+                        preCloseCallback: function() {
+                            $state.go('assignments.assignment.detail', {assignment: $stateParams.id});
+                            return true;
+                        }
+                    });
+                }
+            ]
         });
 })
 
-// Provide generic assignment form fields for create and update view
-.factory('AssignmentFormFieldFactory', [
+// Service for generic assignment form (create and update)
+.factory('AssignmentForm', [
     'gettextCatalog',
     function (gettextCatalog) {
         return {
+            // ngDialog for assignment form
+            getDialog: function (assignment) {
+                if (assignment) {
+                    var resolve = {
+                        assignment: function(Assignment) {return Assignment.find(assignment.id);}
+                    };
+                }
+                return {
+                    template: 'static/templates/assignments/assignment-form.html',
+                    controller: (assignment) ? 'AssignmentUpdateCtrl' : 'AssignmentCreateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: (resolve) ? resolve : null
+                }
+            },
+            // angular-formly fields for assignment form
             getFormFields: function () {
                 return [
                 {
@@ -143,9 +173,10 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 .controller('AssignmentListCtrl', [
     '$scope',
     'ngDialog',
+    'AssignmentForm',
     'Assignment',
     'phases',
-    function($scope, ngDialog, Assignment, phases) {
+    function($scope, ngDialog, AssignmentForm, Assignment, phases) {
         Assignment.bindAll({}, $scope, 'assignments');
         // get all item types via OPTIONS request
         $scope.phases = phases.data.actions.POST.phase.choices;
@@ -163,26 +194,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             $scope.sortColumn = column;
         };
 
-        // open new dialog
-        $scope.newDialog = function () {
-            ngDialog.open({
-                template: 'static/templates/assignments/assignment-form.html',
-                controller: 'AssignmentCreateCtrl',
-                className: 'ngdialog-theme-default wide-form'
-            });
-        };
-        // open edit dialog
-        $scope.editDialog = function (assignment) {
-            ngDialog.open({
-                template: 'static/templates/assignments/assignment-form.html',
-                controller: 'AssignmentUpdateCtrl',
-                className: 'ngdialog-theme-default wide-form',
-                resolve: {
-                    assignment: function(Assignment) {
-                        return Assignment.find(assignment.id);
-                    }
-                }
-            });
+        // open new/edit dialog
+        $scope.openDialog = function (assignment) {
+            ngDialog.open(AssignmentForm.getDialog(assignment));
         };
         // save changed assignment
         $scope.save = function (assignment) {
@@ -237,16 +251,22 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     '$http',
     'gettext',
     'ngDialog',
+    'AssignmentForm',
     'operator',
     'Assignment',
     'User',
     'assignment',
-    function($scope, $http, gettext, ngDialog, operator, Assignment, User, assignment) {
+    function($scope, $http, gettext, ngDialog, AssignmentForm, operator, Assignment, User, assignment) {
         User.bindAll({}, $scope, 'users');
         Assignment.bindOne(assignment.id, $scope, 'assignment');
         Assignment.loadRelations(assignment, 'agenda_item');
         $scope.candidateSelectBox = {};
         $scope.alert = {};
+
+        // open edit dialog
+        $scope.openDialog = function (assignment) {
+            ngDialog.open(AssignmentForm.getDialog(assignment));
+        };
         // add (nominate) candidate
         $scope.addCandidate = function (userId) {
             $http.post('/rest/assignments/assignment/' + assignment.id + '/candidature_other/', {'user': userId})
@@ -369,13 +389,13 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     '$scope',
     '$state',
     'Assignment',
-    'AssignmentFormFieldFactory',
-    function($scope, $state, Assignment, AssignmentFormFieldFactory) {
+    'AssignmentForm',
+    function($scope, $state, Assignment, AssignmentForm) {
         $scope.model = {};
         // set default value for open posts form field
         $scope.model.open_posts = 1;
         // get all form fields
-        $scope.formFields = AssignmentFormFieldFactory.getFormFields();
+        $scope.formFields = AssignmentForm.getFormFields();
 
         // save assignment
         $scope.save = function(assignment) {
@@ -392,13 +412,13 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     '$scope',
     '$state',
     'Assignment',
-    'AssignmentFormFieldFactory',
+    'AssignmentForm',
     'assignment',
-    function($scope, $state, Assignment, AssignmentFormFieldFactory, assignment) {
+    function($scope, $state, Assignment, AssignmentForm, assignment) {
         // set initial values for form model
         $scope.model = assignment;
         // get all form fields
-        $scope.formFields = AssignmentFormFieldFactory.getFormFields();
+        $scope.formFields = AssignmentForm.getFormFields();
 
         // save assignment
         $scope.save = function (assignment) {

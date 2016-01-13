@@ -52,7 +52,8 @@
           </a>
           <!-- delete -->
           <a os-perms="users.can_manage" class="btn btn-danger btn-sm"
-              ng-bootbox-confirm="Are you sure you want to delete <b>{{ group.name }}</b>?"
+              ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
+              <b>{{ group.name }}</b>"
               ng-bootbox-confirm-action="delete(group)"
               title="{{ 'Delete' | translate }}">
             <i class="fa fa-trash-o"></i>

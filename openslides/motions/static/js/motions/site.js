@@ -64,16 +64,29 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 }
             }
         })
+        // redirects to motion detail and opens motion edit form dialog, uses edit url,
+        // used by ui-sref links from agenda only
+        // (from motion controller use MotionForm factory instead to open dialog in front of
+        // current view without redirect)
         .state('motions.motion.detail.update', {
-            onEnter: ['$stateParams', 'ngDialog', 'Motion', function($stateParams, ngDialog, Motion) {
-                ngDialog.open({
-                    template: 'static/templates/motions/motion-form.html',
-                    controller: 'MotionUpdateCtrl',
-                    className: 'ngdialog-theme-default wide-form',
-                    resolve: { motion: function() {
-                        return Motion.find($stateParams.id) }}
-                });
-            }]
+            onEnter: ['$stateParams', '$state', 'ngDialog', 'Motion',
+                function($stateParams, $state, ngDialog, Motion) {
+                    ngDialog.open({
+                        template: 'static/templates/motions/motion-form.html',
+                        controller: 'MotionUpdateCtrl',
+                        className: 'ngdialog-theme-default wide-form',
+                        closeByEscape: false,
+                        closeByDocument: false,
+                        resolve: {
+                            motion: function() {return Motion.find($stateParams.id)}
+                        },
+                        preCloseCallback: function() {
+                            $state.go('motions.motion.detail', {motion: $stateParams.id});
+                            return true;
+                        }
+                    });
+                }
+            ]
         })
         .state('motions.motion.import', {
             url: '/import',
@@ -118,8 +131,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         });
 })
 
-// Provide generic motion form fields for create and update view
-.factory('MotionFormFieldFactory', [
+// Service for generic motion form (create and update)
+.factory('MotionForm', [
     'gettextCatalog',
     'operator',
     'Category',
@@ -130,6 +143,23 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'Workflow',
     function (gettextCatalog, operator, Category, Config, Mediafile, Tag, User, Workflow) {
         return {
+            // ngDialog for motion form
+            getDialog: function (motion) {
+                if (motion) {
+                    var resolve = {
+                        motion: function(Motion) { return Motion.find(motion.id); }
+                    };
+                }
+                return {
+                    template: 'static/templates/motions/motion-form.html',
+                    controller: (motion) ? 'MotionUpdateCtrl' : 'MotionCreateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: (resolve) ? resolve : null
+                }
+            },
+            // angular-formly fields for motion form
             getFormFields: function () {
                 return [
                 {
@@ -266,12 +296,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     '$scope',
     '$state',
     'ngDialog',
+    'MotionForm',
     'Motion',
     'Category',
     'Tag',
     'Workflow',
     'User',
-    function($scope, $state, ngDialog, Motion, Category, Tag, Workflow, User) {
+    function($scope, $state, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         Tag.bindAll({}, $scope, 'tags');
@@ -318,26 +349,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             });
         });
 
-        // open new dialog
-        $scope.newDialog = function () {
-            ngDialog.open({
-                template: 'static/templates/motions/motion-form.html',
-                controller: 'MotionCreateCtrl',
-                className: 'ngdialog-theme-default wide-form'
-            });
-        };
-        // open edit dialog
-        $scope.editDialog = function (motion) {
-            ngDialog.open({
-                template: 'static/templates/motions/motion-form.html',
-                controller: 'MotionUpdateCtrl',
-                className: 'ngdialog-theme-default wide-form',
-                resolve: {
-                    motion: function(Motion) {
-                        return Motion.find(motion.id);
-                    }
-                }
-            });
+        // open new/edit dialog
+        $scope.openDialog = function (motion) {
+            ngDialog.open(MotionForm.getDialog(motion));
         };
         // save changed motion
         $scope.save = function (motion) {
@@ -396,6 +410,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     '$scope',
     '$http',
     'ngDialog',
+    'MotionForm',
     'Motion',
     'Category',
     'Mediafile',
@@ -403,7 +418,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'User',
     'Workflow',
     'motion',
-    function($scope, $http, ngDialog, Motion, Category, Mediafile, Tag, User, Workflow, motion) {
+    function($scope, $http, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, motion) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -411,24 +426,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
         Motion.loadRelations(motion, 'agenda_item');
-        // TODO: make 'motion.attachments' useable and itteratable in template
-        // Motion.loadRelations(motion, 'attachments');
 
         $scope.alert = {};
         $scope.isCollapsed = true;
 
         // open edit dialog
-        $scope.editDialog = function (motion) {
-            ngDialog.open({
-                template: 'static/templates/motions/motion-form.html',
-                controller: 'MotionUpdateCtrl',
-                className: 'ngdialog-theme-default wide-form',
-                resolve: {
-                    motion: function(Motion) {
-                        return Motion.find(motion.id);
-                    }
-                }
-            });
+        $scope.openDialog = function (motion) {
+            ngDialog.open(MotionForm.getDialog(motion));
         };
 
         $scope.support = function () {
@@ -437,8 +441,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         $scope.unsupport = function () {
             $http.delete('/rest/motions/motion/' + motion.id + '/support/');
         }
-        $scope.update_state = function (state) {
-            $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {'state': state.id});
+        $scope.updateState = function (state_id) {
+            $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {'state': state_id});
         }
         $scope.reset_state = function (state_id) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {});
@@ -483,14 +487,14 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     '$state',
     'gettext',
     'Motion',
-    'MotionFormFieldFactory',
+    'MotionForm',
     'Category',
     'Config',
     'Mediafile',
     'Tag',
     'User',
     'Workflow',
-    function($scope, $state, gettext, Motion, MotionFormFieldFactory, Category, Config, Mediafile, Tag, User, Workflow) {
+    function($scope, $state, gettext, Motion, MotionForm, Category, Config, Mediafile, Tag, User, Workflow) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -504,7 +508,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         // ... preselect default workflow
         $scope.model.workflow_id = Config.get('motions_workflow').value;
         // get all form fields
-        $scope.formFields = MotionFormFieldFactory.getFormFields();
+        $scope.formFields = MotionForm.getFormFields();
         for (var i = 0; i < $scope.formFields.length; i++) {
             if ($scope.formFields[i].key == "identifier") {
                $scope.formFields[i].hide = true;
@@ -528,12 +532,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'Category',
     'Config',
     'Mediafile',
-    'MotionFormFieldFactory',
+    'MotionForm',
     'Tag',
     'User',
     'Workflow',
     'motion',
-    function($scope, $state, Motion, Category, Config, Mediafile, MotionFormFieldFactory, Tag, User, Workflow, motion) {
+    function($scope, $state, Motion, Category, Config, Mediafile, MotionForm, Tag, User, Workflow, motion) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -544,7 +548,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         $scope.model = motion;
         $scope.model.more = false;
         // get all form fields
-        $scope.formFields = MotionFormFieldFactory.getFormFields();
+        $scope.formFields = MotionForm.getFormFields();
         // override default values for update form
         for (var i = 0; i < $scope.formFields.length; i++) {
             if ($scope.formFields[i].key == "identifier") {
@@ -567,7 +571,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                // get saved workflow id from state
                $scope.formFields[i].defaultValue = motion.state.workflow_id;
             }
-       }
+        }
 
         // save motion
         $scope.save = function (motion) {
@@ -754,6 +758,17 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
 .controller('CategoryListCtrl', function($scope, Category) {
     Category.bindAll({}, $scope, 'categories');
+
+    // setup table sorting
+    $scope.sortColumn = 'name';
+    $scope.reverse = false;
+    // function to sort by clicked column
+    $scope.toggleSort = function ( column ) {
+        if ( $scope.sortColumn === column ) {
+            $scope.reverse = !$scope.reverse;
+        }
+        $scope.sortColumn = column;
+    };
 
     // delete selected category
     $scope.delete = function (category) {

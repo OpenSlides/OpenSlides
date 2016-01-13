@@ -3,7 +3,7 @@
     <div class="submenu">
       <a ui-sref="assignments.assignment.list" class="btn btn-sm btn-default">
         <i class="fa fa-angle-double-left fa-lg"></i>
-        <translate>Back to overview</translate>
+        <translate>All elections</translate>
       </a>
       <a ui-sref="assignments_single_pdf({pk: assignment.id})" target="_blank" class="btn btn-default btn-sm">
         <i class="fa fa-file-pdf-o fa-lg"></i>
@@ -22,7 +22,7 @@
         <i class="fa fa-video-camera"></i>
       </a>
       <!-- edit -->
-      <a ui-sref="assignments.assignment.detail.update({id: assignment.id })" os-perms="assignments.can_manage"
+      <a os-perms="assignments.can_manage" ng-click="openDialog(assignment)"
           class="btn btn-default btn-sm"
           title="{{ 'Edit' | translate}}">
         <i class="fa fa-pencil"></i>
@@ -30,8 +30,11 @@
     </div>
     <h1>{{ assignment.title }}</h1>
     <h2>
-      <translate>Election</translate> &ndash;
-      <translate>Agenda</translate>: {{ assignment.agenda_item.item_number }}
+      <translate>Election</translate>
+      <span ng-if="assignment.agenda_item.item_number">
+        &ndash;
+        <translate>Agenda</translate>: {{ assignment.agenda_item.item_number }}
+      </span>
     </h2>
   </div>
 </div>

@@ -258,6 +258,13 @@ angular.module('OpenSlidesApp.core.site', [
             }
         })
         .state('core.tag.create', {})
+        .state('core.tag.detail', {
+            resolve: {
+                tag: function(Tag, $stateParams) {
+                    return Tag.find($stateParams.id);
+                }
+            }
+        })
         .state('core.tag.detail.update', {
             views: {
                 '@core.tag': {}
@@ -747,13 +754,16 @@ angular.module('OpenSlidesApp.core.site', [
         Tag.save(tag);
     };
     $scope.delete = function (tag) {
-        //TODO: add confirm message
         Tag.destroy(tag.id).then(
             function(success) {
                 //TODO: success message
             }
         );
     };
+})
+
+.controller('TagDetailCtrl', function($scope, Tag, tag) {
+    Tag.bindOne(tag.id, $scope, 'tag');
 })
 
 .controller('TagCreateCtrl', function($scope, $state, Tag) {

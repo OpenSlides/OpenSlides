@@ -34,9 +34,9 @@
           <strong>{{ tag.name }}</strong>
           <div class="hoverActions" ng-class="{'hiddenDiv': !tag.hover}">
             <a ui-sref="core.tag.detail.update({id: tag.id })" translate>Edit</a> |
-            <!-- TODO: translate confirm message -->
             <a href="" class="text-danger"
-              ng-bootbox-confirm="Are you sure you want to delete <b>{{ tag.name }}</b>?"
+              ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
+              <b>{{ tag.name }}</b>"
               ng-bootbox-confirm-action="delete(tag)" translate>Delete</a>
           </div>
   </table>

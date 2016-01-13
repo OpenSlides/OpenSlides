@@ -165,9 +165,24 @@ class UserResetPassword(TestCase):
         user = User.objects.create(username='Test name ooMoa4ou4mohn2eo1ree')
         user.default_password = 'new_password_Yuuh8OoQueePahngohy3'
         user.save()
-        response = admin_client.post(reverse('user-reset-password', args=[user.pk]))
+        response = admin_client.post(
+            reverse('user-reset-password', args=[user.pk]),
+            {'password': 'new_password_Yuuh8OoQueePahngohy3_new'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(User.objects.get(pk=user.pk).check_password('new_password_Yuuh8OoQueePahngohy3'))
+        self.assertTrue(User.objects.get(pk=user.pk).check_password(
+            'new_password_Yuuh8OoQueePahngohy3_new'))
+
+    def test_reset_to_default(self):
+        admin_client = APIClient()
+        admin_client.login(username='admin', password='admin')
+        user = User.objects.create(username='Test name ooMoa4ou4mohn2eo1ree')
+        user.default_password = 'new_password_Yuuh8OoQueePahngohy3'
+        user.save()
+        response = admin_client.post(
+            reverse('user-reset-password', args=[user.pk]), {})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(User.objects.get(pk=user.pk).check_password(
+            'new_password_Yuuh8OoQueePahngohy3'))
 
 
 class GroupReceive(TestCase):

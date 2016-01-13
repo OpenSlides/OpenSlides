@@ -1,4 +1,12 @@
 <div ng-controller="SlideMotionCtrl" class="content scrollcontent">
   <h1>{{ motion.getTitle() }}</h1>
-  <div class="white-space-pre-line">{{ motion.getText() }}</div>
+  <div ng-bind-html="motion.getText()"></div>
+
+  <h2 ng-if="motion.getReason()" translate>Reason</h2>
+  <div ng-bind-html="motion.getReason()"></div>
+
+  <h2 ng-if="motion.submitters" translate>Submitters</h2>
+  <div ng-repeat="submitter in motion.submitters">
+    {{ submitter.get_full_name() }}<br>
+  </div>
 </div>

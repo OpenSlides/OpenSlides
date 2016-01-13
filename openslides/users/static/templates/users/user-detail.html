@@ -13,7 +13,7 @@
         <i class="fa fa-video-camera"></i>
       </a>
       <!-- edit -->
-      <a ui-sref="users.user.detail.update({id: user.id })" os-perms="users.can_manage"
+      <a os-perms="users.can_manage" ng-click="openDialog(user)"
           class="btn btn-default btn-sm"
           title="{{ 'Edit' | translate}}">
         <i class="fa fa-pencil"></i>

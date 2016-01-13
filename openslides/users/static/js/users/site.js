@@ -53,16 +53,6 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             }
         }
     })
-    .state('users.user.detail.update', {
-        views: {
-            '@users.user': {}
-        },
-        resolve: {
-            groups: function(Group) {
-                return Group.findAll();
-            }
-        }
-    })
     .state('users.user.detail.profile', {
         views: {
             '@users.user': {},
@@ -275,13 +265,30 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     }
 ])
 
-// Provide generic user form fields for create and update view
-.factory('UserFormFieldFactory', [
+// Service for generic assignment form (create and update)
+.factory('UserForm', [
     '$http',
     'gettextCatalog',
     'Group',
     function ($http, gettextCatalog, Group) {
         return {
+            // ngDialog for user form
+            getDialog: function (user) {
+                if (user) {
+                    var resolve = {
+                        user: function(User) {return User.find(user.id);}
+                    };
+                }
+                return {
+                    template: 'static/templates/users/user-form.html',
+                    controller: (user) ? 'UserUpdateCtrl' : 'UserCreateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: (resolve) ? resolve : null
+                }
+            },
+            // angular-formly fields for user form
             getFormFields: function () {
                 return [
                 {
@@ -336,7 +343,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                         label: gettextCatalog.getString('Default password'),
                         addonRight: { text: 'Reset', class: 'fa fa-undo', onClick:
                             function (options, scope) {
-                                $http.post('/rest/users/user/' + scope.model.id + '/reset_password/', {})
+                                $http.post(
+                                    '/rest/users/user/' + scope.model.id + '/reset_password/',
+                                    {'password': scope.model.default_password})
                             }
                         }
                     }
@@ -385,9 +394,10 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     '$scope',
     '$state',
     'ngDialog',
+    'UserForm',
     'User',
     'Group',
-    function($scope, $state, ngDialog, User, Group) {
+    function($scope, $state, ngDialog, UserForm, User, Group) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({}, $scope, 'groups');
         $scope.alert = {};
@@ -404,26 +414,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             $scope.sortColumn = column;
         };
 
-        // open new dialog
-        $scope.newDialog = function () {
-            ngDialog.open({
-                template: 'static/templates/users/user-form.html',
-                controller: 'UserCreateCtrl',
-                className: 'ngdialog-theme-default wide-form'
-            });
-        };
-        // open edit dialog
-        $scope.editDialog = function (user) {
-            ngDialog.open({
-                template: 'static/templates/users/user-form.html',
-                controller: 'UserUpdateCtrl',
-                className: 'ngdialog-theme-default wide-form',
-                resolve: {
-                    user: function(User) {
-                        return User.find(user.id);
-                    }
-                }
-            });
+        // open new/edit dialog
+        $scope.openDialog = function (user) {
+            ngDialog.open(UserForm.getDialog(user));
         };
         // save changed user
         $scope.save = function (user) {
@@ -475,12 +468,19 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 
 .controller('UserDetailCtrl', [
     '$scope',
+    'ngDialog',
+    'UserForm',
     'User',
     'user',
     'Group',
-    function($scope, User, user, Group) {
+    function($scope, ngDialog, UserForm, User, user, Group) {
         User.bindOne(user.id, $scope, 'user');
         Group.bindAll({}, $scope, 'groups');
+
+        // open edit dialog
+        $scope.openDialog = function (user) {
+            ngDialog.open(UserForm.getDialog(user));
+        };
     }
 ])
 
@@ -488,12 +488,12 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     '$scope',
     '$state',
     'User',
-    'UserFormFieldFactory',
+    'UserForm',
     'Group',
-    function($scope, $state, User, UserFormFieldFactory, Group) {
+    function($scope, $state, User, UserForm, Group) {
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
         // get all form fields
-        $scope.formFields = UserFormFieldFactory.getFormFields();
+        $scope.formFields = UserForm.getFormFields();
 
         // save user
         $scope.save = function (user) {
@@ -514,15 +514,15 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     '$state',
     '$http',
     'User',
-    'UserFormFieldFactory',
+    'UserForm',
     'Group',
     'user',
-    function($scope, $state, $http, User, UserFormFieldFactory, Group, user) {
+    function($scope, $state, $http, User, UserForm, Group, user) {
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
         // set initial values for form model
         $scope.model = user;
         // get all form fields
-        $scope.formFields = UserFormFieldFactory.getFormFields();
+        $scope.formFields = UserForm.getFormFields();
 
         // save user
         $scope.save = function (user) {

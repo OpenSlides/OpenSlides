@@ -146,10 +146,10 @@
             <a ui-sref="agenda.item.detail({id: item.id})" translate>List of speakers</a> |
             <a href="" ng-click="item.quickEdit=true" translate>QuickEdit</a> |
             <a href="" ng-click="editDialog(item)" translate>Edit</a>
-            <!-- TODO: translate confirm message -->
             <span ng-if="item.content_object.collection == 'core/customslide'"> |
               <a href="" class="text-danger"
-                ng-bootbox-confirm="Are you sure you want to delete <b>{{ item.getTitle() }}</b>?"
+                ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
+                  <b>{{ item.getTitle() }}</b>"
                 ng-bootbox-confirm-action="deleteRelatedItem(item)" translate>Delete</a>
             </span>
           </div>
@@ -159,7 +159,7 @@
         <td ng-if="!item.quickEdit">
           <input type="checkbox" ng-model="item.closed" ng-change="save(item.id);">
         <!-- quickEdit columns -->
-        <td ng-if="$parent.item.quickEdit" os-perms="agenda.can_manage" colspan="3">
+        <td ng-show="item.quickEdit" os-perms="agenda.can_manage" colspan="3">
           <form ng-submit="save(item)">
           <h4>{{ item.getTitle() }} <span class="text-muted">&ndash; QuickEdit</span></h4>
             <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">

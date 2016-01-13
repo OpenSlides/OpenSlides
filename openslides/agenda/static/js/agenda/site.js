@@ -101,7 +101,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         // detail view of related item (content object)
         $scope.open = function (item) {
             $state.go(item.content_object.collection.replace('/','.')+'.detail',
-                    {id: item.content_object.id});
+                {id: item.content_object.id});
         };
         // save changed item
         $scope.save = function (item) {
@@ -183,10 +183,11 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     '$scope',
     '$filter',
     '$http',
+    '$state',
     'Agenda',
     'User',
     'item',
-    function ($scope, $filter, $http, Agenda, User, item) {
+    function ($scope, $filter, $http, $state, Agenda, User, item) {
         Agenda.bindOne(item.id, $scope, 'item');
         User.bindAll({}, $scope, 'users');
         $scope.speakerSelectBox = {};
@@ -197,6 +198,13 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         }, function () {
             $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
         });
+
+
+        // go to detail view of related item (content object)
+        $scope.open = function (item) {
+            $state.go(item.content_object.collection.replace('/','.')+'.detail',
+                {id: item.content_object.id});
+        };
 
         // close/open list of speakers of current item
         $scope.closeList = function (listClosed) {

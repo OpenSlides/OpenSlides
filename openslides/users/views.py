@@ -153,9 +153,11 @@ class UserViewSet(ModelViewSet):
     @detail_route(methods=['post'])
     def reset_password(self, request, pk=None):
         """
-        View to reset the password (using the default password).
+        View to reset the password using the requested password.
         """
         user = self.get_object()
+        if request.data.get('password'):
+            user.default_password = request.data['password']
         user.set_password(user.default_password)
         user.save()
         return Response({'detail': _('Password successfully reset.')})
