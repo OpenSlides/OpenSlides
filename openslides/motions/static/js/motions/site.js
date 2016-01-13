@@ -42,6 +42,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 },
                 users: function(User) {
                     return User.findAll();
+                },
+                workflows: function(Workflow) {
+                    return Workflow.findAll();
                 }
             }
         })

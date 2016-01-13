@@ -41,9 +41,17 @@
 </div>
 
 <div class="meta">
-  <i class="fa toggle-icon pointer" ng-click="isMeta = !isMeta"
-    ng-class="isMeta ? 'fa-angle-down' : 'fa-angle-up'"></i>
-  <div class="row" uib-collapse="isMeta">
+  <div class="title" ng-click="isMeta = !isMeta">
+    <div class="name">
+      <i class="fa fa-info-circle"></i>
+      <translate>Meta information</translate>
+    </div>
+    <div class="icon">
+      <i class="fa fa-lg" ng-class="isMeta ? 'fa-angle-down' : 'fa-angle-up'"></i>
+    </div>
+  </div>
+  <div class="detail" uib-collapse="isMeta">
+  <div class="row">
     <div class="col-sm-4">
         <!-- submitters -->
         <h3 translate>Submitters</h3>
@@ -163,60 +171,59 @@
               </form>
             </div>
             <div ng-show="!poll.isEditMode" class="pollresults">
-              <!-- yes -->
-              <div class="result_label">
-                <i class="fa fa-thumbs-up"></i>
-                <translate>Yes</translate>:
-              </div>
-              <div ng-if="poll.getYesPercent(true)">
-                <uib-progressbar value="poll.getYesPercent(true)" type="success"></uib-progressbar>
-              </div>
-              <div class="result_value">{{ poll.yes }} {{ poll.getYesPercent() }}</div>
-              <!-- no -->
-              <div class="result_label">
-                <i class="fa fa-thumbs-down"></i>
-                <translate>No</translate>:
-              </div>
-              <div ng-if="poll.getNoPercent(true)">
-                <uib-progressbar value="poll.getNoPercent(true)" type="danger"></uib-progressbar>
-              </div>
-              <div class="result_value">{{ poll.no }} {{ poll.getNoPercent() }}</div>
-              <!-- abstain -->
-              <div class="result_label">
-                <b>&empty;</b>
-                <translate>Abstain</translate>:
-              </div>
-              <div ng-if="poll.getAbstainPercent(true)">
-                <uib-progressbar value="poll.getAbstainPercent(true)" type="warning"></uib-progressbar>
-              </div>
-              <div class="result_value">{{ poll.abstain }} {{ poll.getAbstainPercent() }}</div>
-              <hr class="smallhr" ng-if="poll.votesvalid || poll.votesinvalid">
-              <!-- valid votes -->
-              <div ng-if="poll.votesvalid">
-                <div class="result_label">
-                  <i class="fa fa-check"></i>
-                  <translate>Valid votes</translate>:
-                </div>
-                <div class="result_value">{{ poll.votesvalid }} {{ poll.getVotesValidPercent() }}</div>
-              </div>
-              <!-- invalid votes -->
-              <div ng-if="poll.votesinvalid">
-                <div class="result_label">
-                  <i class="fa fa-ban"></i>
-                  <translate>Invalid votes</translate>:
-                </div>
-                <div class="result_value">{{ poll.votesinvalid }} {{ poll.getVotesInvalidPercent() }}</div>
-              </div>
-              <hr class="smallhr" ng-if="poll.votescast">
-              <!-- votes cast -->
-              <div ng-if="poll.votescast">
-                <div class="result_label">
-                  <b>&sum;</b>
-                  <translate>Votes cast</translate>:
-                </div>
-                <div class="result_value">{{ poll.votescast }} {{ poll.getVotesCastPercent() }}</div>
-              </div>
-            </div>
+              <table class="table">
+                <!-- yes -->
+                <tr>
+                  <td class="icon">
+                    <i class="fa fa-thumbs-up fa-2x"></i>
+                  <td>
+                    <span class="result_label"><translate>Yes</translate>:</span>
+                    <span class="result_value">{{ poll.yes }} {{ poll.getYesPercent() }}</span>
+                    <div ng-if="poll.getYesPercent(true)">
+                      <uib-progressbar value="poll.getYesPercent(true)" type="success"></uib-progressbar>
+                    </div>
+                <!-- no -->
+                <tr>
+                  <td class="icon">
+                    <i class="fa fa-thumbs-down fa-2x"></i>
+                  <td>
+                    <span class="result_label"><translate>No</translate>:</span>
+                    <span class="result_value">{{ poll.no }} {{ poll.getNoPercent() }}</span>
+                    <div ng-if="poll.getNoPercent(true)">
+                      <uib-progressbar value="poll.getNoPercent(true)" type="danger"></uib-progressbar>
+                    </div>
+                <!-- abstain -->
+                <tr>
+                  <td class="icon">
+                    <strong style="font-size: 26px">&empty;</strong>
+                  <td>
+                    <span class="result_label"><translate>Abstain</translate>:</span>
+                    <span class="result_value">{{ poll.abstain }} {{ poll.getAbstainPercent() }}</span>
+                    <div ng-if="poll.getAbstainPercent(true)">
+                      <uib-progressbar value="poll.getAbstainPercent(true)" type="warning"></uib-progressbar>
+                    </div>
+                <!-- valid votes -->
+                <tr>
+                  <td class="icon">
+                    <i class="fa fa-check fa-lg"></i>
+                  <td>
+                    <span class="result_label"><translate>Valid votes</translate>:</span>
+                    <span class="result_value">{{ poll.votesvalid }} {{ poll.getVotesValidPercent() }}</span>
+                <!-- invalid votes -->
+                <tr>
+                  <td class="icon">
+                    <i class="fa fa-ban fa-lg"></i>
+                  <td>
+                    <span class="result_label"><translate>Invalid votes</translate>:</span>
+                    <span class="result_value">{{ poll.votesinvalid }} {{ poll.getVotesInvalidPercent() }}</span>
+                <!-- votes cast -->
+                <tr class="total">
+                  <td class="icon">
+                    <strong style="font-size: 16px">&sum;</strong>
+                  <td>
+                    <span class="result_label"><translate>Votes cast</translate>:</span>
+                    <span class="result_value">{{ poll.votescast }} {{ poll.getVotesCastPercent() }}</span>
+              </table>
         </ol>
         <button ng-if="motion.isAllowed('create_poll')" ng-click="create_poll()" class="btn btn-default btn-sm">
           <i class="fa fa-bar-chart fa-lg"></i>
@@ -224,6 +231,7 @@
         </button>
     </div>
     <div class="col-sm-1"></div>
+  </div>
   </div>
 </div>
 
