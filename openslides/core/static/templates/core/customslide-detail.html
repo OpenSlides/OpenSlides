@@ -25,4 +25,11 @@
 
 <div class="details">
   <div ng-bind-html="customslide.text"></div>
+  <h3 ng-if="customslide.attachments.length > 0" translate>Attachments</h3>
+  <ul>
+    <li ng-repeat="attachment in customslide.attachments">
+      <a href="{{ attachment.mediafileUrl }}" target="_blank">
+        {{ attachment.title_or_filename }}
+      </a>
+  </ul>
 </div>

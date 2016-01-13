@@ -188,6 +188,12 @@ angular.module('OpenSlidesApp.core', [
                         localKey: 'agenda_item_id',
                         localField: 'agenda_item',
                     }
+                },
+                hasMany: {
+                    'mediafiles/mediafile': {
+                        localField: 'attachments',
+                        localKeys: 'attachments_id',
+                    }
                 }
             }
         });

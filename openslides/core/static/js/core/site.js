@@ -466,7 +466,8 @@ angular.module('OpenSlidesApp.core.site', [
 .factory('CustomslideFormFieldFactory', [
     'gettextCatalog',
     'CKEditorOptions',
-    function (gettextCatalog, CKEditorOptions) {
+    'Mediafile',
+    function (gettextCatalog, CKEditorOptions, Mediafile) {
         return {
             getFormFields: function () {
                 return [
@@ -485,7 +486,21 @@ angular.module('OpenSlidesApp.core.site', [
                         label: gettextCatalog.getString('Text')
                     },
                     ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
-                }];
+                },
+                {
+                    key: 'attachments_id',
+                    type: 'ui-select-multiple',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Attachment'),
+                        optionsAttr: 'bs-options',
+                        options: Mediafile.getAll(),
+                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
+                        valueProp: 'id',
+                        labelProp: 'title_or_filename',
+                        placeholder: gettextCatalog.getString('Select or search an attachment ...')
+                    }
+                },
+                ];
             }
         }
     }
