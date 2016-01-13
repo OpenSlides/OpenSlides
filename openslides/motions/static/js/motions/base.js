@@ -169,7 +169,6 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
             name: name,
             useClass: jsDataModel,
             verboseName: gettext('Motion'),
-            agendaSupplement: this.verboseName,
             methods: {
                 getResourceName: function () {
                     return name;
@@ -200,7 +199,7 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
                     if (this.identifier) {
                         value = ' ' + this.identifier;
                     }
-                    return value + ': ' + this.getTitle();
+                    return "Motion " + value + ': ' + this.getTitle();
                 },
                 isAllowed: function (action) {
                     /*

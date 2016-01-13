@@ -60,7 +60,6 @@ body{
     bottom: 0;
     height: 35px;
     color: #F5F5F5;
-    opacity: 0.8;
     width: 100%;
     font-size: 16px;
     padding-left: 50px;
@@ -68,6 +67,9 @@ body{
     padding-top: 5px;
     overflow: hidden;
     text-align: right;
+}
+#footer span {
+    opacity: 0.8;
 }
 
 /*** CONTENT with base style elements ***/
@@ -252,4 +254,28 @@ tr.elected td {
     font-size: 140%;
 }
 .spacer-top {
-   margin-top: 25px;
+    margin-top: 25px;
+}
+
+/*** List of speakers ***/
+.slimlabel.label {
+    padding: 0px 10px;
+}
+
+.lastSpeakers {
+    color: #9a9898;
+    margin-left: 27px;
+}
+.currentSpeaker {
+    font-weight: bold;
+    margin-left: 0px;
+}
+.currentSpeaker i {
+    padding-right: 5px;
+}
+.nextSpeakers {
+    margin-left: 8px;
+}
+.nextSpeakers li {
+    line-height: 150%;
+}

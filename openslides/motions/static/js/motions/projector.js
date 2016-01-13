@@ -10,12 +10,13 @@ angular.module('OpenSlidesApp.motions.projector', ['OpenSlidesApp.motions'])
     });
 })
 
-.controller('SlideMotionCtrl', function($scope, Motion) {
+.controller('SlideMotionCtrl', function($scope, Motion, User) {
     // Attention! Each object that is used here has to be dealt on server side.
     // Add it to the coresponding get_requirements method of the ProjectorElement
     // class.
     var id = $scope.element.id;
     Motion.find(id);
+    User.findAll();
     Motion.bindOne(id, $scope, 'motion');
 });
 

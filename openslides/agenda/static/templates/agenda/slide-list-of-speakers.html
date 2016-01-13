@@ -1,19 +1,28 @@
 <div ng-controller="SlideListOfSpeakersCtrl" class="content scrollcontent">
-  <h1>
-    {{ item.title }}
-    <span translate>List of speakers</span>
-    <span ng-if="item.speaker_list_closed" class="label label-danger" translate>Closed</span>
-  </h1>
-  <!-- List of speakers -->
-  <!-- TODO: show last old speakers -->
+
+  <!-- Title -->
+  <div id="title">
+    <h1>{{ item.getTitle() }}</h1>
+    <h2>
+      <span translate>List of speakers</span>
+      <span ng-if="(item.speakers | filter: {begin_time: null}).length > 0">
+      &ndash; {{ (item.speakers | filter: {begin_time: null}).length }} <translate>speakers</translate>
+      <span ng-if="item.speaker_list_closed" class="slimlabel label label-danger" translate>Closed</span>
+    </h2>
+  </div>
+
+  <!-- Last speakers -->
+  <p ng-repeat="speaker in item.speakers | filter: {end_time: '!!', begin_time: '!!'} |
+      limitTo: config('agenda_show_last_speakers')" class="lastSpeakers">
+      {{ speaker.user.get_full_name() }}
 
   <!-- Current speaker -->
-  <p>
-    <strong ng-repeat="speaker in item.speakers | filter: {end_time: null, begin_time: '!!'}">
-      {{ speaker.user.get_full_name() }}
-    </strong>
+  <p ng-repeat="speaker in item.speakers | filter: {end_time: null, begin_time: '!!'}"
+      class="currentSpeaker">
+      <i class="fa fa-microphone fa-lg"></i> {{ speaker.user.get_full_name() }}
+
   <!-- Next speakers -->
-  <ol id="list_of_speakers">
+  <ol class="nextSpeakers">
     <li ng-repeat="speaker in item.speakers | filter: {begin_time: null}">
       {{ speaker.user.get_full_name() }}
   </ol>

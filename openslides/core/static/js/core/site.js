@@ -63,19 +63,6 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-// set browser language as default language for OpenSlides
-.run([
-    'gettextCatalog',
-    'Languages',
-    function(gettextCatalog, Languages) {
-        // set detected browser language as default language (fallback: 'en')
-        Languages.setCurrentLanguage(Languages.getBrowserLanguage());
-
-        // Set this to true for debug. Helps to find untranslated strings by
-        // adding "[MISSING]:".
-        gettextCatalog.debug = false;
-    }
-])
 .config([
     'mainMenuProvider',
     'gettext',
@@ -367,55 +354,6 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-// gets all in OpenSlides available languages
-.factory('Languages', [
-    'gettext',
-    'gettextCatalog',
-    function (gettext, gettextCatalog) {
-        return {
-            // get all available languages
-            getLanguages: function () {
-                var current = gettextCatalog.getCurrentLanguage();
-                // Define here new languages...
-                var languages = [
-                    { code: 'en', name: gettext('English') },
-                    { code: 'de', name: gettext('German') },
-                    { code: 'fr', name: gettext('French') }
-                ];
-                angular.forEach(languages, function (language) {
-                    if (language.code == current)
-                        language.selected = true;
-                });
-                return languages
-            },
-            // get detected browser language code
-            getBrowserLanguage: function () {
-                var lang = navigator.language || navigator.userLanguage;
-                if (lang.indexOf('-') !== -1)
-                    lang = lang.split('-')[0];
-                if (lang.indexOf('_') !== -1)
-                    lang = lang.split('_')[0];
-                return lang;
-            },
-            // set current language and return updated languages object array
-            setCurrentLanguage: function (lang) {
-                var languages = this.getLanguages();
-                angular.forEach(languages, function (language) {
-                    language.selected = false;
-                    if (language.code == lang) {
-                        language.selected = true;
-                        gettextCatalog.setCurrentLanguage(lang);
-                        if (lang != 'en') {
-                            gettextCatalog.loadRemote("static/i18n/" + lang + ".json");
-                        }
-                    }
-                });
-                return languages;
-            }
-        }
-    }
-])
-
 .controller("LanguageCtrl", function ($scope, gettextCatalog, Languages, filterFilter) {
     $scope.languages = Languages.getLanguages();
     $scope.selectedLanguage = filterFilter($scope.languages, {selected: true});
@@ -689,10 +627,13 @@ angular.module('OpenSlidesApp.core.site', [
         };
         $scope.editCurrentSlide = function () {
             $.each(Projector.get(1).elements, function(key, value) {
-                if (value.name != 'core/clock' &&
+                if (value.name == 'agenda/list-of-speakers') {
+                    $state.go('agenda.item.detail', {id: value.id});
+                } else if (
+                    value.name != 'core/clock' &&
                     value.name != 'core/countdown' &&
                     value.name != 'core/message' ) {
-                    $state.go(value.name.replace('/', '.')+'.detail.update', {id: value.id });
+                    $state.go(value.name.replace('/', '.')+'.detail.update', {id: value.id});
                 }
             });
         };
