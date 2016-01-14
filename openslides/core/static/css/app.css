@@ -264,11 +264,28 @@ img {
     float: right;
 }
 
-.col1 .meta {
+.col1 .meta .title {
+    width: 100%;
+    cursor: pointer;
+    height: 30px;
+    color: #fff;
+    background: #317796;
+    padding: 5px 20px 0 20px;
+}
+.col1 .meta .title .name {
+    float: left;
+    font-size: 14px;
+}
+.col1 .meta .title .icon {
+    float: right;
+}
+
+.col1 .meta .detail {
     padding: 0 20px 10px 20px;
-    width: auto;
+    width: 100%;
     min-height: 30px;
-    background: #bed4de;
+    background: #d3d3d3;
+    color: #444;
 }
 
 .col1 .meta h3 {
@@ -304,16 +321,14 @@ img {
     width: 70px;
 }
 
-#content .col2 h4 {
+#content .col2 h4, .col1 .meta h3 {
     font-size: 22px;
     line-height: 24px;
     font-family: 'Roboto Condensed Light';
     font-weight: 300;
-}
-
-#content .col2 a h4 {
     color: #444;
 }
+
 
 #content .col2 a:hover h4 {
     text-decoration: none;
@@ -380,13 +395,15 @@ img {
     text-align: center;
     padding-top: 7px;
     font-size: 24px;
-    opacity: 0.5;
 }
 
 .col2 .projector_full .title a, .col2 .projector_full .title a:hover {
     color: #fff;
     text-decoration: none;
     display: block;
+}
+.meta .title:hover, .col2 .projector_full .title:hover {
+    color: #d3d3d3;
 }
 
 .col2 .projector_full .details {
@@ -679,8 +696,19 @@ img {
 .result_label {
     margin-top: 5px;
 }
-tr.total td {
-    font-weight: bold;
+.pollresults table {
+    margin-bottom: 0;
+}
+.pollresults table td{
+    border: none !important;
+    padding: 5px 2px !important;
+    vertical-align: middle !important;
+}
+.pollresults table .icon {
+    color: #636363;
+}
+.pollresults table tr.total td {
+    border-top: 1px solid #444 !important;
 }
 
 /* Chatbox */
