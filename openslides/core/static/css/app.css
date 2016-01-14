@@ -348,7 +348,7 @@ img {
 .col2 .projector_min .icon a {
     color: #fff;
     display: block;
- }
+}
 
 .col2 .projector_full {
     margin-left: 30px;
@@ -532,6 +532,26 @@ img {
 
 .slimlist {
     padding-left: 20px;
+}
+
+.slimlabel.label {
+    padding: 0px 10px;
+}
+
+.indentation, .indentation20 {
+    margin-left: 20px;
+}
+
+.indentation-lg {
+    margin-left: 35px !important;
+}
+
+.halfWidth {
+    width: 50%;
+}
+
+.listOfSpeakers h3 {
+    padding-bottom: 0;
 }
 
 .smallhr {

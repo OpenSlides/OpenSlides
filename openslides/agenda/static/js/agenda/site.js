@@ -184,10 +184,11 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     '$filter',
     '$http',
     '$state',
+    'operator',
     'Agenda',
     'User',
     'item',
-    function ($scope, $filter, $http, $state, Agenda, User, item) {
+    function ($scope, $filter, $http, $state, operator, Agenda, User, item) {
         Agenda.bindOne(item.id, $scope, 'item');
         User.bindAll({}, $scope, 'users');
         $scope.speakerSelectBox = {};
@@ -198,7 +199,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         }, function () {
             $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
         });
-
 
         // go to detail view of related item (content object)
         $scope.open = function (item) {
@@ -241,6 +241,23 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             });
             $scope.speakers = item.speakers;
         };
+
+        // check if user is allowed to see 'add me' / 'remove me' button
+        $scope.isAllowed = function (action) {
+            var nextUsers = [];
+            var nextSpeakers = $filter('filter')($scope.speakers, {'begin_time': null});
+            angular.forEach(nextSpeakers, function (speaker) {
+                nextUsers.push(speaker.user_id);
+            });
+            if (action == 'add') {
+                return (operator.hasPerms('agenda.can_be_speaker') &&
+                        !item.speaker_list_closed &&
+                        $.inArray(operator.user.id, nextUsers) == -1);
+            }
+            if (action == 'remove') {
+                return ($.inArray(operator.user.id, nextUsers) != -1);
+            }
+        }
 
         // begin speech of selected/next speaker
         $scope.beginSpeech = function (speakerId) {
