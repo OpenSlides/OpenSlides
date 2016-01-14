@@ -295,6 +295,69 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     }
 ])
 
+// Provide generic motionpoll form fields for poll update view
+.factory('MotionPollForm', [
+    'gettextCatalog',
+    function (gettextCatalog) {
+        return {
+            getFormFields: function () {
+                return [
+                {
+                    key: 'yes',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Yes'),
+                        type: 'number',
+                        required: true
+                    }
+                },
+                {
+                    key: 'no',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettextCatalog.getString('No'),
+                        type: 'number',
+                        required: true
+                    }
+                },
+                {
+                    key: 'abstain',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Abstain'),
+                        type: 'number',
+                        required: true
+                    }
+                },
+                {
+                    key: 'votesvalid',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Valid votes'),
+                        type: 'number'
+                    }
+                },
+                {
+                    key: 'votesinvalid',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Invalid votes'),
+                        type: 'number'
+                    }
+                },
+                {
+                    key: 'votescast',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Votes cast'),
+                        type: 'number'
+                    }
+                }];
+            }
+        }
+    }
+])
+
 .controller('MotionListCtrl', [
     '$scope',
     '$state',
@@ -430,57 +493,53 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         Workflow.bindAll({}, $scope, 'workflows');
         Motion.loadRelations(motion, 'agenda_item');
 
-        $scope.alert = {};
         $scope.isCollapsed = true;
 
         // open edit dialog
         $scope.openDialog = function (motion) {
             ngDialog.open(MotionForm.getDialog(motion));
         };
-
+        // support
         $scope.support = function () {
             $http.post('/rest/motions/motion/' + motion.id + '/support/');
         }
+        // unsupport
         $scope.unsupport = function () {
             $http.delete('/rest/motions/motion/' + motion.id + '/support/');
         }
+        // update state
         $scope.updateState = function (state_id) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {'state': state_id});
         }
+        // reset state
         $scope.reset_state = function (state_id) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {});
         }
+        // create poll
         $scope.create_poll = function () {
-            $http.post('/rest/motions/motion/' + motion.id + '/create_poll/', {})
-            .success(function(data){
-                $scope.alert.show = false;
-            })
-            .error(function(data){
-                $scope.alert = { type: 'danger', msg: data.detail, show: true };
-            });
+            $http.post('/rest/motions/motion/' + motion.id + '/create_poll/', {});
         }
+        // open poll update dialog
+        $scope.openPollDialog = function (poll, voteNumber) {
+            ngDialog.open({
+                template: 'static/templates/motions/motionpoll-form.html',
+                controller: 'MotionPollUpdateCtrl',
+                className: 'ngdialog-theme-default',
+                closeByEscape: false,
+                closeByDocument: false,
+                resolve: {
+                    motionpoll: function (MotionPoll) {
+                        return MotionPoll.find(poll.id);
+                    },
+                    voteNumber: function () {
+                        return voteNumber;
+                    }
+                }
+            });
+        };
+        // delete poll
         $scope.delete_poll = function (poll) {
             poll.DSDestroy();
-        }
-        $scope.update_poll = function (poll) {
-            poll.DSUpdate({
-                    motion_id: motion.id,
-                    votes: {"Yes": poll.yes, "No": poll.no, "Abstain": poll.abstain},
-                    votesvalid: poll.votesvalid,
-                    votesinvalid: poll.votesinvalid,
-                    votescast: poll.votescast
-            })
-            .then(function(success) {
-                $scope.alert.show = false;
-                poll.isEditMode = false;
-            })
-            .catch(function(error) {
-                var message = '';
-                for (var e in error.data) {
-                    message += e + ': ' + error.data[e] + ' ';
-                }
-                $scope.alert = { type: 'danger', msg: message, show: true };
-            });
         }
     }
 ])
@@ -583,6 +642,45 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     $scope.closeThisDialog();
                 }
             );
+        };
+    }
+])
+
+.controller('MotionPollUpdateCtrl', [
+    '$scope',
+    '$state',
+    'gettextCatalog',
+    'MotionPoll',
+    'MotionPollForm',
+    'motionpoll',
+    'voteNumber',
+    function($scope, $state, gettextCatalog, MotionPoll, MotionPollForm, motionpoll, voteNumber) {
+        // set initial values for form model
+        $scope.model = motionpoll;
+        $scope.voteNumber = voteNumber;
+        $scope.formFields = MotionPollForm.getFormFields();
+        $scope.alert = {};
+
+        // save motionpoll
+        $scope.save = function (poll) {
+            poll.DSUpdate({
+                    motion_id: poll.motion_id,
+                    votes: {"Yes": poll.yes, "No": poll.no, "Abstain": poll.abstain},
+                    votesvalid: poll.votesvalid,
+                    votesinvalid: poll.votesinvalid,
+                    votescast: poll.votescast
+            })
+            .then(function(success) {
+                $scope.alert.show = false;
+                $scope.closeThisDialog();
+            })
+            .catch(function(error) {
+                var message = '';
+                for (var e in error.data) {
+                    message += e + ': ' + error.data[e] + ' ';
+                }
+                $scope.alert = { type: 'danger', msg: message, show: true };
+            });
         };
     }
 ])
@@ -758,6 +856,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         }
     }
 ])
+
 
 .controller('CategoryListCtrl', function($scope, Category) {
     Category.bindAll({}, $scope, 'categories');

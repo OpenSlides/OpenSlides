@@ -100,6 +100,7 @@ class MotionPollSerializer(ModelSerializer):
     votes = DictField(
         child=IntegerField(min_value=-2, allow_null=True),
         write_only=True)
+    has_votes = SerializerMethodField()
 
     class Meta:
         model = MotionPoll
@@ -112,7 +113,8 @@ class MotionPollSerializer(ModelSerializer):
             'votesvalid',
             'votesinvalid',
             'votescast',
-            'votes',)
+            'votes',
+            'has_votes')
 
     def to_representation(self, obj):
         """
@@ -149,6 +151,12 @@ class MotionPollSerializer(ModelSerializer):
         except obj.get_vote_class().DoesNotExist:
             result = None
         return result
+
+    def get_has_votes(self, obj):
+        """
+        Returns True if this poll has some votes.
+        """
+        return obj.has_votes()
 
     @transaction.atomic
     def update(self, instance, validated_data):
