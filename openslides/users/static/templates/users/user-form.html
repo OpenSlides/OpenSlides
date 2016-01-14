@@ -1,6 +1,10 @@
 <h1 ng-if="model.id" translate>Edit participant</h1>
 <h1 ng-if="!model.id" translate>New participant</h1>
 
+<alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+  {{ alert.msg }}
+</alert>
+
 <form name="userForm" ng-submit="save(model)">
   <formly-form model="model" fields="formFields">
     <button type="submit" ng-disabled="userForm.$invalid" class="btn btn-primary" translate>
