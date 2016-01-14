@@ -50,12 +50,6 @@ class MotionViewSetUpdate(TestCase):
         self.view_instance.update(self.request)
         self.mock_serializer.save.assert_called_with()
 
-    @patch('openslides.motions.views.config')
-    def test_user_without_perms(self, mock_config):
-        self.request.user.has_perm.return_value = False
-        with self.assertRaises(PermissionDenied):
-            self.view_instance.update(self.request)
-
 
 class MotionViewSetManageVersion(TestCase):
     """

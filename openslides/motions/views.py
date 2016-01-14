@@ -102,11 +102,17 @@ class MotionViewSet(ModelViewSet):
         if not motion.get_allowed_actions(request.user)['update']:
             self.permission_denied(request)
 
-        # Check permission to send submitter and supporter data.
-        if (not request.user.has_perm('motions.can_manage') and
-                (request.data.get('submitters_id') or request.data.get('supporters_id'))):
-            # Non-staff users are not allowed to send submitter or supporter data.
-            self.permission_denied(request)
+        # Check permission to send only some data.
+        if not request.user.has_perm('motions.can_manage'):
+            whitelist = (
+                'title',
+                'text',
+                'reason',)
+            keys = list(request.data.keys())
+            for key in keys:
+                if key not in whitelist:
+                    # Non-staff users are allowed to send only some data. Ignore other data.
+                    del request.data[key]
 
         # Validate data and update motion.
         serializer = self.get_serializer(
