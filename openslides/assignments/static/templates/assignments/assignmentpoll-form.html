@@ -1,8 +1,17 @@
 <h1><translate>Ballot</translate> {{ ballot }}</h1>
 
-<form name="assignmentpollForm" ng-submit="save(model)">
+<alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+  {{ alert.msg }}
+</alert>
+
+<p>
+  <translate>Special values</translate>:
+  <span class="badge badge-success">-1</span> = <translate>majority</translate>
+  <span class="badge">-2</span> = <translate>undocumented</translate>
+
+<form name="assignmentPollForm" ng-submit="save(model)">
   <formly-form model="model" fields="formFields">
-    <button type="submit" ng-disabled="assignmentForm.$invalid" class="btn btn-primary" translate>
+    <button type="submit" ng-disabled="assignmentPollForm.$invalid" class="btn btn-primary" translate>
       Save
     </button>
     <button ng-click="closeThisDialog()" class="btn btn-default" translate>

@@ -136,40 +136,6 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     }
 ])
 
-// Provide generic assignmentpoll form fields for create and update view
-.factory('AssignmentPollFormFieldFactory', [
-    'gettextCatalog',
-    function (gettextCatalog) {
-        return {
-            getFormFields: function () {
-                return [
-                {
-                    key: 'description',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Comment on the ballot paper')
-                    }
-                },
-                {
-                    key: 'yes',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Yes'),
-                        type: 'number',
-                        required: true
-                    }
-                },
-                {
-                    key: 'poll_description_default',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Default comment on the ballot paper')
-                    }
-                }];
-            }
-        }
-    }
-])
 .controller('AssignmentListCtrl', [
     '$scope',
     'ngDialog',
@@ -340,6 +306,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 template: 'static/templates/assignments/assignmentpoll-form.html',
                 controller: 'AssignmentPollUpdateCtrl',
                 className: 'ngdialog-theme-default',
+                closeByEscape: false,
+                closeByDocument: false,
                 resolve: {
                     assignmentpoll: function (AssignmentPoll) {
                         return AssignmentPoll.find(poll.id);
@@ -443,6 +411,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         $scope.model = assignmentpoll;
         $scope.ballot = ballot;
         $scope.formFields = [];
+        $scope.alert = {};
+
         // add dynamic form fields
         assignmentpoll.options.forEach(function(option) {
             if (assignmentpoll.yesnoabstain) {
@@ -528,9 +498,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 }
         );
 
-
-
-        // save assignment
+        // save assignmentpoll
         $scope.save = function (poll) {
             var votes = [];
             if (assignmentpoll.yesnoabstain) {
@@ -556,8 +524,16 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     votescast: poll.votescast
             })
             .then(function(success) {
+                $scope.alert.show = false;
                 $scope.closeThisDialog();
             })
+            .catch(function(error) {
+                var message = '';
+                for (var e in error.data) {
+                    message += e + ': ' + error.data[e] + ' ';
+                }
+                $scope.alert = { type: 'danger', msg: message, show: true };
+            });
         };
     }
 ]);
