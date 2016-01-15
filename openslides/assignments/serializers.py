@@ -171,7 +171,8 @@ class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
             'options',
             'votesvalid',
             'votesinvalid',
-            'votescast',)
+            'votescast',
+            'has_votes',)
 
 
 class AssignmentFullSerializer(ModelSerializer):
