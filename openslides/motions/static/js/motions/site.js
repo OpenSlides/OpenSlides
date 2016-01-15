@@ -637,7 +637,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
         // save motion
         $scope.save = function (motion) {
-            Motion.save(motion).then(
+            Motion.save(motion, { method: 'PATCH' }).then(
                 function(success) {
                     $scope.closeThisDialog();
                 }

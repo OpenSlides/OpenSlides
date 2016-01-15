@@ -197,7 +197,8 @@ class UpdateMotion(TestCase):
             reverse('motion-detail', args=[self.motion.pk]),
             json.dumps({'supporters_id': [1]}),
             content_type='application/json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(motion.supporters.exists())
 
     def test_removal_of_supporters(self):
         admin = get_user_model().objects.get(username='admin')
