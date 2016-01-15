@@ -47,8 +47,9 @@ class MotionViewSetUpdate(TestCase):
     @patch('openslides.motions.views.config')
     def test_simple_update(self, mock_config):
         self.request.user.has_perm.return_value = True
+        self.request.data.get.return_value = versioning_mock = MagicMock()
         self.view_instance.update(self.request)
-        self.mock_serializer.save.assert_called_with()
+        self.mock_serializer.save.assert_called_with(disable_versioning=versioning_mock)
 
 
 class MotionViewSetManageVersion(TestCase):

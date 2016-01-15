@@ -7,7 +7,7 @@ from rest_framework.test import APIClient
 
 from openslides.core.config import config
 from openslides.core.models import Tag
-from openslides.motions.models import Category, Motion
+from openslides.motions.models import Category, Motion, State
 from openslides.utils.test import TestCase
 
 
@@ -220,6 +220,27 @@ class UpdateMotion(TestCase):
         motion = Motion.objects.get()
         self.assertEqual(motion.title, 'new_title_ohph1aedie5Du8sai2ye')
         self.assertEqual(motion.supporters.count(), 0)
+
+    def test_with_new_version(self):
+        self.motion.set_state(State.objects.get(name='permitted'))
+        self.motion.save()
+        response = self.client.patch(
+            reverse('motion-detail', args=[self.motion.pk]),
+            {'text': 'test_text_aeb1iaghahChong5od3a'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        motion = Motion.objects.get()
+        self.assertEqual(motion.versions.count(), 2)
+
+    def test_without_new_version(self):
+        self.motion.set_state(State.objects.get(name='permitted'))
+        self.motion.save()
+        response = self.client.patch(
+            reverse('motion-detail', args=[self.motion.pk]),
+            {'text': 'test_text_aeThaeroneiroo7Iophu',
+             'disable_versioning': True})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        motion = Motion.objects.get()
+        self.assertEqual(motion.versions.count(), 1)
 
 
 class ManageVersion(TestCase):

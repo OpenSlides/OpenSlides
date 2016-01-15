@@ -120,7 +120,7 @@ class MotionViewSet(ModelViewSet):
             data=request.data,
             partial=kwargs.get('partial', False))
         serializer.is_valid(raise_exception=True)
-        updated_motion = serializer.save()
+        updated_motion = serializer.save(disable_versioning=request.data.get('disable_versioning'))
 
         # Write the log message, check removal of supporters and initiate response.
         # TODO: Log if a version was updated.
