@@ -519,8 +519,11 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'user',
     function($scope, $state, $http, User, UserForm, Group, user) {
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
-        // set initial values for form model
-        $scope.model = user;
+        $scope.alert = {};
+        // set initial values for form model by create deep copy of user object
+        // so list/detail view is not updated while editing
+        $scope.model = angular.copy(user);
+
         // get all form fields
         $scope.formFields = UserForm.getFormFields();
 
@@ -529,9 +532,22 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             if (!user.groups) {
                 user.groups = [];
             }
+            // inject the changed user (copy) object back into DS store
+            User.inject(user);
+            // save change user object on server
             User.save(user).then(
-                function(success) {
+                function (success) {
                     $scope.closeThisDialog();
+                },
+                function (error) {
+                    // save error: revert all changes by restore
+                    // (refresh) original user object from server
+                    User.refresh(user);
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };
