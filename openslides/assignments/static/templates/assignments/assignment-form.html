@@ -1,6 +1,10 @@
 <h1 ng-if="model.id" translate>Edit election</h1>
 <h1 ng-if="!model.id" translate>New election</h1>
 
+<alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+  {{ alert.msg }}
+</alert>
+
 <form name="assignmentForm" ng-submit="save(model)">
   <formly-form model="model" fields="formFields">
     <button type="submit" ng-disabled="assignmentForm.$invalid" class="btn btn-primary" translate>

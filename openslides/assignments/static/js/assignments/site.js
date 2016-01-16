@@ -383,16 +383,31 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'AssignmentForm',
     'assignment',
     function($scope, $state, Assignment, AssignmentForm, assignment) {
-        // set initial values for form model
-        $scope.model = assignment;
+        $scope.alert = {};
+        // set initial values for form model by create deep copy of assignment object
+        // so list/detail view is not updated while editing
+        $scope.model = angular.copy(assignment);
         // get all form fields
         $scope.formFields = AssignmentForm.getFormFields();
 
         // save assignment
         $scope.save = function (assignment) {
+            // inject the changed assignment (copy) object back into DS store
+            Assignment.inject(assignment);
+            // save change motion object on server
             Assignment.save(assignment).then(
                 function(success) {
                     $scope.closeThisDialog();
+                },
+                function (error) {
+                    // save error: revert all changes by restore
+                    // (refresh) original assignment object from server
+                    Assignment.refresh(assignment);
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };

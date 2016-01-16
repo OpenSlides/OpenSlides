@@ -220,15 +220,25 @@ angular.module('OpenSlidesApp.core.site', [
                 }
             }
         })
+        // redirects to customslide detail and opens customslide edit form dialog, uses edit url,
+        // used by ui-sref links from agenda only
+        // (from customslide controller use CustomSlideForm factory instead to open dialog in front
+        // of current view without redirect)
         .state('core.customslide.detail.update', {
-            onEnter: ['$stateParams', 'ngDialog', 'Customslide', function($stateParams, ngDialog, Customslide) {
-                ngDialog.open({
-                    template: 'static/templates/core/customslide-form.html',
-                    controller: 'CustomslideUpdateCtrl',
-                    className: 'ngdialog-theme-default wide-form',
-                    resolve: { customslide: function() {
-                        return Customslide.find($stateParams.id) }}
-                });
+            onEnter: ['$stateParams', '$state', 'ngDialog', 'Customslide',
+                function($stateParams, $state, ngDialog, Customslide) {
+                    ngDialog.open({
+                        template: 'static/templates/core/customslide-form.html',
+                        controller: 'CustomslideUpdateCtrl',
+                        className: 'ngdialog-theme-default wide-form',
+                        resolve: {
+                            customslide: function() {return Customslide.find($stateParams.id) }
+                        },
+                        preCloseCallback: function() {
+                            $state.go('core.customslide.detail', {customslide: $stateParams.id});
+                            return true;
+                        }
+                    });
             }]
         })
         // tag
@@ -401,12 +411,28 @@ angular.module('OpenSlidesApp.core.site', [
 
 
 // Provide generic customslide form fields for create and update view
-.factory('CustomslideFormFieldFactory', [
+.factory('CustomslideForm', [
     'gettextCatalog',
     'CKEditorOptions',
     'Mediafile',
     function (gettextCatalog, CKEditorOptions, Mediafile) {
         return {
+            // ngDialog for customslide form
+            getDialog: function (customslide) {
+                if (customslide) {
+                    var resolve = {
+                        customslide: function(Customslide) {return Customslide.find(customslide.id);}
+                    };
+                }
+                return {
+                    template: 'static/templates/core/customslide-form.html',
+                    controller: (customslide) ? 'CustomslideUpdateCtrl' : 'CustomslideCreateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: (resolve) ? resolve : null
+                }
+            },
             getFormFields: function () {
                 return [
                 {
@@ -641,20 +667,32 @@ angular.module('OpenSlidesApp.core.site', [
 ])
 
 // Customslide Controllers
-.controller('CustomslideDetailCtrl', function($scope, Customslide, customslide) {
-    Customslide.bindOne(customslide.id, $scope, 'customslide');
-    Customslide.loadRelations(customslide, 'agenda_item');
-})
+.controller('CustomslideDetailCtrl', [
+    '$scope',
+    'ngDialog',
+    'CustomslideForm',
+    'Customslide',
+    'customslide',
+    function($scope, ngDialog, CustomslideForm, Customslide, customslide) {
+        Customslide.bindOne(customslide.id, $scope, 'customslide');
+        Customslide.loadRelations(customslide, 'agenda_item');
+
+        // open edit dialog
+        $scope.openDialog = function (customslide) {
+            ngDialog.open(CustomslideForm.getDialog(customslide));
+        };
+    }
+])
 
 .controller('CustomslideCreateCtrl', [
     '$scope',
     '$state',
     'Customslide',
-    'CustomslideFormFieldFactory',
-    function($scope, $state, Customslide, CustomslideFormFieldFactory) {
+    'CustomslideForm',
+    function($scope, $state, Customslide, CustomslideForm) {
         $scope.customslide = {};
         // get all form fields
-        $scope.formFields = CustomslideFormFieldFactory.getFormFields();
+        $scope.formFields = CustomslideForm.getFormFields();
 
         // save form
         $scope.save = function (customslide) {
@@ -671,19 +709,34 @@ angular.module('OpenSlidesApp.core.site', [
     '$scope',
     '$state',
     'Customslide',
-    'CustomslideFormFieldFactory',
+    'CustomslideForm',
     'customslide',
-    function($scope, $state, Customslide, CustomslideFormFieldFactory, customslide) {
-        // set initial values for form model
-        $scope.model = customslide;
+    function($scope, $state, Customslide, CustomslideForm, customslide) {
+        $scope.alert = {};
+        // set initial values for form model by create deep copy of customslide object
+        // so list/detail view is not updated while editing
+        $scope.model = angular.copy(customslide);
         // get all form fields
-        $scope.formFields = CustomslideFormFieldFactory.getFormFields();
+        $scope.formFields = CustomslideForm.getFormFields();
 
         // save form
         $scope.save = function (customslide) {
+            // inject the changed customslide (copy) object back into DS store
+            Customslide.inject(customslide);
+            // save change customslide object on server
             Customslide.save(customslide).then(
                 function(success) {
                     $scope.closeThisDialog();
+                },
+                function (error) {
+                    // save error: revert all changes by restore
+                    // (refresh) original customslide object from server
+                    Customslide.refresh(customslide);
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };

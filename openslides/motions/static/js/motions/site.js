@@ -605,10 +605,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         Tag.bindAll({}, $scope, 'tags');
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
+        $scope.alert = {};
 
-        // set initial values for form model
-        $scope.model = motion;
+        // set initial values for form model by create deep copy of motion object
+        // so list/detail view is not updated while editing
+        $scope.model = angular.copy(motion);
         $scope.model.more = false;
+
         // get all form fields
         $scope.formFields = MotionForm.getFormFields();
         // override default values for update form
@@ -637,9 +640,22 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
         // save motion
         $scope.save = function (motion) {
+            // inject the changed motion (copy) object back into DS store
+            Motion.inject(motion);
+            // save change motion object on server
             Motion.save(motion, { method: 'PATCH' }).then(
                 function(success) {
                     $scope.closeThisDialog();
+                },
+                function (error) {
+                    // save error: revert all changes by restore
+                    // (refresh) original motion object from server
+                    Motion.refresh(motion);
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };

@@ -17,6 +17,12 @@
           title="{{ 'Project agenda item' | translate }}">
         <i class="fa fa-video-camera"></i>
       </a>
+      <!-- edit -->
+      <a os-perms="agenda.can_manage" ng-click="openDialog(customslide)"
+          class="btn btn-default btn-sm"
+          title="{{ 'Edit' | translate}}">
+        <i class="fa fa-pencil"></i>
+      </a>
     </div>
     <h1>{{ customslide.agenda_item.getTitle() }}</h1>
     <h2 translate>Agenda item</h2>
