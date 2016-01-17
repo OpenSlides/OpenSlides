@@ -49,6 +49,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     },
                     users: function(User) {
                         return User.findAll();
+                    },
+                    phases: function(Assignment) {
+                        return Assignment.getPhases();
                     }
                 }
             })
@@ -122,7 +125,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'open_posts',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Number of members to be elected'),
+                        label: gettextCatalog.getString('Number of posts to be elected'),
                         type: 'number',
                         required: true
                     }
@@ -225,11 +228,14 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'Assignment',
     'User',
     'assignment',
-    function($scope, $http, gettext, ngDialog, AssignmentForm, operator, Assignment, User, assignment) {
+    'phases',
+    function($scope, $http, gettext, ngDialog, AssignmentForm, operator, Assignment, User, assignment, phases) {
         User.bindAll({}, $scope, 'users');
         Assignment.bindOne(assignment.id, $scope, 'assignment');
         Assignment.loadRelations(assignment, 'agenda_item');
         $scope.candidateSelectBox = {};
+        // get all item types via OPTIONS request
+        $scope.phases = phases.data.actions.POST.phase.choices;
         $scope.alert = {};
 
         // open edit dialog
@@ -289,6 +295,11 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             else
                 return false;
         };
+        // update phase
+        $scope.updatePhase = function (phase_id) {
+            assignment.phase = phase_id;
+            Assignment.save(assignment);
+        }
         // create new ballot
         $scope.createBallot = function () {
             $http.post('/rest/assignments/assignment/' + assignment.id + '/create_poll/')

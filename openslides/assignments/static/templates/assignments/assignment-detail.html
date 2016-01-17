@@ -39,6 +39,42 @@
   </div>
 </div>
 
+<div class="meta">
+  <div class="title" ng-click="isMeta = !isMeta">
+    <div class="name">
+      <i class="fa fa-info-circle"></i>
+      <translate>Meta information</translate>
+    </div>
+    <div class="icon">
+      <i class="fa fa-lg" ng-class="isMeta ? 'fa-angle-down' : 'fa-angle-up'"></i>
+    </div>
+  </div>
+  <div class="detail" uib-collapse="isMeta">
+    <div class="row">
+      <div class="col-md-6">
+          <!-- posts -->
+          <h3 translate>Number of posts to be elected</h3>
+          {{ assignment.open_posts }}<br>
+      </div>
+      <div class="col-md-6">
+          <!-- phase -->
+          <h3 translate>Phase</h3>
+          <span class="label" ng-class="{'label-primary': assignment.phase == 0,
+                                         'label-warning': assignment.phase == 1,
+                                         'label-success': assignment.phase == 2 }">
+            {{ phases[assignment.phase].display_name | translate }}
+          </span>
+          <div os-perms="assignments.can_manage" class="spacer">
+            <select ng-model="phaseSelect" class="form-control" ng-change="updatePhase(phaseSelect)">
+              <option value="" translate>--- Set phase ---</option>
+              <option ng-repeat="phase in phases" value="{{ phase.value }}">{{ phase.display_name }}</option>
+            </select>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="details">
   <h3 translate>Description</h3>
   <div class="white-space-pre-line">{{ assignment.description }}</div>
