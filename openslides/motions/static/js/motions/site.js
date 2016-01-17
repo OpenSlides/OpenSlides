@@ -504,7 +504,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
         Motion.loadRelations(motion, 'agenda_item');
-
+        $scope.version = motion.active_version;
         $scope.isCollapsed = true;
 
         // open edit dialog
@@ -552,6 +552,27 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         // delete poll
         $scope.delete_poll = function (poll) {
             poll.DSDestroy();
+        }
+        // show specific version
+        $scope.showVersion = function (version) {
+            $scope.version = version.id;
+        }
+        // permit specific version
+        $scope.permitVersion = function (version) {
+            $http.put('/rest/motions/motion/' + motion.id + '/manage_version/',
+                {'version_number': version.version_number})
+                .then(function(success) {
+                    $scope.version = version.id;
+                });
+        }
+        // delete specific version
+        $scope.deleteVersion = function (version) {
+            $http.delete('/rest/motions/motion/' + motion.id + '/manage_version/',
+                    {headers: {'Content-Type': 'application/json'},
+                     data: JSON.stringify({version_number: version.version_number})})
+                .then(function(success) {
+                    $scope.version = motion.active_version;
+                });
         }
     }
 ])
