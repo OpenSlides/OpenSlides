@@ -18,120 +18,123 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     }
 ])
 
-.config(function($stateProvider) {
-    $stateProvider
-    .state('users', {
-        url: '/users',
-        abstract: true,
-        template: "<ui-view/>",
-    })
-    .state('users.user', {
-        abstract: true,
-        template: "<ui-view/>",
-    })
-    .state('users.user.list', {
-        resolve: {
-            users: function(User) {
-                return User.findAll();
-            }
-        }
-    })
-    .state('users.user.create', {
-        resolve: {
-            groups: function(Group) {
-                return Group.findAll();
-            }
-        }
-    })
-    .state('users.user.detail', {
-        resolve: {
-            user: function(User, $stateParams) {
-                return User.find($stateParams.id);
-            },
-            groups: function(Group) {
-                return Group.findAll();
-            }
-        }
-    })
-    .state('users.user.detail.profile', {
-        views: {
-            '@users.user': {},
-        },
-        url: '/profile',
-        controller: 'UserProfileCtrl',
-    })
-    .state('users.user.detail.password', {
-        views: {
-            '@users.user': {},
-        },
-        url: '/password',
-        controller: 'UserPasswordCtrl',
-    })
-    .state('users.user.import', {
-        url: '/import',
-        controller: 'UserImportCtrl',
-        resolve: {
-            groups: function(Group) {
-                return Group.findAll();
-            }
-        }
-    })
-    // groups
-    .state('users.group', {
-        url: '/groups',
-        abstract: true,
-        template: "<ui-view/>",
-    })
-    .state('users.group.list', {
-        resolve: {
-            groups: function(Group) {
-                return Group.findAll();
-            }
-        }
-    })
-    .state('users.group.create', {
-        resolve: {
-            permissions: function($http) {
-                return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
-            }
-        }
-    })
-    .state('users.group.detail', {
-        resolve: {
-            group: function(Group, $stateParams) {
-                return Group.find($stateParams.id);
-            }
-        }
-    })
-    .state('users.group.detail.update', {
-        views: {
-            '@users.group': {}
-        },
-        resolve: {
-            permissions: function($http) {
-                return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
-            }
-        }
-    })
-    .state('login', {
-        template: null,
-        url: '/login',
-        params: { guest_enabled: false },
-        onEnter: ['$state', '$stateParams', 'ngDialog', function($state, $stateParams, ngDialog) {
-            ngDialog.open({
-                template: 'static/templates/core/login-form.html',
-                controller: 'LoginFormCtrl',
-                showClose: $stateParams.guest_enabled,
-                closeByEscape: $stateParams.guest_enabled,
-                closeByDocument: $stateParams.guest_enabled,
-                preCloseCallback: function() {
-                    $state.go('dashboard');
-                    return true;
+.config([
+    '$stateProvider',
+    function($stateProvider) {
+        $stateProvider
+        .state('users', {
+            url: '/users',
+            abstract: true,
+            template: "<ui-view/>",
+        })
+        .state('users.user', {
+            abstract: true,
+            template: "<ui-view/>",
+        })
+        .state('users.user.list', {
+            resolve: {
+                users: function(User) {
+                    return User.findAll();
                 }
-            });
-        }]
-    });
-})
+            }
+        })
+        .state('users.user.create', {
+            resolve: {
+                groups: function(Group) {
+                    return Group.findAll();
+                }
+            }
+        })
+        .state('users.user.detail', {
+            resolve: {
+                user: function(User, $stateParams) {
+                    return User.find($stateParams.id);
+                },
+                groups: function(Group) {
+                    return Group.findAll();
+                }
+            }
+        })
+        .state('users.user.detail.profile', {
+            views: {
+                '@users.user': {},
+            },
+            url: '/profile',
+            controller: 'UserProfileCtrl',
+        })
+        .state('users.user.detail.password', {
+            views: {
+                '@users.user': {},
+            },
+            url: '/password',
+            controller: 'UserPasswordCtrl',
+        })
+        .state('users.user.import', {
+            url: '/import',
+            controller: 'UserImportCtrl',
+            resolve: {
+                groups: function(Group) {
+                    return Group.findAll();
+                }
+            }
+        })
+        // groups
+        .state('users.group', {
+            url: '/groups',
+            abstract: true,
+            template: "<ui-view/>",
+        })
+        .state('users.group.list', {
+            resolve: {
+                groups: function(Group) {
+                    return Group.findAll();
+                }
+            }
+        })
+        .state('users.group.create', {
+            resolve: {
+                permissions: function($http) {
+                    return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
+                }
+            }
+        })
+        .state('users.group.detail', {
+            resolve: {
+                group: function(Group, $stateParams) {
+                    return Group.find($stateParams.id);
+                }
+            }
+        })
+        .state('users.group.detail.update', {
+            views: {
+                '@users.group': {}
+            },
+            resolve: {
+                permissions: function($http) {
+                    return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
+                }
+            }
+        })
+        .state('login', {
+            template: null,
+            url: '/login',
+            params: { guest_enabled: false },
+            onEnter: ['$state', '$stateParams', 'ngDialog', function($state, $stateParams, ngDialog) {
+                ngDialog.open({
+                    template: 'static/templates/core/login-form.html',
+                    controller: 'LoginFormCtrl',
+                    showClose: $stateParams.guest_enabled,
+                    closeByEscape: $stateParams.guest_enabled,
+                    closeByDocument: $stateParams.guest_enabled,
+                    preCloseCallback: function() {
+                        $state.go('dashboard');
+                        return true;
+                    }
+                });
+            }]
+        });
+    }
+])
 
 .run([
     'operator',

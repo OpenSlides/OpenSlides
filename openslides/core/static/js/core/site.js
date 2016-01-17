@@ -84,219 +84,244 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-.config(function($urlRouterProvider, $locationProvider) {
-    // define fallback url and html5Mode
-    $urlRouterProvider.otherwise('/');
-    $locationProvider.html5Mode(true);
-})
+.config([
+    '$urlRouterProvider',
+    '$locationProvider',
+    function($urlRouterProvider, $locationProvider) {
+        // define fallback url and html5Mode
+        $urlRouterProvider.otherwise('/');
+        $locationProvider.html5Mode(true);
+    }
+])
 
-.config(function($httpProvider) {
-    // Combine the django csrf system with the angular csrf system
-    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
-    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-})
+.config([
+    '$httpProvider',
+    function($httpProvider) {
+        // Combine the django csrf system with the angular csrf system
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+    }
+])
 
-.config(function(uiSelectConfig) {
-  uiSelectConfig.theme = 'bootstrap';
-})
+.config([
+    'uiSelectConfig',
+    function(uiSelectConfig) {
+        uiSelectConfig.theme = 'bootstrap';
+    }
+])
 
-.config(function($stateProvider, $urlMatcherFactoryProvider) {
-    // Make the trailing slash optional
-    $urlMatcherFactoryProvider.strictMode(false);
+.config([
+    '$stateProvider',
+    '$urlMatcherFactoryProvider',
+    function($stateProvider, $urlMatcherFactoryProvider) {
+        // Make the trailing slash optional
+        $urlMatcherFactoryProvider.strictMode(false);
 
-    // Use stateProvider.decorator to give default values to our states
-    $stateProvider.decorator('views', function(state, parent) {
-        var result = {},
-            views = parent(state);
+        // Use stateProvider.decorator to give default values to our states
+        $stateProvider.decorator('views', function(state, parent) {
+            var result = {},
+                views = parent(state);
 
-        if (state.abstract || state.data && state.data.extern) {
-            return views;
-        }
+            if (state.abstract || state.data && state.data.extern) {
+                return views;
+            }
 
-        angular.forEach(views, function(config, name) {
+            angular.forEach(views, function(config, name) {
 
-            // Sets default values for templateUrl
-            var patterns = state.name.split('.'),
-                templateUrl,
-                controller,
-                defaultControllers = {
-                    create: 'CreateCtrl',
-                    update: 'UpdateCtrl',
-                    list: 'ListCtrl',
-                    detail: 'DetailCtrl',
-                };
+                // Sets default values for templateUrl
+                var patterns = state.name.split('.'),
+                    templateUrl,
+                    controller,
+                    defaultControllers = {
+                        create: 'CreateCtrl',
+                        update: 'UpdateCtrl',
+                        list: 'ListCtrl',
+                        detail: 'DetailCtrl',
+                    };
 
-            // templateUrl
-            if (_.last(patterns).match(/(create|update)/)) {
-                // When state_patterns is in the form "app.module.create" or
-                // "app.module.update", use the form template.
-                templateUrl = 'static/templates/' + patterns[0] + '/' + patterns[1] + '-form.html';
+                // templateUrl
+                if (_.last(patterns).match(/(create|update)/)) {
+                    // When state_patterns is in the form "app.module.create" or
+                    // "app.module.update", use the form template.
+                    templateUrl = 'static/templates/' + patterns[0] + '/' + patterns[1] + '-form.html';
+                } else {
+                    // Replaces the first point through a slash (the app name)
+                    var appName = state.name.replace('.', '/');
+                    // Replaces any folowing points though a -
+                    templateUrl = 'static/templates/' + appName.replace(/\./g, '-') + '.html';
+                }
+                config.templateUrl = state.templateUrl || templateUrl;
+
+                // controller
+                if (patterns.length >= 3) {
+                    controller = _.capitalize(patterns[1]) + defaultControllers[_.last(patterns)];
+                    config.controller = state.controller || controller;
+                }
+                result[name] = config;
+            });
+            return result;
+        })
+
+        .decorator('url', function(state, parent) {
+            var defaultUrl;
+
+            if (state.abstract) {
+                defaultUrl = '';
             } else {
-                // Replaces the first point through a slash (the app name)
-                var appName = state.name.replace('.', '/');
-                // Replaces any folowing points though a -
-                templateUrl = 'static/templates/' + appName.replace(/\./g, '-') + '.html';
-            }
-            config.templateUrl = state.templateUrl || templateUrl;
+                var patterns = state.name.split('.'),
+                    defaultUrls = {
+                        create: '/new',
+                        update: '/edit',
+                        list: '',
+                        // The id is expected to be an integer, if not, the url has to
+                        // be defined manually
+                        detail: '/{id:int}',
+                    };
 
-            // controller
-            if (patterns.length >= 3) {
-                controller = _.capitalize(patterns[1]) + defaultControllers[_.last(patterns)];
-                config.controller = state.controller || controller;
+                defaultUrl = defaultUrls[_.last(patterns)];
             }
-            result[name] = config;
+
+            state.url = state.url || defaultUrl;
+            return parent(state);
         });
-        return result;
-    })
+    }
+])
 
-    .decorator('url', function(state, parent) {
-        var defaultUrl;
-
-        if (state.abstract) {
-            defaultUrl = '';
-        } else {
-            var patterns = state.name.split('.'),
-                defaultUrls = {
-                    create: '/new',
-                    update: '/edit',
-                    list: '',
-                    // The id is expected to be an integer, if not, the url has to
-                    // be defined manually
-                    detail: '/{id:int}',
-                };
-
-            defaultUrl = defaultUrls[_.last(patterns)];
-        }
-
-        state.url = state.url || defaultUrl;
-        return parent(state);
-    });
-})
-
-.config(function($stateProvider, $locationProvider) {
-    // Core urls
-    $stateProvider
-        .state('dashboard', {
-            url: '/',
-            templateUrl: 'static/templates/dashboard.html'
-        })
-        .state('projector', {
-            url: '/projector',
-            data: {extern: true},
-            onEnter: function($window) {
-                $window.location.href = this.url;
-            }
-        })
-        .state('core', {
-            url: '/core',
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        // legal notice and version
-        .state('legalnotice', {
-            url: '/legalnotice',
-            controller: 'LegalNoticeCtrl',
-        })
-        //config
-        .state('config', {
-            url: '/config',
-            controller: 'ConfigCtrl',
-            resolve: {
-                configOption: function($http) {
-                    return $http({ 'method': 'OPTIONS', 'url': '/rest/core/config/' });
-                }
-            }
-        })
-        // customslide
-        .state('core.customslide', {
-            url: '/customslide',
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('core.customslide.detail', {
-            resolve: {
-                customslide: function(Customslide, $stateParams) {
-                    return Customslide.find($stateParams.id);
-                }
-            }
-        })
-        // redirects to customslide detail and opens customslide edit form dialog, uses edit url,
-        // used by ui-sref links from agenda only
-        // (from customslide controller use CustomSlideForm factory instead to open dialog in front
-        // of current view without redirect)
-        .state('core.customslide.detail.update', {
-            onEnter: ['$stateParams', '$state', 'ngDialog', 'Customslide',
-                function($stateParams, $state, ngDialog, Customslide) {
-                    ngDialog.open({
-                        template: 'static/templates/core/customslide-form.html',
-                        controller: 'CustomslideUpdateCtrl',
-                        className: 'ngdialog-theme-default wide-form',
-                        resolve: {
-                            customslide: function() {return Customslide.find($stateParams.id) }
-                        },
-                        preCloseCallback: function() {
-                            $state.go('core.customslide.detail', {customslide: $stateParams.id});
-                            return true;
-                        }
-                    });
-            }]
-        })
-        // tag
-        .state('core.tag', {
-            url: '/tag',
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('core.tag.list', {
-            resolve: {
-                tags: function(Tag) {
-                    return Tag.findAll();
-                }
-            }
-        })
-        .state('core.tag.create', {})
-        .state('core.tag.detail', {
-            resolve: {
-                tag: function(Tag, $stateParams) {
-                    return Tag.find($stateParams.id);
-                }
-            }
-        })
-        .state('core.tag.detail.update', {
-            views: {
-                '@core.tag': {}
-            }
-        });
-
-    $locationProvider.html5Mode(true);
-})
-
-// Helper to add ui.router states at runtime.
-// Needed for the django url_patterns.
-.provider('runtimeStates', function($stateProvider) {
-  this.$get = function($q, $timeout, $state) {
-    return {
-      addState: function(name, state) {
-        $stateProvider.state(name, state);
-      }
-    };
-  };
-})
-
-// Load the django url patterns
-.run(function(runtimeStates, $http) {
-    $http.get('/core/url_patterns/').then(function(data) {
-        for (var pattern in data.data) {
-            runtimeStates.addState(pattern, {
-                'url': data.data[pattern],
+.config([
+    '$stateProvider',
+    '$locationProvider',
+    function($stateProvider, $locationProvider) {
+        // Core urls
+        $stateProvider
+            .state('dashboard', {
+                url: '/',
+                templateUrl: 'static/templates/dashboard.html'
+            })
+            .state('projector', {
+                url: '/projector',
                 data: {extern: true},
                 onEnter: function($window) {
                     $window.location.href = this.url;
                 }
+            })
+            .state('core', {
+                url: '/core',
+                abstract: true,
+                template: "<ui-view/>",
+            })
+            // legal notice and version
+            .state('legalnotice', {
+                url: '/legalnotice',
+                controller: 'LegalNoticeCtrl',
+            })
+            //config
+            .state('config', {
+                url: '/config',
+                controller: 'ConfigCtrl',
+                resolve: {
+                    configOption: function($http) {
+                        return $http({ 'method': 'OPTIONS', 'url': '/rest/core/config/' });
+                    }
+                }
+            })
+            // customslide
+            .state('core.customslide', {
+                url: '/customslide',
+                abstract: true,
+                template: "<ui-view/>",
+            })
+            .state('core.customslide.detail', {
+                resolve: {
+                    customslide: function(Customslide, $stateParams) {
+                        return Customslide.find($stateParams.id);
+                    }
+                }
+            })
+            // redirects to customslide detail and opens customslide edit form dialog, uses edit url,
+            // used by ui-sref links from agenda only
+            // (from customslide controller use CustomSlideForm factory instead to open dialog in front
+            // of current view without redirect)
+            .state('core.customslide.detail.update', {
+                onEnter: ['$stateParams', '$state', 'ngDialog', 'Customslide',
+                    function($stateParams, $state, ngDialog, Customslide) {
+                        ngDialog.open({
+                            template: 'static/templates/core/customslide-form.html',
+                            controller: 'CustomslideUpdateCtrl',
+                            className: 'ngdialog-theme-default wide-form',
+                            resolve: {
+                                customslide: function() {return Customslide.find($stateParams.id) }
+                            },
+                            preCloseCallback: function() {
+                                $state.go('core.customslide.detail', {customslide: $stateParams.id});
+                                return true;
+                            }
+                        });
+                }]
+            })
+            // tag
+            .state('core.tag', {
+                url: '/tag',
+                abstract: true,
+                template: "<ui-view/>",
+            })
+            .state('core.tag.list', {
+                resolve: {
+                    tags: function(Tag) {
+                        return Tag.findAll();
+                    }
+                }
+            })
+            .state('core.tag.create', {})
+            .state('core.tag.detail', {
+                resolve: {
+                    tag: function(Tag, $stateParams) {
+                        return Tag.find($stateParams.id);
+                    }
+                }
+            })
+            .state('core.tag.detail.update', {
+                views: {
+                    '@core.tag': {}
+                }
             });
-        }
-    });
-})
+
+        $locationProvider.html5Mode(true);
+    }
+])
+
+// Helper to add ui.router states at runtime.
+// Needed for the django url_patterns.
+.provider('runtimeStates', [
+    '$stateProvider',
+    function($stateProvider) {
+        this.$get = function($q, $timeout, $state) {
+            return {
+                addState: function(name, state) {
+                    $stateProvider.state(name, state);
+                }
+            };
+        };
+    }
+])
+
+// Load the django url patterns
+.run([
+    'runtimeStates',
+    '$http',
+    function(runtimeStates, $http) {
+        $http.get('/core/url_patterns/').then(function(data) {
+            for (var pattern in data.data) {
+                runtimeStates.addState(pattern, {
+                    'url': data.data[pattern],
+                    data: {extern: true},
+                    onEnter: function($window) {
+                        $window.location.href = this.url;
+                    }
+                });
+            }
+        });
+    }
+])
 
 // angular formly config options
 .run([
@@ -321,42 +346,46 @@ angular.module('OpenSlidesApp.core.site', [
 
 // html-tag os-form-field to generate generic from fields
 // TODO: make it possible to use other fields then config fields
-.directive('osFormField', function($parse, Config) {
-    function getHtmlType(type) {
-        return {
-            string: 'text',
-            text: 'textarea',
-            integer: 'number',
-            boolean: 'checkbox',
-            choice: 'choice',
-        }[type];
-    }
-
-    return {
-        restrict: 'E',
-        scope: true,
-        templateUrl: '/static/templates/config-form-field.html',
-        link: function ($scope, iElement, iAttrs, controller, transcludeFn) {
-            var field = $parse(iAttrs.field)($scope);
-            var config = Config.get(field.key);
-            $scope.type = getHtmlType(field.input_type);
-            if ($scope.type == 'choice') {
-                $scope.choices = field.choices;
-            }
-            $scope.label = field.label;
-            $scope.key = 'field-' + field.key;
-            $scope.value = config.value;
-            $scope.help_text = field.help_text;
-            $scope.default_value = field.default_value;
-            $scope.reset = function () {
-                $scope.value = $scope.default_value;
-                $scope.save(field.key, $scope.value);
-            }
+.directive('osFormField', [
+    '$parse',
+    'Config',
+    function($parse, Config) {
+        function getHtmlType(type) {
+            return {
+                string: 'text',
+                text: 'textarea',
+                integer: 'number',
+                boolean: 'checkbox',
+                choice: 'choice',
+            }[type];
         }
-    };
-})
 
-.controller("MainMenuCtrl", [
+        return {
+            restrict: 'E',
+            scope: true,
+            templateUrl: '/static/templates/config-form-field.html',
+            link: function ($scope, iElement, iAttrs, controller, transcludeFn) {
+                var field = $parse(iAttrs.field)($scope);
+                var config = Config.get(field.key);
+                $scope.type = getHtmlType(field.input_type);
+                if ($scope.type == 'choice') {
+                    $scope.choices = field.choices;
+                }
+                $scope.label = field.label;
+                $scope.key = 'field-' + field.key;
+                $scope.value = config.value;
+                $scope.help_text = field.help_text;
+                $scope.default_value = field.default_value;
+                $scope.reset = function () {
+                    $scope.value = $scope.default_value;
+                    $scope.save(field.key, $scope.value);
+                }
+            }
+        };
+    }
+])
+
+.controller('MainMenuCtrl', [
     '$scope',
     'mainMenu',
     function ($scope, mainMenu) {
@@ -364,15 +393,21 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-.controller("LanguageCtrl", function ($scope, gettextCatalog, Languages, filterFilter) {
-    $scope.languages = Languages.getLanguages();
-    $scope.selectedLanguage = filterFilter($scope.languages, {selected: true});
-    // controller to switch app language
-    $scope.switchLanguage = function (lang) {
-        $scope.languages = Languages.setCurrentLanguage(lang);
+.controller('LanguageCtrl', [
+    '$scope',
+    'gettextCatalog',
+    'Languages',
+    'filterFilter',
+    function ($scope, gettextCatalog, Languages, filterFilter) {
+        $scope.languages = Languages.getLanguages();
         $scope.selectedLanguage = filterFilter($scope.languages, {selected: true});
-    };
-})
+        // controller to switch app language
+        $scope.switchLanguage = function (lang) {
+            $scope.languages = Languages.setCurrentLanguage(lang);
+            $scope.selectedLanguage = filterFilter($scope.languages, {selected: true});
+        };
+    }
+])
 
 // Projector Sidebar Controller
 .controller('ProjectorSidebarCtrl', [
@@ -398,16 +433,21 @@ angular.module('OpenSlidesApp.core.site', [
 ])
 
 // Config Controller
-.controller('ConfigCtrl', function($scope, Config, configOption) {
-    Config.bindAll({}, $scope, 'configs');
-    $scope.configGroups = configOption.data.config_groups;
+.controller('ConfigCtrl', [
+    '$scope',
+    'Config',
+    'configOption',
+    function($scope, Config, configOption) {
+        Config.bindAll({}, $scope, 'configs');
+        $scope.configGroups = configOption.data.config_groups;
 
-    // save changed config value
-    $scope.save = function(key, value) {
-        Config.get(key).value = value;
-        Config.save(key);
-    };
-})
+        // save changed config value
+        $scope.save = function(key, value) {
+            Config.get(key).value = value;
+            Config.save(key);
+        };
+    }
+])
 
 
 // Provide generic customslide form fields for create and update view
@@ -744,58 +784,78 @@ angular.module('OpenSlidesApp.core.site', [
 ])
 
 // Tag Controller
-.controller('TagListCtrl', function($scope, Tag) {
-    Tag.bindAll({}, $scope, 'tags');
+.controller('TagListCtrl', [
+    '$scope',
+    'Tag',
+    function($scope, Tag) {
+        Tag.bindAll({}, $scope, 'tags');
 
-    // setup table sorting
-    $scope.sortColumn = 'name';
-    $scope.reverse = false;
-    // function to sort by clicked column
-    $scope.toggleSort = function ( column ) {
-        if ( $scope.sortColumn === column ) {
-            $scope.reverse = !$scope.reverse;
-        }
-        $scope.sortColumn = column;
-    };
-
-    // save changed tag
-    $scope.save = function (tag) {
-        Tag.save(tag);
-    };
-    $scope.delete = function (tag) {
-        Tag.destroy(tag.id).then(
-            function(success) {
-                //TODO: success message
+        // setup table sorting
+        $scope.sortColumn = 'name';
+        $scope.reverse = false;
+        // function to sort by clicked column
+        $scope.toggleSort = function ( column ) {
+            if ( $scope.sortColumn === column ) {
+                $scope.reverse = !$scope.reverse;
             }
-        );
-    };
-})
+            $scope.sortColumn = column;
+        };
 
-.controller('TagDetailCtrl', function($scope, Tag, tag) {
-    Tag.bindOne(tag.id, $scope, 'tag');
-})
+        // save changed tag
+        $scope.save = function (tag) {
+            Tag.save(tag);
+        };
+        $scope.delete = function (tag) {
+            Tag.destroy(tag.id).then(
+                function(success) {
+                    //TODO: success message
+                }
+            );
+        };
+    }
+])
 
-.controller('TagCreateCtrl', function($scope, $state, Tag) {
-    $scope.tag = {};
-    $scope.save = function (tag) {
-        Tag.create(tag).then(
-            function(success) {
-                $state.go('core.tag.list');
-            }
-        );
-    };
-})
+.controller('TagDetailCtrl', [
+    '$scope',
+    'Tag',
+    'tag',
+    function($scope, Tag, tag) {
+        Tag.bindOne(tag.id, $scope, 'tag');
+    }
+])
 
-.controller('TagUpdateCtrl', function($scope, $state, Tag, tag) {
-    $scope.tag = tag;
-    $scope.save = function (tag) {
-        Tag.save(tag).then(
-            function(success) {
-                $state.go('core.tag.list');
-            }
-        );
-    };
-})
+.controller('TagCreateCtrl', [
+    '$scope',
+    '$state',
+    'Tag',
+    function($scope, $state, Tag) {
+        $scope.tag = {};
+        $scope.save = function (tag) {
+            Tag.create(tag).then(
+                function(success) {
+                    $state.go('core.tag.list');
+                }
+            );
+        };
+    }
+])
+
+.controller('TagUpdateCtrl', [
+    '$scope',
+    '$state',
+    'Tag',
+    'tag',
+    function($scope, $state, Tag, tag) {
+        $scope.tag = tag;
+        $scope.save = function (tag) {
+            Tag.save(tag).then(
+                function(success) {
+                    $state.go('core.tag.list');
+                }
+            );
+        };
+    }
+])
 
 // counter of new (unread) chat messages
 .value('NewChatMessages', [])
@@ -846,14 +906,17 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-.directive('osFocusMe', function ($timeout) {
-    return {
-        link: function (scope, element, attrs, model) {
-            $timeout(function () {
-                element[0].focus();
-            });
-        }
-    };
-});
+.directive('osFocusMe', [
+    '$timeout',
+    function ($timeout) {
+        return {
+            link: function (scope, element, attrs, model) {
+                $timeout(function () {
+                    element[0].focus();
+                });
+            }
+        };
+    }
+]);
 
 }());

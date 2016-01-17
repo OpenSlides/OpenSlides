@@ -18,63 +18,66 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     }
 ])
 
-.config(function($stateProvider) {
-    $stateProvider
-        .state('assignments', {
-            url: '/assignments',
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('assignments.assignment', {
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('assignments.assignment.list', {
-            resolve: {
-                assignments: function(Assignment) {
-                    return Assignment.findAll();
-                },
-                phases: function(Assignment) {
-                    return Assignment.getPhases();
+.config([
+    '$stateProvider',
+    function($stateProvider) {
+        $stateProvider
+            .state('assignments', {
+                url: '/assignments',
+                abstract: true,
+                template: "<ui-view/>",
+            })
+            .state('assignments.assignment', {
+                abstract: true,
+                template: "<ui-view/>",
+            })
+            .state('assignments.assignment.list', {
+                resolve: {
+                    assignments: function(Assignment) {
+                        return Assignment.findAll();
+                    },
+                    phases: function(Assignment) {
+                        return Assignment.getPhases();
+                    }
                 }
-            }
-        })
-        .state('assignments.assignment.detail', {
-            controller: 'AssignmentDetailCtrl',
-            resolve: {
-                assignment: function(Assignment, $stateParams) {
-                    return Assignment.find($stateParams.id);
-                },
-                users: function(User) {
-                    return User.findAll();
+            })
+            .state('assignments.assignment.detail', {
+                controller: 'AssignmentDetailCtrl',
+                resolve: {
+                    assignment: function(Assignment, $stateParams) {
+                        return Assignment.find($stateParams.id);
+                    },
+                    users: function(User) {
+                        return User.findAll();
+                    }
                 }
-            }
-        })
-        // redirects to assignment detail and opens assignment edit form dialog, uses edit url,
-        // used by ui-sref links from agenda only
-        // (from assignment controller use AssignmentForm factory instead to open dialog in front
-        // of current view without redirect)
-        .state('assignments.assignment.detail.update', {
-            onEnter: ['$stateParams', '$state', 'ngDialog', 'Assignment',
-                function($stateParams, $state, ngDialog, Assignment) {
-                    ngDialog.open({
-                        template: 'static/templates/assignments/assignment-form.html',
-                        controller: 'AssignmentUpdateCtrl',
-                        className: 'ngdialog-theme-default wide-form',
-                        closeByEscape: false,
-                        closeByDocument: false,
-                        resolve: {
-                            assignment: function() {return Assignment.find($stateParams.id)}
-                        },
-                        preCloseCallback: function() {
-                            $state.go('assignments.assignment.detail', {assignment: $stateParams.id});
-                            return true;
-                        }
-                    });
-                }
-            ]
-        });
-})
+            })
+            // redirects to assignment detail and opens assignment edit form dialog, uses edit url,
+            // used by ui-sref links from agenda only
+            // (from assignment controller use AssignmentForm factory instead to open dialog in front
+            // of current view without redirect)
+            .state('assignments.assignment.detail.update', {
+                onEnter: ['$stateParams', '$state', 'ngDialog', 'Assignment',
+                    function($stateParams, $state, ngDialog, Assignment) {
+                        ngDialog.open({
+                            template: 'static/templates/assignments/assignment-form.html',
+                            controller: 'AssignmentUpdateCtrl',
+                            className: 'ngdialog-theme-default wide-form',
+                            closeByEscape: false,
+                            closeByDocument: false,
+                            resolve: {
+                                assignment: function() {return Assignment.find($stateParams.id)}
+                            },
+                            preCloseCallback: function() {
+                                $state.go('assignments.assignment.detail', {assignment: $stateParams.id});
+                                return true;
+                            }
+                        });
+                    }
+                ]
+            });
+    }
+])
 
 // Service for generic assignment form (create and update)
 .factory('AssignmentForm', [
