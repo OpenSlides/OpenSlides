@@ -216,6 +216,15 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
                 },
                 {
+                    key: 'disable_versioning',
+                    type: 'checkbox',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Trivial change'),
+                        description: gettextCatalog.getString("Don't create a new version.")
+                    },
+                    hide: true
+                },
+                {
                     key: 'more',
                     type: 'checkbox',
                     templateOptions: {
@@ -574,11 +583,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         $scope.model.workflow_id = Config.get('motions_workflow').value;
         // get all form fields
         $scope.formFields = MotionForm.getFormFields();
-        for (var i = 0; i < $scope.formFields.length; i++) {
-            if ($scope.formFields[i].key == "identifier") {
-               $scope.formFields[i].hide = true;
-            }
-        }
         // save motion
         $scope.save = function (motion) {
             Motion.create(motion).then(
@@ -634,6 +638,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             if ($scope.formFields[i].key == "reason") {
                 // get reason of latest version
                 $scope.formFields[i].defaultValue = motion.getReason(-1);
+            }
+            if ($scope.formFields[i].key == "disable_versioning" &&
+                Config.get('motions_allow_disable_versioning')) {
+                // check current state if versioning is active
+                if (motion.state.versioning) {
+                    $scope.formFields[i].hide = false;
+                }
             }
             if ($scope.formFields[i].key == "workflow_id") {
                // get saved workflow id from state

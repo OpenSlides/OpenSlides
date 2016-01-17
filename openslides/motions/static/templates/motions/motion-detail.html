@@ -31,7 +31,7 @@
     <h1>{{ motion.getTitle() }}</h1>
     <h2>
         <translate>Motion</translate> {{ motion.identifier }}
-        <span ng-if="motion.versions.length > 1" >| Version {{ motion.active_version }}</span>
+        <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion().version_number }}</span>
         <span ng-if="motion.agenda_item.item_number">
           &ndash;
           <translate>Agenda</translate>: {{ motion.agenda_item.item_number }}
