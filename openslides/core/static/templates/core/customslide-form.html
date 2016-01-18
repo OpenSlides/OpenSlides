@@ -1,9 +1,9 @@
 <h1 ng-if="model.id" translate>Edit agenda item</h1>
 <h1 ng-if="!model.id" translate>New agenda item</h1>
 
-<alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+<uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
   {{ alert.msg }}
-</alert>
+</uib-alert>
 
 <form name="customslideForm" ng-submit="save(model)">
   <formly-form model="model" fields="formFields">

@@ -135,9 +135,9 @@
         <!-- quickEdit columns -->
         <td ng-if="assignment.quickEdit" colspan="3">
           <h4>{{ assignment.title }} <span class="text-muted">&ndash; Quick Edit</span></h4>
-            <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-              {{alert.msg}}
-            </alert>
+            <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+              {{ alert.msg }}
+            </uib-alert>
             <div class="row">
               <div class="col-xs-6">
                 <label for="inputTitle" translate>Title</label>

@@ -162,9 +162,9 @@
         <td ng-show="item.quickEdit" os-perms="agenda.can_manage" colspan="3">
           <form ng-submit="save(item)">
           <h4>{{ item.getTitle() }} <span class="text-muted">&ndash; QuickEdit</span></h4>
-            <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-              {{alert.msg}}
-            </alert>
+            <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+              {{ alert.msg }}
+            </uib-alert>
             <div class="row">
               <div class="col-xs-6">
                 <label for="inputTitle" translate>Title</label>

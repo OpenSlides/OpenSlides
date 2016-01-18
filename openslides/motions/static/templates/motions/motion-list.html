@@ -161,9 +161,9 @@
         <!-- quickEdit columns -->
         <td ng-if="motion.quickEdit && motion.isAllowed('quickedit')" colspan="5">
           <h4>{{ motion.getTitle() }} <span class="text-muted">&ndash; <translate>QuickEdit</translate></span></h4>
-            <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-              {{alert.msg}}
-            </alert>
+            <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+              {{ alert.msg }}
+            </uib-alert>
             <div class="row">
               <div class="col-xs-6">
                 <label for="inputIdentifier" translate>Identifier</label>
