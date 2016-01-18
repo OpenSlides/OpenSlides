@@ -16,13 +16,16 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
 .controller('SlideAssignmentCtrl', [
     '$scope',
     'Assignment',
-    function($scope, Assignment) {
+    'User',
+    function($scope, Assignment, User) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         var id = $scope.element.id;
         Assignment.find(id);
         Assignment.bindOne(id, $scope, 'assignment');
+        User.findAll();
+        User.bindAll({}, $scope, 'users');
     }
 ]);
 
