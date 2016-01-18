@@ -169,6 +169,7 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
             name: name,
             useClass: jsDataModel,
             verboseName: gettext('Motion'),
+            agendaSupplement: gettext('Motion'),
             methods: {
                 getResourceName: function () {
                     return name;

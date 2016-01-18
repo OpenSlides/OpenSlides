@@ -131,8 +131,8 @@
         <td ng-show="isDeleteMode" os-perms="agenda.can_manage" class="deleteColumn">
           <input type="checkbox" ng-model="item.selected">
         <!-- agenda data columns -->
-        <td ng-if="!item.quickEdit" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false">
-          <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&ndash;</span>
+        <td ng-if="!item.quickEdit" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false"
+            style="padding-left: calc(8px + {{ item.parentCount }}*15px)">
           <strong>
             <a href="" ng-click="open(item)">
               {{ item.getTitle() }}
