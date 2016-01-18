@@ -376,7 +376,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     templateOptions: {
                         label: gettextCatalog.getString('Is present'),
                         description: gettextCatalog.getString('Designates whether this user is in the room or not.')
-                    }
+                    },
+                    defaultValue: true
                 },
                 {
                     key: 'is_active',
@@ -386,7 +387,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                         description: gettextCatalog.getString(
                             'Designates whether this user should be treated as ' +
                             'active. Unselect this instead of deleting the account.')
-                    }
+                    },
+                    defaultValue: true
                 }];
             }
         }
@@ -495,6 +497,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'Group',
     function($scope, $state, User, UserForm, Group) {
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
+        $scope.alert = {};
         // get all form fields
         $scope.formFields = UserForm.getFormFields();
 
@@ -506,6 +509,13 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             User.create(user).then(
                 function(success) {
                     $scope.closeThisDialog();
+                },
+                function (error) {
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };
