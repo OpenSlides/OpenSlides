@@ -404,7 +404,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'Group',
     function($scope, $state, ngDialog, UserForm, User, Group) {
         User.bindAll({}, $scope, 'users');
-        Group.bindAll({}, $scope, 'groups');
+        Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
         $scope.alert = {};
 
         // setup table sorting
@@ -480,7 +480,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'Group',
     function($scope, ngDialog, UserForm, User, user, Group) {
         User.bindOne(user.id, $scope, 'user');
-        Group.bindAll({}, $scope, 'groups');
+        Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
 
         // open edit dialog
         $scope.openDialog = function (user) {
