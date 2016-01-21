@@ -31,7 +31,8 @@
     <div class="col-sm-6">
       <form class="form-inline">
         <!-- delete mode -->
-        <button os-perms="agenda.can_manage" class="btn btn-default"
+        <button os-perms="agenda.can_manage" class="btn"
+            ng-class="$parent.isDeleteMode ? 'btn-primary' : 'btn-default'"
             ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
           <i class="fa fa-check-square-o"></i>
           <translate>Select ...</translate>
@@ -65,7 +66,8 @@
                placeholder="{{ 'Search' | translate}}">
           </div>
         </div>
-        <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen">
+        <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen"
+            ng-class="isFilterOpen ? 'btn-primary' : 'btn-default'">
           <i class="fa fa-filter"></i>
           <translate>Filter ...</translate>
         </button>
@@ -95,6 +97,7 @@
   </div>
 
   <div class="spacer-top-lg italic">
+    <span os-perms="agenda.can_see_hidden_items">{{ itemsFiltered.length }} /</span>
     {{ items.length }} {{ "items" | translate }}<span ng-if="(items|filter:{selected:true}).length > 0">,
     {{(items|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
   </div>
@@ -115,8 +118,8 @@
         <th class="minimum">
           <translate>Done</translate>
     <tbody>
-      <tr ng-repeat="item in items | filter: filter.search |  filter: {is_hidden: filter.showHiddenItems}
-          |  filter: {closed: filter.showClosedItems}"
+      <tr ng-repeat="item in itemsFiltered = (items | filter: filter.search |
+          filter: {is_hidden: filter.showHiddenItems} |  filter: {closed: filter.showClosedItems})"
           class="animate-item"
           ng-class="{ 'activeline': item.isProjected(), 'selected': item.selected, 'hiddenrow': item.is_hidden}">
         <!-- projector column -->

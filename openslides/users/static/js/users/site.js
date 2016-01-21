@@ -35,6 +35,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             resolve: {
                 users: function(User) {
                     return User.findAll();
+                },
+                groups: function(Group) {
+                    return Group.findAll();
                 }
             }
         })

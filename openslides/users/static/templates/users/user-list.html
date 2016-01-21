@@ -40,7 +40,8 @@
   <div class="row">
     <div class="col-sm-6">
       <!-- delete mode -->
-      <button os-perms="users.can_manage" class="btn btn-default"
+      <button os-perms="users.can_manage" class="btn"
+          ng-class="$parent.isDeleteMode ? 'btn-primary' : 'btn-default'"
           ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
         <i class="fa fa-check-square-o"></i>
         <translate>Select ...</translate>
@@ -55,7 +56,8 @@
                placeholder="{{ 'Search' | translate}}">
           </div>
         </div>
-        <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen">
+        <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen"
+            ng-class="isFilterOpen ? 'btn-primary' : 'btn-default'">
           <i class="fa fa-filter"></i>
           <translate>Filter ...</translate>
         </button>
@@ -64,7 +66,12 @@
   </div>
   <div uib-collapse="!isFilterOpen" class="row spacer">
     <div class="col-sm-6 text-right"></div>
-    <div class="col-sm-6 text-right">
+    <div class="col-sm-6 text-right form-inline">
+      <!-- group filter -->
+      <select ng-model="groupFilter" class="form-control" id="groupFilter">
+        <option value="" translate>--- Select group ---</option>
+        <option ng-repeat="group in groups" value="{{ group.id }}">{{ group.name }}</option>
+      </select>
       <!-- isPresent filter -->
       <input type="checkbox" ng-model="filterPresent" ng-false-value="''">
       <translate>Is present</translate>
@@ -83,6 +90,7 @@
   </div>
 
   <div class="spacer-top-lg italic">
+    {{ usersFiltered.length }} /
     {{ users.length }} {{ "participants" | translate }}<span ng-if="(users|filter:{selected:true}).length > 0">,
     {{(users|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
   </div>
@@ -90,9 +98,9 @@
     <thead>
       <tr>
         <!-- projector column -->
-        <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="firstColumn">
+        <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="minimum">
         <!-- delete selection column -->
-        <th ng-show="isDeleteMode" os-perms="users.can_manage" class="firstColumn deleteColumn">
+        <th ng-show="isDeleteMode" os-perms="users.can_manage" class="minimum deleteColumn">
           <input type="checkbox" ng-model="$parent.selectedAll" ng-change="checkAll()">
         <th ng-click="toggleSort('first_name')" class="sortable">
           <translate>Name</translate>
@@ -116,8 +124,9 @@
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
     <tbody>
-      <tr ng-repeat="user in users | filter: filter.search | filter: {is_present: filterPresent} |
-          orderBy: sortColumn:reverse"
+      <tr ng-repeat="user in usersFiltered = (users | filter: filter.search | filter: {groups: groupFilter} |
+          filter: {is_present: filterPresent} | orderBy: sortColumn:reverse)"
+          class="animate-item"
           ng-class="{ 'activeline': user.isProjected(), 'selected': user.selected  }">
         <!-- projector column -->
         <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">

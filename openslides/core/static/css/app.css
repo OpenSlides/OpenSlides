@@ -648,23 +648,21 @@ img {
 
 /* ngAnimate classes */
 .animate-item.ng-enter {
-    -webkit-animation: fade-in 1s linear;
-    animation: fade-in 1.5s linear;
+    -webkit-animation: fade-in 0.5s linear;
+    animation: fade-in 0.5s linear;
 }
 
 .animate-item.ng-leave {
-    -webkit-animation: fade-out 1s linear;
-    animation: fade-out 1.5s linear;
+    -webkit-animation: fade-out 0.25s linear;
+    animation: fade-out 0.25s linear;
 }
 
 @keyframes fade-out {
     0% { opacity: 1; background: none; }
-    25% { opacity: 1; background: #f8efc0; }
     100% { opacity: 0; background: none; }
 }
 @keyframes fade-in {
     0% { opacity: 0; background: none; }
-    25% { opacity: 1; background: #dff0d8; }
     100% { opacity: 1; background: none; }
 }
 
