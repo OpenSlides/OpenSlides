@@ -255,8 +255,16 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 }
             },
             // angular-formly fields for user form
-            getFormFields: function () {
+            getFormFields: function (hideOnCreateForm) {
                 return [
+                {
+                    key: 'username',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Username')
+                    },
+                    hide: hideOnCreateForm
+                },
                 {
                     key: 'title',
                     type: 'input',
@@ -462,7 +470,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
         $scope.alert = {};
         // get all form fields
-        $scope.formFields = UserForm.getFormFields();
+        $scope.formFields = UserForm.getFormFields(true);
 
         // save user
         $scope.save = function (user) {
