@@ -127,7 +127,8 @@
   </button>
 
   <uib-tabset class="spacer">
-    <uib-tab ng-repeat="poll in assignment.polls | orderBy:'-id'" heading="Ballot {{ assignment.polls.length - $index }}">
+    <uib-tab ng-repeat="poll in assignment.polls | orderBy:'-id'"
+        heading="{{ 'Ballot' | translate }} {{ assignment.polls.length - $index }}">
       <div os-perms="assignments.can_manage" class="spacer">
         <!-- angular requires to open the link in new tab with "target='_blank'".
         Otherwise the pdf url can't be open in same window; angular redirects to "/". -->
@@ -143,17 +144,17 @@
           2. <translate>Enter votes</translate>
         </button>
         <i class="fa fa-arrow-right"></i>
-        <button os-perms-lite="assignments.can_manage" ng-if="!poll.published" ng-click="publishBallot(poll, true)"
+        <button ng-if="!poll.published" ng-click="publishBallot(poll, true)"
             class="btn btn-default btn-sm">
           <i class="fa fa-toggle-off"></i>
           3. <translate>Publish ballot</translate>
         </button>
-        <button os-perms-lite="assignments.can_manage" ng-if="poll.published" ng-click="publishBallot(poll, false)"
+        <button ng-if="poll.published" ng-click="publishBallot(poll, false)"
             class="btn btn-default btn-sm">
           <i class="fa fa-toggle-on"></i>
           <translate>Published</translate>
         </button>
-        <a ng-click="deleteBallot(poll)" class="btn btn-default btn-sm">
+        <a ng-click="deleteBallot(poll)" class="btn btn-danger btn-sm">
           <i class="fa fa-times"></i>
           <translate>Delete</translate>
         </a>
