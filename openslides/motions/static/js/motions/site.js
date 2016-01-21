@@ -399,6 +399,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             }
             $scope.sortColumn = column;
         };
+        // define custom search filter string
         $scope.getFilterString = function (motion) {
             if (motion.category) {
                 var category = motion.category.name;
@@ -406,10 +407,15 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 var category = ''
             }
             return [
+                motion.identifier,
                 motion.getTitle(),
                 motion.getText(),
+                motion.getReason(),
                 _.map(motion.submitters, function (submitter) {return submitter.get_short_name()}).join(" "),
-                category].join(" ");
+                _.map(motion.supporters, function (supporter) {return supporter.get_short_name()}).join(" "),
+                _.map(motion.tags, function (tag) {return tag.name}).join(" "),
+                category
+            ].join(" ");
         }
 
         // collect all states of all workflows

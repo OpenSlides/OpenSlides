@@ -38,7 +38,10 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     },
                     phases: function(Assignment) {
                         return Assignment.getPhases();
-                    }
+                    },
+                    users: function(User) {
+                        return User.findAll();
+                    },
                 }
             })
             .state('assignments.assignment.detail', {
@@ -159,12 +162,22 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         $scope.filterPresent = '';
         $scope.reverse = false;
         // function to sort by clicked column
-        $scope.toggleSort = function ( column ) {
+        $scope.toggleSort = function (column) {
             if ( $scope.sortColumn === column ) {
                 $scope.reverse = !$scope.reverse;
             }
             $scope.sortColumn = column;
         };
+        // define custom search filter string
+        $scope.getFilterString = function (assignment) {
+            return [
+                assignment.title,
+                assignment.description,
+                $scope.phases[assignment.phase].display_name,
+                _.map(assignment.assignment_related_users,
+                        function (candidate) {return candidate.user.get_short_name()}).join(" "),
+            ].join(" ");
+        }
 
         // open new/edit dialog
         $scope.openDialog = function (assignment) {

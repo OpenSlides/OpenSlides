@@ -79,6 +79,15 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
             }
             $scope.sortColumn = column;
         };
+        // define custom search filter string
+        $scope.getFilterString = function (mediafile) {
+            return [
+                mediafile.title,
+                mediafile.mediafile.type,
+                mediafile.mediafile.name,
+                mediafile.uploader.get_short_name()
+            ].join(" ");
+        }
 
         // delete
         $scope.delete = function (mediafile) {

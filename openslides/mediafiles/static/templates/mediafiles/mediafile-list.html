@@ -51,7 +51,7 @@
         </th>
       </tr>
     <tbody>
-      <tr ng-repeat="mediafile in mediafiles | filter: filter.search |
+      <tr ng-repeat="mediafile in mediafiles | osFilter: filter.search : getFilterString |
           orderBy: sortColumn:reverse">
         <td><a ng-href="{{ mediafile.mediafileUrl }}" target="_blank">{{ mediafile.title_or_filename }}</a>
         <td class="optional">{{ mediafile.mediafile.type }}
