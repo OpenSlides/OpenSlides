@@ -2,7 +2,7 @@
   <div class="modal-header">
     <img src="/static/img/openslides-logo.png" alt="OpenSlides" class="login-logo center-block">
   </div>
-  <div class="modal-body">
+  <div class="modal-body loginForm">
     <uib-alert ng-repeat="alert in alerts" type="{{ alert.type }}" close="closeAlert($index)">
       <span ng-bind-html="alert.msg"><span>
     </uib-alert>

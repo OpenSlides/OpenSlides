@@ -149,6 +149,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         // Put the operator into the root scope
         $http.get('/users/whoami/').success(function(data) {
             operator.setUser(data.user_id);
+            $rootScope.guest_enabled = data.guest_enabled;
             if (data.user_id === null && !data.guest_enabled) {
                 // redirect to login dialog if use is not logged in
                 $state.go('login', {guest_enabled: data.guest_enabled});
@@ -854,13 +855,13 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 ])
 
 .controller('LoginFormCtrl', [
+    '$rootScope',
     '$scope',
     '$http',
     '$stateParams',
     'operator',
     'gettextCatalog',
-    'Config',
-    function ($scope, $http, $stateParams, operator, gettextCatalog, Config) {
+    function ($rootScope, $scope, $http, $stateParams, operator, gettextCatalog) {
         $scope.alerts = [];
 
         // get login info-text from server
@@ -877,7 +878,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             $scope.alerts.splice(index, 1);
         };
         // check if guest login is allowed
-        $scope.guestAllowed = $stateParams.guest_enabled;
+        $scope.guestAllowed = $rootScope.guest_enabled;
         // login
         $scope.login = function () {
             $scope.alerts = [];

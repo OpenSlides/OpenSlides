@@ -589,6 +589,10 @@ img {
     width: 250px;
 }
 
+.loginForm .input-group-addon i {
+    width: 15px;
+}
+
 .modal-header {
     padding: 5px;
 }
