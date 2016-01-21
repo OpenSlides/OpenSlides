@@ -458,6 +458,10 @@ img {
     padding-right: 10px;
 }
 
+.col2 .countdown_timer.negative {
+    color: #CC0000;
+}
+
 .col2 .notNull {
     color: red;
     font-weight: bold;
