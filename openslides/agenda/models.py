@@ -181,7 +181,7 @@ class Item(RESTModelMixin, models.Model):
 
     type = models.IntegerField(
         choices=ITEM_TYPE,
-        default=AGENDA_ITEM)
+        default=HIDDEN_ITEM)
     """
     Type of the agenda item.
 
