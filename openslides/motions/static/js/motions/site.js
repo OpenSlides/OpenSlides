@@ -18,121 +18,124 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     }
 ])
 
-.config(function($stateProvider) {
-    $stateProvider
-        .state('motions', {
-            url: '/motions',
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('motions.motion', {
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('motions.motion.list', {
-            resolve: {
-                motions: function(Motion) {
-                    return Motion.findAll();
-                },
-                categories: function(Category) {
-                    return Category.findAll();
-                },
-                tags: function(Tag) {
-                    return Tag.findAll();
-                },
-                users: function(User) {
-                    return User.findAll();
-                },
-                workflows: function(Workflow) {
-                    return Workflow.findAll();
+.config([
+    '$stateProvider',
+    function($stateProvider) {
+        $stateProvider
+            .state('motions', {
+                url: '/motions',
+                abstract: true,
+                template: "<ui-view/>",
+            })
+            .state('motions.motion', {
+                abstract: true,
+                template: "<ui-view/>",
+            })
+            .state('motions.motion.list', {
+                resolve: {
+                    motions: function(Motion) {
+                        return Motion.findAll();
+                    },
+                    categories: function(Category) {
+                        return Category.findAll();
+                    },
+                    tags: function(Tag) {
+                        return Tag.findAll();
+                    },
+                    users: function(User) {
+                        return User.findAll();
+                    },
+                    workflows: function(Workflow) {
+                        return Workflow.findAll();
+                    }
                 }
-            }
-        })
-        .state('motions.motion.detail', {
-            resolve: {
-                motion: function(Motion, $stateParams) {
-                    return Motion.find($stateParams.id);
-                },
-                categories: function(Category) {
-                    return Category.findAll();
-                },
-                users: function(User) {
-                    return User.findAll();
-                },
-                mediafiles: function(Mediafile) {
-                    return Mediafile.findAll();
-                },
-                tags: function(Tag) {
-                    return Tag.findAll();
+            })
+            .state('motions.motion.detail', {
+                resolve: {
+                    motion: function(Motion, $stateParams) {
+                        return Motion.find($stateParams.id);
+                    },
+                    categories: function(Category) {
+                        return Category.findAll();
+                    },
+                    users: function(User) {
+                        return User.findAll();
+                    },
+                    mediafiles: function(Mediafile) {
+                        return Mediafile.findAll();
+                    },
+                    tags: function(Tag) {
+                        return Tag.findAll();
+                    }
                 }
-            }
-        })
-        // redirects to motion detail and opens motion edit form dialog, uses edit url,
-        // used by ui-sref links from agenda only
-        // (from motion controller use MotionForm factory instead to open dialog in front of
-        // current view without redirect)
-        .state('motions.motion.detail.update', {
-            onEnter: ['$stateParams', '$state', 'ngDialog', 'Motion',
-                function($stateParams, $state, ngDialog, Motion) {
-                    ngDialog.open({
-                        template: 'static/templates/motions/motion-form.html',
-                        controller: 'MotionUpdateCtrl',
-                        className: 'ngdialog-theme-default wide-form',
-                        closeByEscape: false,
-                        closeByDocument: false,
-                        resolve: {
-                            motion: function() {return Motion.find($stateParams.id)}
-                        },
-                        preCloseCallback: function() {
-                            $state.go('motions.motion.detail', {motion: $stateParams.id});
-                            return true;
-                        }
-                    });
+            })
+            // redirects to motion detail and opens motion edit form dialog, uses edit url,
+            // used by ui-sref links from agenda only
+            // (from motion controller use MotionForm factory instead to open dialog in front of
+            // current view without redirect)
+            .state('motions.motion.detail.update', {
+                onEnter: ['$stateParams', '$state', 'ngDialog', 'Motion',
+                    function($stateParams, $state, ngDialog, Motion) {
+                        ngDialog.open({
+                            template: 'static/templates/motions/motion-form.html',
+                            controller: 'MotionUpdateCtrl',
+                            className: 'ngdialog-theme-default wide-form',
+                            closeByEscape: false,
+                            closeByDocument: false,
+                            resolve: {
+                                motion: function() {return Motion.find($stateParams.id)}
+                            },
+                            preCloseCallback: function() {
+                                $state.go('motions.motion.detail', {motion: $stateParams.id});
+                                return true;
+                            }
+                        });
+                    }
+                ]
+            })
+            .state('motions.motion.import', {
+                url: '/import',
+                controller: 'MotionImportCtrl',
+                resolve: {
+                    motions: function(Motion) {
+                        return Motion.findAll();
+                    },
+                    categories: function(Category) {
+                        return Category.findAll();
+                    },
+                    users: function(User) {
+                        return User.findAll();
+                    }
                 }
-            ]
-        })
-        .state('motions.motion.import', {
-            url: '/import',
-            controller: 'MotionImportCtrl',
-            resolve: {
-                motions: function(Motion) {
-                    return Motion.findAll();
-                },
-                categories: function(Category) {
-                    return Category.findAll();
-                },
-                users: function(User) {
-                    return User.findAll();
+            })
+            // categories
+            .state('motions.category', {
+                url: '/category',
+                abstract: true,
+                template: "<ui-view/>",
+            })
+            .state('motions.category.list', {
+                resolve: {
+                    categories: function(Category) {
+                        return Category.findAll();
+                    }
                 }
-            }
-        })
-        // categories
-        .state('motions.category', {
-            url: '/category',
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('motions.category.list', {
-            resolve: {
-                categories: function(Category) {
-                    return Category.findAll();
+            })
+            .state('motions.category.create', {})
+            .state('motions.category.detail', {
+                resolve: {
+                    category: function(Category, $stateParams) {
+                        return Category.find($stateParams.id);
+                    }
                 }
-            }
-        })
-        .state('motions.category.create', {})
-        .state('motions.category.detail', {
-            resolve: {
-                category: function(Category, $stateParams) {
-                    return Category.find($stateParams.id);
+            })
+            .state('motions.category.detail.update', {
+                views: {
+                    '@motions.category': {}
                 }
-            }
-        })
-        .state('motions.category.detail.update', {
-            views: {
-                '@motions.category': {}
-            }
-        });
-})
+            });
+    }
+])
 
 // Service for generic motion form (create and update)
 .factory('MotionForm', [
@@ -211,6 +214,15 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         label: gettextCatalog.getString('Reason')
                     },
                     ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
+                },
+                {
+                    key: 'disable_versioning',
+                    type: 'checkbox',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Trivial change'),
+                        description: gettextCatalog.getString("Don't create a new version.")
+                    },
+                    hide: true
                 },
                 {
                     key: 'more',
@@ -387,6 +399,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             }
             $scope.sortColumn = column;
         };
+        // define custom search filter string
         $scope.getFilterString = function (motion) {
             if (motion.category) {
                 var category = motion.category.name;
@@ -394,10 +407,15 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 var category = ''
             }
             return [
+                motion.identifier,
                 motion.getTitle(),
                 motion.getText(),
+                motion.getReason(),
                 _.map(motion.submitters, function (submitter) {return submitter.get_short_name()}).join(" "),
-                category].join(" ");
+                _.map(motion.supporters, function (supporter) {return supporter.get_short_name()}).join(" "),
+                _.map(motion.tags, function (tag) {return tag.name}).join(" "),
+                category
+            ].join(" ");
         }
 
         // collect all states of all workflows
@@ -492,7 +510,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
         Motion.loadRelations(motion, 'agenda_item');
-
+        $scope.version = motion.active_version;
         $scope.isCollapsed = true;
 
         // open edit dialog
@@ -541,6 +559,27 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         $scope.delete_poll = function (poll) {
             poll.DSDestroy();
         }
+        // show specific version
+        $scope.showVersion = function (version) {
+            $scope.version = version.id;
+        }
+        // permit specific version
+        $scope.permitVersion = function (version) {
+            $http.put('/rest/motions/motion/' + motion.id + '/manage_version/',
+                {'version_number': version.version_number})
+                .then(function(success) {
+                    $scope.version = version.id;
+                });
+        }
+        // delete specific version
+        $scope.deleteVersion = function (version) {
+            $http.delete('/rest/motions/motion/' + motion.id + '/manage_version/',
+                    {headers: {'Content-Type': 'application/json'},
+                     data: JSON.stringify({version_number: version.version_number})})
+                .then(function(success) {
+                    $scope.version = motion.active_version;
+                });
+        }
     }
 ])
 
@@ -571,11 +610,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         $scope.model.workflow_id = Config.get('motions_workflow').value;
         // get all form fields
         $scope.formFields = MotionForm.getFormFields();
-        for (var i = 0; i < $scope.formFields.length; i++) {
-            if ($scope.formFields[i].key == "identifier") {
-               $scope.formFields[i].hide = true;
-            }
-        }
         // save motion
         $scope.save = function (motion) {
             Motion.create(motion).then(
@@ -605,10 +639,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         Tag.bindAll({}, $scope, 'tags');
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
+        $scope.alert = {};
 
-        // set initial values for form model
-        $scope.model = motion;
+        // set initial values for form model by create deep copy of motion object
+        // so list/detail view is not updated while editing
+        $scope.model = angular.copy(motion);
         $scope.model.more = false;
+
         // get all form fields
         $scope.formFields = MotionForm.getFormFields();
         // override default values for update form
@@ -629,6 +666,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 // get reason of latest version
                 $scope.formFields[i].defaultValue = motion.getReason(-1);
             }
+            if ($scope.formFields[i].key == "disable_versioning" &&
+                Config.get('motions_allow_disable_versioning')) {
+                // check current state if versioning is active
+                if (motion.state.versioning) {
+                    $scope.formFields[i].hide = false;
+                }
+            }
             if ($scope.formFields[i].key == "workflow_id") {
                // get saved workflow id from state
                $scope.formFields[i].defaultValue = motion.state.workflow_id;
@@ -637,9 +681,22 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
         // save motion
         $scope.save = function (motion) {
+            // inject the changed motion (copy) object back into DS store
+            Motion.inject(motion);
+            // save change motion object on server
             Motion.save(motion, { method: 'PATCH' }).then(
                 function(success) {
                     $scope.closeThisDialog();
+                },
+                function (error) {
+                    // save error: revert all changes by restore
+                    // (refresh) original motion object from server
+                    Motion.refresh(motion);
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };
@@ -858,50 +915,70 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 ])
 
 
-.controller('CategoryListCtrl', function($scope, Category) {
-    Category.bindAll({}, $scope, 'categories');
+.controller('CategoryListCtrl', [
+    '$scope',
+    'Category',
+    function($scope, Category) {
+        Category.bindAll({}, $scope, 'categories');
 
-    // setup table sorting
-    $scope.sortColumn = 'name';
-    $scope.reverse = false;
-    // function to sort by clicked column
-    $scope.toggleSort = function ( column ) {
-        if ( $scope.sortColumn === column ) {
-            $scope.reverse = !$scope.reverse;
-        }
-        $scope.sortColumn = column;
-    };
-
-    // delete selected category
-    $scope.delete = function (category) {
-        Category.destroy(category.id);
-    };
-})
-
-.controller('CategoryDetailCtrl', function($scope, Category, category) {
-    Category.bindOne(category.id, $scope, 'category');
-})
-
-.controller('CategoryCreateCtrl', function($scope, $state, Category) {
-    $scope.category = {};
-    $scope.save = function (category) {
-        Category.create(category).then(
-            function(success) {
-                $state.go('motions.category.list');
+        // setup table sorting
+        $scope.sortColumn = 'name';
+        $scope.reverse = false;
+        // function to sort by clicked column
+        $scope.toggleSort = function ( column ) {
+            if ( $scope.sortColumn === column ) {
+                $scope.reverse = !$scope.reverse;
             }
-        );
-    };
-})
+            $scope.sortColumn = column;
+        };
 
-.controller('CategoryUpdateCtrl', function($scope, $state, Category, category) {
-    $scope.category = category;
-    $scope.save = function (category) {
-        Category.save(category).then(
-            function(success) {
-                $state.go('motions.category.list');
-            }
-        );
-    };
-});
+        // delete selected category
+        $scope.delete = function (category) {
+            Category.destroy(category.id);
+        };
+    }
+])
+
+.controller('CategoryDetailCtrl', [
+    '$scope',
+    'Category',
+    'category',
+    function($scope, Category, category) {
+        Category.bindOne(category.id, $scope, 'category');
+    }
+])
+
+.controller('CategoryCreateCtrl', [
+    '$scope',
+    '$state',
+    'Category',
+    function($scope, $state, Category) {
+        $scope.category = {};
+        $scope.save = function (category) {
+            Category.create(category).then(
+                function(success) {
+                    $state.go('motions.category.list');
+                }
+            );
+        };
+    }
+])
+
+.controller('CategoryUpdateCtrl', [
+    '$scope',
+    '$state',
+    'Category',
+    'category',
+    function($scope, $state, Category, category) {
+        $scope.category = category;
+        $scope.save = function (category) {
+            Category.save(category).then(
+                function(success) {
+                    $state.go('motions.category.list');
+                }
+            );
+        };
+    }
+]);
 
 }());

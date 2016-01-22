@@ -169,6 +169,7 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
             name: name,
             useClass: jsDataModel,
             verboseName: gettext('Motion'),
+            agendaSupplement: gettext('Motion'),
             methods: {
                 getResourceName: function () {
                     return name;
@@ -298,12 +299,18 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
     }
 ])
 
-.factory('Category', ['DS', function(DS) {
-    return DS.defineResource({
-        name: 'motions/category',
-    });
-}])
+.factory('Category', [
+    'DS',
+    function(DS) {
+        return DS.defineResource({
+            name: 'motions/category',
+        });
+    }
+])
 
-.run(['Motion', 'Category', function(Motion, Category) {}]);
-
+.run([
+    'Motion',
+    'Category',
+    function(Motion, Category) {}
+]);
 }());

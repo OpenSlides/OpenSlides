@@ -18,69 +18,88 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
     }
 ])
 
-.config(function($stateProvider) {
-    $stateProvider
-        .state('mediafiles', {
-            url: '/mediafiles',
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('mediafiles.mediafile', {
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('mediafiles.mediafile.list', {
-            resolve: {
-                mediafiles: function(Mediafile) {
-                    return Mediafile.findAll();
+.config([
+    '$stateProvider',
+    function($stateProvider) {
+        $stateProvider
+            .state('mediafiles', {
+                url: '/mediafiles',
+                abstract: true,
+                template: "<ui-view/>",
+            })
+            .state('mediafiles.mediafile', {
+                abstract: true,
+                template: "<ui-view/>",
+            })
+            .state('mediafiles.mediafile.list', {
+                resolve: {
+                    mediafiles: function(Mediafile) {
+                        return Mediafile.findAll();
+                    }
                 }
-            }
-        })
-        .state('mediafiles.mediafile.create', {})
-        .state('mediafiles.mediafile.detail', {
-            url: '/{id:int}',
-            abstract: true,
-            resolve: {
-                mediafile: function(Mediafile, $stateParams) {
-                    var id = $stateParams.id;
-                    var file = Mediafile.find(id);
-                    return file;
+            })
+            .state('mediafiles.mediafile.create', {})
+            .state('mediafiles.mediafile.detail', {
+                url: '/{id:int}',
+                abstract: true,
+                resolve: {
+                    mediafile: function(Mediafile, $stateParams) {
+                        var id = $stateParams.id;
+                        var file = Mediafile.find(id);
+                        return file;
+                    }
+                },
+                template: "<ui-view/>",
+            })
+            .state('mediafiles.mediafile.detail.update', {
+                views: {
+                    '@mediafiles.mediafile': {}
                 }
-            },
-            template: "<ui-view/>",
-        })
-        .state('mediafiles.mediafile.detail.update', {
-            views: {
-                '@mediafiles.mediafile': {}
+            });
+    }
+])
+
+.controller('MediafileListCtrl', [
+    '$scope',
+    '$http',
+    '$timeout',
+    'Upload',
+    'Mediafile',
+    function($scope, $http, $timeout, Upload, Mediafile) {
+        Mediafile.bindAll({}, $scope, 'mediafiles');
+
+        // setup table sorting
+        $scope.sortColumn = 'title';
+        $scope.filterPresent = '';
+        $scope.reverse = false;
+        // function to sort by clicked column
+        $scope.toggleSort = function ( column ) {
+            if ( $scope.sortColumn === column ) {
+                $scope.reverse = !$scope.reverse;
             }
-        });
-})
-
-.controller('MediafileListCtrl', function($scope, $http, $timeout, Upload, Mediafile) {
-    Mediafile.bindAll({}, $scope, 'mediafiles');
-
-    // setup table sorting
-    $scope.sortColumn = 'title';
-    $scope.filterPresent = '';
-    $scope.reverse = false;
-    // function to sort by clicked column
-    $scope.toggleSort = function ( column ) {
-        if ( $scope.sortColumn === column ) {
-            $scope.reverse = !$scope.reverse;
+            $scope.sortColumn = column;
+        };
+        // define custom search filter string
+        $scope.getFilterString = function (mediafile) {
+            return [
+                mediafile.title,
+                mediafile.mediafile.type,
+                mediafile.mediafile.name,
+                mediafile.uploader.get_short_name()
+            ].join(" ");
         }
-        $scope.sortColumn = column;
-    };
 
-    // delete
-    $scope.delete = function (mediafile) {
-        //TODO: add confirm message
-        Mediafile.destroy(mediafile.id).then(
-            function(success) {
-                //TODO: success message
-            }
-        );
-    };
-})
+        // delete
+        $scope.delete = function (mediafile) {
+            //TODO: add confirm message
+            Mediafile.destroy(mediafile.id).then(
+                function(success) {
+                    //TODO: success message
+                }
+            );
+        };
+    }
+])
 
 .controller('MediafileCreateCtrl', [
     '$scope',

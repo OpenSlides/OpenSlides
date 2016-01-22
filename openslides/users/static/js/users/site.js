@@ -18,120 +18,126 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     }
 ])
 
-.config(function($stateProvider) {
-    $stateProvider
-    .state('users', {
-        url: '/users',
-        abstract: true,
-        template: "<ui-view/>",
-    })
-    .state('users.user', {
-        abstract: true,
-        template: "<ui-view/>",
-    })
-    .state('users.user.list', {
-        resolve: {
-            users: function(User) {
-                return User.findAll();
-            }
-        }
-    })
-    .state('users.user.create', {
-        resolve: {
-            groups: function(Group) {
-                return Group.findAll();
-            }
-        }
-    })
-    .state('users.user.detail', {
-        resolve: {
-            user: function(User, $stateParams) {
-                return User.find($stateParams.id);
-            },
-            groups: function(Group) {
-                return Group.findAll();
-            }
-        }
-    })
-    .state('users.user.detail.profile', {
-        views: {
-            '@users.user': {},
-        },
-        url: '/profile',
-        controller: 'UserProfileCtrl',
-    })
-    .state('users.user.detail.password', {
-        views: {
-            '@users.user': {},
-        },
-        url: '/password',
-        controller: 'UserPasswordCtrl',
-    })
-    .state('users.user.import', {
-        url: '/import',
-        controller: 'UserImportCtrl',
-        resolve: {
-            groups: function(Group) {
-                return Group.findAll();
-            }
-        }
-    })
-    // groups
-    .state('users.group', {
-        url: '/groups',
-        abstract: true,
-        template: "<ui-view/>",
-    })
-    .state('users.group.list', {
-        resolve: {
-            groups: function(Group) {
-                return Group.findAll();
-            }
-        }
-    })
-    .state('users.group.create', {
-        resolve: {
-            permissions: function($http) {
-                return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
-            }
-        }
-    })
-    .state('users.group.detail', {
-        resolve: {
-            group: function(Group, $stateParams) {
-                return Group.find($stateParams.id);
-            }
-        }
-    })
-    .state('users.group.detail.update', {
-        views: {
-            '@users.group': {}
-        },
-        resolve: {
-            permissions: function($http) {
-                return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
-            }
-        }
-    })
-    .state('login', {
-        template: null,
-        url: '/login',
-        params: { guest_enabled: false },
-        onEnter: ['$state', '$stateParams', 'ngDialog', function($state, $stateParams, ngDialog) {
-            ngDialog.open({
-                template: 'static/templates/core/login-form.html',
-                controller: 'LoginFormCtrl',
-                showClose: $stateParams.guest_enabled,
-                closeByEscape: $stateParams.guest_enabled,
-                closeByDocument: $stateParams.guest_enabled,
-                preCloseCallback: function() {
-                    $state.go('dashboard');
-                    return true;
+.config([
+    '$stateProvider',
+    function($stateProvider) {
+        $stateProvider
+        .state('users', {
+            url: '/users',
+            abstract: true,
+            template: "<ui-view/>",
+        })
+        .state('users.user', {
+            abstract: true,
+            template: "<ui-view/>",
+        })
+        .state('users.user.list', {
+            resolve: {
+                users: function(User) {
+                    return User.findAll();
+                },
+                groups: function(Group) {
+                    return Group.findAll();
                 }
-            });
-        }]
-    });
-})
+            }
+        })
+        .state('users.user.create', {
+            resolve: {
+                groups: function(Group) {
+                    return Group.findAll();
+                }
+            }
+        })
+        .state('users.user.detail', {
+            resolve: {
+                user: function(User, $stateParams) {
+                    return User.find($stateParams.id);
+                },
+                groups: function(Group) {
+                    return Group.findAll();
+                }
+            }
+        })
+        .state('users.user.detail.profile', {
+            views: {
+                '@users.user': {},
+            },
+            url: '/profile',
+            controller: 'UserProfileCtrl',
+        })
+        .state('users.user.detail.password', {
+            views: {
+                '@users.user': {},
+            },
+            url: '/password',
+            controller: 'UserPasswordCtrl',
+        })
+        .state('users.user.import', {
+            url: '/import',
+            controller: 'UserImportCtrl',
+            resolve: {
+                groups: function(Group) {
+                    return Group.findAll();
+                }
+            }
+        })
+        // groups
+        .state('users.group', {
+            url: '/groups',
+            abstract: true,
+            template: "<ui-view/>",
+        })
+        .state('users.group.list', {
+            resolve: {
+                groups: function(Group) {
+                    return Group.findAll();
+                }
+            }
+        })
+        .state('users.group.create', {
+            resolve: {
+                permissions: function($http) {
+                    return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
+                }
+            }
+        })
+        .state('users.group.detail', {
+            resolve: {
+                group: function(Group, $stateParams) {
+                    return Group.find($stateParams.id);
+                }
+            }
+        })
+        .state('users.group.detail.update', {
+            views: {
+                '@users.group': {}
+            },
+            resolve: {
+                permissions: function($http) {
+                    return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
+                }
+            }
+        })
+        .state('login', {
+            template: null,
+            url: '/login',
+            params: { guest_enabled: false },
+            onEnter: ['$state', '$stateParams', 'ngDialog', function($state, $stateParams, ngDialog) {
+                ngDialog.open({
+                    template: 'static/templates/core/login-form.html',
+                    controller: 'LoginFormCtrl',
+                    showClose: $stateParams.guest_enabled,
+                    closeByEscape: $stateParams.guest_enabled,
+                    closeByDocument: $stateParams.guest_enabled,
+                    preCloseCallback: function() {
+                        $state.go('dashboard');
+                        return true;
+                    }
+                });
+            }]
+        });
+    }
+])
 
 .run([
     'operator',
@@ -143,6 +149,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         // Put the operator into the root scope
         $http.get('/users/whoami/').success(function(data) {
             operator.setUser(data.user_id);
+            $rootScope.guest_enabled = data.guest_enabled;
             if (data.user_id === null && !data.guest_enabled) {
                 // redirect to login dialog if use is not logged in
                 $state.go('login', {guest_enabled: data.guest_enabled});
@@ -224,47 +231,6 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     }
 ])
 
-/*
- * Like osPerms but does only hide the DOM-Elements
- *
- * This is the Code from angular.js ngShow.
-*/
-.directive('osPermsLite', [
-    '$animate',
-    function($animate) {
-        var NG_HIDE_CLASS = 'os-perms-lite';
-        var NG_HIDE_IN_PROGRESS_CLASS = 'os-perms-lite-animate';
-        return {
-            restrict: 'A',
-            multiElement: true,
-            link: function(scope, element, $attr) {
-                var perms;
-                if ($attr.osPermsLite[0] === '!') {
-                    perms = _.trimLeft($attr.osPermsLite, '!');
-                } else {
-                    perms = $attr.osPermsLite;
-                }
-                scope.$watch(
-                    function (scope) {
-                        return scope.operator.hasPerms(perms);
-                    }, function ngShowWatchAction(value) {
-                        if ($attr.osPermsLite[0] === '!') {
-                            value = !value;
-                        }
-                        // we're adding a temporary, animation-specific class for ng-hide since this way
-                        // we can control when the element is actually displayed on screen without having
-                        // to have a global/greedy CSS selector that breaks when other animations are run.
-                        // Read: https://github.com/angular/angular.js/issues/9103#issuecomment-58335845
-                        $animate[value ? 'removeClass' : 'addClass'](element, NG_HIDE_CLASS, {
-                            tempClasses: NG_HIDE_IN_PROGRESS_CLASS
-                        });
-                    }
-                );
-            }
-        };
-    }
-])
-
 // Service for generic assignment form (create and update)
 .factory('UserForm', [
     '$http',
@@ -289,8 +255,16 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 }
             },
             // angular-formly fields for user form
-            getFormFields: function () {
+            getFormFields: function (hideOnCreateForm) {
                 return [
+                {
+                    key: 'username',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Username')
+                    },
+                    hide: hideOnCreateForm
+                },
                 {
                     key: 'title',
                     type: 'input',
@@ -373,7 +347,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     templateOptions: {
                         label: gettextCatalog.getString('Is present'),
                         description: gettextCatalog.getString('Designates whether this user is in the room or not.')
-                    }
+                    },
+                    defaultValue: true
                 },
                 {
                     key: 'is_active',
@@ -383,7 +358,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                         description: gettextCatalog.getString(
                             'Designates whether this user should be treated as ' +
                             'active. Unselect this instead of deleting the account.')
-                    }
+                    },
+                    defaultValue: true
                 }];
             }
         }
@@ -399,7 +375,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'Group',
     function($scope, $state, ngDialog, UserForm, User, Group) {
         User.bindAll({}, $scope, 'users');
-        Group.bindAll({}, $scope, 'groups');
+        Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
         $scope.alert = {};
 
         // setup table sorting
@@ -475,7 +451,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'Group',
     function($scope, ngDialog, UserForm, User, user, Group) {
         User.bindOne(user.id, $scope, 'user');
-        Group.bindAll({}, $scope, 'groups');
+        Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
 
         // open edit dialog
         $scope.openDialog = function (user) {
@@ -492,8 +468,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'Group',
     function($scope, $state, User, UserForm, Group) {
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
+        $scope.alert = {};
         // get all form fields
-        $scope.formFields = UserForm.getFormFields();
+        $scope.formFields = UserForm.getFormFields(true);
 
         // save user
         $scope.save = function (user) {
@@ -503,6 +480,13 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             User.create(user).then(
                 function(success) {
                     $scope.closeThisDialog();
+                },
+                function (error) {
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };
@@ -838,13 +822,13 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 ])
 
 .controller('LoginFormCtrl', [
+    '$rootScope',
     '$scope',
     '$http',
     '$stateParams',
     'operator',
     'gettextCatalog',
-    'Config',
-    function ($scope, $http, $stateParams, operator, gettextCatalog, Config) {
+    function ($rootScope, $scope, $http, $stateParams, operator, gettextCatalog) {
         $scope.alerts = [];
 
         // get login info-text from server
@@ -861,7 +845,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             $scope.alerts.splice(index, 1);
         };
         // check if guest login is allowed
-        $scope.guestAllowed = $stateParams.guest_enabled;
+        $scope.guestAllowed = $rootScope.guest_enabled;
         // login
         $scope.login = function () {
             $scope.alerts = [];

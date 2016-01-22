@@ -52,11 +52,11 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                         // in the DS store.
                         title = this.title;
                     }
-                    if (this.getContentResource().verboseName) {
-                        title = gettextCatalog.getString(this.getContentResource().verboseName) + ' ' + title;
+                    if (this.getContentResource().agendaSupplement) {
+                        title = gettextCatalog.getString(this.getContentResource().agendaSupplement) + ' ' + title;
                     }
                     if (this.item_number) {
-                        title = this.item_number + ' ' + title;
+                        title = this.item_number + ' · ' + title;
                     }
                     return title;
                 },

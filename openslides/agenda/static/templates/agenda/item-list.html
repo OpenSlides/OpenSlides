@@ -31,7 +31,8 @@
     <div class="col-sm-6">
       <form class="form-inline">
         <!-- delete mode -->
-        <button os-perms="agenda.can_manage" class="btn btn-default"
+        <button os-perms="agenda.can_manage" class="btn"
+            ng-class="$parent.isDeleteMode ? 'btn-primary' : 'btn-default'"
             ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
           <i class="fa fa-check-square-o"></i>
           <translate>Select ...</translate>
@@ -65,7 +66,8 @@
                placeholder="{{ 'Search' | translate}}">
           </div>
         </div>
-        <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen">
+        <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen"
+            ng-class="isFilterOpen ? 'btn-primary' : 'btn-default'">
           <i class="fa fa-filter"></i>
           <translate>Filter ...</translate>
         </button>
@@ -95,6 +97,7 @@
   </div>
 
   <div class="spacer-top-lg italic">
+    <span os-perms="agenda.can_see_hidden_items">{{ itemsFiltered.length }} /</span>
     {{ items.length }} {{ "items" | translate }}<span ng-if="(items|filter:{selected:true}).length > 0">,
     {{(items|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
   </div>
@@ -115,8 +118,8 @@
         <th class="minimum">
           <translate>Done</translate>
     <tbody>
-      <tr ng-repeat="item in items | filter: filter.search |  filter: {is_hidden: filter.showHiddenItems}
-          |  filter: {closed: filter.showClosedItems}"
+      <tr ng-repeat="item in itemsFiltered = (items | filter: filter.search |
+          filter: {is_hidden: filter.showHiddenItems} |  filter: {closed: filter.showClosedItems})"
           class="animate-item"
           ng-class="{ 'activeline': item.isProjected(), 'selected': item.selected, 'hiddenrow': item.is_hidden}">
         <!-- projector column -->
@@ -131,8 +134,8 @@
         <td ng-show="isDeleteMode" os-perms="agenda.can_manage" class="deleteColumn">
           <input type="checkbox" ng-model="item.selected">
         <!-- agenda data columns -->
-        <td ng-if="!item.quickEdit" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false">
-          <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&ndash;</span>
+        <td ng-if="!item.quickEdit" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false"
+            style="padding-left: calc(8px + {{ item.parentCount }}*15px)">
           <strong>
             <a href="" ng-click="open(item)">
               {{ item.getTitle() }}
@@ -144,8 +147,8 @@
           </div>
           <div os-perms="agenda.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !item.hover}">
             <a ui-sref="agenda.item.detail({id: item.id})" translate>List of speakers</a> |
-            <a href="" ng-click="item.quickEdit=true" translate>QuickEdit</a> |
-            <a href="" ng-click="editDialog(item)" translate>Edit</a>
+            <a href="" ng-click="editDialog(item)" translate>Edit</a> |
+            <a href="" ng-click="item.quickEdit=true" translate>QuickEdit</a>
             <span ng-if="item.content_object.collection == 'core/customslide'"> |
               <a href="" class="text-danger"
                 ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
@@ -162,9 +165,9 @@
         <td ng-show="item.quickEdit" os-perms="agenda.can_manage" colspan="3">
           <form ng-submit="save(item)">
           <h4>{{ item.getTitle() }} <span class="text-muted">&ndash; QuickEdit</span></h4>
-            <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-              {{alert.msg}}
-            </alert>
+            <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+              {{ alert.msg }}
+            </uib-alert>
             <div class="row">
               <div class="col-xs-6">
                 <label for="inputTitle" translate>Title</label>

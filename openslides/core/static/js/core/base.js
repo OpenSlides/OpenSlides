@@ -12,23 +12,27 @@ angular.module('OpenSlidesApp.core', [
     'ui.tree',
 ])
 
-.config(['DSProvider', 'DSHttpAdapterProvider', function(DSProvider, DSHttpAdapterProvider) {
-    // Reloads everything after 5 minutes.
-    // TODO: * find a way only to reload things that are still needed
-    DSProvider.defaults.maxAge = 5 * 60 * 1000;  // 5 minutes
-    DSProvider.defaults.reapAction = 'none';
-    DSProvider.defaults.basePath = '/rest';
-    DSProvider.defaults.afterReap = function(model, items) {
-        if (items.length > 5) {
-            model.findAll({}, {bypassCache: true});
-        } else {
-            _.forEach(items, function (item) {
-                model.refresh(item[model.idAttribute]);
-            });
-        }
-    };
-    DSHttpAdapterProvider.defaults.forceTrailingSlash = true;
-}])
+.config([
+    'DSProvider',
+    'DSHttpAdapterProvider',
+    function(DSProvider, DSHttpAdapterProvider) {
+        // Reloads everything after 5 minutes.
+        // TODO: * find a way only to reload things that are still needed
+        DSProvider.defaults.maxAge = 5 * 60 * 1000;  // 5 minutes
+        DSProvider.defaults.reapAction = 'none';
+        DSProvider.defaults.basePath = '/rest';
+        DSProvider.defaults.afterReap = function(model, items) {
+            if (items.length > 5) {
+                model.findAll({}, {bypassCache: true});
+            } else {
+                _.forEach(items, function (item) {
+                    model.refresh(item[model.idAttribute]);
+                });
+            }
+        };
+        DSHttpAdapterProvider.defaults.forceTrailingSlash = true;
+    }
+])
 
 .factory('autoupdate', [
     'DS',
@@ -129,23 +133,27 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-.run(['DS', 'autoupdate', function(DS, autoupdate) {
-    autoupdate.on_message(function(data) {
-        // TODO: when MODEL.find() is called after this
-        //       a new request is fired. This could be a bug in DS
+.run([
+    'DS',
+    'autoupdate',
+    function(DS, autoupdate) {
+        autoupdate.on_message(function(data) {
+            // TODO: when MODEL.find() is called after this
+            //       a new request is fired. This could be a bug in DS
 
-        // TODO: Do not send the status code to the client, but make the decission
-        //       on the server side. It is an implementation detail, that tornado
-        //       sends request to wsgi, which should not concern the client.
-        console.log("Received object: " + data.collection + ", " + data.id);
-        if (data.status_code == 200) {
-            DS.inject(data.collection, data.data);
-        } else if (data.status_code == 404) {
-            DS.eject(data.collection, data.id);
-        }
-        // TODO: handle other statuscodes
-    });
-}])
+            // TODO: Do not send the status code to the client, but make the decission
+            //       on the server side. It is an implementation detail, that tornado
+            //       sends request to wsgi, which should not concern the client.
+            console.log("Received object: " + data.collection + ", " + data.id);
+            if (data.status_code == 200) {
+                DS.inject(data.collection, data.data);
+            } else if (data.status_code == 404) {
+                DS.eject(data.collection, data.id);
+            }
+            // TODO: handle other statuscodes
+        });
+    }
+])
 
 .factory('loadGlobalData', [
     '$rootScope',
@@ -310,37 +318,37 @@ angular.module('OpenSlidesApp.core', [
  * be removed. See http://www.js-data.io/docs/dsdefaults#onconflict for
  * more information.
  */
-.factory('Projector', ['DS', function(DS) {
-    return DS.defineResource({
-        name: 'core/projector',
-        onConflict: 'replace',
-    });
-}])
+.factory('Projector', [
+    'DS',
+    function(DS) {
+        return DS.defineResource({
+            name: 'core/projector',
+            onConflict: 'replace',
+        });
+    }
+])
 
 /* Converts number of seconds into string "hh:mm:ss" or "mm:ss" */
 .filter('osSecondsToTime', [
     function () {
         return function (totalseconds) {
             var time;
-            var total = Math.abs(totalseconds);
-            if (parseInt(totalseconds)) {
-                var hh = Math.floor(total / 3600);
-                var mm = Math.floor(total % 3600 / 60);
-                var ss = Math.floor(total % 60);
-                var zero = "0";
-                // Add leading "0" for double digit values
-                hh = (zero+hh).slice(-2);
-                mm = (zero+mm).slice(-2);
-                ss = (zero+ss).slice(-2);
-                if (hh == "00")
-                    time =  mm + ':' + ss;
-                else
-                    time = hh + ":" + mm + ":" + ss;
-                if (totalseconds < 0)
-                    time = "-"+time;
-            } else {
-                time = "--:--";
-            }
+            // floor returns the largest integer of the absolut value of totalseconds
+            var total = Math.floor(Math.abs(totalseconds));
+            var hh = Math.floor(total / 3600);
+            var mm = Math.floor(total % 3600 / 60);
+            var ss = Math.floor(total % 60);
+            var zero = "0";
+            // Add leading "0" for double digit values
+            hh = (zero+hh).slice(-2);
+            mm = (zero+mm).slice(-2);
+            ss = (zero+ss).slice(-2);
+            if (hh == "00")
+                time =  mm + ':' + ss;
+            else
+                time = hh + ":" + mm + ":" + ss;
+            if (totalseconds < 0)
+                time = "-"+time;
             return time;
         };
     }

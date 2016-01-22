@@ -23,7 +23,8 @@
     <div class="col-sm-6">
       <form class="form-inline">
         <!-- delete mode -->
-        <button os-perms="assignments.can_manage" class="btn btn-default"
+        <button os-perms="assignments.can_manage" class="btn"
+            ng-class="$parent.isDeleteMode ? 'btn-primary' : 'btn-default'"
             ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
           <i class="fa fa-check-square-o"></i>
           <translate>Select ...</translate>
@@ -39,7 +40,8 @@
                placeholder="{{ 'Search' | translate}}">
           </div>
         </div>
-        <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen">
+        <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen"
+            ng-class="isFilterOpen ? 'btn-primary' : 'btn-default'">
           <i class="fa fa-filter"></i>
           <translate>Filter ...</translate>
         </button>
@@ -69,6 +71,7 @@
   </div>
 
   <div class="spacer-top-lg italic">
+    {{ assignmentsFiltered.length }} /
     {{ assignments.length }} {{ "elections" | translate }}<span ng-if="(assignments|filter:{selected:true}).length > 0">,
     {{(assignments|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
   </div>
@@ -96,8 +99,8 @@
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
     <tbody>
-      <tr ng-repeat="assignment in assignments | filter: filter.search | filter: {phase: phaseFilter} |
-          orderBy: sortColumn:reverse"
+      <tr ng-repeat="assignment in assignmentsFiltered = (assignments | osFilter: filter.search : getFilterString |
+          filter: {phase: phaseFilter} | orderBy: sortColumn:reverse)"
           class="animate-item"
           ng-class="{ 'activeline': assignment.isProjected(), 'selected': assignment.selected }">
         <!-- projector column -->
@@ -135,9 +138,9 @@
         <!-- quickEdit columns -->
         <td ng-if="assignment.quickEdit" colspan="3">
           <h4>{{ assignment.title }} <span class="text-muted">&ndash; Quick Edit</span></h4>
-            <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-              {{alert.msg}}
-            </alert>
+            <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+              {{ alert.msg }}
+            </uib-alert>
             <div class="row">
               <div class="col-xs-6">
                 <label for="inputTitle" translate>Title</label>

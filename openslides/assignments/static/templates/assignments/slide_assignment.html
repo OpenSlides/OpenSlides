@@ -1,4 +1,12 @@
 <div ng-controller="SlideAssignmentCtrl" class="content scrollcontent">
   <h1>{{ assignment.title }}</h1>
   <div class="white-space-pre-line">{{ assignment.description }}</div>
+
+  <!-- candidates -->
+  <h2 translate>Candidates</h2>
+  <ol>
+    <li ng-repeat="related_user in assignment.assignment_related_users">
+      {{ related_user.user.get_full_name() }}
+      <i ng-if="related_user.elected" class="fa fa-star" title="{{ 'is elected' | translate }}"></i>
+  </ol>
 </div>

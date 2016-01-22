@@ -28,10 +28,14 @@
         <i class="fa fa-pencil"></i>
       </a>
     </div>
-    <h1>{{ motion.getTitle() }}</h1>
+    <h1>{{ motion.getTitle(version) }}</h1>
     <h2>
         <translate>Motion</translate> {{ motion.identifier }}
-        <span ng-if="motion.versions.length > 1" >| Version {{ motion.active_version }}</span>
+        <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion(version).version_number }}</span>
+        <span ng-if="motion.active_version != version" class="label label-warning">
+          <i class="fa fa-exclamation-triangle"></i>
+          <translate>This version is not permitted.</translate>
+        </span>
         <span ng-if="motion.agenda_item.item_number">
           &ndash;
           <translate>Agenda</translate>: {{ motion.agenda_item.item_number }}
@@ -193,10 +197,10 @@
   <div class="row">
     <div class="col-sm-8">
       <h3 translate>Text</h3>
-      <div class="white-space-pre-line" ng-bind-html="motion.getText()"></div>
+      <div class="white-space-pre-line" ng-bind-html="motion.getText(version)"></div>
 
       <!-- reason -->
-      <div ng-if="motion.getReason() != ''">
+      <div ng-if="motion.getReason(version) != ''">
         <h3 translate>Reason</h3>
         <div class="white-space-pre-line" ng-bind-html="motion.getReason()"></div>
       </div>
@@ -207,6 +211,39 @@
         <li ng-repeat="attachment in motion.attachments">
           <a href="{{ attachment.mediafileUrl }}" target="_blank">{{ attachment.title_or_filename }}</a>
       </ul>
+
+      <!-- version history -->
+      <div ng-if="motion.versions.length > 1">
+        <h3 translate>Version history</h3>
+        <ul>
+          <li ng-repeat="version in motion.versions">
+              <span ng-if="$parent.version == version.id">
+                <strong><translate>Version</translate> {{ version.version_number }}</strong>
+              </span>
+              <a ng-if="$parent.version != version.id" ng-click="showVersion(version)">
+                <translate>Version</translate> {{ version.version_number }}
+              </a>
+              <!-- active version -->
+              <i ng-if="motion.active_version == version.id" class="fa fa-star"
+                  title="{{ 'This is the last active version.' | translate }}"></i>
+              <!-- permit version -->
+              <button os-perms="motions.can_manage" ng-show="motion.active_version != version.id"
+                  ng-click="permitVersion(version)"
+                  class="btn btn-default btn-xs" title="{{ 'Permit and activate' | translate }}">
+                <i class="fa fa-check"></i>
+              </button>
+              <!-- delete version -->
+              <button os-perms="motions.can_manage" ng-show="motion.active_version != version.id"
+                  class="btn btn-default btn-xs"
+                  ng-bootbox-confirm="{{ 'Are you sure you want to delete this version?' | translate }}<br>
+                      <strong><translate>Version</translate> {{ version.version_number }}</strong>"
+                  ng-bootbox-confirm-action="deleteVersion(version)"
+                  title="{{ 'Delete' | translate }}">
+                <i class="fa fa-times"></i>
+              </button>
+            <br><translate>Last modified</translate>: {{ version.creation_time | date:'yyyy-MM-dd HH:mm:ss' }}
+        </ul>
+      </div>
 
       <!-- log -->
       <button type="button" class="btn btn-default spacer" ng-click="isCollapsed = !isCollapsed" translate>

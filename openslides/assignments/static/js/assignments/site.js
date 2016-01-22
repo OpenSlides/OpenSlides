@@ -18,63 +18,72 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     }
 ])
 
-.config(function($stateProvider) {
-    $stateProvider
-        .state('assignments', {
-            url: '/assignments',
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('assignments.assignment', {
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('assignments.assignment.list', {
-            resolve: {
-                assignments: function(Assignment) {
-                    return Assignment.findAll();
-                },
-                phases: function(Assignment) {
-                    return Assignment.getPhases();
+.config([
+    '$stateProvider',
+    function($stateProvider) {
+        $stateProvider
+            .state('assignments', {
+                url: '/assignments',
+                abstract: true,
+                template: "<ui-view/>",
+            })
+            .state('assignments.assignment', {
+                abstract: true,
+                template: "<ui-view/>",
+            })
+            .state('assignments.assignment.list', {
+                resolve: {
+                    assignments: function(Assignment) {
+                        return Assignment.findAll();
+                    },
+                    phases: function(Assignment) {
+                        return Assignment.getPhases();
+                    },
+                    users: function(User) {
+                        return User.findAll();
+                    },
                 }
-            }
-        })
-        .state('assignments.assignment.detail', {
-            controller: 'AssignmentDetailCtrl',
-            resolve: {
-                assignment: function(Assignment, $stateParams) {
-                    return Assignment.find($stateParams.id);
-                },
-                users: function(User) {
-                    return User.findAll();
+            })
+            .state('assignments.assignment.detail', {
+                controller: 'AssignmentDetailCtrl',
+                resolve: {
+                    assignment: function(Assignment, $stateParams) {
+                        return Assignment.find($stateParams.id);
+                    },
+                    users: function(User) {
+                        return User.findAll();
+                    },
+                    phases: function(Assignment) {
+                        return Assignment.getPhases();
+                    }
                 }
-            }
-        })
-        // redirects to assignment detail and opens assignment edit form dialog, uses edit url,
-        // used by ui-sref links from agenda only
-        // (from assignment controller use AssignmentForm factory instead to open dialog in front
-        // of current view without redirect)
-        .state('assignments.assignment.detail.update', {
-            onEnter: ['$stateParams', '$state', 'ngDialog', 'Assignment',
-                function($stateParams, $state, ngDialog, Assignment) {
-                    ngDialog.open({
-                        template: 'static/templates/assignments/assignment-form.html',
-                        controller: 'AssignmentUpdateCtrl',
-                        className: 'ngdialog-theme-default wide-form',
-                        closeByEscape: false,
-                        closeByDocument: false,
-                        resolve: {
-                            assignment: function() {return Assignment.find($stateParams.id)}
-                        },
-                        preCloseCallback: function() {
-                            $state.go('assignments.assignment.detail', {assignment: $stateParams.id});
-                            return true;
-                        }
-                    });
-                }
-            ]
-        });
-})
+            })
+            // redirects to assignment detail and opens assignment edit form dialog, uses edit url,
+            // used by ui-sref links from agenda only
+            // (from assignment controller use AssignmentForm factory instead to open dialog in front
+            // of current view without redirect)
+            .state('assignments.assignment.detail.update', {
+                onEnter: ['$stateParams', '$state', 'ngDialog', 'Assignment',
+                    function($stateParams, $state, ngDialog, Assignment) {
+                        ngDialog.open({
+                            template: 'static/templates/assignments/assignment-form.html',
+                            controller: 'AssignmentUpdateCtrl',
+                            className: 'ngdialog-theme-default wide-form',
+                            closeByEscape: false,
+                            closeByDocument: false,
+                            resolve: {
+                                assignment: function() {return Assignment.find($stateParams.id)}
+                            },
+                            preCloseCallback: function() {
+                                $state.go('assignments.assignment.detail', {assignment: $stateParams.id});
+                                return true;
+                            }
+                        });
+                    }
+                ]
+            });
+    }
+])
 
 // Service for generic assignment form (create and update)
 .factory('AssignmentForm', [
@@ -119,7 +128,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'open_posts',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Number of members to be elected'),
+                        label: gettextCatalog.getString('Number of posts to be elected'),
                         type: 'number',
                         required: true
                     }
@@ -153,12 +162,22 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         $scope.filterPresent = '';
         $scope.reverse = false;
         // function to sort by clicked column
-        $scope.toggleSort = function ( column ) {
+        $scope.toggleSort = function (column) {
             if ( $scope.sortColumn === column ) {
                 $scope.reverse = !$scope.reverse;
             }
             $scope.sortColumn = column;
         };
+        // define custom search filter string
+        $scope.getFilterString = function (assignment) {
+            return [
+                assignment.title,
+                assignment.description,
+                $scope.phases[assignment.phase].display_name,
+                _.map(assignment.assignment_related_users,
+                        function (candidate) {return candidate.user.get_short_name()}).join(" "),
+            ].join(" ");
+        }
 
         // open new/edit dialog
         $scope.openDialog = function (assignment) {
@@ -222,11 +241,14 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'Assignment',
     'User',
     'assignment',
-    function($scope, $http, gettext, ngDialog, AssignmentForm, operator, Assignment, User, assignment) {
+    'phases',
+    function($scope, $http, gettext, ngDialog, AssignmentForm, operator, Assignment, User, assignment, phases) {
         User.bindAll({}, $scope, 'users');
         Assignment.bindOne(assignment.id, $scope, 'assignment');
         Assignment.loadRelations(assignment, 'agenda_item');
         $scope.candidateSelectBox = {};
+        // get all item types via OPTIONS request
+        $scope.phases = phases.data.actions.POST.phase.choices;
         $scope.alert = {};
 
         // open edit dialog
@@ -286,6 +308,11 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             else
                 return false;
         };
+        // update phase
+        $scope.updatePhase = function (phase_id) {
+            assignment.phase = phase_id;
+            Assignment.save(assignment);
+        }
         // create new ballot
         $scope.createBallot = function () {
             $http.post('/rest/assignments/assignment/' + assignment.id + '/create_poll/')
@@ -383,16 +410,31 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'AssignmentForm',
     'assignment',
     function($scope, $state, Assignment, AssignmentForm, assignment) {
-        // set initial values for form model
-        $scope.model = assignment;
+        $scope.alert = {};
+        // set initial values for form model by create deep copy of assignment object
+        // so list/detail view is not updated while editing
+        $scope.model = angular.copy(assignment);
         // get all form fields
         $scope.formFields = AssignmentForm.getFormFields();
 
         // save assignment
         $scope.save = function (assignment) {
+            // inject the changed assignment (copy) object back into DS store
+            Assignment.inject(assignment);
+            // save change motion object on server
             Assignment.save(assignment).then(
                 function(success) {
                     $scope.closeThisDialog();
+                },
+                function (error) {
+                    // save error: revert all changes by restore
+                    // (refresh) original assignment object from server
+                    Assignment.refresh(assignment);
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };

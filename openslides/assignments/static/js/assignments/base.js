@@ -80,6 +80,7 @@ angular.module('OpenSlidesApp.assignments', [])
             name: name,
             useClass: jsDataModel,
             verboseName: gettext('Election'),
+            agendaSupplement: gettext('Election'),
             phases: phases,
             getPhases: function () {
                 if (!this.phases) {

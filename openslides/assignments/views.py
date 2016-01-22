@@ -172,7 +172,7 @@ class AssignmentViewSet(ModelViewSet):
         if not request.user.has_perm('assignments.can_manage'):
             self.permission_denied(request)
         if assignment.phase == assignment.PHASE_FINISHED:
-            detail = _('You can not delete someones candidature to this election because it is finished.')
+            detail = _("You can not delete someone's candidature to this election because it is finished.")
             raise ValidationError({'detail': detail})
         if not assignment.is_candidate(user) and not assignment.is_elected(user):
             raise ValidationError({'detail': _('User %s has no status in this election.') % user})
