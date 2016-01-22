@@ -312,5 +312,45 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
     'Motion',
     'Category',
     function(Motion, Category) {}
+])
+
+
+// Mark all motion workflow state strings for translation in JavaScript.
+// (see motions/signals.py)
+.config([
+    'gettext',
+    function (gettext) {
+        // workflow 1
+        gettext('Simple Workflow')
+        gettext('submitted')
+        gettext('accepted')
+        gettext('Accept')
+        gettext('rejected')
+        gettext('Reject')
+        gettext('not decided')
+        gettext('Do not decide')
+        // workflow 2
+        gettext('Complex Workflow')
+        gettext('published')
+        gettext('permitted')
+        gettext('Permit')
+        gettext('accepted')
+        gettext('Accept')
+        gettext('rejected')
+        gettext('Reject')
+        gettext('withdrawed')
+        gettext('Withdraw')
+        gettext('adjourned')
+        gettext('Adjourn')
+        gettext('not concerned')
+        gettext('Do not concern')
+        gettext('commited a bill')
+        gettext('Commit a bill')
+        gettext('needs review')
+        gettext('Needs review')
+        gettext('rejected (not authorized)')
+        gettext('Reject (not authorized)')
+    }
 ]);
+
 }());

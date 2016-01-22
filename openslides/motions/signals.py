@@ -1,6 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext as _
-from django.utils.translation import pgettext, ugettext_lazy, ugettext_noop
+from django.utils.translation import pgettext, ugettext_lazy
 
 from openslides.core.config import ConfigVariable
 from openslides.poll.models import PERCENT_BASE_CHOICES
@@ -181,79 +181,79 @@ def create_builtin_workflows(sender, **kwargs):
         # If there is at least one workflow, then do nothing.
         return
 
-    workflow_1 = Workflow.objects.create(name=ugettext_noop('Simple Workflow'))
-    state_1_1 = State.objects.create(name=ugettext_noop('submitted'),
+    workflow_1 = Workflow.objects.create(name='Simple Workflow')
+    state_1_1 = State.objects.create(name='submitted',
                                      workflow=workflow_1,
                                      allow_create_poll=True,
                                      allow_support=True,
                                      allow_submitter_edit=True)
-    state_1_2 = State.objects.create(name=ugettext_noop('accepted'),
+    state_1_2 = State.objects.create(name='accepted',
                                      workflow=workflow_1,
-                                     action_word=ugettext_noop('Accept'),
+                                     action_word='Accept',
                                      css_class='success')
-    state_1_3 = State.objects.create(name=ugettext_noop('rejected'),
+    state_1_3 = State.objects.create(name='rejected',
                                      workflow=workflow_1,
-                                     action_word=ugettext_noop('Reject'),
+                                     action_word='Reject',
                                      css_class='danger')
-    state_1_4 = State.objects.create(name=ugettext_noop('not decided'),
+    state_1_4 = State.objects.create(name='not decided',
                                      workflow=workflow_1,
-                                     action_word=ugettext_noop('Do not decide'),
+                                     action_word='Do not decide',
                                      css_class='default')
     state_1_1.next_states.add(state_1_2, state_1_3, state_1_4)
     workflow_1.first_state = state_1_1
     workflow_1.save()
 
-    workflow_2 = Workflow.objects.create(name=ugettext_noop('Complex Workflow'))
-    state_2_1 = State.objects.create(name=ugettext_noop('published'),
+    workflow_2 = Workflow.objects.create(name='Complex Workflow')
+    state_2_1 = State.objects.create(name='published',
                                      workflow=workflow_2,
                                      allow_support=True,
                                      allow_submitter_edit=True,
                                      dont_set_identifier=True)
-    state_2_2 = State.objects.create(name=ugettext_noop('permitted'),
+    state_2_2 = State.objects.create(name='permitted',
                                      workflow=workflow_2,
-                                     action_word=ugettext_noop('Permit'),
+                                     action_word='Permit',
                                      allow_create_poll=True,
                                      allow_submitter_edit=True,
                                      versioning=True,
                                      leave_old_version_active=True)
-    state_2_3 = State.objects.create(name=ugettext_noop('accepted'),
+    state_2_3 = State.objects.create(name='accepted',
                                      workflow=workflow_2,
-                                     action_word=ugettext_noop('Accept'),
+                                     action_word='Accept',
                                      versioning=True,
                                      css_class='success')
-    state_2_4 = State.objects.create(name=ugettext_noop('rejected'),
+    state_2_4 = State.objects.create(name='rejected',
                                      workflow=workflow_2,
-                                     action_word=ugettext_noop('Reject'),
+                                     action_word='Reject',
                                      versioning=True,
                                      css_class='danger')
-    state_2_5 = State.objects.create(name=ugettext_noop('withdrawed'),
+    state_2_5 = State.objects.create(name='withdrawed',
                                      workflow=workflow_2,
-                                     action_word=ugettext_noop('Withdraw'),
+                                     action_word='Withdraw',
                                      versioning=True,
                                      css_class='default')
-    state_2_6 = State.objects.create(name=ugettext_noop('adjourned'),
+    state_2_6 = State.objects.create(name='adjourned',
                                      workflow=workflow_2,
-                                     action_word=ugettext_noop('Adjourn'),
+                                     action_word='Adjourn',
                                      versioning=True,
                                      css_class='default')
-    state_2_7 = State.objects.create(name=ugettext_noop('not concerned'),
+    state_2_7 = State.objects.create(name='not concerned',
                                      workflow=workflow_2,
-                                     action_word=ugettext_noop('Do not concern'),
+                                     action_word='Do not concern',
                                      versioning=True,
                                      css_class='default')
-    state_2_8 = State.objects.create(name=ugettext_noop('commited a bill'),
+    state_2_8 = State.objects.create(name='commited a bill',
                                      workflow=workflow_2,
-                                     action_word=ugettext_noop('Commit a bill'),
+                                     action_word='Commit a bill',
                                      versioning=True,
                                      css_class='default')
-    state_2_9 = State.objects.create(name=ugettext_noop('needs review'),
+    state_2_9 = State.objects.create(name='needs review',
                                      workflow=workflow_2,
-                                     action_word=ugettext_noop('Needs review'),
+                                     action_word='Needs review',
                                      versioning=True,
                                      css_class='default')
-    state_2_10 = State.objects.create(name=ugettext_noop('rejected (not authorized)'),
+    state_2_10 = State.objects.create(name='rejected (not authorized)',
                                       workflow=workflow_2,
-                                      action_word=ugettext_noop('Reject (not authorized)'),
+                                      action_word='Reject (not authorized)',
                                       versioning=True,
                                       css_class='default')
     state_2_1.next_states.add(state_2_2, state_2_5, state_2_10)
