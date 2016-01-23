@@ -603,7 +603,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
 .controller('MotionCreateCtrl', [
     '$scope',
-    '$state',
     'gettext',
     'Motion',
     'MotionForm',
@@ -614,7 +613,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'User',
     'Workflow',
     'Agenda',
-    function($scope, $state, gettext, Motion, MotionForm, Category, Config, Mediafile, Tag, User, Workflow, Agenda) {
+    function($scope, gettext, Motion, MotionForm, Category, Config, Mediafile, Tag, User, Workflow, Agenda) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -652,7 +651,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
 .controller('MotionUpdateCtrl', [
     '$scope',
-    '$state',
     'Motion',
     'Category',
     'Config',
@@ -663,7 +661,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'Workflow',
     'Agenda',
     'motion',
-    function($scope, $state, Motion, Category, Config, Mediafile, MotionForm, Tag, User, Workflow, Agenda, motion) {
+    function($scope, Motion, Category, Config, Mediafile, MotionForm, Tag, User, Workflow, Agenda, motion) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -746,13 +744,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
 .controller('MotionPollUpdateCtrl', [
     '$scope',
-    '$state',
     'gettextCatalog',
     'MotionPoll',
     'MotionPollForm',
     'motionpoll',
     'voteNumber',
-    function($scope, $state, gettextCatalog, MotionPoll, MotionPollForm, motionpoll, voteNumber) {
+    function($scope, gettextCatalog, MotionPoll, MotionPollForm, motionpoll, voteNumber) {
         // set initial values for form model
         $scope.model = motionpoll;
         $scope.voteNumber = voteNumber;
