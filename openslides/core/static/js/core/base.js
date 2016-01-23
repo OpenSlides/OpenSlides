@@ -281,11 +281,20 @@ angular.module('OpenSlidesApp.core', [
 ])
 
 .factory('Config', [
+    '$http',
     'DS',
-    function(DS) {
+    function($http, DS) {
+        var configOptions;
         return DS.defineResource({
             name: 'core/config',
             idAttribute: 'key',
+            configOptions: configOptions,
+            getConfigOptions: function () {
+                if (!this.configOptions) {
+                    this.configOptions = $http({ 'method': 'OPTIONS', 'url': '/rest/core/config/' });
+                }
+                return this.configOptions;
+            },
         });
     }
 ])

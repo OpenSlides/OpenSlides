@@ -5,7 +5,8 @@
 </div>
 
 <div class="details">
-  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div os-perms="core.can_manage_config" class="panel-group" id="accordion"
+      role="tablist" aria-multiselectable="true">
     <!-- generate config groups -->
     <div ng-repeat="group in configGroups">
       <div class="panel panel-default">

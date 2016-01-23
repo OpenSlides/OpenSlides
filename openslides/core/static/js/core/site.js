@@ -219,8 +219,8 @@ angular.module('OpenSlidesApp.core.site', [
                 url: '/config',
                 controller: 'ConfigCtrl',
                 resolve: {
-                    configOption: function($http) {
-                        return $http({ 'method': 'OPTIONS', 'url': '/rest/core/config/' });
+                    configOptions: function(Config) {
+                        return Config.getConfigOptions();
                     }
                 }
             })
@@ -436,10 +436,10 @@ angular.module('OpenSlidesApp.core.site', [
 .controller('ConfigCtrl', [
     '$scope',
     'Config',
-    'configOption',
-    function($scope, Config, configOption) {
+    'configOptions',
+    function($scope, Config, configOptions) {
         Config.bindAll({}, $scope, 'configs');
-        $scope.configGroups = configOption.data.config_groups;
+        $scope.configGroups = configOptions.data.config_groups;
 
         // save changed config value
         $scope.save = function(key, value) {
