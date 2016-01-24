@@ -1,27 +1,35 @@
-Instruction to update translation for OpenSlides:
--------------------------------------------------
+Instruction to update translations for OpenSlides (JavaScipt and Django):
+-------------------------------------------------------------------------
 
-1. Go to the openslides directory (which contains the 'locale' directory):
+1. Update English resource files:
+
+   a) for JavaScript run:
+      $ ./node_modules/.bin/gulp pot
+      -> updates 'openslides/locale/angular-gettext/template-en.pot'
+
+   b) for Django:
+      $ cd openslides
+      $ django-admin.py makemessages -l en
+      -> updates 'openslides/locale/en/LC_MESSAGES/django.po'
+
+2. Commit and merge the following files into OpenSlides master repo:
+   a) openslides/locale/angular-gettext/template-en.pot
+   b) openslides/locale/en/LC_MESSAGES/django.po
+
+   Transifex will update both resource files once a day by pulling from GitHub.
+
+3. Translate both files in transifex into desired languages.
+   https://www.transifex.com/openslides/
+
+4. Download translated po files for each language and override it:
+   a) openslides/locale/angular-gettext/{LANG-CODE}.po
+   b) openslides/locale/{LANG-CODE}/LC_MESSAGES/django.po
+
+5. Create mo file for each language (only for django po files required)
    $ cd openslides
-
-2. Update the German po file (locale/de/LC_MESSAGES/django.po):
-   $ django-admin.py makemessages -l de
-   $ django-admin.py makemessages -l de -d djangojs
-
-3. Edit the German po file: locale/de/LC_MESSAGES/django.po
-   Don't forget the js-file: locale/de/LC_MESSAGES/djangojs.po
-   (Search for "fuzzy" and empty msgstr entries.)
-
-4. Update the German mo file (locale/de/LC_MESSAGES/django.mo):
    $ django-admin.py compilemessages
 
-5. Restart server:
-   $ python manage.py runserver
-
---
-Additional hints for internationalization (i18n) in Django:
-https://docs.djangoproject.com/en/dev/topics/i18n/
-
-Note: gettext is required to extract message IDs or compile message files.
-For gettext on Windows read:
-https://docs.djangoproject.com/en/dev/topics/i18n/translation/#gettext-on-windows
+6. Commit and merge for each language the following files:
+   a) openslides/locale/angular-gettext/{LANG-CODE}.po
+   b) openslides/locale/{LANG-CODE}/LC_MESSAGES/django.po
+      openslides/locale/{LANG-CODE}/LC_MESSAGES/django.mo
