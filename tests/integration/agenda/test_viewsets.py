@@ -243,13 +243,18 @@ class Numbering(TestCase):
         self.client = APIClient()
         self.client.login(username='admin', password='admin')
         self.item_1 = CustomSlide.objects.create(title='test_title_thuha8eef7ohXar3eech').agenda_item
+        self.item_1.type = Item.AGENDA_ITEM
+        self.item_1.save()
         self.item_2 = CustomSlide.objects.create(title='test_title_eisah7thuxa1eingaeLo').agenda_item
+        self.item_2.type = Item.AGENDA_ITEM
         self.item_2.weight = 2
         self.item_2.save()
         self.item_2_1 = CustomSlide.objects.create(title='test_title_Qui0audoaz5gie1phish').agenda_item
+        self.item_2_1.type = Item.AGENDA_ITEM
         self.item_2_1.parent = self.item_2
         self.item_2_1.save()
         self.item_3 = CustomSlide.objects.create(title='test_title_ah7tphisheineisgaeLo').agenda_item
+        self.item_3.type = Item.AGENDA_ITEM
         self.item_3.weight = 3
         self.item_3.save()
 

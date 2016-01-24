@@ -72,7 +72,11 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                             closeByEscape: false,
                             closeByDocument: false,
                             resolve: {
-                                assignment: function() {return Assignment.find($stateParams.id)}
+                                assignment: function() {
+                                    return Assignment.find($stateParams.id).then(function(assignment) {
+                                        return Assignment.loadRelations(assignment, 'agenda_item');
+                                    });
+                                },
                             },
                             preCloseCallback: function() {
                                 $state.go('assignments.assignment.detail', {assignment: $stateParams.id});
@@ -88,13 +92,19 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 // Service for generic assignment form (create and update)
 .factory('AssignmentForm', [
     'gettextCatalog',
-    function (gettextCatalog) {
+    'operator',
+    function (gettextCatalog, operator) {
         return {
             // ngDialog for assignment form
             getDialog: function (assignment) {
                 if (assignment) {
                     var resolve = {
-                        assignment: function(Assignment) {return Assignment.find(assignment.id);}
+                        assignment: function() {
+                            return assignment;
+                        },
+                        agenda_item: function(Assignment) {
+                            return Assignment.loadRelations(assignment, 'agenda_item');
+                        }
                     };
                 }
                 return {
@@ -139,6 +149,15 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     templateOptions: {
                         label: gettextCatalog.getString('Default comment on the ballot paper')
                     }
+                },
+                {
+                    key: 'showAsAgendaItem',
+                    type: 'checkbox',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Show as agenda item'),
+                        description: gettextCatalog.getString('If deactivated the election appears as internal item on agenda.')
+                    },
+                    hide: !operator.hasPerms('assignments.can_manage')
                 }];
             }
         }
@@ -385,7 +404,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     '$state',
     'Assignment',
     'AssignmentForm',
-    function($scope, $state, Assignment, AssignmentForm) {
+    'Agenda',
+    function($scope, $state, Assignment, AssignmentForm, Agenda) {
         $scope.model = {};
         // set default value for open posts form field
         $scope.model.open_posts = 1;
@@ -396,6 +416,16 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         $scope.save = function(assignment) {
             Assignment.create(assignment).then(
                 function(success) {
+                    // find related agenda item
+                    Agenda.find(success.agenda_item_id).then(function(item) {
+                        // check form element and set item type (AGENDA_ITEM = 1, HIDDEN_ITEM = 2)
+                        var type = assignment.showAsAgendaItem ? 1 : 2;
+                        // save only if agenda item type is modified
+                        if (item.type != type) {
+                            item.type = type;
+                            Agenda.save(item);
+                        }
+                    });
                     $scope.closeThisDialog();
                 }
             );
@@ -408,22 +438,36 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     '$state',
     'Assignment',
     'AssignmentForm',
+    'Agenda',
     'assignment',
-    function($scope, $state, Assignment, AssignmentForm, assignment) {
+    function($scope, $state, Assignment, AssignmentForm, Agenda, assignment) {
         $scope.alert = {};
         // set initial values for form model by create deep copy of assignment object
         // so list/detail view is not updated while editing
         $scope.model = angular.copy(assignment);
         // get all form fields
         $scope.formFields = AssignmentForm.getFormFields();
+        for (var i = 0; i < $scope.formFields.length; i++) {
+            if ($scope.formFields[i].key == "showAsAgendaItem") {
+                // get state from agenda item (hidden/internal or agenda item)
+                $scope.formFields[i].defaultValue = !assignment.agenda_item.is_hidden;
+            }
+        }
 
         // save assignment
         $scope.save = function (assignment) {
             // inject the changed assignment (copy) object back into DS store
             Assignment.inject(assignment);
-            // save change motion object on server
+            // save change assignment object on server
             Assignment.save(assignment).then(
                 function(success) {
+                    // check form element and set item type (AGENDA_ITEM = 1, HIDDEN_ITEM = 2)
+                    var type = assignment.showAsAgendaItem ? 1 : 2;
+                    // save only if agenda item type is modified
+                    if (assignment.agenda_item.type != type) {
+                        assignment.agenda_item.type = type;
+                        Agenda.save(assignment.agenda_item);
+                    }
                     $scope.closeThisDialog();
                 },
                 function (error) {

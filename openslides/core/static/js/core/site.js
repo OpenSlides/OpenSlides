@@ -504,6 +504,14 @@ angular.module('OpenSlidesApp.core.site', [
                         placeholder: gettextCatalog.getString('Select or search an attachment ...')
                     }
                 },
+                {
+                    key: 'showOnAgenda',
+                    type: 'checkbox',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Show on agenda'),
+                        description: gettextCatalog.getString('If deactivated it appears as internal item.')
+                    }
+                },
                 ];
             }
         }
@@ -729,7 +737,8 @@ angular.module('OpenSlidesApp.core.site', [
     '$state',
     'Customslide',
     'CustomslideForm',
-    function($scope, $state, Customslide, CustomslideForm) {
+    'Agenda',
+    function($scope, $state, Customslide, CustomslideForm, Agenda) {
         $scope.customslide = {};
         // get all form fields
         $scope.formFields = CustomslideForm.getFormFields();
@@ -738,6 +747,14 @@ angular.module('OpenSlidesApp.core.site', [
         $scope.save = function (customslide) {
             Customslide.create(customslide).then(
                 function(success) {
+                    // show as agenda item
+                    if (customslide.showOnAgenda) {
+                        Agenda.find(success.agenda_item_id).then(function(item) {
+                            // set item type to AGENDA_ITEM = 1 (default is HIDDEN_ITEM = 2)
+                            item.type = 1;
+                            Agenda.save(item);
+                        });
+                    }
                     $scope.closeThisDialog();
                 }
             );
