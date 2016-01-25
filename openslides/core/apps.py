@@ -15,11 +15,11 @@ class CoreAppConfig(AppConfig):
 
         # Import all required stuff.
         from django.db.models import signals
-        from openslides.core.signals import config_signal
+        from openslides.core.signals import config_signal, post_permission_creation
         from openslides.utils.autoupdate import inform_changed_data_receiver
         from openslides.utils.rest_api import router
         from openslides.utils.search import index_add_instance, index_del_instance
-        from .signals import setup_general_config
+        from .signals import delete_django_app_permissions, setup_general_config
         from .views import (
             ChatMessageViewSet,
             ConfigViewSet,
@@ -29,7 +29,12 @@ class CoreAppConfig(AppConfig):
         )
 
         # Connect signals.
-        config_signal.connect(setup_general_config, dispatch_uid='setup_general_config')
+        config_signal.connect(
+            setup_general_config,
+            dispatch_uid='setup_general_config')
+        post_permission_creation.connect(
+            delete_django_app_permissions,
+            dispatch_uid='delete_django_app_permissions')
 
         # Register viewsets.
         router.register('core/projector', ProjectorViewSet)
