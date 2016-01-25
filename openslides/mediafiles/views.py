@@ -1,4 +1,4 @@
-from ..utils.rest_api import ModelViewSet
+from ..utils.rest_api import ModelViewSet, ValidationError
 from .models import Mediafile
 from .serializers import MediafileSerializer
 
@@ -45,4 +45,6 @@ class MediafileViewSet(ModelViewSet):
                 not request.user.has_perm('mediafiles.can_manage') and
                 str(self.request.user.pk) != str(uploader_id)):
             self.permission_denied(request)
+        if not self.request.data.get('mediafile'):
+            raise ValidationError({'details': 'You forgot to provide a file.'})
         return super().create(request, *args, **kwargs)

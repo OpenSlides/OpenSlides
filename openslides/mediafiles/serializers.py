@@ -37,6 +37,8 @@ class MediafileSerializer(ModelSerializer):
         """
         super(MediafileSerializer, self).__init__(*args, **kwargs)
         self.serializer_field_mapping[dbmodels.FileField] = AngularCompatibleFileField
+        if self.instance is not None:
+            self.fields['mediafile'].read_only = True
 
     class Meta:
         model = Mediafile
