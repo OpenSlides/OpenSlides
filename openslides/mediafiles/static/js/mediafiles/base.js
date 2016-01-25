@@ -23,6 +23,9 @@ angular.module('OpenSlidesApp.mediafiles', [])
                     var filename = this.mediafile.name;
                     return /\/(.+?)$/.exec(filename)[1];
                 }],
+                filetype: [function () {
+                    return this.mediafile.type;
+                }],
                 title_or_filename: ['title', 'mediafile', function (title) {
                     return title || this.filename;
                 }]

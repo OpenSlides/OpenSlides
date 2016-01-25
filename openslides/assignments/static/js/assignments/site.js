@@ -401,11 +401,10 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
 .controller('AssignmentCreateCtrl', [
     '$scope',
-    '$state',
     'Assignment',
     'AssignmentForm',
     'Agenda',
-    function($scope, $state, Assignment, AssignmentForm, Agenda) {
+    function($scope, Assignment, AssignmentForm, Agenda) {
         $scope.model = {};
         // set default value for open posts form field
         $scope.model.open_posts = 1;
@@ -435,12 +434,11 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
 .controller('AssignmentUpdateCtrl', [
     '$scope',
-    '$state',
     'Assignment',
     'AssignmentForm',
     'Agenda',
     'assignment',
-    function($scope, $state, Assignment, AssignmentForm, Agenda, assignment) {
+    function($scope, Assignment, AssignmentForm, Agenda, assignment) {
         $scope.alert = {};
         // set initial values for form model by create deep copy of assignment object
         // so list/detail view is not updated while editing
@@ -487,12 +485,11 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
 .controller('AssignmentPollUpdateCtrl', [
     '$scope',
-    '$state',
     'gettextCatalog',
     'AssignmentPoll',
     'assignmentpoll',
     'ballot',
-    function($scope, $state, gettextCatalog, AssignmentPoll, assignmentpoll, ballot) {
+    function($scope, gettextCatalog, AssignmentPoll, assignmentpoll, ballot) {
         // set initial values for form model
         $scope.model = assignmentpoll;
         $scope.ballot = ballot;

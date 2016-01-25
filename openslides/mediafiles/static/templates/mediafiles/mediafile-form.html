@@ -1,42 +1,46 @@
-<div class="header">
-  <div class="title">
-    <div class="submenu">
-      <a ui-sref="mediafiles.mediafile.list" class="btn btn-sm btn-default">
-        <i class="fa fa-angle-double-left fa-lg"></i>
-        <translate>Back to overview</translate>
-      </a>
-    </div>
-    <h1 ng-if="mediafile.id" translate>Edit file</h1>
-    <h1 ng-if="!mediafile.id" translate>New file</h1>
+<h1 ng-if="mediafile.id" translate>Edit file</h1>
+<h1 ng-if="!mediafile.id" translate>New file</h1>
+
+<uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+  {{ alert.msg }}
+</uib-alert>
+
+<form name="mediafileForm" ng-submit="save(mediafile)">
+  <!-- file -->
+  <div class="form-group">
+    <label for="inputTitle" translate>File *</label>
+    <!-- create view: show file select field -->
+    <input ng-if="!mediafile.id" type="file" ngf-select ng-model="mediafile.newFile" required>
+    <!-- update view: show filename only -->
+    <div ng-if="mediafile.id">{{ mediafile.filename }}</div>
   </div>
-</div>
 
-<div class="details">
-  <form name="mediafileForm">
+  <!-- title -->
+  <div class="form-group">
+    <label for="inputTitle" translate>Title</label>
+    <input type="text" ng-model="mediafile.title" class="form-control" name="inputTitle">
+  </div>
 
-    <div class="form-group">
-      <div ng-if="mediafile.id">
-        <span translate>Current value: </span>{{ mediafile.filename }}
-      </div>
-      <input type="file" ngf-select ng-model="mediafile.newFile" required/>
-    </div>
+  <!-- uploader -->
+  <div os-perms="mediafiles.can_manage" class="form-group">
+    <label for="inputTitle" translate>Uploaded by</label>
+    <ui-select ng-model="mediafile.uploader_id">
+      <ui-select-match placeholder="{{ 'Select or search a participant ...' | translate }}" data-allow-clear="true">
+        {{ $select.selected.get_full_name() }}
+      </ui-select-match>
+      <ui-select-choices repeat="user.id as user in users | filter: $select.search">
+        <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
+      </ui-select-choices>
+    </ui-select>
+  </div>
 
-    <div class="form-group">
-      <label for="inputTitle" translate>Title</label>
-      <input type="text" ng-model="mediafile.title" class="form-control" name="inputTitle">
-    </div>
+  <i ng-show="mediafile.file.$error.maxSize">File too large
+    {{ picFile.size / 1000000|number:1}}MB: max {{ mediafile.mediafile.$errorParam}}</i>
 
-    <span ng-show="mediafile.mediafile.result">Upload Successful</span>
-
-    <i ng-show="mediafile.file.$error.required">*required</i><br>
-    <i ng-show="mediafile.file.$error.maxSize">File too large
-      {{ picFile.size / 1000000|number:1}}MB: max {{ mediafile.mediafile.$errorParam}}</i>
-
-    <button type="submit" ng-click="save(mediafile)" class="btn btn-primary" translate>
-      Save
-    </button>
-    <button ui-sref="mediafiles.mediafile.list" class="btn btn-default" translate>
-      Cancel
-    </button>
-  </form>
-</div>
+  <button type="submit" ng-disabled="mediafileForm.$invalid" class="btn btn-primary" translate>
+    Save
+  </button>
+  <button ng-click="closeThisDialog()" class="btn btn-default" translate>
+    Cancel
+  </button>
+</form>
