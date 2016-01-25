@@ -66,7 +66,7 @@ class Projector(RESTModelMixin, models.Model):
         permissions = (
             ('can_see_projector', ugettext_noop('Can see the projector')),
             ('can_manage_projector', ugettext_noop('Can manage the projector')),
-            ('can_see_dashboard', ugettext_noop('Can see the dashboard')))
+            ('can_see_frontpage', ugettext_noop('Can see the front page')))
 
     @property
     def elements(self):
@@ -157,6 +157,9 @@ class CustomSlide(RESTModelMixin, models.Model):
         return self.agenda_item.pk
 
     def get_agenda_title(self):
+        return self.title
+
+    def get_agenda_list_view_title(self):
         return self.title
 
     def get_search_index_string(self):

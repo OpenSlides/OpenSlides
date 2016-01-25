@@ -128,7 +128,7 @@ class ModelTest(TestCase):
         motion.active_version = None
         motion.save(update_fields=['active_version'])
         # motion.__unicode__() raised an AttributeError
-        self.assertEqual(str(motion), 'test_identifier_VohT1hu9uhiSh6ooVBFS: test_title_Koowoh1ISheemeey1air')
+        self.assertEqual(str(motion), 'test_title_Koowoh1ISheemeey1air')
 
     def test_is_amendment(self):
         config['motions_amendments_enabled'] = True

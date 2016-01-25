@@ -28,19 +28,18 @@
 
 <div class="details">
   <div class="row">
-    <div class="col-sm-6">
-      <form class="form-inline">
-        <!-- delete mode -->
-        <button os-perms="agenda.can_manage" class="btn"
-            ng-class="$parent.isDeleteMode ? 'btn-primary' : 'btn-default'"
-            ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
-          <i class="fa fa-check-square-o"></i>
-          <translate>Select ...</translate>
-        </button>
-        <div class="form-group">
+    <div class="col-sm-7">
+      <div class="form-inline">
+          <!-- delete mode -->
+          <button os-perms="agenda.can_manage" class="btn"
+              ng-class="$parent.isDeleteMode ? 'btn-primary' : 'btn-default'"
+              ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
+            <i class="fa fa-check-square-o"></i>
+            <translate>Select ...</translate>
+          </button>
           <!-- project agenda button -->
           <a os-perms="core.can_manage_projector"
-              class="btn btn-default form-control"
+              class="btn btn-default"
               title="{{ 'Project agenda' | translate }}"
               ng-click="projectAgenda()"
               ng-class="{ 'btn-primary': isAgendaProjected() }">
@@ -49,15 +48,14 @@
           </a>
           <!-- auto numbering button -->
           <a os-perms="core.can_manage_projector"
-              class="btn btn-default form-control"
+              class="btn btn-default"
               ng-click="autoNumbering()">
             <i class="fa fa-sort-numeric-asc"></i>
-            <translate>Number agenda</translate>
+            <translate>Numbering</translate>
           </a>
-        </div>
-      </form>
+      </div>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-5">
       <div class="form-inline text-right">
         <div class="form-group">
           <div class="input-group">
@@ -138,29 +136,34 @@
             style="padding-left: calc(8px + {{ item.parentCount }}*15px)">
           <strong>
             <a href="" ng-click="open(item)">
-              {{ item.getTitle() }}
+              {{ item.getListViewTitle() }}
             </a>
           </strong>
           <span ng-if="item.is_hidden" title="{{ 'Internal item' | translate }}"><i class="fa fa-ban"></i></span>
           <div ng-if="item.comment">
             <small><i class="fa fa-info-circle"></i> {{ item.comment }}</small>
           </div>
-          <div os-perms="agenda.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !item.hover}">
-            <a ui-sref="agenda.item.detail({id: item.id})" translate>List of speakers</a> |
-            <a href="" ng-click="editDialog(item)" translate>Edit</a> |
-            <a href="" ng-click="item.quickEdit=true" translate>QuickEdit</a>
-            <span ng-if="item.content_object.collection == 'core/customslide'"> |
-              <a href="" class="text-danger"
-                ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
-                  <b>{{ item.getTitle() }}</b>"
-                ng-bootbox-confirm-action="deleteRelatedItem(item)" translate>Delete</a>
+          <div os-perms="agenda.can_see" class="hoverActions" ng-class="{'hiddenDiv': !item.hover}">
+            <a ui-sref="agenda.item.detail({id: item.id})" translate>List of speakers</a>
+            <span os-perms="agenda.can_manage"> |
+              <a href="" ng-click="editDialog(item)" translate>Edit</a> |
+              <a href="" ng-click="item.quickEdit=true" translate>QuickEdit</a>
+              <span ng-if="item.content_object.collection == 'core/customslide'"> |
+                <a href="" class="text-danger"
+                  ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
+                    <b>{{ item.getTitle() }}</b>"
+                  ng-bootbox-confirm-action="deleteRelatedItem(item)" translate>Delete</a>
+              </span>
             </span>
           </div>
         <td ng-show="!item.quickEdit" os-perms="agenda.can_see_hidden_items" class="optional">
           {{ item.duration }}
           <span ng-if="item.duration" translate-comment="'h' means time in hours" translate>h</span>
         <td ng-if="!item.quickEdit">
-          <input type="checkbox" ng-model="item.closed" ng-change="save(item.id);">
+          <span os-perms="!agenda.can_manage">
+            <i ng-if="item.closed" class="fa fa-check-square-o"></i>
+          </span>
+          <input os-perms="agenda.can_manage" type="checkbox" ng-model="item.closed" ng-change="save(item.id);">
         <!-- quickEdit columns -->
         <td ng-show="item.quickEdit" os-perms="agenda.can_manage" colspan="3">
           <form ng-submit="save(item)">
@@ -170,8 +173,8 @@
             </uib-alert>
             <div class="row">
               <div class="col-xs-6">
-                <label for="inputTitle" translate>Title</label>
-                <input type="text" ng-model="item.title" class="form-control input-sm" id="inputTitle">
+                <label for="inputItemNumber" translate>Item number</label>
+                <input type="text" ng-model="item.item_number" class="form-control input-sm" id="inputItemNumber">
               </div>
               <div class="col-xs-6">
                 <label for="inputComment" translate>Comment</label>
@@ -180,23 +183,13 @@
             </div>
             <div class="row">
               <div class="col-xs-6">
-                <label for="inputItemNumber" translate>Item number</label>
-                <input type="text" ng-model="item.item_number" class="form-control input-sm" id="inputItemNumber">
+                <!-- item type: AGENDA_ITEM = 1, HIDDEN_ITEM = 2 -->
+                <input type="checkbox" ng-model="item.type" ng-true-value="1" ng-false-value="2">
+                <translate>Show as agenda item</translate>
               </div>
               <div class="col-xs-6">
                 <label for="inputDuration" translate>Duration</label>
                 <input type="text" ng-model="item.duration" class="form-control input-sm" id="inputDuration">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-6">
-                <label>
-                  <!-- item type: AGENDA_ITEM = 1, HIDDEN_ITEM = 2 -->
-                  <input type="checkbox" ng-model="item.type" ng-true-value="2" ng-false-value="1">
-                  <translate> Hidden item</translate>
-                </label>
-              </div>
-              <div class="col-xs-6">
               </div>
             </div>
             <div class="spacer">

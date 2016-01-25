@@ -28,13 +28,9 @@
         <i class="fa fa-pencil"></i>
       </a>
     </div>
-    <h1>{{ assignment.title }}</h1>
+    <h1>{{ assignment.agenda_item.getTitle() }}</h1>
     <h2>
       <translate>Election</translate>
-      <span ng-if="assignment.agenda_item.item_number">
-        &ndash;
-        <translate>Agenda</translate>: {{ assignment.agenda_item.item_number }}
-      </span>
     </h2>
   </div>
 </div>

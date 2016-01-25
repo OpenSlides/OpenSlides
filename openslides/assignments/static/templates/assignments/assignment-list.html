@@ -80,19 +80,33 @@
       <tr>
         <!-- projector column -->
         <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="minimum">
+
         <!-- delete selection column -->
         <th ng-show="isDeleteMode" os-perms="assignments.can_manage" class="minimum deleteColumn">
           <input type="checkbox" ng-model="$parent.selectedAll" ng-change="checkAll()">
+
+        <!-- agenda item column -->
+        <th ng-click="toggleSort('agenda_item.item_number')" class="sortable">
+          <translate translate-comment="short form of agenda item">Item</translate>
+          <i class="pull-right fa" ng-show="sortColumn === 'agenda_item.item_number' && header.sortable != false"
+              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+          </i>
+
+        <!-- title column -->
         <th ng-click="toggleSort('title')" class="sortable">
           <translate>Title</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'title' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
+
+        <!-- candicates / posts column -->
         <th ng-click="toggleSort('open_posts')" class="sortable optional">
           <translate>Candidates</translate> &middot; <translate>Posts</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'open_posts' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
+
+        <!-- phase column -->
         <th ng-click="toggleSort('phase')" class="sortable optional">
           <translate>Phase</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'phase' && header.sortable != false"
@@ -103,7 +117,8 @@
           filter: {phase: phaseFilter} | orderBy: sortColumn:reverse)"
           class="animate-item"
           ng-class="{ 'activeline': assignment.isProjected(), 'selected': assignment.selected }">
-        <!-- projector column -->
+
+        <!-- projector -->
         <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
           <a class="btn btn-default btn-sm"
               ng-class="{ 'btn-primary': assignment.isProjected() }"
@@ -111,10 +126,16 @@
               title="{{ 'Project election' | translate }}">
             <i class="fa fa-video-camera"></i>
           </a>
-        <!-- delete selection column -->
+
+        <!-- delete selection -->
         <td ng-show="isDeleteMode" os-perms="assignments.can_manage" class="deleteColumn">
           <input type="checkbox" ng-model="assignment.selected">
-        <!-- assignment data colums -->
+
+        <!-- agenda item number -->
+        <td ng-if="!assignment.quickEdit">
+          {{ assignment.agenda_item.item_number }}
+
+        <!-- title -->
         <td ng-if="!assignment.quickEdit" ng-mouseover="assignment.hover=true" ng-mouseleave="assignment.hover=false">
           <strong><a ui-sref="assignments.assignment.detail({id: assignment.id})">{{ assignment.title }}</a></strong>
           <div os-perms="assignments.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !assignment.hover}">
@@ -125,16 +146,21 @@
                 <b>{{ assignment.title }}</b>"
                 ng-bootbox-confirm-action="delete(assignment)" translate>Delete</a>
           </div>
+
+        <!-- candidates / posts -->
         <td ng-if="!assignment.quickEdit" class="optional">
           <span class="badge">{{ assignment.assignment_related_users.length }}</span>
           /
           <span class="badge">{{ assignment.open_posts }}</span>
+
+        <!-- phase -->
         <td ng-if="!assignment.quickEdit" class="optional">
           <span class="label" ng-class="{'label-primary': assignment.phase == 0,
                                          'label-warning': assignment.phase == 1,
                                          'label-success': assignment.phase == 2 }">
             {{ phases[assignment.phase].display_name }}
           </span>
+
         <!-- quickEdit columns -->
         <td ng-if="assignment.quickEdit" colspan="3">
           <h4>{{ assignment.title }} <span class="text-muted">&ndash; Quick Edit</span></h4>

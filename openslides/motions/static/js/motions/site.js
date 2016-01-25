@@ -34,7 +34,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             .state('motions.motion.list', {
                 resolve: {
                     motions: function(Motion) {
-                        return Motion.findAll();
+                        return Motion.findAll().then(function(motions) {
+                            angular.forEach(motions, function(motion) {
+                                Motion.loadRelations(motion, 'agenda_item');
+                            });
+                        });
+
                     },
                     categories: function(Category) {
                         return Category.findAll();
@@ -53,7 +58,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             .state('motions.motion.detail', {
                 resolve: {
                     motion: function(Motion, $stateParams) {
-                        return Motion.find($stateParams.id);
+                        return Motion.find($stateParams.id).then(function(motion) {
+                            return Motion.loadRelations(motion, 'agenda_item');
+                        });
                     },
                     categories: function(Category) {
                         return Category.findAll();
@@ -85,7 +92,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                             resolve: {
                                 motion: function() {
                                     return Motion.find($stateParams.id).then(function(motion) {
-                                        return Motion.loadRelations(motion, 'agenda_item');
+                                        Motion.loadRelations(motion, 'agenda_item');
                                     });
                                 },
                             },

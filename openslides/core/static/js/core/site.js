@@ -68,7 +68,7 @@ angular.module('OpenSlidesApp.core.site', [
     'gettext',
     function (mainMenuProvider, gettext) {
         mainMenuProvider.register({
-            'ui_sref': 'dashboard',
+            'ui_sref': 'home',
             'img_class': 'home',
             'title': gettext('Home'),
             'weight': 100,
@@ -193,9 +193,9 @@ angular.module('OpenSlidesApp.core.site', [
     function($stateProvider, $locationProvider) {
         // Core urls
         $stateProvider
-            .state('dashboard', {
+            .state('home', {
                 url: '/',
-                templateUrl: 'static/templates/dashboard.html'
+                templateUrl: 'static/templates/home.html'
             })
             .state('projector', {
                 url: '/projector',
@@ -556,11 +556,11 @@ angular.module('OpenSlidesApp.core.site', [
                     }
                 },
                 {
-                    key: 'showOnAgenda',
+                    key: 'showAsAgendaItem',
                     type: 'checkbox',
                     templateOptions: {
-                        label: gettextCatalog.getString('Show on agenda'),
-                        description: gettextCatalog.getString('If deactivated it appears as internal item.')
+                        label: gettextCatalog.getString('Show as agenda item'),
+                        description: gettextCatalog.getString('If deactivated it appears as internal item on agenda.')
                     }
                 },
                 ];
@@ -791,6 +791,8 @@ angular.module('OpenSlidesApp.core.site', [
     'Agenda',
     function($scope, $state, Customslide, CustomslideForm, Agenda) {
         $scope.customslide = {};
+        $scope.model = {};
+        $scope.model.showAsAgendaItem = true;
         // get all form fields
         $scope.formFields = CustomslideForm.getFormFields();
 
@@ -798,14 +800,16 @@ angular.module('OpenSlidesApp.core.site', [
         $scope.save = function (customslide) {
             Customslide.create(customslide).then(
                 function(success) {
-                    // show as agenda item
-                    if (customslide.showOnAgenda) {
-                        Agenda.find(success.agenda_item_id).then(function(item) {
-                            // set item type to AGENDA_ITEM = 1 (default is HIDDEN_ITEM = 2)
-                            item.type = 1;
+                    // find related agenda item
+                    Agenda.find(success.agenda_item_id).then(function(item) {
+                        // check form element and set item type (AGENDA_ITEM = 1, HIDDEN_ITEM = 2)
+                        var type = customslide.showAsAgendaItem ? 1 : 2;
+                        // save only if agenda item type is modified
+                        if (item.type != type) {
+                            item.type = type;
                             Agenda.save(item);
-                        });
-                    }
+                        }
+                    });
                     $scope.closeThisDialog();
                 }
             );
@@ -818,14 +822,21 @@ angular.module('OpenSlidesApp.core.site', [
     '$state',
     'Customslide',
     'CustomslideForm',
+    'Agenda',
     'customslide',
-    function($scope, $state, Customslide, CustomslideForm, customslide) {
+    function($scope, $state, Customslide, CustomslideForm, Agenda, customslide) {
         $scope.alert = {};
         // set initial values for form model by create deep copy of customslide object
         // so list/detail view is not updated while editing
         $scope.model = angular.copy(customslide);
         // get all form fields
         $scope.formFields = CustomslideForm.getFormFields();
+        for (var i = 0; i < $scope.formFields.length; i++) {
+            if ($scope.formFields[i].key == "showAsAgendaItem") {
+                // get state from agenda item (hidden/internal or agenda item)
+                $scope.formFields[i].defaultValue = !customslide.agenda_item.is_hidden;
+            }
+        }
 
         // save form
         $scope.save = function (customslide) {
@@ -834,6 +845,12 @@ angular.module('OpenSlidesApp.core.site', [
             // save change customslide object on server
             Customslide.save(customslide).then(
                 function(success) {
+                    // save agenda specific stuff
+                    var type = customslide.showAsAgendaItem ? 1 : 2;
+                    if (customslide.agenda_item.type != type) {
+                        customslide.agenda_item.type = type;
+                        Agenda.save(customslide.agenda_item);
+                    }
                     $scope.closeThisDialog();
                 },
                 function (error) {

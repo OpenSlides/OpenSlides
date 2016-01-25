@@ -3,6 +3,7 @@ from collections import OrderedDict
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
@@ -267,6 +268,15 @@ class Assignment(RESTModelMixin, models.Model):
 
     def get_agenda_title(self):
         return str(self)
+
+    def get_agenda_list_view_title(self):
+        """
+        Return a title string for the agenda list view.
+
+        Contains agenda item number, title and assignment verbose name.
+        Note: It has to be the same return value like in JavaScript.
+        """
+        return '%s (%s)' % (self.title, _(self._meta.verbose_name))
 
     @property
     def agenda_item(self):

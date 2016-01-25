@@ -1,6 +1,7 @@
 # General
 *.pyc
 *.swp
+*.swo
 *~
 
 # Virtual Environment
