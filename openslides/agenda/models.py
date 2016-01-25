@@ -21,13 +21,10 @@ class ItemManager(models.Manager):
     Customized model manager with special methods for agenda tree and
     numbering.
     """
-    def get_only_agenda_items(self, queryset=None):
+    def get_only_agenda_items(self):
         """
         Generator, which yields only agenda items. Skips hidden items.
         """
-        if queryset is None:
-            queryset = self.all()
-
         # Do not execute item.is_hidden() because this would create a lot of db queries
         root_items, item_children = self.get_root_and_children(only_agenda_items=True)
 
@@ -38,6 +35,29 @@ class ItemManager(models.Manager):
             for item in items:
                 yield item
                 yield from yield_items(item_children[item.pk])
+
+        yield from yield_items(root_items)
+
+    def get_only_hidden_items(self):
+        """
+        Generator, which yields only hidden items, that means only items
+        which type is HIDDEN_ITEM or which are children of hidden items.
+        """
+        # Do not execute item.is_hidden() because this would create a lot of db queries
+        root_items, item_children = self.get_root_and_children(only_agenda_items=False)
+
+        def yield_items(items, parent_is_hidden=False):
+            """
+            Generator that yields a list of items and their children.
+            """
+            for item in items:
+                if parent_is_hidden or item.type == item.HIDDEN_ITEM:
+                    item_is_hidden = True
+                    yield item
+                else:
+                    item_is_hidden = False
+                yield from yield_items(item_children[item.pk], parent_is_hidden=item_is_hidden)
+
         yield from yield_items(root_items)
 
     def get_root_and_children(self, only_agenda_items=False):
@@ -45,7 +65,8 @@ class ItemManager(models.Manager):
         Returns a list with all root items and a dictonary where the key is an
         item pk and the value is a list with all children of the item.
 
-        If only_agenda_items is True, the tree hides HIDDEN_ITEM.
+        If only_agenda_items is True, the tree hides items with type
+        HIDDEN_ITEM and all of their children.
         """
         queryset = self.order_by('weight')
         item_children = defaultdict(list)
@@ -57,7 +78,6 @@ class ItemManager(models.Manager):
                 item_children[item.parent_id].append(item)
             else:
                 root_items.append(item)
-
         return root_items, item_children
 
     def get_tree(self, only_agenda_items=False, include_content=False):
@@ -66,7 +86,8 @@ class ItemManager(models.Manager):
         and children, where id is the id of one agenda item and children is a
         generator that yields dictonaries like the one discribed.
 
-        If only_agenda_items is True, the tree hides HIDDEN_ITEM.
+        If only_agenda_items is True, the tree hides items with type
+        HIDDEN_ITEM and all of their children.
 
         If include_content is True, the yielded dictonaries have no key 'id'
         but a key 'item' with the entire object.
@@ -133,21 +154,30 @@ class ItemManager(models.Manager):
         """
         def walk_tree(tree, number=None):
             for index, tree_element in enumerate(tree):
+                # Calculate number of visable agenda items.
                 if numeral_system == 'roman' and number is None:
                     item_number = to_roman(index + 1)
                 else:
                     item_number = str(index + 1)
                     if number is not None:
                         item_number = '.'.join((number, item_number))
+                # Add prefix.
                 if config['agenda_number_prefix']:
                     item_number_tmp = "%s %s" % (config['agenda_number_prefix'], item_number)
                 else:
                     item_number_tmp = item_number
+                # Save the new value and go down the tree.
                 tree_element['item'].item_number = item_number_tmp
                 tree_element['item'].save()
                 walk_tree(tree_element['children'], item_number)
 
+        # Start numbering visable agenda items.
         walk_tree(self.get_tree(only_agenda_items=True, include_content=True))
+
+        # Reset number of hidden items.
+        for item in self.get_only_hidden_items():
+            item.item_number = ''
+            item.save()
 
 
 class Item(RESTModelMixin, models.Model):
