@@ -167,7 +167,8 @@ def search(query):
     The return value is a list of dictonaries where each dictonary has the keys
     id and collection.
     """
-    parser = QueryParser("content", index.schema)
+    search_index = index.get_or_create_index()
+    parser = QueryParser("content", search_index.schema)
     query = parser.parse(query)
-    result = index.searcher().search(query, limit=None)
+    result = search_index.searcher().search(query, limit=None)
     return [dict(element) for element in result]
