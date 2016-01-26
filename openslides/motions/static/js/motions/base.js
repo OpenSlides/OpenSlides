@@ -202,6 +202,14 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
                     }
                     return "Motion " + value + ': ' + this.getTitle();
                 },
+                // link name which is shown in search result
+                getSearchResultName: function () {
+                    return this.getAgendaTitle();
+                },
+                // subtitle of search result
+                getSearchResultSubtitle: function () {
+                    return "Motion";
+                },
                 isAllowed: function (action) {
                     /*
                      * Return true if the requested user is allowed to do the specific action.

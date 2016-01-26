@@ -209,11 +209,13 @@ angular.module('OpenSlidesApp.core.site', [
                 abstract: true,
                 template: "<ui-view/>",
             })
+
             // legal notice and version
             .state('legalnotice', {
                 url: '/legalnotice',
                 controller: 'LegalNoticeCtrl',
             })
+
             //config
             .state('config', {
                 url: '/config',
@@ -224,6 +226,14 @@ angular.module('OpenSlidesApp.core.site', [
                     }
                 }
             })
+
+            // search
+            .state('search', {
+                url: '/search?q',
+                controller: 'SearchCtrl',
+                templateUrl: 'static/templates/search.html',
+            })
+
             // customslide
             .state('core.customslide', {
                 url: '/customslide',
@@ -446,6 +456,47 @@ angular.module('OpenSlidesApp.core.site', [
             Config.get(key).value = value;
             Config.save(key);
         };
+    }
+])
+
+// Search Bar Controller
+.controller('SearchBarCtrl', [
+    '$scope',
+    '$state',
+    function ($scope, $state) {
+        $scope.search = function(query) {
+            $scope.query = '';
+            $state.go('search', {q: query});
+        }
+    }
+])
+// Search Controller
+.controller('SearchCtrl', [
+    '$scope',
+    '$http',
+    '$stateParams',
+    'DS',
+    function ($scope, $http, $stateParams, DS) {
+        // search function
+        $scope.search = function(query) {
+            $http.get('/core/search_api/?q=' + query).then(function(success) {
+                var elements = success.data.elements;
+                $scope.results = [];
+                angular.forEach(elements, function(element) {
+                    DS.find(element.collection, element.id).then(function(data) {
+                        data.urlState = element.collection.replace('/','.')+'.detail';
+                        data.urlParam = {id: element.id};
+                        $scope.results.push(data);
+                    });
+                })
+            });
+        }
+
+        // run search with get parameter from url
+        if ($stateParams.q) {
+            $scope.search($stateParams.q);
+            $scope.query = $stateParams.q;
+        }
     }
 ])
 
