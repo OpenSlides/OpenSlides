@@ -8,6 +8,7 @@ from ..core.config import config
 from ..utils.rest_api import (
     ModelViewSet,
     Response,
+    SimpleMetadata,
     ValidationError,
     detail_route,
     status,
@@ -163,6 +164,21 @@ class UserViewSet(ModelViewSet):
         return Response({'detail': _('Password successfully reset.')})
 
 
+class GroupViewSetMetadata(SimpleMetadata):
+    """
+    Customized metadata class for OPTIONS requests.
+    """
+    def get_field_info(self, field):
+        """
+        Customized method to change the display name of permission choices.
+        """
+        field_info = super().get_field_info(field)
+        if field.field_name == 'permissions':
+            for choice in field_info['choices']:
+                choice['display_name'] = choice['display_name'].split(' | ')[2]
+        return field_info
+
+
 class GroupViewSet(ModelViewSet):
     """
     API endpoint for groups.
@@ -170,6 +186,7 @@ class GroupViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
+    metadata_class = GroupViewSetMetadata
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
