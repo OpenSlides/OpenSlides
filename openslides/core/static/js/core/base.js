@@ -149,13 +149,15 @@ angular.module('OpenSlidesApp.core', [
     function (DS) {
         return function (collection, instance) {
             var Resource = DS.definitions[collection];
-            Resource.relationList.forEach(function (relationDef) {
-                if (relationDef.foreignKey) {
-                    var query = {};
-                    query[relationDef.foreignKey] = instance[Resource.idAttribute];
-                    Resource.getResource(relationDef.relation).ejectAll(query);
-                }
-            });
+            if (Resource.relationList) {
+                Resource.relationList.forEach(function (relationDef) {
+                    if (relationDef.foreignKey) {
+                        var query = {};
+                        query[relationDef.foreignKey] = instance[Resource.idAttribute];
+                        Resource.getResource(relationDef.relation).ejectAll(query);
+                    }
+                });
+            }
         }
     }
 ])
