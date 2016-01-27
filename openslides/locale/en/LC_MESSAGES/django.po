@@ -5,43 +5,27 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-22 21:13+0100\n"
+"POT-Creation-Date: 2016-01-27 20:54+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: agenda/models.py:164
+#: agenda/models.py:194
 msgid "Agenda item"
 msgstr ""
 
-#: agenda/models.py:165
+#: agenda/models.py:195
 msgid "Hidden item"
 msgstr ""
 
-#: agenda/models.py:239
-msgid "Can see agenda"
-msgstr ""
-
-#: agenda/models.py:240
-msgid "Can manage agenda"
-msgstr ""
-
-#: agenda/models.py:241
-msgid "Can see hidden items and time scheduling of agenda"
-msgstr ""
-
-#: agenda/models.py:305
+#: agenda/models.py:346
 #, python-brace-format
 msgid "{user} is already on the list of speakers."
 msgstr ""
 
-#: agenda/models.py:308
+#: agenda/models.py:349
 msgid "An anonymous user can not be on lists of speakers."
-msgstr ""
-
-#: agenda/models.py:354
-msgid "Can put oneself on the list of speakers"
 msgstr ""
 
 #: agenda/signals.py:18
@@ -149,35 +133,19 @@ msgstr ""
 msgid "The agenda has been numbered."
 msgstr ""
 
-#: assignments/models.py:58
+#: assignments/models.py:59
 msgid "Searching for candidates"
 msgstr ""
 
-#: assignments/models.py:59
+#: assignments/models.py:60
 msgid "Voting"
 msgstr ""
 
-#: assignments/models.py:60
+#: assignments/models.py:61
 msgid "Finished"
 msgstr ""
 
-#: assignments/models.py:111
-msgid "Can see elections"
-msgstr ""
-
-#: assignments/models.py:112
-msgid "Can nominate another participant"
-msgstr ""
-
-#: assignments/models.py:113
-msgid "Can nominate oneself"
-msgstr ""
-
-#: assignments/models.py:114
-msgid "Can manage elections"
-msgstr ""
-
-#: assignments/models.py:117 assignments/views.py:244 assignments/views.py:436
+#: assignments/models.py:118 assignments/views.py:244 assignments/views.py:436
 #: assignments/views.py:453
 msgid "Election"
 msgstr ""
@@ -488,134 +456,111 @@ msgid ""
 "'choice'."
 msgstr ""
 
-#: core/config.py:177 core/signals.py:28 core/signals.py:37 core/signals.py:47
-#: core/signals.py:55 core/signals.py:63 core/signals.py:75 core/signals.py:84
-#: core/signals.py:94 core/signals.py:106 core/signals.py:114
-#: motions/signals.py:28 motions/signals.py:41 motions/signals.py:49
-#: motions/signals.py:59 motions/signals.py:68
+#: core/config.py:177 core/signals.py:44 core/signals.py:53 core/signals.py:63
+#: core/signals.py:71 core/signals.py:79 core/signals.py:91
+#: core/signals.py:100 core/signals.py:110 core/signals.py:122
+#: core/signals.py:130 motions/signals.py:28 motions/signals.py:41
+#: motions/signals.py:49 motions/signals.py:59 motions/signals.py:68
 msgid "General"
 msgstr ""
 
-#: core/models.py:67
-msgid "Can see the projector"
-msgstr ""
-
-#: core/models.py:68
-msgid "Can manage the projector"
-msgstr ""
-
-#: core/models.py:69
-msgid "Can see the dashboard"
-msgstr ""
-
-#: core/models.py:184
-msgid "Can manage tags"
-msgstr ""
-
-#: core/models.py:204
-msgid "Can manage configuration"
-msgstr ""
-
-#: core/models.py:230
-msgid "Can use the chat"
-msgstr ""
-
-#: core/signals.py:26
+#: core/signals.py:42
 msgid "Event name"
 msgstr ""
 
-#: core/signals.py:29 core/signals.py:38 core/signals.py:48 core/signals.py:56
-#: core/signals.py:64 core/signals.py:76 core/signals.py:85 core/signals.py:95
+#: core/signals.py:45 core/signals.py:54 core/signals.py:64 core/signals.py:72
+#: core/signals.py:80 core/signals.py:92 core/signals.py:101
+#: core/signals.py:111
 msgid "Event"
 msgstr ""
 
-#: core/signals.py:34
+#: core/signals.py:50
 msgid "Presentation and assembly system"
 msgstr ""
 
-#: core/signals.py:35
+#: core/signals.py:51
 msgid "Short description of event"
 msgstr ""
 
-#: core/signals.py:45
+#: core/signals.py:61
 msgid "Event date"
 msgstr ""
 
-#: core/signals.py:53
+#: core/signals.py:69
 msgid "Event location"
 msgstr ""
 
-#: core/signals.py:61
+#: core/signals.py:77
 msgid "Event organizer"
 msgstr ""
 
-#: core/signals.py:69
+#: core/signals.py:85
 msgid ""
 "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based "
 "presentation and assembly system for visualizing and controlling agenda, "
 "motions and elections of an assembly."
 msgstr ""
 
-#: core/signals.py:73
+#: core/signals.py:89
 msgid "Legal notice"
 msgstr ""
 
-#: core/signals.py:81
+#: core/signals.py:97
 msgid "Welcome to OpenSlides"
 msgstr ""
 
-#: core/signals.py:82
+#: core/signals.py:98
 msgid "Front page title"
 msgstr ""
 
-#: core/signals.py:90
+#: core/signals.py:106
 msgid "[Space for your welcome text.]"
 msgstr ""
 
-#: core/signals.py:92
+#: core/signals.py:108
 msgid "Front page text"
 msgstr ""
 
-#: core/signals.py:104
+#: core/signals.py:120
 msgid "Allow access for anonymous guest users"
 msgstr ""
 
-#: core/signals.py:107 core/signals.py:115
+#: core/signals.py:123 core/signals.py:131
 msgid "System"
 msgstr ""
 
-#: core/signals.py:112
+#: core/signals.py:128
 msgid "Show this text on the login page."
 msgstr ""
 
-#: core/signals.py:123
+#: core/signals.py:139
 msgid "Show logo on projector"
 msgstr ""
 
-#: core/signals.py:125
+#: core/signals.py:141
 msgid ""
 "You can replace the logo. Just copy a file to \"static/img/logo-projector.png"
 "\" in your OpenSlides data path."
 msgstr ""
 
-#: core/signals.py:128 core/signals.py:136 core/signals.py:144
-#: core/signals.py:151
+#: core/signals.py:144 core/signals.py:152 core/signals.py:160
+#: core/signals.py:167
 msgid "Projector"
 msgstr ""
 
-#: core/signals.py:134
+#: core/signals.py:150
 msgid "Show title and description of event on projector"
 msgstr ""
 
-#: core/signals.py:141
+#: core/signals.py:157
 msgid "Background color of projector header"
 msgstr ""
 
-#: core/signals.py:142
+#: core/signals.py:158
 msgid "Use web color names like \"red\" or hex numbers like \"#ff0000\"."
 msgstr ""
 
-#: core/signals.py:149
+#: core/signals.py:165
 msgid "Default countdown"
 msgstr ""
 
@@ -639,36 +584,8 @@ msgstr ""
 msgid "Portuguese"
 msgstr ""
 
-#: mediafiles/models.py:41
-msgid "Can see the list of files"
-msgstr ""
-
-#: mediafiles/models.py:42
-msgid "Can upload files"
-msgstr ""
-
-#: mediafiles/models.py:43
-msgid "Can manage files"
-msgstr ""
-
-#: mediafiles/models.py:59
+#: mediafiles/models.py:58
 msgid "unknown"
-msgstr ""
-
-#: motions/models.py:118
-msgid "Can see motions"
-msgstr ""
-
-#: motions/models.py:119
-msgid "Can create motions"
-msgstr ""
-
-#: motions/models.py:120
-msgid "Can support motions"
-msgstr ""
-
-#: motions/models.py:121
-msgid "Can manage motions"
 msgstr ""
 
 #: motions/models.py:124 motions/pdf.py:38 motions/pdf.py:258
@@ -681,11 +598,11 @@ msgstr ""
 msgid "Motion"
 msgstr ""
 
-#: motions/models.py:604
+#: motions/models.py:616
 msgid "new"
 msgstr ""
 
-#: motions/models.py:671
+#: motions/models.py:683
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr ""
@@ -936,18 +853,6 @@ msgstr ""
 msgid "Disabled (no percents)"
 msgstr ""
 
-#: users/models.py:149
-msgid "Can see names of users"
-msgstr ""
-
-#: users/models.py:150
-msgid "Can see extra data of users"
-msgstr ""
-
-#: users/models.py:151
-msgid "Can manage users"
-msgstr ""
-
 #: users/pdf.py:26
 msgid "Title"
 msgstr ""
@@ -1098,46 +1003,46 @@ msgstr ""
 msgid "Staff"
 msgstr ""
 
-#: users/views.py:110
+#: users/views.py:111
 msgid "You can not deactivate yourself."
 msgstr ""
 
-#: users/views.py:149
+#: users/views.py:150
 msgid "You can not delete yourself."
 msgstr ""
 
-#: users/views.py:163
+#: users/views.py:164
 msgid "Password successfully reset."
 msgstr ""
 
-#: users/views.py:217
+#: users/views.py:234
 msgid "Username or password is not correct."
 msgstr ""
 
-#: users/views.py:243
+#: users/views.py:260
 #, python-brace-format
 msgid ""
 "Installation was successfully. Use {username} and {password} for first "
 "login. Important: Please change your password!"
 msgstr ""
 
-#: users/views.py:264
+#: users/views.py:281
 msgid "You are not authenticated."
 msgstr ""
 
-#: users/views.py:298
+#: users/views.py:315
 msgid "Old password does not match."
 msgstr ""
 
-#: users/views.py:309
+#: users/views.py:326
 msgid "user-list"
 msgstr ""
 
-#: users/views.py:310
+#: users/views.py:327
 msgid "List of users"
 msgstr ""
 
-#: users/views.py:324
+#: users/views.py:341
 msgid "user-access-data"
 msgstr ""
 
