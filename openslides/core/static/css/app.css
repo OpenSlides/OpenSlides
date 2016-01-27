@@ -87,6 +87,11 @@ img {
     color: #999;
 }
 
+#header div.unconnected {
+    border: 1px solid red;
+    position: fixed;
+    width: 100%;
+}
 #header a.headerlink {
     text-decoration: none;
 }
