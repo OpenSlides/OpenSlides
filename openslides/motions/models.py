@@ -115,10 +115,10 @@ class Motion(RESTModelMixin, models.Model):
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_see', ugettext_noop('Can see motions')),
-            ('can_create', ugettext_noop('Can create motions')),
-            ('can_support', ugettext_noop('Can support motions')),
-            ('can_manage', ugettext_noop('Can manage motions')),
+            ('can_see', 'Can see motions'),
+            ('can_create', 'Can create motions'),
+            ('can_support', 'Can support motions'),
+            ('can_manage', 'Can manage motions'),
         )
         ordering = ('identifier', )
         verbose_name = ugettext_noop('Motion')

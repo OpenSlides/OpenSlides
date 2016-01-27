@@ -96,8 +96,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         })
         .state('users.group.create', {
             resolve: {
-                permissions: function($http) {
-                    return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
+                permissions: function(Group) {
+                    return Group.getPermissions();
                 }
             }
         })
@@ -113,8 +113,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 '@users.group': {}
             },
             resolve: {
-                permissions: function($http) {
-                    return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
+                permissions: function(Group) {
+                    return Group.getPermissions();
                 }
             }
         })
@@ -762,7 +762,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'permissions',
     function($scope, $state, Group, permissions) {
         // get all permissions
-        $scope.permissions = permissions.data.actions.POST.permissions.choices;
+        $scope.permissions = permissions;
         $scope.group = {};
         $scope.save = function (group) {
             Group.create(group).then(
@@ -782,7 +782,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'group',
     function($scope, $state, Group, permissions, group) {
         // get all permissions
-        $scope.permissions = permissions.data.actions.POST.permissions.choices;
+        $scope.permissions = permissions;
         $scope.group = group;  // autoupdate is not activated
         $scope.save = function (group) {
             Group.save(group).then(
@@ -827,8 +827,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     '$http',
     '$stateParams',
     'operator',
-    'gettextCatalog',
-    function ($rootScope, $scope, $http, $stateParams, operator, gettextCatalog) {
+    function ($rootScope, $scope, $http, $stateParams, operator ) {
         $scope.alerts = [];
 
         // get login info-text from server
@@ -872,7 +871,46 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             $scope.closeThisDialog();
         };
     }
+])
+
+// Mark all permission strings for translation in JavaScript.
+// (see models.py of each Django app)
+.config([
+    'gettext',
+    function (gettext) {
+        // agenda
+        gettext('Can see agenda')
+        gettext('Can manage agenda')
+        gettext('Can see hidden items and time scheduling of agenda')
+        gettext('Can put oneself on the list of speakers')
+        // assignments
+        gettext('Can see elections')
+        gettext('Can nominate another participant')
+        gettext('Can nominate oneself')
+        gettext('Can manage elections')
+        // core
+        gettext('Can see the projector')
+        gettext('Can manage the projector')
+        gettext('Can see the dashboard')
+        gettext('Can manage tags')
+        gettext('Can manage configuration')
+        gettext('Can use the chat')
+        // mediafiles
+        gettext('Can see the list of files')
+        gettext('Can upload files')
+        gettext('Can manage files')
+        // motions
+        gettext('Can see motions')
+        gettext('Can create motions')
+        gettext('Can support motions')
+        gettext('Can manage motions')
+        // users
+        gettext('Can see names of users')
+        gettext('Can see extra data of users')
+        gettext('Can manage users')
+    }
 ]);
+
 
 // this is code from angular.js. Find a way to call this function from this file
 function getBlockNodes(nodes) {
