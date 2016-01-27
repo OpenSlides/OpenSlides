@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">  <!-- TODO: make lang dynamic -->
+<html ng-controller="LanguageCtrl" lang="{{ selectedLanguage[0].code }}" class="no-js">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <base href="/">
@@ -11,17 +11,17 @@
 <link rel="icon" href="/static/img/favicon.png">
 <script src="static/js/openslides-libs.js"></script>
 <script src="static/ckeditor/ckeditor.js"></script>
-<div id="wrapper">
+
+<div id="wrapper" ng-cloak>
 
 <!-- Header -->
 <div id="header">
   <div class="containerOS">
     <!-- Logo -->
     <div class="title">
-      <a ui-sref="dashboard">
+      <a ui-sref="home">
         <img src="/static/img/openslides-logo-dark.png" alt="Logo" height="35">
       </a>
-      <!-- TODO: <span class="navbar-text optional">{{ config('general_event_name') }}</span>-->
     </div>
 
     <!-- user specific header (chat, user settings / login, language)-->
@@ -104,7 +104,7 @@
       </div>
 
       <!-- language switcher -->
-      <span ng-controller="LanguageCtrl" uib-dropdown>
+      <span uib-dropdown>
         | <a href class="headerlink" uib-dropdown-toggle>
           <i class="fa fa-flag"></i>
           {{ selectedLanguage[0].name | translate }}
@@ -157,7 +157,7 @@
   <div class="containerOS">
     <div class="col1" ng-class="isProjectorSidebar ? 'min' : 'max'">
         <!-- dynamic views -->
-        <div ui-view></div>
+        <div ui-view ng-cloak></div>
         <!-- footer -->
         <div id="footer">
           &copy; Copyright by <a href="http://www.openslides.org" target="_blank">OpenSlides</a> |

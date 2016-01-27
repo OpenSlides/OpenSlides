@@ -280,6 +280,14 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 $scope.alert = { type: 'danger', msg: data.detail, show: true };
             });
         };
+        // gets speech duration of selected speaker in seconds
+        $scope.getDuration = function (speaker) {
+            var beginTimestamp = new Date(speaker.begin_time).getTime()
+            var endTimestamp = new Date(speaker.end_time).getTime()
+            // calculate duration in seconds
+            return Math.floor((endTimestamp - beginTimestamp) / 1000);
+
+        }
         // save reordered list of speakers
         $scope.treeOptions = {
             dropped: function (event) {

@@ -125,13 +125,9 @@ class Motion(RESTModelMixin, models.Model):
 
     def __str__(self):
         """
-        Return a human readable name of this motion.
+        Return the title of this motion.
         """
-        if self.identifier:
-            string = '%s: %s' % (self.identifier, self.title)
-        else:
-            string = self.title
-        return string
+        return self.title
 
     # TODO: Use transaction
     def save(self, use_version=None, *args, **kwargs):
@@ -464,10 +460,24 @@ class Motion(RESTModelMixin, models.Model):
 
     def get_agenda_title(self):
         """
-        Return a title for the agenda.
+        Return a simple title string for the agenda.
+
+        Contains only agenda item number and title.
         """
-        # There has to be a function with the same return value in javascript.
         return str(self)
+
+    def get_agenda_list_view_title(self):
+        """
+        Return a title string for the agenda list view.
+
+        Contains agenda item number, title and motion identifier.
+        Note: It has to be the same return value like in JavaScript.
+        """
+        if self.identifier:
+            string = '%s (%s %s)' % (self.title, _(self._meta.verbose_name), self.identifier)
+        else:
+            string = '%s (%s)' % (self.title, _(self._meta.verbose_name))
+        return string
 
     @property
     def agenda_item(self):

@@ -130,7 +130,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     closeByEscape: $stateParams.guest_enabled,
                     closeByDocument: $stateParams.guest_enabled,
                     preCloseCallback: function() {
-                        $state.go('dashboard');
+                        $state.go('home');
                         return true;
                     }
                 });

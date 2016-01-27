@@ -299,6 +299,17 @@ class Item(RESTModelMixin, models.Model):
             raise NotImplementedError('You have to provide a get_agenda_title '
                                       'method on your related model.')
 
+    @property
+    def list_view_title(self):
+        """
+        Return get_agenda_list_view_title() from the content_object.
+        """
+        try:
+            return self.content_object.get_agenda_list_view_title()
+        except AttributeError:
+            raise NotImplementedError('You have to provide a get_agenda_list_view_title '
+                                      'method on your related model.')
+
     def is_hidden(self):
         """
         Returns True if the type of this object itself is a hidden item or any

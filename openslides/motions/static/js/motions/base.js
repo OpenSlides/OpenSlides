@@ -161,15 +161,15 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
     'MotionPoll',
     'jsDataModel',
     'gettext',
+    'gettextCatalog',
     'operator',
     'Config',
-    function(DS, MotionPoll, jsDataModel, gettext, operator, Config) {
+    function(DS, MotionPoll, jsDataModel, gettext, gettextCatalog, operator, Config) {
         var name = 'motions/motion';
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
             verboseName: gettext('Motion'),
-            agendaSupplement: gettext('Motion'),
             methods: {
                 getResourceName: function () {
                     return name;
@@ -195,16 +195,9 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
                 getReason: function (versionId) {
                     return this.getVersion(versionId).reason;
                 },
-                getAgendaTitle: function () {
-                    var value = '';
-                    if (this.identifier) {
-                        value = ' ' + this.identifier;
-                    }
-                    return "Motion " + value + ': ' + this.getTitle();
-                },
                 // link name which is shown in search result
                 getSearchResultName: function () {
-                    return this.getAgendaTitle();
+                    return this.getTitle();
                 },
                 // subtitle of search result
                 getSearchResultSubtitle: function () {

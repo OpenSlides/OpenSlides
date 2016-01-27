@@ -48,12 +48,24 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                     try {
                         title =  this.getContentObject().getAgendaTitle();
                     } catch (e) {
-                        // Only use this.title when the content object is not
-                        // in the DS store.
+                        // when the content object is not in the DS store.
                         title = this.title;
                     }
-                    if (this.getContentResource().agendaSupplement) {
-                        title = gettextCatalog.getString(this.getContentResource().agendaSupplement) + ' ' + title;
+                    if (this.item_number) {
+                        title = this.item_number + ' · ' + title;
+                    }
+                    return title;
+                },
+                getAgendaTitle: function () {
+                    return this.title;
+                },
+                getListViewTitle: function () {
+                    var title;
+                    try {
+                        title =  this.getContentObject().getAgendaListViewTitle();
+                    } catch (e) {
+                        // when the content object is not in the DS store
+                        title = this.list_view_title;
                     }
                     if (this.item_number) {
                         title = this.item_number + ' · ' + title;

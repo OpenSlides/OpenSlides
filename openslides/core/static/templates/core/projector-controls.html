@@ -8,7 +8,7 @@
         <i class="fa toggle-icon" ng-class="isLiveViewClosed ? 'fa-angle-up' : 'fa-angle-down'"></i>
         <h4 translate>Live view</h4>
       </a>
-      <div uib-collapse="isLiveViewClosed">
+      <div uib-collapse="isLiveViewClosed" ng-cloak>
         <a ui-sref="projector" target="_blank">
           <div id="iframewrapper">
             <iframe id="iframe" src="/projector" frameborder="0"></iframe>
@@ -61,7 +61,7 @@
         <i class="fa toggle-icon" ng-class="isCountdowns ? 'fa-angle-up' : 'fa-angle-down'"></i>
         <h4 translate>Countdowns</h4>
       </a>
-      <div uib-collapse="!isCountdowns">
+      <div uib-collapse="!isCountdowns" ng-cloak>
         <div ng-repeat="countdown in countdowns | orderBy: 'index'" id="{{countdown.uuid}}"
             class="countdown panel panel-default">
           <div class="panel-heading">
@@ -153,7 +153,7 @@
         <i class="fa toggle-icon" ng-class="isMessages ? 'fa-angle-up' : 'fa-angle-down'"></i>
         <h4 translate>Messages</h4>
       </a>
-      <div uib-collapse="!isMessages">
+      <div uib-collapse="!isMessages" ng-cloak>
         <div ng-repeat="message in messages | orderBy: 'index'" id="{{message.uuid}}" class="message panel panel-default">
           <div class="panel-body"
               ng-class="{ 'projected': message.visible }">

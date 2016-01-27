@@ -14,7 +14,7 @@
 
   <!-- Title -->
   <div id="title">
-    <h1>{{ motion.getTitle() }}</h1>
+    <h1>{{ motion.agenda_item.getTitle() }}</h1>
     <h2>
       <translate>Motion</translate> {{ motion.identifier }}
       <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion().version_number }}</span>
@@ -25,6 +25,6 @@
   <div ng-bind-html="motion.getText()"></div>
 
   <!-- Reason -->
-  <h2 ng-if="motion.getReason()" translate>Reason</h2>
+  <h3 ng-if="motion.getReason()" translate>Reason</h3>
   <div ng-bind-html="motion.getReason()"></div>
 </div>

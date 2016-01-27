@@ -36,19 +36,21 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     assignments: function(Assignment) {
                         return Assignment.findAll();
                     },
+                    items: function(Agenda) {
+                        return Agenda.findAll();
+                    },
                     phases: function(Assignment) {
                         return Assignment.getPhases();
-                    },
-                    users: function(User) {
-                        return User.findAll();
-                    },
+                    }
                 }
             })
             .state('assignments.assignment.detail', {
                 controller: 'AssignmentDetailCtrl',
                 resolve: {
                     assignment: function(Assignment, $stateParams) {
-                        return Assignment.find($stateParams.id);
+                        return Assignment.find($stateParams.id).then(function(assignment) {
+                            return Assignment.loadRelations(assignment, 'agenda_item');
+                        });
                     },
                     users: function(User) {
                         return User.findAll();
@@ -172,8 +174,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'phases',
     function($scope, ngDialog, AssignmentForm, Assignment, phases) {
         Assignment.bindAll({}, $scope, 'assignments');
-        // get all item types via OPTIONS request
-        $scope.phases = phases.data.actions.POST.phase.choices;
+        $scope.phases = phases;
         $scope.alert = {};
 
         // setup table sorting
@@ -266,8 +267,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         Assignment.bindOne(assignment.id, $scope, 'assignment');
         Assignment.loadRelations(assignment, 'agenda_item');
         $scope.candidateSelectBox = {};
-        // get all item types via OPTIONS request
-        $scope.phases = phases.data.actions.POST.phase.choices;
+        $scope.phases = phases;
         $scope.alert = {};
 
         // open edit dialog

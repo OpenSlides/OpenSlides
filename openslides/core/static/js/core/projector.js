@@ -89,7 +89,9 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         var id = $scope.element.id;
-        Customslide.find(id);
+        Customslide.find(id).then(function(customslide) {
+            Customslide.loadRelations(customslide, 'agenda_item');
+        });
         Customslide.bindOne(id, $scope, 'customslide');
     }
 ])

@@ -28,17 +28,13 @@
         <i class="fa fa-pencil"></i>
       </a>
     </div>
-    <h1>{{ motion.getTitle(version) }}</h1>
+    <h1>{{ motion.agenda_item.getTitle() }}</h1>
     <h2>
         <translate>Motion</translate> {{ motion.identifier }}
         <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion(version).version_number }}</span>
         <span ng-if="motion.active_version != version" class="label label-warning">
           <i class="fa fa-exclamation-triangle"></i>
           <translate>This version is not permitted.</translate>
-        </span>
-        <span ng-if="motion.agenda_item.item_number">
-          &ndash;
-          <translate>Agenda</translate>: {{ motion.agenda_item.item_number }}
         </span>
     </h2>
   </div>

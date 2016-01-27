@@ -89,26 +89,42 @@
         <!-- delete selection column -->
         <th ng-show="$parent.isDeleteMode" os-perms="motions.can_manage" class="minimum deleteColumn">
           <input type="checkbox" ng-model="$parent.selectedAll" ng-change="checkAll()">
+
+        <!-- agenda item column -->
+        <th ng-click="toggleSort('agenda_item.item_number')" class="sortable">
+          <translate translate-comment="short form of agenda item">Item</translate>
+          <i class="pull-right fa" ng-show="sortColumn === 'agenda_item.item_number' && header.sortable != false"
+              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+          </i>
+        <!-- identifier column -->
         <th ng-click="toggleSort('identifier')" class="sortable minimum">
           <translate>Identifier</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'identifier' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
+
+        <!-- title column -->
         <th ng-click="toggleSort('getTitle()')" class="sortable">
           <translate>Title</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'getTitle()' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
+
+        <!-- submitters column -->
         <th ng-click="toggleSort('submitters')" class="sortable optional">
           <translate>Submitters</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'submitters' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
+
+        <!-- category column -->
         <th ng-click="toggleSort('category')" class="sortable optional">
           <translate>Category</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'category' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
+
+        <!-- state column -->
         <th ng-click="toggleSort('state.name')" class="sortable optional">
           <translate>State</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'state.name' && header.sortable != false"
@@ -119,7 +135,8 @@
           filter: {state_id: stateFilter} | orderBy: sortColumn:reverse)"
           class="animate-item"
           ng-class="{ 'activeline': motion.isProjected(), 'selected': motion.selected }">
-        <!-- projector column -->
+
+        <!-- projector -->
         <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
           <a class="btn btn-default btn-sm"
               ng-class="{ 'btn-primary': motion.isProjected() }"
@@ -127,11 +144,18 @@
               title="{{ 'Project motion' | translate }}">
             <i class="fa fa-video-camera"></i>
           </a>
-        <!-- delete selection column -->
+
+        <!-- delete selection -->
         <td ng-show="isDeleteMode" os-perms="motions.can_manage" class="deleteColumn">
           <input type="checkbox" ng-model="motion.selected">
-        <!-- motion data colums -->
+
+        <!-- agenda item number -->
+        <td ng-if="!motion.quickEdit">{{ motion.agenda_item.item_number }}
+
+        <!-- identifier -->
         <td ng-if="!motion.quickEdit">{{ motion.identifier }}
+
+        <!-- title -->
         <td ng-if="!motion.quickEdit" ng-mouseover="motion.hover=true" ng-mouseleave="motion.hover=false">
             <strong><a ui-sref="motions.motion.detail({id: motion.id})">{{ motion.getTitle() }}</a></strong>
             <span ng-repeat="tag in motion.tags" class="label label-default">
@@ -151,16 +175,23 @@
                   ng-bootbox-confirm-action="delete(motion)" translate>Delete</a>
               </span>
             </div>
+
+        <!-- submitters -->
         <td ng-if="!motion.quickEdit" class="optional">
           <div ng-repeat="submitter in motion.submitters">
             {{ submitter.get_full_name() }}<br>
           </div>
+
+        <!-- category -->
         <td ng-if="!motion.quickEdit" class="optional">
           {{ motion.category.name }}
+
+        <!-- state -->
         <td ng-if="!motion.quickEdit" class="optional">
           <span class="label" ng-class="'label-'+motion.state.css_class">
             {{ motion.state.name | translate }}
           </span>
+
         <!-- quickEdit columns -->
         <td ng-if="motion.quickEdit && motion.isAllowed('quickedit')" colspan="5">
           <h4>{{ motion.getTitle() }} <span class="text-muted">&ndash; <translate>QuickEdit</translate></span></h4>
