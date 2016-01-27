@@ -2,7 +2,6 @@ import mimetypes
 
 from django.conf import settings
 from django.db import models as dbmodels
-from PyPDF2 import PdfFileReader
 
 from ..utils.rest_api import FileField, ModelSerializer, SerializerMethodField
 from .models import Mediafile
@@ -18,14 +17,10 @@ class AngularCompatibleFileField(FileField):
     def to_representation(self, value):
         if value is None:
             return None
-        filetype = mimetypes.guess_type(value.path)[0]
-        result = {
+        return {
             'name': value.name,
-            'type': filetype
+            'type': mimetypes.guess_type(value.path)[0]
         }
-        if filetype == 'application/pdf':
-            result['pages'] = PdfFileReader(open(value.path, 'rb')).getNumPages()
-        return result
 
 
 class MediafileSerializer(ModelSerializer):

@@ -9,5 +9,4 @@ reportlab>=3.0,<3.3
 roman>=2.0,<2.1
 setuptools>=2.2,<20.0
 sockjs-tornado>=1.0,<1.1
-Whoosh>=2.7.0,<2.8
-PyPDF2==1.25.1
+Whoosh>=2.7,<2.8
