@@ -3,13 +3,13 @@
 # Copyright (C) 2011–2015 by OpenSlides team, see AUTHORS.
 # This file is distributed under the same license as the OpenSlides package.
 # Translators:
-# Moira Brülisauer <moosline@savvy.ch>, 2015
+# Moira Brülisauer <moosline@savvy.ch>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-07 15:41+0100\n"
-"PO-Revision-Date: 2015-12-07 18:58+0000\n"
+"POT-Creation-Date: 2016-01-27 20:54+0100\n"
+"PO-Revision-Date: 2016-01-27 19:59+0000\n"
 "Last-Translator: Norman Jäckel <transifex16062013@normanjaeckel.de>\n"
 "Language-Team: French (http://www.transifex.com/openslides/openslides/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -18,62 +18,22 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: agenda/models.py:160
+#: agenda/models.py:194
 msgid "Agenda item"
 msgstr "Point de l'ordre du jour"
 
-#: agenda/models.py:161
+#: agenda/models.py:195
 msgid "Hidden item"
 msgstr "élément masqué"
 
-#: agenda/models.py:163
-msgid "Number"
-msgstr "Numéro"
+#: agenda/models.py:346
+#, python-brace-format
+msgid "{user} is already on the list of speakers."
+msgstr "{user} est déjà sur la liste des orateurs."
 
-#: agenda/models.py:168 users/models.py:137
-msgid "Comment"
-msgstr "Commentaire"
-
-#: agenda/models.py:173
-msgid "Closed"
-msgstr "Fermé"
-
-#: agenda/models.py:181
-msgid "Type"
-msgstr "Genre"
-
-#: agenda/models.py:198 core/models.py:130
-msgid "Weight"
-msgstr "Importance"
-
-#: agenda/models.py:219
-msgid "List of speakers is closed"
-msgstr "Liste des orateurs est fermé"
-
-#: agenda/models.py:226
-msgid "Can see agenda"
-msgstr "Peut voir l'ordre du jour"
-
-#: agenda/models.py:227
-msgid "Can manage agenda"
-msgstr "Peut gérer l'ordre du jour"
-
-#: agenda/models.py:228
-msgid "Can see hidden items and time scheduling of agenda"
-msgstr "Peut voir les éléments cachés et \nla planification de temps de l'ordre du jour"
-
-#: agenda/models.py:303
-#, python-format
-msgid "%(user)s is already on the list of speakers of %(id)s."
-msgstr ""
-
-#: agenda/models.py:307
+#: agenda/models.py:349
 msgid "An anonymous user can not be on lists of speakers."
 msgstr "Un utilisateur anonyme no peut pas être sur la liste des orateurs."
-
-#: agenda/models.py:347
-msgid "Can put oneself on the list of speakers"
-msgstr "Peut se mettre sur la liste des orateurs"
 
 #: agenda/signals.py:18
 msgid "Invalid input."
@@ -88,8 +48,8 @@ msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr "Format d'entrée: DD.MM.YYYY HH:MM"
 
 #: agenda/signals.py:34 agenda/signals.py:43 agenda/signals.py:53
-#: agenda/signals.py:60 agenda/signals.py:72 agenda/views.py:240
-#: agenda/views.py:241
+#: agenda/signals.py:61 agenda/signals.py:73 agenda/views.py:279
+#: agenda/views.py:280
 msgid "Agenda"
 msgstr "Ordre du jour"
 
@@ -109,143 +69,105 @@ msgstr "[Commencer discours] démarre le compte à rebours, [Arreter discours] a
 msgid "Numbering prefix for agenda items"
 msgstr "Numérotation préfixe pour points de l'ordre du jour"
 
-#: agenda/signals.py:67
+#: agenda/signals.py:59
+msgid "This prefix will be set if you run the automatic agenda numbering."
+msgstr "Ce préfixe sera fixé si vous exécutez la numérotation automatique pour  l'ordre du jour."
+
+#: agenda/signals.py:68
 msgid "Numeral system for agenda items"
 msgstr "système de numération de points de l'ordre du jour"
 
-#: agenda/signals.py:69
+#: agenda/signals.py:70
 msgid "Arabic"
 msgstr "arabe"
 
-#: agenda/signals.py:70
+#: agenda/signals.py:71
 msgid "Roman"
 msgstr "romain"
 
-#: agenda/views.py:105
+#: agenda/views.py:106
 msgid "The list of speakers is closed."
 msgstr "La liste des orateurs est fermée."
 
-#: agenda/views.py:114
+#: agenda/views.py:115
 msgid "User does not exist."
 msgstr "L'utilisateur n'existe pas."
 
-#: agenda/views.py:122
+#: agenda/views.py:123
 #, python-format
 msgid "User %s was successfully added to the list of speakers."
 msgstr "L'utilisateur %s a été ajouté avec succès à la liste des orateurs."
 
-#: agenda/views.py:140
+#: agenda/views.py:141
 msgid "You are not on the list of speakers."
 msgstr "Vous n'êtes pas sur la liste des orateurs."
 
-#: agenda/views.py:148 agenda/views.py:178
+#: agenda/views.py:149 agenda/views.py:179
 msgid "Speaker does not exist."
 msgstr "Orateur n'existe pas."
 
-#: agenda/views.py:152
+#: agenda/views.py:153
 #, python-format
 msgid "Speaker %s was successfully removed from the list of speakers."
 msgstr "L'orateur %s a été envelé avec succès à la liste des orateurs."
 
-#: agenda/views.py:173
+#: agenda/views.py:174
 msgid "The list of speakers is empty."
 msgstr "La liste des orateurs est vide."
 
-#: agenda/views.py:180
+#: agenda/views.py:181
 msgid "User is now speaking."
 msgstr "utilisateur est entrain de parler."
 
-#: agenda/views.py:191
+#: agenda/views.py:192
 #, python-format
 msgid "There is no one speaking at the moment according to %(item)s."
 msgstr "Il n'y a pas un a parlé au moment selon %(item)s."
 
-#: agenda/views.py:193
+#: agenda/views.py:194
 msgid "The speech is finished now."
 msgstr "Le discours maintenant terminé."
 
-#: agenda/views.py:230
+#: agenda/views.py:213 agenda/views.py:225
+msgid "Invalid data."
+msgstr "Données invalides."
+
+#: agenda/views.py:235
+msgid "List of speakers successfully sorted."
+msgstr "Liste des orateurs a été trié avec succès."
+
+#: agenda/views.py:269
 msgid "The agenda has been numbered."
 msgstr "L'ordre du jour a été numéroté."
 
-#: assignments/models.py:29
-msgid "candidate"
-msgstr "candidat"
-
-#: assignments/models.py:30 assignments/views.py:414
-msgid "elected"
-msgstr "élu"
-
-#: assignments/models.py:31
-msgid "blocked"
-msgstr "bloqué"
-
-#: assignments/models.py:64
+#: assignments/models.py:59
 msgid "Searching for candidates"
 msgstr "Recherche de candidats"
 
-#: assignments/models.py:65
+#: assignments/models.py:60
 msgid "Voting"
 msgstr "Vote"
 
-#: assignments/models.py:66
+#: assignments/models.py:61
 msgid "Finished"
 msgstr "Terminé"
 
-#: assignments/models.py:71 core/models.py:124 core/signals.py:126
-#: mediafiles/models.py:19 motions/models.py:554 users/models.py:124
-#: users/pdf.py:26
-msgid "Title"
-msgstr "Titre"
-
-#: assignments/models.py:78
-msgid "Description"
-msgstr "Description"
-
-#: assignments/models.py:84 assignments/views.py:303
-msgid "Number of members to be elected"
-msgstr "Nombre de membres à élire"
-
-#: assignments/models.py:92
-msgid "Default comment on the ballot paper"
-msgstr "Commentaire par défaut sur le bulletin de vote"
-
-#: assignments/models.py:120
-msgid "Can see elections"
-msgstr "Peut voir les élections"
-
-#: assignments/models.py:121
-msgid "Can nominate another participant"
-msgstr "Peut nonimer un autre participant"
-
-#: assignments/models.py:122
-msgid "Can nominate oneself"
-msgstr "Peut se nommer soi même"
-
-#: assignments/models.py:123
-msgid "Can manage elections"
-msgstr "Peut gérer les élections"
-
-#: assignments/models.py:126 assignments/views.py:251 assignments/views.py:443
-#: assignments/views.py:460
+#: assignments/models.py:118 assignments/views.py:244 assignments/views.py:436
+#: assignments/views.py:453
 msgid "Election"
 msgstr "Election"
 
-#: assignments/models.py:355
-msgid "Comment on the ballot paper"
-msgstr "Commentaire sur le bulletin de vote"
-
-#: assignments/serializers.py:119
+#: assignments/serializers.py:136
 #, python-format
 msgid "You have to submit data for %d candidates."
 msgstr "Vous devez soumettre des données pour %d candidats."
 
-#: assignments/serializers.py:123 motions/serializers.py:168
+#: assignments/serializers.py:140 motions/serializers.py:176
 #, python-format
 msgid "You have to submit data for %d vote values."
 msgstr "Vous devez soumettre des données pour les valeurs %d votes."
 
-#: assignments/serializers.py:127 motions/serializers.py:172
+#: assignments/serializers.py:144 motions/serializers.py:180
 #, python-format
 msgid "Vote value %s is invalid."
 msgstr "Valeur de vote %s est invalide."
@@ -270,7 +192,7 @@ msgstr "Toujours Oui-Non-Abstention par candidat"
 #: assignments/signals.py:51 assignments/signals.py:60
 #: assignments/signals.py:71 assignments/signals.py:78
 #: assignments/signals.py:81 assignments/signals.py:90
-#: assignments/views.py:254
+#: assignments/views.py:247
 msgid "Elections"
 msgstr "Elections"
 
@@ -345,464 +267,384 @@ msgstr "Vous ne pouvez pas retirer votre candidature à cette élection car elle
 msgid "You are not a candidate of this election."
 msgstr "Vous n'êtes pas un candidat de cette élection."
 
-#: assignments/views.py:120
-msgid ""
-"You have withdrawn your candidature successfully. You can not be nominated "
-"by other participants anymore."
-msgstr "Vous avez retiré votre candidature avec  succès. On ne peut plus vous nominer comme candidat."
+#: assignments/views.py:119
+msgid "You have withdrawn your candidature successfully."
+msgstr "Vous avez retiré votre candidature avec succès."
 
-#: assignments/views.py:130
+#: assignments/views.py:128
 #, python-format
 msgid "Invalid data. Expected dictionary, got %s."
 msgstr "Données invalides. Dictionnaire attendu, obtenu %s."
 
-#: assignments/views.py:136
+#: assignments/views.py:134
 msgid "Invalid data. Expected something like {\"user\": <id>}."
 msgstr "Données invalides. Attendu quelque chose comme {\"user\": <id>}."
 
-#: assignments/views.py:140
+#: assignments/views.py:138
 #, python-format
 msgid "Invalid data. User %d does not exist."
 msgstr "Données invalides. L'utilisateur %d ne existe pas."
 
-#: assignments/views.py:152 assignments/views.py:171
+#: assignments/views.py:158
 #, python-format
 msgid "User %s is already elected."
 msgstr "L'utilisateur %s est déja elu."
 
-#: assignments/views.py:162
+#: assignments/views.py:160
 msgid "You can not nominate someone to this election because it is finished."
 msgstr "Vous ne pouvez pas nommer quelqu'un pour cette élection, car elle terminée."
 
-#: assignments/views.py:169
-#, python-format
-msgid "User %s does not want to be a candidate. Only a manager can do this."
-msgstr "L'utilisateur %s ne veut pas être un candidat. Seulement un gestionnaire peut faire cela."
-
-#: assignments/views.py:173
+#: assignments/views.py:166
 #, python-format
 msgid "User %s is already nominated."
 msgstr "L'utilisateur %s est déja nommé."
 
-#: assignments/views.py:175
+#: assignments/views.py:168
 #, python-format
 msgid "User %s was nominated successfully."
 msgstr "Le candidat %s a été nommé avec succès. "
 
-#: assignments/views.py:182
+#: assignments/views.py:175
 msgid ""
-"You can not delete someones candidature to this election because it is "
+"You can not delete someone's candidature to this election because it is "
 "finished."
-msgstr "Vous ne pouvez pas supprimer la candidature de quelqu'un à cette élection, car il est terminé."
+msgstr ""
 
-#: assignments/views.py:185
+#: assignments/views.py:178
 #, python-format
 msgid "User %s has no status in this election."
 msgstr "L'utilisateur %s n'a pas de statut dans cette élection."
 
-#: assignments/views.py:187
+#: assignments/views.py:180
 #, python-format
-msgid "Candidate %s was withdrawn/unblocked successfully."
-msgstr "Le candidat %s a été rejeté/débloqué avec succès."
+msgid "Candidate %s was withdrawn successfully."
+msgstr "Le candidat %s a été rejeté avec succès."
 
-#: assignments/views.py:199
+#: assignments/views.py:192
 #, python-format
 msgid "User %s is not a candidate of this election."
 msgstr "L'utilisateur %s n'est pas un candidat de cette élection."
 
-#: assignments/views.py:201
+#: assignments/views.py:194
 #, python-format
 msgid "User %s was successfully elected."
 msgstr "L'utilisateur %s a été élu avec succès."
 
-#: assignments/views.py:205
+#: assignments/views.py:198
 #, python-format
 msgid "User %s is not an elected candidate of this election."
 msgstr "L'utilisateur %s n'est pas un candidat élu de cette élection."
 
-#: assignments/views.py:208
+#: assignments/views.py:201
 #, python-format
 msgid "User %s was successfully unelected."
-msgstr ""
+msgstr "L'utilisateur %s a été non élu avec succès."
 
-#: assignments/views.py:218
+#: assignments/views.py:211
 msgid "Can not create ballot because there are no candidates."
-msgstr ""
+msgstr "Vous ne pouvez pas créer des scrutins, car il n'y a pas de candidats."
 
-#: assignments/views.py:221
+#: assignments/views.py:214
 msgid "Ballot created successfully."
-msgstr ""
+msgstr "Le scrutin a été créé avec succès."
 
-#: assignments/views.py:275
+#: assignments/views.py:268
 msgid "No elections available."
-msgstr ""
+msgstr "Pas d' élections disponibles."
 
-#: assignments/views.py:294
+#: assignments/views.py:287
 #, python-format
 msgid "Election: %s"
-msgstr ""
+msgstr "Election: %s"
 
-#: assignments/views.py:310 assignments/views.py:338
+#: assignments/views.py:296
+msgid "Number of members to be elected"
+msgstr "Nombre de membres à élire"
+
+#: assignments/views.py:303 assignments/views.py:331
 msgid "Candidates"
 msgstr "Candidats"
 
-#: assignments/views.py:334
+#: assignments/views.py:327
 msgid "Election result"
-msgstr ""
+msgstr "Résultat de l'élection"
 
-#: assignments/views.py:340
+#: assignments/views.py:333
 msgid "ballot"
-msgstr ""
+msgstr "vote"
 
-#: assignments/views.py:359
+#: assignments/views.py:352
 #, python-format
 msgid ""
 "Y: %(YES)s\n"
 "N: %(NO)s\n"
 "A: %(ABSTAIN)s"
-msgstr ""
+msgstr "O: %(YES)s\nN: %(NO)s\nA: %(ABSTAIN)s"
 
-#: assignments/views.py:370 motions/pdf.py:115 poll/models.py:82
+#: assignments/views.py:363 motions/pdf.py:115
 msgid "Valid votes"
-msgstr ""
+msgstr "Votes valides"
 
-#: assignments/views.py:381 motions/pdf.py:117 poll/models.py:84
+#: assignments/views.py:374 motions/pdf.py:117
 msgid "Invalid votes"
-msgstr ""
+msgstr "Votes invalides"
 
-#: assignments/views.py:392 motions/pdf.py:119 poll/models.py:86
+#: assignments/views.py:385 motions/pdf.py:119
 msgid "Votes cast"
-msgstr ""
+msgstr "Nombre de votants"
 
-#: assignments/views.py:467
+#: assignments/views.py:407
+msgid "elected"
+msgstr "élu"
+
+#: assignments/views.py:460
 #, python-format
 msgid "%d. ballot"
-msgstr ""
+msgstr "%d. vote"
 
-#: assignments/views.py:469
+#: assignments/views.py:462
 #, python-format
 msgid "%d candidate"
 msgid_plural "%d candidates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d candidat"
+msgstr[1] "%d candidats"
 
-#: assignments/views.py:471
+#: assignments/views.py:464
 #, python-format
 msgid "%d available post"
 msgid_plural "%d available posts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d poste disponible"
+msgstr[1] "%d postes disponibles"
 
-#: assignments/views.py:523 motions/pdf.py:125 motions/pdf.py:270
+#: assignments/views.py:516 motions/pdf.py:125 motions/pdf.py:270
 msgid "Yes"
 msgstr "Oui"
 
-#: assignments/views.py:524 motions/pdf.py:125 motions/pdf.py:272
+#: assignments/views.py:517 motions/pdf.py:125 motions/pdf.py:272
 msgid "No"
 msgstr "Non"
 
-#: assignments/views.py:525 motions/pdf.py:125 motions/pdf.py:274
+#: assignments/views.py:518 motions/pdf.py:125 motions/pdf.py:274
 msgid "Abstain"
 msgstr "Abstention"
 
-#: core/config.py:28 core/config.py:59
+#: core/config.py:29 core/config.py:60
 #, python-format
 msgid "The config variable %s was not found."
-msgstr ""
+msgstr "La variable de configuration %s n'a pas été trouvé."
 
-#: core/config.py:68
+#: core/config.py:69
 #, python-format
 msgid "Wrong datatype. Expected %(expected_type)s, got %(got_type)s."
-msgstr ""
+msgstr "Type de données erronées. %(expected_type)s, obtenu %(got_type)s."
 
-#: core/config.py:71
+#: core/config.py:72
 msgid "Invalid input. Choice does not match."
-msgstr ""
+msgstr "Entrée invalide. Choix ne correspond pas."
 
-#: core/config.py:112
+#: core/config.py:114
 #, python-format
 msgid "Too many values for config variable %s found."
-msgstr ""
-
-#: core/config.py:161
-msgid "Invalid value for config attribute input_type."
-msgstr ""
+msgstr "Trop de valeurs pour la variable den configuration %s ont été trouvé."
 
 #: core/config.py:163
+msgid "Invalid value for config attribute input_type."
+msgstr "Valeur incorrecte pour l'attribut de configuration input_type."
+
+#: core/config.py:165
 msgid ""
 "Either config attribute 'choices' must not be None or 'input_type' must not "
 "be 'choice'."
-msgstr ""
+msgstr "Soit l'attribut de configuration 'choix' ne doit pas être aucun ou 'input_type' ne dois pas être 'choix'."
 
-#: core/config.py:166
+#: core/config.py:168
 msgid ""
 "Either config attribute 'choices' must be None or 'input_type' must be "
 "'choice'."
-msgstr ""
+msgstr "Soit l'attribut de configuration 'choix' ne doit pas être aucun ou 'input_type' ne doit être 'choix'."
 
-#: core/config.py:175 core/signals.py:28 core/signals.py:37 core/signals.py:47
-#: core/signals.py:55 core/signals.py:64 core/signals.py:75
-#: motions/signals.py:28 motions/signals.py:41 motions/signals.py:49
-#: motions/signals.py:59 motions/signals.py:68
+#: core/config.py:177 core/signals.py:44 core/signals.py:53 core/signals.py:63
+#: core/signals.py:71 core/signals.py:79 core/signals.py:91
+#: core/signals.py:100 core/signals.py:110 core/signals.py:122
+#: core/signals.py:130 motions/signals.py:28 motions/signals.py:41
+#: motions/signals.py:49 motions/signals.py:59 motions/signals.py:68
 msgid "General"
-msgstr ""
+msgstr "Général"
 
-#: core/models.py:65
-msgid "Can see the projector"
-msgstr ""
-
-#: core/models.py:66
-msgid "Can manage the projector"
-msgstr ""
-
-#: core/models.py:67
-msgid "Can see the dashboard"
-msgstr ""
-
-#: core/models.py:89
-msgid "Projector element does not exist."
-msgstr ""
-
-#: core/models.py:127 motions/models.py:557
-msgid "Text"
-msgstr ""
-
-#: core/models.py:166
-msgid "Tag"
-msgstr ""
-
-#: core/models.py:173
-msgid "Can manage tags"
-msgstr ""
-
-#: core/models.py:191
-msgid "Can manage configuration"
-msgstr ""
-
-#: core/models.py:201
-msgid "Message"
-msgstr ""
-
-#: core/models.py:207
-msgid "User"
-msgstr ""
-
-#: core/models.py:211
-msgid "Can use the chat"
-msgstr ""
-
-#: core/signals.py:26
+#: core/signals.py:42
 msgid "Event name"
-msgstr ""
+msgstr "Nom de l'événement"
 
-#: core/signals.py:29 core/signals.py:38 core/signals.py:48 core/signals.py:56
-#: core/signals.py:65
+#: core/signals.py:45 core/signals.py:54 core/signals.py:64 core/signals.py:72
+#: core/signals.py:80 core/signals.py:92 core/signals.py:101
+#: core/signals.py:111
 msgid "Event"
-msgstr ""
+msgstr "Evénement"
 
-#: core/signals.py:34
+#: core/signals.py:50
 msgid "Presentation and assembly system"
-msgstr ""
+msgstr "Système de présentation et d'assemblée"
 
-#: core/signals.py:35
+#: core/signals.py:51
 msgid "Short description of event"
-msgstr ""
+msgstr "Une courte description de l'événement"
 
-#: core/signals.py:45
+#: core/signals.py:61
 msgid "Event date"
-msgstr ""
+msgstr "Date de l'événement"
 
-#: core/signals.py:53
+#: core/signals.py:69
 msgid "Event location"
-msgstr ""
+msgstr "Lieu de l'événement"
 
-#: core/signals.py:62
+#: core/signals.py:77
 msgid "Event organizer"
-msgstr ""
+msgstr "Organisateur de l'événement"
 
-#: core/signals.py:73
+#: core/signals.py:85
+msgid ""
+"<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based "
+"presentation and assembly system for visualizing and controlling agenda, "
+"motions and elections of an assembly."
+msgstr "<a href=\"http://www.openslides.org\">OpenSlides</a> est un system de présentation et d'assemblée libre, basé sur le Web. OpenSlides est un système de visualisation et de contrôle de l'ordre du jour, des motions et des élections d'une assemblée."
+
+#: core/signals.py:89
+msgid "Legal notice"
+msgstr "Mention légale"
+
+#: core/signals.py:97
+msgid "Welcome to OpenSlides"
+msgstr "Bienvenue sur OpenSlides!"
+
+#: core/signals.py:98
+msgid "Front page title"
+msgstr "Titre de la première page"
+
+#: core/signals.py:106
+msgid "[Space for your welcome text.]"
+msgstr "[Espace pour votre texte de bienvenue ici.]"
+
+#: core/signals.py:108
+msgid "Front page text"
+msgstr "Texte de la première page"
+
+#: core/signals.py:120
 msgid "Allow access for anonymous guest users"
-msgstr ""
+msgstr "Autoriser l'accès pour les utilisateurs anonymes"
 
-#: core/signals.py:76
+#: core/signals.py:123 core/signals.py:131
 msgid "System"
-msgstr ""
+msgstr "Système"
 
-#: core/signals.py:84
+#: core/signals.py:128
+msgid "Show this text on the login page."
+msgstr "Montrer ce texte sur la page de connexion."
+
+#: core/signals.py:139
 msgid "Show logo on projector"
-msgstr ""
+msgstr "Afficher le logo sur le projecteur"
 
-#: core/signals.py:86
+#: core/signals.py:141
 msgid ""
 "You can replace the logo. Just copy a file to \"static/img/logo-"
 "projector.png\" in your OpenSlides data path."
-msgstr ""
+msgstr "Vous pouvez remplacer le logo. Il suffit de copier un fichier à \"static/img/logo-projector.png\" dans votre chemin de données de OpenSlides."
 
-#: core/signals.py:89 core/signals.py:97 core/signals.py:105
-#: core/signals.py:113 core/signals.py:121 core/signals.py:129
-#: core/signals.py:137 core/signals.py:145
+#: core/signals.py:144 core/signals.py:152 core/signals.py:160
+#: core/signals.py:167
 msgid "Projector"
-msgstr ""
+msgstr "Projecteur"
 
-#: core/signals.py:95
+#: core/signals.py:150
 msgid "Show title and description of event on projector"
-msgstr ""
+msgstr "Afficher le titre et la description de l'événement sur ​​le projecteur"
 
-#: core/signals.py:102
+#: core/signals.py:157
 msgid "Background color of projector header"
-msgstr ""
+msgstr "Couleur de fond de header du projecteur "
 
-#: core/signals.py:103 core/signals.py:111 core/signals.py:119
+#: core/signals.py:158
 msgid "Use web color names like \"red\" or hex numbers like \"#ff0000\"."
-msgstr ""
+msgstr "Utilisez des noms de couleur de Web telles que les noms comme \"red\" ou le numéros hexadécimal comme \"# FF0000\"."
 
-#: core/signals.py:110
-msgid "Second (optional) background color for linear color gradient"
-msgstr ""
-
-#: core/signals.py:118
-msgid "Font color of projector header"
-msgstr ""
-
-#: core/signals.py:125
-msgid "Welcome to OpenSlides"
-msgstr ""
-
-#: core/signals.py:127
-msgid "Also used for the default welcome slide."
-msgstr ""
-
-#: core/signals.py:134
-msgid "[Space for your welcome text.]"
-msgstr ""
-
-#: core/signals.py:135
-msgid "Welcome text"
-msgstr ""
-
-#: core/signals.py:143
+#: core/signals.py:165
 msgid "Default countdown"
-msgstr ""
+msgstr "Valeur par défaut du compte à rebours"
 
 #: global_settings.py:16
 msgid "Czech"
-msgstr ""
+msgstr "Tchèque"
 
 #: global_settings.py:17
 msgid "English"
-msgstr ""
+msgstr "Anglais"
 
 #: global_settings.py:18
 msgid "French"
-msgstr ""
+msgstr "Français"
 
 #: global_settings.py:19
 msgid "German"
-msgstr ""
+msgstr "Allemand"
 
 #: global_settings.py:20
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugais"
 
-#: mediafiles/models.py:13
-#: mediafiles/templates/search/mediafile-results.html:7
-msgid "File"
-msgstr ""
-
-#: mediafiles/models.py:22
-msgid "Uploaded by"
-msgstr ""
-
-#: mediafiles/models.py:34
-msgid "Can see the list of files"
-msgstr ""
-
-#: mediafiles/models.py:35
-msgid "Can upload files"
-msgstr ""
-
-#: mediafiles/models.py:36
-msgid "Can manage files"
-msgstr ""
-
-#: mediafiles/models.py:52
+#: mediafiles/models.py:58
 msgid "unknown"
-msgstr ""
+msgstr "inconnu"
 
-#: motions/models.py:102
-msgid "Can see motions"
-msgstr ""
-
-#: motions/models.py:103
-msgid "Can create motions"
-msgstr ""
-
-#: motions/models.py:104
-msgid "Can support motions"
-msgstr ""
-
-#: motions/models.py:105
-msgid "Can manage motions"
-msgstr ""
-
-#: motions/models.py:108 motions/pdf.py:38 motions/pdf.py:258
+#: motions/models.py:124 motions/pdf.py:38 motions/pdf.py:258
 #: motions/signals.py:27 motions/signals.py:40 motions/signals.py:48
 #: motions/signals.py:58 motions/signals.py:67 motions/signals.py:78
 #: motions/signals.py:86 motions/signals.py:98 motions/signals.py:108
 #: motions/signals.py:120 motions/signals.py:133 motions/signals.py:142
 #: motions/signals.py:153 motions/signals.py:162 motions/signals.py:170
-#: motions/views.py:351 motions/views.py:411
+#: motions/views.py:357 motions/views.py:417
 msgid "Motion"
-msgstr ""
+msgstr "Motion"
 
-#: motions/models.py:560 motions/pdf.py:148
-msgid "Reason"
-msgstr ""
-
-#: motions/models.py:574
+#: motions/models.py:616
 msgid "new"
-msgstr ""
+msgstr "nouveau"
 
-#: motions/models.py:590
-msgid "Category name"
-msgstr ""
-
-#: motions/models.py:593
-msgid "Prefix"
-msgstr ""
-
-#: motions/models.py:633
+#: motions/models.py:683
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
-msgstr ""
+msgstr "%(time_and_messages)s par %(person)s"
 
 #: motions/pdf.py:45
 msgid "Submitter"
-msgstr ""
+msgstr "Requérant"
 
 #: motions/pdf.py:59
 msgid "Signature"
-msgstr ""
+msgstr "Signature"
 
 #: motions/pdf.py:70 motions/signals.py:99 motions/signals.py:109
 msgid "Supporters"
-msgstr ""
+msgstr "Partisants"
 
 #: motions/pdf.py:81
 msgid "State"
-msgstr ""
+msgstr "Statut"
 
-#: motions/pdf.py:91 motions/views.py:151 motions/views.py:163
+#: motions/pdf.py:91 motions/views.py:157 motions/views.py:169
 msgid "Version"
-msgstr ""
+msgstr "Version"
 
 #: motions/pdf.py:107
 msgid "Vote result"
-msgstr ""
+msgstr "Résultat du vote"
 
-#: motions/pdf.py:121 motions/views.py:351
+#: motions/pdf.py:121 motions/views.py:357
 msgid "Vote"
-msgstr ""
+msgstr "Vote"
+
+#: motions/pdf.py:148
+msgid "Reason"
+msgstr "Motivation"
 
 #: motions/pdf.py:245
 msgid "Categories"
@@ -810,429 +652,279 @@ msgstr "Catégories"
 
 #: motions/pdf.py:252
 msgid "No motions available."
-msgstr ""
+msgstr "Aucune motion disponible."
 
 #: motions/pdf.py:265
 #, python-format
 msgid "Motion No. %s"
-msgstr ""
+msgstr "Motion No %s"
 
 #: motions/pdf.py:267
 #, python-format
 msgid "%d. Vote"
-msgstr ""
+msgstr "%d. Vote"
 
 #: motions/serializers.py:30
 #, python-format
 msgid "Workflow %(pk)d does not exist."
-msgstr ""
+msgstr "Flux de travail %(pk)d n'existe pas."
 
-#: motions/serializers.py:127 poll/models.py:265
+#: motions/serializers.py:129 poll/models.py:262
 msgid "majority"
-msgstr ""
+msgstr "majorité"
 
-#: motions/serializers.py:129 poll/models.py:267 poll/models.py:269
+#: motions/serializers.py:131 poll/models.py:264 poll/models.py:266
 msgid "undocumented"
-msgstr ""
+msgstr "non documenté"
 
 #: motions/signals.py:24
 msgid "Workflow of new motions"
-msgstr ""
+msgstr "Flux de travail des nouvelles motions"
 
 #: motions/signals.py:34
 msgid "Identifier"
-msgstr ""
+msgstr "Identificateur"
 
 #: motions/signals.py:36
 msgid "Numbered per category"
-msgstr ""
+msgstr "Numérotée par catégorie"
 
 #: motions/signals.py:37
 msgid "Serially numbered"
-msgstr ""
+msgstr "Numérotés en série"
 
 #: motions/signals.py:38
 msgid "Set it manually"
-msgstr ""
+msgstr "Réglez manuellement"
 
 #: motions/signals.py:45
 msgid "The assembly may decide,"
-msgstr ""
+msgstr "Je demande a l'Assemblée de décider sur,"
 
 #: motions/signals.py:46
 msgid "Motion preamble"
-msgstr ""
+msgstr "Préambule de la motion"
 
 #: motions/signals.py:56
 msgid "Stop submitting new motions by non-staff users"
-msgstr ""
+msgstr "Arrêtez de soumettre de nouvelles motions par les utilisateurs non-employés"
 
 #: motions/signals.py:65
 msgid "Allow to disable versioning"
-msgstr ""
+msgstr "Permettre de désactiver le versionnage"
 
 #: motions/signals.py:76
 msgid "Activate amendments"
-msgstr ""
+msgstr "Activer amendements"
 
 #: motions/signals.py:79 motions/signals.py:87
 msgid "Amendments"
-msgstr ""
+msgstr "Amendements"
 
 #: motions/signals.py:83
 msgctxt "Prefix for the identifier for amendments"
 msgid "A"
-msgstr ""
+msgstr "A"
 
 #: motions/signals.py:84
 msgid "Prefix for the identifier for amendments"
-msgstr ""
+msgstr "Préfixe pour l'identificateur d'amendements"
 
 #: motions/signals.py:95
 msgid "Number of (minimum) required supporters for a motion"
-msgstr ""
+msgstr "(minimum)  de personnes nécessaire au soutient d'une motion"
 
 #: motions/signals.py:96
 msgid "Choose 0 to disable the supporting system."
-msgstr ""
+msgstr "Choisissez 0 pour desactiver le système de soutien."
 
 #: motions/signals.py:106
 msgid ""
 "Remove all supporters of a motion if a submitter edits his motion in early "
 "state"
-msgstr ""
+msgstr "Supprimer tous les partisans d'une motion si un expéditeur édite sa motion dans un statut précoce"
 
 #: motions/signals.py:117
 msgid "The 100 % base of a voting result consists of"
-msgstr ""
+msgstr "La base d'un résultat de vote de 100% est constitué de"
 
 #: motions/signals.py:121 motions/signals.py:134 motions/signals.py:143
 msgid "Voting and ballot papers"
-msgstr ""
+msgstr "Bulletins de vote et d'élection"
 
-#: motions/signals.py:150 motions/views.py:404
+#: motions/signals.py:150 motions/views.py:410
 msgid "Motions"
-msgstr ""
+msgstr "Motions"
 
 #: motions/signals.py:151
 msgid "Title for PDF document (all motions)"
-msgstr ""
+msgstr "Titre pour le document PDF (toutes les motions)"
 
 #: motions/signals.py:160
 msgid "Preamble text for PDF document (all motions)"
-msgstr ""
+msgstr "Texte de préambule pour le document PDF (toutes les motions)"
 
 #: motions/signals.py:168
 msgid "Show paragraph numbering (only in PDF)"
-msgstr ""
-
-#: motions/signals.py:184
-msgid "Simple Workflow"
-msgstr ""
-
-#: motions/signals.py:185
-msgid "submitted"
-msgstr ""
-
-#: motions/signals.py:190 motions/signals.py:219
-msgid "accepted"
-msgstr ""
-
-#: motions/signals.py:192 motions/signals.py:221
-msgid "Accept"
-msgstr ""
-
-#: motions/signals.py:194 motions/signals.py:224
-msgid "rejected"
-msgstr ""
-
-#: motions/signals.py:196 motions/signals.py:226
-msgid "Reject"
-msgstr ""
-
-#: motions/signals.py:198
-msgid "not decided"
-msgstr ""
-
-#: motions/signals.py:200
-msgid "Do not decide"
-msgstr ""
-
-#: motions/signals.py:206
-msgid "Complex Workflow"
-msgstr ""
-
-#: motions/signals.py:207
-msgid "published"
-msgstr ""
-
-#: motions/signals.py:212 motions/views.py:153
-msgid "permitted"
-msgstr ""
-
-#: motions/signals.py:214
-msgid "Permit"
-msgstr ""
-
-#: motions/signals.py:229
-msgid "withdrawed"
-msgstr ""
-
-#: motions/signals.py:231
-msgid "Withdraw"
-msgstr ""
-
-#: motions/signals.py:234
-msgid "adjourned"
-msgstr ""
-
-#: motions/signals.py:236
-msgid "Adjourn"
-msgstr ""
-
-#: motions/signals.py:239
-msgid "not concerned"
-msgstr ""
-
-#: motions/signals.py:241
-msgid "Do not concern"
-msgstr ""
-
-#: motions/signals.py:244
-msgid "commited a bill"
-msgstr ""
-
-#: motions/signals.py:246
-msgid "Commit a bill"
-msgstr ""
-
-#: motions/signals.py:249
-msgid "needs review"
-msgstr ""
-
-#: motions/signals.py:251
-msgid "Needs review"
-msgstr ""
-
-#: motions/signals.py:254
-msgid "rejected (not authorized)"
-msgstr ""
-
-#: motions/signals.py:256
-msgid "Reject (not authorized)"
-msgstr ""
+msgstr "Afficher la numérotation des paragraphes (uniquement en PDF)"
 
 #: motions/views.py:85
 msgid "Motion created"
-msgstr ""
+msgstr "Motion créé"
 
-#: motions/views.py:121
+#: motions/views.py:127
 msgid "Motion updated"
-msgstr ""
+msgstr "motion mise à jour"
 
-#: motions/views.py:125
+#: motions/views.py:131
 msgid "All supporters removed"
-msgstr ""
+msgstr "Tous les partisans supprimés"
 
-#: motions/views.py:155
+#: motions/views.py:159
+msgid "permitted"
+msgstr "permis"
+
+#: motions/views.py:161
 #, python-format
 msgid "Version %d permitted successfully."
-msgstr ""
+msgstr "Version %d a été autorisé avec succes."
 
-#: motions/views.py:160
+#: motions/views.py:166
 msgid "You can not delete the active version of a motion."
-msgstr ""
+msgstr "Vous ne pouvez pas suprimer la version active de cette motion. "
 
-#: motions/views.py:165
+#: motions/views.py:171
 msgid "deleted"
-msgstr ""
+msgstr "Suprimé"
 
-#: motions/views.py:167
+#: motions/views.py:173
 #, python-format
 msgid "Version %d deleted successfully."
-msgstr ""
+msgstr "Version %d a été suprimé avec succes."
 
-#: motions/views.py:188
+#: motions/views.py:194
 msgid "You can not support this motion."
-msgstr ""
-
-#: motions/views.py:190
-msgid "Motion supported"
-msgstr ""
-
-#: motions/views.py:191
-msgid "You have supported this motion successfully."
-msgstr ""
+msgstr "Vous ne pouvez pas soutenir cette motion. "
 
 #: motions/views.py:196
+msgid "Motion supported"
+msgstr "Motion soutenu"
+
+#: motions/views.py:197
+msgid "You have supported this motion successfully."
+msgstr "Vous soutenez maintenant cette motion, vous avez été ajouté avec succès."
+
+#: motions/views.py:202
 msgid "You can not unsupport this motion."
-msgstr ""
+msgstr "Vous ne pouvez pas retirer votre soutien pour cette motion. "
 
-#: motions/views.py:198
+#: motions/views.py:204
 msgid "Motion unsupported"
-msgstr ""
+msgstr "Motion ne plus soutenue"
 
-#: motions/views.py:199
+#: motions/views.py:205
 msgid "You have unsupported this motion successfully."
-msgstr ""
+msgstr "Vous avez retiré votre soutien pour cette motion avec succès."
 
-#: motions/views.py:222
+#: motions/views.py:228
 msgid "Invalid data. State must be an integer."
-msgstr ""
+msgstr "Données invalides. Le statut doit être intègre."
 
-#: motions/views.py:225
+#: motions/views.py:231
 #, python-format
 msgid "You can not set the state to %(state_id)d."
-msgstr ""
+msgstr "Vous ne pouvez pas fixé le statut à %(state_id)d."
 
-#: motions/views.py:233
+#: motions/views.py:239
 #, python-format
 msgid "The state of the motion was set to %s."
-msgstr ""
+msgstr "Le statut de la motion a été fixé à %s."
 
-#: motions/views.py:237
+#: motions/views.py:243
 msgid "State set to"
-msgstr ""
+msgstr "Changer le statut à"
 
-#: motions/views.py:252
+#: motions/views.py:258
 msgid "Vote created successfully."
-msgstr ""
+msgstr "La votation a été créé avec succès."
 
 #: poll/models.py:71
 msgid "Only all valid votes"
-msgstr ""
+msgstr "Seulement tout les votes valides"
 
 #: poll/models.py:72
 msgid "All votes cast (including invalid votes)"
-msgstr ""
+msgstr "Tous les votes émis (y compris les les votes non valables)"
 
 #: poll/models.py:73
 msgid "Disabled (no percents)"
-msgstr ""
+msgstr "Désactivé (aucun pourcentage)"
 
-#: users/models.py:99 users/pdf.py:114
-msgid "Username"
-msgstr ""
-
-#: users/models.py:105
-msgid "First name"
-msgstr ""
-
-#: users/models.py:110
-msgid "Last name"
-msgstr ""
-
-#: users/models.py:117 users/pdf.py:27
-msgid "Structure level"
-msgstr ""
-
-#: users/models.py:121
-msgid "Will be shown after the name."
-msgstr ""
-
-#: users/models.py:128
-msgid "Will be shown before the name."
-msgstr ""
-
-#: users/models.py:131
-msgid "About me"
-msgstr "A propos de moi"
-
-#: users/models.py:134
-msgid "Profile text."
-msgstr ""
-
-#: users/models.py:140
-msgid "Only for notes."
-msgstr ""
-
-#: users/models.py:143
-msgid "Default password"
-msgstr ""
-
-#: users/models.py:149
-msgid "Active"
-msgstr ""
-
-#: users/models.py:152
-msgid ""
-"Designates whether this user should be treated as active. Unselect this "
-"instead of deleting the account."
-msgstr ""
-
-#: users/models.py:156
-msgid "Present"
-msgstr ""
-
-#: users/models.py:159
-msgid "Designates whether this user is in the room or not."
-msgstr ""
-
-#: users/models.py:165
-msgid "Can see names of users"
-msgstr ""
-
-#: users/models.py:166
-msgid "Can see extra data of users"
-msgstr ""
-
-#: users/models.py:167
-msgid "Can manage users"
-msgstr ""
+#: users/pdf.py:26
+msgid "Title"
+msgstr "Titre"
 
 #: users/pdf.py:26
 msgid "Last Name"
-msgstr ""
+msgstr "Nom"
 
 #: users/pdf.py:26
 msgid "First Name"
-msgstr ""
+msgstr "Prénom"
+
+#: users/pdf.py:27
+msgid "Structure level"
+msgstr "Niveau de structure"
 
 #: users/pdf.py:27
 msgid "Group"
-msgstr ""
+msgstr "Groupe"
 
 #: users/pdf.py:95
 msgid "WLAN access data"
-msgstr ""
+msgstr "Données d'accès du réseau sans fil"
 
 #: users/pdf.py:97 users/signals.py:62
 msgid "WLAN name (SSID)"
-msgstr ""
+msgstr "Nom du réseau sans fil (SSID)"
 
 #: users/pdf.py:101 users/signals.py:71
 msgid "WLAN password"
-msgstr ""
+msgstr "Mot de passe du réseau sans fils"
 
 #: users/pdf.py:105 users/signals.py:81
 msgid "WLAN encryption"
-msgstr ""
+msgstr "cryptage du réseau sans fil"
 
 #: users/pdf.py:112
 msgid "OpenSlides access data"
-msgstr ""
+msgstr " Données d'accès OpenSlides"
+
+#: users/pdf.py:114
+msgid "Username"
+msgstr "Nom d'utilisateur"
 
 #: users/pdf.py:118
 msgid "Password"
-msgstr ""
+msgstr "Mot de passe"
 
 #: users/pdf.py:131
 msgid "Scan this QRCode to connect WLAN."
-msgstr ""
+msgstr "Scannez ce code QR pour se connecter au réseau sans fil."
 
 #: users/pdf.py:136
 msgid "Scan this QRCode to open URL."
-msgstr ""
+msgstr "Scannez ce code QR pour ouvrir l'URL."
 
 #: users/serializers.py:44
 msgid ""
 "The groups this user belongs to. A user will get all permissions granted to "
 "each of his/her groups."
-msgstr ""
+msgstr "Les groupes auxquels cet utilisateur appartient. Un utilisateur obtiendra toutes les autorisations accordées à chacun de ses groupes."
 
 #: users/serializers.py:72
 msgid "Username, first name and last name can not all be empty."
-msgstr ""
+msgstr "Nom d'utilisateur, le prénom et le nom ne peuvent pas tous être vide."
 
 #: users/serializers.py:105
 #, python-brace-format
@@ -1316,25 +1008,48 @@ msgstr ""
 
 #: users/signals.py:184
 msgid "Staff"
+msgstr "Personnel"
+
+#: users/views.py:111
+msgid "You can not deactivate yourself."
 msgstr ""
 
-#: users/views.py:145
+#: users/views.py:150
+msgid "You can not delete yourself."
+msgstr ""
+
+#: users/views.py:164
 msgid "Password successfully reset."
 msgstr ""
 
-#: users/views.py:253
-msgid "Password does not match."
+#: users/views.py:234
+msgid "Username or password is not correct."
 msgstr ""
 
-#: users/views.py:264
+#: users/views.py:260
+#, python-brace-format
+msgid ""
+"Installation was successfully. Use {username} and {password} for first "
+"login. Important: Please change your password!"
+msgstr ""
+
+#: users/views.py:281
+msgid "You are not authenticated."
+msgstr ""
+
+#: users/views.py:315
+msgid "Old password does not match."
+msgstr ""
+
+#: users/views.py:326
 msgid "user-list"
 msgstr ""
 
-#: users/views.py:265
+#: users/views.py:327
 msgid "List of users"
 msgstr ""
 
-#: users/views.py:279
+#: users/views.py:341
 msgid "user-access-data"
 msgstr ""
 
