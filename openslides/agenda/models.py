@@ -7,7 +7,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext_lazy
 
 from openslides.core.config import config
 from openslides.core.projector import Countdown
@@ -266,9 +266,9 @@ class Item(RESTModelMixin, models.Model):
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_see', ugettext_noop("Can see agenda")),
-            ('can_manage', ugettext_noop("Can manage agenda")),
-            ('can_see_hidden_items', ugettext_noop("Can see hidden items and time scheduling of agenda")))
+            ('can_see', 'Can see agenda'),
+            ('can_manage', 'Can manage agenda'),
+            ('can_see_hidden_items', 'Can see hidden items and time scheduling of agenda'))
         unique_together = ('content_type', 'object_id')
 
     def __str__(self):
@@ -392,7 +392,7 @@ class Speaker(RESTModelMixin, models.Model):
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_be_speaker', ugettext_noop('Can put oneself on the list of speakers')),
+            ('can_be_speaker', 'Can put oneself on the list of speakers'),
         )
 
     def __str__(self):

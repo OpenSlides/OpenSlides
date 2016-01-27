@@ -148,10 +148,22 @@ angular.module('OpenSlidesApp.users', [])
 ])
 
 .factory('Group', [
+    '$http',
     'DS',
-    function(DS) {
+    function($http, DS) {
+        var permissions;
         return DS.defineResource({
             name: 'users/group',
+            permissions: permissions,
+            getPermissions: function() {
+                if (!this.permissions) {
+                    this.permissions = $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' })
+                        .then(function(result) {
+                            return result.data.actions.POST.permissions.choices;
+                        });
+                }
+                return this.permissions;
+            }
         });
     }
 ])

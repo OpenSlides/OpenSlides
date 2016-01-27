@@ -8,7 +8,6 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
-from django.utils.translation import ugettext_noop
 
 from openslides.utils.search import user_name_helper
 
@@ -146,9 +145,9 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_see_name', ugettext_noop('Can see names of users')),
-            ('can_see_extra_data', ugettext_noop('Can see extra data of users')),
-            ('can_manage', ugettext_noop('Can manage users')),
+            ('can_see_name', 'Can see names of users'),
+            ('can_see_extra_data', 'Can see extra data of users'),
+            ('can_manage', 'Can manage users'),
         )
         ordering = ('last_name', 'first_name', 'username', )
 

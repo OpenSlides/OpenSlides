@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_noop
 
 from openslides.utils.search import user_name_helper
 
@@ -38,9 +37,9 @@ class Mediafile(RESTModelMixin, models.Model):
         ordering = ['title']
         default_permissions = ()
         permissions = (
-            ('can_see', ugettext_noop('Can see the list of files')),
-            ('can_upload', ugettext_noop('Can upload files')),
-            ('can_manage', ugettext_noop('Can manage files')),)
+            ('can_see', 'Can see the list of files'),
+            ('can_upload', 'Can upload files'),
+            ('can_manage', 'Can manage files'))
 
     def __str__(self):
         """

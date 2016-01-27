@@ -73,8 +73,7 @@ angular.module('OpenSlidesApp.assignments', [])
     'AssignmentPoll',
     'jsDataModel',
     'gettext',
-    'gettextCatalog',
-    function ($http, DS, AssignmentRelatedUser, AssignmentPoll, jsDataModel, gettext, gettextCatalog) {
+    function ($http, DS, AssignmentRelatedUser, AssignmentPoll, jsDataModel, gettext) {
         var name = 'assignments/assignment';
         var phases;
         return DS.defineResource({

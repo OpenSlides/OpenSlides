@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.utils.translation import ugettext_noop
 from jsonfield import JSONField
 
 from openslides.mediafiles.models import Mediafile
@@ -64,9 +63,9 @@ class Projector(RESTModelMixin, models.Model):
         """
         default_permissions = ()
         permissions = (
-            ('can_see_projector', ugettext_noop('Can see the projector')),
-            ('can_manage_projector', ugettext_noop('Can manage the projector')),
-            ('can_see_frontpage', ugettext_noop('Can see the front page')))
+            ('can_see_projector', 'Can see the projector'),
+            ('can_manage_projector', 'Can manage the projector'),
+            ('can_see_frontpage', 'Can see the front page'),)
 
     @property
     def elements(self):
@@ -184,7 +183,7 @@ class Tag(RESTModelMixin, models.Model):
         ordering = ('name',)
         default_permissions = ()
         permissions = (
-            ('can_manage_tags', ugettext_noop('Can manage tags')),)
+            ('can_manage_tags', 'Can manage tags'),)
 
     def __str__(self):
         return self.name
@@ -204,7 +203,7 @@ class ConfigStore(models.Model):
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_manage_config', ugettext_noop('Can manage configuration')),)
+            ('can_manage_config', 'Can manage configuration'),)
 
     def get_root_rest_url(self):
         """
@@ -230,7 +229,7 @@ class ChatMessage(RESTModelMixin, models.Model):
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_use_chat', ugettext_noop('Can use the chat')),)
+            ('can_use_chat', 'Can use the chat'),)
 
     def __str__(self):
         return 'Message {}'.format(self.timestamp)

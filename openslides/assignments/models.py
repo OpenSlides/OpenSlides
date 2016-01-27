@@ -109,10 +109,10 @@ class Assignment(RESTModelMixin, models.Model):
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_see', ugettext_noop('Can see elections')),
-            ('can_nominate_other', ugettext_noop('Can nominate another participant')),
-            ('can_nominate_self', ugettext_noop('Can nominate oneself')),
-            ('can_manage', ugettext_noop('Can manage elections')),
+            ('can_see', 'Can see elections'),
+            ('can_nominate_other', 'Can nominate another participant'),
+            ('can_nominate_self', 'Can nominate oneself'),
+            ('can_manage', 'Can manage elections'),
         )
         ordering = ('title', )
         verbose_name = ugettext_noop('Election')
