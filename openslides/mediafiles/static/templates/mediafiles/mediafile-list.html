@@ -60,6 +60,40 @@
     </div>
   </div>
 
+  <!-- mediafile pdf controls -->
+  <div os-perms="core.can_manage_projector" ng-show="presentedMediafiles.length">
+    <div ng-repeat="presentedMediafile in presentedMediafiles" class="well well-sm">
+      <h3 translate>PDF control elements</h3>
+      <!-- TODO: show filename / title of mediafile -->
+      <nav ng-class="getNavStyle(scroll)" class="form-inline">
+        <div class="btn-group">
+          <button class="btn btn-default" ng-click="mediafileGoPrevious()" title="{{ 'Previouse page' | translate }}">
+            <i class="fa fa-backward"></i>
+          </button>
+          <button class="btn btn-default" ng-click="mediafileGoNext()" title="{{ 'Next page' | translate }}">
+            <i class="fa fa-forward"></i>
+          </button>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-default" ng-click="mediafileZoomOut()" title="{{ 'Zoom out' | translate }}">
+            <i class="fa fa-search-minus"></i>
+          </button>
+          <button class="btn btn-default" ng-click="mediafileFit()" title="{{ 'Reset zoom' | translate }}">
+              100%
+          </button>
+          <button class="btn btn-default" ng-click="mediafileZoomIn()" title="{{ 'Zoom in' | translate }}">
+            <i class="fa fa-search-plus"></i>
+          </button>
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon" translate>Page</span>
+          <input type="number" min=1 ng-model="presentedMediafile.page" class="form-control" style="width: 80px">
+          <span class="input-group-addon"><translate>of</translate> {{presentedMediafile.numPages}}</span>
+        </div>
+      </nav>
+    </div>
+  </div>
+
   <div class="spacer-top-lg italic">
     {{ mediafilesFiltered.length }} /
     {{ mediafiles.length }} {{ "files" | translate }}<span ng-if="(mediafiles|filter:{selected:true}).length > 0">,
@@ -110,14 +144,12 @@
           class="animate-item"
           ng-class="{ 'activeline': mediafile.isProjected(), 'selected': mediafile.selected }">
         <!-- projector column -->
-        <!-- TOOD: implement project pdf feature -->
         <td ng-show="!isDeleteMode"
             os-perms="core.can_manage_projector">
           <a class="btn btn-default btn-sm"
               ng-if="mediafile.mediafile.type == 'application/pdf'"
               ng-class="{ 'btn-primary': mediafile.isProjected() }"
-              ng-click="mediafile.project()"
-              ng-bootbox-alert="{{ 'Sorry, the function to project pdf files is not yet implemented.' | translate }}"
+              ng-click="showPdf(mediafile)"
               title="{{ 'Project mediafile' | translate }}">
             <i class="fa fa-video-camera"></i>
           </a>
