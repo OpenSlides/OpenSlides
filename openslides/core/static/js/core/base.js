@@ -36,7 +36,8 @@ angular.module('OpenSlidesApp.core', [
 
 .factory('autoupdate', [
     'DS',
-    function (DS) {
+    '$rootScope',
+    function (DS, $rootScope) {
         var url = location.origin + "/sockjs";
         var socket;
         var Autoupdate = {
@@ -46,15 +47,20 @@ angular.module('OpenSlidesApp.core', [
                 var autoupdate = this;
                 socket = this.socket = new SockJS(url);
 
-
                 this.socket.onmessage = function (event) {
                     _.forEach(autoupdate.message_receivers, function (receiver) {
                         receiver(event.data);
                     });
                 };
 
+                this.socket.onopen = function () {
+                    $rootScope.connected = true;
+                };
+
                 this.socket.onclose = function () {
-                    setTimeout(autoupdate.connect, 5000);
+                    $rootScope.connected = false;
+                    autoupdate.connect()
+
                 };
             },
             on_message: function (receiver) {
@@ -65,6 +71,7 @@ angular.module('OpenSlidesApp.core', [
                 Autoupdate.connect();
             }
         };
+        $rootScope.connected = false;
         Autoupdate.connect();
         return Autoupdate;
     }
