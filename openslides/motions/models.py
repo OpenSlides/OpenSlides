@@ -462,7 +462,8 @@ class Motion(RESTModelMixin, models.Model):
         """
         Return a simple title string for the agenda.
 
-        Contains only agenda item number and title.
+        Returns only the motion title so that you have only agenda item number
+        and title in the agenda.
         """
         return str(self)
 
@@ -470,7 +471,8 @@ class Motion(RESTModelMixin, models.Model):
         """
         Return a title string for the agenda list view.
 
-        Contains agenda item number, title and motion identifier.
+        Returns only the motion title so that you have agenda item number,
+        title and motion identifier in the agenda.
         Note: It has to be the same return value like in JavaScript.
         """
         if self.identifier:
