@@ -199,25 +199,15 @@ img {
 #nav .searchbar {
     float: right;
     margin-top: 35px;
+    display: inline-table;
 }
 
-.searchbar .input-medium {
-    float: left;
-    height: 28px;
-    width: 200px;
-    border: 1px solid #ccc;
-    padding: 0 5px;
-    font-size: 14px;
+#nav .searchbar input {
+    width: 150px;
 }
 
-.searchbar .btn {
-    float: left;
-    height: 30px;
-    width: 30px;
+#nav .searchbar .btn {
     background: #e8eaed;
-    border: 1px solid #ccc;
-    border-left: none;
-    font-size: 14px;
     color: #555;
 }
 
@@ -617,6 +607,13 @@ img {
     content: ":";
 }
 
+/* search results */
+.searchresults li {
+    margin-bottom: 12px;
+}
+.searchresults li .subtitle {
+    color: #999999;
+}
 
 /* ngDialog: override ngdialog-theme-default */
 
@@ -796,10 +793,17 @@ tr.selected td {
 
 
 
-/* display for resolutions smaller that 880px */
-@media only screen and (max-width: 880px) {
+/* display for resolutions smaller that 900px */
+@media only screen and (max-width: 900px) {
 
     #nav .navbar li a { padding: 24px 5px; }
+}
+
+/* display for resolutions smaller that 760px */
+@media only screen and (max-width: 760px) {
+
+    #nav .navbar li a { padding: 24px 2px; }
+    #nav .searchbar input { width: 100px; }
 }
 
 
@@ -821,7 +825,7 @@ tr.selected td {
     #nav .navbar .button { display: block;}
     #nav .navbar .button i { padding-top: 15px;}
     #nav .searchbar { margin-top: 15px; }
-    .searchbar .input-medium { width: 150px; }
+    #nav .searchbar input { width: 150px; }
 
     #chatbox { width: 100%; top: 130px; }
     .optional { /* hide optional column */

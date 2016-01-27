@@ -15,6 +15,10 @@ urlpatterns = [
         views.VersionView.as_view(),
         name='core_version'),
 
+    url(r'^core/search_api/$',
+        views.SearchView.as_view(),
+        name='core_search'),
+
     url(r'^angular_js/(?P<openslides_app>site|projector)/$',
         views.AppsJsView.as_view(),
         name='core_apps_js'),
@@ -22,9 +26,6 @@ urlpatterns = [
     # View for the projectors are handelt by angular.
     url(r'^projector.*$', views.ProjectorView.as_view()),
 
-    url(r'^search/$',
-        views.SearchView.as_view(),
-        name='core_search'),
 
     # Main entry point for all angular pages.
     # Has to be the last entry in the urls.py

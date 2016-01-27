@@ -251,7 +251,15 @@ angular.module('OpenSlidesApp.core', [
                 },
                 getAgendaTitle: function () {
                     return this.title;
-                }
+                },
+                // link name which is shown in search result
+                getSearchResultName: function () {
+                    return this.getAgendaTitle();
+                },
+                // subtitle of search result
+                getSearchResultSubtitle: function () {
+                    return "Agenda item";
+                },
             },
             relations: {
                 belongsTo: {

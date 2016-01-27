@@ -134,6 +134,14 @@ angular.module('OpenSlidesApp.users', [])
                     });
                     return _.uniq(allPerms);
                 },
+                // link name which is shown in search result
+                getSearchResultName: function () {
+                    return this.get_full_name();
+                },
+                // subtitle of search result
+                getSearchResultSubtitle: function () {
+                    return "Participant";
+                },
             },
         });
     }
