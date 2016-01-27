@@ -91,7 +91,10 @@ angular.module('OpenSlidesApp.core', [
                 var languages = [
                     { code: 'en', name: gettext('English') },
                     { code: 'de', name: gettext('German') },
-                    { code: 'fr', name: gettext('French') }
+                    { code: 'fr', name: gettext('French') },
+                    { code: 'es', name: gettext('Spanish') },
+                    { code: 'pt', name: gettext('Portuguese') },
+                    { code: 'cs', name: gettext('Czech') },
                 ];
                 angular.forEach(languages, function (language) {
                     if (language.code == current)
