@@ -99,7 +99,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 default:
                     return false;
             }
-        }
+        };
         // open new dialog
         $scope.newDialog = function () {
             ngDialog.open({
