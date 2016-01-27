@@ -233,7 +233,7 @@ class Item(RESTModelMixin, models.Model):
     The parent item in the agenda tree.
     """
 
-    weight = models.IntegerField(default=0)
+    weight = models.IntegerField(default=10000)
     """
     Weight to sort the item in the agenda.
     """

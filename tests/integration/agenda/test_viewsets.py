@@ -244,6 +244,7 @@ class Numbering(TestCase):
         self.client.login(username='admin', password='admin')
         self.item_1 = CustomSlide.objects.create(title='test_title_thuha8eef7ohXar3eech').agenda_item
         self.item_1.type = Item.AGENDA_ITEM
+        self.item_1.weight = 1
         self.item_1.save()
         self.item_2 = CustomSlide.objects.create(title='test_title_eisah7thuxa1eingaeLo').agenda_item
         self.item_2.type = Item.AGENDA_ITEM

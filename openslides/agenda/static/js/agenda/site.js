@@ -71,12 +71,13 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     '$scope',
     '$http',
     '$state',
+    'operator',
     'ngDialog',
     'Agenda',
     'AgendaTree',
     'Customslide',
     'Projector',
-    function($scope, $http, $state, ngDialog, Agenda, AgendaTree, Customslide, Projector) {
+    function($scope, $http, $state, operator, ngDialog, Agenda, AgendaTree, Customslide, Projector) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -85,6 +86,20 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         });
         $scope.alert = {};
 
+        // check open permission
+        $scope.isAllowedToSeeOpenLink = function (item) {
+            var collection = item.content_object.collection;
+            switch (collection) {
+                case 'core/customslide':
+                    return operator.hasPerms('core.can_manage_projector');
+                case 'motions/motion':
+                    return operator.hasPerms('motions.can_see');
+                case 'assignments/assignment':
+                    return operator.hasPerms('assignments.can_see');
+                default:
+                    return false;
+            }
+        };
         // open new dialog
         $scope.newDialog = function () {
             ngDialog.open({
