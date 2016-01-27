@@ -135,9 +135,12 @@
         <td ng-if="!item.quickEdit" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false"
             style="padding-left: calc(8px + {{ item.parentCount }}*15px)">
           <strong>
-            <a href="" ng-click="open(item)">
+            <a ng-show="isAllowedToSeeOpenLink(item)" href="" ng-click="open(item)">
               {{ item.getListViewTitle() }}
             </a>
+            <span ng-hide="isAllowedToSeeOpenLink(item)">
+              {{ item.getListViewTitle() }}
+            </span>
           </strong>
           <span ng-if="item.is_hidden" title="{{ 'Internal item' | translate }}"><i class="fa fa-ban"></i></span>
           <div ng-if="item.comment">
