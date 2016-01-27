@@ -98,10 +98,10 @@ portable version you should observe the following install steps.*
    user. Make sure that you have installed Virtual Python Environment
    builder on your system.
 
-   To install Virtual Python Environment builder, open command line (cmd)
+   To install latest Virtual Python Environment builder, open command line (cmd)
    and run::
 
-       > easy_install https://pypi.python.org/packages/source/v/virtualenv/virtualenv-12.0.5.tar.gz
+       > easy_install https://pypi.python.org/packages/source/v/virtualenv/virtualenv-x.y.z.tar.gz
 
    Create your OpenSlides directory, change to it, setup and activate the
    virtual environment::
@@ -229,13 +229,6 @@ Installation and start of the development version
        python manage.py --help
 
 
-Coding Style
-------------
-
-You can find some information on the coding style in the `OpenSlides wiki
-<https://github.com/OpenSlides/OpenSlides/wiki/De%3ACode-Richtlinien-f%C3%BCr-Openslides>`_.
-
-
 VI. Used software
 =================
 
@@ -249,8 +242,6 @@ OpenSlides uses the following projects or parts of them:
 
 * `Django <https://www.djangoproject.com>`_, License: BSD
 
-* `Django haystack <http://haystacksearch.org>`_, License: BSD
-
 * `Django REST framework <http://www.django-rest-framework.org>`_, License: BSD
 
 * `html5-lib <https://github.com/html5lib/html5lib-python>`_, License: MIT
@@ -258,6 +249,8 @@ OpenSlides uses the following projects or parts of them:
 * `jsonfield <https://github.com/bradjasper/django-jsonfield/>`_, License: MIT
 
 * `natsort <https://github.com/SethMMorton/natsort/>`_, License: MIT
+
+* `PyPDF2 <http://mstamy2.github.io/PyPDF2/>`_, License: BSD
 
 * `ReportLab <http://www.reportlab.com/software/opensource/rl-toolkit/>`_,
   License: BSD
@@ -273,6 +266,8 @@ OpenSlides uses the following projects or parts of them:
 * `Tornado <http://www.tornadoweb.org/en/stable/>`_, License: Apache
   License v2.0
 
+* `Whoosh <https://bitbucket.org/mchaput/whoosh/wiki/Home>`_, License: BSD
+
 * Several JavaScript packages (see bower.json)
 
   * `angular <https://angularjs.org>`_, License: MIT
@@ -285,11 +280,11 @@ OpenSlides uses the following projects or parts of them:
   * `angular-gettext <https://angular-gettext.rocketeer.be/>`_, License: MIT
   * `angular-loading-bar <https://chieffancypants.github.io/angular-loading-bar/>`_, License: MIT
   * `angular-messages <https://github.com/angular/bower-angular-messages>`_, License: MIT
+  * `angular-pdf <http://github.com/sayanee/angularjs-pdf>`_, License: MIT
   * `angular-sanitize <https://github.com/angular/bower-angular-sanitize>`_, License: MIT
   * `angular-scroll-glue <https://github.com/Luegg/angularjs-scroll-glue>`_, License: MIT
   * `angular-ui-router <http://angular-ui.github.io/ui-router>`_, License: MIT
   * `angular-ui-select <https://github.com/angular-ui/ui-select>`_, License: MIT
-  * `angular-ui-switch <https://github.com/xpepermint/angular-ui-switch>`_, License: MIT
   * `angular-ui-tree <https://github.com/JimLiu/angular-ui-tree>`_, License: MIT
   * `api-check <https://github.com/kentcdodds/apiCheck.js>`_, License: MIT
   * `bootbox <http://bootboxjs.com/>`_, License: MIT
@@ -307,6 +302,7 @@ OpenSlides uses the following projects or parts of them:
   * `ng-file-upload <https://github.com/danialfarid/ng-file-upload>`_, License: MIT
   * `ngBootbox <https://github.com/eriktufvesson/ngBootbox>`_, License: MIT
   * `open-sans-fontface <https://github.com/FontFaceKit/open-sans>`_, License: Apache License version 2.0
+  * `PDF.js <https://github.com/mozilla/pdfjs-dist>`_, License: Apache License version 2.0
   * `roboto-condensed <https://github.com/davidcunningham/roboto-condensed>`_, License: Apache-2.0
   * `sockjs <https://github.com/sockjs/sockjs-client>`_, License: MIT
 
