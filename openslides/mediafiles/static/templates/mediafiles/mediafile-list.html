@@ -10,6 +10,27 @@
   </div>
 </div>
 
+<!-- mediafile pdf controls -->
+<div os-perms-lite="core.can_manage_projector" ng-if="presentedMediafiles.length">
+
+  <div ng-repeat="presentedMediafile in presentedMediafiles">
+    <h3 translate>PDF controls</h3>
+    <nav ng-class="getNavStyle(scroll)">
+      <button ng-click="mediafileGoPrevious()"><</span></button>
+      <button ng-click="mediafileGoNext()">></span></button>
+
+      <button ng-click="mediafileZoomIn()">+</span></button>
+      <button ng-click="mediafileFit()">100%</span></button>
+      <button ng-click="mediafileZoomOut()">-</span></button>
+
+      <span>Page: </span>
+      <input type="text" min=1 ng-model="presentedMediafile.page">
+      <span> / {{presentedMediafile.numPages}}</span>
+
+    </nav>
+  </div>
+</div>
+
 <div class="details">
   <div class="row form-group">
     <div class="col-sm-6">
