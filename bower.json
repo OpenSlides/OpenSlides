@@ -32,5 +32,8 @@
     "angular-ckeditor": "~1.0.0",
     "roboto-condensed": "~0.3.0",
     "open-sans-fontface": "https://github.com/OpenSlides/open-sans.git#1.4.2.post1"
+  },
+  "resolutions": {
+    "angular": "^1.2.x"
   }
 }
