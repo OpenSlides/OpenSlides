@@ -21,7 +21,7 @@ var argv = require('yargs').argv,
     mainBowerFiles = require('main-bower-files'),
     minifyCSS = require('gulp-minify-css'),
     path = require('path'),
-    rename = require("gulp-rename"),
+    rename = require('gulp-rename'),
     through = require('through2'),
     uglify = require('gulp-uglify'),
     vsprintf = require('sprintf-js').vsprintf;
@@ -70,7 +70,7 @@ gulp.task('ckeditor', function () {
         .pipe(gulp.dest(path.join(output_directory, 'ckeditor')));
 });
 
-// Extra task only for pdfjs
+// Extra task only for PDF.js
 gulp.task('pdfjs', function () {
     return gulp.src(path.join('bower_components', 'pdfjs-dist', 'build', 'pdf.worker.js'))
         .pipe(rename(path.join('openslides-libs.worker.js')))
@@ -98,9 +98,11 @@ gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs', 'ckeditor', 'pdfjs', 
 // Extracts translatable strings using angular-gettext and saves them in file
 // openslides/locale/angular-gettext/template-en.pot.
 gulp.task('pot', function () {
-    return gulp.src(['openslides/core/static/templates/*.html',
-                     'openslides/*/static/templates/*/*.html',
-                     'openslides/*/static/js/*/*.js'])
+    return gulp.src([
+            'openslides/core/static/templates/*.html',
+            'openslides/*/static/templates/*/*.html',
+            'openslides/*/static/js/*/*.js',
+        ])
         .pipe(gettext.extract('template-en.pot', {}))
         .pipe(gulp.dest('openslides/locale/angular-gettext/'));
 });

@@ -14,6 +14,7 @@ Agenda:
   are now agenda items and can be hidden.
 - Removed mptt.
 - Added attachments to custom slides.
+- Improved csv import.
 Assignments:
 - Renamed app from assignment to assignments.
 - Removed possibility to block candidates.
@@ -27,6 +28,7 @@ Users:
 - Used new anonymous user object instead of an authentification backend. Used
   special authentication class for REST requests.
 - Used authentication frontend via AngularJS.
+- Improved csv import.
 Other:
 - New OpenSlides logo.
 - New design for web interface.
@@ -57,8 +59,8 @@ Other:
 - Used Bower and gulp to manage third party JavaScript and Cascading Style
   Sheets libraries.
 - Used setup.cfg for development tools.
-- Removed code for Windows portable version with GUI. Used new repository for
-  this.
+- Removed code for documentation and for Windows portable version with GUI.
+  Used new repositories for this. Cleaned up main repository.
 - Django 1.9 is supported
 Translations:
 - Updated DE, FR, CS and PT translations.

@@ -7,4 +7,5 @@ include bower.json
 recursive-include openslides *.*
 recursive-exclude openslides *.pyc
 recursive-exclude openslides *.swp
+recursive-exclude openslides *.swo
 recursive-exclude openslides *~
