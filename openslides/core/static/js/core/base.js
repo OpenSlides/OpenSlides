@@ -140,10 +140,27 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+.factory('dsEject', [
+    'DS',
+    function (DS) {
+        return function (collection, instance) {
+            var Resource = DS.definitions[collection];
+            Resource.relationList.forEach(function (relationDef) {
+                if (relationDef.foreignKey) {
+                    var query = {};
+                    query[relationDef.foreignKey] = instance[Resource.idAttribute];
+                    Resource.getResource(relationDef.relation).ejectAll(query);
+                }
+            });
+        }
+    }
+])
+
 .run([
     'DS',
     'autoupdate',
-    function(DS, autoupdate) {
+    'dsEject',
+    function (DS, autoupdate, dsEject) {
         autoupdate.on_message(function(data) {
             // TODO: when MODEL.find() is called after this
             //       a new request is fired. This could be a bug in DS
@@ -152,9 +169,18 @@ angular.module('OpenSlidesApp.core', [
             //       on the server side. It is an implementation detail, that tornado
             //       sends request to wsgi, which should not concern the client.
             console.log("Received object: " + data.collection + ", " + data.id);
+            var instance = DS.get(data.collection, data.id);
             if (data.status_code == 200) {
+                if (instance) {
+                    // The instance is in the local db
+                    dsEject(data.collection, instance);
+                }
                 DS.inject(data.collection, data.data);
             } else if (data.status_code == 404) {
+                if (instance) {
+                    // The instance is in the local db
+                    dsEject(data.collection, instance);
+                }
                 DS.eject(data.collection, data.id);
             }
             // TODO: handle other statuscodes
