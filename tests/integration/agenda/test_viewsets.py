@@ -288,3 +288,18 @@ class Numbering(TestCase):
         self.assertEqual(Item.objects.get(pk=self.item_2.pk).item_number, '')
         self.assertEqual(Item.objects.get(pk=self.item_2_1.pk).item_number, '')
         self.assertEqual(Item.objects.get(pk=self.item_3.pk).item_number, '2')
+
+    def test_reset_numbering_with_hidden_item(self):
+        self.item_2.item_number = 'test_number_Cieghae6ied5ool4hiem'
+        self.item_2.type = Item.HIDDEN_ITEM
+        self.item_2.save()
+        self.item_2_1.item_number = 'test_number_roQueTohg7fe1Is7aemu'
+        self.item_2_1.save()
+
+        response = self.client.post(reverse('item-numbering'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Item.objects.get(pk=self.item_1.pk).item_number, '1')
+        self.assertEqual(Item.objects.get(pk=self.item_2.pk).item_number, '')
+        self.assertEqual(Item.objects.get(pk=self.item_2_1.pk).item_number, '')
+        self.assertEqual(Item.objects.get(pk=self.item_3.pk).item_number, '2')
