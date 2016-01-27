@@ -59,6 +59,20 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
         $scope.sortColumn = 'title';
         $scope.filterPresent = '';
         $scope.reverse = false;
+
+        function updatePresentedMediafiles() {
+            var projectorElements = _.map(Projector.get(1).elements, function(element) { return element });
+            $scope.presentedMediafiles = _.filter(projectorElements, function (element) {
+                return element.name === 'mediafiles/mediafile';
+            });
+        }
+
+        $scope.$watch(function() {
+           return Projector.get(1).elements;
+        }, updatePresentedMediafiles);
+
+        updatePresentedMediafiles();
+
         // function to sort by clicked column
         $scope.toggleSort = function ( column ) {
             if ( $scope.sortColumn === column ) {
@@ -110,6 +124,110 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
         // delete single mediafile
         $scope.delete = function (mediafile) {
             Mediafile.destroy(mediafile.id);
+        };
+
+        // show document on projector
+        $scope.showPdf = function (mediafile) {
+            var postUrl,
+                data;
+            if($scope.presentedMediafiles.length > 0) {
+                // update first mediafile, at the moment there should not be more
+                var uuid = $scope.presentedMediafiles[0].uuid;
+                postUrl = '/rest/core/projector/1/update_elements/';
+                data = {};
+                data[uuid] = {
+                    mediafile: mediafile.id,
+                    numPages: mediafile.mediafile.pages,
+                    page: 1,
+                    pageFit: true,
+                    scale: 1,
+                    visible: true
+                };
+            } else {
+                postUrl = '/rest/core/projector/1/activate_elements/';
+                data = [{
+                    name: 'mediafiles/mediafile',
+                    visible: true,
+                    numPages: mediafile.mediafile.pages,
+                    pageFit: true,
+                    scale: 1,
+                    mediafile: mediafile.id,
+                    page: 1
+                }];
+            }
+            $http.post(postUrl, data);
+        };
+
+        function sendMediafileCommand(data) {
+            var mediafileElement = getCurrentlyPresentedMediafile();
+            var updateData = _.extend({}, mediafileElement);
+            _.extend(updateData, data);
+            var postData = {};
+            postData[mediafileElement.uuid] = updateData;
+            $http.post('/rest/core/projector/1/update_elements/', postData);
+        }
+
+        function getCurrentlyPresentedMediafile() {
+            return $scope.presentedMediafiles[0];
+        }
+
+        $scope.mediafileGoPrevious = function () {
+            var mediafileElement = getCurrentlyPresentedMediafile();
+            if (mediafileElement.page <= 1) {
+                return;
+            }
+            sendMediafileCommand({
+                page: parseInt(mediafileElement.page) - 1
+            });
+        };
+        $scope.mediafileGoNext = function () {
+            var mediafileElement = getCurrentlyPresentedMediafile();
+            if (mediafileElement.page >= mediafileElement.numPages) {
+                return;
+            }
+            sendMediafileCommand({
+                page: parseInt(mediafileElement.page) + 1
+            });
+        };
+        $scope.mediafileZoomIn = function () {
+            var mediafileElement = getCurrentlyPresentedMediafile();
+            sendMediafileCommand({
+                pageFit: false,
+                scale: parseFloat(mediafileElement.scale) + 0.2
+            });
+        };
+        $scope.mediafileFit = function () {
+            sendMediafileCommand({
+                pageFit: true
+            });
+        };
+        $scope.mediafileZoomOut = function () {
+            var mediafileElement = getCurrentlyPresentedMediafile();
+            sendMediafileCommand({
+                pageFit: false,
+                scale: parseFloat(mediafileElement.scale) - 0.2
+            });
+        };
+        $scope.mediafileChangePage = function(pageNum) {
+            sendMediafileCommand({
+                pageToDisplay: pageNum
+            });
+        };
+        $scope.mediafileRotate = function () {
+            var rotation;
+            var currentRotation = $scope.mediafile.rotation;
+            if (currentRotation === 0) {
+                rotation = 90;
+            } else if (currentRotation === 90) {
+                rotation = 180;
+            } else if (currentRotation === 180) {
+                rotation = 270;
+            } else {
+                rotation = 0;
+            }
+            sendMediafileCommand({
+                rotation: rotation
+            });
         };
     }
 ])
