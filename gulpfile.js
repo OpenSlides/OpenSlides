@@ -98,7 +98,8 @@ gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs', 'ckeditor', 'pdfjs', 
 // Extracts translatable strings using angular-gettext and saves them in file
 // openslides/locale/angular-gettext/template-en.pot.
 gulp.task('pot', function () {
-    return gulp.src(['openslides/*/static/templates/*/*.html',
+    return gulp.src(['openslides/core/static/templates/*.html',
+                     'openslides/*/static/templates/*/*.html',
                      'openslides/*/static/js/*/*.js'])
         .pipe(gettext.extract('template-en.pot', {}))
         .pipe(gulp.dest('openslides/locale/angular-gettext/'));
