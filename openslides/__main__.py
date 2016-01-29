@@ -139,7 +139,8 @@ def start(args):
         start_browser('http://localhost:8000')
 
     # Start the webserver
-    execute_from_command_line(['manage.py', 'runserver', '0.0.0.0:8000'])
+    # Tell django not to reload. OpenSlides uses the reload method from tornado
+    execute_from_command_line(['manage.py', 'runserver', '0.0.0.0:8000', '--noreload'])
 
 
 def createsettings(args):
