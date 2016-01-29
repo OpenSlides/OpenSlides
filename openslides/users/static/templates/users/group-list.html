@@ -42,7 +42,7 @@
     <tbody>
       <tr ng-repeat="group in groups | filter: filter.search | orderBy:sortby:reverse">
         <td>{{ group.id }}
-        <td><a ui-sref="users.group.detail({id: group.id})">{{ group.name }}</a>
+        <td><a ui-sref="users.group.detail({id: group.id})">{{ group.name | translate }}</a>
         <td os-perms="users.can_manage" class="nobr">
           <!-- edit -->
           <a ui-sref="users.group.detail.update({id: group.id})" os-perms="users.can_manage"

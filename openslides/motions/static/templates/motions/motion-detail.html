@@ -97,7 +97,9 @@
           <div ng-if="motion.isAllowed('change_state')" class="spacer">
             <select ng-if="motion.state.getNextStates().length > 0" ng-model="stateSelect" class="form-control" ng-change="updateState(stateSelect)">
               <option value="" translate>--- Set next state ---</option>
-              <option ng-repeat="state in motion.state.getNextStates()" value="{{ state.id }}">{{ state.action_word }}</option>
+              <option ng-repeat="state in motion.state.getNextStates()" value="{{ state.id }}">
+                {{ state.action_word | translate }}
+              </option>
             </select>
             <button ng-if="motion.isAllowed('reset_state')" ng-click="reset_state()"
                 class="btn btn-danger btn-xs spacer">
@@ -111,7 +113,7 @@
           <ol class="slimlist">
             <li ng-repeat="poll in motion.polls" class="spacer"
                 ng-if="poll.has_votes || operator.hasPerms('motions.can_manage')">
-              <strong><translate translate-context="ballot">Vote</translate></strong>
+              <strong translate-comment='ballot of a motion' translate>Vote</strong>
               <!-- Edit poll -->
               <button os-perms="motions.can_manage" ng-click="openPollDialog(poll, $index+1)"
                   class="btn btn-default btn-xs" title="{{ 'Edit' | translate }}">

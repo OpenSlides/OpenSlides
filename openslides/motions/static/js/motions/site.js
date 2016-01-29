@@ -183,6 +183,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             },
             // angular-formly fields for motion form
             getFormFields: function () {
+                var workflows = Workflow.getAll();
+                angular.forEach(workflows, function(workflow) {
+                    workflow.name = gettextCatalog.getString(workflow.name);
+                });
                 return [
                 {
                     key: 'identifier',
@@ -319,7 +323,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     templateOptions: {
                         label: gettextCatalog.getString('Workflow'),
                         optionsAttr: 'bs-options',
-                        options: Workflow.getAll(),
+                        options: workflows,
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'name',
@@ -450,7 +454,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         angular.forEach(workflows, function (workflow) {
             if (workflows.length > 1) {
                 var wf = {}
-                wf.name = "# "+workflow.name;
+                wf.name = workflow.name;
+                wf.workflowSeparator = "-";
                 $scope.states.push(wf);
             }
             angular.forEach(workflow.states, function (state) {

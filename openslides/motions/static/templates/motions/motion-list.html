@@ -60,7 +60,11 @@
       <!-- state filter -->
       <select ng-model="stateFilter" class="form-control" id="stateFilter">
         <option value="" translate>--- Select state ---</option>
-        <option ng-repeat="state in states" value="{{ state.id }}">{{ state.name }}</option>
+        <option ng-repeat="state in states" value="{{ state.id }}">
+          {{ state.workflowSeparator }}
+          {{ state.name | translate }}
+          {{ state.workflowSeparator }}
+        </option>
       </select>
     </div>
   </div>

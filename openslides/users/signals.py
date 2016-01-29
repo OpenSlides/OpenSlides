@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Permission
 from django.db.models import Q
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext_lazy
 
 from ..core.config import ConfigVariable
 from .models import Group, User
@@ -149,9 +149,9 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['motions.can_see'],
         permission_dict['users.can_see_extra_data'],
         permission_dict['users.can_see_name'], )
-    group_anonymous = Group.objects.create(name=ugettext_noop('Anonymous'), pk=1)
+    group_anonymous = Group.objects.create(name='Guests', pk=1)
     group_anonymous.permissions.add(*base_permissions)
-    group_registered = Group.objects.create(name=ugettext_noop('Registered'), pk=2)
+    group_registered = Group.objects.create(name=('Registered users', pk=2)
     group_registered.permissions.add(
         permission_dict['agenda.can_be_speaker'],
         *base_permissions)
@@ -163,7 +163,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['mediafiles.can_upload'],
         permission_dict['motions.can_create'],
         permission_dict['motions.can_support'], )
-    group_delegates = Group.objects.create(name=ugettext_noop('Delegates'), pk=3)
+    group_delegates = Group.objects.create(name='Delegates', pk=3)
     group_delegates.permissions.add(*delegates_permissions)
 
     # Staff (pk 4)
@@ -181,7 +181,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['motions.can_create'],
         permission_dict['motions.can_manage'],
         permission_dict['users.can_manage'], )
-    group_staff = Group.objects.create(name=ugettext_noop('Staff'), pk=4)
+    group_staff = Group.objects.create(name='Staff', pk=4)
     group_staff.permissions.add(*staff_permissions)
 
     # Add users.can_see_name and users.can_see_extra_data permissions to staff

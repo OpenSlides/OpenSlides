@@ -70,7 +70,7 @@
       <!-- group filter -->
       <select ng-model="groupFilter" class="form-control" id="groupFilter">
         <option value="" translate>--- Select group ---</option>
-        <option ng-repeat="group in groups" value="{{ group.id }}">{{ group.name }}</option>
+        <option ng-repeat="group in groups" value="{{ group.id }}">{{ group.name | translate }}</option>
       </select>
       <!-- isPresent filter -->
       <input type="checkbox" ng-model="filterPresent" ng-false-value="''">
@@ -155,7 +155,7 @@
         <td class="optional">{{ user.structure_level }}
         <td class="optional">
           <div ng-repeat="group in user.groups">
-            {{ (groups | filter: {id: group})[0].name }}
+            {{ (groups | filter: {id: group})[0].name | translate }}
           </div>
         <td>
           <span os-perms="!users.can_manage">

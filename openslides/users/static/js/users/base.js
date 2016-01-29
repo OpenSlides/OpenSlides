@@ -172,6 +172,19 @@ angular.module('OpenSlidesApp.users', [])
     'User',
     'Group',
     function(User, Group) {}
+])
+
+
+// Mark strings for translation in JavaScript.
+.config([
+    'gettext',
+    function (gettext) {
+        // default group names (from users/signals.py)
+        gettext('Guests');
+        gettext('Registered users');
+        gettext('Delegates');
+        gettext('Staff');
+    }
 ]);
 
 }());
