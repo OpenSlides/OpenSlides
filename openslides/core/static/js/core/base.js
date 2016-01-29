@@ -39,40 +39,41 @@ angular.module('OpenSlidesApp.core', [
     'DS',
     '$rootScope',
     function (DS, $rootScope) {
-        var url = location.origin + "/sockjs";
-        var socket;
-        var Autoupdate = {
-            socket: null,
-            message_receivers: [],
-            connect: function () {
-                var autoupdate = this;
-                socket = this.socket = new SockJS(url);
+        var socket = null;
+        var recInterval = null;
+        $rootScope.connected = true;
 
-                this.socket.onmessage = function (event) {
-                    _.forEach(autoupdate.message_receivers, function (receiver) {
+        var newConnect = function () {
+            socket = new SockJS(location.origin + "/sockjs");
+            clearInterval(recInterval);
+            socket.onopen = function () {
+                $rootScope.connected = true;
+            };
+            socket.onclose = function () {
+                $rootScope.connected = false;
+                socket = null;
+                recInterval = setInterval(function () {
+                    newConnect();
+                }, 1000);
+            };
+        };
+        var Autoupdate = {
+            messageReceivers: [],
+            connect: function () {
+                socket.onmessage = function (event) {
+                    _.forEach(Autoupdate.messageReceivers, function (receiver) {
                         receiver(event.data);
                     });
                 };
-
-                this.socket.onopen = function () {
-                    $rootScope.connected = true;
-                };
-
-                this.socket.onclose = function () {
-                    $rootScope.connected = false;
-                    autoupdate.connect()
-
-                };
             },
             on_message: function (receiver) {
-                this.message_receivers.push(receiver);
+                this.messageReceivers.push(receiver);
             },
             reconnect: function () {
                 socket.close();
-                Autoupdate.connect();
             }
         };
-        $rootScope.connected = false;
+        newConnect();
         Autoupdate.connect();
         return Autoupdate;
     }
