@@ -259,9 +259,9 @@ class UserLoginView(APIView):
                         context['info_text'] = _(
                             'Installation was successfully. Use {username} and '
                             '{password} for first login. Important: Please change '
-                            'your password!'.format(
+                            'your password!').format(
                                 username='<strong>admin</strong>',
-                                password='<strong>admin</strong>'))
+                                password='<strong>admin</strong>')
                     else:
                         context['info_text'] = ''
         else:
