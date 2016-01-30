@@ -151,7 +151,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['users.can_see_name'], )
     group_anonymous = Group.objects.create(name='Guests', pk=1)
     group_anonymous.permissions.add(*base_permissions)
-    group_registered = Group.objects.create(name=('Registered users', pk=2)
+    group_registered = Group.objects.create(name='Registered users', pk=2)
     group_registered.permissions.add(
         permission_dict['agenda.can_be_speaker'],
         *base_permissions)

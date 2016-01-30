@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-27 20:54+0100\n"
+"POT-Creation-Date: 2016-01-30 09:21+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -985,22 +985,6 @@ msgstr ""
 
 #: users/signals.py:87
 msgid "No encryption"
-msgstr ""
-
-#: users/signals.py:152
-msgid "Anonymous"
-msgstr ""
-
-#: users/signals.py:154
-msgid "Registered"
-msgstr ""
-
-#: users/signals.py:166
-msgid "Delegates"
-msgstr ""
-
-#: users/signals.py:184
-msgid "Staff"
 msgstr ""
 
 #: users/views.py:111
