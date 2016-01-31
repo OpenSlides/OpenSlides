@@ -1,10 +1,10 @@
-#
+# 
 # Translators:
 # Marco A.G.Pinto <marcoagpinto@mail.telepac.pt>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
-"PO-Revision-Date: 2016-01-27 20:38+0000\n"
+"PO-Revision-Date: 2016-01-28 12:31+0000\n"
 "Last-Translator: Marco A.G.Pinto <marcoagpinto@mail.telepac.pt>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/openslides/openslides/language/pt_PT/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -91,7 +91,7 @@ msgid "Agenda"
 msgstr "Agenda"
 
 #: agenda/static/templates/agenda/item-list.html:113
-#: core/static/js/core/base.js:281
+#: core/static/js/core/base.js:284
 #: core/static/templates/core/customslide-detail.html:28
 msgid "Agenda item"
 msgstr "Item da agenda"
@@ -104,7 +104,7 @@ msgstr "Todas as eleições"
 msgid "All motions"
 msgstr "Todas as moções"
 
-#: agenda/static/templates/agenda/item-list.html:153
+#: agenda/static/templates/agenda/item-list.html:156
 #: assignments/static/templates/assignments/assignment-list.html:145
 #: core/static/templates/core/tag-list.html:38
 #: motions/static/templates/motions/category-list.html:47
@@ -285,7 +285,7 @@ msgstr "Pode fazer upload de ficheiros"
 msgid "Can use the chat"
 msgstr "Pode usar o chat"
 
-#: agenda/static/templates/agenda/item-list.html:196
+#: agenda/static/templates/agenda/item-list.html:199
 #: assignments/static/templates/assignments/assignment-form.html:13
 #: assignments/static/templates/assignments/assignment-list.html:190
 #: assignments/static/templates/assignments/assignmentpoll-form.html:17
@@ -325,6 +325,14 @@ msgstr "Categorias"
 msgid "Category"
 msgstr "Categoria"
 
+#: index.html:87
+msgid "Change password"
+msgstr "Alterar senha"
+
+#: index.html:38
+msgid "Chat"
+msgstr "Chat"
+
 #: agenda/static/templates/agenda/item-import.html:127
 #: motions/static/templates/motions/motion-import.html:124
 #: users/static/templates/users/user-import.html:154
@@ -337,7 +345,7 @@ msgstr "Limpar pré-visualização"
 msgid "Closed"
 msgstr "Fechado"
 
-#: agenda/static/templates/agenda/item-list.html:180
+#: agenda/static/templates/agenda/item-list.html:183
 #: users/static/js/users/site.js:331
 #: users/static/templates/users/user-detail.html:45
 #: users/static/templates/users/user-import.html:92
@@ -384,6 +392,10 @@ msgstr "Contagens regressivas"
 msgid "Current speaker"
 msgstr "Orador actual"
 
+#: core/static/js/core/base.js:97
+msgid "Czech"
+msgstr "Tcheco"
+
 #: assignments/static/js/assignments/site.js:152
 msgid "Default comment on the ballot paper"
 msgstr "Comentário predefinido no boletim de voto"
@@ -400,7 +412,7 @@ msgstr "Senha predefinida"
 msgid "Delegate"
 msgstr "Delegar"
 
-#: agenda/static/templates/agenda/item-list.html:152
+#: agenda/static/templates/agenda/item-list.html:155
 #: assignments/static/templates/assignments/assignment-detail.html:155
 #: assignments/static/templates/assignments/assignment-list.html:144
 #: core/static/templates/core/tag-list.html:37
@@ -479,11 +491,11 @@ msgid ""
 msgstr "Arrasta e larga os itens para alterar a ordem da agenda. A modificação será gravada imediatamente."
 
 #: agenda/static/templates/agenda/item-list.html:115
-#: agenda/static/templates/agenda/item-list.html:191
+#: agenda/static/templates/agenda/item-list.html:194
 msgid "Duration"
 msgstr "Duração"
 
-#: agenda/static/templates/agenda/item-list.html:149
+#: agenda/static/templates/agenda/item-list.html:152
 #: assignments/static/templates/assignments/assignment-detail.html:27
 #: assignments/static/templates/assignments/assignment-list.html:142
 #: core/static/templates/core/customslide-detail.html:23
@@ -499,7 +511,7 @@ msgstr "Duração"
 msgid "Edit"
 msgstr "Editar"
 
-#: agenda/static/templates/agenda/item-list.html:202
+#: agenda/static/templates/agenda/item-list.html:205
 msgid "Edit ..."
 msgstr "Editar ..."
 
@@ -551,7 +563,7 @@ msgstr "Editar moção ..."
 msgid "Edit participant"
 msgstr "Editar participante"
 
-#: users/static/templates/users/user-detail-profile.html:3
+#: index.html:82 users/static/templates/users/user-detail-profile.html:3
 msgid "Edit profile"
 msgstr "Editar perfil"
 
@@ -612,7 +624,7 @@ msgstr "Erro: Identificador já existe."
 msgid "Error: Text is required."
 msgstr "Erro: Texto é necessário."
 
-#: agenda/static/js/agenda/site.js:385 motions/static/js/motions/site.js:844
+#: agenda/static/js/agenda/site.js:400 motions/static/js/motions/site.js:844
 msgid "Error: Title is required."
 msgstr "Erro: Título é necessário."
 
@@ -751,7 +763,11 @@ msgstr "Importar {{ motions.length - motionsFailed.length }} moções"
 msgid "Import {{ users.length - usersFailed.length }} participants"
 msgstr "Importar {{ users.length - usersFailed.length }} participantes"
 
-#: agenda/static/templates/agenda/item-list.html:142
+#: legalnotice.html:12
+msgid "Installed plugins:"
+msgstr "Plugins instalados:"
+
+#: agenda/static/templates/agenda/item-list.html:145
 msgid "Internal item"
 msgstr "Item interno"
 
@@ -777,7 +793,7 @@ msgstr "Está presente"
 msgid "Item"
 msgstr "Item"
 
-#: agenda/static/templates/agenda/item-list.html:176
+#: agenda/static/templates/agenda/item-list.html:179
 msgid "Item number"
 msgstr "Número de item"
 
@@ -795,6 +811,10 @@ msgstr "Apelido"
 msgid "Last speakers"
 msgstr "Últimos oradores"
 
+#: index.html:165 legalnotice.html:3
+msgid "Legal notice"
+msgstr "Aviso legal"
+
 #: users/static/templates/users/user-list.html:30
 msgid "List of access data"
 msgstr "Lista de dados de acesso"
@@ -805,7 +825,7 @@ msgstr "Lista de participantes"
 
 #: agenda/static/templates/agenda/item-detail.html:17
 #: agenda/static/templates/agenda/item-detail.html:30
-#: agenda/static/templates/agenda/item-list.html:147
+#: agenda/static/templates/agenda/item-list.html:150
 #: agenda/static/templates/agenda/slide-list-of-speakers.html:7
 #: assignments/static/templates/assignments/assignment-detail.html:15
 #: core/static/templates/core/customslide-detail.html:11
@@ -817,9 +837,13 @@ msgstr "Lista de oradores"
 msgid "Live view"
 msgstr "Visualização ao vivo"
 
-#: core/static/templates/core/login-form.html:20
+#: core/static/templates/core/login-form.html:20 index.html:102
 msgid "Login"
 msgstr "Login"
+
+#: index.html:93
+msgid "Logout"
+msgstr "Logout"
 
 #: core/static/templates/core/projector-controls.html:154
 msgid "Messages"
@@ -933,6 +957,10 @@ msgstr "Próximos oradores"
 msgid "No"
 msgstr "Não"
 
+#: search.html:21
+msgid "No results."
+msgstr "Sem resultados."
+
 #: assignments/static/templates/assignments/assignment-list.html:176
 msgid "Number of members to be elected"
 msgstr "Número de membros a serem eleitos"
@@ -1030,6 +1058,10 @@ msgstr "Fase"
 msgid "Please note:"
 msgstr "Por favor nota"
 
+#: core/static/js/core/base.js:96
+msgid "Portuguese"
+msgstr "Português"
+
 #: assignments/static/templates/assignments/assignment-list.html:104
 #: assignments/static/templates/assignments/slide_assignment.html:9
 msgid "Posts"
@@ -1055,7 +1087,7 @@ msgid "Preview"
 msgstr "Visualização"
 
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:70
-msgid "Previouse page"
+msgid "Previous page"
 msgstr "Página anterior"
 
 #: assignments/static/templates/assignments/assignment-detail.html:134
@@ -1106,6 +1138,10 @@ msgstr "Moção do projecto"
 msgid "Project user"
 msgstr "Utilizador do projecto"
 
+#: index.html:175
+msgid "Projector"
+msgstr "Projector"
+
 #: assignments/static/templates/assignments/assignment-detail.html:146
 msgid "Publish ballot"
 msgstr "Publicar a votação"
@@ -1114,7 +1150,7 @@ msgstr "Publicar a votação"
 msgid "Published"
 msgstr "Publicado"
 
-#: agenda/static/templates/agenda/item-list.html:150
+#: agenda/static/templates/agenda/item-list.html:153
 #: assignments/static/templates/assignments/assignment-list.html:143
 #: motions/static/templates/motions/motion-list.html:169
 #: motions/static/templates/motions/motion-list.html:197
@@ -1163,6 +1199,10 @@ msgid ""
 "in the first row"
 msgstr "Necessário valores separados por vírgula ou ponto e vírgula com esses nomes de cabeçalho de coluna na primeira linha"
 
+#: config-form-field.html:27
+msgid "Reset"
+msgstr "Redefinir"
+
 #: core/static/templates/core/projector-controls.html:99
 msgid "Reset countdown"
 msgstr "Redefinir contagem regressiva"
@@ -1206,12 +1246,17 @@ msgstr "Scroll para cima"
 
 #: agenda/static/templates/agenda/item-list.html:64
 #: assignments/static/templates/assignments/assignment-list.html:40
+#: index.html:142
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:32
-#: motions/static/templates/motions/motion-list.html:46
+#: motions/static/templates/motions/motion-list.html:46 search.html:11
 #: users/static/templates/users/group-list.html:24
 #: users/static/templates/users/user-list.html:56
 msgid "Search"
 msgstr "Pesquisar"
+
+#: search.html:3
+msgid "Search results"
+msgstr "Resultados da pesquisa"
 
 #: agenda/static/templates/agenda/item-list.html:38
 #: assignments/static/templates/assignments/assignment-list.html:30
@@ -1270,7 +1315,7 @@ msgstr "Seleccionar ou pesquisar um anexo ..."
 msgid "Separator"
 msgstr "Separador"
 
-#: core/static/js/core/site.js:80
+#: config.html:3 core/static/js/core/site.js:80
 msgid "Settings"
 msgstr "Definições"
 
@@ -1282,7 +1327,7 @@ msgstr "Mostrar"
 msgid "Show PDF files only"
 msgstr "Mostrar apenas ficheiros PDF"
 
-#: agenda/static/templates/agenda/item-list.html:188
+#: agenda/static/templates/agenda/item-list.html:191
 #: assignments/static/js/assignments/site.js:159
 #: core/static/js/core/site.js:562 motions/static/js/motions/site.js:247
 msgid "Show as agenda item"
@@ -1316,6 +1361,10 @@ msgstr "Menor"
 #: agenda/static/templates/agenda/item-sort.html:9
 msgid "Sort agenda"
 msgstr "Ordenar agenda"
+
+#: core/static/js/core/base.js:95
+msgid "Spanish"
+msgstr "Espanhol"
 
 #: assignments/static/templates/assignments/assignmentpoll-form.html:8
 #: motions/static/templates/motions/motionpoll-form.html:8
@@ -1435,7 +1484,7 @@ msgstr "Alteração trivial"
 msgid "Unsupport motion"
 msgstr "Desapoiar moção"
 
-#: agenda/static/templates/agenda/item-list.html:199
+#: agenda/static/templates/agenda/item-list.html:202
 #: assignments/static/templates/assignments/assignment-list.html:193
 #: motions/static/templates/motions/motion-list.html:257
 msgid "Update"
@@ -1556,7 +1605,7 @@ msgid "files"
 msgstr "ficheiros"
 
 #. 'h' means time in hours
-#: agenda/static/templates/agenda/item-list.html:161
+#: agenda/static/templates/agenda/item-list.html:164
 msgid "h"
 msgstr "h"
 
