@@ -85,6 +85,20 @@ body{
     transition-property: margin, font-size;
     transition-duration: 1s;
 }
+.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background-color: black;
+}
+.fullscreen canvas {
+    margin: auto;
+    display: block !important;
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: "Roboto Condensed",Helvetica,Arial,sans-serif;
     font-weight: normal;
@@ -213,6 +227,19 @@ hr {
     z-index: 301;
 }
 
+/*** PDF presentation ***/
+.rotate0 {
+    transform: rotate(0deg);
+}
+.rotate90 {
+    transform: rotate(90deg);
+}
+.rotate180 {
+    transform: rotate(180deg);
+}
+.rotate270 {
+    transform: rotate(270deg);
+}
 
 /*** Table style ***/
 .table {

@@ -1,8 +1,6 @@
-<div ng-controller="SlideMediafileCtrl" class="content">
+<div ng-controller="SlideMediafileCtrl" class="content fullscreen">
     <ng-pdf template-url="/static/templates/mediafiles/slide_mediafile_partial.html"
-        scale="page-fit"
-        ng-attr-scale="{{ scale }}"
-        ng-attr-page="{{ page }}"
-        debug="true">
+        ng-attr-scale="{{ element.scale }}"
+        ng-attr-page="{{ element.page }}">
     </ng-pdf>
 </div>
