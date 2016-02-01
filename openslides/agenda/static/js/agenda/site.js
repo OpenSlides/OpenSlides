@@ -332,10 +332,17 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             $scope.items = AgendaTree.getTree(Agenda.getAll());
         });
 
-        // set changed agenda tree
+        // save parent and weight of moved agenda item (and all items on same level)
         $scope.treeOptions = {
-            dropped: function() {
-                $http.put('/rest/agenda/item/tree/', {tree: $scope.items});
+            dropped: function(event) {
+                var parentID = null;
+                var droppedItemID = event.source.nodeScope.$modelValue.id;
+                if (event.dest.nodesScope.item) {
+                    parentID = event.dest.nodesScope.item.id;
+                }
+                angular.forEach(event.dest.nodesScope.$modelValue, function(item, index) {
+                    $http.patch('/rest/agenda/item/' + item.id + '/', {parent_id: parentID, weight: index});
+                });
             }
         };
     }
