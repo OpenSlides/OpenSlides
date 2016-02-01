@@ -97,15 +97,14 @@ class OpenSlidesSockJSConnection(SockJSConnection):
         object_url.
         """
         # Join network location with object URL.
-        if RUNNING_HOST == '0.0.0.0':
-            # Windows can not connect to 0.0.0.0. So connect to localhost instead
-            local_host = 'localhost'
+        if settings.OPENSLIDES_WSGI_NETWORK_LOCATION:
+            wsgi_network_location = settings.OPENSLIDES_WSGI_NETWORK_LOCATION
         else:
-            local_host = RUNNING_HOST
-
-        wsgi_network_location = (
-            settings.OPENSLIDES_WSGI_NETWORK_LOCATION or
-            'http://{}:{}'.format(local_host, RUNNING_PORT))
+            if RUNNING_HOST == '0.0.0.0':
+                # Windows can not connect to 0.0.0.0, so connect to localhost instead.
+                wsgi_network_location = 'http://localhost:{}'.format(RUNNING_PORT)
+            else:
+                wsgi_network_location = 'http://{}:{}'.format(RUNNING_HOST, RUNNING_PORT)
         url = ''.join((wsgi_network_location, object_url))
 
         # Send out internal HTTP request to get data from the REST api.
