@@ -43,6 +43,15 @@ angular.module('OpenSlidesApp.core', [
         var recInterval = null;
         $rootScope.connected = true;
 
+        var Autoupdate = {
+            messageReceivers: [],
+            onMessage: function (receiver) {
+                this.messageReceivers.push(receiver);
+            },
+            reconnect: function () {
+                socket.close();
+            }
+        };
         var newConnect = function () {
             socket = new SockJS(location.origin + "/sockjs");
             clearInterval(recInterval);
@@ -56,25 +65,14 @@ angular.module('OpenSlidesApp.core', [
                     newConnect();
                 }, 1000);
             };
+            socket.onmessage = function (event) {
+                _.forEach(Autoupdate.messageReceivers, function (receiver) {
+                    receiver(event.data);
+                });
+            };
         };
-        var Autoupdate = {
-            messageReceivers: [],
-            connect: function () {
-                socket.onmessage = function (event) {
-                    _.forEach(Autoupdate.messageReceivers, function (receiver) {
-                        receiver(event.data);
-                    });
-                };
-            },
-            on_message: function (receiver) {
-                this.messageReceivers.push(receiver);
-            },
-            reconnect: function () {
-                socket.close();
-            }
-        };
+
         newConnect();
-        Autoupdate.connect();
         return Autoupdate;
     }
 ])
@@ -168,7 +166,7 @@ angular.module('OpenSlidesApp.core', [
     'autoupdate',
     'dsEject',
     function (DS, autoupdate, dsEject) {
-        autoupdate.on_message(function(data) {
+        autoupdate.onMessage(function(data) {
             // TODO: when MODEL.find() is called after this
             //       a new request is fired. This could be a bug in DS
 
