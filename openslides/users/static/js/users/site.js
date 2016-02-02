@@ -390,6 +390,14 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             $scope.sortColumn = column;
         };
 
+        // pagination
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 100;
+        $scope.limitBegin = 0;
+        $scope.pageChanged = function() {
+            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+        };
+
         // open new/edit dialog
         $scope.openDialog = function (user) {
             ngDialog.open(UserForm.getDialog(user));
@@ -642,6 +650,13 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         // set csv file encoding
         $scope.setSeparator = function () {
             $scope.csv.separator = $scope.separator;
+        };
+        // pagination
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 100;
+        $scope.limitBegin = 0;
+        $scope.pageChanged = function() {
+            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
         };
         // detect if csv file is loaded
         $scope.$watch('csv.result', function () {

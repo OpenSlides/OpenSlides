@@ -125,7 +125,7 @@
           </i>
     <tbody>
       <tr ng-repeat="user in usersFiltered = (users | filter: filter.search | filter: {groups: groupFilter} |
-          filter: {is_present: filterPresent} | orderBy: sortColumn:reverse)"
+          filter: {is_present: filterPresent} | orderBy: sortColumn:reverse) | limitTo : itemsPerPage : limitBegin"
           class="animate-item"
           ng-class="{ 'activeline': user.isProjected(), 'selected': user.selected  }">
         <!-- projector column -->
@@ -163,4 +163,5 @@
           </span>
           <input os-perms="users.can_manage" type="checkbox" ng-model="user.is_present" ng-click="save(user)">
   </table>
+  <uib-pagination total-items="usersFiltered.length" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
 </div>
