@@ -10,6 +10,65 @@
   </div>
 </div>
 
+<div class="meta" os-perms="core.can_manage_projector">
+  <div class="title" ng-click="isMeta = !isMeta">
+    <div class="name">
+      <i class="fa fa-play-circle"></i>
+      <translate>Presentation control elements</translate>
+    </div>
+    <div class="icon">
+      <i class="fa fa-lg" ng-class="isMeta ? 'fa-angle-down' : 'fa-angle-up'"></i>
+    </div>
+  </div>
+  <div class="detail" uib-collapse="isMeta">
+    <!-- mediafile pdf controls -->
+    <div class="row">
+      <div class="col-md-12">
+        <div ng-repeat="presentedMediafile in presentedMediafiles">
+          <h3>{{ getTitle(presentedMediafile) }}</h3>
+          <nav ng-class="getNavStyle(scroll)" class="form-inline">
+            <div class="btn-group">
+              <button class="btn btn-default" ng-click="mediafileGoToPage(presentedMediafile.page - 1)"
+                  title="{{ 'Previous page' | translate }}">
+                <i class="fa fa-backward"></i>
+              </button>
+              <button class="btn btn-default" ng-click="mediafileGoToPage(presentedMediafile.page + 1)"
+                  title="{{ 'Next page' | translate }}">
+                <i class="fa fa-forward"></i>
+              </button>
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon" translate>Page</span>
+              <input type="number" min=1 ng-model="presentedMediafile.page" class="form-control" style="width: 80px"
+                  ng-change="mediafileGoToPage(presentedMediafile.page)">
+              <span class="input-group-addon"><translate>of</translate> {{presentedMediafile.numPages}}</span>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-default" ng-click="mediafileRotate()" title="{{ 'Rotate clockwise' | translate }}">
+                <i class="fa fa-repeat"></i>
+              </button>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-default" ng-click="mediafileZoomOut()" title="{{ 'Zoom out' | translate }}">
+                <i class="fa fa-search-minus"></i>
+              </button>
+              <button class="btn btn-default" ng-click="mediafileFit()" title="{{ 'Reset zoom' | translate }}">
+                  100%
+              </button>
+              <button class="btn btn-default" ng-click="mediafileZoomIn()" title="{{ 'Zoom in' | translate }}">
+                <i class="fa fa-search-plus"></i>
+              </button>
+            </div>
+          </nav>
+        </div>
+        <div ng-show="!presentedMediafiles.length" class="spacer">
+          <i translate>No PDF file projected.</i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="details">
   <div class="row form-group">
     <div class="col-sm-6">
@@ -60,40 +119,6 @@
     </div>
   </div>
 
-  <!-- mediafile pdf controls -->
-  <div os-perms="core.can_manage_projector" ng-show="presentedMediafiles.length">
-    <div ng-repeat="presentedMediafile in presentedMediafiles" class="well well-sm">
-      <h3 translate>PDF control elements</h3>
-      <!-- TODO: show filename / title of mediafile -->
-      <nav ng-class="getNavStyle(scroll)" class="form-inline">
-        <div class="btn-group">
-          <button class="btn btn-default" ng-click="mediafileGoPrevious()" title="{{ 'Previous page' | translate }}">
-            <i class="fa fa-backward"></i>
-          </button>
-          <button class="btn btn-default" ng-click="mediafileGoNext()" title="{{ 'Next page' | translate }}">
-            <i class="fa fa-forward"></i>
-          </button>
-        </div>
-        <div class="btn-group">
-          <button class="btn btn-default" ng-click="mediafileZoomOut()" title="{{ 'Zoom out' | translate }}">
-            <i class="fa fa-search-minus"></i>
-          </button>
-          <button class="btn btn-default" ng-click="mediafileFit()" title="{{ 'Reset zoom' | translate }}">
-              100%
-          </button>
-          <button class="btn btn-default" ng-click="mediafileZoomIn()" title="{{ 'Zoom in' | translate }}">
-            <i class="fa fa-search-plus"></i>
-          </button>
-        </div>
-        <div class="input-group">
-          <span class="input-group-addon" translate>Page</span>
-          <input type="number" min=1 ng-model="presentedMediafile.page" class="form-control" style="width: 80px">
-          <span class="input-group-addon"><translate>of</translate> {{presentedMediafile.numPages}}</span>
-        </div>
-      </nav>
-    </div>
-  </div>
-
   <div class="spacer-top-lg italic">
     {{ mediafilesFiltered.length }} /
     {{ mediafiles.length }} {{ "files" | translate }}<span ng-if="(mediafiles|filter:{selected:true}).length > 0">,
@@ -111,18 +136,6 @@
         <th ng-click="toggleSort('title_or_filename')" class="sortable">
           <translate>Title</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'title_or_filename' && header.sortable != false"
-              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-          </i>
-        <!-- filetype -->
-        <th ng-click="toggleSort('filetype')" class="sortable optional">
-          <translate>Filetype</translate>
-          <i class="pull-right fa" ng-show="sortColumn === 'filetype' && header.sortable != false"
-              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-          </i>
-        <!-- filesize -->
-        <th ng-click="toggleSort('filesize')" class="sortable optional">
-          <translate>Filesize</translate>
-          <i class="pull-right fa" ng-show="sortColumn === 'filesize' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
         <!-- upload time -->
@@ -159,6 +172,8 @@
         <!-- mediafile data colums -->
         <td ng-mouseover="mediafile.hover=true" ng-mouseleave="mediafile.hover=false">
           <strong><a ng-href="{{ mediafile.mediafileUrl }}" target="_blank">{{ mediafile.title_or_filename }}</a></strong>
+          <br><small><i class="fa fa-file"></i> {{ mediafile.filetype }}</small>
+          <br><small><i class="fa fa-database"></i> {{ mediafile.filesize }}</small>
           <div os-perms="mediafiles.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !mediafile.hover}">
             <a href="" ng-click="openDialog(mediafile)" translate>Edit</a> |
             <a href="" class="text-danger"
@@ -166,8 +181,6 @@
                 <b>{{ mediafile.title }} [{{ mediafile.mediafile.name }}]</b>"
                 ng-bootbox-confirm-action="delete(mediafile)" translate>Delete</a>
           </div>
-        <td class="optional">{{ mediafile.mediafile.type }}
-        <td class="optional">{{ mediafile.filesize }}
         <td class="optional">{{ mediafile.timestamp | date:'yyyy-MM-dd HH:mm:ss' }}
         <td>{{ mediafile.uploader.get_full_name() }}
     </tbody>

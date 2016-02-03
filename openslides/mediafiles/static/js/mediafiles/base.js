@@ -11,6 +11,12 @@ angular.module('OpenSlidesApp.mediafiles', [])
         var name = 'mediafiles/mediafile';
         return DS.defineResource({
             name: name,
+            useClass: jsDataModel,
+            methods: {
+                getResourceName: function () {
+                    return name;
+                }
+            },
             computed: {
                 is_presentable: ['filetype', function (filetype) {
                     var PRESENTABLE_FILE_TYPES = ['application/pdf'];

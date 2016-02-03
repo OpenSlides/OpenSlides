@@ -66,6 +66,11 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
             $scope.presentedMediafiles = _.filter(projectorElements, function (element) {
                 return element.name === 'mediafiles/mediafile';
             });
+            if ($scope.presentedMediafiles.length) {
+                $scope.isMeta = false;
+            } else {
+                $scope.isMeta = true;
+            }
         }
 
         $scope.$watch(function() {
@@ -141,8 +146,8 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                     id: mediafile.id,
                     numPages: mediafile.mediafile.pages,
                     page: 1,
-                    pageFit: true,
                     scale: 1,
+                    rotate: 0,
                     visible: true
                 };
             } else {
@@ -151,10 +156,10 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                     name: 'mediafiles/mediafile',
                     id: mediafile.id,
                     numPages: mediafile.mediafile.pages,
-                    visible: true,
-                    pageFit: true,
+                    page: 1,
                     scale: 1,
-                    page: 1
+                    rotate: 0,
+                    visible: true
                 }];
             }
             $http.post(postUrl, data);
@@ -173,38 +178,32 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
             return $scope.presentedMediafiles[0];
         }
 
-        $scope.mediafileGoPrevious = function () {
-            var mediafileElement = getCurrentlyPresentedMediafile();
-            if (mediafileElement.page > 1) {
-                sendMediafileCommand({
-                    page: parseInt(mediafileElement.page) - 1
-                });
-            }
+        $scope.getTitle = function (presentedMediafile) {
+            return Mediafile.get(presentedMediafile.id).title;
         };
-        $scope.mediafileGoNext = function () {
+
+        $scope.mediafileGoToPage = function (page) {
             var mediafileElement = getCurrentlyPresentedMediafile();
-            if (mediafileElement.page < mediafileElement.numPages) {
+            if (parseInt(page) > 0) {
                 sendMediafileCommand({
-                    page: parseInt(mediafileElement.page) + 1
+                    page: parseInt(page)
                 });
             }
         };
         $scope.mediafileZoomIn = function () {
             var mediafileElement = getCurrentlyPresentedMediafile();
             sendMediafileCommand({
-                pageFit: false,
                 scale: parseFloat(mediafileElement.scale) + 0.2
             });
         };
         $scope.mediafileFit = function () {
             sendMediafileCommand({
-                pageFit: true
+                scale: 1
             });
         };
         $scope.mediafileZoomOut = function () {
             var mediafileElement = getCurrentlyPresentedMediafile();
             sendMediafileCommand({
-                pageFit: false,
                 scale: parseFloat(mediafileElement.scale) - 0.2
             });
         };
@@ -214,15 +213,15 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
             });
         };
         $scope.mediafileRotate = function () {
-            var rotation;
-            var currentRotation = $scope.mediafile.rotation;
-            if (currentRotation === 270) {
+            var mediafileElement = getCurrentlyPresentedMediafile();
+            var rotation = mediafileElement.rotate;
+            if (rotation === 270) {
                 rotation = 0;
             } else {
-                rotation = currentRotation + 90;
+                rotation = rotation + 90;
             }
             sendMediafileCommand({
-                rotation: rotation
+                rotate: rotation
             });
         };
     }
