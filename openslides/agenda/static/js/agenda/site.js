@@ -86,6 +86,14 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         });
         $scope.alert = {};
 
+        // pagination
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 100;
+        $scope.limitBegin = 0;
+        $scope.pageChanged = function() {
+            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+        };
+
         // check open permission
         $scope.isAllowedToSeeOpenLink = function (item) {
             var collection = item.content_object.collection;
@@ -356,17 +364,26 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     function($scope, gettext, Agenda, Customslide) {
         // import from textarea
         $scope.importByLine = function () {
-            $scope.titleItems = $scope.itemlist[0].split("\n");
-            $scope.importcounter = 0;
-            $scope.titleItems.forEach(function(title) {
-                var item = {title: title};
-                // TODO: create all items in bulk mode
-                Customslide.create(item).then(
-                    function(success) {
-                        $scope.importcounter++;
-                    }
-                );
-            });
+            if ($scope.itemlist) {
+                $scope.titleItems = $scope.itemlist[0].split("\n");
+                $scope.importcounter = 0;
+                $scope.titleItems.forEach(function(title, index) {
+                    var item = {title: title};
+                    // TODO: create all items in bulk mode
+                    Customslide.create(item).then(
+                        function(success) {
+                            // find related agenda item
+                            Agenda.find(success.agenda_item_id).then(function(item) {
+                                // import all items as type AGENDA_ITEM = 1
+                                item.type = 1;
+                                item.weight = 1000 + index;
+                                Agenda.save(item);
+                            });
+                            $scope.importcounter++;
+                        }
+                    );
+                });
+            }
         };
 
         // *** CSV import ***
@@ -397,7 +414,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         $scope.$watch('csv.result', function () {
             $scope.items = [];
             var quotionRe = /^"(.*)"$/;
-            angular.forEach($scope.csv.result, function (item) {
+            angular.forEach($scope.csv.result, function (item, index) {
                 // title
                 if (item.title) {
                     item.title = item.title.replace(quotionRe, '$1');
@@ -410,6 +427,29 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 if (item.text) {
                     item.text = item.text.replace(quotionRe, '$1');
                 }
+                // duration
+                if (item.duration) {
+                    item.duration = item.duration.replace(quotionRe, '$1');
+                }
+                // comment
+                if (item.comment) {
+                    item.comment = item.comment.replace(quotionRe, '$1');
+                }
+                // is_hidden
+                if (item.is_hidden) {
+                    item.is_hidden = item.is_hidden.replace(quotionRe, '$1');
+                    if (item.is_hidden == '1') {
+                        item.type = 2;
+                    } else {
+                        item.type = 1;
+                    }
+                } else {
+                    item.type = 1;
+                }
+                // set weight for right csv row order
+                // (Use 1000+ to protect existing items and prevent collision
+                // with new items which use weight 10000 as default.)
+                item.weight = 1000 + index;
                 $scope.items.push(item);
             });
         });
@@ -422,6 +462,14 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                     Customslide.create(item).then(
                         function(success) {
                             item.imported = true;
+                            // find related agenda item
+                            Agenda.find(success.agenda_item_id).then(function(agendaItem) {
+                                agendaItem.duration = item.duration;
+                                agendaItem.comment = item.comment;
+                                agendaItem.type = item.type;
+                                agendaItem.weight = item.weight;
+                                Agenda.save(agendaItem);
+                            });
                         }
                     );
                 }
@@ -436,10 +484,11 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             var element = document.getElementById('downloadLink');
             var csvRows = [
                 // column header line
-                ['title', 'text'],
+                ['title', 'text', 'duration', 'comment', 'is_hidden'],
                 // example entries
-                ['Demo 1', 'Demo text 1'],
-                ['Demo 2', 'Demo text 2']
+                ['Demo 1', 'Demo text 1', '1:00', 'test comment', ''],
+                ['Break', '', '0:10', '', '1'],
+                ['Demo 2', 'Demo text 2', '1:30', '', '']
 
             ];
             var csvString = csvRows.join("%0A");

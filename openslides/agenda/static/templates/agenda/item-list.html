@@ -117,7 +117,8 @@
           <translate>Done</translate>
     <tbody>
       <tr ng-repeat="item in itemsFiltered = (items | filter: filter.search |
-          filter: {is_hidden: filter.showHiddenItems} |  filter: {closed: filter.showClosedItems})"
+          filter: {is_hidden: filter.showHiddenItems} |  filter: {closed: filter.showClosedItems}) |
+          limitTo : itemsPerPage : limitBegin"
           class="animate-item"
           ng-class="{ 'activeline': item.isProjected(), 'selected': item.selected, 'hiddenrow': item.is_hidden}">
         <!-- projector column -->
@@ -206,4 +207,5 @@
             </div>
           </form>
   </table>
+  <uib-pagination total-items="itemsFiltered.length" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
 </div>

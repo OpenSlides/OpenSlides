@@ -91,6 +91,7 @@ img {
     border: 1px solid red;
     position: fixed;
     width: 100%;
+    z-index: 1000;
 }
 #header a.headerlink {
     text-decoration: none;
