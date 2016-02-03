@@ -84,7 +84,7 @@ msgid "Agenda"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:113
-#: core/static/js/core/base.js:286
+#: core/static/js/core/base.js:285
 #: core/static/templates/core/customslide-detail.html:28
 msgid "Agenda item"
 msgstr ""
@@ -97,7 +97,7 @@ msgstr ""
 msgid "All motions"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-list.html:156
+#: agenda/static/templates/agenda/item-list.html:157
 #: assignments/static/templates/assignments/assignment-list.html:145
 #: core/static/templates/core/tag-list.html:38
 #: motions/static/templates/motions/category-list.html:47
@@ -107,7 +107,7 @@ msgstr ""
 msgid "Are you sure you want to delete this entry?"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:165
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:180
 msgid "Are you sure you want to delete this file?"
 msgstr ""
 
@@ -135,7 +135,7 @@ msgstr ""
 msgid "Attachments"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:137
+#: agenda/static/templates/agenda/item-import.html:143
 #: agenda/static/templates/agenda/item-import.html:36
 msgid "Back to agenda"
 msgstr ""
@@ -161,7 +161,7 @@ msgstr ""
 msgid "Back to overview"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:164
+#: users/static/templates/users/user-import.html:165
 #: users/static/templates/users/user-import.html:36
 msgid "Back to users overview"
 msgstr ""
@@ -183,103 +183,103 @@ msgstr ""
 msgid "Bigger"
 msgstr ""
 
-#: users/static/js/users/site.js:904
+#: users/static/js/users/site.js:919
 msgid "Can create motions"
 msgstr ""
 
-#: users/static/js/users/site.js:883
+#: users/static/js/users/site.js:898
 msgid "Can manage agenda"
 msgstr ""
 
-#: users/static/js/users/site.js:896
+#: users/static/js/users/site.js:911
 msgid "Can manage configuration"
 msgstr ""
 
-#: users/static/js/users/site.js:890
+#: users/static/js/users/site.js:905
 msgid "Can manage elections"
 msgstr ""
 
-#: users/static/js/users/site.js:901
+#: users/static/js/users/site.js:916
 msgid "Can manage files"
 msgstr ""
 
-#: users/static/js/users/site.js:906
+#: users/static/js/users/site.js:921
 msgid "Can manage motions"
 msgstr ""
 
-#: users/static/js/users/site.js:895
+#: users/static/js/users/site.js:910
 msgid "Can manage tags"
 msgstr ""
 
-#: users/static/js/users/site.js:893
+#: users/static/js/users/site.js:908
 msgid "Can manage the projector"
 msgstr ""
 
-#: users/static/js/users/site.js:910
+#: users/static/js/users/site.js:925
 msgid "Can manage users"
 msgstr ""
 
-#: users/static/js/users/site.js:888
+#: users/static/js/users/site.js:903
 msgid "Can nominate another participant"
 msgstr ""
 
-#: users/static/js/users/site.js:889
+#: users/static/js/users/site.js:904
 msgid "Can nominate oneself"
 msgstr ""
 
-#: users/static/js/users/site.js:885
+#: users/static/js/users/site.js:900
 msgid "Can put oneself on the list of speakers"
 msgstr ""
 
-#: users/static/js/users/site.js:882
+#: users/static/js/users/site.js:897
 msgid "Can see agenda"
 msgstr ""
 
-#: users/static/js/users/site.js:887
+#: users/static/js/users/site.js:902
 msgid "Can see elections"
 msgstr ""
 
-#: users/static/js/users/site.js:909
+#: users/static/js/users/site.js:924
 msgid "Can see extra data of users"
 msgstr ""
 
-#: users/static/js/users/site.js:884
+#: users/static/js/users/site.js:899
 msgid "Can see hidden items and time scheduling of agenda"
 msgstr ""
 
-#: users/static/js/users/site.js:903
+#: users/static/js/users/site.js:918
 msgid "Can see motions"
 msgstr ""
 
-#: users/static/js/users/site.js:908
+#: users/static/js/users/site.js:923
 msgid "Can see names of users"
 msgstr ""
 
-#: users/static/js/users/site.js:894
+#: users/static/js/users/site.js:909
 msgid "Can see the dashboard"
 msgstr ""
 
-#: users/static/js/users/site.js:899
+#: users/static/js/users/site.js:914
 msgid "Can see the list of files"
 msgstr ""
 
-#: users/static/js/users/site.js:892
+#: users/static/js/users/site.js:907
 msgid "Can see the projector"
 msgstr ""
 
-#: users/static/js/users/site.js:905
+#: users/static/js/users/site.js:920
 msgid "Can support motions"
 msgstr ""
 
-#: users/static/js/users/site.js:900
+#: users/static/js/users/site.js:915
 msgid "Can upload files"
 msgstr ""
 
-#: users/static/js/users/site.js:897
+#: users/static/js/users/site.js:912
 msgid "Can use the chat"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-list.html:199
+#: agenda/static/templates/agenda/item-list.html:200
 #: assignments/static/templates/assignments/assignment-form.html:13
 #: assignments/static/templates/assignments/assignment-list.html:190
 #: assignments/static/templates/assignments/assignmentpoll-form.html:17
@@ -327,9 +327,9 @@ msgstr ""
 msgid "Chat"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:127
+#: agenda/static/templates/agenda/item-import.html:133
 #: motions/static/templates/motions/motion-import.html:124
-#: users/static/templates/users/user-import.html:154
+#: users/static/templates/users/user-import.html:155
 msgid "Clear preview"
 msgstr ""
 
@@ -339,7 +339,8 @@ msgstr ""
 msgid "Closed"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-list.html:183
+#: agenda/static/templates/agenda/item-import.html:85
+#: agenda/static/templates/agenda/item-list.html:184
 #: users/static/js/users/site.js:331
 #: users/static/templates/users/user-detail.html:45
 #: users/static/templates/users/user-import.html:92
@@ -386,7 +387,7 @@ msgstr ""
 msgid "Current speaker"
 msgstr ""
 
-#: core/static/js/core/base.js:97
+#: core/static/js/core/base.js:96
 msgid "Czech"
 msgstr ""
 
@@ -407,11 +408,11 @@ msgstr ""
 msgid "Delegates"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-list.html:155
+#: agenda/static/templates/agenda/item-list.html:156
 #: assignments/static/templates/assignments/assignment-detail.html:155
 #: assignments/static/templates/assignments/assignment-list.html:144
 #: core/static/templates/core/tag-list.html:37
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:164
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:179
 #: motions/static/templates/motions/category-list.html:46
 #: motions/static/templates/motions/motion-detail.html:126
 #: motions/static/templates/motions/motion-detail.html:239
@@ -429,7 +430,7 @@ msgstr ""
 msgid "Delete selected items"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:58
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:117
 msgid "Delete selected mediafiles"
 msgstr ""
 
@@ -481,17 +482,18 @@ msgstr ""
 msgid "Drag and drop items to change the order of the agenda. Your modification will be saved immediately."
 msgstr ""
 
+#: agenda/static/templates/agenda/item-import.html:84
 #: agenda/static/templates/agenda/item-list.html:115
-#: agenda/static/templates/agenda/item-list.html:194
+#: agenda/static/templates/agenda/item-list.html:195
 msgid "Duration"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-list.html:152
+#: agenda/static/templates/agenda/item-list.html:153
 #: assignments/static/templates/assignments/assignment-detail.html:27
 #: assignments/static/templates/assignments/assignment-list.html:142
 #: core/static/templates/core/customslide-detail.html:23
 #: core/static/templates/core/tag-list.html:36
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:163
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:178
 #: motions/static/templates/motions/category-list.html:44
 #: motions/static/templates/motions/motion-detail.html:119
 #: motions/static/templates/motions/motion-detail.html:27
@@ -502,7 +504,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-list.html:205
+#: agenda/static/templates/agenda/item-list.html:206
 msgid "Edit ..."
 msgstr ""
 
@@ -596,7 +598,7 @@ msgstr ""
 msgid "End speech"
 msgstr ""
 
-#: core/static/js/core/base.js:92
+#: core/static/js/core/base.js:91
 msgid "English"
 msgstr ""
 
@@ -604,7 +606,7 @@ msgstr ""
 msgid "Enter votes"
 msgstr ""
 
-#: users/static/js/users/site.js:665
+#: users/static/js/users/site.js:680
 msgid "Error: First or last name is required."
 msgstr ""
 
@@ -616,7 +618,7 @@ msgstr ""
 msgid "Error: Text is required."
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:400
+#: agenda/static/js/agenda/site.js:424
 #: motions/static/js/motions/site.js:849
 msgid "Error: Title is required."
 msgstr ""
@@ -630,14 +632,6 @@ msgstr ""
 msgid "Files"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:124
-msgid "Filesize"
-msgstr ""
-
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:118
-msgid "Filetype"
-msgstr ""
-
 #: core/static/templates/core/tag-list.html:18
 #: motions/static/templates/motions/category-list.html:21
 msgid "Filter"
@@ -645,7 +639,7 @@ msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:70
 #: assignments/static/templates/assignments/assignment-list.html:46
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:38
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:97
 #: motions/static/templates/motions/motion-list.html:52
 #: users/static/templates/users/user-list.html:62
 msgid "Filter ..."
@@ -657,11 +651,11 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
-#: core/static/js/core/base.js:94
+#: core/static/js/core/base.js:93
 msgid "French"
 msgstr ""
 
-#: core/static/js/core/base.js:93
+#: core/static/js/core/base.js:92
 msgid "German"
 msgstr ""
 
@@ -747,7 +741,7 @@ msgstr ""
 msgid "Import participants"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:130
+#: agenda/static/templates/agenda/item-import.html:136
 msgid "Import {{ items.length - itemsFailed.length }} items"
 msgstr ""
 
@@ -755,7 +749,7 @@ msgstr ""
 msgid "Import {{ motions.length - motionsFailed.length }} motions"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:157
+#: users/static/templates/users/user-import.html:158
 msgid "Import {{ users.length - usersFailed.length }} participants"
 msgstr ""
 
@@ -763,7 +757,7 @@ msgstr ""
 msgid "Installed plugins:"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-list.html:145
+#: agenda/static/templates/agenda/item-list.html:146
 msgid "Internal item"
 msgstr ""
 
@@ -778,6 +772,10 @@ msgstr ""
 msgid "Is active"
 msgstr ""
 
+#: agenda/static/templates/agenda/item-import.html:86
+msgid "Is hidden"
+msgstr ""
+
 #: users/static/js/users/site.js:348
 #: users/static/templates/users/user-list.html:77
 msgid "Is present"
@@ -789,7 +787,7 @@ msgstr ""
 msgid "Item"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-list.html:179
+#: agenda/static/templates/agenda/item-list.html:180
 msgid "Item number"
 msgstr ""
 
@@ -822,7 +820,7 @@ msgstr ""
 
 #: agenda/static/templates/agenda/item-detail.html:17
 #: agenda/static/templates/agenda/item-detail.html:30
-#: agenda/static/templates/agenda/item-list.html:150
+#: agenda/static/templates/agenda/item-list.html:151
 #: agenda/static/templates/agenda/slide-list-of-speakers.html:7
 #: assignments/static/templates/assignments/assignment-detail.html:15
 #: core/static/templates/core/customslide-detail.html:11
@@ -940,7 +938,7 @@ msgstr ""
 msgid "New vote"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:73
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:36
 msgid "Next page"
 msgstr ""
 
@@ -953,6 +951,10 @@ msgstr ""
 #: motions/static/js/motions/site.js:359
 #: motions/static/templates/motions/motion-detail.html:147
 msgid "No"
+msgstr ""
+
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:65
+msgid "No PDF file projected."
 msgstr ""
 
 #: search.html:21
@@ -999,11 +1001,7 @@ msgstr ""
 msgid "PDF"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:66
-msgid "PDF control elements"
-msgstr ""
-
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:89
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:41
 msgid "Page"
 msgstr ""
 
@@ -1056,7 +1054,7 @@ msgstr ""
 msgid "Please note:"
 msgstr ""
 
-#: core/static/js/core/base.js:96
+#: core/static/js/core/base.js:95
 msgid "Portuguese"
 msgstr ""
 
@@ -1078,13 +1076,17 @@ msgstr ""
 msgid "Present"
 msgstr ""
 
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:17
+msgid "Presentation control elements"
+msgstr ""
+
 #: agenda/static/templates/agenda/item-import.html:76
 #: motions/static/templates/motions/motion-import.html:48
 #: users/static/templates/users/user-import.html:81
 msgid "Preview"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:70
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:32
 msgid "Previous page"
 msgstr ""
 
@@ -1114,11 +1116,11 @@ msgid "Project election"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-detail.html:23
-#: agenda/static/templates/agenda/item-list.html:128
+#: agenda/static/templates/agenda/item-list.html:129
 msgid "Project item"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:153
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:166
 msgid "Project mediafile"
 msgstr ""
 
@@ -1148,7 +1150,7 @@ msgstr ""
 msgid "Published"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-list.html:153
+#: agenda/static/templates/agenda/item-list.html:154
 #: assignments/static/templates/assignments/assignment-list.html:143
 #: motions/static/templates/motions/motion-list.html:173
 #: motions/static/templates/motions/motion-list.html:201
@@ -1216,8 +1218,12 @@ msgstr ""
 msgid "Reset state"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:81
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:55
 msgid "Reset zoom"
+msgstr ""
+
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:47
+msgid "Rotate clockwise"
 msgstr ""
 
 #: assignments/static/templates/assignments/assignment-form.html:10
@@ -1248,7 +1254,7 @@ msgstr ""
 #: agenda/static/templates/agenda/item-list.html:64
 #: assignments/static/templates/assignments/assignment-list.html:40
 #: index.html:142
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:32
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:91
 #: motions/static/templates/motions/motion-list.html:46
 #: search.html:11
 #: users/static/templates/users/group-list.html:24
@@ -1262,7 +1268,7 @@ msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:38
 #: assignments/static/templates/assignments/assignment-list.html:30
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:22
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:81
 #: motions/static/templates/motions/motion-list.html:37
 #: users/static/templates/users/user-list.html:47
 msgid "Select ..."
@@ -1327,11 +1333,11 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:48
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:107
 msgid "Show PDF files only"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-list.html:191
+#: agenda/static/templates/agenda/item-list.html:192
 #: assignments/static/js/assignments/site.js:159
 #: core/static/js/core/site.js:562
 #: motions/static/js/motions/site.js:251
@@ -1367,7 +1373,7 @@ msgstr ""
 msgid "Sort agenda"
 msgstr ""
 
-#: core/static/js/core/base.js:95
+#: core/static/js/core/base.js:94
 msgid "Spanish"
 msgstr ""
 
@@ -1454,10 +1460,6 @@ msgstr ""
 msgid "Text"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:70
-msgid "Text is optional and may be empty."
-msgstr ""
-
 #: motions/static/templates/motions/motion-detail.html:226
 msgid "This is the last active version."
 msgstr ""
@@ -1473,7 +1475,7 @@ msgstr ""
 #: assignments/static/templates/assignments/assignment-list.html:97
 #: core/static/js/core/site.js:533
 #: mediafiles/static/templates/mediafiles/mediafile-form.html:20
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:112
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:137
 #: motions/static/js/motions/site.js:217
 #: motions/static/templates/motions/motion-import.html:55
 #: motions/static/templates/motions/motion-list.html:112
@@ -1481,6 +1483,10 @@ msgstr ""
 #: users/static/templates/users/user-detail-profile.html:22
 #: users/static/templates/users/user-import.html:87
 msgid "Title"
+msgstr ""
+
+#: agenda/static/templates/agenda/item-import.html:70
+msgid "Title is required. All other fields are optional and may be empty."
 msgstr ""
 
 #: motions/static/js/motions/site.js:242
@@ -1491,18 +1497,18 @@ msgstr ""
 msgid "Unsupport motion"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-list.html:202
+#: agenda/static/templates/agenda/item-list.html:203
 #: assignments/static/templates/assignments/assignment-list.html:193
 #: motions/static/templates/motions/motion-list.html:261
 msgid "Update"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:130
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:143
 msgid "Upload time"
 msgstr ""
 
 #: mediafiles/static/templates/mediafiles/mediafile-form.html:26
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:136
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:149
 msgid "Uploaded by"
 msgstr ""
 
@@ -1580,11 +1586,11 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:84
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:58
 msgid "Zoom in"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:78
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:52
 msgid "Zoom out"
 msgstr ""
 
@@ -1597,7 +1603,7 @@ msgstr ""
 msgid "adjourned"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:110
+#: agenda/static/templates/agenda/item-import.html:116
 msgid "agenda items will be not imported."
 msgstr ""
 
@@ -1609,12 +1615,12 @@ msgstr ""
 msgid "elections"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:99
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:124
 msgid "files"
 msgstr ""
 
 #. 'h' means time in hours
-#: agenda/static/templates/agenda/item-list.html:164
+#: agenda/static/templates/agenda/item-list.html:165
 msgid "h"
 msgstr ""
 
@@ -1637,11 +1643,11 @@ msgstr ""
 msgid "items"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:123
+#: agenda/static/templates/agenda/item-import.html:129
 msgid "items were successfully imported."
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:116
+#: agenda/static/templates/agenda/item-import.html:122
 msgid "items will be imported."
 msgstr ""
 
@@ -1682,7 +1688,7 @@ msgstr ""
 msgid "not decided"
 msgstr ""
 
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:91
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:44
 msgid "of"
 msgstr ""
 
@@ -1690,15 +1696,15 @@ msgstr ""
 msgid "participants"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:150
+#: users/static/templates/users/user-import.html:151
 msgid "participants were successfully imported."
 msgstr ""
 
-#: users/static/templates/users/user-import.html:143
+#: users/static/templates/users/user-import.html:144
 msgid "participants will be imported."
 msgstr ""
 
-#: users/static/templates/users/user-import.html:137
+#: users/static/templates/users/user-import.html:138
 msgid "participants will be not imported."
 msgstr ""
 
@@ -1721,7 +1727,7 @@ msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:100
 #: assignments/static/templates/assignments/assignment-list.html:76
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:100
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:125
 #: motions/static/templates/motions/motion-list.html:86
 #: users/static/templates/users/user-list.html:95
 msgid "selected"
