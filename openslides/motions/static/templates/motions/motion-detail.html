@@ -195,12 +195,12 @@
   <div class="row">
     <div class="col-sm-8">
       <h3 translate>Text</h3>
-      <div class="white-space-pre-line" ng-bind-html="motion.getText(version)"></div>
+      <div ng-bind-html="motion.getText(version)"></div>
 
       <!-- reason -->
       <div ng-if="motion.getReason(version) != ''">
         <h3 translate>Reason</h3>
-        <div class="white-space-pre-line" ng-bind-html="motion.getReason()"></div>
+        <div ng-bind-html="motion.getReason()"></div>
       </div>
 
       <!-- attachments -->
