@@ -336,13 +336,13 @@ class AssignmentPDF(PDFView):
             # Add result rows
             elected_candidates = list(assignment.elected)
             length = len(vote_results)
-            for candidate, poll_list in vote_results.iteritems():
+            for candidate, poll_list in vote_results.items():
                 row = []
                 candidate_string = candidate.get_short_name()
                 if candidate in elected_candidates:
                     candidate_string = "* " + candidate_string
-                if candidate.name_suffix and length < 20:
-                    candidate_string += "\n(%s)" % candidate.name_suffix
+                if candidate.structure_level and length < 20:
+                    candidate_string += "\n(%s)" % candidate.structure_level
                 row.append(candidate_string)
                 for vote in poll_list:
                     if vote is None:
