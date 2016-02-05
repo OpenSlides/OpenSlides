@@ -14,8 +14,8 @@ II. Requirements
 ================
 
 OpenSlides runs everywhere where Python is running (for example on
-GNU/Linux, Mac or Windows (XP or newer)). On each client you need only an
-actual webbrowser.
+GNU/Linux, Mac or Windows (XP or newer)). On each client you need only a
+current version of a webbrowser.
 
 
 III. Installation
@@ -33,23 +33,22 @@ Installation on GNU/Linux or Mac OS X
 
        $ sudo apt-get install python3-dev
 
-2. Setup a virtual environment with Virtual Python Environment builder
-   (optional)
+2. Setup a virtual Python environment using the virtual environment (venv)
+   package for Python (optional)
 
-   You can setup a virtual environment to install OpenSlides as non-root
-   user. Make sure that you have installed Virtual Python Environment
-   builder on your system.
+   You can setup a virtual Python environment to install OpenSlides as
+   non-root user.
 
-   For example for Ubuntu run::
+   Note: For Ubuntu 14.04 you have to install the pyvenv binary package. Run::
 
-       $ sudo apt-get install python-virtualenv
+       $ sudo apt-get install python3.4-venv
 
    Create your OpenSlides directory, change to it, setup and activate the
    virtual environment::
 
        $ mkdir OpenSlides
        $ cd OpenSlides
-       $ virtualenv -p /usr/bin/python3 .virtualenv
+       $ python3 -m venv .virtualenv
        $ source .virtualenv/bin/activate
 
 3. Install OpenSlides
@@ -60,7 +59,7 @@ Installation on GNU/Linux or Mac OS X
 
        $ pip install openslides-x.x.tar.gz
 
-   OpenSlides will install all required python packages (see
+   OpenSlides will install all required Python packages (see
    requirements_production.txt).
 
 
@@ -68,7 +67,7 @@ Installation on Windows
 -----------------------
 
 *Note: There is a portable version of OpenSlides for Windows which does not
-required any install steps. If there is a reason that you can not use the
+require any install steps. If there is a reason that you can not use the
 portable version you should observe the following install steps.*
 
 1. Check requirements
@@ -80,7 +79,7 @@ portable version you should observe the following install steps.*
       <https://www.python.org/downloads/windows/>`_. Note
       that the 32-bit MSI installer is required even on a 64-bit Windows
       system. If you use the 64-bit MSI installer, step 3 of this
-      instruction will fail unless you installed the package reportlab
+      instruction will fail unless you installed the package Reportlab
       manually.
 
    b. Add python directories to PATH (via Control Panel > System >
@@ -91,25 +90,19 @@ portable version you should observe the following install steps.*
       ez_setup.py for Setuptools
       <https://pypi.python.org/pypi/setuptools/#installation-instructions>`_.
 
-2. Setup a virtual environment with Virtual Python Environment builder
-   (optional)
+2. Setup a virtual Python environment using the virtual environment (venv)
+   package for Python (optional)
 
-   You can setup a virtual environment to install OpenSlides as non-root
-   user. Make sure that you have installed Virtual Python Environment
-   builder on your system.
-
-   To install latest Virtual Python Environment builder, open command line (cmd)
-   and run::
-
-       > easy_install https://pypi.python.org/packages/source/v/virtualenv/virtualenv-x.y.z.tar.gz
+   You can setup a virtual Python environment to install OpenSlides as
+   non-root user.
 
    Create your OpenSlides directory, change to it, setup and activate the
    virtual environment::
 
        > md OpenSlides
        > cd OpenSlides
-       > virtualenv .virtualenv
-       > .virtualenv\Scripts\activate
+       > python -m venv .virtualenv
+       > .virtualenv\Scripts\activate.bat
 
 3. Install OpenSlides
 
@@ -117,9 +110,9 @@ portable version you should observe the following install steps.*
    <http://openslides.org/download/>`_. Download latest OpenSlides release
    as compressed tar archive and run::
 
-       > easy_install openslides-x.x.tar.gz
+       > pip install openslides-x.x.tar.gz
 
-   OpenSlides will install all required python packages (see
+   OpenSlides will install all required Python packages (see
    requirements_production.txt).
 
 
@@ -130,15 +123,15 @@ To start OpenSlides simply run on command line::
 
     openslides
 
-If you run this command the first time, a new database and the admin account
-(Username: `admin`, Password: `admin`) will be created. Please change the password
-after first login!
+If you run this command the first time, a new database and the admin
+account (Username: `admin`, Password: `admin`) will be created. Please
+change the password after first login!
 
 OpenSlides will start using the integrated Tornado webserver. It will also
 try to open the webinterface in your default webbrowser. The server will
-try to listen on the local ip address on port 8000. That means that the server
-will be available to everyone on your local network (at least for commonly used
-network configurations).
+try to listen on the local ip address on port 8000. That means that the
+server will be available to everyone on your local network (at least for
+commonly used network configurations).
 
 If you use a virtual environment (see install instructions, step 2), do not
 forget to activate the environment before restart after you have closed the
@@ -184,10 +177,10 @@ Installation and start of the development version
        git clone https://github.com/OpenSlides/OpenSlides.git
        cd OpenSlides
 
-3. Setup and activate a virtual environment with Virtual Python Environment
-   builder (optional)
+3. Setup a virtual Python environment using the virtual environment (venv)
+   package for Python (optional)
 
-   Follow step 2 in the correspondent instruction in section III.
+   See step 2 in the correspondent instruction in section III.
 
 4. Install all required Python packages::
 
@@ -227,6 +220,11 @@ Installation and start of the development version
    To get help on the command-line options run::
 
        python manage.py --help
+
+   Later you might want to start the server with the following command to
+   avoid opening new browser windows::
+
+       python manage.py runserver
 
 
 VI. Used software
