@@ -254,6 +254,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 .controller('AssignmentDetailCtrl', [
     '$scope',
     '$http',
+    'filterFilter',
     'gettext',
     'ngDialog',
     'AssignmentForm',
@@ -262,7 +263,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'User',
     'assignment',
     'phases',
-    function($scope, $http, gettext, ngDialog, AssignmentForm, operator, Assignment, User, assignment, phases) {
+    function($scope, $http, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment, User, assignment, phases) {
         User.bindAll({}, $scope, 'users');
         Assignment.bindOne(assignment.id, $scope, 'assignment');
         Assignment.loadRelations(assignment, 'agenda_item');
@@ -337,6 +338,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             $http.post('/rest/assignments/assignment/' + assignment.id + '/create_poll/')
                 .success(function(data){
                     $scope.alert.show = false;
+                    if (assignment.phase == 0) {
+                        $scope.updatePhase(1);
+                    }
                 })
                 .error(function(data){
                     $scope.alert = { type: 'danger', msg: data.detail, show: true };
@@ -390,6 +394,15 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                      data: JSON.stringify({user: user})})
             } else {
                 $http.post('/rest/assignments/assignment/' + assignment.id + '/mark_elected/', {'user': user})
+                    .then(function(success) {
+                        var elected = filterFilter(assignment.assignment_related_users,{elected: true});
+                        // Set phase to 'finished' if there are enough (= number of open posts) elected users.
+                        // Note: The array 'elected' does NOT contains the candidate who is just marked as elected.
+                        // So add 1 to length to get the real number of all elected users.
+                        if (elected.length + 1 == assignment.open_posts ) {
+                            $scope.updatePhase(2);
+                        }
+                    });
             }
 
         };
@@ -490,8 +503,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'assignmentpoll',
     'ballot',
     function($scope, gettextCatalog, AssignmentPoll, assignmentpoll, ballot) {
-        // set initial values for form model
-        $scope.model = assignmentpoll;
+        // set initial values for form model by create deep copy of assignmentpoll object
+        // so detail view is not updated while editing poll
+        $scope.model = angular.copy(assignmentpoll);
         $scope.ballot = ballot;
         $scope.formFields = [];
         $scope.alert = {};
@@ -499,6 +513,16 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         // add dynamic form fields
         assignmentpoll.options.forEach(function(option) {
             if (assignmentpoll.yesnoabstain) {
+                var defaultValue = {
+                    'yes': '',
+                    'no': '',
+                    'abstain': ''
+                };
+                if (option.votes.length) {
+                    defaultValue.yes = option.votes[0].weight;
+                    defaultValue.no = option.votes[1].weight;
+                    defaultValue.abstain = option.votes[2].weight;
+                }
                 $scope.formFields.push(
                     {
                         noFormControl: true,
@@ -511,7 +535,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                             label: gettextCatalog.getString('Yes'),
                             type: 'number',
                             required: true
-                        }
+                        },
+                        defaultValue: defaultValue.yes
                     },
                     {
                         key: 'no_' + option.candidate_id,
@@ -520,7 +545,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                             label: gettextCatalog.getString('No'),
                             type: 'number',
                             required: true
-                        }
+                        },
+                        defaultValue: defaultValue.no
                     },
                     {
                         key:'abstain_' + option.candidate_id,
@@ -529,9 +555,14 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                             label: gettextCatalog.getString('Abstain'),
                             type: 'number',
                             required: true
-                        }
+                        },
+                        defaultValue: defaultValue.abstain
                     });
             } else {
+                var defaultValue;
+                if (option.votes.length) {
+                    defaultValue = option.votes[0].weight;
+                }
                 $scope.formFields.push(
                     {
                         key: 'vote_' + option.candidate_id,
@@ -540,7 +571,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                             label: option.candidate.get_full_name(),
                             type: 'number',
                             required: true
-                        }
+                        },
+                        defaultValue: defaultValue
                     });
             }
         });
@@ -599,6 +631,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     });
                 });
             }
+            // save change poll object on server
             poll.DSUpdate({
                     assignment_id: poll.assignment_id,
                     votes: votes,

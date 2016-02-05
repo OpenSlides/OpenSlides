@@ -6,9 +6,55 @@ angular.module('OpenSlidesApp.assignments', [])
 
 .factory('AssignmentPollOption', [
     'DS',
-    function (DS) {
+    'jsDataModel',
+    'gettextCatalog',
+    'Config',
+    function (DS, jsDataModel, gettextCatalog, Config) {
         return DS.defineResource({
             name: 'assignments/polloption',
+            useClass: jsDataModel,
+            methods: {
+                getVotes: function () {
+                    if (!this.poll.has_votes) {
+                        return;
+                    }
+                    var poll = this.poll;
+                    var votes = [];
+                    var config = Config.get('assignments_poll_100_percent_base').value;
+                    angular.forEach(this.votes, function(vote) {
+                        // check for special value
+                        var value;
+                        switch (vote.weight) {
+                            case -1:
+                                value = gettextCatalog.getString('majority');
+                                break;
+                            case -2:
+                                value = gettextCatalog.getString('undocumented');
+                                break;
+                            default:
+                                value = vote.weight;
+                                break;
+                        }
+                        // calculate percent value
+                        var percentStr, percentNumber;
+                        if (config == "WITHOUT_INVALID" && poll.votesvalid > 0 && vote.weight >= 0) {
+                            percentNumber = Math.round(vote.weight * 100 / poll.votesvalid * 10) / 10;
+                        } else if (config == "WITH_INVALID" && poll.votescast > 0 && vote.weight >= 0) {
+                            percentNumber = Math.round(vote.weight * 100 / (poll.votescast) * 10) / 10;
+                        }
+                        if (percentNumber) {
+                            percentStr = "(" + percentNumber + "%)";
+                        }
+                        votes.push({
+                            'label': gettextCatalog.getString(vote.value),
+                            'value': value,
+                            'percentStr': percentStr,
+                            'percentNumber': percentNumber
+                        });
+                    });
+                    return votes;
+                }
+            },
             relations: {
                 belongsTo: {
                     'assignments/poll': {
@@ -27,10 +73,43 @@ angular.module('OpenSlidesApp.assignments', [])
 
 .factory('AssignmentPoll', [
     'DS',
+    'gettextCatalog',
     'AssignmentPollOption',
-    function (DS, AssignmentPollOption) {
+    'Config',
+    function (DS, gettextCatalog, AssignmentPollOption, Config) {
         return DS.defineResource({
             name: 'assignments/poll',
+            methods: {
+                // returns object with value and percent (for votes valid/invalid/cast only)
+                getVote: function (vote) {
+                    if (!this.has_votes || !vote) {
+                        return;
+                    }
+                    var value = '';
+                    switch (vote) {
+                        case -1:
+                            value = gettextCatalog.getString('majority');
+                            break;
+                        case -2:
+                            value = gettextCatalog.getString('undocumented');
+                            break;
+                        default:
+                            value = vote;
+                            break;
+                    }
+                    // calculate percent value
+                    var config = Config.get('assignments_poll_100_percent_base').value;
+                    var percent;
+                    if ((config == "WITHOUT_INVALID" && vote == this.votesvalid && vote >= 0) ||
+                        (config == "WITH_INVALID" && vote == this.votescast && vote >= 0)) {
+                        percent = '(100%)';
+                    }
+                    return {
+                        'value': value,
+                        'percent': percent
+                    };
+                },
+            },
             relations: {
                 belongsTo: {
                     'assignments/assignment': {
