@@ -46,5 +46,5 @@ class MediafileViewSet(ModelViewSet):
                 str(self.request.user.pk) != str(uploader_id)):
             self.permission_denied(request)
         if not self.request.data.get('mediafile'):
-            raise ValidationError({'details': 'You forgot to provide a file.'})
+            raise ValidationError({'detail': 'You forgot to provide a file.'})
         return super().create(request, *args, **kwargs)

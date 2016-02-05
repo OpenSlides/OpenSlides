@@ -69,7 +69,7 @@ class UserFullSerializer(ModelSerializer):
         Generates the username if it is empty.
         """
         if not (data.get('username') or data.get('first_name') or data.get('last_name')):
-            raise ValidationError(_('Username, first name and last name can not all be empty.'))
+            raise ValidationError({'detail': _('Username, first name and last name can not all be empty.')})
 
         # Generate username. But only if it is not set and the serializer is not
         # called in a PATCH context (partial_update).
