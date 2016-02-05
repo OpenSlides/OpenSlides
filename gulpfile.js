@@ -12,14 +12,18 @@
  * for production mode.
  */
 
+// TODO: Remove the next line when support for Node 0.10.x is dropped.
+// See https://github.com/postcss/postcss#nodejs-010-and-the-promise-api
+require('es6-promise').polyfill();
+
 var argv = require('yargs').argv,
     gulp = require('gulp'),
     concat = require('gulp-concat'),
+    cssnano = require('gulp-cssnano'),
     gulpif = require('gulp-if'),
     gettext = require('gulp-angular-gettext'),
     jshint = require('gulp-jshint'),
     mainBowerFiles = require('main-bower-files'),
-    minifyCSS = require('gulp-minify-css'),
     path = require('path'),
     rename = require('gulp-rename'),
     through = require('through2'),
@@ -52,7 +56,7 @@ gulp.task('css-libs', function () {
             filter: /\.css$/
         }))
         .pipe(concat('openslides-libs.css'))
-        .pipe(gulpif(argv.production, minifyCSS()))
+        .pipe(gulpif(argv.production, cssnano()))
         .pipe(gulp.dest(path.join(output_directory, 'css')));
 });
 
