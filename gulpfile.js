@@ -25,7 +25,6 @@ var argv = require('yargs').argv,
     jshint = require('gulp-jshint'),
     mainBowerFiles = require('main-bower-files'),
     path = require('path'),
-    rename = require('gulp-rename'),
     through = require('through2'),
     uglify = require('gulp-uglify'),
     vsprintf = require('sprintf-js').vsprintf;
@@ -74,13 +73,6 @@ gulp.task('ckeditor', function () {
         .pipe(gulp.dest(path.join(output_directory, 'ckeditor')));
 });
 
-// Extra task only for PDF.js
-gulp.task('pdfjs', function () {
-    return gulp.src(path.join('bower_components', 'pdfjs-dist', 'build', 'pdf.worker.js'))
-        .pipe(rename(path.join('openslides-libs.worker.js')))
-        .pipe(gulp.dest(path.join(output_directory, 'js')));
-});
-
 // Compiles translation files (*.po) to *.json and saves them in the directory
 // openslides/static/i18n/.
 gulp.task('translations', function () {
@@ -92,7 +84,7 @@ gulp.task('translations', function () {
 });
 
 // Gulp default task. Runs all other tasks before.
-gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs', 'ckeditor', 'pdfjs', 'translations'], function () {});
+gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs', 'ckeditor', 'translations'], function () {});
 
 
 /**

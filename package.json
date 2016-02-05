@@ -1,6 +1,9 @@
 {
   "name": "OpenSlides",
   "private": true,
+  "scripts": {
+    "prepublish": "bower install && gulp --production"
+  },
   "devDependencies": {
     "bower": "~1.7.2",
     "es6-promise": "~3.0.2",
@@ -10,7 +13,6 @@
     "gulp-cssnano": "~2.1.0",
     "gulp-if": "~2.0.0",
     "gulp-jshint": "~2.0.0",
-    "gulp-rename": "~1.2.2",
     "gulp-uglify": "~1.5.1",
     "main-bower-files": "~2.11.1",
     "po2json": "~0.4.1",

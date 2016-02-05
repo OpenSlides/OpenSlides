@@ -186,30 +186,29 @@ Installation and start of the development version
 
        $ pip install -r requirements.txt
 
-5. Install all npm and bower packages
+5. Install all npm and bower packages and concat and copy all third party
+   JavaScript and Cascading Style Sheets libraries
 
    For Unix and Mac OS X run::
 
        $ npm install
-       $ node_modules/.bin/bower install
 
    For Windows run::
 
        > npm install
-       > node_modules\.bin\bower install
 
-6. Concat and copy all third party JavaScript and Cascading Style Sheets
-   libraries
+   Later you might want to rerun gulp so that the third party JavaScript
+   and Cascading Style Sheets libraries are not minified.
 
-   For Unix and Mac OS X run::
+   To do this for Unix and Mac OS X run::
 
        $ node_modules/.bin/gulp
 
-   For Windows run::
+   To do this for Windows run::
 
        > node_modules\.bin\gulp
 
-7. Start OpenSlides
+6. Start OpenSlides
 
    Use the command-line interface::
 
