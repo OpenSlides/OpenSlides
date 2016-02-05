@@ -79,14 +79,18 @@ class OpenSlidesSockJSConnection(SockJSConnection):
         This method is called after succesful response of AsyncHTTPClient().
         See send_object().
         """
-        collection, obj_id = get_collection_and_id_from_url(response.request.url)
-        data = {
-            'url': response.request.url,
-            'status_code': response.code,
-            'collection': collection,
-            'id': obj_id,
-            'data': json.loads(response.body.decode())}
-        self.send(data)
+        if response.code in (200, 404):
+            # Only send something to the client in case of one of these status
+            # codes. You have to change the client code (autoupdate.onMessage)
+            # if you want to handle some more codes.
+            collection, obj_id = get_collection_and_id_from_url(response.request.url)
+            data = {
+                'url': response.request.url,
+                'status_code': response.code,
+                'collection': collection,
+                'id': obj_id,
+                'data': json.loads(response.body.decode())}
+            self.send(data)
 
     @classmethod
     def send_object(cls, object_url):
