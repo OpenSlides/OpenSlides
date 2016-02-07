@@ -188,7 +188,8 @@ angular.module('OpenSlidesApp.core', [
                 }
                 DS.eject(data.collection, data.id);
             }
-            // TODO: handle other statuscodes
+            // If you want to handle more status codes, change server
+            // restrictions in utils/autoupdate.py.
         });
     }
 ])
