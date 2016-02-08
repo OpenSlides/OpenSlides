@@ -13,12 +13,12 @@ class JSONSerializerField(Field):
         value is a dictionary with must have a key 'name'.
         """
         if type(data) is not dict:
-            raise ValidationError('Data must be a dictionary.')
+            raise ValidationError({'detail': 'Data must be a dictionary.'})
         for element in data.values():
             if type(element) is not dict:
-                raise ValidationError('Data must be a dictionary.')
+                raise ValidationError({'detail': 'Data must be a dictionary.'})
             elif element.get('name') is None:
-                raise ValidationError("Every dictionary must have a key 'name'.")
+                raise ValidationError({'detail': "Every dictionary must have a key 'name'."})
         return data
 
 

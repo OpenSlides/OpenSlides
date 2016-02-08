@@ -27,7 +27,7 @@ def validate_workflow_field(value):
     Validator to ensure that the workflow with the given id exists.
     """
     if not Workflow.objects.filter(pk=value).exists():
-        raise ValidationError(_('Workflow %(pk)d does not exist.') % {'pk': value})
+        raise ValidationError({'detail': _('Workflow %(pk)d does not exist.') % {'pk': value}})
 
 
 class CategorySerializer(ModelSerializer):

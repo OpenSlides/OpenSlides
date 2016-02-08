@@ -177,13 +177,13 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         of dictionaries to be appended to the projector config entry.
         """
         if not isinstance(request.data, list):
-            raise ValidationError({'data': 'Data must be a list.'})
+            raise ValidationError({'detail': 'Data must be a list.'})
 
         projector_instance = self.get_object()
         projector_config = projector_instance.config
         for element in request.data:
             if element.get('name') is None:
-                raise ValidationError({'data': 'Invalid projector element. Name is missing.'})
+                raise ValidationError({'detail': 'Invalid projector element. Name is missing.'})
             projector_config[uuid.uuid4().hex] = element
 
         serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
@@ -200,7 +200,7 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         entries are deleted but not entries with stable == True.
         """
         if not isinstance(request.data, list):
-            raise ValidationError({'data': 'Data must be a list.'})
+            raise ValidationError({'detail': 'Data must be a list.'})
 
         projector_instance = self.get_object()
         projector_config = {}
@@ -209,7 +209,7 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
                 projector_config[key] = value
         for element in request.data:
             if element.get('name') is None:
-                raise ValidationError({'data': 'Invalid projector element. Name is missing.'})
+                raise ValidationError({'detail': 'Invalid projector element. Name is missing.'})
             projector_config[uuid.uuid4().hex] = element
 
         serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
@@ -239,8 +239,8 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         }
         """
         if not isinstance(request.data, dict):
-            raise ValidationError({'data': 'Data must be a dictionary.'})
-        error = {'data': 'Data must be a dictionary with UUIDs as keys and dictionaries as values.'}
+            raise ValidationError({'detail': 'Data must be a dictionary.'})
+        error = {'detail': 'Data must be a dictionary with UUIDs as keys and dictionaries as values.'}
         for key, value in request.data.items():
             try:
                 uuid.UUID(hex=str(key))
@@ -253,7 +253,7 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         projector_config = projector_instance.config
         for key, value in request.data.items():
             if key not in projector_config:
-                raise ValidationError({'data': 'Invalid projector element. Wrong UUID.'})
+                raise ValidationError({'detail': 'Invalid projector element. Wrong UUID.'})
             projector_config[key].update(request.data[key])
 
         serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
@@ -270,12 +270,12 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         that should be deleted.
         """
         if not isinstance(request.data, list):
-            raise ValidationError({'data': 'Data must be a list of hex UUIDs.'})
+            raise ValidationError({'detail': 'Data must be a list of hex UUIDs.'})
         for item in request.data:
             try:
                 uuid.UUID(hex=str(item))
             except ValueError:
-                raise ValidationError({'data': 'Data must be a list of hex UUIDs.'})
+                raise ValidationError({'detail': 'Data must be a list of hex UUIDs.'})
 
         projector_instance = self.get_object()
         projector_config = projector_instance.config
@@ -283,7 +283,7 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
             try:
                 del projector_config[key]
             except KeyError:
-                raise ValidationError({'data': 'Invalid UUID.'})
+                raise ValidationError({'detail': 'Invalid UUID.'})
 
         serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
         serializer.is_valid(raise_exception=True)
@@ -327,11 +327,11 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         }
         """
         if not isinstance(request.data, dict):
-            raise ValidationError({'data': 'Data must be a dictionary.'})
+            raise ValidationError({'detail': 'Data must be a dictionary.'})
         if (request.data.get('action') not in ('scale', 'scroll') or
                 request.data.get('direction') not in ('up', 'down', 'reset')):
-            raise ValidationError({'data': "Data must be a dictionary with an action ('scale' or 'scroll') "
-                                           "and a direction ('up', 'down' or 'reset')."})
+            raise ValidationError({'detail': "Data must be a dictionary with an action ('scale' or 'scroll') "
+                                             "and a direction ('up', 'down' or 'reset')."})
 
         projector_instance = self.get_object()
         if request.data['action'] == 'scale':
