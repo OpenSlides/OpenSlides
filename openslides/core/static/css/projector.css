@@ -16,6 +16,7 @@ body{
     box-shadow: 0 0 7px rgba(0,0,0,0.6);
     height: 70px;
     margin-bottom: 20px;
+    font-family: 'Roboto Condensed Light';
 }
 #logo {
     position: relative;
@@ -46,6 +47,7 @@ body{
     opacity: 0.8;
 }
 #currentTime {
+    font-family: 'Roboto Condensed Light';
     border: 0 solid #000000;
     font-size: 24px;
     position: absolute;
@@ -56,6 +58,7 @@ body{
     color: #fff;
 }
 #footer {
+    font-family: 'Roboto Condensed Light';
     position: fixed;
     bottom: 0;
     height: 35px;
