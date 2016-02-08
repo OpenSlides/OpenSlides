@@ -71,13 +71,13 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     '$scope',
     '$http',
     '$state',
+    'DS',
     'operator',
     'ngDialog',
     'Agenda',
     'AgendaTree',
-    'Customslide',
     'Projector',
-    function($scope, $http, $state, operator, ngDialog, Agenda, AgendaTree, Customslide, Projector) {
+    function($scope, $http, $state, DS, operator, ngDialog, Agenda, AgendaTree, Projector) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -143,9 +143,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         };
         // delete related item
         $scope.deleteRelatedItem = function (item) {
-            if (item.content_object.collection == 'core/customslide') {
-                Customslide.destroy(item.content_object.id);
-            }
+            DS.destroy(item.content_object.collection, item.content_object.id);
         };
 
         // *** delete mode functions ***
@@ -169,9 +167,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         $scope.delete = function () {
             angular.forEach($scope.items, function (item) {
                 if (item.selected) {
-                    if (item.content_object.collection == 'core/customslide') {
-                        Customslide.destroy(item.content_object.id);
-                    }
+                    DS.destroy(item.content_object.collection, item.content_object.id);
                 }
             });
             $scope.isDeleteMode = false;
