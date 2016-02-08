@@ -1,6 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext as _
-from django.utils.translation import pgettext, ugettext_lazy
+from django.utils.translation import pgettext, ugettext_lazy, ugettext_noop
 
 from openslides.core.config import ConfigVariable
 from openslides.poll.models import PERCENT_BASE_CHOICES
@@ -182,20 +182,20 @@ def create_builtin_workflows(sender, **kwargs):
         return
 
     workflow_1 = Workflow.objects.create(name='Simple Workflow')
-    state_1_1 = State.objects.create(name='submitted',
+    state_1_1 = State.objects.create(name=ugettext_noop('submitted'),
                                      workflow=workflow_1,
                                      allow_create_poll=True,
                                      allow_support=True,
                                      allow_submitter_edit=True)
-    state_1_2 = State.objects.create(name='accepted',
+    state_1_2 = State.objects.create(name=ugettext_noop('accepted'),
                                      workflow=workflow_1,
                                      action_word='Accept',
                                      css_class='success')
-    state_1_3 = State.objects.create(name='rejected',
+    state_1_3 = State.objects.create(name=ugettext_noop('rejected'),
                                      workflow=workflow_1,
                                      action_word='Reject',
                                      css_class='danger')
-    state_1_4 = State.objects.create(name='not decided',
+    state_1_4 = State.objects.create(name=ugettext_noop('not decided'),
                                      workflow=workflow_1,
                                      action_word='Do not decide',
                                      css_class='default')
@@ -204,54 +204,54 @@ def create_builtin_workflows(sender, **kwargs):
     workflow_1.save()
 
     workflow_2 = Workflow.objects.create(name='Complex Workflow')
-    state_2_1 = State.objects.create(name='published',
+    state_2_1 = State.objects.create(name=ugettext_noop('published'),
                                      workflow=workflow_2,
                                      allow_support=True,
                                      allow_submitter_edit=True,
                                      dont_set_identifier=True)
-    state_2_2 = State.objects.create(name='permitted',
+    state_2_2 = State.objects.create(name=ugettext_noop('permitted'),
                                      workflow=workflow_2,
                                      action_word='Permit',
                                      allow_create_poll=True,
                                      allow_submitter_edit=True,
                                      versioning=True,
                                      leave_old_version_active=True)
-    state_2_3 = State.objects.create(name='accepted',
+    state_2_3 = State.objects.create(name=ugettext_noop('accepted'),
                                      workflow=workflow_2,
                                      action_word='Accept',
                                      versioning=True,
                                      css_class='success')
-    state_2_4 = State.objects.create(name='rejected',
+    state_2_4 = State.objects.create(name=ugettext_noop('rejected'),
                                      workflow=workflow_2,
                                      action_word='Reject',
                                      versioning=True,
                                      css_class='danger')
-    state_2_5 = State.objects.create(name='withdrawed',
+    state_2_5 = State.objects.create(name=ugettext_noop('withdrawed'),
                                      workflow=workflow_2,
                                      action_word='Withdraw',
                                      versioning=True,
                                      css_class='default')
-    state_2_6 = State.objects.create(name='adjourned',
+    state_2_6 = State.objects.create(name=ugettext_noop('adjourned'),
                                      workflow=workflow_2,
                                      action_word='Adjourn',
                                      versioning=True,
                                      css_class='default')
-    state_2_7 = State.objects.create(name='not concerned',
+    state_2_7 = State.objects.create(name=ugettext_noop('not concerned'),
                                      workflow=workflow_2,
                                      action_word='Do not concern',
                                      versioning=True,
                                      css_class='default')
-    state_2_8 = State.objects.create(name='commited a bill',
+    state_2_8 = State.objects.create(name=ugettext_noop('commited a bill'),
                                      workflow=workflow_2,
                                      action_word='Commit a bill',
                                      versioning=True,
                                      css_class='default')
-    state_2_9 = State.objects.create(name='needs review',
+    state_2_9 = State.objects.create(name=ugettext_noop('needs review'),
                                      workflow=workflow_2,
                                      action_word='Needs review',
                                      versioning=True,
                                      css_class='default')
-    state_2_10 = State.objects.create(name='rejected (not authorized)',
+    state_2_10 = State.objects.create(name=ugettext_noop('rejected (not authorized)'),
                                       workflow=workflow_2,
                                       action_word='Reject (not authorized)',
                                       versioning=True,
