@@ -10,6 +10,46 @@
     <div ng-repeat="submitter in motion.submitters">
       {{ submitter.get_full_name() }}<br>
     </div>
+
+    <!-- Poll results -->
+    <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
+      <div ng-repeat="poll in motion.polls | orderBy:'-id'" class="spacer">
+        <div ng-show="poll.has_votes" class="pollresults">
+          <strong ng-if="motion.polls.length > 1"><translate>Vote</translate> {{ motion.polls.length - $index }}:</strong>
+          <table class="transparentTable spacer">
+            <!-- yes -->
+            <tr>
+              <td class="icon">
+                <i class="fa fa-thumbs-up fa-2x"></i>
+              <td>
+                <span class="result_label"><translate>Yes</translate>:</span>
+                <span class="result_value">{{ poll.yes }} {{ poll.getYesPercent() }}</span>
+                <div ng-if="poll.getYesPercent(true)">
+                  <uib-progressbar value="poll.getYesPercent(true)" type="success"></uib-progressbar>
+                </div>
+            <!-- no -->
+            <tr>
+              <td class="icon">
+                <i class="fa fa-thumbs-down fa-2x"></i>
+              <td>
+                <span class="result_label"><translate>No</translate>:</span>
+                <span class="result_value">{{ poll.no }} {{ poll.getNoPercent() }}</span>
+                <div ng-if="poll.getNoPercent(true)">
+                  <uib-progressbar value="poll.getNoPercent(true)" type="danger"></uib-progressbar>
+                </div>
+            <!-- abstain -->
+            <tr>
+              <td class="icon">
+                <strong style="font-size: 26px">&empty;</strong>
+              <td>
+                <span class="result_label"><translate>Abstain</translate>:</span>
+                <span class="result_value">{{ poll.abstain }} {{ poll.getAbstainPercent() }}</span>
+                <div ng-if="poll.getAbstainPercent(true)">
+                  <uib-progressbar value="poll.getAbstainPercent(true)" type="warning"></uib-progressbar>
+                </div>
+          </table>
+        </div>
+      </div>
   </div>
 
   <!-- Title -->

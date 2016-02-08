@@ -278,10 +278,21 @@ tr.total td {
 tr.elected td {
     background-color: #BED4DE !important;
 }
+.transparentTable td {
+    background-color: transparent;
+    padding-right: 10px;
+}
+.pollresults table .icon {
+    color: #636363;
+    height: 45px;
+}
 
 /*** Agenda list ***/
 .agendalist p {
     font-size: 140%;
+}
+.spacer {
+    margin-top: 10px;
 }
 .spacer-top {
     margin-top: 25px;
