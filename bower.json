@@ -33,6 +33,11 @@
     "roboto-condensed": "~0.3.0",
     "open-sans-fontface": "https://github.com/OpenSlides/open-sans.git#1.4.2.post1"
   },
+  "overrides": {
+    "pdfjs-dist": {
+      "main": "build/pdf.combined.js"
+    }
+  },
   "resolutions": {
     "angular": ">=1.4.9 <1.5"
   }
