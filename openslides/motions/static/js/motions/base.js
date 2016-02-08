@@ -52,8 +52,9 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
 
 .factory('MotionPoll', [
     'DS',
+    'gettextCatalog',
     'Config',
-    function (DS, Config) {
+    function (DS, gettextCatalog, Config) {
         return DS.defineResource({
             name: 'motions/motionpoll',
             relations: {
@@ -65,92 +66,40 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
                 }
             },
             methods: {
-                getYesPercent: function (valueOnly) {
+                // returns object with value and percent
+                getVote: function (vote) {
+                    if (!this.has_votes || !vote) {
+                        return;
+                    }
+                    var value = '';
+                    switch (vote) {
+                        case -1:
+                            value = gettextCatalog.getString('majority');
+                            break;
+                        case -2:
+                            value = gettextCatalog.getString('undocumented');
+                            break;
+                        default:
+                            value = vote;
+                            break;
+                    }
+                    // calculate percent value
                     var config = Config.get('motions_poll_100_percent_base').value;
-                    var returnvalue;
-                    if (config == "WITHOUT_INVALID" && this.votesvalid > 0 && this.yes >= 0) {
-                        returnvalue = Math.round(this.yes * 100 / this.votesvalid * 10) / 10;
-                    } else if (config == "WITH_INVALID" && this.votescast > 0 && this.yes >= 0) {
-                        returnvalue = Math.round(this.yes * 100 / (this.votescast) * 10) / 10;
-                    } else {
-                        returnvalue = null;
+                    var percentStr, percentNumber;
+                    if (config == "WITHOUT_INVALID" && this.votesvalid > 0 && vote >= 0) {
+                        percentNumber = Math.round(vote * 100 / this.votesvalid * 10) / 10;
+                    } else if (config == "WITH_INVALID" && this.votescast > 0 && vote >= 0) {
+                        percentNumber = Math.round(vote * 100 / (this.votescast) * 10) / 10;
                     }
-                    if (!valueOnly && returnvalue != null) {
-                        returnvalue = "(" + returnvalue + "%)";
+                    if (percentNumber) {
+                        percentStr = "(" + percentNumber + "%)";
                     }
-                    return returnvalue;
+                    return {
+                        'value': value,
+                        'percentStr': percentStr,
+                        'percentNumber': percentNumber
+                    };
                 },
-                getNoPercent: function (valueOnly) {
-                    var config = Config.get('motions_poll_100_percent_base').value;
-                    var returnvalue;
-                    if (config == "WITHOUT_INVALID" && this.votesvalid > 0 && this.no >= 0) {
-                        returnvalue = Math.round(this.no * 100 / this.votesvalid * 10) / 10;
-                    } else if (config == "WITH_INVALID" && this.votescast > 0 && this.no >= 0) {
-                        returnvalue = Math.round(this.no * 100 / (this.votescast) * 10) / 10;
-                    } else {
-                        returnvalue = null;
-                    }
-                    if (!valueOnly && returnvalue != null) {
-                        returnvalue = "(" + returnvalue + "%)";
-                    }
-                    return returnvalue;
-                },
-                getAbstainPercent: function (valueOnly) {
-                    var config = Config.get('motions_poll_100_percent_base').value;
-                    var returnvalue;
-                    if (config == "WITHOUT_INVALID" && this.votesvalid > 0 && this.abstain >= 0) {
-                        returnvalue = Math.round(this.abstain * 100 / this.votesvalid * 10) / 10;
-                    } else if (config == "WITH_INVALID" && this.votescast > 0 && this.abstain >= 0) {
-                        returnvalue = Math.round(this.abstain * 100 / (this.votescast) * 10) / 10;
-                    } else {
-                        returnvalue = null;
-                    }
-                    if (!valueOnly && returnvalue != null) {
-                        returnvalue = "(" + returnvalue + "%)";
-                    }
-                    return returnvalue;
-                },
-                getVotesValidPercent: function (valueOnly) {
-                    var config = Config.get('motions_poll_100_percent_base').value;
-                    var returnvalue;
-                    if (config == "WITHOUT_INVALID" && this.votevalid >= 0) {
-                        returnvalue = 100;
-                    } else if (config == "WITH_INVALID" && this.votevalid >= 0) {
-                        returnvalue = Math.round(this.votesvalid * 100 / (this.votescast) * 10) / 10;
-                    } else {
-                        returnvalue = null;
-                    }
-                    if (!valueOnly && returnvalue != null) {
-                        returnvalue = "(" + returnvalue + "%)";
-                    }
-                    return returnvalue;
-                },
-                getVotesInvalidPercent: function (valueOnly) {
-                    var config = Config.get('motions_poll_100_percent_base').value;
-                    var returnvalue;
-                    if (config == "WITH_INVALID" && this.voteinvalid >= 0) {
-                        returnvalue = Math.round(this.votesinvalid * 100 / (this.votescast) * 10) / 10;
-                    } else {
-                        returnvalue = null;
-                    }
-                    if (!valueOnly && returnvalue != null) {
-                        returnvalue = "(" + returnvalue + "%)";
-                    }
-                    return returnvalue;
-                },
-                getVotesCastPercent: function (valueOnly) {
-                    var config = Config.get('motions_poll_100_percent_base').value;
-                    var returnvalue;
-                    if (config == "WITH_INVALID" && this.votecast >= 0) {
-                        returnvalue = 100;
-                    } else {
-                        returnvalue = null;
-                    }
-                    if (!valueOnly && returnvalue != null) {
-                        returnvalue = "(" + returnvalue + "%)";
-                    }
-                    return returnvalue;
-                }
             }
         });
     }
