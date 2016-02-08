@@ -126,6 +126,12 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             $state.go(item.content_object.collection.replace('/','.')+'.detail',
                 {id: item.content_object.id});
         };
+        // cancel QuickEdit mode
+        $scope.cancelQuickEdit = function (item) {
+            // revert all changes by restore (refresh) original item object from server
+            Agenda.refresh(item);
+            item.quickEdit = false;
+        };
         // save changed item
         $scope.save = function (item) {
             Agenda.save(item).then(

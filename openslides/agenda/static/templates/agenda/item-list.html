@@ -168,42 +168,40 @@
           <input os-perms="agenda.can_manage" type="checkbox" ng-model="item.closed" ng-change="save(item.id);">
         <!-- quickEdit columns -->
         <td ng-show="item.quickEdit" os-perms="agenda.can_manage" colspan="3">
-          <form ng-submit="save(item)">
           <h4>{{ item.getTitle() }} <span class="text-muted">&ndash; QuickEdit</span></h4>
-            <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-              {{ alert.msg }}
-            </uib-alert>
-            <div class="row">
-              <div class="col-xs-6">
-                <label for="inputItemNumber" translate>Item number</label>
-                <input type="text" ng-model="item.item_number" class="form-control input-sm" id="inputItemNumber">
-              </div>
-              <div class="col-xs-6">
-                <label for="inputComment" translate>Comment</label>
-                <input type="text" ng-model="item.comment" class="form-control input-sm" id="inputComment">
-              </div>
+          <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+            {{ alert.msg }}
+          </uib-alert>
+          <div class="row">
+            <div class="col-xs-6">
+              <label for="inputItemNumber" translate>Item number</label>
+              <input type="text" ng-model="item.item_number" class="form-control input-sm" id="inputItemNumber">
             </div>
-            <div class="row">
-              <div class="col-xs-6">
-                <!-- item type: AGENDA_ITEM = 1, HIDDEN_ITEM = 2 -->
-                <input type="checkbox" ng-model="item.type" ng-true-value="1" ng-false-value="2">
-                <translate>Show as agenda item</translate>
-              </div>
-              <div class="col-xs-6">
-                <label for="inputDuration" translate>Duration</label>
-                <input type="text" ng-model="item.duration" class="form-control input-sm" id="inputDuration">
-              </div>
+            <div class="col-xs-6">
+              <label for="inputComment" translate>Comment</label>
+              <input type="text" ng-model="item.comment" class="form-control input-sm" id="inputComment">
             </div>
-            <div class="spacer">
-              <button ng-click="item.quickEdit=false" class="btn btn-default pull-left" translate>
-                Cancel
-              </button> &nbsp;
-              <button type="submit" class="btn btn-primary" translate>
-                Update
-              </button>
-              <a href="" ng-click="editDialog(item)" class="pull-right"><translate>Edit ...</translate></a>
+          </div>
+          <div class="row">
+            <div class="col-xs-6">
+              <!-- item type: AGENDA_ITEM = 1, HIDDEN_ITEM = 2 -->
+              <input type="checkbox" ng-model="item.type" ng-true-value="1" ng-false-value="2">
+              <translate>Show as agenda item</translate>
             </div>
-          </form>
+            <div class="col-xs-6">
+              <label for="inputDuration" translate>Duration</label>
+              <input type="text" ng-model="item.duration" class="form-control input-sm" id="inputDuration">
+            </div>
+          </div>
+          <div class="spacer">
+            <button ng-click="cancelQuickEdit(item)" class="btn btn-default pull-left" translate>
+              Cancel
+            </button> &nbsp;
+            <button ng-click="save(item)" class="btn btn-primary" translate>
+              Update
+            </button>
+            <a href="" ng-click="editDialog(item)" class="pull-right"><translate>Edit ...</translate></a>
+          </div>
   </table>
   <uib-pagination total-items="itemsFiltered.length" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
 </div>

@@ -467,6 +467,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         $scope.openDialog = function (motion) {
             ngDialog.open(MotionForm.getDialog(motion));
         };
+        // cancel QuickEdit mode
+        $scope.cancelQuickEdit = function (motion) {
+            // revert all changes by restore (refresh) original motion object from server
+            Motion.refresh(motion);
+            motion.quickEdit = false;
+        };
         // save changed motion
         $scope.save = function (motion) {
             // get (unchanged) values from latest version for update method

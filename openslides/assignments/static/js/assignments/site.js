@@ -203,6 +203,12 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         $scope.openDialog = function (assignment) {
             ngDialog.open(AssignmentForm.getDialog(assignment));
         };
+        // cancel QuickEdit mode
+        $scope.cancelQuickEdit = function (assignment) {
+            // revert all changes by restore (refresh) original assignment object from server
+            Assignment.refresh(assignment);
+            assignment.quickEdit = false;
+        };
         // save changed assignment
         $scope.save = function (assignment) {
             Assignment.save(assignment).then(
