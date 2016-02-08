@@ -90,22 +90,27 @@
           </span>
 
           <!-- State -->
-          <h3 translate>State</h3>
-          <span class="label" ng-class="'label-'+motion.state.css_class">
+          <h3 ng-if="!motion.isAllowed('change_state')" class="heading" translate>State</h3>
+          <div ng-if="motion.isAllowed('change_state')" class="heading">
+            <span uib-dropdown>
+              <a href id="state-dropdown" class="drop-down-name" uib-dropdown-toggle>
+                <translate>State</translate>
+                <i class="fa fa-cog"></i>
+              </a>
+              <ul uib-dropdown-menu aria-labelledby="state-dropdown">
+                <li ng-repeat="state in motion.state.getNextStates()">
+                  <a href ng-click="updateState(state.id)">{{ state.action_word | translate }}</a>
+                <li class="divider" ng-if="motion.state.getNextStates().length">
+                <li>
+                  <a href ng-if="motion.isAllowed('reset_state')" ng-click="reset_state()">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <translate>Reset state</translate>
+                  </a>
+              </ul>
+            </span>
+          </div>
+          <div class="label" ng-class="'label-'+motion.state.css_class">
             {{ motion.state.name | translate }}
-          </span>
-          <div ng-if="motion.isAllowed('change_state')" class="spacer">
-            <select ng-if="motion.state.getNextStates().length > 0" ng-model="stateSelect" class="form-control" ng-change="updateState(stateSelect)">
-              <option value="" translate>--- Set next state ---</option>
-              <option ng-repeat="state in motion.state.getNextStates()" value="{{ state.id }}">
-                {{ state.action_word | translate }}
-              </option>
-            </select>
-            <button ng-if="motion.isAllowed('reset_state')" ng-click="reset_state()"
-                class="btn btn-danger btn-xs spacer">
-              <i class="fa fa-exclamation-triangle"></i>
-              <translate>Reset state</translate>
-            </button>
           </div>
       </div>
       <div class="col-md-4">

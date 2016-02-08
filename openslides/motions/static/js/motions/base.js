@@ -248,6 +248,8 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
                             return operator.hasPerms('motions.can_manage');
                         case 'reset_state':
                             return operator.hasPerms('motions.can_manage');
+                        case 'can_manage':
+                            return operator.hasPerms('motions.can_manage');
                         default:
                             return false;
                     }
