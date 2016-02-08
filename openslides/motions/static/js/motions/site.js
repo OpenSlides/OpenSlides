@@ -768,8 +768,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'motionpoll',
     'voteNumber',
     function($scope, gettextCatalog, MotionPoll, MotionPollForm, motionpoll, voteNumber) {
-        // set initial values for form model
-        $scope.model = motionpoll;
+        // set initial values for form model by create deep copy of motionpoll object
+        // so detail view is not updated while editing poll
+        $scope.model = angular.copy(motionpoll);
         $scope.voteNumber = voteNumber;
         $scope.formFields = MotionPollForm.getFormFields();
         $scope.alert = {};
