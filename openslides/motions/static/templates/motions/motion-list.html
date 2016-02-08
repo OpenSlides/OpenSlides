@@ -197,7 +197,7 @@
           </span>
 
         <!-- quickEdit columns -->
-        <td ng-if="motion.quickEdit && motion.isAllowed('quickedit')" colspan="5">
+        <td ng-if="motion.quickEdit && motion.isAllowed('quickedit')" colspan="6">
           <h4>{{ motion.getTitle() }} <span class="text-muted">&ndash; <translate>QuickEdit</translate></span></h4>
             <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
               {{ alert.msg }}
@@ -255,7 +255,7 @@
               </div>
             </div>
             <div class="spacer">
-              <button ng-click="motion.quickEdit=false" class="btn btn-default pull-left" translate>
+              <button ng-click="cancelQuickEdit(motion)" class="btn btn-default pull-left" translate>
                 Cancel
               </button> &nbsp;
               <button ng-if="motion.isAllowed('update')" ng-click="save(motion)" class="btn btn-primary" translate>

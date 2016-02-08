@@ -51,7 +51,13 @@ h4 {
     font-size: 18px;
     color: #222;
 }
-
+.heading a {
+    color: #444;
+}
+.heading a:hover {
+    color: #2b6883;
+    text-decoration: none;
+}
 
 p {
     padding-bottom: 14px;
@@ -284,11 +290,6 @@ img {
     color: #444;
 }
 
-.col1 .meta h3 {
-    padding-bottom: 0;
-    margin-bottom: 5px;
-}
-
 .col1 .details {
     padding: 20px;
     width: auto;
@@ -317,14 +318,25 @@ img {
     width: 70px;
 }
 
-#content .col2 h4, .col1 .meta h3 {
+#content .col2 h4 {
     font-size: 22px;
     line-height: 24px;
     font-family: 'Roboto Condensed Light';
     font-weight: 300;
     color: #444;
 }
-
+#content .col1 .meta .heading, #content .col1 .meta h3 {
+    font-size: 22px;
+    line-height: 24px;
+    font-weight: 300;
+    color: #444;
+    padding-bottom: 0;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+#content .col1 .meta .heading .drop-down-name, #content .col1 .meta h3 {
+    font-family: 'Roboto Condensed Light';
+}
 
 #content .col2 a:hover h4 {
     text-decoration: none;

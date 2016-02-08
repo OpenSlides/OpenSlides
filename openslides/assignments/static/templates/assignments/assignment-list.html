@@ -162,7 +162,7 @@
           </span>
 
         <!-- quickEdit columns -->
-        <td ng-if="assignment.quickEdit" colspan="3">
+        <td ng-if="assignment.quickEdit" colspan="4">
           <h4>{{ assignment.title }} <span class="text-muted">&ndash; Quick Edit</span></h4>
             <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
               {{ alert.msg }}
@@ -187,7 +187,7 @@
               <div class="col-xs-6"></div>
             </div>
             <div class="spacer">
-              <button ng-click="assignment.quickEdit=false" class="btn btn-default pull-left" translate>
+              <button ng-click="cancelQuickEdit(assignment)" class="btn btn-default pull-left" translate>
                 Cancel
               </button> &nbsp;
               <button ng-click="save(assignment)" class="btn btn-primary" translate>

@@ -467,6 +467,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         $scope.openDialog = function (motion) {
             ngDialog.open(MotionForm.getDialog(motion));
         };
+        // cancel QuickEdit mode
+        $scope.cancelQuickEdit = function (motion) {
+            // revert all changes by restore (refresh) original motion object from server
+            Motion.refresh(motion);
+            motion.quickEdit = false;
+        };
         // save changed motion
         $scope.save = function (motion) {
             // get (unchanged) values from latest version for update method
@@ -762,8 +768,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'motionpoll',
     'voteNumber',
     function($scope, gettextCatalog, MotionPoll, MotionPollForm, motionpoll, voteNumber) {
-        // set initial values for form model
-        $scope.model = motionpoll;
+        // set initial values for form model by create deep copy of motionpoll object
+        // so detail view is not updated while editing poll
+        $scope.model = angular.copy(motionpoll);
         $scope.voteNumber = voteNumber;
         $scope.formFields = MotionPollForm.getFormFields();
         $scope.alert = {};
