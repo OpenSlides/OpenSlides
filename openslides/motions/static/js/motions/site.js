@@ -92,7 +92,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                             resolve: {
                                 motion: function() {
                                     return Motion.find($stateParams.id).then(function(motion) {
-                                        Motion.loadRelations(motion, 'agenda_item');
+                                        return Motion.loadRelations(motion, 'agenda_item');
                                     });
                                 },
                             },
