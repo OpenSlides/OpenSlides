@@ -22,34 +22,45 @@
               title="{{ 'Edit current slide' | translate}}">
             <i class="fa fa-pencil"></i>
           </a>
-          &nbsp;
-          <a ng-click="controlProjector('scale', 'down')"
-              class="btn btn-default btn-sm"
-              title="{{ 'Smaller' | translate}}">
-            <i class="fa fa-search-minus"></i>
-          </a>
-          <a ng-click="controlProjector('scale', 'up')"
-              class="btn btn-default btn-sm"
-              title="{{ 'Bigger' | translate}}">
-            <i class="fa fa-search-plus"></i>
-          </a>
+
+          <!-- scale -->
+          <div class="btn-group">
+            <a ng-click="controlProjector('scale', 'down')"
+                class="btn btn-default btn-sm"
+                title="{{ 'Smaller' | translate}}">
+              <i class="fa fa-search-minus"></i>
+            </a>
+            <a ng-click="controlProjector('scale', 'up')"
+                class="btn btn-default btn-sm"
+                title="{{ 'Bigger' | translate}}">
+              <i class="fa fa-search-plus"></i>
+            </a>
+            <a ng-click="controlProjector('scale', 'reset')"
+                class="btn btn-default btn-sm"
+                title="{{ 'Reset scaling' | translate}}">
+              <i class="fa fa-undo"></i>
+            </a>
+          </div>
           <span ng-class="{ 'notNull': scaleLevel != 0 }">{{ scaleLevel }}</span>
-          &nbsp;
-          <a ng-click="controlProjector('scroll', 'down')"
-              class="btn btn-default btn-sm"
-              title="{{ 'Scroll up' | translate}}">
-            <i class="fa fa-arrow-up"></i>
-          </a>
-          <a ng-click="controlProjector('scroll', 'up')"
-              class="btn btn-default btn-sm"
-              title="{{ 'Scroll down' | translate}}">
-            <i class="fa fa-arrow-down"></i>
-          </a>
-          <a ng-click="controlProjector('scroll', 'reset')"
-              class="btn btn-default btn-sm"
-              title="{{ 'Reset scrolling' | translate}}">
-            <i class="fa fa-undo"></i>
-          </a>
+
+          <!-- scroll -->
+          <div class="btn-group">
+            <a ng-click="controlProjector('scroll', 'down')"
+                class="btn btn-default btn-sm"
+                title="{{ 'Scroll up' | translate}}">
+              <i class="fa fa-arrow-up"></i>
+            </a>
+            <a ng-click="controlProjector('scroll', 'up')"
+                class="btn btn-default btn-sm"
+                title="{{ 'Scroll down' | translate}}">
+              <i class="fa fa-arrow-down"></i>
+            </a>
+            <a ng-click="controlProjector('scroll', 'reset')"
+                class="btn btn-default btn-sm"
+                title="{{ 'Reset scrolling' | translate}}">
+              <i class="fa fa-undo"></i>
+            </a>
+          </div>
           <span ng-class="{ 'notNull': scrollLevel != 0 }">{{ scrollLevel }}</span>
         </div>
       </div>
