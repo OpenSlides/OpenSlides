@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-27 20:54+0100\n"
-"PO-Revision-Date: 2016-01-27 19:59+0000\n"
-"Last-Translator: Norman Jäckel <transifex16062013@normanjaeckel.de>\n"
+"POT-Creation-Date: 2016-02-09 00:11+0100\n"
+"PO-Revision-Date: 2016-02-09 12:55+0000\n"
+"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/openslides/openslides/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -769,6 +769,54 @@ msgstr "Einleitungstext für PDF-Dokument (alle Anträge) "
 msgid "Show paragraph numbering (only in PDF)"
 msgstr "Absatznummerierung anzeigen (nur im PDF)"
 
+#: motions/signals.py:185
+msgid "submitted"
+msgstr "eingereicht"
+
+#: motions/signals.py:190 motions/signals.py:219
+msgid "accepted"
+msgstr "angenommen"
+
+#: motions/signals.py:194 motions/signals.py:224
+msgid "rejected"
+msgstr "abgelehnt"
+
+#: motions/signals.py:198
+msgid "not decided"
+msgstr "nicht entschieden"
+
+#: motions/signals.py:207
+msgid "published"
+msgstr "veröffentlicht"
+
+#: motions/signals.py:212 motions/views.py:159
+msgid "permitted"
+msgstr "zugelassen"
+
+#: motions/signals.py:229
+msgid "withdrawed"
+msgstr "zurückgezogen"
+
+#: motions/signals.py:234
+msgid "adjourned"
+msgstr "vertagt"
+
+#: motions/signals.py:239
+msgid "not concerned"
+msgstr "nicht befasst"
+
+#: motions/signals.py:244
+msgid "commited a bill"
+msgstr "in Ausschuss verwiesen"
+
+#: motions/signals.py:249
+msgid "needs review"
+msgstr "Benötigt Review"
+
+#: motions/signals.py:254
+msgid "rejected (not authorized)"
+msgstr "Verworfen (nicht zulässig)"
+
 #: motions/views.py:85
 msgid "Motion created"
 msgstr "Antrag erstellt"
@@ -780,10 +828,6 @@ msgstr "Antrag aktualisiert"
 #: motions/views.py:131
 msgid "All supporters removed"
 msgstr "Alle Unterstützer entfernt"
-
-#: motions/views.py:159
-msgid "permitted"
-msgstr "zugelassen"
 
 #: motions/views.py:161
 #, python-format
@@ -995,22 +1039,6 @@ msgstr "WPA/WPA2"
 msgid "No encryption"
 msgstr "Keine Verschlüsselung"
 
-#: users/signals.py:152
-msgid "Anonymous"
-msgstr "Anonymous"
-
-#: users/signals.py:154
-msgid "Registered"
-msgstr "Registrierte/r Teilnehmer/in"
-
-#: users/signals.py:166
-msgid "Delegates"
-msgstr "Delegierte/r"
-
-#: users/signals.py:184
-msgid "Staff"
-msgstr "Mitarbeiter/in"
-
 #: users/views.py:111
 msgid "You can not deactivate yourself."
 msgstr "Sie dürfen sich nicht selbst deaktivieren."
@@ -1048,7 +1076,7 @@ msgstr "benutzer-liste"
 
 #: users/views.py:327
 msgid "List of users"
-msgstr "Liste der Benutzer"
+msgstr "Teilnehmerliste"
 
 #: users/views.py:341
 msgid "user-access-data"
