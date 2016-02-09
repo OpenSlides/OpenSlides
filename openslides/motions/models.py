@@ -30,11 +30,6 @@ class Motion(RESTModelMixin, models.Model):
     This class is the main entry point to all other classes related to a motion.
     """
 
-    slide_callback_name = 'motion'
-    """
-    Name of the callback for the slide-system.
-    """
-
     active_version = models.ForeignKey(
         'MotionVersion',
         on_delete=models.SET_NULL,
@@ -737,9 +732,6 @@ class MotionOption(RESTModelMixin, BaseOption):
 
 class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):
     """The Class to saves the vote result for a motion poll."""
-
-    slide_callback_name = 'motionpoll'
-    """Name of the callback for the slide-system."""
 
     motion = models.ForeignKey(
         Motion,

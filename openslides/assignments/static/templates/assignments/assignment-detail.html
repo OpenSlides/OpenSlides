@@ -143,14 +143,22 @@
         <button ng-if="!poll.published" ng-click="publishBallot(poll, true)"
             class="btn btn-default btn-sm">
           <i class="fa fa-toggle-off"></i>
-          3. <translate>Publish ballot</translate>
+          3. <translate>Publish</translate>
         </button>
         <button ng-if="poll.published" ng-click="publishBallot(poll, false)"
             class="btn btn-default btn-sm">
           <i class="fa fa-toggle-on"></i>
-          <translate>Published</translate>
+          3. <translate>Published</translate>
         </button>
-        <a class="btn btn-danger btn-sm"
+        <i class="fa fa-arrow-right"></i>
+        <button os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+            ng-class="{ 'btn-primary': assignment.isProjected(poll.id) }"
+            ng-click="assignment.project(poll.id)"
+            title="{{ 'Project ballot' | translate }}">
+          <i class="fa fa-video-camera"></i>
+          4. <translate>Project</translate>
+        </button>
+        | <a class="btn btn-danger btn-sm"
             ng-bootbox-confirm="{{ 'Are you sure you want to delete this ballot?' | translate }}"
             ng-bootbox-confirm-action="deleteBallot(poll)">
           <i class="fa fa-times"></i>

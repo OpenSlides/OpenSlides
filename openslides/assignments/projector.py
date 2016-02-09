@@ -2,7 +2,7 @@ from openslides.core.exceptions import ProjectorException
 from openslides.core.views import TagViewSet
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
 
-from .models import Assignment
+from .models import Assignment, AssignmentPoll
 from .views import AssignmentViewSet
 
 
@@ -20,6 +20,11 @@ class AssignmentSlide(ProjectorElement):
             # Detail slide.
             if not Assignment.objects.filter(pk=pk).exists():
                 raise ProjectorException('Election does not exist.')
+            poll_id = self.config_entry.get('poll')
+            if poll_id is not None:
+                # Poll slide.
+                if not AssignmentPoll.objects.filter(pk=poll_id).exists():
+                    raise ProjectorException('Poll does not exist.')
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')

@@ -168,6 +168,12 @@ li {
 .result .bold {
     font-weight: bold;
 }
+.electionresults table {
+    width: calc(100% - 230px);
+}
+.electionresults .progress {
+    margin-bottom: 0;
+}
 hr {
     margin: 10px 0;
 }

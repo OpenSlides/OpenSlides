@@ -22,6 +22,7 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         var id = $scope.element.id;
+        var poll = $scope.element.poll;
 
         // load assignemt object and related agenda item
         Assignment.find(id).then(function(assignment) {
