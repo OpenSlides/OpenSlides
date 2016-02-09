@@ -1,6 +1,7 @@
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
+from openslides.poll.serializers import default_votes_validator
 from openslides.utils.rest_api import (
     DictField,
     IntegerField,
@@ -106,6 +107,7 @@ class AssignmentAllPollSerializer(ModelSerializer):
             'has_votes',
             'assignment')  # js-data needs the assignment-id in the nested object to define relations.
         read_only_fields = ('yesnoabstain',)
+        validators = (default_votes_validator,)
 
     def get_has_votes(self, obj):
         """

@@ -360,3 +360,38 @@ class SetState(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, {'detail': 'The state of the motion was set to submitted.'})
         self.assertEqual(Motion.objects.get(pk=self.motion.pk).state.name, 'submitted')
+
+
+class UpdateMotionPoll(TestCase):
+    """
+    Tests updating polls of motions.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+        self.motion = Motion(
+            title='test_title_Aiqueigh2dae9phabiqu',
+            text='test_text_Neekoh3zou6li5rue8iL')
+        self.motion.save()
+        self.poll = self.motion.create_poll()
+
+    def test_invalid_votesvalid_value(self):
+        response = self.client.put(
+            reverse('motionpoll-detail', args=[self.poll.pk]),
+            {'motion_id': self.motion.pk,
+             'votesvalid': '-3'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_votesinvalid_value(self):
+        response = self.client.put(
+            reverse('motionpoll-detail', args=[self.poll.pk]),
+            {'motion_id': self.motion.pk,
+             'votesinvalid': '-3'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_votescast_value(self):
+        response = self.client.put(
+            reverse('motionpoll-detail', args=[self.poll.pk]),
+            {'motion_id': self.motion.pk,
+             'votescast': '-3'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.assignments.models import Assignment
@@ -273,3 +274,36 @@ class MarkElectedOtherUser(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Assignment.objects.get(pk=self.assignment.pk).elected.filter(username='test_user_Oonei3rahji5jugh1eev').exists())
+
+
+class UpdateAssignmentPoll(TestCase):
+    """
+    Tests updating polls of assignments.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+        self.assignment = Assignment.objects.create(title='test_assignment_ohneivoh9caiB8Yiungo', open_posts=1)
+        self.assignment.set_candidate(get_user_model().objects.get(username='admin'))
+        self.poll = self.assignment.create_poll()
+
+    def test_invalid_votesvalid_value(self):
+        response = self.client.put(
+            reverse('assignmentpoll-detail', args=[self.poll.pk]),
+            {'assignment_id': self.assignment.pk,
+             'votesvalid': '-3'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_votesinvalid_value(self):
+        response = self.client.put(
+            reverse('assignmentpoll-detail', args=[self.poll.pk]),
+            {'assignment_id': self.assignment.pk,
+             'votesinvalid': '-3'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_votescast_value(self):
+        response = self.client.put(
+            reverse('assignmentpoll-detail', args=[self.poll.pk]),
+            {'assignment_id': self.assignment.pk,
+             'votescast': '-3'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
