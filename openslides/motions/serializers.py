@@ -1,6 +1,7 @@
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
+from openslides.poll.serializers import default_votes_validator
 from openslides.utils.rest_api import (
     CharField,
     DictField,
@@ -115,6 +116,7 @@ class MotionPollSerializer(ModelSerializer):
             'votescast',
             'votes',
             'has_votes')
+        validators = (default_votes_validator,)
 
     def get_yes(self, obj):
         try:
