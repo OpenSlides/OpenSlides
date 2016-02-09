@@ -15,7 +15,13 @@
   <div class="searchresults spacer-top-lg">
     <ol ng-show="results">
       <li ng-repeat="result in results">
-        <a ui-sref="{{ result.urlState }}({{ result.urlParam }})">{{ result.getSearchResultName() }}</a><br>
+        <a ng-if="!result.mediafileUrl" ui-sref="{{ result.urlState }}({{ result.urlParam }})">
+          {{ result.getSearchResultName() }}
+        </a>
+        <a ng-if="result.mediafileUrl" href="{{ result.mediafileUrl }}" target="_blank">
+          {{ result.getSearchResultName() }}
+        </a>
+        <br>
         <span class="grey">{{ result.getSearchResultSubtitle() | translate }}</span>
     </ol>
     <p ng-show="!results" translate>No results.</p>
