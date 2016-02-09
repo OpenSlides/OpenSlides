@@ -15,7 +15,15 @@ angular.module('OpenSlidesApp.mediafiles', [])
             methods: {
                 getResourceName: function () {
                     return name;
-                }
+                },
+                // link name which is shown in search result
+                getSearchResultName: function () {
+                    return this.title;
+                },
+                // subtitle of search result
+                getSearchResultSubtitle: function () {
+                    return "File";
+                },
             },
             computed: {
                 is_presentable: ['filetype', function (filetype) {

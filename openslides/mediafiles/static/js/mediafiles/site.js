@@ -135,24 +135,8 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
         // ** PDF presentation functions **/
         // show document on projector
         $scope.showPdf = function (mediafile) {
-            var postUrl,
-                data;
-            if ($scope.presentedMediafiles.length > 0) {
-                // update first mediafile, at the moment there should not be more
-                var uuid = $scope.presentedMediafiles[0].uuid;
-                postUrl = '/rest/core/projector/1/update_elements/';
-                data = {};
-                data[uuid] = {
-                    id: mediafile.id,
-                    numPages: mediafile.mediafile.pages,
-                    page: 1,
-                    scale: 1,
-                    rotate: 0,
-                    visible: true
-                };
-            } else {
-                postUrl = '/rest/core/projector/1/prune_elements/';
-                data = [{
+            var postUrl = '/rest/core/projector/1/prune_elements/';
+            var data = [{
                     name: 'mediafiles/mediafile',
                     id: mediafile.id,
                     numPages: mediafile.mediafile.pages,
@@ -160,8 +144,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                     scale: 1,
                     rotate: 0,
                     visible: true
-                }];
-            }
+            }];
             $http.post(postUrl, data);
         };
 
@@ -192,19 +175,27 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
         };
         $scope.mediafileZoomIn = function () {
             var mediafileElement = getCurrentlyPresentedMediafile();
+            var scale = 1;
+            if (parseFloat(mediafileElement.scale)) {
+                scale = mediafileElement.scale;
+            }
             sendMediafileCommand({
-                scale: parseFloat(mediafileElement.scale) + 0.2
+                scale: scale + 0.2
             });
         };
         $scope.mediafileFit = function () {
             sendMediafileCommand({
-                scale: 1
+                scale: 'page-fit'
             });
         };
         $scope.mediafileZoomOut = function () {
             var mediafileElement = getCurrentlyPresentedMediafile();
+            var scale = 1;
+            if (parseFloat(mediafileElement.scale)) {
+                scale = mediafileElement.scale;
+            }
             sendMediafileCommand({
-                scale: parseFloat(mediafileElement.scale) - 0.2
+                scale: scale - 0.2
             });
         };
         $scope.mediafileChangePage = function(pageNum) {
