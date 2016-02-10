@@ -5,8 +5,9 @@
     <input ng-if="type != 'choice' && type != 'textarea'"
            ng-model="$parent.value"
            ng-change="save(configOption.key, $parent.value)"
+           ng-class="{ 'form-control': type != 'checkbox' }"
            id="{{ key }}"
-        type="{{ type }}" class="form-control">
+        type="{{ type }}">
 
     <textarea ng-if="type == 'textarea'"
               ng-model="$parent.value"

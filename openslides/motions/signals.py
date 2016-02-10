@@ -68,7 +68,7 @@ def setup_motion_config(sender, **kwargs):
         subgroup=ugettext_lazy('General'))
 
     # Amendments
-
+    # Amendments currently not implemented. (TODO: Implement it like in OpenSlides 1.7.)
     yield ConfigVariable(
         name='motions_amendments_enabled',
         default_value=False,
@@ -167,6 +167,7 @@ def setup_motion_config(sender, **kwargs):
     yield ConfigVariable(
         name='motions_pdf_paragraph_numbering',
         default_value=False,
+        input_type='boolean',
         label=ugettext_lazy('Show paragraph numbering (only in PDF)'),
         weight=380,
         group=ugettext_lazy('Motion'),

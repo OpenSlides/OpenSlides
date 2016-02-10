@@ -82,7 +82,7 @@ body{
     top: 150px;
     right: 50px;
     z-index: -1;
-    line-height: 28px;
+    line-height: 1.3em;
 }
 .scrollcontent {
     transition-property: margin, font-size;
