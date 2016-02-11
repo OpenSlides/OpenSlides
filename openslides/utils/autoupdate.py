@@ -2,9 +2,10 @@ import json
 import os
 import posixpath
 from urllib.parse import unquote
-
 from django.conf import settings
+from openslides.users.auth import get_user
 from django.core.wsgi import get_wsgi_application
+from django.utils.importlib import import_module
 from sockjs.tornado import SockJSConnection, SockJSRouter
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.httpserver import HTTPServer
@@ -18,7 +19,6 @@ from tornado.web import (
     StaticFileHandler,
 )
 from tornado.wsgi import WSGIContainer
-
 from .rest_api import get_collection_and_id_from_url
 
 RUNNING_HOST = None
@@ -59,6 +59,9 @@ class DjangoStaticFileHandler(StaticFileHandler):
         return absolute_path
 
 
+class FakeRequest:
+    pass
+
 class OpenSlidesSockJSConnection(SockJSConnection):
     """
     SockJS connection for OpenSlides.
@@ -72,78 +75,41 @@ class OpenSlidesSockJSConnection(SockJSConnection):
     def on_close(self):
         OpenSlidesSockJSConnection.waiters.remove(self)
 
-    def forward_rest_response(self, response):
-        """
-        Sends data to the client of the connection instance.
-
-        This method is called after succesful response of AsyncHTTPClient().
-        See send_object().
-        """
-        if response.code in (200, 404):
-            # Only send something to the client in case of one of these status
-            # codes. You have to change the client code (autoupdate.onMessage)
-            # if you want to handle some more codes.
-            collection, obj_id = get_collection_and_id_from_url(response.request.url)
-            data = {
-                'url': response.request.url,
-                'status_code': response.code,
-                'collection': collection,
-                'id': obj_id,
-                'data': json.loads(response.body.decode())}
-            self.send(data)
-
     @classmethod
-    def send_object(cls, object_url):
+    def send_object(cls, instance, is_delete):
         """
         Sends an OpenSlides object to all connected clients (waiters).
-
-        First, retrieve the object from the OpenSlides REST api using the given
-        object_url.
         """
-        # Join network location with object URL.
-        if settings.OPENSLIDES_WSGI_NETWORK_LOCATION:
-            wsgi_network_location = settings.OPENSLIDES_WSGI_NETWORK_LOCATION
-        else:
-            if RUNNING_HOST == '0.0.0.0':
-                # Windows can not connect to 0.0.0.0, so connect to localhost instead.
-                wsgi_network_location = 'http://localhost:{}'.format(RUNNING_PORT)
-            else:
-                wsgi_network_location = 'http://{}:{}'.format(RUNNING_HOST, RUNNING_PORT)
-        url = ''.join((wsgi_network_location, object_url))
-
         # Send out internal HTTP request to get data from the REST api.
         for waiter in cls.waiters:
-            # Initiat new headers object.
-            headers = HTTPHeaders()
-
             # Read waiter's former cookies and parse session cookie to new header object.
+            headers = HTTPHeaders()
             try:
                 session_cookie = waiter.connection_info.cookies[settings.SESSION_COOKIE_NAME]
+                engine = import_module(settings.SESSION_ENGINE)
+                session = engine.SessionStore(session_cookie)
+
+                request = FakeRequest()
+                request.session = session
+
+                user = get_user(request)
+                serializer_class = instance.access_permissions.get_serializer_class(user)
+                serialized_instance_data = serializer_class(instance).data
+
+                data = {
+                    'url': "foobar",
+                    'status_code': 404 if is_delete else 200,
+                    'collection': instance.get_collection_name(),
+                    'id': instance.id,
+                    'data': serialized_instance_data}
+                waiter.send(data)
             except KeyError:
                 # There is no session cookie
                 pass
             else:
                 headers.add('Cookie', '%s=%s' % (settings.SESSION_COOKIE_NAME, session_cookie.value))
 
-            # Read waiter's language header.
-            try:
-                languages = waiter.connection_info.headers['Accept-Language']
-            except KeyError:
-                # There is no language header
-                pass
-            else:
-                headers.parse_line('Accept-Language: ' + languages)
 
-            # Setup uncompressed request.
-            request = HTTPRequest(
-                url=url,
-                headers=headers,
-                decompress_response=False)
-            # Setup non-blocking HTTP client
-            http_client = AsyncHTTPClient()
-            # Executes the request, asynchronously returning an HTTPResponse
-            # and calling waiter's forward_rest_response() method.
-            http_client.fetch(request, waiter.forward_rest_response)
 
 
 def run_tornado(addr, port, *args, **kwargs):
@@ -182,23 +148,23 @@ def run_tornado(addr, port, *args, **kwargs):
     RUNNING_PORT = None
 
 
-def inform_changed_data(*args):
+def inform_changed_data(is_delete, *args):
     """
     Informs all users about changed data.
 
     The arguments are Django/OpenSlides models.
     """
-    rest_urls = set()
+    root_instances = set()
     for instance in args:
         try:
-            rest_urls.add(instance.get_root_rest_url())
+            root_instances.add(instance.get_root_rest_element())
         except AttributeError:
             # Instance has no method get_root_rest_url. Just skip it.
             pass
 
     if settings.USE_TORNADO_AS_WSGI_SERVER:
-        for url in rest_urls:
-            OpenSlidesSockJSConnection.send_object(url)
+        for root_instance in root_instances:
+            OpenSlidesSockJSConnection.send_object(root_instance, is_delete)
     else:
         pass
         # TODO: Implement big varainte with Apache or Nginx as wsgi webserver.
@@ -208,4 +174,11 @@ def inform_changed_data_receiver(sender, instance, **kwargs):
     """
     Receiver for the inform_changed_data function to use in a signal.
     """
-    inform_changed_data(instance)
+    inform_changed_data(False, instance)
+
+
+def inform_deleted_data_receiver(sender, instance, **kwargs):
+    """
+    Receiver for the inform_changed_data function to use in a signal.
+    """
+    inform_changed_data(True, instance)

@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
+from openslides.assignments.access_permissions import AccessPermissions
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.poll.models import (
@@ -49,6 +50,7 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
 
 
 class Assignment(RESTModelMixin, models.Model):
+    access_permissions = AccessPermissions()
 
     PHASE_SEARCH = 0
     PHASE_VOTING = 1

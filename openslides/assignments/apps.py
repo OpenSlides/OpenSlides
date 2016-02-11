@@ -12,7 +12,6 @@ class AssignmentsAppConfig(AppConfig):
         # Load projector elements.
         # Do this by just importing all from these files.
         from . import projector  # noqa
-
         # Import all required stuff.
         from openslides.core.signals import config_signal
         from openslides.utils.rest_api import router
@@ -23,5 +22,5 @@ class AssignmentsAppConfig(AppConfig):
         config_signal.connect(setup_assignment_config, dispatch_uid='setup_assignment_config')
 
         # Register viewsets.
-        router.register('assignments/assignment', AssignmentViewSet)
+        router.register(self.get_model('Assignment').get_collection_name(), AssignmentViewSet)
         router.register('assignments/poll', AssignmentPollViewSet)

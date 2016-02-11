@@ -13,6 +13,7 @@ from django.http import Http404, HttpResponse
 from django.utils.timezone import now
 
 from openslides import __version__ as version
+from openslides.core.access_permissions import AccessPermissions
 from openslides.utils import views as utils_views
 from openslides.utils.plugins import (
     get_plugin_description,
@@ -154,12 +155,15 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
     """
     queryset = Projector.objects.all()
     serializer_class = ProjectorSerializer
+    access_permissions = AccessPermissions()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve'):
+        if self.action == 'retrieve':
+            result = self.access_permissions.can_retrieve(self.request.user)
+        elif self.action in ('metadata', 'list'):
             result = self.request.user.has_perm('core.can_see_projector')
         elif self.action in ('activate_elements', 'prune_elements', 'update_elements',
                              'deactivate_elements', 'clear_elements', 'control_view'):

@@ -22,6 +22,12 @@ class RESTModelMixin:
     Mixin for django models which are used in our rest api.
     """
 
+    access_permissions = None
+
+    @classmethod
+    def get_collection_name(cls):
+        return "{0}/{1}".format(cls._meta.app_label.lower(), cls._meta.object_name.lower())
+
     def get_root_rest_element(self):
         """
         Returns the root rest instance.

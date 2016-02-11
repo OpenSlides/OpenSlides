@@ -95,28 +95,6 @@ class IdPrimaryKeyRelatedField(PrimaryKeyRelatedField):
         return IdManyRelatedField(**list_kwargs)
 
 
-class ModelSerializer(_ModelSerializer):
-    """
-    ModelSerializer that changes the field names of related fields to
-    FIELD_NAME_id.
-    """
-    serializer_related_field = IdPrimaryKeyRelatedField
-
-    def get_fields(self):
-        """
-        Returns all fields of the serializer.
-        """
-        fields = OrderedDict()
-
-        for field_name, field in super().get_fields().items():
-            try:
-                field_name += field.field_name_suffix
-            except AttributeError:
-                pass
-            fields[field_name] = field
-        return fields
-
-
 class PermissionMixin:
     """
     Mixin for subclasses of APIView like GenericViewSet and ModelViewSet.
@@ -125,6 +103,13 @@ class PermissionMixin:
     evaluated. If both return False self.permission_denied() is called.
     Django REST framework's permission system is disabled.
     """
+
+    def get_serializer_class(self):
+        """
+        TODO
+        """
+        serializer_class = self.access_permissions.get_serializer_class(self.request.user) if self.access_permissions is not None else None
+        return super().get_serializer_class() if serializer_class is None else serializer_class
 
     def get_permissions(self):
         """
@@ -160,12 +145,34 @@ class PermissionMixin:
         return result
 
 
+class ModelSerializer(_ModelSerializer):
+    """
+    ModelSerializer that changes the field names of related fields to
+    FIELD_NAME_id.
+    """
+    serializer_related_field = IdPrimaryKeyRelatedField
+
+    def get_fields(self):
+        """
+        Returns all fields of the serializer.
+        """
+        fields = OrderedDict()
+
+        for field_name, field in super().get_fields().items():
+            try:
+                field_name += field.field_name_suffix
+            except AttributeError:
+                pass
+            fields[field_name] = field
+        return fields
+
+
 class GenericViewSet(PermissionMixin, _GenericViewSet):
     pass
 
 
 class ModelViewSet(PermissionMixin, _ModelViewSet):
-    pass
+    access_permissions = None
 
 
 class ReadOnlyModelViewSet(PermissionMixin, _ReadOnlyModelViewSet):

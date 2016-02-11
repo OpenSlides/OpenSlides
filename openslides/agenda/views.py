@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy
 from reportlab.platypus import Paragraph
 
 from openslides.core.config import config
+from openslides.agenda.access_permissions import AccessPermissions
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
 from openslides.utils.rest_api import (
@@ -36,12 +37,15 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
     """
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+    access_permissions = AccessPermissions()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve', 'manage_speaker', 'tree'):
+        if self.action == 'retrieve':
+            result = self.access_permissions.can_retrieve(self.request.user)
+        elif self.action in ('metadata', 'list', 'manage_speaker', 'tree'):
             result = self.request.user.has_perm('agenda.can_see')
             # For manage_speaker and tree requests the rest of the check is
             # done in the specific method. See below.

@@ -12,11 +12,11 @@ class CoreAppConfig(AppConfig):
         # Load projector elements.
         # Do this by just importing all from these files.
         from . import projector  # noqa
-
         # Import all required stuff.
         from django.db.models import signals
         from openslides.core.signals import config_signal, post_permission_creation
         from openslides.utils.autoupdate import inform_changed_data_receiver
+        from openslides.utils.autoupdate import inform_deleted_data_receiver
         from openslides.utils.rest_api import router
         from openslides.utils.search import index_add_instance, index_del_instance
         from .signals import delete_django_app_permissions, setup_general_config
@@ -49,8 +49,8 @@ class CoreAppConfig(AppConfig):
             inform_changed_data_receiver,
             dispatch_uid='inform_changed_data_receiver')
         signals.post_delete.connect(
-            inform_changed_data_receiver,
-            dispatch_uid='inform_changed_data_receiver')
+            inform_deleted_data_receiver,
+            dispatch_uid='inform_deleted_data_receiver')
 
         # Update the search when a model is saved or deleted
         signals.post_save.connect(
