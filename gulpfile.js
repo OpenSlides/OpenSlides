@@ -25,6 +25,7 @@ var argv = require('yargs').argv,
     jshint = require('gulp-jshint'),
     mainBowerFiles = require('main-bower-files'),
     path = require('path'),
+    rename = require('gulp-rename'),
     through = require('through2'),
     uglify = require('gulp-uglify'),
     vsprintf = require('sprintf-js').vsprintf;
@@ -67,10 +68,27 @@ gulp.task('fonts-libs', function() {
         .pipe(gulp.dest(path.join(output_directory, 'fonts')));
 });
 
-// Extra task only for CKEditor
-gulp.task('ckeditor', function () {
-    return gulp.src(path.join('bower_components', 'ckeditor', '**'))
-        .pipe(gulp.dest(path.join(output_directory, 'ckeditor')));
+// Catches all skins files for TinyMCE editor.
+gulp.task('tinymce-skins', function () {
+    return gulp.src(path.join('bower_components', 'tinymce-dist', 'skins', '**'))
+        .pipe(gulp.dest(path.join(output_directory, 'tinymce', 'skins')));
+});
+
+// Catches all required i18n files for TinyMCE editor.
+gulp.task('tinymce-i18n', function () {
+    return gulp.src([
+            'bower_components/tinymce-i18n/langs/cs.js',
+            'bower_components/tinymce-i18n/langs/de.js',
+            'bower_components/tinymce-i18n/langs/es.js',
+            'bower_components/tinymce-i18n/langs/fr_FR.js',
+            'bower_components/tinymce-i18n/langs/pt_PT.js',
+            ])
+        .pipe(rename(function (path) {
+            if (path.basename === 'pt_PT') {path.basename = 'pt'}
+            if (path.basename === 'fr_FR') {path.basename = 'fr'}
+        }))
+        .pipe(gulpif(argv.production, uglify()))
+        .pipe(gulp.dest(path.join(output_directory, 'tinymce', 'i18n')));
 });
 
 // Compiles translation files (*.po) to *.json and saves them in the directory
@@ -84,7 +102,7 @@ gulp.task('translations', function () {
 });
 
 // Gulp default task. Runs all other tasks before.
-gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs', 'ckeditor', 'translations'], function () {});
+gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs', 'tinymce-skins', 'tinymce-i18n', 'translations'], function () {});
 
 
 /**

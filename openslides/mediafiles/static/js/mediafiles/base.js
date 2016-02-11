@@ -12,6 +12,15 @@ angular.module('OpenSlidesApp.mediafiles', [])
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
+            getAllImages: function () {
+                var images = []
+                angular.forEach(this.getAll(), function(file) {
+                    if (file.is_image) {
+                        images.push({title: file.title, value: file.mediafileUrl});
+                    }
+                });
+                return images;
+            },
             methods: {
                 getResourceName: function () {
                     return name;
@@ -29,6 +38,10 @@ angular.module('OpenSlidesApp.mediafiles', [])
                 is_presentable: ['filetype', function (filetype) {
                     var PRESENTABLE_FILE_TYPES = ['application/pdf'];
                     return _.contains(PRESENTABLE_FILE_TYPES, filetype);
+                }],
+                is_image: ['filetype', function (filetype) {
+                    var IMAGE_FILE_TYPES = ['image/png', 'image/jpeg', 'image/gif'];
+                    return _.contains(IMAGE_FILE_TYPES, filetype);
                 }],
                 mediafileUrl: [function () {
                     return this.media_url_prefix + this.mediafile.name;

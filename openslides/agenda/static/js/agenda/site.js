@@ -75,9 +75,10 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     'operator',
     'ngDialog',
     'Agenda',
+    'CustomslideForm',
     'AgendaTree',
     'Projector',
-    function($scope, $http, $state, DS, operator, ngDialog, Agenda, AgendaTree, Projector) {
+    function($scope, $http, $state, DS, operator, ngDialog, Agenda, CustomslideForm, AgendaTree, Projector) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -110,11 +111,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         };
         // open new dialog
         $scope.newDialog = function () {
-            ngDialog.open({
-                template: 'static/templates/core/customslide-form.html',
-                controller: 'CustomslideCreateCtrl',
-                className: 'ngdialog-theme-default wide-form'
-            });
+            ngDialog.open(CustomslideForm.getDialog());
         };
         // open edit dialog
         $scope.editDialog = function (item) {
