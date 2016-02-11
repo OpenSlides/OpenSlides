@@ -395,3 +395,10 @@ class UpdateMotionPoll(TestCase):
             {'motion_id': self.motion.pk,
              'votescast': '-3'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_empty_value_for_votesvalid(self):
+        response = self.client.put(
+            reverse('motionpoll-detail', args=[self.poll.pk]),
+            {'motion_id': self.motion.pk,
+             'votesvalid': ''})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

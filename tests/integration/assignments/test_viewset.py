@@ -307,3 +307,10 @@ class UpdateAssignmentPoll(TestCase):
             {'assignment_id': self.assignment.pk,
              'votescast': '-3'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_empty_value_for_votesvalid(self):
+        response = self.client.put(
+            reverse('assignmentpoll-detail', args=[self.poll.pk]),
+            {'assignment_id': self.assignment.pk,
+             'votesvalid': ''})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
