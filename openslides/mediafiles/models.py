@@ -5,12 +5,15 @@ from django.utils.translation import ugettext as _
 from openslides.utils.search import user_name_helper
 
 from ..utils.models import RESTModelMixin
+from .access_permissions import MediafileAccessPermissions
 
 
 class Mediafile(RESTModelMixin, models.Model):
     """
     Class for uploaded files which can be delivered under a certain url.
     """
+    access_permissions = MediafileAccessPermissions()
+
     mediafile = models.FileField(upload_to='file')
     """
     See https://docs.djangoproject.com/en/dev/ref/models/fields/#filefield

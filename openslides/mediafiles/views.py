@@ -1,6 +1,6 @@
 from ..utils.rest_api import ModelViewSet, ValidationError
+from .access_permissions import MediafileAccessPermissions
 from .models import Mediafile
-from .serializers import MediafileSerializer
 
 
 # Viewsets for the REST API
@@ -12,14 +12,16 @@ class MediafileViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
+    access_permissions = MediafileAccessPermissions()
     queryset = Mediafile.objects.all()
-    serializer_class = MediafileSerializer
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve'):
+        if self.action == 'retrieve':
+            result = self.get_access_permissions().can_retrieve(self.request.user)
+        elif self.action in ('metadata', 'list'):
             result = self.request.user.has_perm('mediafiles.can_see')
         elif self.action == 'create':
             result = (self.request.user.has_perm('mediafiles.can_see') and

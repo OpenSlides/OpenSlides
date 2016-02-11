@@ -1,15 +1,12 @@
-import json
 import os
 import posixpath
+from importlib import import_module
 from urllib.parse import unquote
+
 from django.conf import settings
-from openslides.users.auth import get_user
 from django.core.wsgi import get_wsgi_application
-from django.utils.importlib import import_module
 from sockjs.tornado import SockJSConnection, SockJSRouter
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.httpserver import HTTPServer
-from tornado.httputil import HTTPHeaders
 from tornado.ioloop import IOLoop
 from tornado.options import parse_command_line
 from tornado.web import (
@@ -19,7 +16,8 @@ from tornado.web import (
     StaticFileHandler,
 )
 from tornado.wsgi import WSGIContainer
-from .rest_api import get_collection_and_id_from_url
+
+from openslides.users.auth import AnonymousUser, get_user
 
 RUNNING_HOST = None
 RUNNING_PORT = None
@@ -59,9 +57,6 @@ class DjangoStaticFileHandler(StaticFileHandler):
         return absolute_path
 
 
-class FakeRequest:
-    pass
-
 class OpenSlidesSockJSConnection(SockJSConnection):
     """
     SockJS connection for OpenSlides.
@@ -80,36 +75,29 @@ class OpenSlidesSockJSConnection(SockJSConnection):
         """
         Sends an OpenSlides object to all connected clients (waiters).
         """
-        # Send out internal HTTP request to get data from the REST api.
         for waiter in cls.waiters:
-            # Read waiter's former cookies and parse session cookie to new header object.
-            headers = HTTPHeaders()
+            # Read waiter's former cookies and parse session cookie to get user instance.
             try:
                 session_cookie = waiter.connection_info.cookies[settings.SESSION_COOKIE_NAME]
+            except KeyError:
+                # There is no session cookie so use anonymous user here.
+                user = AnonymousUser()
+            else:
+                # Get session from session store and use it to retrieve the user.
                 engine = import_module(settings.SESSION_ENGINE)
-                session = engine.SessionStore(session_cookie)
-
-                request = FakeRequest()
-                request.session = session
-
-                user = get_user(request)
-                serializer_class = instance.access_permissions.get_serializer_class(user)
-                serialized_instance_data = serializer_class(instance).data
-
+                session = engine.SessionStore(session_cookie.value)
+                fake_request = type('FakeRequest', (), {})()
+                fake_request.session = session
+                user = get_user(fake_request)
+            # Fetch serialized data and send them out to the waiter (client).
+            serialized_instance_data = instance.get_access_permissions().get_serialized_data(instance, user)
+            if serialized_instance_data is not None:
                 data = {
-                    'url': "foobar",
-                    'status_code': 404 if is_delete else 200,
-                    'collection': instance.get_collection_name(),
-                    'id': instance.id,
+                    'status_code': 404 if is_delete else 200,  # TODO: Refactor this. Use strings like 'change' or 'delete'.
+                    'collection': instance.get_collection_string(),
+                    'id': instance.get_rest_pk(),
                     'data': serialized_instance_data}
                 waiter.send(data)
-            except KeyError:
-                # There is no session cookie
-                pass
-            else:
-                headers.add('Cookie', '%s=%s' % (settings.SESSION_COOKIE_NAME, session_cookie.value))
-
-
 
 
 def run_tornado(addr, port, *args, **kwargs):
@@ -152,22 +140,28 @@ def inform_changed_data(is_delete, *args):
     """
     Informs all users about changed data.
 
-    The arguments are Django/OpenSlides models.
+    The first argument is whether the object or the objects are deleted.
+    The other arguments are the changed or deleted Django/OpenSlides model
+    instances.
     """
-    root_instances = set()
-    for instance in args:
-        try:
-            root_instances.add(instance.get_root_rest_element())
-        except AttributeError:
-            # Instance has no method get_root_rest_url. Just skip it.
-            pass
-
     if settings.USE_TORNADO_AS_WSGI_SERVER:
-        for root_instance in root_instances:
-            OpenSlidesSockJSConnection.send_object(root_instance, is_delete)
+        for instance in args:
+            try:
+                root_instance = instance.get_root_rest_element()
+            except AttributeError:
+                # Instance has no method get_root_rest_element. Just skip it.
+                pass
+            else:
+                if is_delete and instance == root_instance:
+                    # A root instance is deleted.
+                    OpenSlidesSockJSConnection.send_object(root_instance, is_delete)
+                else:
+                    # A non root instance is deleted or any instance is just changed.
+                    root_instance.refresh_from_db()
+                    OpenSlidesSockJSConnection.send_object(root_instance, False)
     else:
         pass
-        # TODO: Implement big varainte with Apache or Nginx as wsgi webserver.
+        # TODO: Implement big variant with Apache or Nginx as WSGI webserver.
 
 
 def inform_changed_data_receiver(sender, instance, **kwargs):

@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
 from django.db import models
 from jsonfield import JSONField
 
@@ -8,6 +7,13 @@ from openslides.mediafiles.models import Mediafile
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.projector import ProjectorElement
 
+from .access_permissions import (
+    ChatMessageAccessPermissions,
+    ConfigAccessPermissions,
+    CustomSlideAccessPermissions,
+    ProjectorAccessPermissions,
+    TagAccessPermissions,
+)
 from .exceptions import ProjectorException
 
 
@@ -51,6 +57,8 @@ class Projector(RESTModelMixin, models.Model):
     The projector can be controlled using the REST API with POST requests
     on e. g. the URL /rest/core/projector/1/activate_elements/.
     """
+    access_permissions = ProjectorAccessPermissions()
+
     config = JSONField()
 
     scale = models.IntegerField(default=0)
@@ -121,6 +129,8 @@ class CustomSlide(RESTModelMixin, models.Model):
     """
     Model for slides with custom content.
     """
+    access_permissions = CustomSlideAccessPermissions()
+
     title = models.CharField(
         max_length=256)
     text = models.TextField(
@@ -175,6 +185,8 @@ class Tag(RESTModelMixin, models.Model):
     Model for tags. This tags can be used for other models like agenda items,
     motions or assignments.
     """
+    access_permissions = TagAccessPermissions()
+
     name = models.CharField(
         max_length=255,
         unique=True)
@@ -189,10 +201,11 @@ class Tag(RESTModelMixin, models.Model):
         return self.name
 
 
-class ConfigStore(models.Model):
+class ConfigStore(RESTModelMixin, models.Model):
     """
     A model class to store all config variables in the database.
     """
+    access_permissions = ConfigAccessPermissions()
 
     key = models.CharField(max_length=255, unique=True, db_index=True)
     """A string, the key of the config variable."""
@@ -205,11 +218,15 @@ class ConfigStore(models.Model):
         permissions = (
             ('can_manage_config', 'Can manage configuration'),)
 
-    def get_root_rest_url(self):
+    @classmethod
+    def get_collection_string(cls):
+        return 'core/config'
+
+    def get_rest_pk(self):
         """
-        Returns the detail url of config value.
+        Returns the primary key used in the REST API.
         """
-        return reverse('config-detail', args=[str(self.key)])
+        return self.key
 
 
 class ChatMessage(RESTModelMixin, models.Model):
@@ -218,6 +235,8 @@ class ChatMessage(RESTModelMixin, models.Model):
 
     At the moment we only have one global chat room for managers.
     """
+    access_permissions = ChatMessageAccessPermissions()
+
     message = models.TextField()
 
     timestamp = models.DateTimeField(auto_now_add=True)

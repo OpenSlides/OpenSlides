@@ -12,11 +12,11 @@ class CoreAppConfig(AppConfig):
         # Load projector elements.
         # Do this by just importing all from these files.
         from . import projector  # noqa
+
         # Import all required stuff.
         from django.db.models import signals
         from openslides.core.signals import config_signal, post_permission_creation
-        from openslides.utils.autoupdate import inform_changed_data_receiver
-        from openslides.utils.autoupdate import inform_deleted_data_receiver
+        from openslides.utils.autoupdate import inform_changed_data_receiver, inform_deleted_data_receiver
         from openslides.utils.rest_api import router
         from openslides.utils.search import index_add_instance, index_del_instance
         from .signals import delete_django_app_permissions, setup_general_config
@@ -37,11 +37,11 @@ class CoreAppConfig(AppConfig):
             dispatch_uid='delete_django_app_permissions')
 
         # Register viewsets.
-        router.register('core/projector', ProjectorViewSet)
-        router.register('core/chatmessage', ChatMessageViewSet)
-        router.register('core/customslide', CustomSlideViewSet)
-        router.register('core/tag', TagViewSet)
-        router.register('core/config', ConfigViewSet, 'config')
+        router.register(self.get_model('Projector').get_collection_string(), ProjectorViewSet)
+        router.register(self.get_model('ChatMessage').get_collection_string(), ChatMessageViewSet)
+        router.register(self.get_model('CustomSlide').get_collection_string(), CustomSlideViewSet)
+        router.register(self.get_model('Tag').get_collection_string(), TagViewSet)
+        router.register(self.get_model('ConfigStore').get_collection_string(), ConfigViewSet, 'config')
 
         # Update data when any model of any installed app is saved or deleted.
         # TODO: Test if the m2m_changed signal is also needed.

@@ -15,6 +15,8 @@ from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.utils import to_roman
 
+from .access_permissions import ItemAccessPermissions
+
 
 class ItemManager(models.Manager):
     """
@@ -184,6 +186,7 @@ class Item(RESTModelMixin, models.Model):
     """
     An Agenda Item
     """
+    access_permissions = ItemAccessPermissions()
     objects = ItemManager()
 
     AGENDA_ITEM = 1

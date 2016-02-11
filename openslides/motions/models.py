@@ -20,6 +20,11 @@ from openslides.poll.models import (
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.search import user_name_helper
 
+from .access_permissions import (
+    CategoryAccessPermissions,
+    MotionAccessPermissions,
+    WorkflowAccessPermissions,
+)
 from .exceptions import WorkflowError
 
 
@@ -29,6 +34,7 @@ class Motion(RESTModelMixin, models.Model):
 
     This class is the main entry point to all other classes related to a motion.
     """
+    access_permissions = MotionAccessPermissions()
 
     active_version = models.ForeignKey(
         'MotionVersion',
@@ -624,6 +630,11 @@ class MotionVersion(RESTModelMixin, models.Model):
 
 
 class Category(RESTModelMixin, models.Model):
+    """
+    Model for categories of motions.
+    """
+    access_permissions = CategoryAccessPermissions()
+
     name = models.CharField(max_length=255)
     """Name of the category."""
 
@@ -879,7 +890,10 @@ class State(RESTModelMixin, models.Model):
 
 
 class Workflow(RESTModelMixin, models.Model):
-    """Defines a workflow for a motion."""
+    """
+    Defines a workflow for a motion.
+    """
+    access_permissions = WorkflowAccessPermissions()
 
     name = models.CharField(max_length=255)
     """A string representing the workflow."""

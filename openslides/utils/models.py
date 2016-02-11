@@ -1,4 +1,3 @@
-from django.core.urlresolvers import reverse
 from django.db import models
 
 
@@ -19,14 +18,10 @@ class MinMaxIntegerField(models.IntegerField):
 
 class RESTModelMixin:
     """
-    Mixin for django models which are used in our rest api.
+    Mixin for Django models which are used in our REST API.
     """
 
     access_permissions = None
-
-    @classmethod
-    def get_collection_name(cls):
-        return "{0}/{1}".format(cls._meta.app_label.lower(), cls._meta.object_name.lower())
 
     def get_root_rest_element(self):
         """
@@ -36,20 +31,25 @@ class RESTModelMixin:
         """
         return self
 
-    def get_root_rest_url(self):
+    def get_access_permissions(self):
         """
-        Returns the detail url of the root model of this object.
+        Returns a container to handle access permissions for this model and
+        its corresponding viewset.
         """
-        # Gets the default url-name in the same way as django rest framework
-        # does in relations.HyperlinkedModelSerializer
-        root_instance = self.get_root_rest_element()
-        rest_url = '%s-detail' % type(root_instance)._meta.object_name.lower()
-        return reverse(rest_url, args=[str(root_instance.pk)])
+        return self.access_permissions
 
-    def get_collection_string(self):
+    @classmethod
+    def get_collection_string(cls):
         """
-        Returns the string representing the name of the collection.
+        Returns the string representing the name of the collection. Returns
+        None if this is not a so called root rest instance.
         """
-        # TODO: find a way not to use the url. See #1791
-        from .rest_api import get_collection_and_id_from_url
-        return get_collection_and_id_from_url(self.get_root_rest_url())[0]
+        # TODO Check if this is a root rest element class and return None if not.
+        return '/'.join((cls._meta.app_label.lower(), cls._meta.object_name.lower()))
+
+    def get_rest_pk(self):
+        """
+        Returns the primary key used in the REST API. By default this is
+        the database pk.
+        """
+        return self.pk

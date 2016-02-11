@@ -13,7 +13,6 @@ from django.http import Http404, HttpResponse
 from django.utils.timezone import now
 
 from openslides import __version__ as version
-from openslides.core.access_permissions import AccessPermissions
 from openslides.utils import views as utils_views
 from openslides.utils.plugins import (
     get_plugin_description,
@@ -31,15 +30,16 @@ from openslides.utils.rest_api import (
 )
 from openslides.utils.search import search
 
+from .access_permissions import (
+    ChatMessageAccessPermissions,
+    ConfigAccessPermissions,
+    CustomSlideAccessPermissions,
+    ProjectorAccessPermissions,
+    TagAccessPermissions,
+)
 from .config import config
 from .exceptions import ConfigError, ConfigNotFound
 from .models import ChatMessage, CustomSlide, Projector, Tag
-from .serializers import (
-    ChatMessageSerializer,
-    CustomSlideSerializer,
-    ProjectorSerializer,
-    TagSerializer,
-)
 
 
 # Special Django views
@@ -153,16 +153,15 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
     activate_elements, prune_elements, update_elements,
     deactivate_elements, clear_elements and control_view.
     """
+    access_permissions = ProjectorAccessPermissions()
     queryset = Projector.objects.all()
-    serializer_class = ProjectorSerializer
-    access_permissions = AccessPermissions()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
         if self.action == 'retrieve':
-            result = self.access_permissions.can_retrieve(self.request.user)
+            result = self.get_access_permissions().can_retrieve(self.request.user)
         elif self.action in ('metadata', 'list'):
             result = self.request.user.has_perm('core.can_see_projector')
         elif self.action in ('activate_elements', 'prune_elements', 'update_elements',
@@ -370,14 +369,18 @@ class CustomSlideViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
+    access_permissions = CustomSlideAccessPermissions()
     queryset = CustomSlide.objects.all()
-    serializer_class = CustomSlideSerializer
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        return self.request.user.has_perm('core.can_manage_projector')
+        if self.action == 'retrieve':
+            result = self.get_access_permissions().can_retrieve(self.request.user)
+        else:
+            result = self.request.user.has_perm('core.can_manage_projector')
+        return result
 
 
 class TagViewSet(ModelViewSet):
@@ -387,16 +390,18 @@ class TagViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
+    access_permissions = TagAccessPermissions()
     queryset = Tag.objects.all()
-    serializer_class = TagSerializer
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve'):
-            # Every authenticated user can see the metadata and list or
-            # retrieve tags. Anonymous users can do so if they are enabled.
+        if self.action == 'retrieve':
+            result = self.get_access_permissions().can_retrieve(self.request.user)
+        elif self.action in ('metadata', 'list'):
+            # Every authenticated user can see the metadata and list tags.
+            # Anonymous users can do so if they are enabled.
             result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
         elif self.action in ('create', 'update', 'destroy'):
             result = self.request.user.has_perm('core.can_manage_tags')
@@ -444,13 +449,16 @@ class ConfigViewSet(ViewSet):
 
     There are the following views: metadata, list, retrieve and update.
     """
+    access_permissions = ConfigAccessPermissions()
     metadata_class = ConfigMetadata
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve'):
+        if self.action == 'retrieve':
+            result = self.get_access_permissions().can_retrieve(self.request.user)
+        elif self.action in ('metadata', 'list'):
             # Every authenticated user can see the metadata and list or
             # retrieve the config. Anonymous users can do so if they are
             # enabled.
@@ -476,6 +484,8 @@ class ConfigViewSet(ViewSet):
             value = config[key]
         except ConfigNotFound:
             raise Http404
+        # Attention: The format of this response has to be the same as in
+        # the get_serialized_data method of ConfigAccessPermissions.
         return Response({'key': key, 'value': value})
 
     def update(self, request, *args, **kwargs):
@@ -508,18 +518,23 @@ class ChatMessageViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve and create.
     The views partial_update, update and destroy are disabled.
     """
+    access_permissions = ChatMessageAccessPermissions()
     queryset = ChatMessage.objects.all()
-    serializer_class = ChatMessageSerializer
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        # We do not want anonymous users to use the chat even the anonymous
-        # group has the permission core.can_use_chat.
-        return (self.action in ('metadata', 'list', 'retrieve', 'create') and
+        if self.action == 'retrieve':
+            result = self.get_access_permissions().can_retrieve(self.request.user)
+        else:
+            # We do not want anonymous users to use the chat even the anonymous
+            # group has the permission core.can_use_chat.
+            result = (
+                self.action in ('metadata', 'list', 'create') and
                 self.request.user.is_authenticated() and
                 self.request.user.has_perm('core.can_use_chat'))
+        return result
 
     def perform_create(self, serializer):
         """

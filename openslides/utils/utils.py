@@ -10,7 +10,3 @@ def to_roman(number):
         return roman.toRoman(number)
     except (roman.NotIntegerError, roman.OutOfRangeError):
         return None
-
-
-def collection_name(model_class):
-    return "{1}/{2}".format(model_class.Meta.app_label.lower(), model_class.Meta.object_name)

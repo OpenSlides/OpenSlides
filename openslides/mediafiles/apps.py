@@ -18,4 +18,4 @@ class MediafilesAppConfig(AppConfig):
         from .views import MediafileViewSet
 
         # Register viewsets.
-        router.register('mediafiles/mediafile', MediafileViewSet)
+        router.register(self.get_model('Mediafile').get_collection_string(), MediafileViewSet)

@@ -101,20 +101,17 @@ class PermissionMixin:
 
     The methods check_view_permissions or check_projector_requirements are
     evaluated. If both return False self.permission_denied() is called.
-    Django REST framework's permission system is disabled.
-    """
+    Django REST Framework's permission system is disabled.
 
-    def get_serializer_class(self):
-        """
-        TODO
-        """
-        serializer_class = self.access_permissions.get_serializer_class(self.request.user) if self.access_permissions is not None else None
-        return super().get_serializer_class() if serializer_class is None else serializer_class
+    Also connects container to handle access permissions for model and
+    viewset.
+    """
+    access_permissions = None
 
     def get_permissions(self):
         """
-        Overriden method to check view and projector permissions. Returns an
-        empty interable so Django REST framework won't do any other
+        Overridden method to check view and projector permissions. Returns an
+        empty iterable so Django REST framework won't do any other
         permission checks by evaluating Django REST framework style permission
         classes  and the request passes.
         """
@@ -126,6 +123,8 @@ class PermissionMixin:
         """
         Override this and return True if the requesting user should be able to
         get access to your view.
+
+        Use access permissions container for retrieve requests.
         """
         return False
 
@@ -143,6 +142,24 @@ class PermissionMixin:
                     result = True
                     break
         return result
+
+    def get_access_permissions(self):
+        """
+        Returns a container to handle access permissions for this viewset and
+        its corresponding model.
+        """
+        return self.access_permissions
+
+    def get_serializer_class(self):
+        """
+        Overridden method to return the serializer class given by the
+        access permissions container.
+        """
+        if self.get_access_permissions() is not None:
+            serializer_class = self.get_access_permissions().get_serializer_class(self.request.user)
+        else:
+            serializer_class = super().get_serializer_class()
+        return serializer_class
 
 
 class ModelSerializer(_ModelSerializer):
@@ -172,7 +189,7 @@ class GenericViewSet(PermissionMixin, _GenericViewSet):
 
 
 class ModelViewSet(PermissionMixin, _ModelViewSet):
-    access_permissions = None
+    pass
 
 
 class ReadOnlyModelViewSet(PermissionMixin, _ReadOnlyModelViewSet):
@@ -183,12 +200,13 @@ class ViewSet(PermissionMixin, _ViewSet):
     pass
 
 
+#TODO: Remove this method
 def get_collection_and_id_from_url(url):
     """
     Helper function. Returns a tuple containing the collection name and the id
     extracted out of the given REST api URL.
 
-    For example get_collection_and_id_from_url('http://localhost/api/users/user/3/')
+    For example get_collection_and_id_from_url('http://localhost/rest/users/user/3/')
     returns ('users/user', '3').
 
     Raises OpenSlidesError if the URL is invalid.
@@ -196,5 +214,5 @@ def get_collection_and_id_from_url(url):
     path = urlparse(url).path
     match = re.match(r'^/rest/(?P<collection>[-\w]+/[-\w]+)/(?P<id>[-\w]+)/$', path)
     if not match:
-        raise OpenSlidesError('Invalid REST api URL: %s' % url)
+        raise OpenSlidesError('Invalid REST API URL: %s' % url)
     return match.group('collection'), match.group('id')

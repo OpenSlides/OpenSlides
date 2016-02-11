@@ -28,5 +28,5 @@ class UsersAppConfig(AppConfig):
             dispatch_uid='create_builtin_groups_and_admin')
 
         # Register viewsets.
-        router.register('users/user', UserViewSet)
+        router.register(self.get_model('User').get_collection_string(), UserViewSet)
         router.register('users/group', GroupViewSet)

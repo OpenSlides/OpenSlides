@@ -17,7 +17,6 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from openslides.assignments.access_permissions import AccessPermissions
 from openslides.core.config import config
 from openslides.utils.pdf import stylesheet
 from openslides.utils.rest_api import (
@@ -31,12 +30,9 @@ from openslides.utils.rest_api import (
 )
 from openslides.utils.views import PDFView
 
+from .access_permissions import AssignmentAccessPermissions
 from .models import Assignment, AssignmentPoll
-from .serializers import (
-    AssignmentAllPollSerializer,
-    AssignmentFullSerializer,
-    AssignmentShortSerializer,
-)
+from .serializers import AssignmentAllPollSerializer
 
 
 # Viewsets for the REST API
@@ -49,15 +45,15 @@ class AssignmentViewSet(ModelViewSet):
     partial_update, update, destroy, candidature_self, candidature_other,
     mark_elected and create_poll.
     """
+    access_permissions = AssignmentAccessPermissions()
     queryset = Assignment.objects.all()
-    access_permissions = AccessPermissions()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
         if self.action == 'retrieve':
-            result = self.access_permissions.can_retrieve(self.request.user)
+            result = self.get_access_permissions().can_retrieve(self.request.user)
         elif self.action in ('metadata', 'list'):
             result = self.request.user.has_perm('assignments.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy',

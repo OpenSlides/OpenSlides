@@ -14,13 +14,10 @@ from ..utils.rest_api import (
     status,
 )
 from ..utils.views import APIView, PDFView
+from .access_permissions import UserAccessPermissions
 from .models import Group, User
 from .pdf import users_passwords_to_pdf, users_to_pdf
-from .serializers import (
-    GroupSerializer,
-    UserFullSerializer,
-    UserShortSerializer,
-)
+from .serializers import GroupSerializer, UserFullSerializer
 
 
 # Viewsets for the REST API
@@ -32,13 +29,16 @@ class UserViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update, destroy and reset_password.
     """
+    access_permissions = UserAccessPermissions()
     queryset = User.objects.all()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve', 'update', 'partial_update'):
+        if self.action == 'retrieve':
+            result = self.get_access_permissions().can_retrieve(self.request.user)
+        elif self.action in ('metadata', 'list', 'update', 'partial_update'):
             result = self.request.user.has_perm('users.can_see_name')
         elif self.action in ('create', 'destroy', 'reset_password'):
             result = (self.request.user.has_perm('users.can_see_name') and
@@ -50,16 +50,13 @@ class UserViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         """
-        Returns different serializer classes with respect to action and user's
-        permissions.
+        Returns different serializer classes with respect to action.
         """
-        if (self.action in ('create', 'partial_update', 'update') or
-                self.request.user.has_perm('users.can_see_extra_data')):
-            # Return the UserFullSerializer for edit requests or for
-            # list/retrieve requests of users with more permissions.
+        if self.action in ('create', 'partial_update', 'update'):
+            # Return the UserFullSerializer for edit requests.
             serializer_class = UserFullSerializer
         else:
-            serializer_class = UserShortSerializer
+            serializer_class = super().get_serializer_class()
         return serializer_class
 
     def list(self, request, *args, **kwargs):
@@ -78,6 +75,7 @@ class UserViewSet(ModelViewSet):
 
         Hides the default_password for non admins.
         """
+        #TODO: Hide default_password also in case of autoupdate.
         response = super().retrieve(request, *args, **kwargs)
         self.extract_default_password(response)
         return response

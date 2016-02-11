@@ -18,15 +18,15 @@ from openslides.utils.rest_api import (
 )
 from openslides.utils.views import PDFView, SingleObjectMixin
 
+from .access_permissions import (
+    CategoryAccessPermissions,
+    MotionAccessPermissions,
+    WorkflowAccessPermissions,
+)
 from .exceptions import WorkflowError
 from .models import Category, Motion, MotionPoll, MotionVersion, Workflow
 from .pdf import motion_poll_to_pdf, motion_to_pdf, motions_to_pdf
-from .serializers import (
-    CategorySerializer,
-    MotionPollSerializer,
-    MotionSerializer,
-    WorkflowSerializer,
-)
+from .serializers import MotionPollSerializer
 
 
 # Viewsets for the REST API
@@ -39,14 +39,16 @@ class MotionViewSet(ModelViewSet):
     partial_update, update, destroy, manage_version, support, set_state and
     create_poll.
     """
+    access_permissions = MotionAccessPermissions()
     queryset = Motion.objects.all()
-    serializer_class = MotionSerializer
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve', 'partial_update', 'update'):
+        if self.action == 'retrieve':
+            result = self.get_access_permissions().can_retrieve(self.request.user)
+        elif self.action in ('metadata', 'list', 'partial_update', 'update'):
             result = self.request.user.has_perm('motions.can_see')
             # For partial_update and update requests the rest of the check is
             # done in the update method. See below.
@@ -281,14 +283,16 @@ class CategoryViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
+    access_permissions = CategoryAccessPermissions()
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve'):
+        if self.action == 'retrieve':
+            result = self.get_access_permissions().can_retrieve(self.request.user)
+        elif self.action in ('metadata', 'list'):
             result = self.request.user.has_perm('motions.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             result = (self.request.user.has_perm('motions.can_see') and
@@ -305,14 +309,16 @@ class WorkflowViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
+    access_permissions = WorkflowAccessPermissions()
     queryset = Workflow.objects.all()
-    serializer_class = WorkflowSerializer
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve'):
+        if self.action == 'retrieve':
+            result = self.get_access_permissions().can_retrieve(self.request.user)
+        elif self.action in ('metadata', 'list'):
             result = self.request.user.has_perm('motions.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             result = (self.request.user.has_perm('motions.can_see') and

@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy
 from reportlab.platypus import Paragraph
 
 from openslides.core.config import config
-from openslides.agenda.access_permissions import AccessPermissions
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
 from openslides.utils.rest_api import (
@@ -22,8 +21,8 @@ from openslides.utils.rest_api import (
 )
 from openslides.utils.views import PDFView
 
+from .access_permissions import ItemAccessPermissions
 from .models import Item, Speaker
-from .serializers import ItemSerializer
 
 
 # Viewsets for the REST API
@@ -35,16 +34,15 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
     There are the following views: metadata, list, retrieve, create,
     partial_update, update, destroy, manage_speaker, speak and tree.
     """
+    access_permissions = ItemAccessPermissions()
     queryset = Item.objects.all()
-    serializer_class = ItemSerializer
-    access_permissions = AccessPermissions()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
         if self.action == 'retrieve':
-            result = self.access_permissions.can_retrieve(self.request.user)
+            result = self.get_access_permissions().can_retrieve(self.request.user)
         elif self.action in ('metadata', 'list', 'manage_speaker', 'tree'):
             result = self.request.user.has_perm('agenda.can_see')
             # For manage_speaker and tree requests the rest of the check is
@@ -65,6 +63,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         Checks if the requesting user has permission to see also an
         organizational item if it is one.
         """
+        #TODO
         if obj.is_hidden() and not request.user.has_perm('agenda.can_see_hidden_items'):
             self.permission_denied(request)
 
