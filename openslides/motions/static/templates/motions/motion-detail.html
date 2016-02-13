@@ -28,7 +28,7 @@
         <i class="fa fa-pencil"></i>
       </a>
     </div>
-    <h1>{{ motion.agenda_item.getTitle() }}</h1>
+    <h1>{{ motion.getTitle() }}</h1>
     <h2>
         <translate>Motion</translate> {{ motion.identifier }}
         <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion(version).version_number }}</span>
