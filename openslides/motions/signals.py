@@ -74,6 +74,7 @@ def setup_motion_config(sender, **kwargs):
         default_value=False,
         input_type='boolean',
         label=ugettext_lazy('Activate amendments'),
+        hidden=True,
         weight=335,
         group=ugettext_lazy('Motion'),
         subgroup=ugettext_lazy('Amendments'))
@@ -82,6 +83,7 @@ def setup_motion_config(sender, **kwargs):
         name='motions_amendments_prefix',
         default_value=pgettext('Prefix for the identifier for amendments', 'A'),
         label=ugettext_lazy('Prefix for the identifier for amendments'),
+        hidden=True,
         weight=340,
         group=ugettext_lazy('Motion'),
         subgroup=ugettext_lazy('Amendments'))
