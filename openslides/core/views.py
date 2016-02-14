@@ -412,14 +412,20 @@ class ConfigMetadata(SimpleMetadata):
         # Build tree.
         config_groups = []
         for config_variable in config_variables:
+            if config_variable.is_hidden():
+                # Skip hidden config variables. Do not even check groups and subgroups.
+                continue
             if not config_groups or config_groups[-1]['name'] != config_variable.group:
+                # Add new group.
                 config_groups.append(OrderedDict(
                     name=config_variable.group,
                     subgroups=[]))
             if not config_groups[-1]['subgroups'] or config_groups[-1]['subgroups'][-1]['name'] != config_variable.subgroup:
+                # Add new subgroup.
                 config_groups[-1]['subgroups'].append(OrderedDict(
                     name=config_variable.subgroup,
                     items=[]))
+            # Add the config variable to the current group and subgroup.
             config_groups[-1]['subgroups'][-1]['items'].append(config_variable.data)
 
         # Add tree to metadata.

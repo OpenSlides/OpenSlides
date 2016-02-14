@@ -137,10 +137,11 @@ class ConfigVariable:
 
     The keyword arguments 'name' and 'default_value' are required.
 
-    The keyword arguments 'input_type', 'label' and 'help_text' are for
-    rendering a HTML form element. If you set 'input_type' to 'choice' you
-    have to provide 'choices', which is a list of dictionaries containing a
-    value and a display_name of every possible choice.
+    The keyword arguments 'input_type', 'label', 'help_text' and 'hidden'
+    are for rendering a HTML form element. The 'input_type is also used for
+    validation. If you set 'input_type' to 'choice' you have to provide
+    'choices', which is a list of dictionaries containing a value and a
+    display_name of every possible choice.
 
     The keyword arguments 'weight', 'group' and 'subgroup' are for sorting
     and grouping.
@@ -157,8 +158,9 @@ class ConfigVariable:
     command line option.
     """
     def __init__(self, name, default_value, input_type='string', label=None,
-                 help_text=None, choices=None, weight=0, group=None,
-                 subgroup=None, validators=None, on_change=None, translatable=False):
+                 help_text=None, choices=None, hidden=False, weight=0,
+                 group=None, subgroup=None, validators=None, on_change=None,
+                 translatable=False):
         if input_type not in INPUT_TYPE_MAPPING:
             raise ValueError(_('Invalid value for config attribute input_type.'))
         if input_type == 'choice' and choices is None:
@@ -173,6 +175,7 @@ class ConfigVariable:
         self.label = label or name
         self.help_text = help_text or ''
         self.choices = choices
+        self.hidden = hidden
         self.weight = weight
         self.group = group or _('General')
         self.subgroup = subgroup
@@ -191,8 +194,15 @@ class ConfigVariable:
             'value': config[self.name],
             'input_type': self.input_type,
             'label': self.label,
-            'help_text': self.help_text
+            'help_text': self.help_text,
         }
         if self.input_type == 'choice':
             data['choices'] = self.choices
         return data
+
+    def is_hidden(self):
+        """
+        Returns True if the config variable is hidden so it can be removed
+        from response of OPTIONS request.
+        """
+        return self.hidden
