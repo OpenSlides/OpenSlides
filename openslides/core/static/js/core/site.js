@@ -14,8 +14,8 @@ angular.module('OpenSlidesApp.core.site', [
     'ngMessages',
     'ngCsvImport',
     'ui.select',
+    'ui.tinymce',
     'luegg.directives',
-    'ckeditor',
 ])
 
 // Provider to register entries for the main menu.
@@ -337,10 +337,16 @@ angular.module('OpenSlidesApp.core.site', [
 .run([
     'formlyConfig',
     function (formlyConfig) {
-        // NOTE: This next line is highly recommended. Otherwise Chrome's autocomplete will appear over your options!
+        // NOTE: This next line is highly recommended. Otherwise Chrome's autocomplete
+        // will appear over your options!
         formlyConfig.extras.removeChromeAutoComplete = true;
 
         // Configure custom types
+        formlyConfig.setType({
+          name: 'editor',
+          extends: 'textarea',
+          templateUrl: 'static/templates/core/editor.html',
+        });
         formlyConfig.setType({
           name: 'ui-select-single',
           extends: 'select',
@@ -351,6 +357,35 @@ angular.module('OpenSlidesApp.core.site', [
           extends: 'select',
           templateUrl: 'static/templates/core/ui-select-multiple.html'
         });
+    }
+])
+
+// Options for TinyMCE editor used in various create and edit views.
+.factory('Editor', [
+    'gettextCatalog',
+    function (gettextCatalog) {
+        return {
+            getOptions: function (images) {
+                return {
+                    language_url: '/static/tinymce/i18n/' + gettextCatalog.getCurrentLanguage() + '.js',
+                    theme_url: '/static/js/openslides-libs.js',
+                    skin_url: '/static/tinymce/skins/lightgray/',
+                    inline: false,
+                    statusbar: false,
+                    browser_spellcheck: true,
+                    image_advtab: true,
+                    image_list: images,
+                    plugins: [
+                      'lists link autolink charmap preview searchreplace code fullscreen',
+                      'paste textcolor colorpicker image imagetools'
+                    ],
+                    menubar: '',
+                    toolbar: 'undo redo searchreplace | styleselect | bold italic underline strikethrough ' +
+                        'forecolor backcolor removeformat | bullist numlist | outdent indent | ' +
+                        'link image charmap table | code preview fullscreen'
+                };
+            }
+        }
     }
 ])
 
@@ -504,17 +539,19 @@ angular.module('OpenSlidesApp.core.site', [
 // Provide generic customslide form fields for create and update view
 .factory('CustomslideForm', [
     'gettextCatalog',
-    'CKEditorOptions',
+    'Editor',
     'Mediafile',
-    function (gettextCatalog, CKEditorOptions, Mediafile) {
+    function (gettextCatalog, Editor, Mediafile) {
         return {
             // ngDialog for customslide form
             getDialog: function (customslide) {
+                var resolve = {};
                 if (customslide) {
-                    var resolve = {
+                    resolve = {
                         customslide: function(Customslide) {return Customslide.find(customslide.id);}
                     };
                 }
+                resolve.mediafiles = function(Mediafile) {return Mediafile.findAll();}
                 return {
                     template: 'static/templates/core/customslide-form.html',
                     controller: (customslide) ? 'CustomslideUpdateCtrl' : 'CustomslideCreateCtrl',
@@ -525,6 +562,7 @@ angular.module('OpenSlidesApp.core.site', [
                 }
             },
             getFormFields: function () {
+                var images = Mediafile.getAllImages();
                 return [
                 {
                     key: 'title',
@@ -536,11 +574,13 @@ angular.module('OpenSlidesApp.core.site', [
                 },
                 {
                     key: 'text',
-                    type: 'textarea',
+                    type: 'editor',
                     templateOptions: {
                         label: gettextCatalog.getString('Text')
                     },
-                    ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
+                    data: {
+                        tinymceOption: Editor.getOptions(images)
+                    }
                 },
                 {
                     key: 'attachments_id',

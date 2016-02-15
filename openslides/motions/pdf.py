@@ -1,4 +1,5 @@
 import random
+import re
 from html import escape
 from operator import attrgetter
 
@@ -153,6 +154,23 @@ def motion_to_pdf(pdf, motion):
 def convert_html_to_reportlab(pdf, text):
     # parsing and replacing not supported html tags for reportlab...
     soup = BeautifulSoup(text, "html5lib")
+
+    # number ol list elements
+    ols = soup.find_all('ol')
+    for ol in ols:
+        counter = 0
+        for li in ol.children:
+            if li.name == 'li':
+                # if start attribute is available set counter for first list element
+                if li.parent.get('start') and not li.find_previous_sibling():
+                    counter = int(ol.get('start'))
+                else:
+                    counter += 1
+                if li.get('value'):
+                    counter = li.get('value')
+                else:
+                    li['value'] = counter
+
     # read all list elements...
     for element in soup.find_all('li'):
         # ... and replace ul list elements with <para><bullet>&bull;</bullet>...<para>
@@ -167,22 +185,32 @@ def convert_html_to_reportlab(pdf, text):
                 bullet_tag = soup.new_tag("bullet")
                 bullet_tag.string = u"•"
                 element.insert(0, bullet_tag)
-        # ... and replace ol list elements with <para><bullet><seq id="%id"></seq>.</bullet>...</para>
+        # ... and replace ol list elements with <para><bullet><seqreset id="%id" base="value"><seq id="%id"></seq>.</bullet>...</para>
         if element.parent.name == "ol":
+            counter = None
             # set list id if element is the first of numbered list
             if not element.find_previous_sibling():
                 id = random.randrange(0, 101)
+                if element.parent.get('start'):
+                    counter = element.parent.get('start')
+            if element.get('value'):
+                counter = element.get('value')
             # nested lists
             if element.ul or element.ol:
-                for i in element.find_all('li'):
-                    element.insert_before(i)
-                element.clear()
-            else:
-                element.name = "para"
-                element.insert(0, soup.new_tag("bullet"))
-                element.bullet.insert(0, soup.new_tag("seq"))
-                element.bullet.seq['id'] = id
-                element.bullet.insert(1, ".")
+                nested_list = element.find_all('li')
+                for i in reversed(nested_list):
+                    element.insert_after(i)
+
+            element.attrs = {}
+            element.name = "para"
+            element.insert(0, soup.new_tag("bullet"))
+            element.bullet.insert(0, soup.new_tag("seq"))
+            element.bullet.seq['id'] = id
+            if counter:
+                element.bullet.insert(0, soup.new_tag("seqreset"))
+                element.bullet.seqreset['id'] = id
+                element.bullet.seqreset['base'] = int(counter) - 1
+            element.bullet.insert(2, ".")
     # remove tags which are not supported by reportlab (replace tags with their children tags)
     for tag in soup.find_all('ul'):
         tag.unwrap()
@@ -190,8 +218,60 @@ def convert_html_to_reportlab(pdf, text):
         tag.unwrap()
     for tag in soup.find_all('li'):
         tag.unwrap()
+
+    # use tags which are supported by reportlab
+    # replace <s> to <strike>
+    for tag in soup.find_all('s'):
+        tag.name = "strike"
+
+    # replace <del> to <strike>
+    for tag in soup.find_all('del'):
+        tag.name = "strike"
+
+    for tag in soup.find_all('a'):
+        # remove a tags without href attribute
+        if not tag.get('href'):
+            tag.extract()
+    for tag in soup.find_all('img'):
+        # remove img tags without src attribute
+        if not tag.get('src'):
+            tag.extract()
+
+    # replace style attributes in <span> tags
     for tag in soup.find_all('span'):
-        tag.unwrap()
+        if tag.get('style'):
+            # replace style attribute "text-decoration: line-through;" to <strike> tag
+            if 'text-decoration: line-through' in str(tag['style']):
+                strike_tag = soup.new_tag("strike")
+                strike_tag.string = tag.string
+                tag.replace_with(strike_tag)
+            # replace style attribute "text-decoration: underline;" to <u> tag
+            elif 'text-decoration: underline' in str(tag['style']):
+                u_tag = soup.new_tag("u")
+                u_tag.string = tag.string
+                tag.replace_with(u_tag)
+            # replace style attribute "color: #xxxxxx;" to "<font backcolor='#xxxxxx'>...</font>"
+            elif 'background-color: ' in str(tag['style']):
+                font_tag = soup.new_tag("font")
+                color = re.findall('background-color: (.*?);', str(tag['style']))
+                if color:
+                    font_tag['backcolor'] = color
+                if tag.string:
+                    font_tag.string = tag.string
+                tag.replace_with(font_tag)
+            # replace style attribute "color: #xxxxxx;" to "<font color='#xxxxxx'>...</font>"
+            elif 'color: ' in str(tag['style']):
+                font_tag = soup.new_tag("font")
+                color = re.findall('color: (.*?);', str(tag['style']))
+                if color:
+                    font_tag['color'] = color
+                if tag.string:
+                    font_tag.string = tag.string
+                tag.replace_with(font_tag)
+            else:
+                tag.unwrap()
+        else:
+            tag.unwrap()
     # print paragraphs with numbers
     text = soup.body.contents
     paragraph_number = 1

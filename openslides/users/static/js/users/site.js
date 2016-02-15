@@ -235,8 +235,10 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 .factory('UserForm', [
     '$http',
     'gettextCatalog',
+    'Editor',
     'Group',
-    function ($http, gettextCatalog, Group) {
+    'Mediafile',
+    function ($http, gettextCatalog, Editor, Group, Mediafile) {
         return {
             // ngDialog for user form
             getDialog: function (user) {
@@ -256,6 +258,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             },
             // angular-formly fields for user form
             getFormFields: function (hideOnCreateForm) {
+                var images = Mediafile.getAllImages();
                 return [
                 {
                     key: 'username',
@@ -334,12 +337,13 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 },
                 {
                     key: 'about_me',
-                    type: 'textarea',
+                    type: 'editor',
                     templateOptions: {
                         label: gettextCatalog.getString('About me'),
-                        description: gettextCatalog.getString('Profile text.')
                     },
-                    ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
+                    data: {
+                        tinymceOption: Editor.getOptions(images)
+                    }
                 },
                 {
                     key: 'is_present',
@@ -549,10 +553,12 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 .controller('UserProfileCtrl', [
     '$scope',
     '$state',
+    'Editor',
     'User',
     'user',
-    function($scope, $state, User, user) {
+    function($scope, $state, Editor, User, user) {
         $scope.user = user;  // autoupdate is not activated
+        $scope.tinymceOption = Editor.getOptions();
         $scope.save = function (user) {
             User.save(user, { method: 'PATCH' }).then(
                 function(success) {

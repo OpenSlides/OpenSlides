@@ -152,18 +152,20 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 .factory('MotionForm', [
     'gettextCatalog',
     'operator',
+    'Editor',
     'Category',
     'Config',
     'Mediafile',
     'Tag',
     'User',
     'Workflow',
-    function (gettextCatalog, operator, Category, Config, Mediafile, Tag, User, Workflow) {
+    function (gettextCatalog, operator, Editor, Category, Config, Mediafile, Tag, User, Workflow) {
         return {
             // ngDialog for motion form
             getDialog: function (motion) {
+                var resolve = {}
                 if (motion) {
-                    var resolve = {
+                    resolve = {
                         motion: function() {
                             return motion;
                         },
@@ -172,6 +174,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         }
                     };
                 }
+                resolve.mediafiles = function(Mediafile) {return Mediafile.findAll();}
                 return {
                     template: 'static/templates/motions/motion-form.html',
                     controller: (motion) ? 'MotionUpdateCtrl' : 'MotionCreateCtrl',
@@ -187,6 +190,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 angular.forEach(workflows, function(workflow) {
                     workflow.name = gettextCatalog.getString(workflow.name);
                 });
+                var images = Mediafile.getAllImages();
                 return [
                 {
                     key: 'identifier',
@@ -220,20 +224,24 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 },
                 {
                     key: 'text',
-                    type: 'textarea',
+                    type: 'editor',
                     templateOptions: {
                         label: gettextCatalog.getString('Text'),
                         required: true
                     },
-                    ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
+                    data: {
+                        tinymceOption: Editor.getOptions(images)
+                    }
                 },
                 {
                     key: 'reason',
-                    type: 'textarea',
+                    type: 'editor',
                     templateOptions: {
-                        label: gettextCatalog.getString('Reason')
+                        label: gettextCatalog.getString('Reason'),
                     },
-                    ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
+                    data: {
+                        tinymceOption: Editor.getOptions(images)
+                    }
                 },
                 {
                     key: 'disable_versioning',
