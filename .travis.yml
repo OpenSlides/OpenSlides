@@ -14,6 +14,7 @@ install:
 script:
   - "flake8 openslides tests"
   - "isort --check-only --recursive openslides tests"
+  - "gulp jshint"
 
   - "DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py test tests.unit"
   - "coverage report --fail-under=40"
