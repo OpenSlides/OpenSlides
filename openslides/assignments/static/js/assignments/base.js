@@ -72,14 +72,21 @@ angular.module('OpenSlidesApp.assignments', [])
 ])
 
 .factory('AssignmentPoll', [
+    '$http',
     'DS',
+    'jsDataModel',
     'gettextCatalog',
     'AssignmentPollOption',
     'Config',
-    function (DS, gettextCatalog, AssignmentPollOption, Config) {
+    function ($http, DS, jsDataModel, gettextCatalog, AssignmentPollOption, Config) {
+        var name = 'assignments/poll';
         return DS.defineResource({
-            name: 'assignments/poll',
+            name: name,
+            useClass: jsDataModel,
             methods: {
+                getResourceName: function () {
+                    return name;
+                },
                 // returns object with value and percent (for votes valid/invalid/cast only)
                 getVote: function (vote) {
                     if (!this.has_votes || !vote) {
@@ -148,11 +155,12 @@ angular.module('OpenSlidesApp.assignments', [])
 .factory('Assignment', [
     '$http',
     'DS',
+    'Projector',
     'AssignmentRelatedUser',
     'AssignmentPoll',
     'jsDataModel',
     'gettext',
-    function ($http, DS, AssignmentRelatedUser, AssignmentPoll, jsDataModel, gettext) {
+    function ($http, DS, Projector, AssignmentRelatedUser, AssignmentPoll, jsDataModel, gettext) {
         var name = 'assignments/assignment';
         var phases;
         return DS.defineResource({
@@ -183,6 +191,45 @@ angular.module('OpenSlidesApp.assignments', [])
                 // subtitle of search result
                 getSearchResultSubtitle: function () {
                     return "Election";
+                },
+                // override project function of jsDataModel factory
+                project: function (poll_id) {
+                    return $http.post(
+                        '/rest/core/projector/1/prune_elements/',
+                        [{name: 'assignments/assignment', id: this.id, poll: poll_id}]
+                    );
+                },
+                // override isProjected function of jsDataModel factory
+                isProjected: function (poll_id) {
+                    // Returns true if there is a projector element with the name
+                    // 'assignments/assignment'.
+                    var projector = Projector.get(1);
+                    var isProjected;
+                    if (typeof projector !== 'undefined') {
+                        var self = this;
+                        var predicate = function (element) {
+                            var value;
+                            if (typeof poll_id === 'undefined') {
+                                // Assignment detail slide without poll
+                                value = element.name == 'assignments/assignment' &&
+                                    typeof element.id !== 'undefined' &&
+                                    element.id == self.id &&
+                                    typeof element.poll === 'undefined';
+                            } else {
+                                // Assignment detail slide with specific poll
+                                value = element.name == 'assignments/assignment' &&
+                                    typeof element.id !== 'undefined' &&
+                                    element.id == self.id &&
+                                    typeof element.poll !== 'undefined' &&
+                                    element.poll == poll_id;
+                            }
+                            return value;
+                        };
+                        isProjected = typeof _.findKey(projector.elements, predicate) === 'string';
+                    } else {
+                        isProjected = false;
+                    }
+                    return isProjected;
                 }
             },
             relations: {

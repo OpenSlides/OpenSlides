@@ -261,14 +261,19 @@ angular.module('OpenSlidesApp.core', [
             // Returns true if there is a projector element with the same
             // name and the same id.
             var projector = Projector.get(1);
-            if (typeof projector === 'undefined') return false;
-            var self = this;
-            var predicate = function (element) {
-                return element.name == self.getResourceName() &&
-                       typeof element.id !== 'undefined' &&
-                       element.id == self.id;
-            };
-            return typeof _.findKey(projector.elements, predicate) === 'string';
+            var isProjected;
+            if (typeof projector !== 'undefined') {
+                var self = this;
+                var predicate = function (element) {
+                    return element.name == self.getResourceName() &&
+                        typeof element.id !== 'undefined' &&
+                        element.id == self.id;
+                };
+                isProjected = typeof _.findKey(projector.elements, predicate) === 'string';
+            } else {
+                isProjected = false;
+            }
+            return isProjected;
         };
         return BaseModel;
     }

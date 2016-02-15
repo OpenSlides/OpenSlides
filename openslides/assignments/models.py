@@ -49,7 +49,6 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
 
 
 class Assignment(RESTModelMixin, models.Model):
-    slide_callback_name = 'assignment'
 
     PHASE_SEARCH = 0
     PHASE_VOTING = 1
@@ -345,7 +344,6 @@ class AssignmentOption(RESTModelMixin, BaseOption):
 
 class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
                      PublishPollMixin, BasePoll):
-    slide_callback_name = 'assignmentpoll'
     option_class = AssignmentOption
 
     assignment = models.ForeignKey(

@@ -185,7 +185,6 @@ class Item(RESTModelMixin, models.Model):
     An Agenda Item
     """
     objects = ItemManager()
-    slide_callback_name = 'agenda'
 
     AGENDA_ITEM = 1
     HIDDEN_ITEM = 2

@@ -81,15 +81,22 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 },
                 // override isProjected function of jsDataModel factory
                 isProjected: function () {
+                    // Returns true if there is a projector element with the same
+                    // name and the same id.
                     var projector = Projector.get(1);
-                    if (typeof projector === 'undefined') return false;
-                    var self = this;
-                    var predicate = function (element) {
-                        return element.name == self.content_object.collection &&
-                               typeof element.id !== 'undefined' &&
-                               element.id == self.content_object.id;
-                    };
-                    return typeof _.findKey(projector.elements, predicate) === 'string';
+                    var isProjected;
+                    if (typeof projector !== 'undefined') {
+                        var self = this;
+                        var predicate = function (element) {
+                            return element.name == self.content_object.collection &&
+                                typeof element.id !== 'undefined' &&
+                                element.id == self.content_object.id;
+                        };
+                        isProjected = typeof _.findKey(projector.elements, predicate) === 'string';
+                    } else {
+                        isProjected = false;
+                    }
+                    return isProjected;
                 },
                 // project list of speakers
                 projectListOfSpeakers: function() {
