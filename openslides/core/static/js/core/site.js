@@ -259,7 +259,7 @@ angular.module('OpenSlidesApp.core.site', [
                             controller: 'CustomslideUpdateCtrl',
                             className: 'ngdialog-theme-default wide-form',
                             resolve: {
-                                customslide: function() {return Customslide.find($stateParams.id) }
+                                customslide: function() {return Customslide.find($stateParams.id);}
                             },
                             preCloseCallback: function() {
                                 $state.go('core.customslide.detail', {customslide: $stateParams.id});
@@ -385,7 +385,7 @@ angular.module('OpenSlidesApp.core.site', [
                         'link image charmap table | code preview fullscreen'
                 };
             }
-        }
+        };
     }
 ])
 
@@ -424,7 +424,7 @@ angular.module('OpenSlidesApp.core.site', [
                 $scope.reset = function () {
                     $scope.value = $scope.default_value;
                     $scope.save(field.key, $scope.value);
-                }
+                };
             }
         };
     }
@@ -502,7 +502,7 @@ angular.module('OpenSlidesApp.core.site', [
         $scope.search = function(query) {
             $scope.query = '';
             $state.go('search', {q: query});
-        }
+        };
     }
 ])
 // Search Controller
@@ -523,9 +523,9 @@ angular.module('OpenSlidesApp.core.site', [
                         data.urlParam = {id: element.id};
                         $scope.results.push(data);
                     });
-                })
+                });
             });
-        }
+        };
 
         // run search with get parameter from url
         if ($stateParams.q) {
@@ -551,7 +551,7 @@ angular.module('OpenSlidesApp.core.site', [
                         customslide: function(Customslide) {return Customslide.find(customslide.id);}
                     };
                 }
-                resolve.mediafiles = function(Mediafile) {return Mediafile.findAll();}
+                resolve.mediafiles = function(Mediafile) {return Mediafile.findAll();};
                 return {
                     template: 'static/templates/core/customslide-form.html',
                     controller: (customslide) ? 'CustomslideUpdateCtrl' : 'CustomslideCreateCtrl',
@@ -559,7 +559,7 @@ angular.module('OpenSlidesApp.core.site', [
                     closeByEscape: false,
                     closeByDocument: false,
                     resolve: (resolve) ? resolve : null
-                }
+                };
             },
             getFormFields: function () {
                 var images = Mediafile.getAllImages();
@@ -605,7 +605,7 @@ angular.module('OpenSlidesApp.core.site', [
                 },
                 ];
             }
-        }
+        };
     }
 ])
 
@@ -999,7 +999,7 @@ angular.module('OpenSlidesApp.core.site', [
             $scope.chatboxIsCollapsed = !$scope.chatboxIsCollapsed;
             NewChatMessages = [];
             $scope.unreadMessages = NewChatMessages.length;
-        }
+        };
         $scope.sendMessage = function () {
             angular.element('#messageSendButton').addClass('disabled');
             angular.element('#messageInput').attr('disabled', '');
@@ -1027,7 +1027,7 @@ angular.module('OpenSlidesApp.core.site', [
                     $scope.unreadMessages = NewChatMessages.length;
                 }
             }
-        })
+        });
     }
 ])
 

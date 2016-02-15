@@ -13,7 +13,7 @@ angular.module('OpenSlidesApp.mediafiles', [])
             name: name,
             useClass: jsDataModel,
             getAllImages: function () {
-                var images = []
+                var images = [];
                 angular.forEach(this.getAll(), function(file) {
                     if (file.is_image) {
                         images.push({title: file.title, value: file.mediafileUrl});

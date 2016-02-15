@@ -40,7 +40,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                         return User.findAll();
                     },
                 }
-            })
+            });
     }
 ])
 
@@ -62,7 +62,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
         $scope.reverse = false;
 
         function updatePresentedMediafiles() {
-            var projectorElements = _.map(Projector.get(1).elements, function(element) { return element });
+            var projectorElements = _.map(Projector.get(1).elements, function(element) { return element; });
             $scope.presentedMediafiles = _.filter(projectorElements, function (element) {
                 return element.name === 'mediafiles/mediafile';
             });
@@ -94,7 +94,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                 mediafile.mediafile.name,
                 mediafile.uploader.get_short_name()
             ].join(" ");
-        }
+        };
 
         // open new/edit dialog
         $scope.openDialog = function (mediafile) {
@@ -242,7 +242,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                     $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
-        }
+        };
     }
 ])
 
@@ -286,7 +286,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                     $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
-        }
+        };
     }
 ])
 
@@ -301,8 +301,9 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
         return {
             // ngDialog for mediafile form
             getDialog: function (mediafile) {
+                var resolve;
                 if (mediafile) {
-                    var resolve = {
+                    resolve = {
                         mediafile: function(Assignment) {return mediafile;}
                     };
                 }
@@ -313,7 +314,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                     closeByEscape: false,
                     closeByDocument: false,
                     resolve: (resolve) ? resolve : null
-                }
+                };
             },
             // upload selected file (used by create view only)
             uploadFile: function (mediafile) {

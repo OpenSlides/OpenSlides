@@ -22,7 +22,7 @@ angular.module('OpenSlidesApp.mediafiles.projector', ['OpenSlidesApp.mediafiles'
         mediafile.then(function(mediafile) {
             $scope.pdfName = mediafile.title;
             $scope.pdfUrl = mediafile.mediafileUrl;
-        })
+        });
     }
 ]);
 
