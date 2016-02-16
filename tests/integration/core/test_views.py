@@ -70,8 +70,8 @@ class VersionView(TestCase):
         self.assertEqual(json.loads(response.content.decode()), {
             'openslides_version': version,
             'plugins': [
-                {'verbose_name': 'Plugin tests.old.utils',
-                 'description': 'Description of plugin tests.old.utils',
+                {'verbose_name': 'OpenSlides Test Plugin',
+                 'description': 'This is a test plugin for OpenSlides.',
                  'version': 'unknown'}]})
 
 

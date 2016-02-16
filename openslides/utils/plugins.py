@@ -1,7 +1,6 @@
 import os
 import pkgutil
 import sys
-from importlib import import_module
 
 from django.apps import apps
 from django.conf import settings
