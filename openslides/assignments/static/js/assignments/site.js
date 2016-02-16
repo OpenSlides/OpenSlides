@@ -99,8 +99,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         return {
             // ngDialog for assignment form
             getDialog: function (assignment) {
+                var resolve;
                 if (assignment) {
-                    var resolve = {
+                    resolve = {
                         assignment: function() {
                             return assignment;
                         },
@@ -116,7 +117,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     closeByEscape: false,
                     closeByDocument: false,
                     resolve: (resolve) ? resolve : null
-                }
+                };
             },
             // angular-formly fields for assignment form
             getFormFields: function () {
@@ -162,7 +163,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     hide: !operator.hasPerms('assignments.can_manage')
                 }];
             }
-        }
+        };
     }
 ])
 
@@ -195,9 +196,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 assignment.description,
                 $scope.phases[assignment.phase].display_name,
                 _.map(assignment.assignment_related_users,
-                        function (candidate) {return candidate.user.get_short_name()}).join(" "),
+                        function (candidate) {return candidate.user.get_short_name();}).join(" "),
             ].join(" ");
-        }
+        };
 
         // open new/edit dialog
         $scope.openDialog = function (assignment) {
@@ -338,13 +339,13 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         $scope.updatePhase = function (phase_id) {
             assignment.phase = phase_id;
             Assignment.save(assignment);
-        }
+        };
         // create new ballot
         $scope.createBallot = function () {
             $http.post('/rest/assignments/assignment/' + assignment.id + '/create_poll/')
                 .success(function(data){
                     $scope.alert.show = false;
-                    if (assignment.phase == 0) {
+                    if (assignment.phase === 0) {
                         $scope.updatePhase(1);
                     }
                 })
@@ -355,7 +356,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         // delete ballot
         $scope.deleteBallot = function (poll) {
             poll.DSDestroy();
-        }
+        };
         // edit poll dialog
         $scope.editPollDialog = function (poll, ballot) {
             ngDialog.open({
@@ -396,8 +397,13 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             if (reverse) {
                 $http.delete(
                     '/rest/assignments/assignment/' + assignment.id + '/mark_elected/',
-                    {headers: {'Content-Type': 'application/json'},
-                     data: JSON.stringify({user: user})})
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        data: JSON.stringify({user: user})
+                    }
+                );
             } else {
                 $http.post('/rest/assignments/assignment/' + assignment.id + '/mark_elected/', {'user': user})
                     .then(function(success) {
@@ -414,7 +420,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         };
 
         // Just mark some vote value strings for translation.
-        gettext('Yes'), gettext('No'), gettext('Abstain');
+        gettext('Yes');
+        gettext('No');
+        gettext('Abstain');
     }
 ])
 
@@ -518,8 +526,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
         // add dynamic form fields
         assignmentpoll.options.forEach(function(option) {
+            var defaultValue;
             if (assignmentpoll.yesnoabstain) {
-                var defaultValue = {
+                defaultValue = {
                     'yes': '',
                     'no': '',
                     'abstain': ''
@@ -565,7 +574,6 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         defaultValue: defaultValue.abstain
                     });
             } else {
-                var defaultValue;
                 if (option.votes.length) {
                     defaultValue = option.votes[0].weight;
                 }

@@ -279,7 +279,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             if (action == 'remove') {
                 return ($.inArray(operator.user.id, nextUsers) != -1);
             }
-        }
+        };
 
         // begin speech of selected/next speaker
         $scope.beginSpeech = function (speakerId) {
@@ -304,12 +304,12 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         };
         // gets speech duration of selected speaker in seconds
         $scope.getDuration = function (speaker) {
-            var beginTimestamp = new Date(speaker.begin_time).getTime()
-            var endTimestamp = new Date(speaker.end_time).getTime()
+            var beginTimestamp = new Date(speaker.begin_time).getTime();
+            var endTimestamp = new Date(speaker.end_time).getTime();
             // calculate duration in seconds
             return Math.floor((endTimestamp - beginTimestamp) / 1000);
 
-        }
+        };
         // save reordered list of speakers
         $scope.treeOptions = {
             dropped: function (event) {
@@ -387,7 +387,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
 
         // *** CSV import ***
         // set initial data for csv import
-        $scope.items = []
+        $scope.items = [];
         $scope.separator = ',';
         $scope.encoding = 'UTF-8';
         $scope.encodingOptions = ['UTF-8', 'ISO-8859-1'];
@@ -494,7 +494,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             element.href = 'data:text/csv;charset=utf-8,' + csvString;
             element.download = 'agenda-example.csv';
             element.target = '_blank';
-        }
+        };
      }
 ]);
 

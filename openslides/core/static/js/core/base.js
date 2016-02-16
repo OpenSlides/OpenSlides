@@ -99,7 +99,7 @@ angular.module('OpenSlidesApp.core', [
                     if (language.code == current)
                         language.selected = true;
                 });
-                return languages
+                return languages;
             },
             // get detected browser language code
             getBrowserLanguage: function () {
@@ -125,7 +125,7 @@ angular.module('OpenSlidesApp.core', [
                 });
                 return languages;
             }
-        }
+        };
     }
 ])
 
@@ -157,7 +157,7 @@ angular.module('OpenSlidesApp.core', [
                     }
                 });
             }
-        }
+        };
     }
 ])
 
@@ -425,7 +425,7 @@ angular.module('OpenSlidesApp.core', [
             return Array.prototype.filter.call(array, function (item) {
                 return getFilterString(item).toLowerCase().indexOf(string.toLowerCase()) > -1;
             });
-        }
+        };
     }
 ])
 

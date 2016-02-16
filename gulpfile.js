@@ -84,12 +84,18 @@ gulp.task('tinymce-i18n', function () {
             'bower_components/tinymce-i18n/langs/pt_PT.js',
             ])
         .pipe(rename(function (path) {
-            if (path.basename === 'pt_PT') {path.basename = 'pt'}
-            if (path.basename === 'fr_FR') {path.basename = 'fr'}
+            if (path.basename === 'fr_FR') {
+                path.basename = 'fr';
+            } else if (path.basename === 'pt_PT') {
+                path.basename = 'pt';
+            }
         }))
         .pipe(gulpif(argv.production, uglify()))
         .pipe(gulp.dest(path.join(output_directory, 'tinymce', 'i18n')));
 });
+
+// Combines all TinyMCE related tasks.
+gulp.task('tinymce', ['tinymce-skins', 'tinymce-i18n'], function () {});
 
 // Compiles translation files (*.po) to *.json and saves them in the directory
 // openslides/static/i18n/.
@@ -102,7 +108,7 @@ gulp.task('translations', function () {
 });
 
 // Gulp default task. Runs all other tasks before.
-gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs', 'tinymce-skins', 'tinymce-i18n', 'translations'], function () {});
+gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs', 'tinymce', 'translations'], function () {});
 
 
 /**
@@ -123,7 +129,13 @@ gulp.task('pot', function () {
 
 // Checks JavaScript using JSHint
 gulp.task('jshint', function () {
-    return gulp.src([ 'gulpfile.js', path.join( 'openslides', '*', 'static', '**', '*.js' ) ])
+    return gulp.src([
+            'gulpfile.js',
+            path.join( 'openslides', '*', 'static', '**', '*.js' ),
+            '!' + path.join( 'openslides', 'users', 'static', 'js', 'users', 'site.js' ),
+            '!' + path.join( 'openslides', 'motions', 'static', 'js', 'motions', 'base.js' ),
+            '!' + path.join( 'openslides', 'motions', 'static', 'js', 'motions', 'site.js' ),
+        ])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });

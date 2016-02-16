@@ -67,7 +67,7 @@ angular.module('OpenSlidesApp.assignments', [])
                     }
                 }
             },
-        })
+        });
     }
 ])
 
@@ -131,7 +131,7 @@ angular.module('OpenSlidesApp.assignments', [])
                     }
                 }
             },
-        })
+        });
     }
 ])
 
@@ -148,7 +148,7 @@ angular.module('OpenSlidesApp.assignments', [])
                     }
                 }
             }
-        })
+        });
     }
 ])
 
