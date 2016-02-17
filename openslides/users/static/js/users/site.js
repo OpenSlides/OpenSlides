@@ -721,6 +721,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     } else {
                         user.is_active = false;
                     }
+                } else {
+                    user.is_active = false;
                 }
                 $scope.users.push(user);
             });
