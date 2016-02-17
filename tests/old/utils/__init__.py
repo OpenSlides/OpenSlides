@@ -1,2 +1,1 @@
-__verbose_name__ = 'Plugin tests.old.utils'
-__description__ = 'Description of plugin tests.old.utils'
+default_app_config = 'tests.old.utils.apps.TestPluginAppConfig'

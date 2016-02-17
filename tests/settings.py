@@ -17,7 +17,7 @@ SECRET_KEY = 'secret'
 # Add plugins to this list.
 
 INSTALLED_PLUGINS += (
-    'tests.old.utils',
+    'tests.integration.test_plugin',
 )
 
 INSTALLED_APPS += INSTALLED_PLUGINS

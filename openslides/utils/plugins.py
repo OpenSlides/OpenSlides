@@ -1,8 +1,8 @@
 import os
 import pkgutil
 import sys
-from importlib import import_module
 
+from django.apps import apps
 from django.conf import settings
 from pkg_resources import iter_entry_points
 
@@ -11,8 +11,6 @@ from openslides.utils.main import (
     detect_openslides_type,
     get_win32_portable_user_data_path,
 )
-
-plugins = {}
 
 
 # Methods to collect plugins.
@@ -52,35 +50,14 @@ def collect_plugins():
     return collected_plugins
 
 
-# Methods to retrieve plugins and their metadata.
-
-def get_plugin(plugin):
-    """
-    Returns the imported module. The plugin argument must be a python dotted
-    module path.
-    """
-    try:
-        plugin = plugins[plugin]
-    except KeyError:
-        plugins[plugin] = import_module(plugin)
-        plugin = get_plugin(plugin)
-    return plugin
-
+# Methods to retrieve plugin metadata and urlpatterns.
 
 def get_plugin_verbose_name(plugin):
     """
     Returns the verbose name of a plugin. The plugin argument must be a python
     dotted module path.
     """
-    plugin = get_plugin(plugin)
-    try:
-        verbose_name = plugin.get_verbose_name()
-    except AttributeError:
-        try:
-            verbose_name = plugin.__verbose_name__
-        except AttributeError:
-            verbose_name = plugin.__name__
-    return verbose_name
+    return apps.get_app_config(plugin).verbose_name
 
 
 def get_plugin_description(plugin):
@@ -88,12 +65,12 @@ def get_plugin_description(plugin):
     Returns the short descrption of a plugin. The plugin argument must be a
     python dotted module path.
     """
-    plugin = get_plugin(plugin)
+    plugin_app_config = apps.get_app_config(plugin)
     try:
-        description = plugin.get_description()
+        description = plugin_app_config.get_description()
     except AttributeError:
         try:
-            description = plugin.__description__
+            description = plugin_app_config.description
         except AttributeError:
             description = ''
     return description
@@ -104,12 +81,12 @@ def get_plugin_version(plugin):
     Returns the version string of a plugin. The plugin argument must be a
     python dotted module path.
     """
-    plugin = get_plugin(plugin)
+    plugin_app_config = apps.get_app_config(plugin)
     try:
-        version = plugin.get_version()
+        version = plugin_app_config.get_version()
     except AttributeError:
         try:
-            version = plugin.__version__
+            version = plugin_app_config.version
         except AttributeError:
             version = 'unknown'
     return version
@@ -120,12 +97,12 @@ def get_plugin_urlpatterns(plugin):
     Returns the urlpatterns object for a plugin. The plugin argument must be
     a python dotted module path.
     """
-    plugin = get_plugin(plugin)
+    plugin_app_config = apps.get_app_config(plugin)
     try:
-        urlpatterns = plugin.get_urlpatterns()
+        urlpatterns = plugin_app_config.get_urlpatterns()
     except AttributeError:
         try:
-            urlpatterns = plugin.urls.urlpatterns
+            urlpatterns = plugin_app_config.urlpatterns
         except AttributeError:
             urlpatterns = None
     return urlpatterns
