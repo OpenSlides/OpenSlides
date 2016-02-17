@@ -919,8 +919,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             $scope.csvImporting = true;
             angular.forEach($scope.motions, function (motion) {
                 if (!motion.importerror) {
-                    // create new user if not exist
-                    if (!motion.submitters_id) {
+                    // create new user if not exists
+                    if (!motion.submitters_id && motion.submitter) {
                         var index = motion.submitter.indexOf(' ');
                         var user = {
                             first_name: motion.submitter.substr(0, index),
@@ -934,8 +934,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                             }
                         );
                     }
-                    // create new category if not exist
-                    if (!motion.category_id) {
+                    // create new category if not exists
+                    if (!motion.category_id && motion.category) {
                         var category = {
                             name: motion.category,
                             prefix: motion.category.charAt(0)
