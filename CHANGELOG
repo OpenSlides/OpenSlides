@@ -13,7 +13,7 @@ Agenda:
 - Changed API of related objects. All assignments, motions and custom slides
   are now agenda items and can be hidden.
 - Removed mptt.
-- Added attachments to custom slides.
+- Added attachments to agenda items.
 - Improved csv import.
 Assignments:
 - Renamed app from assignment to assignments.
@@ -23,6 +23,7 @@ Motions:
 - Renamed app from motion to motions.
 Mediafiles:
 - Renamed app from mediafile to mediafiles.
+- Used improved pdf presentation with angular-pdf.
 Users:
 - Massive refactoring of the participant app. Now called 'users'.
 - Used new anonymous user object instead of an authentification backend. Used
@@ -33,6 +34,7 @@ Other:
 - New OpenSlides logo.
 - New design for web interface.
 - Added multiple countdown support.
+- Switched editor from CKEditor to TinyMCE.
 - Changed supported Python version to >= 3.4.
 - Used Django 1.7 as lowest requirement.
 - Added Django's application configuration. Refactored loading of signals
