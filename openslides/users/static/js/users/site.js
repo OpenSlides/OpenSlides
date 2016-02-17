@@ -129,10 +129,6 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     showClose: $stateParams.guest_enabled,
                     closeByEscape: $stateParams.guest_enabled,
                     closeByDocument: $stateParams.guest_enabled,
-                    preCloseCallback: function() {
-                        $state.go('home');
-                        return true;
-                    }
                 });
             }]
         });
@@ -870,8 +866,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         $scope.logout = function () {
             $http.post('/users/logout/').then(function (response) {
                 operator.setUser(null);
-                // TODO: remove all data from cache and reload page
-                // DS.flush();
+                window.location.reload();
             });
         };
     }
@@ -912,6 +907,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     // Success: User logged in.
                     operator.setUser(response.data.user_id);
                     $scope.closeThisDialog();
+                    setTimeout(function(){
+                        window.location.replace('/');
+                    }, 1000);
                 },
                 function (response) {
                     // Error: Username or password is not correct.
