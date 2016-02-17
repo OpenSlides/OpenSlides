@@ -121,7 +121,10 @@ angular.module('OpenSlidesApp.users', [])
                 },
                 getPerms: function() {
                     var allPerms = [];
-                    var allGroups = this.groups.slice(0);
+                    var allGroups = [];
+                    if (this.groups) {
+                        allGroups = this.groups.slice(0);
+                    }
                     // Add registered group
                     allGroups.push(2);
                     _.forEach(allGroups, function(groupId) {

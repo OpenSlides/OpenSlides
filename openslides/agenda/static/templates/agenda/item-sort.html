@@ -18,12 +18,14 @@
       <li ng-repeat="item in items" ui-tree-node ng-include="'nodes_renderer.html'">
     </ol>
   </div>
+  <p class="spacer">* <translate>Internal item</translate</p>
 </div>
 
 
 <!-- Nested node template -->
 <script type="text/ng-template" id="nodes_renderer.html">
   <div ui-tree-handle>
+    <span ng-if="item.item.is_hidden">*</span>
     {{ item.item.getTitle() }}
   </div>
   <ol ui-tree-nodes="" ng-model="item.children">

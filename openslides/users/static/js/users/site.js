@@ -912,7 +912,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         // core
         gettext('Can see the projector')
         gettext('Can manage the projector')
-        gettext('Can see the dashboard')
+        gettext('Can see the front page')
         gettext('Can manage tags')
         gettext('Can manage configuration')
         gettext('Can use the chat')

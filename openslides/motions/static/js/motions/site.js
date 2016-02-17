@@ -207,7 +207,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         label: gettextCatalog.getString('Submitters'),
                         optionsAttr: 'bs-options',
                         options: User.getAll(),
-                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
+                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search | limitTo: 50',
                         valueProp: 'id',
                         labelProp: 'full_name',
                         placeholder: gettextCatalog.getString('Select or search a submitter ...')
@@ -318,7 +318,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         label: gettextCatalog.getString('Supporters'),
                         optionsAttr: 'bs-options',
                         options: User.getAll(),
-                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
+                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search | limitTo: 50',
                         valueProp: 'id',
                         labelProp: 'full_name',
                         placeholder: gettextCatalog.getString('Select or search a supporter ...')

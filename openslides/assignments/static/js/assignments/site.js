@@ -278,6 +278,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         $scope.phases = phases;
         $scope.alert = {};
 
+        // limit the number of users in ui-select field
+        $scope.limitUsers = 50;
+
         // open edit dialog
         $scope.openDialog = function (assignment) {
             ngDialog.open(AssignmentForm.getDialog(assignment));

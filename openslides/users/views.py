@@ -89,10 +89,16 @@ class UserViewSet(ModelViewSet):
         """
         if not self.request.user.has_perm('users.can_manage'):
             if isinstance(response.data, dict):
-                del response.data['default_password']
+                try:
+                    del response.data['default_password']
+                except KeyError:
+                    pass
             elif isinstance(response.data, list):
                 for user in response.data:
-                    del user['default_password']
+                    try:
+                        del user['default_password']
+                    except KeyError:
+                        pass
 
     def update(self, request, *args, **kwargs):
         """
