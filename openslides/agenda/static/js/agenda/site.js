@@ -216,6 +216,10 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         $scope.speakerSelectBox = {};
         $scope.alert = {};
         $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
+
+        // limit the number of users in ui-select field
+        $scope.limitUsers = 50;
+
         $scope.$watch(function () {
             return Agenda.lastModified();
         }, function () {

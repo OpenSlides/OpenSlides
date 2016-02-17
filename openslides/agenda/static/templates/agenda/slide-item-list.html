@@ -3,8 +3,9 @@
 
   <div class="agendalist">
     <!-- item type: AGENDA_ITEM = 1, HIDDEN_ITEM = 2 -->
-    <p ng-repeat="item in items | filter: {type: 1}" ng-class="{ 'spacer-top': !item.parent_id }">
-      <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&nbsp;&nbsp;</span>
+    <p ng-repeat="item in items | filter: {type: 1}"
+        ng-class="item.parent_id ? 'subitem' : 'mainitem'">
+      <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
       {{ item.getListViewTitle() }}
       <i ng-if="item.closed" class="fa fa-check"></i>
     </p>

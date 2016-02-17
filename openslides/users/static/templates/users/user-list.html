@@ -56,7 +56,7 @@
                placeholder="{{ 'Search' | translate}}">
           </div>
         </div>
-        <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen"
+        <button os-perms="users.can_see_extra_data" class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen"
             ng-class="isFilterOpen ? 'btn-primary' : 'btn-default'">
           <i class="fa fa-filter"></i>
           <translate>Filter ...</translate>
@@ -64,7 +64,7 @@
       </div>
     </div>
   </div>
-  <div uib-collapse="!isFilterOpen" class="row spacer">
+  <div os-perms="users.can_see_extra_data" uib-collapse="!isFilterOpen" class="row spacer">
     <div class="col-sm-6 text-right"></div>
     <div class="col-sm-6 text-right form-inline">
       <!-- group filter -->
@@ -94,6 +94,14 @@
     {{ users.length }} {{ "participants" | translate }}<span ng-if="(users|filter:{selected:true}).length > 0">,
     {{(users|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
   </div>
+
+  <!-- set filtered users (for user with/without can_see_extra_data permissions-->
+  <div os-perms="users.can_see_extra_data"
+      ng-repeat="user in usersFiltered = (users | filter: filter.search | filter: {groups: groupFilter} |
+          filter: {is_present: filterPresent} | orderBy: sortColumn:reverse)"></div>
+  <div os-perms="!users.can_see_extra_data"
+      ng-repeat="user in usersFiltered = (users | filter: filter.search | orderBy: sortColumn:reverse)"></div>
+
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
@@ -124,9 +132,7 @@
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
     <tbody>
-      <tr ng-repeat="user in usersFiltered = (users | filter: filter.search | filter: {groups: groupFilter} |
-          filter: {is_present: filterPresent} | orderBy: sortColumn:reverse) | limitTo : itemsPerPage : limitBegin"
-          class="animate-item"
+      <tr ng-repeat="user in usersFiltered | limitTo : itemsPerPage : limitBegin" class="animate-item"
           ng-class="{ 'activeline': user.isProjected(), 'selected': user.selected  }">
         <!-- projector column -->
         <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
@@ -163,5 +169,8 @@
           </span>
           <input os-perms="users.can_manage" type="checkbox" ng-model="user.is_present" ng-click="save(user)">
   </table>
-  <uib-pagination total-items="usersFiltered.length" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
+  <uib-pagination total-items="usersFiltered.length" items-per-page="itemsPerPage" ng-model="currentPage"
+      ng-change="pageChanged()"
+      class="pagination-sm" direction-links="false" boundary-links="true" first-text="&laquo;" last-text="&raquo;">
+  </uib-pagination>
 </div>

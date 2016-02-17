@@ -19,8 +19,8 @@
 
 
 <div id="header">
-  <img id="logo" src="/static/img/logo-projector.png" alt="OpenSlides" />
-  <div id="eventdata">
+  <img ng-if="config('projector_enable_logo')" id="logo" src="/static/img/logo-projector.png" alt="OpenSlides" />
+  <div ng-if="config('projector_enable_title')" id="eventdata">
     <div class="title">
       {{ config('general_event_name') }}
     </div>

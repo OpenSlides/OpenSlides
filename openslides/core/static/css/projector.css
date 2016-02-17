@@ -23,12 +23,12 @@ body{
     left: 50px;
     top: 10px;
     height: 50px;
-    margin-right: 35px;
+    margin-right: 25px;
     float: left;
 }
 #eventdata {
     position: relative;
-    left: 30px;
+    left: 50px;
     top: 12px;
     height: 50px;
     overflow: hidden;
@@ -297,12 +297,17 @@ tr.elected td {
 .agendalist p {
     font-size: 140%;
 }
+.agendalist .mainitem {
+    margin-top: 25px;
+}
+.agendalist .subitem {
+    font-size: 100%;
+    margin-bottom: 4px;
+}
 .spacer {
     margin-top: 10px;
 }
-.spacer-top {
-    margin-top: 25px;
-}
+
 
 /*** List of speakers ***/
 .slimlabel.label {

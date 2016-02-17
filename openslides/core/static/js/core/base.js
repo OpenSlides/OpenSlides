@@ -49,7 +49,9 @@ angular.module('OpenSlidesApp.core', [
                 this.messageReceivers.push(receiver);
             },
             reconnect: function () {
-                socket.close();
+                if (socket) {
+                    socket.close();
+                }
             }
         };
         var newConnect = function () {
