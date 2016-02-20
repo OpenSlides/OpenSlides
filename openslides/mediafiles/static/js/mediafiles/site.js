@@ -141,7 +141,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                     id: mediafile.id,
                     numPages: mediafile.mediafile.pages,
                     page: 1,
-                    scale: 1,
+                    scale: 'page-fit',
                     rotate: 0,
                     visible: true
             }];
