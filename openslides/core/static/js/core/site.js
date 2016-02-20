@@ -989,9 +989,10 @@ angular.module('OpenSlidesApp.core.site', [
 .controller('ChatMessageCtrl', [
     '$scope',
     '$http',
+    '$timeout',
     'ChatMessage',
     'NewChatMessages',
-    function ($scope, $http, ChatMessage, NewChatMessages) {
+    function ($scope, $http, $timeout, ChatMessage, NewChatMessages) {
         ChatMessage.bindAll({}, $scope, 'chatmessages');
         $scope.unreadMessages = NewChatMessages.length;
         $scope.chatboxIsCollapsed = true;
@@ -999,6 +1000,9 @@ angular.module('OpenSlidesApp.core.site', [
             $scope.chatboxIsCollapsed = !$scope.chatboxIsCollapsed;
             NewChatMessages = [];
             $scope.unreadMessages = NewChatMessages.length;
+            $timeout(function () {
+                angular.element('#messageInput').focus();
+            }, 0);
         };
         $scope.sendMessage = function () {
             angular.element('#messageSendButton').addClass('disabled');
@@ -1011,6 +1015,9 @@ angular.module('OpenSlidesApp.core.site', [
                 $scope.newMessage = '';
                 angular.element('#messageSendButton').removeClass('disabled');
                 angular.element('#messageInput').removeAttr('disabled');
+                $timeout(function () {
+                    angular.element('#messageInput').focus();
+                }, 0);
             })
             .error(function () {
                 angular.element('#messageSendButton').removeClass('disabled');
