@@ -56,15 +56,15 @@
                placeholder="{{ 'Search' | translate}}">
           </div>
         </div>
-        <button os-perms="users.can_see_extra_data" class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen"
-            ng-class="isFilterOpen ? 'btn-primary' : 'btn-default'">
+        <button os-perms="users.can_see_extra_data" class="btn btn-default" ng-click="$parent.isFilterOpen = !$parent.isFilterOpen"
+            ng-class="$parent.isFilterOpen ? 'btn-primary' : 'btn-default'">
           <i class="fa fa-filter"></i>
           <translate>Filter ...</translate>
         </button>
       </div>
     </div>
   </div>
-  <div os-perms="users.can_see_extra_data" uib-collapse="!isFilterOpen" class="row spacer">
+  <div os-perms="users.can_see_extra_data" uib-collapse="!$parent.isFilterOpen" class="row spacer">
     <div class="col-sm-6 text-right"></div>
     <div class="col-sm-6 text-right form-inline">
       <!-- group filter -->
