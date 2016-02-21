@@ -154,6 +154,7 @@ def setup_general_config(sender, **kwargs):
     yield ConfigVariable(
         name='projector_backgroundcolor',
         default_value='#317796',
+        input_type='colorpicker',
         label=ugettext_lazy('Background color of projector header'),
         help_text=ugettext_lazy('Use web color names like "red" or hex numbers like "#ff0000".'),
         weight=160,

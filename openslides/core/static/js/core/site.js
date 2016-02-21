@@ -7,6 +7,7 @@ angular.module('OpenSlidesApp.core.site', [
     'OpenSlidesApp.core',
     'ui.router',
     'angular-loading-bar',
+    'colorpicker.module',
     'formly',
     'formlyBootstrap',
     'ngBootbox',
@@ -402,6 +403,7 @@ angular.module('OpenSlidesApp.core.site', [
                 integer: 'number',
                 boolean: 'checkbox',
                 choice: 'choice',
+                colorpicker: 'colorpicker',
             }[type];
         }
 
