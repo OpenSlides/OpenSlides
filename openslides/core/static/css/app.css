@@ -466,6 +466,10 @@ img {
     padding-right: 10px;
 }
 
+.col2 .countdown_timer.warning {
+    color: #ed940d;
+}
+
 .col2 .countdown_timer.negative {
     color: #CC0000;
 }

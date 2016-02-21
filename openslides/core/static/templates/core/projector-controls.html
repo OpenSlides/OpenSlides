@@ -122,7 +122,9 @@
               <i  class="fa fa-pause"></i>
             </a>
             <span ng-if="!editTime" class="countdown_timer vcenter"
-                  ng-class="{ 'negative': countdown.seconds < 0 }">
+                  ng-class="{
+                    'negative': countdown.seconds <= 0,
+                    'warning': countdown.seconds <= config('agenda_countdown_warning_time') && countdown.seconds > 0 }">
                 {{ countdown.seconds | osSecondsToTime }}
             </span>
             <!-- edit countdown form -->
