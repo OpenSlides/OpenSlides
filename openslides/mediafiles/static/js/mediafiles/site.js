@@ -222,11 +222,13 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
     '$scope',
     'MediafileForm',
     'User',
-    function($scope, MediafileForm, User) {
+    'LimitUsers',
+    function($scope, MediafileForm, User, LimitUsers) {
         User.bindAll({}, $scope, 'users');
         $scope.mediafile = {};
         $scope.alert = {};
         $scope.users = User.getAll();
+        $scope.LimitUsers = LimitUsers;
 
         // upload and save mediafile
         $scope.save = function (mediafile) {
@@ -251,11 +253,13 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
     'operator',
     'Mediafile',
     'User',
+    'LimitUsers',
     'mediafile',
-    function($scope, operator, Mediafile, User, mediafile) {
+    function($scope, operator, Mediafile, User, LimitUsers, mediafile) {
         User.bindAll({}, $scope, 'users');
         $scope.alert = {};
         $scope.users = User.getAll();
+        $scope.LimitUsers = LimitUsers;
 
         // set initial values for form model by create deep copy of motion object
         // so list/detail view is not updated while editing

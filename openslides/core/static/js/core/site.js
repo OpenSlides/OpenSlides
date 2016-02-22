@@ -1040,6 +1040,9 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+// define maximum number of users shown in users select fields (e.g. in motion or speakers forms)
+.value('LimitUsers', 50)
+
 .directive('osFocusMe', [
     '$timeout',
     function ($timeout) {

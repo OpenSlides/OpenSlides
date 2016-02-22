@@ -268,9 +268,10 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'operator',
     'Assignment',
     'User',
+    'LimitUsers',
     'assignment',
     'phases',
-    function($scope, $http, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment, User, assignment, phases) {
+    function($scope, $http, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment, User, LimitUsers, assignment, phases) {
         User.bindAll({}, $scope, 'users');
         Assignment.bindOne(assignment.id, $scope, 'assignment');
         Assignment.loadRelations(assignment, 'agenda_item');
@@ -279,7 +280,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         $scope.alert = {};
 
         // limit the number of users in ui-select field
-        $scope.limitUsers = 50;
+        $scope.LimitUsers = LimitUsers;
 
         // open edit dialog
         $scope.openDialog = function (assignment) {
