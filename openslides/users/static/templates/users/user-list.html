@@ -39,10 +39,10 @@
 <div class="details">
   <div class="row">
     <div class="col-sm-6">
-      <!-- delete mode -->
+      <!-- select mode -->
       <button os-perms="users.can_manage" class="btn"
-          ng-class="$parent.isDeleteMode ? 'btn-primary' : 'btn-default'"
-          ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
+          ng-class="$parent.isSelectMode ? 'btn-primary' : 'btn-default'"
+          ng-click="$parent.isSelectMode = !$parent.isSelectMode; uncheckAll()">
         <i class="fa fa-check-square-o"></i>
         <translate>Select ...</translate>
       </button>
@@ -77,14 +77,39 @@
       <translate>Is present</translate>
     </div>
   </div>
-  <div uib-collapse="!isDeleteMode" class="row spacer">
-    <div class="col-sm-12 text-left">
+  <div uib-collapse="!isSelectMode" class="row spacer">
+    <div os-perms="users.can_manage" ng-show="isSelectMode" class="col-sm-12 text-left form-inline">
+      <!-- actions -->
+      <select ng-model="selectedAction" class="form-control">
+        <option value="" translate>--- Select action ---</option>
+        <option value="delete" translate>Delete</option>
+        <option value="addGroup" translate>Add group</option>
+        <option value="removeGroup" translate>Remove group</option>
+      </select>
       <!-- delete button -->
-      <a ng-show="isDeleteMode"
-          os-perms="users.can_manage" ng-click="deleteMultiple()"
-          class="btn btn-primary">
+      <a ng-show="selectedAction == 'delete'"
+          ng-click="deleteMultiple()"
+          class="btn btn-default">
         <i class="fa fa-trash fa-lg"></i>
         <translate>Delete selected participants</translate>
+      </a>
+      <!-- group select -->
+      <select ng-show="selectedAction == 'addGroup' || selectedAction == 'removeGroup'"
+          ng-model="selectedGroup" class="form-control">
+        <option value="" translate>--- Select group ---</option>
+        <option ng-repeat="group in groups" value="{{ group.id }}">{{ group.name | translate }}</option>
+      </select>
+      <!-- add group button -->
+      <a ng-show="selectedAction == 'addGroup'"
+          ng-click="addGroupMultiple(selectedGroup)" class="btn btn-default">
+        <i class="fa fa-plus fa-lg"></i>
+        <translate>Add group</translate>
+      </a>
+      <!-- remove group button -->
+      <a ng-show="selectedAction == 'removeGroup'"
+          ng-click="removeGroupMultiple(selectedGroup)" class="btn btn-default">
+        <i class="fa fa-minus fa-lg"></i>
+        <translate>Remove group</translate>
       </a>
     </div>
   </div>
@@ -106,9 +131,9 @@
     <thead>
       <tr>
         <!-- projector column -->
-        <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="minimum">
-        <!-- delete selection column -->
-        <th ng-show="isDeleteMode" os-perms="users.can_manage" class="minimum deleteColumn">
+        <th ng-show="!isSelectMode" os-perms="core.can_manage_projector" class="minimum">
+        <!-- selection column -->
+        <th ng-show="isSelectMode" os-perms="users.can_manage" class="minimum deleteColumn">
           <input type="checkbox" ng-model="$parent.selectedAll" ng-change="checkAll()">
         <th ng-click="toggleSort('first_name')" class="sortable">
           <translate>Name</translate>
@@ -135,15 +160,15 @@
       <tr ng-repeat="user in usersFiltered | limitTo : itemsPerPage : limitBegin" class="animate-item"
           ng-class="{ 'activeline': user.isProjected(), 'selected': user.selected  }">
         <!-- projector column -->
-        <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
+        <td ng-show="!isSelectMode" os-perms="core.can_manage_projector">
           <a class="btn btn-default btn-sm"
               ng-class="{ 'btn-primary': user.isProjected() }"
               ng-click="user.project()"
               title="{{ 'Project user' | translate }}">
             <i class="fa fa-video-camera"></i>
           </a>
-        <!-- delete selection column -->
-        <td ng-show="isDeleteMode" os-perms="users.can_manage" class="deleteColumn">
+        <!-- selection column -->
+        <td ng-show="isSelectMode" os-perms="users.can_manage" class="deleteColumn">
           <input type="checkbox" ng-model="user.selected">
         <!-- user data colums -->
         <td ng-mouseover="user.hover=true" ng-mouseleave="user.hover=false">

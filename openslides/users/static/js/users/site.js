@@ -421,17 +421,17 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     $scope.alert = { type: 'danger', msg: message, show: true };
                 });
         };
-        // *** delete mode functions ***
-        $scope.isDeleteMode = false;
+        // *** select mode functions ***
+        $scope.isSelectMode = false;
         // check all checkboxes
         $scope.checkAll = function () {
             angular.forEach($scope.users, function (user) {
                 user.selected = $scope.selectedAll;
             });
         };
-        // uncheck all checkboxes if isDeleteMode is closed
+        // uncheck all checkboxes if isSelectMode is closed
         $scope.uncheckAll = function () {
-            if (!$scope.isDeleteMode) {
+            if (!$scope.isSelectMode) {
                 $scope.selectedAll = false;
                 angular.forEach($scope.users, function (user) {
                     user.selected = false;
@@ -441,15 +441,41 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         // delete all selected users
         $scope.deleteMultiple = function () {
             angular.forEach($scope.users, function (user) {
-                if (user.selected)
+                if (user.selected) {
                     User.destroy(user.id);
+                }
             });
-            $scope.isDeleteMode = false;
+            $scope.isSelectMode = false;
             $scope.uncheckAll();
         };
         // delete single user
         $scope.delete = function (user) {
             User.destroy(user.id);
+        };
+        // add group for selected users
+        $scope.addGroupMultiple = function (group) {
+            angular.forEach($scope.users, function (user) {
+                if (user.selected) {
+                    user.groups.push(group);
+                    User.save(user);
+                }
+            });
+            $scope.isSelectMode = false;
+            $scope.uncheckAll();
+        };
+        // remove group for selected users
+        $scope.removeGroupMultiple = function (group) {
+            angular.forEach($scope.users, function (user) {
+                if (user.selected) {
+                    var groupIndex = user.groups.indexOf(parseInt(group));
+                    if (groupIndex > -1) {
+                        user.groups.splice(groupIndex, 1);
+                        User.save(user);
+                    }
+                }
+            });
+            $scope.isSelectMode = false;
+            $scope.uncheckAll();
         };
     }
 ])
