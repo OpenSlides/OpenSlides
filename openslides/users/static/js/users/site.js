@@ -318,11 +318,17 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     type: 'input',
                     templateOptions: {
                         label: gettextCatalog.getString('Default password'),
+                        description: '',
                         addonRight: { text: 'Reset', class: 'fa fa-undo', onClick:
                             function (options, scope) {
                                 $http.post(
                                     '/rest/users/user/' + scope.model.id + '/reset_password/',
                                     {'password': scope.model.default_password})
+                                .then(function() {
+                                    options.templateOptions.description =
+                                        gettextCatalog.getString('Password successfully resetted to:') +
+                                        ' ' + scope.model.default_password;
+                                });
                             }
                         }
                     }
