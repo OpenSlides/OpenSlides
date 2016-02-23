@@ -1,21 +1,25 @@
 import shutil
-from optparse import make_option  # TODO: Use argpase in Django 1.8
 
-from django.core.management.base import CommandError, NoArgsCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.db import connection, transaction
 
 from openslides.utils.main import get_database_path_from_settings
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     """
-    Commands to create or reset the adminuser
+    Command to backup the SQLite3 database.
     """
-    option_list = NoArgsCommand.option_list + (
-        make_option('--path', dest='path'),
-    )
+    help = 'Backups the SQLite3 database.'
 
-    def handle_noargs(self, **options):
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--path',
+            default='database_backup.sqlite',
+            help='Path for the backup file (Default: database_backup.sqlite).'
+        )
+
+    def handle(self, *args, **options):
         path = options.get('path')
 
         @transaction.atomic

@@ -51,12 +51,22 @@ def get_parser():
     # Init parser
     description = 'Start script for OpenSlides.'
     if 'manage.py' not in sys.argv[0]:
-        description += (' If it is called without any argument, this will be '
-                        'treated as if it is called with the "start" subcommand. '
-                        'That means OpenSlides will setup default settings and '
-                        'database, start the tornado webserver, launch the '
-                        'default web browser and open the webinterface.')
-    parser = ExceptionArgumentParser(description=description)
+        description += """
+            If it is called without any argument, this will be treated as
+            if it is called with the 'start' subcommand. That means
+            OpenSlides will setup default settings and database, start the
+            tornado webserver, launch the default web browser and open the
+            webinterface.
+            """
+    epilog = """
+        There are some more subcommands available. They belong to Django's
+        command-line utility for administrative tasks. Type '%(prog)s help'
+        (without the two hyphen-minus characters) to list them all. Type
+        '%(prog)s help <subcommand>' for help on a specific subcommand.
+        """
+    parser = ExceptionArgumentParser(
+        description=description,
+        epilog=epilog)
 
     # Add version argument
     parser.add_argument(
@@ -71,14 +81,18 @@ def get_parser():
         title='Available subcommands',
         description="Type '%s <subcommand> --help' for help on a "
                     "specific subcommand." % parser.prog,
-        help='You can choose only one subcommand at once.')
+        help='You can choose only one subcommand at once.',
+        metavar='')
 
     # Subcommand start
+    start_help = (
+        'Setup settings and database, start tornado webserver, launch the '
+        'default web browser and open the webinterface. The environment '
+        'variable DJANGO_SETTINGS_MODULE is ignored.')
     subcommand_start = subparsers.add_parser(
         'start',
-        help='Setup settings and database, start tornado webserver, launch the '
-             'default web browser and open the webinterface. The environment '
-             'variable DJANGO_SETTINGS_MODULE is ignored.')
+        description=start_help,
+        help=start_help)
     subcommand_start.add_argument(
         '--no-browser',
         action='store_true',
@@ -92,12 +106,14 @@ def get_parser():
     subcommand_start.add_argument(
         '--development',
         action='store_true',
-        help='Command for development purposes.')
+        help='Option for development purposes.')
 
     # Subcommand createsettings
+    createsettings_help = 'Creates the settings file.'
     subcommand_createsettings = subparsers.add_parser(
         'createsettings',
-        help='Create the settings file.')
+        description=createsettings_help,
+        help=createsettings_help)
     subcommand_createsettings.set_defaults(callback=createsettings)
     subcommand_createsettings.add_argument(
         '--settings_path',
@@ -107,7 +123,21 @@ def get_parser():
     subcommand_createsettings.add_argument(
         '--development',
         action='store_true',
-        help='Command for development purposes.')
+        help='Option for development purposes.')
+
+    # Help text for several Django subcommands
+    django_subcommands = (
+        ('backupdb', 'Backups the SQLite3 database.'),
+        ('createsuperuser', 'Creates or resets the admin user.'),
+        ('migrate', 'Updates database schema.'),
+        ('runserver', 'Starts the Tornado webserver.'),
+    )
+    for django_subcommand, help_text in django_subcommands:
+        subparsers._choices_actions.append(
+            subparsers._ChoicesPseudoAction(
+                django_subcommand,
+                (),
+                help_text))
 
     return parser
 
