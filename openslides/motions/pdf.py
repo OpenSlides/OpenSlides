@@ -344,7 +344,6 @@ def motion_poll_to_pdf(pdf, poll):
     cell.append(Spacer(0, 0.8 * cm))
     cell.append(Paragraph(_("Motion No. %s") % poll.motion.identifier, stylesheet['Ballot_title']))
     cell.append(Paragraph(poll.motion.title, stylesheet['Ballot_subtitle']))
-    cell.append(Paragraph(_("%d. Vote") % poll.poll_number, stylesheet['Ballot_description']))
     cell.append(Spacer(0, 0.5 * cm))
     cell.append(Paragraph("<font name='circlefont' size='15'>%s</font> <font name='Ubuntu'>%s</font>"
                 % (circle, _("Yes")), stylesheet['Ballot_option']))
@@ -377,7 +376,7 @@ def motion_poll_to_pdf(pdf, poll):
     # print ballot papers
     if number > 0:
         # TODO: try [cell, cell] * (number / 2)
-        for user in range(number / 2):
+        for user in range(int(number / 2)):
             data.append([cell, cell])
         rest = number % 2
         if rest:
