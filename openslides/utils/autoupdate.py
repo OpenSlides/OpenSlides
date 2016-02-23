@@ -113,8 +113,10 @@ class OpenSlidesSockJSConnection(SockJSConnection):
 
         # Send out internal HTTP request to get data from the REST api.
         for waiter in cls.waiters:
-            # Read waiter's former cookies and parse session cookie to new header object.
+            # Initiat new headers object.
             headers = HTTPHeaders()
+
+            # Read waiter's former cookies and parse session cookie to new header object.
             try:
                 session_cookie = waiter.connection_info.cookies[settings.SESSION_COOKIE_NAME]
             except KeyError:
@@ -122,6 +124,16 @@ class OpenSlidesSockJSConnection(SockJSConnection):
                 pass
             else:
                 headers.add('Cookie', '%s=%s' % (settings.SESSION_COOKIE_NAME, session_cookie.value))
+
+            # Read waiter's language header.
+            try:
+                languages = waiter.connection_info.headers['Accept-Language']
+            except KeyError:
+                # There is no language header
+                pass
+            else:
+                headers.parse_line('Accept-Language: ' + languages)
+
             # Setup uncompressed request.
             request = HTTPRequest(
                 url=url,
