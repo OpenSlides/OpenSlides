@@ -1,6 +1,5 @@
 from django.db import transaction
 from django.http import Http404
-from django.shortcuts import get_object_or_404
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_noop
@@ -325,7 +324,7 @@ class WorkflowViewSet(ModelViewSet):
 
 # Views to generate PDFs
 
-class PollPDFView(PDFView):
+class MotionPollPDF(PDFView):
     """
     Generates a ballotpaper.
     """
@@ -333,28 +332,15 @@ class PollPDFView(PDFView):
     required_permission = 'motions.can_manage'
     top_space = 0
 
-    def get_object(self):
-        """
-        Return a MotionPoll object.
-
-        Use the motion id and the poll_number from the url kwargs to get the
-        object.
-        """
-        try:
-            obj = self._object
-        except AttributeError:
-            queryset = MotionPoll.objects.filter(
-                motion=self.kwargs['pk'],
-                poll_number=self.kwargs['poll_number'])
-            obj = get_object_or_404(queryset)
-            self._object = obj
-        return obj
+    def get(self, request, *args, **kwargs):
+        self.poll = MotionPoll.objects.get(pk=self.kwargs['poll_pk'])
+        return super().get(request, *args, **kwargs)
 
     def get_filename(self):
         """
         Return the filename for the PDF.
         """
-        return u'%s%s_%s' % (_("Motion"), str(self.get_object().poll_number), _("Vote"))
+        return u'%s_%s' % (_("Motion"), _("Vote"))
 
     def get_template(self, buffer):
         return SimpleDocTemplate(
@@ -368,7 +354,7 @@ class PollPDFView(PDFView):
         """
         Append PDF objects.
         """
-        motion_poll_to_pdf(pdf, self.get_object())
+        motion_poll_to_pdf(pdf, self.poll)
 
 
 class MotionPDFView(SingleObjectMixin, PDFView):
