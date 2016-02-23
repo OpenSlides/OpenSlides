@@ -135,7 +135,7 @@
         <ui-select-match placeholder="{{ 'Select or search a participant ...' | translate }}">
           {{ $select.selected.get_full_name() }}
         </ui-select-match>
-        <ui-select-choices repeat="user in users | filter: $select.search | limitTo: limitUsers">
+        <ui-select-choices repeat="user in users | filter: $select.search | limitTo: LimitUsers">
           <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
         </ui-select-choices>
       </ui-select>

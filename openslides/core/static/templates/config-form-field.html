@@ -2,19 +2,30 @@
   <label>{{ label }}</label>
 
   <div class="input-group">
-    <input ng-if="type != 'choice' && type != 'textarea'"
+    <!-- text/number input, checkbox -->
+    <input ng-if="type == 'text' || type == 'number' || type == 'checkbox'"
            ng-model="$parent.value"
            ng-change="save(configOption.key, $parent.value)"
            ng-class="{ 'form-control': type != 'checkbox' }"
            id="{{ key }}"
-        type="{{ type }}">
+           type="{{ type }}">
 
+    <!-- colorpicker -->
+    <input ng-if="type == 'colorpicker'"
+           colorpicker
+           class="form-control"
+           ng-model="$parent.value"
+           ng-change="save(configOption.key, $parent.value)"
+           type="text">
+
+    <!-- textarea -->
     <textarea ng-if="type == 'textarea'"
               ng-model="$parent.value"
               ng-change="save(configOption.key, $parent.value)"
               id="{{ key }}" class="form-control">
     </textarea>
 
+    <!-- select -->
     <select ng-if="type == 'choice'"
             ng-model="$parent.value"
             ng-change="save(configOption.key, $parent.value)"

@@ -159,7 +159,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'Tag',
     'User',
     'Workflow',
-    function (gettextCatalog, operator, Editor, Category, Config, Mediafile, Tag, User, Workflow) {
+    'LimitUsers',
+    function (gettextCatalog, operator, Editor, Category, Config, Mediafile, Tag, User, Workflow, LimitUsers) {
         return {
             // ngDialog for motion form
             getDialog: function (motion) {
@@ -207,7 +208,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         label: gettextCatalog.getString('Submitters'),
                         optionsAttr: 'bs-options',
                         options: User.getAll(),
-                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search | limitTo: 50',
+                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search | limitTo: ' + LimitUsers,
                         valueProp: 'id',
                         labelProp: 'full_name',
                         placeholder: gettextCatalog.getString('Select or search a submitter ...')
@@ -318,7 +319,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         label: gettextCatalog.getString('Supporters'),
                         optionsAttr: 'bs-options',
                         options: User.getAll(),
-                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search | limitTo: 50',
+                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search | limitTo: ' + LimitUsers,
                         valueProp: 'id',
                         labelProp: 'full_name',
                         placeholder: gettextCatalog.getString('Select or search a supporter ...')

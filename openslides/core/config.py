@@ -9,7 +9,8 @@ INPUT_TYPE_MAPPING = {
     'text': str,
     'integer': int,
     'boolean': bool,
-    'choice': str}
+    'choice': str,
+    'colorpicker': str}
 
 
 class ConfigHandler:

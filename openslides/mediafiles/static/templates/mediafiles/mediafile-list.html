@@ -29,10 +29,12 @@
           <nav ng-class="getNavStyle(scroll)" class="form-inline">
             <div class="btn-group">
               <button class="btn btn-default" ng-click="mediafileGoToPage(presentedMediafile.page - 1)"
+                  ng-class="{ 'disabled': (presentedMediafile.page - 1) < 1 }"
                   title="{{ 'Previous page' | translate }}">
                 <i class="fa fa-backward"></i>
               </button>
               <button class="btn btn-default" ng-click="mediafileGoToPage(presentedMediafile.page + 1)"
+                  ng-class="{ 'disabled': (presentedMediafile.page + 1) > presentedMediafile.numPages }"
                   title="{{ 'Next page' | translate }}">
                 <i class="fa fa-forward"></i>
               </button>
@@ -52,8 +54,9 @@
               <button class="btn btn-default" ng-click="mediafileZoomOut()" title="{{ 'Zoom out' | translate }}">
                 <i class="fa fa-search-minus"></i>
               </button>
-              <button class="btn btn-default" ng-click="mediafileFit()" title="{{ 'Reset zoom' | translate }}">
-                  100%
+              <button class="btn" ng-click="mediafileFit()" title="{{ 'Reset zoom' | translate }}"
+                  ng-class="presentedMediafile.scale=='page-fit' ? 'btn-primary' : 'btn-default'">
+                100%
               </button>
               <button class="btn btn-default" ng-click="mediafileZoomIn()" title="{{ 'Zoom in' | translate }}">
                 <i class="fa fa-search-plus"></i>

@@ -207,9 +207,13 @@ hr {
     margin-top: 20px;
     padding-right: 5px;
 }
+.countdown.warning {
+    color: #ed940d;
+}
 .countdown.negative {
     color: #CC0000;
 }
+
 .message_background {
     background-color: #777777;
     opacity: 0.8;
