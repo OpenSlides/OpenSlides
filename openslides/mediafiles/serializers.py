@@ -24,7 +24,11 @@ class AngularCompatibleFileField(FileField):
             'type': filetype
         }
         if filetype == 'application/pdf':
-            result['pages'] = PdfFileReader(open(value.path, 'rb')).getNumPages()
+            try:
+                result['pages'] = PdfFileReader(open(value.path, 'rb')).getNumPages()
+            except FileNotFoundError:
+                # File was deleted from server. Set 'pages' to 0.
+                result['pages'] = 0
         return result
 
 
