@@ -105,6 +105,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             resolve: {
                 group: function(Group, $stateParams) {
                     return Group.find($stateParams.id);
+                },
+                permissions: function(Group) {
+                    return Group.getPermissions();
                 }
             }
         })
@@ -854,8 +857,19 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     '$scope',
     'Group',
     'group',
-    function($scope, Group, group) {
+    'permissions',
+    function($scope, Group, group, permissions) {
         Group.bindOne(group.id, $scope, 'group');
+        $scope.groupPermissionNames = [];
+        // get display names of group permissions
+        // from an object array with all available permissions [{display_name, value}]
+        angular.forEach(group.permissions, function(permValue) {
+            angular.forEach(permissions, function(p) {
+                if (p.value == permValue) {
+                    $scope.groupPermissionNames.push(p.display_name);
+                }
+            });
+        });
     }
 ])
 
