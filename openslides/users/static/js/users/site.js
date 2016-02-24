@@ -242,8 +242,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         return {
             // ngDialog for user form
             getDialog: function (user) {
+                var resolve;
                 if (user) {
-                    var resolve = {
+                    resolve = {
                         user: function(User) {return User.find(user.id);}
                     };
                 }
@@ -254,7 +255,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     closeByEscape: false,
                     closeByDocument: false,
                     resolve: (resolve) ? resolve : null
-                }
+                };
             },
             // angular-formly fields for user form
             getFormFields: function (hideOnCreateForm) {
@@ -372,7 +373,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     defaultValue: true
                 }];
             }
-        }
+        };
     }
 ])
 
@@ -667,7 +668,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 
         // *** csv import ***
         // set initial data for csv import
-        $scope.users = []
+        $scope.users = [];
         $scope.separator = ',';
         $scope.encoding = 'UTF-8';
         $scope.encodingOptions = ['UTF-8', 'ISO-8859-1'];
@@ -726,7 +727,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     var csvGroups = user.groups.replace(quotionRe, '$1').split(",");
                     user.groups = [];
                     user.groupnames = [];
-                    if (csvGroups != '') {
+                    if (csvGroups !== '') {
                         // All group objects are already loaded via the resolve statement from ui-router.
                         var allGroups = Group.getAll();
                         csvGroups.forEach(function(csvGroup) {
@@ -793,7 +794,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             element.href = 'data:text/csv;charset=utf-8,' + csvString;
             element.download = 'users-example.csv';
             element.target = '_blank';
-        }
+        };
     }
 ])
 
@@ -893,7 +894,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     msg: data.info_text
                 });
             }
-        })
+        });
         // close alert function
         $scope.closeAlert = function(index) {
             $scope.alerts.splice(index, 1);
@@ -934,35 +935,35 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'gettext',
     function (gettext) {
         // agenda
-        gettext('Can see agenda')
-        gettext('Can manage agenda')
-        gettext('Can see hidden items and time scheduling of agenda')
-        gettext('Can put oneself on the list of speakers')
+        gettext('Can see agenda');
+        gettext('Can manage agenda');
+        gettext('Can see hidden items and time scheduling of agenda');
+        gettext('Can put oneself on the list of speakers');
         // assignments
-        gettext('Can see elections')
-        gettext('Can nominate another participant')
-        gettext('Can nominate oneself')
-        gettext('Can manage elections')
+        gettext('Can see elections');
+        gettext('Can nominate another participant');
+        gettext('Can nominate oneself');
+        gettext('Can manage elections');
         // core
-        gettext('Can see the projector')
-        gettext('Can manage the projector')
-        gettext('Can see the front page')
-        gettext('Can manage tags')
-        gettext('Can manage configuration')
-        gettext('Can use the chat')
+        gettext('Can see the projector');
+        gettext('Can manage the projector');
+        gettext('Can see the front page');
+        gettext('Can manage tags');
+        gettext('Can manage configuration');
+        gettext('Can use the chat');
         // mediafiles
-        gettext('Can see the list of files')
-        gettext('Can upload files')
-        gettext('Can manage files')
+        gettext('Can see the list of files');
+        gettext('Can upload files');
+        gettext('Can manage files');
         // motions
-        gettext('Can see motions')
-        gettext('Can create motions')
-        gettext('Can support motions')
-        gettext('Can manage motions')
+        gettext('Can see motions');
+        gettext('Can create motions');
+        gettext('Can support motions');
+        gettext('Can manage motions');
         // users
-        gettext('Can see names of users')
-        gettext('Can see extra data of users')
-        gettext('Can manage users')
+        gettext('Can see names of users');
+        gettext('Can see extra data of users');
+        gettext('Can manage users');
     }
 ]);
 

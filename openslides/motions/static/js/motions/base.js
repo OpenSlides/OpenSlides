@@ -14,11 +14,11 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
                     var states = [];
                     _.forEach(this.next_states_id, function (stateId) {
                         states.push(DS.get('motions/workflowstate', stateId));
-                    })
+                    });
                     return states;
                 }
             }
-        })
+        });
     }
 ])
 
@@ -38,7 +38,7 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
                     }
                 }
             }
-        })
+        });
     }
 ])
 
@@ -129,7 +129,7 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
                         index = this.versions.length - 1;
                     } else {
                         index = _.findIndex(this.versions, function (element) {
-                            return element.id == versionId
+                            return element.id == versionId;
                         });
                     }
                     return this.versions[index];
@@ -169,30 +169,44 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
                      */
                     switch (action) {
                         case 'see':
-                            return (operator.hasPerms('motions.can_see') &&
-                                (!this.state.required_permission_to_see ||
-                                 operator.hasPerms(this.state.required_permission_to_see) ||
-                                 (operator.user in this.submitters)));
+                            return (
+                                operator.hasPerms('motions.can_see') &&
+                                (
+                                    !this.state.required_permission_to_see ||
+                                    operator.hasPerms(this.state.required_permission_to_see) ||
+                                    (operator.user in this.submitters)
+                                )
+                            );
                         case 'update':
-                            return (operator.hasPerms('motions.can_manage') ||
-                                (($.inArray(operator.user, this.submitters) != -1) &&
-                                this.state.allow_submitter_edit));
+                            return (
+                                operator.hasPerms('motions.can_manage') ||
+                                (
+                                    ($.inArray(operator.user, this.submitters) != -1) &&
+                                    this.state.allow_submitter_edit
+                                )
+                            );
                         case 'quickedit':
                             return operator.hasPerms('motions.can_manage');
                         case 'delete':
                             return operator.hasPerms('motions.can_manage');
                         case 'create_poll':
-                            return (operator.hasPerms('motions.can_manage') &&
-                                this.state.allow_create_poll);
+                            return (
+                                operator.hasPerms('motions.can_manage') &&
+                                this.state.allow_create_poll
+                            );
                         case 'support':
-                            return (operator.hasPerms('motions.can_support') &&
-                                    this.state.allow_support &&
-                                    Config.get('motions_min_supporters').value > 0 &&
-                                    !($.inArray(operator.user, this.submitters) != -1) &&
-                                    !($.inArray(operator.user, this.supporters) != -1));
+                            return (
+                                operator.hasPerms('motions.can_support') &&
+                                this.state.allow_support &&
+                                Config.get('motions_min_supporters').value > 0 &&
+                                ($.inArray(operator.user, this.submitters) == -1) &&
+                                ($.inArray(operator.user, this.supporters) == -1)
+                            );
                         case 'unsupport':
-                            return (this.state.allow_support &&
-                                   ($.inArray(operator.user, this.supporters) != -1));
+                            return (
+                                this.state.allow_support &&
+                                ($.inArray(operator.user, this.supporters) != -1)
+                            );
                         case 'change_state':
                             return operator.hasPerms('motions.can_manage');
                         case 'reset_state':
@@ -272,35 +286,35 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
     'gettext',
     function (gettext) {
         // workflow 1
-        gettext('Simple Workflow')
-        gettext('submitted')
-        gettext('accepted')
-        gettext('Accept')
-        gettext('rejected')
-        gettext('Reject')
-        gettext('not decided')
-        gettext('Do not decide')
+        gettext('Simple Workflow');
+        gettext('submitted');
+        gettext('accepted');
+        gettext('Accept');
+        gettext('rejected');
+        gettext('Reject');
+        gettext('not decided');
+        gettext('Do not decide');
         // workflow 2
-        gettext('Complex Workflow')
-        gettext('published')
-        gettext('permitted')
-        gettext('Permit')
-        gettext('accepted')
-        gettext('Accept')
-        gettext('rejected')
-        gettext('Reject')
-        gettext('withdrawed')
-        gettext('Withdraw')
-        gettext('adjourned')
-        gettext('Adjourn')
-        gettext('not concerned')
-        gettext('Do not concern')
-        gettext('commited a bill')
-        gettext('Commit a bill')
-        gettext('needs review')
-        gettext('Needs review')
-        gettext('rejected (not authorized)')
-        gettext('Reject (not authorized)')
+        gettext('Complex Workflow');
+        gettext('published');
+        gettext('permitted');
+        gettext('Permit');
+        gettext('accepted');
+        gettext('Accept');
+        gettext('rejected');
+        gettext('Reject');
+        gettext('withdrawed');
+        gettext('Withdraw');
+        gettext('adjourned');
+        gettext('Adjourn');
+        gettext('not concerned');
+        gettext('Do not concern');
+        gettext('commited a bill');
+        gettext('Commit a bill');
+        gettext('needs review');
+        gettext('Needs review');
+        gettext('rejected (not authorized)');
+        gettext('Reject (not authorized)');
     }
 ]);
 

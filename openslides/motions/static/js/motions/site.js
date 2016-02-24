@@ -164,7 +164,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         return {
             // ngDialog for motion form
             getDialog: function (motion) {
-                var resolve = {}
+                var resolve = {};
                 if (motion) {
                     resolve = {
                         motion: function() {
@@ -175,7 +175,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         }
                     };
                 }
-                resolve.mediafiles = function(Mediafile) {return Mediafile.findAll();}
+                resolve.mediafiles = function (Mediafile) {
+                        return Mediafile.findAll();
+                };
                 return {
                     template: 'static/templates/motions/motion-form.html',
                     controller: (motion) ? 'MotionUpdateCtrl' : 'MotionCreateCtrl',
@@ -183,7 +185,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     closeByEscape: false,
                     closeByDocument: false,
                     resolve: (resolve) ? resolve : null
-                }
+                };
             },
             // angular-formly fields for motion form
             getFormFields: function () {
@@ -341,7 +343,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     hideExpression: '!model.more',
                 }];
             }
-        }
+        };
     }
 ])
 
@@ -404,7 +406,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     }
                 }];
             }
-        }
+        };
     }
 ])
 
@@ -439,22 +441,36 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         };
         // define custom search filter string
         $scope.getFilterString = function (motion) {
+            var category = '';
             if (motion.category) {
-                var category = motion.category.name;
-            } else {
-                var category = ''
+                category = motion.category.name;
             }
             return [
                 motion.identifier,
                 motion.getTitle(),
                 motion.getText(),
                 motion.getReason(),
-                _.map(motion.submitters, function (submitter) {return submitter.get_short_name()}).join(" "),
-                _.map(motion.supporters, function (supporter) {return supporter.get_short_name()}).join(" "),
-                _.map(motion.tags, function (tag) {return tag.name}).join(" "),
-                category
+                _.map(
+                    motion.submitters,
+                    function (submitter) {
+                        return submitter.get_short_name();
+                    }
+                ).join(" "),
+                _.map(
+                    motion.supporters,
+                    function (supporter) {
+                        return supporter.get_short_name();
+                    }
+                ).join(" "),
+                _.map(
+                    motion.tags,
+                    function (tag) {
+                        return tag.name;
+                    }
+                ).join(" "),
+                category,
             ].join(" ");
-        }
+        };
 
         // collect all states of all workflows
         // TODO: regard workflows only which are used by motions
@@ -462,7 +478,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         var workflows = Workflow.getAll();
         angular.forEach(workflows, function (workflow) {
             if (workflows.length > 1) {
-                var wf = {}
+                var wf = {};
                 wf.name = workflow.name;
                 wf.workflowSeparator = "-";
                 $scope.states.push(wf);
@@ -565,23 +581,23 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         // support
         $scope.support = function () {
             $http.post('/rest/motions/motion/' + motion.id + '/support/');
-        }
+        };
         // unsupport
         $scope.unsupport = function () {
             $http.delete('/rest/motions/motion/' + motion.id + '/support/');
-        }
+        };
         // update state
         $scope.updateState = function (state_id) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {'state': state_id});
-        }
+        };
         // reset state
         $scope.reset_state = function (state_id) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {});
-        }
+        };
         // create poll
         $scope.create_poll = function () {
             $http.post('/rest/motions/motion/' + motion.id + '/create_poll/', {});
-        }
+        };
         // open poll update dialog
         $scope.openPollDialog = function (poll, voteNumber) {
             ngDialog.open({
@@ -603,11 +619,11 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         // delete poll
         $scope.delete_poll = function (poll) {
             poll.DSDestroy();
-        }
+        };
         // show specific version
         $scope.showVersion = function (version) {
             $scope.version = version.id;
-        }
+        };
         // permit specific version
         $scope.permitVersion = function (version) {
             $http.put('/rest/motions/motion/' + motion.id + '/manage_version/',
@@ -615,7 +631,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 .then(function(success) {
                     $scope.version = version.id;
                 });
-        }
+        };
         // delete specific version
         $scope.deleteVersion = function (version) {
             $http.delete('/rest/motions/motion/' + motion.id + '/manage_version/',
@@ -624,7 +640,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 .then(function(success) {
                     $scope.version = motion.active_version;
                 });
-        }
+        };
     }
 ])
 
@@ -816,7 +832,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'User',
     function($scope, gettext, Category, Motion, User) {
         // set initial data for csv import
-        $scope.motions = []
+        $scope.motions = [];
         $scope.separator = ',';
         $scope.encoding = 'UTF-8';
         $scope.encodingOptions = ['UTF-8', 'ISO-8859-1'];
@@ -845,7 +861,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             angular.forEach($scope.csv.result, function (motion) {
                 if (motion.identifier) {
                     motion.identifier = motion.identifier.replace(quotionRe, '$1');
-                    if (motion.identifier != '') {
+                    if (motion.identifier !== '') {
                         // All motion objects are already loaded via the resolve statement from ui-router.
                         var motions = Motion.getAll();
                         if (_.find(motions, function (item) {
@@ -879,7 +895,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 // submitter
                 if (motion.submitter) {
                     motion.submitter = motion.submitter.replace(quotionRe, '$1');
-                    if (motion.submitter != '') {
+                    if (motion.submitter !== '') {
                         // All user objects are already loaded via the resolve statement from ui-router.
                         var users = User.getAll();
                         angular.forEach(users, function (user) {
@@ -890,13 +906,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         });
                     }
                 }
-                if (motion.submitter && motion.submitter != '' && !motion.submitters_id) {
+                if (motion.submitter && motion.submitter !== '' && !motion.submitters_id) {
                     motion.submitter_create = gettext('New participant will be created.');
                 }
                 // category
                 if (motion.category) {
                     motion.category = motion.category.replace(quotionRe, '$1');
-                    if (motion.category != '') {
+                    if (motion.category !== '') {
                         // All categore objects are already loaded via the resolve statement from ui-router.
                         var categories = Category.getAll();
                         angular.forEach(categories, function (category) {
@@ -908,7 +924,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         });
                     }
                 }
-                if (motion.category && motion.category != '' && !motion.category_id) {
+                if (motion.category && motion.category !== '' && !motion.category_id) {
                     motion.category_create = gettext('New category will be created.');
                 }
                 $scope.motions.push(motion);
@@ -927,7 +943,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                             first_name: motion.submitter.substr(0, index),
                             last_name: motion.submitter.substr(index+1),
                             groups: []
-                        }
+                        };
                         User.create(user).then(
                             function(success) {
                                 // set new user id
@@ -940,7 +956,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         var category = {
                             name: motion.category,
                             prefix: motion.category.charAt(0)
-                        }
+                        };
                         Category.create(category).then(
                             function(success) {
                                 // set new category id
@@ -976,7 +992,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             element.href = 'data:text/csv;charset=utf-8,' + csvString;
             element.download = 'motions-example.csv';
             element.target = '_blank';
-        }
+        };
     }
 ])
 
