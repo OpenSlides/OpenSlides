@@ -136,6 +136,24 @@ class CreateMotion(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
+class RetrieveMotion(TestCase):
+    """
+    Tests retrieving a motion (with poll results).
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+        self.motion = Motion(
+            title='test_title_uj5eeSiedohSh3ohyaaj',
+            text='test_text_ithohchaeThohmae5aug')
+        self.motion.save()
+        self.motion.create_poll()
+
+    def test_number_of_queries(self):
+        with self.assertNumQueries(17):
+            self.client.get(reverse('motion-detail', args=[self.motion.pk]))
+
+
 class UpdateMotion(TestCase):
     """
     Tests updating motions.

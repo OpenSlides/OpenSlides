@@ -120,24 +120,33 @@ class MotionPollSerializer(ModelSerializer):
 
     def get_yes(self, obj):
         try:
-            result = obj.get_votes().get(value='Yes').weight
-        except obj.get_vote_class().DoesNotExist:
+            result = self.get_votes_dict(obj)['Yes']
+        except KeyError:
             result = None
         return result
 
     def get_no(self, obj):
         try:
-            result = obj.get_votes().get(value='No').weight
-        except obj.get_vote_class().DoesNotExist:
+            result = self.get_votes_dict(obj)['No']
+        except KeyError:
             result = None
         return result
 
     def get_abstain(self, obj):
         try:
-            result = obj.get_votes().get(value='Abstain').weight
-        except obj.get_vote_class().DoesNotExist:
+            result = self.get_votes_dict(obj)['Abstain']
+        except KeyError:
             result = None
         return result
+
+    def get_votes_dict(self, obj):
+        try:
+            votes_dict = self._votes_dict
+        except AttributeError:
+            votes_dict = self._votes_dict = {}
+            for vote in obj.get_votes():
+                votes_dict[vote.value] = vote.weight
+        return votes_dict
 
     def get_has_votes(self, obj):
         """
