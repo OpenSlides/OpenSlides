@@ -178,19 +178,31 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         };
 
         // project agenda
-        $scope.projectAgenda = function () {
+        $scope.projectAgenda = function (tree, id) {
             $http.post('/rest/core/projector/1/prune_elements/',
-                    [{name: 'agenda/item-list'}]);
+                    [{name: 'agenda/item-list', tree: tree, id: id}]);
         };
         // check if agenda is projected
-        $scope.isAgendaProjected = function () {
+        $scope.isAgendaProjected = function (tree) {
             // Returns true if there is a projector element with the name
             // 'agenda/item-list'.
             var projector = Projector.get(1);
             if (typeof projector === 'undefined') return false;
             var self = this;
             var predicate = function (element) {
-                return element.name == 'agenda/item-list';
+                var value;
+                if (typeof tree === 'undefined') {
+                    // only main agenda items
+                    value = element.name == 'agenda/item-list' &&
+                        typeof element.id === 'undefined' &&
+                        !element.tree;
+                } else {
+                    // tree with all agenda items
+                    value = element.name == 'agenda/item-list' &&
+                        typeof element.id === 'undefined' &&
+                        element.tree;
+                }
+                return value;
             };
             return typeof _.findKey(projector.elements, predicate) === 'string';
         };

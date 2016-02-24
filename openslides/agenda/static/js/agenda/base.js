@@ -80,7 +80,7 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                     );
                 },
                 // override isProjected function of jsDataModel factory
-                isProjected: function () {
+                isProjected: function (list) {
                     // Returns true if there is a projector element with the same
                     // name and the same id.
                     var projector = Projector.get(1);
@@ -88,9 +88,19 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                     if (typeof projector !== 'undefined') {
                         var self = this;
                         var predicate = function (element) {
-                            return element.name == self.content_object.collection &&
-                                typeof element.id !== 'undefined' &&
-                                element.id == self.content_object.id;
+                            var value;
+                            if (typeof list === 'undefined') {
+                                // Releated item detail slide
+                                value = element.name == self.content_object.collection &&
+                                    typeof element.id !== 'undefined' &&
+                                    element.id == self.content_object.id;
+                            } else {
+                                // Item list slide for sub tree
+                                value = element.name == 'agenda/item-list' &&
+                                    typeof element.id !== 'undefined' &&
+                                    element.id == self.id;
+                            }
+                            return value;
                         };
                         isProjected = typeof _.findKey(projector.elements, predicate) === 'string';
                     } else {
@@ -186,21 +196,21 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 return getChildren(parentItems);
             },
 
-            // Returns a list of all items as a flat tree the attribute parentCount
+            // Returns a list of all items as a flat tree
             getFlatTree: function(items) {
                 var tree = this.getTree(items);
                 var flatItems = [];
 
-                function generateFatTree(tree, parentCount) {
+                function generateFlatTree(tree, parentCount) {
                     _.each(tree, function (item) {
                         item.item.parentCount = parentCount;
                         flatItems.push(item.item);
-                        generateFatTree(item.children, parentCount + 1);
+                        generateFlatTree(item.children, parentCount + 1);
                     });
                 }
-                generateFatTree(tree, 0);
+                generateFlatTree(tree, 0);
                 return flatItems;
-            },
+            }
         };
     }
 ])
