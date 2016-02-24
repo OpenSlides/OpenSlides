@@ -132,9 +132,6 @@ gulp.task('jshint', function () {
     return gulp.src([
             'gulpfile.js',
             path.join( 'openslides', '*', 'static', '**', '*.js' ),
-            '!' + path.join( 'openslides', 'users', 'static', 'js', 'users', 'site.js' ),
-            '!' + path.join( 'openslides', 'motions', 'static', 'js', 'motions', 'base.js' ),
-            '!' + path.join( 'openslides', 'motions', 'static', 'js', 'motions', 'site.js' ),
         ])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
