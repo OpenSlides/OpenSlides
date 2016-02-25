@@ -532,6 +532,11 @@ img {
     background-color: #317796;
 }
 
+.slimDropDown {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+}
+
 .spacer, .spacer-top {
     margin-top: 7px;
 }

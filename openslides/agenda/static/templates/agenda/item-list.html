@@ -38,14 +38,26 @@
             <translate>Select ...</translate>
           </button>
           <!-- project agenda button -->
-          <a os-perms="core.can_manage_projector"
-              class="btn btn-default"
-              title="{{ 'Project agenda' | translate }}"
-              ng-click="projectAgenda()"
-              ng-class="{ 'btn-primary': isAgendaProjected() }">
-            <i class="fa fa-video-camera"></i>
-            <translate>Agenda</translate>
-          </a>
+          <div class="btn-group" uib-dropdown>
+            <button os-perms="core.can_manage_projector"
+                type="button"
+                class="btn btn-default"
+                title="{{ 'Project agenda' | translate }}"
+                ng-click="projectAgenda(tree=true)"
+                ng-class="{ 'btn-primary': isAgendaProjected(tree=true) }">
+              <i class="fa fa-video-camera"></i>
+              <translate>Agenda</translate>
+            </button>
+            <button type="button" class="btn btn-default"
+                ng-class="{ 'btn-primary': isAgendaProjected() }"
+                uib-dropdown-toggle>
+              <span class="caret"></span>
+            </button>
+            <ul class="uib-dropdown-menu" role="menu" aria-labelledby="split-button">
+              <li role="menuitem"><a href="" ng-click="projectAgenda(tree=true)" translate>All agenda items (Default)</a>
+              <li role="menuitem"><a href="" ng-click="projectAgenda(tree=false)" translate>Only main agenda items</a>
+            </ul>
+          </div>
           <!-- auto numbering button -->
           <a os-perms="core.can_manage_projector"
               class="btn btn-default"
@@ -123,12 +135,25 @@
           ng-class="{ 'activeline': item.isProjected(), 'selected': item.selected, 'hiddenrow': item.is_hidden}">
         <!-- projector column -->
         <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
-          <a class="btn btn-default btn-sm"
-              ng-class="{ 'btn-primary': item.isProjected() }"
-              ng-click="item.project()"
-              title="{{ 'Project item' | translate }}">
-            <i class="fa fa-video-camera"></i>
-          </a>
+          <div class="btn-group" style="width:54px;" uib-dropdown>
+            <button os-perms="core.can_manage_projector"
+                type="button"
+                class="btn btn-default btn-sm"
+                title="{{ 'Project item' | translate }}"
+                ng-click="item.project()"
+                ng-class="{ 'btn-primary': item.isProjected() }">
+              <i class="fa fa-video-camera"></i>
+            </button>
+            <button type="button" class="btn btn-default btn-sm slimDropDown"
+                ng-class="{ 'btn-primary': item.isProjected(list=true) }"
+                uib-dropdown-toggle>
+              <span class="caret"></span>
+            </button>
+            <ul class="uib-dropdown-menu" role="menu" aria-labelledby="split-button">
+              <li role="menuitem"><a href="" ng-click="item.project()" translate>Project item (Default)</a>
+              <li role="menuitem"><a href="" ng-click="projectAgenda(tree=true, id=item.id)" translate>Project all sub items</a>
+            </ul>
+          </div>
         <!-- delete selection column -->
         <td ng-show="isDeleteMode" os-perms="agenda.can_manage" class="deleteColumn">
           <input type="checkbox" ng-model="item.selected">
