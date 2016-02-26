@@ -21,6 +21,8 @@ class Command(_Command):
 
     The Code is from django 1.9
     """
+    help = 'Starts the Tornado webserver.'
+
     # TODO: do not start tornado when the settings says so
 
     def inner_run(self, *args, **options):
