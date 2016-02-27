@@ -15,37 +15,45 @@
     <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
       <div ng-repeat="poll in motion.polls | orderBy:'-id'" class="spacer">
         <div ng-show="poll.has_votes" class="pollresults">
-          <strong ng-if="motion.polls.length > 1"><translate>Vote</translate> {{ motion.polls.length - $index }}:</strong>
+          <strong ng-if="motion.polls.length > 1">
+            <translate>Vote</translate> {{ motion.polls.length - $index }}:
+          </strong>
           <table class="transparentTable spacer">
             <!-- yes -->
             <tr>
               <td class="icon">
                 <i class="fa fa-thumbs-up fa-2x"></i>
-              <td>
+              <td ng-init="voteYes = poll.getVote(poll.yes)">
                 <span class="result_label"><translate>Yes</translate>:</span>
-                <span class="result_value">{{ poll.yes }} {{ poll.getYesPercent() }}</span>
-                <div ng-if="poll.getYesPercent(true)">
-                  <uib-progressbar value="poll.getYesPercent(true)" type="success"></uib-progressbar>
+                <span class="result_value">
+                  {{ voteYes.value }} {{ voteYes.percentStr }}
+                </span>
+                <div ng-if="voteYes.percentNumber">
+                  <uib-progressbar value="voteYes.percentNumber" type="success"></uib-progressbar>
                 </div>
             <!-- no -->
             <tr>
               <td class="icon">
                 <i class="fa fa-thumbs-down fa-2x"></i>
-              <td>
+              <td ng-init="voteNo = poll.getVote(poll.no)">
                 <span class="result_label"><translate>No</translate>:</span>
-                <span class="result_value">{{ poll.no }} {{ poll.getNoPercent() }}</span>
-                <div ng-if="poll.getNoPercent(true)">
-                  <uib-progressbar value="poll.getNoPercent(true)" type="danger"></uib-progressbar>
+                <span class="result_value" >
+                  {{ voteNo.value }} {{ voteNo.percentStr }}
+                </span>
+                <div ng-if="voteNo.percentNumber">
+                  <uib-progressbar value="voteNo.percentNumber" type="danger"></uib-progressbar>
                 </div>
             <!-- abstain -->
             <tr>
               <td class="icon">
                 <strong style="font-size: 26px">&empty;</strong>
-              <td>
+              <td ng-init="voteAbstain = poll.getVote(poll.abstain)">
                 <span class="result_label"><translate>Abstain</translate>:</span>
-                <span class="result_value">{{ poll.abstain }} {{ poll.getAbstainPercent() }}</span>
-                <div ng-if="poll.getAbstainPercent(true)">
-                  <uib-progressbar value="poll.getAbstainPercent(true)" type="warning"></uib-progressbar>
+                <span class="result_value">
+                  {{ voteAbstain.value }} {{ voteAbstain.percentStr }}
+                </span>
+                <div ng-if="voteAbstain.percentNumber">
+                  <uib-progressbar value="voteAbstain.percentNumber" type="warning"></uib-progressbar>
                 </div>
           </table>
         </div>
