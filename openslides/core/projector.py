@@ -14,7 +14,7 @@ class CustomSlideSlide(ProjectorElement):
     """
     name = 'core/customslide'
 
-    def get_context(self):
+    def check_data(self):
         if not CustomSlide.objects.filter(pk=self.config_entry.get('id')).exists():
             raise ProjectorException('Custom slide does not exist.')
 
@@ -74,7 +74,7 @@ class Countdown(ProjectorElement):
     """
     name = 'core/countdown'
 
-    def get_context(self):
+    def check_data(self):
         self.validate_config(self.config_entry)
 
     @classmethod
@@ -136,6 +136,6 @@ class Message(ProjectorElement):
     """
     name = 'core/message'
 
-    def get_context(self):
+    def check_data(self):
         if self.config_entry.get('message') is None:
             raise ProjectorException('No message given.')

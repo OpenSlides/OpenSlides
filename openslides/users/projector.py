@@ -10,7 +10,7 @@ class UserSlide(ProjectorElement):
     """
     name = 'users/user'
 
-    def get_context(self):
+    def check_data(self):
         if not User.objects.filter(pk=self.config_entry.get('id')).exists():
             raise ProjectorException('User does not exist.')
 
