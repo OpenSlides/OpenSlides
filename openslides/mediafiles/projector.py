@@ -11,7 +11,7 @@ class MediafileSlide(ProjectorElement):
     """
     name = 'mediafiles/mediafile'
 
-    def get_context(self):
+    def check_data(self):
         try:
             Mediafile.objects.get(pk=self.config_entry.get('id'))
         except Mediafile.DoesNotExist:

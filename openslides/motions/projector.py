@@ -14,7 +14,7 @@ class MotionSlide(ProjectorElement):
     """
     name = 'motions/motion'
 
-    def get_context(self):
+    def check_data(self):
         pk = self.config_entry.get('id')
         if pk is not None:
             # Detail slide.

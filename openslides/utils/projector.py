@@ -34,23 +34,37 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
         if not cls.__name__ == 'ProjectorElement':
             return cls.__name__
 
-    def get_data(self, projector_object, config_entry):
+    def check_and_update_data(self, projector_object, config_entry):
         """
-        Returns all data to be sent to the client. The projector object and
-        the config entry have to be given.
+        Checks projector element data via self.check_data() and updates
+        them via self.update_data(). The projector object and the config
+        entry have to be given.
         """
         self.projector_object = projector_object
         self.config_entry = config_entry
         assert self.config_entry.get('name') == self.name, (
             'To get data of a projector element, the correct config entry has to be given.')
-        return {
-            'context': self.get_context()}
+        self.check_data()
+        return self.update_data() or {}
 
-    def get_context(self):
+    def check_data(self):
         """
-        Returns the context of the projector element.
+        Method can be overridden to validate projector element data. This
+        may raise ProjectorException in case of an error.
+
+        Default: Does nothing.
         """
-        return None
+        pass
+
+    def update_data(self):
+        """
+        Method can be overridden to update the projector element data
+        output. This should return a dictonary. Use this for server
+        calculated data which have to be forwared to the client.
+
+        Default: Does nothing.
+        """
+        pass
 
     def get_requirements(self, config_entry):
         """

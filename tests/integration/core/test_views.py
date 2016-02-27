@@ -34,8 +34,7 @@ class ProjectorAPI(TestCase):
                 'aae4a07b26534cfb9af4232f361dce73':
                     {'id': customslide.id,
                      'uuid': 'aae4a07b26534cfb9af4232f361dce73',
-                     'name': 'core/customslide',
-                     'context': None}},
+                     'name': 'core/customslide'}},
             'scale': 0,
             'scroll': 0})
 

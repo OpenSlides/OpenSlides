@@ -70,8 +70,8 @@ class Projector(RESTModelMixin, models.Model):
     @property
     def elements(self):
         """
-        Retrieve all projector elements given in the config
-        field. For every element the method get_data() is called and its
+        Retrieve all projector elements given in the config field. For
+        every element the method check_and_update_data() is called and its
         result is also used.
         """
         # Get all elements from all apps.
@@ -90,7 +90,7 @@ class Projector(RESTModelMixin, models.Model):
                 result[key]['error'] = 'Projector element does not exist.'
             else:
                 try:
-                    result[key].update(element.get_data(
+                    result[key].update(element.check_and_update_data(
                         projector_object=self,
                         config_entry=value))
                 except ProjectorException as e:

@@ -18,7 +18,7 @@ class ItemListSlide(ProjectorElement):
     """
     name = 'agenda/item-list'
 
-    def get_context(self):
+    def check_data(self):
         pk = self.config_entry.get('id')
         if pk is not None:
             # Children slide.
@@ -48,7 +48,7 @@ class ListOfSpeakersSlide(ProjectorElement):
     """
     name = 'agenda/list-of-speakers'
 
-    def get_context(self):
+    def check_data(self):
         pk = self.config_entry.get('id')
         if pk is None:
             raise ProjectorException('Id must not be None.')
