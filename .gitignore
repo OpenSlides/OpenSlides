@@ -12,8 +12,8 @@
 node_modules/*
 bower_components/*
 
-# Development user data (settings, database, media, search index, static files)
-development/*
+# Local user data (settings, database, media, search index, static files)
+personal_data/*
 openslides/static/*
 
 # Package building/IDE

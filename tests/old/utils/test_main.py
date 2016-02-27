@@ -55,8 +55,8 @@ class TestFunctions(TestCase):
         self.assertEqual(main.get_default_settings_path(main.WINDOWS_PORTABLE_VERSION),
                          'portable/openslides/settings.py')
 
-    def test_get_development_settings_path(self):
-        self.assertEqual(main.get_development_settings_path(), os.sep.join(('development', 'var', 'settings.py')))
+    def test_get_local_settings_path(self):
+        self.assertEqual(main.get_local_settings_path(), os.sep.join(('personal_data', 'var', 'settings.py')))
 
     def test_setup_django_settings_module(self):
         main.setup_django_settings_module('test_dir_dhvnghfjdh456fzheg2f/test_path_bngjdhc756dzwncshdfnx.py')
