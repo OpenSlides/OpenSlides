@@ -118,6 +118,11 @@ class MotionPollSerializer(ModelSerializer):
             'has_votes')
         validators = (default_votes_validator,)
 
+    def __init__(self, *args, **kwargs):
+        # The following dictionary is just a cache for several votes.
+        self._votes_dicts = {}
+        return super().__init__(*args, **kwargs)
+
     def get_yes(self, obj):
         try:
             result = self.get_votes_dict(obj)['Yes']
@@ -141,9 +146,9 @@ class MotionPollSerializer(ModelSerializer):
 
     def get_votes_dict(self, obj):
         try:
-            votes_dict = self._votes_dict
-        except AttributeError:
-            votes_dict = self._votes_dict = {}
+            votes_dict = self._votes_dicts[obj.pk]
+        except KeyError:
+            votes_dict = self._votes_dicts[obj.pk] = {}
             for vote in obj.get_votes():
                 votes_dict[vote.value] = vote.weight
         return votes_dict

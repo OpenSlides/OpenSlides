@@ -380,6 +380,29 @@ class SetState(TestCase):
         self.assertEqual(Motion.objects.get(pk=self.motion.pk).state.name, 'submitted')
 
 
+class CreateMotionPoll(TestCase):
+    """
+    Tests creating polls of motions.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+        self.motion = Motion(
+            title='test_title_Aiqueigh2dae9phabiqu',
+            text='test_text_Neekoh3zou6li5rue8iL')
+        self.motion.save()
+
+    def test_create_first_poll_with_values_then_second_poll_without(self):
+        self.poll = self.motion.create_poll()
+        self.poll.set_vote_objects_with_values(self.poll.get_options().get(), {'Yes': 42, 'No': 43, 'Abstain': 44})
+        response = self.client.post(
+            reverse('motion-create-poll', args=[self.motion.pk]))
+        self.assertEqual(self.motion.polls.count(), 2)
+        response = self.client.get(reverse('motion-detail', args=[self.motion.pk]))
+        for key in ('yes', 'no', 'abstain'):
+            self.assertTrue(response.data['polls'][1][key] is None, 'Vote value "{}" should be None.'.format(key))
+
+
 class UpdateMotionPoll(TestCase):
     """
     Tests updating polls of motions.
