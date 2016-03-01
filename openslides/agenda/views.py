@@ -63,7 +63,6 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         Checks if the requesting user has permission to see also an
         organizational item if it is one.
         """
-        #TODO
         if obj.is_hidden() and not request.user.has_perm('agenda.can_see_hidden_items'):
             self.permission_denied(request)
 

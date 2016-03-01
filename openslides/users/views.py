@@ -75,7 +75,6 @@ class UserViewSet(ModelViewSet):
 
         Hides the default_password for non admins.
         """
-        #TODO: Hide default_password also in case of autoupdate.
         response = super().retrieve(request, *args, **kwargs)
         self.extract_default_password(response)
         return response

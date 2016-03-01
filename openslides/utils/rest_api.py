@@ -1,6 +1,4 @@
-import re
 from collections import OrderedDict
-from urllib.parse import urlparse
 
 from rest_framework import status  # noqa
 from rest_framework.decorators import detail_route, list_route  # noqa
@@ -34,8 +32,6 @@ from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
 from rest_framework.viewsets import \
     ReadOnlyModelViewSet as _ReadOnlyModelViewSet  # noqa
 from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
-
-from .exceptions import OpenSlidesError
 
 router = DefaultRouter()
 
@@ -198,21 +194,3 @@ class ReadOnlyModelViewSet(PermissionMixin, _ReadOnlyModelViewSet):
 
 class ViewSet(PermissionMixin, _ViewSet):
     pass
-
-
-#TODO: Remove this method
-def get_collection_and_id_from_url(url):
-    """
-    Helper function. Returns a tuple containing the collection name and the id
-    extracted out of the given REST api URL.
-
-    For example get_collection_and_id_from_url('http://localhost/rest/users/user/3/')
-    returns ('users/user', '3').
-
-    Raises OpenSlidesError if the URL is invalid.
-    """
-    path = urlparse(url).path
-    match = re.match(r'^/rest/(?P<collection>[-\w]+/[-\w]+)/(?P<id>[-\w]+)/$', path)
-    if not match:
-        raise OpenSlidesError('Invalid REST API URL: %s' % url)
-    return match.group('collection'), match.group('id')

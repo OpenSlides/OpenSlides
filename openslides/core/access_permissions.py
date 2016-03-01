@@ -11,7 +11,7 @@ class ProjectorAccessPermissions(BaseAccessPermissions):
         """
         return user.has_perm('core.can_see_projector')
 
-    def get_serializer_class(self, user):
+    def get_serializer_class(self, user=None):
         """
         Returns serializer class.
         """
@@ -30,7 +30,7 @@ class CustomSlideAccessPermissions(BaseAccessPermissions):
         """
         return user.has_perm('core.can_manage_projector')
 
-    def get_serializer_class(self, user):
+    def get_serializer_class(self, user=None):
         """
         Returns serializer class.
         """
@@ -53,7 +53,7 @@ class TagAccessPermissions(BaseAccessPermissions):
         # so if they are enabled.
         return user.is_authenticated() or config['general_system_enable_anonymous']
 
-    def get_serializer_class(self, user):
+    def get_serializer_class(self, user=None):
         """
         Returns serializer class.
         """
@@ -74,7 +74,7 @@ class ChatMessageAccessPermissions(BaseAccessPermissions):
         # permission core.can_use_chat. But they can not use it. See views.py.
         return user.has_perm('core.can_use_chat')
 
-    def get_serializer_class(self, user):
+    def get_serializer_class(self, user=None):
         """
         Returns serializer class.
         """
@@ -98,12 +98,12 @@ class ConfigAccessPermissions(BaseAccessPermissions):
         # the config. Anonymous users can do so if they are enabled.
         return user.is_authenticated() or config['general_system_enable_anonymous']
 
-    def get_serialized_data(self, instance, user):
+    def get_full_data(self, instance):
         """
-        Returns the serlialized config data or None if the user is not
-        allowed to see it.
+        Returns the serlialized config data.
         """
         from .config import config
 
-        if self.can_retrieve(user) is not None:
-            return {'key': instance.key, 'value': config[instance.key]}
+        # Attention: The format of this response has to be the same as in
+        # the retrieve method of ConfigViewSet.
+        return {'key': instance.key, 'value': config[instance.key]}

@@ -11,7 +11,7 @@ class MediafileAccessPermissions(BaseAccessPermissions):
         """
         return user.has_perm('mediafiles.can_see')
 
-    def get_serializer_class(self, user):
+    def get_serializer_class(self, user=None):
         """
         Returns serializer class.
         """

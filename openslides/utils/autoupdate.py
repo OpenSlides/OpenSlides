@@ -1,3 +1,4 @@
+import json
 import os
 import posixpath
 from importlib import import_module
@@ -17,7 +18,8 @@ from tornado.web import (
 )
 from tornado.wsgi import WSGIContainer
 
-from openslides.users.auth import AnonymousUser, get_user
+from ..users.auth import AnonymousUser, get_user
+from .access_permissions import BaseAccessPermissions
 
 RUNNING_HOST = None
 RUNNING_PORT = None
@@ -71,10 +73,21 @@ class OpenSlidesSockJSConnection(SockJSConnection):
         OpenSlidesSockJSConnection.waiters.remove(self)
 
     @classmethod
-    def send_object(cls, instance, is_delete):
+    def send_object(cls, json_container):
         """
         Sends an OpenSlides object to all connected clients (waiters).
         """
+        # Load JSON
+        container = json.loads(json_container)
+
+        # Search our AccessPermission class.
+        for access_permissions in BaseAccessPermissions.get_all():
+            if access_permissions.get_dispatch_uid() == container.get('dispatch_uid'):
+                break
+        else:
+            raise ValueError('Invalid container. A valid dispatch_uid is missing.')
+
+        # Loop over all waiters
         for waiter in cls.waiters:
             # Read waiter's former cookies and parse session cookie to get user instance.
             try:
@@ -89,15 +102,28 @@ class OpenSlidesSockJSConnection(SockJSConnection):
                 fake_request = type('FakeRequest', (), {})()
                 fake_request.session = session
                 user = get_user(fake_request)
-            # Fetch serialized data and send them out to the waiter (client).
-            serialized_instance_data = instance.get_access_permissions().get_serialized_data(instance, user)
-            if serialized_instance_data is not None:
-                data = {
-                    'status_code': 404 if is_delete else 200,  # TODO: Refactor this. Use strings like 'change' or 'delete'.
-                    'collection': instance.get_collection_string(),
-                    'id': instance.get_rest_pk(),
-                    'data': serialized_instance_data}
-                waiter.send(data)
+
+            # Two cases: models instance was changed or deleted
+            if container.get('action') == 'changed':
+                data = access_permissions.get_restricted_data(container.get('full_data'), user)
+                if data is None:
+                    # There are no data for the user so he can't see the object. Skip him.
+                    break
+                output = {
+                    'status_code': 200,  # TODO: Refactor this. Use strings like 'change' or 'delete'.
+                    'collection': container['collection_string'],
+                    'id': container['rest_pk'],
+                    'data': data}
+            elif container.get('action') == 'deleted':
+                output = {
+                    'status_code': 404,  # TODO: Refactor this. Use strings like 'change' or 'delete'.
+                    'collection': container['collection_string'],
+                    'id': container['rest_pk']}
+            else:
+                raise ValueError('Invalid container. A valid action is missing.')
+
+            # Send output to the waiter (client).
+            waiter.send(output)
 
 
 def run_tornado(addr, port, *args, **kwargs):
@@ -152,13 +178,20 @@ def inform_changed_data(is_delete, *args):
                 # Instance has no method get_root_rest_element. Just skip it.
                 pass
             else:
+                access_permissions = root_instance.get_access_permissions()
+                container = {
+                    'dispatch_uid': access_permissions.get_dispatch_uid(),
+                    'collection_string': root_instance.get_collection_string(),
+                    'rest_pk': root_instance.get_rest_pk()}
                 if is_delete and instance == root_instance:
                     # A root instance is deleted.
-                    OpenSlidesSockJSConnection.send_object(root_instance, is_delete)
+                    container['action'] = 'deleted'
                 else:
                     # A non root instance is deleted or any instance is just changed.
+                    container['action'] = 'changed'
                     root_instance.refresh_from_db()
-                    OpenSlidesSockJSConnection.send_object(root_instance, False)
+                    container['full_data'] = access_permissions.get_full_data(root_instance)
+                OpenSlidesSockJSConnection.send_object(json.dumps(container))
     else:
         pass
         # TODO: Implement big variant with Apache or Nginx as WSGI webserver.

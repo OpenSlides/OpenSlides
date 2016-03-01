@@ -11,7 +11,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
         """
         return user.has_perm('motions.can_see')
 
-    def get_serializer_class(self, user):
+    def get_serializer_class(self, user=None):
         """
         Returns serializer class.
         """
@@ -30,7 +30,7 @@ class CategoryAccessPermissions(BaseAccessPermissions):
         """
         return user.has_perm('motions.can_see')
 
-    def get_serializer_class(self, user):
+    def get_serializer_class(self, user=None):
         """
         Returns serializer class.
         """
@@ -49,7 +49,7 @@ class WorkflowAccessPermissions(BaseAccessPermissions):
         """
         return user.has_perm('motions.can_see')
 
-    def get_serializer_class(self, user):
+    def get_serializer_class(self, user=None):
         """
         Returns serializer class.
         """

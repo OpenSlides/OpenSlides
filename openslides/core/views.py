@@ -485,7 +485,7 @@ class ConfigViewSet(ViewSet):
         except ConfigNotFound:
             raise Http404
         # Attention: The format of this response has to be the same as in
-        # the get_serialized_data method of ConfigAccessPermissions.
+        # the get_full_data method of ConfigAccessPermissions.
         return Response({'key': key, 'value': value})
 
     def update(self, request, *args, **kwargs):
