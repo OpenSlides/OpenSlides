@@ -69,6 +69,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
 
 .controller('ItemListCtrl', [
     '$scope',
+    '$filter',
     '$http',
     '$state',
     'DS',
@@ -78,12 +79,16 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     'CustomslideForm',
     'AgendaTree',
     'Projector',
-    function($scope, $http, $state, DS, operator, ngDialog, Agenda, CustomslideForm, AgendaTree, Projector) {
+    function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, CustomslideForm, AgendaTree, Projector) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
         }, function () {
             $scope.items = AgendaTree.getFlatTree(Agenda.getAll());
+            var subitems = $filter('filter')($scope.items, {'parent_id': ''});
+            if (subitems.length) {
+                $scope.agendaHasSubitems = true;
+            }
         });
         $scope.alert = {};
 

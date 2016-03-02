@@ -128,6 +128,17 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                                element.id == self.id;
                     };
                     return typeof _.findKey(projector.elements, predicate) === 'string';
+                },
+                hasSubitems: function(items) {
+                    var self = this;
+                    var hasChild = false;
+                    // Returns true if the item has at least one child item.
+                    _.each(items, function (item) {
+                        if (item.parent_id == self.id) {
+                            hasChild = true;
+                        }
+                    });
+                    return hasChild;
                 }
             },
             relations: {
