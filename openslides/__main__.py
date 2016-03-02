@@ -10,8 +10,8 @@ from openslides.utils.main import (
     ExceptionArgumentParser,
     UnknownCommand,
     get_default_settings_path,
-    get_development_settings_path,
-    is_development,
+    get_local_settings_path,
+    is_local_installation,
     setup_django_settings_module,
     start_browser,
     write_settings,
@@ -32,8 +32,8 @@ def main():
 
     if unknown_command:
         # Run a command, that is defined by the django management api
-        development = is_development()
-        setup_django_settings_module(development=development)
+        local_installation = is_local_installation()
+        setup_django_settings_module(local_installation=local_installation)
         execute_from_command_line(sys.argv)
     else:
         # Run a command that is defined here
@@ -45,7 +45,7 @@ def get_parser():
     """
     Parses all command line arguments.
     """
-    if len(sys.argv) == 1 and not is_development():
+    if len(sys.argv) == 1 and not is_local_installation():
         sys.argv.append('start')
 
     # Init parser
@@ -104,9 +104,9 @@ def get_parser():
         help='The used settings file. The file is created, if it does not exist.')
     subcommand_start.set_defaults(callback=start)
     subcommand_start.add_argument(
-        '--development',
+        '--local-installation',
         action='store_true',
-        help='Option for development purposes.')
+        help='Store settings and user files in a local directory.')
 
     # Subcommand createsettings
     createsettings_help = 'Creates the settings file.'
@@ -121,9 +121,9 @@ def get_parser():
         default=None,
         help='The used settings file. The file is created, even if it exists.')
     subcommand_createsettings.add_argument(
-        '--development',
+        '--local-installation',
         action='store_true',
-        help='Option for development purposes.')
+        help='Store settings and user files in a local directory.')
 
     # Help text for several Django subcommands
     django_subcommands = (
@@ -147,11 +147,11 @@ def start(args):
     Starts OpenSlides: Runs migrations and runs runserver.
     """
     settings_path = args.settings_path
-    development = is_development()
+    local_installation = is_local_installation()
 
     if settings_path is None:
-        if development:
-            settings_path = get_development_settings_path()
+        if local_installation:
+            settings_path = get_local_settings_path()
         else:
             settings_path = get_default_settings_path()
 
@@ -161,7 +161,7 @@ def start(args):
 
     # Set the django setting module and run migrations
     # A manual given environment variable will be overwritten
-    setup_django_settings_module(settings_path, development=development)
+    setup_django_settings_module(settings_path, local_installation=local_installation)
 
     execute_from_command_line(['manage.py', 'migrate'])
 
@@ -178,14 +178,14 @@ def createsettings(args):
     Creates settings for OpenSlides.
     """
     settings_path = args.settings_path
-    development = is_development()
+    local_installation = is_local_installation()
     context = {}
 
-    if development:
+    if local_installation:
         if settings_path is None:
-            settings_path = get_development_settings_path()
+            settings_path = get_local_settings_path()
         context = {
-            'openslides_user_data_path': repr(os.path.join(os.getcwd(), 'development', 'var')),
+            'openslides_user_data_path': repr(os.path.join(os.getcwd(), 'personal_data', 'var')),
             'debug': 'True'}
 
     settings_path = write_settings(settings_path, **context)

@@ -82,16 +82,16 @@ def get_default_settings_path(openslides_type=None):
     return os.path.join(parent_directory, 'openslides', 'settings.py')
 
 
-def get_development_settings_path():
+def get_local_settings_path():
     """
-    Returns the path to a local development settings.
+    Returns the path to a local settings.
 
-    On Unix systems: 'development/var/settings.py'
+    On Unix systems: 'personal_data/var/settings.py'
     """
-    return os.path.join('development', 'var', 'settings.py')
+    return os.path.join('personal_data', 'var', 'settings.py')
 
 
-def setup_django_settings_module(settings_path=None, development=None):
+def setup_django_settings_module(settings_path=None, local_installation=None):
     """
     Sets the environment variable ENVIRONMENT_VARIABLE, that means
     'DJANGO_SETTINGS_MODULE', to the given settings.
@@ -106,8 +106,8 @@ def setup_django_settings_module(settings_path=None, development=None):
         return
 
     if settings_path is None:
-        if development:
-            settings_path = get_development_settings_path()
+        if local_installation:
+            settings_path = get_local_settings_path()
         else:
             settings_path = get_default_settings_path()
 
@@ -307,10 +307,10 @@ def translate_customizable_strings(language_code):
         activate(current_language)
 
 
-def is_development():
+def is_local_installation():
     """
-    Returns True if the command is called for development.
+    Returns True if the command is called for a local installation
 
-    This is the case if manage.py is used, or when the --development flag is set.
+    This is the case if manage.py is used, or when the --local-installation flag is set.
     """
-    return True if '--development' in sys.argv or 'manage.py' in sys.argv[0] else False
+    return True if '--local-installation' in sys.argv or 'manage.py' in sys.argv[0] else False

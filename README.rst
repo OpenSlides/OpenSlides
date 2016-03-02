@@ -149,6 +149,12 @@ To get help on the command line options run::
 
     openslides --help
 
+You can store settings, database and other personal files in a local
+subdirectory and use these files e. g. if you want to run multiple
+instances of OpenSlides::
+
+    openslides --local-installation
+
 
 V. Development
 ==============
@@ -214,7 +220,7 @@ Installation and start of the development version
 
        python manage.py start
 
-   This will create a new development directoy with settings.py and database.
+   This will create a new directoy with settings.py and database.
 
    To get help on the command-line options run::
 
