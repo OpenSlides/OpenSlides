@@ -134,7 +134,8 @@ gulp.task('jshint', function () {
             path.join( 'openslides', '*', 'static', '**', '*.js' ),
         ])
         .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+        .pipe(jshint.reporter('default'))
+        .pipe(jshint.reporter('fail'));
 });
 
 // Extracts names, URLs and licensed of all uses bower components and prints
