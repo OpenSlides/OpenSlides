@@ -52,8 +52,9 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
                 var startIndex = tree.indexOf($scope.rootItem);
                 tree = tree.slice(startIndex);
                 // define delta to move the whole subtree to level 0
+                var parentCountDelta = 0;
                 if (tree[0]) {
-                    var parentCountDelta = tree[0].parentCount;
+                    parentCountDelta = tree[0].parentCount;
                 }
                 $scope.items = [];
                 for (var i = 1; i < tree.length; i++) {
