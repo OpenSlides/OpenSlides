@@ -68,11 +68,10 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         """
         Filters organizational items if the user has no permission to see them.
         """
-        queryset = super().get_queryset()
         if self.request.user.has_perm('agenda.can_see_hidden_items'):
-            return queryset
+            return super().get_queryset()
         else:
-            return Item.objects.get_only_agenda_items(queryset)
+            return Item.objects.get_only_agenda_items()
 
     @detail_route(methods=['POST', 'DELETE'])
     def manage_speaker(self, request, pk=None):
