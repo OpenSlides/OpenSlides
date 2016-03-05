@@ -437,6 +437,10 @@ angular.module('OpenSlidesApp.core.site', [
     'mainMenu',
     function ($scope, mainMenu) {
         mainMenu.registerScope($scope);
+        $scope.isMenuOpen = false;
+        $scope.closeMenu = function () {
+            $scope.isMenuOpen = false;
+        };
     }
 ])
 

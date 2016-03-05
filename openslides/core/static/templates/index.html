@@ -34,7 +34,7 @@
             <a href ng-click="openChatbox()" class="headerlink"
                 ng-class="{ 'active': !chatboxIsCollapsed }" uib-dropdown-toggle>
               <i class="fa fa-comment"></i>
-              <translate>Chat</translate>
+              <translate class="hide-sm">Chat</translate>
               <span ng-if="unreadMessages > 0 && chatboxIsCollapsed" class="badge">
                 {{ unreadMessages }}
               </span>
@@ -72,7 +72,7 @@
           <span uib-dropdown>
             <a href class="headerlink" uib-dropdown-toggle>
               <i class="fa fa-user"></i>
-              <span>{{ operator.user.get_short_name() }}</span>
+              <span class="hide-sm">{{ operator.user.get_short_name() }}</span>
             </a>
             <ul class="uib-dropdown-menu pull-right" role="menu" aria-labelledby="simple-dropdown">
               <li>
@@ -107,7 +107,7 @@
       <span uib-dropdown>
         | <a href class="headerlink" uib-dropdown-toggle>
           <i class="fa fa-flag"></i>
-          {{ selectedLanguage[0].name | translate }}
+          <span class="hide-sm">{{ selectedLanguage[0].name | translate }}</span>
         </a>
         <ul class="uib-dropdown-menu pull-right" role="menu" aria-labelledby="simple-dropdown">
           <li ng-repeat="language in languages">
@@ -122,30 +122,34 @@
 </div><!--end header-->
 
 <!-- Navbar -->
-<div id="nav">
-  <div class="containerOS">
-    <div class="navbar">
-      <div class="button"><a href="#"><i class="fa fa-bars"></i></a></div>
+<div id="nav" ng-controller="MainMenuCtrl">
+  <div class="containerOS" >
+    <!-- mobile (vertical) main menu -->
+    <button class="navbar-toggle" ng-click="isMenuOpen = !isMenuOpen">
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="navbar navbar-collapse" ng-class="{collapse: !isMenuOpen}" >
       <!-- Main menu -->
-      <ul ng-controller="MainMenuCtrl">
-        <li ng-repeat="element in elements" ui-sref-active="active">
+      <ul>
+        <li ng-repeat="element in elements" ui-sref-active="active" ng-click="closeMenu()">
           <a ui-sref="{{ element.ui_sref }}">
             <i class="fa fa-{{ element.img_class }}"></i>
             {{ element.title | translate }}
           </a>
       </ul>
-    </div>
-    <div class="searchbar pull-right" ng-controller="SearchBarCtrl">
-      <form ng-submit="search(query)">
-        <div class="input-group">
-          <input ng-model="query" class="form-control" type="text" placeholder="{{ 'Search' | translate}}">
-          <span class="input-group-btn">
-            <button type="submit" class="btn btn-default">
-              <i class="fa fa-search"></i>
-            </button>
-          </span>
-        </div>
-      </form>
+      <!-- Search bar -->
+      <div class="searchbar pull-right" ng-controller="SearchBarCtrl">
+        <form ng-submit="search(query); closeMenu()">
+          <div class="input-group">
+            <input ng-model="query" class="form-control" type="text" placeholder="{{ 'Search' | translate}}">
+            <span class="input-group-btn">
+              <button type="submit" class="btn btn-default">
+                <i class="fa fa-search"></i>
+              </button>
+            </span>
+          </div>
+        </form>
+      </div>
     </div>
 
    </div>

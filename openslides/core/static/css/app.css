@@ -143,28 +143,28 @@ img {
 }
 
 #nav .navbar {
+    width: 100%;
     float: left;
     border: none;
     margin: 0;
 }
 
-#nav .navbar .button {
-    float: left;
-    display: none;
+#nav .navbar-toggle {
+    padding: 5px 0;
 }
 
-#nav .navbar .button i {
-    padding-top: 33px;
+#nav .navbar-toggle i {
     font-size: 28px;
+    color: #fff;
     opacity: 0.5;
 }
 
-#nav .navbar .button a i {
-    display: block;
-    color: #fff;
-}
-#nav .navbar .button a:hover i {
+#nav .navbar-toggle:hover i {
     opacity: 1;
+}
+
+#nav .navbar-collapse {
+    padding: 0;
 }
 
 #nav .navbar ul {
@@ -752,12 +752,13 @@ img {
     box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.2);
     height: 200px;
     padding: 0 10px 10px 10px;
-    z-index: 99;
+    z-index: 1;
 }
 
 #chatbox-text {
     overflow-y: scroll;
     height: 190px;
+    color: #222;
 }
 
 /* tables */
@@ -809,7 +810,6 @@ tr.selected td {
 
     body { font-size: 12px;}
 
-
     h1 { font-size: 30px; padding-bottom: 6px; }
 
     h2 { font-size: 22px; padding-bottom: 10px; }
@@ -819,23 +819,15 @@ tr.selected td {
 }
 
 
-
 /* display for resolutions smaller that 900px */
 @media only screen and (max-width: 900px) {
 
     #nav .navbar li a { padding: 24px 5px; }
 }
 
+
 /* display for resolutions smaller that 760px */
 @media only screen and (max-width: 760px) {
-
-    #nav .navbar li a { padding: 24px 2px; }
-    #nav .searchbar input { width: 100px; }
-}
-
-
-/* display for resolutions smaller that 480px */
-@media only screen and (max-width: 480px) {
 
     h1 { font-size: 22px; padding-bottom: 4px; }
 
@@ -843,19 +835,14 @@ tr.selected td {
 
     h3 { font-size: 14px; padding-bottom: 4px; }
 
-    #header { height: 80px;  }
-    #header .title { width: 100%; text-align: center; margin-top: 5px;  }
-    #header .user { float: left; width: 100%;  }
+    .user i { font-size: 16px;  padding: 3px; }
 
-    #nav { height: 60px; }
-    #nav .navbar ul { display:none;}
-    #nav .navbar .button { display: block;}
-    #nav .navbar .button i { padding-top: 15px;}
-    #nav .searchbar { margin-top: 15px; }
-    #nav .searchbar input { width: 150px; }
+    #nav .navbar { box-shadow: none; }
+    #nav .navbar ul li a { padding: 10px 15px; }
+    #nav .searchbar { margin: 15px 0; }
 
-    #chatbox { width: 100%; top: 130px; }
-    .optional { /* hide optional column */
-        display: none;
-    }
+    #chatbox { width: 100%; top: 40px; }
+
+    /* hide marked element / column */
+    .optional, .hide-sm { display: none; }
 }
