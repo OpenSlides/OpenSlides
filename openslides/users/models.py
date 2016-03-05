@@ -146,7 +146,7 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         default_permissions = ()
         permissions = (
             ('can_see_name', 'Can see names of users'),
-            ('can_see_extra_data', 'Can see extra data of users'),
+            ('can_see_extra_data', 'Can see extra data of users (e.g. present and comment)'),
             ('can_manage', 'Can manage users'),
         )
         ordering = ('last_name', 'first_name', 'username', )

@@ -56,7 +56,7 @@
                placeholder="{{ 'Search' | translate}}">
           </div>
         </div>
-        <button os-perms="users.can_see_extra_data" class="btn btn-default" ng-click="$parent.isFilterOpen = !$parent.isFilterOpen"
+        <button class="btn btn-default" ng-click="$parent.isFilterOpen = !$parent.isFilterOpen"
             ng-class="$parent.isFilterOpen ? 'btn-primary' : 'btn-default'">
           <i class="fa fa-filter"></i>
           <translate>Filter ...</translate>
@@ -64,7 +64,7 @@
       </div>
     </div>
   </div>
-  <div os-perms="users.can_see_extra_data" uib-collapse="!$parent.isFilterOpen" class="row spacer">
+  <div uib-collapse="!$parent.isFilterOpen" class="row spacer">
     <div class="col-sm-6 text-right"></div>
     <div class="col-sm-6 text-right form-inline">
       <!-- group filter -->
@@ -73,8 +73,10 @@
         <option ng-repeat="group in groups" value="{{ group.id }}">{{ group.name | translate }}</option>
       </select>
       <!-- isPresent filter -->
-      <input type="checkbox" ng-model="filterPresent" ng-false-value="''">
-      <translate>Is present</translate>
+      <span os-perms="users.can_see_extra_data">
+        <input  type="checkbox" ng-model="$parent.filterPresent" ng-false-value="''">
+        <translate>Is present</translate>
+      </span>
     </div>
   </div>
   <div uib-collapse="!isSelectMode" class="row spacer">
@@ -120,12 +122,15 @@
     {{(users|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
   </div>
 
-  <!-- set filtered users (for user with/without can_see_extra_data permissions-->
-  <div os-perms="users.can_see_extra_data"
-      ng-repeat="user in usersFiltered = (users | filter: filter.search | filter: {groups: groupFilter} |
-          filter: {is_present: filterPresent} | orderBy: sortColumn:reverse)"></div>
+  <!-- filter users (for user with 'can_see_extra_data' permission) - consider present filter -->
+  <div os-perms="users.can_see_extra_data">
+    <span ng-repeat="user in $parent.usersFiltered = (users | filter: filter.search | filter: {groups: groupFilter} |
+          filter: {is_present: filterPresent} | orderBy: sortColumn:reverse)"></span>
+  </div>
+  <!-- filter users (for user without 'can_see_extra_data' permission) -->
   <div os-perms="!users.can_see_extra_data"
-      ng-repeat="user in usersFiltered = (users | filter: filter.search | orderBy: sortColumn:reverse)"></div>
+      ng-repeat="user in $parent.usersFiltered = (users | filter: filter.search | filter: {groups_id: groupFilter} |
+          orderBy: sortColumn:reverse)"></div>
 
   <table class="table table-striped table-bordered table-hover">
     <thead>
@@ -151,7 +156,7 @@
           <i class="pull-right fa" ng-show="sortColumn === 'groups' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
-        <th ng-click="toggleSort('is_present')" class="sortable minimum">
+        <th os-perms="users.can_see_extra_data" ng-click="toggleSort('is_present')" class="sortable minimum">
           <translate>Present</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'is_present' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
@@ -185,10 +190,14 @@
           </div>
         <td class="optional">{{ user.structure_level }}
         <td class="optional">
-          <div ng-repeat="group in user.groups">
+          <div os-perms="users.can_manage" ng-repeat="group in user.groups">
             {{ (groups | filter: {id: group})[0].name | translate }}
           </div>
-        <td>
+          <!-- TODO: normal users can't use user.groups but users.groups_id -->
+          <div os-perms="!users.can_manage" ng-repeat="group in user.groups_id">
+            {{ (groups | filter: {id: group})[0].name | translate }}
+          </div>
+        <td os-perms="users.can_see_extra_data">
           <span os-perms="!users.can_manage">
             <i ng-if="user.is_present" class="fa fa-check-square-o"></i>
           </span>
