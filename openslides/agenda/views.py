@@ -21,8 +21,8 @@ from openslides.utils.rest_api import (
 )
 from openslides.utils.views import PDFView
 
+from .access_permissions import ItemAccessPermissions
 from .models import Item, Speaker
-from .serializers import ItemSerializer
 
 
 # Viewsets for the REST API
@@ -34,14 +34,16 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
     There are the following views: metadata, list, retrieve, create,
     partial_update, update, destroy, manage_speaker, speak and tree.
     """
+    access_permissions = ItemAccessPermissions()
     queryset = Item.objects.all()
-    serializer_class = ItemSerializer
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve', 'manage_speaker', 'tree'):
+        if self.action == 'retrieve':
+            result = self.get_access_permissions().can_retrieve(self.request.user)
+        elif self.action in ('metadata', 'list', 'manage_speaker', 'tree'):
             result = self.request.user.has_perm('agenda.can_see')
             # For manage_speaker and tree requests the rest of the check is
             # done in the specific method. See below.

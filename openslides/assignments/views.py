@@ -30,12 +30,9 @@ from openslides.utils.rest_api import (
 )
 from openslides.utils.views import PDFView
 
+from .access_permissions import AssignmentAccessPermissions
 from .models import Assignment, AssignmentPoll
-from .serializers import (
-    AssignmentAllPollSerializer,
-    AssignmentFullSerializer,
-    AssignmentShortSerializer,
-)
+from .serializers import AssignmentAllPollSerializer
 
 
 # Viewsets for the REST API
@@ -48,13 +45,16 @@ class AssignmentViewSet(ModelViewSet):
     partial_update, update, destroy, candidature_self, candidature_other,
     mark_elected and create_poll.
     """
+    access_permissions = AssignmentAccessPermissions()
     queryset = Assignment.objects.all()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve'):
+        if self.action == 'retrieve':
+            result = self.get_access_permissions().can_retrieve(self.request.user)
+        elif self.action in ('metadata', 'list'):
             result = self.request.user.has_perm('assignments.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy',
                              'mark_elected', 'create_poll'):
@@ -69,16 +69,6 @@ class AssignmentViewSet(ModelViewSet):
         else:
             result = False
         return result
-
-    def get_serializer_class(self):
-        """
-        Returns different serializer classes according to users permissions.
-        """
-        if self.request.user.has_perm('assignments.can_manage'):
-            serializer_class = AssignmentFullSerializer
-        else:
-            serializer_class = AssignmentShortSerializer
-        return serializer_class
 
     @detail_route(methods=['post', 'delete'])
     def candidature_self(self, request, pk=None):

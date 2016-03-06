@@ -20,6 +20,8 @@ from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.search import user_name_helper
 
+from .access_permissions import AssignmentAccessPermissions
+
 
 class AssignmentRelatedUser(RESTModelMixin, models.Model):
     """
@@ -49,6 +51,10 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
 
 
 class Assignment(RESTModelMixin, models.Model):
+    """
+    Model for assignments.
+    """
+    access_permissions = AssignmentAccessPermissions()
 
     PHASE_SEARCH = 0
     PHASE_VOTING = 1

@@ -25,7 +25,7 @@ class MotionsAppConfig(AppConfig):
         post_migrate.connect(create_builtin_workflows, dispatch_uid='motion_create_builtin_workflows')
 
         # Register viewsets.
-        router.register('motions/category', CategoryViewSet)
-        router.register('motions/motion', MotionViewSet)
+        router.register(self.get_model('Category').get_collection_string(), CategoryViewSet)
+        router.register(self.get_model('Motion').get_collection_string(), MotionViewSet)
+        router.register(self.get_model('Workflow').get_collection_string(), WorkflowViewSet)
         router.register('motions/motionpoll', MotionPollViewSet)
-        router.register('motions/workflow', WorkflowViewSet)

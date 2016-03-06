@@ -23,5 +23,5 @@ class AssignmentsAppConfig(AppConfig):
         config_signal.connect(setup_assignment_config, dispatch_uid='setup_assignment_config')
 
         # Register viewsets.
-        router.register('assignments/assignment', AssignmentViewSet)
+        router.register(self.get_model('Assignment').get_collection_string(), AssignmentViewSet)
         router.register('assignments/poll', AssignmentPollViewSet)

@@ -11,16 +11,7 @@ from ..utils.rest_api import (
 )
 from .models import Group, User
 
-
-class UserShortSerializer(ModelSerializer):
-    """
-    Serializer for users.models.User objects.
-
-    Serializes only name fields and about me field.
-    """
-    class Meta:
-        model = User
-        fields = (
+USERSHORTSERIALIZER_FIELDS = (
             'id',
             'username',
             'title',
@@ -30,6 +21,17 @@ class UserShortSerializer(ModelSerializer):
             'about_me',
             'groups',
         )
+
+
+class UserShortSerializer(ModelSerializer):
+    """
+    Serializer for users.models.User objects.
+
+    Serializes only name fields and about me field.
+    """
+    class Meta:
+        model = User
+        fields = USERSHORTSERIALIZER_FIELDS
 
 
 class UserFullSerializer(ModelSerializer):

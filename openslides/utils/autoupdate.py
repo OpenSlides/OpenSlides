@@ -1,14 +1,13 @@
 import json
 import os
 import posixpath
+from importlib import import_module
 from urllib.parse import unquote
 
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
 from sockjs.tornado import SockJSConnection, SockJSRouter
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.httpserver import HTTPServer
-from tornado.httputil import HTTPHeaders
 from tornado.ioloop import IOLoop
 from tornado.options import parse_command_line
 from tornado.web import (
@@ -19,7 +18,8 @@ from tornado.web import (
 )
 from tornado.wsgi import WSGIContainer
 
-from .rest_api import get_collection_and_id_from_url
+from ..users.auth import AnonymousUser, get_user
+from .access_permissions import BaseAccessPermissions
 
 RUNNING_HOST = None
 RUNNING_PORT = None
@@ -72,78 +72,58 @@ class OpenSlidesSockJSConnection(SockJSConnection):
     def on_close(self):
         OpenSlidesSockJSConnection.waiters.remove(self)
 
-    def forward_rest_response(self, response):
-        """
-        Sends data to the client of the connection instance.
-
-        This method is called after succesful response of AsyncHTTPClient().
-        See send_object().
-        """
-        if response.code in (200, 404):
-            # Only send something to the client in case of one of these status
-            # codes. You have to change the client code (autoupdate.onMessage)
-            # if you want to handle some more codes.
-            collection, obj_id = get_collection_and_id_from_url(response.request.url)
-            data = {
-                'url': response.request.url,
-                'status_code': response.code,
-                'collection': collection,
-                'id': obj_id,
-                'data': json.loads(response.body.decode())}
-            self.send(data)
-
     @classmethod
-    def send_object(cls, object_url):
+    def send_object(cls, json_container):
         """
         Sends an OpenSlides object to all connected clients (waiters).
-
-        First, retrieve the object from the OpenSlides REST api using the given
-        object_url.
         """
-        # Join network location with object URL.
-        if settings.OPENSLIDES_WSGI_NETWORK_LOCATION:
-            wsgi_network_location = settings.OPENSLIDES_WSGI_NETWORK_LOCATION
+        # Load JSON
+        container = json.loads(json_container)
+
+        # Search our AccessPermission class.
+        for access_permissions in BaseAccessPermissions.get_all():
+            if access_permissions.get_dispatch_uid() == container.get('dispatch_uid'):
+                break
         else:
-            if RUNNING_HOST == '0.0.0.0':
-                # Windows can not connect to 0.0.0.0, so connect to localhost instead.
-                wsgi_network_location = 'http://localhost:{}'.format(RUNNING_PORT)
-            else:
-                wsgi_network_location = 'http://{}:{}'.format(RUNNING_HOST, RUNNING_PORT)
-        url = ''.join((wsgi_network_location, object_url))
+            raise ValueError('Invalid container. A valid dispatch_uid is missing.')
 
-        # Send out internal HTTP request to get data from the REST api.
+        # Loop over all waiters
         for waiter in cls.waiters:
-            # Initiat new headers object.
-            headers = HTTPHeaders()
-
-            # Read waiter's former cookies and parse session cookie to new header object.
+            # Read waiter's former cookies and parse session cookie to get user instance.
             try:
                 session_cookie = waiter.connection_info.cookies[settings.SESSION_COOKIE_NAME]
             except KeyError:
-                # There is no session cookie
-                pass
+                # There is no session cookie so use anonymous user here.
+                user = AnonymousUser()
             else:
-                headers.add('Cookie', '%s=%s' % (settings.SESSION_COOKIE_NAME, session_cookie.value))
+                # Get session from session store and use it to retrieve the user.
+                engine = import_module(settings.SESSION_ENGINE)
+                session = engine.SessionStore(session_cookie.value)
+                fake_request = type('FakeRequest', (), {})()
+                fake_request.session = session
+                user = get_user(fake_request)
 
-            # Read waiter's language header.
-            try:
-                languages = waiter.connection_info.headers['Accept-Language']
-            except KeyError:
-                # There is no language header
-                pass
+            # Two cases: models instance was changed or deleted
+            if container.get('action') == 'changed':
+                data = access_permissions.get_restricted_data(container.get('full_data'), user)
+                if data is None:
+                    # There are no data for the user so he can't see the object. Skip him.
+                    break
+                output = {
+                    'status_code': 200,  # TODO: Refactor this. Use strings like 'change' or 'delete'.
+                    'collection': container['collection_string'],
+                    'id': container['rest_pk'],
+                    'data': data}
+            elif container.get('action') == 'deleted':
+                output = {
+                    'status_code': 404,  # TODO: Refactor this. Use strings like 'change' or 'delete'.
+                    'collection': container['collection_string'],
+                    'id': container['rest_pk']}
             else:
-                headers.parse_line('Accept-Language: ' + languages)
+                raise ValueError('Invalid container. A valid action is missing.')
 
-            # Setup uncompressed request.
-            request = HTTPRequest(
-                url=url,
-                headers=headers,
-                decompress_response=False)
-            # Setup non-blocking HTTP client
-            http_client = AsyncHTTPClient()
-            # Executes the request, asynchronously returning an HTTPResponse
-            # and calling waiter's forward_rest_response() method.
-            http_client.fetch(request, waiter.forward_rest_response)
+            # Send output to the waiter (client).
+            waiter.send(output)
 
 
 def run_tornado(addr, port, *args, **kwargs):
@@ -182,30 +162,50 @@ def run_tornado(addr, port, *args, **kwargs):
     RUNNING_PORT = None
 
 
-def inform_changed_data(*args):
+def inform_changed_data(is_delete, *args):
     """
     Informs all users about changed data.
 
-    The arguments are Django/OpenSlides models.
+    The first argument is whether the object or the objects are deleted.
+    The other arguments are the changed or deleted Django/OpenSlides model
+    instances.
     """
-    rest_urls = set()
-    for instance in args:
-        try:
-            rest_urls.add(instance.get_root_rest_url())
-        except AttributeError:
-            # Instance has no method get_root_rest_url. Just skip it.
-            pass
-
     if settings.USE_TORNADO_AS_WSGI_SERVER:
-        for url in rest_urls:
-            OpenSlidesSockJSConnection.send_object(url)
+        for instance in args:
+            try:
+                root_instance = instance.get_root_rest_element()
+            except AttributeError:
+                # Instance has no method get_root_rest_element. Just skip it.
+                pass
+            else:
+                access_permissions = root_instance.get_access_permissions()
+                container = {
+                    'dispatch_uid': access_permissions.get_dispatch_uid(),
+                    'collection_string': root_instance.get_collection_string(),
+                    'rest_pk': root_instance.get_rest_pk()}
+                if is_delete and instance == root_instance:
+                    # A root instance is deleted.
+                    container['action'] = 'deleted'
+                else:
+                    # A non root instance is deleted or any instance is just changed.
+                    container['action'] = 'changed'
+                    root_instance.refresh_from_db()
+                    container['full_data'] = access_permissions.get_full_data(root_instance)
+                OpenSlidesSockJSConnection.send_object(json.dumps(container))
     else:
         pass
-        # TODO: Implement big varainte with Apache or Nginx as wsgi webserver.
+        # TODO: Implement big variant with Apache or Nginx as WSGI webserver.
 
 
 def inform_changed_data_receiver(sender, instance, **kwargs):
     """
     Receiver for the inform_changed_data function to use in a signal.
     """
-    inform_changed_data(instance)
+    inform_changed_data(False, instance)
+
+
+def inform_deleted_data_receiver(sender, instance, **kwargs):
+    """
+    Receiver for the inform_changed_data function to use in a signal.
+    """
+    inform_changed_data(True, instance)

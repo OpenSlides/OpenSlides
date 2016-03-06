@@ -13,6 +13,7 @@ from openslides.utils.search import user_name_helper
 
 from ..core.config import config
 from ..utils.models import RESTModelMixin
+from .access_permissions import UserAccessPermissions
 from .exceptions import UsersError
 
 
@@ -94,6 +95,8 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
     in other OpenSlides apps like motion submitter or (assignment) election
     candidates.
     """
+    access_permissions = UserAccessPermissions()
+
     USERNAME_FIELD = 'username'
 
     username = models.CharField(

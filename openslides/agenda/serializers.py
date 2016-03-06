@@ -1,10 +1,4 @@
-from django.core.urlresolvers import reverse
-
-from openslides.utils.rest_api import (
-    ModelSerializer,
-    RelatedField,
-    get_collection_and_id_from_url,
-)
+from openslides.utils.rest_api import ModelSerializer, RelatedField
 
 from .models import Item, Speaker
 
@@ -34,10 +28,7 @@ class RelatedItemRelatedField(RelatedField):
         Returns info concerning the related object extracted from the api URL
         of this object.
         """
-        view_name = '%s-detail' % type(value)._meta.object_name.lower()
-        url = reverse(view_name, kwargs={'pk': value.pk})
-        collection, obj_id = get_collection_and_id_from_url(url)
-        return {'collection': collection, 'id': obj_id}
+        return {'collection': value.get_collection_string(), 'id': value.get_rest_pk()}
 
 
 class ItemSerializer(ModelSerializer):

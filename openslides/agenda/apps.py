@@ -33,4 +33,4 @@ class AgendaAppConfig(AppConfig):
             dispatch_uid='listen_to_related_object_post_delete')
 
         # Register viewsets.
-        router.register('agenda/item', ItemViewSet)
+        router.register(self.get_model('Item').get_collection_string(), ItemViewSet)
