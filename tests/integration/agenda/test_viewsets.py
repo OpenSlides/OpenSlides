@@ -1,11 +1,42 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.agenda.models import Item, Speaker
 from openslides.core.config import config
 from openslides.core.models import CustomSlide, Projector
 from openslides.utils.test import TestCase
+
+
+class RetrieveItem(TestCase):
+    """
+    Tests retrieving items.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        config['general_system_enable_anonymous'] = True
+        self.item = CustomSlide.objects.create(title='test_title_Idais2pheepeiz5uph1c').agenda_item
+
+    def test_normal_by_anonymous_without_perm_to_see_hidden_items(self):
+        group = get_user_model().groups.field.related_model.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
+        permission_string = 'agenda.can_see_hidden_items'
+        app_label, codename = permission_string.split('.')
+        permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
+        group.permissions.remove(permission)
+        self.item.type = Item.AGENDA_ITEM
+        self.item.save()
+        response = self.client.get(reverse('item-detail', args=[self.item.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_hidden_by_anonymous_without_perm_to_see_hidden_items(self):
+        group = get_user_model().groups.field.related_model.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
+        permission_string = 'agenda.can_see_hidden_items'
+        app_label, codename = permission_string.split('.')
+        permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
+        group.permissions.remove(permission)
+        response = self.client.get(reverse('item-detail', args=[self.item.pk]))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class ManageSpeaker(TestCase):
