@@ -820,6 +820,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         $scope.permissions = permissions;
         $scope.group = {};
         $scope.save = function (group) {
+            if (!group.permissions) {
+                group.permissions = [];
+            }
             Group.create(group).then(
                 function(success) {
                     $state.go('users.group.list');

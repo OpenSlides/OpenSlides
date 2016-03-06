@@ -147,7 +147,6 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['core.can_see_projector'],
         permission_dict['mediafiles.can_see'],
         permission_dict['motions.can_see'],
-        permission_dict['users.can_see_extra_data'],
         permission_dict['users.can_see_name'], )
     group_anonymous = Group.objects.create(name='Guests', pk=1)
     group_anonymous.permissions.add(*base_permissions)
@@ -180,15 +179,15 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['mediafiles.can_upload'],
         permission_dict['motions.can_create'],
         permission_dict['motions.can_manage'],
-        permission_dict['users.can_manage'], )
+        permission_dict['users.can_manage'],
+        permission_dict['users.can_see_extra_data'],)
     group_staff = Group.objects.create(name='Staff', pk=4)
     group_staff.permissions.add(*staff_permissions)
 
-    # Add users.can_see_name and users.can_see_extra_data permissions to staff
+    # Add users.can_see_name permission to staff
     # group to ensure proper management possibilities
     # TODO: Remove this redundancy after cleanup of the permission system.
     group_staff.permissions.add(
-        permission_dict['users.can_see_extra_data'],
         permission_dict['users.can_see_name'])
 
     # Create or reset admin user

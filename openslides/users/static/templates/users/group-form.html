@@ -19,7 +19,7 @@
     </div>
     <div class="form-group">
       <label for="selectPermissions" translate>Permissions</label>
-      <select multiple size="15" ng-model="group.permissions" class="form-control" id="selectPermissions" required>
+      <select multiple size="15" ng-model="group.permissions" class="form-control" id="selectPermissions">
           <option value="{{ permission.value }}" ng-repeat="permission in permissions">{{ permission.display_name | translate }}</option>
       </select>
     </div>
