@@ -32,7 +32,7 @@
     "angular-pdf": "~1.3.0",
     "roboto-condensed": "~0.3.0",
     "open-sans-fontface": "https://github.com/OpenSlides/open-sans.git#1.4.2.post1",
-    "tinymce-i18n": "OpenSlides/tinymce-i18n"
+    "tinymce-i18n": "OpenSlides/tinymce-i18n#a186ad61e0aa30fdf657e88f405f966d790f0805"
   },
   "overrides": {
     "pdfjs-dist": {
