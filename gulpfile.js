@@ -68,6 +68,12 @@ gulp.task('fonts-libs', function() {
         .pipe(gulp.dest(path.join(output_directory, 'fonts')));
 });
 
+// Catches image files for angular-chosen.
+gulp.task('angular-chosen-img', function () {
+    return gulp.src(path.join('bower_components', 'chosen', '*.png'))
+        .pipe(gulp.dest(path.join(output_directory, 'css')));
+});
+
 // Catches all skins files for TinyMCE editor.
 gulp.task('tinymce-skins', function () {
     return gulp.src(path.join('bower_components', 'tinymce-dist', 'skins', '**'))
@@ -108,7 +114,7 @@ gulp.task('translations', function () {
 });
 
 // Gulp default task. Runs all other tasks before.
-gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs', 'tinymce', 'translations'], function () {});
+gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs', 'tinymce', 'angular-chosen-img', 'translations'], function () {});
 
 
 /**

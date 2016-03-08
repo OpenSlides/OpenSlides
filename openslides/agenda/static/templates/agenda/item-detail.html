@@ -130,20 +130,14 @@
     <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
       {{ alert.msg }}
     </uib-alert>
-    <div os-perms="agenda.can_manage" class="input-group">
-      <ui-select ng-model="speakerSelectBox.selected" ng-change="addSpeaker(speakerSelectBox.selected.id)">
-        <ui-select-match placeholder="{{ 'Select or search a participant ...' | translate }}">
-          {{ $select.selected.get_full_name() }}
-        </ui-select-match>
-        <ui-select-choices repeat="user in users | filter: $select.search | limitTo: LimitUsers">
-          <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
-        </ui-select-choices>
-      </ui-select>
-      <span class="input-group-btn">
-        <a ng-click="speakerSelectBox={}" class="btn btn-default">
-          <i class="fa fa-times-circle"></i>
-        </a>
-      </span>
+    <div os-perms="agenda.can_manage">
+      <select chosen ng-model="speakerSelectBox.selected" ng-change="addSpeaker(speakerSelectBox.selected)"
+          ng-options="user.id as user.get_full_name() for user in users"
+          search-contains="true"
+          placeholder-text-single="'{{ 'Select or search a participant ...' | translate }}'"
+          no-results-text="'{{ 'No results available ...' | translate }}'"
+          class="form-control">
+      <select>
     </div>
     <p class="spacer">
       <button ng-if="isAllowed('add')" ng-click="addSpeaker()" class="btn btn-default">

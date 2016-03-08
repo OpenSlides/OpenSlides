@@ -660,6 +660,10 @@ img {
     margin-top: 5px;
 }
 
+/* angular-chosen: override default width of select fields in quickmode */
+.quickmode .chosen-container {
+    width: 100% !important;
+}
 
 /* angular-ui-tree style */
 
