@@ -152,12 +152,27 @@ def setup_general_config(sender, **kwargs):
         group=ugettext_lazy('Projector'))
 
     yield ConfigVariable(
-        name='projector_backgroundcolor',
+        name='projector_header_backgroundcolor',
         default_value='#317796',
         input_type='colorpicker',
-        label=ugettext_lazy('Background color of projector header'),
-        help_text=ugettext_lazy('Use web color names like "red" or hex numbers like "#ff0000".'),
+        label=ugettext_lazy('Background color of projector header and footer'),
         weight=160,
+        group=ugettext_lazy('Projector'))
+
+    yield ConfigVariable(
+        name='projector_header_fontcolor',
+        default_value='#F5F5F5',
+        input_type='colorpicker',
+        label=ugettext_lazy('Font color of projector header and footer'),
+        weight=165,
+        group=ugettext_lazy('Projector'))
+
+    yield ConfigVariable(
+        name='projector_h1_fontcolor',
+        default_value='#317796',
+        input_type='colorpicker',
+        label=ugettext_lazy('Font color of projector headline'),
+        weight=170,
         group=ugettext_lazy('Projector'))
 
     yield ConfigVariable(

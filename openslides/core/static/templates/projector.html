@@ -10,10 +10,13 @@
 
 <style type="text/css">
   #header, #footer {
-    background-color: {{ config('projector_backgroundcolor') }};
+    background-color: {{ config('projector_header_backgroundcolor') }};
+  }
+  #header, #footer, #currentTime {
+    color: {{ config('projector_header_fontcolor') }};
   }
   h1 {
-    color: {{ config('projector_backgroundcolor') }};
+    color: {{ config('projector_h1_fontcolor') }};
   }
 </style>
 

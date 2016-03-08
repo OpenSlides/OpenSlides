@@ -32,7 +32,6 @@ body{
     top: 12px;
     height: 50px;
     overflow: hidden;
-    color: #F5F5F5;
 }
 #eventdata .title {
     font-size: 26px;
@@ -55,14 +54,12 @@ body{
     top: 25px;
     right: 50px;
     padding-left: 30px;
-    color: #fff;
 }
 #footer {
     font-family: 'Roboto Condensed Light';
     position: fixed;
     bottom: 0;
     height: 35px;
-    color: #F5F5F5;
     width: 100%;
     font-size: 16px;
     padding-left: 50px;
