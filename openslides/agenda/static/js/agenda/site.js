@@ -318,7 +318,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         $scope.endSpeech = function () {
             $http.delete(
                 '/rest/agenda/item/' + item.id + '/speak/',
-                {headers: {'Content-Type': 'application/json'}, data: JSON.stringify()}
+                {headers: {'Content-Type': 'application/json'}, data: {}}
             )
             .error(function(data){
                 $scope.alert = { type: 'danger', msg: data.detail, show: true };
