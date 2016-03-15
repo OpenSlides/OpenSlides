@@ -545,6 +545,10 @@ img {
     margin-top: 25px;
 }
 
+.spacer-bottom {
+    margin-bottom: 7px;
+}
+
 .spacer-right {
     margin-right: 5px;
 }
