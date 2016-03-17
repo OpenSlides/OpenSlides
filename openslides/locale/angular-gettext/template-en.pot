@@ -140,7 +140,7 @@ msgid ""
 "        other fields are optional and may be empty."
 msgstr ""
 
-#: core/static/js/core/site.js:595
+#: core/static/js/core/site.js:615
 #: motions/static/js/motions/site.js:279
 msgid "Attachment"
 msgstr ""
@@ -336,6 +336,7 @@ msgid "Category"
 msgstr ""
 
 #: index.html:86
+#: users/static/templates/users/user-detail-password.html:3
 msgid "Change password"
 msgstr ""
 
@@ -716,7 +717,7 @@ msgstr ""
 msgid "Identifier, reason, submitter and category are optional and may be empty."
 msgstr ""
 
-#: core/static/js/core/site.js:609
+#: core/static/js/core/site.js:629
 msgid "If deactivated it appears as internal item on agenda."
 msgstr ""
 
@@ -824,7 +825,7 @@ msgstr ""
 msgid "Last speakers"
 msgstr ""
 
-#: index.html:168
+#: index.html:169
 #: legalnotice.html:3
 msgid "Legal notice"
 msgstr ""
@@ -849,6 +850,10 @@ msgstr ""
 
 #: core/static/templates/core/projector-controls.html:9
 msgid "Live view"
+msgstr ""
+
+#: core/static/templates/core/spinner.html:3
+msgid "Loading"
 msgstr ""
 
 #: core/static/templates/core/login-form.html:20
@@ -1179,7 +1184,7 @@ msgstr ""
 msgid "Project user"
 msgstr ""
 
-#: index.html:178
+#: index.html:179
 msgid "Projector"
 msgstr ""
 
@@ -1363,7 +1368,7 @@ msgstr ""
 msgid "Select or search a workflow ..."
 msgstr ""
 
-#: core/static/js/core/site.js:601
+#: core/static/js/core/site.js:621
 #: motions/static/js/motions/site.js:285
 msgid "Select or search an attachment ..."
 msgstr ""
@@ -1389,7 +1394,7 @@ msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:216
 #: assignments/static/js/assignments/site.js:160
-#: core/static/js/core/site.js:608
+#: core/static/js/core/site.js:628
 #: motions/static/js/motions/site.js:262
 msgid "Show as agenda item"
 msgstr ""
@@ -1504,7 +1509,7 @@ msgid "Tags"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-import.html:83
-#: core/static/js/core/site.js:585
+#: core/static/js/core/site.js:605
 #: motions/static/js/motions/site.js:232
 #: motions/static/templates/motions/motion-detail.html:227
 #: motions/static/templates/motions/motion-import.html:56
@@ -1524,7 +1529,7 @@ msgstr ""
 #: assignments/static/js/assignments/site.js:129
 #: assignments/static/templates/assignments/assignment-list.html:172
 #: assignments/static/templates/assignments/assignment-list.html:97
-#: core/static/js/core/site.js:577
+#: core/static/js/core/site.js:597
 #: mediafiles/static/templates/mediafiles/mediafile-form.html:20
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:140
 #: motions/static/js/motions/site.js:224
