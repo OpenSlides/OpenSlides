@@ -300,16 +300,12 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 },
                 {
                     key: 'groups',
-                    type: 'ui-select-multiple',
+                    type: 'select-multiple',
                     templateOptions: {
                         label: gettextCatalog.getString('Groups'),
-                        optionsAttr: 'bs-options',
                         options: Group.getAll(),
-                        ngOptions: 'option[to.valueProp] as option in to.options | ' +
-                                   'filter: {id: "!1"} | filter: {id: "!2"} | ' +
-                                   'filter: $select.search',
-                        valueProp: 'id',
-                        labelProp: 'name',
+                        ngOptions: 'option.id as option.name for option in to.options | ' +
+                                   'filter: {id: "!1"} | filter: {id: "!2"}',
                         placeholder: gettextCatalog.getString('Select or search a group ...')
                     }
                 },

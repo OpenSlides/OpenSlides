@@ -24,17 +24,19 @@
   <!-- uploader -->
   <div os-perms="mediafiles.can_manage" class="form-group">
     <label for="inputTitle" translate>Uploaded by</label>
-    <ui-select ng-model="mediafile.uploader_id">
-      <ui-select-match placeholder="{{ 'Select or search a participant ...' | translate }}" data-allow-clear="true">
-        {{ $select.selected.get_full_name() }}
-      </ui-select-match>
-      <ui-select-choices repeat="user.id as user in users | filter: $select.search | limitTo: LimitUsers">
-        <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
-      </ui-select-choices>
-    </ui-select>
+    <select chosen
+        ng-model="mediafile.uploader_id"
+        ng-options="user.id as user.get_full_name() for user in users"
+        allow-single-deselect="true"
+        search-contains="true"
+        placeholder-text-single="'{{ 'Select or search a participant ...' | translate }}'"
+        no-results-text="'{{ 'No results available ...' | translate }}'"
+        class="form-control">
+      <option value=""></option>
+    <select>
   </div>
 
-  <i ng-show="mediafile.file.$error.maxSize">File too large
+  <i ng-if="mediafile.file.$error.maxSize">File too large
     {{ picFile.size / 1000000|number:1}}MB: max {{ mediafile.mediafile.$errorParam}}</i>
 
   <button type="submit" ng-disabled="mediafileForm.$invalid" class="btn btn-primary" translate>

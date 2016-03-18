@@ -159,8 +159,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'Tag',
     'User',
     'Workflow',
-    'LimitUsers',
-    function (gettextCatalog, operator, Editor, Category, Config, Mediafile, Tag, User, Workflow, LimitUsers) {
+    function (gettextCatalog, operator, Editor, Category, Config, Mediafile, Tag, User, Workflow) {
         return {
             // ngDialog for motion form
             getDialog: function (motion) {
@@ -205,14 +204,11 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 },
                 {
                     key: 'submitters_id',
-                    type: 'ui-select-multiple',
+                    type: 'select-multiple',
                     templateOptions: {
                         label: gettextCatalog.getString('Submitters'),
-                        optionsAttr: 'bs-options',
                         options: User.getAll(),
-                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search | limitTo: ' + LimitUsers,
-                        valueProp: 'id',
-                        labelProp: 'full_name',
+                        ngOptions: 'option.id as option.full_name for option in to.options',
                         placeholder: gettextCatalog.getString('Select or search a submitter ...')
                     },
                     hide: !operator.hasPerms('motions.can_manage')
@@ -274,70 +270,56 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 },
                 {
                     key: 'attachments_id',
-                    type: 'ui-select-multiple',
+                    type: 'select-multiple',
                     templateOptions: {
                         label: gettextCatalog.getString('Attachment'),
-                        optionsAttr: 'bs-options',
                         options: Mediafile.getAll(),
-                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
-                        valueProp: 'id',
-                        labelProp: 'title_or_filename',
+                        ngOptions: 'option.id as option.title_or_filename for option in to.options',
                         placeholder: gettextCatalog.getString('Select or search an attachment ...')
                     },
                     hideExpression: '!model.more'
                 },
                 {
                     key: 'category_id',
-                    type: 'ui-select-single',
+                    type: 'select-single',
                     templateOptions: {
                         label: gettextCatalog.getString('Category'),
-                        optionsAttr: 'bs-options',
                         options: Category.getAll(),
-                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
-                        valueProp: 'id',
-                        labelProp: 'name',
+                        ngOptions: 'option.id as option.name for option in to.options',
                         placeholder: gettextCatalog.getString('Select or search a category ...')
                     },
                     hideExpression: '!model.more'
                 },
                 {
                     key: 'tags_id',
-                    type: 'ui-select-multiple',
+                    type: 'select-multiple',
                     templateOptions: {
                         label: gettextCatalog.getString('Tags'),
-                        optionsAttr: 'bs-options',
                         options: Tag.getAll(),
-                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
-                        valueProp: 'id',
-                        labelProp: 'name',
+                        ngOptions: 'option.id as option.name for option in to.options',
                         placeholder: gettextCatalog.getString('Select or search a tag ...')
                     },
                     hideExpression: '!model.more'
                 },
                 {
                     key: 'supporters_id',
-                    type: 'ui-select-multiple',
+                    type: 'select-multiple',
                     templateOptions: {
                         label: gettextCatalog.getString('Supporters'),
-                        optionsAttr: 'bs-options',
                         options: User.getAll(),
-                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search | limitTo: ' + LimitUsers,
-                        valueProp: 'id',
-                        labelProp: 'full_name',
+                        ngOptions: 'option.id as option.full_name for option in to.options',
                         placeholder: gettextCatalog.getString('Select or search a supporter ...')
                     },
                     hideExpression: '!model.more'
                 },
                 {
                     key: 'workflow_id',
-                    type: 'ui-select-single',
+                    type: 'select-single',
                     templateOptions: {
                         label: gettextCatalog.getString('Workflow'),
                         optionsAttr: 'bs-options',
                         options: workflows,
-                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
-                        valueProp: 'id',
-                        labelProp: 'name',
+                        ngOptions: 'option.id as option.name for option in to.options',
                         placeholder: gettextCatalog.getString('Select or search a workflow ...')
                     },
                     hideExpression: '!model.more',

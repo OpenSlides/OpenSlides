@@ -197,7 +197,7 @@
           </span>
 
         <!-- quickEdit columns -->
-        <td ng-if="motion.quickEdit && motion.isAllowed('quickedit')" colspan="6">
+        <td ng-if="motion.quickEdit && motion.isAllowed('quickedit')" class="quickmode" colspan="6">
           <h4>{{ motion.getTitle() }} <span class="text-muted">&ndash; <translate>QuickEdit</translate></span></h4>
             <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
               {{ alert.msg }}
@@ -206,51 +206,49 @@
               <div class="col-xs-6">
                 <label for="inputIdentifier" translate>Identifier</label>
                 <input type="text" ng-model="motion.identifier" class="form-control input-sm"
-                    name="inputIdentifier">
+                    id="inputIdentifier">
               </div>
               <div class="col-xs-6">
                 <label for="selectCategory" translate>Category</label>
                 <select ng-options="category.id as category.name for category in categories"
-                    ng-model="motion.category_id" class="form-control" name="selectCategory">
+                    ng-model="motion.category_id" class="form-control" id="selectCategory">
                 </select>
               </div>
             </div>
             <div class="row">
               <div class="col-xs-6">
                 <label for="selectSubmitter" translate>Submitters</label>
-                <ui-select multiple ng-model="motion.submitters_id" name="selectSubmitter">
-                  <ui-select-match placeholder="{{ 'Select or search a submitter ...' | translate }}">
-                    {{ $item.get_full_name() }}
-                  </ui-select-match>
-                  <ui-select-choices repeat="user.id as user in users | filter: $select.search">
-                    <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
-                  </ui-select-choices>
-                </ui-select>
+                <select multiple chosen
+                    ng-model="motion.submitters_id"
+                    ng-options="user.id as user.full_name for user in users"
+                    search-contains="true"
+                    id="selectSubmitter"
+                    class="form-control">
+                </select>
               </div>
               <div class="col-xs-6">
                 <label for="selectTags" translate>Tags</label>
-                <ui-select multiple ng-model="motion.tags_id">
-                  <ui-select-match placeholder="{{ 'Select or search a tag ...' | translate }}">
-                    {{ $item.name }}
-                  </ui-select-match>
-                  <ui-select-choices repeat="tag.id as tag in tags | filter: $select.search">
-                    {{ tag.name }}
-                  </ui-select-choices>
-                </ui-select>
+                <select multiple chosen
+                    ng-model="motion.tags_id"
+                    ng-options="tag.id as tag.name for tag in tags"
+                    search-contains="true"
+                    id="selectTag"
+                    class="form-control">
+                </select>
               </div>
             </div>
             <div class="row">
               <div class="col-xs-6">
                 <div ng-if="config('motions_min_supporters') > 0">
-                  <label for="selectSubmitter" translate>Supporters</label>
-                  <ui-select multiple ng-model="motion.supporters_id">
-                    <ui-select-match placeholder="{{ 'Select or search a supporter ...' | translate }}">
-                      {{ $item.get_full_name() }}
-                    </ui-select-match>
-                    <ui-select-choices repeat="user.id as user in users | filter: $select.search">
-                      <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
-                    </ui-select-choices>
-                  </ui-select>
+                  <label for="selectSupporter" translate>Supporters</label>
+                  <select multiple chosen
+                      ng-model="motion.supporters_id"
+                      ng-options="user.id as user.full_name for user in users"
+                      search-contains="true"
+                      id="selectSupporter"
+                      class="form-control">
+                    <option value=""></option>
+                  </select>
                 </div>
               </div>
             </div>

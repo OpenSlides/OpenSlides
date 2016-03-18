@@ -10,11 +10,11 @@ angular.module('OpenSlidesApp.core.site', [
     'colorpicker.module',
     'formly',
     'formlyBootstrap',
+    'localytics.directives',
     'ngBootbox',
     'ngDialog',
     'ngMessages',
     'ngCsvImport',
-    'ui.select',
     'ui.tinymce',
     'luegg.directives',
 ])
@@ -101,13 +101,6 @@ angular.module('OpenSlidesApp.core.site', [
         // Combine the django csrf system with the angular csrf system
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-    }
-])
-
-.config([
-    'uiSelectConfig',
-    function(uiSelectConfig) {
-        uiSelectConfig.theme = 'bootstrap';
     }
 ])
 
@@ -349,14 +342,14 @@ angular.module('OpenSlidesApp.core.site', [
           templateUrl: 'static/templates/core/editor.html',
         });
         formlyConfig.setType({
-          name: 'ui-select-single',
+          name: 'select-single',
           extends: 'select',
-          templateUrl: 'static/templates/core/ui-select-single.html'
+          templateUrl: 'static/templates/core/select-single.html'
         });
         formlyConfig.setType({
-          name: 'ui-select-multiple',
+          name: 'select-multiple',
           extends: 'select',
-          templateUrl: 'static/templates/core/ui-select-multiple.html'
+          templateUrl: 'static/templates/core/select-multiple.html'
         });
     }
 ])
@@ -610,14 +603,11 @@ angular.module('OpenSlidesApp.core.site', [
                 },
                 {
                     key: 'attachments_id',
-                    type: 'ui-select-multiple',
+                    type: 'select-multiple',
                     templateOptions: {
                         label: gettextCatalog.getString('Attachment'),
-                        optionsAttr: 'bs-options',
                         options: Mediafile.getAll(),
-                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
-                        valueProp: 'id',
-                        labelProp: 'title_or_filename',
+                        ngOptions: 'option.id as option.title_or_filename for option in to.options',
                         placeholder: gettextCatalog.getString('Select or search an attachment ...')
                     }
                 },
@@ -1063,9 +1053,6 @@ angular.module('OpenSlidesApp.core.site', [
         });
     }
 ])
-
-// define maximum number of users shown in users select fields (e.g. in motion or speakers forms)
-.value('LimitUsers', 50)
 
 .directive('osFocusMe', [
     '$timeout',

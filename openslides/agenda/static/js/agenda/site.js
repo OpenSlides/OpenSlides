@@ -226,17 +226,13 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     'operator',
     'Agenda',
     'User',
-    'LimitUsers',
     'item',
-    function ($scope, $filter, $http, $state, operator, Agenda, User, LimitUsers, item) {
+    function ($scope, $filter, $http, $state, operator, Agenda, User, item) {
         Agenda.bindOne(item.id, $scope, 'item');
         User.bindAll({}, $scope, 'users');
         $scope.speakerSelectBox = {};
         $scope.alert = {};
         $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
-
-        // limit the number of users in ui-select field
-        $scope.LimitUsers = LimitUsers;
 
         $scope.$watch(function () {
             return Agenda.lastModified();
