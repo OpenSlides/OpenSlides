@@ -39,7 +39,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                                 Motion.loadRelations(motion, 'agenda_item');
                             });
                         });
-
                     },
                     categories: function(Category) {
                         return Category.findAll();
@@ -48,7 +47,11 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         return Tag.findAll();
                     },
                     users: function(User) {
-                        return User.findAll();
+                        return User.findAll().catch(
+                            function () {
+                                return null;
+                            }
+                        );
                     },
                     workflows: function(Workflow) {
                         return Workflow.findAll();
@@ -58,18 +61,24 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             .state('motions.motion.detail', {
                 resolve: {
                     motion: function(Motion, $stateParams) {
-                        return Motion.find($stateParams.id).then(function(motion) {
-                            return Motion.loadRelations(motion, 'agenda_item');
-                        });
+                        return Motion.find($stateParams.id);
                     },
                     categories: function(Category) {
                         return Category.findAll();
                     },
                     users: function(User) {
-                        return User.findAll();
+                        return User.findAll().catch(
+                            function () {
+                                return null;
+                            }
+                        );
                     },
                     mediafiles: function(Mediafile) {
-                        return Mediafile.findAll();
+                        return Mediafile.findAll().catch(
+                            function () {
+                                return null;
+                            }
+                        );
                     },
                     tags: function(Tag) {
                         return Tag.findAll();

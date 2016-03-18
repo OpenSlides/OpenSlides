@@ -383,6 +383,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         User.bindAll({}, $scope, 'users');
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
         $scope.alert = {};
+        $scope.groupFilter = undefined;
 
         // setup table sorting
         $scope.sortColumn = 'first_name'; //TODO: sort by first OR last name
@@ -973,7 +974,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         gettext('Can manage motions');
         // users
         gettext('Can see names of users');
-        gettext('Can see extra data of users');
+        gettext('Can see extra data of users (e.g. present and comment)');
         gettext('Can manage users');
     }
 ]);

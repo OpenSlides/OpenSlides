@@ -69,7 +69,7 @@
     <div class="col-sm-6 text-right form-inline">
       <!-- group filter -->
       <select ng-model="groupFilter" class="form-control" id="groupFilter">
-        <option value="" translate>--- Select group ---</option>
+        <option ng-click="groupFilter = undefined" value="" translate>--- Select group ---</option>
         <option ng-repeat="group in groups" value="{{ group.id }}">{{ group.name | translate }}</option>
       </select>
       <!-- isPresent filter -->
