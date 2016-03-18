@@ -94,8 +94,8 @@
       <select chosen ng-model="candidateSelectBox.selected" ng-change="addCandidate(candidateSelectBox.selected)"
           ng-options="user.id as user.get_full_name() for user in users"
           search-contains="true"
-          placeholder-text-single="'{{ 'Select or search a participant ...' | translate }}'"
-          no-results-text="'{{ 'No results available ...' | translate }}'"
+          placeholder-text-single="'Select or search a participant ...' | translate"
+          no-results-text="'No results available ...' | translate"
           class="form-control">
       <select>
     </div>
