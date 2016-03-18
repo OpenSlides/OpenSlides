@@ -1,6 +1,6 @@
 <div ng-controller="SlideCountdownCtrl">
   <div ng-if="visible">
-    <div class="countdown well" style="margin-top: calc({{index}}*100px);"
+    <div class="countdown well pull-right"
         ng-class="{
           'negative': seconds <= 0,
           'warning': seconds <= config('agenda_countdown_warning_time') && seconds > 0 }">

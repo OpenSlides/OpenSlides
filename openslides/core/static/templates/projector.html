@@ -24,7 +24,8 @@
 <div id="header">
   <img ng-if="config('projector_enable_logo')" id="logo" src="/static/img/logo-projector.png" alt="OpenSlides" />
   <div ng-if="config('projector_enable_title')" id="eventdata">
-    <div class="title" ng-bind-html="config('general_event_name')"></div>
+    <div class="title" ng-class="{ 'titleonly': !config('general_event_description') }"
+        ng-bind-html="config('general_event_name')"></div>
     <div ng-if="config('general_event_description')" class="description"
         ng-bind-html="config('general_event_description')"></div>
   </div>
@@ -37,7 +38,7 @@
       font-size: {{scale}}%;
     }
   </style>
-  <div ng-repeat="element in elements">
+  <div ng-repeat="element in elements | orderBy:'index'">
     <div ng-include="element.template"></div>
   </div>
 </div>
