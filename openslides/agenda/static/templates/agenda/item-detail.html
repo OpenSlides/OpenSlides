@@ -131,11 +131,13 @@
       {{ alert.msg }}
     </uib-alert>
     <div os-perms="agenda.can_manage">
-      <select chosen ng-model="speakerSelectBox.selected" ng-change="addSpeaker(speakerSelectBox.selected)"
+      <select chosen
+          ng-model="speakerSelectBox.selected"
+          ng-change="addSpeaker(speakerSelectBox.selected)"
           ng-options="user.id as user.get_full_name() for user in users"
           search-contains="true"
-          placeholder-text-single="'{{ 'Select or search a participant ...' | translate }}'"
-          no-results-text="'{{ 'No results available ...' | translate }}'"
+          placeholder-text-single="'Select or search a participant ...' | translate"
+          no-results-text="'No results available ...' | translate"
           class="form-control">
       <select>
     </div>
