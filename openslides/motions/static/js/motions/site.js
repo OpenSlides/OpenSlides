@@ -189,9 +189,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             // angular-formly fields for motion form
             getFormFields: function () {
                 var workflows = Workflow.getAll();
-                angular.forEach(workflows, function(workflow) {
-                    workflow.name = gettextCatalog.getString(workflow.name);
-                });
                 var images = Mediafile.getAllImages();
                 return [
                 {
@@ -319,7 +316,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         label: gettextCatalog.getString('Workflow'),
                         optionsAttr: 'bs-options',
                         options: workflows,
-                        ngOptions: 'option.id as option.name for option in to.options',
+                        ngOptions: 'option.id as option.name | translate for option in to.options',
                         placeholder: gettextCatalog.getString('Select or search a workflow ...')
                     },
                     hideExpression: '!model.more',
