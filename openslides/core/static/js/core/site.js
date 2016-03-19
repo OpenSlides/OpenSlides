@@ -1055,6 +1055,48 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+// format time string for model ("s") and view format ("h:mm:ss" or "mm:ss")
+.directive('minSecFormat', [
+    function () {
+        return {
+            require: 'ngModel',
+            link: function(scope, element, attrs, ngModelController) {
+                ngModelController.$parsers.push(function(data) {
+                    //convert data from view format (mm:ss) to model format (s)
+                    var time = data.split(':');
+                    if (time.length > 1) {
+                        data = (+time[0]) * 60 + (+time[1]);
+                        if (data < 0) {
+                            data = "-"+data;
+                        }
+                    }
+                    return data;
+                });
+
+                ngModelController.$formatters.push(function(data) {
+                    //convert data from model format (s) to view format (mm:ss)
+                    var time;
+                    // floor returns the largest integer of the absolut value of totalseconds
+                    var total = Math.floor(Math.abs(data));
+                    var mm = Math.floor(total / 60);
+                    var ss = Math.floor(total % 60);
+                    var zero = "0";
+                    // Add leading "0" for double digit values
+                    if (mm.length < 2) {
+                        mm = (zero+mm).slice(-2);
+                    }
+                    ss = (zero+ss).slice(-2);
+                    time =  mm + ':' + ss;
+                    if (data < 0) {
+                        time = "-"+time;
+                    }
+                    return time;
+                });
+            }
+        };
+    }
+])
+
 .directive('osFocusMe', [
     '$timeout',
     function ($timeout) {

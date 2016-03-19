@@ -391,25 +391,24 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-/* Converts number of seconds into string "hh:mm:ss" or "mm:ss" */
+/* Converts number of seconds into string "h:mm:ss" or "mm:ss" */
 .filter('osSecondsToTime', [
     function () {
         return function (totalseconds) {
             var time;
             // floor returns the largest integer of the absolut value of totalseconds
             var total = Math.floor(Math.abs(totalseconds));
-            var hh = Math.floor(total / 3600);
+            var h = Math.floor(total / 3600);
             var mm = Math.floor(total % 3600 / 60);
             var ss = Math.floor(total % 60);
             var zero = "0";
             // Add leading "0" for double digit values
-            hh = (zero+hh).slice(-2);
             mm = (zero+mm).slice(-2);
             ss = (zero+ss).slice(-2);
-            if (hh == "00")
+            if (h == "0")
                 time =  mm + ':' + ss;
             else
-                time = hh + ":" + mm + ":" + ss;
+                time = h + ":" + mm + ":" + ss;
             if (totalseconds < 0)
                 time = "-"+time;
             return time;
