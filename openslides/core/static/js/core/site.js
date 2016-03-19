@@ -811,6 +811,7 @@ angular.module('OpenSlidesApp.core.site', [
                 if (value.name == 'agenda/list-of-speakers') {
                     $state.go('agenda.item.detail', {id: value.id});
                 } else if (
+                    value.name != 'agenda/item-list' &&
                     value.name != 'core/clock' &&
                     value.name != 'core/countdown' &&
                     value.name != 'core/message' ) {
