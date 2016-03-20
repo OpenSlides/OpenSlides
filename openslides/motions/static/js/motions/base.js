@@ -132,7 +132,7 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
                             return element.id == versionId;
                         });
                     }
-                    return this.versions[index];
+                    return this.versions[index] || {};
                 },
                 getTitle: function (versionId) {
                     return this.getVersion(versionId).title;
