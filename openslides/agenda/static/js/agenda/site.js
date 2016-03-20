@@ -41,10 +41,18 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             .state('agenda.item.detail', {
                 resolve: {
                     item: function(Agenda, $stateParams) {
-                        return Agenda.find($stateParams.id);
+                        return Agenda.find($stateParams.id).catch(
+                            function () {
+                                return null;
+                            }
+                        );
                     },
                     users: function(User) {
-                        return User.findAll();
+                        return User.findAll().catch(
+                            function () {
+                                return null;
+                            }
+                        );
                     },
                     tags: function(Tag) {
                         return Tag.findAll();

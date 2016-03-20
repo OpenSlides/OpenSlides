@@ -73,6 +73,7 @@ angular.module('OpenSlidesApp.core.site', [
             'img_class': 'home',
             'title': gettext('Home'),
             'weight': 100,
+            'perm': 'core.can_see_frontpage',
         });
 
         mainMenuProvider.register({

@@ -37,7 +37,11 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         return Assignment.findAll();
                     },
                     items: function(Agenda) {
-                        return Agenda.findAll();
+                        return Agenda.findAll().catch(
+                            function () {
+                                return null;
+                            }
+                        );
                     },
                     phases: function(Assignment) {
                         return Assignment.getPhases();

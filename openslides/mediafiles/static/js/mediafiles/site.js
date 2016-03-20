@@ -37,7 +37,11 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                         return Mediafile.findAll();
                     },
                     users: function(User) {
-                        return User.findAll();
+                        return User.findAll().catch(
+                            function () {
+                                return null;
+                            }
+                        );
                     },
                 }
             });

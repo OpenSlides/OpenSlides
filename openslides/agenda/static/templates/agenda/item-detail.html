@@ -1,4 +1,4 @@
-<div class="header">
+<div ng-if="item" class="header">
   <div class="title">
     <div class="submenu">
       <a ui-sref="agenda.item.list" class="btn btn-sm btn-default">
@@ -34,7 +34,7 @@
   </div>
 </div>
 
-<div class="details listOfSpeakers">
+<div ng-if="item" class="details listOfSpeakers">
   <div class="pull-right">
     <span os-perms="agenda.can_manage">
       <button ng-if="item.speaker_list_closed" ng-click="closeList(false)"
