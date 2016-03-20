@@ -5,399 +5,389 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-08 21:10+0100\n"
+"POT-Creation-Date: 2016-03-20 23:29+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: openslides/agenda/models.py:196
+#: agenda/models.py:196
 msgid "Agenda item"
 msgstr ""
 
-#: openslides/agenda/models.py:197
+#: agenda/models.py:197
 msgid "Hidden item"
 msgstr ""
 
-#: openslides/agenda/models.py:348
+#: agenda/models.py:348
 #, python-brace-format
 msgid "{user} is already on the list of speakers."
 msgstr ""
 
-#: openslides/agenda/models.py:351
+#: agenda/models.py:351
 msgid "An anonymous user can not be on lists of speakers."
 msgstr ""
 
-#: openslides/agenda/signals.py:18
+#: agenda/signals.py:19
 msgid "Invalid input."
 msgstr ""
 
-#: openslides/agenda/signals.py:30
+#: agenda/signals.py:31
 msgid "Numbering prefix for agenda items"
 msgstr ""
 
-#: openslides/agenda/signals.py:31
+#: agenda/signals.py:32
 msgid "This prefix will be set if you run the automatic agenda numbering."
 msgstr ""
 
-#: openslides/agenda/signals.py:33 openslides/agenda/signals.py:46
-#: openslides/agenda/signals.py:56 openslides/agenda/signals.py:68
-#: openslides/agenda/signals.py:79 openslides/agenda/signals.py:90
-#: openslides/agenda/views.py:281 openslides/agenda/views.py:282
+#: agenda/signals.py:34 agenda/signals.py:47 agenda/signals.py:57
+#: agenda/signals.py:69 agenda/signals.py:80 agenda/signals.py:91
+#: agenda/views.py:281 agenda/views.py:282
 msgid "Agenda"
 msgstr ""
 
-#: openslides/agenda/signals.py:34 openslides/agenda/signals.py:47
-#: openslides/agenda/signals.py:57 openslides/core/config.py:181
-#: openslides/core/signals.py:44 openslides/core/signals.py:53
-#: openslides/core/signals.py:63 openslides/core/signals.py:71
-#: openslides/core/signals.py:79 openslides/core/signals.py:91
-#: openslides/core/signals.py:100 openslides/core/signals.py:110
-#: openslides/core/signals.py:122 openslides/core/signals.py:130
-#: openslides/motions/signals.py:28 openslides/motions/signals.py:41
-#: openslides/motions/signals.py:49 openslides/motions/signals.py:59
-#: openslides/motions/signals.py:68
+#: agenda/signals.py:35 agenda/signals.py:48 agenda/signals.py:58
+#: core/config.py:181 core/signals.py:44 core/signals.py:53 core/signals.py:63
+#: core/signals.py:71 core/signals.py:79 core/signals.py:91
+#: core/signals.py:100 core/signals.py:110 core/signals.py:122
+#: core/signals.py:130 motions/signals.py:28 motions/signals.py:41
+#: motions/signals.py:49 motions/signals.py:59 motions/signals.py:68
 msgid "General"
 msgstr ""
 
-#: openslides/agenda/signals.py:41
+#: agenda/signals.py:42
 msgid "Numeral system for agenda items"
 msgstr ""
 
-#: openslides/agenda/signals.py:43
+#: agenda/signals.py:44
 msgid "Arabic"
 msgstr ""
 
-#: openslides/agenda/signals.py:44
+#: agenda/signals.py:45
 msgid "Roman"
 msgstr ""
 
-#: openslides/agenda/signals.py:53
+#: agenda/signals.py:54
 msgid "Begin of event"
 msgstr ""
 
-#: openslides/agenda/signals.py:54
+#: agenda/signals.py:55
 msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr ""
 
-#: openslides/agenda/signals.py:66
+#: agenda/signals.py:67
 msgid "Number of last speakers to be shown on the projector"
 msgstr ""
 
-#: openslides/agenda/signals.py:69 openslides/agenda/signals.py:80
-#: openslides/agenda/signals.py:91
+#: agenda/signals.py:70 agenda/signals.py:81 agenda/signals.py:92
 msgid "List of speakers"
 msgstr ""
 
-#: openslides/agenda/signals.py:76
+#: agenda/signals.py:77
 msgid "Show orange countdown in the last x seconds of speaking time"
 msgstr ""
 
-#: openslides/agenda/signals.py:77
+#: agenda/signals.py:78
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 
-#: openslides/agenda/signals.py:87
+#: agenda/signals.py:88
 msgid "Couple countdown with the list of speakers"
 msgstr ""
 
-#: openslides/agenda/signals.py:88
+#: agenda/signals.py:89
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
 msgstr ""
 
-#: openslides/agenda/views.py:108
+#: agenda/views.py:108
 msgid "The list of speakers is closed."
 msgstr ""
 
-#: openslides/agenda/views.py:117
+#: agenda/views.py:117
 msgid "User does not exist."
 msgstr ""
 
-#: openslides/agenda/views.py:125
+#: agenda/views.py:125
 #, python-format
 msgid "User %s was successfully added to the list of speakers."
 msgstr ""
 
-#: openslides/agenda/views.py:143
+#: agenda/views.py:143
 msgid "You are not on the list of speakers."
 msgstr ""
 
-#: openslides/agenda/views.py:151 openslides/agenda/views.py:181
+#: agenda/views.py:151 agenda/views.py:181
 msgid "Speaker does not exist."
 msgstr ""
 
-#: openslides/agenda/views.py:155
+#: agenda/views.py:155
 #, python-format
 msgid "Speaker %s was successfully removed from the list of speakers."
 msgstr ""
 
-#: openslides/agenda/views.py:176
+#: agenda/views.py:176
 msgid "The list of speakers is empty."
 msgstr ""
 
-#: openslides/agenda/views.py:183
+#: agenda/views.py:183
 msgid "User is now speaking."
 msgstr ""
 
-#: openslides/agenda/views.py:194
+#: agenda/views.py:194
 #, python-format
 msgid "There is no one speaking at the moment according to %(item)s."
 msgstr ""
 
-#: openslides/agenda/views.py:196
+#: agenda/views.py:196
 msgid "The speech is finished now."
 msgstr ""
 
-#: openslides/agenda/views.py:215 openslides/agenda/views.py:227
+#: agenda/views.py:215 agenda/views.py:227
 msgid "Invalid data."
 msgstr ""
 
-#: openslides/agenda/views.py:237
+#: agenda/views.py:237
 msgid "List of speakers successfully sorted."
 msgstr ""
 
-#: openslides/agenda/views.py:271
+#: agenda/views.py:271
 msgid "The agenda has been numbered."
 msgstr ""
 
-#: openslides/assignments/models.py:64
+#: assignments/models.py:64
 msgid "Searching for candidates"
 msgstr ""
 
-#: openslides/assignments/models.py:65
+#: assignments/models.py:65
 msgid "Voting"
 msgstr ""
 
-#: openslides/assignments/models.py:66
+#: assignments/models.py:66
 msgid "Finished"
 msgstr ""
 
-#: openslides/assignments/models.py:123 openslides/assignments/views.py:234
-#: openslides/assignments/views.py:426 openslides/assignments/views.py:443
+#: assignments/models.py:123 assignments/views.py:234 assignments/views.py:426
+#: assignments/views.py:443
 msgid "Election"
 msgstr ""
 
-#: openslides/assignments/serializers.py:138
+#: assignments/serializers.py:138
 #, python-format
 msgid "You have to submit data for %d candidates."
 msgstr ""
 
-#: openslides/assignments/serializers.py:142
-#: openslides/motions/serializers.py:177
+#: assignments/serializers.py:142 motions/serializers.py:177
 #, python-format
 msgid "You have to submit data for %d vote values."
 msgstr ""
 
-#: openslides/assignments/serializers.py:146
-#: openslides/motions/serializers.py:181
+#: assignments/serializers.py:146 motions/serializers.py:181
 #, python-format
 msgid "Vote value %s is invalid."
 msgstr ""
 
-#: openslides/assignments/signals.py:22
+#: assignments/signals.py:22
 msgid "Election method"
 msgstr ""
 
-#: openslides/assignments/signals.py:24
+#: assignments/signals.py:24
 msgid "Automatic assign of method"
 msgstr ""
 
-#: openslides/assignments/signals.py:25
+#: assignments/signals.py:25
 msgid "Always one option per candidate"
 msgstr ""
 
-#: openslides/assignments/signals.py:26
+#: assignments/signals.py:26
 msgid "Always Yes-No-Abstain per candidate"
 msgstr ""
 
-#: openslides/assignments/signals.py:28 openslides/assignments/signals.py:38
-#: openslides/assignments/signals.py:51 openslides/assignments/signals.py:60
-#: openslides/assignments/signals.py:71 openslides/assignments/signals.py:78
-#: openslides/assignments/signals.py:81 openslides/assignments/signals.py:90
-#: openslides/assignments/views.py:237
+#: assignments/signals.py:28 assignments/signals.py:38
+#: assignments/signals.py:51 assignments/signals.py:60
+#: assignments/signals.py:71 assignments/signals.py:78
+#: assignments/signals.py:81 assignments/signals.py:90
+#: assignments/views.py:237
 msgid "Elections"
 msgstr ""
 
-#: openslides/assignments/signals.py:29 openslides/assignments/signals.py:39
-#: openslides/assignments/signals.py:52 openslides/assignments/signals.py:61
-#: openslides/assignments/signals.py:72
+#: assignments/signals.py:29 assignments/signals.py:39
+#: assignments/signals.py:52 assignments/signals.py:61
+#: assignments/signals.py:72
 msgid "Ballot and ballot papers"
 msgstr ""
 
-#: openslides/assignments/signals.py:35
+#: assignments/signals.py:35
 msgid "The 100 % base of an election result consists of"
 msgstr ""
 
-#: openslides/assignments/signals.py:45 openslides/motions/signals.py:129
+#: assignments/signals.py:45 motions/signals.py:129
 msgid "Number of ballot papers (selection)"
 msgstr ""
 
-#: openslides/assignments/signals.py:47 openslides/motions/signals.py:131
+#: assignments/signals.py:47 motions/signals.py:131
 msgid "Number of all delegates"
 msgstr ""
 
-#: openslides/assignments/signals.py:48 openslides/motions/signals.py:132
+#: assignments/signals.py:48 motions/signals.py:132
 msgid "Number of all participants"
 msgstr ""
 
-#: openslides/assignments/signals.py:49 openslides/motions/signals.py:133
+#: assignments/signals.py:49 motions/signals.py:133
 msgid "Use the following custom number"
 msgstr ""
 
-#: openslides/assignments/signals.py:58 openslides/motions/signals.py:142
+#: assignments/signals.py:58 motions/signals.py:142
 msgid "Custom number of ballot papers"
 msgstr ""
 
-#: openslides/assignments/signals.py:68
+#: assignments/signals.py:68
 msgid "Publish election result for elected candidates only (projector view)"
 msgstr ""
 
-#: openslides/assignments/signals.py:79
+#: assignments/signals.py:79
 msgid "Title for PDF document (all elections)"
 msgstr ""
 
-#: openslides/assignments/signals.py:82 openslides/assignments/signals.py:91
-#: openslides/motions/signals.py:156 openslides/motions/signals.py:165
-#: openslides/motions/signals.py:174 openslides/users/signals.py:37
-#: openslides/users/signals.py:46 openslides/users/signals.py:57
-#: openslides/users/signals.py:66 openslides/users/signals.py:75
-#: openslides/users/signals.py:90
+#: assignments/signals.py:82 assignments/signals.py:91 motions/signals.py:156
+#: motions/signals.py:165 motions/signals.py:174 users/signals.py:37
+#: users/signals.py:46 users/signals.py:57 users/signals.py:66
+#: users/signals.py:75 users/signals.py:90
 msgid "PDF"
 msgstr ""
 
-#: openslides/assignments/signals.py:88
+#: assignments/signals.py:88
 msgid "Preamble text for PDF document (all elections)"
 msgstr ""
 
-#: openslides/assignments/views.py:81
+#: assignments/views.py:81
 msgid "You are already elected."
 msgstr ""
 
-#: openslides/assignments/views.py:91
+#: assignments/views.py:91
 msgid "You can not candidate to this election because it is finished."
 msgstr ""
 
-#: openslides/assignments/views.py:97
+#: assignments/views.py:97
 msgid "You were nominated successfully."
 msgstr ""
 
-#: openslides/assignments/views.py:102
+#: assignments/views.py:102
 msgid ""
 "You can not withdraw your candidature to this election because it is "
 "finished."
 msgstr ""
 
-#: openslides/assignments/views.py:107
+#: assignments/views.py:107
 msgid "You are not a candidate of this election."
 msgstr ""
 
-#: openslides/assignments/views.py:109
+#: assignments/views.py:109
 msgid "You have withdrawn your candidature successfully."
 msgstr ""
 
-#: openslides/assignments/views.py:118
+#: assignments/views.py:118
 #, python-format
 msgid "Invalid data. Expected dictionary, got %s."
 msgstr ""
 
-#: openslides/assignments/views.py:124
+#: assignments/views.py:124
 msgid "Invalid data. Expected something like {\"user\": <id>}."
 msgstr ""
 
-#: openslides/assignments/views.py:128
+#: assignments/views.py:128
 #, python-format
 msgid "Invalid data. User %d does not exist."
 msgstr ""
 
-#: openslides/assignments/views.py:148
+#: assignments/views.py:148
 #, python-format
 msgid "User %s is already elected."
 msgstr ""
 
-#: openslides/assignments/views.py:150
+#: assignments/views.py:150
 msgid "You can not nominate someone to this election because it is finished."
 msgstr ""
 
-#: openslides/assignments/views.py:156
+#: assignments/views.py:156
 #, python-format
 msgid "User %s is already nominated."
 msgstr ""
 
-#: openslides/assignments/views.py:158
+#: assignments/views.py:158
 #, python-format
 msgid "User %s was nominated successfully."
 msgstr ""
 
-#: openslides/assignments/views.py:165
+#: assignments/views.py:165
 msgid ""
 "You can not delete someone's candidature to this election because it is "
 "finished."
 msgstr ""
 
-#: openslides/assignments/views.py:168
+#: assignments/views.py:168
 #, python-format
 msgid "User %s has no status in this election."
 msgstr ""
 
-#: openslides/assignments/views.py:170
+#: assignments/views.py:170
 #, python-format
 msgid "Candidate %s was withdrawn successfully."
 msgstr ""
 
-#: openslides/assignments/views.py:182
+#: assignments/views.py:182
 #, python-format
 msgid "User %s is not a candidate of this election."
 msgstr ""
 
-#: openslides/assignments/views.py:184
+#: assignments/views.py:184
 #, python-format
 msgid "User %s was successfully elected."
 msgstr ""
 
-#: openslides/assignments/views.py:188
+#: assignments/views.py:188
 #, python-format
 msgid "User %s is not an elected candidate of this election."
 msgstr ""
 
-#: openslides/assignments/views.py:191
+#: assignments/views.py:191
 #, python-format
 msgid "User %s was successfully unelected."
 msgstr ""
 
-#: openslides/assignments/views.py:201
+#: assignments/views.py:201
 msgid "Can not create ballot because there are no candidates."
 msgstr ""
 
-#: openslides/assignments/views.py:204
+#: assignments/views.py:204
 msgid "Ballot created successfully."
 msgstr ""
 
-#: openslides/assignments/views.py:258
+#: assignments/views.py:258
 msgid "No elections available."
 msgstr ""
 
-#: openslides/assignments/views.py:277
+#: assignments/views.py:277
 #, python-format
 msgid "Election: %s"
 msgstr ""
 
-#: openslides/assignments/views.py:286
+#: assignments/views.py:286
 msgid "Number of members to be elected"
 msgstr ""
 
-#: openslides/assignments/views.py:293 openslides/assignments/views.py:321
+#: assignments/views.py:293 assignments/views.py:321
 msgid "Candidates"
 msgstr ""
 
-#: openslides/assignments/views.py:317
+#: assignments/views.py:317
 msgid "Election result"
 msgstr ""
 
-#: openslides/assignments/views.py:323
+#: assignments/views.py:323
 msgid "ballot"
 msgstr ""
 
-#: openslides/assignments/views.py:342
+#: assignments/views.py:342
 #, python-format
 msgid ""
 "Y: %(YES)s\n"
@@ -405,724 +395,711 @@ msgid ""
 "A: %(ABSTAIN)s"
 msgstr ""
 
-#: openslides/assignments/views.py:353 openslides/motions/pdf.py:116
+#: assignments/views.py:353 motions/pdf.py:116
 msgid "Valid votes"
 msgstr ""
 
-#: openslides/assignments/views.py:364 openslides/motions/pdf.py:118
+#: assignments/views.py:364 motions/pdf.py:118
 msgid "Invalid votes"
 msgstr ""
 
-#: openslides/assignments/views.py:375 openslides/motions/pdf.py:120
+#: assignments/views.py:375 motions/pdf.py:120
 msgid "Votes cast"
 msgstr ""
 
-#: openslides/assignments/views.py:397
+#: assignments/views.py:397
 msgid "elected"
 msgstr ""
 
-#: openslides/assignments/views.py:450
+#: assignments/views.py:450
 #, python-format
 msgid "%d. ballot"
 msgstr ""
 
-#: openslides/assignments/views.py:452
+#: assignments/views.py:452
 #, python-format
 msgid "%d candidate"
 msgid_plural "%d candidates"
 msgstr[0] ""
 msgstr[1] ""
 
-#: openslides/assignments/views.py:454
+#: assignments/views.py:454
 #, python-format
 msgid "%d available post"
 msgid_plural "%d available posts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: openslides/assignments/views.py:506 openslides/motions/pdf.py:126
-#: openslides/motions/pdf.py:349
+#: assignments/views.py:506 motions/pdf.py:126 motions/pdf.py:349
 msgid "Yes"
 msgstr ""
 
-#: openslides/assignments/views.py:507 openslides/motions/pdf.py:126
-#: openslides/motions/pdf.py:351
+#: assignments/views.py:507 motions/pdf.py:126 motions/pdf.py:351
 msgid "No"
 msgstr ""
 
-#: openslides/assignments/views.py:508 openslides/motions/pdf.py:126
-#: openslides/motions/pdf.py:353
+#: assignments/views.py:508 motions/pdf.py:126 motions/pdf.py:353
 msgid "Abstain"
 msgstr ""
 
-#: openslides/core/config.py:30 openslides/core/config.py:61
+#: core/config.py:30 core/config.py:61
 #, python-format
 msgid "The config variable %s was not found."
 msgstr ""
 
-#: openslides/core/config.py:70
+#: core/config.py:70
 #, python-format
 msgid "Wrong datatype. Expected %(expected_type)s, got %(got_type)s."
 msgstr ""
 
-#: openslides/core/config.py:73
+#: core/config.py:73
 msgid "Invalid input. Choice does not match."
 msgstr ""
 
-#: openslides/core/config.py:115
+#: core/config.py:115
 #, python-format
 msgid "Too many values for config variable %s found."
 msgstr ""
 
-#: openslides/core/config.py:166
+#: core/config.py:166
 msgid "Invalid value for config attribute input_type."
 msgstr ""
 
-#: openslides/core/config.py:168
+#: core/config.py:168
 msgid ""
 "Either config attribute 'choices' must not be None or 'input_type' must not "
 "be 'choice'."
 msgstr ""
 
-#: openslides/core/config.py:171
+#: core/config.py:171
 msgid ""
 "Either config attribute 'choices' must be None or 'input_type' must be "
 "'choice'."
 msgstr ""
 
-#: openslides/core/signals.py:42
+#: core/signals.py:42
 msgid "Event name"
 msgstr ""
 
-#: openslides/core/signals.py:45 openslides/core/signals.py:54
-#: openslides/core/signals.py:64 openslides/core/signals.py:72
-#: openslides/core/signals.py:80 openslides/core/signals.py:92
-#: openslides/core/signals.py:101 openslides/core/signals.py:111
+#: core/signals.py:45 core/signals.py:54 core/signals.py:64 core/signals.py:72
+#: core/signals.py:80 core/signals.py:92 core/signals.py:101
+#: core/signals.py:111
 msgid "Event"
 msgstr ""
 
-#: openslides/core/signals.py:50
+#: core/signals.py:50
 msgid "Presentation and assembly system"
 msgstr ""
 
-#: openslides/core/signals.py:51
+#: core/signals.py:51
 msgid "Short description of event"
 msgstr ""
 
-#: openslides/core/signals.py:61
+#: core/signals.py:61
 msgid "Event date"
 msgstr ""
 
-#: openslides/core/signals.py:69
+#: core/signals.py:69
 msgid "Event location"
 msgstr ""
 
-#: openslides/core/signals.py:77
+#: core/signals.py:77
 msgid "Event organizer"
 msgstr ""
 
-#: openslides/core/signals.py:85
+#: core/signals.py:85
 msgid ""
 "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based "
 "presentation and assembly system for visualizing and controlling agenda, "
 "motions and elections of an assembly."
 msgstr ""
 
-#: openslides/core/signals.py:89
+#: core/signals.py:89
 msgid "Legal notice"
 msgstr ""
 
-#: openslides/core/signals.py:97
+#: core/signals.py:97
 msgid "Welcome to OpenSlides"
 msgstr ""
 
-#: openslides/core/signals.py:98
+#: core/signals.py:98
 msgid "Front page title"
 msgstr ""
 
-#: openslides/core/signals.py:106
+#: core/signals.py:106
 msgid "[Space for your welcome text.]"
 msgstr ""
 
-#: openslides/core/signals.py:108
+#: core/signals.py:108
 msgid "Front page text"
 msgstr ""
 
-#: openslides/core/signals.py:120
+#: core/signals.py:120
 msgid "Allow access for anonymous guest users"
 msgstr ""
 
-#: openslides/core/signals.py:123 openslides/core/signals.py:131
+#: core/signals.py:123 core/signals.py:131
 msgid "System"
 msgstr ""
 
-#: openslides/core/signals.py:128
+#: core/signals.py:128
 msgid "Show this text on the login page."
 msgstr ""
 
-#: openslides/core/signals.py:139
+#: core/signals.py:139
 msgid "Show logo on projector"
 msgstr ""
 
-#: openslides/core/signals.py:141
+#: core/signals.py:141
 msgid ""
 "You can replace the logo. Just copy a file to \"static/img/logo-projector.png"
 "\" in your OpenSlides data path."
 msgstr ""
 
-#: openslides/core/signals.py:144 openslides/core/signals.py:152
-#: openslides/core/signals.py:160 openslides/core/signals.py:168
-#: openslides/core/signals.py:176 openslides/core/signals.py:183
+#: core/signals.py:144 core/signals.py:152 core/signals.py:160
+#: core/signals.py:168 core/signals.py:176 core/signals.py:183
 msgid "Projector"
 msgstr ""
 
-#: openslides/core/signals.py:150
+#: core/signals.py:150
 msgid "Show title and description of event on projector"
 msgstr ""
 
-#: openslides/core/signals.py:158
+#: core/signals.py:158
 msgid "Background color of projector header and footer"
 msgstr ""
 
-#: openslides/core/signals.py:166
+#: core/signals.py:166
 msgid "Font color of projector header and footer"
 msgstr ""
 
-#: openslides/core/signals.py:174
+#: core/signals.py:174
 msgid "Font color of projector headline"
 msgstr ""
 
-#: openslides/core/signals.py:181
+#: core/signals.py:181
 msgid "Default countdown"
 msgstr ""
 
-#: openslides/global_settings.py:16
+#: global_settings.py:16
 msgid "Czech"
 msgstr ""
 
-#: openslides/global_settings.py:17
+#: global_settings.py:17
 msgid "English"
 msgstr ""
 
-#: openslides/global_settings.py:18
+#: global_settings.py:18
 msgid "French"
 msgstr ""
 
-#: openslides/global_settings.py:19
+#: global_settings.py:19
 msgid "German"
 msgstr ""
 
-#: openslides/global_settings.py:20
+#: global_settings.py:20
 msgid "Portuguese"
 msgstr ""
 
-#: openslides/mediafiles/models.py:61
+#: mediafiles/models.py:61
 msgid "unknown"
 msgstr ""
 
-#: openslides/motions/models.py:125 openslides/motions/pdf.py:39
-#: openslides/motions/pdf.py:338 openslides/motions/signals.py:27
-#: openslides/motions/signals.py:40 openslides/motions/signals.py:48
-#: openslides/motions/signals.py:58 openslides/motions/signals.py:67
-#: openslides/motions/signals.py:79 openslides/motions/signals.py:88
-#: openslides/motions/signals.py:100 openslides/motions/signals.py:110
-#: openslides/motions/signals.py:122 openslides/motions/signals.py:135
-#: openslides/motions/signals.py:144 openslides/motions/signals.py:155
-#: openslides/motions/signals.py:164 openslides/motions/signals.py:173
-#: openslides/motions/views.py:349 openslides/motions/views.py:409
+#: motions/models.py:125 motions/pdf.py:39 motions/pdf.py:338
+#: motions/signals.py:27 motions/signals.py:40 motions/signals.py:48
+#: motions/signals.py:58 motions/signals.py:67 motions/signals.py:79
+#: motions/signals.py:88 motions/signals.py:100 motions/signals.py:110
+#: motions/signals.py:122 motions/signals.py:135 motions/signals.py:144
+#: motions/signals.py:155 motions/signals.py:164 motions/signals.py:173
+#: motions/views.py:349 motions/views.py:409
 msgid "Motion"
 msgstr ""
 
-#: openslides/motions/models.py:617
+#: motions/models.py:617
 msgid "new"
 msgstr ""
 
-#: openslides/motions/models.py:689
+#: motions/models.py:689
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr ""
 
-#: openslides/motions/pdf.py:46
+#: motions/pdf.py:46
 msgid "Submitter"
 msgstr ""
 
-#: openslides/motions/pdf.py:60
+#: motions/pdf.py:60
 msgid "Signature"
 msgstr ""
 
-#: openslides/motions/pdf.py:71 openslides/motions/signals.py:101
-#: openslides/motions/signals.py:111
+#: motions/pdf.py:71 motions/signals.py:101 motions/signals.py:111
 msgid "Supporters"
 msgstr ""
 
-#: openslides/motions/pdf.py:82
+#: motions/pdf.py:82
 msgid "State"
 msgstr ""
 
-#: openslides/motions/pdf.py:92 openslides/motions/views.py:158
-#: openslides/motions/views.py:170
+#: motions/pdf.py:92 motions/views.py:158 motions/views.py:170
 msgid "Version"
 msgstr ""
 
-#: openslides/motions/pdf.py:108
+#: motions/pdf.py:108
 msgid "Vote result"
 msgstr ""
 
-#: openslides/motions/pdf.py:122 openslides/motions/views.py:349
+#: motions/pdf.py:122 motions/views.py:349
 msgid "Vote"
 msgstr ""
 
-#: openslides/motions/pdf.py:149
+#: motions/pdf.py:149
 msgid "Reason"
 msgstr ""
 
-#: openslides/motions/pdf.py:325
+#: motions/pdf.py:325
 msgid "Categories"
 msgstr ""
 
-#: openslides/motions/pdf.py:332
+#: motions/pdf.py:332
 msgid "No motions available."
 msgstr ""
 
-#: openslides/motions/pdf.py:345
+#: motions/pdf.py:345
 #, python-format
 msgid "Motion No. %s"
 msgstr ""
 
-#: openslides/motions/serializers.py:31
+#: motions/serializers.py:31
 #, python-format
 msgid "Workflow %(pk)d does not exist."
 msgstr ""
 
-#: openslides/motions/signals.py:24
+#: motions/signals.py:24
 msgid "Workflow of new motions"
 msgstr ""
 
-#: openslides/motions/signals.py:34
+#: motions/signals.py:34
 msgid "Identifier"
 msgstr ""
 
-#: openslides/motions/signals.py:36
+#: motions/signals.py:36
 msgid "Numbered per category"
 msgstr ""
 
-#: openslides/motions/signals.py:37
+#: motions/signals.py:37
 msgid "Serially numbered"
 msgstr ""
 
-#: openslides/motions/signals.py:38
+#: motions/signals.py:38
 msgid "Set it manually"
 msgstr ""
 
-#: openslides/motions/signals.py:45
+#: motions/signals.py:45
 msgid "The assembly may decide,"
 msgstr ""
 
-#: openslides/motions/signals.py:46
+#: motions/signals.py:46
 msgid "Motion preamble"
 msgstr ""
 
-#: openslides/motions/signals.py:56
+#: motions/signals.py:56
 msgid "Stop submitting new motions by non-staff users"
 msgstr ""
 
-#: openslides/motions/signals.py:65
+#: motions/signals.py:65
 msgid "Allow to disable versioning"
 msgstr ""
 
-#: openslides/motions/signals.py:76
+#: motions/signals.py:76
 msgid "Activate amendments"
 msgstr ""
 
-#: openslides/motions/signals.py:80 openslides/motions/signals.py:89
+#: motions/signals.py:80 motions/signals.py:89
 msgid "Amendments"
 msgstr ""
 
-#: openslides/motions/signals.py:84
+#: motions/signals.py:84
 msgctxt "Prefix for the identifier for amendments"
 msgid "A"
 msgstr ""
 
-#: openslides/motions/signals.py:85
+#: motions/signals.py:85
 msgid "Prefix for the identifier for amendments"
 msgstr ""
 
-#: openslides/motions/signals.py:97
+#: motions/signals.py:97
 msgid "Number of (minimum) required supporters for a motion"
 msgstr ""
 
-#: openslides/motions/signals.py:98
+#: motions/signals.py:98
 msgid "Choose 0 to disable the supporting system."
 msgstr ""
 
-#: openslides/motions/signals.py:108
+#: motions/signals.py:108
 msgid ""
 "Remove all supporters of a motion if a submitter edits his motion in early "
 "state"
 msgstr ""
 
-#: openslides/motions/signals.py:119
+#: motions/signals.py:119
 msgid "The 100 % base of a voting result consists of"
 msgstr ""
 
-#: openslides/motions/signals.py:123 openslides/motions/signals.py:136
-#: openslides/motions/signals.py:145
+#: motions/signals.py:123 motions/signals.py:136 motions/signals.py:145
 msgid "Voting and ballot papers"
 msgstr ""
 
-#: openslides/motions/signals.py:152 openslides/motions/views.py:402
+#: motions/signals.py:152 motions/views.py:402
 msgid "Motions"
 msgstr ""
 
-#: openslides/motions/signals.py:153
+#: motions/signals.py:153
 msgid "Title for PDF document (all motions)"
 msgstr ""
 
-#: openslides/motions/signals.py:162
+#: motions/signals.py:162
 msgid "Preamble text for PDF document (all motions)"
 msgstr ""
 
-#: openslides/motions/signals.py:171
+#: motions/signals.py:171
 msgid "Show paragraph numbering (only in PDF)"
 msgstr ""
 
-#: openslides/motions/signals.py:188
+#: motions/signals.py:188
 msgid "submitted"
 msgstr ""
 
-#: openslides/motions/signals.py:193 openslides/motions/signals.py:222
+#: motions/signals.py:193 motions/signals.py:222
 msgid "accepted"
 msgstr ""
 
-#: openslides/motions/signals.py:197 openslides/motions/signals.py:227
+#: motions/signals.py:197 motions/signals.py:227
 msgid "rejected"
 msgstr ""
 
-#: openslides/motions/signals.py:201
+#: motions/signals.py:201
 msgid "not decided"
 msgstr ""
 
-#: openslides/motions/signals.py:210
+#: motions/signals.py:210
 msgid "published"
 msgstr ""
 
-#: openslides/motions/signals.py:215 openslides/motions/views.py:160
+#: motions/signals.py:215 motions/views.py:160
 msgid "permitted"
 msgstr ""
 
-#: openslides/motions/signals.py:232
+#: motions/signals.py:232
 msgid "withdrawed"
 msgstr ""
 
-#: openslides/motions/signals.py:237
+#: motions/signals.py:237
 msgid "adjourned"
 msgstr ""
 
-#: openslides/motions/signals.py:242
+#: motions/signals.py:242
 msgid "not concerned"
 msgstr ""
 
-#: openslides/motions/signals.py:247
+#: motions/signals.py:247
 msgid "commited a bill"
 msgstr ""
 
-#: openslides/motions/signals.py:252
+#: motions/signals.py:252
 msgid "needs review"
 msgstr ""
 
-#: openslides/motions/signals.py:257
+#: motions/signals.py:257
 msgid "rejected (not authorized)"
 msgstr ""
 
-#: openslides/motions/views.py:86
+#: motions/views.py:86
 msgid "Motion created"
 msgstr ""
 
-#: openslides/motions/views.py:128
+#: motions/views.py:128
 msgid "Motion updated"
 msgstr ""
 
-#: openslides/motions/views.py:132
+#: motions/views.py:132
 msgid "All supporters removed"
 msgstr ""
 
-#: openslides/motions/views.py:162
+#: motions/views.py:162
 #, python-format
 msgid "Version %d permitted successfully."
 msgstr ""
 
-#: openslides/motions/views.py:167
+#: motions/views.py:167
 msgid "You can not delete the active version of a motion."
 msgstr ""
 
-#: openslides/motions/views.py:172
+#: motions/views.py:172
 msgid "deleted"
 msgstr ""
 
-#: openslides/motions/views.py:174
+#: motions/views.py:174
 #, python-format
 msgid "Version %d deleted successfully."
 msgstr ""
 
-#: openslides/motions/views.py:195
+#: motions/views.py:195
 msgid "You can not support this motion."
 msgstr ""
 
-#: openslides/motions/views.py:197
+#: motions/views.py:197
 msgid "Motion supported"
 msgstr ""
 
-#: openslides/motions/views.py:198
+#: motions/views.py:198
 msgid "You have supported this motion successfully."
 msgstr ""
 
-#: openslides/motions/views.py:203
+#: motions/views.py:203
 msgid "You can not unsupport this motion."
 msgstr ""
 
-#: openslides/motions/views.py:205
+#: motions/views.py:205
 msgid "Motion unsupported"
 msgstr ""
 
-#: openslides/motions/views.py:206
+#: motions/views.py:206
 msgid "You have unsupported this motion successfully."
 msgstr ""
 
-#: openslides/motions/views.py:229
+#: motions/views.py:229
 msgid "Invalid data. State must be an integer."
 msgstr ""
 
-#: openslides/motions/views.py:232
+#: motions/views.py:232
 #, python-format
 msgid "You can not set the state to %(state_id)d."
 msgstr ""
 
-#: openslides/motions/views.py:240
+#: motions/views.py:240
 #, python-format
 msgid "The state of the motion was set to %s."
 msgstr ""
 
-#: openslides/motions/views.py:244
+#: motions/views.py:244
 msgid "State set to"
 msgstr ""
 
-#: openslides/motions/views.py:259
+#: motions/views.py:259
 msgid "Vote created successfully."
 msgstr ""
 
-#: openslides/poll/models.py:71
+#: poll/models.py:71
 msgid "Only all valid votes"
 msgstr ""
 
-#: openslides/poll/models.py:72
+#: poll/models.py:72
 msgid "All votes cast (including invalid votes)"
 msgstr ""
 
-#: openslides/poll/models.py:73
+#: poll/models.py:73
 msgid "Disabled (no percents)"
 msgstr ""
 
-#: openslides/poll/models.py:262
+#: poll/models.py:262
 msgid "majority"
 msgstr ""
 
-#: openslides/poll/models.py:264 openslides/poll/models.py:266
+#: poll/models.py:264 poll/models.py:266
 msgid "undocumented"
 msgstr ""
 
-#: openslides/poll/serializers.py:16
+#: poll/serializers.py:16
 msgid "Value for {} must not be less than -2"
 msgstr ""
 
-#: openslides/users/pdf.py:26
+#: users/pdf.py:26
 msgid "Title"
 msgstr ""
 
-#: openslides/users/pdf.py:26
+#: users/pdf.py:26
 msgid "Last Name"
 msgstr ""
 
-#: openslides/users/pdf.py:26
+#: users/pdf.py:26
 msgid "First Name"
 msgstr ""
 
-#: openslides/users/pdf.py:27
+#: users/pdf.py:27
 msgid "Structure level"
 msgstr ""
 
-#: openslides/users/pdf.py:27
+#: users/pdf.py:27
 msgid "Group"
 msgstr ""
 
-#: openslides/users/pdf.py:95
+#: users/pdf.py:95
 msgid "WLAN access data"
 msgstr ""
 
-#: openslides/users/pdf.py:97 openslides/users/signals.py:62
+#: users/pdf.py:97 users/signals.py:62
 msgid "WLAN name (SSID)"
 msgstr ""
 
-#: openslides/users/pdf.py:101 openslides/users/signals.py:71
+#: users/pdf.py:101 users/signals.py:71
 msgid "WLAN password"
 msgstr ""
 
-#: openslides/users/pdf.py:105 openslides/users/signals.py:81
+#: users/pdf.py:105 users/signals.py:81
 msgid "WLAN encryption"
 msgstr ""
 
-#: openslides/users/pdf.py:112
+#: users/pdf.py:112
 msgid "OpenSlides access data"
 msgstr ""
 
-#: openslides/users/pdf.py:114
+#: users/pdf.py:114
 msgid "Username"
 msgstr ""
 
-#: openslides/users/pdf.py:118
+#: users/pdf.py:118
 msgid "Password"
 msgstr ""
 
-#: openslides/users/pdf.py:131
+#: users/pdf.py:131
 msgid "Scan this QRCode to connect WLAN."
 msgstr ""
 
-#: openslides/users/pdf.py:136
+#: users/pdf.py:136
 msgid "Scan this QRCode to open URL."
 msgstr ""
 
-#: openslides/users/serializers.py:46
+#: users/serializers.py:46
 msgid ""
 "The groups this user belongs to. A user will get all permissions granted to "
 "each of his/her groups."
 msgstr ""
 
-#: openslides/users/serializers.py:74
+#: users/serializers.py:74
 msgid "Username, first name and last name can not all be empty."
 msgstr ""
 
-#: openslides/users/serializers.py:107
+#: users/serializers.py:107
 #, python-brace-format
 msgid "Incorrect value \"{value}\". Expected app_label.codename string."
 msgstr ""
 
-#: openslides/users/serializers.py:108
+#: users/serializers.py:108
 #, python-brace-format
 msgid "Invalid permission \"{value}\". Object does not exist."
 msgstr ""
 
-#: openslides/users/signals.py:23
+#: users/signals.py:23
 msgid "Sort users by first name"
 msgstr ""
 
-#: openslides/users/signals.py:24
+#: users/signals.py:24
 msgid "Disable for sorting by last name"
 msgstr ""
 
-#: openslides/users/signals.py:26 openslides/users/signals.py:36
-#: openslides/users/signals.py:45 openslides/users/signals.py:56
-#: openslides/users/signals.py:65 openslides/users/signals.py:74
-#: openslides/users/signals.py:89
+#: users/signals.py:26 users/signals.py:36 users/signals.py:45
+#: users/signals.py:56 users/signals.py:65 users/signals.py:74
+#: users/signals.py:89
 msgid "Users"
 msgstr ""
 
-#: openslides/users/signals.py:27
+#: users/signals.py:27
 msgid "Sorting"
 msgstr ""
 
-#: openslides/users/signals.py:33
+#: users/signals.py:33
 msgid "Welcome to OpenSlides!"
 msgstr ""
 
-#: openslides/users/signals.py:34
+#: users/signals.py:34
 msgid "Title for access data and welcome PDF"
 msgstr ""
 
-#: openslides/users/signals.py:42
+#: users/signals.py:42
 msgid "[Place for your welcome and help text.]"
 msgstr ""
 
-#: openslides/users/signals.py:43
+#: users/signals.py:43
 msgid "Help text for access data and welcome PDF"
 msgstr ""
 
-#: openslides/users/signals.py:53
+#: users/signals.py:53
 msgid "System URL"
 msgstr ""
 
-#: openslides/users/signals.py:54
+#: users/signals.py:54
 msgid "Used for QRCode in PDF of access data."
 msgstr ""
 
-#: openslides/users/signals.py:63 openslides/users/signals.py:72
-#: openslides/users/signals.py:82
+#: users/signals.py:63 users/signals.py:72 users/signals.py:82
 msgid "Used for WLAN QRCode in PDF of access data."
 msgstr ""
 
-#: openslides/users/signals.py:85
+#: users/signals.py:85
 msgid "WEP"
 msgstr ""
 
-#: openslides/users/signals.py:86
+#: users/signals.py:86
 msgid "WPA/WPA2"
 msgstr ""
 
-#: openslides/users/signals.py:87
+#: users/signals.py:87
 msgid "No encryption"
 msgstr ""
 
-#: openslides/users/views.py:114
+#: users/views.py:114
 msgid "You can not deactivate yourself."
 msgstr ""
 
-#: openslides/users/views.py:153
+#: users/views.py:153
 msgid "You can not delete yourself."
 msgstr ""
 
-#: openslides/users/views.py:167
+#: users/views.py:167
 msgid "Password successfully reset."
 msgstr ""
 
-#: openslides/users/views.py:237
+#: users/views.py:237
 msgid "Username or password is not correct."
 msgstr ""
 
-#: openslides/users/views.py:263
+#: users/views.py:263
 #, python-brace-format
 msgid ""
 "Installation was successfully. Use {username} and {password} for first "
 "login. Important: Please change your password!"
 msgstr ""
 
-#: openslides/users/views.py:284
+#: users/views.py:284
 msgid "You are not authenticated."
 msgstr ""
 
-#: openslides/users/views.py:318
+#: users/views.py:318
 msgid "Old password does not match."
 msgstr ""
 
-#: openslides/users/views.py:329
+#: users/views.py:329
 msgid "user-list"
 msgstr ""
 
-#: openslides/users/views.py:330
+#: users/views.py:330
 msgid "List of users"
 msgstr ""
 
-#: openslides/users/views.py:344
+#: users/views.py:344
 msgid "user-access-data"
 msgstr ""
 
-#: openslides/utils/pdf.py:252
+#: utils/pdf.py:252
 #, python-format
 msgid "As of: %s"
 msgstr ""
 
-#: openslides/utils/pdf.py:263 openslides/utils/pdf.py:272
+#: utils/pdf.py:263 utils/pdf.py:272
 #, python-format
 msgid "Page %s"
 msgstr ""
 
-#: openslides/utils/views.py:59
+#: utils/views.py:59
 msgid "undefined-filename"
 msgstr ""
