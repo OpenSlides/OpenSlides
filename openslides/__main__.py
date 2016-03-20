@@ -98,6 +98,16 @@ def get_parser():
         action='store_true',
         help='Do not launch the default web browser.')
     subcommand_start.add_argument(
+        '--host',
+        action='store',
+        default='0.0.0.0',
+        help='IP address to listen on. Default is 0.0.0.0.')
+    subcommand_start.add_argument(
+        '--port',
+        action='store',
+        default='8000',
+        help='Port to listen on. Default is 8000.')
+    subcommand_start.add_argument(
         '--settings_path',
         action='store',
         default=None,
@@ -165,12 +175,17 @@ def start(args):
 
     execute_from_command_line(['manage.py', 'migrate'])
 
+    # Open the browser
     if not args.no_browser:
-        start_browser('http://localhost:8000')
+        if args.host == '0.0.0.0':
+            # Windows does not support 0.0.0.0, so use 'localhost' instead
+            start_browser('http://localhost:%s' % args.port)
+        else:
+            start_browser('http://%s:%s' % (args.host, args.port))
 
     # Start the webserver
     # Tell django not to reload. OpenSlides uses the reload method from tornado
-    execute_from_command_line(['manage.py', 'runserver', '0.0.0.0:8000', '--noreload'])
+    execute_from_command_line(['manage.py', 'runserver', '%s:%s' % (args.host, args.port), '--noreload'])
 
 
 def createsettings(args):
