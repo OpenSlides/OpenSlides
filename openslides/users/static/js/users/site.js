@@ -58,6 +58,26 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 }
             }
         })
+        // Redirects to user detail view and opens user edit form dialog, uses edit url.
+        // Used by $state.go(..) from core/site.js only (for edit current slide button).
+        // (from users list controller use UserForm factory instead to open dialog in front of
+        // current view without redirect)
+        .state('users.user.detail.update', {
+            onEnter: ['$stateParams', '$state', 'ngDialog', 'User',
+                function($stateParams, $state, ngDialog, User) {
+                    ngDialog.open({
+                        template: 'static/templates/users/user-form.html',
+                        controller: 'UserUpdateCtrl',
+                        className: 'ngdialog-theme-default wide-form',
+                        closeByEscape: false,
+                        closeByDocument: false,
+                        resolve: {
+                            user: function() {return User.find($stateParams.id);}
+                        }
+                    });
+                }
+            ]
+        })
         .state('users.user.detail.profile', {
             views: {
                 '@users.user': {},
@@ -304,7 +324,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     templateOptions: {
                         label: gettextCatalog.getString('Groups'),
                         options: Group.getAll(),
-                        ngOptions: 'option.id as option.name for option in to.options | ' +
+                        ngOptions: 'option.id as option.name | translate for option in to.options | ' +
                                    'filter: {id: "!1"} | filter: {id: "!2"}',
                         placeholder: gettextCatalog.getString('Select or search a group ...')
                     }

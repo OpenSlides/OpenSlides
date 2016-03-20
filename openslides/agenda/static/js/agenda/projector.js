@@ -69,7 +69,10 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
             } else if ($scope.element.tree) {
                 $scope.items = AgendaTree.getFlatTree(Agenda.getAll());
             } else {
-                $scope.items = $filter('filter')(Agenda.getAll(), {'parent_id': null});
+                $scope.items = Agenda.filter({
+                    where: { parent_id: null },
+                    orderBy: 'weight'
+                });
             }
         });
     }

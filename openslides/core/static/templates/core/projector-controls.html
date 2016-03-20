@@ -17,6 +17,8 @@
         </a>
         <!-- projector control buttons -->
         <div os-perms="core.can_manage_projector">
+
+          <!-- edit -->
           <a ng-click="editCurrentSlide()"
               class="btn btn-default btn-sm"
               title="{{ 'Edit current slide' | translate}}">
@@ -85,8 +87,7 @@
                 <i class="fa fa-times"></i>
             </button>
             <!-- edit countdown button -->
-            <button ng-show="countdown.status=='stop'"
-                type="button" class="close editicon"
+            <button type="button" class="close editicon"
                 ng-click="editCountdownFlag=true;"
                 title="{{ 'Edit countdown' | translate}}">
                 <i class="fa fa-pencil"></i>
@@ -135,7 +136,8 @@
               </div>
               <div class="form-group">
                 <label translate>Start time</label>
-                <input ng-model="countdown.default" type="number" class="form-control input-sm">
+                <input data-ng-model="countdown.default" min-sec-format
+                    type="text" placeholder="mm:ss" class="form-control input-sm">
               </div>
               <button type="submit"
                   title="{{ 'Save' | translate}}"

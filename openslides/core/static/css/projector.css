@@ -51,7 +51,7 @@ body{
     font-size: 24px;
     position: absolute;
     text-align: right;
-    top: 25px;
+    top: 23px;
     right: 50px;
     padding-left: 30px;
 }
@@ -185,16 +185,16 @@ hr {
 /*** Overlay ***/
 .countdown {
     min-width: 260px;
-    position: fixed;
-    margin: 0;
-    top: 90px;
+    position: relative;
+    margin: 0 0 10px 10px;
+    top: 0px;
     right: 0px;
-    padding: 23px 47px 0px 19px;
+    padding: 23px 45px 0px 19px;
     min-height: 72px;
     font-size: 3.7em;
     font-weight: bold;
     text-align: right;
-    border-radius: 7px 0 0 7px;
+    border-radius: 7px 7px 7px 7px;
     z-index: 200;
     font-family: "Roboto Condensed",Helvetica,Arial,sans-serif;
 }
@@ -202,7 +202,7 @@ hr {
     font-weight: normal;
     font-size: 18px;
     margin-top: 20px;
-    padding-right: 5px;
+    padding-right: 6px;
 }
 .countdown.warning {
     color: #ed940d;
