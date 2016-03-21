@@ -151,6 +151,7 @@ gulp.task('bower-components-for-readme', function () {
     var files = [];
     return gulp.src([
             path.join('bower_components', '*', 'bower.json'),
+            path.join('bower_components', '*', 'package.json'),
             path.join('bower_components', '*', 'component.json'),
         ])
         .pipe(

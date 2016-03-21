@@ -75,18 +75,13 @@ portable version you should observe the following install steps.*
    Make sure that you have installed Python Programming Language 3 (>= 3.4)
    and Setuptools on your system.
 
-   a. Download and run the latest `Python 3.4 32-bit MSI installer
-      <https://www.python.org/downloads/windows/>`_. Note
-      that the 32-bit MSI installer is required even on a 64-bit Windows
-      system. If you use the 64-bit MSI installer, step 3 of this
-      instruction will fail unless you installed the package Reportlab
-      manually.
+   a. Download and run the latest `Python 3.5 32-bit (x86) executable
+      installer <https://www.python.org/downloads/windows/>`_. Note that
+      the 32-bit installer is required even on a 64-bit Windows system. If
+      you use the 64-bit installer, step 3 of this instruction will fail
+      unless you installed the package Reportlab manually.
 
-   b. Add python directories to PATH (via Control Panel > System >
-      Advanced): ``";C:\\Python34;C:\\Python34\\Scripts"``. Note that the path
-      can differ if you customized the install of Python in the first step.
-
-   c. Download and run (via double click) the last `install script
+   b. Download and run (via double click) the last `install script
       ez_setup.py for Setuptools
       <https://pypi.python.org/pypi/setuptools/#installation-instructions>`_.
 
@@ -273,28 +268,27 @@ OpenSlides uses the following projects or parts of them:
 
 * Several JavaScript packages (see bower.json)
 
-  * `angular <https://angularjs.org>`_, License: MIT
-  * `angular-animate <https://github.com/angular/bower-angular-animate>`_, License: MIT
-  * `angular-bootstrap <https://angular-ui.github.io/bootstrap>`_, License: MIT
-  * `angular-ckeditor <https://github.com/lemonde/angular-ckeditor>`_, License: MIT
-  * `angular-csv-import <https://github.com/cybadave/angular-csv-import>`_, License: MIT
-  * `angular-formly <http://angular-formly.com/>`_, License: MIT
-  * `angular-formly-templates-bootstrap <http://angular-formly.com/>`_, License: MIT
-  * `angular-gettext <https://angular-gettext.rocketeer.be/>`_, License: MIT
-  * `angular-loading-bar <https://chieffancypants.github.io/angular-loading-bar/>`_, License: MIT
-  * `angular-messages <https://github.com/angular/bower-angular-messages>`_, License: MIT
+  * `angular <http://angularjs.org>`_, License: MIT
+  * `angular-animate <http://angularjs.org>`_, License: MIT
+  * `angular-bootstrap <http://angular-ui.github.io/bootstrap>`_, License: MIT
+  * `angular-bootstrap-colorpicker <https://github.com/buberdds/angular-bootstrap-colorpicker>`_, License: MIT
+  * `angular-chosen-localytics <http://github.com/leocaseiro/angular-chosen>`_, License: MIT
+  * `angular-csv-import-tmp <https://github.com/cybadave/angular-csv-import>`_, License: MIT
+  * `angular-formly <http://formly-js.github.io/angular-formly/>`_, License: MIT
+  * `angular-formly-templates-bootstrap <http://formly-js.github.io/angular-formly-templates-bootstrap/>`_, License: MIT
+  * `angular-gettext <http://angular-gettext.rocketeer.be/>`_, License: MIT
+  * `angular-loading-bar <https://chieffancypants.github.io/angular-loading-bar>`_, License: MIT
+  * `angular-messages <http://angularjs.org>`_, License: MIT
   * `angular-pdf <http://github.com/sayanee/angularjs-pdf>`_, License: MIT
-  * `angular-sanitize <https://github.com/angular/bower-angular-sanitize>`_, License: MIT
+  * `angular-sanitize <http://angularjs.org>`_, License: MIT
   * `angular-scroll-glue <https://github.com/Luegg/angularjs-scroll-glue>`_, License: MIT
-  * `angular-ui-router <http://angular-ui.github.io/ui-router>`_, License: MIT
-  * `angular-ui-select <https://github.com/angular-ui/ui-select>`_, License: MIT
-  * `angular-ui-tree <https://github.com/JimLiu/angular-ui-tree>`_, License: MIT
-  * `api-check <https://github.com/kentcdodds/apiCheck.js>`_, License: MIT
-  * `bootbox <http://bootboxjs.com/>`_, License: MIT
+  * `angular-ui-router <http://angular-ui.github.io/ui-router/>`_, License: MIT
+  * `angular-ui-tinymce <http://angular-ui.github.com>`_, License: MIT
+  * `angular-ui-tree <https://github.com/angular-ui-tree/angular-ui-tree>`_, License: MIT
+  * `api-check <https://github.com/kentcdodds/api-check>`_, License: MIT
   * `bootstrap <http://getbootstrap.com>`_, License: MIT
-  * `bootstrap-css-only <http://getbootstrap.com>`_, License: MIT
-  * `ckeditor <http://ckeditor.com>`_, License: For licensing, see LICENSE.md or http://ckeditor.com/license.
-  * `font-awesome-bower <https://github.com/interval-braining/font-awesome-bower>`_, License: MIT
+  * `chosen <http://harvesthq.github.io/chosen/>`_, License: MIT
+  * `font-awesome-bower <https://github.com/tdg5/font-awesome-bower>`_, License: MIT
   * `jquery <https://jquery.com>`_, License: MIT
   * `jquery.cookie <https://plugins.jquery.com/cookie>`_, License: MIT
   * `js-data <http://www.js-data.io>`_, License: MIT
@@ -303,11 +297,13 @@ OpenSlides uses the following projects or parts of them:
   * `lodash <https://lodash.com/>`_, License: MIT
   * `ng-dialog <https://github.com/likeastore/ngDialog>`_, License: MIT
   * `ng-file-upload <https://github.com/danialfarid/ng-file-upload>`_, License: MIT
-  * `ngBootbox <https://github.com/eriktufvesson/ngBootbox>`_, License: MIT
+  * `ngbootbox <https://github.com/eriktufvesson/ngBootbox>`_, License: MIT
   * `open-sans-fontface <https://github.com/FontFaceKit/open-sans>`_, License: Apache License version 2.0
-  * `PDF.js <https://github.com/mozilla/pdfjs-dist>`_, License: Apache License version 2.0
-  * `roboto-condensed <https://github.com/davidcunningham/roboto-condensed>`_, License: Apache-2.0
+  * `pdfjs-dist <http://mozilla.github.io/pdf.js/>`_, License: Apache-2.0
+  * `roboto-condensed <https://github.com/davidcunningham/roboto-condensed>`_, License: Apache 2.0
   * `sockjs <https://github.com/sockjs/sockjs-client>`_, License: MIT
+  * `tinymce <http://www.tinymce.com>`_, License: LGPL-2.1
+  * `tinymce-i18n <https://github.com/OpenSlides/tinymce-i18n>`_, License: LGPL-2.1
 
 
 VII. License and authors
