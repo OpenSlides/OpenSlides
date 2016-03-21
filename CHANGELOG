@@ -12,31 +12,35 @@ Agenda:
 - Updated the tests and changed internal parts of method of the agenda model.
 - Changed API of related objects. All assignments, motions and custom slides
   are now agenda items and can be hidden.
-- Removed mptt.
+- Removed django-mptt.
 - Added attachments to custom sldies.
-- Improved csv import.
+- Improved CSV import.
 Assignments:
 - Renamed app from assignment to assignments.
 - Removed possibility to block candidates.
 - Massive refactoring and cleanup of the app.
 Motions:
 - Renamed app from motion to motions.
+- Massive refactoring and cleanup of the app.
 Mediafiles:
 - Renamed app from mediafile to mediafiles.
 - Used improved pdf presentation with angular-pdf.
+- Massive refactoring and cleanup of the app.
 Users:
 - Massive refactoring of the participant app. Now called 'users'.
 - Used new anonymous user object instead of an authentification backend. Used
   special authentication class for REST requests.
 - Used authentication frontend via AngularJS.
-- Improved csv import.
+- Improved CSV import.
 Other:
 - New OpenSlides logo.
 - New design for web interface.
 - Added multiple countdown support.
+- Added colored countdown for the last n seconds (configurable).
 - Switched editor from CKEditor to TinyMCE.
 - Changed supported Python version to >= 3.4.
-- Used Django 1.7 as lowest requirement.
+- Used Django 1.8 as lowest requirement.
+- Django 1.9 is supported
 - Added Django's application configuration. Refactored loading of signals
   and projector elements/slides.
 - Setup migrations.
@@ -57,14 +61,14 @@ Other:
 - Used SockJS for automatic update of AngularJS driven single page frontend.
 - Refactored plugin API.
 - Refactored start script and management commands. Changed command line
-  options and path for local installation.
+  option and path for local installation.
 - Refactored tests.
 - Used Bower and gulp to manage third party JavaScript and Cascading Style
   Sheets libraries.
 - Used setup.cfg for development tools.
 - Removed code for documentation and for Windows portable version with GUI.
   Used new repositories for this. Cleaned up main repository.
-- Django 1.9 is supported
+- Updated all dependencies.
 Translations:
 - Updated DE, FR, CS and PT translations.
 - Added ES translations.
