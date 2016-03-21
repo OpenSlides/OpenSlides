@@ -8,14 +8,14 @@
 # fri, 2013
 # Norman Jäckel <transifex16062013@normanjaeckel.de>, 2013-2014
 # Oskar Hahn <mail@oshahn.de>, 2012
-# fri, 2015
+# fri, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-27 20:54+0100\n"
-"PO-Revision-Date: 2016-01-27 19:59+0000\n"
-"Last-Translator: Norman Jäckel <transifex16062013@normanjaeckel.de>\n"
+"POT-Creation-Date: 2016-03-20 23:29+0100\n"
+"PO-Revision-Date: 2016-03-20 22:40+0000\n"
+"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: Czech (http://www.transifex.com/openslides/openslides/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,156 +23,177 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: agenda/models.py:194
+#: agenda/models.py:196
 msgid "Agenda item"
 msgstr "Položka pořadu jednání"
 
-#: agenda/models.py:195
+#: agenda/models.py:197
 msgid "Hidden item"
 msgstr "Skrytá položka"
 
-#: agenda/models.py:346
+#: agenda/models.py:348
 #, python-brace-format
 msgid "{user} is already on the list of speakers."
-msgstr ""
+msgstr "{user} je již na seznamu řečníků."
 
-#: agenda/models.py:349
+#: agenda/models.py:351
 msgid "An anonymous user can not be on lists of speakers."
 msgstr "Anonymní uživatel nemůže být v seznamu řečníků."
 
-#: agenda/signals.py:18
+#: agenda/signals.py:19
 msgid "Invalid input."
 msgstr "Neplatné zadání."
 
 #: agenda/signals.py:31
-msgid "Begin of event"
-msgstr "Začátek události"
-
-#: agenda/signals.py:32
-msgid "Input format: DD.MM.YYYY HH:MM"
-msgstr "Zadávací formát: DD.MM.RRRR HH:MM"
-
-#: agenda/signals.py:34 agenda/signals.py:43 agenda/signals.py:53
-#: agenda/signals.py:61 agenda/signals.py:73 agenda/views.py:279
-#: agenda/views.py:280
-msgid "Agenda"
-msgstr "Pořad jednání"
-
-#: agenda/signals.py:41
-msgid "Number of last speakers to be shown on the projector"
-msgstr "Počet posledních řečníků zobrazených na promítacím přístroji"
-
-#: agenda/signals.py:50
-msgid "Couple countdown with the list of speakers"
-msgstr "Sdružit odpočítávání se seznamem řečníků"
-
-#: agenda/signals.py:51
-msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
-msgstr "[Začít řeč] spustí odpočítávání, [Ukončit řeč] zastaví odpočítávání."
-
-#: agenda/signals.py:58
 msgid "Numbering prefix for agenda items"
 msgstr "Předpona pro číslování položek pořadu jednání"
 
-#: agenda/signals.py:59
+#: agenda/signals.py:32
 msgid "This prefix will be set if you run the automatic agenda numbering."
-msgstr ""
+msgstr "Tato předpona bude nastavena k provádění automatického číslování bodů pořadu jednání."
 
-#: agenda/signals.py:68
+#: agenda/signals.py:34 agenda/signals.py:47 agenda/signals.py:57
+#: agenda/signals.py:69 agenda/signals.py:80 agenda/signals.py:91
+#: agenda/views.py:281 agenda/views.py:282
+msgid "Agenda"
+msgstr "Pořad jednání"
+
+#: agenda/signals.py:35 agenda/signals.py:48 agenda/signals.py:58
+#: core/config.py:181 core/signals.py:44 core/signals.py:53 core/signals.py:63
+#: core/signals.py:71 core/signals.py:79 core/signals.py:91
+#: core/signals.py:100 core/signals.py:110 core/signals.py:122
+#: core/signals.py:130 motions/signals.py:28 motions/signals.py:41
+#: motions/signals.py:49 motions/signals.py:59 motions/signals.py:68
+msgid "General"
+msgstr "Obecné"
+
+#: agenda/signals.py:42
 msgid "Numeral system for agenda items"
 msgstr "Číselný systém pro položky pořadu jednání"
 
-#: agenda/signals.py:70
+#: agenda/signals.py:44
 msgid "Arabic"
 msgstr "Arabský"
 
-#: agenda/signals.py:71
+#: agenda/signals.py:45
 msgid "Roman"
 msgstr "Římský"
 
-#: agenda/views.py:106
+#: agenda/signals.py:54
+msgid "Begin of event"
+msgstr "Začátek události"
+
+#: agenda/signals.py:55
+msgid "Input format: DD.MM.YYYY HH:MM"
+msgstr "Zadávací formát: DD.MM.RRRR HH:MM"
+
+#: agenda/signals.py:67
+msgid "Number of last speakers to be shown on the projector"
+msgstr "Počet posledních řečníků zobrazených na promítacím přístroji"
+
+#: agenda/signals.py:70 agenda/signals.py:81 agenda/signals.py:92
+msgid "List of speakers"
+msgstr ""
+
+#: agenda/signals.py:77
+msgid "Show orange countdown in the last x seconds of speaking time"
+msgstr ""
+
+#: agenda/signals.py:78
+msgid "Enter duration in seconds. Choose 0 to disable warning color."
+msgstr ""
+
+#: agenda/signals.py:88
+msgid "Couple countdown with the list of speakers"
+msgstr "Sdružit odpočítávání se seznamem řečníků"
+
+#: agenda/signals.py:89
+msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
+msgstr "[Začít řeč] spustí odpočítávání, [Ukončit řeč] zastaví odpočítávání."
+
+#: agenda/views.py:108
 msgid "The list of speakers is closed."
 msgstr "Seznam řečníků je uzavřen."
 
-#: agenda/views.py:115
+#: agenda/views.py:117
 msgid "User does not exist."
 msgstr "Uživatel neexistuje."
 
-#: agenda/views.py:123
+#: agenda/views.py:125
 #, python-format
 msgid "User %s was successfully added to the list of speakers."
 msgstr "Uživatel %s byl úspěšně přidán do seznamu řečníků."
 
-#: agenda/views.py:141
+#: agenda/views.py:143
 msgid "You are not on the list of speakers."
 msgstr "Nejste na seznamu řečníků."
 
-#: agenda/views.py:149 agenda/views.py:179
+#: agenda/views.py:151 agenda/views.py:181
 msgid "Speaker does not exist."
 msgstr "Řečník neexistuje."
 
-#: agenda/views.py:153
+#: agenda/views.py:155
 #, python-format
 msgid "Speaker %s was successfully removed from the list of speakers."
 msgstr "Uživatel %s byl úspěšně odstraněn ze seznamu řečníků."
 
-#: agenda/views.py:174
+#: agenda/views.py:176
 msgid "The list of speakers is empty."
 msgstr "Seznam řečníků je prázdný."
 
-#: agenda/views.py:181
+#: agenda/views.py:183
 msgid "User is now speaking."
 msgstr "Uživatel nyní mluví."
 
-#: agenda/views.py:192
+#: agenda/views.py:194
 #, python-format
 msgid "There is no one speaking at the moment according to %(item)s."
 msgstr "Nyní nemluví žádný řečník podle %(item)s."
 
-#: agenda/views.py:194
+#: agenda/views.py:196
 msgid "The speech is finished now."
 msgstr "Řeč je nyní skončena."
 
-#: agenda/views.py:213 agenda/views.py:225
+#: agenda/views.py:215 agenda/views.py:227
 msgid "Invalid data."
-msgstr ""
+msgstr "Neplatná data."
 
-#: agenda/views.py:235
+#: agenda/views.py:237
 msgid "List of speakers successfully sorted."
-msgstr ""
+msgstr "Seznam řečníků úspěšně roztříděn."
 
-#: agenda/views.py:269
+#: agenda/views.py:271
 msgid "The agenda has been numbered."
 msgstr "Pořad jednání byl očíslován."
 
-#: assignments/models.py:59
+#: assignments/models.py:64
 msgid "Searching for candidates"
 msgstr "Hledání uchazečů"
 
-#: assignments/models.py:60
+#: assignments/models.py:65
 msgid "Voting"
 msgstr "Hlasování"
 
-#: assignments/models.py:61
+#: assignments/models.py:66
 msgid "Finished"
 msgstr "Dokončeno"
 
-#: assignments/models.py:118 assignments/views.py:244 assignments/views.py:436
-#: assignments/views.py:453
+#: assignments/models.py:123 assignments/views.py:234 assignments/views.py:426
+#: assignments/views.py:443
 msgid "Election"
 msgstr "Volba"
 
-#: assignments/serializers.py:136
+#: assignments/serializers.py:138
 #, python-format
 msgid "You have to submit data for %d candidates."
 msgstr "Musíte předat data pro %d uchazečů."
 
-#: assignments/serializers.py:140 motions/serializers.py:176
+#: assignments/serializers.py:142 motions/serializers.py:177
 #, python-format
 msgid "You have to submit data for %d vote values."
 msgstr "Musíte předat data pro %d voleb."
 
-#: assignments/serializers.py:144 motions/serializers.py:180
+#: assignments/serializers.py:146 motions/serializers.py:181
 #, python-format
 msgid "Vote value %s is invalid."
 msgstr "Hodnota pro volby %s je neplatná."
@@ -197,7 +218,7 @@ msgstr "Ano, Ne, Zdržení se pro uchazeče"
 #: assignments/signals.py:51 assignments/signals.py:60
 #: assignments/signals.py:71 assignments/signals.py:78
 #: assignments/signals.py:81 assignments/signals.py:90
-#: assignments/views.py:247
+#: assignments/views.py:237
 msgid "Elections"
 msgstr "Volby"
 
@@ -211,23 +232,23 @@ msgstr "Volba a hlasovací lístky"
 msgid "The 100 % base of an election result consists of"
 msgstr "100 % základ volebních výsledků se skládá z"
 
-#: assignments/signals.py:45 motions/signals.py:127
+#: assignments/signals.py:45 motions/signals.py:129
 msgid "Number of ballot papers (selection)"
 msgstr "Počet hlasovacích lístků (předběžná volba)"
 
-#: assignments/signals.py:47 motions/signals.py:129
+#: assignments/signals.py:47 motions/signals.py:131
 msgid "Number of all delegates"
 msgstr "Počet všech zástupců"
 
-#: assignments/signals.py:48 motions/signals.py:130
+#: assignments/signals.py:48 motions/signals.py:132
 msgid "Number of all participants"
 msgstr "Počet všech účastníků"
 
-#: assignments/signals.py:49 motions/signals.py:131
+#: assignments/signals.py:49 motions/signals.py:133
 msgid "Use the following custom number"
 msgstr "Použít následující uživatelsky stanovený počet"
 
-#: assignments/signals.py:58 motions/signals.py:140
+#: assignments/signals.py:58 motions/signals.py:142
 msgid "Custom number of ballot papers"
 msgstr "Uživatelsky stanovený počet hlasovacích lístků"
 
@@ -239,8 +260,8 @@ msgstr "Zveřejnit výsledek volby zvolených uchazečů (pohled promítacího p
 msgid "Title for PDF document (all elections)"
 msgstr "Název dokumentu PDF (všechny volby)"
 
-#: assignments/signals.py:82 assignments/signals.py:91 motions/signals.py:154
-#: motions/signals.py:163 motions/signals.py:171 users/signals.py:37
+#: assignments/signals.py:82 assignments/signals.py:91 motions/signals.py:156
+#: motions/signals.py:165 motions/signals.py:174 users/signals.py:37
 #: users/signals.py:46 users/signals.py:57 users/signals.py:66
 #: users/signals.py:75 users/signals.py:90
 msgid "PDF"
@@ -250,135 +271,135 @@ msgstr "PDF"
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Text úvodu dokumentu PDF (všechny volby)"
 
-#: assignments/views.py:91
+#: assignments/views.py:81
 msgid "You are already elected."
 msgstr "Již jste zvolen."
 
-#: assignments/views.py:101
+#: assignments/views.py:91
 msgid "You can not candidate to this election because it is finished."
 msgstr "Nemůžete se ucházet o zvolení v těchto volbách, protože tyto jsou již skončeny."
 
-#: assignments/views.py:107
+#: assignments/views.py:97
 msgid "You were nominated successfully."
 msgstr "Byl jste úspěšně navržen."
 
-#: assignments/views.py:112
+#: assignments/views.py:102
 msgid ""
 "You can not withdraw your candidature to this election because it is "
 "finished."
 msgstr "Nemůžete stáhnout své uchazečství o zvolení v těchto volbách, protože tyto jsou již skončeny."
 
-#: assignments/views.py:117
+#: assignments/views.py:107
 msgid "You are not a candidate of this election."
 msgstr "Nejste uchazeč/uchazečka pro tyto volby."
 
-#: assignments/views.py:119
+#: assignments/views.py:109
 msgid "You have withdrawn your candidature successfully."
-msgstr ""
+msgstr "Stáhl jste své uchazečství úspěšně."
 
-#: assignments/views.py:128
+#: assignments/views.py:118
 #, python-format
 msgid "Invalid data. Expected dictionary, got %s."
 msgstr "Neplatná data. Očekáván slovník, obdrženo %s."
 
-#: assignments/views.py:134
+#: assignments/views.py:124
 msgid "Invalid data. Expected something like {\"user\": <id>}."
 msgstr "Neplatná data. Očekáváno něco jako {\"user\": <id>}."
 
-#: assignments/views.py:138
+#: assignments/views.py:128
 #, python-format
 msgid "Invalid data. User %d does not exist."
 msgstr "Neplatná data. Uživatel %d neexistuje."
 
-#: assignments/views.py:158
+#: assignments/views.py:148
 #, python-format
 msgid "User %s is already elected."
 msgstr "Uživatel %s je již zvolen."
 
-#: assignments/views.py:160
+#: assignments/views.py:150
 msgid "You can not nominate someone to this election because it is finished."
 msgstr "Nemůžete někoho jmenovat do těchto voleb, protože tyto jsou již skončeny."
 
-#: assignments/views.py:166
+#: assignments/views.py:156
 #, python-format
 msgid "User %s is already nominated."
 msgstr "Uživatel %s je již jmenován."
 
-#: assignments/views.py:168
+#: assignments/views.py:158
 #, python-format
 msgid "User %s was nominated successfully."
 msgstr "Uchazeč %s byl úspěšně jmenován."
 
-#: assignments/views.py:175
+#: assignments/views.py:165
 msgid ""
 "You can not delete someone's candidature to this election because it is "
 "finished."
-msgstr ""
+msgstr "Nemůžete smazat něčí uchazečství o zvolení v těchto volbách, protože tyto jsou již skončeny."
 
-#: assignments/views.py:178
+#: assignments/views.py:168
 #, python-format
 msgid "User %s has no status in this election."
 msgstr "Uživatel %s v těchto volbách nemá žádné postavení."
 
-#: assignments/views.py:180
+#: assignments/views.py:170
 #, python-format
 msgid "Candidate %s was withdrawn successfully."
-msgstr ""
+msgstr "Uchazeč %s byl úspěšně stažen."
 
-#: assignments/views.py:192
+#: assignments/views.py:182
 #, python-format
 msgid "User %s is not a candidate of this election."
 msgstr "Uživatel %s není uchazečem v těchto volbách."
 
-#: assignments/views.py:194
+#: assignments/views.py:184
 #, python-format
 msgid "User %s was successfully elected."
 msgstr "Uživatel %s byl úspěšně zvolen."
 
-#: assignments/views.py:198
+#: assignments/views.py:188
 #, python-format
 msgid "User %s is not an elected candidate of this election."
 msgstr "Uživatel %s není zvoleným uchazečem v těchto volbách."
 
-#: assignments/views.py:201
+#: assignments/views.py:191
 #, python-format
 msgid "User %s was successfully unelected."
 msgstr "Postavení uživatele/uživatelky %s jako zvoleného/zvolené byl úspěšně zrušeno."
 
-#: assignments/views.py:211
+#: assignments/views.py:201
 msgid "Can not create ballot because there are no candidates."
 msgstr "Nelze vyvolat hlasování, protože nejsou uchazeči."
 
-#: assignments/views.py:214
+#: assignments/views.py:204
 msgid "Ballot created successfully."
 msgstr "Hlasování bylo úspěšně vyvoláno."
 
-#: assignments/views.py:268
+#: assignments/views.py:258
 msgid "No elections available."
 msgstr "Žádné volby nejsou dostupné."
 
-#: assignments/views.py:287
+#: assignments/views.py:277
 #, python-format
 msgid "Election: %s"
 msgstr "Volba: %s"
 
-#: assignments/views.py:296
+#: assignments/views.py:286
 msgid "Number of members to be elected"
 msgstr "Počet členů ke zvolení"
 
-#: assignments/views.py:303 assignments/views.py:331
+#: assignments/views.py:293 assignments/views.py:321
 msgid "Candidates"
 msgstr "Uchazeči"
 
-#: assignments/views.py:327
+#: assignments/views.py:317
 msgid "Election result"
 msgstr "Výsledek volby"
 
-#: assignments/views.py:333
+#: assignments/views.py:323
 msgid "ballot"
 msgstr "Hlasování"
 
-#: assignments/views.py:352
+#: assignments/views.py:342
 #, python-format
 msgid ""
 "Y: %(YES)s\n"
@@ -386,28 +407,28 @@ msgid ""
 "A: %(ABSTAIN)s"
 msgstr "A: %(YES)s\nN: %(NO)s\nZ: %(ABSTAIN)s"
 
-#: assignments/views.py:363 motions/pdf.py:115
+#: assignments/views.py:353 motions/pdf.py:116
 msgid "Valid votes"
 msgstr "Platné hlasy"
 
-#: assignments/views.py:374 motions/pdf.py:117
+#: assignments/views.py:364 motions/pdf.py:118
 msgid "Invalid votes"
 msgstr "Neplatné hlasy"
 
-#: assignments/views.py:385 motions/pdf.py:119
+#: assignments/views.py:375 motions/pdf.py:120
 msgid "Votes cast"
 msgstr "Odevzdané hlasy"
 
-#: assignments/views.py:407
+#: assignments/views.py:397
 msgid "elected"
 msgstr "zvolen"
 
-#: assignments/views.py:460
+#: assignments/views.py:450
 #, python-format
 msgid "%d. ballot"
 msgstr "%d. hlasování"
 
-#: assignments/views.py:462
+#: assignments/views.py:452
 #, python-format
 msgid "%d candidate"
 msgid_plural "%d candidates"
@@ -415,7 +436,7 @@ msgstr[0] "%d uchazeč"
 msgstr[1] "%d uchazeči"
 msgstr[2] "%d uchazečů"
 
-#: assignments/views.py:464
+#: assignments/views.py:454
 #, python-format
 msgid "%d available post"
 msgid_plural "%d available posts"
@@ -423,60 +444,52 @@ msgstr[0] "%d dostupné místo"
 msgstr[1] "%d dostupná místa"
 msgstr[2] "%d dostupných míst"
 
-#: assignments/views.py:516 motions/pdf.py:125 motions/pdf.py:270
+#: assignments/views.py:506 motions/pdf.py:126 motions/pdf.py:349
 msgid "Yes"
 msgstr "Ano"
 
-#: assignments/views.py:517 motions/pdf.py:125 motions/pdf.py:272
+#: assignments/views.py:507 motions/pdf.py:126 motions/pdf.py:351
 msgid "No"
 msgstr "Ne"
 
-#: assignments/views.py:518 motions/pdf.py:125 motions/pdf.py:274
+#: assignments/views.py:508 motions/pdf.py:126 motions/pdf.py:353
 msgid "Abstain"
 msgstr "Zdržení se"
 
-#: core/config.py:29 core/config.py:60
+#: core/config.py:30 core/config.py:61
 #, python-format
 msgid "The config variable %s was not found."
 msgstr "Proměnná nastavení %s nebyla nalezena."
 
-#: core/config.py:69
+#: core/config.py:70
 #, python-format
 msgid "Wrong datatype. Expected %(expected_type)s, got %(got_type)s."
 msgstr "Nesprávný typ dat. Očekáváno %(expected_type)s, obdrženo %(got_type)s."
 
-#: core/config.py:72
+#: core/config.py:73
 msgid "Invalid input. Choice does not match."
-msgstr ""
+msgstr "Neplatný vstup. Výběr neodpovídá."
 
-#: core/config.py:114
+#: core/config.py:115
 #, python-format
 msgid "Too many values for config variable %s found."
-msgstr ""
+msgstr "Nalezeno příliš mnoho hodnot pro proměnnou nastavení %s."
 
-#: core/config.py:163
+#: core/config.py:166
 msgid "Invalid value for config attribute input_type."
-msgstr ""
-
-#: core/config.py:165
-msgid ""
-"Either config attribute 'choices' must not be None or 'input_type' must not "
-"be 'choice'."
-msgstr ""
+msgstr "Neplatná hodnota pro vlastnost nastavení input_type."
 
 #: core/config.py:168
 msgid ""
+"Either config attribute 'choices' must not be None or 'input_type' must not "
+"be 'choice'."
+msgstr "Buď nesmí být vlastnost nastavení 'choices' žádná nebo 'input_type' nesmí být 'choice'."
+
+#: core/config.py:171
+msgid ""
 "Either config attribute 'choices' must be None or 'input_type' must be "
 "'choice'."
-msgstr ""
-
-#: core/config.py:177 core/signals.py:44 core/signals.py:53 core/signals.py:63
-#: core/signals.py:71 core/signals.py:79 core/signals.py:91
-#: core/signals.py:100 core/signals.py:110 core/signals.py:122
-#: core/signals.py:130 motions/signals.py:28 motions/signals.py:41
-#: motions/signals.py:49 motions/signals.py:59 motions/signals.py:68
-msgid "General"
-msgstr "Obecné"
+msgstr "Buď musí být vlastnost nastavení 'choices' žádná nebo 'input_type' musí být 'choice'."
 
 #: core/signals.py:42
 msgid "Event name"
@@ -490,7 +503,7 @@ msgstr "Událost"
 
 #: core/signals.py:50
 msgid "Presentation and assembly system"
-msgstr "Předváděcí a schůzovací systém"
+msgstr "Promítací a schůzovací sestava"
 
 #: core/signals.py:51
 msgid "Short description of event"
@@ -513,11 +526,11 @@ msgid ""
 "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based "
 "presentation and assembly system for visualizing and controlling agenda, "
 "motions and elections of an assembly."
-msgstr ""
+msgstr "<a href=\"http://www.openslides.org\">OpenSlides</a> je svobodný na internetu založený promítací a schůzovací systém k znázornění a řízení pořadu jednání, návrhů a voleb ve shromáždění."
 
 #: core/signals.py:89
 msgid "Legal notice"
-msgstr ""
+msgstr "Soudní oznámení"
 
 #: core/signals.py:97
 msgid "Welcome to OpenSlides"
@@ -525,15 +538,15 @@ msgstr "Vítejte v OpenSlides"
 
 #: core/signals.py:98
 msgid "Front page title"
-msgstr ""
+msgstr "Název první strany"
 
 #: core/signals.py:106
 msgid "[Space for your welcome text.]"
-msgstr ""
+msgstr "[Místo pro váš uvítací text.]"
 
 #: core/signals.py:108
 msgid "Front page text"
-msgstr ""
+msgstr "Text na první straně"
 
 #: core/signals.py:120
 msgid "Allow access for anonymous guest users"
@@ -545,7 +558,7 @@ msgstr "Systém"
 
 #: core/signals.py:128
 msgid "Show this text on the login page."
-msgstr ""
+msgstr "Ukázat tento text na přihlašovací stránce."
 
 #: core/signals.py:139
 msgid "Show logo on projector"
@@ -555,10 +568,10 @@ msgstr "Ukázat značku na promítacím přístrojí"
 msgid ""
 "You can replace the logo. Just copy a file to \"static/img/logo-"
 "projector.png\" in your OpenSlides data path."
-msgstr ""
+msgstr "Symbol (logo) můžete nahradit. Jednoduše zkopírujte soubor do \"static/img/logo-projector.png\" v cestě s daty OpenSlides."
 
 #: core/signals.py:144 core/signals.py:152 core/signals.py:160
-#: core/signals.py:167
+#: core/signals.py:168 core/signals.py:176 core/signals.py:183
 msgid "Projector"
 msgstr "Promítací přístroj"
 
@@ -566,15 +579,19 @@ msgstr "Promítací přístroj"
 msgid "Show title and description of event on projector"
 msgstr "Ukázat název a popis události na promítacím přístroji"
 
-#: core/signals.py:157
-msgid "Background color of projector header"
-msgstr "Barva pozadí záhlaví promítacího přístroje"
-
 #: core/signals.py:158
-msgid "Use web color names like \"red\" or hex numbers like \"#ff0000\"."
-msgstr "Použít názvy barev na internetu jako je \"červená\" nebo šestnáctková čísla jako je \"#ff0000\"."
+msgid "Background color of projector header and footer"
+msgstr ""
 
-#: core/signals.py:165
+#: core/signals.py:166
+msgid "Font color of projector header and footer"
+msgstr ""
+
+#: core/signals.py:174
+msgid "Font color of projector headline"
+msgstr ""
+
+#: core/signals.py:181
 msgid "Default countdown"
 msgstr "Výchozí odpočítávání"
 
@@ -598,91 +615,78 @@ msgstr "Němčina"
 msgid "Portuguese"
 msgstr "Portugalština"
 
-#: mediafiles/models.py:58
+#: mediafiles/models.py:61
 msgid "unknown"
 msgstr "neznámý"
 
-#: motions/models.py:124 motions/pdf.py:38 motions/pdf.py:258
+#: motions/models.py:125 motions/pdf.py:39 motions/pdf.py:338
 #: motions/signals.py:27 motions/signals.py:40 motions/signals.py:48
-#: motions/signals.py:58 motions/signals.py:67 motions/signals.py:78
-#: motions/signals.py:86 motions/signals.py:98 motions/signals.py:108
-#: motions/signals.py:120 motions/signals.py:133 motions/signals.py:142
-#: motions/signals.py:153 motions/signals.py:162 motions/signals.py:170
-#: motions/views.py:357 motions/views.py:417
+#: motions/signals.py:58 motions/signals.py:67 motions/signals.py:79
+#: motions/signals.py:88 motions/signals.py:100 motions/signals.py:110
+#: motions/signals.py:122 motions/signals.py:135 motions/signals.py:144
+#: motions/signals.py:155 motions/signals.py:164 motions/signals.py:173
+#: motions/views.py:349 motions/views.py:409
 msgid "Motion"
 msgstr "Návrh"
 
-#: motions/models.py:616
+#: motions/models.py:617
 msgid "new"
 msgstr "Nový"
 
-#: motions/models.py:683
+#: motions/models.py:689
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr "%(time_and_messages)s od %(person)s"
 
-#: motions/pdf.py:45
+#: motions/pdf.py:46
 msgid "Submitter"
 msgstr "Navrhovatel"
 
-#: motions/pdf.py:59
+#: motions/pdf.py:60
 msgid "Signature"
 msgstr "Podpis"
 
-#: motions/pdf.py:70 motions/signals.py:99 motions/signals.py:109
+#: motions/pdf.py:71 motions/signals.py:101 motions/signals.py:111
 msgid "Supporters"
 msgstr "Podporovatel"
 
-#: motions/pdf.py:81
+#: motions/pdf.py:82
 msgid "State"
 msgstr "Stav"
 
-#: motions/pdf.py:91 motions/views.py:157 motions/views.py:169
+#: motions/pdf.py:92 motions/views.py:158 motions/views.py:170
 msgid "Version"
 msgstr "Verze"
 
-#: motions/pdf.py:107
+#: motions/pdf.py:108
 msgid "Vote result"
 msgstr "Výsledek hlasování"
 
-#: motions/pdf.py:121 motions/views.py:357
+#: motions/pdf.py:122 motions/views.py:349
 msgid "Vote"
 msgstr "Hlasování"
 
-#: motions/pdf.py:148
+#: motions/pdf.py:149
 msgid "Reason"
 msgstr "Zdůvodnění"
 
-#: motions/pdf.py:245
+#: motions/pdf.py:325
 msgid "Categories"
 msgstr "Skupiny"
 
-#: motions/pdf.py:252
+#: motions/pdf.py:332
 msgid "No motions available."
 msgstr "Nejsou dostupné žádné návrhy."
 
-#: motions/pdf.py:265
+#: motions/pdf.py:345
 #, python-format
 msgid "Motion No. %s"
 msgstr "Návrh č. %s"
 
-#: motions/pdf.py:267
-#, python-format
-msgid "%d. Vote"
-msgstr "%d. hlasování"
-
-#: motions/serializers.py:30
+#: motions/serializers.py:31
 #, python-format
 msgid "Workflow %(pk)d does not exist."
-msgstr ""
-
-#: motions/serializers.py:129 poll/models.py:262
-msgid "majority"
-msgstr "Většina"
-
-#: motions/serializers.py:131 poll/models.py:264 poll/models.py:266
-msgid "undocumented"
-msgstr "nedokumentováno"
+msgstr "Průběh práce %(pk)d neexistuje."
 
 #: motions/signals.py:24
 msgid "Workflow of new motions"
@@ -694,7 +698,7 @@ msgstr "Identifikátor"
 
 #: motions/signals.py:36
 msgid "Numbered per category"
-msgstr "Číslovat na základě skupin"
+msgstr "Číslovat podle oboru"
 
 #: motions/signals.py:37
 msgid "Serially numbered"
@@ -724,134 +728,178 @@ msgstr "Povolit vypnutí tvorby nových verzí"
 msgid "Activate amendments"
 msgstr "Zapnout pozměňovací návrhy"
 
-#: motions/signals.py:79 motions/signals.py:87
+#: motions/signals.py:80 motions/signals.py:89
 msgid "Amendments"
 msgstr "Pozměňovací návrhy"
 
-#: motions/signals.py:83
+#: motions/signals.py:84
 msgctxt "Prefix for the identifier for amendments"
 msgid "A"
 msgstr "PN"
 
-#: motions/signals.py:84
+#: motions/signals.py:85
 msgid "Prefix for the identifier for amendments"
 msgstr "Předpona identifikátoru pro pozměňovací návrhy"
 
-#: motions/signals.py:95
+#: motions/signals.py:97
 msgid "Number of (minimum) required supporters for a motion"
 msgstr "Nejnižší počet podporovatelů potřebných pro návrh"
 
-#: motions/signals.py:96
+#: motions/signals.py:98
 msgid "Choose 0 to disable the supporting system."
 msgstr "Zadejte 0 pro vypnutí podpůrného systému."
 
-#: motions/signals.py:106
+#: motions/signals.py:108
 msgid ""
 "Remove all supporters of a motion if a submitter edits his motion in early "
 "state"
 msgstr "Odstranit všechny podporovatele návrhu, pokud navrhovatel svůj návrh v počátečním stavu upravuje"
 
-#: motions/signals.py:117
+#: motions/signals.py:119
 msgid "The 100 % base of a voting result consists of"
 msgstr "100 % základ výsledků hlasování se skládá z"
 
-#: motions/signals.py:121 motions/signals.py:134 motions/signals.py:143
+#: motions/signals.py:123 motions/signals.py:136 motions/signals.py:145
 msgid "Voting and ballot papers"
 msgstr "Hlasování a hlasovací lístky"
 
-#: motions/signals.py:150 motions/views.py:410
+#: motions/signals.py:152 motions/views.py:402
 msgid "Motions"
 msgstr "Návrhy"
 
-#: motions/signals.py:151
+#: motions/signals.py:153
 msgid "Title for PDF document (all motions)"
 msgstr "Název dokumentu PDF (všechny návrhy)"
 
-#: motions/signals.py:160
+#: motions/signals.py:162
 msgid "Preamble text for PDF document (all motions)"
 msgstr "Text úvodu dokumentu PDF (všechny návrhy)"
 
-#: motions/signals.py:168
+#: motions/signals.py:171
 msgid "Show paragraph numbering (only in PDF)"
 msgstr "Ukázat číslování odstavců (jen v PDF)"
 
-#: motions/views.py:85
-msgid "Motion created"
-msgstr "Návrh vytvořen"
+#: motions/signals.py:188
+msgid "submitted"
+msgstr "podáno"
 
-#: motions/views.py:127
-msgid "Motion updated"
-msgstr "Návrh aktualizován"
+#: motions/signals.py:193 motions/signals.py:222
+msgid "accepted"
+msgstr "přijato"
 
-#: motions/views.py:131
-msgid "All supporters removed"
-msgstr "Všichni podporovatelé odstraněni"
+#: motions/signals.py:197 motions/signals.py:227
+msgid "rejected"
+msgstr "odmítnuto"
 
-#: motions/views.py:159
+#: motions/signals.py:201
+msgid "not decided"
+msgstr "nerozhodnuto"
+
+#: motions/signals.py:210
+msgid "published"
+msgstr "zveřejněno"
+
+#: motions/signals.py:215 motions/views.py:160
 msgid "permitted"
 msgstr "schváleno"
 
-#: motions/views.py:161
+#: motions/signals.py:232
+msgid "withdrawed"
+msgstr "staženo"
+
+#: motions/signals.py:237
+msgid "adjourned"
+msgstr "odloženo"
+
+#: motions/signals.py:242
+msgid "not concerned"
+msgstr "neprobíráno"
+
+#: motions/signals.py:247
+msgid "commited a bill"
+msgstr "předáno výboru"
+
+#: motions/signals.py:252
+msgid "needs review"
+msgstr "potřeba posouzení"
+
+#: motions/signals.py:257
+msgid "rejected (not authorized)"
+msgstr "odmítnuto (není schváleno)"
+
+#: motions/views.py:86
+msgid "Motion created"
+msgstr "Návrh vytvořen"
+
+#: motions/views.py:128
+msgid "Motion updated"
+msgstr "Návrh aktualizován"
+
+#: motions/views.py:132
+msgid "All supporters removed"
+msgstr "Všichni podporovatelé odstraněni"
+
+#: motions/views.py:162
 #, python-format
 msgid "Version %d permitted successfully."
-msgstr ""
+msgstr "Verze %d úspěšně schválena."
 
-#: motions/views.py:166
+#: motions/views.py:167
 msgid "You can not delete the active version of a motion."
-msgstr ""
+msgstr "Nelze smazat platnou verzi návrhu."
 
-#: motions/views.py:171
+#: motions/views.py:172
 msgid "deleted"
 msgstr "smazáno"
 
-#: motions/views.py:173
+#: motions/views.py:174
 #, python-format
 msgid "Version %d deleted successfully."
-msgstr ""
+msgstr "Verze %d úspěšně smazána."
 
-#: motions/views.py:194
+#: motions/views.py:195
 msgid "You can not support this motion."
 msgstr "Nesmíte podporovat tento návrh."
 
-#: motions/views.py:196
+#: motions/views.py:197
 msgid "Motion supported"
 msgstr "Návrh podporován"
 
-#: motions/views.py:197
+#: motions/views.py:198
 msgid "You have supported this motion successfully."
 msgstr "Podporoval jste úspěšně tento návrh."
 
-#: motions/views.py:202
+#: motions/views.py:203
 msgid "You can not unsupport this motion."
 msgstr "Nesmíte odepřít svou podporu pro tento návrh."
 
-#: motions/views.py:204
+#: motions/views.py:205
 msgid "Motion unsupported"
 msgstr "Podpora pro návrh stažena"
 
-#: motions/views.py:205
+#: motions/views.py:206
 msgid "You have unsupported this motion successfully."
 msgstr "Svou podporu pro návrh jste úspěšně stáhl."
 
-#: motions/views.py:228
+#: motions/views.py:229
 msgid "Invalid data. State must be an integer."
-msgstr ""
+msgstr "Neplatná data. Stav musí být celé číslo."
 
-#: motions/views.py:231
+#: motions/views.py:232
 #, python-format
 msgid "You can not set the state to %(state_id)d."
-msgstr ""
+msgstr "Nelze nastavit stav na %(state_id)d."
 
-#: motions/views.py:239
+#: motions/views.py:240
 #, python-format
 msgid "The state of the motion was set to %s."
 msgstr "Stav návrhu byl nastaven na %s."
 
-#: motions/views.py:243
+#: motions/views.py:244
 msgid "State set to"
 msgstr "Stav nastaven na"
 
-#: motions/views.py:258
+#: motions/views.py:259
 msgid "Vote created successfully."
 msgstr "Hlasování bylo úspěšně vytvořeno."
 
@@ -866,6 +914,18 @@ msgstr "Všechny odevzdané hlasy (včetně neplatných hlasů)"
 #: poll/models.py:73
 msgid "Disabled (no percents)"
 msgstr "Zakázáno (žádná procenta)"
+
+#: poll/models.py:262
+msgid "majority"
+msgstr "Většina"
+
+#: poll/models.py:264 poll/models.py:266
+msgid "undocumented"
+msgstr "nedokumentováno"
+
+#: poll/serializers.py:16
+msgid "Value for {} must not be less than -2"
+msgstr ""
 
 #: users/pdf.py:26
 msgid "Title"
@@ -923,22 +983,22 @@ msgstr "Snímat tento QRCode pro spojení s WLAN."
 msgid "Scan this QRCode to open URL."
 msgstr "Snímat tento QRCode pro otevření adresy (URL)."
 
-#: users/serializers.py:44
+#: users/serializers.py:46
 msgid ""
 "The groups this user belongs to. A user will get all permissions granted to "
 "each of his/her groups."
-msgstr ""
+msgstr "Skupina, k níž tento uživatel patří. Uživatel dostane oprávnění udělená každému v jeho/její skupině."
 
-#: users/serializers.py:72
+#: users/serializers.py:74
 msgid "Username, first name and last name can not all be empty."
-msgstr ""
+msgstr "Uživatelské jméno, křestní jméno a příjmení nesmí být prázdné."
 
-#: users/serializers.py:105
+#: users/serializers.py:107
 #, python-brace-format
 msgid "Incorrect value \"{value}\". Expected app_label.codename string."
-msgstr ""
+msgstr "Nesprávná hodnota \"{value}\". Očekáván řetězec app_label.codename."
 
-#: users/serializers.py:106
+#: users/serializers.py:108
 #, python-brace-format
 msgid "Invalid permission \"{value}\". Object does not exist."
 msgstr "Neplatné oprávnění \"{value}\". Předmět neexistuje."
@@ -1001,62 +1061,46 @@ msgstr "WPA/WPA2"
 msgid "No encryption"
 msgstr "Žádné šifrování"
 
-#: users/signals.py:152
-msgid "Anonymous"
-msgstr "Neoznačený jménem"
-
-#: users/signals.py:154
-msgid "Registered"
-msgstr "Přihlášený účastník"
-
-#: users/signals.py:166
-msgid "Delegates"
-msgstr "Zástupci"
-
-#: users/signals.py:184
-msgid "Staff"
-msgstr "Zaměstnanci"
-
-#: users/views.py:111
+#: users/views.py:114
 msgid "You can not deactivate yourself."
-msgstr ""
+msgstr "Nemůžete vypnout sami sebe."
 
-#: users/views.py:150
+#: users/views.py:153
 msgid "You can not delete yourself."
-msgstr ""
+msgstr "Nemůžete smazat sami sebe."
 
-#: users/views.py:164
+#: users/views.py:167
 msgid "Password successfully reset."
 msgstr "Heslo bylo úspěšně nastaveno znovu."
 
-#: users/views.py:234
+#: users/views.py:237
 msgid "Username or password is not correct."
-msgstr ""
+msgstr "Uživatelské jméno nebo heslo není správné."
 
-#: users/views.py:260
+#: users/views.py:263
 #, python-brace-format
 msgid ""
 "Installation was successfully. Use {username} and {password} for first "
 "login. Important: Please change your password!"
-msgstr ""
+msgstr "Instalace proběhla úspěšně. Použijte {username} a {password} při prvním přihlášení. Důležité: Změňte, prosím, své heslo!"
 
-#: users/views.py:281
+#: users/views.py:284
 msgid "You are not authenticated."
-msgstr ""
+msgstr "Nejste ověřen."
 
-#: users/views.py:315
+#: users/views.py:318
 msgid "Old password does not match."
-msgstr ""
+msgstr "Staré heslo se neshoduje."
 
-#: users/views.py:326
+#: users/views.py:329
 msgid "user-list"
 msgstr "Seznam uživatelů"
 
-#: users/views.py:327
+#: users/views.py:330
 msgid "List of users"
 msgstr "Seznam uživatelů"
 
-#: users/views.py:341
+#: users/views.py:344
 msgid "user-access-data"
 msgstr "Přístupová data uživatele"
 
