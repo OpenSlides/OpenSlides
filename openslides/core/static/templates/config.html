@@ -10,15 +10,15 @@
     <!-- generate config groups -->
     <div ng-repeat="group in configGroups">
       <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="heading-{{ group.name }}">
+        <div class="panel-heading" role="tab" id="heading-group{{ $index }}">
           <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion" href="#{{ group.name }}"
-                aria-expanded="false" aria-controls="{{ group.name }}">
+            <a data-toggle="collapse" data-parent="#accordion" href="#group{{ $index }}"
+                aria-expanded="false" aria-controls="group{{ $index }}">
               {{ group.name | translate }}
             </a>
           </h4>
         </div> <!-- heading -->
-        <div id="{{ group.name }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-{{ group.name }}">
+        <div id="group{{ $index }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-group{{ $index }}">
           <div class="panel-body">
             <div ng-repeat="subgroup in group.subgroups">
               <h3>{{ subgroup.name }}</h3>

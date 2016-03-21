@@ -661,7 +661,7 @@ img {
 }
 
 /* angular-chosen: override default width of select fields in quickmode */
-.quickmode .chosen-container {
+.chosen-container {
     width: 100% !important;
 }
 
