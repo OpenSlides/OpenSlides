@@ -429,7 +429,9 @@ angular.module('OpenSlidesApp.core.site', [
 .directive('routeLoadingIndicator', [
     '$rootScope',
     '$state',
-    function($rootScope, $state) {
+    'gettext',
+    function($rootScope, $state, gettext) {
+        gettext('Loading ...');
         return {
             restrict: 'E',
             template: "<div class='header spacer-bottom' ng-if='isRouteLoading'><div class='title'><h1><translate>Loading ...</translate> <i class='fa fa-spinner fa-pulse'></i></h1></div></div>",
