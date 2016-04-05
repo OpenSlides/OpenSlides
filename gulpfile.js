@@ -83,6 +83,7 @@ gulp.task('tinymce-skins', function () {
 // Catches all required i18n files for TinyMCE editor.
 gulp.task('tinymce-i18n', function () {
     return gulp.src([
+            'bower_components/tinymce-i18n/langs/en_GB.js',
             'bower_components/tinymce-i18n/langs/cs.js',
             'bower_components/tinymce-i18n/langs/de.js',
             'bower_components/tinymce-i18n/langs/es.js',
@@ -90,7 +91,9 @@ gulp.task('tinymce-i18n', function () {
             'bower_components/tinymce-i18n/langs/pt_PT.js',
             ])
         .pipe(rename(function (path) {
-            if (path.basename === 'fr_FR') {
+            if (path.basename === 'en_GB') {
+                path.basename = 'en';
+            } else if (path.basename === 'fr_FR') {
                 path.basename = 'fr';
             } else if (path.basename === 'pt_PT') {
                 path.basename = 'pt';
