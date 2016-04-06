@@ -2,7 +2,7 @@
   "name": "OpenSlides",
   "private": true,
   "scripts": {
-    "prepublish": "bower install && gulp --production"
+    "prepublish": "bower install && gulp"
   },
   "devDependencies": {
     "bower": "~1.7.2",
