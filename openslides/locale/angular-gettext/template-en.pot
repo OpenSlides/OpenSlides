@@ -140,7 +140,7 @@ msgid ""
 "        other fields are optional and may be empty."
 msgstr ""
 
-#: core/static/js/core/site.js:609
+#: core/static/js/core/site.js:611
 #: motions/static/js/motions/site.js:281
 msgid "Attachment"
 msgstr ""
@@ -717,7 +717,7 @@ msgstr ""
 msgid "Identifier, reason, submitter and category are optional and may be empty."
 msgstr ""
 
-#: core/static/js/core/site.js:620
+#: core/static/js/core/site.js:622
 msgid "If deactivated it appears as internal item on agenda."
 msgstr ""
 
@@ -850,6 +850,10 @@ msgstr ""
 
 #: core/static/templates/core/projector-controls.html:9
 msgid "Live view"
+msgstr ""
+
+#: core/static/js/core/site.js:434
+msgid "Loading ..."
 msgstr ""
 
 #: core/static/templates/core/login-form.html:20
@@ -1369,7 +1373,7 @@ msgstr ""
 msgid "Select or search a workflow ..."
 msgstr ""
 
-#: core/static/js/core/site.js:612
+#: core/static/js/core/site.js:614
 #: motions/static/js/motions/site.js:284
 msgid "Select or search an attachment ..."
 msgstr ""
@@ -1395,7 +1399,7 @@ msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:216
 #: assignments/static/js/assignments/site.js:164
-#: core/static/js/core/site.js:619
+#: core/static/js/core/site.js:621
 #: motions/static/js/motions/site.js:264
 msgid "Show as agenda item"
 msgstr ""
@@ -1510,7 +1514,7 @@ msgid "Tags"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-import.html:83
-#: core/static/js/core/site.js:599
+#: core/static/js/core/site.js:601
 #: motions/static/js/motions/site.js:234
 #: motions/static/templates/motions/motion-detail.html:227
 #: motions/static/templates/motions/motion-import.html:56
@@ -1530,7 +1534,7 @@ msgstr ""
 #: assignments/static/js/assignments/site.js:133
 #: assignments/static/templates/assignments/assignment-list.html:172
 #: assignments/static/templates/assignments/assignment-list.html:97
-#: core/static/js/core/site.js:591
+#: core/static/js/core/site.js:593
 #: mediafiles/static/templates/mediafiles/mediafile-form.html:20
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:140
 #: motions/static/js/motions/site.js:226
