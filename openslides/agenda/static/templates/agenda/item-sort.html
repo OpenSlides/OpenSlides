@@ -26,7 +26,7 @@
 <script type="text/ng-template" id="nodes_renderer.html">
   <div ui-tree-handle>
     <span ng-if="item.item.is_hidden">*</span>
-    {{ item.item.getTitle() }}
+    {{ item.item.getListViewTitle() }}
   </div>
   <ol ui-tree-nodes="" ng-model="item.children">
     <li ng-repeat="item in item.children" ui-tree-node ng-include="'nodes_renderer.html'">
