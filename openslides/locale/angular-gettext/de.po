@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
-"PO-Revision-Date: 2016-03-21 14:34+0000\n"
+"PO-Revision-Date: 2016-04-10 11:02+0000\n"
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/openslides/openslides/language/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -149,7 +149,7 @@ msgid ""
 "        other fields are optional and may be empty."
 msgstr "Mindestens der Vorname oder der Nachname müssen angegeben sein. Alle übrigen Felder sind optional und dürfen leer sein."
 
-#: core/static/js/core/site.js:609 motions/static/js/motions/site.js:281
+#: core/static/js/core/site.js:611 motions/static/js/motions/site.js:281
 msgid "Attachment"
 msgstr "Anhang"
 
@@ -727,7 +727,7 @@ msgid ""
 "Identifier, reason, submitter and category are optional and may be empty."
 msgstr "Bezeichner, Begründung, Antragsteller/in und Sachgebiet sind optional und dürfen leer sein."
 
-#: core/static/js/core/site.js:620
+#: core/static/js/core/site.js:622
 msgid "If deactivated it appears as internal item on agenda."
 msgstr "Wenn deaktiviert, erscheint es als interner Eintrag in der Tagesordnung."
 
@@ -860,6 +860,10 @@ msgstr "Redeliste"
 #: core/static/templates/core/projector-controls.html:9
 msgid "Live view"
 msgstr "Live-Vorschau"
+
+#: core/static/js/core/site.js:434
+msgid "Loading ..."
+msgstr "Laden ..."
 
 #: core/static/templates/core/login-form.html:20 index.html:101
 msgid "Login"
@@ -1377,7 +1381,7 @@ msgstr "Schlagwort auswählen oder suchen ..."
 msgid "Select or search a workflow ..."
 msgstr "Arbeitsablauf auswählen oder suchen ..."
 
-#: core/static/js/core/site.js:612 motions/static/js/motions/site.js:284
+#: core/static/js/core/site.js:614 motions/static/js/motions/site.js:284
 msgid "Select or search an attachment ..."
 msgstr "Anhang auswählen oder suchen ..."
 
@@ -1401,7 +1405,7 @@ msgstr "Nur PDF-Dateien anzeigen"
 
 #: agenda/static/templates/agenda/item-list.html:216
 #: assignments/static/js/assignments/site.js:164
-#: core/static/js/core/site.js:619 motions/static/js/motions/site.js:264
+#: core/static/js/core/site.js:621 motions/static/js/motions/site.js:264
 msgid "Show as agenda item"
 msgstr "Als Tagesordnungspunkt anzeigen"
 
@@ -1515,7 +1519,7 @@ msgid "Tags"
 msgstr "Schlagwörter"
 
 #: agenda/static/templates/agenda/item-import.html:83
-#: core/static/js/core/site.js:599 motions/static/js/motions/site.js:234
+#: core/static/js/core/site.js:601 motions/static/js/motions/site.js:234
 #: motions/static/templates/motions/motion-detail.html:227
 #: motions/static/templates/motions/motion-import.html:56
 msgid "Text"
@@ -1534,7 +1538,7 @@ msgstr "Diese Version ist nicht zugelassen."
 #: assignments/static/js/assignments/site.js:133
 #: assignments/static/templates/assignments/assignment-list.html:172
 #: assignments/static/templates/assignments/assignment-list.html:97
-#: core/static/js/core/site.js:591
+#: core/static/js/core/site.js:593
 #: mediafiles/static/templates/mediafiles/mediafile-form.html:20
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:140
 #: motions/static/js/motions/site.js:226

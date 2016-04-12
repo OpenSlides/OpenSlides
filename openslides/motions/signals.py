@@ -24,7 +24,7 @@ def setup_motion_config(sender, **kwargs):
         label=ugettext_lazy('Workflow of new motions'),
         choices=({'value': str(workflow.pk), 'display_name': ugettext_lazy(workflow.name)} for workflow in Workflow.objects.all()),
         weight=310,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('General'))
 
     yield ConfigVariable(
@@ -37,7 +37,7 @@ def setup_motion_config(sender, **kwargs):
             {'value': 'serially_numbered', 'display_name': ugettext_lazy('Serially numbered')},
             {'value': 'manually', 'display_name': ugettext_lazy('Set it manually')}),
         weight=315,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('General'))
 
     yield ConfigVariable(
@@ -45,7 +45,7 @@ def setup_motion_config(sender, **kwargs):
         default_value=_('The assembly may decide,'),
         label=ugettext_lazy('Motion preamble'),
         weight=320,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('General'),
         translatable=True)
 
@@ -55,7 +55,7 @@ def setup_motion_config(sender, **kwargs):
         input_type='boolean',
         label=ugettext_lazy('Stop submitting new motions by non-staff users'),
         weight=325,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('General'))
 
     yield ConfigVariable(
@@ -64,7 +64,7 @@ def setup_motion_config(sender, **kwargs):
         input_type='boolean',
         label=ugettext_lazy('Allow to disable versioning'),
         weight=330,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('General'))
 
     # Amendments
@@ -76,7 +76,7 @@ def setup_motion_config(sender, **kwargs):
         label=ugettext_lazy('Activate amendments'),
         hidden=True,
         weight=335,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('Amendments'))
 
     yield ConfigVariable(
@@ -85,7 +85,7 @@ def setup_motion_config(sender, **kwargs):
         label=ugettext_lazy('Prefix for the identifier for amendments'),
         hidden=True,
         weight=340,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('Amendments'))
 
     # Supporters
@@ -97,7 +97,7 @@ def setup_motion_config(sender, **kwargs):
         label=ugettext_lazy('Number of (minimum) required supporters for a motion'),
         help_text=ugettext_lazy('Choose 0 to disable the supporting system.'),
         weight=345,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('Supporters'),
         validators=(MinValueValidator(0),))
 
@@ -107,7 +107,7 @@ def setup_motion_config(sender, **kwargs):
         input_type='boolean',
         label=ugettext_lazy('Remove all supporters of a motion if a submitter edits his motion in early state'),
         weight=350,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('Supporters'))
 
     # Voting and ballot papers
@@ -119,7 +119,7 @@ def setup_motion_config(sender, **kwargs):
         label=ugettext_lazy('The 100 % base of a voting result consists of'),
         choices=PERCENT_BASE_CHOICES,
         weight=355,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('Voting and ballot papers'))
 
     yield ConfigVariable(
@@ -132,7 +132,7 @@ def setup_motion_config(sender, **kwargs):
             {'value': 'NUMBER_OF_ALL_PARTICIPANTS', 'display_name': ugettext_lazy('Number of all participants')},
             {'value': 'CUSTOM_NUMBER', 'display_name': ugettext_lazy('Use the following custom number')}),
         weight=360,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('Voting and ballot papers'))
 
     yield ConfigVariable(
@@ -141,7 +141,7 @@ def setup_motion_config(sender, **kwargs):
         input_type='integer',
         label=ugettext_lazy('Custom number of ballot papers'),
         weight=365,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('Voting and ballot papers'),
         validators=(MinValueValidator(1),))
 
@@ -152,7 +152,7 @@ def setup_motion_config(sender, **kwargs):
         default_value=_('Motions'),
         label=ugettext_lazy('Title for PDF document (all motions)'),
         weight=370,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('PDF'),
         translatable=True)
 
@@ -161,7 +161,7 @@ def setup_motion_config(sender, **kwargs):
         default_value='',
         label=ugettext_lazy('Preamble text for PDF document (all motions)'),
         weight=375,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('PDF'))
 
     yield ConfigVariable(
@@ -170,7 +170,7 @@ def setup_motion_config(sender, **kwargs):
         input_type='boolean',
         label=ugettext_lazy('Show paragraph numbering (only in PDF)'),
         weight=380,
-        group=ugettext_lazy('Motion'),
+        group=ugettext_lazy('Motions'),
         subgroup=ugettext_lazy('PDF'))
 
 
