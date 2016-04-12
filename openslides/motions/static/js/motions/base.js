@@ -68,7 +68,7 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
             methods: {
                 // returns object with value and percent
                 getVote: function (vote) {
-                    if (!this.has_votes || !vote) {
+                    if (!this.has_votes) {
                         return;
                     }
                     var value = '';
