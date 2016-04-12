@@ -75,39 +75,41 @@
   <h3 translate>Description</h3>
   <div class="white-space-pre-line">{{ assignment.description }}</div>
 
-  <h3 translate>Candidates</h3>
-  <ol>
-    <li ng-repeat="related_user in assignment.assignment_related_users">
-      <a ui-sref="users.user.detail({id: related_user.user_id})">{{ related_user.user.get_full_name() }}</a>
-      <i ng-if="related_user.elected" class="fa fa-star" title="{{ 'is elected' | translate }}"></i>
-      <button os-perms="assignments.can_manage" ng-click="removeCandidate(related_user.user_id)"
-          class="btn btn-default btn-xs">
-        <i class="fa fa-times"></i>
-      </button>
-  </ol>
+  <div ng-if="assignment.phase != 2">
+    <h3 translate>Candidates</h3>
+    <ol>
+      <li ng-repeat="related_user in assignment.assignment_related_users">
+        <a ui-sref="users.user.detail({id: related_user.user_id})">{{ related_user.user.get_full_name() }}</a>
+        <i ng-if="related_user.elected" class="fa fa-star" title="{{ 'is elected' | translate }}"></i>
+        <button os-perms="assignments.can_manage" ng-click="removeCandidate(related_user.user_id)"
+            class="btn btn-default btn-xs">
+          <i class="fa fa-times"></i>
+        </button>
+    </ol>
 
-  <div class="form-group">
-    <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-      {{ alert.msg }}
-    </uib-alert>
-    <div os-perms="assignments.can_nominate_other">
-      <select chosen ng-model="candidateSelectBox.selected" ng-change="addCandidate(candidateSelectBox.selected)"
-          ng-options="user.id as user.get_full_name() for user in users"
-          search-contains="true"
-          placeholder-text-single="'Select or search a participant ...' | translate"
-          no-results-text="'No results available ...' | translate"
-          class="form-control">
-      <select>
+    <div class="form-group">
+      <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+        {{ alert.msg }}
+      </uib-alert>
+      <div os-perms="assignments.can_nominate_other">
+        <select chosen ng-model="candidateSelectBox.selected" ng-change="addCandidate(candidateSelectBox.selected)"
+            ng-options="user.id as user.get_full_name() for user in users"
+            search-contains="true"
+            placeholder-text-single="'Select or search a participant ...' | translate"
+            no-results-text="'No results available ...' | translate"
+            class="form-control">
+        <select>
+      </div>
+      <p os-perms="assignments.can_nominate_self" class="spacer">
+        <button ng-if="!isCandidate()" ng-click="addMe()" class="btn btn-default">
+          <i class="fa fa-plus"></i>
+          <translate>Add me</translate>
+        </button>
+        <button ng-if="isCandidate()" ng-click="removeMe()" class="btn btn-default">
+          <i class="fa fa-minus"></i>
+          <translate>Remove me</translate>
+        </button>
     </div>
-    <p os-perms="assignments.can_nominate_self" class="spacer">
-      <button ng-if="!isCandidate()" ng-click="addMe()" class="btn btn-default">
-        <i class="fa fa-plus"></i>
-        <translate>Add me</translate>
-      </button>
-      <button ng-if="isCandidate()" ng-click="removeMe()" class="btn btn-default">
-        <i class="fa fa-minus"></i>
-        <translate>Remove me</translate>
-      </button>
   </div>
 
   <h3 translate>Election result</h3>
