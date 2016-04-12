@@ -122,7 +122,7 @@
             {{ user.structure_level }}
           <td>
             <div ng-repeat="groupname in user.groupnames">
-              <translate>{{ groupname }}</translate>
+              {{ groupname | translate }}
             </div>
           <td>
             {{ user.comment }}
