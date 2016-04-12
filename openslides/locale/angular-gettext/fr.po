@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
-"PO-Revision-Date: 2016-03-21 12:05+0000\n"
-"Last-Translator: Moira Brülisauer <moosline@savvy.ch>\n"
+"PO-Revision-Date: 2016-04-07 10:07+0000\n"
+"Last-Translator: Oskar Hahn <mail@oshahn.de>\n"
 "Language-Team: French (http://www.transifex.com/openslides/openslides/language/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -148,7 +148,7 @@ msgid ""
 "        other fields are optional and may be empty."
 msgstr "Au moins le prénom ou le nom doivent être remplir. \nTous les autres champs sont facultatifs et peuvent être vides."
 
-#: core/static/js/core/site.js:609 motions/static/js/motions/site.js:281
+#: core/static/js/core/site.js:611 motions/static/js/motions/site.js:281
 msgid "Attachment"
 msgstr "pièce jointe"
 
@@ -726,7 +726,7 @@ msgid ""
 "Identifier, reason, submitter and category are optional and may be empty."
 msgstr "L' Identificateur, la raison, le déposant et la catégorie sont optionnels et peuvent être vides."
 
-#: core/static/js/core/site.js:620
+#: core/static/js/core/site.js:622
 msgid "If deactivated it appears as internal item on agenda."
 msgstr "Si cette option est désactivée, elle apparaît comme élément interne sur l'ordre du jour."
 
@@ -859,6 +859,10 @@ msgstr "Liste des orateurs"
 #: core/static/templates/core/projector-controls.html:9
 msgid "Live view"
 msgstr "La vue en direct"
+
+#: core/static/js/core/site.js:434
+msgid "Loading ..."
+msgstr ""
 
 #: core/static/templates/core/login-form.html:20 index.html:101
 msgid "Login"
@@ -1376,7 +1380,7 @@ msgstr "Sélectionner ou rechercher une balise ..."
 msgid "Select or search a workflow ..."
 msgstr "Sélectionner ou rechercher un flux de travail ..."
 
-#: core/static/js/core/site.js:612 motions/static/js/motions/site.js:284
+#: core/static/js/core/site.js:614 motions/static/js/motions/site.js:284
 msgid "Select or search an attachment ..."
 msgstr "Sélectionner ou rechercher une annexe ..."
 
@@ -1400,7 +1404,7 @@ msgstr "N'afficher que les fichier PDF"
 
 #: agenda/static/templates/agenda/item-list.html:216
 #: assignments/static/js/assignments/site.js:164
-#: core/static/js/core/site.js:619 motions/static/js/motions/site.js:264
+#: core/static/js/core/site.js:621 motions/static/js/motions/site.js:264
 msgid "Show as agenda item"
 msgstr "Afficher comme éléments de l'ordre du jour"
 
@@ -1514,7 +1518,7 @@ msgid "Tags"
 msgstr "Balises"
 
 #: agenda/static/templates/agenda/item-import.html:83
-#: core/static/js/core/site.js:599 motions/static/js/motions/site.js:234
+#: core/static/js/core/site.js:601 motions/static/js/motions/site.js:234
 #: motions/static/templates/motions/motion-detail.html:227
 #: motions/static/templates/motions/motion-import.html:56
 msgid "Text"
@@ -1533,7 +1537,7 @@ msgstr "Cette version n'est pas permis."
 #: assignments/static/js/assignments/site.js:133
 #: assignments/static/templates/assignments/assignment-list.html:172
 #: assignments/static/templates/assignments/assignment-list.html:97
-#: core/static/js/core/site.js:591
+#: core/static/js/core/site.js:593
 #: mediafiles/static/templates/mediafiles/mediafile-form.html:20
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:140
 #: motions/static/js/motions/site.js:226

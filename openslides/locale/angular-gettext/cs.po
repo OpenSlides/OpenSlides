@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
-"PO-Revision-Date: 2016-03-20 22:40+0000\n"
-"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
+"PO-Revision-Date: 2016-04-07 10:07+0000\n"
+"Last-Translator: Oskar Hahn <mail@oshahn.de>\n"
 "Language-Team: Czech (http://www.transifex.com/openslides/openslides/language/cs/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -153,7 +153,7 @@ msgid ""
 "        other fields are optional and may be empty."
 msgstr "Musí být vyplněny alespoň křestní jméno nebo příjmení.\nVšechna zbývající pole jsou nepovinná a smějí být prázdná."
 
-#: core/static/js/core/site.js:609 motions/static/js/motions/site.js:281
+#: core/static/js/core/site.js:611 motions/static/js/motions/site.js:281
 msgid "Attachment"
 msgstr "Příloha"
 
@@ -268,7 +268,7 @@ msgstr "Smí vidět volby"
 
 #: users/static/js/users/site.js:997
 msgid "Can see extra data of users (e.g. present and comment)"
-msgstr ""
+msgstr "Může vidět další údaje o uživatelích (například přítomný a poznámka)"
 
 #: users/static/js/users/site.js:972
 msgid "Can see hidden items and time scheduling of agenda"
@@ -731,7 +731,7 @@ msgid ""
 "Identifier, reason, submitter and category are optional and may be empty."
 msgstr "Identifikátor, zdůvodnění, navrhovatel a skupina jsou nepovinné a mohou zůstat prázdné"
 
-#: core/static/js/core/site.js:620
+#: core/static/js/core/site.js:622
 msgid "If deactivated it appears as internal item on agenda."
 msgstr "Je-li vypnuto, jeví se jako vnitřní bod pořadu jednání."
 
@@ -865,6 +865,10 @@ msgstr "Seznam řečníků"
 msgid "Live view"
 msgstr "Živé zobrazení"
 
+#: core/static/js/core/site.js:434
+msgid "Loading ..."
+msgstr ""
+
 #: core/static/templates/core/login-form.html:20 index.html:101
 msgid "Login"
 msgstr "Přihlášení"
@@ -996,7 +1000,7 @@ msgstr "Nepromítnut žádný soubor PDF."
 #: core/static/templates/core/select-single.html:2
 #: mediafiles/static/templates/mediafiles/mediafile-form.html:27
 msgid "No results available ..."
-msgstr ""
+msgstr "Nejsou dostupné žádné výsledky..."
 
 #: search.html:27
 msgid "No results."
@@ -1381,7 +1385,7 @@ msgstr "Vybrat nebo hledat značku..."
 msgid "Select or search a workflow ..."
 msgstr "Vybrat nebo hledat pracovní postup..."
 
-#: core/static/js/core/site.js:612 motions/static/js/motions/site.js:284
+#: core/static/js/core/site.js:614 motions/static/js/motions/site.js:284
 msgid "Select or search an attachment ..."
 msgstr "Vybrat nebo hledat přílohu..."
 
@@ -1405,7 +1409,7 @@ msgstr "Ukázat jen soubory PDF"
 
 #: agenda/static/templates/agenda/item-list.html:216
 #: assignments/static/js/assignments/site.js:164
-#: core/static/js/core/site.js:619 motions/static/js/motions/site.js:264
+#: core/static/js/core/site.js:621 motions/static/js/motions/site.js:264
 msgid "Show as agenda item"
 msgstr "Ukázat jako bod pořadu jednání"
 
@@ -1519,7 +1523,7 @@ msgid "Tags"
 msgstr "Značky"
 
 #: agenda/static/templates/agenda/item-import.html:83
-#: core/static/js/core/site.js:599 motions/static/js/motions/site.js:234
+#: core/static/js/core/site.js:601 motions/static/js/motions/site.js:234
 #: motions/static/templates/motions/motion-detail.html:227
 #: motions/static/templates/motions/motion-import.html:56
 msgid "Text"
@@ -1538,7 +1542,7 @@ msgstr "Tato verze není povolena."
 #: assignments/static/js/assignments/site.js:133
 #: assignments/static/templates/assignments/assignment-list.html:172
 #: assignments/static/templates/assignments/assignment-list.html:97
-#: core/static/js/core/site.js:591
+#: core/static/js/core/site.js:593
 #: mediafiles/static/templates/mediafiles/mediafile-form.html:20
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:140
 #: motions/static/js/motions/site.js:226
