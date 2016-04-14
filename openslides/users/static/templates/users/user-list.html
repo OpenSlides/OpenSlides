@@ -124,7 +124,7 @@
 
   <!-- filter users (for user with 'can_see_extra_data' permission) - consider present filter -->
   <div os-perms="users.can_see_extra_data">
-    <span ng-repeat="user in $parent.usersFiltered = (users | filter: filter.search | filter: {groups: groupFilter} |
+    <span ng-repeat="user in $parent.usersFiltered = (users | filter: filter.search | filter: {groups_id: groupFilter} |
           filter: {is_present: filterPresent} | orderBy: sortColumn:reverse)"></span>
   </div>
   <!-- filter users (for user without 'can_see_extra_data' permission) -->
@@ -190,11 +190,7 @@
           </div>
         <td class="optional">{{ user.structure_level }}
         <td class="optional">
-          <div os-perms="users.can_manage" ng-repeat="group in user.groups">
-            {{ (groups | filter: {id: group})[0].name | translate }}
-          </div>
-          <!-- TODO: normal users can't use user.groups but users.groups_id -->
-          <div os-perms="!users.can_manage" ng-repeat="group in user.groups_id">
+          <div ng-repeat="group in user.groups_id">
             {{ (groups | filter: {id: group})[0].name | translate }}
           </div>
         <td os-perms="users.can_see_extra_data">

@@ -4,8 +4,8 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
 from ..utils.rest_api import (
+    IdPrimaryKeyRelatedField,
     ModelSerializer,
-    PrimaryKeyRelatedField,
     RelatedField,
     ValidationError,
 )
@@ -40,7 +40,7 @@ class UserFullSerializer(ModelSerializer):
 
     Serializes all relevant fields.
     """
-    groups = PrimaryKeyRelatedField(
+    groups = IdPrimaryKeyRelatedField(
         many=True,
         queryset=Group.objects.exclude(pk__in=(1, 2)),
         help_text=ugettext_lazy('The groups this user belongs to. A user will '
