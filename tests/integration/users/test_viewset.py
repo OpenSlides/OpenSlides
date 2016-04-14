@@ -49,7 +49,7 @@ class UserCreate(TestCase):
         self.client.post(
             reverse('user-list'),
             {'last_name': 'Test name aedah1iequoof0Ashed4',
-             'groups': group_pks})
+             'groups_id': group_pks})
 
         user = User.objects.get(username='Test name aedah1iequoof0Ashed4')
         self.assertTrue(user.groups.filter(pk=group_pks[0]).exists())
@@ -64,10 +64,10 @@ class UserCreate(TestCase):
         response = self.client.post(
             reverse('user-list'),
             {'last_name': 'Test name aedah1iequoof0Ashed4',
-             'groups': group_pks})
+             'groups_id': group_pks})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'groups': ["Invalid pk \"%d\" - object does not exist." % group_pks[0]]})
+        self.assertEqual(response.data, {'groups_id': ["Invalid pk \"%d\" - object does not exist." % group_pks[0]]})
 
 
 class UserUpdate(TestCase):

@@ -319,7 +319,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     }
                 },
                 {
-                    key: 'groups',
+                    key: 'groups_id',
                     type: 'select-multiple',
                     templateOptions: {
                         label: gettextCatalog.getString('Groups'),
@@ -672,7 +672,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 var user = {
                     first_name: first_name,
                     last_name: last_name,
-                    groups: []
+                    groups_id: []
                 };
                 User.create(user).then(
                     function(success) {
@@ -741,7 +741,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 // groups
                 if (user.groups) {
                     var csvGroups = user.groups.replace(quotionRe, '$1').split(",");
-                    user.groups = [];
+                    user.groups_id = [];
                     user.groupnames = [];
                     if (csvGroups !== '') {
                         // All group objects are already loaded via the resolve statement from ui-router.
@@ -749,14 +749,14 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                         csvGroups.forEach(function(csvGroup) {
                             allGroups.forEach(function (allGroup) {
                                 if (csvGroup == allGroup.id) {
-                                    user.groups.push(allGroup.id);
+                                    user.groups_id.push(allGroup.id);
                                     user.groupnames.push(allGroup.name);
                                 }
                             });
                         });
                     }
                 } else {
-                    user.groups = [];
+                    user.groups_id = [];
                 }
                 // comment
                 if (user.comment) {

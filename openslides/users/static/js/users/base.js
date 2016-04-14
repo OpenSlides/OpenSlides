@@ -122,8 +122,8 @@ angular.module('OpenSlidesApp.users', [])
                 getPerms: function() {
                     var allPerms = [];
                     var allGroups = [];
-                    if (this.groups) {
-                        allGroups = this.groups.slice(0);
+                    if (this.groups_id) {
+                        allGroups = this.groups_id.slice(0);
                     }
                     // Add registered group
                     allGroups.push(2);
@@ -146,6 +146,14 @@ angular.module('OpenSlidesApp.users', [])
                     return "Participant";
                 },
             },
+            relations: {
+                hasMany: {
+                    'users/group': {
+                        localField: 'groups',
+                        localKey: 'groups_id',
+                    }
+                }
+            }
         });
     }
 ])

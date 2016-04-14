@@ -31,8 +31,8 @@
       <label translate>Structure level</label>
         {{ user.structure_level }}
       <label translate>Groups</label>
-        <div ng-repeat="group in user.groups">
-          {{ (groups | filter: {id: group})[0].name }}
+        <div ng-repeat="group in user.groups_id">
+          {{ (groups | filter: {id: group})[0].name | translate }}
         </div>
       <label translate>About me</label>
         <div ng-bind-html="user.about_me"></div>
