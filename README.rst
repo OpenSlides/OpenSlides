@@ -2,121 +2,82 @@
  OpenSlides
 ============
 
-I. What is OpenSlides?
-======================
+What is OpenSlides?
+===================
 
-OpenSlides is a free web-based presentation and assembly system for
-displaying and controlling of agenda, motions and elections of an assembly.
-See http://openslides.org/ for more information.
+OpenSlides is a free, web based presentation and assembly system for
+managing and projecting agenda, motions and elections of an assembly. See
+https://openslides.org/ for more information.
 
 
-II. Requirements
-================
+Requirements
+============
 
 OpenSlides runs everywhere where Python is running (for example on
 GNU/Linux, Mac or Windows (XP or newer)). On each client you need only a
 current version of a webbrowser.
 
 
-III. Installation
-=================
+Installation
+============
 
-Installation on GNU/Linux or Mac OS X
--------------------------------------
+1. Installation on GNU/Linux or Mac OS X
+----------------------------------------
 
-1. Check requirements
+a. Check requirements
+'''''''''''''''''''''
 
-   Make sure that you have installed Python Programming Language 3 (>= 3.4)
-   on your system. You will also need the Python development headers.
+Make sure that you have installed `Python (>= 3.4)
+<https://www.python.org/>`_ on your system. You also need the Python
+development headers, the Independent JPEG Group's JPEG runtime library
+(dependency package) and the compression library (development).
 
-   For example for Ubuntu run::
+\E. g. for Ubuntu run::
 
-       $ sudo apt-get install python3-dev
-
-2. Setup a virtual Python environment using the virtual environment (venv)
-   package for Python (optional)
-
-   You can setup a virtual Python environment to install OpenSlides as
-   non-root user.
-
-   Note: For Ubuntu 14.04 you have to install the pyvenv binary package. Run::
-
-       $ sudo apt-get install python3.4-venv
-
-   Create your OpenSlides directory, change to it, setup and activate the
-   virtual environment::
-
-       $ mkdir OpenSlides
-       $ cd OpenSlides
-       $ python3 -m venv .virtualenv
-       $ source .virtualenv/bin/activate
-
-3. Install OpenSlides
-
-   You can use the package from the `OpenSlides Website
-   <http://openslides.org/download/>`_. Download latest OpenSlides release
-   as compressed tar archive and run::
-
-       $ pip install openslides-x.x.tar.gz
-
-   OpenSlides will install all required Python packages (see
-   requirements_production.txt).
+    $ sudo apt-get install python3-dev libjpg-dev zlib1g-dev
 
 
-Installation on Windows
------------------------
+b. Setup a virtual Python environment (optional)
+''''''''''''''''''''''''''''''''''''''''''''''''
 
-*Note: There is a portable version of OpenSlides for Windows which does not
-require any install steps. If there is a reason that you can not use the
-portable version you should observe the following install steps.*
+You can setup a virtual Python environment using the virtual environment
+(venv) package for Python to install OpenSlides as non-root user.
 
-1. Check requirements
+*Note: For Ubuntu 14.04 you have to install the pyvenv binary package*
+``python3.4-venv`` *before.*
 
-   Make sure that you have installed Python Programming Language 3 (>= 3.4)
-   and Setuptools on your system.
+Create your OpenSlides directory, change to it, setup and activate the
+virtual environment::
 
-   a. Download and run the latest `Python 3.5 32-bit (x86) executable
-      installer <https://www.python.org/downloads/windows/>`_. Note that
-      the 32-bit installer is required even on a 64-bit Windows system. If
-      you use the 64-bit installer, step 3 of this instruction will fail
-      unless you installed the package Reportlab manually.
-
-   b. Download and run (via double click) the last `install script
-      ez_setup.py for Setuptools
-      <https://pypi.python.org/pypi/setuptools/#installation-instructions>`_.
-
-2. Setup a virtual Python environment using the virtual environment (venv)
-   package for Python (optional)
-
-   You can setup a virtual Python environment to install OpenSlides as
-   non-root user.
-
-   Create your OpenSlides directory, change to it, setup and activate the
-   virtual environment::
-
-       > md OpenSlides
-       > cd OpenSlides
-       > python -m venv .virtualenv
-       > .virtualenv\Scripts\activate.bat
-
-3. Install OpenSlides
-
-   You can use the package from the `OpenSlides Website
-   <http://openslides.org/download/>`_. Download latest OpenSlides release
-   as compressed tar archive and run::
-
-       > pip install openslides-x.x.tar.gz
-
-   OpenSlides will install all required Python packages (see
-   requirements_production.txt).
+    $ mkdir OpenSlides
+    $ cd OpenSlides
+    $ python3 -m venv .virtualenv
+    $ source .virtualenv/bin/activate
 
 
-IV. Start
-=========
+c. Install OpenSlides
+'''''''''''''''''''''
 
-To start OpenSlides simply run on command line::
+To install OpenSlides just run::
 
-    openslides
+    $ pip install openslides
+
+You can also use the package from the `OpenSlides website
+<https://openslides.org/>`_. Download latest OpenSlides release as
+compressed tar archive and run::
+
+    $ pip install openslides-x.x.tar.gz
+
+This will install all required Python packages (see
+``requirements_production.txt``).
+
+
+d. Start OpenSlides
+'''''''''''''''''''
+
+To start OpenSlides simply run::
+
+    $ openslides
 
 If you run this command the first time, a new database and the admin
 account (Username: `admin`, Password: `admin`) will be created. Please
@@ -128,107 +89,41 @@ try to listen on the local ip address on port 8000. That means that the
 server will be available to everyone on your local network (at least for
 commonly used network configurations).
 
-If you use a virtual environment (see install instructions, step 2), do not
-forget to activate the environment before restart after you have closed the
-terminal.
-
-For Unix and Mac OS X run::
+If you use a virtual environment (see step b.), do not forget to activate
+the environment before restart after you have closed the terminal::
 
     $ source .virtualenv/bin/activate
 
-For Windows run::
-
-    > .virtualenv\Scripts\activate
-
 To get help on the command line options run::
 
-    openslides --help
+    $ openslides --help
 
 You can store settings, database and other personal files in a local
 subdirectory and use these files e. g. if you want to run multiple
 instances of OpenSlides::
 
-    openslides --local-installation
+    $ openslides --local-installation
 
 
-V. Development
-==============
+2. Installation on Windows
+--------------------------
 
-If you want to join us developing OpenSlides, have a look at `GitHub
-<https://github.com/OpenSlides/OpenSlides/>`_ or write an email to our
-`mailing list <http://openslides.org/contact/>`_.
-
-
-Installation and start of the development version
--------------------------------------------------
-
-1. Check requirements
-
-   You need to have `Python 3 (>=3.4) <https://www.python.org/>`_, `Node.js
-   (>=0.10) <https://nodejs.org/>`_ and `Git <http://git-scm.com/>`_
-   installed. See also step 1 in the correspondent instruction in section
-   III.
-
-2. Get OpenSlides source code
-
-   Clone current master version from `OpenSlides' GitHub repository
-   <https://github.com/OpenSlides/OpenSlides/>`_::
-
-       cd ...  # Go to a nice place in your filesystem.
-       git clone https://github.com/OpenSlides/OpenSlides.git
-       cd OpenSlides
-
-3. Setup a virtual Python environment using the virtual environment (venv)
-   package for Python (optional)
-
-   See step 2 in the correspondent instruction in section III.
-
-4. Install all required Python packages::
-
-       $ pip install -r requirements.txt
-
-5. Install all npm and bower packages and concat and copy all third party
-   JavaScript and Cascading Style Sheets libraries
-
-   For Unix and Mac OS X run::
-
-       $ npm install
-
-   For Windows run::
-
-       > npm install
-
-   Later you might want to rerun gulp so that the third party JavaScript
-   and Cascading Style Sheets libraries are not minified.
-
-   To do this for Unix and Mac OS X run::
-
-       $ node_modules/.bin/gulp
-
-   To do this for Windows run::
-
-       > node_modules\.bin\gulp
-
-6. Start OpenSlides
-
-   Use the command-line interface::
-
-       python manage.py start
-
-   This will create a new directoy with settings.py and database.
-
-   To get help on the command-line options run::
-
-       python manage.py --help
-
-   Later you might want to start the server with the following command to
-   avoid opening new browser windows::
-
-       python manage.py runserver
+Download the latest portable version of OpenSlides for Windows from
+`OpenSlides website <https://openslides.org/>`_ which does not require any
+install steps. Simply unzip the downloaded file and run ``openslides.exe``.
 
 
-VI. Used software
-=================
+Development
+===========
+
+If you want to contribute to OpenSlides, have a look at `OpenSlides website
+<https://openslides.org/>`_ and write us an email. There is also an
+`instruction to install the development version
+<https://github.com/OpenSlides/OpenSlides/blob/master/DEVELOPMENT.rst>`_.
+
+
+Used software
+=============
 
 OpenSlides uses the following projects or parts of them:
 
@@ -240,23 +135,27 @@ OpenSlides uses the following projects or parts of them:
 
 * `Django <https://www.djangoproject.com>`_, License: BSD
 
-* `Django REST framework <http://www.django-rest-framework.org>`_, License: BSD
+* `Django REST framework <http://www.django-rest-framework.org>`_, License:
+  BSD
 
-* `html5-lib <https://github.com/html5lib/html5lib-python>`_, License: MIT
+* `html5lib <https://github.com/html5lib/html5lib-python>`_, License: MIT
 
-* `jsonfield <https://github.com/bradjasper/django-jsonfield/>`_, License: MIT
+* `django-jsonfield <https://github.com/bradjasper/django-jsonfield/>`_,
+  License: MIT
 
-* `natsort <https://github.com/SethMMorton/natsort/>`_, License: MIT
+* `natsort <https://pypi.python.org/pypi/natsort>`_, License: MIT
 
 * `PyPDF2 <http://mstamy2.github.io/PyPDF2/>`_, License: BSD
 
-* `ReportLab <http://www.reportlab.com/software/opensource/rl-toolkit/>`_,
+* `ReportLab <http://www.reportlab.com/opensource/>`_,
   License: BSD
 
 * `roman <https://pypi.python.org/pypi/roman>`_, License: Python 2.1.1
 
 * `setuptools <https://pypi.python.org/pypi/setuptools>`_,
   License: Python Software Foundation License
+
+* `Six <http://pythonhosted.org/six/>`_, License: MIT
 
 * `sockjs-tornado <https://github.com/mrjoes/sockjs-tornado>`_,
   License: MIT
@@ -266,7 +165,7 @@ OpenSlides uses the following projects or parts of them:
 
 * `Whoosh <https://bitbucket.org/mchaput/whoosh/wiki/Home>`_, License: BSD
 
-* Several JavaScript packages (see bower.json)
+* Several JavaScript packages (see ``bower.json``)
 
   * `angular <http://angularjs.org>`_, License: MIT
   * `angular-animate <http://angularjs.org>`_, License: MIT
@@ -306,9 +205,9 @@ OpenSlides uses the following projects or parts of them:
   * `tinymce-i18n <https://github.com/OpenSlides/tinymce-i18n>`_, License: LGPL-2.1
 
 
-VII. License and authors
-========================
+License and authors
+===================
 
-OpenSlides is Free/Libre Open Source Software (FLOSS), and distributed under
-the MIT License, see LICENSE file. The authors of OpenSlides are mentioned
-in the AUTHORS file.
+OpenSlides is Free/Libre Open Source Software (FLOSS), and distributed
+under the MIT License, see ``LICENSE`` file. The authors of OpenSlides are
+mentioned in the ``AUTHORS`` file.

@@ -2,11 +2,15 @@
  CHANGELOG of OpenSlides
 =========================
 
-http://openslides.org
+https://openslides.org/
 
-Version 2.0.0 (unreleased)
+Version 2.0 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/milestones/2.0]
+
+OpenSlides 2.0 is essentially not compatible to OpenSlides 1.7. E. g.
+customized templates, databases and plugins can not be reused without
+adaption.
 
 Agenda:
 - Updated the tests and changed internal parts of method of the agenda model.
