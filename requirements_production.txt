@@ -8,6 +8,6 @@ natsort>=3.2,<4.1
 PyPDF2>=1.25.0,<1.26
 reportlab>=3.0,<3.4
 roman>=2.0,<2.1
-setuptools>=2.2,<20.0
+setuptools>=2.2,<21.0
 sockjs-tornado>=1.0.1,<1.1
 Whoosh>=2.7.0,<2.8
