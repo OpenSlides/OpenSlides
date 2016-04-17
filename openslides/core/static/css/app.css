@@ -309,7 +309,7 @@ img {
 #content .col2 {
     float: right;
     position: relative;
-    z-index: 10;
+    z-index: 3;
 }
 
 #content .col2.max {
@@ -762,7 +762,7 @@ img {
     box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.2);
     height: 200px;
     padding: 0 10px 10px 10px;
-    z-index: 10;
+    z-index: 5;
 }
 
 #chatbox-text {
