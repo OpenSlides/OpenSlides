@@ -42,7 +42,7 @@
         <div class="form-group">
           <div class="input-group">
             <div class="input-group-addon"><i class="fa fa-search"></i></div>
-            <input type="text" os-focus-me ng-model="filter.search" class="form-control"
+            <input type="text" ng-model="filter.search" class="form-control"
                placeholder="{{ 'Search' | translate}}">
           </div>
         </div>
@@ -95,7 +95,7 @@
           <input type="checkbox" ng-model="$parent.selectedAll" ng-change="checkAll()">
 
         <!-- agenda item column -->
-        <th ng-click="toggleSort('agenda_item.item_number')" class="sortable">
+        <th ng-click="toggleSort('agenda_item.item_number')" class="sortable optional">
           <translate translate-comment="short form of agenda item">Item</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'agenda_item.item_number' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
@@ -154,7 +154,7 @@
           <input type="checkbox" ng-model="motion.selected">
 
         <!-- agenda item number -->
-        <td ng-if="!motion.quickEdit">{{ motion.agenda_item.item_number }}
+        <td ng-if="!motion.quickEdit" class="optional">{{ motion.agenda_item.item_number }}
 
         <!-- identifier -->
         <td ng-if="!motion.quickEdit">{{ motion.identifier }}
