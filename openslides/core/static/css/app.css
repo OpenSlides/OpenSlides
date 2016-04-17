@@ -308,6 +308,8 @@ img {
 
 #content .col2 {
     float: right;
+    position: relative;
+    z-index: 10;
 }
 
 #content .col2.max {
@@ -853,4 +855,18 @@ tr.selected td {
 
     /* hide marked element / column */
     .optional, .hide-sm { display: none; }
+}
+
+/* display for resolutions smaller that 560px */
+@media only screen and (max-width: 560px) {
+    #content .containerOS {
+        padding: 0;
+    }
+    #content .col2.max {
+        width: 100%;
+        position: absolute;
+    }
+    .col2 .projector_full {
+        margin-left: 0px;
+    }
 }

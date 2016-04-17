@@ -73,7 +73,7 @@
         <div class="form-group">
           <div class="input-group">
             <div class="input-group-addon"><i class="fa fa-search"></i></div>
-            <input type="text" os-focus-me ng-model="filter.search" class="form-control"
+            <input type="text" ng-model="filter.search" class="form-control"
                placeholder="{{ 'Search' | translate}}">
           </div>
         </div>
@@ -124,9 +124,9 @@
         <!-- agenda item column -->
         <th>
           <translate>Agenda item</translate>
-        <th os-perms="agenda.can_see_hidden_items">
+        <th os-perms="agenda.can_see_hidden_items" class="optional">
           <translate>Duration</translate>
-        <th class="minimum">
+        <th class="minimum optional">
           <translate>Done</translate>
     <tbody>
       <tr ng-repeat="item in itemsFiltered = (items | filter: filter.search |
@@ -188,7 +188,7 @@
         <td ng-show="!item.quickEdit" os-perms="agenda.can_see_hidden_items" class="optional">
           {{ item.duration }}
           <span ng-if="item.duration" translate-comment="'h' means time in hours" translate>h</span>
-        <td ng-if="!item.quickEdit">
+        <td ng-if="!item.quickEdit" class="optional">
           <span os-perms="!agenda.can_manage">
             <i ng-if="item.closed" class="fa fa-check-square-o"></i>
           </span>
