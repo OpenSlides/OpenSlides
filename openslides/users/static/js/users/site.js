@@ -479,7 +479,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         $scope.addGroupMultiple = function (group) {
             angular.forEach($scope.users, function (user) {
                 if (user.selected) {
-                    user.groups.push(group);
+                    user.groups_id.push(group);
                     User.save(user);
                 }
             });
@@ -490,9 +490,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         $scope.removeGroupMultiple = function (group) {
             angular.forEach($scope.users, function (user) {
                 if (user.selected) {
-                    var groupIndex = user.groups.indexOf(parseInt(group));
+                    var groupIndex = user.groups_id.indexOf(parseInt(group));
                     if (groupIndex > -1) {
-                        user.groups.splice(groupIndex, 1);
+                        user.groups_id.splice(groupIndex, 1);
                         User.save(user);
                     }
                 }
@@ -535,8 +535,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 
         // save user
         $scope.save = function (user) {
-            if (!user.groups) {
-                user.groups = [];
+            if (!user.groups_id) {
+                user.groups_id = [];
             }
             User.create(user).then(
                 function(success) {
@@ -574,8 +574,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 
         // save user
         $scope.save = function (user) {
-            if (!user.groups) {
-                user.groups = [];
+            if (!user.groups_id) {
+                user.groups_id = [];
             }
             // inject the changed user (copy) object back into DS store
             User.inject(user);
