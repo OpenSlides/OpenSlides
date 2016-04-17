@@ -4,8 +4,13 @@
 
 https://openslides.org/
 
-Version 2.0 (unreleased)
+Version 2.0.1 (unreleased)
 ==========================
+[https://github.com/OpenSlides/OpenSlides/milestones/2.0.1]
+
+
+Version 2.0 (2016-04-18)
+========================
 [https://github.com/OpenSlides/OpenSlides/milestones/2.0]
 
 OpenSlides 2.0 is essentially not compatible to OpenSlides 1.7. E. g.
