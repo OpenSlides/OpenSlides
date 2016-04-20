@@ -34,7 +34,7 @@ development headers, the Independent JPEG Group's JPEG runtime library
 
 \E. g. for Ubuntu run::
 
-    $ sudo apt-get install python3-dev libjpg-dev zlib1g-dev
+    $ sudo apt-get install python3-dev libjpeg-dev zlib1g-dev
 
 
 b. Setup a virtual Python environment (optional)
