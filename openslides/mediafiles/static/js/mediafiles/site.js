@@ -138,7 +138,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
 
         // ** PDF presentation functions **/
         // show document on projector
-        $scope.showPdf = function (mediafile) {
+        $scope.showMediafile = function (mediafile) {
             var postUrl = '/rest/core/projector/1/prune_elements/';
             var data = [{
                     name: 'mediafiles/mediafile',
@@ -147,7 +147,9 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                     page: 1,
                     scale: 'page-fit',
                     rotate: 0,
-                    visible: true
+                    visible: true,
+                    playing: false,
+                    fullscreen: mediafile.is_pdf
             }];
             $http.post(postUrl, data);
         };
@@ -167,6 +169,11 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
 
         $scope.getTitle = function (presentedMediafile) {
             return Mediafile.get(presentedMediafile.id).title;
+        };
+
+        $scope.getType = function(presentedMediafile) {
+            var mediafile = Mediafile.get(presentedMediafile.id);
+            return mediafile.is_pdf ? 'pdf' : mediafile.is_image ? 'image' : 'video';
         };
 
         $scope.mediafileGoToPage = function (page) {
@@ -217,6 +224,26 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
             }
             sendMediafileCommand({
                 rotate: rotation
+            });
+        };
+        $scope.mediafileScroll = function(scroll) {
+            var mediafileElement = getCurrentlyPresentedMediafile();
+            sendMediafileCommand({
+                scroll: scroll
+            });
+        };
+        var setFullscreen = function(fullscreen) {
+            sendMediafileCommand({
+                fullscreen: fullscreen
+            });
+        };
+        $scope.mediafileToggleFullscreen = function() {
+            var mediafileElement = getCurrentlyPresentedMediafile();
+            setFullscreen(!mediafileElement.fullscreen);
+        };
+        $scope.setPlaying = function(playing) {
+            sendMediafileCommand({
+                playing: playing
             });
         };
     }
