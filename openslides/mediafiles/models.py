@@ -30,6 +30,9 @@ class Mediafile(RESTModelMixin, models.Model):
         blank=True)
     """A user – the uploader of a file."""
 
+    private = models.BooleanField(default=False)
+    """Whether or not this mediafile should be listed as private"""
+
     timestamp = models.DateTimeField(auto_now_add=True)
     """A DateTimeField to save the upload date and time."""
 
@@ -41,6 +44,7 @@ class Mediafile(RESTModelMixin, models.Model):
         default_permissions = ()
         permissions = (
             ('can_see', 'Can see the list of files'),
+            ('can_see_private', 'Can see private files'),
             ('can_upload', 'Can upload files'),
             ('can_manage', 'Can manage files'))
 

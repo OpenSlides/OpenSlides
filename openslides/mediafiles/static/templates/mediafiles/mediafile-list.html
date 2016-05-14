@@ -155,8 +155,8 @@
           </i>
       </tr>
     <tbody>
-      <tr ng-repeat="mediafile in mediafilesFiltered = (mediafiles | osFilter: filter.search : getFilterString |
-          filter: {filetype: filter.showPDFs} | orderBy: sortColumn:reverse)"
+      <tr ng-repeat="mediafile in mediafilesFiltered = (mediafiles | privateFilter | osFilter: filter.search : getFilterString |
+	  filter: {filetype: filter.showPDFs} | orderBy: sortColumn:reverse )"
           class="animate-item"
           ng-class="{ 'activeline': mediafile.isProjected(), 'selected': mediafile.selected }">
         <!-- projector column -->
@@ -177,6 +177,7 @@
           <strong><a ng-href="{{ mediafile.mediafileUrl }}" target="_blank">{{ mediafile.title_or_filename }}</a></strong>
           <br><small><i class="fa fa-file"></i> {{ mediafile.filetype }}</small>
           <br><small><i class="fa fa-database"></i> {{ mediafile.filesize }}</small>
+          <span ng-if="mediafile.private"><br><small><i class="fa fa-lock"></i> <translate>Private</translate></small></span>
           <div os-perms="mediafiles.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !mediafile.hover}">
             <a href="" ng-click="openDialog(mediafile)" translate>Edit</a> |
             <a href="" class="text-danger"

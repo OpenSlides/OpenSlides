@@ -331,10 +331,25 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                 return Upload.upload({
                     url: '/rest/mediafiles/mediafile/',
                     method: 'POST',
-                    data: {mediafile: mediafile.newFile, title: mediafile.title, uploader_id: mediafile.uploader_id}
+                    data: {mediafile: mediafile.newFile, title: mediafile.title, uploader_id: mediafile.uploader_id, private: mediafile.private}
                 });
 
             }
+        };
+    }
+])
+
+.filter('privateFilter', [
+    '$filter',
+    'operator',
+    function ($filter, operator) {
+        return function (array) {
+            if (operator.hasPerms('mediafiles.can_see_private')) {
+                return array;
+            }
+            return Array.prototype.filter.call(array, function (item) {
+                return !item.private;
+            });
         };
     }
 ]);

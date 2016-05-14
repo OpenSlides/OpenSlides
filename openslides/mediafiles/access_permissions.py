@@ -18,3 +18,14 @@ class MediafileAccessPermissions(BaseAccessPermissions):
         from .serializers import MediafileSerializer
 
         return MediafileSerializer
+
+    def get_restricted_data(self, full_data, user):
+        """
+        Returns the restricted serialized data for the instance prepared
+        for the user.
+        """
+        if (not full_data['private'] or user.has_perm('mediafiles.can_see_private')):
+            data = full_data
+        else:
+            data = None
+        return data
