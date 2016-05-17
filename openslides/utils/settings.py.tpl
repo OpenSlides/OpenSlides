@@ -33,7 +33,7 @@ TEMPLATE_DEBUG = DEBUG
 # Add plugins to this list (see example entry in comment).
 
 INSTALLED_PLUGINS += (
-#    'pluginname',
+#    'plugin_module_name',
 )
 
 INSTALLED_APPS += INSTALLED_PLUGINS
