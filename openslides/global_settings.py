@@ -1,7 +1,5 @@
 import os
 
-from django.utils.translation import ugettext_lazy
-
 from openslides.utils.plugins import collect_plugins
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
@@ -13,11 +11,12 @@ AUTHENTICATION_BACKENDS = ('openslides.users.auth.CustomizedModelBackend',)
 SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
 
 LANGUAGES = (
-    ('cs', ugettext_lazy('Czech')),
-    ('en', ugettext_lazy('English')),
-    ('fr', ugettext_lazy('French')),
-    ('de', ugettext_lazy('German')),
-    ('pt', ugettext_lazy('Portuguese')),
+    ('en', 'English'),
+    ('de', 'Deutsch'),
+    ('fr', 'Français'),
+    ('es', 'Español'),
+    ('pt', 'Português'),
+    ('cs', 'Český'),
 )
 
 # If you set this to False, Django will make some optimizations so as not
