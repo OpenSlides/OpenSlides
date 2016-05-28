@@ -23,7 +23,7 @@
 
   <!-- Next speakers -->
   <ol class="nextSpeakers">
-    <li ng-repeat="speaker in item.speakers | filter: {begin_time: null}">
+    <li ng-repeat="speaker in item.speakers | filter: {begin_time: null} | orderBy:'weight'">
       {{ speaker.user.get_full_name() }}
   </ol>
 </div>
