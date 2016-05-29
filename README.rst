@@ -79,15 +79,14 @@ To start OpenSlides simply run::
 
     $ openslides
 
-If you run this command the first time, a new database and the admin
-account (Username: `admin`, Password: `admin`) will be created. Please
-change the password after first login!
+If you run this command the first time, a new database and the admin account
+(Username: `admin`, Password: `admin`) will be created. Please change the
+password after first login!
 
-OpenSlides will start using the integrated Tornado webserver. It will also
-try to open the webinterface in your default webbrowser. The server will
-try to listen on the local ip address on port 8000. That means that the
-server will be available to everyone on your local network (at least for
-commonly used network configurations).
+OpenSlides will start a webserver. It will also try to open the webinterface in
+your default webbrowser. The server will try to listen on the local ip address
+on port 8000. That means that the server will be available to everyone on your
+local network (at least for commonly used network configurations).
 
 If you use a virtual environment (see step b.), do not forget to activate
 the environment before restart after you have closed the terminal::
@@ -122,6 +121,32 @@ If you want to contribute to OpenSlides, have a look at `OpenSlides website
 <https://github.com/OpenSlides/OpenSlides/blob/master/DEVELOPMENT.rst>`_.
 
 
+Installation for big assemblies
+===============================
+
+The installation steps described above install OpenSlides in a way, that does
+not support hundreds of concurrent clients. To install OpenSlides in for big
+assemblies, some config variables have to be changed in the OpenSlides settings
+usualy called settings.py.
+
+The configuration values, that have to be altered are:
+
+* CACHES
+* CHANNEL_LAYERS
+* DATABASES
+
+Please see:
+* http://channels.readthedocs.io/en/latest/deploying.html
+* https://docs.djangoproject.com/en/1.9/topics/cache/
+* https://github.com/sebleier/django-redis-cache
+* https://docs.djangoproject.com/en/1.9/ref/settings/#databases
+
+You should use a webserver like Apache HTTP Server or nginx to serve the static
+and media files and as proxy server in front of OpenSlides server. You also
+should use a database like PostgreSQL and Redis as channels backend and cache
+backend.
+
+
 Used software
 =============
 
@@ -140,6 +165,8 @@ OpenSlides uses the following projects or parts of them:
 
 * `html5lib <https://github.com/html5lib/html5lib-python>`_, License: MIT
 
+* `Django Channels <https://github.com/andrewgodwin/channels/>`_, License: MIT
+
 * `django-jsonfield <https://github.com/bradjasper/django-jsonfield/>`_,
   License: MIT
 
@@ -156,12 +183,6 @@ OpenSlides uses the following projects or parts of them:
   License: Python Software Foundation License
 
 * `Six <http://pythonhosted.org/six/>`_, License: MIT
-
-* `sockjs-tornado <https://github.com/mrjoes/sockjs-tornado>`_,
-  License: MIT
-
-* `Tornado <http://www.tornadoweb.org/en/stable/>`_, License: Apache
-  License v2.0
 
 * `Whoosh <https://bitbucket.org/mchaput/whoosh/wiki/Home>`_, License: BSD
 
@@ -200,7 +221,6 @@ OpenSlides uses the following projects or parts of them:
   * `open-sans-fontface <https://github.com/FontFaceKit/open-sans>`_, License: Apache License version 2.0
   * `pdfjs-dist <http://mozilla.github.io/pdf.js/>`_, License: Apache-2.0
   * `roboto-condensed <https://github.com/davidcunningham/roboto-condensed>`_, License: Apache 2.0
-  * `sockjs <https://github.com/sockjs/sockjs-client>`_, License: MIT
   * `tinymce <http://www.tinymce.com>`_, License: LGPL-2.1
   * `tinymce-i18n <https://github.com/OpenSlides/tinymce-i18n>`_, License: LGPL-2.1
 

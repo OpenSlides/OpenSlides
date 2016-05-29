@@ -12,7 +12,7 @@ def listen_to_related_object_post_save(sender, instance, created, **kwargs):
     """
     if created and hasattr(instance, 'get_agenda_title'):
         Item.objects.create(content_object=instance)
-        inform_changed_data(False, instance)
+        inform_changed_data(instance)
 
 
 def listen_to_related_object_post_delete(sender, instance, **kwargs):

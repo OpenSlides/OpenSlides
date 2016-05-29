@@ -4,12 +4,17 @@
 
 https://openslides.org/
 
-Version 2.0.1 (unreleased)
-==========================
-[https://github.com/OpenSlides/OpenSlides/milestones/2.0.1]
+Version 2.1 (unreleased)
+========================
+[https://github.com/OpenSlides/OpenSlides/milestones/2.1]
+
+Core:
+- Used Django Channels instead of Tornado.
+- Added support for big assemblies with lots of users.
 
 Other:
-- Remove config cache to support multiple threads or processes.
+- Removed config cache to support multiple threads or processes.
+- Fixed bug, that the last change of a config value was not send via autoupdate.
 
 
 Version 2.0 (2016-04-18)

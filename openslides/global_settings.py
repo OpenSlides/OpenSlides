@@ -8,6 +8,9 @@ AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = ('openslides.users.auth.CustomizedModelBackend',)
 
+# Uses a db session backend, that saves the user_id directly in the db
+SESSION_ENGINE = 'openslides.core.session_backend'
+
 SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
 
 LANGUAGES = (
@@ -74,6 +77,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'rest_framework',
+    'channels',
     'openslides.poll',  # TODO: try to remove this line
     'openslides.agenda',
     'openslides.motions',
@@ -93,25 +97,8 @@ CACHES = {
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ['*']
 
-# Use Haystack with Whoosh for full text search
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine'
-    },
-}
-
-# Haystack updates search index after each save/delete action by apps
-HAYSTACK_SIGNAL_PROCESSOR = 'openslides.utils.haystack_processor.OpenSlidesProcessor'
-
 # Adds all automaticly collected plugins
 INSTALLED_PLUGINS = collect_plugins()
-
-# Set this True to use tornado as single wsgi server. Set this False to use
-# other webserver like Apache or Nginx as wsgi server.
-USE_TORNADO_AS_WSGI_SERVER = True
-
-OPENSLIDES_WSGI_NETWORK_LOCATION = ''
-
 
 TEST_RUNNER = 'openslides.utils.test.OpenSlidesDiscoverRunner'
 
@@ -121,4 +108,12 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'openslides.users.auth.RESTFrameworkAnonymousAuthentication',
     )
+}
+
+# Config for channels
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'asgiref.inmemory.ChannelLayer',
+        'ROUTING': 'openslides.routing.channel_routing',
+    },
 }
