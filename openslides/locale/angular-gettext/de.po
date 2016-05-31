@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
-"PO-Revision-Date: 2016-04-10 11:02+0000\n"
+"PO-Revision-Date: 2016-05-31 11:38+0000\n"
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/openslides/openslides/language/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -616,7 +616,7 @@ msgstr "Wahlen"
 #: motions/static/templates/motions/motion-import.html:23
 #: users/static/templates/users/user-import.html:52
 msgid "Encoding"
-msgstr "Encoding"
+msgstr "Kodierung"
 
 #: agenda/static/templates/agenda/item-detail.html:63
 msgid "End current speech"
