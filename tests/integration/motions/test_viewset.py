@@ -150,7 +150,7 @@ class RetrieveMotion(TestCase):
         self.motion.create_poll()
 
     def test_number_of_queries(self):
-        with self.assertNumQueries(17):
+        with self.assertNumQueries(16):
             self.client.get(reverse('motion-detail', args=[self.motion.pk]))
 
 

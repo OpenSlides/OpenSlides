@@ -1,16 +1,17 @@
 import json
+from unittest.mock import patch
 
 from django.core.urlresolvers import reverse
-from django.dispatch import receiver
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides import __version__ as version
-from openslides.core.config import ConfigVariable, config
+from openslides.core.config import ConfigHandler, ConfigVariable
 from openslides.core.models import CustomSlide, Projector
-from openslides.core.signals import config_signal
 from openslides.utils.rest_api import ValidationError
 from openslides.utils.test import TestCase
+
+config = ConfigHandler()
 
 
 class ProjectorAPI(TestCase):
@@ -74,10 +75,19 @@ class VersionView(TestCase):
                  'version': 'unknown'}]})
 
 
+@patch('openslides.core.config.config', config)
+@patch('openslides.core.views.config', config)
 class ConfigViewSet(TestCase):
     """
     Tests requests to deal with config variables.
     """
+    def setUp(self):
+        config.update_config_varialbes(set_simple_config_view_integration_config_test())
+
+    def tearDown(self):
+        # Reset the config variables
+        config.config_variables = {}
+
     def test_retrieve(self):
         self.client.login(username='admin', password='admin')
         config['test_var_aeW3Quahkah1phahCheo'] = 'test_value_Oovoojieme7eephaed2A'
@@ -178,8 +188,7 @@ def validator_for_testing(value):
         raise ValidationError({'detail': 'Invalid input.'})
 
 
-@receiver(config_signal, dispatch_uid='set_simple_config_view_integration_config_test')
-def set_simple_config_view_integration_config_test(sender, **kwargs):
+def set_simple_config_view_integration_config_test():
     """
     Sets a simple config view with some config variables but without
     grouping.

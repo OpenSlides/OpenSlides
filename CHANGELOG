@@ -8,6 +8,9 @@ Version 2.0.1 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/milestones/2.0.1]
 
+Other:
+- Remove config cache to support multiple threads or processes.
+
 
 Version 2.0 (2016-04-18)
 ========================

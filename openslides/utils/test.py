@@ -1,8 +1,6 @@
 from django.test import TestCase as _TestCase
 from django.test.runner import DiscoverRunner
 
-from openslides.core.config import config
-
 
 class OpenSlidesDiscoverRunner(DiscoverRunner):
     def run_tests(self, test_labels, extra_tests=None, **kwargs):
@@ -28,15 +26,8 @@ class OpenSlidesDiscoverRunner(DiscoverRunner):
 
 class TestCase(_TestCase):
     """
-    Overwrites Django's TestCase class to refreshs the config cache.
-    """
+    Does nothing at the moment.
 
-    def _post_teardown(self, *args, **kwargs):
-        return_value = super(TestCase, self)._post_teardown(*args, **kwargs)
-        # Resets the config object by deleting the cache
-        try:
-            del config._cache
-        except AttributeError:
-            # The cache has only to be deleted if it exists.
-            pass
-        return return_value
+    Could be used in the future. Use this this for the integration test suit.
+    """
+    pass

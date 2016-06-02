@@ -15,11 +15,13 @@ class CoreAppConfig(AppConfig):
 
         # Import all required stuff.
         from django.db.models import signals
-        from openslides.core.signals import config_signal, post_permission_creation
+        from openslides.core.config import config
+        from openslides.core.signals import post_permission_creation
         from openslides.utils.autoupdate import inform_changed_data_receiver, inform_deleted_data_receiver
         from openslides.utils.rest_api import router
         from openslides.utils.search import index_add_instance, index_del_instance
-        from .signals import delete_django_app_permissions, setup_general_config
+        from .config_variables import get_config_variables
+        from .signals import delete_django_app_permissions
         from .views import (
             ChatMessageViewSet,
             ConfigViewSet,
@@ -28,10 +30,10 @@ class CoreAppConfig(AppConfig):
             TagViewSet,
         )
 
+        # Define config variables
+        config.update_config_varialbes(get_config_variables())
+
         # Connect signals.
-        config_signal.connect(
-            setup_general_config,
-            dispatch_uid='setup_general_config')
         post_permission_creation.connect(
             delete_django_app_permissions,
             dispatch_uid='delete_django_app_permissions')

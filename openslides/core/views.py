@@ -415,12 +415,9 @@ class ConfigMetadata(SimpleMetadata):
     Custom metadata class to add config info to responses on OPTIONS requests.
     """
     def determine_metadata(self, request, view):
-        # Sort config variables by weight.
-        config_variables = sorted(config.get_config_variables().values(), key=attrgetter('weight'))
-
         # Build tree.
         config_groups = []
-        for config_variable in config_variables:
+        for config_variable in sorted(config.config_variables.values(), key=attrgetter('weight')):
             if config_variable.is_hidden():
                 # Skip hidden config variables. Do not even check groups and subgroups.
                 continue

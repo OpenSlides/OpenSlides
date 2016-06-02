@@ -19,33 +19,35 @@ class ConfigHandler:
     object. To get a config variable use x = config[...], to set it use
     config[...] = x.
     """
+
+    def __init__(self):
+        # Dict, that keeps all ConfigVariable objects. Has to be set at statup.
+        # See the run method in openslides.core.apps.
+        self.config_variables = {}
+
     def __getitem__(self, key):
         """
-        Returns the value of the config variable. Builds the cache if it
-        does not exist.
+        Returns the value of the config variable. Returns the default value, if
+        not value exists in the database.
         """
         try:
-            return self._cache[key]
+            default_value = self.config_variables[key].default_value
         except KeyError:
-            raise ConfigNotFound(_('The config variable %s was not found.') % key)
-        except AttributeError:
-            self.setup_cache()
-            return self[key]
+            raise ConfigNotFound(_('The config variable {} was not found.').format(key))
 
-    def setup_cache(self):
-        """
-        Creates a cache of all config variables with their current value.
-        """
-        self._cache = {}
-        for key, config_variable in self.get_config_variables().items():
-            self._cache[key] = config_variable.default_value
-        for config_object in ConfigStore.objects.all():
-            self._cache[config_object.key] = config_object.value
+        try:
+            db_value = ConfigStore.objects.get(key=key)
+        except ConfigStore.DoesNotExist:
+            return default_value
+        return db_value.value
 
     def __contains__(self, key):
+        """
+        Returns True, if the config varialbe exists.
+        """
         try:
-            config[key]
-        except ConfigNotFound:
+            self.config_variables[key]
+        except KeyError:
             return False
         else:
             return True
@@ -56,9 +58,9 @@ class ConfigHandler:
         """
         # Check if the variable is defined.
         try:
-            config_variable = config.get_config_variables()[key]
+            config_variable = self.config_variables[key]
         except KeyError:
-            raise ConfigNotFound(_('The config variable %s was not found.') % key)
+            raise ConfigNotFound(_('The config variable {} was not found.').format(key))
 
         # Validate datatype and run validators.
         expected_type = INPUT_TYPE_MAPPING[config_variable.input_type]
@@ -69,8 +71,15 @@ class ConfigHandler:
         except ValueError:
             raise ConfigError(_('Wrong datatype. Expected %(expected_type)s, got %(got_type)s.') % {
                 'expected_type': expected_type, 'got_type': type(value)})
-        if config_variable.input_type == 'choice' and value not in map(lambda choice: choice['value'], config_variable.choices):
-            raise ConfigError(_('Invalid input. Choice does not match.'))
+
+        if config_variable.input_type == 'choice':
+            # Choices can be a callable. In this case call it at this place
+            if callable(config_variable.choices):
+                choices = config_variable.choices()
+            else:
+                choices = config_variable.choices
+            if value not in map(lambda choice: choice['value'], choices):
+                raise ConfigError(_('Invalid input. Choice does not match.'))
         for validator in config_variable.validators:
             try:
                 validator(value)
@@ -78,50 +87,45 @@ class ConfigHandler:
                 raise ConfigError(e.messages[0])
 
         # Save the new value to the database.
-        config_store, created = ConfigStore.objects.get_or_create(key=key, defaults={'value': value})
-        if not created:
-            config_store.value = value
-            config_store.save()
-
-        # Update cache.
-        if hasattr(self, '_cache'):
-            self._cache[key] = value
+        ConfigStore.objects.update_or_create(key=key, defaults={'value': value})
 
         # Call on_change callback.
         if config_variable.on_change:
             config_variable.on_change()
 
+    def update_config_varialbes(self, items):
+        """
+        Updates the config_variables dict.
+
+        items has to be an iterator over ConfigVariable objects.
+        """
+        new_items = dict((variable.name, variable) for variable in items)
+        # Check that all ConfigVariables are unique. So no key from items can
+        # be in already in self.config_variables
+        for key in new_items.keys():
+            if key in self.config_variables:
+                raise ConfigError(_('Too many values for config variable {} found.').format(key))
+
+        self.config_variables.update(new_items)
+
     def items(self):
         """
-        Returns key-value pairs of all config variables.
+        Iterates over key-value pairs of all config variables.
         """
-        if not hasattr(self, '_cache'):
-            self.setup_cache()
-        return self._cache.items()
+        # Create a dict with the default values of each ConfigVariable
+        config_items = dict((key, variable.default_value) for key, variable in self.config_variables.items())
 
-    def get_config_variables(self):
-        """
-        Returns a dictionary with all ConfigVariable instances of all
-        signal receivers. The key is the name of the config variable.
-        """
-        # config_signal can not be imported at global space, because
-        # core.signals imports this file
-        from .signals import config_signal
-
-        result = {}
-        for receiver, config_collection in config_signal.send(sender='get_config_variables'):
-            for config_variable in config_collection:
-                if config_variable.name in result:
-                    raise ConfigError(_('Too many values for config variable %s found.') % config_variable.name)
-                result[config_variable.name] = config_variable
-        return result
+        # Update the dict with all values, which are in the db
+        for db_value in ConfigStore.objects.all():
+            config_items[db_value.key] = db_value.value
+        return config_items.items()
 
     def get_all_translatable(self):
         """
         Generator to get all config variables as strings when their values are
         intended to be translated.
         """
-        for config_variable in self.get_config_variables().values():
+        for config_variable in self.config_variables.values():
             if config_variable.translatable:
                 yield config_variable.name
 
