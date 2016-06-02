@@ -8,7 +8,7 @@
     "angular-bootstrap": "~0.14.3",
     "angular-bootstrap-colorpicker": "~3.0.24",
     "angular-chosen-localytics": "~1.4.0",
-    "angular-csv-import": "~0.0.27",
+    "angular-csv-import": "~0.0.29",
     "angular-formly": "~7.3.9",
     "angular-formly-templates-bootstrap": "~6.2.0",
     "angular-gettext": "~2.2.0",
