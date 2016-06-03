@@ -14,15 +14,17 @@ class UsersAppConfig(AppConfig):
         from . import projector  # noqa
 
         # Import all required stuff.
-        from ..core.signals import config_signal, post_permission_creation
+        from ..core.config import config
+        from ..core.signals import post_permission_creation
         from ..utils.rest_api import router
-        from .signals import create_builtin_groups_and_admin, setup_users_config
+        from .config_variables import get_config_variables
+        from .signals import create_builtin_groups_and_admin
         from .views import GroupViewSet, UserViewSet
 
+        # Define config variables
+        config.update_config_varialbes(get_config_variables())
+
         # Connect signals.
-        config_signal.connect(
-            setup_users_config,
-            dispatch_uid='setup_users_config')
         post_permission_creation.connect(
             create_builtin_groups_and_admin,
             dispatch_uid='create_builtin_groups_and_admin')

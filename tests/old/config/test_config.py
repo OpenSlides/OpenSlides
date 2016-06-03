@@ -1,12 +1,28 @@
-from django.dispatch import receiver
+from unittest.mock import patch
 
-from openslides.core.config import ConfigVariable, config
+from openslides.core.config import ConfigHandler, ConfigVariable
 from openslides.core.exceptions import ConfigError, ConfigNotFound
-from openslides.core.signals import config_signal
 from openslides.utils.test import TestCase
 
 
+class TestConfigException(Exception):
+    pass
+
+config = ConfigHandler()
+
+
+@patch('openslides.core.config.config', config)
 class HandleConfigTest(TestCase):
+    def setUp(self):
+        config.update_config_varialbes(set_grouped_config_view())
+        config.update_config_varialbes(set_simple_config_view())
+        config.update_config_varialbes(set_simple_config_view_multiple_vars())
+        config.update_config_varialbes(set_simple_config_collection_disabled_view())
+        config.update_config_varialbes(set_simple_config_collection_with_callback())
+
+    def tearDown(self):
+        # Reset the config variables
+        config.config_variables = {}
 
     def get_config_var(self, key):
         return config[key]
@@ -26,24 +42,10 @@ class HandleConfigTest(TestCase):
             self.get_config_var('unknown_config_var')
 
     def test_get_multiple_config_var_error(self):
-        config_signal.connect(
-            set_simple_config_view_multiple_vars,
-            dispatch_uid='set_simple_config_view_multiple_vars_for_testing')
-
         with self.assertRaisesMessage(
                 ConfigError,
                 'Too many values for config variable multiple_config_var found.'):
-            config.setup_cache()
-        config_signal.disconnect(
-            set_simple_config_view_multiple_vars,
-            dispatch_uid='set_simple_config_view_multiple_vars_for_testing')
-
-    def test_database_queries(self):
-        """
-        Test that no database queries are send, after the cache was created.
-        """
-        config.setup_cache()
-        self.assertNumQueries(0, self.get_config_var, key='string_var')
+            config.update_config_varialbes(set_simple_config_view_multiple_vars())
 
     def test_setup_config_var(self):
         self.assertRaises(TypeError, ConfigVariable)
@@ -73,9 +75,8 @@ class HandleConfigTest(TestCase):
         Tests that the special callback is called and raises a special
         message.
         """
-        # TODO: use right exception
         with self.assertRaisesMessage(
-                Exception,
+                TestConfigException,
                 'Change callback dhcnfg34dlg06kdg successfully called.'):
             self.set_config_var(
                 key='var_with_callback_ghvnfjd5768gdfkwg0hm2',
@@ -86,8 +87,7 @@ class HandleConfigTest(TestCase):
             'new_string_kbmbnfhdgibkdjshg452bc')
 
 
-@receiver(config_signal, dispatch_uid='set_grouped_config_view_for_testing')
-def set_grouped_config_view(sender, **kwargs):
+def set_grouped_config_view():
     """
     Sets a grouped config collection. There are some variables, one variable
     with a string as default value, one with a boolean as default value,
@@ -128,8 +128,7 @@ def set_grouped_config_view(sender, **kwargs):
         subgroup='Group 2 Toongai7ahyahy7B')
 
 
-@receiver(config_signal, dispatch_uid='set_simple_config_view_for_testing')
-def set_simple_config_view(sender, **kwargs):
+def set_simple_config_view():
     """
     Sets a simple config view with some config variables but without
     grouping.
@@ -139,8 +138,7 @@ def set_simple_config_view(sender, **kwargs):
     yield ConfigVariable(name='none_config_var', default_value=None)
 
 
-# Do not connect to the signal now but later inside the test.
-def set_simple_config_view_multiple_vars(sender, **kwargs):
+def set_simple_config_view_multiple_vars():
     """
     Sets a bad config view with some multiple config vars.
     """
@@ -148,15 +146,13 @@ def set_simple_config_view_multiple_vars(sender, **kwargs):
     yield ConfigVariable(name='multiple_config_var', default_value='foobar2')
 
 
-@receiver(config_signal, dispatch_uid='set_simple_config_collection_disabled_view_for_testing')
-def set_simple_config_collection_disabled_view(sender, **kwargs):
+def set_simple_config_collection_disabled_view():
     yield ConfigVariable(name='hidden_config_var_2', default_value='')
 
 
-@receiver(config_signal, dispatch_uid='set_simple_config_collection_with_callback_for_testing')
-def set_simple_config_collection_with_callback(sender, **kwargs):
+def set_simple_config_collection_with_callback():
     def callback():
-        raise Exception('Change callback dhcnfg34dlg06kdg successfully called.')
+        raise TestConfigException('Change callback dhcnfg34dlg06kdg successfully called.')
     yield ConfigVariable(
         name='var_with_callback_ghvnfjd5768gdfkwg0hm2',
         default_value='',

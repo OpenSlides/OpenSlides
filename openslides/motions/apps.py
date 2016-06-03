@@ -15,13 +15,16 @@ class MotionsAppConfig(AppConfig):
         from . import projector  # noqa
 
         # Import all required stuff.
-        from openslides.core.signals import config_signal
+        from openslides.core.config import config
         from openslides.utils.rest_api import router
-        from .signals import create_builtin_workflows, setup_motion_config
+        from .config_variables import get_config_variables
+        from .signals import create_builtin_workflows
         from .views import CategoryViewSet, MotionViewSet, MotionPollViewSet, WorkflowViewSet
 
+        # Define config varialbes
+        config.update_config_varialbes(get_config_variables())
+
         # Connect signals.
-        config_signal.connect(setup_motion_config, dispatch_uid='setup_motion_config')
         post_migrate.connect(create_builtin_workflows, dispatch_uid='motion_create_builtin_workflows')
 
         # Register viewsets.

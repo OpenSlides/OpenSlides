@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from openslides.core.config import ConfigHandler, ConfigVariable, config
+from openslides.core.config import ConfigVariable, config
 from openslides.core.exceptions import ConfigNotFound
 
 
@@ -26,12 +26,7 @@ class TestConfigVariable(TestCase):
 
 
 class TestConfigHandler(TestCase):
-    def test_get_from_cache(self):
-        ConfigHandler._cache = {'key_eeshah4Sho6zailee4ko': 'value_chies7aCohZoo9umieph'}
-        self.assertEqual(config['key_eeshah4Sho6zailee4ko'], 'value_chies7aCohZoo9umieph')
-
     def test_get_not_found(self):
-        ConfigHandler._cache = {}
         self.assertRaises(
             ConfigNotFound,
             config.__getitem__,

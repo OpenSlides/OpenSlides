@@ -14,13 +14,13 @@ class AssignmentsAppConfig(AppConfig):
         from . import projector  # noqa
 
         # Import all required stuff.
-        from openslides.core.signals import config_signal
+        from openslides.core.config import config
         from openslides.utils.rest_api import router
-        from .signals import setup_assignment_config
+        from .config_variables import get_config_variables
         from .views import AssignmentViewSet, AssignmentPollViewSet
 
-        # Connect signals.
-        config_signal.connect(setup_assignment_config, dispatch_uid='setup_assignment_config')
+        # Define config variables
+        config.update_config_varialbes(get_config_variables())
 
         # Register viewsets.
         router.register(self.get_model('Assignment').get_collection_string(), AssignmentViewSet)

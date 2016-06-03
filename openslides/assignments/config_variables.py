@@ -6,15 +6,14 @@ from openslides.core.config import ConfigVariable
 from openslides.poll.models import PERCENT_BASE_CHOICES
 
 
-def setup_assignment_config(sender, **kwargs):
+def get_config_variables():
     """
-    Receiver function to setup all assignment config variables. They are
-    grouped in 'Ballot and ballot papers' and 'PDF'. This function is
-    connected to the signal openslides.core.signals.config_signal during
-    app loading.
+    Generator which yields all config variables of this app.
+
+    They are grouped in 'Ballot and ballot papers' and 'PDF'. The generator has
+    to be evaluated during app loading (see apps.py).
     """
     # Ballot and ballot papers
-
     yield ConfigVariable(
         name='assignments_poll_vote_values',
         default_value='auto',

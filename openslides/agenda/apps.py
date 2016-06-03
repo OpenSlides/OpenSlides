@@ -15,16 +15,18 @@ class AgendaAppConfig(AppConfig):
 
         # Import all required stuff.
         from django.db.models.signals import pre_delete, post_save
-        from openslides.core.signals import config_signal
+        from openslides.core.config import config
         from openslides.utils.rest_api import router
+        from .config_variables import get_config_variables
         from .signals import (
-            setup_agenda_config,
             listen_to_related_object_post_delete,
             listen_to_related_object_post_save)
         from .views import ItemViewSet
 
+        # Define config varialbes
+        config.update_config_varialbes(get_config_variables())
+
         # Connect signals.
-        config_signal.connect(setup_agenda_config, dispatch_uid='setup_agenda_config')
         post_save.connect(
             listen_to_related_object_post_save,
             dispatch_uid='listen_to_related_object_post_save')
