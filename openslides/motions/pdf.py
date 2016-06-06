@@ -1,7 +1,6 @@
 import random
 import re
 from html import escape
-from operator import attrgetter
 
 from bs4 import BeautifulSoup
 from django.conf import settings
@@ -22,7 +21,7 @@ def motions_to_pdf(pdf, motions):
     """
     Create a PDF with all motions.
     """
-    motions = natsorted(motions, key=attrgetter('identifier'))
+    motions = natsorted(motions, key=lambda motion: motion.identifier or '')
     all_motion_cover(pdf, motions)
     for motion in motions:
         pdf.append(PageBreak())
