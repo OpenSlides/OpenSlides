@@ -202,7 +202,7 @@ class ConfigVariable:
             'help_text': self.help_text,
         }
         if self.input_type == 'choice':
-            data['choices'] = self.choices
+            data['choices'] = self.choices() if callable(self.choices) else self.choices
         return data
 
     def is_hidden(self):
