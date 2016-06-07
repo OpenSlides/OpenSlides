@@ -624,6 +624,11 @@ img {
     padding: 5px;
 }
 
+.label { /*fix tag linebreaking and resize*/
+    display: inline-block;
+    padding: .3em .6em .4em;
+}
+
 /* user details */
 .user_details fieldset {
     margin-bottom: 10px;
