@@ -223,7 +223,9 @@
                     ng-options="user.id as user.full_name for user in users"
                     search-contains="true"
                     id="selectSubmitter"
-                    class="form-control">
+                    class="form-control"
+                    data-placeholder-text-multiple="'Select or search a submitter ...' | translate"
+                    no-results-text="'No results match' | translate">
                 </select>
               </div>
               <div class="col-xs-6">
@@ -233,7 +235,9 @@
                     ng-options="tag.id as tag.name for tag in tags"
                     search-contains="true"
                     id="selectTag"
-                    class="form-control">
+                    class="form-control"
+                    data-placeholder-text-multiple="'Select or search a tag ...' | translate"
+                    no-results-text="'No results match' | translate">
                 </select>
               </div>
             </div>
@@ -246,7 +250,9 @@
                       ng-options="user.id as user.full_name for user in users"
                       search-contains="true"
                       id="selectSupporter"
-                      class="form-control">
+                      class="form-control"
+                      data-placeholder-text-multiple="'Select or search a supporter ...' | translate"
+                      no-results-text="'No results match' | translate">
                     <option value=""></option>
                   </select>
                 </div>
