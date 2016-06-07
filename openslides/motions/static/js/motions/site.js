@@ -70,14 +70,15 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                     results = function() {
                         return motion.polls.map(function(poll, index) {
                             var id = index + 1,
-                                yes = poll.yes,
-                                yesRelative = (poll.yes) * 100 / (poll.votescast),
-                                no = poll.no,
-                                noRelative = (poll.no) * 100 / (poll.votescast),
-                                abstain = poll.abstain,
-                                abstainRelative = (poll.abstain) * 100 / (poll.votescast),
+                                yes = poll.yes ? poll.yes : 0, // if no poll.yes is given, set it to 0
+                                yesRelative = poll.getVote(poll.yes, 'yes').percentStr,
+                                no = poll.no ? poll.no : 0,
+                                noRelative = poll.getVote(poll.no, 'no').percentStr,
+                                abstain = poll.abstain ? poll.abstain : 0,
+                                abstainrelativeGet = poll.getVote(poll.abstain, 'abstain').percentStr,
+                                abstainRelative = abstainrelativeGet? abstainrelativeGet : "",
                                 valid = poll.votesvalid,
-                                validRelative = (poll.votesvalid) * 100 / (poll.votescast),
+                                validRelative = poll.getVote(poll.votesvalid, 'votesvalid').percentStr,
                                 number = {
                                     text: id + ".",
                                     width: "5%"
@@ -100,7 +101,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                                     var indexColumn = converter.createElement("text");
                                     var nameColumn = converter.createElement("text", "" + name);
                                     var valueColumn = converter.createElement("text", "" + value);
-                                    var relColumn = converter.createElement("text", "(" + "" + relValue + "%)");
+                                    var relColumn = converter.createElement("text", relValue);
                                     valueColumn.width = "40%";
                                     indexColumn.width = "5%";
                                     valueColumn.width = "5%";

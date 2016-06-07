@@ -71,7 +71,7 @@ angular.module('OpenSlidesApp.motions', [
             },
             methods: {
                 // returns object with value and percent
-                getVote: function (vote) {
+                getVote: function (vote, type) {
                     if (!this.has_votes) {
                         return;
                     }
@@ -89,13 +89,18 @@ angular.module('OpenSlidesApp.motions', [
                     }
                     // calculate percent value
                     var config = Config.get('motions_poll_100_percent_base').value;
-                    var percentStr, percentNumber;
+                    var percentStr;
+                    var percentNumber = null;
                     if (config == "WITHOUT_INVALID" && this.votesvalid > 0 && vote >= 0) {
                         percentNumber = Math.round(vote * 100 / this.votesvalid * 10) / 10;
                     } else if (config == "WITH_INVALID" && this.votescast > 0 && vote >= 0) {
                         percentNumber = Math.round(vote * 100 / (this.votescast) * 10) / 10;
+                    } else if (config == "WITHOUT_ABSTAIN" && this.votesvalid > 0 && vote >= 0){
+		                if (type == 'yes' || type == 'no') {
+                            percentNumber = Math.round(vote * 100 / (this.yes + this.no) * 10) / 10;
+                        }
                     }
-                    if (percentNumber) {
+                    if (percentNumber !== null) {
                         percentStr = "(" + percentNumber + "%)";
                     }
                     return {
@@ -103,7 +108,7 @@ angular.module('OpenSlidesApp.motions', [
                         'percentStr': percentStr,
                         'percentNumber': percentNumber
                     };
-                },
+                }
             }
         });
     }

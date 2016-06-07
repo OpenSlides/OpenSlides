@@ -510,7 +510,7 @@ class AssignmentPollPDF(PDFView):
                                  'yes': _("Yes"),
                                  'no': _("No"),
                                  'abstain': _("Abstain")},
-                               stylesheet['Ballot_option_circle_YNA']))
+                                stylesheet['Ballot_option_circle_YNA']))
                 else:
                     cell.append(Paragraph(
                         "&nbsp;", stylesheet['Ballot_option_suffix_YNA']))
