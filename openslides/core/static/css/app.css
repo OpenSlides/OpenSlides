@@ -714,6 +714,14 @@ img {
     margin-bottom: 0;
 }
 
+
+/* override booststrap's label class to fix linebreak and add spacing */
+.label {
+    display: inline-block;
+    padding: .3em .6em;
+    margin-right: .2em;
+}
+
 /* for angular-csv-import form */
 .import {
     margin-left: 15px;

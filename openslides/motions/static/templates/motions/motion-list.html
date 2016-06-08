@@ -163,7 +163,7 @@
         <td ng-if="!motion.quickEdit" ng-mouseover="motion.hover=true" ng-mouseleave="motion.hover=false">
             <strong><a ui-sref="motions.motion.detail({id: motion.id})">{{ motion.getTitle() }}</a></strong>
             <span ng-repeat="tag in motion.tags" class="label label-default">
-              {{ tag.name }}{{$last ? '' : ', '}}
+              {{ tag.name }}
             </span>
             <div ng-if="motion.isAllowed('update')" class="hoverActions" ng-class="{'hiddenDiv': !motion.hover}">
               <span ng-if="motion.isAllowed('update')">
