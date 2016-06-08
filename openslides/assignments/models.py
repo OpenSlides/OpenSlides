@@ -209,20 +209,28 @@ class Assignment(RESTModelMixin, models.Model):
         # Find out the method of the election
         if config['assignments_poll_vote_values'] == 'votes':
             yesnoabstain = False
+            yesno = False
         elif config['assignments_poll_vote_values'] == 'yesnoabstain':
             yesnoabstain = True
+            yesno = False
+        elif config['assignments_poll_vote_values'] == 'yesno':
+            yesnoabstain = False
+            yesno = True
         else:
             # config['assignments_poll_vote_values'] == 'auto'
             # candidates <= available posts -> yes/no/abstain
             if len(candidates) <= (self.open_posts - self.elected.count()):
+                yesno = False
                 yesnoabstain = True
             else:
+                yesno = False
                 yesnoabstain = False
 
         # Create the poll with the candidates.
         poll = self.polls.create(
             description=self.poll_description_default,
-            yesnoabstain=yesnoabstain)
+            yesnoabstain=yesnoabstain,
+            yesno=yesno)
         poll.set_options({'candidate': user} for user in candidates)
 
         # Add all candidates to list of speakers of related agenda item
@@ -357,6 +365,7 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
         on_delete=models.CASCADE,
         related_name='polls')
     yesnoabstain = models.BooleanField(default=False)
+    yesno = models.BooleanField(default=False)
     description = models.CharField(
         max_length=79,
         blank=True)
@@ -370,6 +379,8 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
     def get_vote_values(self):
         if self.yesnoabstain:
             return ['Yes', 'No', 'Abstain']
+        elif self.yesno:
+            return ['Yes', 'No']
         else:
             return ['Votes']
 

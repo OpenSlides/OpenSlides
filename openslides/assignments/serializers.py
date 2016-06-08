@@ -97,6 +97,7 @@ class AssignmentAllPollSerializer(ModelSerializer):
         fields = (
             'id',
             'yesnoabstain',
+            'yesno',
             'description',
             'published',
             'options',
@@ -168,6 +169,7 @@ class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
         fields = (
             'id',
             'yesnoabstain',
+            'yesno',
             'description',
             'published',
             'options',

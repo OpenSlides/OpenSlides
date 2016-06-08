@@ -531,16 +531,27 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         // add dynamic form fields
         assignmentpoll.options.forEach(function(option) {
             var defaultValue;
-            if (assignmentpoll.yesnoabstain) {
-                defaultValue = {
-                    'yes': '',
-                    'no': '',
-                    'abstain': ''
-                };
+            if (assignmentpoll.yesnoabstain || assignmentpoll.yesno) {
+                if (assignmentpoll.yesnoabstain) {
+                    defaultValue = {
+                        'yes': '',
+                        'no': '',
+                        'abstain': ''
+                    };
+                }
+                else {
+                    defaultValue = {
+                        'yes': '',
+                        'no': ''
+                    };
+                }
+                    
                 if (option.votes.length) {
                     defaultValue.yes = option.votes[0].weight;
                     defaultValue.no = option.votes[1].weight;
-                    defaultValue.abstain = option.votes[2].weight;
+                    if (assignmentpoll.yesnoabstain){
+                        defaultValue.abstain = option.votes[2].weight;
+                    }
                 }
                 $scope.formFields.push(
                     {
@@ -566,7 +577,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                             required: true
                         },
                         defaultValue: defaultValue.no
-                    },
+                    });
+                if (assignmentpoll.yesnoabstain){
+                    $scope.formFields.push(
                     {
                         key:'abstain_' + option.candidate_id,
                         type: 'input',
@@ -577,6 +590,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         },
                         defaultValue: defaultValue.abstain
                     });
+                }
             } else {
                 if (option.votes.length) {
                     defaultValue = option.votes[0].weight;
@@ -642,6 +656,13 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         "Abstain": poll['abstain_' + option.candidate_id]
                     });
                 });
+            } else if (assignmentpoll.yesno) {
+                    assignmentpoll.options.forEach(function(option) {
+                        votes.push({
+                            "Yes": poll['yes_' + option.candidate_id],
+                            "No": poll['no_' + option.candidate_id]
+                            });
+                        });
             } else {
                 assignmentpoll.options.forEach(function(option) {
                     votes.push({
@@ -651,11 +672,11 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             }
             // save change poll object on server
             poll.DSUpdate({
-                    assignment_id: poll.assignment_id,
-                    votes: votes,
-                    votesvalid: poll.votesvalid,
-                    votesinvalid: poll.votesinvalid,
-                    votescast: poll.votescast
+                assignment_id: poll.assignment_id,
+                votes: votes,
+                votesvalid: poll.votesvalid,
+                votesinvalid: poll.votesinvalid,
+                votescast: poll.votescast
             })
             .then(function(success) {
                 $scope.alert.show = false;

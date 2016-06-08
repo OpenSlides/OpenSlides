@@ -187,7 +187,7 @@
           <td ng-if="poll.has_votes">
             <div ng-init="votes = option.getVotes()">
               <div ng-repeat="vote in votes">
-                <span ng-if="poll.yesnoabstain">{{ vote.label }}:</span>
+                <span ng-if="poll.yesnoabstain || poll.yesno">{{ vote.label }}:</span>
                 {{ vote.value }} {{ vote.percentStr }}
                 <div ng-if="vote.percentNumber">
                   <uib-progressbar value="vote.percentNumber" type="success"></uib-progressbar>

@@ -22,7 +22,8 @@ def get_config_variables():
         choices=(
             {'value': 'auto', 'display_name': ugettext_lazy('Automatic assign of method')},
             {'value': 'votes', 'display_name': ugettext_lazy('Always one option per candidate')},
-            {'value': 'yesnoabstain', 'display_name': ugettext_lazy('Always Yes-No-Abstain per candidate')}),
+            {'value': 'yesnoabstain', 'display_name': ugettext_lazy('Always Yes-No-Abstain per candidate')},
+            {'value': 'yesno', 'display_name': ugettext_lazy('Always Yes/No per candidate')}),
         weight=410,
         group=ugettext_lazy('Elections'),
         subgroup=ugettext_lazy('Ballot and ballot papers'))
