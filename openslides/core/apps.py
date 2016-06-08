@@ -31,7 +31,7 @@ class CoreAppConfig(AppConfig):
         )
 
         # Define config variables
-        config.update_config_varialbes(get_config_variables())
+        config.update_config_variables(get_config_variables())
 
         # Connect signals.
         post_permission_creation.connect(

@@ -23,8 +23,8 @@ class AgendaAppConfig(AppConfig):
             listen_to_related_object_post_save)
         from .views import ItemViewSet
 
-        # Define config varialbes
-        config.update_config_varialbes(get_config_variables())
+        # Define config variables
+        config.update_config_variables(get_config_variables())
 
         # Connect signals.
         post_save.connect(

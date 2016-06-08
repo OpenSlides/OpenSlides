@@ -93,7 +93,7 @@ class ConfigHandler:
         if config_variable.on_change:
             config_variable.on_change()
 
-    def update_config_varialbes(self, items):
+    def update_config_variables(self, items):
         """
         Updates the config_variables dict.
 

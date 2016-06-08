@@ -14,11 +14,11 @@ config = ConfigHandler()
 @patch('openslides.core.config.config', config)
 class HandleConfigTest(TestCase):
     def setUp(self):
-        config.update_config_varialbes(set_grouped_config_view())
-        config.update_config_varialbes(set_simple_config_view())
-        config.update_config_varialbes(set_simple_config_view_multiple_vars())
-        config.update_config_varialbes(set_simple_config_collection_disabled_view())
-        config.update_config_varialbes(set_simple_config_collection_with_callback())
+        config.update_config_variables(set_grouped_config_view())
+        config.update_config_variables(set_simple_config_view())
+        config.update_config_variables(set_simple_config_view_multiple_vars())
+        config.update_config_variables(set_simple_config_collection_disabled_view())
+        config.update_config_variables(set_simple_config_collection_with_callback())
 
     def tearDown(self):
         # Reset the config variables
@@ -45,7 +45,7 @@ class HandleConfigTest(TestCase):
         with self.assertRaisesMessage(
                 ConfigError,
                 'Too many values for config variable multiple_config_var found.'):
-            config.update_config_varialbes(set_simple_config_view_multiple_vars())
+            config.update_config_variables(set_simple_config_view_multiple_vars())
 
     def test_setup_config_var(self):
         self.assertRaises(TypeError, ConfigVariable)
