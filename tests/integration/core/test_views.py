@@ -82,7 +82,7 @@ class ConfigViewSet(TestCase):
     Tests requests to deal with config variables.
     """
     def setUp(self):
-        config.update_config_varialbes(set_simple_config_view_integration_config_test())
+        config.update_config_variables(set_simple_config_view_integration_config_test())
 
     def tearDown(self):
         # Reset the config variables

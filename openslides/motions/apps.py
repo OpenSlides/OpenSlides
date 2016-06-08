@@ -21,8 +21,8 @@ class MotionsAppConfig(AppConfig):
         from .signals import create_builtin_workflows
         from .views import CategoryViewSet, MotionViewSet, MotionPollViewSet, WorkflowViewSet
 
-        # Define config varialbes
-        config.update_config_varialbes(get_config_variables())
+        # Define config variables
+        config.update_config_variables(get_config_variables())
 
         # Connect signals.
         post_migrate.connect(create_builtin_workflows, dispatch_uid='motion_create_builtin_workflows')

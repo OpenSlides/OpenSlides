@@ -20,7 +20,7 @@ class AssignmentsAppConfig(AppConfig):
         from .views import AssignmentViewSet, AssignmentPollViewSet
 
         # Define config variables
-        config.update_config_varialbes(get_config_variables())
+        config.update_config_variables(get_config_variables())
 
         # Register viewsets.
         router.register(self.get_model('Assignment').get_collection_string(), AssignmentViewSet)
