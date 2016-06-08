@@ -824,6 +824,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         $scope.separator = ',';
         $scope.encoding = 'UTF-8';
         $scope.encodingOptions = ['UTF-8', 'ISO-8859-1'];
+        $scope.accept = '.csv, .txt';
         $scope.csv = {
             content: null,
             header: true,
@@ -832,6 +833,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             separatorVisible: false,
             encoding: $scope.encoding,
             encodingVisible: false,
+            accept: $scope.accept,
             result: null
         };
         // set csv file encoding
