@@ -691,6 +691,30 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             });
         };
     }
+])
+
+//mark all assignment config strings for translation with Javascript
+.config([
+    'gettext',
+    function (gettext) {
+        gettext('Election method');
+        gettext('Automatic assign of method');
+        gettext('Always one option per candidate');
+        gettext('Always Yes-No-Abstain per candidate');
+        gettext('Always Yes/No per candidate');
+        gettext('Elections');
+        gettext('Ballot and ballot papers');
+        gettext('The 100 % base of an election result consists of');
+        gettext('Number of ballot papers (selection)');
+        gettext('Number of all delegates');
+        gettext('Number of all participants');
+        gettext('Use the following custom number');
+        gettext('Custom number of ballot papers');
+        gettext('Publish election result for elected candidates only (' +
+                'projector view)');
+        gettext('Title for PDF document (all elections)');
+        gettext('Preamble text for PDF document (all elections)');
+    }
 ]);
 
 }());

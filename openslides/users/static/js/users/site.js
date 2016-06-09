@@ -998,6 +998,29 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         gettext('Can see names of users');
         gettext('Can see extra data of users (e.g. present and comment)');
         gettext('Can manage users');
+        //mark all config strings in users/config_variables.py for translation
+        gettext('Welcome to OpenSlides');
+        gettext('Space for your welcome text.]');
+        gettext('[Place for your welcome and help text.]');
+        gettext('Sort users by first name');
+        gettext('Disable for sorting by last name');
+        gettext('Users');
+        gettext('Sorting');
+        gettext('Welcome to OpenSlides!');
+        gettext('Title for access data and welcome PDF');
+        gettext('PDF');
+        gettext('Help text for access data and welcome PDF');
+        gettext('System URL');
+        gettext('Used for QRCode in PDF of access data.');
+        gettext('WLAN name (SSID)');
+        gettext('Used for WLAN QRCode in PDF of access data.');
+        gettext('WLAN password');
+        gettext('Used for WLAN QRCode in PDF of access data.');
+        gettext('WLAN encryption');
+        gettext('Used for WLAN QRCode in PDF of access data.');
+        gettext('WEP');
+        gettext('WPA/WPA2');
+        gettext('No encryption');
     }
 ]);
 

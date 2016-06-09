@@ -1111,6 +1111,40 @@ angular.module('OpenSlidesApp.core.site', [
             }
         };
     }
+])
+
+//Mark all core config strings for translation in Javascript
+.config([
+    'gettext',
+    function (gettext) {
+        gettext('Presentation and assembly system');
+        gettext('Event name');
+        gettext('<a href="http://www.openslides.org">OpenSlides</a> is a free' +
+                ' web based presentation and assembly system for visualizing' +
+		' and controlling agenda, motions and elections of an' +
+		' assembly.');
+        gettext('General');
+        gettext('Event');
+        gettext('Short description of Event');
+        gettext('Event date');
+        gettext('Event location');
+        gettext('Event organizer');
+        gettext('Legal notice');
+        gettext('Front page title');
+        gettext('Front page text');
+        gettext('Allow access for anonymous guest users');
+        gettext('Show this text on the login page.');
+        gettext('Show logo on projector');
+        gettext('You can replace the logo. Just copy a file to ');
+        gettext('"static/img/logo-projector.png" in your OpenSlides data' + 
+		' path.');
+        gettext('Projector');
+        gettext('Show title and description of event on projector');
+        gettext('Backgroundcolor of projector header and footer');
+        gettext('Font color of projector header and footer');
+        gettext('Font color of projector headline');
+        gettext('Default countdown');
+    }
 ]);
 
 }());

@@ -524,6 +524,29 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             element.target = '_blank';
         };
      }
-]);
+])
+
+//mark all agenda config strings for translation with Javascript
+.config([
+    'gettext',
+    function (gettext) {
+        gettext('Numbering prefix for agenda items');
+        gettext('This prefix will be set if you run the automatic agenda numbering.');
+        gettext('Agenda');
+        gettext('Invalid input.');
+        gettext('Numeral system for agenda items');
+        gettext('Arabic');
+        gettext('Roman');
+        gettext('Begin of event');
+        gettext('Input format: DD.MM.YYYY HH:MM');
+        gettext('Number of last speakers to be shown on the projector');
+        gettext('List of speakers');
+        gettext('Show orange countdown in the last x seconds of speaking time');
+        gettext('Enter duration in seconds. Choose 0 to disable warning color.');
+        gettext('Couple countdown with the list of speakers');
+        gettext('[Begin speech] starts the countdown, [End speech] stops the' +
+        ' countdown.');
+    }
+ ]);
 
 }());
