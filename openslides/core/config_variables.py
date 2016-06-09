@@ -1,5 +1,4 @@
 from django.core.validators import MaxLengthValidator
-from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
 from openslides.core.config import ConfigVariable
@@ -24,7 +23,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='general_event_description',
-        default_value=_('Presentation and assembly system'),
+        default_value=ugettext_lazy('Presentation and assembly system'),
         label=ugettext_lazy('Short description of event'),
         weight=115,
         group=ugettext_lazy('General'),
@@ -58,7 +57,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='general_event_legal_notice',
-        default_value=_(
+        default_value=ugettext_lazy(
             '<a href="http://www.openslides.org">OpenSlides</a> is a free web based '
             'presentation and assembly system for visualizing and controlling agenda, '
             'motions and elections of an assembly.'),
@@ -71,7 +70,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='general_event_welcome_title',
-        default_value=_('Welcome to OpenSlides'),
+        default_value=ugettext_lazy('Welcome to OpenSlides'),
         label=ugettext_lazy('Front page title'),
         weight=134,
         group=ugettext_lazy('General'),
@@ -80,7 +79,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='general_event_welcome_text',
-        default_value=_('[Space for your welcome text.]'),
+        default_value=ugettext_lazy('[Space for your welcome text.]'),
         input_type='text',
         label=ugettext_lazy('Front page text'),
         weight=136,

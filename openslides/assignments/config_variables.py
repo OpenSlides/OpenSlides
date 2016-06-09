@@ -1,5 +1,4 @@
 from django.core.validators import MinValueValidator
-from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
 from openslides.core.config import ConfigVariable
@@ -74,7 +73,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='assignments_pdf_title',
-        default_value=_('Elections'),
+        default_value=ugettext_lazy('Elections'),
         label=ugettext_lazy('Title for PDF document (all elections)'),
         weight=460,
         group=ugettext_lazy('Elections'),

@@ -1,6 +1,5 @@
 from django.core.validators import MinValueValidator
-from django.utils.translation import ugettext as _
-from django.utils.translation import pgettext, ugettext_lazy
+from django.utils.translation import pgettext_lazy, ugettext_lazy
 
 from openslides.core.config import ConfigVariable
 from openslides.poll.models import PERCENT_BASE_CHOICES
@@ -51,7 +50,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='motions_preamble',
-        default_value=_('The assembly may decide,'),
+        default_value=ugettext_lazy('The assembly may decide,'),
         label=ugettext_lazy('Motion preamble'),
         weight=320,
         group=ugettext_lazy('Motions'),
@@ -90,7 +89,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='motions_amendments_prefix',
-        default_value=pgettext('Prefix for the identifier for amendments', 'A'),
+        default_value=pgettext_lazy('Prefix for the identifier for amendments', 'A'),
         label=ugettext_lazy('Prefix for the identifier for amendments'),
         hidden=True,
         weight=340,
@@ -158,7 +157,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='motions_pdf_title',
-        default_value=_('Motions'),
+        default_value=ugettext_lazy('Motions'),
         label=ugettext_lazy('Title for PDF document (all motions)'),
         weight=370,
         group=ugettext_lazy('Motions'),

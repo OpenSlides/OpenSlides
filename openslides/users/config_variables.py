@@ -1,4 +1,3 @@
-from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
 from openslides.core.config import ConfigVariable
@@ -26,7 +25,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='users_pdf_welcometitle',
-        default_value=_('Welcome to OpenSlides!'),
+        default_value=ugettext_lazy('Welcome to OpenSlides!'),
         label=ugettext_lazy('Title for access data and welcome PDF'),
         weight=520,
         group=ugettext_lazy('Users'),
@@ -35,7 +34,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='users_pdf_welcometext',
-        default_value=_('[Place for your welcome and help text.]'),
+        default_value=ugettext_lazy('[Place for your welcome and help text.]'),
         label=ugettext_lazy('Help text for access data and welcome PDF'),
         weight=530,
         group=ugettext_lazy('Users'),
