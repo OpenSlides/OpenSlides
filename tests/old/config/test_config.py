@@ -1,6 +1,4 @@
-from unittest.mock import patch
-
-from openslides.core.config import ConfigHandler, ConfigVariable
+from openslides.core.config import ConfigVariable, config
 from openslides.core.exceptions import ConfigError, ConfigNotFound
 from openslides.utils.test import TestCase
 
@@ -8,12 +6,12 @@ from openslides.utils.test import TestCase
 class TestConfigException(Exception):
     pass
 
-config = ConfigHandler()
 
-
-@patch('openslides.core.config.config', config)
 class HandleConfigTest(TestCase):
     def setUp(self):
+        # Save the old value of the config object and add the test values
+        # TODO: Can be changed to setUpClass when Django 1.8 is no longer supported
+        self._config_values = config.config_variables.copy()
         config.update_config_variables(set_grouped_config_view())
         config.update_config_variables(set_simple_config_view())
         config.update_config_variables(set_simple_config_view_multiple_vars())
@@ -22,7 +20,7 @@ class HandleConfigTest(TestCase):
 
     def tearDown(self):
         # Reset the config variables
-        config.config_variables = {}
+        config.config_variables = self._config_values
 
     def get_config_var(self, key):
         return config[key]

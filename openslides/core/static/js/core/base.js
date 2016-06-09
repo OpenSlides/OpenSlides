@@ -41,7 +41,7 @@ angular.module('OpenSlidesApp.core', [
     function (DS, $rootScope) {
         var socket = null;
         var recInterval = null;
-        $rootScope.connected = true;
+        $rootScope.connected = false;
 
         var Autoupdate = {
             messageReceivers: [],
@@ -55,7 +55,7 @@ angular.module('OpenSlidesApp.core', [
             }
         };
         var newConnect = function () {
-            socket = new SockJS(location.origin + "/sockjs");
+            socket = new WebSocket('ws://' + location.host + '/ws/');
             clearInterval(recInterval);
             socket.onopen = function () {
                 $rootScope.connected = true;
@@ -168,22 +168,20 @@ angular.module('OpenSlidesApp.core', [
     'autoupdate',
     'dsEject',
     function (DS, autoupdate, dsEject) {
-        autoupdate.onMessage(function(data) {
+        autoupdate.onMessage(function(json) {
             // TODO: when MODEL.find() is called after this
             //       a new request is fired. This could be a bug in DS
 
-            // TODO: Do not send the status code to the client, but make the decission
-            //       on the server side. It is an implementation detail, that tornado
-            //       sends request to wsgi, which should not concern the client.
+            var data = JSON.parse(json);
             console.log("Received object: " + data.collection + ", " + data.id);
             var instance = DS.get(data.collection, data.id);
-            if (data.status_code == 200) {
+            if (data.action == 'changed') {
                 if (instance) {
                     // The instance is in the local db
                     dsEject(data.collection, instance);
                 }
                 DS.inject(data.collection, data.data);
-            } else if (data.status_code == 404) {
+            } else if (data.action == 'deleted') {
                 if (instance) {
                     // The instance is in the local db
                     dsEject(data.collection, instance);

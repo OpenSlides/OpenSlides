@@ -185,7 +185,13 @@ def start(args):
 
     # Start the webserver
     # Tell django not to reload. OpenSlides uses the reload method from tornado
-    execute_from_command_line(['manage.py', 'runserver', '%s:%s' % (args.host, args.port), '--noreload'])
+    # Use insecure to serve static files, even when DEBUG is False.
+    execute_from_command_line([
+        'manage.py',
+        'runserver',
+        '{}:{}'.format(args.host, args.port),
+        '--noreload',
+        '--insecure'])
 
 
 def createsettings(args):

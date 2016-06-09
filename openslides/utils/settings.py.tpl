@@ -2,10 +2,10 @@
 Settings file for OpenSlides
 
 For more information on this file, see
-https://docs.djangoproject.com/en/1.7/topics/settings/
+https://docs.djangoproject.com/en/1.9/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.7/ref/settings/
+https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
@@ -26,7 +26,6 @@ SECRET_KEY = %(secret_key)r
 # SECURITY WARNING: Don't run with debug turned on in production!
 
 DEBUG = %(debug)s
-TEMPLATE_DEBUG = DEBUG
 
 
 # OpenSlides plugins
@@ -41,7 +40,7 @@ INSTALLED_APPS += INSTALLED_PLUGINS
 
 # Database
 # Change this to use MySQL or PostgreSQL.
-# See https://docs.djangoproject.com/en/1.7/ref/settings/#databases
+# See https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -49,6 +48,25 @@ DATABASES = {
         'NAME': os.path.join(OPENSLIDES_USER_DATA_PATH, 'database.sqlite')
     }
 }
+
+
+# Big Mode
+# Uncomment the following lines to activate redis as channel and cache backend.
+# You have to install a redis server and the python packages asgi_redis and
+# django-redis for this to work.
+# See https://channels.readthedocs.io/en/latest/backends.html#redis
+#     https://niwinz.github.io/django-redis/latest/#_user_guide
+
+# CHANNEL_LAYERS['default']['BACKEND'] = 'asgi_redis.RedisChannelLayer'
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/1",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     }
+# }
 
 
 # Some other settings
@@ -62,6 +80,5 @@ TEMPLATE_DIRS = (
 )
 
 STATICFILES_DIRS = [os.path.join(OPENSLIDES_USER_DATA_PATH, 'static')] + STATICFILES_DIRS
-
 
 SEARCH_INDEX = os.path.join(OPENSLIDES_USER_DATA_PATH, 'search_index')

@@ -1,17 +1,14 @@
 import json
-from unittest.mock import patch
 
 from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides import __version__ as version
-from openslides.core.config import ConfigHandler, ConfigVariable
+from openslides.core.config import ConfigVariable, config
 from openslides.core.models import CustomSlide, Projector
 from openslides.utils.rest_api import ValidationError
 from openslides.utils.test import TestCase
-
-config = ConfigHandler()
 
 
 class ProjectorAPI(TestCase):
@@ -75,18 +72,19 @@ class VersionView(TestCase):
                  'version': 'unknown'}]})
 
 
-@patch('openslides.core.config.config', config)
-@patch('openslides.core.views.config', config)
 class ConfigViewSet(TestCase):
     """
     Tests requests to deal with config variables.
     """
     def setUp(self):
+        # Save the old value of the config object and add the test values
+        # TODO: Can be changed to setUpClass when Django 1.8 is no longer supported
+        self._config_values = config.config_variables.copy()
         config.update_config_variables(set_simple_config_view_integration_config_test())
 
     def tearDown(self):
         # Reset the config variables
-        config.config_variables = {}
+        config.config_variables = self._config_values
 
     def test_retrieve(self):
         self.client.login(username='admin', password='admin')
