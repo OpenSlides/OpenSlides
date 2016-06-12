@@ -51,27 +51,30 @@
       <!-- votes -->
       <td ng-if="poll.has_votes">
         <div ng-init="votes = option.getVotes()">
-          <div ng-show="poll.yesnoabstain">
-            <span>
+          <div ng-show="poll.yesnoabstain || poll.yesno">
+            <span ng-show="poll.yesnoabstain">
               {{ votes[0].label }}: <strong>{{ votes[0].value }}</strong> ·
               {{ votes[1].label }}: {{ votes[1].value }} ·
               {{ votes[2].label }}: {{ votes[2].value }} </span>
-            <uib-progress ng-if="votes[0].percentNumber">
+            <span ng-show="poll.yesno">
+              {{ votes[0].label }}: <strong>{{ votes[0].value }}</strong> ·
+              {{ votes[1].label }}: {{ votes[1].value }}</span>
+            <uib-progress ng-if="votes[0].percentNumber>=0">
               <uib-bar value="votes[0].percentNumber" type="success">
                 <span ng-hide="votes[0].percentNumber < 5">{{votes[0].percentNumber}} %</span>
               </uib-bar>
               <uib-bar value="votes[1].percentNumber" type="danger">
                 <span ng-hide="votes[1].percentNumber < 5">{{votes[1].percentNumber}} %</span>
               </uib-bar>
-              <uib-bar value="votes[2].percentNumber" type="warning"></uib-bar>
+              <uib-bar value="votes[2].percentNumber" type="warning">
                 <span ng-hide="votes[2].percentNumber < 5">{{votes[2].percentNumber}} %</span>
               </uib-bar>
             </uib-progress>
           </div>
-          <div ng-hide="poll.yesnoabstain">
+          <div ng-hide="poll.yesnoabstain || poll.yesno">
             <div ng-repeat="vote in votes">
-              {{ vote.value }} {{ vote.percentStr }} - {{vote.percentNumber}}
-              <div ng-if="vote.percentNumber">
+              {{ vote.value }} {{ vote.percentStr }}
+              <div ng-if="vote.percentNumber >= 0">
                 <uib-progressbar value="vote.percentNumber" type="success"></uib-progressbar>
               </div>
             </div>

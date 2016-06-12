@@ -42,7 +42,7 @@ angular.module('OpenSlidesApp.assignments', [])
                         } else if (config == "WITH_INVALID" && poll.votescast > 0 && vote.weight >= 0) {
                             percentNumber = Math.round(vote.weight * 100 / (poll.votescast) * 10) / 10;
                         }
-                        if (percentNumber) {
+                        if (percentNumber >=0) {
                             percentStr = "(" + percentNumber + "%)";
                         }
                         votes.push({
