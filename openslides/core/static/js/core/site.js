@@ -1119,10 +1119,10 @@ angular.module('OpenSlidesApp.core.site', [
     function (gettext) {
         gettext('Presentation and assembly system');
         gettext('Event name');
-        gettext('<a href="http://www.openslides.org">OpenSlides</a> is a free' +
-                ' web based presentation and assembly system for visualizing' +
-		' and controlling agenda, motions and elections of an' +
-		' assembly.');
+        gettext('<a href="http://www.openslides.org">OpenSlides</a> is a free ' +
+                'web based presentation and assembly system for visualizing ' +
+                'and controlling agenda, motions and elections of an ' +
+                'assembly.');
         gettext('General');
         gettext('Event');
         gettext('Short description of Event');
@@ -1136,8 +1136,8 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('Show this text on the login page.');
         gettext('Show logo on projector');
         gettext('You can replace the logo. Just copy a file to ');
-        gettext('"static/img/logo-projector.png" in your OpenSlides data' + 
-		' path.');
+        gettext('"static/img/logo-projector.png" in your OpenSlides data ' +
+                'path.');
         gettext('Projector');
         gettext('Show title and description of event on projector');
         gettext('Backgroundcolor of projector header and footer');

@@ -1073,8 +1073,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         gettext('Number of (minimum) required supporters for a motion');
         gettext('Choose 0 to disable the supporting system.');
         gettext('Supporters');
-        gettext('Remove all supporters of a motion if a submitter edits his' +
-                ' motion in early state');
+        gettext('Remove all supporters of a motion if a submitter edits his ' +
+                'motion in early state');
         gettext('Title for PDF document (all motions)');
         gettext('Preamble text for PDF document (all motioqns)');
         gettext('Show paragraph numbering (only in PDF)');

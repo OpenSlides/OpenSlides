@@ -544,8 +544,8 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         gettext('Show orange countdown in the last x seconds of speaking time');
         gettext('Enter duration in seconds. Choose 0 to disable warning color.');
         gettext('Couple countdown with the list of speakers');
-        gettext('[Begin speech] starts the countdown, [End speech] stops the' +
-        ' countdown.');
+        gettext('[Begin speech] starts the countdown, [End speech] stops the ' +
+                'countdown.');
     }
  ]);
 
