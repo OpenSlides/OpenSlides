@@ -1051,6 +1051,36 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             );
         };
     }
+])
+
+//mark all motions config strings for translation in javascript
+.config([
+    'gettext',
+    function (gettext) {
+        gettext('The assembly may decide,');
+        gettext('Workflow of new motions');
+        gettext('Motions');
+        gettext('Identifier');
+        gettext('Numbered per category');
+        gettext('Serially numbered');
+        gettext('Set it manually');
+        gettext('Motion preamble');
+        gettext('Stop submitting new motions by non-staff users');
+        gettext('Allow to disable versioning');
+        gettext('Activate amendments');
+        gettext('Amendments');
+        gettext('Prefix for the identifier for amendments');
+        gettext('Number of (minimum) required supporters for a motion');
+        gettext('Choose 0 to disable the supporting system.');
+        gettext('Supporters');
+        gettext('Remove all supporters of a motion if a submitter edits his' +
+                ' motion in early state');
+        gettext('Title for PDF document (all motions)');
+        gettext('Preamble text for PDF document (all motioqns)');
+        gettext('Show paragraph numbering (only in PDF)');
+        /// Prefix for the identifier for amendments
+        gettext('A');
+    }
 ]);
 
 }());
