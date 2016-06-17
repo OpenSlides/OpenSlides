@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
 from openslides.core.config import config
@@ -61,9 +61,9 @@ class Assignment(RESTModelMixin, models.Model):
     PHASE_FINISHED = 2
 
     PHASES = (
-        (PHASE_SEARCH, ugettext_lazy('Searching for candidates')),
-        (PHASE_VOTING, ugettext_lazy('Voting')),
-        (PHASE_FINISHED, ugettext_lazy('Finished')),
+        (PHASE_SEARCH, 'Searching for candidates'),
+        (PHASE_VOTING, 'Voting'),
+        (PHASE_FINISHED, 'Finished'),
     )
 
     title = models.CharField(
