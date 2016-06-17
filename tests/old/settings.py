@@ -16,11 +16,11 @@ SECRET_KEY = 'secret'
 # OpenSlides plugins
 # Add plugins to this list.
 
-INSTALLED_PLUGINS += (
+INSTALLED_PLUGINS += (  # noqa
     'tests.old.utils',
 )
 
-INSTALLED_APPS += INSTALLED_PLUGINS
+INSTALLED_APPS += INSTALLED_PLUGINS  # noqa
 
 
 # Database
@@ -40,7 +40,7 @@ TIME_ZONE = 'Europe/Berlin'
 
 MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, '')
 
-STATICFILES_DIRS.insert(0, os.path.join(OPENSLIDES_USER_DATA_PATH, 'static'))
+STATICFILES_DIRS.insert(0, os.path.join(OPENSLIDES_USER_DATA_PATH, 'static'))  # noqa
 
 SEARCH_INDEX = 'ram'
 
