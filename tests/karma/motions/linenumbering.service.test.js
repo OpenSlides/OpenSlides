@@ -61,6 +61,23 @@ describe('linenumbering', function () {
       expect(outHtml).toBe('0123 <br>45 67 <br>89012<br>tes <br>344 ');
       expect(out.newOffset).toBe(4);
     });
+
+    it('breaks simple lines with spaces (3)', function() {
+      var textNode = document.createTextNode("I'm a Demo-Text");
+      var out = lineNumberingService._textNodeToLines(textNode, 5, 0);
+      var outHtml = lineNumberingService._nodesToHtml(out.nodes);
+      expect(outHtml).toBe('I\'m a <br>Demo-<br>Text');
+      expect(out.newOffset).toBe(4);
+    });
+
+    it('breaks simple lines with spaces (4)', function() {
+      var textNode = document.createTextNode("I'm a LongDemo-Text");
+      var out = lineNumberingService._textNodeToLines(textNode, 5, 0);
+      var outHtml = lineNumberingService._nodesToHtml(out.nodes);
+      expect(outHtml).toBe('I\'m a <br>LongD<br>emo-<br>Text');
+      expect(out.newOffset).toBe(4);
+    });
+
   });
 
 });

@@ -58,14 +58,14 @@ angular.module('OpenSlidesApp.motions', [])
 
         while (i < node.nodeValue.length) {
             var lineBreakAt = null;
-            if (currLineOffset == length) {
+            if (currLineOffset >= length) {
                 if (lastBreakableIndex) {
                     lineBreakAt = lastBreakableIndex;
                 } else {
                     lineBreakAt = i - 1;
                 }
             }
-            if (lineBreakAt) {
+            if (lineBreakAt && node.nodeValue[i] != ' ') {
                 var currLine = node.nodeValue.substring(currLineStart, lineBreakAt + 1);
                 addLine(currLine);
 
@@ -74,12 +74,13 @@ angular.module('OpenSlidesApp.motions', [])
                 lastBreakableIndex = null;
             }
 
-            currLineOffset++;
-            i++;
-
             if (node.nodeValue[i] == ' ' || node.nodeValue[i] == '-') {
                 lastBreakableIndex = i;
             }
+
+            currLineOffset++;
+            i++;
+
         }
         addLine(node.nodeValue.substring(currLineStart));
 
