@@ -96,3 +96,13 @@ To setup and activate the virtual environment in step c. use::
     > .virtualenv\Scripts\activate.bat
 
 All other commands are the same as for GNU/Linux and Mac OS X.
+
+
+3. Running the test cases
+-------------------------
+
+a. Running Angular.js test cases
+''''''''''''''''''''''''''''''''
+
+    $ node_modules/karma/bin/karma start tests/karma/karma.conf.js
+
