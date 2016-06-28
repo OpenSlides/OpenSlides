@@ -1125,22 +1125,24 @@ angular.module('OpenSlidesApp.core.site', [
                 'assembly.');
         gettext('General');
         gettext('Event');
-        gettext('Short description of Event');
+        gettext('Short description of event');
         gettext('Event date');
         gettext('Event location');
         gettext('Event organizer');
         gettext('Legal notice');
         gettext('Front page title');
+        gettext('Welcome to OpenSlides');
         gettext('Front page text');
+        gettext('[Space for your welcome text.]');
         gettext('Allow access for anonymous guest users');
         gettext('Show this text on the login page.');
         gettext('Show logo on projector');
-        gettext('You can replace the logo. Just copy a file to ');
-        gettext('"static/img/logo-projector.png" in your OpenSlides data ' +
+        gettext('You can replace the logo. Just copy a file to ' +
+                '"static/img/logo-projector.png" in your OpenSlides data ' +
                 'path.');
         gettext('Projector');
         gettext('Show title and description of event on projector');
-        gettext('Backgroundcolor of projector header and footer');
+        gettext('Background color of projector header and footer');
         gettext('Font color of projector header and footer');
         gettext('Font color of projector headline');
         gettext('Default countdown');

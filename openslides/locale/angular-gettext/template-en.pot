@@ -25,16 +25,16 @@ msgstr ""
 msgid "--- Set phase ---"
 msgstr ""
 
-#: core/static/js/core/site.js:1139
-msgid "\"static/img/logo-projector.png\" in your OpenSlides data path."
-msgstr ""
-
 #: agenda/static/js/agenda/site.js:547
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
 msgstr ""
 
-#: users/static/js/users/site.js:1004
+#: users/static/js/users/site.js:1003
 msgid "[Place for your welcome and help text.]"
+msgstr ""
+
+#: core/static/js/core/site.js:1136
+msgid "[Space for your welcome text.]"
 msgstr ""
 
 #: core/static/js/core/site.js:1122
@@ -147,7 +147,7 @@ msgstr ""
 msgid "All motions"
 msgstr ""
 
-#: core/static/js/core/site.js:1135
+#: core/static/js/core/site.js:1137
 msgid "Allow access for anonymous guest users"
 msgstr ""
 
@@ -256,8 +256,8 @@ msgstr ""
 msgid "Back to users overview"
 msgstr ""
 
-#: core/static/js/core/site.js:1143
-msgid "Backgroundcolor of projector header and footer"
+#: core/static/js/core/site.js:1145
+msgid "Background color of projector header and footer"
 msgstr ""
 
 #: assignments/static/templates/assignments/assignment-detail.html:123
@@ -515,7 +515,7 @@ msgstr ""
 msgid "Default comment on the ballot paper"
 msgstr ""
 
-#: core/static/js/core/site.js:1146
+#: core/static/js/core/site.js:1148
 msgid "Default countdown"
 msgstr ""
 
@@ -581,7 +581,7 @@ msgstr ""
 msgid "Designates whether this user should be treated as active. Unselect this instead of deleting the account."
 msgstr ""
 
-#: users/static/js/users/site.js:1006
+#: users/static/js/users/site.js:1005
 msgid "Disable for sorting by last name"
 msgstr ""
 
@@ -817,11 +817,11 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
-#: core/static/js/core/site.js:1144
+#: core/static/js/core/site.js:1146
 msgid "Font color of projector header and footer"
 msgstr ""
 
-#: core/static/js/core/site.js:1145
+#: core/static/js/core/site.js:1147
 msgid "Font color of projector headline"
 msgstr ""
 
@@ -829,7 +829,7 @@ msgstr ""
 msgid "French"
 msgstr ""
 
-#: core/static/js/core/site.js:1134
+#: core/static/js/core/site.js:1135
 msgid "Front page text"
 msgstr ""
 
@@ -867,7 +867,7 @@ msgstr ""
 msgid "h"
 msgstr ""
 
-#: users/static/js/users/site.js:1012
+#: users/static/js/users/site.js:1011
 msgid "Help text for access data and welcome PDF"
 msgstr ""
 
@@ -1231,7 +1231,7 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: users/static/js/users/site.js:1023
+#: users/static/js/users/site.js:1022
 msgid "No encryption"
 msgstr ""
 
@@ -1342,6 +1342,7 @@ msgstr ""
 msgid "participants"
 msgstr ""
 
+#: users/static/js/users/site.js:1006
 #: users/static/js/users/site.js:14
 #: users/static/templates/users/user-list.html:35
 msgid "Participants"
@@ -1376,7 +1377,7 @@ msgstr ""
 #: assignments/static/templates/assignments/assignment-list.html:14
 #: motions/static/templates/motions/motion-detail.html:10
 #: motions/static/templates/motions/motion-list.html:22
-#: users/static/js/users/site.js:1011
+#: users/static/js/users/site.js:1010
 #: users/static/templates/users/user-list.html:19
 msgid "PDF"
 msgstr ""
@@ -1530,7 +1531,7 @@ msgstr ""
 msgid "Project user"
 msgstr ""
 
-#: core/static/js/core/site.js:1141
+#: core/static/js/core/site.js:1143
 #: index.html:179
 msgid "Projector"
 msgstr ""
@@ -1770,7 +1771,7 @@ msgid "Settings"
 msgstr ""
 
 #: core/static/js/core/site.js:1128
-msgid "Short description of Event"
+msgid "Short description of event"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-detail.html:72
@@ -1800,7 +1801,7 @@ msgstr ""
 msgid "Show internal items"
 msgstr ""
 
-#: core/static/js/core/site.js:1137
+#: core/static/js/core/site.js:1139
 msgid "Show logo on projector"
 msgstr ""
 
@@ -1816,11 +1817,11 @@ msgstr ""
 msgid "Show PDF files only"
 msgstr ""
 
-#: core/static/js/core/site.js:1136
+#: core/static/js/core/site.js:1138
 msgid "Show this text on the login page."
 msgstr ""
 
-#: core/static/js/core/site.js:1142
+#: core/static/js/core/site.js:1144
 msgid "Show title and description of event on projector"
 msgstr ""
 
@@ -1837,16 +1838,12 @@ msgstr ""
 msgid "Sort agenda"
 msgstr ""
 
-#: users/static/js/users/site.js:1005
+#: users/static/js/users/site.js:1004
 msgid "Sort users by first name"
 msgstr ""
 
-#: users/static/js/users/site.js:1008
+#: users/static/js/users/site.js:1007
 msgid "Sorting"
-msgstr ""
-
-#: users/static/js/users/site.js:1003
-msgid "Space for your welcome text.]"
 msgstr ""
 
 #: core/static/js/core/base.js:96
@@ -1928,7 +1925,7 @@ msgstr ""
 msgid "Supporters"
 msgstr ""
 
-#: users/static/js/users/site.js:1013
+#: users/static/js/users/site.js:1012
 msgid "System URL"
 msgstr ""
 
@@ -1991,7 +1988,7 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: users/static/js/users/site.js:1010
+#: users/static/js/users/site.js:1009
 msgid "Title for access data and welcome PDF"
 msgstr ""
 
@@ -2042,13 +2039,13 @@ msgstr ""
 msgid "Use the following custom number"
 msgstr ""
 
-#: users/static/js/users/site.js:1014
+#: users/static/js/users/site.js:1013
 msgid "Used for QRCode in PDF of access data."
 msgstr ""
 
-#: users/static/js/users/site.js:1016
-#: users/static/js/users/site.js:1018
-#: users/static/js/users/site.js:1020
+#: users/static/js/users/site.js:1015
+#: users/static/js/users/site.js:1017
+#: users/static/js/users/site.js:1019
 msgid "Used for WLAN QRCode in PDF of access data."
 msgstr ""
 
@@ -2057,10 +2054,6 @@ msgstr ""
 #: users/static/templates/users/user-detail-profile.html:13
 #: users/static/templates/users/user-detail.html:43
 msgid "Username"
-msgstr ""
-
-#: users/static/js/users/site.js:1007
-msgid "Users"
 msgstr ""
 
 #: assignments/static/templates/assignments/assignment-detail.html:202
@@ -2112,15 +2105,12 @@ msgstr ""
 msgid "Voting result"
 msgstr ""
 
-#: users/static/js/users/site.js:1002
+#: core/static/js/core/site.js:1134
+#: users/static/js/users/site.js:1008
 msgid "Welcome to OpenSlides"
 msgstr ""
 
-#: users/static/js/users/site.js:1009
-msgid "Welcome to OpenSlides!"
-msgstr ""
-
-#: users/static/js/users/site.js:1021
+#: users/static/js/users/site.js:1020
 msgid "WEP"
 msgstr ""
 
@@ -2140,15 +2130,15 @@ msgstr ""
 msgid "withdrawed"
 msgstr ""
 
-#: users/static/js/users/site.js:1019
+#: users/static/js/users/site.js:1018
 msgid "WLAN encryption"
 msgstr ""
 
-#: users/static/js/users/site.js:1015
+#: users/static/js/users/site.js:1014
 msgid "WLAN name (SSID)"
 msgstr ""
 
-#: users/static/js/users/site.js:1017
+#: users/static/js/users/site.js:1016
 msgid "WLAN password"
 msgstr ""
 
@@ -2160,7 +2150,7 @@ msgstr ""
 msgid "Workflow of new motions"
 msgstr ""
 
-#: users/static/js/users/site.js:1022
+#: users/static/js/users/site.js:1021
 msgid "WPA/WPA2"
 msgstr ""
 
@@ -2172,8 +2162,8 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: core/static/js/core/site.js:1138
-msgid "You can replace the logo. Just copy a file to"
+#: core/static/js/core/site.js:1140
+msgid "You can replace the logo. Just copy a file to \"static/img/logo-projector.png\" in your OpenSlides data path."
 msgstr ""
 
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:61
