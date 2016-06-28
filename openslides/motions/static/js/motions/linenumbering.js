@@ -4,25 +4,9 @@
 
 angular.module('OpenSlidesApp.motions', [])
 
-.controller('CalculatorController', function CalculatorController($scope) {
-  $scope.sum = function() {
-    if ($scope.x === undefined || $scope.y === undefined) {
-      $scope.z = 0;
-    } else {
-      $scope.z = $scope.x + $scope.y;
-    }
-  };
-})
-
-
 .service('lineNumberingService', function lineNumberingService() {
     var ELEMENT_NODE = 1,
         TEXT_NODE = 3;
-
-
-    this.helloWorld = function() {
-        return 'Hello World';
-    };
 
     this.lineLength = 80;
     this._currentInlineOffset = null;

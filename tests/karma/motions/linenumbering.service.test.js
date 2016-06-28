@@ -9,11 +9,7 @@ describe('linenumbering', function () {
   }));
 
   describe('line numbering', function () {
-    it('should output hello world', function () {
-        var out = lineNumberingService.helloWorld();
-        expect(out).toBe('Hello World');
-    });
-    
+
     it('breaks very short lines', function() {
       var textNode = document.createTextNode("0123");
       lineNumberingService._currentInlineOffset = 0;
@@ -86,10 +82,9 @@ describe('linenumbering', function () {
       expect(lineNumberingService._currentInlineOffset).toBe(4);
     });
 
-    it('should leave a simple SPAN untouched', function() {
+    it('leaves a simple SPAN untouched', function() {
       var outHtml = lineNumberingService.insertLineNumbers("<span>Test</span>");
       expect(outHtml).toBe('<span>Test</span>');
     });
   });
-
 });
