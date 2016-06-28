@@ -8,9 +8,8 @@ describe('linenumbering', function () {
     lineNumberingService = _lineNumberingService_;
   }));
 
-  describe('line numbering', function () {
-
-    it('breaks very short lines', function() {
+  describe('line numbering: test nodes', function () {
+    it('breaks very short lines', function () {
       var textNode = document.createTextNode("0123");
       lineNumberingService._currentInlineOffset = 0;
       var out = lineNumberingService._textNodeToLines(textNode, 5);
@@ -19,7 +18,7 @@ describe('linenumbering', function () {
       expect(lineNumberingService._currentInlineOffset).toBe(4);
     });
 
-    it('breaks simple lines', function() {
+    it('breaks simple lines', function () {
       var textNode = document.createTextNode("012345678901234567");
       lineNumberingService._currentInlineOffset = 0;
       var out = lineNumberingService._textNodeToLines(textNode, 5);
@@ -28,7 +27,7 @@ describe('linenumbering', function () {
       expect(lineNumberingService._currentInlineOffset).toBe(3);
     });
 
-    it('breaks simple lines with offset', function() {
+    it('breaks simple lines with offset', function () {
       var textNode = document.createTextNode("012345678901234567");
       lineNumberingService._currentInlineOffset = 2;
       var out = lineNumberingService._textNodeToLines(textNode, 5);
@@ -37,7 +36,7 @@ describe('linenumbering', function () {
       expect(lineNumberingService._currentInlineOffset).toBe(5);
     });
 
-    it('breaks simple lines with offset equaling to length', function() {
+    it('breaks simple lines with offset equaling to length', function () {
       var textNode = document.createTextNode("012345678901234567");
       lineNumberingService._currentInlineOffset = 5;
       var out = lineNumberingService._textNodeToLines(textNode, 5);
@@ -46,7 +45,7 @@ describe('linenumbering', function () {
       expect(lineNumberingService._currentInlineOffset).toBe(3);
     });
 
-    it('breaks simple lines with spaces (1)', function() {
+    it('breaks simple lines with spaces (1)', function () {
       var textNode = document.createTextNode("0123 45 67 89012 34 567");
       lineNumberingService._currentInlineOffset = 0;
       var out = lineNumberingService._textNodeToLines(textNode, 5);
@@ -55,7 +54,7 @@ describe('linenumbering', function () {
       expect(lineNumberingService._currentInlineOffset).toBe(3);
     });
 
-    it('breaks simple lines with spaces (2)', function() {
+    it('breaks simple lines with spaces (2)', function () {
       var textNode = document.createTextNode("0123 45 67 89012tes 344 ");
       lineNumberingService._currentInlineOffset = 0;
       var out = lineNumberingService._textNodeToLines(textNode, 5);
@@ -64,7 +63,7 @@ describe('linenumbering', function () {
       expect(lineNumberingService._currentInlineOffset).toBe(4);
     });
 
-    it('breaks simple lines with spaces (3)', function() {
+    it('breaks simple lines with spaces (3)', function () {
       var textNode = document.createTextNode("I'm a Demo-Text");
       lineNumberingService._currentInlineOffset = 0;
       var out = lineNumberingService._textNodeToLines(textNode, 5);
@@ -73,7 +72,7 @@ describe('linenumbering', function () {
       expect(lineNumberingService._currentInlineOffset).toBe(4);
     });
 
-    it('breaks simple lines with spaces (4)', function() {
+    it('breaks simple lines with spaces (4)', function () {
       var textNode = document.createTextNode("I'm a LongDemo-Text");
       lineNumberingService._currentInlineOffset = 0;
       var out = lineNumberingService._textNodeToLines(textNode, 5);
@@ -81,10 +80,25 @@ describe('linenumbering', function () {
       expect(outHtml).toBe('I\'m a <br class="os-line-break">LongD<br class="os-line-break">emo-<br class="os-line-break">Text');
       expect(lineNumberingService._currentInlineOffset).toBe(4);
     });
+  });
 
+  describe('line numbering: inline nodes', function () {
     it('leaves a simple SPAN untouched', function() {
+      lineNumberingService.setLineLength(5);
       var outHtml = lineNumberingService.insertLineNumbers("<span>Test</span>");
       expect(outHtml).toBe('<span>Test</span>');
+    });
+
+    it('breaks lines in a simple SPAN', function() {
+      lineNumberingService.setLineLength(5);
+      var outHtml = lineNumberingService.insertLineNumbers("<span>Lorem ipsum dolorsit amet</span>");
+      expect(outHtml).toBe('<span>Lorem <br class="os-line-break">ipsum <br class="os-line-break">dolor<br class="os-line-break">sit <br class="os-line-break">amet</span>');
+    });
+
+    it('breaks lines in nested inline elements', function() {
+      lineNumberingService.setLineLength(5);
+      var outHtml = lineNumberingService.insertLineNumbers("<span>Lorem <strong>ipsum dolorsit</strong> amet</span>");
+      expect(outHtml).toBe('<span>Lorem <br class="os-line-break"><strong>ipsum <br class="os-line-break">dolor<br class="os-line-break">sit</strong> <br class="os-line-break">amet</span>');
     });
   });
 });
