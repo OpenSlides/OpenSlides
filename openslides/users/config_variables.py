@@ -16,17 +16,17 @@ def get_config_variables():
         label='Sort users by first name',
         help_text='Disable for sorting by last name',
         weight=510,
-        group='Users',
+        group='Participants',
         subgroup='Sorting')
 
     # PDF
 
     yield ConfigVariable(
         name='users_pdf_welcometitle',
-        default_value='Welcome to OpenSlides!',
+        default_value='Welcome to OpenSlides',
         label='Title for access data and welcome PDF',
         weight=520,
-        group='Users',
+        group='Participants',
         subgroup='PDF',
         translatable=True)
 
@@ -35,7 +35,7 @@ def get_config_variables():
         default_value='[Place for your welcome and help text.]',
         label='Help text for access data and welcome PDF',
         weight=530,
-        group='Users',
+        group='Participants',
         subgroup='PDF',
         translatable=True)
 
@@ -46,7 +46,7 @@ def get_config_variables():
         label='System URL',
         help_text='Used for QRCode in PDF of access data.',
         weight=540,
-        group='Users',
+        group='Participants',
         subgroup='PDF')
 
     yield ConfigVariable(
@@ -55,7 +55,7 @@ def get_config_variables():
         label='WLAN name (SSID)',
         help_text='Used for WLAN QRCode in PDF of access data.',
         weight=550,
-        group='Users',
+        group='Participants',
         subgroup='PDF')
 
     yield ConfigVariable(
@@ -64,7 +64,7 @@ def get_config_variables():
         label='WLAN password',
         help_text='Used for WLAN QRCode in PDF of access data.',
         weight=560,
-        group='Users',
+        group='Participants',
         subgroup='PDF')
 
     yield ConfigVariable(
@@ -79,5 +79,5 @@ def get_config_variables():
             {'value': 'WPA', 'display_name': 'WPA/WPA2'},
             {'value': 'nopass', 'display_name': 'No encryption'}),
         weight=570,
-        group='Users',
+        group='Participants',
         subgroup='PDF')
