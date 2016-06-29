@@ -147,6 +147,46 @@ angular.module('OpenSlidesApp.motions', [])
         return node;
     };
 
+    this._calcBlockNodeIntendation = function (node) {
+        return 0; // @TODO
+    };
+
+    this._insertLineNumbersToBlockNode = function (node, length) {
+        this._currentInlineOffset = 0;
+
+        var oldChildren = [], i;
+        for (i = 0; i < node.childNodes.length; i++) {
+            oldChildren.push(node.childNodes[i]);
+        }
+
+        while (node.firstChild) {
+            node.removeChild(node.firstChild);
+        }
+
+        for (i = 0; i < oldChildren.length; i++) {
+            if (oldChildren[i].nodeType == TEXT_NODE) {
+                var ret = this._textNodeToLines(oldChildren[i], length);
+                for (var j in ret) {
+                    node.appendChild(ret[j]);
+                }
+            } else if (oldChildren[i].nodeType == ELEMENT_NODE) {
+                var changedNode = this._insertLineNumbersToNode(oldChildren[i], length);
+                if (this._isOsLineBreakNode(changedNode.firstChild)) {
+                    var br = changedNode.firstChild;
+                    changedNode.removeChild(br);
+                    node.appendChild(br);
+                }
+                node.appendChild(changedNode);
+            } else {
+                throw 'Unknown nodeType: ' + i + ': ' + oldChildren[i];
+            }
+        }
+
+        this._currentInlineOffset = 0;
+
+        return node;
+    };
+
     this._insertLineNumbersToNode = function (node, length) {
         if (node.nodeType !== ELEMENT_NODE) {
             throw 'This method may only be called for ELEMENT-nodes: ' + node.nodeValue;
@@ -154,9 +194,8 @@ angular.module('OpenSlidesApp.motions', [])
         if (this._isInlineElement(node)) {
             return this._insertLineNumbersToInlineNode(node, length);
         } else {
-            // @TODO
-            this._currentInlineOffset = 0;
-            return this._insertLineNumbersToInlineNode(node, length);
+            var newLength = length - this._calcBlockNodeIntendation(node);
+            return this._insertLineNumbersToBlockNode(node, newLength);
         }
     };
 

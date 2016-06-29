@@ -82,6 +82,7 @@ describe('linenumbering', function () {
     });
   });
 
+
   describe('line numbering: inline nodes', function () {
     it('leaves a simple SPAN untouched', function() {
       lineNumberingService.setLineLength(5);
@@ -99,6 +100,27 @@ describe('linenumbering', function () {
       lineNumberingService.setLineLength(5);
       var outHtml = lineNumberingService.insertLineNumbers("<span>Lorem <strong>ipsum dolorsit</strong> amet</span>");
       expect(outHtml).toBe('<span>Lorem <br class="os-line-break"><strong>ipsum <br class="os-line-break">dolor<br class="os-line-break">sit</strong> <br class="os-line-break">amet</span>');
+    });
+  });
+
+
+  describe('line numbering: block nodes', function () {
+    it('leaves a simple DIV untouched', function() {
+      lineNumberingService.setLineLength(5);
+      var outHtml = lineNumberingService.insertLineNumbers("<div>Test</div>");
+      expect(outHtml).toBe('<div>Test</div>');
+    });
+
+    it('breaks a DIV containing only inline elements', function() {
+      lineNumberingService.setLineLength(5);
+      var outHtml = lineNumberingService.insertLineNumbers("<div>Test <span>Test1234</span>5678 Test</div>");
+      expect(outHtml).toBe('<div>Test <br class="os-line-break"><span>Test1<br class="os-line-break">234</span>56<br class="os-line-break">78 <br class="os-line-break">Test</div>');
+    });
+
+    it('handles a DIV within a DIV correctly', function() {
+      lineNumberingService.setLineLength(5);
+      var outHtml = lineNumberingService.insertLineNumbers("<div>Te<div>Te Test</div>Test");
+      expect(outHtml).toBe('<div>Te<div>Te <br class="os-line-break">Test</div>Test</div>');
     });
   });
 });
