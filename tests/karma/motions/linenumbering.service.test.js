@@ -1,6 +1,6 @@
 describe('linenumbering', function () {
 
-  beforeEach(module('OpenSlidesApp.motions'));
+  beforeEach(module('OpenSlidesApp.motions.lineNumbering'));
 
   var lineNumberingService;
 

@@ -2,7 +2,7 @@
 
 "use strict";
 
-angular.module('OpenSlidesApp.motions', [])
+angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
 /**
  * Current limitations of this implementation:
@@ -14,7 +14,7 @@ angular.module('OpenSlidesApp.motions', [])
  * No constructs like <a...><div></div></a> are allowed. CSS-attributes like 'display: block' are ignored.
  */
 
-.service('lineNumberingService', function lineNumberingService() {
+.service('lineNumberingService', function () {
     var ELEMENT_NODE = 1,
         TEXT_NODE = 3;
 
@@ -147,7 +147,7 @@ angular.module('OpenSlidesApp.motions', [])
         return node;
     };
 
-    this._calcBlockNodeIntendation = function (node) {
+    this._calcBlockNodeIndendation = function (node) {
         return 0; // @TODO
     };
 
@@ -194,7 +194,7 @@ angular.module('OpenSlidesApp.motions', [])
         if (this._isInlineElement(node)) {
             return this._insertLineNumbersToInlineNode(node, length);
         } else {
-            var newLength = length - this._calcBlockNodeIntendation(node);
+            var newLength = length - this._calcBlockNodeIndendation(node);
             return this._insertLineNumbersToBlockNode(node, newLength);
         }
     };
