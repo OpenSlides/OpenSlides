@@ -143,6 +143,9 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
     is_present = models.BooleanField(
         default=False)
 
+    is_committee = models.BooleanField(
+        default=False)
+
     objects = UserManager()
 
     class Meta:

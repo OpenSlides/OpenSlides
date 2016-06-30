@@ -18,6 +18,9 @@ Core:
 Motions:
 - Added origin field.
 
+Users:
+- Added field is_committee and new default group Committees.
+
 Other:
 - Removed config cache to support multiple threads or processes.
 - Fixed bug, that the last change of a config value was not send via autoupdate.
