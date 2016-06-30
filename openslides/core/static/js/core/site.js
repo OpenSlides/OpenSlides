@@ -859,9 +859,10 @@ angular.module('OpenSlidesApp.core.site', [
         // save form
         $scope.save = function (customslide) {
             Customslide.create(customslide).then(
-                function(success) {
+                function(customslideServer) {
                     // find related agenda item
-                    Agenda.find(success.agenda_item_id).then(function(item) {
+                    Customslide.inject(customslideServer);
+                    Agenda.find(customslideServer.agenda_item_id).then(function(item) {
                         // check form element and set item type (AGENDA_ITEM = 1, HIDDEN_ITEM = 2)
                         var type = customslide.showAsAgendaItem ? 1 : 2;
                         // save only if agenda item type is modified
