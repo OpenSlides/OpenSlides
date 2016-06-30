@@ -21,6 +21,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
     this.lineLength = 80;
     this._currentInlineOffset = null;
     this._currentLineNumber = null;
+    this._prependLineNumberToFirstText = false;
 
     this.setLineLength = function (length) {
         this.lineLength = length;
@@ -107,7 +108,10 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             out.push(createLineBreak());
             out.push(createLineNumber());
             this._currentInlineOffset = 0;
+        } else if (this._prependLineNumberToFirstText) {
+            out.push(createLineNumber());
         }
+        this._prependLineNumberToFirstText = false;
 
         while (i < node.nodeValue.length) {
             var lineBreakAt = null;
@@ -141,7 +145,17 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
     };
 
 
+    /**
+     * Moves line breaking and line numbering markup before inline elements
+     *
+     * @param innerNode
+     * @param outerNode
+     * @private
+     */
     this._moveLeadingLineBreaksToOuterNode = function (innerNode, outerNode) {
+        if (!this._isInlineElement(innerNode)) {
+            return;
+        }
         if (this._isOsLineBreakNode(innerNode.firstChild)) {
             var br = innerNode.firstChild;
             innerNode.removeChild(br);
@@ -189,6 +203,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
     this._insertLineNumbersToBlockNode = function (node, length) {
         this._currentInlineOffset = 0;
+        this._prependLineNumberToFirstText = true;
 
         var oldChildren = [], i;
         for (i = 0; i < node.childNodes.length; i++) {
@@ -215,6 +230,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         }
 
         this._currentInlineOffset = 0;
+        this._prependLineNumberToFirstText = true;
 
         return node;
     };
@@ -247,6 +263,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
         this._currentInlineOffset = 0;
         this._currentLineNumber = 1;
+        this._prependLineNumberToFirstText = true;
         var newRoot = this._insertLineNumbersToNode(root, this.lineLength);
 
         return newRoot.innerHTML;
