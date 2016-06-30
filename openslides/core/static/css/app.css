@@ -304,6 +304,28 @@ img {
 }
 
 
+/** Line numbers */
+
+.motion-text.line-numbers-outside {
+    padding-left: 50px;
+    position: relative;
+}
+
+.motion-text.line-numbers-outside .os-line-number {
+    display: inline-block;
+}
+.motion-text.line-numbers-outside .os-line-number:after {
+    content: attr(data-line-number);
+    position: absolute;
+    left: 0;
+    vertical-align: top;
+    margin-top: -14px;
+    color: gray;
+    font-family: Courier, serif;
+    font-size: 13px;
+}
+
+
 /** Projector sidebar column **/
 
 #content .col2 {
