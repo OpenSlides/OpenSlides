@@ -561,6 +561,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         Motion.loadRelations(motion, 'agenda_item');
         $scope.version = motion.active_version;
         $scope.isCollapsed = true;
+        $scope.lineNumberMode = 'outside';
 
         // open edit dialog
         $scope.openDialog = function (motion) {

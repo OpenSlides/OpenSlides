@@ -325,6 +325,32 @@ img {
     font-size: 13px;
 }
 
+.motion-text.line-numbers-inside .os-line-break {
+    display: none;
+}
+.motion-text.line-numbers-inside .os-line-number {
+    display: inline-block;
+}
+.motion-text.line-numbers-inside .os-line-number:after {
+    display: inline-block;
+    content: attr(data-line-number);
+    vertical-align: top;
+    font-size: 11px;
+    color: gray;
+    font-family: Courier, serif;
+    margin-top: -3px;
+    margin-left: 0;
+    margin-right: 3px;
+}
+
+
+.motion-text.line-numbers-none .os-line-break {
+    display: none;
+}
+.motion-text.line-numbers-none .os-line-number {
+    display: none;
+}
+
 
 /** Projector sidebar column **/
 
