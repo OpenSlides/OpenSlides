@@ -103,6 +103,11 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             out.push(newNode)
         };
 
+        if (node.nodeValue == "\n") {
+            out.push(node);
+            return out;
+        }
+
         // This happens if a previous inline element exactly stretches to the end of the line
         if (this._currentInlineOffset >= length) {
             out.push(createLineBreak());
@@ -198,7 +203,13 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
     };
 
     this._calcBlockNodeIndendation = function (node) {
-        return 0; // @TODO
+        if (node.nodeName == 'LI') {
+            return 5;
+        }
+        if (node.nodeName == 'BLOCKQUOTE') {
+            return 20;
+        }
+        return 0;
     };
 
     this._insertLineNumbersToBlockNode = function (node, length) {
