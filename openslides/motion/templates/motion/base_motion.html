@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% load tags %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block submenu %}
+    {% url application_overview as url_applicationoverview %}
+    <h4>{% trans "Motions" %}</h4>
+    <ul>
+        <li class="{% if request.path == url_applicationoverview %}selected{% endif %}"><a href="{% url application_overview %}">{% trans "All motions" %}</a></li>
+        {% if perms.application.can_create_application or perms.application.can_manage_application %}
+            <li class="{% active request '/application/new' %}"><a href="{%  url application_new %}">{% trans "New motion" %}</a></li>
+        {% endif %}
+        {% if perms.application.can_manage_application %}
+            <li class="{% active request '/application/import' %}"><a href="{%  url application_import %}">{% trans 'Import motions' %}</a></li>
+        {% endif %}
+        <li><a href="{% url print_applications %}"><img src="{% static 'images/icons/pdf.png' %}"> {% trans 'All motions as PDF' %}</a></li>
+    </ul>
+
+    {# second submenu #}
+    {% if application %}
+        <br>
+        <h3>{% trans "Application No." %}
+            {% if application.number != None %}
+                {{ application.number }}
+            {% else %}
+                <i>[-]</i>
+            {% endif %}
+        </h3>
+        <ul>
+        {# view application #}
+            {% url application_view application.id as url_applicationview %}
+            <li class="{% if request.path == url_applicationview %}selected{% endif %}"><a href="{% url application_view application.id  %}">{% trans 'View motion' %}</a></li>
+        {# edit application #}
+            {% if "edit" in actions %}
+            {% url application_edit application.id as url_applicationedit %}
+            <li class="{% if request.path == url_applicationedit %}selected{% endif %}"><a href="{% url application_edit application.id  %}"><img src="{% static 'images/icons/edit.png' %}"> {% trans 'Edit motion' %}</a></li>
+            {% endif %}
+        {# delete application #}
+            {% if "delete" in actions %}
+            <li><a href="{% url application_delete application.id  %}"><img src="{% static 'images/icons/delete.png' %}"> {% trans 'Delete motion' %}</a></li>
+            {% endif %}
+        {# PDF #}
+            <li><a href="{% url print_application application.id  %}"><img src="{% static 'images/icons/pdf.png' %}"> {% trans 'Motion as PDF' %}</a></li>
+        {# activate and polls #}
+            {% if perms.projector.can_manage_projector %}
+                <li>
+                    <a class="activate_link {% if item.active %}active{% endif %}" href="{% url projector_activate_slide application.sid  %}"><img src="{% static 'images/icons/projector.png' %}"> {% trans 'Show Application' %}</a>
+                </li>
+            {% endif %}
+            {% if perms.application.can_manage_application %}
+                {% for poll in application.polls %}
+                    {% url application_poll_view poll.id as url_applicationpollview %}
+                    <li class="{% if request.path == url_applicationpollview %}selected{% endif %}"><a href="{% url application_poll_view poll.id %}"><img src="{% static 'images/icons/edit.png' %}"> {{ forloop.counter }}. {% trans "Vote" %}</a></li>
+                {% endfor %}
+            {% endif %}
+        {# Agenda Item #}
+            {% if perms.agenda.can_manage_agenda %}
+            <li>
+                <a href="{% url application_create_agenda application.id  %}">{% trans 'New agenda item' %}</a>
+            </li>
+            {% endif %}
+        </ul>
+    {% endif %}
+{% endblock %}

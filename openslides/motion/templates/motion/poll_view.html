@@ -1,0 +1,64 @@
+{% extends 'application/base_application.html' %}
+
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}
+    {{ block.super }} – {% trans "Motion" %} "{{ application.public_version.title }}"
+    – {{ ballot }}. {% trans "Vote" %}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ application.public_version.title }} ({% trans "Motion" %}
+    {{ application.number }}) – {{ ballot }}. {% trans "Vote" %}</h1>
+    <i class="helptext">{% trans "Special values" %}: -1 = {% trans 'majority' %}; -2 = {% trans 'undocumented' %}</i>
+    <form action="" method="post" class="small-form">{% csrf_token %}
+        {{ pre_form }}
+        <span id="poll_id" style="display:none">{{ poll.id }}</span>
+
+        <table class="table" style="width: auto;">
+            <tr>
+                <th>{% trans "Option" %}</th>
+                <th>{% trans "Votes" %}</th>
+            </tr>
+            {% for value in forms.0 %}
+                <tr>
+                    <td>{{ value.label }}</td>
+                    <td>{{ value.errors }}{{ value }}</td>
+                </tr>
+            {% endfor %}
+            <tr class="total">
+                <td>{% trans "Invalid votes" %}</td>
+                <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
+            </tr>
+            <tr class="total">
+                <td>{% trans "Votes cast" %}</td>
+                <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
+            </tr>
+        </table>
+
+        {{ post_form }}
+
+        <p>
+        <a href='{% url print_application_poll poll.id %}'>
+        <button class="button" type="button" onclick="window.location='{% url print_application_poll poll.id %}'">
+            <span class="icon pdf">{% trans 'Ballot paper as PDF' %}</span>
+        </button>
+        </a>
+        </p>
+
+        <p>
+        <button class="button" type="submit">
+            <span class="icon ok">{% trans 'Save' %}</span>
+        </button>
+        <button class="button" type="submit" name="apply">
+            <span class="icon apply">{% trans 'Apply' %}</span>
+        </button>
+        <a href='{% url application_view application.id %}'>
+        <button class="button" type="button" onclick="window.location='{% url application_view application.id %}'">
+            <span class="icon cancel">{% trans 'Cancel' %}</span>
+        </button>
+        </a>
+        </p>
+    </form>
+{% endblock %}
