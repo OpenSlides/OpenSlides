@@ -2,7 +2,7 @@
 
 "use strict";
 
-angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
+angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users', 'OpenSlidesApp.motions.lineNumbering'])
 
 .factory('WorkflowState', [
     'DS',
@@ -112,7 +112,8 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
     'gettext',
     'operator',
     'Config',
-    function(DS, MotionPoll, jsDataModel, gettext, operator, Config) {
+    'lineNumberingService',
+    function(DS, MotionPoll, jsDataModel, gettext, operator, Config, lineNumberingService) {
         var name = 'motions/motion';
         return DS.defineResource({
             name: name,
@@ -139,6 +140,12 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
                 },
                 getText: function (versionId) {
                     return this.getVersion(versionId).text;
+                },
+                getTextWithLineBreaks: function (versionId) {
+                    var html = this.getVersion(versionId).text,
+                        withBreaks = lineNumberingService.insertLineNumbers(html);
+
+                    return withBreaks;
                 },
                 getReason: function (versionId) {
                     return this.getVersion(versionId).reason;
