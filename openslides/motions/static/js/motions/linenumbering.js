@@ -100,7 +100,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                 out.push(createLineBreak());
                 out.push(createLineNumber());
             }
-            out.push(newNode)
+            out.push(newNode);
         };
 
         if (node.nodeValue == "\n") {
@@ -304,7 +304,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         var newRoot = this._insertLineNumbersToNode(root, this.lineLength);
 
         return newRoot.innerHTML;
-    }
+    };
 });
 
 
