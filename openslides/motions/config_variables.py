@@ -58,7 +58,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='motions_default_line_numbering',
-        default_value='outside',
+        default_value='none',
         input_type='choice',
         label='Default line numbering',
         choices=(
