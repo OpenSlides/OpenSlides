@@ -550,8 +550,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'Tag',
     'User',
     'Workflow',
+    'Config',
     'motion',
-    function($scope, $http, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, motion) {
+    function($scope, $http, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Config, motion) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -561,6 +562,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         Motion.loadRelations(motion, 'agenda_item');
         $scope.version = motion.active_version;
         $scope.isCollapsed = true;
+        $scope.lineNumberMode = Config.get('motions_default_line_numbering').value;
 
         // open edit dialog
         $scope.openDialog = function (motion) {

@@ -225,7 +225,7 @@
   <div class="row">
     <div class="col-sm-8">
       <h3 translate>Text</h3>
-      <div ng-bind-html="motion.getText(version) | trusted"></div>
+      <div ng-bind-html="motion.getTextWithLineBreaks(version) | trusted" class="motion-text line-numbers-{{ lineNumberMode }}"></div>
 
       <!-- reason -->
       <div ng-if="motion.getReason(version) != ''">
@@ -273,17 +273,42 @@
         </ul>
       </div>
 
-      <!-- log -->
-      <button type="button" class="btn btn-default spacer" ng-click="isCollapsed = !isCollapsed" translate>
-        Show history
-      </button>
-      <div uib-collapse="isCollapsed">
+      <div class="row spacer">
+        <div class="col-md-1">
+
+          <!-- switching line numbering mode -->
+          <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="lineNumberTypeBtn" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="true" title="{{ 'Switch line numbering' | translate }}">
+              <span class="glypicon glyphicon glyphicon-sort-by-order"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="lineNumberTypeBtn">
+              <li class="dropdown-header"><translate>Line Numbering</translate></li>
+              <li><a href="#" ng-click="lineNumberMode = 'inside';"><translate>Inline</translate></a></li>
+              <li><a href="#" ng-click="lineNumberMode = 'outside';"><translate>Outside</translate></a></li>
+              <li><a href="#" ng-click="lineNumberMode = 'none';"><translate>None</translate></a></li>
+            </ul>
+          </div>
+
+        </div>
+        <div class="col-md-11">
+
+          <!-- log -->
+          <button type="button" class="btn btn-default" ng-click="isCollapsed = !isCollapsed" translate>
+            Show history
+          </button>
+        </div>
+      </div>
+      <div uib-collapse="isCollapsed" class="spacer">
         <div class="well well-sm">
           <ul class="list-unstyled">
             <li ng-repeat="message in motion.log_messages">
               <small>{{ message.message }}</small>
+            </li>
+          </ul>
         </div>
       </div>
+
     </div>
 
   </div>

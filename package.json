@@ -20,6 +20,12 @@
     "po2json": "~0.4.1",
     "sprintf-js": "~1.0.3",
     "through2": "~2.0.0",
-    "yargs": "~3.32.0"
+    "yargs": "~3.32.0",
+
+    "karma": "~1.0.0",
+    "karma-jasmine": "~1.0.2",
+    "karma-chrome-launcher": "~1.0.1",
+    "jasmine": "~2.4.1",
+    "angular-mocks": "~1.5.7"
   }
 }

@@ -57,6 +57,19 @@ def get_config_variables():
         translatable=True)
 
     yield ConfigVariable(
+        name='motions_default_line_numbering',
+        default_value='none',
+        input_type='choice',
+        label='Default line numbering',
+        choices=(
+            {'value': 'outside', 'display_name': 'Outside'},
+            {'value': 'inside', 'display_name': 'Inside'},
+            {'value': 'none', 'display_name': 'None'}),
+        weight=322,
+        group='Motions',
+        subgroup='General')
+
+    yield ConfigVariable(
         name='motions_stop_submitting',
         default_value=False,
         input_type='boolean',
