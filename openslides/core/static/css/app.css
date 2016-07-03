@@ -304,8 +304,7 @@ img {
 }
 
 
-/** Line numbers */
-
+/*** Line numbers ***/
 .motion-text.line-numbers-outside {
     padding-left: 50px;
     position: relative;
