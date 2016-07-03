@@ -202,14 +202,40 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         return node;
     };
 
-    this._calcBlockNodeIndendation = function (node) {
+    this._calcBlockNodeLength = function (node, oldLength) {
         if (node.nodeName == 'LI') {
-            return 5;
+            return oldLength - 5;
         }
         if (node.nodeName == 'BLOCKQUOTE') {
-            return 20;
+            return oldLength - 20;
         }
-        return 0;
+        if (node.nodeName == 'DIV' || node.nodeName == 'P') {
+            var styles = node.getAttribute("style"),
+                padding = 0;
+            if (styles) {
+                var leftpad = styles.split("padding-left:");
+                if (leftpad.length > 1) {
+                    leftpad = parseInt(leftpad[1]);
+                    padding += leftpad;
+                }
+                var rightpad = styles.split("padding-right:");
+                if (rightpad.length > 1) {
+                    rightpad = parseInt(rightpad[1]);
+                    padding += rightpad;
+                }
+                return oldLength - Math.ceil(padding / 5);
+            }
+        }
+        if (node.nodeName == 'H1') {
+            return Math.ceil(oldLength * 0.5);
+        }
+        if (node.nodeName == 'H2') {
+            return Math.ceil(oldLength * 0.66);
+        }
+        if (node.nodeName == 'H3') {
+            return Math.ceil(oldLength * 0.66);
+        }
+        return oldLength;
     };
 
     this._insertLineNumbersToBlockNode = function (node, length) {
@@ -253,7 +279,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         if (this._isInlineElement(node)) {
             return this._insertLineNumbersToInlineNode(node, length);
         } else {
-            var newLength = length - this._calcBlockNodeIndendation(node);
+            var newLength = this._calcBlockNodeLength(node, length);
             return this._insertLineNumbersToBlockNode(node, newLength);
         }
     };

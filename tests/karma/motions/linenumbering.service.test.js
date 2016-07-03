@@ -176,5 +176,29 @@ describe('linenumbering', function () {
       var outHtml = lineNumberingService.insertLineNumbers(inHtml);
       expect(outHtml).toBe(expected);
     });
+
+    it('shortens the line for H1-elements by 1/2', function () {
+      var inHtml = '<h1>' + longstr(80) + '</h1>';
+      var expected = '<h1>' + noMarkup(1) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMN' +
+          brMarkup(2) + 'OPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZAB</h1>';
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml);
+      expect(outHtml).toBe(expected);
+    });
+
+    it('shortens the line for H2-elements by 2/3', function () {
+      var inHtml = '<h2>' + longstr(80) + '</h2>';
+      var expected = '<h2>' + noMarkup(1) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZA' +
+          brMarkup(2) + 'BCDEFGHIJKLMNOPQRSTUVWXYZAB</h2>';
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml);
+      expect(outHtml).toBe(expected);
+    });
+
+    it('indents Ps with 30px-padding by 6 characters', function () {
+      var inHtml = '<div style="padding-left: 30px;">' + longstr(80) + '</div>';
+      var expected = '<div style="padding-left: 30px;">' + noMarkup(1) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUV' +
+          brMarkup(2) + 'WXYZAB</div>';
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml);
+      expect(outHtml).toBe(expected);
+    });
   });
 });
