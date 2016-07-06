@@ -144,6 +144,18 @@ h3 {
     margin-top: 10px;
     margin-bottom: 0px;
 }
+#speakerbox {
+    width: 500px;
+    float: right;
+    margin: 44px -50px 20px 10px;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    background: #d3d3d3;
+    border-radius: 7px;
+    border: 1px solid;
+    padding: 3px 7px 10px 19px;
+}
 ul, ol {
     margin: 0 0 10px 2em;
 }

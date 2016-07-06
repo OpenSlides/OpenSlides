@@ -1,0 +1,17 @@
+<div ng-controller="SlideSpeakerOverlayCtrl">
+  <div ng-if="visible">
+    <div id="speakerbox">
+      <h3 translate>List of speakers</h3>
+      <div class="lastSpeakers">Last Speaker</div>
+      <p ng-repeat="speaker in agenda.item.speakers | filter: {end_time: null, begin_time: '!!'}"
+        class="currentSpeaker">
+        <i class="fa fa-microphone fa-lg"></i> {{ speaker.user.get_full_name() }}
+      </p>
+      <ol class="nextSpeakers">
+      <li ng-repeat="speaker in agenda.item.speakers | filter: {begin_time: null} | orderBy:'weight'">
+        {{ speaker.user.get_full_name() }}
+      </ol>
+  </div>
+  </div>
+</div>
+

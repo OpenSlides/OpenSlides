@@ -38,6 +38,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 
 .config([
     'slidesProvider',
+    
     function(slidesProvider) {
         slidesProvider.registerSlide('core/customslide', {
             template: 'static/templates/core/slide_customslide.html',
@@ -54,6 +55,25 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         slidesProvider.registerSlide('core/message', {
             template: 'static/templates/core/slide_message.html',
         });
+        slidesProvider.registerSlide('core/speakeroverlay', {
+            template: 'static/templates/core/slide_speakeroverlay.html',
+            resolve: {
+                motions: function(Motion) {
+                    return Motion.findAll().then(function(motions) {
+                        angular.forEach(motions, function(motion) {
+                            Motion.loadRelations(motion, 'agenda_item');
+                            });
+                    });
+                },
+                assignments: function(Assignment) {
+                    return Assignment.findAll().then(function(assignments) {
+                        angular.forEach(assignments, function(assignment) {
+                            Assignment.loadRelations(assignment, 'agenda_item');
+                        });
+                    });
+                }
+            }
+        })
     }
 ])
 
@@ -131,6 +151,53 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             // Cancel the interval if the controller is destroyed
             $interval.cancel(interval);
         });
+    }
+])
+
+.controller('SlideSpeakerOverlayCtrl', [
+    '$scope',
+    'Motion',
+    'Assignment',
+    'Agenda',
+    function($scope, Motion, Assignment, Agenda) {
+        // Attention! Each object that is used here has to be dealt on server side.
+        // Add it to the coresponding get_requirements method of the ProjectorElement
+        // class.
+        Motion.bindAll({}, $scope, 'motions');
+        Assignment.bindAll({}, $scope, 'assignments');
+        $scope.visible = $scope.element.visible;
+        
+        //get list of speakers
+        var displayeditem = null;
+        angular.forEach($scope.elements, function(element) {
+            if (element.name == "motions/motion") {
+                var currentmotion = Motion.find(element.id);
+                //TODO displayeditem = currentmotion.agenda_item;
+            } else if (element.name == "core/customslide") {
+                displayeditem = element.id;
+            } else if (element.name == "assignments/assignment") {
+                
+                var currentassign = Assignment.find(element.id);
+                
+                //TODO I want to get the 'value.agenda_item_id' from this currentassign object.
+                
+                console.log(currentassign); //object with $$state: object
+                console.log(currentassign.value); //undefined
+                console.log(currentassign.$$state);// object with "status, value, __proto__"
+                console.log(currentassign.$$state['value']); // undefined
+                console.log(currentassign.$$state.value); // undefined
+                
+                
+                //TODO displayeditem = currentassign.agenda_item;
+            }
+        });
+        if (displayeditem !== null) {
+            var agendaitem = Agenda.find(displayeditem);
+            $scope.speakers = agendaitem.speakers;//TODO
+        } else {
+            $scope.speakers = [];
+        }
+        console.log(displayeditem);
     }
 ])
 

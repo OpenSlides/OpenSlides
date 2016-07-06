@@ -642,7 +642,7 @@ angular.module('OpenSlidesApp.core.site', [
     'Config',
     'Projector',
     function($scope, $http, $interval, $state, Config, Projector) {
-         // bind projector elements to the scope, update after projector changed
+        // bind projector elements to the scope, update after projector changed
         $scope.$watch(function () {
             return Projector.lastModified(1);
         }, function () {
@@ -826,6 +826,25 @@ angular.module('OpenSlidesApp.core.site', [
                     $state.go(value.name.replace('/', '.')+'.detail.update', {id: value.id});
                 }
             });
+        };
+
+        //*** List of speakers overlay on slide***
+        $scope.listOfSpeakers = function () {
+            var data = {};
+            var listofspeakersoverlay = {};
+            $.each(Projector.get(1).elements, function(key, value) {
+                if (value.name == 'core/speakeroverlay') {
+                    listofspeakersoverlay = value;
+                }
+            })
+	    //TODO: get the UUID/element  before...
+	    
+            if (!listofspeakersoverlay.visible) {
+                data[listofspeakersoverlay.uuid] = { "visible": true };
+            } else {
+                data[listofspeakersoverlay.uuid] = { "visible": false };
+            }
+            $http.post('/rest/core/projector/1/update_elements/', data);
         };
     }
 ])
