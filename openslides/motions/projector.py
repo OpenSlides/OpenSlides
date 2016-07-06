@@ -1,3 +1,4 @@
+from ..core.config import config
 from ..core.exceptions import ProjectorException
 from ..utils.projector import ProjectorElement
 from .models import Motion
@@ -25,3 +26,9 @@ class MotionSlide(ProjectorElement):
             yield motion.state.workflow
             yield from motion.submitters.all()
             yield from motion.supporters.all()
+            for speaker in motion.agenda_item.speakers.filter(end_time=None):
+                yield speaker.user
+            query = (motion.agenda_item.speakers.exclude(end_time=None)
+                     .order_by('-end_time')[:config['agenda_show_last_speakers']])
+            for speaker in query:
+                yield speaker.user

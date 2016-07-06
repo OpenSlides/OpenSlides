@@ -28,6 +28,9 @@ Motions:
 - Added recommendations for motions.
 - Changed label of former state "commited a bill" to "refered to committee".
 
+Projector:
+- Added an overlay for the current list of speakers.
+
 Users:
 - Added field is_committee and new default group Committees.
 - Added field number.

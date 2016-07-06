@@ -53,6 +53,9 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         slidesProvider.registerSlide('core/message', {
             template: 'static/templates/core/slide_message.html',
         });
+        slidesProvider.registerSlide('core/speakeroverlay', {
+            template: 'static/templates/core/slide_speakeroverlay.html',
+        });
     }
 ])
 
@@ -175,6 +178,45 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             // Cancel the interval if the controller is destroyed
             $interval.cancel(interval);
         });
+    }
+])
+
+.controller('SlideSpeakerOverlayCtrl', [
+    '$scope',
+    'Motion',
+    'Assignment',
+    'Agenda',
+    'Customslide',
+    'Projector',
+    'User',
+    function($scope, Motion, Assignment, Agenda, Customslide, Projector, User) {
+        // Attention! Each object that is used here has to be dealt on server side.
+        // Add it to the coresponding get_requirements method of the ProjectorElement
+        // class.
+
+        $scope.visible = $scope.element.visible;
+        $scope.displayedElement = function() {
+            var displayedElement = [];
+            angular.forEach($scope.$parent.elements, function(element){
+                if (element.name == 'motions/motion') {
+                    displayedElement = ['motion', element.id];
+                } else if (element.name == 'core/customslide') {
+                    displayedElement = ['agenda', element.id];
+                } else if (element.name == 'assignments/assignment') {
+                    displayedElement = ['assignment', element.id];
+                }
+            });
+            if (displayedElement[0] == 'motion') {
+                $scope.AgendaItem = Motion.get(displayedElement[1]).agenda_item;
+            } else if (displayedElement[0] == 'agenda') {
+                $scope.AgendaItem = Customslide.get(displayedElement[1]).agenda_item;
+            } else if (displayedElement[0] == 'assignment') {
+                $scope.AgendaItem = Assignment.get(displayedElement[1]).agenda_item;
+            } else {
+                $scope.AgendaItem = null;
+            }
+        };
+        $scope.$watch($scope.$parent.elements, $scope.displayedElement());
     }
 ])
 

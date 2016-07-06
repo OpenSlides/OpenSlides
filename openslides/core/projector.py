@@ -118,3 +118,10 @@ class Message(ProjectorElement):
     def check_data(self):
         if self.config_entry.get('message') is None:
             raise ProjectorException('No message given.')
+
+
+class ListOfSpeakersOverlay(ProjectorElement):
+    """
+    List of speakers (last, current, next) on the projector. Rendered as overlay.
+    """
+    name = 'core/speakeroverlay'
