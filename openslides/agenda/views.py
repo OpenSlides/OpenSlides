@@ -81,8 +81,9 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         """
         Special view endpoint to add users to the list of speakers or remove
         them. Send POST {'user': <user_id>} to add a new speaker. Omit
-        data to add yourself. Send DELETE {'speaker': <speaker_id>} to remove
-        someone from the list of speakers. Omit data to remove yourself.
+        data to add yourself. Send DELETE {'speaker': <speaker_id>} or
+        DELETE {'speaker': [<speaker_id>, <speaker_id>, ...]} to remove one or
+        more speakers from the list of speakers. Omit data to remove yourself.
 
         Checks also whether the requesting user can do this. He needs at
         least the permissions 'agenda.can_see' (see
@@ -126,11 +127,10 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
 
         else:
             # request.method == 'DELETE'
-            # Retrieve speaker_id
-            speaker_id = request.data.get('speaker')
+            speaker_ids = request.data.get('speaker')
 
             # Check permissions and other conditions. Get speaker instance.
-            if speaker_id is None:
+            if speaker_ids is None:
                 # Remove oneself
                 queryset = Speaker.objects.filter(
                     item=item, user=self.request.user).exclude(weight=None)
@@ -141,18 +141,23 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                     speaker = queryset.get()
                 except Speaker.DoesNotExist:
                     raise ValidationError({'detail': _('You are not on the list of speakers.')})
+                else:
+                    speaker.delete()
+                    message = _('You are successfully removed from the list of speakers.')
             else:
                 # Remove someone else.
                 if not self.request.user.has_perm('agenda.can_manage'):
                     self.permission_denied(request)
-                try:
-                    speaker = Speaker.objects.get(pk=int(speaker_id))
-                except (ValueError, Speaker.DoesNotExist):
-                    raise ValidationError({'detail': _('Speaker does not exist.')})
-
-            # Delete the speaker.
-            speaker.delete()
-            message = _('Speaker %s was successfully removed from the list of speakers.') % speaker
+                if type(speaker_ids) is int:
+                    speaker_ids = [speaker_ids]
+                for speaker_id in speaker_ids:
+                    try:
+                        speaker = Speaker.objects.get(pk=int(speaker_id))
+                    except (ValueError, Speaker.DoesNotExist):
+                        raise ValidationError({'detail': _('Speaker does not exist.')})
+                    # Delete the speaker.
+                    speaker.delete()
+                    message = _('Speaker %s was successfully removed from the list of speakers.') % speaker
 
         # Initiate response.
         return Response({'detail': message})
