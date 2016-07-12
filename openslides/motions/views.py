@@ -294,12 +294,45 @@ class CategoryViewSet(ModelViewSet):
             result = self.get_access_permissions().can_retrieve(self.request.user)
         elif self.action in ('metadata', 'list'):
             result = self.request.user.has_perm('motions.can_see')
-        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
+        elif self.action in ('create', 'partial_update', 'update', 'destroy', 'numbering'):
             result = (self.request.user.has_perm('motions.can_see') and
                       self.request.user.has_perm('motions.can_manage'))
         else:
             result = False
         return result
+
+    @detail_route(methods=['post'])
+    def numbering(self, request, pk=None):
+        """
+        Special view endpoint to number all motions in this category.
+
+        Only managers can use this view.
+        """
+        category = self.get_object()
+        number = 0
+        if not category.prefix:
+            prefix = ''
+        else:
+            prefix = '%s ' % category.prefix
+
+        with transaction.atomic():
+            for motion in category.motion_set.all():
+                motion.identifier = None
+                motion.save()
+
+            for motion in category.motion_set.all():
+                if motion.is_amendment():
+                    parent_identifier = motion.parent.identifier or ''
+                    prefix = '%s %s ' % (parent_identifier, config['motions_amendments_prefix'])
+                number += 1
+                identifier = '%s%d' % (prefix, number)
+                motion.identifier = identifier
+                motion.identifier_number = number
+                motion.save()
+
+        message = _('All motions in category {category} numbered '
+                    'successfully.').format(category=category)
+        return Response({'detail': message})
 
 
 class WorkflowViewSet(ModelViewSet):
