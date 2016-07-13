@@ -233,6 +233,7 @@ class MotionSerializer(ModelSerializer):
             'active_version',
             'parent',
             'category',
+            'origin',
             'submitters',
             'supporters',
             'state',
@@ -255,6 +256,7 @@ class MotionSerializer(ModelSerializer):
         motion.reason = validated_data.get('reason', '')
         motion.identifier = validated_data.get('identifier')
         motion.category = validated_data.get('category')
+        motion.origin = validated_data.get('origin', '')
         motion.reset_state(validated_data.get('workflow_id'))
         motion.save()
         if validated_data.get('submitters'):
@@ -271,8 +273,8 @@ class MotionSerializer(ModelSerializer):
         """
         Customized method to update a motion.
         """
-        # Identifier and category.
-        for key in ('identifier', 'category'):
+        # Identifier, category and origin.
+        for key in ('identifier', 'category', 'origin'):
             if key in validated_data.keys():
                 setattr(motion, key, validated_data[key])
 
