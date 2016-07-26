@@ -253,11 +253,16 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                         return User.findAll().catch(
                             function () {
                                 return null;
-                            }
-                        );
+                            });
                     },
                     workflows: function(Workflow) {
                         return Workflow.findAll();
+                    },
+                    items: function(Agenda) {
+                        return Agenda.findAll().catch(
+                            function () {
+                                return null;
+                            });
                     }
                 }
             })
@@ -271,6 +276,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                     },
                     users: function(User) {
                         return User.findAll().catch(
+                            function () {
+                                return null;
+                            }
+                        );
+                    },
+                    items: function(Agenda) {
+                        return Agenda.findAll().catch(
                             function () {
                                 return null;
                             }
@@ -307,6 +319,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                                         return Motion.loadRelations(motion, 'agenda_item');
                                     });
                                 },
+                                items: function(Agenda) {
+                                    return Agenda.findAll().catch(
+                                        function() {
+                                            return null;
+                                        }
+                                    );
+                                }
                             },
                             preCloseCallback: function() {
                                 $state.go('motions.motion.detail', {motion: $stateParams.id});
@@ -384,7 +403,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'Tag',
     'User',
     'Workflow',
-    function (gettextCatalog, operator, Editor, Category, Config, Mediafile, Tag, User, Workflow) {
+    'Agenda',
+    'AgendaTree',
+    function (gettextCatalog, operator, Editor, Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaTree) {
         return {
             // ngDialog for motion form
             getDialog: function (motion) {
@@ -481,6 +502,17 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                         description: gettextCatalog.getString('If deactivated the motion appears as internal item on agenda.')
                     },
                     hide: !operator.hasPerms('motions.can_manage')
+                },
+                {
+                    key: 'agenda_parent_item_id',
+                    type: 'select-single',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Parent item'),
+                        options: AgendaTree.getFlatTree(Agenda.getAll()),
+                        ngOptions: 'item.id as item.getListViewTitle() for item in to.options | notself : model.agenda_item_id',
+                        placeholder: gettextCatalog.getString('Select a parent item ...')
+                    },
+                    hide: !operator.hasPerms('agenda.can_manage')
                 },
                 {
                     key: 'more',
@@ -1015,7 +1047,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'User',
     'Workflow',
     'Agenda',
-    function($scope, gettext, Motion, MotionForm, Category, Config, Mediafile, Tag, User, Workflow, Agenda) {
+    'AgendaUpdate',
+    function($scope, gettext, Motion, MotionForm, Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaUpdate) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1034,16 +1067,11 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         $scope.save = function (motion) {
             Motion.create(motion).then(
                 function(success) {
-                    // find related agenda item
-                    Agenda.find(success.agenda_item_id).then(function(item) {
-                        // check form element and set item type (AGENDA_ITEM = 1, HIDDEN_ITEM = 2)
-                        var type = motion.showAsAgendaItem ? 1 : 2;
-                        // save only if agenda item type is modified
-                        if (item.type != type) {
-                            item.type = type;
-                            Agenda.save(item);
-                        }
-                    });
+                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
+                    // see openslides.agenda.models.Item.ITEM_TYPE.
+                    var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
+                                   {key: 'parent_id', value: motion.agenda_parent_item_id}];
+                    AgendaUpdate.saveChanges(success.agenda_item_id, changes);
                     $scope.closeThisDialog();
                 }
             );
@@ -1062,8 +1090,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'User',
     'Workflow',
     'Agenda',
+    'AgendaUpdate',
     'motion',
-    function($scope, Motion, Category, Config, Mediafile, MotionForm, Tag, User, Workflow, Agenda, motion) {
+    function($scope, Motion, Category, Config, Mediafile, MotionForm, Tag, User, Workflow, Agenda, AgendaUpdate, motion) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1111,6 +1140,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                // get saved workflow id from state
                $scope.formFields[i].defaultValue = motion.state.workflow_id;
             }
+            if ($scope.formFields[i].key == "agenda_parent_item_id") {
+                // get current parent_id of the agenda item
+                $scope.formFields[i].defaultValue = motion.agenda_item.parent_id;
+            }
         }
 
         // save motion
@@ -1120,14 +1153,14 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             // save change motion object on server
             Motion.save(motion, { method: 'PATCH' }).then(
                 function(success) {
-                    // check form element and set item type (AGENDA_ITEM = 1, HIDDEN_ITEM = 2)
-                    var type = motion.showAsAgendaItem ? 1 : 2;
-                    // save only if agenda item type is modified
-                    if (motion.agenda_item.type != type) {
-                        motion.agenda_item.type = type;
-                        Agenda.save(motion.agenda_item);
-                    }
-                    $scope.closeThisDialog();
+                    Agenda.find(success.agenda_item_id).then(function(item) {
+                        // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
+                        // see openslides.agenda.models.Item.ITEM_TYPE.
+                        var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
+                                       {key: 'parent_id', value: motion.agenda_parent_item_id}];
+                        AgendaUpdate.saveChanges(success.agenda_item_id,changes);
+                        $scope.closeThisDialog();
+                    });
                 },
                 function (error) {
                     // save error: revert all changes by restore
