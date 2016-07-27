@@ -39,8 +39,8 @@
   <h4 translate>Please note:</h4>
   <ul>
       <li><translate>Required comma or semicolon separated values with these column header names in the first row</translate>:<br>
-          <code>identifier, title, text, reason, submitter, category</code>
-      <li translate>Identifier, reason, submitter and category are optional and may be empty.
+          <code>identifier, title, text, reason, submitter, category, origin</code>
+      <li translate>Identifier, reason, submitter, category and origin are optional and may be empty.
       <li translate>Only double quotes are accepted as text delimiter (no single quotes).
       <li><a id="downloadLink" href="" ng-click="downloadCSVExample()" translate>Download CSV example file</a>
   </ul>
@@ -57,7 +57,8 @@
           <th translate>Text
           <th translate>Reason
           <th translate>Submitter
-          <th translate>Category</th>
+          <th translate>Category
+          <th translate>Origin</th>
       <tbody ng-repeat="motion in motions">
         <tr>
           <td class="minimum"
@@ -99,6 +100,7 @@
               <i class="fa fa-plus-circle"></i>
             </span>
             {{ motion.category }}
+          <td>{{ motion.origin | limitTo:30 }}{{ motion.origin.length > 30 ? '...' : '' }}
     </table>
 
     <div class="text-danger">
