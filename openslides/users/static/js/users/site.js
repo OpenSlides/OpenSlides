@@ -785,6 +785,17 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 } else {
                     user.is_active = false;
                 }
+                // is committee
+                if (user.is_committee) {
+                    user.is_committee = user.is_committee.replace(quotionRe, '$1');
+                    if (user.is_committee == '1') {
+                        user.is_committee = true;
+                    } else {
+                        user.is_committee = false;
+                    }
+                } else {
+                    user.is_committee = false;
+                }
                 $scope.users.push(user);
             });
         });
