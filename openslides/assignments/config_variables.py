@@ -59,16 +59,6 @@ def get_config_variables():
         subgroup='Ballot and ballot papers',
         validators=(MinValueValidator(1),))
 
-    yield ConfigVariable(
-        name='assignments_publish_winner_results_only',
-        default_value=False,
-        input_type='boolean',
-        label='Publish election result for elected candidates only '
-              '(projector view)',
-        weight=450,
-        group='Elections',
-        subgroup='Ballot and ballot papers')
-
     # PDF
 
     yield ConfigVariable(
