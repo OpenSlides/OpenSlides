@@ -112,6 +112,10 @@
           <div class="label" ng-class="'label-'+motion.state.css_class">
             {{ motion.state.name | translate }}
           </div>
+
+          <!-- Origin -->
+          <h3 ng-if="motion.origin" translate>Origin</h3>
+          {{ motion.origin }}
       </div>
       <div class="col-md-4">
           <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
