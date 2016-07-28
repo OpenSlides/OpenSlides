@@ -989,8 +989,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
 .controller('CategoryListCtrl', [
     '$scope',
+    '$http',
     'Category',
-    function($scope, Category) {
+    function($scope, $http, Category) {
         Category.bindAll({}, $scope, 'categories');
 
         // setup table sorting
@@ -1007,6 +1008,19 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         // delete selected category
         $scope.delete = function (category) {
             Category.destroy(category.id);
+        };
+
+        // number all motions in selected category
+        $scope.numbering = function (category) {
+            $http.patch('/rest/motions/category/' + category.id + '/numbering/', {})
+                .success(function(data){
+                    console.log("Success");
+                    $scope.alert.show = false;
+                })
+                .error(function(data){
+                    console.log("Error");
+                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
+                });
         };
     }
 ])

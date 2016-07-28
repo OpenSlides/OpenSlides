@@ -40,6 +40,8 @@
         <td ng-mouseover="category.hover=true" ng-mouseleave="category.hover=false">
           <strong>{{ category.name }}</strong>
           <div class="hoverActions" ng-class="{'hiddenDiv': !category.hover}">
+            <!-- numbering -->
+            <a ng-click="numbering(category)" translate>Numbering</a> |
             <!-- edit -->
             <a ui-sref="motions.category.detail.update({id: category.id })" translate>Edit</a> |
             <!-- delete -->
