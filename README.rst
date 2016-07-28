@@ -198,6 +198,7 @@ OpenSlides uses the following projects or parts of them:
   * `ng-file-upload <https://github.com/danialfarid/ng-file-upload>`_, License: MIT
   * `ngbootbox <https://github.com/eriktufvesson/ngBootbox>`_, License: MIT
   * `open-sans-fontface <https://github.com/FontFaceKit/open-sans>`_, License: Apache License version 2.0
+  * `pdfmake <http://pdfmake.org>`_, Lincse: MIT
   * `pdfjs-dist <http://mozilla.github.io/pdf.js/>`_, License: Apache-2.0
   * `roboto-condensed <https://github.com/davidcunningham/roboto-condensed>`_, License: Apache 2.0
   * `sockjs <https://github.com/sockjs/sockjs-client>`_, License: MIT
