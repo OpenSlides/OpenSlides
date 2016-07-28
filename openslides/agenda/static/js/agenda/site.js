@@ -290,6 +290,26 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             $scope.speakers = item.speakers;
         };
 
+        //delete all speakers from list of speakers
+        $scope.removeAllSpeakers = function () {
+            var speakersOnList = [];
+            angular.forEach(item.speakers, function (speaker) {
+                speakersOnList.push(speaker.id);
+            });
+            $http.delete(
+                '/rest/agenda/item/' + item.id + '/manage_speaker/',
+                {headers: {'Content-Type': 'application/json'},
+                 data: JSON.stringify({speaker: speakersOnList})}
+            )
+            .success(function(data){
+                $scope.speakers = item.speakers;
+            })
+            .error(function(data){
+                $scope.alert = { type: 'danger', msg: data.detail, show: true };
+            });
+            $scope.speakers = item.speakers;
+        };
+
         // check if user is allowed to see 'add me' / 'remove me' button
         $scope.isAllowed = function (action) {
             var nextUsers = [];
