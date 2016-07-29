@@ -8,7 +8,7 @@ Version 2.1 (unreleased)
 ========================
 [https://github.com/OpenSlides/OpenSlides/milestones/2.1]
 
-Agenda: 
+Agenda:
 - Added button to remove all speakers from a list of speakers.
 
 Core:
@@ -17,6 +17,9 @@ Core:
 
 Motions:
 - Added origin field.
+
+Users:
+- Added field is_committee and new default group Committees.
 
 Other:
 - Removed config cache to support multiple threads or processes.

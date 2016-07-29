@@ -20,6 +20,7 @@ USERSHORTSERIALIZER_FIELDS = (
             'structure_level',
             'about_me',
             'groups',
+            'is_committee',
         )
 
 
@@ -62,6 +63,7 @@ class UserFullSerializer(ModelSerializer):
             'groups',
             'default_password',
             'is_active',
+            'is_committee',
         )
 
     def validate(self, data):

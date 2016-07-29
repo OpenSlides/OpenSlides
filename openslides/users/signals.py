@@ -6,12 +6,13 @@ from .models import Group, User
 
 def create_builtin_groups_and_admin(**kwargs):
     """
-    Creates the builtin groups: Anonymous, Registered, Delegates and Staff.
+    Creates the builtin groups: Anonymous, Registered, Delegates, Staff and
+    Committees.
 
     Creates the builtin user: admin.
     """
-    # Check whether the group pks 1 to 4 are free
-    if Group.objects.filter(pk__in=range(1, 5)).exists():
+    # Check whether the group pk's 1 to 5 are free.
+    if Group.objects.filter(pk__in=range(1, 6)).exists():
         # Do completely nothing if there are already some of our groups in the database.
         return
 
@@ -103,6 +104,14 @@ def create_builtin_groups_and_admin(**kwargs):
     # TODO: Remove this redundancy after cleanup of the permission system.
     group_staff.permissions.add(
         permission_dict['users.can_see_name'])
+
+    # Committees (pk 5)
+    committees_permissions = (
+        permission_dict['mediafiles.can_upload'],
+        permission_dict['motions.can_create'],
+        permission_dict['motions.can_support'], )
+    group_committee = Group.objects.create(name='Committees', pk=5)
+    group_committee.permissions.add(*committees_permissions)
 
     # Create or reset admin user
     User.objects.create_or_reset_admin_user()

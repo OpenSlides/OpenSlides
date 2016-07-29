@@ -386,6 +386,16 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                             'active. Unselect this instead of deleting the account.')
                     },
                     defaultValue: true
+                },
+                {
+                    key: 'is_committee',
+                    type: 'checkbox',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Is a committee'),
+                        description: gettextCatalog.getString(
+                            'Designates whether this user should be treated as a committee.')
+                    },
+                    defaultValue: false
                 }];
             }
         };
@@ -775,6 +785,17 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 } else {
                     user.is_active = false;
                 }
+                // is committee
+                if (user.is_committee) {
+                    user.is_committee = user.is_committee.replace(quotionRe, '$1');
+                    if (user.is_committee == '1') {
+                        user.is_committee = true;
+                    } else {
+                        user.is_committee = false;
+                    }
+                } else {
+                    user.is_committee = false;
+                }
                 $scope.users.push(user);
             });
         });
@@ -801,11 +822,12 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             var element = document.getElementById('downloadLink');
             var csvRows = [
                 // column header line
-                ['title', 'first_name', 'last_name', 'structure_level', 'groups', 'comment', 'is_active'],
+                ['title', 'first_name', 'last_name', 'structure_level', 'groups', 'comment', 'is_active', 'is_committee'],
                 // example entries
-                ['Dr.', 'Max', 'Mustermann', 'Berlin', '"3,4"', 'xyz', '1'],
-                ['', 'John', 'Doe', 'Washington', '3', 'abc', '1'],
-                ['', 'Fred', 'Bloggs', 'London', '', '', ''],
+                ['Dr.', 'Max', 'Mustermann', 'Berlin', '"3,4"', 'xyz', '1', ''],
+                ['', 'John', 'Doe', 'Washington', '3', 'abc', '1', ''],
+                ['', 'Fred', 'Bloggs', 'London', '', '', '', ''],
+                ['', '', 'Executive Board', '', '5', '', '', '1'],
 
             ];
             var csvString = csvRows.join("%0A");
