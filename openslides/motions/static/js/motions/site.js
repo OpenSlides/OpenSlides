@@ -446,6 +446,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 motion.getTitle(),
                 motion.getText(),
                 motion.getReason(),
+                motion.origin,
                 _.map(
                     motion.submitters,
                     function (submitter) {
