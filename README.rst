@@ -171,6 +171,8 @@ OpenSlides uses the following projects or parts of them:
 * `django-jsonfield <https://github.com/bradjasper/django-jsonfield/>`_,
   License: MIT
 
+* `jsonschema <https://github.com/Julian/jsonschema>`_, License: MIT
+
 * `natsort <https://pypi.python.org/pypi/natsort>`_, License: MIT
 
 * `PyPDF2 <http://mstamy2.github.io/PyPDF2/>`_, License: BSD
@@ -216,6 +218,7 @@ OpenSlides uses the following projects or parts of them:
   * `js-data <http://www.js-data.io>`_, License: MIT
   * `js-data-angular <http://www.js-data.io/docs/js-data-angular>`_, License: MIT
   * `js-data-http <http://www.js-data.io/docs/dshttpadapter>`_, License: MIT
+  * `jsen <https://github.com/bugventure/jsen>`_, License: MIT
   * `lodash <https://lodash.com/>`_, License: MIT
   * `ng-dialog <https://github.com/likeastore/ngDialog>`_, License: MIT
   * `ng-file-upload <https://github.com/danialfarid/ng-file-upload>`_, License: MIT

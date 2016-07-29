@@ -24,6 +24,7 @@ Motions:
 - Added origin field.
 - Added button to sort and number all motions in a category.
 - Introduced pdfMake for clientside generation of PDFs.
+- Added configurable fields for comments.
 
 Users:
 - Added field is_committee and new default group Committees.

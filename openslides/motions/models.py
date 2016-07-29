@@ -119,12 +119,18 @@ class Motion(RESTModelMixin, models.Model):
     Users who support this motion.
     """
 
+    comments = JSONField(null=True)
+    """
+    Configurable fields for comments. Contains a list of strings.
+    """
+
     class Meta:
         default_permissions = ()
         permissions = (
             ('can_see', 'Can see motions'),
             ('can_create', 'Can create motions'),
             ('can_support', 'Can support motions'),
+            ('can_see_and_manage_comments', 'Can see and manage comments'),
             ('can_manage', 'Can manage motions'),
         )
         ordering = ('identifier', )

@@ -36,6 +36,7 @@ def create_builtin_groups_and_admin(**kwargs):
         'motions.can_create',
         'motions.can_manage',
         'motions.can_see',
+        'motions.can_see_and_manage_comments',
         'motions.can_support',
         'users.can_manage',
         'users.can_see_extra_data',
@@ -106,6 +107,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['motions.can_see'],
         permission_dict['motions.can_create'],
         permission_dict['motions.can_manage'],
+        permission_dict['motions.can_see_and_manage_comments'],
         permission_dict['users.can_see_name'],
         permission_dict['users.can_manage'],
         permission_dict['users.can_see_extra_data'],)

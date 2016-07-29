@@ -208,7 +208,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     };
 })
 .factory('PollContentProvider', function() {
-
     /**
     * Generates a content provider for polls
     * @constructor
@@ -216,7 +215,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     * @param {string} id - if of poll
     * @param {object} gettextCatalog - for translation
     */
-
     var createInstance = function(title, id, gettextCatalog){
 
         //left and top margin for a single sheet
@@ -527,11 +525,124 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     }
 ])
 
+// Service for generic comment fields
+.factory('MotionComment', [
+    'Config',
+    function (Config) {
+        return {
+            getFields: function () {
+                // Take input from config field and parse it. It can be some
+                // JSON or just a comma separated list of strings.
+                //
+                // The result is an array of objects. Each object contains
+                // at least the name of the comment field See configSchema.
+                //
+                // Attention: This code does also exist on server side.
+                var configSchema = {
+                    $schema: "http://json-schema.org/draft-04/schema#",
+                    title: "Motion Comments",
+                    type: "array",
+                    items: {
+                        type: "object",
+                        properties: {
+                            name: {
+                                type: "string",
+                                minLength: 1
+                            },
+                            public: {
+                                type: "boolean"
+                            },
+                            forRecommendation: {
+                                type: "boolean"
+                            },
+                            forState: {
+                                type: "boolean"
+                            }
+                        },
+                        required: ["name"]
+                    },
+                    minItems: 1,
+                    uniqueItems: true
+                };
+                var configValue = Config.get('motions_comments').value;
+                var fields;
+                var isJSON = true;
+                try {
+                    fields = JSON.parse(configValue);
+                } catch (err) {
+                    isJSON = false;
+                }
+                if (isJSON) {
+                    // Config is JSON. Validate it.
+                    if (!jsen(configSchema)(fields)) {
+                        fields = [];
+                    }
+                } else {
+                    // Config is a comma separated list of strings. Strip out
+                    // empty parts. All valid strings lead to public comment
+                    // fields.
+                    fields = _.map(
+                        _.filter(
+                            configValue.split(','),
+                            function (name) {
+                                return name;
+                            }),
+                        function (name) {
+                            return {
+                                'name': name,
+                                'public': true
+                            };
+                        }
+                    );
+                }
+                return fields;
+            },
+            getFormFields: function () {
+                var fields = this.getFields();
+                return _.map(
+                    fields,
+                    function (field) {
+                        // TODO: Hide non-public fields for unauthorized users.
+                        return {
+                            key: 'comment ' + field.name,
+                            type: 'input',
+                            templateOptions: {
+                                label: field.name,
+                            },
+                            hideExpression: '!model.more'
+                        };
+                    }
+                );
+            },
+            populateFields: function (motion) {
+                // Populate content of motion.comments to the single comment
+                // fields like motion['comment MyComment'], motion['comment MyOtherComment'], ...
+                var fields = this.getFields();
+                if (!motion.comments) {
+                    motion.comments = [];
+                }
+                for (var i = 0; i < fields.length; i++) {
+                    motion['comment ' + fields[i].name] = motion.comments[i];
+                }
+            },
+            populateFieldsReverse: function (motion) {
+                // Reverse equivalent to populateFields.
+                var fields = this.getFields();
+                motion.comments = [];
+                for (var i = 0; i < fields.length; i++) {
+                    motion.comments.push(motion['comment ' + fields[i].name] || '');
+                }
+            }
+        };
+    }
+])
+
 // Service for generic motion form (create and update)
 .factory('MotionForm', [
     'gettextCatalog',
     'operator',
     'Editor',
+    'MotionComment',
     'Category',
     'Config',
     'Mediafile',
@@ -540,7 +651,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'Workflow',
     'Agenda',
     'AgendaTree',
-    function (gettextCatalog, operator, Editor, Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaTree) {
+    function (gettextCatalog, operator, Editor, MotionComment, Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaTree) {
         return {
             // ngDialog for motion form
             getDialog: function (motion) {
@@ -548,6 +659,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                 if (motion) {
                     resolve = {
                         motion: function() {
+                            MotionComment.populateFields(motion);
                             return motion;
                         },
                         agenda_item: function(Motion) {
@@ -708,8 +820,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                         placeholder: gettextCatalog.getString('Select or search a supporter ...')
                     },
                     hideExpression: '!model.more'
-                },
-                {
+                }]
+                .concat(MotionComment.getFormFields())
+                .concat([{
                     key: 'workflow_id',
                     type: 'select-single',
                     templateOptions: {
@@ -720,7 +833,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                         placeholder: gettextCatalog.getString('Select or search a workflow ...')
                     },
                     hideExpression: '!model.more',
-                }];
+                }]);
             }
         };
     }
@@ -936,6 +1049,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     '$http',
     '$timeout',
     'ngDialog',
+    'MotionComment',
     'MotionForm',
     'Motion',
     'Category',
@@ -953,9 +1067,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'PdfMakeDocumentProvider',
     'gettextCatalog',
     'diffService',
-    function($scope, $http, $timeout, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Editor,
-             Config, motion, SingleMotionContentProvider, MotionContentProvider, PollContentProvider, PdfMakeConverter,
-             PdfMakeDocumentProvider, gettextCatalog, diffService) {
+    function($scope, $http, $timeout, ngDialog, MotionComment, MotionForm, Motion, Category, Mediafile, Tag,
+             User, Workflow, Editor, Config, motion, SingleMotionContentProvider, MotionContentProvider,
+             PollContentProvider, PdfMakeConverter, PdfMakeDocumentProvider, gettextCatalog, diffService) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -965,6 +1079,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         Motion.loadRelations(motion, 'agenda_item');
         $scope.version = motion.active_version;
         $scope.isCollapsed = true;
+        $scope.commentsFields = MotionComment.getFields();
         $scope.lineNumberMode = Config.get('motions_default_line_numbering').value;
         $scope.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
         if (motion.parent_id) {
