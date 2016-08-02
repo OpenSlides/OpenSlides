@@ -14,6 +14,7 @@ Agenda:
 Core:
 - Used Django Channels instead of Tornado.
 - Added support for big assemblies with lots of users.
+- Added HTML support for messages on the projector.
 
 Motions:
 - Added origin field.

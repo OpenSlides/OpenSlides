@@ -1,4 +1,4 @@
 <div ng-controller="SlideMessageCtrl">
   <div ng-if="visible" class="message_background"></div>
-  <div ng-if="visible" class="message well">{{ message }}</div>
+  <div ng-if="visible" class="message well" ng-bind-html="message"></div>
 </div>
