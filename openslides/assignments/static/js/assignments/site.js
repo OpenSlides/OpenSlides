@@ -714,6 +714,10 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 'projector view)');
         gettext('Title for PDF document (all elections)');
         gettext('Preamble text for PDF document (all elections)');
+        //other translations
+        gettext('Searching for candidates');
+        gettext('Voting');
+        gettext('Finished');
     }
 ]);
 
