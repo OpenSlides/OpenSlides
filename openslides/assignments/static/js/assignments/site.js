@@ -746,8 +746,6 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         gettext('Number of all participants');
         gettext('Use the following custom number');
         gettext('Custom number of ballot papers');
-        gettext('Publish election result for elected candidates only (' +
-                'projector view)');
         gettext('Title for PDF document (all elections)');
         gettext('Preamble text for PDF document (all elections)');
         //other translations

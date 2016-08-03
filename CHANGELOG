@@ -19,6 +19,9 @@ Motions:
 - Added origin field.
 - Added button to number all motions in a category.
 
+Assignments:
+- Remove unused assignment config to publish winner election results only.
+
 Users:
 - Added field is_committee and new default group Committees.
 
