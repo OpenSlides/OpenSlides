@@ -68,7 +68,7 @@
   <h4 translate>Please note:</h4>
   <ul>
       <li><translate>Required comma or semicolon separated values with these column header names in the first row</translate>:<br>
-          <code>title, first_name, last_name, structure_level, groups, comment, is_active, is_committee</code>
+          <code>title, first_name, last_name, structure_level, number, groups, comment, is_active, is_committee</code>
       <li><translate>Default groups</translate>:
           <translate>Delegates</translate> <code>3</code>,
           <translate>Staff</translate> <code>4</code>
@@ -90,6 +90,7 @@
           <th translate>First name
           <th translate>Last name
           <th translate>Structure level
+          <th translate>Participant number
           <th translate>Groups
           <th translate>Comment
           <th translate>Is active
@@ -123,6 +124,8 @@
             {{ user.last_name }}
           <td>
             {{ user.structure_level }}
+          <td>
+            {{ user.number }}
           <td>
             <div ng-repeat="groupname in user.groupnames">
               {{ groupname | translate }}
