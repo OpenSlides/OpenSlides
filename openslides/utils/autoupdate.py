@@ -90,7 +90,7 @@ def send_data(message):
         channel = Group('user-{}'.format(user.id))
         output = {
             'collection': message['collection_string'],
-            'id': instance.get_rest_pk(),
+            'id': message['pk'],  # == instance.get_rest_pk()
             'action': 'deleted' if message['is_deleted'] else 'changed'}
         if not message['is_deleted']:
             data = access_permissions.get_restricted_data(full_data, user)
