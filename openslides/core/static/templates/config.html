@@ -21,7 +21,7 @@
         <div id="group{{ $index }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-group{{ $index }}">
           <div class="panel-body">
             <div ng-repeat="subgroup in group.subgroups">
-              <h3>{{ subgroup.name }}</h3>
+              <h3>{{ subgroup.name | translate }}</h3>
               <div ng-repeat="configOption in subgroup.items">
                 <os-form-field field="configOption"></os-form-field>
               </div>

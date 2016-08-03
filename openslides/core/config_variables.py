@@ -151,6 +151,7 @@ def get_config_variables():
     yield ConfigVariable(
         name='projector_default_countdown',
         default_value=60,
+        input_type='integer',
         label='Default countdown',
         weight=185,
         group='Projector')
