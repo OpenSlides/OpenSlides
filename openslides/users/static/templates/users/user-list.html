@@ -196,6 +196,7 @@
           <div ng-if="user.comment">
             <small><i class="fa fa-info-circle"></i> {{ user.comment }}</small>
           </div>
+          <div ng-if="user.number"> {{ user.number }} </div>
           <div os-perms="users.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !user.hover}">
             <a href="" ng-click="openDialog(user)" translate>Edit</a> |
             <a href="" class="text-danger"
