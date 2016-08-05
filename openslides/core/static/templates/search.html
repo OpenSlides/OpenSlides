@@ -5,16 +5,43 @@
 </div>
 
 <div class="details">
-    <form class="input-group" ng-submit="search(query)">
+    <form class="input-group" ng-submit="search()">
       <input type="text" ng-model="query" class="form-control">
       <span class="input-group-btn">
         <button type="submit" class="btn btn-default" translate>Search</button>
       </span>
     </form>
-
+    <div class="searchfilter spacer-top">
+      <label class="checkbox-inline">
+        <input type="checkbox" ng-model="filterAgenda">
+        <translate>Agenda items</translate>
+      </label>
+      <label class="checkbox-inline">
+        <input type="checkbox" ng-model="filterMotion">
+        <translate>Motions</translate>
+      </label>
+      <label class="checkbox-inline">
+        <input type="checkbox" ng-model="filterAssignment">
+        <translate>Elections</translate>
+      </label>
+      <label class="checkbox-inline">
+        <input type="checkbox" ng-model="filterUser">
+        <translate>Participants</translate>
+      </label>
+      <label class="checkbox-inline">
+        <input type="checkbox" ng-model="filterMedia">
+        <translate>Files</translate>
+      </label>
+      <div>
+        <label class="checkbox-inline">
+          <input type="checkbox" ng-model="fullword" ng-change="search()">
+          <translate>Only whole words</translate>
+        </label>
+      </div>
+    </div>
   <div class="searchresults spacer-top-lg">
     <ol ng-show="results">
-      <li ng-repeat="result in results">
+      <li ng-repeat="result in results | filter:filterresult()">
         <a ng-if="!result.mediafileUrl" ui-sref="{{ result.urlState }}({{ result.urlParam }})">
           {{ result.getSearchResultName() }}
         </a>
@@ -24,6 +51,6 @@
         <br>
         <span class="grey">{{ result.getSearchResultSubtitle() | translate }}</span>
     </ol>
-    <p ng-show="!results" translate>No results.</p>
+    <p ng-show="!results || results.length == 0" translate>No results.</p>
   </div>
 </div>
