@@ -295,8 +295,16 @@ img {
     width: auto;
     margin-top: 20px;
     background: #fff;
-    padding: 20px;
     border: 1px solid #d3d3d3;
+}
+
+.col1 .details .line-number-setter {
+    margin: 20px;
+}
+
+.col1 .details .line-number-setter .btn-group-label {
+    display: inline-block;
+    margin-right: 20px;
 }
 
 .col1 ul, .col1 ol {

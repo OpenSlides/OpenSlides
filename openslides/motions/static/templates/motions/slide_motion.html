@@ -70,7 +70,8 @@
   </div>
 
   <!-- Text -->
-  <div ng-bind-html="motion.getTextWithLineBreaks() | trusted" class="motion-text line-numbers-{{ line_numbering.value }}"></div>
+  <div ng-bind-html="motion.getTextWithLineBreaks() | trusted"
+       class="motion-text line-numbers-{{ line_numbering.value }}"></div>
 
   <!-- Reason -->
   <h3 ng-if="motion.getReason()" translate>Reason</h3>

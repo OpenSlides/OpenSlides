@@ -70,6 +70,17 @@ def get_config_variables():
         subgroup='General')
 
     yield ConfigVariable(
+        name='motions_line_length',
+        default_value=80,
+        input_type='integer',
+        label='Line length',
+        help_text='The maximum number of characters per line. Relevant when line numbering is enabled. Min: 40',
+        weight=323,
+        group='Motions',
+        subgroup='General',
+        validators=(MinValueValidator(40),))
+
+    yield ConfigVariable(
         name='motions_stop_submitting',
         default_value=False,
         input_type='boolean',

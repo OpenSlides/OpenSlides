@@ -142,8 +142,9 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users', 'OpenSlidesApp.m
                     return this.getVersion(versionId).text;
                 },
                 getTextWithLineBreaks: function (versionId) {
-                    var html = this.getVersion(versionId).text,
-                        withBreaks = lineNumberingService.insertLineNumbers(html);
+                    var lineLength = Config.get('motions_line_length').value,
+                        html = this.getVersion(versionId).text,
+                        withBreaks = lineNumberingService.insertLineNumbers(html, lineLength);
 
                     return withBreaks;
                 },
