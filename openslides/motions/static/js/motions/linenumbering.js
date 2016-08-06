@@ -299,7 +299,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         var newRoot = this._insertLineNumbersToNode(root, lineLength);
 
         return newRoot.innerHTML;
-    }
+    };
 });
 
 
