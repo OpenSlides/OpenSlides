@@ -23,8 +23,7 @@ def users_to_pdf(pdf):
     """
     Create a list of all users as PDF.
     """
-    data = [['#', _('Title'), _('Last Name'), _('First Name'),
-             _('Structure level'), _('Group')]]
+    data = [['#', _('Name'), _('Structure level'), _('Group')]]
     if config['users_sort_users_by_first_name']:
         sort = 'first_name'
     else:
@@ -36,11 +35,19 @@ def users_to_pdf(pdf):
         for group in user.groups.all():
             if group.pk != 2:
                 groups += "%s<br/>" % escape(_(group.name))
+        if sort == 'last_name':
+            name = "%s" % escape(user.last_name)
+            if user.first_name:
+                name = "%s, %s" % (name, escape(user.first_name))
+        else:
+            name = "%s %s" % (escape(user.first_name), escape(user.last_name))
+        if user.title:
+            name = "%s %s" % (user.title, name)
+        if user.number:
+            name = "%s<br/>%s" % (name, user.number)
         data.append([
             counter,
-            Paragraph(user.title, stylesheet['Tablecell']),
-            Paragraph(escape(user.last_name), stylesheet['Tablecell']),
-            Paragraph(escape(user.first_name), stylesheet['Tablecell']),
+            Paragraph(name, stylesheet['Tablecell']),
             Paragraph(escape(user.structure_level), stylesheet['Tablecell']),
             Paragraph(groups, stylesheet['Tablecell'])])
     t = LongTable(data, style=[
@@ -65,6 +72,7 @@ def users_passwords_to_pdf(pdf):
     users_pdf_url = config["users_pdf_url"] or "-"
     users_pdf_welcometitle = config["users_pdf_welcometitle"]
     users_pdf_welcometext = config["users_pdf_welcometext"]
+
     if config['users_sort_users_by_first_name']:
         sort = 'first_name'
     else:
@@ -88,6 +96,7 @@ def users_passwords_to_pdf(pdf):
 
     for user in User.objects.all().order_by(sort):
         pdf.append(Paragraph(escape(user.get_full_name()), stylesheet['h1']))
+        pdf.append(Paragraph(escape(user.number), stylesheet['h3']))
         pdf.append(Spacer(0, 1 * cm))
         data = []
         # WLAN access data

@@ -37,6 +37,12 @@
 <div ng-if="item" class="details listOfSpeakers">
   <div class="pull-right">
     <span os-perms="agenda.can_manage">
+      <button class="btn btn-danger"
+          ng-bootbox-confirm="{{ 'Are you sure you want to remove all speakers from this list?'| translate }}"
+          ng-bootbox-confirm-action="removeAllSpeakers()">
+          <i class="fa fa-trash fa-lg"></i>
+          <translate>Remove all speakers</translate>
+      </button>
       <button ng-if="item.speaker_list_closed" ng-click="closeList(false)"
           class="btn btn-sm btn-default">
         <i class="fa fa-toggle-off"></i>

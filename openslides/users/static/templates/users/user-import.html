@@ -68,10 +68,11 @@
   <h4 translate>Please note:</h4>
   <ul>
       <li><translate>Required comma or semicolon separated values with these column header names in the first row</translate>:<br>
-          <code>title, first_name, last_name, structure_level, groups, comment, is_active</code>
+          <code>title, first_name, last_name, structure_level, number, groups, comment, is_active, is_committee</code>
       <li><translate>Default groups</translate>:
           <translate>Delegates</translate> <code>3</code>,
           <translate>Staff</translate> <code>4</code>
+          <translate>Committees</translate> <code>5</code>
       <li translate>At least first name or last name have to be filled in. All
         other fields are optional and may be empty.
       <li translate>Only double quotes are accepted as text delimiter (no single quotes).
@@ -89,9 +90,11 @@
           <th translate>First name
           <th translate>Last name
           <th translate>Structure level
+          <th translate>Participant number
           <th translate>Groups
           <th translate>Comment
-          <th translate>Is active</th>
+          <th translate>Is active
+          <th translate>Is committee</th>
       <tbody>
         <tr ng-repeat="user in users | limitTo : itemsPerPage : limitBegin">
           <td class="minimum"
@@ -122,6 +125,8 @@
           <td>
             {{ user.structure_level }}
           <td>
+            {{ user.number }}
+          <td>
             <div ng-repeat="groupname in user.groupnames">
               {{ groupname | translate }}
             </div>
@@ -129,6 +134,8 @@
             {{ user.comment }}
           <td>
             <i ng-if="user.is_active" class="fa fa-check-square-o"></i>
+          <td>
+            <i ng-if="user.is_committee" class="fa fa-check-square-o"></i>
     </table>
     <uib-pagination total-items="users.length" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
 

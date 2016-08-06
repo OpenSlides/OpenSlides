@@ -170,36 +170,46 @@
       </a>
       <div uib-collapse="!isMessages" ng-cloak>
         <div ng-repeat="message in messages | orderBy: 'index'" id="{{message.uuid}}" class="message panel panel-default">
+
+          <div class="panel-heading">
+              <span>{{ 'Message' | translate }} {{ message.index + 1 }}</span>
+            <!-- remove message button -->
+            <button type="button" class="close"
+              ng-click="removeMessage(message)"
+              title="{{ 'Remove message' | translate}}">
+              <i class="fa fa-times"></i>
+            </button>
+            <button type="button" class="close editicon"
+              ng-click="editMessageFlag=true;"
+              title="{{ 'Edit message' | translate}}">
+              <i class="fa fa-pencil"></i>
+            </button>
+          </div>
+
           <div class="panel-body"
               ng-class="{ 'projected': message.visible }">
-            <!-- project message button -->
-            <a class="btn btn-default btn-sm"
+            <div class="projectorbtn">
+              <!-- project message button -->
+              <a class="btn btn-default btn-sm"
                 ng-model="message.visible"
                 ng-click="showMessage(message)"
                 ng-class="{ 'btn-primary': message.visible }"
-                title="{{ 'Project message' | translate }}">
-              <i class="fa fa-video-camera"></i>
-            </a>
-            &nbsp;&nbsp;
-            {{ message.message }}
-            <!-- remove message button -->
-            <button type="button" class="close"
-                ng-click="removeMessage(message)"
-                title="{{ 'Remove message' | translate}}">
-                <i class="fa fa-times"></i>
-            </button>
-            <button type="button" class="close editicon"
-                ng-click="editMessageFlag=true;"
-                title="{{ 'Edit message' | translate}}">
-                <i class="fa fa-pencil"></i>
-            </button>
-            <div ng-if="editMessageFlag" class="input-group">
-              <input ng-model="message.message" type="text" class="form-control input-sm">
-              <a ng-click="editMessage(message)"
-                  title="{{ 'Save' | translate}}"
-                 class="btn btn-sm btn-primary input-group-addon">
-                <i class="fa fa-check"></i>
+                title="{{ 'Project message' | translate }}" float="left">
+                <i class="fa fa-video-camera"></i>
               </a>
+            </div>
+            &nbsp;&nbsp;
+            <div class="innermessage" ng-bind-html="message.message"> </div>
+
+            <div class="panel-input">
+              <div ng-if="editMessageFlag" class="input-group">
+                <input ng-model="message.message" type="text" class="form-control input-sm">
+                <a ng-click="editMessage(message)"
+                  title="{{ 'Save' | translate}}"
+                  class="btn btn-sm btn-primary input-group-addon">
+                  <i class="fa fa-check"></i>
+                </a>
+              </div>
             </div>
           </div>
         </div>

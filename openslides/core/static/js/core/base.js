@@ -106,10 +106,14 @@ angular.module('OpenSlidesApp.core', [
             // get detected browser language code
             getBrowserLanguage: function () {
                 var lang = navigator.language || navigator.userLanguage;
-                if (lang.indexOf('-') !== -1)
-                    lang = lang.split('-')[0];
-                if (lang.indexOf('_') !== -1)
-                    lang = lang.split('_')[0];
+                if (!navigator.language && !navigator.userLanguage) {
+                    lang = 'en';
+                } else {
+                    if (lang.indexOf('-') !== -1)
+                        lang = lang.split('-')[0];
+                    if (lang.indexOf('_') !== -1)
+                        lang = lang.split('_')[0];
+                }
                 return lang;
             },
             // set current language and return updated languages object array

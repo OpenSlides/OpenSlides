@@ -443,3 +443,47 @@ class UpdateMotionPoll(TestCase):
             {'motion_id': self.motion.pk,
              'votesvalid': ''})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class NumberMotionsInCategory(TestCase):
+    """
+    Tests numbering motions in a category.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+        self.category = Category.objects.create(
+            name='test_cateogory_name_zah6Ahd4Ifofaeree6ai',
+            prefix='test_prefix_ahz6tho2mooH8')
+        self.motion = Motion(
+            title='test_title_Eeha8Haf6peulu8ooc0z',
+            text='test_text_faghaZoov9ooV4Acaquk',
+            category=self.category)
+        self.motion.save()
+        self.motion.identifier = ''
+        self.motion.save()
+        self.motion_2 = Motion(
+            title='test_title_kuheih2eja2Saeshusha',
+            text='test_text_Ha5ShaeraeSuthooP2Bu',
+            category=self.category)
+        self.motion_2.save()
+        self.motion_2.identifier = ''
+        self.motion_2.save()
+
+    def test_numbering(self):
+        response = self.client.post(
+            reverse('category-numbering', args=[self.category.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'detail': 'All motions in category test_cateogory_name_zah6Ahd4Ifofaeree6ai numbered successfully.'})
+        self.assertEqual(Motion.objects.get(pk=self.motion.pk).identifier, 'test_prefix_ahz6tho2mooH8 1')
+        self.assertEqual(Motion.objects.get(pk=self.motion_2.pk).identifier, 'test_prefix_ahz6tho2mooH8 2')
+
+    def test_numbering_existing_identifier(self):
+        self.motion_2.identifier = 'test_prefix_ahz6tho2mooH8 1'
+        self.motion_2.save()
+        response = self.client.post(
+            reverse('category-numbering', args=[self.category.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'detail': 'All motions in category test_cateogory_name_zah6Ahd4Ifofaeree6ai numbered successfully.'})
+        self.assertEqual(Motion.objects.get(pk=self.motion.pk).identifier, 'test_prefix_ahz6tho2mooH8 1')
+        self.assertEqual(Motion.objects.get(pk=self.motion_2.pk).identifier, 'test_prefix_ahz6tho2mooH8 2')

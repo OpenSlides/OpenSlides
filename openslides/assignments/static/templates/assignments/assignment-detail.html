@@ -51,6 +51,11 @@
           <!-- posts -->
           <h3 translate>Number of posts to be elected</h3>
           {{ assignment.open_posts }}<br>
+          <!-- Tags -->
+          <h3 ng-if="assignment.tags.length > 0" translate>Tags</h3>
+          <span ng-repeat="tag in assignment.tags">
+            {{ tag.name }}{{$last ? '' : ', '}}
+          </span>
       </div>
       <div class="col-md-6">
           <!-- phase -->

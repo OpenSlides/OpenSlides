@@ -297,6 +297,14 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     hideExpression: '!model.more'
                 },
                 {
+                    key: 'origin',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Origin'),
+                    },
+                    hideExpression: '!model.more'
+                },
+                {
                     key: 'tags_id',
                     type: 'select-multiple',
                     templateOptions: {
@@ -438,6 +446,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 motion.getTitle(),
                 motion.getText(),
                 motion.getReason(),
+                motion.origin,
                 _.map(
                     motion.submitters,
                     function (submitter) {
@@ -919,6 +928,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 if (motion.category && motion.category !== '' && !motion.category_id) {
                     motion.category_create = gettext('New category will be created.');
                 }
+                // origin
+                if (motion.origin) {
+                    motion.origin = motion.origin.replace(quotionRe, '$1');
+                }
                 $scope.motions.push(motion);
             });
         });
@@ -973,12 +986,11 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             var element = document.getElementById('downloadLink');
             var csvRows = [
                 // column header line
-                ['identifier', 'title', 'text', 'reason', 'submitter', 'category'],
+                ['identifier', 'title', 'text', 'reason', 'submitter', 'category', 'origin'],
                 // example entries
-                ['A1', 'title 1', 'text 1', 'reason 1', 'Submitter A', 'Category A'],
-                ['B1', 'title 2', 'text 2', 'reason 2', 'Submitter B', 'Category B'],
-                [''  , 'title 3', 'text 3', '', '', '']
-
+                ['A1', 'Title 1', 'Text 1', 'Reason 1', 'Submitter A', 'Category A', 'Last Year Conference A'],
+                ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', ''                      ],
+                [''  , 'Title 3', 'Text 3', ''        , ''           , ''          , ''                      ],
             ];
             var csvString = csvRows.join("%0A");
             element.href = 'data:text/csv;charset=utf-8,' + csvString;

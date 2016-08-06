@@ -34,6 +34,8 @@
         <div ng-repeat="group in user.groups_id">
           {{ (groups | filter: {id: group})[0].name | translate }}
         </div>
+      <label translate>Participant number</label>
+        {{ user.number }}
       <label translate>About me</label>
         <div ng-bind-html="user.about_me"></div>
     </fieldset>

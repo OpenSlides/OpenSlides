@@ -137,25 +137,34 @@
       <tr>
         <!-- projector column -->
         <th ng-show="!isSelectMode" os-perms="core.can_manage_projector" class="minimum">
+
         <!-- selection column -->
         <th ng-show="isSelectMode" os-perms="users.can_manage" class="minimum deleteColumn">
           <input type="checkbox" ng-model="$parent.selectedAll" ng-change="checkAll()">
+
+        <!-- name column -->
         <th ng-click="toggleSort('first_name')" class="sortable">
           <translate>Name</translate>
           <!-- TODO: sort by first OR last name -->
           <i class="pull-right fa" ng-show="sortColumn === 'first_name' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
+
+        <!-- structure level column -->
         <th ng-click="toggleSort('structure_level')" class="sortable optional">
           <translate>Structure level</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'structure_level' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
+
+        <!-- groups column -->
         <th ng-click="toggleSort('groups')" class="sortable optional">
           <translate>Groups</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'groups' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
           </i>
+
+        <!-- present column -->
         <th os-perms="users.can_see_extra_data" ng-click="toggleSort('is_present')" class="sortable minimum">
           <translate>Present</translate>
           <i class="pull-right fa" ng-show="sortColumn === 'is_present' && header.sortable != false"
@@ -177,10 +186,17 @@
           <input type="checkbox" ng-model="user.selected">
         <!-- user data colums -->
         <td ng-mouseover="user.hover=true" ng-mouseleave="user.hover=false">
-          <strong><a ui-sref="users.user.detail({id: user.id})">{{ user.get_short_name() }}</a></strong>
+          <strong>
+            <i ng-show="!user.is_active" class="fa fa-ban"
+              title="{{ 'Is inactive' | translate }}"></i>
+            <i ng-show="user.is_committee" class="fa fa-users"
+              title="{{ 'Is a committee' | translate }}"></i>
+            <a ui-sref="users.user.detail({id: user.id})">{{ user.get_short_name() }}</a>
+          </strong>
           <div ng-if="user.comment">
             <small><i class="fa fa-info-circle"></i> {{ user.comment }}</small>
           </div>
+          <div ng-if="user.number"> {{ user.number }} </div>
           <div os-perms="users.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !user.hover}">
             <a href="" ng-click="openDialog(user)" translate>Edit</a> |
             <a href="" class="text-danger"

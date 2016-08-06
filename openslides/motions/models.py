@@ -81,6 +81,12 @@ class Motion(RESTModelMixin, models.Model):
     ForeignKey to one category of motions.
     """
 
+    origin = models.CharField(max_length=255, blank=True)
+    """
+    A string to describe the origin of this motion e. g. that it was
+    discussed at another assembly/conference.
+    """
+
     attachments = models.ManyToManyField(Mediafile, blank=True)
     """
     Many to many relation to mediafile objects.

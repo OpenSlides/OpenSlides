@@ -9,6 +9,7 @@ from whoosh import fields
 from whoosh.filedb.filestore import RamStorage
 from whoosh.index import create_in, exists_in, open_dir
 from whoosh.qparser import QueryParser
+from whoosh.writing import AsyncWriter
 
 
 def get_schema():
@@ -113,11 +114,9 @@ def index_add_instance(sender, instance, **kwargs):
     If the instance has an method get_search_string, then it is written
     into the search index. The method has to return an dictonary that can be
     used as keyword arguments to writer.add_document.
+
+    This function uses whoosh.writing.AsyncWriter.
     """
-    # TODO: This method blocks the search index. So in a multi thread environment
-    #       this method can raise whoosh.store.LockError. Therefore it has to
-    #       be done in tornado to support the big mode.
-    #       See: https://pythonhosted.org/Whoosh/indexing.html#indexing-documents
     try:
         get_search_index_string = instance.get_search_index_string
     except AttributeError:
@@ -132,7 +131,7 @@ def index_add_instance(sender, instance, **kwargs):
         'collection': instance.get_collection_string(),
         'content': get_search_index_string()}
 
-    with index.get_or_create_index().writer() as writer:
+    with AsyncWriter(index.get_or_create_index()) as writer:
         if created:
             writer.add_document(**writer_kwargs)
         else:
@@ -144,6 +143,8 @@ def index_del_instance(sender, instance, **kwargs):
     Like index_add_instance but deletes the instance from the index.
 
     Should be called by the post_delete signal.
+
+    This function uses whoosh.writing.AsyncWriter.
     """
     try:
         # Try to get the arrribute get_search_attributes. It is not needed
@@ -154,7 +155,7 @@ def index_del_instance(sender, instance, **kwargs):
         # If the instance is not searchable, then exit this signal early.
         return
 
-    with index.get_or_create_index().writer() as writer:
+    with AsyncWriter(index.get_or_create_index()) as writer:
         writer.delete_by_term('id_collection', combine_id_and_collection(instance))
 
 

@@ -8,9 +8,24 @@ Version 2.1 (unreleased)
 ========================
 [https://github.com/OpenSlides/OpenSlides/milestones/2.1]
 
+Agenda:
+- Added button to remove all speakers from a list of speakers.
+
+Assignments:
+- Remove unused assignment config to publish winner election results only.
+
 Core:
 - Used Django Channels instead of Tornado.
 - Added support for big assemblies with lots of users.
+- Added HTML support for messages on the projector.
+
+Motions:
+- Added origin field.
+- Added button to number all motions in a category.
+
+Users:
+- Added field is_committee and new default group Committees.
+- Added field number.
 
 Other:
 - Removed config cache to support multiple threads or processes.

@@ -138,6 +138,9 @@
         <!-- title -->
         <td ng-if="!assignment.quickEdit" ng-mouseover="assignment.hover=true" ng-mouseleave="assignment.hover=false">
           <strong><a ui-sref="assignments.assignment.detail({id: assignment.id})">{{ assignment.title }}</a></strong>
+          <span ng-repeat="tag in assignment.tags" class="label label-default">
+            {{ tag.name }}
+          </span>
           <div os-perms="assignments.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !assignment.hover}">
             <a href="" ng-click="openDialog(assignment)" translate>Edit</a> |
             <a href="" ng-click="assignment.quickEdit=true" translate>QuickEdit</a> |
@@ -184,7 +187,16 @@
                     ng-model="assignment.phase" class="form-control" id="selectPhase">
                 </select>
               </div>
-              <div class="col-xs-6"></div>
+              <div class="col-xs-6">
+                <label for="selectTags" translate>Tags</label>
+                <select multiple chosen
+                    ng-model="assignment.tags_id"
+                    ng-options="tag.id as tag.name for tag in tags"
+                    search-contains="true"
+                    id="selectTag"
+                    class="form-control">
+                </select>
+              </div>
             </div>
             <div class="spacer">
               <button ng-click="cancelQuickEdit(assignment)" class="btn btn-default pull-left" translate>

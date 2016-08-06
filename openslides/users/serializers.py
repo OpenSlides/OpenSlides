@@ -18,8 +18,10 @@ USERSHORTSERIALIZER_FIELDS = (
             'first_name',
             'last_name',
             'structure_level',
+            'number',
             'about_me',
             'groups',
+            'is_committee',
         )
 
 
@@ -56,12 +58,14 @@ class UserFullSerializer(ModelSerializer):
             'title',
             'first_name',
             'last_name',
+            'number',
             'structure_level',
             'about_me',
             'comment',
             'groups',
             'default_password',
             'is_active',
+            'is_committee',
         )
 
     def validate(self, data):

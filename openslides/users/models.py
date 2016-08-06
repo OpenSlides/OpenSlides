@@ -124,6 +124,11 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         blank=True,
         default='')
 
+    number = models.CharField(
+        max_length=50,
+        blank=True,
+        default='')
+
     about_me = models.TextField(
         blank=True,
         default='')
@@ -141,6 +146,9 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         default=True)
 
     is_present = models.BooleanField(
+        default=False)
+
+    is_committee = models.BooleanField(
         default=False)
 
     objects = UserManager()

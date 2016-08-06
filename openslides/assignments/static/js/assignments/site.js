@@ -43,6 +43,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                             }
                         );
                     },
+                    tags: function(Tag) {
+                        return Tag.findAll();
+                    },
                     phases: function(Assignment) {
                         return Assignment.getPhases();
                     }
@@ -58,6 +61,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     },
                     users: function(User) {
                         return User.findAll();
+                    },
+                    tags: function(Tag) {
+                        return Tag.findAll();
                     },
                     phases: function(Assignment) {
                         return Assignment.getPhases();
@@ -99,7 +105,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 .factory('AssignmentForm', [
     'gettextCatalog',
     'operator',
-    function (gettextCatalog, operator) {
+    'Tag',
+    function (gettextCatalog, operator, Tag) {
         return {
             // ngDialog for assignment form
             getDialog: function (assignment) {
@@ -165,6 +172,25 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         description: gettextCatalog.getString('If deactivated the election appears as internal item on agenda.')
                     },
                     hide: !operator.hasPerms('assignments.can_manage')
+                },
+                {
+                    key: 'more',
+                    type: 'checkbox',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Show extended fields')
+                    },
+                    hide: !operator.hasPerms('assignments.can_manage')
+                },
+                {
+                    key: 'tags_id',
+                    type: 'select-multiple',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Tags'),
+                        options: Tag.getAll(),
+                        ngOptions: 'option.id as option.name for option in to.options',
+                        placeholder: gettextCatalog.getString('Select or search a tag ...')
+                    },
+                    hideExpression: '!model.more'
                 }];
             }
         };
@@ -176,9 +202,11 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'ngDialog',
     'AssignmentForm',
     'Assignment',
+    'Tag',
     'phases',
-    function($scope, ngDialog, AssignmentForm, Assignment, phases) {
+    function($scope, ngDialog, AssignmentForm, Assignment, Tag, phases) {
         Assignment.bindAll({}, $scope, 'assignments');
+        Tag.bindAll({}, $scope, 'tags');
         $scope.phases = phases;
         $scope.alert = {};
 
@@ -200,7 +228,15 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 assignment.description,
                 $scope.phases[assignment.phase].display_name,
                 _.map(assignment.assignment_related_users,
-                        function (candidate) {return candidate.user.get_short_name();}).join(" "),
+                    function (candidate) {
+                        return candidate.user.get_short_name();
+                    }
+                ).join(" "),
+                _.map(assignment.tags,
+                    function (tag) {
+                        return tag.name;
+                    }
+                ).join(" "),
             ].join(" ");
         };
 
@@ -545,7 +581,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         'no': ''
                     };
                 }
-                    
+
                 if (option.votes.length) {
                     defaultValue.yes = option.votes[0].weight;
                     defaultValue.no = option.votes[1].weight;
@@ -710,10 +746,12 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         gettext('Number of all participants');
         gettext('Use the following custom number');
         gettext('Custom number of ballot papers');
-        gettext('Publish election result for elected candidates only (' +
-                'projector view)');
         gettext('Title for PDF document (all elections)');
         gettext('Preamble text for PDF document (all elections)');
+        //other translations
+        gettext('Searching for candidates');
+        gettext('Voting');
+        gettext('Finished');
     }
 ]);
 
