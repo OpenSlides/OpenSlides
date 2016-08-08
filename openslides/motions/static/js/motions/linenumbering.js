@@ -95,7 +95,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                 out.push(createLineBreak());
                 out.push(createLineNumber());
             }
-            out.push(newNode)
+            out.push(newNode);
         };
 
         if (node.nodeValue == "\n") {
