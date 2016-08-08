@@ -28,11 +28,13 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
     'jsDataModel',
     'Projector',
     'gettextCatalog',
-    function($http, DS, Speaker, jsDataModel, Projector, gettextCatalog) {
+    'gettext',
+    function($http, DS, Speaker, jsDataModel, Projector, gettextCatalog, gettext) {
         var name = 'agenda/item';
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
+            verboseName: gettext('Agenda'),
             methods: {
                 getResourceName: function () {
                     return name;

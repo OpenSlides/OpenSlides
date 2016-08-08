@@ -111,31 +111,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             resolve: {
                 groups: function(Group) {
                     return Group.findAll();
-                }
-            }
-        })
-        .state('users.group.create', {
-            resolve: {
-                permissions: function(Group) {
-                    return Group.getPermissions();
-                }
-            }
-        })
-        .state('users.group.detail', {
-            resolve: {
-                group: function(Group, $stateParams) {
-                    return Group.find($stateParams.id);
                 },
-                permissions: function(Group) {
-                    return Group.getPermissions();
-                }
-            }
-        })
-        .state('users.group.detail.update', {
-            views: {
-                '@users.group': {}
-            },
-            resolve: {
                 permissions: function(Group) {
                     return Group.getPermissions();
                 }
@@ -331,7 +307,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                         label: gettextCatalog.getString('Groups'),
                         options: Group.getAll(),
                         ngOptions: 'option.id as option.name | translate for option in to.options | ' +
-                                   'filter: {id: "!1"} | filter: {id: "!2"}',
+                                   'filter: {id: "!1"}',
                         placeholder: gettextCatalog.getString('Select or search a group ...')
                     }
                 },
@@ -850,76 +826,230 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 
 .controller('GroupListCtrl', [
     '$scope',
+    '$http',
+    'operator',
     'Group',
-    function($scope, Group) {
-        Group.bindAll({}, $scope, 'groups');
+    'permissions',
+    'gettext',
+    'Agenda',
+    'Assignment',
+    'Mediafile',
+    'Motion',
+    'User',
+    'ngDialog',
+    function($scope, $http, operator, Group, permissions, gettext, Agenda, Assignment, Mediafile, Motion, User, ngDialog) {
+        //Group.bindAll({}, $scope, 'groups');
+        $scope.permissions = permissions;
+
+        $scope.$watch(function() {
+            return Group.lastModified();
+        }, function() {
+            $scope.groups = Group.getAll();
+
+            // find all groups with the 2 dangerous permissions
+            var groups_danger = [];
+            $scope.groups.forEach(function (group) {
+                if ((_.indexOf(group.permissions, 'users.can_see_name') > -1) &&
+                    (_.indexOf(group.permissions, 'users.can_manage') > -1)){
+                    if (operator.isInGroup(group)){
+                        groups_danger.push(group);
+                    }
+                }
+            });
+            // if there is only one dangerous group, block it.
+            $scope.group_danger = groups_danger.length == 1 ? groups_danger[0] : null;
+        });
+
+        $scope.apps = [];
+        // Create the main clustering with appname->permissions
+        angular.forEach(permissions, function(perm) {
+            var permissionApp = perm.value.split('.')[0]; // get appname
+
+            // To insert perm in the right spot in $scope.apps
+            var insert = function (id, perm, verboseName) {
+                if (!$scope.apps[id]) {
+                    $scope.apps[id] = {
+                        app_name: verboseName,
+                        app_visible: true,
+                        permissions: []
+                    };
+                }
+                $scope.apps[id].permissions.push(perm);
+            };
+
+            switch(permissionApp) {
+                case 'core': // id 0 (projector) and id 6 (general)
+                    if (perm.value.indexOf('projector') > -1) {
+                        insert(0, perm, gettext('Projector'));
+                    } else {
+                        insert(6, perm, gettext('General'));
+                    }
+                    break;
+                case 'agenda': // id 1
+                    insert(1, perm, Agenda.verboseName);
+                    break;
+                case 'motions': // id 2
+                    insert(2, perm, Motion.verboseNamePlural);
+                    break;
+                case 'assignments': // id 3
+                    insert(3, perm, Assignment.verboseNamePlural);
+                    break;
+                case 'mediafiles': // id 4
+                    insert(4, perm, Mediafile.verboseNamePlural);
+                    break;
+                case 'users': // id 5
+                    insert(5, perm, User.verboseNamePlural);
+                    break;
+                default: // plugins: id>5
+                    var display_name = permissionApp.charAt(0).toUpperCase() + permissionApp.slice(1);
+                    // does the app exists?
+                    var result = -1;
+                    angular.forEach($scope.apps, function (app, index) {
+                        if (app.app_name === display_name)
+                            result = index;
+                    });
+                    var id = result == -1 ? $scope.apps.length : result;
+                    insert(id, perm, display_name);
+                    break;
+            }
+        });
+
+        // sort each app: first all permission with 'see', then 'manage', then the rest
+        // save the permissions in different lists an concat them in the right order together
+        // Special Users: the two "see"-permissions are normally swapped. To create the right
+        // order, we could simply reverse the whole permissions.
+        angular.forEach($scope.apps, function (app, index) {
+            if(index == 5) { // users
+                app.permissions.reverse();
+            } else { // rest
+                var see = [];
+                var manage = [];
+                var others = [];
+                angular.forEach(app.permissions, function (perm) {
+                    if (perm.value.indexOf('see') > -1) {
+                        see.push(perm);
+                    } else if (perm.value.indexOf('manage') > -1) {
+                        manage.push(perm);
+                    } else {
+                        others.push(perm);
+                    }
+                });
+                app.permissions = see.concat(manage.concat(others));
+            }
+        });
+
+        // check if the given group has the given permission
+        $scope.hasPerm = function (group, permission) {
+            return _.indexOf(group.permissions, permission.value) > -1;
+        };
+
+        // The current user is not allowed to lock himself out of the configuration:
+        // - if the permission is 'users.can_manage' or 'users.can_see'
+        // - if the user is in only one group with these permissions (group_danger is set)
+        $scope.danger = function (group, permission){
+            if ($scope.group_danger){
+                if (permission.value == 'users.can_see_name' ||
+                    permission.value == 'users.can_manage'){
+                    return $scope.group_danger == group;
+                }
+            }
+            return false;
+        };
 
         // delete selected group
         $scope.delete = function (group) {
             Group.destroy(group.id);
+        };
+
+        // save changed permission
+        $scope.changePermission = function (group, perm) {
+            if (!$scope.danger(group, perm)) {
+                if (!$scope.hasPerm(group, perm)) { // activate perm
+                    group.permissions.push(perm.value);
+                } else {
+                    // delete perm in group.permissions
+                    group.permissions = _.filter(group.permissions, function(value) {
+                        return value != perm.value; // remove perm
+                    });
+                }
+                Group.save(group);
+            }
+        };
+
+        $scope.openDialog = function (group) {
+            var resolve;
+            if (group) {
+                resolve = {
+                    group: function() {return Group.find(group.id);}
+                };
+            }
+            ngDialog.open({
+                template: 'static/templates/users/group-edit.html',
+                controller: group ? 'GroupRenameCtrl' : 'GroupCreateCtrl',
+                className: 'ngdialog-theme-default wide-form',
+                closeByEscape: false,
+                closeByDocument: false,
+                resolve: (resolve) ? resolve : null
+            });
+        };
+    }
+])
+
+.controller('GroupRenameCtrl', [
+    '$scope',
+    'Group',
+    'group',
+    function($scope, Group, group) {
+        $scope.group = group;
+        $scope.new_name = group.name;
+
+        $scope.alert = {};
+        $scope.save = function() {
+            var old_name = $scope.group.name;
+            $scope.group.name = $scope.new_name;
+            Group.save($scope.group).then(
+                function (success) {
+                    $scope.closeThisDialog();
+                },
+                function (error) {
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = { msg: message, show: true };
+                    $scope.group.name = old_name;
+                }
+            );
         };
     }
 ])
 
 .controller('GroupCreateCtrl', [
     '$scope',
-    '$state',
     'Group',
-    'permissions',
-    function($scope, $state, Group, permissions) {
-        // get all permissions
-        $scope.permissions = permissions;
-        $scope.group = {};
-        $scope.save = function (group) {
-            if (!group.permissions) {
-                group.permissions = [];
-            }
+    function($scope, Group) {
+        $scope.new_name = '';
+        $scope.alert = {};
+
+        $scope.save = function() {
+            var group = {
+                name: $scope.new_name,
+                permissions: []
+            };
+
             Group.create(group).then(
-                function(success) {
-                    $state.go('users.group.list');
+                function (success) {
+                    $scope.closeThisDialog();
+                },
+                function (error) {
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = { msg: message, show: true };
                 }
             );
         };
-    }
-])
-
-.controller('GroupUpdateCtrl', [
-    '$scope',
-    '$state',
-    'Group',
-    'permissions',
-    'group',
-    function($scope, $state, Group, permissions, group) {
-        // get all permissions
-        $scope.permissions = permissions;
-        $scope.group = group;  // autoupdate is not activated
-        $scope.save = function (group) {
-            Group.save(group).then(
-                function(success) {
-                    $state.go('users.group.list');
-                }
-            );
-        };
-    }
-])
-
-.controller('GroupDetailCtrl', [
-    '$scope',
-    'Group',
-    'group',
-    'permissions',
-    function($scope, Group, group, permissions) {
-        Group.bindOne(group.id, $scope, 'group');
-        $scope.groupPermissionNames = [];
-        // get display names of group permissions
-        // from an object array with all available permissions [{display_name, value}]
-        angular.forEach(group.permissions, function(permValue) {
-            angular.forEach(permissions, function(p) {
-                if (p.value == permValue) {
-                    $scope.groupPermissionNames.push(p.display_name);
-                }
-            });
-        });
     }
 ])
 

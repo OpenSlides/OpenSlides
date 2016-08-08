@@ -7,11 +7,14 @@ angular.module('OpenSlidesApp.mediafiles', [])
 .factory('Mediafile', [
     'DS',
     'jsDataModel',
-    function(DS, jsDataModel) {
+    'gettext',
+    function(DS, jsDataModel, gettext) {
         var name = 'mediafiles/mediafile';
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
+            verboseName: gettext('Files'),
+            verboseNamePlural: gettext('Files'),
             getAllImages: function () {
                 var images = [];
                 angular.forEach(this.getAll(), function(file) {
