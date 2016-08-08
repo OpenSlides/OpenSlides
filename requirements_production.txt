@@ -1,5 +1,5 @@
 # Requirements for OpenSlides in production in alphabetical order
-Django>=1.8,<1.11,!=1.10.0
+Django>=1.9,<1.11,!=1.10.0
 beautifulsoup4>=4.5,<4.6
 channels>=0.15,<1.0
 djangorestframework>=3.2.0,<3.5
