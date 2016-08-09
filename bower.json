@@ -11,7 +11,7 @@
     "angular-csv-import": "~0.0.29",
     "angular-formly": "~7.3.9",
     "angular-formly-templates-bootstrap": "~6.2.0",
-    "angular-gettext": "~2.2.0",
+    "angular-gettext": "~2.3.4",
     "angular-loading-bar": "~0.8.0",
     "angular-messages": "~1.4.10",
     "angular-pdf": "~1.3.0",
