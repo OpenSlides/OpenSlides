@@ -1,14 +1,13 @@
 # Requirements for OpenSlides in production in alphabetical order
-Django>=1.8,<1.10
+Django>=1.8,<1.11,!=1.10.0
 beautifulsoup4>=4.5,<4.6
 channels>=0.15,<1.0
-djangorestframework>=3.2.0,<3.4.0
-html5lib>=0.9,<1.0
+djangorestframework>=3.2.0,<3.5
+html5lib>=0.99,<1.0
 jsonfield>=0.9.19,<1.1
-natsort>=3.2,<4.1
-PyPDF2>=1.25.0,<1.26
+natsort>=3.2,<5.1
+PyPDF2>=1.25.0,<1.27
 reportlab>=3.0,<3.4
 roman>=2.0,<2.1
 setuptools>=18.5,<26.0
-sockjs-tornado>=1.0.1,<1.1
 Whoosh>=2.7.0,<2.8
