@@ -261,15 +261,19 @@ def start_browser(browser_url):
     Launches the default web browser at the given url and opens the
     webinterface.
     """
-    browser = webbrowser.get()
+    try:
+        browser = webbrowser.get()
+    except webbrowser.Error:
+        print('Could not locate runnable browser: Skipping start')
+    else:
 
-    def function():
-        # TODO: Use a nonblocking sleep event here. Tornado has such features.
-        time.sleep(1)
-        browser.open(browser_url)
+        def function():
+            # TODO: Use a nonblocking sleep event here. Tornado has such features.
+            time.sleep(1)
+            browser.open(browser_url)
 
-    thread = threading.Thread(target=function)
-    thread.start()
+        thread = threading.Thread(target=function)
+        thread.start()
 
 
 def get_database_path_from_settings():
