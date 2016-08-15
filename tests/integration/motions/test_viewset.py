@@ -487,3 +487,21 @@ class NumberMotionsInCategory(TestCase):
         self.assertEqual(response.data, {'detail': 'All motions in category test_cateogory_name_zah6Ahd4Ifofaeree6ai numbered successfully.'})
         self.assertEqual(Motion.objects.get(pk=self.motion.pk).identifier, 'test_prefix_ahz6tho2mooH8 1')
         self.assertEqual(Motion.objects.get(pk=self.motion_2.pk).identifier, 'test_prefix_ahz6tho2mooH8 2')
+
+    def test_numbering_with_given_order(self):
+        self.motion_3 = Motion(
+            title='test_title_eeb0kua5ciike4su2auJ',
+            text='test_text_ahshuGhaew3eim8yoht7',
+            category=self.category)
+        self.motion_3.save()
+        self.motion_3.identifier = ''
+        self.motion_3.save()
+        response = self.client.post(
+            reverse('category-numbering', args=[self.category.pk]),
+            {'motions': [3, 2]},
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'detail': 'All motions in category test_cateogory_name_zah6Ahd4Ifofaeree6ai numbered successfully.'})
+        self.assertEqual(Motion.objects.get(pk=self.motion.pk).identifier, None)
+        self.assertEqual(Motion.objects.get(pk=self.motion_2.pk).identifier, 'test_prefix_ahz6tho2mooH8 2')
+        self.assertEqual(Motion.objects.get(pk=self.motion_3.pk).identifier, 'test_prefix_ahz6tho2mooH8 1')
