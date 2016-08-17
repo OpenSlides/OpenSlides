@@ -184,14 +184,16 @@ def start(args):
             start_browser('http://%s:%s' % (args.host, args.port))
 
     # Start the webserver
-    # Tell django not to reload. OpenSlides uses the reload method from tornado
-    # Use insecure to serve static files, even when DEBUG is False.
+    # Use flag --noreload to tell Django not to reload the server.
+    # Use flag --insecure to serve static files even if DEBUG is False.
+    # Use flag --nothreading to tell Django Channels to run in single thread mode.
     execute_from_command_line([
         'manage.py',
         'runserver',
         '{}:{}'.format(args.host, args.port),
         '--noreload',
-        '--insecure'])
+        '--insecure',
+        '--nothreading'])
 
 
 def createsettings(args):
