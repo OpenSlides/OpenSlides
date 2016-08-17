@@ -307,6 +307,11 @@ class CategoryViewSet(ModelViewSet):
         Special view endpoint to number all motions in this category.
 
         Only managers can use this view.
+
+        Send POST {'motions': [<list of motion ids>]} to sort the given
+        motions in a special order. Ids of motions which do not belong to
+        the category are just ignored. Send just POST {} to sort all
+        motions in the category by id.
         """
         category = self.get_object()
         number = 0
@@ -314,13 +319,20 @@ class CategoryViewSet(ModelViewSet):
             prefix = ''
         else:
             prefix = '%s ' % category.prefix
+        motions = category.motion_set.all()
+        motion_list = request.data.get('motions')
+        if motion_list:
+            motion_dict = {}
+            for motion in motions.filter(id__in=motion_list):
+                motion_dict[motion.pk] = motion
+            motions = [motion_dict[pk] for pk in motion_list]
 
         with transaction.atomic():
-            for motion in category.motion_set.all():
+            for motion in motions:
                 motion.identifier = None
                 motion.save()
 
-            for motion in category.motion_set.all():
+            for motion in motions:
                 if motion.is_amendment():
                     parent_identifier = motion.parent.identifier or ''
                     prefix = '%s %s ' % (parent_identifier, config['motions_amendments_prefix'])
