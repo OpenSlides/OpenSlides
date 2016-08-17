@@ -19,6 +19,12 @@ urlpatterns = [
         views.SearchView.as_view(),
         name='core_search'),
 
+    #Example code
+    url(r'^trigger/$',
+        views.TriggerFakeModelAutoupdateView.as_view(),
+        name='trigger'),
+    #End of example code
+
     url(r'^angular_js/(?P<openslides_app>site|projector)/$',
         views.AppsJsView.as_view(),
         name='core_apps_js'),

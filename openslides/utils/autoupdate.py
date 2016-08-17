@@ -13,6 +13,15 @@ from ..users.models import User
 from .access_permissions import BaseAccessPermissions
 
 
+extra_autoupdate_objects = set()
+
+def register_extra_autoupdate_object(obj):
+    """
+    Adds extra objects to the extra_autoupdate_objects store.
+    """
+    extra_autoupdate_objects.add(obj)
+
+
 def get_logged_in_users():
     """
     Helper to get all logged in users.
@@ -33,6 +42,8 @@ def get_model_from_collection_string(collection_string):
         for app_config in apps.get_app_configs():
             for model in app_config.get_models():
                 yield model
+        for model in extra_autoupdate_objects:
+            yield model
 
     for model in model_generator():
         try:
@@ -83,7 +94,7 @@ def send_data(message):
 
     if not message['is_deleted']:
         Model = get_model_from_collection_string(message['collection_string'])
-        instance = Model.objects.get(pk=message['pk'])
+        instance = Model.get_autoupdate_instance(pk=message['pk'])
         full_data = access_permissions.get_full_data(instance)
 
     # Loop over all logged in users and the anonymous user.

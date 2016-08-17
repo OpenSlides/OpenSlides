@@ -53,3 +53,11 @@ class RESTModelMixin:
         the database pk.
         """
         return self.pk
+
+    @classmethod
+    def get_autoupdate_instance(cls, pk):
+        """
+        Returns the instance to be send out via autoupdate. For Django models
+        this is the database instance.
+        """
+        return cls.objects.get(pk=pk)

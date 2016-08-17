@@ -336,6 +336,21 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+//Example code
+.factory('Exampleobject', [
+    'DS',
+    function(DS) {
+        return DS.defineResource({
+            name: 'exampleapp/exampleobject'
+        });
+    }
+])
+.run([
+    'Exampleobject',
+    function (Exampleobject) {}
+])
+//End of example code
+
 .factory('Config', [
     '$http',
     'DS',

@@ -107,3 +107,13 @@ class ConfigAccessPermissions(BaseAccessPermissions):
         # Attention: The format of this response has to be the same as in
         # the retrieve method of ConfigViewSet.
         return {'key': instance.key, 'value': config[instance.key]}
+
+
+#Example code
+class FakeModelAccessPermissions(BaseAccessPermissions):
+    def can_retrieve(self, user):
+        return True
+
+    def get_full_data(self, instance):
+        return instance.get_result()
+#End of example code

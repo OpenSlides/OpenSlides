@@ -45,6 +45,13 @@ class CoreAppConfig(AppConfig):
         router.register(self.get_model('Tag').get_collection_string(), TagViewSet)
         router.register(self.get_model('ConfigStore').get_collection_string(), ConfigViewSet, 'config')
 
+        #Example code
+        from .views import FakeModel, FakeModelViewSet
+        from openslides.utils.autoupdate import register_extra_autoupdate_object
+        register_extra_autoupdate_object(FakeModel)
+        router.register('exampleapp/exampleobject', FakeModelViewSet, 'exampleobjecturl')
+        #End of example code
+
         # Update data when any model of any installed app is saved or deleted.
         # TODO: Test if the m2m_changed signal is also needed.
         signals.post_save.connect(
