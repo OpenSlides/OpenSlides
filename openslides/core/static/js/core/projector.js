@@ -159,45 +159,45 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     'Motion',
     'Assignment',
     'Agenda',
-    function($scope, Motion, Assignment, Agenda) {
+    'Projector',
+    function($scope, Motion, Assignment, Agenda, Projector) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
-        Motion.bindAll({}, $scope, 'motions');
-        Assignment.bindAll({}, $scope, 'assignments');
         $scope.visible = $scope.element.visible;
+        $scope.displayedElement =  function () {
+            for (var e in $scope.$parent.elements) {
+                var ee = $scope.$parent.elements[e];
+                if (ee.name == "motions/motion") {
+                    return ['motion', ee.id];
+                } else if (ee.name == "core/customslide") {
+                    return ['agenda', ee.id];
+                } else if (ee.name == "assignments/assignment") {
+                   return ['assignment', ee.id];
+                }
+            };
+        };
+        $scope.searchAgendaItem = function () {
+            var displayedElement = $scope.displayedElement();
+            if (displayedElement[0] == 'motion') {
+                Motion.find(displayedElement[1]).then( function(result){
+                    return result.agenda_item_id;
+                });
+            } else if (displayedElement[0] == 'agenda') {
+                Agenda.find(displayedElement[1]).then( function (result){
+                    return result;
+                });
+            } else if (displayedElement[0] == 'assignment') {
+                Assignment.find(displayedElement[1]).then( function(result){
+                    return result.agenda_item_id;
+                });
+            } else { return null; };
+        };
+        $scope.displayedAgendaItem = Agenda.find($scope.elementAgendaItemID()).then( function(result){
+            return result;});
+        $scope.speakers = $scope.displayedAgendaItem.speakers;
+        $scope.canary = $scope.displayedAgendaItem ? 'Ja' : 'Nein';
         
-        //get list of speakers
-        var displayeditem = null;
-        angular.forEach($scope.elements, function(element) {
-            if (element.name == "motions/motion") {
-                var currentmotion = Motion.find(element.id);
-                //TODO displayeditem = currentmotion.agenda_item;
-            } else if (element.name == "core/customslide") {
-                displayeditem = element.id;
-            } else if (element.name == "assignments/assignment") {
-                
-                var currentassign = Assignment.find(element.id);
-                
-                //TODO I want to get the 'value.agenda_item_id' from this currentassign object.
-                
-                console.log(currentassign); //object with $$state: object
-                console.log(currentassign.value); //undefined
-                console.log(currentassign.$$state);// object with "status, value, __proto__"
-                console.log(currentassign.$$state['value']); // undefined
-                console.log(currentassign.$$state.value); // undefined
-                
-                
-                //TODO displayeditem = currentassign.agenda_item;
-            }
-        });
-        if (displayeditem !== null) {
-            var agendaitem = Agenda.find(displayeditem);
-            $scope.speakers = agendaitem.speakers;//TODO
-        } else {
-            $scope.speakers = [];
-        }
-        console.log(displayeditem);
     }
 ])
 
