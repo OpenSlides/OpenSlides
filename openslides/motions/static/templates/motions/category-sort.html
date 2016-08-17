@@ -1,0 +1,34 @@
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a ui-sref="motions.category.list" class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to categories</translate>
+      </a>
+    </div>
+    <h1><translate>Category</translate> {{ category.name }}</h1>
+  </div>
+</div>
+
+<div class="details">
+  <div class="lead-div">
+    <p class="lead" translate>
+      Drag and drop motions to reorder the category and when finished, renumber them.
+    </p>
+    <a os-perms="motions.can_manage" class="btn btn-primary btn-sm" ng-click="numbering()">
+      <i class="fa fa-sort-numeric-asc fa-lg"></i>
+      <translate>Numbering</translate>
+    </a>
+  </div>
+  <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+    {{ alert.msg }}
+  </uib-alert>
+  <div ui-tree="treeOptions" data-max-depth="1" data-empty-placeholder-enabled="false">
+    <ol ui-tree-nodes ng-model="items">
+      <li ui-tree-node ng-repeat="item in items">
+        <div ui-tree-handle bg-color="#FF0000">
+            {{ item.item.identifier }}: {{ item.item.getTitle() }}
+        </div>
+    </ol>
+  </div>
+</div>
