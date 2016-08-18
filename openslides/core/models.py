@@ -265,6 +265,9 @@ class Session(DjangoSession):
         on_delete=models.CASCADE,
         null=True)
 
+    class Meta:
+        default_permissions = ()
+
     @classmethod
     def get_session_store_class(cls):
         from .session_backend import SessionStore

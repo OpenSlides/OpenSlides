@@ -389,7 +389,8 @@ angular.module('OpenSlidesApp.core.site', [
 .directive('osFormField', [
     '$parse',
     'Config',
-    function($parse, Config) {
+    'gettextCatalog',
+    function($parse, Config, gettextCatalog) {
         function getHtmlType(type) {
             return {
                 string: 'text',
@@ -410,15 +411,19 @@ angular.module('OpenSlidesApp.core.site', [
                 var config = Config.get(field.key);
                 $scope.type = getHtmlType(field.input_type);
                 if ($scope.type == 'choice') {
-                    $scope.choices = field.choices;
+                    $scope.choices = [];
+                    angular.forEach(field.choices, function(choice) {
+                        choice.display_name = gettextCatalog.getString(choice.display_name);
+                        $scope.choices.push(choice);
+                    });
                 }
                 $scope.label = field.label;
                 $scope.key = 'field-' + field.key;
-                $scope.value = config.value;
+                $scope.value = gettextCatalog.getString(config.value);
                 $scope.help_text = field.help_text;
                 $scope.default_value = field.default_value;
                 $scope.reset = function () {
-                    $scope.value = $scope.default_value;
+                    $scope.value = gettextCatalog.getString($scope.default_value);
                     $scope.save(field.key, $scope.value);
                 };
             }

@@ -86,15 +86,24 @@ def min_requirements(args=None):
     requirement file.
 
     Uses requirements_production.txt by default.
-    """
 
+    The following line will install the version:
+
+    pip install $(python make min_requirements)
+    """
     import pip
 
     def get_lowest_versions(requirements_file):
         for line in pip.req.parse_requirements(requirements_file, session=pip.download.PipSession()):
-            yield '%s==%s' % (line.req.key, line.req.specs[0][1])
+            for specifier in line.req.specifier:
+                if specifier.operator == '>=':
+                    min_version = specifier.version
+                    break
+            else:
+                raise ValueError('Not supported line {}'.format(line))
+            yield '%s==%s' % (line.req.name, min_version)
 
-    print('pip install %s' % ' '.join(get_lowest_versions(args.requirements)))
+    print(' '.join(get_lowest_versions(args.requirements)))
 
 
 @command('clear',

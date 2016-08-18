@@ -5,6 +5,7 @@ from asgiref.inmemory import ChannelLayer
 from channels import Channel, Group
 from channels.auth import channel_session_user, channel_session_user_from_http
 from django.apps import apps
+from django.db import transaction
 from django.utils import timezone
 
 from ..users.auth import AnonymousUser
@@ -108,14 +109,19 @@ def inform_changed_data(instance, is_deleted=False):
         # Instance has no method get_root_rest_element. Just ignore it.
         pass
     else:
-        try:
-            Channel('autoupdate.send_data').send({
-                'collection_string': root_instance.get_collection_string(),
-                'pk': root_instance.pk,
-                'is_deleted': is_deleted and instance == root_instance,
-                'dispatch_uid': root_instance.get_access_permissions().get_dispatch_uid()})
-        except ChannelLayer.ChannelFull:
-            pass
+        # If currently there is an open database transaction, then the following
+        # function is only called, when the transaction is commited. If there
+        # is currently no transaction, then the function is called immediately.
+        def send_autoupdate():
+            try:
+                Channel('autoupdate.send_data').send({
+                    'collection_string': root_instance.get_collection_string(),
+                    'pk': root_instance.pk,
+                    'is_deleted': is_deleted and instance == root_instance,
+                    'dispatch_uid': root_instance.get_access_permissions().get_dispatch_uid()})
+            except ChannelLayer.ChannelFull:
+                pass
+        transaction.on_commit(send_autoupdate)
 
 
 def inform_changed_data_receiver(sender, instance, **kwargs):

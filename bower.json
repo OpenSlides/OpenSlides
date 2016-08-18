@@ -11,7 +11,7 @@
     "angular-csv-import": "~0.0.29",
     "angular-formly": "~7.3.9",
     "angular-formly-templates-bootstrap": "~6.2.0",
-    "angular-gettext": "~2.2.0",
+    "angular-gettext": "~2.3.4",
     "angular-loading-bar": "~0.8.0",
     "angular-messages": "~1.4.10",
     "angular-pdf": "~1.3.0",
@@ -31,6 +31,7 @@
     "ngBootbox": "~0.1.3",
     "open-sans-fontface": "https://github.com/OpenSlides/open-sans.git#1.4.2.post1",
     "roboto-condensed": "~0.3.0",
+    "tinymce-dist": "4.3.12",
     "tinymce-i18n": "OpenSlides/tinymce-i18n#a186ad61e0aa30fdf657e88f405f966d790f0805"
   },
   "overrides": {

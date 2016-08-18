@@ -21,7 +21,7 @@ Core:
 
 Motions:
 - Added origin field.
-- Added button to number all motions in a category.
+- Added button to sort and number all motions in a category.
 
 Users:
 - Added field is_committee and new default group Committees.

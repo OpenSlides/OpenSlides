@@ -497,32 +497,31 @@ class AssignmentPollPDF(PDFView):
                     cell.append(Paragraph(
                         "(%s)" % candidate.structure_level,
                         stylesheet['Ballot_option_suffix_YNA']))
+                if self.poll.yesnoabstain:
+                    cell.append(Paragraph(
+                        "&nbsp;", stylesheet['Ballot_option_suffix_YNA']))
+                    cell.append(Paragraph("<font name='circlefont' size='15'>%(circle)s</font> \
+                        <font name='Ubuntu'>%(yes)s &nbsp;&nbsp;&nbsp;</font> \
+                        <font name='circlefont' size='15'>%(circle)s</font> \
+                        <font name='Ubuntu'>%(no)s &nbsp;&nbsp;&nbsp;</font> \
+                        <font name='circlefont' size='15'>%(circle)s</font> \
+                        <font name='Ubuntu'>%(abstain)s</font>" %
+                                {'circle': circle,
+                                 'yes': _("Yes"),
+                                 'no': _("No"),
+                                 'abstain': _("Abstain")},
+                               stylesheet['Ballot_option_circle_YNA']))
                 else:
-                    if self.poll.yesnoabstain:
-                        cell.append(Paragraph(
-                            "&nbsp;", stylesheet['Ballot_option_suffix_YNA']))
-                        cell.append(Paragraph("<font name='circlefont' size='15'>%(circle)s</font> \
-                            <font name='Ubuntu'>%(yes)s &nbsp;&nbsp;&nbsp;</font> \
-                            <font name='circlefont' size='15'>%(circle)s</font> \
-                            <font name='Ubuntu'>%(no)s &nbsp;&nbsp;&nbsp;</font> \
-                            <font name='circlefont' size='15'>%(circle)s</font> \
-                            <font name='Ubuntu'>%(abstain)s</font>" %
-                                    {'circle': circle,
-                                     'yes': _("Yes"),
-                                     'no': _("No"),
-                                     'abstain': _("Abstain")},
-                                    stylesheet['Ballot_option_circle_YNA']))
-                    else:
-                        cell.append(Paragraph(
-                            "&nbsp;", stylesheet['Ballot_option_suffix_YNA']))
-                        cell.append(Paragraph("<font name='circlefont' size='15'>%(circle)s</font> \
-                            <font name='Ubuntu'>%(yes)s &nbsp;&nbsp;&nbsp;</font> \
-                            <font name='circlefont' size='15'>%(circle)s</font> \
-                            <font name='Ubuntu'>%(no)s &nbsp;&nbsp;&nbsp;</font>" %
-                                    {'circle': circle,
-                                     'yes': _("Yes"),
-                                     'no': _("No")},
-                                    stylesheet['Ballot_option_circle_YNA']))
+                    cell.append(Paragraph(
+                        "&nbsp;", stylesheet['Ballot_option_suffix_YNA']))
+                    cell.append(Paragraph("<font name='circlefont' size='15'>%(circle)s</font> \
+                        <font name='Ubuntu'>%(yes)s &nbsp;&nbsp;&nbsp;</font> \
+                        <font name='circlefont' size='15'>%(circle)s</font> \
+                        <font name='Ubuntu'>%(no)s &nbsp;&nbsp;&nbsp;</font>" %
+                                {'circle': circle,
+                                 'yes': _("Yes"),
+                                 'no': _("No")},
+                                stylesheet['Ballot_option_circle_YNA']))
                 if counter == 13:
                     cellcolumnA = cell
                     cell = []
