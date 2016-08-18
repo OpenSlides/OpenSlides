@@ -153,6 +153,19 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 views: {
                     '@motions.category': {}
                 }
+            })
+            .state('motions.category.sort', {
+                url: '/sort/{id}',
+                resolve: {
+                    category: function(Category, $stateParams) {
+                        return Category.find($stateParams.id);
+                    },
+                    motions: function(Motion) {
+                        return Motion.findAll();
+                    }
+                },
+                controller: 'CategorySortCtrl',
+                templateUrl: 'static/templates/motions/category-sort.html'
             });
     }
 ])
@@ -1061,6 +1074,52 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     $state.go('motions.category.list');
                 }
             );
+        };
+    }
+])
+
+.controller('CategorySortCtrl', [
+    '$scope',
+    '$stateParams',
+    '$http',
+    'MotionList',
+    'Category',
+    'category',
+    'Motion',
+    'motions',
+    function($scope, $stateParams, $http, MotionList, Category, category, Motion, motions) {
+        Category.bindOne(category.id, $scope, 'category');
+        Motion.bindAll({}, $scope, 'motions');
+        $scope.filter = { category_id: category.id,
+                          orderBy: 'identifier' };
+
+        $scope.$watch(
+            function () {
+                return Motion.lastModified();
+            },
+            function () {
+                $scope.items = MotionList.getTree(Motion.filter($scope.filter));
+            }
+        );
+
+        $scope.alert = {};
+        // Numbers all motions in this category by the given order in $scope.items
+        $scope.numbering = function () {
+            // Create a list of all motion ids in the current order.
+            var sorted_motions = [];
+            $scope.items.forEach(function (item) {
+                sorted_motions.push(item.item.id);
+            });
+
+            // renumber them
+            $http.post('/rest/motions/category/' + $scope.category.id + '/numbering/',
+                {'motions': sorted_motions} )
+            .success(function(data) {
+                $scope.alert = { type: 'success', msg: data.detail, show: true };
+            })
+            .error(function(data) {
+                $scope.alert = { type: 'danger', msg: data.detail, show: true };
+            });
         };
     }
 ])
