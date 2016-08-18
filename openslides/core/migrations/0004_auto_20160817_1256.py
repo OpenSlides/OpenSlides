@@ -19,12 +19,11 @@ def add_speaker_overlay(apps, schema_editor):
 
     # We get the model from the versioned app registry;
     # if we directly import it, it will be the wrong version.
-    Projector = apps.get_model('core', 'Projector')
     projector = Projector.objects.get(id=1)
     soverlay_uuid = uuid.uuid4().hex
     projector.config[soverlay_uuid] = {
         'name': 'core/speakeroverlay',
-        'stable' : True}
+        'stable': True}
     projector.save()
 
 
