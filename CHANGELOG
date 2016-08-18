@@ -30,6 +30,7 @@ Users:
 Other:
 - Removed config cache to support multiple threads or processes.
 - Fixed bug, that the last change of a config value was not send via autoupdate.
+- Added template hooks for plugins (in item detail view and motion poll form).
 
 
 Version 2.0 (2016-04-18)
