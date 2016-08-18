@@ -145,9 +145,9 @@ h3 {
     margin-bottom: 0px;
 }
 #speakerbox {
-    width: 500px;
+    width: 40%;
     float: right;
-    margin: 44px -50px 20px 10px;
+    margin: 20px;
     right: 0;
     bottom: 0;
     position: absolute;
@@ -155,6 +155,7 @@ h3 {
     border-radius: 7px;
     border: 1px solid;
     padding: 3px 7px 10px 19px;
+    z-index: 99;
 }
 ul, ol {
     margin: 0 0 10px 2em;

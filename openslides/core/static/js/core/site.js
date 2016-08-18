@@ -197,6 +197,23 @@ angular.module('OpenSlidesApp.core.site', [
                 data: {extern: true},
                 onEnter: function($window) {
                     $window.location.href = this.url;
+                },
+                resolve: {
+                    motions: function(Motion) {
+                        return Motion.findAll().then(function(motions) {
+                            angular.forEach(motions, function(motion) {
+                                Motion.loadRelations(motion, 'agenda_item');
+                            });
+                        });
+                    },
+                    assignments: function(Assignment) {
+                        return Assignment.findAll().then(function(assignments) {
+                            angular.forEach(assignments, function(assignment) {
+                                Assignment.loadRelations(assignment, 'agenda_item');
+                            });
+                        });
+                    }
+                //TODO: resolve custonslides
                 }
             })
             .state('core', {
@@ -827,22 +844,22 @@ angular.module('OpenSlidesApp.core.site', [
                 }
             });
         };
-
         //*** List of speakers overlay on slide***
-        $scope.listOfSpeakers = function () {
-            var data = {};
-            var listofspeakersoverlay = {};
-            $.each(Projector.get(1).elements, function(key, value) {
-                if (value.name == 'core/speakeroverlay') {
-                    listofspeakersoverlay = value;
+        $scope.speakeroverlay = function() {
+            var elements = Projector.get(1).elements;
+            for (var element in elements) {
+                if (elements[element].name == 'core/speakeroverlay') {
+                    return elements[element];
                 }
-            })
-	    //TODO: get the UUID/element  before...
-	    
-            if (!listofspeakersoverlay.visible) {
-                data[listofspeakersoverlay.uuid] = { "visible": true };
+            }
+            return null;//TODO: error
+        };
+        $scope.speakeroverlaytoggle = function () {
+            var data = {};
+            if ($scope.speakeroverlay().visible) {
+                data[$scope.speakeroverlay().uuid] = { "visible": false };
             } else {
-                data[listofspeakersoverlay.uuid] = { "visible": false };
+                data[$scope.speakeroverlay().uuid] = { "visible": true };
             }
             $http.post('/rest/core/projector/1/update_elements/', data);
         };

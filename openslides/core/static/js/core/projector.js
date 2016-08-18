@@ -38,7 +38,6 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 
 .config([
     'slidesProvider',
-    
     function(slidesProvider) {
         slidesProvider.registerSlide('core/customslide', {
             template: 'static/templates/core/slide_customslide.html',
@@ -73,7 +72,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                     });
                 }
             }
-        })
+        });
     }
 ])
 
@@ -164,39 +163,46 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
+        //TODO: speed it up. Resolving?
         $scope.visible = $scope.element.visible;
-        $scope.displayedElement =  function () {
+        $scope.displayedElement = function() {
+            var displayedElement = [];
             for (var e in $scope.$parent.elements) {
                 var ee = $scope.$parent.elements[e];
                 if (ee.name == "motions/motion") {
-                    return ['motion', ee.id];
+                    displayedElement = ['motion', ee.id];
                 } else if (ee.name == "core/customslide") {
-                    return ['agenda', ee.id];
+                    displayedElement = ['agenda', ee.id];
                 } else if (ee.name == "assignments/assignment") {
-                   return ['assignment', ee.id];
+                    displayedElement = ['assignment', ee.id];
                 }
-            };
-        };
-        $scope.searchAgendaItem = function () {
-            var displayedElement = $scope.displayedElement();
+            }
             if (displayedElement[0] == 'motion') {
-                Motion.find(displayedElement[1]).then( function(result){
-                    return result.agenda_item_id;
+                Motion.find(displayedElement[1])
+                .then(function(motion) {
+                    Motion.loadRelations(motion, 'agenda_item')
+                    .then(function(item) {
+                        $scope.AgendaItem = item.agenda_item;
+                    });
                 });
             } else if (displayedElement[0] == 'agenda') {
-                Agenda.find(displayedElement[1]).then( function (result){
-                    return result;
+                Agenda.find(displayedElement[1])
+                .then(function(item) {
+                    $scope.AgendaItem = item;
                 });
             } else if (displayedElement[0] == 'assignment') {
-                Assignment.find(displayedElement[1]).then( function(result){
-                    return result.agenda_item_id;
+                Assignment.find(displayedElement[1])
+                .then(function(assignment) {
+                    Assignment.loadRelations(assignment, 'agenda_item')
+                    .then(function(item) {
+                        $scope.AgendaItem = item.agenda_item;
+                    });
                 });
-            } else { return null; };
+            } else {
+                $scope.AgendaItem = null;
+            }
         };
-        $scope.displayedAgendaItem = Agenda.find($scope.elementAgendaItemID()).then( function(result){
-            return result;});
-        $scope.speakers = $scope.displayedAgendaItem.speakers;
-        $scope.canary = $scope.displayedAgendaItem ? 'Ja' : 'Nein';
+        $scope.$watch($scope.$parent.elements, $scope.displayedElement());
         
     }
 ])

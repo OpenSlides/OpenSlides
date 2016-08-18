@@ -1,23 +1,18 @@
 <div ng-controller="SlideSpeakerOverlayCtrl">
-  {{displayedElement()[0]}}
-  {{displayedElement()[1]}}
-  {{elementAgendaItemID}}
-  {{canary}}
-  <div ng-if="speakers.length">
-    Lalala
+  <div ng-if="AgendaItem.speakers && AgendaItem.speakers.length && visible">
     <div id="speakerbox">
       <h3 translate>List of speakers</h3>
-      <p ng-repeat="speaker in lastSpeakers = (speakers | filter: {end_time: '!!', begin_time: '!!'}) | 
+      <p ng-repeat="speaker in lastSpeakers = (AgendaItem.speakers| filter: {end_time: '!!', begin_time: '!!'}) | 
        limitTo: config('agenda_show_last_speakers') : (lastSpeakers.length - config('agenda_show_last_speakers'))" 
        class="lastSpeakers">
-      {{ speaker.user.get_full_name() }} 
-        <!-- orderBy? -->
-      <p ng-repeat="speaker in speakers | filter: {end_time: null, begin_time: '!!'} " 
+      {{ speaker.user.get_full_name() }}
+      <p ng-repeat="speaker in AgendaItem.speakers | filter: {end_time: null, begin_time: '!!'} " 
         class="currentSpeaker">
         <i class="fa fa-microphone fa-lg"></i> {{ speaker.user.get_full_name() }}
-      <p ng-repeat="speaker in speakers | filter: {begin_time: null} | orderBy:'weight' | limitTo: 3">
-        {{ speaker.user.get_full_name() }}
-  </div>
+      <ol class="nextSpeakers">
+         <li ng-repeat="speaker in AgendaItem.speakers | filter: {begin_time: null} | orderBy:'weight' | limitTo: 3">
+         {{ speaker.user.get_full_name() }}
+      </ol>
+    </div>
   </div>
 </div>
-
