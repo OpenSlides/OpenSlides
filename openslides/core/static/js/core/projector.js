@@ -61,7 +61,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                     return Motion.findAll().then(function(motions) {
                         angular.forEach(motions, function(motion) {
                             Motion.loadRelations(motion, 'agenda_item');
-                            });
+                        });
                     });
                 },
                 assignments: function(Assignment) {
@@ -158,12 +158,12 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     'Motion',
     'Assignment',
     'Agenda',
+    'Customslide',
     'Projector',
-    function($scope, Motion, Assignment, Agenda, Projector) {
+    function($scope, Motion, Assignment, Agenda, Customslide, Projector) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
-        //TODO: speed it up. Resolving?
         $scope.visible = $scope.element.visible;
         $scope.displayedElement = function() {
             var displayedElement = [];
@@ -186,9 +186,13 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                     });
                 });
             } else if (displayedElement[0] == 'agenda') {
-                Agenda.find(displayedElement[1])
-                .then(function(item) {
-                    $scope.AgendaItem = item;
+                Customslide.find(displayedElement[1]).
+                then(function(customslide) {
+                    Customslide.loadRelations(customslide, 'agenda_item').
+                    then(function(item) {
+                        console.log(item.agenda_item);
+                        $scope.AgendaItem = item.agenda_item;
+                    });
                 });
             } else if (displayedElement[0] == 'assignment') {
                 Assignment.find(displayedElement[1])
@@ -203,7 +207,6 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             }
         };
         $scope.$watch($scope.$parent.elements, $scope.displayedElement());
-        
     }
 ])
 

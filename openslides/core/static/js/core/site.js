@@ -206,14 +206,19 @@ angular.module('OpenSlidesApp.core.site', [
                             });
                         });
                     },
+                    users: function(User) {
+                        return User.findAll();
+                    },
                     assignments: function(Assignment) {
                         return Assignment.findAll().then(function(assignments) {
                             angular.forEach(assignments, function(assignment) {
                                 Assignment.loadRelations(assignment, 'agenda_item');
                             });
                         });
+                    },
+                    items: function(Agenda) {
+                        return Agenda.findAll();
                     }
-                //TODO: resolve custonslides
                 }
             })
             .state('core', {
@@ -852,7 +857,7 @@ angular.module('OpenSlidesApp.core.site', [
                     return elements[element];
                 }
             }
-            return null;//TODO: error
+            return null;
         };
         $scope.speakeroverlaytoggle = function () {
             var data = {};
