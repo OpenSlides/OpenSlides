@@ -1098,7 +1098,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 return Motion.lastModified();
             },
             function () {
-                $scope.items = MotionList.getTree(Motion.filter($scope.filter));
+                $scope.items = MotionList.getList(Motion.filter($scope.filter));
             }
         );
 
