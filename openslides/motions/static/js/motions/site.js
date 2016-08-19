@@ -691,6 +691,18 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             $scope.inlineEditing.trivialChangeAllowed = true;
         }
 
+        $scope.$watch(
+            function () {
+                return Motion.lastModified();
+            },
+            function () {
+                console.log(motion.state.versioning);
+                $scope.inlineEditing.trivialChangeAllowed =
+                    (motion.state.versioning && Config.get('motions_allow_disable_versioning').value);
+                console.log((motion.state.versioning && Config.get('motions_allow_disable_versioning').value));
+            }
+        );
+
         $scope.tinymceOptions = Editor.getOptions(null, true);
         $scope.tinymceOptions.readonly = 1;
         $scope.tinymceOptions.entities = "160,nbsp,38,amp,34,quot,162,cent,8364,euro,163,pound,165,yen,169,copy," +

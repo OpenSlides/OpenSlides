@@ -307,6 +307,7 @@ img {
 .col1 .details .line-number-setter .btn.disabled {
     cursor: default;
     opacity: 1;
+    background-color: #eee;
 }
 
 .col1 .details .inline-editing-activator {
