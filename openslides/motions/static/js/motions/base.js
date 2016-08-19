@@ -271,7 +271,7 @@ angular.module('OpenSlidesApp.motions', [
                     'motions/motionpoll': {
                         localField: 'polls',
                         foreignKey: 'motion_id',
-                    }
+                    },
                 },
                 hasOne: {
                     'motions/workflowstate': {
