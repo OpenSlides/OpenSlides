@@ -540,6 +540,62 @@ class ChatMessageViewSet(ModelViewSet):
         """
         serializer.save(user=self.request.user)
 
+#Example code
+
+from openslides.utils.autoupdate import inform_changed_data
+from openslides.utils.models import RESTModelMixin
+from .access_permissions import FakeModelAccessPermissions
+
+class FakeModel(RESTModelMixin):
+
+    access_permissions = FakeModelAccessPermissions()
+
+    @classmethod
+    def get_collection_string(cls):
+        return 'exampleapp/exampleobject'
+
+    @property
+    def pk(self):
+        # Just return 1 for there are no real objects here.
+        return 1
+
+    @classmethod
+    def get_autoupdate_instance(cls, pk):
+        # Just return an instance of the class for there is no database
+        # instance here.
+        return cls()
+
+    def get_result(self):
+        return {
+            'id': 1,
+            'my_data': 'Get live data here.'
+        }
+
+
+class FakeModelViewSet(ViewSet):
+
+    access_permissions = FakeModelAccessPermissions()
+
+    def check_view_permissions(self):
+        return self.get_access_permissions().can_retrieve(self.request.user)
+
+    def list(self, request):
+        return Response()
+
+    def retrieve(self, request, *args, **kwargs):
+        return Response(FakeModel().get_result())
+
+
+class TriggerFakeModelAutoupdateView(utils_views.APIView):
+    http_method_names = ['get']
+
+    def get(self, request, *args, **kwargs):
+        print('TriggerFakeModelAutoupdateView was called')
+        inform_changed_data(FakeModel())
+        return Response('Success')
+
+#End of example code
+
 
 # Special API views
 
