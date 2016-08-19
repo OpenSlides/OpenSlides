@@ -227,9 +227,33 @@
 
 <div class="details">
   <div class="row">
+    <div class="pull-right line-number-setter">
+      <div class="btn-group-label"><translate>Line numbering:</translate></div>
+      <div class="btn-group" data-toggle="buttons">
+        <label class="btn btn-default" ng-class="{active: (lineNumberMode == 'none')}"
+               ng-click="lineNumberMode = 'none';">
+          <input type="radio" name="lineNumberMode" value="none" ng-model="lineNumberMode"
+                 ng-checked="lineNumberMode == 'none'">
+          <translate>None</translate>
+        </label>
+        <label class="btn btn-default" ng-class="{active: (lineNumberMode == 'inside')}"
+               ng-click="lineNumberMode = 'inside'">
+          <input type="radio" name="lineNumberMode" value="inside" ng-model="lineNumberMode"
+                 ng-checked="lineNumberMode == 'inside'">
+          <translate>Inline</translate>
+        </label>
+        <label class="btn btn-default" ng-class="{active: (lineNumberMode == 'outside')}"
+               ng-click="lineNumberMode = 'outside'">
+          <input type="radio" name="lineNumberMode" value="outside" ng-model="lineNumberMode"
+                 ng-checked="lineNumberMode == 'outside'">
+          <translate>Outside</translate>
+        </label>
+      </div>
+    </div>
     <div class="col-sm-8">
       <h3 translate>Text</h3>
-      <div ng-bind-html="motion.getText(version) | trusted"></div>
+      <div ng-bind-html="motion.getTextWithLineBreaks(version) | trusted"
+           class="motion-text line-numbers-{{ lineNumberMode }}"></div>
 
       <!-- reason -->
       <div ng-if="motion.getReason(version) != ''">
@@ -286,6 +310,8 @@
           <ul class="list-unstyled">
             <li ng-repeat="message in motion.log_messages">
               <small>{{ message.message }}</small>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

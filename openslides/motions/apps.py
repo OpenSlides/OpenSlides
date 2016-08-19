@@ -7,7 +7,7 @@ class MotionsAppConfig(AppConfig):
     verbose_name = 'OpenSlides Motion'
     angular_site_module = True
     angular_projector_module = True
-    js_files = ['js/motions/base.js', 'js/motions/site.js', 'js/motions/projector.js']
+    js_files = ['js/motions/base.js', 'js/motions/site.js', 'js/motions/projector.js', 'js/motions/linenumbering.js']
 
     def ready(self):
         # Load projector elements.
