@@ -5,7 +5,7 @@
         <i class="fa fa-angle-double-left fa-lg"></i>
         <translate>All motions</translate>
       </a>
-      <a ui-sref="motions_single_pdf({pk: motion.id})" target="_blank" class="btn btn-default btn-sm">
+      <a ng-click="makePDF()" class="btn btn-primary btn-sm">
         <i class="fa fa-file-pdf-o fa-lg"></i>
         <translate>PDF</translate>
       </a>
