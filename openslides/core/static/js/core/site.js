@@ -360,12 +360,15 @@ angular.module('OpenSlidesApp.core.site', [
     'gettextCatalog',
     function (gettextCatalog) {
         return {
-            getOptions: function (images) {
+            getOptions: function (images, inlineMode) {
+                if (inlineMode === undefined) {
+                    inlineMode = false;
+                }
                 return {
                     language_url: '/static/tinymce/i18n/' + gettextCatalog.getCurrentLanguage() + '.js',
                     theme_url: '/static/js/openslides-libs.js',
                     skin_url: '/static/tinymce/skins/lightgray/',
-                    inline: false,
+                    inline: inlineMode,
                     statusbar: false,
                     browser_spellcheck: true,
                     image_advtab: true,

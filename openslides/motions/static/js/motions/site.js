@@ -2,7 +2,7 @@
 
 'use strict';
 
-angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
+angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlidesApp.motions.diff'])
 
 .config([
     'mainMenuProvider',
@@ -572,8 +572,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'Tag',
     'User',
     'Workflow',
+    'Editor',
+    'Config',
     'motion',
-    function($scope, $http, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, motion) {
+    'diffService',
+    function($scope, $http, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Editor, Config,
+             motion, diffService) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -583,6 +587,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         Motion.loadRelations(motion, 'agenda_item');
         $scope.version = motion.active_version;
         $scope.isCollapsed = true;
+        $scope.lineNumberMode = Config.get('motions_default_line_numbering').value;
+        $scope.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
 
         // open edit dialog
         $scope.openDialog = function (motion) {
@@ -633,6 +639,16 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         // show specific version
         $scope.showVersion = function (version) {
             $scope.version = version.id;
+            $scope.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
+            $scope.inlineEditing.allowed = (motion.isAllowed('update') && $scope.version == motion.getVersion(-1).id);
+            $scope.inlineEditing.changed = false;
+            $scope.inlineEditing.active = false;
+            $scope.inlineEditing.originalHtml = $scope.lineBrokenText;
+            $scope.inlineEditing.originalHtmlNormalized = normalizeInlineHtml($scope.lineBrokenText);
+            if ($scope.inlineEditing.editor) {
+                $scope.inlineEditing.editor.setContent($scope.inlineEditing.originalHtml);
+                $scope.inlineEditing.editor.setMode("readonly");
+            }
         };
         // permit specific version
         $scope.permitVersion = function (version) {
@@ -650,6 +666,84 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 .then(function(success) {
                     $scope.version = motion.active_version;
                 });
+        };
+
+
+        // Inline editing functions
+        var normalizeInlineHtml = function(text) {
+            text = text.replace(/ contenteditable="false"/g, "");
+            text = text.replace(/ \/>/g, ">");
+            return text;
+        };
+        $scope.inlineEditing = {
+            allowed: (motion.isAllowed('update') && $scope.version == motion.getVersion(-1).id),
+            active: false,
+            changed: false,
+            trivialChange: false,
+            trivialChangeAllowed: false,
+            editor: null,
+            originalHtml: $scope.lineBrokenText,
+            originalHtmlNormalized: normalizeInlineHtml($scope.lineBrokenText)
+        };
+
+        if (motion.state.versioning && Config.get('motions_allow_disable_versioning').value) {
+            $scope.inlineEditing.trivialChange = true;
+            $scope.inlineEditing.trivialChangeAllowed = true;
+        }
+
+        $scope.tinymceOptions = Editor.getOptions(null, true);
+        $scope.tinymceOptions.readonly = 1;
+        $scope.tinymceOptions.entities = "160,nbsp,38,amp,34,quot,162,cent,8364,euro,163,pound,165,yen,169,copy," +
+            "174,reg,8482,trade,8240,permil,60,lt,62,gt,8804,le,8805,ge,176,deg,8722,minus";
+        $scope.tinymceOptions.setup = function(editor) {
+            $scope.inlineEditing.editor = editor;
+            editor.on("change", function() {
+                var text = normalizeInlineHtml(editor.getContent());
+                text = text.replace(/ \/>/g, ">");
+                $scope.inlineEditing.changed = (text != $scope.inlineEditing.originalHtmlNormalized);
+            });
+        };
+
+        $scope.enableInlineEditing = function() {
+            $scope.inlineEditing.editor.setMode("design");
+            $scope.inlineEditing.active = true;
+        };
+
+        $scope.disableInlineEditing = function() {
+            $scope.inlineEditing.editor.setMode("readonly");
+            $scope.inlineEditing.active = false;
+            $scope.inlineEditing.changed = false;
+            $scope.lineBrokenText = $scope.inlineEditing.originalHtml;
+            $scope.inlineEditing.editor.setContent($scope.inlineEditing.originalHtml);
+        };
+
+        $scope.motionInlineSave = function () {
+            if (!$scope.inlineEditing.allowed) {
+                throw "No permission to update motion";
+            }
+
+            var newInlineHtml = normalizeInlineHtml($scope.inlineEditing.editor.getContent());
+            motion.setTextStrippingLineBreaks(motion.active_version, newInlineHtml);
+            motion.disable_versioning = $scope.inlineEditing.trivialChange;
+            console.log(motion.disable_versioning);
+
+            Motion.inject(motion);
+            // save change motion object on server
+            Motion.save(motion, { method: 'PATCH' }).then(
+                function(success) {
+                    $scope.showVersion(motion.getVersion(-1));
+                },
+                function (error) {
+                    // save error: revert all changes by restore
+                    // (refresh) original motion object from server
+                    Motion.refresh(motion);
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
+                }
+            );
         };
     }
 ])
