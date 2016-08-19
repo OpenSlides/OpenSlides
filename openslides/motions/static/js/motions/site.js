@@ -49,9 +49,11 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
              */
             signment = function(motion, $scope, User) {
                 var label = converter.createElement("text", gettextCatalog.getString('Submitter') + ':\nStatus:');
+                var state = converter.createElement("text", User.get(motion.submitters_id[0]).full_name + '\n'+gettextCatalog.getString(motion.state.name));
+                state.width = "70%";
                 label.width = "30%";
                 label.bold = true;
-                var signment = converter.createElement("stack", [label]);
+                var signment = converter.createElement("columns", [label, state]);
                 signment.margin = [10, 20, 0, 10];
                 signment.lineHeight = 2.5;
                 return signment;
@@ -778,10 +780,11 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'MotionContentProvider',
     'PdfMakeConverter',
     'PdfMakeDocumentProvider',
+    'gettextCatalog',
     function($scope, $http, ngDialog, MotionForm,
        Motion, Category, Mediafile, Tag,
        User, Workflow, motion,
-       SingleMotionContentProvider, MotionContentProvider, PdfMakeConverter, PdfMakeDocumentProvider) {
+       SingleMotionContentProvider, MotionContentProvider, PdfMakeConverter, PdfMakeDocumentProvider, gettextCatalog) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -794,13 +797,14 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
         $scope.makePDF = function(){
           var content = motion.getText($scope.version) + motion.getReason($scope.version),
+              id = motion.identifier,
               slice = Function.prototype.call.bind([].slice),
               map = Function.prototype.call.bind([].map),
               image_sources = map($(content).find("img"), function(element) {
                   return element.getAttribute("src");
               });
 
-          $http.post('/motions/encode_media/', JSON.stringify(image_sources)).success(function(data) {
+          $http.post('/core/encode_media/', JSON.stringify(image_sources)).success(function(data) {
               /**
                * Converter for use with pdfMake
                * @constructor
@@ -812,8 +816,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
               var converter = PdfMakeConverter.createInstance(data.images, data.fonts, pdfMake),
                   motionContentProvider = MotionContentProvider.createInstance(converter),
                   contentProvider = SingleMotionContentProvider.createInstance(motionContentProvider, motion, $scope, User),
-                  documentProvider = PdfMakeDocumentProvider.createInstance(contentProvider, data.defaultFont);
-              pdfMake.createPdf(documentProvider.getDocument()).open();
+                  documentProvider = PdfMakeDocumentProvider.createInstance(contentProvider, data.defaultFont),
+                  filename = gettextCatalog.getString("Motion") + " " + id + ".pdf";
+              pdfMake.createPdf(documentProvider.getDocument()).download(filename);
           });
         };
 

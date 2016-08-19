@@ -14,6 +14,4 @@ urlpatterns = [
     url(r'^poll/(?P<poll_pk>\d+)/print/$',
         views.MotionPollPDF.as_view(),
         name='motionpoll_pdf'),
-
-    url(r'^encode_media/', views.encode_media, name="media_encoding")
 ]

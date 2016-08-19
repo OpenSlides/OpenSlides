@@ -37,8 +37,15 @@ angular.module('OpenSlidesApp.core.site', [
                         color: '#555',
                         fontSize: 10,
                         margin: [80, 50, 80, 0], //margin: [left, top, right, bottom]
-                        columns: ['OpenSlides | Presentation and assembly system', {
+                        columns: [
+                          {
+                            text: 'OpenSlides | Presentation and assembly system',
+                            fontSize:10,
+                            width: '70%'
+                          },
+                          {
                             fontSize: 6,
+                            width: '30%',
                             text: 'Stand: ' + date.toLocaleDateString() + " " + date.toLocaleTimeString(),
                             alignment: 'right'
                         }]
