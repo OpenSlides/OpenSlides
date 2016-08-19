@@ -229,14 +229,20 @@
         <h4 translate>List of speakers</h4>
       </a>
       <div uib-collapse="!isSpeakerList" ng-cloak>
-        <a class="btn btn-default btn-sm"
+        <div class="projectorbtn">    
+            <a class="btn btn-default btn-sm"
                 ng-model="speakeroverlay().visible"
                 ng-click="speakeroverlaytoggle()"
                 ng-class="{ 'btn-primary': speakeroverlay().visible }"
                 title="{{ 'Project list of speakers' | translate }}">
               <i class="fa fa-video-camera"></i>
-              <translate>Project</translate>
-         </a>
+            </a>
+            <a os-perms="agenda.can_manage" ng-click="goToListofSpeakers()"
+              class="btn btn-default btn-sm"
+              title="{{ 'Go to current list of Speakers' | translate}}">
+            <i class="fa fa-pencil"></i>
+          </a>
+        <div>
       </div>
     </div>
   </div><!-- end div ProjectorControlCtrl -->

@@ -206,9 +206,6 @@ angular.module('OpenSlidesApp.core.site', [
                             });
                         });
                     },
-                    users: function(User) {
-                        return User.findAll();
-                    },
                     assignments: function(Assignment) {
                         return Assignment.findAll().then(function(assignments) {
                             angular.forEach(assignments, function(assignment) {
@@ -216,8 +213,12 @@ angular.module('OpenSlidesApp.core.site', [
                             });
                         });
                     },
-                    items: function(Agenda) {
-                        return Agenda.findAll();
+                    items: function(Customslide) {
+                        return Customslide.findAll().then(function(items) {
+                            angular.forEach(items, function(item) {
+                                Customslide.loadRelations(item, 'agenda_item');
+                            });
+                        });
                     }
                 }
             })
@@ -663,7 +664,10 @@ angular.module('OpenSlidesApp.core.site', [
     '$state',
     'Config',
     'Projector',
-    function($scope, $http, $interval, $state, Config, Projector) {
+    'Customslide',
+    'Motion',
+    'Assignment',
+    function($scope, $http, $interval, $state, Config, Projector, Customslide, Motion, Assignment) {
         // bind projector elements to the scope, update after projector changed
         $scope.$watch(function () {
             return Projector.lastModified(1);
@@ -867,6 +871,27 @@ angular.module('OpenSlidesApp.core.site', [
                 data[$scope.speakeroverlay().uuid] = { "visible": true };
             }
             $http.post('/rest/core/projector/1/update_elements/', data);
+        };
+        $scope.goToListofSpeakers = function() {
+            $.each(Projector.get(1).elements, function(key, value) {
+                if (value.name == 'motions/motion') {
+                    Motion.find(value.id).then(function(motion){
+                        $state.go('agenda.item.detail',
+                              {id: motion.agenda_item_id});
+                    });
+                } else if (value.name == 'core/customslide') {
+                    Customslide.find(value.id).then(function(slide){
+                        console.log(slide);
+                        $state.go('agenda.item.detail',
+                                  {id: slide.agenda_item_id});
+                    });
+                } else if (value.name == 'assignments/assignment') {
+                    Assignment.find(value.id).then(function(assignment){
+                        $state.go('agenda.item.detail',
+                              {id: assignment.agenda_item_id});
+                    });
+                }
+            });
         };
     }
 ])

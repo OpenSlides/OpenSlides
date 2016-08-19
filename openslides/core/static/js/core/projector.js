@@ -70,7 +70,14 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                             Assignment.loadRelations(assignment, 'agenda_item');
                         });
                     });
-                }
+                },
+                items: function (Customslide) {
+                    return Customslide.findAll().then(function(customslide) {
+                        angular.forEach(customslide, function(slide) {
+                            Customslide.loadRelations(slide, 'agenda_item');
+                        });
+                    });
+                },
             }
         });
     }
@@ -160,20 +167,23 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     'Agenda',
     'Customslide',
     'Projector',
-    function($scope, Motion, Assignment, Agenda, Customslide, Projector) {
+    'User',
+    function($scope, Motion, Assignment, Agenda, Customslide, Projector, User) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
+
+        User.findAll();
         $scope.visible = $scope.element.visible;
         $scope.displayedElement = function() {
             var displayedElement = [];
             for (var e in $scope.$parent.elements) {
                 var ee = $scope.$parent.elements[e];
-                if (ee.name == "motions/motion") {
+                if (ee.name == 'motions/motion') {
                     displayedElement = ['motion', ee.id];
-                } else if (ee.name == "core/customslide") {
+                } else if (ee.name == 'core/customslide') {
                     displayedElement = ['agenda', ee.id];
-                } else if (ee.name == "assignments/assignment") {
+                } else if (ee.name == 'assignments/assignment') {
                     displayedElement = ['assignment', ee.id];
                 }
             }
@@ -190,7 +200,6 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                 then(function(customslide) {
                     Customslide.loadRelations(customslide, 'agenda_item').
                     then(function(item) {
-                        console.log(item.agenda_item);
                         $scope.AgendaItem = item.agenda_item;
                     });
                 });
