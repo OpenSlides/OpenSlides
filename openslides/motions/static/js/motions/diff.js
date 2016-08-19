@@ -4,13 +4,6 @@
 
 angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumbering'])
 
-/**
- * TO DO
- * - Selecting the last line
- * - <ol start="number">
- *
- */
-
 .service('diffService', function (lineNumberingService) {
     var ELEMENT_NODE = 1,
         TEXT_NODE = 3,

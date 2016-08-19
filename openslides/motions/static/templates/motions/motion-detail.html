@@ -267,7 +267,11 @@
     <div  ng-class="{'col-sm-8': (lineNumberMode != 'outside'), 'col-sm-12': (lineNumberMode == 'outside')}">
 
       <div ng-if="inlineEditing.allowed">
-        <div ui-tinymce="tinymceOptions" ng-model="lineBrokenText"
+        <div ng-show="inlineEditing.active">
+          <div ui-tinymce="tinymceOptions" ng-model="lineBrokenText"
+            class="motion-text line-numbers-{{ lineNumberMode }}"></div>
+        </div>
+        <div ng-show="!inlineEditing.active" ng-bind-html="motion.getTextWithLineBreaks(version) | trusted"
            class="motion-text line-numbers-{{ lineNumberMode }}"></div>
 
         <div class="motion-save-toolbar" ng-class="{ 'visible': (inlineEditing.changed && inlineEditing.active) }">

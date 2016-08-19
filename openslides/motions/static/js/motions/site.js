@@ -592,6 +592,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 
         // open edit dialog
         $scope.openDialog = function (motion) {
+            if ($scope.inlineEditing.active) {
+                $scope.disableInlineEditing();
+            }
             ngDialog.open(MotionForm.getDialog(motion));
         };
         // support
@@ -656,7 +659,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             $http.put('/rest/motions/motion/' + motion.id + '/manage_version/',
                 {'version_number': version.version_number})
                 .then(function(success) {
-                    $scope.version = version.id;
+                    $scope.showVersion(version);
                 });
         };
         // delete specific version
@@ -665,7 +668,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                     {headers: {'Content-Type': 'application/json'},
                      data: JSON.stringify({version_number: version.version_number})})
                 .then(function(success) {
-                    $scope.version = motion.active_version;
+                    $scope.showVersion(motion.active_version);
                 });
         };
 
@@ -697,9 +700,16 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 
         $scope.tinymceOptions = Editor.getOptions(null, true);
         $scope.tinymceOptions.readonly = 1;
-        $scope.tinymceOptions.setup = function(editor) {
+        $scope.tinymceOptions.setup = function (editor) {
             $scope.inlineEditing.editor = editor;
-            editor.on("change", function() {
+
+            editor.on("init", function () {
+                $scope.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
+                $scope.inlineEditing.editor.setContent($scope.lineBrokenText);
+                $scope.inlineEditing.originalHtml = $scope.inlineEditing.editor.getContent();
+                $scope.inlineEditing.changed = false;
+            });
+            editor.on("change", function () {
                 $scope.inlineEditing.changed = (editor.getContent() != $scope.inlineEditing.originalHtml);
             });
             editor.on("undo", function() {
@@ -708,11 +718,16 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         };
 
         $scope.enableInlineEditing = function() {
-            var content = $scope.inlineEditing.editor.getContent();
             $scope.inlineEditing.editor.setMode("design");
             $scope.inlineEditing.active = true;
-            $scope.inlineEditing.originalHtml = content;
-            $scope.inlineEditing.changed = (content != $scope.inlineEditing.originalHtml);
+            $scope.inlineEditing.changed = false;
+
+            $scope.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
+            $scope.inlineEditing.editor.setContent($scope.lineBrokenText);
+            $scope.inlineEditing.originalHtml = $scope.inlineEditing.editor.getContent();
+            window.setTimeout(function() {
+                $scope.inlineEditing.editor.focus();
+            }, 100);
         };
 
         $scope.disableInlineEditing = function() {
