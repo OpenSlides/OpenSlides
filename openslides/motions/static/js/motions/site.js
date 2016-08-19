@@ -83,7 +83,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                                     width: "5%"
                                 },
                                 headerText = {
-                                    text: "Abstimmung",
+                                    text: gettextCatalog.getString('Vote'),
                                     width: "15%"
                                 },
                                 /**
