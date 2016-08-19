@@ -643,11 +643,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             $scope.inlineEditing.allowed = (motion.isAllowed('update') && $scope.version == motion.getVersion(-1).id);
             $scope.inlineEditing.changed = false;
             $scope.inlineEditing.active = false;
-            $scope.inlineEditing.originalHtml = $scope.lineBrokenText;
-            $scope.inlineEditing.originalHtmlNormalized = normalizeInlineHtml($scope.lineBrokenText);
             if ($scope.inlineEditing.editor) {
-                $scope.inlineEditing.editor.setContent($scope.inlineEditing.originalHtml);
+                $scope.inlineEditing.editor.setContent($scope.lineBrokenText);
                 $scope.inlineEditing.editor.setMode("readonly");
+                $scope.inlineEditing.originalHtml = $scope.inlineEditing.editor.getContent();
+            } else {
+                $scope.inlineEditing.originalHtml = $scope.lineBrokenText;
             }
         };
         // permit specific version
@@ -669,11 +670,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         };
 
         // Inline editing functions
-        var normalizeInlineHtml = function(text) {
-            text = text.replace(/ contenteditable="false"/g, "");
-            text = text.replace(/ \/>/g, ">");
-            return text;
-        };
         $scope.inlineEditing = {
             allowed: (motion.isAllowed('update') && $scope.version == motion.getVersion(-1).id),
             active: false,
@@ -682,7 +678,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             trivialChangeAllowed: false,
             editor: null,
             originalHtml: $scope.lineBrokenText,
-            originalHtmlNormalized: normalizeInlineHtml($scope.lineBrokenText)
         };
 
         if (motion.state.versioning && Config.get('motions_allow_disable_versioning').value) {
@@ -702,22 +697,22 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 
         $scope.tinymceOptions = Editor.getOptions(null, true);
         $scope.tinymceOptions.readonly = 1;
-        // Encode HTML entities, but not umlauts
-        // http://archive.tinymce.com/wiki.php/Configuration3x:entities
-        $scope.tinymceOptions.entities = "160,nbsp,38,amp,34,quot,162,cent,8364,euro,163,pound,165,yen,169,copy," +
-            "174,reg,8482,trade,8240,permil,60,lt,62,gt,8804,le,8805,ge,176,deg,8722,minus";
         $scope.tinymceOptions.setup = function(editor) {
             $scope.inlineEditing.editor = editor;
             editor.on("change", function() {
-                var text = normalizeInlineHtml(editor.getContent());
-                text = text.replace(/ \/>/g, ">"); // Removes slashes in self-closing tags, like <IMG /> -> <IMG>
-                $scope.inlineEditing.changed = (text != $scope.inlineEditing.originalHtmlNormalized);
+                $scope.inlineEditing.changed = (editor.getContent() != $scope.inlineEditing.originalHtml);
+            });
+            editor.on("undo", function() {
+                $scope.inlineEditing.changed = (editor.getContent() != $scope.inlineEditing.originalHtml);
             });
         };
 
         $scope.enableInlineEditing = function() {
+            var content = $scope.inlineEditing.editor.getContent();
             $scope.inlineEditing.editor.setMode("design");
             $scope.inlineEditing.active = true;
+            $scope.inlineEditing.originalHtml = content;
+            $scope.inlineEditing.changed = (content != $scope.inlineEditing.originalHtml);
         };
 
         $scope.disableInlineEditing = function() {
@@ -733,8 +728,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                 throw "No permission to update motion";
             }
 
-            var newInlineHtml = normalizeInlineHtml($scope.inlineEditing.editor.getContent());
-            motion.setTextStrippingLineBreaks(motion.active_version, newInlineHtml);
+            motion.setTextStrippingLineBreaks(motion.active_version, $scope.inlineEditing.editor.getContent());
             motion.disable_versioning = $scope.inlineEditing.trivialChange;
 
             Motion.inject(motion);

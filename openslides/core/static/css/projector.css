@@ -341,6 +341,7 @@ tr.elected td {
 /*** Line numbers ***/
 .motion-text.line-numbers-outside {
     padding-left: 0;
+    margin-left: 25px;
     position: relative;
 }
 
@@ -350,9 +351,8 @@ tr.elected td {
 .motion-text.line-numbers-outside .os-line-number:after {
     content: attr(data-line-number);
     position: absolute;
-    left: -40px;
+    left: -25px;
     vertical-align: top;
-    margin-top: -19px;
     color: gray;
     font-family: Courier, serif;
     font-size: 13px;
@@ -368,12 +368,11 @@ tr.elected td {
     display: inline-block;
     content: attr(data-line-number);
     vertical-align: top;
-    font-size: 11px;
+    font-size: 0.75em;
     color: gray;
     font-family: Courier, serif;
-    margin-top: -3px;
+    margin-top: -5px;
     margin-left: 0;
-    margin-right: 3px;
 }
 
 
