@@ -281,6 +281,21 @@ angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users', 'OpenSlidesApp.m
     }
 ])
 
+.factory('MotionList', [
+    function () {
+        return {
+            getList: function (items){
+                var list = [];
+                _.each(items, function (item) {
+                    list.push({ id: item.id,
+                                item: item });
+                });
+                return list;
+            }
+        };
+    }
+])
+
 .run([
     'Motion',
     'Category',

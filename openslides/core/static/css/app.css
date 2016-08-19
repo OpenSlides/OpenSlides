@@ -633,6 +633,14 @@ img {
     margin-right: 5px;
 }
 
+.lead-div {
+    margin-bottom: 20px;
+}
+
+.lead-div .lead {
+    margin-bottom: 0;
+}
+
 .italic {
     font-style: italic;
 }
