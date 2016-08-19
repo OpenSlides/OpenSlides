@@ -836,11 +836,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
 .controller('MotionImportCtrl', [
     '$scope',
+    '$q',
     'gettext',
     'Category',
     'Motion',
     'User',
-    function($scope, gettext, Category, Motion, User) {
+    function($scope, $q, gettext, Category, Motion, User) {
         // set initial data for csv import
         $scope.motions = [];
         $scope.separator = ',';
@@ -947,45 +948,136 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             });
         });
 
+        // Counter for creations
+        $scope.usersCreated = 0;
+        $scope.categoriesCreated = 0;
+
         // import from csv file
         $scope.import = function () {
             $scope.csvImporting = true;
-            angular.forEach($scope.motions, function (motion) {
+
+            // Reset counters
+            $scope.usersCreated = 0;
+            $scope.categoriesCreated = 0;
+
+            var importedUsers = [];
+            var importedCategories = [];
+            // collect users and categories
+            angular.forEach($scope.motions, function (motion){
                 if (!motion.importerror) {
-                    // create new user if not exists
+                    // collect user if not exists
                     if (!motion.submitters_id && motion.submitter) {
                         var index = motion.submitter.indexOf(' ');
                         var user = {
                             first_name: motion.submitter.substr(0, index),
                             last_name: motion.submitter.substr(index+1),
-                            groups: []
+                            groups_id: []
                         };
-                        User.create(user).then(
-                            function(success) {
-                                // set new user id
-                                motion.submitters_id = [success.id];
-                            }
-                        );
+                        importedUsers.push(user);
                     }
-                    // create new category if not exists
+                    // collect category if not exists
                     if (!motion.category_id && motion.category) {
                         var category = {
                             name: motion.category,
                             prefix: motion.category.charAt(0)
                         };
-                        Category.create(category).then(
+                        importedCategories.push(category);
+                    }
+                }
+            });
+
+            // TODO (Issue #2293):
+            // fix _.uniqWith(importedXXX, _.isEqual); 
+            // (You need lodash version >= 4.0.0)
+
+            // unique users
+            var importedUsersUnique = [];
+            importedUsers.forEach(function (u1) {
+                var unique = true;
+                importedUsersUnique.forEach(function (u2) {
+                    if (u1.first_name == u2.first_name &&
+                        u1.last_name == u2.last_name) {
+                        unique = false;
+                    }
+                });
+                if (unique) {
+                    importedUsersUnique.push(u1);
+                }
+            });
+
+            // unique categories
+            var importedCategoriesUnique = [];
+            importedCategories.forEach(function (c1) {
+                var unique = true;
+                importedCategoriesUnique.forEach(function (c2) {
+                    if (c1.name == c2.name) {
+                        unique = false;
+                    }
+                });
+                if (unique) {
+                    importedCategoriesUnique.push(c1);
+                }
+            });
+
+            // Promises for users and categories
+            var createPromises = [];
+
+            // create users and categories
+            importedUsersUnique.forEach(function (user) {
+                createPromises.push(User.create(user).then(
+                    function (success) {
+                        user.id = success.id;
+                        $scope.usersCreated++;
+                    }
+                ));
+            });
+            importedCategoriesUnique.forEach(function (category) {
+                createPromises.push(Category.create(category).then(
+                    function (success) {
+                        category.id = success.id;
+                        $scope.categoriesCreated++;
+                    }
+                ));
+            });
+
+            // wait for users and categories to create
+            $q.all(createPromises).then( function() {
+                angular.forEach($scope.motions, function (motion) {
+                    if (!motion.importerror) {
+                        // now, add user
+                        if (!motion.submitters_id && motion.submitter) {
+                            var index = motion.submitter.indexOf(' ');
+                            var first_name = motion.submitter.substr(0, index);
+                            var last_name = motion.submitter.substr(index+1);
+                            
+                            // search for user, set id.
+                            importedUsersUnique.forEach(function (user) {
+                                if (user.first_name == first_name &&
+                                    user.last_name == last_name) {
+                                    motion.submitters_id = [user.id];
+                                }
+                            });
+                        }
+                        // add category
+                        if (!motion.category_id && motion.category) {
+                            var name = motion.category;
+                         
+                            // search for category, set id.
+                            importedCategoriesUnique.forEach(function (category) {
+                                if (category.name == name) {
+                                    motion.category_id = category.id;
+                                }
+                            });
+                        }
+
+                        // finally create motion
+                        Motion.create(motion).then(
                             function(success) {
-                                // set new category id
-                                motion.category_id = [success.id];
+                                motion.imported = true;
                             }
                         );
                     }
-                    Motion.create(motion).then(
-                        function(success) {
-                            motion.imported = true;
-                        }
-                    );
-                }
+                });
             });
             $scope.csvimported = true;
         };
