@@ -250,6 +250,43 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+
+// Template hooks
+
+.factory('templateHooks', [
+    function () {
+        var hooks = {};
+        return {
+            hooks: hooks,
+            registerHook: function (hook) {
+                if (hooks[hook.Id] === undefined) {
+                    hooks[hook.Id] = [];
+                }
+                hooks[hook.Id].push(hook);
+            }
+        };
+    }
+])
+
+.directive('templateHook', [
+    '$compile',
+    'templateHooks',
+    function ($compile, templateHooks) {
+        return {
+            restrict: 'E',
+            template: '',
+            link: function (scope, iElement, iAttr) {
+                var hooks = templateHooks.hooks[iAttr.hookName];
+                var html = hooks.map(function (hook) {
+                    return '<div>' + hook.template + '</div>';
+                }).join('');
+                iElement.append($compile(html)(scope));
+            }
+        };
+    }
+])
+
+
 .factory('jsDataModel', [
     '$http',
     'Projector',

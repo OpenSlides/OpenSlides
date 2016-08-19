@@ -11,6 +11,7 @@
 
 <form name="motionPollForm" ng-submit="save(model)">
   <formly-form model="model" fields="formFields">
+    <template-hook hook-name="motionPollFormButtons"></template-hook>
     <button type="submit" ng-disabled="motionPollForm.$invalid" class="btn btn-primary" translate>
       Save
     </button>
