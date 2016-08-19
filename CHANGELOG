@@ -22,6 +22,7 @@ Core:
 Motions:
 - Added origin field.
 - Added button to sort and number all motions in a category.
+- Introduced pdfMake for clientside generation of PDFs.
 
 Users:
 - Added field is_committee and new default group Committees.

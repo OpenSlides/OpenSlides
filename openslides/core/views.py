@@ -1,3 +1,6 @@
+import base64
+import json
+import os
 import re
 import uuid
 from collections import OrderedDict
@@ -606,3 +609,143 @@ class SearchView(utils_views.APIView):
         return super().get_context_data(
             elements=search(unquote(query)),
             **context)
+
+
+class MediaEncoder(utils_views.APIView):
+    """
+    MediaEncoder is a class based view to prepare encoded media for pdfMake
+    """
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        """
+        Encode_image is used in the context of PDF-Generation
+        Takes an array of IMG.src - Paths
+        Retrieves the according images
+        Encodes the images to BASE64
+        Add configured fonts
+        Puts it into a key-value structure
+
+        {
+            "images": {
+                "media/file/ubuntu.png":"$ENCODED_IMAGE"
+            },
+            "fonts": [{
+                        $FontName : {
+                                        normal: $Filename
+                                        bold: $Filename
+                                        italics: $Filename
+                                        bolditalics: $Filename
+                                    }
+            }],
+            "default_font": "$DEFAULTFONT"
+        }
+
+        :param request:
+        :return: Response of the resulting dictionary
+
+        Calling e.g.
+        $.ajax({ type: "POST", url: "/motions/encode_images/",
+                data: JSON.stringify(["$FILEPATH"]),
+                success: function(data){ console.log(data); },
+                dataType: 'application/json' });
+        """
+        body_unicode = request.body.decode('utf-8')
+        file_paths = json.loads(body_unicode)
+        images = {file_path: self.encode_image_from(file_path) for file_path in file_paths}
+        fonts = self.encoded_fonts()
+        default_font = self.get_default_font()
+        return Response({
+            "images": images,
+            "fonts": fonts,
+            "defaultFont": default_font
+        })
+
+    def get_default_font(self):
+        """
+        Returns the default font for pdfMake.
+
+        Note: For development purposes this is hard coded.
+
+        :return: the name of the default Font
+        """
+        return 'OpenSans'
+
+    def encoded_fonts(self):
+        """
+        Generate font encoding for pdfMake
+        :return: list of Font Encodings
+        """
+        fonts = self.get_configured_fonts()
+        enc_fonts = [self.encode_font(name, files) for name, files in fonts.items()]
+        return enc_fonts
+
+    def get_configured_fonts(self):
+        """
+        Returns the configured fonts
+
+        Note: For development purposes, the current font definition is hard coded
+
+        The form is {
+            $FontName : {
+                normal: $Filename
+                bold: $Filename
+                italics: $Filename
+                bolditalics: $Filename
+            }
+        }
+        This structure is required according to PDFMake specs.
+        :return:
+        """
+        fonts = {
+            'OpenSans': {
+                'normal': 'OpenSans-Regular.ttf',
+                'bold': 'OpenSans-Bold.ttf',
+                'italics': 'OpenSans-Italic.ttf',
+                'bolditalics': 'OpenSans-BoldItalic.ttf'
+            }
+        }
+        return fonts
+
+    def encode_font(self, font_name, font_files):
+        """
+        Responsible to encode a single font
+        :param fontName: name of the font
+        :param font_files: files for different weighs
+        :return: dictionary with encoded font
+        """
+        encoded_files = {type: self.encode_font_from(file_path) for type, file_path in font_files.items()}
+        return {font_name: encoded_files}
+
+    def encode_font_from(self, file_path):
+        """
+        Returns the BASE64 encoded version of an image-file for a given path
+        :param file_path:
+        :return: dictionary with the string representation (content) and the name of the file
+        for the pdfMake.vfs structure
+        """
+        path = os.path.join(settings.SITE_ROOT, 'static/fonts', os.path.basename(file_path))
+        try:
+            with open(path, "rb") as file:
+                string_representation = "{}".format(base64.b64encode(file.read()).decode())
+        except:
+            return ""
+        else:
+            return {"content": string_representation, "name": file_path}
+
+    def encode_image_from(self, file_path):
+        """
+        Returns the BASE64 encoded version of an image-file for a given path
+        :param file_path:
+        :return:
+        """
+        path = os.path.join(settings.MEDIA_ROOT, 'file', os.path.basename(file_path))
+        try:
+            with open(path, "rb") as file:
+                string_representation = "data:image/{};base64,{}".format(os.path.splitext(file_path)[1][1:],
+                                                                         base64.b64encode(file.read()).decode())
+        except Exception:
+            # If any error occurs ignore it and return an empty string
+            return ""
+        else:
+            return string_representation
