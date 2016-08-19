@@ -651,6 +651,373 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     $scope.version = motion.active_version;
                 });
         };
+
+        //highly experimental PDF generator!
+        var BaseMap = {};
+        $scope.$on('$viewContentLoaded', function(){
+            var m,
+                str = motion.getText($scope.version) + motion.getReason($scope.version),
+                rex = /<img[^>]+src="([^">]+)/g;
+
+            while (m = rex.exec(str)) {
+                URLtoBase64toMap(m[1]);
+            }
+        });
+
+        function URLtoBase64toMap(url) {
+            var img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.onload = function() {
+                var canvas = document.createElement('CANVAS');
+                var ctx = canvas.getContext('2d');
+                canvas.height = this.height;
+                canvas.width = this.width;
+                ctx.drawImage(this, 0, 0);
+                BaseMap[url] = canvas.toDataURL("image/png");
+            };
+            img.src = url;
+            img.onerror = function() {
+                img.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/No_image_3x4.svg/200px-No_image_3x4.svg.png';
+            };
+        }
+
+        function pdfForElement(id) {
+
+            function ParseContainer(cnt, e, p, styles) {
+                var elements = [];
+                var children = e.childNodes;
+                if (children.length !== 0) {
+                    for (var i = 0; i < children.length; i++)
+                        p = ParseElement(elements, children[i], p, styles);
+                }
+                if (elements.length !== 0) {
+                    for (var i = 0; i < elements.length; i++) {
+                        cnt.push(elements[i]);
+                    }
+                }
+                return p;
+            }
+
+            function ComputeStyle(o, styles) {
+                for (var i = 0; i < styles.length; i++) {
+                    var st = styles[i].trim().toLowerCase().split(":");
+                    if (st.length == 2) {
+                        switch (st[0]) {
+                            case "font-size":
+                                o.fontSize = parseInt(st[1]);
+                                break;
+                            case "text-align":
+                                switch (st[1]) {
+                                case "right":
+                                    o.alignment = 'right';
+                                    break;
+                                case "center":
+                                    o.alignment = 'center';
+                                    break;
+                                case "justify":
+                                    o.alignment = 'justify';
+                                }
+                                break;
+                            case "font-weight":
+                                switch (st[1]) {
+                                case "bold":
+                                    o.bold = true;
+                                    break;
+                                }
+                                break;
+                            case "text-decoration":
+                                switch (st[1]) {
+                                case "underline":
+                                    o.decoration = "underline";
+                                    break;
+                                case "line-through":
+                                    o.decoration = "lineThrough";
+                                    break;
+                                }
+                                break;
+                            case "font-style":
+                                switch (st[1]) {
+                                case "italic":
+                                    o.italics = true;
+                                    break;
+                                }
+                                break;
+                            case "color":
+                                o.color = st[1];
+                                break;
+                            case "background-color":
+                                o.background = st[1];
+                                break;
+                        }
+                    }
+                }
+            }
+
+            function ParseElement(cnt, e, p, styles) {
+                if (!styles)
+                    styles = [];
+                if (e.getAttribute) {
+                    var nodeStyle = e.getAttribute("style");
+                    if (nodeStyle) {
+                        var ns = nodeStyle.split(";");
+                        for (var k = 0; k < ns.length; k++) {
+                            var tmp = ns[k].replace(/\s/g, '');
+                            styles.push(tmp);
+                        }
+                    }
+                }
+
+                switch (e.nodeName.toLowerCase()) {
+                    case "#text":
+                        var t = {
+                            text: e.textContent.replace(/\n/g, "")
+                        };
+                        if (styles)
+                            ComputeStyle(t, styles);
+                        p.text.push(t);
+                        break;
+                    case "b":
+                    case "strong":
+                        ParseContainer(cnt, e, p, styles.concat(["font-weight:bold"]));
+                        break;
+                    case "u":
+                        ParseContainer(cnt, e, p, styles.concat(["text-decoration:underline"]));
+                        break;
+                    case "em":
+                    case "i":
+                        ParseContainer(cnt, e, p, styles.concat(["font-style:italic"]));
+                        break;
+                    case "table":
+                        var t = {
+                            table: {
+                                widths: [],
+                                body: []
+                            }
+                        };
+                        var border = e.getAttribute("border");
+                        var isBorder = false;
+                        if (border)
+                            if (parseInt(border) == 1) isBorder = true;
+                                if (!isBorder) t.layout = 'noBorders';
+                                    ParseContainer(t.table.body, e, p, styles);
+                        var widths = e.getAttribute("widths");
+                        if (!widths) {
+                            if (t.table.body.length !== 0) {
+                                if (t.table.body[0].length !== 0)
+                                for (var k = 0; k < t.table.body[0].length; k++)
+                                    t.table.widths.push("*");
+                            }
+                        } else {
+                            var w = widths.split(",");
+                            for (var k = 0; k < w.length; k++) t.table.widths.push(w[k]);
+                        }
+                        cnt.push(t);
+                        break;
+                    case "tbody":
+                        ParseContainer(cnt, e, p, styles);
+                        break;
+                    case "tr":
+                        var row = [];
+                        ParseContainer(row, e, p, styles);
+                        cnt.push(row);
+                        break;
+                    case "td":
+                        p = CreateParagraph();
+                        var st = {
+                            stack: []
+                        };
+                        st.stack.push(p);
+
+                        var rspan = e.getAttribute("rowspan");
+                        if (rspan)
+                            st.rowSpan = parseInt(rspan);
+                        var cspan = e.getAttribute("colspan");
+                        if (cspan)
+                            st.colSpan = parseInt(cspan);
+                        ParseContainer(st.stack, e, p, styles);
+                        cnt.push(st);
+                        break;
+                    case "span":
+                        ParseContainer(cnt, e, p, styles);
+                        break;
+                    case "br":
+                        p = CreateParagraph();
+                        cnt.push(p);
+                        break;
+                    case "li":
+                    case "div":
+                    case "p":
+                        p = CreateParagraph();
+                        var st = {
+                            stack: []
+                        };
+                        st.stack.push(p);
+                        ComputeStyle(st, styles);
+                        ParseContainer(st.stack, e, p);
+                        cnt.push(st);
+                        break;
+                    case "a":
+                        ParseContainer(cnt, e, p, styles.concat(["color:blue", "text-decoration:underline"]));
+                        cnt.push(p);
+                        break;
+                    case "h1":
+                        p = CreateParagraph();
+                        ParseContainer(cnt, e, p, styles.concat(["font-size:30"]));
+                        cnt.push(p);
+                        break;
+                    case "h2":
+                        p = CreateParagraph();
+                        ParseContainer(cnt, e, p, styles.concat(["font-size:28"]));
+                        cnt.push(p);
+                        break;
+                    case "h3":
+                        p = CreateParagraph();
+                        ParseContainer(cnt, e, p, styles.concat(["font-size:26"]));
+                        cnt.push(p);
+                        break;
+                    case "h4":
+                        p = CreateParagraph();
+                        ParseContainer(cnt, e, p, styles.concat(["font-size:24"]));
+                        cnt.push(p);
+                        break;
+                    case "h5":
+                        p = CreateParagraph();
+                        ParseContainer(cnt, e, p, styles.concat(["font-size:22"]));
+                        cnt.push(p);
+                        break;
+                    case "h6":
+                        p = CreateParagraph();
+                        ParseContainer(cnt, e, p, styles.concat(["font-size:20"]));
+                        cnt.push(p);
+                        break;
+                    case "img":
+                        console.log(e.getAttribute("width"));
+                        cnt.push({
+                            image: BaseMap[e.getAttribute("src")],
+                            width: parseInt(e.getAttribute("width")),
+                            height: parseInt(e.getAttribute("height"))
+                        });
+                        break;
+                    case "ul":
+                        var u = {
+                            ul: []
+                        };
+                        ParseContainer(u.ul, e, p, styles);
+                        cnt.push(u);
+                        break;
+                    case "ol":
+                        var o = {
+                            ol: []
+                        };
+                        ParseContainer(o.ol, e, p, styles);
+                        cnt.push(o);
+                        break;
+                    default:
+                        console.log("Parsing for node " + e.nodeName + " not found");
+                        break;
+                }
+                return p;
+            }
+
+            function ParseHtml(cnt, htmlText) {
+                var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, ""));
+                var p = CreateParagraph();
+                for (var i = 0; i < html.length; i++)
+                    ParseElement(cnt, html.get(i), p);
+            }
+
+            function CreateParagraph() {
+                var p = {
+                    text: []
+                };
+                return p;
+            }
+
+            var content = [];
+            ParseHtml(content, id);
+            // console.log(JSON.stringify(content));
+            return content;
+        }
+
+        $scope.makePDF = function () {
+
+            var header = function() {
+                var date = new Date();
+                return {
+                    // alignment: 'center',
+                    color: '#555',
+                    fontSize: 10,
+                    margin: [80, 50, 80, 0], //margin: [left, top, right, bottom]
+                    columns: ['OpenSlides | Presentation and assembly system',
+                        {
+                            fontSize: 6,
+                            text: 'Stand: ' + date.toLocaleDateString() + " " + date.toLocaleTimeString(),
+                            alignment: 'right'
+                        }
+                    ]
+                };
+            };
+
+            var footer = function(currentPage, pageCount) {
+                return {
+                    alignment: 'center',
+                    fontSize: 8,
+                    color: '#555',
+                    text: "Seite: " + currentPage.toString()
+                };
+            };
+
+            var textContent = pdfForElement(motion.getText($scope.version));
+            var reasonContent = pdfForElement(motion.getReason($scope.version));
+
+            var content = [
+                {
+                    text: "Antrag " + motion.identifier + ": " + motion.getTitle($scope.version),
+                    bold: true,
+                    fontSize: 26
+                },
+                {
+                    columns: [
+                        {
+                            width: '30%',
+                            text: 'Antragsteller/in:\nUnterschrift:\nStatus:',
+                            bold: true
+                        },
+                        {
+                            width: '*',
+                            text:
+                            User.get(motion.submitters_id[0]).full_name + `
+                            ___________________________________
+                            ` + motion.state.name
+                        }
+                    ],
+                    margin: [10, 20, 0, 10],
+                    lineHeight: 2.5
+                },
+                {
+                    text: motion.getTitle($scope.version),
+                    bold: true,
+                    fontSize: 14,
+                    margin: [0, 0, 0, 10],
+                },
+                textContent,
+                {
+                    text: "Begründung:",
+                    bold: true,
+                    fontSize: 14,
+                    margin: [0, 30, 0, 10],
+                },
+                reasonContent
+            ];
+            pdfMake.createPdf({
+                pageSize: 'A4',
+                pageMargins: [80, 90, 80, 60],
+                fontSize: 8,
+                header: header,
+                footer: footer,
+                content: content,
+            }).open();
+        };
     }
 ])
 
