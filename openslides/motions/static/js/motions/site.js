@@ -668,7 +668,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                 });
         };
 
-
         // Inline editing functions
         var normalizeInlineHtml = function(text) {
             text = text.replace(/ contenteditable="false"/g, "");
@@ -696,22 +695,22 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                 return Motion.lastModified();
             },
             function () {
-                console.log(motion.state.versioning);
                 $scope.inlineEditing.trivialChangeAllowed =
                     (motion.state.versioning && Config.get('motions_allow_disable_versioning').value);
-                console.log((motion.state.versioning && Config.get('motions_allow_disable_versioning').value));
             }
         );
 
         $scope.tinymceOptions = Editor.getOptions(null, true);
         $scope.tinymceOptions.readonly = 1;
+        // Encode HTML entities, but not umlauts
+        // http://archive.tinymce.com/wiki.php/Configuration3x:entities
         $scope.tinymceOptions.entities = "160,nbsp,38,amp,34,quot,162,cent,8364,euro,163,pound,165,yen,169,copy," +
             "174,reg,8482,trade,8240,permil,60,lt,62,gt,8804,le,8805,ge,176,deg,8722,minus";
         $scope.tinymceOptions.setup = function(editor) {
             $scope.inlineEditing.editor = editor;
             editor.on("change", function() {
                 var text = normalizeInlineHtml(editor.getContent());
-                text = text.replace(/ \/>/g, ">");
+                text = text.replace(/ \/>/g, ">"); // Removes slashes in self-closing tags, like <IMG /> -> <IMG>
                 $scope.inlineEditing.changed = (text != $scope.inlineEditing.originalHtmlNormalized);
             });
         };
@@ -737,7 +736,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             var newInlineHtml = normalizeInlineHtml($scope.inlineEditing.editor.getContent());
             motion.setTextStrippingLineBreaks(motion.active_version, newInlineHtml);
             motion.disable_versioning = $scope.inlineEditing.trivialChange;
-            console.log(motion.disable_versioning);
 
             Motion.inject(motion);
             // save change motion object on server

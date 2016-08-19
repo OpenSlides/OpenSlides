@@ -30,30 +30,25 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
     };
 
     this._isOsLineBreakNode = function (node) {
-        if (!node) {
-            return false;
+        var isLineBreak = false;
+        if (node && node.nodeType === ELEMENT_NODE && node.nodeName == 'BR' && node.hasAttribute('class')) {
+            var classes = node.getAttribute('class').split(' ');
+            if (classes.indexOf('os-line-break') > -1) {
+                isLineBreak = true;
+            }
         }
-        if (node.nodeType !== ELEMENT_NODE || node.nodeName != 'BR') {
-            return false;
-        }
-        if (!node.hasAttribute('class')) {
-            return false;
-        }
-        var classes = node.getAttribute('class').split(' ');
-        return (classes.indexOf('os-line-break') > -1);
+        return isLineBreak;
     };
+
     this._isOsLineNumberNode = function (node) {
-        if (!node) {
-            return false;
+        var isLineNumber = false;
+        if (node && node.nodeType === ELEMENT_NODE && node.nodeName == 'SPAN' && node.hasAttribute('class')) {
+            var classes = node.getAttribute('class').split(' ');
+            if (classes.indexOf('os-line-number') > -1) {
+                isLineNumber = true;
+            }
         }
-        if (node.nodeType !== ELEMENT_NODE || node.nodeName != 'SPAN') {
-            return false;
-        }
-        if (!node.hasAttribute('class')) {
-            return false;
-        }
-        var classes = node.getAttribute('class').split(' ');
-        return (classes.indexOf('os-line-number') > -1);
+        return isLineNumber;
     };
 
     /**
@@ -102,47 +97,46 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
         if (node.nodeValue == "\n") {
             out.push(node);
-            return out;
-        }
+        } else {
 
-        // This happens if a previous inline element exactly stretches to the end of the line
-        if (this._currentInlineOffset >= length) {
-            out.push(createLineBreak());
-            out.push(createLineNumber());
-            this._currentInlineOffset = 0;
-        } else if (this._prependLineNumberToFirstText) {
-            out.push(createLineNumber());
-        }
-        this._prependLineNumberToFirstText = false;
-
-        while (i < node.nodeValue.length) {
-            var lineBreakAt = null;
+            // This happens if a previous inline element exactly stretches to the end of the line
             if (this._currentInlineOffset >= length) {
-                if (lastBreakableIndex !== null) {
-                    lineBreakAt = lastBreakableIndex;
-                } else {
-                    lineBreakAt = i - 1;
+                out.push(createLineBreak());
+                out.push(createLineNumber());
+                this._currentInlineOffset = 0;
+            } else if (this._prependLineNumberToFirstText) {
+                out.push(createLineNumber());
+            }
+            this._prependLineNumberToFirstText = false;
+
+            while (i < node.nodeValue.length) {
+                var lineBreakAt = null;
+                if (this._currentInlineOffset >= length) {
+                    if (lastBreakableIndex !== null) {
+                        lineBreakAt = lastBreakableIndex;
+                    } else {
+                        lineBreakAt = i - 1;
+                    }
                 }
+                if (lineBreakAt !== null && node.nodeValue[i] != ' ') {
+                    var currLine = node.nodeValue.substring(currLineStart, lineBreakAt + 1);
+                    addLine(currLine);
+
+                    currLineStart = lineBreakAt + 1;
+                    this._currentInlineOffset = i - lineBreakAt - 1;
+                    lastBreakableIndex = null;
+                }
+
+                if (node.nodeValue[i] == ' ' || node.nodeValue[i] == '-') {
+                    lastBreakableIndex = i;
+                }
+
+                this._currentInlineOffset++;
+                i++;
+
             }
-            if (lineBreakAt !== null && node.nodeValue[i] != ' ') {
-                var currLine = node.nodeValue.substring(currLineStart, lineBreakAt + 1);
-                addLine(currLine);
-
-                currLineStart = lineBreakAt + 1;
-                this._currentInlineOffset = i - lineBreakAt - 1;
-                lastBreakableIndex = null;
-            }
-
-            if (node.nodeValue[i] == ' ' || node.nodeValue[i] == '-') {
-                lastBreakableIndex = i;
-            }
-
-            this._currentInlineOffset++;
-            i++;
-
+            addLine(node.nodeValue.substring(currLineStart));
         }
-        addLine(node.nodeValue.substring(currLineStart));
-
         return out;
     };
 
@@ -155,18 +149,17 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
      * @private
      */
     this._moveLeadingLineBreaksToOuterNode = function (innerNode, outerNode) {
-        if (!this._isInlineElement(innerNode)) {
-            return;
-        }
-        if (this._isOsLineBreakNode(innerNode.firstChild)) {
-            var br = innerNode.firstChild;
-            innerNode.removeChild(br);
-            outerNode.appendChild(br);
-        }
-        if (this._isOsLineNumberNode(innerNode.firstChild)) {
-            var span = innerNode.firstChild;
-            innerNode.removeChild(span);
-            outerNode.appendChild(span);
+        if (this._isInlineElement(innerNode)) {
+            if (this._isOsLineBreakNode(innerNode.firstChild)) {
+                var br = innerNode.firstChild;
+                innerNode.removeChild(br);
+                outerNode.appendChild(br);
+            }
+            if (this._isOsLineNumberNode(innerNode.firstChild)) {
+                var span = innerNode.firstChild;
+                innerNode.removeChild(span);
+                outerNode.appendChild(span);
+            }
         }
     };
 
@@ -200,39 +193,43 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
     };
 
     this._calcBlockNodeLength = function (node, oldLength) {
-        if (node.nodeName == 'LI') {
-            return oldLength - 5;
-        }
-        if (node.nodeName == 'BLOCKQUOTE') {
-            return oldLength - 20;
-        }
-        if (node.nodeName == 'DIV' || node.nodeName == 'P') {
-            var styles = node.getAttribute("style"),
-                padding = 0;
-            if (styles) {
-                var leftpad = styles.split("padding-left:");
-                if (leftpad.length > 1) {
-                    leftpad = parseInt(leftpad[1]);
-                    padding += leftpad;
+        var newLength = oldLength;
+        switch (node.nodeName) {
+            case 'LI':
+                newLength -= 5;
+                break;
+            case 'BLOCKQUOTE':
+                newLength -= 20;
+                break;
+            case 'DIV':
+            case 'P':
+                var styles = node.getAttribute("style"),
+                    padding = 0;
+                if (styles) {
+                    var leftpad = styles.split("padding-left:");
+                    if (leftpad.length > 1) {
+                        leftpad = parseInt(leftpad[1]);
+                        padding += leftpad;
+                    }
+                    var rightpad = styles.split("padding-right:");
+                    if (rightpad.length > 1) {
+                        rightpad = parseInt(rightpad[1]);
+                        padding += rightpad;
+                    }
+                    newLength -= (padding / 5);
                 }
-                var rightpad = styles.split("padding-right:");
-                if (rightpad.length > 1) {
-                    rightpad = parseInt(rightpad[1]);
-                    padding += rightpad;
-                }
-                return oldLength - Math.ceil(padding / 5);
-            }
+                break;
+            case 'H1':
+                newLength *= 0.5;
+                break;
+            case 'H2':
+                newLength *= 0.66;
+                break;
+            case 'H3':
+                newLength *= 0.66;
+                break;
         }
-        if (node.nodeName == 'H1') {
-            return Math.ceil(oldLength * 0.5);
-        }
-        if (node.nodeName == 'H2') {
-            return Math.ceil(oldLength * 0.66);
-        }
-        if (node.nodeName == 'H3') {
-            return Math.ceil(oldLength * 0.66);
-        }
-        return oldLength;
+        return Math.ceil(newLength);
     };
 
     this._insertLineNumbersToBlockNode = function (node, length) {

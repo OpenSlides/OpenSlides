@@ -319,6 +319,7 @@ img {
 }
 
 
+/* Toolbar to save motion in inline editing mode */
 .motion-save-toolbar {
     position: fixed;
     bottom: 0;
@@ -404,7 +405,6 @@ img {
     margin-left: 0;
     margin-right: 0;
 }
-
 
 .motion-text.line-numbers-none .os-line-break {
     display: none;
