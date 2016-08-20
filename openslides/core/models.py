@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.sessions.models import Session as DjangoSession
 from django.db import models
 from jsonfield import JSONField
 
@@ -253,22 +252,3 @@ class ChatMessage(RESTModelMixin, models.Model):
 
     def __str__(self):
         return 'Message {}'.format(self.timestamp)
-
-
-class Session(DjangoSession):
-    """
-    Model like the Django db session, which saves the user as ForeignKey instead
-    of an encoded value.
-    """
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        null=True)
-
-    class Meta:
-        default_permissions = ()
-
-    @classmethod
-    def get_session_store_class(cls):
-        from .session_backend import SessionStore
-        return SessionStore
