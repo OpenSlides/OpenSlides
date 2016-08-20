@@ -18,7 +18,10 @@ angular.module('OpenSlidesApp.core.site', [
     'ui.tinymce',
     'luegg.directives',
 ])
-.factory('PdfMakeDocumentProvider', function() {
+.factory('PdfMakeDocumentProvider', [
+    'gettextCatalog',
+    'Config',
+    function(gettextCatalog, Config) {
         /**
          * Provides the global Document
          * @constructor
@@ -39,14 +42,14 @@ angular.module('OpenSlidesApp.core.site', [
                         margin: [80, 50, 80, 0], //margin: [left, top, right, bottom]
                         columns: [
                           {
-                            text: 'OpenSlides | Presentation and assembly system',
+                            text: Config.get('general_event_name').value + ' · ' + Config.get('general_event_description').value ,
                             fontSize:10,
                             width: '70%'
                           },
                           {
                             fontSize: 6,
                             width: '30%',
-                            text: 'Stand: ' + date.toLocaleDateString() + " " + date.toLocaleTimeString(),
+                            text: gettextCatalog.getString('As of') + date.toLocaleDateString() + " " + date.toLocaleTimeString(),
                             alignment: 'right'
                         }]
                     };
@@ -62,7 +65,7 @@ angular.module('OpenSlidesApp.core.site', [
                         alignment: 'center',
                         fontSize: 8,
                         color: '#555',
-                        text: "Seite: " + currentPage.toString()
+                        text: gettextCatalog.getString('Page') + ' ' + currentPage.toString() + ' / ' + pageCount.toString()
                     };
                 },
                 /**
@@ -90,7 +93,8 @@ angular.module('OpenSlidesApp.core.site', [
         return {
             createInstance: createInstance
         };
-    })
+    }
+])
 .factory('PdfMakeConverter', function() {
         /**
          * Converter component for HTML->JSON for pdfMake
