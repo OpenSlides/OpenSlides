@@ -57,6 +57,30 @@ def get_config_variables():
         translatable=True)
 
     yield ConfigVariable(
+        name='motions_default_line_numbering',
+        default_value='none',
+        input_type='choice',
+        label='Default line numbering',
+        choices=(
+            {'value': 'outside', 'display_name': 'Outside'},
+            {'value': 'inline', 'display_name': 'Inline'},
+            {'value': 'none', 'display_name': 'None'}),
+        weight=322,
+        group='Motions',
+        subgroup='General')
+
+    yield ConfigVariable(
+        name='motions_line_length',
+        default_value=80,
+        input_type='integer',
+        label='Line length',
+        help_text='The maximum number of characters per line. Relevant when line numbering is enabled. Min: 40',
+        weight=323,
+        group='Motions',
+        subgroup='General',
+        validators=(MinValueValidator(40),))
+
+    yield ConfigVariable(
         name='motions_stop_submitting',
         default_value=False,
         input_type='boolean',
