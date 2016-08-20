@@ -23,6 +23,10 @@ div {
     text-align: left;
 }
 
+blockquote {
+    font-size: inherit;
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: "Roboto Condensed",Helvetica,Arial,sans-serif;
     font-weight: 400;
@@ -295,14 +299,137 @@ img {
     width: auto;
     margin-top: 20px;
     background: #fff;
-    padding: 20px;
     border: 1px solid #d3d3d3;
+}
+
+.col1 .details .line-number-setter {
+    margin-top: 0;
+    margin-bottom: 55px;
+    margin-left: 15px;
+}
+
+.col1 .details .line-number-setter .btn.disabled {
+    cursor: default;
+    opacity: 1;
+    background-color: #eee;
+}
+
+.col1 .details .inline-editing-activator {
+    margin-right: 13px;
 }
 
 .col1 ul, .col1 ol {
     margin-left: 20px;
 }
 
+
+/* Toolbar to save motion in inline editing mode */
+.motion-save-toolbar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    height: 75px;
+    width: 300px;
+    background: rgba(242, 222, 222, 0.9);
+    color: black;
+    text-align: center;
+    padding: 5px;
+    z-index: 10;
+    display: none;
+    border: 1px solid #d3d3d3;
+    margin-left: -150px;
+    border-bottom: none;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+.motion-save-toolbar.visible {
+    display: block;
+}
+
+.motion-save-toolbar .changed-hint {
+    display: block;
+    line-height: 16px;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.motion-save-toolbar label {
+    font-weight: normal;
+    line-height: 16px;
+    text-align: left;
+    padding-left: 16px;
+    margin-top: 5px;
+    margin-left: 15px;
+}
+
+.motion-save-toolbar label input {
+    margin-left: -16px;
+}
+
+/*** Line numbers ***/
+.motion-text.line-numbers-outside {
+    padding-left: 35px;
+    position: relative;
+}
+.motion-text.line-numbers-outside .os-line-number {
+    display: inline-block;
+    font-size: 0;
+    line-height: 0;
+    width: 0;
+    height: 0;
+}
+.motion-text.line-numbers-outside .os-line-number:after {
+    content: attr(data-line-number);
+    position: absolute;
+    left: 0;
+    vertical-align: top;
+    margin-top: -5px;
+    color: gray;
+    font-family: Courier, serif;
+    font-size: 13px;
+}
+
+.motion-text.line-numbers-inline .os-line-break {
+    display: none;
+}
+.motion-text.line-numbers-inline .os-line-number {
+    display: inline-block;
+}
+.motion-text.line-numbers-inline .os-line-number:after {
+    display: inline-block;
+    content: attr(data-line-number);
+    vertical-align: top;
+    font-size: 11px;
+    color: gray;
+    font-family: Courier, serif;
+    margin-top: -3px;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.motion-text.line-numbers-none .os-line-break {
+    display: none;
+}
+.motion-text.line-numbers-none .os-line-number {
+    display: none;
+}
+
+.os-line-number {
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+}
+.os-line-number:after {
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+}
 
 /** Projector sidebar column **/
 
