@@ -862,8 +862,7 @@ angular.module('OpenSlidesApp.core.site', [
                 }
             });
         };
-            return null;
-        };
+        
         $scope.speakeroverlaytoggle = function () {
             var data = {};
             if ($scope.speakeroverlay().visible) {
