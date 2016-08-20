@@ -249,10 +249,10 @@
                  ng-checked="lineNumberMode == 'none'">
           <translate>None</translate>
         </label>
-        <label class="btn btn-default" ng-class="{active: (lineNumberMode == 'inside')}"
-               ng-click="lineNumberMode = 'inside'">
-          <input type="radio" name="lineNumberMode" value="inside" ng-model="lineNumberMode"
-                 ng-checked="lineNumberMode == 'inside'">
+        <label class="btn btn-default" ng-class="{active: (lineNumberMode == 'inline')}"
+               ng-click="lineNumberMode = 'inline'">
+          <input type="radio" name="lineNumberMode" value="inline" ng-model="lineNumberMode"
+                 ng-checked="lineNumberMode == 'inline'">
           <translate>Inline</translate>
         </label>
         <label class="btn btn-default" ng-class="{active: (lineNumberMode == 'outside')}"

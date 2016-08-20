@@ -370,7 +370,7 @@ img {
 
 /*** Line numbers ***/
 .motion-text.line-numbers-outside {
-    padding-left: 50px;
+    padding-left: 35px;
     position: relative;
 }
 
@@ -392,13 +392,13 @@ img {
     font-size: 13px;
 }
 
-.motion-text.line-numbers-inside .os-line-break {
+.motion-text.line-numbers-inline .os-line-break {
     display: none;
 }
-.motion-text.line-numbers-inside .os-line-number {
+.motion-text.line-numbers-inline .os-line-number {
     display: inline-block;
 }
-.motion-text.line-numbers-inside .os-line-number:after {
+.motion-text.line-numbers-inline .os-line-number:after {
     display: inline-block;
     content: attr(data-line-number);
     vertical-align: top;

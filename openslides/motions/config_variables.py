@@ -63,7 +63,7 @@ def get_config_variables():
         label='Default line numbering',
         choices=(
             {'value': 'outside', 'display_name': 'Outside'},
-            {'value': 'inside', 'display_name': 'Inside'},
+            {'value': 'inline', 'display_name': 'Inline'},
             {'value': 'none', 'display_name': 'None'}),
         weight=322,
         group='Motions',
