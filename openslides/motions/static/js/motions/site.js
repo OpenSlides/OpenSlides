@@ -767,6 +767,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 .controller('MotionDetailCtrl', [
     '$scope',
     '$http',
+    '$timeout',
     'ngDialog',
     'MotionForm',
     'Motion',
@@ -784,8 +785,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'PdfMakeDocumentProvider',
     'gettextCatalog',
     'diffService',
-    function($scope, $http, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Editor, Config,
-             motion, SingleMotionContentProvider, MotionContentProvider, PdfMakeConverter,
+    function($scope, $http, $timeout, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Editor,
+             Config,motion, SingleMotionContentProvider, MotionContentProvider, PdfMakeConverter,
              PdfMakeDocumentProvider, gettextCatalog, diffService) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
@@ -938,7 +939,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         $scope.tinymceOptions.readonly = 1;
         $scope.tinymceOptions.setup = function (editor) {
             $scope.inlineEditing.editor = editor;
-
             editor.on("init", function () {
                 $scope.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
                 $scope.inlineEditing.editor.setContent($scope.lineBrokenText);
@@ -961,7 +961,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             $scope.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
             $scope.inlineEditing.editor.setContent($scope.lineBrokenText);
             $scope.inlineEditing.originalHtml = $scope.inlineEditing.editor.getContent();
-            window.setTimeout(function() {
+            $timeout(function() {
                 $scope.inlineEditing.editor.focus();
             }, 100);
         };

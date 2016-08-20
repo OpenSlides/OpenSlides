@@ -79,6 +79,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
     this._serializeTag = function(node) {
         if (node.nodeType == DOCUMENT_FRAGMENT_NODE) {
+            // Fragments are only placeholders and do not have an HTML representation
             return '';
         }
         var html = '<' + node.nodeName;
