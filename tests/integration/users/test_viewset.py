@@ -44,7 +44,7 @@ class UserCreate(TestCase):
     def test_creation_with_group(self):
         self.client.login(username='admin', password='admin')
         # These are the builtin groups 'Delegates' and 'Staff'. The pks are valid.
-        group_pks = (3, 4,)
+        group_pks = (2, 3,)
 
         self.client.post(
             reverse('user-list'),
@@ -55,19 +55,19 @@ class UserCreate(TestCase):
         self.assertTrue(user.groups.filter(pk=group_pks[0]).exists())
         self.assertTrue(user.groups.filter(pk=group_pks[1]).exists())
 
-    def test_creation_with_anonymous_or_registered_group(self):
+    def test_creation_with_default_group(self):
         self.client.login(username='admin', password='admin')
-        # These are the builtin groups 'Anonymous' and 'Registered'.
-        # The pks are valid. But these groups can not be added to users.
-        group_pks = (1, 2,)
+        # This is the builtin groups 'default'.
+        # The pk is valid. But this group can not be added to users.
+        group_pk = (1,)
 
         response = self.client.post(
             reverse('user-list'),
             {'last_name': 'Test name aedah1iequoof0Ashed4',
-             'groups_id': group_pks})
+             'groups_id': group_pk})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'groups_id': ["Invalid pk \"%d\" - object does not exist." % group_pks[0]]})
+        self.assertEqual(response.data, {'groups_id': ["Invalid pk \"%d\" - object does not exist." % group_pk]})
 
 
 class UserUpdate(TestCase):
@@ -211,8 +211,8 @@ class GroupReceive(TestCase):
         user = User(username='test')
         user.set_password('test')
         user.save()
-        registered_group = Group.objects.get(pk=2)
-        registered_group.permissions.all().delete()
+        default_group = Group.objects.get(pk=1)
+        default_group.permissions.all().delete()
         self.client.login(username='test', password='test')
 
         response = self.client.get('/rest/users/group/')
@@ -277,7 +277,7 @@ class GroupUpdate(TestCase):
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
         # This is the builtin group 'Delegates'. The pk is valid.
-        group_pk = 3
+        group_pk = 2
         # This contains one valid permission of the users app.
         permissions = ('users.can_see_name',)
 
@@ -295,7 +295,7 @@ class GroupUpdate(TestCase):
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
         # This is the builtin group 'Delegates'. The pk is valid.
-        group_pk = 3
+        group_pk = 2
         # This contains one valid permission of the users app.
         permissions = ('users.can_see_name',)
 
@@ -324,9 +324,8 @@ class GroupDelete(TestCase):
     def test_delete_builtin_groups(self):
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
-        # The pks of builtin groups 'Anonymous' and 'Registered'
-        group_pks = (1, 2,)
+        # The pk of builtin group 'Default'
+        group_pk = 1
 
-        for group_pk in group_pks:
-            response = admin_client.delete(reverse('group-detail', args=[group_pk]))
-            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        response = admin_client.delete(reverse('group-detail', args=[group_pk]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

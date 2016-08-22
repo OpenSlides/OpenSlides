@@ -35,13 +35,13 @@ class UserManager(BaseUserManager):
         """
         Creates an user with the username 'admin'. If such a user already
         exists, resets it. The password is (re)set to 'admin'. The user
-        becomes member of the group 'Staff' (pk=4).
+        becomes member of the group 'Staff' (pk=3).
         """
         try:
-            staff = Group.objects.get(pk=4)
+            staff = Group.objects.get(pk=3)
         except Group.DoesNotExist:
             raise UsersError("Admin user can not be created or reset because "
-                             "the group 'Staff' (pk=4) is not available.")
+                             "the group 'Staff' (pk=3) is not available.")
         admin, created = self.get_or_create(
             username='admin',
             defaults={'last_name': 'Administrator'})

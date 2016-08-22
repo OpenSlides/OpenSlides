@@ -27,6 +27,7 @@ Motions:
 Users:
 - Added field is_committee and new default group Committees.
 - Added field number.
+- Added new matrix-interface for managing groups and their permissions.
 
 Other:
 - Removed config cache to support multiple threads or processes.

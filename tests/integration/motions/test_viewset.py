@@ -150,7 +150,7 @@ class RetrieveMotion(TestCase):
         self.motion.create_poll()
 
     def test_number_of_queries(self):
-        with self.assertNumQueries(16):
+        with self.assertNumQueries(17):
             self.client.get(reverse('motion-detail', args=[self.motion.pk]))
 
 
@@ -312,7 +312,7 @@ class SupportMotion(TestCase):
     """
     def setUp(self):
         self.admin = get_user_model().objects.get(username='admin')
-        self.admin.groups.add(3)
+        self.admin.groups.add(2)
         self.client.login(username='admin', password='admin')
         self.motion = Motion(
             title='test_title_chee7ahCha6bingaew4e',

@@ -290,12 +290,10 @@ class UserManagerGeneratePassword(TestCase):
 class UserManagerCreateOrResetAdminUser(TestCase):
     def test_get_admin_group(self, mock_group):
         """
-        Tests that the Group with pk=4 is added to the admin.
+        Tests that the Group with pk=3 is added to the admin.
         """
         def mock_side_effect(pk):
-            if pk == 2:
-                result = 'mock_registered'
-            elif pk == 4:
+            if pk == 3:
                 result = 'mock_staff'
             else:
                 result = ''
@@ -308,7 +306,7 @@ class UserManagerCreateOrResetAdminUser(TestCase):
 
         manager.create_or_reset_admin_user()
 
-        mock_group.objects.get.assert_called_once_with(pk=4)
+        mock_group.objects.get.assert_called_once_with(pk=3)
         admin_user.groups.add.assert_called_once_with('mock_staff')
 
     def test_password_set_to_admin(self, mock_group):

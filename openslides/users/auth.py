@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import AnonymousUser as DjangoAnonymousUser
 from django.contrib.auth.models import Permission
-from django.db.models import Q
 from django.utils.functional import SimpleLazyObject
 from rest_framework.authentication import BaseAuthentication
 
@@ -14,9 +13,9 @@ from ..core.config import config
 
 class CustomizedModelBackend(ModelBackend):
     """
-    Customized backend for authentication. Ensures that registered users
-    have all permissions of the group 'Registered' (pk=2). See
-    AUTHENTICATION_BACKENDS settings.
+    Customized backend for authentication. Ensures that all users
+    without a group have the permissions of the group 'Default' (pk=1).
+    See AUTHENTICATION_BACKENDS settings.
     """
     def get_group_permissions(self, user_obj, obj=None):
         """
@@ -31,11 +30,12 @@ class CustomizedModelBackend(ModelBackend):
             if user_obj.is_superuser:
                 perms = Permission.objects.all()
             else:
-                user_groups_field = get_user_model()._meta.get_field('groups')
-                user_groups_query = 'group__%s' % user_groups_field.related_query_name()
-                # The next two lines are the customization.
-                query = Q(**{user_groups_query: user_obj}) | Q(group__pk=2)
-                perms = Permission.objects.filter(query)
+                if user_obj.groups.all().count() == 0:  # user is in no group
+                    perms = Permission.objects.filter(group__pk=1)  # group 'default' (pk=1)
+                else:
+                    user_groups_field = get_user_model()._meta.get_field('groups')
+                    user_groups_query = 'group__%s' % user_groups_field.related_query_name()
+                    perms = Permission.objects.filter(**{user_groups_query: user_obj})
             perms = perms.values_list('content_type__app_label', 'codename').order_by()
             user_obj._group_perm_cache = set("%s.%s" % (ct, name) for ct, name in perms)
         return user_obj._group_perm_cache

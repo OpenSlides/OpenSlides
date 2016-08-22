@@ -167,6 +167,7 @@ angular.module('OpenSlidesApp.assignments', [])
             name: name,
             useClass: jsDataModel,
             verboseName: gettext('Election'),
+            verboseNamePlural: gettext('Elections'),
             phases: phases,
             getPhases: function () {
                 if (!this.phases) {

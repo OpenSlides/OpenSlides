@@ -55,6 +55,10 @@ angular.module('OpenSlidesApp.users', [])
                 }
                 return _.intersection(perms, operator.perms).length > 0;
             },
+            // Returns true if the operator is a member of group.
+            isInGroup: function(group) {
+                return _.indexOf(operator.user.groups_id, group.id) > -1;
+            },
         };
         return operator;
     }
@@ -64,11 +68,14 @@ angular.module('OpenSlidesApp.users', [])
     'DS',
     'Group',
     'jsDataModel',
-    function(DS, Group, jsDataModel) {
+    'gettext',
+    function(DS, Group, jsDataModel, gettext) {
         var name = 'users/user';
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
+            verboseName: gettext('Participants'),
+            verboseNamePlural: gettext('Participants'),
             computed: {
                 full_name: function () {
                     return this.get_full_name();
@@ -125,8 +132,9 @@ angular.module('OpenSlidesApp.users', [])
                     if (this.groups_id) {
                         allGroups = this.groups_id.slice(0);
                     }
-                    // Add registered group
-                    allGroups.push(2);
+                    if (allGroups.length === 0) {
+                        allGroups.push(1); // add default group
+                    }
                     _.forEach(allGroups, function(groupId) {
                         var group = Group.get(groupId);
                         if (group) {
@@ -191,10 +199,10 @@ angular.module('OpenSlidesApp.users', [])
     'gettext',
     function (gettext) {
         // default group names (from users/signals.py)
-        gettext('Guests');
-        gettext('Registered users');
+        gettext('Default');
         gettext('Delegates');
         gettext('Staff');
+        gettext('Committees');
     }
 ]);
 
