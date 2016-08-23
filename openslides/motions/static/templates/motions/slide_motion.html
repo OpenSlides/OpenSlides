@@ -75,5 +75,26 @@
 
   <!-- Reason -->
   <h3 ng-if="motion.getReason()" translate>Reason</h3>
-  <div ng-bind-html="motion.getReason() | trusted"></div>
+  <div ng-bind-html="motion.getReason() | trusted">
+  </div>
+  
+  <!--Speaker overlay-->
+  <h2 ng-if="motion.agenda_item.speakers.length">Yay length</h2>
+  <div ng-if="overlay && motion.agenda_item.speakers.length">
+    <div id="speakerbox">
+      <h3 translate>List of speakers</h3>
+      <p ng-repeat="speaker in lastSpeakers = (motion.agenda_item.speakers| filter: {end_time: '!!', begin_time: '!!'}) |
+        limitTo: config('agenda_show_last_speakers') : (lastSpeakers.length - config('agenda_show_last_speakers'))"
+        class="lastSpeakers">
+        {{ speaker.user.get_full_name() }}
+      <p ng-repeat="speaker in motion.agenda_item.speakers | filter: {end_time: null, begin_time: '!!'} "
+         class="currentSpeaker">
+         <i class="fa fa-microphone fa-lg"></i> {{ speaker.user.get_full_name() }}
+      <ol class="nextSpeakers">
+         <li ng-repeat="speaker in motion.agenda_item.speakers | filter: {begin_time: null} | orderBy:'weight' | limitTo: 3">
+         {{ speaker.user.get_full_name() }}
+      </ol>
+    </div>
+  </div>
+  
 </div>

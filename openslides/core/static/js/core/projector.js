@@ -154,6 +154,14 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             Customslide.loadRelations(customslide, 'agenda_item');
         });
         Customslide.bindOne(id, $scope, 'customslide');
+        Projector.find(1).then(function(projector) {
+            $scope.overlay = projector.speakeroverlay;
+        });
+        $scope.$watch(Projector.lastModified(1), function() {
+            Projector.find(1).then(function(projector) {
+                $scope.overlay = projector.speakeroverlay;
+            });
+        });
     }
 ])
 

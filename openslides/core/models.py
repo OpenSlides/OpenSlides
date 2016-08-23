@@ -52,8 +52,8 @@ class Projector(RESTModelMixin, models.Model):
     If the config field is empty or invalid the projector shows a default
     slide.
 
-    There are two additional fields to control the behavior of the projector
-    view itself: scale and scroll.
+    There are three additional fields to control the behavior of the projector
+    view itself: scale, scroll and speakeroverlay.
 
     The projector can be controlled using the REST API with POST requests
     on e. g. the URL /rest/core/projector/1/activate_elements/.
@@ -70,6 +70,8 @@ class Projector(RESTModelMixin, models.Model):
     width = models.PositiveIntegerField(default=1024)
 
     height = models.PositiveIntegerField(default=768)
+
+    speakeroverlay = models.BooleanField(default=False)
 
     class Meta:
         """

@@ -23,6 +23,14 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
         // class.
         var id = $scope.element.id;
         var poll = $scope.element.poll;
+        Projector.find(1).then(function(projector) {
+            $scope.overlay = projector.speakeroverlay;
+        });
+        $scope.$watch(Projector.lastModified(1), function() {
+            Projector.find(1).then(function(projector) {
+                $scope.overlay = projector.speakeroverlay;
+            });
+        });
 
         // load assignemt object and related agenda item
         Assignment.find(id).then(function(assignment) {
