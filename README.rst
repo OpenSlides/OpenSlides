@@ -124,25 +124,26 @@ If you want to contribute to OpenSlides, have a look at `OpenSlides website
 Installation for big assemblies
 ===============================
 
-The installation steps described above install OpenSlides in a way, that does
-not support hundreds of concurrent clients. To install OpenSlides in for big
-assemblies, some config variables have to be changed in the OpenSlides settings
+The installation steps described above install OpenSlides in a way that does
+NOT support hundreds of concurrent clients. To install OpenSlides in for big
+assemblies some config variables have to be changed in the OpenSlides settings
 usualy called settings.py.
 
-The configuration values, that have to be altered are:
+The configuration values that have to be altered are:
 
 * CACHES
 * CHANNEL_LAYERS
 * DATABASES
 
 Please see:
+
 * http://channels.readthedocs.io/en/latest/deploying.html
 * https://docs.djangoproject.com/en/1.9/topics/cache/
 * https://github.com/sebleier/django-redis-cache
 * https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 You should use a webserver like Apache HTTP Server or nginx to serve the static
-and media files and as proxy server in front of OpenSlides server. You also
+and media files as proxy server in front of OpenSlides server. You also
 should use a database like PostgreSQL and Redis as channels backend and cache
 backend.
 
