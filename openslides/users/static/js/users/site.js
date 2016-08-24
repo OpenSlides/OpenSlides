@@ -98,6 +98,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             resolve: {
                 groups: function(Group) {
                     return Group.findAll();
+                },
+                users: function(User) {
+                    return User.findAll();
                 }
             }
         })
@@ -646,10 +649,12 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 
 .controller('UserImportCtrl', [
     '$scope',
+    '$q',
     'gettext',
+    'gettextCatalog',
     'User',
     'Group',
-    function($scope, gettext, User, Group) {
+    function($scope, $q, gettext, gettextCatalog, User, Group) {
         // import from textarea
         $scope.importByLine = function () {
             $scope.usernames = $scope.userlist[0].split("\n");
@@ -707,9 +712,17 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         $scope.pageChanged = function() {
             $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
         };
+        $scope.duplicateActions = [
+            'keep original',
+            'override new',
+            'create duplicate'
+        ];
         // detect if csv file is loaded
         $scope.$watch('csv.result', function () {
+            // All user objects are already loaded via the resolve statement from ui-router.
+            var users = User.getAll();
             $scope.users = [];
+            $scope.duplicates = 0;
             var quotionRe = /^"(.*)"$/;
             angular.forEach($scope.csv.result, function (user) {
                 // title
@@ -735,6 +748,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 // number
                 if (user.number) {
                     user.number = user.number.replace(quotionRe, '$1');
+                } else {
+                    user.number = "";
                 }
                 // groups
                 if (user.groups) {
@@ -782,20 +797,102 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 } else {
                     user.is_committee = false;
                 }
+
+                // Check for duplicates
+                user.duplicate = false;
+                users.forEach(function(user_) {
+                    if (user_.first_name == user.first_name &&
+                        user_.last_name == user.last_name &&
+                        user_.structure_level == user.structure_level) {
+                        if (user.duplicate) {
+                            // there are multiple duplicates!
+                            user.duplicate_info += '\n' + gettextCatalog.getString('There are more than one duplicates of this user!');
+                        } else {
+                            user.duplicate = true;
+                            user.duplicateAction = $scope.duplicateActions[1];
+                            user.duplicate_info = '';
+                            if (user_.title)
+                                user.duplicate_info += user_.title + ' ';
+                            if (user_.first_name)
+                                user.duplicate_info += user_.first_name;
+                            if (user_.first_name && user_.last_name)
+                                user.duplicate_info += ' ';
+                            if (user_.last_name)
+                                user.duplicate_info += user_.last_name;
+                            user.duplicate_info += ' (';
+                            if (user_.number)
+                                user.duplicate_info += gettextCatalog.getString('number') + ': ' + user_.number + ', ';
+                            if (user_.structure_level)
+                                user.duplicate_info += gettextCatalog.getString('structure level') + ': ' + user_.structure_level + ', ';
+                            user.duplicate_info += gettextCatalog.getString('username') + ': ' + user_.username + ') '+
+                                gettextCatalog.getString('already exists.');
+
+                            $scope.duplicates++;
+                        }
+                    }
+                });
                 $scope.users.push(user);
             });
+            $scope.calcStats();
         });
+
+        // Stats
+        $scope.calcStats = function() {
+            // not imported: if importerror or duplicate->keep original
+            $scope.usersWillNotBeImported = 0;
+            // imported: all others
+            $scope.usersWillBeImported = 0;
+
+            $scope.users.forEach(function(user) {
+                if (user.importerror || (user.duplicate && user.duplicateAction == $scope.duplicateActions[0])) {
+                    $scope.usersWillNotBeImported++;
+                } else {
+                    $scope.usersWillBeImported++;
+                }
+            });
+        };
+
+        $scope.setGlobalAction = function (action) {
+            $scope.users.forEach(function (user) {
+                if (user.duplicate)
+                    user.duplicateAction = action;
+            });
+            $scope.calcStats();
+        };
 
         // import from csv file
         $scope.import = function () {
             $scope.csvImporting = true;
+            var existingUsers = User.getAll();
             angular.forEach($scope.users, function (user) {
                 if (!user.importerror) {
-                    User.create(user).then(
-                        function(success) {
-                            user.imported = true;
-                        }
-                    );
+                    // Do nothing on duplicateAction==duplicateActions[0] (keep original)
+                    if (user.duplicate && (user.duplicateAction == $scope.duplicateActions[1])) {
+                        // delete existing user
+                        var deletePromises = [];
+                        existingUsers.forEach(function(user_) {
+                            if (user_.first_name == user.first_name &&
+                                user_.last_name == user.last_name &&
+                                user_.structure_level == user.structure_level) {  
+                                deletePromises.push(User.destroy(user_.id));
+                            }
+                        });
+                        $q.all(deletePromises).then(function() {
+                            User.create(user).then(
+                                function(success) {
+                                    user.imported = true;
+                                }
+                            );   
+                        });
+                    } else if (!user.duplicate ||
+                               (user.duplicateAction == $scope.duplicateActions[2])) {
+                        // create user
+                        User.create(user).then(
+                            function(success) {
+                                user.imported = true;
+                            }
+                        );
+                    }
                 }
             });
             $scope.csvimported = true;
