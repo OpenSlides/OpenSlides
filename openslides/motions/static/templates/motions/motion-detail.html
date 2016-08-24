@@ -141,6 +141,8 @@
                   title="{{ 'Print ballot paper' | translate }}">
                 <i class="fa fa-file-pdf-o"></i>
               </a>
+              <!-- template hook for motion poll buttons -->
+              <template-hook hook-name="motionPollSmallButtons"></template-hook>
 
               <!-- Poll results -->
               <div ng-show="poll.has_votes" class="pollresults">
