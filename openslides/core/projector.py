@@ -47,7 +47,6 @@ class CustomSlideSlide(ProjectorElement):
                         view_action='retrieve',
                         pk=str(speaker.user_id))
 
-
 class Clock(ProjectorElement):
     """
     Clock on the projector.
