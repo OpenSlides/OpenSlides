@@ -119,7 +119,7 @@ class Motion(RESTModelMixin, models.Model):
     Tags to categorise motions.
     """
 
-    submitters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_submitters', blank=True)
+    submitters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_submitters', blank=True, through='SubmittersRelationship')
     """
     Users who submit this motion.
     """
@@ -617,6 +617,15 @@ class Motion(RESTModelMixin, models.Model):
             user_name_helper(self.supporters.all()),
             " ".join(tag.name for tag in self.tags.all())))
 
+
+class SubmittersRelationship (models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    motion = models.ForeignKey(Motion, on_delete=models.CASCADE)
+    order_id = models.IntegerField(default = 1)
+
+    class Meta:
+        db_table='motions_submittersrelationship'
+        unique_together = (('user', 'motion'))
 
 class MotionVersion(RESTModelMixin, models.Model):
     """
