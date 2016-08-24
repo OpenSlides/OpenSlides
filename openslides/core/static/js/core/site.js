@@ -1153,7 +1153,10 @@ angular.module('OpenSlidesApp.core.site', [
     '$state',
     'Config',
     'Projector',
-    function($scope, $http, $interval, $state, Config, Projector) {
+    'Assignment',
+    'Customslide',
+    'Motion',
+    function($scope, $http, $interval, $state, Config, Projector, Assignment, Customslide, Motion) {
          // bind projector elements to the scope, update after projector changed
         $scope.$watch(function () {
             return Projector.lastModified(1);
@@ -1337,31 +1340,15 @@ angular.module('OpenSlidesApp.core.site', [
             message.editMessageFlag = false;
         };
 
-        // *** projector controls ***
-        $scope.controlProjector = function (action, direction) {
-            $http.post('/rest/core/projector/1/control_view/', {"action": action, "direction": direction});
-        };
-        $scope.editCurrentSlide = function () {
-            angular.forEach(Projector.get(1).elements, function(element) {
-                if (element.name == 'agenda/list-of-speakers') {
-                    $state.go('agenda.item.detail', {id: element.id});
-                } else if (
-                    element.name != 'agenda/item-list' &&
-                    element.name != 'core/clock' &&
-                    element.name != 'core/countdown' &&
-                    element.name != 'core/message' ) {
-                    $state.go(element.name.replace('/', '.')+'.detail.update', {id: element.id});
-                }
-            });
-        };
+        // *** list of speaker controls ***
         $scope.speakeroverlaytoggle = function() {
-            if ($scope.overlay === true) {
+            if ($scope.overlay) {
                 $scope.controlProjector('speakeroverlay', 'off');
             } else {
                 $scope.controlProjector('speakeroverlay', 'on');
             }
         };
-        $scope.gotToListOfSpeakers = function() {
+        $scope.goToListOfSpeakers = function() {
             angular.forEach(Projector.get(1).elements, function(element) {
                 if (element.name == 'motions/motion') {
                     Motion.find(element.id).then(function(motion){
@@ -1378,6 +1365,24 @@ angular.module('OpenSlidesApp.core.site', [
                         $state.go('agenda.item.detail',
                                   {id: assignment.agenda_item_id});
                     });
+                }
+            });
+        };
+
+        // *** projector controls ***
+        $scope.controlProjector = function (action, direction) {
+            $http.post('/rest/core/projector/1/control_view/', {"action": action, "direction": direction});
+        };
+        $scope.editCurrentSlide = function () {
+            angular.forEach(Projector.get(1).elements, function(element) {
+                if (element.name == 'agenda/list-of-speakers') {
+                    $state.go('agenda.item.detail', {id: element.id});
+                } else if (
+                    element.name != 'agenda/item-list' &&
+                    element.name != 'core/clock' &&
+                    element.name != 'core/countdown' &&
+                    element.name != 'core/message' ) {
+                    $state.go(element.name.replace('/', '.')+'.detail.update', {id: element.id});
                 }
             });
         };

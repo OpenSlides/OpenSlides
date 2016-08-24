@@ -145,7 +145,8 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 .controller('SlideCustomSlideCtrl', [
     '$scope',
     'Customslide',
-    function($scope, Customslide) {
+    'Projector',
+    function($scope, Customslide, Projector) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.

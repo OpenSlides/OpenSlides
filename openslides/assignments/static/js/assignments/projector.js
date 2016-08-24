@@ -17,7 +17,8 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
     '$scope',
     'Assignment',
     'User',
-    function($scope, Assignment, User) {
+    'Projector',
+    function($scope, Assignment, User, Projector) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.

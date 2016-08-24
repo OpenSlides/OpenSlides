@@ -1,6 +1,8 @@
 from openslides.core.exceptions import ProjectorException
 from openslides.core.views import TagViewSet
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
+from openslides.agenda.models import Item
+from openslides.agenda.views import ItemViewSet
 
 from .models import Motion
 from .views import CategoryViewSet, MotionViewSet, WorkflowViewSet
@@ -64,3 +66,17 @@ class MotionSlide(ProjectorElement):
                         view_class=TagViewSet,
                         view_action='retrieve',
                         pk=str(tag.pk))
+                try:
+                    item = Item.objects.get(pk=motion.agenda_item_id)
+                except Item.DoesNotExist:
+                    pass
+                else:
+                    yield ProjectorRequirement(
+                        view_class=ItemViewSet,
+                        view_action='retrieve',
+                        pk=str(item.pk))
+                for speaker in item.speakers.all():
+                    yield ProjectorRequirement(
+                        view_class=speaker.user.get_view_class(),
+                        view_action='retrieve',
+                        pk=str(speaker.user_id))

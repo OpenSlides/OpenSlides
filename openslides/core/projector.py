@@ -6,6 +6,7 @@ from .config import config
 from .exceptions import ProjectorException
 from .models import CustomSlide, Projector
 from .views import CustomSlideViewSet
+import openslides  # from openslides.agenda.models import Item fails
 
 
 class CustomSlideSlide(ProjectorElement):
@@ -21,10 +22,30 @@ class CustomSlideSlide(ProjectorElement):
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
         if pk is not None:
-            yield ProjectorRequirement(
-                view_class=CustomSlideViewSet,
-                view_action='retrieve',
-                pk=str(pk))
+            try:
+                customslide = CustomSlide.objects.get(pk=pk)
+            except CustomSlide.DoesNotExist:
+                pass
+            else:
+                yield ProjectorRequirement(
+                    view_class=CustomSlideViewSet,
+                    view_action='retrieve',
+                    pk=str(pk))
+                try:
+                    item = openslides.agenda.models.Item.objects.get(
+                        pk=customslide.agenda_item_id)
+                except openslides.agenda.models.Item.DoesNotExist:
+                    pass
+                else:
+                    yield ProjectorRequirement(
+                        view_class=openslides.agenda.views.ItemViewSet,
+                        view_action='retrieve',
+                        pk=str(item.pk))
+                for speaker in item.speakers.all():
+                    yield ProjectorRequirement(
+                        view_class=speaker.user.get_view_class(),
+                        view_action='retrieve',
+                        pk=str(speaker.user_id))
 
 
 class Clock(ProjectorElement):
