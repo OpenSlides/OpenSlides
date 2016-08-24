@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-20 21:03+0200\n"
+"POT-Creation-Date: 2016-08-24 16:03+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,15 +28,15 @@ msgstr ""
 msgid "An anonymous user can not be on lists of speakers."
 msgstr ""
 
-#: agenda/views.py:108
+#: agenda/views.py:109
 msgid "The list of speakers is closed."
 msgstr ""
 
-#: agenda/views.py:117
+#: agenda/views.py:118
 msgid "User does not exist."
 msgstr ""
 
-#: agenda/views.py:125
+#: agenda/views.py:126
 #, python-format
 msgid "User %s was successfully added to the list of speakers."
 msgstr ""
@@ -45,58 +45,50 @@ msgstr ""
 msgid "You are not on the list of speakers."
 msgstr ""
 
-#: agenda/views.py:151 agenda/views.py:181
+#: agenda/views.py:146
+msgid "You are successfully removed from the list of speakers."
+msgstr ""
+
+#: agenda/views.py:157 agenda/views.py:186
 msgid "Speaker does not exist."
 msgstr ""
 
-#: agenda/views.py:155
+#: agenda/views.py:160
 #, python-format
 msgid "Speaker %s was successfully removed from the list of speakers."
 msgstr ""
 
-#: agenda/views.py:176
+#: agenda/views.py:181
 msgid "The list of speakers is empty."
 msgstr ""
 
-#: agenda/views.py:183
+#: agenda/views.py:188
 msgid "User is now speaking."
 msgstr ""
 
-#: agenda/views.py:194
+#: agenda/views.py:199
 #, python-format
 msgid "There is no one speaking at the moment according to %(item)s."
 msgstr ""
 
-#: agenda/views.py:196
+#: agenda/views.py:201
 msgid "The speech is finished now."
 msgstr ""
 
-#: agenda/views.py:215 agenda/views.py:227
+#: agenda/views.py:220 agenda/views.py:232
 msgid "Invalid data."
 msgstr ""
 
-#: agenda/views.py:237
+#: agenda/views.py:242
 msgid "List of speakers successfully sorted."
 msgstr ""
 
-#: agenda/views.py:271
+#: agenda/views.py:276
 msgid "The agenda has been numbered."
 msgstr ""
 
-#: agenda/views.py:281 agenda/views.py:282
+#: agenda/views.py:286 agenda/views.py:287
 msgid "Agenda"
-msgstr ""
-
-#: assignments/models.py:64
-msgid "Searching for candidates"
-msgstr ""
-
-#: assignments/models.py:65
-msgid "Voting"
-msgstr ""
-
-#: assignments/models.py:66
-msgid "Finished"
 msgstr ""
 
 #: assignments/models.py:123 assignments/views.py:234 assignments/views.py:430
@@ -301,17 +293,17 @@ msgid_plural "%d available posts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: assignments/views.py:511 assignments/views.py:523 motions/pdf.py:125
+#: assignments/views.py:510 assignments/views.py:522 motions/pdf.py:125
 #: motions/pdf.py:348
 msgid "Yes"
 msgstr ""
 
-#: assignments/views.py:512 assignments/views.py:524 motions/pdf.py:125
+#: assignments/views.py:511 assignments/views.py:523 motions/pdf.py:125
 #: motions/pdf.py:350
 msgid "No"
 msgstr ""
 
-#: assignments/views.py:513 motions/pdf.py:125 motions/pdf.py:352
+#: assignments/views.py:512 motions/pdf.py:125 motions/pdf.py:352
 msgid "Abstain"
 msgstr ""
 
@@ -356,16 +348,16 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: motions/models.py:125 motions/pdf.py:38 motions/pdf.py:337
-#: motions/views.py:349 motions/views.py:409
+#: motions/models.py:131 motions/pdf.py:38 motions/pdf.py:337
+#: motions/views.py:394 motions/views.py:454
 msgid "Motion"
 msgstr ""
 
-#: motions/models.py:617
+#: motions/models.py:623
 msgid "new"
 msgstr ""
 
-#: motions/models.py:689
+#: motions/models.py:695
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr ""
@@ -394,7 +386,7 @@ msgstr ""
 msgid "Vote result"
 msgstr ""
 
-#: motions/pdf.py:121 motions/views.py:349
+#: motions/pdf.py:121 motions/views.py:394
 msgid "Vote"
 msgstr ""
 
@@ -544,7 +536,12 @@ msgstr ""
 msgid "Vote created successfully."
 msgstr ""
 
-#: motions/views.py:402
+#: motions/views.py:345
+#, python-brace-format
+msgid "All motions in category {category} numbered successfully."
+msgstr ""
+
+#: motions/views.py:447
 msgid "Motions"
 msgstr ""
 
@@ -573,77 +570,69 @@ msgid "Value for {} must not be less than -2"
 msgstr ""
 
 #: users/pdf.py:26
-msgid "Title"
+msgid "Name"
 msgstr ""
 
 #: users/pdf.py:26
-msgid "Last Name"
-msgstr ""
-
-#: users/pdf.py:26
-msgid "First Name"
-msgstr ""
-
-#: users/pdf.py:27
 msgid "Structure level"
 msgstr ""
 
-#: users/pdf.py:27
+#: users/pdf.py:26
 msgid "Group"
 msgstr ""
 
-#: users/pdf.py:95
+#: users/pdf.py:104
 msgid "WLAN access data"
 msgstr ""
 
-#: users/pdf.py:97
+#: users/pdf.py:106
 msgid "WLAN name (SSID)"
 msgstr ""
 
-#: users/pdf.py:101
+#: users/pdf.py:110
 msgid "WLAN password"
 msgstr ""
 
-#: users/pdf.py:105
+#: users/pdf.py:114
 msgid "WLAN encryption"
 msgstr ""
 
-#: users/pdf.py:112
+#: users/pdf.py:121
 msgid "OpenSlides access data"
 msgstr ""
 
-#: users/pdf.py:114
+#: users/pdf.py:123
 msgid "Username"
 msgstr ""
 
-#: users/pdf.py:118
+#: users/pdf.py:127
 msgid "Password"
 msgstr ""
 
-#: users/pdf.py:131
+#: users/pdf.py:140
 msgid "Scan this QRCode to connect WLAN."
 msgstr ""
 
-#: users/pdf.py:136
+#: users/pdf.py:145
 msgid "Scan this QRCode to open URL."
 msgstr ""
 
-#: users/serializers.py:46
+#: users/serializers.py:48
 msgid ""
 "The groups this user belongs to. A user will get all permissions granted to "
 "each of his/her groups."
 msgstr ""
 
-#: users/serializers.py:74
+#: users/serializers.py:78
 msgid "Username, first name and last name can not all be empty."
 msgstr ""
 
-#: users/serializers.py:107
+#: users/serializers.py:111
 #, python-brace-format
 msgid "Incorrect value \"{value}\". Expected app_label.codename string."
 msgstr ""
 
-#: users/serializers.py:108
+#: users/serializers.py:112
 #, python-brace-format
 msgid "Invalid permission \"{value}\". Object does not exist."
 msgstr ""
