@@ -42,9 +42,9 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
             $scope.phases = phases;
         });
         // load all users
-        User.findAll().catch(
+        User.findAll().then( fucntion() {
             User.bindAll({}, $scope, 'users')
-        );
+        });
     }
 ]);
 
