@@ -29,10 +29,6 @@ msgstr ""
 msgid "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based presentation and assembly system for visualizing and controlling agenda, motions and elections of an assembly."
 msgstr ""
 
-#: users/static/templates/users/group-list.html:43
-msgid "<i class=\"fa fa-trash fa-lg\"></i>"
-msgstr ""
-
 #. Prefix for the identifier for amendments
 #: motions/static/js/motions/site.js:1594
 msgid "A"
@@ -384,7 +380,7 @@ msgstr ""
 #: motions/static/templates/motions/motion-form.html:13
 #: motions/static/templates/motions/motion-list.html:268
 #: motions/static/templates/motions/motionpoll-form.html:18
-#: users/static/templates/users/group-edit.html:23
+#: users/static/templates/users/group-edit.html:22
 #: users/static/templates/users/user-detail-password.html:39
 #: users/static/templates/users/user-detail-profile.html:46
 #: users/static/templates/users/user-form.html:13
@@ -1386,12 +1382,12 @@ msgstr ""
 msgid "Phase"
 msgstr ""
 
-#: users/static/templates/users/group-edit.html:11
-msgid "Please enter a name for the new group"
+#: users/static/templates/users/group-edit.html:10
+msgid "Please enter a name for the new group:"
 msgstr ""
 
 #: users/static/templates/users/group-edit.html:8
-msgid "Please enter a new name for"
+msgid "Please enter a new name for {{ group.name }}:"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-import.html:67
@@ -1631,7 +1627,7 @@ msgstr ""
 #: motions/static/templates/motions/category-form.html:25
 #: motions/static/templates/motions/motion-form.html:10
 #: motions/static/templates/motions/motionpoll-form.html:15
-#: users/static/templates/users/group-edit.html:20
+#: users/static/templates/users/group-edit.html:19
 #: users/static/templates/users/user-detail-password.html:36
 #: users/static/templates/users/user-detail-profile.html:43
 #: users/static/templates/users/user-form.html:10
