@@ -1084,6 +1084,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         // ... for amendments add parent_id
         if (isAmendment) {
             if (Config.get('motions_amendments_apply_title_text').value) {
+                $scope.model.title = $scope.$parent.motion.getTitle();
                 $scope.model.text = $scope.$parent.motion.getText();
             }
             $scope.model.parent_id = $scope.$parent.motion.id;
@@ -1665,6 +1666,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         gettext('Prefix for the identifier for amendments');
         /// Prefix for the identifier for amendments
         gettext('A');
+        gettext('Apply title and text for new amendments');
 
         // subgroup Suppoerters
         gettext('Supporters');
