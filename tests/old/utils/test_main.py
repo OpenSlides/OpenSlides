@@ -2,7 +2,6 @@ import os
 import sys
 from unittest.mock import MagicMock, patch
 
-from openslides.core.config import config
 from openslides.utils import main
 from openslides.utils.test import TestCase
 
@@ -86,8 +85,3 @@ class TestFunctions(TestCase):
         inner_function = mock_Thread.call_args[1]['target']
         inner_function()
         browser_mock.open.assert_called_with('http://localhost:8234')
-
-    def test_translate_customizable_strings(self):
-        self.assertEqual(config['general_event_description'], 'Presentation and assembly system')
-        main.translate_customizable_strings('de')
-        self.assertEqual(config['general_event_description'], u'Präsentations- und Versammlungssystem')
