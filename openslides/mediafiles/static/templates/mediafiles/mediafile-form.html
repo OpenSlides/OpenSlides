@@ -8,7 +8,7 @@
 <form name="mediafileForm" ng-submit="save(mediafile)">
   <!-- file -->
   <div class="form-group">
-    <label for="inputTitle" translate>File *</label>
+    <label for="inputTitle"><translate>File</translate>*</label>
     <!-- create view: show file select field -->
     <input ng-if="!mediafile.id" type="file" ngf-select ng-model="mediafile.newFile" required>
     <!-- update view: show filename only -->

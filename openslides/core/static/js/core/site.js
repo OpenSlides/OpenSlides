@@ -944,40 +944,89 @@ angular.module('OpenSlidesApp.core.site', [
 .controller('SearchBarCtrl', [
     '$scope',
     '$state',
-    function ($scope, $state) {
-        $scope.search = function(query) {
-            $scope.query = '';
+    '$sanitize',
+    function ($scope, $state, $sanitize) {
+        $scope.search = function() {
+            var query = _.escape($scope.querybar);
+            $scope.querybar = '';
             $state.go('search', {q: query});
         };
     }
 ])
+
 // Search Controller
 .controller('SearchCtrl', [
     '$scope',
     '$http',
     '$stateParams',
+    '$location',
+    '$sanitize',
     'DS',
-    function ($scope, $http, $stateParams, DS) {
+    function ($scope, $http, $stateParams, $location, $sanitize, DS) {
+        $scope.fullword = false;
+        $scope.filterAgenda = true;
+        $scope.filterMotion = true;
+        $scope.filterAssignment = true;
+        $scope.filterUser = true;
+        $scope.filterMedia = true;
+
         // search function
-        $scope.search = function(query) {
-            $http.get('/core/search_api/?q=' + query).then(function(success) {
-                var elements = success.data.elements;
-                $scope.results = [];
-                angular.forEach(elements, function(element) {
-                    DS.find(element.collection, element.id).then(function(data) {
-                        data.urlState = element.collection.replace('/','.')+'.detail';
-                        data.urlParam = {id: element.id};
-                        $scope.results.push(data);
+        $scope.search = function() {
+            var query = _.escape($scope.query);
+            if (query !== '') {
+                var lastquery = query;
+                // attach asterisks if search is not for full words only
+                if (!$scope.fullword) {
+                    if (query.charAt(0) != '*'){
+                        query = "*" + query;
+                    }
+                    if (query.charAt(query.length - 1) != '*'){
+                        query = query + "*";
+                    }
+                }
+                $scope.query = lastquery;
+                $http.get('/core/search_api/?q=' + query).then(function(success) {
+                    $scope.results = [];
+                    var elements = success.data.elements;
+                    angular.forEach(elements, function(element) {
+                        DS.find(element.collection, element.id).then(function(data) {
+                            data.urlState = element.collection.replace('/','.')+'.detail';
+                            data.urlParam = {id: element.id};
+                            $scope.results.push(data);
+                        });
                     });
                 });
-            });
+                $location.url('/search/?q=' + lastquery);
+            }
         };
 
-        // run search with get parameter from url
+        //get search string from parameters submitted from outside the scope
         if ($stateParams.q) {
-            $scope.search($stateParams.q);
             $scope.query = $stateParams.q;
+            $scope.search();
         }
+
+        // returns element if part of the current search selection
+        $scope.filterresult = function() {
+            return function(result) {
+                if ($scope.filterUser && result.urlState == 'users.user.detail') {
+                    return result;
+                }
+                if ($scope.filterMotion && result.urlState == 'motions.motion.detail') {
+                    return result;
+                }
+                if ($scope.filterAgenda && result.urlState == 'core.customslide.detail') {
+                    return result;
+                }
+                if ($scope.filterAssignment && result.urlState == 'assignments.assignment.detail') {
+                    return result;
+                }
+                if ($scope.filterMedia && result.urlState== 'mediafiles.mediafile.detail') {
+                    return result;
+                }
+                return;
+            };
+        };
     }
 ])
 

@@ -139,9 +139,9 @@
       </ul>
       <!-- Search bar -->
       <div class="searchbar pull-right" ng-controller="SearchBarCtrl">
-        <form ng-submit="search(query); closeMenu()">
+        <form ng-submit="search(); closeMenu()">
           <div class="input-group">
-            <input ng-model="query" class="form-control" type="text" placeholder="{{ 'Search' | translate}}">
+            <input ng-model="querybar" class="form-control" type="text" placeholder="{{ 'Search' | translate}}">
             <span class="input-group-btn">
               <button type="submit" class="btn btn-default">
                 <i class="fa fa-search"></i>
