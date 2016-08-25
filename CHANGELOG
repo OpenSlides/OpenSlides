@@ -10,6 +10,7 @@ Version 2.1 (unreleased)
 
 Agenda:
 - Added button to remove all speakers from a list of speakers.
+- Added option to create or edit agenda items as subitems of others.
 
 Assignments:
 - Remove unused assignment config to publish winner election results only.

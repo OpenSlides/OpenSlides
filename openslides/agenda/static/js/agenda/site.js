@@ -129,7 +129,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         // open edit dialog
         $scope.editDialog = function (item) {
             $state.go(item.content_object.collection.replace('/','.')+'.detail.update',
-                        {id: item.content_object.id});
+                {id: item.content_object.id});
         };
         // detail view of related item (content object)
         $scope.open = function (item) {
