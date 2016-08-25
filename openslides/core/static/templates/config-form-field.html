@@ -11,6 +11,26 @@
            id="{{ key }}"
            type="{{ type }}">
 
+    <!-- resolution -->
+    <!-- Can be removed with multiprojector, but maybe it could be reused in the projectormanage-view -->
+    <!-- if removed, remember to delete the class resolution -->
+    <span ng-if="type == 'resolution'">
+      <translate>Width</translate>:
+      <input ng-model="$parent.value.width"
+             ng-model-option="{debounce: 1000}"
+             ng-change="save(configOption.key, $parent.value)"
+             class="form-control resolution"
+             id="{{ key }}_width"
+             type="number">
+      <translate>Height</translate>:
+      <input ng-model="$parent.value.height"
+             ng-model-option="{debounce: 1000}"
+             ng-change="save(configOption.key, $parent.value)"
+             class="form-control resolution"
+             id="{{ key }}_height"
+             type="number">
+    </span>
+
     <!-- colorpicker -->
     <input ng-if="type == 'colorpicker'"
            colorpicker

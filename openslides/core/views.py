@@ -66,6 +66,20 @@ class ProjectorView(utils_views.View):
     """
     The primary view for OpenSlides projector using AngularJS.
 
+    The projector container template is 'openslides/core/static/templates/projector-container.html'.
+    This container is for controlling the projector resolution.
+    """
+
+    def get(self, *args, **kwargs):
+        with open(finders.find('templates/projector-container.html')) as f:
+            content = f.read()
+        return HttpResponse(content)
+
+
+class RealProjectorView(utils_views.View):
+    """
+    The original view without resolutioncontrol for OpenSlides projector using AngularJS.
+
     The default base template is 'openslides/core/static/templates/projector.html'.
     You can override it by simply adding a custom 'templates/projector.html'
     file to the custom staticfiles directory. See STATICFILES_DIRS in
@@ -168,7 +182,7 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         elif self.action in ('metadata', 'list'):
             result = self.request.user.has_perm('core.can_see_projector')
         elif self.action in ('activate_elements', 'prune_elements', 'update_elements',
-                             'deactivate_elements', 'clear_elements', 'control_view'):
+                             'deactivate_elements', 'clear_elements', 'control_view', 'set_resolution'):
             result = (self.request.user.has_perm('core.can_see_projector') and
                       self.request.user.has_perm('core.can_manage_projector'))
         else:
@@ -313,6 +327,46 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+    @detail_route(methods=['post'])
+    def set_resolution(self, request, pk):
+        """
+        REST API operation to set the resolution.
+
+        It is actually unused, because the resolution is currently set in the config.
+        But with the multiprojector feature this will become importent to set the
+        resolution per projector individually.
+
+        It expects a POST request to
+        /rest/core/projector/<pk>/set_resolution/ with a dictionary with the width
+        and height and the values.
+
+        Example:
+
+        {
+            "width": "1024",
+            "height": "768"
+        }
+        """
+        if not isinstance(request.data, dict):
+            raise ValidationError({'detail': 'Data must be a dictionary.'})
+        if request.data.get('width') is None or request.data.get('height') is None:
+            raise ValidationError({'detail': 'A width and a height have to be given.'})
+        if not isinstance(request.data['width'], int) or not isinstance(request.data['height'], int):
+            raise ValidationError({'detail': 'Data has to be integers.'})
+        if (request.data['width'] < 800 or request.data['width'] > 3840 or
+                request.data['height'] < 600 or request.data['height'] > 2160):
+            raise ValidationError({'detail': 'The Resolution have to be between 800x600 and 3840x2160.'})
+
+        projector_instance = self.get_object()
+        projector_instance.width = request.data['width']
+        projector_instance.height = request.data['height']
+        projector_instance.save()
+
+        message = 'Changing resolution to {width}x{height} was successful.'.format(
+            width=request.data['width'],
+            height=request.data['height'])
+        return Response({'detail': message})
 
     @detail_route(methods=['post'])
     def control_view(self, request, pk):

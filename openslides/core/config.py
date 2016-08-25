@@ -4,13 +4,15 @@ from django.utils.translation import ugettext as _
 from .exceptions import ConfigError, ConfigNotFound
 from .models import ConfigStore
 
+# remove resolution when changing to multiprojector
 INPUT_TYPE_MAPPING = {
     'string': str,
     'text': str,
     'integer': int,
     'boolean': bool,
     'choice': str,
-    'colorpicker': str}
+    'colorpicker': str,
+    'resolution': dict}
 
 
 class ConfigHandler:
@@ -85,6 +87,16 @@ class ConfigHandler:
                 validator(value)
             except DjangoValidationError as e:
                 raise ConfigError(e.messages[0])
+
+        # remove this block when changing to multiprojector
+        if config_variable.input_type == 'resolution':
+            if value.get('width') is None or value.get('height') is None:
+                raise ConfigError(_('A width and a height have to be given.'))
+            if not isinstance(value['width'], int) or not isinstance(value['height'], int):
+                raise ConfigError(_('Data has to be integers.'))
+            if (value['width'] < 800 or value['width'] > 3840 or
+                    value['height'] < 600 or value['height'] > 2160):
+                raise ConfigError(_('The Resolution have to be between 800x600 and 3840x2160.'))
 
         # Save the new value to the database.
         ConfigStore.objects.update_or_create(key=key, defaults={'value': value})

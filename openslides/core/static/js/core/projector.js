@@ -57,6 +57,65 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     }
 ])
 
+// Projector Container Controller
+.controller('ProjectorContainerCtrl', [
+    '$scope',
+    'Config',
+    function($scope, Config) {
+        // watch for changes in Config
+        var last_conf;
+        $scope.$watch(function () {
+            return Config.lastModified();
+        }, function () {
+            var conf = Config.get('projector_resolution').value;
+            // With multiprojector, get the resolution from Prjector.get(pk).{width; height}
+            if(!last_conf || last_conf.width != conf.width || last-conf.height != conf.height) {
+                last_conf = conf;
+                $scope.projectorWidth = conf.width;
+                $scope.projectorHeight = conf.height;
+                $scope.recalculateIframe();
+            }
+        });
+
+        // recalculate the actual Iframesize and scale
+        $scope.recalculateIframe = function () {
+            var scale_width = window.innerWidth / $scope.projectorWidth;
+            var scale_height = window.innerHeight / $scope.projectorHeight;
+
+            if (scale_width > 1 && scale_height > 1) {
+                // Iframe fits in full size in the window
+                $scope.scale = 1;
+                $scope.iframeWidth = $scope.projectorWidth;
+                $scope.iframeHeight = $scope.projectorHeight;
+            } else {
+                // Iframe has to be scaled down
+                if (scale_width <= scale_height) {
+                    // width is the reference
+                    $scope.iframeWidth = window.innerWidth;
+                    $scope.scale = scale_width;
+                    $scope.iframeHeight = $scope.projectorHeight * scale_width;
+                } else {
+                    // height is the reference
+                    $scope.iframeHeight = window.innerHeight;
+                    $scope.scale = scale_height;
+                    $scope.iframeWidth = $scope.projectorWidth * scale_height;
+                }
+            }
+        };
+
+        // watch for changes in the windowsize
+        $(window).on("resize.doResize", function () {
+            $scope.$apply(function() {
+                $scope.recalculateIframe();
+            });
+        });
+
+        $scope.$on("$destroy",function (){
+            $(window).off("resize.doResize");
+        });
+    }
+])
+
 .controller('ProjectorCtrl', [
     '$scope',
     'Projector',

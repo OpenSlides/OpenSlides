@@ -602,6 +602,15 @@ angular.module('OpenSlidesApp.core.site', [
             })
             .state('projector', {
                 url: '/projector',
+                templateUrl: 'static/templates/projector-container.html',
+                data: {extern: true},
+                onEnter: function($window) {
+                    $window.location.href = this.url;
+                }
+            })
+            .state('real-projector', {
+                url: '/real-projector',
+                templateUrl: 'static/templates/projector.html',
                 data: {extern: true},
                 onEnter: function($window) {
                     $window.location.href = this.url;
@@ -802,6 +811,7 @@ angular.module('OpenSlidesApp.core.site', [
     'Config',
     'gettextCatalog',
     function($parse, Config, gettextCatalog) {
+        // remove resolution when changing to multiprojector
         function getHtmlType(type) {
             return {
                 string: 'text',
@@ -810,6 +820,7 @@ angular.module('OpenSlidesApp.core.site', [
                 boolean: 'checkbox',
                 choice: 'choice',
                 colorpicker: 'colorpicker',
+                resolution: 'resolution',
             }[type];
         }
 
@@ -1074,6 +1085,22 @@ angular.module('OpenSlidesApp.core.site', [
                 }
             }
 
+        });
+
+        // watch for changes in Config
+        var last_conf;
+        $scope.$watch(function () {
+            return Config.lastModified();
+        }, function () {
+            var conf = Config.get('projector_resolution').value;
+            // With multiprojector, get the resolution from Prjector.get(pk).{width; height}
+            if(!last_conf || last_conf.width != conf.width || last-conf.height != conf.height) {
+                last_conf = conf;
+                $scope.projectorWidth = conf.width;
+                $scope.projectorHeight = conf.height;
+                $scope.scale = 256.0 / $scope.projectorWidth;
+                $scope.iframeHeight = $scope.scale * $scope.projectorHeight;
+            }
         });
 
         // *** countdown functions ***

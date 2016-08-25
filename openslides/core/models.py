@@ -66,6 +66,11 @@ class Projector(RESTModelMixin, models.Model):
 
     scroll = models.IntegerField(default=0)
 
+    # currently unused, but important for the multiprojector.
+    width = models.PositiveIntegerField(default=1024)
+
+    height = models.PositiveIntegerField(default=768)
+
     class Meta:
         """
         Contains general permissions that can not be placed in a specific app.

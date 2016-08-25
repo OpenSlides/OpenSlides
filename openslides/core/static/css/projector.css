@@ -11,6 +11,44 @@ body{
     color: #222;
 }
 
+/*** ProjectorContainer ***/
+.pContainer {
+    background-color: #222;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: table;
+}
+
+.pContainer > div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.pContainer #iframe {
+    -moz-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    transform-origin: 0 0 0;
+}
+
+.pContainer #iframewrapper {
+    position: relative;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pContainer #iframeoverlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: block;
+    z-index: 1;
+}
+
 /*** HEADER ***/
 #header {
     box-shadow: 0 0 7px rgba(0,0,0,0.6);
