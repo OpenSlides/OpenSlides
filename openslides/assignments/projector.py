@@ -1,8 +1,8 @@
+from openslides.agenda.models import Item
+from openslides.agenda.views import ItemViewSet
 from openslides.core.exceptions import ProjectorException
 from openslides.core.views import TagViewSet
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
-from openslides.agenda.models import Item
-from openslides.agenda.views import ItemViewSet
 
 from .models import Assignment, AssignmentPoll
 from .views import AssignmentViewSet

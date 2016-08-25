@@ -42,8 +42,8 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
             $scope.phases = phases;
         });
         // load all users
-        User.findAll().then( fucntion() {
-            User.bindAll({}, $scope, 'users')
+        User.findAll().then( function() {
+            User.bindAll({}, $scope, 'users');
         });
     }
 ]);

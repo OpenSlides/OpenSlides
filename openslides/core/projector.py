@@ -1,4 +1,5 @@
 from django.utils.timezone import now
+import openslides  # from openslides.agenda.models import Item fails
 
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
 
@@ -6,7 +7,6 @@ from .config import config
 from .exceptions import ProjectorException
 from .models import CustomSlide, Projector
 from .views import CustomSlideViewSet
-import openslides  # from openslides.agenda.models import Item fails
 
 
 class CustomSlideSlide(ProjectorElement):
@@ -46,6 +46,7 @@ class CustomSlideSlide(ProjectorElement):
                         view_class=speaker.user.get_view_class(),
                         view_action='retrieve',
                         pk=str(speaker.user_id))
+
 
 class Clock(ProjectorElement):
     """
