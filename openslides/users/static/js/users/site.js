@@ -92,6 +92,16 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             url: '/password',
             controller: 'UserPasswordCtrl',
         })
+        .state('users.user.change-password', {
+            url: '/change-password/{id}',
+            controller: 'UserChangePasswordCtrl',
+            templateUrl: 'static/templates/users/user-change-password.html',
+            resolve: {
+                user: function(User, $stateParams) {
+                    return User.find($stateParams.id);
+                }
+            }
+        })
         .state('users.user.import', {
             url: '/import',
             controller: 'UserImportCtrl',
@@ -226,6 +236,24 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     }
 ])
 
+.factory('PasswordGenerator', [
+    function () {
+        return {
+            generate: function (length) {
+                if (!length) {
+                    length = 8;
+                }
+                var chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789',
+                pw = '';
+                for (var i = 0; i < length; ++i) {
+                    pw += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return pw;
+            }
+        };
+    }
+])
+
 // Service for generic assignment form (create and update)
 .factory('UserForm', [
     '$http',
@@ -233,7 +261,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'Editor',
     'Group',
     'Mediafile',
-    function ($http, gettextCatalog, Editor, Group, Mediafile) {
+    'PasswordGenerator',
+    function ($http, gettextCatalog, Editor, Group, Mediafile, PasswordGenerator) {
         return {
             // ngDialog for user form
             getDialog: function (user) {
@@ -315,21 +344,17 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     key: 'default_password',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Default password'),
-                        description: '',
-                        addonRight: { text: 'Reset', class: 'fa fa-undo', onClick:
-                            function (options, scope) {
-                                $http.post(
-                                    '/rest/users/user/' + scope.model.id + '/reset_password/',
-                                    {'password': scope.model.default_password})
-                                .then(function() {
-                                    options.templateOptions.description =
-                                        gettextCatalog.getString('Password successfully resetted to:') +
-                                        ' ' + scope.model.default_password;
-                                });
+                        label: gettextCatalog.getString('Initial password'),
+                        description: gettextCatalog.getString('Initial password can not be changed.'),
+                        addonRight: {
+                            text: gettextCatalog.getString('Generate'),
+                            class: 'fa fa-magic',
+                            onClick:function (options, scope) {
+                                scope.$parent.model.default_password = PasswordGenerator.generate();
                             }
                         }
-                    }
+                    },
+                    hide: !hideOnCreateForm
                 },
                 {
                     key: 'comment',
@@ -609,6 +634,39 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     $scope.formError = error;
                 }
             );
+        };
+    }
+])
+
+.controller('UserChangePasswordCtrl', [
+    '$scope',
+    '$state',
+    '$http',
+    'User',
+    'user',
+    'gettextCatalog',
+    'PasswordGenerator',
+    function($scope, $state, $http, User, user, gettextCatalog, PasswordGenerator) {
+        User.bindOne(user.id, $scope, 'user');
+        $scope.alert={};
+        $scope.generatePassword = function () {
+            $scope.new_password = PasswordGenerator.generate();
+        };
+        $scope.save = function (user) {
+            if ($scope.new_password !== '') {
+                $http.post(
+                    '/rest/users/user/' + user.id + '/reset_password/',
+                    {'password': $scope.new_password}
+                ).then(
+                    function (success) {
+                        $scope.alert = {type: 'success', msg: success.data.detail, show: true};
+                        $scope.new_password = '';
+                    },
+                    function (error) {
+                        $scope.alert = {type: 'danger', msg: error.data.detail, show: true};
+                    }
+                );
+            }
         };
     }
 ])

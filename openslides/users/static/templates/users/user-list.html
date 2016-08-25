@@ -199,6 +199,7 @@
           <div ng-if="user.number"> {{ user.number }} </div>
           <div os-perms="users.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !user.hover}">
             <a href="" ng-click="openDialog(user)" translate>Edit</a> |
+            <a ui-sref="users.user.change-password({id: user.id})" translate>Change password</a> |
             <a href="" class="text-danger"
                 ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
                 <b>{{ user.get_short_name() }}</b>"
