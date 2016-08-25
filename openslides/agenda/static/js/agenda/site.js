@@ -71,6 +71,22 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             .state('agenda.item.import', {
                 url: '/import',
                 controller: 'AgendaImportCtrl',
+            })
+            .state('agenda.current-list-of-speakers', {
+                url: '/speakers',
+                controller: 'ListOfSpeakersViewCtrl',
+                resolve: {
+                    users: function(User) {
+                        return User.findAll().catch(
+                            function () {
+                                return null;
+                            }
+                        );
+                    },
+                    items: function(Agenda) {
+                       return Agenda.findAll();
+                    }
+                }
             });
     }
 ])
@@ -544,6 +560,63 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             element.target = '_blank';
         };
      }
+])
+
+.controller('ListOfSpeakersViewCtrl', [
+    '$scope',
+    '$state',
+    '$http',
+    'Projector',
+    'Assignment',
+    'Customslide',
+    'Motion',
+    'Agenda',
+    function($scope, $state, $http, Projector, Assignment, Customslide, Motion, Agenda) {
+        $scope.$watch(
+            function() {
+                return Projector.lastModified(1);
+            },
+            function() {
+                Projector.find(1).then( function(projector) {
+                    $scope.AgendaItem = null;
+                    _.forEach(projector.elements, function(element) {
+                        switch(element.name) {
+                            case 'motions/motion':
+                                Motion.find(element.id).then(function(motion) {
+                                    Motion.loadRelations(motion, 'agenda_item').then(function() {
+                                        $scope.AgendaItem = motion.agenda_item;
+                                    });
+                                });
+                                break;
+                            case 'core/customslide':
+                                Customslide.find(element.id).then(function(customslide) {
+                                    Customslide.loadRelations(customslide, 'agenda_item').then(function() {
+                                        $scope.AgendaItem = customslide.agenda_item;
+                                    });
+                                });
+                                break;
+                            case 'assignments/assignment':
+                                Assignment.find(element.id).then(function(assignment) {
+                                    Assignment.loadRelations(assignment, 'agenda_item').then(function() {
+                                        $scope.AgendaItem = assignment.agenda_item;
+                                    });
+                                });
+                                break;
+                            case 'agenda/list-of-speakers':
+                                Agenda.find(element.id).then(function(item) {
+                                    $scope.AgendaItem = item;
+                                });
+                        }
+                    });
+                });
+            }
+        );
+        // go to the list of speakers (management) of the currently
+        // displayed projector slide
+        $scope.goToListOfSpeakers = function() {
+            $state.go('agenda.item.detail', {id: $scope.AgendaItem.id});
+        };
+    }
 ])
 
 //mark all agenda config strings for translation with Javascript

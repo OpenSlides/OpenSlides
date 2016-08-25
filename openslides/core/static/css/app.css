@@ -834,6 +834,49 @@ img {
     display: none;
 }
 
+/* List of speakers view */
+.fullscreendiv {
+    position: absolute;
+    font-size:120%;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    padding: 50px;
+    background: #fff;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+}
+
+.fullscreendiv-title {
+    border-bottom: 5px solid #d3d3d3;
+    margin-bottom: 40px;
+}
+
+.lastSpeakers {
+    color: #9a9898;
+    margin-left: 27px;
+}
+
+.currentSpeaker {
+    font-weight: bold;
+    margin-left: 0px;
+}
+
+.currentSpeaker i {
+    padding-right: 5px;
+}
+
+.nextSpeakers {
+    margin-left: 8px;
+}
+
+.nextSpeakers li {
+    line-height: 150%;
+}
+
 /* search results */
 .searchresults li {
     margin-bottom: 12px;
