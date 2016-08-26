@@ -14,6 +14,7 @@ Agenda:
 
 Assignments:
 - Remove unused assignment config to publish winner election results only.
+- Added options to calculate percentages on different bases.
 
 Core:
 - Added support for big assemblies with lots of users.
@@ -27,6 +28,7 @@ Motions:
 - Added configurable fields for comments.
 - Added recommendations for motions.
 - Changed label of former state "commited a bill" to "refered to committee".
+- Added options to calculate percentages on different bases.
 
 Users:
 - Added field is_committee and new default group Committees.

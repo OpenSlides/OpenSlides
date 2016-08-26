@@ -1,7 +1,6 @@
 from django.core.validators import MinValueValidator
 
 from openslides.core.config import ConfigVariable
-from openslides.poll.models import PERCENT_BASE_CHOICES
 
 
 def get_config_variables():
@@ -28,10 +27,18 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='assignments_poll_100_percent_base',
-        default_value='WITHOUT_INVALID',
+        default_value='YES_NO_ABSTAIN',
         input_type='choice',
         label='The 100 % base of an election result consists of',
-        choices=PERCENT_BASE_CHOICES,
+        choices=(
+            {'value': 'YES_NO_ABSTAIN', 'display_name': 'Yes/No/Abstain per candidate'},
+            {'value': 'YES_NO', 'display_name': 'Yes/No per candidate'},
+            {'value': 'VALID', 'display_name': 'All valid ballots'},
+            {'value': 'CAST', 'display_name': 'All casted ballots'},
+            {'value': 'DISABLED', 'display_name': 'Disabled (no percents)'}),
+        help_text="For Yes/No/Abstain and Yes/No the 100 % base depends on the election method: If there are " +
+                  "more candidates than open posts, the sum of all votes of all candidates is 100%. Otherwise " +
+                  "the sum of all votes per candidate is 100 %.",
         weight=420,
         group='Elections',
         subgroup='Ballot and ballot papers')

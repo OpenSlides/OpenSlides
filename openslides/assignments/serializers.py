@@ -96,8 +96,7 @@ class AssignmentAllPollSerializer(ModelSerializer):
         model = AssignmentPoll
         fields = (
             'id',
-            'yesnoabstain',
-            'yesno',
+            'pollmethod',
             'description',
             'published',
             'options',
@@ -107,7 +106,7 @@ class AssignmentAllPollSerializer(ModelSerializer):
             'votes',
             'has_votes',
             'assignment')  # js-data needs the assignment-id in the nested object to define relations.
-        read_only_fields = ('yesnoabstain',)
+        read_only_fields = ('pollmethod',)
         validators = (default_votes_validator,)
 
     def get_has_votes(self, obj):
@@ -122,12 +121,12 @@ class AssignmentAllPollSerializer(ModelSerializer):
         Customized update method for polls. To update votes use the write
         only field 'votes'.
 
-        Example data for a 'yesnoabstain'=true poll with two candidates:
+        Example data for a 'pollmethod'='yna' poll with two candidates:
 
             "votes": [{"Yes": 10, "No": 4, "Abstain": -2},
                       {"Yes": -1, "No": 0, "Abstain": -2}]
 
-        Example data for a 'yesnoabstain'=false poll with two candidates:
+        Example data for a 'pollmethod' ='yn' poll with two candidates:
             "votes": [{"Votes": 10}, {"Votes": 0}]
         """
         # Update votes.
@@ -168,8 +167,7 @@ class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
         model = AssignmentPoll
         fields = (
             'id',
-            'yesnoabstain',
-            'yesno',
+            'pollmethod',
             'description',
             'published',
             'options',

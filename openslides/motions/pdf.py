@@ -112,11 +112,11 @@ def motion_to_pdf(pdf, motion):
             yes, no, abstain = (option['Yes'], option['No'], option['Abstain'])
             valid, invalid, votescast = ('', '', '')
             if poll.votesvalid is not None:
-                valid = "<br/>%s: %s" % (_("Valid votes"), poll.print_votesvalid())
+                valid = "<br/>%s" % (_("Valid votes"))
             if poll.votesinvalid is not None:
-                invalid = "<br/>%s: %s" % (_("Invalid votes"), poll.print_votesinvalid())
+                invalid = "<br/>%s" % (_("Invalid votes"))
             if poll.votescast is not None:
-                votescast = "<br/>%s: %s" % (_("Votes cast"), poll.print_votescast())
+                votescast = "<br/>%s" % (_("Votes cast"))
             if len(polls) > 1:
                 cell6b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")),
                                         stylesheet['Bold']))

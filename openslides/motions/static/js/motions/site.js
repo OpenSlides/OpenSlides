@@ -85,8 +85,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                                 no = poll.no ? poll.no : '-',
                                 noRelative = poll.getVote(poll.no, 'no').percentStr,
                                 abstain = poll.abstain ? poll.abstain : '-',
-                                abstainrelativeGet = poll.getVote(poll.abstain, 'abstain').percentStr,
-                                abstainRelative = abstainrelativeGet ? abstainrelativeGet : '',
+                                abstainRelative = poll.getVote(poll.abstain, 'abstain').percentStr,
                                 valid = poll.votesvalid  ? poll.votesvalid : '-',
                                 validRelative = poll.getVote(poll.votesvalid, 'votesvalid').percentStr,
                                 number = {
@@ -122,7 +121,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                                 yesPart = converter.createElement("columns", createPart(gettextCatalog.getString("Yes"), yes, yesRelative)),
                                 noPart = converter.createElement("columns", createPart(gettextCatalog.getString("No"), no, noRelative)),
                                 abstainPart = converter.createElement("columns", createPart(gettextCatalog.getString("Abstain"), abstain, abstainRelative)),
-                                totalPart = converter.createElement("columns", createPart(gettextCatalog.getString("Valid votes"), valid, validRelative)),
+                                totalPart = converter.createElement("columns", createPart(gettextCatalog.getString("Valid ballots"), valid, validRelative)),
                                 heading = converter.createElement("columns", [number, headerText]),
                                 pollResult = converter.createElement("stack", [
                                     heading, yesPart, noPart, abstainPart, totalPart
@@ -794,7 +793,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                     key: 'votesvalid',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Valid votes'),
+                        label: gettextCatalog.getString('Valid ballots'),
                         type: 'number'
                     }
                 },
@@ -802,7 +801,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                     key: 'votesinvalid',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Invalid votes'),
+                        label: gettextCatalog.getString('Invalid ballots'),
                         type: 'number'
                     }
                 },
@@ -810,7 +809,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                     key: 'votescast',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Votes cast'),
+                        label: gettextCatalog.getString('Casted ballots'),
                         type: 'number'
                     }
                 }];
@@ -1863,8 +1862,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         // subgroup Voting and ballot papers
         gettext('Voting and ballot papers');
         gettext('The 100 % base of a voting result consists of');
-        gettext('All valid votes (Yes/No/Abstain)');
-        gettext('All votes cast (including invalid votes)');
+        gettext('Yes/No/Abstain');
+        gettext('Yes/No');
+        gettext('All valid ballots');
+        gettext('All casted ballots');
         gettext('Disabled (no percents)');
         gettext('Yes and No votes');
         gettext('Number of ballot papers (selection)');
