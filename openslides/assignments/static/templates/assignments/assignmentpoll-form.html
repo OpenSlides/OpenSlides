@@ -11,6 +11,7 @@
 
 <form name="assignmentPollForm" ng-submit="save(model)">
   <formly-form model="model" fields="formFields">
+    <template-hook hook-name="assignmentPollFormButtons"></template-hook>
     <button type="submit" ng-disabled="assignmentPollForm.$invalid" class="btn btn-primary" translate>
       Save
     </button>
