@@ -25,6 +25,9 @@ Motions:
 - Added button to sort and number all motions in a category.
 - Introduced pdfMake for clientside generation of PDFs.
 
+Projector:
+- Added an overlay for the current list of speakers.
+
 Users:
 - Added field is_committee and new default group Committees.
 - Added field number.

@@ -605,6 +605,29 @@ angular.module('OpenSlidesApp.core.site', [
                 data: {extern: true},
                 onEnter: function($window) {
                     $window.location.href = this.url;
+                },
+                resolve: {
+                    motions: function(Motion) {
+                        return Motion.findAll().then(function(motions) {
+                            angular.forEach(motions, function(motion) {
+                                Motion.loadRelations(motion, 'agenda_item');
+                            });
+                        });
+                    },
+                    assignments: function(Assignment) {
+                        return Assignment.findAll().then(function(assignments) {
+                            angular.forEach(assignments, function(assignment) {
+                                Assignment.loadRelations(assignment, 'agenda_item');
+                            });
+                        });
+                    },
+                    items: function(Customslide) {
+                        return Customslide.findAll().then(function(items) {
+                            angular.forEach(items, function(item) {
+                                Customslide.loadRelations(item, 'agenda_item');
+                            });
+                        });
+                    }
                 }
             })
             .state('core', {
@@ -1120,8 +1143,11 @@ angular.module('OpenSlidesApp.core.site', [
     '$state',
     'Config',
     'Projector',
-    function($scope, $http, $interval, $state, Config, Projector) {
-         // bind projector elements to the scope, update after projector changed
+    'Customslide',
+    'Motion',
+    'Assignment',
+    function($scope, $http, $interval, $state, Config, Projector, Customslide, Motion, Assignment) {
+        // bind projector elements to the scope, update after projector changed
         $scope.$watch(function () {
             return Projector.lastModified(1);
         }, function () {
@@ -1152,20 +1178,20 @@ angular.module('OpenSlidesApp.core.site', [
             $scope.countdowns = [];
             $scope.messages = [];
             // iterate via all projector elements and catch all countdowns and messages
-            $.each(Projector.get(1).elements, function(key, value) {
-                if (value.name == 'core/countdown') {
-                    $scope.countdowns.push(value);
-                    if (value.status == "running") {
+            angular.forEach(Projector.get(1).elements, function(element) {
+                if (element.name == 'core/countdown') {
+                    $scope.countdowns.push(element);
+                    if (element.status == "running") {
                         // calculate remaining seconds directly because interval starts with 1 second delay
-                        $scope.calculateCountdownTime(value);
+                        $scope.calculateCountdownTime(element);
                         // start interval timer (every second)
-                        value.interval = $interval( function() { $scope.calculateCountdownTime(value); }, 1000);
+                        element.interval = $interval( function() { $scope.calculateCountdownTime(element); }, 1000);
                     } else {
-                        value.seconds = value.countdown_time;
+                        element.seconds = element.countdown_time;
                     }
                 }
-                if (value.name == 'core/message') {
-                    $scope.messages.push(value);
+                if (element.name == 'core/message') {
+                    $scope.messages.push(element);
                 }
             });
             $scope.scrollLevel = Projector.get(1).scroll;
@@ -1294,15 +1320,54 @@ angular.module('OpenSlidesApp.core.site', [
             $http.post('/rest/core/projector/1/control_view/', {"action": action, "direction": direction});
         };
         $scope.editCurrentSlide = function () {
-            $.each(Projector.get(1).elements, function(key, value) {
-                if (value.name == 'agenda/list-of-speakers') {
+            angular.forEach(Projector.get(1).elements, function(element) {
+                if (element.name == 'agenda/list-of-speakers') {
                     $state.go('agenda.item.detail', {id: value.id});
                 } else if (
-                    value.name != 'agenda/item-list' &&
-                    value.name != 'core/clock' &&
-                    value.name != 'core/countdown' &&
-                    value.name != 'core/message' ) {
-                    $state.go(value.name.replace('/', '.')+'.detail.update', {id: value.id});
+                    element.name != 'agenda/item-list' &&
+                    element.name != 'core/clock' &&
+                    element.name != 'core/countdown' &&
+                    element.name != 'core/message' &&
+                    element.name != 'core/speakeroverlay') {
+                    $state.go(element.name.replace('/', '.')+'.detail.update', {id: element.id});
+                }
+            });
+        };
+        //*** List of speakers overlay on slide***
+        $scope.speakeroverlay = function() {
+            angular.forEach(Projector.get(1).elements, function(element) {
+                if (element.name == 'core/speakeroverlay') {
+                    return element;
+                }
+            });
+        };
+        
+        $scope.speakeroverlaytoggle = function () {
+            var data = {};
+            if ($scope.speakeroverlay().visible) {
+                data[$scope.speakeroverlay().uuid] = { "visible": false };
+            } else {
+                data[$scope.speakeroverlay().uuid] = { "visible": true };
+            }
+            $http.post('/rest/core/projector/1/update_elements/', data);
+        };
+        $scope.goToListofSpeakers = function() {
+            angular.forEach(Projector.get(1).elements, function(element) {
+                if (element.name == 'motions/motion') {
+                    Motion.find(element.id).then(function(motion){
+                        $state.go('agenda.item.detail',
+                              {id: motion.agenda_item_id});
+                    });
+                } else if (element.name == 'core/customslide') {
+                    Customslide.find(element.id).then(function(slide){
+                        $state.go('agenda.item.detail',
+                                  {id: slide.agenda_item_id});
+                    });
+                } else if (element.name == 'assignments/assignment') {
+                    Assignment.find(element.id).then(function(assignment){
+                        $state.go('agenda.item.detail',
+                              {id: assignment.agenda_item_id});
+                    });
                 }
             });
         };
