@@ -8,10 +8,11 @@ from django.apps import apps
 from django.db import transaction
 from django.utils import timezone
 
+from openslides.core.models import Projector
+
 from ..users.auth import AnonymousUser
 from ..users.models import User
 from .access_permissions import BaseAccessPermissions
-from openslides.core.models import Projector
 
 
 def get_logged_in_users():
