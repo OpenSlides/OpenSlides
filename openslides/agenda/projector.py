@@ -38,6 +38,11 @@ class ItemListSlide(ProjectorElement):
         yield ProjectorRequirement(
             view_class=ItemViewSet,
             view_action='list')
+        for speaker in self.speakers.all():
+            yield ProjectorRequirement(
+                view_class=speaker.user.get_view_class(),
+                view_action='retrieve',
+                pk=str(speaker.user_id))
 
 
 class ListOfSpeakersSlide(ProjectorElement):
@@ -73,4 +78,4 @@ class ListOfSpeakersSlide(ProjectorElement):
                     yield ProjectorRequirement(
                         view_class=speaker.user.get_view_class(),
                         view_action='retrieve',
-                        pk=str(speaker.user_id))
+                        pk=str(speaker.user.pk))

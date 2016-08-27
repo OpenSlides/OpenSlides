@@ -68,6 +68,8 @@ angular.module('OpenSlidesApp.core', [
                 }, 1000);
             };
             socket.onmessage = function (event) {
+                console.log("event");
+                console.log(event);
                 _.forEach(Autoupdate.messageReceivers, function (receiver) {
                     receiver(event.data);
                 });

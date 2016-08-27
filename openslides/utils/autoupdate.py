@@ -11,6 +11,7 @@ from django.utils import timezone
 from ..users.auth import AnonymousUser
 from ..users.models import User
 from .access_permissions import BaseAccessPermissions
+from openslides.core.models import Projector
 
 
 def get_logged_in_users():
@@ -84,7 +85,8 @@ def send_data(message):
     if not message['is_deleted']:
         Model = get_model_from_collection_string(message['collection_string'])
         instance = Model.objects.get(pk=message['pk'])
-        full_data = access_permissions.get_full_data(instance)
+        model_access_permissions = Model.access_permissions
+        full_data = model_access_permissions.get_full_data(instance)
 
     # Loop over all logged in users and the anonymous user.
     for user in itertools.chain(get_logged_in_users(), [AnonymousUser()]):
@@ -94,10 +96,20 @@ def send_data(message):
             'id': message['pk'],  # == instance.get_rest_pk()
             'action': 'deleted' if message['is_deleted'] else 'changed'}
         if not message['is_deleted']:
-            data = access_permissions.get_restricted_data(full_data, user)
+            data = model_access_permissions.get_restricted_data(full_data, user)
+
             if data is None:
-                # There are no data for the user so he can't see the object. Skip him.
-                continue
+                # send data if user can see the projector and data is projected
+                if user.has_perm('core.can_see_projector'):
+                    for requirement in Projector.get_all_requirements():
+                        # TODO: only send the data if a projector is open. This is not
+                        # send via websocket as of now?
+                        # if requirement.is_currently_required(view_instance=self):
+                        # TODO: limit data to the amount needed
+                        data = full_data
+                else:
+                    # There are no data for the user so he can't see the object. Skip him.
+                    continue
             output['data'] = data
         channel.send({'text': json.dumps(output)})
 

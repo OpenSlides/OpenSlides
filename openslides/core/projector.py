@@ -19,12 +19,23 @@ class CustomSlideSlide(ProjectorElement):
             raise ProjectorException('Custom slide does not exist.')
 
     def get_requirements(self, config_entry):
+        from openslides.agenda.views import ItemViewSet
         pk = config_entry.get('id')
         if pk is not None:
+            slide = CustomSlide.objects.get(pk=pk)
             yield ProjectorRequirement(
                 view_class=CustomSlideViewSet,
                 view_action='retrieve',
                 pk=str(pk))
+            yield ProjectorRequirement(
+                view_class=ItemViewSet,
+                view_action='retrieve',
+                pk=str(slide.agenda_item_id))
+            for speaker in slide.agenda_item.speakers.all():
+                yield ProjectorRequirement(
+                    view_class=speaker.user.get_view_class(),
+                    view_action='retrieve',
+                    pk=str(speaker.user))
 
 
 class Clock(ProjectorElement):
