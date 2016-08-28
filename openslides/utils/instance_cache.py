@@ -43,7 +43,7 @@ def get_instance_list(collection, user=None):
 
     # Get all instances out of the cache
     cache_keys = [get_instance_cache_key(collection, id) for id in cached_ids]
-    for cache_key, cached_instance in cache.get_many(cache_keys):
+    for cache_key, cached_instance in cache.get_many(cache_keys).items():
         # TODO: Test if cached_instance is None for instances, that do not exist in the cache
         if cached_instance is None:
             cached_instance = get_instance_from_db(
@@ -95,8 +95,9 @@ def update_instance(collection, id):
     # Add the id of the instance in the instance list
     # Do nothing if the ids are currently not in the cache
     cache_key = get_instance_list_cache_key(collection)
-    cached_ids = set(cache.get(cache_key))
+    cached_ids = cache.get(cache_key)
     if cached_ids is not None:
+        cached_ids = set(cached_ids)
         cached_ids.add(id)
         cache.set(cache_key, cached_ids)
 
@@ -110,16 +111,15 @@ def get_instance_from_db(collection, id):
     cache_key = get_instance_cache_key(collection, id)
     Model = get_model_from_collection_string(collection)
     instance = Model.objects.get(pk=id)
-    # TODO: Get the access_permissions object
-    instance = access_permissions.get_full_data(instance)
-    cache.set(cache_key, instance)
-    return instance
+    access_permissions = instance.get_access_permissions()
+    full_data = access_permissions.get_full_data(instance)
+    cache.set(cache_key, full_data)
+    return full_data
 
 
 def permission_filter(collection, instance, user):
     # Apply permission filter
     if user is not None:
-        Model = get_model_from_collection_string(collection)
         if user == 0:
             user = AnonymousUser()
 
@@ -127,7 +127,11 @@ def permission_filter(collection, instance, user):
             # user is the id of an user instance.
             user = User.objects.get(user)
 
-        # TODO: Get the access_permissions object
+        Model = get_model_from_collection_string(collection)
+        # TODO: access_permissions is normaly get by get_access_permissions().
+        #       but in this case there is only the Class and get_access_permissions()
+        #       is not a classmethod.
+        access_permissions = Model.access_permissions
         instance = access_permissions.get_restricted_data(instance, user)
     return instance
 
