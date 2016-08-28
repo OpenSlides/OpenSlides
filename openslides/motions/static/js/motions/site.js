@@ -207,6 +207,137 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         createInstance: createInstance
     };
 })
+.factory('PollContentProvider', function() {
+
+    /**
+    * Generates a content provider for polls
+    * @constructor
+    * @param {string} title - title of poll
+    * @param {string} id - if of poll
+    * @param {object} gettextCatalog - for translation
+    */
+
+    var createInstance = function(title, id, gettextCatalog){
+
+        //left and top margin for a single sheet
+        var space = {
+            left: 30,
+            top: 30,
+            bottom: 10
+        },
+            //size and position of the signing circle
+            circle = {
+            yDistance: 6,
+            size: 8
+        },
+            //margin for the decision
+            singleItemMargin = 10,
+            //space between circle and dicision
+            columnwidth = 20,
+            //defines the space under a single sheet
+            sheetend = 65,
+            //defines the used fontsize
+            fontSize = 14;
+
+        /**
+        * draws a single circle
+        * @function
+        * @param {int} y - the relative y coordinate
+        * @param {int} size - size of the circle in px
+        */
+        var drawCircle = function(y, size) {
+            return [
+                {
+                    type: 'ellipse',
+                    x: 0,
+                    y: y,
+                    lineColor: 'black',
+                    r1: size,
+                    r2: size
+                }
+            ];
+        };
+
+        /**
+        * Returns an entry in the ballot with a circle to draw into
+        * @function
+        * @param {string} decision - the name of an entry to decide between, e.g. 'yes' or 'no'
+        */
+        var createBallotEntry = function(decision) {
+            return {
+                margin: [space.left+circle.size, singleItemMargin, 0, 0],
+                columns: [
+                    {
+                        width: columnwidth,
+                        canvas: drawCircle(circle.yDistance, circle.size)
+                    },
+                    {
+                        text: decision
+                    }
+                ],
+            };
+        };
+
+        /**
+        * Returns a single section on the ballot paper
+        * @function
+        */
+        var createSection = function() {
+            return {
+                stack: [{
+                    text: gettextCatalog.getString("Motion") + " " + id,
+                    style: 'header',
+                    margin: [space.left, space.top, 0, 0]
+                }, {
+                    text: title,
+                    margin: [space.left, 0, 0, space.bottom]
+                },
+                createBallotEntry(gettextCatalog.getString("Yes")),
+                createBallotEntry(gettextCatalog.getString("No")),
+                createBallotEntry(gettextCatalog.getString("Abstain")),
+                ],
+                margin: [0, 0, 0, sheetend]
+            };
+        };
+
+        /**
+        * Returns Content for single motion
+        * @function
+        * @param {string} id - if of poll
+        */
+        return {
+            content: [{
+                table: {
+                    headerRows: 1,
+                    widths: ['*', '*'],
+                    body: [
+                        [createSection(), createSection()],
+                        [createSection(), createSection()],
+                        [createSection(), createSection()],
+                        [createSection(), createSection()]
+                    ],
+                },
+                layout: {
+                    hLineWidth: function() {return 0.5;},
+                    vLineWidth: function() {return 0.5;},
+                    hLineColor: function() {return 'gray';},
+                    vLineColor: function() {return 'gray';},
+                }
+            }],
+            pageSize: 'A4',
+            pageMargins: [0, 0, 0, 0],
+            styles: {
+                header: {
+                    fontSize: fontSize,
+                    bold: true
+                }
+            },
+        };
+    };
+    return {
+        createInstance: createInstance
+    };
+})
 
 .config([
     'mainMenuProvider',
@@ -817,12 +948,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'motion',
     'SingleMotionContentProvider',
     'MotionContentProvider',
+    'PollContentProvider',
     'PdfMakeConverter',
     'PdfMakeDocumentProvider',
     'gettextCatalog',
     'diffService',
     function($scope, $http, $timeout, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Editor,
-             Config, motion, SingleMotionContentProvider, MotionContentProvider, PdfMakeConverter,
+             Config, motion, SingleMotionContentProvider, MotionContentProvider, PollContentProvider, PdfMakeConverter,
              PdfMakeDocumentProvider, gettextCatalog, diffService) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
@@ -862,9 +994,18 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                   motionContentProvider = MotionContentProvider.createInstance(converter),
                   contentProvider = SingleMotionContentProvider.createInstance(motionContentProvider, motion, $scope, User),
                   documentProvider = PdfMakeDocumentProvider.createInstance(contentProvider, data.defaultFont),
-                  filename = gettextCatalog.getString("Motion") + " " + id + ".pdf";
+                  filename = gettextCatalog.getString("Motion") + "-" + id + ".pdf";
               pdfMake.createPdf(documentProvider.getDocument()).download(filename);
           });
+        };
+
+        //make PDF for polls
+        $scope.makePollPDF = function() {
+            var id = motion.identifier.replace(" ", ""),
+                title = motion.getTitle($scope.version),
+                filename = gettextCatalog.getString("Motion") + "-" + id + "-" + gettextCatalog.getString("ballot-paper") + ".pdf",
+                content = PollContentProvider.createInstance(title, id, gettextCatalog);
+            pdfMake.createPdf(content).download(filename);
         };
 
         // open edit dialog
