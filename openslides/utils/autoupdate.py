@@ -4,13 +4,14 @@ import json
 from asgiref.inmemory import ChannelLayer
 from channels import Channel, Group
 from channels.auth import channel_session_user, channel_session_user_from_http
-from django.apps import apps
 from django.db import transaction
 from django.utils import timezone
 
+from . import instance_cache
 from ..users.auth import AnonymousUser
 from ..users.models import User
 from .access_permissions import BaseAccessPermissions
+from .collection import get_model_from_collection_string
 
 
 def get_logged_in_users():
@@ -20,34 +21,6 @@ def get_logged_in_users():
     Only works with the OpenSlides session backend.
     """
     return User.objects.exclude(session=None).filter(session__expire_date__gte=timezone.now()).distinct()
-
-
-def get_model_from_collection_string(collection_string):
-    """
-    Returns a model class which belongs to the argument collection_string.
-    """
-    def model_generator():
-        """
-        Yields all models of all apps.
-        """
-        for app_config in apps.get_app_configs():
-            for model in app_config.get_models():
-                yield model
-
-    for model in model_generator():
-        try:
-            model_collection_string = model.get_collection_string()
-        except AttributeError:
-            # Skip models which do not have the method get_collection_string.
-            pass
-        else:
-            if model_collection_string == collection_string:
-                # The model was found.
-                break
-    else:
-        # No model was found in all apps.
-        raise ValueError('Invalid message. A valid collection_string is missing.')
-    return model
 
 
 # Connected to websocket.connect
@@ -85,6 +58,11 @@ def send_data(message):
         Model = get_model_from_collection_string(message['collection_string'])
         instance = Model.objects.get(pk=message['pk'])
         full_data = access_permissions.get_full_data(instance)
+        # Update the cache
+        instance_cache.update_instance(message['collection_string'], message['pk'])
+    else:
+        # Remove the instance from the cache
+        instance_cache.del_instance(message['collection_string'], message['pk'])
 
     # Loop over all logged in users and the anonymous user.
     for user in itertools.chain(get_logged_in_users(), [AnonymousUser()]):
