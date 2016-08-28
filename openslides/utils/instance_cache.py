@@ -27,9 +27,10 @@ def get_instance(collection, id, user=None):
     return cached_instance
 
 
-def get_instance_list(collection, user=None):
+def instances_generator(collection, user=None):
     """
-    Like get_instance but returns all of instances of an collection as a generator.
+    Like get_instance but returns all of instances of an collection as a
+    generator.
 
     Therefore a set of all ids of the collection is saved at the cache.
     """
@@ -43,11 +44,20 @@ def get_instance_list(collection, user=None):
 
     # Get all instances out of the cache
     cache_keys = [get_instance_cache_key(collection, id) for id in cached_ids]
-    for cache_key, cached_instance in cache.get_many(cache_keys).items():
-        # TODO: Test if cached_instance is None for instances, that do not exist in the cache
+    cached_instances = cache.get_many(cache_keys)
+
+    # cache.get_many() ignores cache_keys that are not in the cache. Add them
+    # with the value None.
+    for cache_key in cache_keys:
+        cached_instances.setdefault(cache_key, None)
+
+    for cache_key, cached_instance in cached_instances.items():
         if cached_instance is None:
+            # TODO: If the cache is empty, this retrieves all db entries one by
+            #       one. Instead it should get all at once.
             cached_instance = get_instance_from_db(
-                get_collection_id_from_cache_key(cache_key))
+                *get_collection_id_from_cache_key(cache_key))
+
         cached_instance = permission_filter(collection, cached_instance, user)
         if cached_instance is not None:
             # Only return instances where the user can see at least some data
@@ -125,7 +135,9 @@ def permission_filter(collection, instance, user):
 
         if isinstance(user, int):
             # user is the id of an user instance.
-            user = User.objects.get(user)
+            # TODO: get_instance could be used here to get the cached version of
+            #       the user.
+            user = User.objects.get(pk=user)
 
         Model = get_model_from_collection_string(collection)
         # TODO: access_permissions is normaly get by get_access_permissions().
