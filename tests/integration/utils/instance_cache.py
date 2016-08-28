@@ -1,11 +1,12 @@
-from openslides.utils.test import TestCase as _TestCase
+from unittest.mock import patch
+
+from django.core.cache import caches
 
 from openslides.core.models import CustomSlide
-from openslides.utils.instance_cache import get_instance, instances_generator
-
-from unittest.mock import patch
-from django.core.cache import caches
 from openslides.users.models import User
+from openslides.utils.instance_cache import get_instance, instances_generator
+from openslides.utils.test import TestCase as _TestCase
+
 
 class TestCase(_TestCase):
     """
@@ -75,7 +76,7 @@ class TestGetInstance(TestCase):
         admin = User.objects.get(pk=1)
 
         with self.assertNumQueries(0):
-            instance = get_instance('core/customslide', 1)
+            get_instance('core/customslide', 1, user=admin)
 
 
 class TestInstancesGenerator(TestCase):
