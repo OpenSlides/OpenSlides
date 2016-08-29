@@ -66,9 +66,8 @@ class BaseVote(models.Model):
             percent_base = 0
         return print_value(self.weight, percent_base)
 
-
 PERCENT_BASE_CHOICES = (
-    {'value': 'WITHOUT_INVALID', 'display_name': ugettext_lazy('Only all valid votes')},
+    {'value': 'WITHOUT_INVALID', 'display_name': ugettext_lazy('All valid votes (Yes/No/Abstain)')},
     {'value': 'WITH_INVALID', 'display_name': ugettext_lazy('All votes cast (including invalid votes)')},
     {'value': 'DISABLED', 'display_name': ugettext_lazy('Disabled (no percents)')})
 
@@ -119,9 +118,11 @@ class CollectDefaultVotesMixin(models.Model):
         return value
 
     def get_percent_base(self):
-        if self.get_percent_base_choice() == "WITHOUT_INVALID" and self.votesvalid and self.votesvalid > 0:
+        if self.get_percent_base_choice() == "WITHOUT_INVALID" and\
+                self.votesvalid and self.votesvalid > 0:
             base = 100 / float(self.votesvalid)
-        elif self.get_percent_base_choice() == "WITH_INVALID" and self.votescast and self.votescast > 0:
+        elif self.get_percent_base_choice() == "WITH_INVALID" and\
+                self.votescast and self.votescast > 0:
             base = 100 / float(self.votescast)
         else:
             base = None

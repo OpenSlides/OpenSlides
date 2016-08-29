@@ -1,4 +1,5 @@
 from django.core.validators import MinValueValidator
+from django.utils.translation import ugettext_lazy
 
 from openslides.core.config import ConfigVariable
 from openslides.poll.models import PERCENT_BASE_CHOICES
@@ -23,6 +24,10 @@ def get_config_variables():
     papers' and 'PDF'. The generator has to be evaluated during app loading
     (see apps.py).
     """
+    percent_base_choices_motion = PERCENT_BASE_CHOICES
+    percent_base_choices_motion += ({
+        'value': "WITHOUT_ABSTAIN",
+        'display_name': ugettext_lazy('Yes and No votes')},)
     # General
     yield ConfigVariable(
         name='motions_workflow',
@@ -148,7 +153,7 @@ def get_config_variables():
         default_value='WITHOUT_INVALID',
         input_type='choice',
         label='The 100 % base of a voting result consists of',
-        choices=PERCENT_BASE_CHOICES,
+        choices=percent_base_choices_motion,
         weight=355,
         group='Motions',
         subgroup='Voting and ballot papers')
