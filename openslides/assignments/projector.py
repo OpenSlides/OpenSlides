@@ -50,11 +50,6 @@ class AssignmentSlide(ProjectorElement):
                     view_class=ItemViewSet,
                     view_action='retrieve',
                     pk=str(assignment.agenda_item_id))
-                for speaker in assignment.agenda_item.speakers.all():
-                    yield ProjectorRequirement(
-                        view_class=speaker.user.get_view_class(),
-                        view_action='retrieve',
-                        pk=str(speaker.user))
                 for user in assignment.related_users.all():
                     yield ProjectorRequirement(
                         view_class=user.get_view_class(),

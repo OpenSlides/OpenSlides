@@ -69,8 +69,3 @@ class MotionSlide(ProjectorElement):
                         view_class=TagViewSet,
                         view_action='retrieve',
                         pk=str(tag.pk))
-                for speaker in motion.agenda_item.speakers.all():
-                    yield ProjectorRequirement(
-                        view_class=speaker.user.get_view_class(),
-                        view_action='retrieve',
-                        pk=str(speaker.user))
