@@ -26,7 +26,8 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
         // load assignemt object and related agenda item
         Assignment.find(id).then(function(assignment) {
             Assignment.loadRelations(assignment, 'agenda_item');
-            $scope.$watchGroup([assignment.assignment_related_users, $scope.element.poll.options],                                      function(newval, oldval) {
+            $scope.$watchGroup([assignment.assignment_related_users, $scope.element.poll.options],
+            function(newval, oldval) {
                 if (newval[0] != oldval[0]) {
                     angular.forEach(assignment.assignment_related_users, function(related) {
                         if(!related.user) {
