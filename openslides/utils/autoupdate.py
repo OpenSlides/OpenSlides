@@ -109,19 +109,23 @@ def inform_changed_data(instance, is_deleted=False):
         # Instance has no method get_root_rest_element. Just ignore it.
         pass
     else:
+        message_dict = {
+            'collection_string': root_instance.get_collection_string(),
+            'pk': root_instance.pk,
+            'is_deleted': is_deleted and instance == root_instance,
+            'dispatch_uid': root_instance.get_access_permissions().get_dispatch_uid(),
+        }
+
         # If currently there is an open database transaction, then the following
         # function is only called, when the transaction is commited. If there
         # is currently no transaction, then the function is called immediately.
-        def send_autoupdate():
+        def send_autoupdate(message):
             try:
-                Channel('autoupdate.send_data').send({
-                    'collection_string': root_instance.get_collection_string(),
-                    'pk': root_instance.pk,
-                    'is_deleted': is_deleted and instance == root_instance,
-                    'dispatch_uid': root_instance.get_access_permissions().get_dispatch_uid()})
+                Channel('autoupdate.send_data').send(message)
             except ChannelLayer.ChannelFull:
                 pass
-        transaction.on_commit(send_autoupdate)
+
+        transaction.on_commit(lambda: send_autoupdate(message_dict))
 
 
 def inform_changed_data_receiver(sender, instance, **kwargs):
