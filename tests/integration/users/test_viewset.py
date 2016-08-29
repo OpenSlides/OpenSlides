@@ -185,6 +185,22 @@ class UserResetPassword(TestCase):
             'new_password_Yuuh8OoQueePahngohy3'))
 
 
+class GroupMetadata(TestCase):
+    def test_options_request_as_anonymous_user_activated(self):
+        config['general_system_enable_anonymous'] = True
+
+        response = self.client.options('/rest/users/group/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['name'], 'Group List')
+        perm_list = response.data['actions']['POST']['permissions']['choices']
+        self.assertEqual(type(perm_list), list)
+        for item in perm_list:
+            self.assertEqual(type(item), dict)
+            self.assertTrue(item.get('display_name') is not None)
+            self.assertTrue(item.get('value') is not None)
+
+
 class GroupReceive(TestCase):
     def test_get_groups_as_anonymous_deactivated(self):
         """
