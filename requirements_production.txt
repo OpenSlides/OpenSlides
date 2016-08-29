@@ -2,7 +2,7 @@
 Django>=1.9,<1.11,!=1.10.0
 beautifulsoup4>=4.5,<4.6
 channels>=0.15,<1.0
-djangorestframework>=3.2.0,<3.4
+djangorestframework>=3.4,<3.5
 html5lib>=0.99,<1.0
 jsonfield>=0.9.19,<1.1
 natsort>=3.2,<5.1

@@ -1,6 +1,7 @@
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
@@ -177,8 +178,13 @@ class GroupViewSetMetadata(SimpleMetadata):
         """
         field_info = super().get_field_info(field)
         if field.field_name == 'permissions':
-            for choice in field_info['choices']:
-                choice['display_name'] = choice['display_name'].split(' | ')[2]
+            field_info['choices'] = [
+                {
+                    'value': choice_value,
+                    'display_name': force_text(choice_name, strings_only=True).split(' | ')[2]
+                }
+                for choice_value, choice_name in field.choices.items()
+            ]
         return field_info
 
 
