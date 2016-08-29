@@ -23,6 +23,10 @@ def get_config_variables():
     papers' and 'PDF'. The generator has to be evaluated during app loading
     (see apps.py).
     """
+    PERCENT_BASE_CHOICES_MOTION = ({
+        'value': "WITHOUT_ABSTAIN",
+        'display_name': 'Yes and No votes'},)
+    PERCENT_BASE_CHOICES_MOTION += PERCENT_BASE_CHOICES
     # General
     yield ConfigVariable(
         name='motions_workflow',
@@ -148,7 +152,7 @@ def get_config_variables():
         default_value='WITHOUT_INVALID',
         input_type='choice',
         label='The 100 % base of a voting result consists of',
-        choices=PERCENT_BASE_CHOICES,
+        choices=PERCENT_BASE_CHOICES_MOTION,
         weight=355,
         group='Motions',
         subgroup='Voting and ballot papers')

@@ -3,7 +3,6 @@ import locale
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy
 
 from openslides.utils.models import MinMaxIntegerField
 
@@ -66,11 +65,10 @@ class BaseVote(models.Model):
             percent_base = 0
         return print_value(self.weight, percent_base)
 
-
 PERCENT_BASE_CHOICES = (
-    {'value': 'WITHOUT_INVALID', 'display_name': ugettext_lazy('Only all valid votes')},
-    {'value': 'WITH_INVALID', 'display_name': ugettext_lazy('All votes cast (including invalid votes)')},
-    {'value': 'DISABLED', 'display_name': ugettext_lazy('Disabled (no percents)')})
+    {'value': 'WITHOUT_INVALID', 'display_name': 'All valid votes (Yes/No/Abstain)'},
+    {'value': 'WITH_INVALID', 'display_name': 'All votes cast (including invalid votes)'},
+    {'value': 'DISABLED', 'display_name': 'Disabled (no percents)'})
 
 
 class CollectDefaultVotesMixin(models.Model):

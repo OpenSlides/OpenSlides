@@ -764,6 +764,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         gettext('Elections');
         gettext('Ballot and ballot papers');
         gettext('The 100 % base of an election result consists of');
+        gettext('All valid votes (Yes/No/Abstain)');
+        gettext('All votes cast (including invalid votes)');
+        gettext('Disabled (no percents)');
         gettext('Number of ballot papers (selection)');
         gettext('Number of all delegates');
         gettext('Number of all participants');

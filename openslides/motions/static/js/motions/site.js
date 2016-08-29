@@ -70,14 +70,15 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                     results = function() {
                         return motion.polls.map(function(poll, index) {
                             var id = index + 1,
-                                yes = poll.yes,
-                                yesRelative = (poll.yes) * 100 / (poll.votescast),
-                                no = poll.no,
-                                noRelative = (poll.no) * 100 / (poll.votescast),
-                                abstain = poll.abstain,
-                                abstainRelative = (poll.abstain) * 100 / (poll.votescast),
-                                valid = poll.votesvalid,
-                                validRelative = (poll.votesvalid) * 100 / (poll.votescast),
+                                yes = poll.yes ? poll.yes : '-', // if no poll.yes is given set it to '-'
+                                yesRelative = poll.getVote(poll.yes, 'yes').percentStr,
+                                no = poll.no ? poll.no : '-',
+                                noRelative = poll.getVote(poll.no, 'no').percentStr,
+                                abstain = poll.abstain ? poll.abstain : '-',
+                                abstainrelativeGet = poll.getVote(poll.abstain, 'abstain').percentStr,
+                                abstainRelative = abstainrelativeGet ? abstainrelativeGet : '',
+                                valid = poll.votesvalid  ? poll.votesvalid : '-',
+                                validRelative = poll.getVote(poll.votesvalid, 'votesvalid').percentStr,
                                 number = {
                                     text: id + ".",
                                     width: "5%"
@@ -100,7 +101,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                                     var indexColumn = converter.createElement("text");
                                     var nameColumn = converter.createElement("text", "" + name);
                                     var valueColumn = converter.createElement("text", "" + value);
-                                    var relColumn = converter.createElement("text", "(" + "" + relValue + "%)");
+                                    var relColumn = converter.createElement("text", relValue);
                                     valueColumn.width = "40%";
                                     indexColumn.width = "5%";
                                     valueColumn.width = "5%";
@@ -1602,29 +1603,17 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 .config([
     'gettext',
     function (gettext) {
-        gettext('The assembly may decide,');
-        gettext('Workflow of new motions');
         gettext('Motions');
+
+        // subgroup General
+        gettext('General');
+        gettext('Workflow of new motions');
         gettext('Identifier');
         gettext('Numbered per category');
         gettext('Serially numbered');
         gettext('Set it manually');
         gettext('Motion preamble');
-        gettext('Stop submitting new motions by non-staff users');
-        gettext('Allow to disable versioning');
-        gettext('Activate amendments');
-        gettext('Amendments');
-        gettext('Prefix for the identifier for amendments');
-        gettext('Number of (minimum) required supporters for a motion');
-        gettext('Choose 0 to disable the supporting system.');
-        gettext('Supporters');
-        gettext('Remove all supporters of a motion if a submitter edits his ' +
-                'motion in early state');
-        gettext('Title for PDF document (all motions)');
-        gettext('Preamble text for PDF document (all motioqns)');
-        gettext('Show paragraph numbering (only in PDF)');
-        /// Prefix for the identifier for amendments
-        gettext('A');
+        gettext('The assembly may decide,');
         gettext('Default line numbering');
         /// Line numbering: Outside
         gettext('Outside');
@@ -1634,6 +1623,40 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         gettext('None');
         gettext('Line length');
         gettext('The maximum number of characters per line. Relevant when line numbering is enabled. Min: 40');
+        gettext('Stop submitting new motions by non-staff users');
+        gettext('Allow to disable versioning');
+
+        // subgroup Amendments
+        gettext('Amendments');
+        gettext('Activate amendments');
+        gettext('Prefix for the identifier for amendments');
+        /// Prefix for the identifier for amendments
+        gettext('A');
+
+        // subgroup Suppoerters
+        gettext('Supporters');
+        gettext('Number of (minimum) required supporters for a motion');
+        gettext('Choose 0 to disable the supporting system.');
+        gettext('Remove all supporters of a motion if a submitter edits his ' +
+                'motion in early state');
+
+        // subgroup Voting and ballot papers
+        gettext('Voting and ballot papers');
+        gettext('The 100 % base of a voting result consists of');
+        gettext('All valid votes (Yes/No/Abstain)');
+        gettext('All votes cast (including invalid votes)');
+        gettext('Disabled (no percents)');
+        gettext('Yes and No votes');
+        gettext('Number of ballot papers (selection)');
+        gettext('Number of all delegates');
+        gettext('Number of all participants');
+        gettext('Use the following custom number');
+        gettext('Custom number of ballot papers');
+
+        // subgroup PDF
+        gettext('Title for PDF document (all motions)');
+        gettext('Preamble text for PDF document (all motioqns)');
+        gettext('Show paragraph numbering (only in PDF)');
     }
 ]);
 

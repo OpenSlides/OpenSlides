@@ -23,31 +23,31 @@
             <tr>
               <td class="icon">
                 <i class="fa fa-thumbs-up fa-2x"></i>
-              <td ng-init="voteYes = poll.getVote(poll.yes)">
+              <td ng-init="voteYes = poll.getVote(poll.yes, 'yes')">
                 <span class="result_label"><translate>Yes</translate>:</span>
                 <span class="result_value">
                   {{ voteYes.value }} {{ voteYes.percentStr }}
                 </span>
-                <div ng-if="voteYes.percentNumber">
+                <div ng-if="voteYes.percentNumber >= 0">
                   <uib-progressbar value="voteYes.percentNumber" type="success"></uib-progressbar>
                 </div>
             <!-- no -->
             <tr>
               <td class="icon">
                 <i class="fa fa-thumbs-down fa-2x"></i>
-              <td ng-init="voteNo = poll.getVote(poll.no)">
+              <td ng-init="voteNo = poll.getVote(poll.no, 'no')">
                 <span class="result_label"><translate>No</translate>:</span>
                 <span class="result_value" >
                   {{ voteNo.value }} {{ voteNo.percentStr }}
                 </span>
-                <div ng-if="voteNo.percentNumber">
+                <div ng-if="voteNo.percentNumber >= 0">
                   <uib-progressbar value="voteNo.percentNumber" type="danger"></uib-progressbar>
                 </div>
             <!-- abstain -->
             <tr>
               <td class="icon">
                 <strong style="font-size: 26px">&empty;</strong>
-              <td ng-init="voteAbstain = poll.getVote(poll.abstain)">
+              <td ng-init="voteAbstain = poll.getVote(poll.abstain, 'abstain')">
                 <span class="result_label"><translate>Abstain</translate>:</span>
                 <span class="result_value">
                   {{ voteAbstain.value }} {{ voteAbstain.percentStr }}
