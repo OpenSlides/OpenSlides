@@ -95,8 +95,8 @@ angular.module('OpenSlidesApp.motions', [
                         percentNumber = Math.round(vote * 100 / this.votesvalid * 10) / 10;
                     } else if (config == "WITH_INVALID" && this.votescast > 0 && vote >= 0) {
                         percentNumber = Math.round(vote * 100 / (this.votescast) * 10) / 10;
-                    } else if (config == "WITHOUT_ABSTAIN" && this.votesvalid > 0 && vote >= 0){
-		                if (type == 'yes' || type == 'no') {
+                    } else if (config == "WITHOUT_ABSTAIN" && vote >= 0) {
+                        if (type == 'yes' || type == 'no') {
                             percentNumber = Math.round(vote * 100 / (this.yes + this.no) * 10) / 10;
                         }
                     }

@@ -184,7 +184,7 @@
                         <uib-progressbar value="voteAbstain.percentNumber" type="warning"></uib-progressbar>
                       </div>
                   <!-- valid votes -->
-                  <tr>
+                  <tr ng-if="poll.votesvalid !== null">
                     <td class="icon">
                       <i class="fa fa-check fa-lg"></i>
                     <td ng-init="votesValid = poll.getVote(poll.votesvalid, 'votesvalid')">
@@ -193,7 +193,7 @@
                         {{ votesValid.value }} {{ votesValid.percentStr }}
                       </span>
                   <!-- invalid votes -->
-                  <tr>
+                  <tr ng-if="poll.votesinvalid !== null">
                     <td class="icon">
                       <i class="fa fa-ban fa-lg"></i>
                     <td ng-init="votesInvalid = poll.getVote(poll.votesinvalid, 'votesinvalid')">
@@ -205,7 +205,7 @@
                         </span>
                       </span>
                   <!-- votes cast -->
-                  <tr class="total">
+                  <tr class="total" ng-if="poll.votescast !== null">
                     <td class="icon">
                       <strong style="font-size: 16px">&sum;</strong>
                     <td ng-init="votesCast = poll.getVote(poll.votescast, 'votescast')">
