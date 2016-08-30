@@ -286,36 +286,36 @@ class UserManagerGeneratePassword(TestCase):
              for _ in range(8)])
 
 
+@patch('openslides.users.models.Permission')
 @patch('openslides.users.models.Group')
 class UserManagerCreateOrResetAdminUser(TestCase):
-    def test_get_admin_group(self, mock_group):
+    def test_add_admin_group(self, mock_group, mock_permission):
         """
-        Tests that the Group with pk=3 is added to the admin.
+        Tests that the Group with name='Staff' is added to the admin.
         """
-        def mock_side_effect(pk):
-            if pk == 3:
-                result = 'mock_staff'
-            else:
-                result = ''
-            return result
-
         admin_user = MagicMock()
         manager = UserManager()
         manager.get_or_create = MagicMock(return_value=(admin_user, False))
-        mock_group.objects.get.side_effect = mock_side_effect
+
+        staff_group = MagicMock(name="Staff")
+        mock_group.objects.get_or_create = MagicMock(return_value=(staff_group, True))
+        mock_permission.get = MagicMock()
 
         manager.create_or_reset_admin_user()
 
-        mock_group.objects.get.assert_called_once_with(pk=3)
-        admin_user.groups.add.assert_called_once_with('mock_staff')
+        admin_user.groups.add.assert_called_once_with(staff_group)
 
-    def test_password_set_to_admin(self, mock_group):
+    def test_password_set_to_admin(self, mock_group, mock_permission):
         """
         Tests that the password of the admin is set to 'admin'.
         """
         admin_user = MagicMock()
         manager = UserManager()
         manager.get_or_create = MagicMock(return_value=(admin_user, False))
+
+        staff_group = MagicMock(name="Staff")
+        mock_group.objects.get_or_create = MagicMock(return_value=(staff_group, True))
+        mock_permission.get = MagicMock()
 
         manager.create_or_reset_admin_user()
 
@@ -325,7 +325,7 @@ class UserManagerCreateOrResetAdminUser(TestCase):
         admin_user.save.assert_called_once_with()
 
     @patch('openslides.users.models.User')
-    def test_return_value(self, mock_user, mock_group):
+    def test_return_value(self, mock_user, mock_group, mock_permission):
         """
         Tests that the method returns True when a user is created.
         """
@@ -334,6 +334,10 @@ class UserManagerCreateOrResetAdminUser(TestCase):
         manager.get_or_create = MagicMock(return_value=(admin_user, True))
         manager.model = mock_user
 
+        staff_group = MagicMock(name="Staff")
+        mock_group.objects.get_or_create = MagicMock(return_value=(staff_group, True))
+        mock_permission.get = MagicMock()
+
         self.assertEqual(
             manager.create_or_reset_admin_user(),
             True,
@@ -341,7 +345,7 @@ class UserManagerCreateOrResetAdminUser(TestCase):
             "new user is created.")
 
     @patch('openslides.users.models.User')
-    def test_attributes_of_created_user(self, mock_user, mock_group):
+    def test_attributes_of_created_user(self, mock_user, mock_group, mock_permission):
         """
         Tests username and last_name of the created admin user.
         """
@@ -349,6 +353,10 @@ class UserManagerCreateOrResetAdminUser(TestCase):
         manager = UserManager()
         manager.get_or_create = MagicMock(return_value=(admin_user, True))
         manager.model = mock_user
+
+        staff_group = MagicMock(name="Staff")
+        mock_group.objects.get_or_create = MagicMock(return_value=(staff_group, True))
+        mock_permission.get = MagicMock()
 
         manager.create_or_reset_admin_user()
 
@@ -360,3 +368,24 @@ class UserManagerCreateOrResetAdminUser(TestCase):
             admin_user.last_name,
             'Administrator',
             "The last_name of a new created admin should be 'Administrator'.")
+
+    def test_get_permissions(self, mock_group, mock_permission):
+        """
+        Tests if two permissions are get
+        """
+        admin_user = MagicMock()
+        manager = UserManager()
+        manager.get_or_create = MagicMock(return_value=(admin_user, True))
+
+        staff_group = MagicMock(name="Staff")
+        mock_group.objects.get_or_create = MagicMock(return_value=(staff_group, True))
+
+        permission_mock = MagicMock(name="test permission")
+        mock_permission.objects.get = MagicMock(return_value=permission_mock)
+
+        manager.create_or_reset_admin_user()
+
+        self.assertEqual(
+            mock_permission.objects.get.call_count,
+            2,
+            "Permission.get should be called two times")

@@ -5,16 +5,17 @@ from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     Group,
+    Permission,
     PermissionsMixin,
 )
 from django.db import models
+from django.db.models import Q
 
 from openslides.utils.search import user_name_helper
 
 from ..core.config import config
 from ..utils.models import RESTModelMixin
 from .access_permissions import UserAccessPermissions
-from .exceptions import UsersError
 
 
 class UserManager(BaseUserManager):
@@ -35,13 +36,17 @@ class UserManager(BaseUserManager):
         """
         Creates an user with the username 'admin'. If such a user already
         exists, resets it. The password is (re)set to 'admin'. The user
-        becomes member of the group 'Staff' (pk=3).
+        becomes member of the group 'Staff'. The two important permissions
+        'users.can_see_name' and 'users.can_manage' are added to this group,
+        so that the admin can manage all other permissions.
         """
-        try:
-            staff = Group.objects.get(pk=3)
-        except Group.DoesNotExist:
-            raise UsersError("Admin user can not be created or reset because "
-                             "the group 'Staff' (pk=3) is not available.")
+        query_can_see_name = Q(content_type__app_label='users') & Q(codename='can_see_name')
+        query_can_manage = Q(content_type__app_label='users') & Q(codename='can_manage')
+
+        staff, _ = Group.objects.get_or_create(name='Staff')
+        staff.permissions.add(Permission.objects.get(query_can_see_name))
+        staff.permissions.add(Permission.objects.get(query_can_manage))
+
         admin, created = self.get_or_create(
             username='admin',
             defaults={'last_name': 'Administrator'})
