@@ -684,6 +684,16 @@ img {
     background-color: #317796;
 }
 
+.dropdown-entries {
+    white-space: nowrap;
+}
+
+.dropdown-entries > li {
+    padding: 5px 10px 5px 10px;
+    width: 100%;
+    cursor: pointer;
+}
+
 .slimDropDown {
     padding-left: 4px !important;
     padding-right: 4px !important;
