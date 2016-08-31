@@ -360,8 +360,8 @@ angular.module('OpenSlidesApp.core.site', [
                                     // This requires further information
                                     // A4 in 72dpi: 595px x 842px
                                     var maxResolution = {
-                                        width: 590,
-                                        height: 840
+                                        width: 435,
+                                        height: 830
                                     },
                                         width = parseInt(element.getAttribute("width")),
                                         height = parseInt(element.getAttribute("height"));
