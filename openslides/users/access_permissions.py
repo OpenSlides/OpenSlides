@@ -15,35 +15,34 @@ class UserAccessPermissions(BaseAccessPermissions):
         """
         Returns different serializer classes with respect user's permissions.
         """
-        from .serializers import UserFullSerializer, UserShortSerializer
+        from .serializers import UserCanSeeSerializer, UserCanSeeExtraSerializer, UserFullSerializer
 
-        if user is None or user.has_perm('users.can_see_extra_data'):
-            # Return the UserFullSerializer for requests of users with more
-            # permissions.
+        if (user is None or (user.has_perm('users.can_see_extra_data') and user.has_perm('users.can_manage'))):
             serializer_class = UserFullSerializer
+        elif user.has_perm('users.can_see_extra_data'):
+            serializer_class = UserCanSeeExtraSerializer
         else:
-            serializer_class = UserShortSerializer
+            serializer_class = UserCanSeeSerializer
         return serializer_class
 
     def get_restricted_data(self, full_data, user):
         """
         Returns the restricted serialized data for the instance prepared
         for the user. Removes several fields for non admins so that they do
-        not get the default_password or even get only the fields as the
-        UserShortSerializer would give them.
+        not get the fields they should not get.
         """
-        from .serializers import USERSHORTSERIALIZER_FIELDS
+        from .serializers import USERCANSEESERIALIZER_FIELDS, USERCANSEEEXTRASERIALIZER_FIELDS
 
         if user.has_perm('users.can_manage'):
             data = full_data
-        elif user.has_perm('users.can_see_extra_data'):
-            # Only remove default password from full data.
-            data = full_data.copy()
-            del data['default_password']
         else:
-            # Let only fields as in the UserShortSerializer pass this method.
+            if user.has_perm('users.can_see_extra_data'):
+                fields = USERCANSEEEXTRASERIALIZER_FIELDS
+            else:
+                fields = USERCANSEESERIALIZER_FIELDS
+            # Let only some fields pass this method.
             data = {}
             for key in full_data.keys():
-                if key in USERSHORTSERIALIZER_FIELDS:
+                if key in fields:
                     data[key] = full_data[key]
         return data
