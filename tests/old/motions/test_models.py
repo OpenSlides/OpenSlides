@@ -171,7 +171,7 @@ class ModelTest(TestCase):
 
         motion.set_identifier()
 
-        self.assertEqual(motion.identifier, 'Parent identifier A 1')
+        self.assertEqual(motion.identifier, 'Parent identifier - 1')
 
     def test_set_identifier_second_amendment(self):
         """
@@ -186,7 +186,7 @@ class ModelTest(TestCase):
 
         motion.set_identifier()
 
-        self.assertEqual(motion.identifier, 'Parent identifier A 2')
+        self.assertEqual(motion.identifier, 'Parent identifier - 2')
 
 
 class ConfigTest(TestCase):
