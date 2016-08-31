@@ -243,7 +243,7 @@ class MotionSerializer(ModelSerializer):
             'polls',
             'agenda_item_id',
             'log_messages',)
-        read_only_fields = ('parent', 'state')  # Some other fields are also read_only. See definitions above.
+        read_only_fields = ('state',)  # Some other fields are also read_only. See definitions above.
 
     @transaction.atomic
     def create(self, validated_data):
@@ -257,6 +257,7 @@ class MotionSerializer(ModelSerializer):
         motion.identifier = validated_data.get('identifier')
         motion.category = validated_data.get('category')
         motion.origin = validated_data.get('origin', '')
+        motion.parent = validated_data.get('parent')
         motion.reset_state(validated_data.get('workflow_id'))
         motion.save()
         if validated_data.get('submitters'):

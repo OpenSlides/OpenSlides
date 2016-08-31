@@ -1,5 +1,6 @@
 <h1 ng-if="model.id" translate>Edit motion</h1>
-<h1 ng-if="!model.id" translate>New motion</h1>
+<h1 ng-if="!model.id && !parent" translate>New motion</h1>
+<h1 ng-if="parent"><translate>New amendment of motion</translate> {{ parent.identifier || parent.getTitle() }}</h1>
 
 <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
   {{ alert.msg }}

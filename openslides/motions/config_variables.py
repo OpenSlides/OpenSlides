@@ -103,23 +103,29 @@ def get_config_variables():
         subgroup='General')
 
     # Amendments
-    # Amendments currently not implemented. (TODO: Implement it like in OpenSlides 1.7.)
     yield ConfigVariable(
         name='motions_amendments_enabled',
         default_value=False,
         input_type='boolean',
         label='Activate amendments',
-        hidden=True,
         weight=335,
         group='Motions',
         subgroup='Amendments')
 
     yield ConfigVariable(
         name='motions_amendments_prefix',
-        default_value='A',
+        default_value='-',
         label='Prefix for the identifier for amendments',
-        hidden=True,
         weight=340,
+        group='Motions',
+        subgroup='Amendments')
+
+    yield ConfigVariable(
+        name='motions_amendments_apply_title_text',
+        default_value=False,
+        input_type='boolean',
+        label='Apply title and text for new amendments',
+        weight=342,
         group='Motions',
         subgroup='Amendments')
 

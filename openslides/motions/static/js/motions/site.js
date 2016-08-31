@@ -272,6 +272,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                     motion: function(Motion, $stateParams) {
                         return Motion.find($stateParams.id);
                     },
+                    motions: function(Motion) {
+                        return Motion.findAll();
+                    },
                     categories: function(Category) {
                         return Category.findAll();
                     },
@@ -819,7 +822,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'gettextCatalog',
     'diffService',
     function($scope, $http, $timeout, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Editor,
-             Config,motion, SingleMotionContentProvider, MotionContentProvider, PdfMakeConverter,
+             Config, motion, SingleMotionContentProvider, MotionContentProvider, PdfMakeConverter,
              PdfMakeDocumentProvider, gettextCatalog, diffService) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
@@ -832,6 +835,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         $scope.isCollapsed = true;
         $scope.lineNumberMode = Config.get('motions_default_line_numbering').value;
         $scope.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
+        if (motion.parent_id) {
+            Motion.bindOne(motion.parent_id, $scope, 'parent');
+        }
+        $scope.amendments = Motion.filter({parent_id: motion.id});
 
         $scope.makePDF = function(){
           var content = motion.getText($scope.version) + motion.getReason($scope.version),
@@ -874,6 +881,15 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         // unsupport
         $scope.unsupport = function () {
             $http.delete('/rest/motions/motion/' + motion.id + '/support/');
+        };
+        // open dialog for new amendment
+        $scope.newAmendment = function () {
+            var dialog = MotionForm.getDialog();
+            if (dialog.scope === undefined) {
+                dialog.scope = {};
+            }
+            dialog.scope = $scope;
+            ngDialog.open(dialog);
         };
         // update state
         $scope.updateState = function (state_id) {
@@ -1038,6 +1054,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 
 .controller('MotionCreateCtrl', [
     '$scope',
+    '$state',
     'gettext',
     'Motion',
     'MotionForm',
@@ -1049,7 +1066,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'Workflow',
     'Agenda',
     'AgendaUpdate',
-    function($scope, gettext, Motion, MotionForm, Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaUpdate) {
+    function($scope, $state, gettext, Motion, MotionForm, Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaUpdate) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1057,13 +1074,27 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         Workflow.bindAll({}, $scope, 'workflows');
 
         $scope.model = {};
-        // set default values for create form
+
+        // Check whether this is a new amendment.
+        var isAmendment = $scope.$parent.motion && $scope.$parent.motion.id;
+
+        // Set default values for create form
         // ... set preamble config value as text
         $scope.model.text = Config.get('motions_preamble').value;
+        // ... for amendments add parent_id
+        if (isAmendment) {
+            if (Config.get('motions_amendments_apply_title_text').value) {
+                $scope.model.title = $scope.$parent.motion.getTitle();
+                $scope.model.text = $scope.$parent.motion.getText();
+            }
+            $scope.model.parent_id = $scope.$parent.motion.id;
+            Motion.bindOne($scope.model.parent_id, $scope, 'parent');
+        }
         // ... preselect default workflow
         $scope.model.workflow_id = Config.get('motions_workflow').value;
         // get all form fields
         $scope.formFields = MotionForm.getFormFields();
+
         // save motion
         $scope.save = function (motion) {
             Motion.create(motion).then(
@@ -1073,6 +1104,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                     var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
                                    {key: 'parent_id', value: motion.agenda_parent_item_id}];
                     AgendaUpdate.saveChanges(success.agenda_item_id, changes);
+                    if (isAmendment) {
+                        $state.go('motions.motion.detail', {id: success.id});
+                    }
                     $scope.closeThisDialog();
                 }
             );
@@ -1346,7 +1380,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             var importedUsers = [];
             var importedCategories = [];
             // collect users and categories
-            angular.forEach($scope.motions, function (motion){
+            angular.forEach($scope.motions, function (motion) {
                 if (!motion.importerror) {
                     // collect user if not exists
                     if (!motion.submitters_id && motion.submitter) {
@@ -1630,8 +1664,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         gettext('Amendments');
         gettext('Activate amendments');
         gettext('Prefix for the identifier for amendments');
-        /// Prefix for the identifier for amendments
-        gettext('A');
+        gettext('Apply title and text for new amendments');
 
         // subgroup Suppoerters
         gettext('Supporters');
