@@ -114,7 +114,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='motions_amendments_prefix',
-        default_value='A',
+        default_value='-',
         label='Prefix for the identifier for amendments',
         weight=340,
         group='Motions',

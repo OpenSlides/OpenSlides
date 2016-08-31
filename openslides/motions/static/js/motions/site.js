@@ -1664,8 +1664,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         gettext('Amendments');
         gettext('Activate amendments');
         gettext('Prefix for the identifier for amendments');
-        /// Prefix for the identifier for amendments
-        gettext('A');
         gettext('Apply title and text for new amendments');
 
         // subgroup Suppoerters
