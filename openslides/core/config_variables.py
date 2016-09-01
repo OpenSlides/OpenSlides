@@ -17,7 +17,7 @@ def get_config_variables():
         weight=110,
         group='General',
         subgroup='Event',
-        validators=(MaxLengthValidator(50),))
+        validators=(MaxLengthValidator(100),))
 
     yield ConfigVariable(
         name='general_event_description',
