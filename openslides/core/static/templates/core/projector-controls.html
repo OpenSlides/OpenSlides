@@ -9,9 +9,30 @@
         <h4 translate>Live view</h4>
       </a>
       <div uib-collapse="isLiveViewClosed" ng-cloak>
+        <style>
+          /* iframe for live view */
+          .col2 #iframe {
+              width: {{ projectorWidth }}px;
+              height: {{ projectorHeight }}px;
+              -moz-transform: scale({{ scale }});
+              -webkit-transform: scale({{ scale }});
+              -o-transform: scale({{ scale }});
+              transform: scale({{ scale }});
+              /* IE8+ - must be on one line, unfortunately */
+              -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11={{ scale }}, M12=0, M21=0, M22={{ scale }}, SizingMethod='auto expand')";
+          }
+
+          .col2 #iframewrapper {
+              height: {{ iframeHeight }}px;
+          }
+
+          .col2 #iframeoverlay {
+            height: {{ iframeHeight }}px;
+          }
+        </style>
         <a ui-sref="projector" target="_blank">
           <div id="iframewrapper">
-            <iframe id="iframe" src="/projector" frameborder="0"></iframe>
+            <iframe id="iframe" src="/real-projector" frameborder="0"></iframe>
             <div id="iframeoverlay"></div>
           </div>
         </a>

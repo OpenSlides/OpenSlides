@@ -27,8 +27,11 @@ urlpatterns = [
         views.AppsJsView.as_view(),
         name='core_apps_js'),
 
-    # View for the projectors are handelt by angular.
+    # View for the projectors are handled by angular.
     url(r'^projector.*$', views.ProjectorView.as_view()),
+
+    # Original view without resolutioncontrol for the projectors are handled by angular.
+    url(r'^real-projector.*$', views.RealProjectorView.as_view()),
 
     # Main entry point for all angular pages.
     # Has to be the last entry in the urls.py

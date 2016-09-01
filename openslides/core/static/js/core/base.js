@@ -286,7 +286,6 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-
 .factory('jsDataModel', [
     '$http',
     'Projector',

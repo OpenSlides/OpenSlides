@@ -322,6 +322,14 @@ img {
     margin-left: 20px;
 }
 
+/* .resolution can be removed with the multiprojector, but maybe
+ * it could be reused for the settings in the projectormanage-view */
+.col1 .input-group .resolution {
+    float: none;
+    display: inline-block;
+    width: 80px;
+    border-radius: 4px !important;
+}
 
 /* Toolbar to save motion in inline editing mode */
 .motion-save-toolbar {
@@ -633,23 +641,14 @@ img {
 
 /* iframe for live view */
 .col2 #iframe {
-    width: 1024px;
-    height: 768px;
     -moz-transform-origin: 0 0;
     -webkit-transform-origin: 0 0;
     -o-transform-origin: 0 0;
     transform-origin: 0 0 0;
-    -moz-transform: scale(0.25);
-    -webkit-transform: scale(0.25);
-    -o-transform: scale(0.25);
-    transform: scale(0.25);
-    /* IE8+ - must be on one line, unfortunately */
-    -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.25, M12=0, M21=0, M22=0.25, SizingMethod='auto expand')";
 }
 
 .col2 #iframewrapper {
     width: 256px;
-    height: 192px;
     position: relative;
     overflow: hidden;
     border: 1px solid #D5D5D5;
@@ -658,7 +657,6 @@ img {
 
 .col2 #iframeoverlay {
     width: 256px;
-    height: 192px;
     position: absolute;
     top: 0px;
     left: 0px;
@@ -666,9 +664,7 @@ img {
     z-index: 1;
 }
 
-
 /** Footer **/
-
 #footer {
     float: left;
     height: 50px;
