@@ -27,7 +27,7 @@ class UserGetFullName(TestCase):
         user = User()
         user.title = 'test_title'
         user.structure_level = 'test_structure_level'
-        user.get_short_name = MagicMock(return_value='test_short_name')
+        user.get_short_name = MagicMock(return_value='test_title test_short_name')
 
         self.assertEqual(
             user.get_full_name(),
@@ -42,7 +42,7 @@ class UserGetFullName(TestCase):
         user = User()
         user.title = 'test_title'
         user.structure_level = ''
-        user.get_short_name = MagicMock(return_value='test_short_name')
+        user.get_short_name = MagicMock(return_value='test_title test_short_name')
 
         self.assertEqual(
             user.get_full_name(),

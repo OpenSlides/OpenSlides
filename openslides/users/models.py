@@ -173,14 +173,14 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
                * Professor Dr. Enders, Christoph (Leipzig)
         """
         structure = '(%s)' % self.structure_level if self.structure_level else ''
-        return ' '.join((self.title, self.get_short_name(), structure)).strip()
+        return ' '.join((self.get_short_name(), structure)).strip()
 
     def get_short_name(self, sort_by_first_name=None):
         """
         Returns only the name of the user.
 
-        E. g.: * Max Mustermann
-               * Enders, Christoph
+        E. g.: * Dr. Max Mustermann
+               * Professor Dr. Enders, Christoph
         """
         # Strip white spaces from the name parts
         first_name = self.first_name.strip()
@@ -200,7 +200,7 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             name = first_name or last_name or self.username
 
         # Return result
-        return name
+        return ' '.join((self.title, name)).strip()
 
     def get_view_class(self):
         """
