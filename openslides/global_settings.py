@@ -8,9 +8,6 @@ AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = ('openslides.users.auth.CustomizedModelBackend',)
 
-# Uses a db session backend, that saves the user_id directly in the db
-SESSION_ENGINE = 'openslides.core.session_backend'
-
 SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
 
 LANGUAGES = (

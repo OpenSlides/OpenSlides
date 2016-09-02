@@ -1,25 +1,15 @@
-import itertools
 import json
 
 from asgiref.inmemory import ChannelLayer
 from channels import Channel, Group
-from channels.auth import channel_session_user, channel_session_user_from_http
+from channels.auth import channel_session_user_from_http
+from channels.sessions import session_for_reply_channel
 from django.apps import apps
+from django.contrib.auth import get_user
 from django.db import transaction
-from django.utils import timezone
 
 from ..users.auth import AnonymousUser
-from ..users.models import User
 from .access_permissions import BaseAccessPermissions
-
-
-def get_logged_in_users():
-    """
-    Helper to get all logged in users.
-
-    Only works with the OpenSlides session backend.
-    """
-    return User.objects.exclude(session=None).filter(session__expire_date__gte=timezone.now()).distinct()
 
 
 def get_model_from_collection_string(collection_string):
@@ -54,17 +44,14 @@ def get_model_from_collection_string(collection_string):
 @channel_session_user_from_http
 def ws_add(message):
     """
-    Adds the websocket connection to a group specific to the connecting user.
-
-    The group with the name 'user-None' stands for all anonymous users.
+    Adds the websocket connection to the group autoupdate.
     """
-    Group('user-{}'.format(message.user.id)).add(message.reply_channel)
+    Group('autoupdate').add(message.reply_channel)
 
 
 # Connected to websocket.disconnect
-@channel_session_user
 def ws_disconnect(message):
-    Group('user-{}'.format(message.user.id)).discard(message.reply_channel)
+    Group('autoupdate').discard(message.reply_channel)
 
 
 def send_data(message):
@@ -87,8 +74,17 @@ def send_data(message):
         full_data = access_permissions.get_full_data(instance)
 
     # Loop over all logged in users and the anonymous user.
-    for user in itertools.chain(get_logged_in_users(), [AnonymousUser()]):
-        channel = Group('user-{}'.format(user.id))
+    for channel_name in Group('autoupdate').channel_layer.group_channels('autoupdate'):
+        channel = Channel(channel_name)
+        session = session_for_reply_channel(channel_name)
+        if session is None:
+            user = AnonymousUser()
+        else:
+            # Get the user from a session. There is currently no better way.
+            # See: channels.auth.channel_session_user
+            fake_request = type("FakeRequest", (object, ), {"session": session})
+            user = get_user(fake_request)
+
         output = {
             'collection': message['collection_string'],
             'id': message['pk'],  # == instance.get_rest_pk()
