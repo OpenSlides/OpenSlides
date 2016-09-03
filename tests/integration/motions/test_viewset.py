@@ -379,6 +379,82 @@ class SetState(TestCase):
         self.assertEqual(Motion.objects.get(pk=self.motion.pk).state.name, 'submitted')
 
 
+class SetRecommendation(TestCase):
+    """
+    Tests setting a recommendation.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+        self.motion = Motion(
+            title='test_title_ahfooT5leilahcohJ2uz',
+            text='test_text_enoogh7OhPoo6eohoCus')
+        self.motion.save()
+        self.state_id_accepted = 2  # This should be the id of the state 'accepted'.
+
+    def test_set_recommendation(self):
+        response = self.client.put(
+            reverse('motion-set-recommendation', args=[self.motion.pk]),
+            {'recommendation': self.state_id_accepted})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'detail': 'The recommendation of the motion was set to Acceptance.'})
+        self.assertEqual(Motion.objects.get(pk=self.motion.pk).recommendation.name, 'accepted')
+
+    def test_set_state_with_string(self):
+        # Using a string is not allowed even if it is the correct name of the state.
+        response = self.client.put(
+            reverse('motion-set-recommendation', args=[self.motion.pk]),
+            {'recommendation': 'accepted'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'detail': 'Invalid data. Recommendation must be an integer.'})
+
+    def test_set_unknown_recommendation(self):
+        invalid_state_id = 0
+        response = self.client.put(
+            reverse('motion-set-recommendation', args=[self.motion.pk]),
+            {'recommendation': invalid_state_id})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'detail': 'You can not set the recommendation to %d.' % invalid_state_id})
+
+    def test_set_invalid_recommendation(self):
+        # This is a valid state id, but this state is not recommendable because it belongs to a different workflow.
+        invalid_state_id = 6  # State 'permitted'
+        response = self.client.put(
+            reverse('motion-set-recommendation', args=[self.motion.pk]),
+            {'recommendation': invalid_state_id})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'detail': 'You can not set the recommendation to %d.' % invalid_state_id})
+
+    def test_set_invalid_recommendation_2(self):
+        # This is a valid state id, but this state is not recommendable because it has not recommendation label
+        invalid_state_id = 1  # State 'submitted'
+        self.motion.set_state(self.state_id_accepted)
+        self.motion.save()
+        response = self.client.put(
+            reverse('motion-set-recommendation', args=[self.motion.pk]),
+            {'recommendation': invalid_state_id})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'detail': 'You can not set the recommendation to %d.' % invalid_state_id})
+
+    def test_reset(self):
+        self.motion.set_recommendation(self.state_id_accepted)
+        self.motion.save()
+        response = self.client.put(reverse('motion-set-recommendation', args=[self.motion.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'detail': 'The recommendation of the motion was set to None.'})
+        self.assertTrue(Motion.objects.get(pk=self.motion.pk).recommendation is None)
+
+    def test_set_recommendation_to_current_state(self):
+        self.motion.set_state(self.state_id_accepted)
+        self.motion.save()
+        response = self.client.put(
+            reverse('motion-set-recommendation', args=[self.motion.pk]),
+            {'recommendation': self.state_id_accepted})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'detail': 'The recommendation of the motion was set to Acceptance.'})
+        self.assertEqual(Motion.objects.get(pk=self.motion.pk).recommendation.name, 'accepted')
+
+
 class CreateMotionPoll(TestCase):
     """
     Tests creating polls of motions.

@@ -51,6 +51,7 @@ class StateSerializer(ModelSerializer):
             'id',
             'name',
             'action_word',
+            'recommendation_label',
             'css_class',
             'required_permission_to_see',
             'allow_support',
@@ -263,12 +264,13 @@ class MotionSerializer(ModelSerializer):
             'comments',
             'state',
             'workflow_id',
+            'recommendation',
             'tags',
             'attachments',
             'polls',
             'agenda_item_id',
             'log_messages',)
-        read_only_fields = ('state',)  # Some other fields are also read_only. See definitions above.
+        read_only_fields = ('state', 'recommendation',)  # Some other fields are also read_only. See definitions above.
 
     @transaction.atomic
     def create(self, validated_data):

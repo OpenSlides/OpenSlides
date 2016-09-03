@@ -27,6 +27,7 @@ def get_config_variables():
         'value': "WITHOUT_ABSTAIN",
         'display_name': 'Yes and No votes'},)
     PERCENT_BASE_CHOICES_MOTION += PERCENT_BASE_CHOICES
+
     # General
     yield ConfigVariable(
         name='motions_workflow',
@@ -101,6 +102,16 @@ def get_config_variables():
         weight=330,
         group='Motions',
         subgroup='General')
+
+    yield ConfigVariable(
+        name='motions_recommendations_by',
+        default_value='Recommendation committee',
+        label='Name of recommendation committee',
+        help_text='Use an empty value to disable the recommendation system.',
+        weight=332,
+        group='Motions',
+        subgroup='General',
+        translatable=True)
 
     # Amendments
     yield ConfigVariable(
