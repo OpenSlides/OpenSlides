@@ -57,46 +57,10 @@ class UserViewSet(ModelViewSet):
             # Return the UserFullSerializer for edit requests.
             serializer_class = UserFullSerializer
         else:
+            # Return different serializers according to user permsissions via
+            # access permissions class.
             serializer_class = super().get_serializer_class()
         return serializer_class
-
-    def list(self, request, *args, **kwargs):
-        """
-        Customized view endpoint to list all user.
-
-        Hides the default_password for non admins.
-        """
-        response = super().list(request, *args, **kwargs)
-        self.extract_default_password(response)
-        return response
-
-    def retrieve(self, request, *args, **kwargs):
-        """
-        Customized view endpoint to retrieve a user.
-
-        Hides the default_password for non admins.
-        """
-        response = super().retrieve(request, *args, **kwargs)
-        self.extract_default_password(response)
-        return response
-
-    def extract_default_password(self, response):
-        """
-        Checks if a user is not a manager. If yes, the default password is
-        extracted from the response.
-        """
-        if not self.request.user.has_perm('users.can_manage'):
-            if isinstance(response.data, dict):
-                try:
-                    del response.data['default_password']
-                except KeyError:
-                    pass
-            elif isinstance(response.data, list):
-                for user in response.data:
-                    try:
-                        del user['default_password']
-                    except KeyError:
-                        pass
 
     def update(self, request, *args, **kwargs):
         """
@@ -113,34 +77,11 @@ class UserViewSet(ModelViewSet):
             if request.data.get('is_active') is False and self.get_object() == request.user:
                 # A user can not deactivate himself.
                 raise ValidationError({'detail': _('You can not deactivate yourself.')})
-            response = super().update(request, *args, **kwargs)
         else:
-            # Get user.
-            user = self.get_object()
             # Check permissions only to update yourself.
-            if request.user != user:
+            if str(request.user.pk) != self.kwargs['pk']:
                 self.permission_denied(request)
-            # Check permission to send only some data.
-            whitelist = (
-                'username',
-                'title',
-                'first_name',
-                'last_name',
-                'structure_level',
-                'about_me',)
-            keys = list(request.data.keys())
-            for key in keys:
-                if key not in whitelist:
-                    # Non-staff users are allowed to send only some data. Ignore other data.
-                    del request.data[key]
-            # Validate data and update user.
-            serializer = self.get_serializer(
-                user,
-                data=request.data,
-                partial=kwargs.get('partial', False))
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            response = Response(serializer.data)
+        response = super().update(request, *args, **kwargs)
         return response
 
     def destroy(self, request, *args, **kwargs):

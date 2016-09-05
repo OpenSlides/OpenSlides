@@ -11,7 +11,8 @@ from ..utils.rest_api import (
 )
 from .models import Group, User
 
-USERSHORTSERIALIZER_FIELDS = (
+
+USERCANSEESERIALIZER_FIELDS = (
             'id',
             'username',
             'title',
@@ -25,33 +26,24 @@ USERSHORTSERIALIZER_FIELDS = (
         )
 
 
-class UserShortSerializer(ModelSerializer):
+class UserCanSeeSerializer(ModelSerializer):
     """
-    Serializer for users.models.User objects.
+    Serializer for users.models.User objects to be used by users who have
+    only the permission to see users and to change some date of theirselfs.
 
-    Serializes only name fields and about me field.
+    Attention: Viewset has to ensure that a user can update only himself.
     """
     class Meta:
         model = User
-        fields = USERSHORTSERIALIZER_FIELDS
+        fields = USERCANSEESERIALIZER_FIELDS
+        read_only_fields = (
+            'number',
+            'groups',
+            'is_comittee',
+        )
 
 
-class UserFullSerializer(ModelSerializer):
-    """
-    Serializer for users.models.User objects.
-
-    Serializes all relevant fields.
-    """
-    groups = IdPrimaryKeyRelatedField(
-        many=True,
-        queryset=Group.objects.exclude(pk=1),
-        help_text=ugettext_lazy('The groups this user belongs to. A user will '
-                                'get all permissions granted to each of '
-                                'his/her groups.'))
-
-    class Meta:
-        model = User
-        fields = (
+USERCANSEEEXTRASERIALIZER_FIELDS = (
             'id',
             'is_present',
             'username',
@@ -63,16 +55,60 @@ class UserFullSerializer(ModelSerializer):
             'about_me',
             'comment',
             'groups',
-            'default_password',
             'is_active',
             'is_committee',
         )
 
+
+class UserCanSeeExtraSerializer(ModelSerializer):
+    """
+    Serializer for users.models.User objects to be used by users who have
+    the permission to see users with extra data and to change some date of
+    theirselfs.
+
+    Attention: Viewset has to ensure that a user can update only himself.
+    """
+    groups = IdPrimaryKeyRelatedField(
+        many=True,
+        queryset=Group.objects.exclude(pk=1),
+        help_text=ugettext_lazy('The groups this user belongs to. A user will '
+                                'get all permissions granted to each of '
+                                'his/her groups.'))
+
+    class Meta:
+        model = User
+        fields = USERCANSEEEXTRASERIALIZER_FIELDS
+        read_only_fields = (
+            'is_present',
+            'number',
+            'comment',
+            'groups',
+            'is_comittee',
+            'is_active',
+        )
+
+
+class UserFullSerializer(ModelSerializer):
+    """
+    Serializer for users.models.User objects.
+
+    Serializes all relevant fields for manager.
+    """
+    groups = IdPrimaryKeyRelatedField(
+        many=True,
+        queryset=Group.objects.exclude(pk=1),
+        help_text=ugettext_lazy('The groups this user belongs to. A user will '
+                                'get all permissions granted to each of '
+                                'his/her groups.'))
+
+    class Meta:
+        model = User
+        fields = USERCANSEEEXTRASERIALIZER_FIELDS + ('default_password',)
+
     def validate(self, data):
         """
-        Checks that first_name or last_name is given.
-
-        Generates the username if it is empty.
+        Checks that first_name or last_name is given. Generates the
+        username if it is empty.
         """
         if not (data.get('username') or data.get('first_name') or data.get('last_name')):
             raise ValidationError({'detail': _('Username, first name and last name can not all be empty.')})
@@ -92,8 +128,7 @@ class UserFullSerializer(ModelSerializer):
 
     def create(self, validated_data):
         """
-        Creates the user. Sets the default password. Adds the new user to the
-        registered group.
+        Creates the user. Sets the default password.
         """
         # Prepare setup password.
         if not validated_data.get('default_password'):

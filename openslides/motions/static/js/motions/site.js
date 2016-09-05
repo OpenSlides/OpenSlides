@@ -1404,7 +1404,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             });
 
             // TODO (Issue #2293):
-            // fix _.uniqWith(importedXXX, _.isEqual); 
+            // fix _.uniqWith(importedXXX, _.isEqual);
             // (You need lodash version >= 4.0.0)
 
             // unique users
@@ -1466,7 +1466,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                             var index = motion.submitter.indexOf(' ');
                             var first_name = motion.submitter.substr(0, index);
                             var last_name = motion.submitter.substr(index+1);
-                            
+
                             // search for user, set id.
                             importedUsersUnique.forEach(function (user) {
                                 if (user.first_name == first_name &&
@@ -1478,7 +1478,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                         // add category
                         if (!motion.category_id && motion.category) {
                             var name = motion.category;
-                         
+
                             // search for category, set id.
                             importedCategoriesUnique.forEach(function (category) {
                                 if (category.name == name) {
