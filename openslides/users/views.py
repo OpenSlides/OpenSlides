@@ -161,11 +161,12 @@ class UserViewSet(ModelViewSet):
         View to reset the password using the requested password.
         """
         user = self.get_object()
-        if request.data.get('password'):
-            user.default_password = request.data['password']
-        user.set_password(user.default_password)
-        user.save()
-        return Response({'detail': _('Password successfully reset.')})
+        if isinstance(request.data.get('password'), str):
+            user.set_password(request.data.get('password'))
+            user.save()
+            return Response({'detail': _('Password successfully reset.')})
+        else:
+            raise ValidationError({'detail': 'Password has to be a string.'})
 
 
 class GroupViewSetMetadata(SimpleMetadata):

@@ -4,6 +4,7 @@ from rest_framework.test import APIClient
 
 from openslides.core.config import config
 from openslides.users.models import Group, User
+from openslides.users.serializers import UserFullSerializer
 from openslides.utils.test import TestCase
 
 
@@ -172,17 +173,22 @@ class UserResetPassword(TestCase):
         self.assertTrue(User.objects.get(pk=user.pk).check_password(
             'new_password_Yuuh8OoQueePahngohy3_new'))
 
-    def test_reset_to_default(self):
+    """
+    Tests whether a random password is set as default and actual password
+    if no default password is provided.
+    """
+    def test_set_random_initial_password(self):
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
-        user = User.objects.create(username='Test name ooMoa4ou4mohn2eo1ree')
-        user.default_password = 'new_password_Yuuh8OoQueePahngohy3'
+
+        serializer = UserFullSerializer()
+        user = serializer.create({'username': 'Test name 9gt043qwvnj2d0cr'})
         user.save()
-        response = admin_client.post(
-            reverse('user-reset-password', args=[user.pk]), {})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(User.objects.get(pk=user.pk).check_password(
-            'new_password_Yuuh8OoQueePahngohy3'))
+
+        default_password = User.objects.get(pk=user.pk).default_password
+        self.assertIsNotNone(default_password)
+        self.assertEqual(len(default_password), 8)
+        self.assertTrue(User.objects.get(pk=user.pk).check_password(default_password))
 
 
 class GroupMetadata(TestCase):

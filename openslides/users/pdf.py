@@ -124,7 +124,7 @@ def users_passwords_to_pdf(pdf):
                      stylesheet['formfield']))
         cell2.append(Paragraph(escape(user.username),
                      stylesheet['formfield_value']))
-        cell2.append(Paragraph("%s:" % _("Password"),
+        cell2.append(Paragraph("%s:" % _("Initial password"),
                      stylesheet['formfield']))
         cell2.append(Paragraph(escape(user.default_password),
                      stylesheet['formfield_value']))
