@@ -52,10 +52,9 @@ class AssignmentViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
+        if self.action in ('metadata', 'list', 'retrieve'):
+            # TODO: Try to use 'metadata' as in all other apps (or refactor it over there).
             result = self.get_access_permissions().can_retrieve(self.request.user)
-        elif self.action in ('metadata', 'list'):
-            result = self.request.user.has_perm('assignments.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy',
                              'mark_elected', 'create_poll'):
             result = (self.request.user.has_perm('assignments.can_see') and

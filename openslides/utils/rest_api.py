@@ -95,9 +95,9 @@ class PermissionMixin:
     """
     Mixin for subclasses of APIView like GenericViewSet and ModelViewSet.
 
-    The methods check_view_permissions or check_projector_requirements are
-    evaluated. If both return False self.permission_denied() is called.
-    Django REST Framework's permission system is disabled.
+    The method check_view_permissions is evaluated. If it returns False
+    self.permission_denied() is called. Django REST Framework's permission
+    system is disabled.
 
     Also connects container to handle access permissions for model and
     viewset.
@@ -106,12 +106,12 @@ class PermissionMixin:
 
     def get_permissions(self):
         """
-        Overridden method to check view and projector permissions. Returns an
-        empty iterable so Django REST framework won't do any other
-        permission checks by evaluating Django REST framework style permission
-        classes  and the request passes.
+        Overridden method to check view permissions. Returns an empty
+        iterable so Django REST framework won't do any other permission
+        checks by evaluating Django REST framework style permission classes
+        and the request passes.
         """
-        if not self.check_view_permissions() and not self.check_projector_requirements():
+        if not self.check_view_permissions():
             self.permission_denied(self.request)
         return ()
 
@@ -120,24 +120,10 @@ class PermissionMixin:
         Override this and return True if the requesting user should be able to
         get access to your view.
 
-        Use access permissions container for retrieve requests.
+        Do not forget to use access permissions container for list and
+        retrieve requests.
         """
         return False
-
-    def check_projector_requirements(self):
-        """
-        Helper method which returns True if the current request (on this
-        view instance) is required for at least one active projector element.
-        """
-        from openslides.core.models import Projector
-
-        result = False
-        if self.request.user.has_perm('core.can_see_projector'):
-            for requirement in Projector.get_all_requirements():
-                if requirement.is_currently_required(view_instance=self):
-                    result = True
-                    break
-        return result
 
     def get_access_permissions(self):
         """

@@ -202,14 +202,6 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         # Return result
         return name
 
-    def get_view_class(self):
-        """
-        Returns the main view class (viewset class) that should be unlocked
-        if the user (means its name) appears on a slide.
-        """
-        from .views import UserViewSet
-        return UserViewSet
-
     def get_search_index_string(self):
         """
         Returns a string that can be indexed for the search.

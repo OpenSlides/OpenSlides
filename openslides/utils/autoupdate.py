@@ -94,7 +94,7 @@ def send_data(message):
             'id': message['pk'],  # == instance.get_rest_pk()
             'action': 'deleted' if message['is_deleted'] else 'changed'}
         if not message['is_deleted']:
-            data = access_permissions.get_restricted_data(full_data, user)
+            data = access_permissions.get_restricted_data(full_data, user, message['pk'])
             if data is None:
                 # There are no data for the user so he can't see the object. Skip him.
                 continue

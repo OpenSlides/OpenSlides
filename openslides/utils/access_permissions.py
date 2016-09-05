@@ -33,11 +33,34 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
         if not cls.__name__ == 'BaseAccessPermissions':
             return cls.__name__
 
-    def can_retrieve(self, user):
+    def can_retrieve(self, user, id=None):
         """
-        Returns True if the user has read access to model instances.
+        Returns True of the user has read access because of his permissions or
+        because of a projector requirement.
+        """
+        # TODO: Rename this method because it is also for list and perhaps for metadata views.
+        return self.check_permissions(user) or self.check_projector_requirements(user, id)
+
+    def check_permissions(self, user):
+        """
+        Returns True if the user has read access because of his permissions.
         """
         return False
+
+    def check_projector_requirements(self, user, id):
+        """
+        Returns True if the user has read access because of a projector
+        requirement.
+        """
+        from openslides.core.models import Projector
+
+        result = False
+        if user.has_perm('core.can_see_projector'):
+            for requirement in Projector.get_all_requirements():
+                if requirement.is_currently_required(access_permissions=self, id=id):
+                    result = True
+                    break
+        return result
 
     def get_serializer_class(self, user=None):
         """
@@ -56,7 +79,7 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
         """
         return self.get_serializer_class(user=None)(instance).data
 
-    def get_restricted_data(self, full_data, user):
+    def get_restricted_data(self, full_data, user, id):
         """
         Returns the restricted serialized data for the instance prepared
         for the user.
@@ -66,11 +89,11 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
         user has read access to model instances.
 
         Hint: You should override this method if your
-        get_serializer_class() method may return different serializer for
+        get_serializer_class() method returns different serializers for
         different users or if you have access restrictions in your view or
         viewset in methods like retrieve() or check_object_permissions().
         """
-        if self.can_retrieve(user):
+        if self.can_retrieve(user, id):
             data = full_data
         else:
             data = None

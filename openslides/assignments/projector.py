@@ -1,16 +1,16 @@
-from openslides.core.exceptions import ProjectorException
-from openslides.core.views import TagViewSet
-from openslides.utils.projector import ProjectorElement, ProjectorRequirement
-
+from ..agenda.access_permissions import ItemAccessPermissions
+from ..core.exceptions import ProjectorException
+from ..utils.projector import ProjectorElement, ProjectorRequirement
+from .access_permissions import AssignmentAccessPermissions
 from .models import Assignment, AssignmentPoll
-from .views import AssignmentViewSet
 
 
 class AssignmentSlide(ProjectorElement):
     """
     Slide definitions for Assignment model.
 
-    Set 'id' to get a detail slide. Omit it to get a list slide.
+    Set 'id' to get a detail slide. Omit it to get a list slide. Set
+    'poll' to get a poll slide.
     """
     name = 'assignments/assignment'
 
@@ -29,10 +29,9 @@ class AssignmentSlide(ProjectorElement):
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
         if pk is None:
-            # List slide. Related objects like users and tags are not unlocked.
+            # List slide. Related objects like users are not unlocked.
             yield ProjectorRequirement(
-                view_class=AssignmentViewSet,
-                view_action='list')
+                access_permissions=AssignmentAccessPermissions)
         else:
             # Detail slide.
             try:
@@ -41,23 +40,28 @@ class AssignmentSlide(ProjectorElement):
                 # Assignment does not exist. Just do nothing.
                 pass
             else:
+                # Assignment and agenda item
                 yield ProjectorRequirement(
-                    view_class=AssignmentViewSet,
-                    view_action='retrieve',
-                    pk=str(assignment.pk))
+                    access_permissions=AssignmentAccessPermissions,
+                    id=str(pk))
+                yield ProjectorRequirement(
+                    access_permissions=ItemAccessPermissions,
+                    id=str(assignment.agenda_item_id))
+
+                # Candidates and elected users (related users)
+                # TODO: Remove related users on assignment poll slide if not required.
                 for user in assignment.related_users.all():
                     yield ProjectorRequirement(
-                        view_class=user.get_view_class(),
-                        view_action='retrieve',
-                        pk=str(user.pk))
+                        access_permissions=user.get_access_permissions(),
+                        id=str(user.pk))
+
+                # Users in polls (poll options)
                 for poll in assignment.polls.all().prefetch_related('options'):
                     for option in poll.options.all():
                         yield ProjectorRequirement(
-                            view_class=option.candidate.get_view_class(),
-                            view_action='retrieve',
-                            pk=str(option.candidate_id))
-                for tag in assignment.tags.all():
-                    yield ProjectorRequirement(
-                        view_class=TagViewSet,
-                        view_action='retrieve',
-                        pk=str(tag.pk))
+                            access_permissions=option.candidate.get_access_permissions(),
+                            id=str(option.candidate_id))
+
+                # Hint: We do not have to yield any ProjectorRequirement
+                # instances for tags because tags are always available for
+                # everyone.

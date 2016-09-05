@@ -77,27 +77,20 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
 
 class ProjectorRequirement:
     """
-    Container for required views. Such a view is defined by its class, its
-    action and its kwargs which come from the URL path.
+    Container for required root rest elements. If is defined by an
+    AccessPermission class and an optional id. If no id is given, all
+    objects are required.
     """
-    def __init__(self, view_class, view_action, **kwargs):
-        self.view_class = view_class
-        self.view_action = view_action
-        self.kwargs = kwargs
+    def __init__(self, access_permissions, id=None):
+        self.access_permissions = access_permissions
+        self.id = id
 
-    def is_currently_required(self, view_instance):
+    def is_currently_required(self, access_permissions, id):
         """
-        Returns True if the view_instance matches the initiated data of this
-        requirement.
+        Returns True if access_permissions and in some cases the id matches
+        the initiated data of this requirement.
         """
-        if not type(view_instance) == self.view_class:
-            result = False
-        elif not view_instance.action == self.view_action:
-            result = False
-        else:
-            result = True
-            for key in view_instance.kwargs:
-                if not self.kwargs[key] == view_instance.kwargs[key]:
-                    result = False
-                    break
-        return result
+        return (
+            self.access_permissions.get_dispatch_uid() == access_permissions.get_dispatch_uid() and
+            (self.id is None or id is None or str(self.id) == str(id))
+        )

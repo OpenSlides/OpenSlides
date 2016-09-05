@@ -1,9 +1,12 @@
-from openslides.core.exceptions import ProjectorException
-from openslides.core.views import TagViewSet
-from openslides.utils.projector import ProjectorElement, ProjectorRequirement
-
+from ..agenda.access_permissions import ItemAccessPermissions
+from ..core.exceptions import ProjectorException
+from ..utils.projector import ProjectorElement, ProjectorRequirement
+from .access_permissions import (
+    CategoryAccessPermissions,
+    MotionAccessPermissions,
+    WorkflowAccessPermissions,
+)
 from .models import Motion
-from .views import CategoryViewSet, MotionViewSet, WorkflowViewSet
 
 
 class MotionSlide(ProjectorElement):
@@ -24,10 +27,9 @@ class MotionSlide(ProjectorElement):
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
         if pk is None:
-            # List slide. Related objects like users and tags are not unlocked.
+            # List slide. Related objects like users are not unlocked.
             yield ProjectorRequirement(
-                view_class=MotionViewSet,
-                view_action='list')
+                access_permissions=MotionAccessPermissions)
         else:
             # Detail slide.
             try:
@@ -36,31 +38,35 @@ class MotionSlide(ProjectorElement):
                 # Motion does not exist. Just do nothing.
                 pass
             else:
+                # Motion and agenda item
                 yield ProjectorRequirement(
-                    view_class=MotionViewSet,
-                    view_action='retrieve',
-                    pk=str(motion.pk))
+                    access_permissions=MotionAccessPermissions,
+                    id=str(pk))
+                yield ProjectorRequirement(
+                    access_permissions=ItemAccessPermissions,
+                    id=str(motion.agenda_item_id))
+
+                # Category
                 if motion.category:
                     yield ProjectorRequirement(
-                        view_class=CategoryViewSet,
-                        view_action='retrieve',
-                        pk=str(motion.category.pk))
+                        access_permissions=CategoryAccessPermissions,
+                        pk=str(motion.category_id))
+
+                # Workflow
                 yield ProjectorRequirement(
-                    view_class=WorkflowViewSet,
-                    view_action='retrieve',
-                    pk=str(motion.workflow))
-                for submitter in motion.submitters.all():
+                    access_permissions=WorkflowAccessPermissions,
+                    id=str(motion.workflow))
+
+                # Submitters and suporters (users)
+                for user in motion.submitters.all():
                     yield ProjectorRequirement(
-                        view_class=submitter.get_view_class(),
-                        view_action='retrieve',
-                        pk=str(submitter.pk))
-                for supporter in motion.supporters.all():
+                        access_permissions=user.get_access_permissions(),
+                        id=str(user.pk))
+                for user in motion.supporters.all():
                     yield ProjectorRequirement(
-                        view_class=supporter.get_view_class(),
-                        view_action='retrieve',
-                        pk=str(supporter.pk))
-                for tag in motion.tags.all():
-                    yield ProjectorRequirement(
-                        view_class=TagViewSet,
-                        view_action='retrieve',
-                        pk=str(tag.pk))
+                        access_permissions=user.get_access_permissions(),
+                        id=str(user.pk))
+
+                # Hint: We do not have to yield any ProjectorRequirement
+                # instances for tags because tags are always available for
+                # everyone.
