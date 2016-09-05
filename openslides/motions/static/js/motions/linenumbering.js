@@ -51,6 +51,23 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         return isLineNumber;
     };
 
+    this._createLineBreak = function () {
+        var br = document.createElement('br');
+        br.setAttribute('class', 'os-line-break');
+        return br;
+    };
+
+    this._createLineNumber = function () {
+        var node = document.createElement('span');
+        var lineNumber = this._currentLineNumber;
+        this._currentLineNumber++;
+        node.setAttribute('class', 'os-line-number line-number-' + lineNumber);
+        node.setAttribute('data-line-number', lineNumber + '');
+        node.setAttribute('contenteditable', 'false');
+        node.innerHTML = '&nbsp;'; // Prevent tinymce from stripping out empty span's
+        return node;
+    };
+
     /**
      * Splits a TEXT_NODE into an array of TEXT_NODEs and BR-Elements separating them into lines.
      * Each line has a maximum length of 'length', with one exception: spaces are accepted to exceed the length.
@@ -69,28 +86,13 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             lastBreakableIndex = null,
             service = this;
 
-        var createLineBreak = function() {
-            var br = document.createElement('br');
-                br.setAttribute('class', 'os-line-break');
-                return br;
-            };
-        var createLineNumber = function() {
-            var node = document.createElement('span');
-            var lineNumber = service._currentLineNumber;
-            service._currentLineNumber++;
-            node.setAttribute('class', 'os-line-number line-number-' + lineNumber);
-            node.setAttribute('data-line-number', lineNumber + '');
-            node.setAttribute('contenteditable', 'false');
-            node.innerHTML = '&nbsp;'; // Prevent tinymce from stripping out empty span's
-            return node;
-        };
         var addLine = function (text) {
             var newNode = document.createTextNode(text);
             if (firstTextNode) {
                 firstTextNode = false;
             } else {
-                out.push(createLineBreak());
-                out.push(createLineNumber());
+                out.push(service._createLineBreak());
+                out.push(service._createLineNumber());
             }
             out.push(newNode);
         };
@@ -101,11 +103,11 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
             // This happens if a previous inline element exactly stretches to the end of the line
             if (this._currentInlineOffset >= length) {
-                out.push(createLineBreak());
-                out.push(createLineNumber());
+                out.push(service._createLineBreak());
+                out.push(service._createLineNumber());
                 this._currentInlineOffset = 0;
             } else if (this._prependLineNumberToFirstText) {
-                out.push(createLineNumber());
+                out.push(service._createLineNumber());
             }
             this._prependLineNumberToFirstText = false;
 
@@ -163,6 +165,17 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         }
     };
 
+    this._lengthOfFirstInlineWord = function (node) {
+        if (!node.firstChild) {
+            return 0;
+        }
+        if (node.firstChild.nodeType == TEXT_NODE) {
+            var parts = node.firstChild.nodeValue.split(' ');
+            return parts[0].length;
+        } else {
+            return this._lengthOfFirstInlineWord(node.firstChild);
+        }
+    };
 
     this._insertLineNumbersToInlineNode = function (node, length) {
         var oldChildren = [], i;
@@ -181,6 +194,14 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                     node.appendChild(ret[j]);
                 }
             } else if (oldChildren[i].nodeType == ELEMENT_NODE) {
+                var firstword = this._lengthOfFirstInlineWord(oldChildren[i]),
+                    overlength = ((this._currentInlineOffset + firstword) > length && this._currentInlineOffset > 0);
+                if (overlength && this._isInlineElement(oldChildren[i])) {
+                    this._currentInlineOffset = 0;
+                    node.appendChild(this._createLineBreak());
+                    node.appendChild(this._createLineNumber());
+                }
+
                 var changedNode = this._insertLineNumbersToNode(oldChildren[i], length);
                 this._moveLeadingLineBreaksToOuterNode(changedNode, node);
                 node.appendChild(changedNode);
@@ -252,6 +273,14 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                     node.appendChild(ret[j]);
                 }
             } else if (oldChildren[i].nodeType == ELEMENT_NODE) {
+                var firstword = this._lengthOfFirstInlineWord(oldChildren[i]),
+                    overlength = ((this._currentInlineOffset + firstword) > length && this._currentInlineOffset > 0);
+                if (overlength && this._isInlineElement(oldChildren[i])) {
+                    this._currentInlineOffset = 0;
+                    node.appendChild(this._createLineBreak());
+                    node.appendChild(this._createLineNumber());
+                }
+
                 var changedNode = this._insertLineNumbersToNode(oldChildren[i], length);
                 this._moveLeadingLineBreaksToOuterNode(changedNode, node);
                 node.appendChild(changedNode);
