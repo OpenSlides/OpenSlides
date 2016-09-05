@@ -12,7 +12,7 @@
     </div>
 
     <!-- Poll results -->
-    <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
+    <h3 ng-if="motion.polls.length > 0 && motion.polls[0].has_votes" translate>Voting result</h3>
       <div ng-repeat="poll in motion.polls | orderBy:'-id'" class="spacer">
         <div ng-show="poll.has_votes" class="pollresults">
           <strong ng-if="motion.polls.length > 1">

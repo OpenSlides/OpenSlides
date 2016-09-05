@@ -1056,6 +1056,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     '$scope',
     '$state',
     'gettext',
+    'gettextCatalog',
     'Motion',
     'MotionForm',
     'Category',
@@ -1066,7 +1067,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'Workflow',
     'Agenda',
     'AgendaUpdate',
-    function($scope, $state, gettext, Motion, MotionForm, Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaUpdate) {
+    function($scope, $state, gettext, gettextCatalog, Motion, MotionForm, Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaUpdate) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1080,7 +1081,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 
         // Set default values for create form
         // ... set preamble config value as text
-        $scope.model.text = Config.get('motions_preamble').value;
+        $scope.model.text = gettextCatalog.getString(Config.get('motions_preamble').value);
         // ... for amendments add parent_id
         if (isAmendment) {
             if (Config.get('motions_amendments_apply_title_text').value) {
