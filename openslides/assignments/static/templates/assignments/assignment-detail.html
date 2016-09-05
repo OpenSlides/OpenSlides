@@ -68,7 +68,7 @@
           <div os-perms="assignments.can_manage" class="spacer">
             <select ng-model="phaseSelect" class="form-control" ng-change="updatePhase(phaseSelect)">
               <option value="" translate>--- Set phase ---</option>
-              <option ng-repeat="phase in phases" value="{{ phase.value }}">{{ phase.display_name }}</option>
+              <option ng-repeat="phase in phases" value="{{ phase.value }}">{{ phase.display_name | translate }}</option>
             </select>
           </div>
       </div>
