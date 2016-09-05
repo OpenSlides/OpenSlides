@@ -144,7 +144,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                     }
                 });
                 // TODO: Use the current projector. At the moment there is only one
-                $scope.scroll = -5 * Projector.get(1).scroll;
+                $scope.scroll = -80 * Projector.get(1).scroll;
                 $scope.scale = 100 + 20 * Projector.get(1).scale;
             }
         });

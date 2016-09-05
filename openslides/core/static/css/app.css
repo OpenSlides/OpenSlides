@@ -308,6 +308,11 @@ img {
     margin-left: 15px;
 }
 
+.col1 .details .line-number-setter > span {
+    margin-right: 5px;
+    float: left;
+}
+
 .col1 .details .line-number-setter .btn.disabled {
     cursor: default;
     opacity: 1;
@@ -381,6 +386,10 @@ img {
 }
 
 /*** Line numbers ***/
+.motion-text .highlight {
+    background-color: #ff0;
+}
+
 .motion-text.line-numbers-outside {
     padding-left: 35px;
     position: relative;
@@ -808,6 +817,11 @@ img {
 .slimDropDown {
     padding-left: 4px !important;
     padding-right: 4px !important;
+}
+
+.btn-slim {
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 .spacer, .spacer-top {

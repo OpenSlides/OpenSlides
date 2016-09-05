@@ -1069,9 +1069,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'PdfMakeDocumentProvider',
     'MotionInlineEditing',
     'gettextCatalog',
+    'Projector',
     function($scope, $http, ngDialog, MotionComment, MotionForm, Motion, Category, Mediafile, Tag,
              User, Workflow, Config, motion, SingleMotionContentProvider, MotionContentProvider,
-             PollContentProvider, PdfMakeConverter, PdfMakeDocumentProvider, MotionInlineEditing, gettextCatalog) {
+             PollContentProvider, PdfMakeConverter, PdfMakeDocumentProvider, MotionInlineEditing, gettextCatalog, Projector) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1087,6 +1088,38 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             Motion.bindOne(motion.parent_id, $scope, 'parent');
         }
         $scope.amendments = Motion.filter({parent_id: motion.id});
+
+        $scope.highlight = 0;
+        $scope.linesForProjector = false;
+        // Set 0 for disable highlighting on projector
+        var setHighlightOnProjector = function (line) {
+            var elements = _.map(Projector.get(1).elements, function(element) { return element; });
+            elements.forEach(function (element) {
+                if (element.name == 'motions/motion') {
+                    var data = {};
+                    data[element.uuid] = {
+                        highlightAndScroll: line,
+                    };
+                    $http.post('/rest/core/projector/1/update_elements/', data);
+                }
+            });
+        };
+        $scope.scrollToAndHighlight = function (line) {
+            $scope.highlight = line;
+            var lineElement = document.getElementsByName('L' + line);
+            if (lineElement[0]) {
+                // Scroll local
+                $('html, body').animate({
+                    scrollTop: lineElement[0].getBoundingClientRect().top
+                }, 1000);
+            }
+            // set highlight and scroll on Projector
+            setHighlightOnProjector($scope.linesForProjector ? line : 0);
+        };
+        $scope.toggleLinesForProjector = function () {
+            $scope.linesForProjector = !$scope.linesForProjector;
+            setHighlightOnProjector($scope.linesForProjector ? $scope.highlight : 0);
+        };
 
         $scope.makePDF = function() {
           var id = motion.identifier,
