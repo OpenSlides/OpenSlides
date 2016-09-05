@@ -394,6 +394,7 @@ tr.elected td {
     color: gray;
     font-family: Courier, serif;
     font-size: 13px;
+    font-weight: normal;
 }
 
 .motion-text.line-numbers-inline .os-line-break {
@@ -407,6 +408,7 @@ tr.elected td {
     content: attr(data-line-number);
     vertical-align: top;
     font-size: 0.75em;
+    font-weight: normal;
     color: gray;
     font-family: Courier, serif;
     margin-top: -5px;

@@ -212,5 +212,19 @@ describe('linenumbering', function () {
       expect(outHtml).toBe(expected);
       expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
     });
+
+    it('breaks before an inline element, if the first word of the new inline element is longer than the remaining line (1)', function () {
+      var inHtml = "<p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie <strong>consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio</strong>.</p>";
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+      expect(outHtml).toBe('<p>' + noMarkup(1) + 'Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie ' + brMarkup(2) + '<strong>consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan ' + brMarkup(3) + 'et iusto odio</strong>.</p>');
+      expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
+    });
+
+    it('breaks before an inline element, if the first word of the new inline element is longer than the remaining line (2)', function () {
+      var inHtml = "<p><span>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie <strong>consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio</strong>.</span></p>";
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+      expect(outHtml).toBe('<p>' + noMarkup(1) + '<span>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie ' + brMarkup(2) + '<strong>consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan ' + brMarkup(3) + 'et iusto odio</strong>.</span></p>');
+      expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
+    });
   });
 });
