@@ -119,6 +119,10 @@ body{
     z-index: -1;
     line-height: 1.3em;
 }
+.content img {
+    max-width: 65%;
+    height: auto;
+}
 .scrollcontent {
     transition-property: margin, font-size;
     transition-duration: 1s;

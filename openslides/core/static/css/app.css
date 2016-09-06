@@ -318,6 +318,10 @@ img {
     margin-right: 13px;
 }
 
+.col1 .details img {
+    max-width: 100%;
+    height: auto;
+}
 .col1 ul, .col1 ol {
     margin-left: 20px;
 }
