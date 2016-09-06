@@ -49,7 +49,7 @@ angular.module('OpenSlidesApp.core.site', [
                           {
                             fontSize: 6,
                             width: '30%',
-                            text: gettextCatalog.getString('As of') + date.toLocaleDateString() + " " + date.toLocaleTimeString(),
+                            text: gettextCatalog.getString('As of') + " " + date.toLocaleDateString() + " " + date.toLocaleTimeString(),
                             alignment: 'right'
                         }]
                     };
@@ -78,9 +78,9 @@ angular.module('OpenSlidesApp.core.site', [
                         pageSize: 'A4',
                         pageMargins: [80, 90, 80, 60],
                         defaultStyle: {
-                            font: defaultFont
+                            font: defaultFont,
+                            fontSize: 10
                         },
-                        fontSize: 8,
                         header: header,
                         footer: footer,
                         content: content,
@@ -152,7 +152,7 @@ angular.module('OpenSlidesApp.core.site', [
                  * @function
                  * @param {object} html - html
                  */
-                convertHTML = function(html) {
+                convertHTML = function(html, scope) {
                     var elementStyles = {
                             "b": ["font-weight:bold"],
                             "strong": ["font-weight:bold"],
@@ -338,21 +338,59 @@ angular.module('OpenSlidesApp.core.site', [
                                     alreadyConverted.push(st);
                                     break;
                                 case "span":
-                                    parseChildren(alreadyConverted, element, currentParagraph, styles);
+                                    if (scope.lineNumberMode == "inline") {
+                                        var lineNumberInline = element.getAttribute("data-line-number"),
+                                            lineNumberObjInline = {
+                                            text: lineNumberInline,
+                                            color: "gray",
+                                            fontSize: 5
+                                        };
+                                        currentParagraph.text.push(lineNumberObjInline);
+                                        parseChildren(alreadyConverted, element, currentParagraph, styles);
+                                    } else if (scope.lineNumberMode == "outside") {
+                                        var lineNumberOutline = element.getAttribute("data-line-number"),
+                                            lineNumberObject = {
+                                                width: 20,
+                                                text: lineNumberOutline,
+                                                color: "gray"
+                                        },
+                                            col = {
+                                                columns: [
+                                                    lineNumberObject,
+                                                ]
+                                        };
+                                        currentParagraph = create("text");
+                                        col.columns.push(currentParagraph);
+                                        parseChildren(col.columns[0], element, currentParagraph, styles);
+                                        alreadyConverted.push(col);
+                                    } else {
+                                        parseChildren(alreadyConverted, element, currentParagraph, styles);
+                                    }
                                     break;
                                 case "br":
-                                    currentParagraph = create("text");
-                                    alreadyConverted.push(currentParagraph);
+                                    //in case of inline-line-numbers and the os-line-break class ignore the break
+                                    if (!(scope.lineNumberMode == "inline" && element.getAttribute("class") == "os-line-break")) {
+                                        currentParagraph = create("text");
+                                        alreadyConverted.push(currentParagraph);
+                                    }
                                     break;
                                 case "li":
                                 case "div":
+                                    currentParagraph = create("text");
+                                    var stackDiv = create("stack");
+                                    stackDiv.stack.push(currentParagraph);
+                                    ComputeStyle(stackDiv, styles);
+                                    parseChildren(stackDiv.stack, element, currentParagraph);
+                                    alreadyConverted.push(stackDiv);
+                                    break;
                                 case "p":
                                     currentParagraph = create("text");
-                                    var stack = create("stack");
-                                    stack.stack.push(currentParagraph);
-                                    ComputeStyle(stack, styles);
-                                    parseChildren(stack.stack, element, currentParagraph);
-                                    alreadyConverted.push(stack);
+                                    currentParagraph.margin = [0,5];
+                                    var stackP = create("stack");
+                                    stackP.stack.push(currentParagraph);
+                                    ComputeStyle(stackP, styles);
+                                    parseChildren(stackP.stack, element, currentParagraph);
+                                    alreadyConverted.push(stackP);
                                     break;
                                 case "img":
                                     alreadyConverted.push({
@@ -373,8 +411,9 @@ angular.module('OpenSlidesApp.core.site', [
                                     break;
                                 default:
                                     var temporary = create("text", element.textContent.replace(/\n/g, ""));
-                                    if (styles)
+                                    if (styles) {
                                         ComputeStyle(temporary, styles);
+                                    }
                                     currentParagraph.text.push(temporary);
                                     break;
                             }
@@ -390,7 +429,7 @@ angular.module('OpenSlidesApp.core.site', [
                             var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, ""));
                             var emptyParagraph = create("text");
                             slice(html).forEach(function(element) {
-                                ParseElement(converted, element, emptyParagraph);
+                                ParseElement(converted, element);
                             });
                         },
                         content = [];

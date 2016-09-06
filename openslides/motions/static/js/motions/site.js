@@ -17,7 +17,17 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
          * @param {object} $scope - Current $scope
          */
         var textContent = function(motion, $scope) {
-                return converter.convertHTML(motion.getText($scope.version));
+                if ($scope.lineNumberMode == "inline" || $scope.lineNumberMode == "outside") {
+                    /* in order to distinguish between the line-number-types we need to pass the scope
+                     * to the convertHTML function.
+                     * We should avoid this, since this completly breaks compatibilty for every
+                     * other project that might want to use this HTML to PDF parser.
+                     * https://github.com/OpenSlides/OpenSlides/issues/2361
+                     */
+                    return converter.convertHTML($scope.lineBrokenText, $scope);
+                } else {
+                    return converter.convertHTML(motion.getText($scope.version), $scope);
+                }
             },
             /**
              * Generate text of reason
@@ -26,7 +36,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
              * @param {object} $scope - Current $scope
              */
             reasonContent = function(motion, $scope) {
-                return converter.convertHTML(motion.getReason($scope.version));
+                return converter.convertHTML(motion.getReason($scope.version), $scope);
             },
             /**
              * Generate header text of motion
@@ -162,15 +172,25 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
              * @param {object} User - Current user
              */
             getContent = function(motion, $scope, User) {
-                return [
-                    motionHeader(motion, $scope),
-                    signment(motion, $scope, User),
-                    polls(motion, $scope),
-                    titleSection(motion, $scope),
-                    textContent(motion, $scope),
-                    reason(motion, $scope),
-                    reasonContent(motion, $scope)
-                ];
+                if (reasonContent(motion, $scope).length === 0 ) {
+                    return [
+                        motionHeader(motion, $scope),
+                        signment(motion, $scope, User),
+                        polls(motion, $scope),
+                        titleSection(motion, $scope),
+                        textContent(motion, $scope),
+                    ];
+                } else {
+                    return [
+                        motionHeader(motion, $scope),
+                        signment(motion, $scope, User),
+                        polls(motion, $scope),
+                        titleSection(motion, $scope),
+                        textContent(motion, $scope),
+                        reason(motion, $scope),
+                        reasonContent(motion, $scope)
+                    ];
+                }
             };
         return {
             getContent: getContent
@@ -840,9 +860,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         }
         $scope.amendments = Motion.filter({parent_id: motion.id});
 
-        $scope.makePDF = function(){
-          var content = motion.getText($scope.version) + motion.getReason($scope.version),
-              id = motion.identifier,
+        $scope.makePDF = function() {
+          var id = motion.identifier,
               slice = Function.prototype.call.bind([].slice),
               map = Function.prototype.call.bind([].map),
               image_sources = map($(content).find("img"), function(element) {
