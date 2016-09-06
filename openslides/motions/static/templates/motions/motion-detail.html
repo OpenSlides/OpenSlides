@@ -153,8 +153,7 @@
                 <i class="fa fa-times"></i>
               </button>
               <!-- print poll PDF -->
-              <a ui-sref="motionpoll_pdf({poll_pk: poll.id})" target="_blank"
-                  class="btn btn-default btn-xs"
+              <a ng-click="makePollPDF()" class="btn btn-default btn-xs"
                   title="{{ 'Print ballot paper' | translate }}">
                 <i class="fa fa-file-pdf-o"></i>
               </a>
