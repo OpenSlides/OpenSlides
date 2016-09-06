@@ -7,7 +7,7 @@ from rest_framework.test import APIClient
 
 from openslides.core.config import config
 from openslides.core.models import Tag
-from openslides.motions.models import Category, Motion, State
+from openslides.motions.models import Category, Motion, State, SubmittersRelationship
 from openslides.utils.test import TestCase
 
 
@@ -124,8 +124,8 @@ class CreateMotion(TestCase):
         Test to create a motion by a delegate, non staff user.
         """
         self.admin = get_user_model().objects.get(username='admin')
-        self.admin.groups.add(3)
-        self.admin.groups.remove(4)
+        self.admin.groups.add(2)
+        self.admin.groups.remove(3)
 
         response = self.client.post(
             reverse('motion-list'),
@@ -208,7 +208,11 @@ class UpdateMotion(TestCase):
             username='test_username_uqu6PhoovieB9eicah0o',
             password='test_password_Xaesh8ohg6CoheTe3awo')
         motion = Motion.objects.get()
-        motion.submitters.add(non_admin)
+        sr = SubmittersRelationship(
+            user=non_admin,
+            motion=motion,
+            weight=1)
+        sr.save()
         motion.supporters.clear()
         response = self.client.patch(
             reverse('motion-detail', args=[self.motion.pk]),
@@ -221,7 +225,11 @@ class UpdateMotion(TestCase):
         admin = get_user_model().objects.get(username='admin')
         group_staff = admin.groups.get(name='Staff')
         admin.groups.remove(group_staff)
-        self.motion.submitters.add(admin)
+        sr = SubmittersRelationship(
+            user=admin,
+            motion=self.motion,
+            weight=1)
+        sr.save()
         supporter = get_user_model().objects.create_user(
             username='test_username_ahshi4oZin0OoSh9chee',
             password='test_password_Sia8ahgeenixu5cei2Ib')

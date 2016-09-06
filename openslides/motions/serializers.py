@@ -20,6 +20,7 @@ from .models import (
     MotionPoll,
     MotionVersion,
     State,
+    SubmittersRelationship,
     Workflow,
 )
 
@@ -228,6 +229,15 @@ class MotionVersionSerializer(ModelSerializer):
             'reason',)
 
 
+class SubmittersRelationshipSerializer(ModelSerializer):
+    """
+    Serializer for motion.models.SubmittersRelationship objects.
+    """
+    class Meta:
+        model = SubmittersRelationship
+        fields = ('user', 'weight')  # Just the user and the weight
+
+
 class MotionSerializer(ModelSerializer):
     """
     Serializer for motion.models.Motion objects.
@@ -237,6 +247,7 @@ class MotionSerializer(ModelSerializer):
     log_messages = MotionLogSerializer(many=True, read_only=True)
     polls = MotionPollSerializer(many=True, read_only=True)
     reason = CharField(allow_blank=True, required=False, write_only=True)
+    submitters = SubmittersRelationshipSerializer(many=True, required=False, read_only=True, source='submittersrelationship_set')
     text = CharField(write_only=True)
     title = CharField(max_length=255, write_only=True)
     versions = MotionVersionSerializer(many=True, read_only=True)
@@ -289,9 +300,18 @@ class MotionSerializer(ModelSerializer):
         motion.reset_state(validated_data.get('workflow_id'))
         motion.save()
         if validated_data.get('submitters'):
-            motion.submitters.add(*validated_data['submitters'])
+            for index, submitter in enumerate(validated_data['submitters']):
+                sr = SubmittersRelationship(
+                    user=submitter,
+                    motion=motion,
+                    weight=index+1)
+                sr.save()
         elif validated_data['request_user'].is_authenticated():
-            motion.submitters.add(validated_data['request_user'])
+            sr = SubmittersRelationship(
+                user=validated_data['request_user'],
+                motion=motion,
+                weight=1)
+            sr.save()
         motion.supporters.add(*validated_data.get('supporters', []))
         motion.attachments.add(*validated_data.get('attachments', []))
         motion.tags.add(*validated_data.get('tags', []))
@@ -326,11 +346,21 @@ class MotionSerializer(ModelSerializer):
 
         motion.save(use_version=version)
 
-        # Submitters, supporters, attachments and tags
-        for key in ('submitters', 'supporters', 'attachments', 'tags'):
+        # Supporters, attachments and tags
+        for key in ('supporters', 'attachments', 'tags'):
             if key in validated_data.keys():
                 attr = getattr(motion, key)
                 attr.clear()
                 attr.add(*validated_data[key])
+
+        # Submitters
+        if 'submitters' in validated_data.keys():
+            motion.submitters.clear()
+            for index, submitter in enumerate(validated_data['submitters']):
+                sr = SubmittersRelationship(
+                    user=submitter,
+                    motion=motion,
+                    weight=index+1)
+                sr.save()
 
         return motion

@@ -7,6 +7,20 @@ from django.conf import settings
 from django.db import migrations, models
 
 
+def copy_submitter_motion_relationship_data(apps, schema_editor):
+    """
+    Copy all relationship data from motion->ManyToMany->submitters to the model SubmittersRelationship
+    """
+    Motion = apps.get_model('motions', 'Motion')
+    SubmittersRelationship = apps.get_model('motions', 'SubmittersRelationship')
+    for motion in Motion.objects.all():
+        for index, submitter in enumerate(motion.submitters.all(), start=1):
+            SubmittersRelationship.objects.create(
+                motion=motion,
+                user=submitter,
+                weight=index)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -19,17 +33,11 @@ class Migration(migrations.Migration):
             name='SubmittersRelationship',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('order_id', models.IntegerField(default=1)),
+                ('weight', models.IntegerField()),
             ],
             options={
                 'db_table': 'motions_submittersrelationship',
             },
-        ),
-        migrations.AlterField(
-            model_name='motion',
-            name='submitters',
-            field=models.ManyToManyField(blank=True, related_name='motion_submitters',
-                                         through='motions.SubmittersRelationship', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='submittersrelationship',
@@ -43,6 +51,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='submittersrelationship',
-            unique_together=set([('user', 'motion')]),
+            unique_together=set([('user', 'motion'), ('weight', 'motion')]),
         ),
+        migrations.RunPython(copy_submitter_motion_relationship_data),
     ]

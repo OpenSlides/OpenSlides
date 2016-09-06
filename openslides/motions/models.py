@@ -621,11 +621,11 @@ class Motion(RESTModelMixin, models.Model):
 class SubmittersRelationship (models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     motion = models.ForeignKey(Motion, on_delete=models.CASCADE)
-    order_id = models.IntegerField(default=1)
+    weight = models.IntegerField()
 
     class Meta:
         db_table = 'motions_submittersrelationship'
-        unique_together = (('user', 'motion'))
+        unique_together = (('user', 'motion'), ('weight', 'motion'))
 
 
 class MotionVersion(RESTModelMixin, models.Model):
