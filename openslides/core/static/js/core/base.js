@@ -277,9 +277,14 @@ angular.module('OpenSlidesApp.core', [
             template: '',
             link: function (scope, iElement, iAttr) {
                 var hooks = templateHooks.hooks[iAttr.hookName];
-                var html = hooks.map(function (hook) {
-                    return '<div>' + hook.template + '</div>';
-                }).join('');
+                var html;
+                if (hooks) {
+                    html = hooks.map(function (hook) {
+                        return '<div>' + hook.template + '</div>';
+                    }).join('');
+                } else {
+                    html = '';
+                }
                 iElement.append($compile(html)(scope));
             }
         };
