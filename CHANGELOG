@@ -25,6 +25,8 @@ Motions:
 - Added button to sort and number all motions in a category.
 - Introduced pdfMake for clientside generation of PDFs.
 - Added configurable fields for comments.
+- Added recommendations for motions.
+- Changed label of former state "commited a bill" to "refered to committee".
 
 Users:
 - Added field is_committee and new default group Committees.

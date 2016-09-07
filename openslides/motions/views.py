@@ -24,7 +24,14 @@ from .access_permissions import (
     WorkflowAccessPermissions,
 )
 from .exceptions import WorkflowError
-from .models import Category, Motion, MotionPoll, MotionVersion, Workflow
+from .models import (
+    Category,
+    Motion,
+    MotionPoll,
+    MotionVersion,
+    State,
+    Workflow,
+)
 from .pdf import motion_poll_to_pdf, motion_to_pdf, motions_to_pdf
 from .serializers import MotionPollSerializer
 
@@ -57,7 +64,7 @@ class MotionViewSet(ModelViewSet):
                       self.request.user.has_perm('motions.can_create') and
                       (not config['motions_stop_submitting'] or
                        self.request.user.has_perm('motions.can_manage')))
-        elif self.action in ('destroy', 'manage_version', 'set_state', 'create_poll'):
+        elif self.action in ('destroy', 'manage_version', 'set_state', 'set_recommendation', 'create_poll'):
             result = (self.request.user.has_perm('motions.can_see') and
                       self.request.user.has_perm('motions.can_manage'))
         elif self.action == 'support':
@@ -275,6 +282,46 @@ class MotionViewSet(ModelViewSet):
         # Write the log message and initiate response.
         motion.write_log(
             message_list=[ugettext_noop('State set to'), ' ', motion.state.name],
+            person=request.user)
+        return Response({'detail': message})
+
+    @detail_route(methods=['put'])
+    def set_recommendation(self, request, pk=None):
+        """
+        Special view endpoint to set a recommendation of a motion.
+
+        Send PUT {'recommendation': <state_id>} to set and just PUT {} to
+        reset the recommendation. Only managers can use this view.
+        """
+        # Retrieve motion and recommendation state.
+        motion = self.get_object()
+        recommendation_state = request.data.get('recommendation')
+
+        # Set or reset recommendation.
+        if recommendation_state is not None:
+            # Check data and set recommendation.
+            try:
+                recommendation_state_id = int(recommendation_state)
+            except ValueError:
+                raise ValidationError({'detail': _('Invalid data. Recommendation must be an integer.')})
+            recommendable_states = State.objects.filter(workflow=motion.workflow, recommendation_label__isnull=False)
+            if recommendation_state_id not in [item.id for item in recommendable_states]:
+                raise ValidationError(
+                    {'detail': _('You can not set the recommendation to {recommendation_state_id}.').format(
+                        recommendation_state_id=recommendation_state_id)})
+            motion.set_recommendation(recommendation_state_id)
+        else:
+            # Reset recommendation.
+            motion.recommendation = None
+
+        # Save motion.
+        motion.save(update_fields=['recommendation'])
+        label = motion.recommendation.recommendation_label if motion.recommendation else 'None'
+        message = _('The recommendation of the motion was set to %s.') % label
+
+        # Write the log message and initiate response.
+        motion.write_log(
+            message_list=[ugettext_noop('Recommendation set to'), ' ', label],
             person=request.user)
         return Response({'detail': message})
 

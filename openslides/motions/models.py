@@ -51,12 +51,22 @@ class Motion(RESTModelMixin, models.Model):
 
     state = models.ForeignKey(
         'State',
+        related_name='+',
         on_delete=models.SET_NULL,
         null=True)  # TODO: Check whether null=True is necessary.
     """
     The related state object.
 
     This attribute is to get the current state of the motion.
+    """
+
+    recommendation = models.ForeignKey(
+        'State',
+        related_name='+',
+        on_delete=models.SET_NULL,
+        null=True)
+    """
+    The recommendation of a person or committee for this motion.
     """
 
     identifier = models.CharField(max_length=255, null=True, blank=True,
@@ -471,6 +481,16 @@ class Motion(RESTModelMixin, models.Model):
                          Workflow.objects.get(pk=config['motions_workflow']).states.all()[0])
         self.set_state(new_state)
 
+    def set_recommendation(self, recommendation):
+        """
+        Set the recommendation of the motion.
+
+        'recommendation' can be the id of a state object or a state object.
+        """
+        if type(recommendation) is int:
+            recommendation = State.objects.get(pk=recommendation)
+        self.recommendation = recommendation
+
     def get_agenda_title(self):
         """
         Return a simple title string for the agenda.
@@ -523,6 +543,7 @@ class Motion(RESTModelMixin, models.Model):
         * unsupport
         * change_state
         * reset_state
+        * change_recommendation
 
         NOTE: If you update this function please also update the
         'isAllowed' function on client side in motions/site.js.
@@ -553,7 +574,11 @@ class Motion(RESTModelMixin, models.Model):
 
             'change_state': person.has_perm('motions.can_manage'),
 
-            'reset_state': person.has_perm('motions.can_manage')}
+            'reset_state': person.has_perm('motions.can_manage'),
+
+            'change_recommendation': person.has_perm('motions.can_manage'),
+
+        }
 
         actions['edit'] = actions['update']
 
@@ -800,11 +825,16 @@ class State(RESTModelMixin, models.Model):
     """
     Defines a state for a motion.
 
-    Every state belongs to a workflow. All states of a workflow are linked together
-    via 'next_states'. One of these states is the first state, but this
-    is saved in the workflow table (one-to-one relation). In every state
-    you can configure some handling of a motion. See the following fields
-    for more information.
+    Every state belongs to a workflow. All states of a workflow are linked
+    together via 'next_states'. One of these states is the first state, but
+    this is saved in the workflow table (one-to-one relation). In every
+    state you can configure some handling of a motion. See the following
+    fields for more information.
+
+    Additionally every motion can refer to one state as recommendation of
+    an person or committee (see config 'motions_recommendations_by'). This
+    means that the person or committee recommends to set the motion to this
+    state.
     """
 
     name = models.CharField(max_length=255)
@@ -812,6 +842,9 @@ class State(RESTModelMixin, models.Model):
 
     action_word = models.CharField(max_length=255)
     """An alternative string to be used for a button to switch to this state."""
+
+    recommendation_label = models.CharField(max_length=255, null=True)
+    """A string for a recommendation to set the motion to this state."""
 
     workflow = models.ForeignKey(
         'Workflow',
@@ -876,9 +909,13 @@ class State(RESTModelMixin, models.Model):
     def save(self, **kwargs):
         """Saves a state in the database.
 
-        Used to check the integrity before saving.
+        Used to check the integrity before saving. Also used to check that
+        recommendation_label is not an empty string.
         """
         self.check_next_states()
+        if self.recommendation_label == '':
+            raise WorkflowError('The field recommendation_label of {} must not '
+                                'be an empty string.'.format(self))
         super(State, self).save(**kwargs)
 
     def get_action_word(self):

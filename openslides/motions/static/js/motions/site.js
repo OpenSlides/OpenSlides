@@ -1152,8 +1152,16 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {'state': state_id});
         };
         // reset state
-        $scope.reset_state = function (state_id) {
+        $scope.reset_state = function () {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {});
+        };
+        // update recommendation
+        $scope.updateRecommendation = function (recommendation_id) {
+            $http.put('/rest/motions/motion/' + motion.id + '/set_recommendation/', {'recommendation': recommendation_id});
+        };
+        // reset state
+        $scope.resetRecommendation = function () {
+            $http.put('/rest/motions/motion/' + motion.id + '/set_recommendation/', {});
         };
         // create poll
         $scope.create_poll = function () {
@@ -1916,6 +1924,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         gettext('The maximum number of characters per line. Relevant when line numbering is enabled. Min: 40');
         gettext('Stop submitting new motions by non-staff users');
         gettext('Allow to disable versioning');
+        gettext('Name of recommendation committee');
+        gettext('Use an empty value to disable the recommendation system.');
 
         // subgroup Amendments
         gettext('Amendments');

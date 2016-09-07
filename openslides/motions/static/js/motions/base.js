@@ -15,11 +15,25 @@ angular.module('OpenSlidesApp.motions', [
             name: 'motions/workflowstate',
             methods: {
                 getNextStates: function () {
+                    // TODO: Use filter with params with operator 'in'.
                     var states = [];
                     _.forEach(this.next_states_id, function (stateId) {
                         states.push(DS.get('motions/workflowstate', stateId));
                     });
                     return states;
+                },
+                getRecommendations: function () {
+                    var params = {
+                        where: {
+                            'workflow_id': {
+                                '==': this.workflow_id
+                            },
+                            'recommendation_label': {
+                                '!=': null
+                            }
+                        }
+                    };
+                    return DS.filter('motions/workflowstate', params);
                 }
             }
         });
@@ -188,6 +202,7 @@ angular.module('OpenSlidesApp.motions', [
                      * - unsupport
                      * - change_state
                      * - reset_state
+                     * - change_recommendation
                      *
                      *  NOTE: If you update this function please also update the
                      *  'get_allowed_actions' function on server side in motions/models.py.
@@ -236,6 +251,8 @@ angular.module('OpenSlidesApp.motions', [
                             return operator.hasPerms('motions.can_manage');
                         case 'reset_state':
                             return operator.hasPerms('motions.can_manage');
+                        case 'change_recommendation':
+                            return operator.hasPerms('motions.can_manage');
                         case 'can_manage':
                             return operator.hasPerms('motions.can_manage');
                         default:
@@ -279,10 +296,16 @@ angular.module('OpenSlidesApp.motions', [
                     }
                 },
                 hasOne: {
-                    'motions/workflowstate': {
-                        localField: 'state',
-                        localKey: 'state_id',
-                    }
+                    'motions/workflowstate': [
+                        {
+                            localField: 'state',
+                            localKey: 'state_id',
+                        },
+                        {
+                            localField: 'recommendation',
+                            localKey: 'recommendation_id',
+                        }
+                    ]
                 }
             }
         });
@@ -330,31 +353,41 @@ angular.module('OpenSlidesApp.motions', [
         gettext('submitted');
         gettext('accepted');
         gettext('Accept');
+        gettext('Acceptance');
         gettext('rejected');
         gettext('Reject');
+        gettext('Rejection');
         gettext('not decided');
         gettext('Do not decide');
+        gettext('No decision');
         // workflow 2
         gettext('Complex Workflow');
         gettext('published');
         gettext('permitted');
         gettext('Permit');
+        gettext('Permission');
         gettext('accepted');
         gettext('Accept');
+        gettext('Acceptance');
         gettext('rejected');
         gettext('Reject');
+        gettext('Rejection');
         gettext('withdrawed');
         gettext('Withdraw');
         gettext('adjourned');
         gettext('Adjourn');
+        gettext('Adjournment');
         gettext('not concerned');
         gettext('Do not concern');
-        gettext('commited a bill');
-        gettext('Commit a bill');
+        gettext('No concernment');
+        gettext('refered to committee');
+        gettext('Refer to committee');
+        gettext('Referral to committee');
         gettext('needs review');
         gettext('Needs review');
         gettext('rejected (not authorized)');
         gettext('Reject (not authorized)');
+        gettext('Rejection (not authorized)');
     }
 ]);
 

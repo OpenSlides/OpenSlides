@@ -117,9 +117,9 @@
               <ul uib-dropdown-menu aria-labelledby="state-dropdown">
                 <li ng-repeat="state in motion.state.getNextStates()">
                   <a href ng-click="updateState(state.id)">{{ state.action_word | translate }}</a>
-                <li class="divider" ng-if="motion.state.getNextStates().length">
-                <li>
-                  <a href ng-if="motion.isAllowed('reset_state')" ng-click="reset_state()">
+                <li class="divider" ng-if="motion.state.getNextStates().length && motion.isAllowed('reset_state')">
+                <li ng-if="motion.isAllowed('reset_state')">
+                  <a href ng-click="reset_state()">
                     <i class="fa fa-exclamation-triangle"></i>
                     <translate>Reset state</translate>
                   </a>
@@ -128,6 +128,34 @@
           </div>
           <div class="label" ng-class="'label-'+motion.state.css_class">
             {{ motion.state.name | translate }}
+          </div>
+
+          <!-- Recommendation -->
+          <div ng-if="config('motions_recommendations_by') != ''">
+            <h3 ng-if="!motion.isAllowed('change_recommendation')" class="heading" translate>Recommendation</h3>
+            <div ng-if="motion.isAllowed('change_recommendation')" class="heading">
+              <span uib-dropdown>
+                <a href id="recommendation-dropdown" class="drop-down-name" uib-dropdown-toggle>
+                  <translate>Recommendation</translate>
+                  <i class="fa fa-cog"></i>
+                </a>
+                <ul uib-dropdown-menu aria-labelledby="recommendation-dropdown">
+                  <li ng-repeat="recommendation in motion.state.getRecommendations()">
+                    <a href ng-click="updateRecommendation(recommendation.id)">
+                      {{ recommendation.recommendation_label | translate }}
+                    </a>
+                  <li class="divider" ng-if="motion.state.getRecommendations().length && motion.recommendation">
+                  <li ng-if="motion.recommendation">
+                    <a href ng-click="resetRecommendation()">
+                      <i class="fa fa-exclamation-triangle"></i>
+                      <translate>Reset recommendation</translate>
+                    </a>
+                </ul>
+              </span>
+            </div>
+            <div class="label" ng-class="'label-'+motion.recommendation.css_class">
+              {{ motion.recommendation.recommendation_label | translate }}
+            </div>
           </div>
 
           <!-- Origin -->
