@@ -840,6 +840,26 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         User.bindAll({}, $scope, 'users');
         $scope.alert = {};
 
+
+        $scope.test = function () {
+            console.log($scope.motions);
+            console.log($scope.motions[0].submitters);
+            
+            var motion = {};
+            motion.title = 'test2';
+            motion.text = 'text';
+            motion.submitters = {
+                submitter_id: 2,
+                weight: 123
+            };
+            Motion.create(motion).then(function (success) {
+                console.log(success);
+            }, function (error) {
+                console.log(error);
+            });
+        };
+
+
         // setup table sorting
         $scope.sortColumn = 'identifier';
         $scope.filterPresent = '';

@@ -235,7 +235,7 @@ class SubmittersRelationshipSerializer(ModelSerializer):
     """
     class Meta:
         model = SubmittersRelationship
-        fields = ('user', 'weight')  # Just the user and the weight
+        fields = ('submitter', 'weight')  # Just the submitter and the weight
 
 
 class MotionSerializer(ModelSerializer):
@@ -299,16 +299,18 @@ class MotionSerializer(ModelSerializer):
         motion.parent = validated_data.get('parent')
         motion.reset_state(validated_data.get('workflow_id'))
         motion.save()
+        print(validated_data.get('submitters'))
+
         if validated_data.get('submitters'):
             for index, submitter in enumerate(validated_data['submitters']):
                 sr = SubmittersRelationship(
-                    user=submitter,
+                    submitter=submitter,
                     motion=motion,
                     weight=index+1)
                 sr.save()
         elif validated_data['request_user'].is_authenticated():
             sr = SubmittersRelationship(
-                user=validated_data['request_user'],
+                submitter=validated_data['request_user'],
                 motion=motion,
                 weight=1)
             sr.save()
@@ -358,7 +360,7 @@ class MotionSerializer(ModelSerializer):
             motion.submitters.clear()
             for index, submitter in enumerate(validated_data['submitters']):
                 sr = SubmittersRelationship(
-                    user=submitter,
+                    submitter=submitter,
                     motion=motion,
                     weight=index+1)
                 sr.save()

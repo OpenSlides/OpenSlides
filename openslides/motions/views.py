@@ -117,6 +117,9 @@ class MotionViewSet(ModelViewSet):
                 # No comments here. Just do nothing.
                 pass
 
+        print(request.data.get('submitters'))
+        print(request.data.get('submitters').get('weight'))
+
         # Validate data and create motion.
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

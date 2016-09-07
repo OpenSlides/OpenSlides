@@ -274,10 +274,10 @@ angular.module('OpenSlidesApp.motions', [
                         localKeys: 'attachments_id',
                     },
                     'users/user': [
-                        {
+                        /*{
                             localField: 'submitters',
                             localKeys: 'submitters_id',
-                        },
+                        },*/
                         {
                             localField: 'supporters',
                             localKeys: 'supporters_id',

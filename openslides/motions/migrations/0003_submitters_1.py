@@ -17,7 +17,7 @@ def copy_submitter_motion_relationship_data(apps, schema_editor):
         for index, submitter in enumerate(motion.submitters.all(), start=1):
             SubmittersRelationship.objects.create(
                 motion=motion,
-                user=submitter,
+                submitter=submitter,
                 weight=index)
 
 
@@ -46,12 +46,12 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='submittersrelationship',
-            name='user',
+            name='submitter',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterUniqueTogether(
             name='submittersrelationship',
-            unique_together=set([('user', 'motion'), ('weight', 'motion')]),
+            unique_together=set([('submitter', 'motion'), ('weight', 'motion')]),
         ),
         migrations.RunPython(copy_submitter_motion_relationship_data),
     ]
