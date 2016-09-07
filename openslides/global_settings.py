@@ -100,6 +100,15 @@ ALLOWED_HOSTS = ['*']
 # Adds all automaticly collected plugins
 INSTALLED_PLUGINS = collect_plugins()
 
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',  # MD5 is only used for inital passwords.
+]
+
 TEST_RUNNER = 'openslides.utils.test.OpenSlidesDiscoverRunner'
 
 # Config for the REST Framework
