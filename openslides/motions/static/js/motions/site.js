@@ -2,7 +2,7 @@
 
 'use strict';
 
-angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlidesApp.motions.diff'])
+angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlidesApp.motions.diff', 'OpenSlidesApp.motions.motionservices'])
 
 .factory('MotionContentProvider', ['gettextCatalog', function(gettextCatalog) {
     /**
@@ -1022,7 +1022,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 .controller('MotionDetailCtrl', [
     '$scope',
     '$http',
-    '$timeout',
     'ngDialog',
     'MotionComment',
     'MotionForm',
@@ -1032,7 +1031,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'Tag',
     'User',
     'Workflow',
-    'Editor',
     'Config',
     'motion',
     'SingleMotionContentProvider',
@@ -1040,11 +1038,11 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'PollContentProvider',
     'PdfMakeConverter',
     'PdfMakeDocumentProvider',
+    'MotionInlineEditing',
     'gettextCatalog',
-    'diffService',
-    function($scope, $http, $timeout, ngDialog, MotionComment, MotionForm, Motion, Category, Mediafile, Tag,
-             User, Workflow, Editor, Config, motion, SingleMotionContentProvider, MotionContentProvider,
-             PollContentProvider, PdfMakeConverter, PdfMakeDocumentProvider, gettextCatalog, diffService) {
+    function($scope, $http, ngDialog, MotionComment, MotionForm, Motion, Category, Mediafile, Tag,
+             User, Workflow, Config, motion, SingleMotionContentProvider, MotionContentProvider,
+             PollContentProvider, PdfMakeConverter, PdfMakeDocumentProvider, MotionInlineEditing, gettextCatalog) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1056,7 +1054,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         $scope.isCollapsed = true;
         $scope.commentsFields = MotionComment.getFields();
         $scope.lineNumberMode = Config.get('motions_default_line_numbering').value;
-        $scope.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
         if (motion.parent_id) {
             Motion.bindOne(motion.parent_id, $scope, 'parent');
         }
@@ -1167,17 +1164,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         // show specific version
         $scope.showVersion = function (version) {
             $scope.version = version.id;
-            $scope.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
-            $scope.inlineEditing.allowed = (motion.isAllowed('update') && $scope.version == motion.getVersion(-1).id);
-            $scope.inlineEditing.changed = false;
-            $scope.inlineEditing.active = false;
-            if ($scope.inlineEditing.editor) {
-                $scope.inlineEditing.editor.setContent($scope.lineBrokenText);
-                $scope.inlineEditing.editor.setMode("readonly");
-                $scope.inlineEditing.originalHtml = $scope.inlineEditing.editor.getContent();
-            } else {
-                $scope.inlineEditing.originalHtml = $scope.lineBrokenText;
-            }
+            $scope.inlineEditing.setVersion(motion, version.id);
         };
         // permit specific version
         $scope.permitVersion = function (version) {
@@ -1198,96 +1185,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         };
 
         // Inline editing functions
-        $scope.inlineEditing = {
-            allowed: (motion.isAllowed('update') && $scope.version == motion.getVersion(-1).id),
-            active: false,
-            changed: false,
-            trivialChange: false,
-            trivialChangeAllowed: false,
-            editor: null,
-            originalHtml: $scope.lineBrokenText,
-        };
-
-        if (motion.state.versioning && Config.get('motions_allow_disable_versioning').value) {
-            $scope.inlineEditing.trivialChange = true;
-            $scope.inlineEditing.trivialChangeAllowed = true;
-        }
-
-        $scope.$watch(
-            function () {
-                return Motion.lastModified();
-            },
-            function () {
-                $scope.inlineEditing.trivialChangeAllowed =
-                    (motion.state.versioning && Config.get('motions_allow_disable_versioning').value);
-            }
-        );
-
-        $scope.tinymceOptions = Editor.getOptions(null, true);
-        $scope.tinymceOptions.readonly = 1;
-        $scope.tinymceOptions.setup = function (editor) {
-            $scope.inlineEditing.editor = editor;
-            editor.on("init", function () {
-                $scope.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
-                $scope.inlineEditing.editor.setContent($scope.lineBrokenText);
-                $scope.inlineEditing.originalHtml = $scope.inlineEditing.editor.getContent();
-                $scope.inlineEditing.changed = false;
-            });
-            editor.on("change", function () {
-                $scope.inlineEditing.changed = (editor.getContent() != $scope.inlineEditing.originalHtml);
-            });
-            editor.on("undo", function() {
-                $scope.inlineEditing.changed = (editor.getContent() != $scope.inlineEditing.originalHtml);
-            });
-        };
-
-        $scope.enableInlineEditing = function() {
-            $scope.inlineEditing.editor.setMode("design");
-            $scope.inlineEditing.active = true;
-            $scope.inlineEditing.changed = false;
-
-            $scope.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
-            $scope.inlineEditing.editor.setContent($scope.lineBrokenText);
-            $scope.inlineEditing.originalHtml = $scope.inlineEditing.editor.getContent();
-            $timeout(function() {
-                $scope.inlineEditing.editor.focus();
-            }, 100);
-        };
-
-        $scope.disableInlineEditing = function() {
-            $scope.inlineEditing.editor.setMode("readonly");
-            $scope.inlineEditing.active = false;
-            $scope.inlineEditing.changed = false;
-            $scope.lineBrokenText = $scope.inlineEditing.originalHtml;
-            $scope.inlineEditing.editor.setContent($scope.inlineEditing.originalHtml);
-        };
-
-        $scope.motionInlineSave = function () {
-            if (!$scope.inlineEditing.allowed) {
-                throw "No permission to update motion";
-            }
-
-            motion.setTextStrippingLineBreaks(motion.active_version, $scope.inlineEditing.editor.getContent());
-            motion.disable_versioning = $scope.inlineEditing.trivialChange;
-
-            Motion.inject(motion);
-            // save change motion object on server
-            Motion.save(motion, { method: 'PATCH' }).then(
-                function(success) {
-                    $scope.showVersion(motion.getVersion(-1));
-                },
-                function (error) {
-                    // save error: revert all changes by restore
-                    // (refresh) original motion object from server
-                    Motion.refresh(motion);
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
-                }
-            );
-        };
+        $scope.inlineEditing = MotionInlineEditing;
+        $scope.inlineEditing.init($scope, motion);
     }
 ])
 
