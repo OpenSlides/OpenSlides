@@ -29,9 +29,8 @@ class CreateMotion(TestCase):
             reverse('motion-list'),
             {'title': 'test_title_OoCoo3MeiT9li5Iengu9',
              'text': 'test_text_thuoz0iecheiheereiCi'})
-
-        motion = Motion.objects.get()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        motion = Motion.objects.get()
         self.assertEqual(motion.title, 'test_title_OoCoo3MeiT9li5Iengu9')
         self.assertEqual(motion.identifier, '1')
         self.assertTrue(motion.submitters.exists())

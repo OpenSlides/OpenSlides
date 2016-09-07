@@ -369,3 +369,12 @@
 
   </div>
 </div>
+
+<div class="details">
+    <h3>Motion Comments</h3>
+    <div ng-repeat="field in commentsFields">
+        <p ng-if="field.public || operator.hasPerms('motions.can_see_and_manage_comments')">
+            {{ field.name }}: {{ motion.comments[$index] }}
+        </p>
+    </div>
+</div>

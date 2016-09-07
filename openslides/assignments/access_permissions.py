@@ -26,7 +26,7 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
     def get_restricted_data(self, full_data, user):
         """
         Returns the restricted serialized data for the instance prepared
-        for the user. Removes unpublushed polls for non admins so that they
+        for the user. Removes unpublished polls for non admins so that they
         only get a result like the AssignmentShortSerializer would give them.
         """
         if user.has_perm('assignments.can_manage'):

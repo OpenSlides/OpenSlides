@@ -1,4 +1,4 @@
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.http import Http404
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
@@ -67,6 +67,27 @@ class MotionViewSet(ModelViewSet):
             result = False
         return result
 
+    def list(self, request, *args, **kwargs):
+        """
+        Customized view endpoint to list all motions.
+
+        Hides non public comment fields for some users.
+        """
+        response = super().list(request, *args, **kwargs)
+        for i, motion in enumerate(response.data):
+            response.data[i] = self.get_access_permissions().get_restricted_data(motion, self.request.user)
+        return response
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Customized view endpoint to retrieve a motion.
+
+        Hides non public comment fields for some users.
+        """
+        response = super().retrieve(request, *args, **kwargs)
+        response.data = self.get_access_permissions().get_restricted_data(response.data, self.request.user)
+        return response
+
     def create(self, request, *args, **kwargs):
         """
         Customized view endpoint to create a new motion.
@@ -75,6 +96,12 @@ class MotionViewSet(ModelViewSet):
         if (not request.user.has_perm('motions.can_manage') and
                 (request.data.get('submitters_id') or request.data.get('supporters_id'))):
             # Non-staff users are not allowed to send submitter or supporter data.
+            self.permission_denied(request)
+
+        # Check permission to send comment data.
+        if (not request.user.has_perm('motions.can_see_and_manage_comments') and
+                request.data.get('comments')):
+            # Some users are not allowed to send comments data.
             self.permission_denied(request)
 
         # Validate data and create motion.
@@ -114,6 +141,12 @@ class MotionViewSet(ModelViewSet):
                 if key not in whitelist:
                     # Non-staff users are allowed to send only some data. Ignore other data.
                     del request.data[key]
+        if not request.user.has_perm('motions.can_see_and_manage_comments'):
+            try:
+                del request.data['comments']
+            except KeyError:
+                # No comments here. Just do nothing.
+                pass
 
         # Validate data and update motion.
         serializer = self.get_serializer(
@@ -327,24 +360,30 @@ class CategoryViewSet(ModelViewSet):
                 motion_dict[motion.pk] = motion
             motions = [motion_dict[pk] for pk in motion_list]
 
-        with transaction.atomic():
-            for motion in motions:
-                motion.identifier = None
-                motion.save()
+        try:
+            with transaction.atomic():
+                for motion in motions:
+                    motion.identifier = None
+                    motion.save()
 
-            for motion in motions:
-                if motion.is_amendment():
-                    parent_identifier = motion.parent.identifier or ''
-                    prefix = '%s %s ' % (parent_identifier, config['motions_amendments_prefix'])
-                number += 1
-                identifier = '%s%d' % (prefix, number)
-                motion.identifier = identifier
-                motion.identifier_number = number
-                motion.save()
-
-        message = _('All motions in category {category} numbered '
-                    'successfully.').format(category=category)
-        return Response({'detail': message})
+                for motion in motions:
+                    if motion.is_amendment():
+                        parent_identifier = motion.parent.identifier or ''
+                        prefix = '%s %s ' % (parent_identifier, config['motions_amendments_prefix'])
+                    number += 1
+                    identifier = '%s%d' % (prefix, number)
+                    motion.identifier = identifier
+                    motion.identifier_number = number
+                    motion.save()
+        except IntegrityError:
+            message = _('Error: At least one identifier of this category does '
+                        'already exist in another category.')
+            response = Response({'detail': message}, status_code=400)
+        else:
+            message = _('All motions in category {category} numbered '
+                        'successfully.').format(category=category)
+            response = Response({'detail': message})
+        return response
 
 
 class WorkflowViewSet(ModelViewSet):

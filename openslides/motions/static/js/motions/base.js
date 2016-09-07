@@ -117,18 +117,23 @@ angular.module('OpenSlidesApp.motions', [
 .factory('Motion', [
     'DS',
     'MotionPoll',
+    'MotionComment',
     'jsDataModel',
     'gettext',
     'operator',
     'Config',
     'lineNumberingService',
-    function(DS, MotionPoll, jsDataModel, gettext, operator, Config, lineNumberingService) {
+    function(DS, MotionPoll, MotionComment, jsDataModel, gettext, operator, Config, lineNumberingService) {
         var name = 'motions/motion';
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
             verboseName: gettext('Motion'),
             verboseNamePlural: gettext('Motions'),
+            validate: function (resource, data, callback) {
+                MotionComment.populateFieldsReverse(data);
+                callback(null, data);
+            },
             methods: {
                 getResourceName: function () {
                     return name;

@@ -25,6 +25,7 @@
     "jquery.cookie": "~1.4.1",
     "js-data": "~2.8.2",
     "js-data-angular": "~3.1.0",
+    "jsen": "~0.6.1",
     "lodash": "~3.10.0",
     "ng-dialog": "~0.5.6",
     "ng-file-upload": "~11.2.3",
@@ -44,9 +45,9 @@
     },
     "tinymce-dist": {
       "main": [
-          "tinymce.js",
-          "themes/modern/theme.js",
-          "plugins/*/plugin.js"
+        "tinymce.js",
+        "themes/modern/theme.js",
+        "plugins/*/plugin.js"
       ]
     }
   },
