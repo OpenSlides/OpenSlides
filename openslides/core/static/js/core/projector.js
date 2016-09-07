@@ -67,13 +67,15 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         $scope.$watch(function () {
             return Config.lastModified();
         }, function () {
-            var conf = Config.get('projector_resolution').value;
             // With multiprojector, get the resolution from Prjector.get(pk).{width; height}
-            if(!last_conf || last_conf.width != conf.width || last-conf.height != conf.height) {
-                last_conf = conf;
-                $scope.projectorWidth = conf.width;
-                $scope.projectorHeight = conf.height;
-                $scope.recalculateIframe();
+            if (typeof $scope.config === 'function') {
+                var conf = $scope.config('projector_resolution');
+                if(!last_conf || last_conf.width != conf.width || last_conf.height != conf.height) {
+                    last_conf = conf;
+                    $scope.projectorWidth = conf.width;
+                    $scope.projectorHeight = conf.height;
+                    $scope.recalculateIframe();
+                }
             }
         });
 
