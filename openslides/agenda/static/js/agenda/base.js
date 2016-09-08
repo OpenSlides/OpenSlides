@@ -96,6 +96,21 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                     }
                     return title;
                 },
+                getItemNumberWithAncestors: function (agendaId) {
+                    if (!agendaId) {
+                        agendaId = this.id;
+                    }
+                    var agendaItem = DS.get(name, agendaId);
+                    if (!agendaItem) {
+                        return '';
+                    } else if (agendaItem.item_number) {
+                        return agendaItem.item_number;
+                    } else if (agendaItem.parent_id) {
+                        return this.getItemNumberWithAncestors(agendaItem.parent_id);
+                    } else {
+                        return '';
+                    }
+                },
                 // override project function of jsDataModel factory
                 project: function() {
                     return $http.post(

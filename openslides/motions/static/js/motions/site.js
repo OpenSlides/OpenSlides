@@ -793,6 +793,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 .controller('MotionListCtrl', [
     '$scope',
     '$state',
+    '$http',
     'ngDialog',
     'MotionForm',
     'Motion',
@@ -800,7 +801,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'Tag',
     'Workflow',
     'User',
-    function($scope, $state, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User) {
+    'Agenda',
+    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         Tag.bindAll({}, $scope, 'tags');
@@ -812,6 +814,32 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         $scope.sortColumn = 'identifier';
         $scope.filterPresent = '';
         $scope.reverse = false;
+
+        $scope.multiselectFilter = {
+            state: [],
+            category: [],
+            tag: []
+        };
+        $scope.getItemId = {
+            state: function (motion) {return motion.state_id;},
+            category: function (motion) {return motion.category_id;},
+            tag: function (motion) {return motion.tags_id;}
+        };
+        // function to operate the multiselectFilter
+        $scope.operateMultiselectFilter = function (filter, id) {
+            if (!$scope.isDeleteMode) {
+                if (_.indexOf($scope.multiselectFilter[filter], id) > -1) {
+                    // remove id
+                    $scope.multiselectFilter[filter] = _.filter($scope.multiselectFilter[filter], function (_id) {
+                        return _id != id;
+                    });
+                } else {
+                    // add id
+                    $scope.multiselectFilter[filter].push(id);
+                }
+
+            }
+        };
         // function to sort by clicked column
         $scope.toggleSort = function (column) {
             if ( $scope.sortColumn === column ) {
@@ -852,6 +880,23 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                 category,
             ].join(" ");
         };
+        // for reset-button
+        $scope.reset_filters = function () {
+            $scope.multiselectFilter = {
+                state: [],
+                category: [],
+                tag: []
+            };
+            if ($scope.filter) {
+                $scope.filter.search = '';
+            }
+        };
+        $scope.are_filters_set = function () {
+            return $scope.multiselectFilter.state.length > 0 ||
+                   $scope.multiselectFilter.category.length > 0 ||
+                   $scope.multiselectFilter.tag.length > 0 ||
+                   ($scope.filter ? $scope.filter.search : false);
+        };
 
         // collect all states of all workflows
         // TODO: regard workflows only which are used by motions
@@ -861,7 +906,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             if (workflows.length > 1) {
                 var wf = {};
                 wf.name = workflow.name;
-                wf.workflowSeparator = "-";
+                wf.workflowHeader = true;
                 $scope.states.push(wf);
             }
             angular.forEach(workflow.states, function (state) {
@@ -869,41 +914,83 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             });
         });
 
+        // update state
+        $scope.updateState = function (motion, state_id) {
+            $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {'state': state_id});
+        };
+        // reset state
+        $scope.reset_state = function (motion) {
+            $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {});
+        };
+
+        $scope.has_tag = function (motion, tag) {
+            return _.indexOf(motion.tags_id, tag.id) > -1;
+        };
+
+        // Use this methon instead of Motion.save(), because otherwise
+        // you have to provide always a title and a text
+        var save = function (motion) {
+            motion.title = motion.getTitle(-1);
+            motion.text = motion.getText(-1);
+            motion.reason = motion.getReason(-1);
+            Motion.save(motion);
+        };
+        $scope.toggle_tag = function (motion, tag) {
+            if ($scope.has_tag(motion, tag)) {
+                // remove
+                motion.tags_id = _.filter(motion.tags_id, function (tag_id){
+                    return tag_id != tag.id;
+                });
+            } else {
+                motion.tags_id.push(tag.id);
+            }
+            save(motion);
+        };
+        $scope.toggle_category = function (motion, category) {
+            if (motion.category_id == category.id) {
+                motion.category_id = null;
+            } else {
+                motion.category_id = category.id;
+            }
+            save(motion);
+        };
+
         // open new/edit dialog
         $scope.openDialog = function (motion) {
             ngDialog.open(MotionForm.getDialog(motion));
         };
-        // cancel QuickEdit mode
-        $scope.cancelQuickEdit = function (motion) {
-            // revert all changes by restore (refresh) original motion object from server
-            Motion.refresh(motion);
-            motion.quickEdit = false;
-        };
-        // save changed motion
-        $scope.save = function (motion) {
-            // get (unchanged) values from latest version for update method
-            motion.title = motion.getTitle(-1);
-            motion.text = motion.getText(-1);
-            motion.reason = motion.getReason(-1);
-            Motion.save(motion).then(
-                function(success) {
-                    motion.quickEdit = false;
-                    $scope.alert.show = false;
-                },
-                function(error){
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = { type: 'danger', msg: message, show: true };
-                });
+
+        // Export the given motions as a csv file
+        $scope.csv_export = function () {
+            var element = document.getElementById('downloadLink');
+            var csvRows = [
+                ['identifier', 'title', 'text', 'reason', 'submitter', 'category', 'origin'],
+            ];
+            angular.forEach($scope.motionsFiltered, function (motion) {
+                var row = [];
+                row.push('"' + motion.identifier + '"');
+                row.push('"' + motion.getTitle() + '"');
+                row.push('"' + motion.getText() + '"');
+                row.push('"' + motion.getReason() + '"');
+                row.push('"' + motion.submitters[0].get_full_name() + '"');
+                var category = motion.category ? motion.category.name : '';
+                row.push('"' + category + '"');
+                row.push('"' + motion.origin + '"');
+                csvRows.push(row);
+            });
+
+            var csvString = csvRows.join("%0A");
+            element.href = 'data:text/csv;charset=utf-8,' + csvString;
+            element.download = 'motions-export.csv';
+            element.target = '_blank';
         };
 
         // *** delete mode functions ***
         $scope.isDeleteMode = false;
-        // check all checkboxes
+        // check all checkboxes from filtered motions
         $scope.checkAll = function () {
-            angular.forEach($scope.motions, function (motion) {
+            $scope.selectedAll = !$scope.selectedAll;
+            angular.forEach($scope.motionsFiltered, function (motion) {
                 motion.selected = $scope.selectedAll;
             });
         };
@@ -918,7 +1005,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         };
         // delete selected motions
         $scope.deleteMultiple = function () {
-            angular.forEach($scope.motions, function (motion) {
+            angular.forEach($scope.motionsFiltered, function (motion) {
                 if (motion.selected)
                     Motion.destroy(motion.id);
             });

@@ -460,14 +460,37 @@ angular.module('OpenSlidesApp.core', [
 ])
 
 .filter('osFilter', [
-    '$filter',
-    function ($filter) {
+    function () {
         return function (array, string, getFilterString) {
             if (!string) {
                 return array;
             }
             return Array.prototype.filter.call(array, function (item) {
                 return getFilterString(item).toLowerCase().indexOf(string.toLowerCase()) > -1;
+            });
+        };
+    }
+])
+
+// This filter filters all items in array. If the filterArray is empty, the array is passed.
+// The filterArray contains numbers of the multiselect: [1, 3, 4].
+// Then, all items in array are passed, if the item_id (get with id_function) matches one of the
+// ids in filterArray. id_function could also return a list of ids. Example:
+// Item 1 has two tags with ids [1, 4]. filterArray = [3, 4] --> match
+.filter('SelectMultipleFilter', [
+    function () {
+        return function (array, filterArray, idFunction) {
+            if (filterArray.length === 0) {
+                return array;
+            }
+            return Array.prototype.filter.call(array, function (item) {
+                var id = idFunction(item);
+                if (!id) {
+                    return false;
+                } else if (typeof id === 'number') {
+                    id = [id];
+                }
+                return _.intersection(id, filterArray).length > 0;
             });
         };
     }

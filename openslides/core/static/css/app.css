@@ -670,6 +670,100 @@ img {
     z-index: 1;
 }
 
+/** Motion **/
+#motion-table .row {
+    border: 1px solid #ddd;
+    border-top: 0px;
+}
+
+#motion-table .data-row:hover {
+    background-color: #f5f5f5;
+}
+
+#motion-table .data-row > div {
+    padding: 5px;
+}
+
+#motion-table .header-row {
+    border-top: 1px solid #ddd;
+    background-color: #f5f5f5;
+}
+
+.header-row > div {
+    padding: 10px;
+}
+
+#motion-table .main-header {
+    width: calc(100% - 50px);
+    float: right;
+}
+
+#motion-table .main-header .form-inline {
+    margin-left: 15px;
+}
+
+#motion-table .content > div {
+    display: inline-block;
+    float: left;
+}
+
+#motion-table .identifier-col {
+    width: 50px;
+    min-height: 1px;
+}
+
+#motion-table .identifier-col > div {
+    text-align: center;
+}
+
+#motion-table .title-col {
+    width: calc(100% - 50px);
+}
+
+#motion-table .title-col, #motion-table small {
+    color: #555;
+}
+
+#motion-table .content > div > div {
+    margin-bottom: 5px;
+}
+
+#motion-table .content > div > div:last-child {
+    margin-bottom: 0px;
+}
+
+#motion-table .row .centered {
+    text-align: center;
+}
+
+#motion-table .row .col-xs-1 {
+    width: 50px;
+}
+
+#motion-table .row .col-xs-4 {
+    padding-right: 10px;
+}
+
+#motion-table .dropdown {
+    display: inline-block;
+}
+
+#motion-table .dropdown > span, #motion-table .sort-spacer {
+    padding: 5px 10px 5px 10px;
+}
+
+#motion-table .dropdown-entry {
+    padding: 5px 10px 5px 10px;
+    display: inline-block;
+    width: 100%;
+}
+
+#motion-table .title {
+    margin-right: 10px;
+    padding: 0;
+    background-color: transparent;
+}
+
 /** Footer **/
 #footer {
     float: left;
@@ -681,9 +775,21 @@ img {
 
 /** General helper classes **/
 
+.disabled {
+    color: #555;
+    cursor: not-allowed !important;
+}
+
+.bold {
+    font-weight: bold;
+}
 
 .btn-primary {
     background-color: #317796;
+}
+
+.dropdown-menu {
+    margin-left: 0px !important;
 }
 
 .dropdown-entries {
@@ -715,6 +821,14 @@ img {
 
 .spacer-right {
     margin-right: 5px;
+}
+
+.spacer-left {
+    margin-left: 5px;
+}
+
+.spacer-left-lg {
+    margin-left: 10px;
 }
 
 .lead-div {
@@ -762,6 +876,10 @@ img {
 
 .halfWidth {
     width: 50%;
+}
+
+.badge-info {
+    background-color: #f0ad4e;
 }
 
 .listOfSpeakers h3 {
@@ -1053,7 +1171,7 @@ tr.hiddenrow td {
 }
 
 tr.activeline td, li.activeline, .projected {
-    background-color: #bed4de;
+    background-color: #bed4de !important;
 }
 
 tr.selected td {
@@ -1119,11 +1237,11 @@ tr.selected td {
 
     #chatbox { width: 100%; top: 40px; }
 
-    /* hide marked element / column */
-    .optional, .hide-sm { display: none; }
-
     /* show replacement elements, if any */
     .optional-show { display: block !important; }
+
+    /* hide marked element / column */
+    .optional, .hide-sm { display: none !important; }
 }
 
 /* display for resolutions smaller that 560px */
