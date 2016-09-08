@@ -74,6 +74,10 @@ avoid opening new browser windows::
 
     $ python manage.py runserver
 
+Use gulp watch in a second command-line interface::
+
+    $ node_modules/.bin/gulp watch
+
 
 2. Installation on Windows
 --------------------------
