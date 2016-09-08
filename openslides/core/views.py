@@ -778,7 +778,7 @@ class MediaEncoder(utils_views.APIView):
         :return: dictionary with the string representation (content) and the name of the file
         for the pdfMake.vfs structure
         """
-        path = os.path.join(settings.SITE_ROOT, 'static/fonts', os.path.basename(file_path))
+        path = os.path.join(settings.MODULE_DIR, 'static', 'fonts', os.path.basename(file_path))
         try:
             with open(path, "rb") as file:
                 string_representation = "{}".format(base64.b64encode(file.read()).decode())
