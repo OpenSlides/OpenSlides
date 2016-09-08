@@ -290,7 +290,7 @@ class MotionSerializer(ModelSerializer):
         motion.save()
         if validated_data.get('submitters'):
             motion.submitters.add(*validated_data['submitters'])
-        else:
+        elif validated_data['request_user'].is_authenticated():
             motion.submitters.add(validated_data['request_user'])
         motion.supporters.add(*validated_data.get('supporters', []))
         motion.attachments.add(*validated_data.get('attachments', []))

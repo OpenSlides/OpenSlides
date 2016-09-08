@@ -1209,6 +1209,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     '$state',
     'gettext',
     'gettextCatalog',
+    'operator',
     'Motion',
     'MotionForm',
     'Category',
@@ -1219,7 +1220,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'Workflow',
     'Agenda',
     'AgendaUpdate',
-    function($scope, $state, gettext, gettextCatalog, Motion, MotionForm, Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaUpdate) {
+    function($scope, $state, gettext, gettextCatalog, operator, Motion, MotionForm, Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaUpdate) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1252,11 +1253,14 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         $scope.save = function (motion) {
             Motion.create(motion).then(
                 function(success) {
-                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
-                    // see openslides.agenda.models.Item.ITEM_TYPE.
-                    var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
-                                   {key: 'parent_id', value: motion.agenda_parent_item_id}];
-                    AgendaUpdate.saveChanges(success.agenda_item_id, changes);
+                    // change agenda item only if user has the permission to do that
+                    if (operator.hasPerms('agenda.can_manage')) {
+                        // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
+                        // see openslides.agenda.models.Item.ITEM_TYPE.
+                        var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
+                                       {key: 'parent_id', value: motion.agenda_parent_item_id}];
+                        AgendaUpdate.saveChanges(success.agenda_item_id, changes);
+                    }
                     if (isAmendment) {
                         $state.go('motions.motion.detail', {id: success.id});
                     }

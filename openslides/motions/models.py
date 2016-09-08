@@ -591,6 +591,8 @@ class Motion(RESTModelMixin, models.Model):
         The message should be in English and translatable,
         e. g. motion.write_log(message_list=[ugettext_noop('Message Text')])
         """
+        if person and not person.is_authenticated():
+            person = None
         MotionLog.objects.create(motion=self, message_list=message_list, person=person)
 
     def is_amendment(self):

@@ -1311,6 +1311,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         gettext('Can create motions');
         gettext('Can support motions');
         gettext('Can manage motions');
+        gettext('Can see and manage comments');
         // users
         gettext('Can see names of users');
         gettext('Can see extra data of users (e.g. present and comment)');
