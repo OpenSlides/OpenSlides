@@ -12,7 +12,7 @@ def create_builtin_groups_and_admin(**kwargs):
     """
     # Check whether there are groups in the database.
     if Group.objects.exists():
-        # Do completely nothing if there are already some of our groups in the database.
+        # Do completely nothing if there are already some groups in the database.
         return
 
     permission_strings = (
