@@ -10,9 +10,9 @@ def create_builtin_groups_and_admin(**kwargs):
 
     Creates the builtin user: admin.
     """
-    # Check whether the group pk's 1 to 4 are free.
-    if Group.objects.filter(pk__in=range(1, 5)).exists():
-        # Do completely nothing if there are already some of our groups in the database.
+    # Check whether there are groups in the database.
+    if Group.objects.exists():
+        # Do completely nothing if there are already some groups in the database.
         return
 
     permission_strings = (
