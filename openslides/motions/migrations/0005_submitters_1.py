@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('motions', '0002_motion_origin'),
+        ('motions', '0004_auto_20160907_2343'),
     ]
 
     operations = [
@@ -37,6 +37,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'motions_submittersrelationship',
+                'default_permissions': (),
             },
         ),
         migrations.AddField(

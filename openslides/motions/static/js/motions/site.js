@@ -832,7 +832,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'User',
     'Agenda',
     'MotionDocxExport',
-    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionDocxExport) {
+    'SubmittersRelationship',
+    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionDocxExport, SubmittersRelationship) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         Tag.bindAll({}, $scope, 'tags');
@@ -843,19 +844,40 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 
         $scope.test = function () {
             console.log($scope.motions);
-            console.log($scope.motions[0].submitters);
-            
-            var motion = {};
+            if($scope.motions[0]){
+                console.log($scope.motions[0].submitters);
+            }
+
+            console.log($scope.motions[0].submitters[0].user);
+
+            /*var motion = {};
             motion.title = 'test2';
             motion.text = 'text';
-            motion.submitters = {
-                submitter_id: 2,
-                weight: 123
-            };
-            Motion.create(motion).then(function (success) {
-                console.log(success);
+            Motion.create(motion).then(function (motion) {
+                var sr = {
+                    submitter_id: 1,
+                    motion_id: motion.id,
+                    weight: 123
+                };
+                SubmittersRelationship.create(sr).then(function(success) {
+                    console.log(success);
+                }, function (error) {
+                    console.log(error);
+                });
+                SubmittersRelationship.findAll().then(function (sr) {
+                    console.log(motion);
+                    console.log(motion.submitters);
+                    console.log(sr);
+                    console.log(motion.submitters[0].weight);
+                    console.log(motion.submitters[0].user.username);
+                });
             }, function (error) {
                 console.log(error);
+            });*/
+
+            SubmittersRelationship.find(2).then(function (sr) {
+                sr.weight=123;
+                SubmittersRelationship.save(sr);
             });
         };
 

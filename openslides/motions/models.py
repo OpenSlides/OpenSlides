@@ -24,6 +24,7 @@ from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
     WorkflowAccessPermissions,
+    SubmittersRelationshipAccessPermissions,
 )
 from .exceptions import WorkflowError
 
@@ -618,12 +619,16 @@ class Motion(RESTModelMixin, models.Model):
             " ".join(tag.name for tag in self.tags.all())))
 
 
-class SubmittersRelationship (models.Model):
+class SubmittersRelationship (RESTModelMixin, models.Model):
+
+    access_permissions = SubmittersRelationshipAccessPermissions()
+
     submitter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     motion = models.ForeignKey(Motion, on_delete=models.CASCADE)
     weight = models.IntegerField()
 
     class Meta:
+        default_permissions = ()
         db_table = 'motions_submittersrelationship'
         unique_together = (('submitter', 'motion'), ('weight', 'motion'))
 

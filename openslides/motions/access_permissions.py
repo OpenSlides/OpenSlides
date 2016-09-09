@@ -6,6 +6,23 @@ from ..core.config import config
 from ..utils.access_permissions import BaseAccessPermissions
 
 
+class SubmittersRelationshipAccessPermissions(BaseAccessPermissions):
+    """
+    """
+    def can_retrieve(self, user):
+        """
+        Returns True if the user has read access model instances.
+        """
+        return user.has_perm('motions.can_see')
+
+    def get_serializer_class(self, user=None):
+        """
+        Returns serializer class.
+        """
+        from .serializers import SubmittersRelationshipSerializer
+
+        return SubmittersRelationshipSerializer
+
 class MotionAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Motion and MotionViewSet.

@@ -368,7 +368,7 @@
             <small>
               <span class="optional" translate>by</span> 
               <span class="optional" ng-repeat="submitter in motion.submitters | limitTo:3">
-                {{ submitter.get_full_name() }}<span ng-if="!$last">,</span></span><span ng-if="motion.submitters.length > 3">, ...</span>
+                {{ submitter.user.get_full_name() }}<span ng-if="!$last">,</span></span><span ng-if="motion.submitters.length > 3">, ...</span>
               <!-- sorry for merging them together, but otherwise there would be a whitespace because of the new line -->
             </small>
           </div>

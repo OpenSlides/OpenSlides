@@ -283,6 +283,10 @@ angular.module('OpenSlidesApp.motions', [
                             localKeys: 'supporters_id',
                         }
                     ],
+                    'motions/submittersrelationship': {
+                        localField: 'submitters',
+                        localKeys: 'submitters_id',
+                    },
                     'motions/motionpoll': {
                         localField: 'polls',
                         foreignKey: 'motion_id',
@@ -299,6 +303,28 @@ angular.module('OpenSlidesApp.motions', [
                             localKey: 'recommendation_id',
                         }
                     ]
+                }
+            }
+        });
+    }
+])
+
+.factory('SubmittersRelationship', [
+    'DS',
+    function (DS) {
+        var name = 'motions/submittersrelationship';
+        return DS.defineResource({
+            name: name,
+            relations: {
+                hasOne: {
+                    'users/user': {
+                        localField: 'user',
+                        localKey: 'user_id'
+                    },
+                    'motions/motion': {
+                        localField: 'motion',
+                        localKey: 'motion_id',
+                    }
                 }
             }
         });
@@ -446,7 +472,8 @@ angular.module('OpenSlidesApp.motions', [
     'Motion',
     'Category',
     'Workflow',
-    function(Motion, Category, Workflow) {}
+    'SubmittersRelationship',
+    function(Motion, Category, Workflow, SubmittersRelationship) {}
 ])
 
 

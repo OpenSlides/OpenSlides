@@ -25,6 +25,7 @@ from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
     WorkflowAccessPermissions,
+    SubmittersRelationshipAccessPermissions,
 )
 from .exceptions import WorkflowError
 from .models import (
@@ -34,12 +35,28 @@ from .models import (
     MotionVersion,
     State,
     Workflow,
+    SubmittersRelationship,
 )
 from .pdf import motion_poll_to_pdf, motion_to_pdf, motions_to_pdf
 from .serializers import MotionPollSerializer
 
 
 # Viewsets for the REST API
+
+class SubmittersRelationshipViewSet(ModelViewSet):
+    """
+    API endpoint for SubmittersRelationship
+    """
+    access_permissions = SubmittersRelationshipAccessPermissions()
+    queryset = SubmittersRelationship.objects.all()
+
+    def check_view_permissions(self):
+        return True
+
+    def get_access_permissions(self):
+        print("HI")
+        print(repr(SubmittersRelationshipAccessPermissions()))
+        return self.access_permissions
 
 class MotionViewSet(ModelViewSet):
     """
@@ -117,8 +134,10 @@ class MotionViewSet(ModelViewSet):
                 # No comments here. Just do nothing.
                 pass
 
+        print("views")
         print(request.data.get('submitters'))
-        print(request.data.get('submitters').get('weight'))
+        print(request.data.get('submitters_id'))
+        print(repr(request.data))
 
         # Validate data and create motion.
         serializer = self.get_serializer(data=request.data)
