@@ -16,6 +16,7 @@ class CreateMotion(TestCase):
     Tests motion creation.
     """
     def setUp(self):
+        self.client = APIClient()
         self.client.login(username='admin', password='admin')
 
     def test_simple(self):
@@ -105,6 +106,21 @@ class CreateMotion(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         motion = Motion.objects.get()
         self.assertEqual(motion.tags.get().name, 'test_tag_iRee3kiecoos4rorohth')
+
+    def test_with_multiple_comments(self):
+        config['motions_comments'] = [
+            {'name': 'comment1', 'public': True},
+            {'name': 'comment2', 'public': False}]
+        comments = ['comemnt1_sdpoiuffo3%7dwDwW&', 'comment2_iusd&D/TdskDWH&5DWas46WAd078']
+        response = self.client.post(
+            reverse('motion-list'),
+            {'title': 'title_test_sfdAaufd56HR7sd5FDq7av',
+             'text': 'text_test_fiuhefF86()ew1Ef346AF6W',
+             'comments': comments},
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        motion = Motion.objects.get()
+        self.assertEqual(motion.comments, comments)
 
     def test_with_workflow(self):
         """

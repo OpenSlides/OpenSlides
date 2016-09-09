@@ -861,6 +861,7 @@ angular.module('OpenSlidesApp.core.site', [
                 boolean: 'checkbox',
                 choice: 'choice',
                 colorpicker: 'colorpicker',
+                comments: 'comments',
                 resolution: 'resolution',
             }[type];
         }
@@ -1015,7 +1016,8 @@ angular.module('OpenSlidesApp.core.site', [
     '$scope',
     'Config',
     'configOptions',
-    function($scope, Config, configOptions) {
+    'gettextCatalog',
+    function($scope, Config, configOptions, gettextCatalog) {
         Config.bindAll({}, $scope, 'configs');
         $scope.configGroups = configOptions.data.config_groups;
 
@@ -1023,6 +1025,19 @@ angular.module('OpenSlidesApp.core.site', [
         $scope.save = function(key, value) {
             Config.get(key).value = value;
             Config.save(key);
+        };
+
+        /* For comments input */
+        $scope.addComment = function (key, parent) {
+            parent.value.push({
+                name: gettextCatalog.getString('New'),
+                public: false,
+            });
+            $scope.save(key, parent.value);
+        };
+        $scope.removeComment = function (key, parent, index) {
+            parent.value.splice(index, 1);
+            $scope.save(key, parent.value);
         };
     }
 ])

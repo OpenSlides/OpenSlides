@@ -776,6 +776,11 @@ img {
     background-color: transparent;
 }
 
+/** Config **/
+.input-comments > div {
+    margin-bottom: 5px
+}
+
 /** Footer **/
 #footer {
     float: left;

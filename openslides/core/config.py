@@ -12,6 +12,7 @@ INPUT_TYPE_MAPPING = {
     'boolean': bool,
     'choice': str,
     'colorpicker': str,
+    'comments': list,
     'resolution': dict}
 
 
@@ -97,6 +98,19 @@ class ConfigHandler:
             if (value['width'] < 800 or value['width'] > 3840 or
                     value['height'] < 600 or value['height'] > 2160):
                 raise ConfigError(_('The Resolution have to be between 800x600 and 3840x2160.'))
+
+        if config_variable.input_type == 'comments':
+            if not isinstance(value, list):
+                raise ConfigError(_('motions_comments has to be a list.'))
+            for comment in value:
+                if not isinstance(comment, dict):
+                    raise ConfigError(_('Each element in motions_comments has to be a dict.'))
+                if comment.get('name') is None or comment.get('public') is None:
+                    raise ConfigError(_('A name and a public property have to be given.'))
+                if not isinstance(comment['name'], str):
+                    raise ConfigError(_('name has to be string.'))
+                if not isinstance(comment['public'], bool):
+                    raise ConfigError(_('public property has to be bool.'))
 
         # Save the new value to the database.
         ConfigStore.objects.update_or_create(key=key, defaults={'value': value})

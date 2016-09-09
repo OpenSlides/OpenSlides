@@ -310,79 +310,11 @@ angular.module('OpenSlidesApp.motions', [
     'operator',
     function (Config, operator) {
         return {
-            getFields: function () {
-                // Take input from config field and parse it. It can be some
-                // JSON or just a comma separated list of strings.
-                //
-                // The result is an array of objects. Each object contains
-                // at least the name of the comment field See configSchema.
-                //
-                // Attention: This code does also exist on server side.
-                var configSchema = {
-                    $schema: "http://json-schema.org/draft-04/schema#",
-                    title: "Motion Comments",
-                    type: "array",
-                    items: {
-                        type: "object",
-                        properties: {
-                            name: {
-                                type: "string",
-                                minLength: 1
-                            },
-                            public: {
-                                type: "boolean"
-                            },
-                            forRecommendation: {
-                                type: "boolean"
-                            },
-                            forState: {
-                                type: "boolean"
-                            }
-                        },
-                        required: ["name"]
-                    },
-                    minItems: 1,
-                    uniqueItems: true
-                };
-                var configValue = Config.get('motions_comments').value;
-                var fields;
-                var isJSON = true;
-                try {
-                    fields = JSON.parse(configValue);
-                } catch (err) {
-                    isJSON = false;
-                }
-                if (isJSON) {
-                    // Config is JSON. Validate it.
-                    if (!jsen(configSchema)(fields)) {
-                        fields = [];
-                    }
-                } else {
-                    // Config is a comma separated list of strings. Strip out
-                    // empty parts. All valid strings lead to public comment
-                    // fields.
-                    fields = _.map(
-                        _.filter(
-                            configValue.split(','),
-                            function (name) {
-                                return name;
-                            }),
-                        function (name) {
-                            return {
-                                'name': name,
-                                'public': true
-                            };
-                        }
-                    );
-                }
-                return fields;
-            },
             getFormFields: function () {
-                var fields = this.getFields();
+                var fields = Config.get('motions_comments').value;
                 return _.map(
                     fields,
                     function (field) {
-                        // TODO: Hide non-public fields for unauthorized users.
                         return {
                             key: 'comment ' + field.name,
                             type: 'input',
@@ -397,7 +329,7 @@ angular.module('OpenSlidesApp.motions', [
             populateFields: function (motion) {
                 // Populate content of motion.comments to the single comment
                 // fields like motion['comment MyComment'], motion['comment MyOtherComment'], ...
-                var fields = this.getFields();
+                var fields = Config.get('motions_comments').value;
                 if (!motion.comments) {
                     motion.comments = [];
                 }
@@ -407,7 +339,7 @@ angular.module('OpenSlidesApp.motions', [
             },
             populateFieldsReverse: function (motion) {
                 // Reverse equivalent to populateFields.
-                var fields = this.getFields();
+                var fields = Config.get('motions_comments').value;
                 motion.comments = [];
                 for (var i = 0; i < fields.length; i++) {
                     motion.comments.push(motion['comment ' + fields[i].name] || '');
