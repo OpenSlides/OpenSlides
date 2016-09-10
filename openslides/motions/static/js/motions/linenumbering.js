@@ -76,6 +76,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
      *
      * @param node
      * @param length
+     * @param highlight
      * @returns Array
      * @private
      */
@@ -89,7 +90,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         var addLine = function (text, highlight) {
             var node;
             if (typeof highlight === 'undefined') {
-                highlight = 0;
+                highlight = -1;
             }
             if (firstTextNode) {
                 if (highlight == service._currentLineNumber - 1) {
@@ -344,19 +345,23 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         return root.innerHTML;
     };
 
-    this.insertLineNumbersNode = function (html, lineLength, highlight) {
+    this.insertLineNumbersNode = function (html, lineLength, highlight, firstLine) {
         var root = document.createElement('div');
         root.innerHTML = html;
 
         this._currentInlineOffset = 0;
-        this._currentLineNumber = 1;
+        if (firstLine) {
+            this._currentLineNumber = firstLine;
+        } else {
+            this._currentLineNumber = 1;
+        }
         this._prependLineNumberToFirstText = true;
 
         return this._insertLineNumbersToNode(root, lineLength, highlight);
     };
 
-    this.insertLineNumbers = function (html, lineLength, highlight, callback) {
-        var newRoot = this.insertLineNumbersNode(html, lineLength, highlight);
+    this.insertLineNumbers = function (html, lineLength, highlight, callback, firstLine) {
+        var newRoot = this.insertLineNumbersNode(html, lineLength, highlight, firstLine);
 
         if (callback) {
             callback();

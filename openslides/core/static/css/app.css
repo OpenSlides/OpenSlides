@@ -302,21 +302,24 @@ img {
     border: 1px solid #d3d3d3;
 }
 
-.col1 .details .line-number-setter {
+.col1 .details .motion-toolbar .toolbar-left {
     margin-top: 0;
     margin-bottom: 55px;
     margin-left: 15px;
 }
 
-.col1 .details .line-number-setter > span {
+.col1 .details .motion-toolbar .toolbar-left > * {
     margin-right: 5px;
     float: left;
 }
 
-.col1 .details .line-number-setter .btn.disabled {
+.col1 .details .motion-toolbar .toolbar-left .btn.disabled {
     cursor: default;
     opacity: 1;
     background-color: #eee;
+}
+.col1 .details .motion-toolbar .toolbar-left .goto-line-number {
+    max-width: 220px;
 }
 
 .col1 .details .inline-editing-activator {
@@ -395,23 +398,29 @@ img {
     background-color: #ff0;
 }
 
+.motion-text li {
+    margin-left: 30px;
+}
 .motion-text.line-numbers-outside {
-    padding-left: 35px;
+    padding-left: 40px;
     position: relative;
 }
 .motion-text.line-numbers-outside .os-line-number {
     display: inline-block;
     font-size: 0;
     line-height: 0;
-    width: 0;
-    height: 0;
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    left: -20px;
+    padding-right: 55px;
 }
 .motion-text.line-numbers-outside .os-line-number:after {
     content: attr(data-line-number);
     position: absolute;
-    left: 0;
+    left: 20px;
+    top: 12px;
     vertical-align: top;
-    margin-top: -5px;
     color: gray;
     font-family: Courier, serif;
     font-size: 13px;
@@ -445,6 +454,7 @@ img {
 }
 
 .os-line-number {
+    position: relative;
     user-select: none;
     -moz-user-select: none;
     -khtml-user-select: none;
@@ -452,11 +462,180 @@ img {
     -o-user-select: none;
 }
 .os-line-number:after {
+    position: relative;
     user-select: none;
     -moz-user-select: none;
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
+}
+
+.line-numbers-outside .os-line-number.selectable:hover:before, .line-numbers-outside .os-line-number.selected:before {
+    cursor: pointer;
+    content: "\f067";
+    display: inline-block;
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 0.25em;
+    top: 4px;
+    left: 43px;
+    cursor: pointer;
+    font-family: FontAwesome;
+    font-size: 12px;
+    color: white;
+    line-height: 16px;
+    text-align: center;
+    background-color: #337ab7;
+}
+
+
+/** Styles for annotating the original motion text with change recommendations */
+
+.motion-text-holder {
+    position: relative;
+}
+
+.motion-text-holder .change-recommendation-list {
+    position: absolute;
+    top: 0;
+    left: -10px;
+    width: 4px;
+    list-style-type: none;
+    margin: 0;
+}
+
+.motion-text-holder .change-recommendation-list > li {
+    position: absolute;
+    width: 4px;
+    cursor: pointer;
+}
+.motion-text-holder .change-recommendation-list > li.insert {
+    background-color: #00aa00;
+}
+.motion-text-holder .change-recommendation-list > li.delete {
+    background-color: #aa0000;
+}
+.motion-text-holder .change-recommendation-list > li.replace {
+    background-color: #0333ff;
+}
+
+.motion-text-holder .change-recommendation-list .tooltip {
+    display: none;
+}
+
+/** Diff view */
+
+.change-recommendation-overview {
+    background-color: #eee;
+    border: solid 1px #ddd;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    margin-top: -15px;
+    padding-top: 5px;
+}
+.change-recommendation-overview {
+    margin-bottom: 50px;
+    padding: 10px;
+}
+.change-recommendation-overview h2 {
+    margin-top: 0;
+}
+.change-recommendation-overview ul {
+    list-style: none;
+    display: table;
+}
+.change-recommendation-overview li {
+    display: table-row;
+    cursor: pointer;
+}
+.change-recommendation-overview li:hover {
+    text-decoration: underline;
+}
+.change-recommendation-overview li > * {
+    display: table-cell;
+    padding: 4px;
+}
+.change-recommendation-overview .status {
+    color: gray;
+    font-style: italic;
+}
+.change-recommendation-overview .status > *:before {
+    content: '(';
+}
+.change-recommendation-overview .status > *:after {
+    content: ')';
+}
+.change-recommendation-overview .no-changes {
+    font-style: italic;
+    color: grey;
+}
+
+
+.diff-box {
+    background-color: #f9f9f9;
+    border: solid 1px #eee;
+    border-radius: 3px;
+    margin-bottom: 0;
+    margin-top: -25px;
+    padding-top: 0;
+    padding-right: 155px;
+}
+.motion-text-with-diffs .original-text {
+    min-height: 30px; // Spacer between .diff-box, in case .original-text is empty
+}
+.motion-text-with-diffs .original-text ul:last-child {
+    padding-bottom: 16px;
+}
+.motion-text-with-diffs.line-numbers-inline .diff-box, .motion-text-with-diffs.line-numbers-none .diff-box {
+    margin-right: -220px;
+}
+.diff-box:hover {
+    background-color: #f0f0f0;
+}
+.diff-box .action-row {
+    font-size: 0.8em;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    float: right;
+    width: 150px;
+    text-align: right;
+    margin-right: -150px;
+    opacity: 0.5;
+}
+.diff-box:hover .action-row {
+    opacity: 1;
+}
+.diff-box .action-row .btn-delete {
+    margin-left: 10px;
+    color: red;
+}
+.diff-box .status-row {
+    font-style: italic;
+    color: gray;
+}
+.diff-box .status-row > *:after {
+    content: ':';
+}
+
+.motion-text-diff .delete {
+    color: red;
+    text-decoration: line-through;
+}
+.motion-text-diff .insert {
+    color: green;
+    text-decoration: underline;
+}
+.motion-text-diff p {
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.motion-text-diff.line-numbers-outside .insert .os-line-number {
+    display: none;
+}
+.motion-text-diff.line-numbers-inline .insert .os-line-number {
+    display: none;
 }
 
 /** Projector sidebar column **/
@@ -704,12 +883,15 @@ img {
     border-top: 1px solid #ddd;
     background-color: #f5f5f5;
 }
-.linenumber-toolbar, .speakers-toolbar {
+.motion-toolbar, .speakers-toolbar {
     background-color: #f5f5f5;
     border-bottom: 1px solid #ddd;
     padding: 12px 0 10px 0;
     height: 54px;
     margin: -20px -5px 50px -5px;
+}
+.motion-toolbar:first-child {
+    margin-bottom: 20px;
 }
 
 .speakers-toolbar {

@@ -1,0 +1,116 @@
+<div class="motion-toolbar">
+    <!-- inline editing -->
+    <div class="pull-right inline-editing-activator"
+         ng-if="motion.isAllowed('update') && version == motion.getVersion(-1).id && viewChangeRecommendations.mode == 'original'">
+        <button ng-if="!inlineEditing.active && change_recommendations.length == 0" ng-click="inlineEditing.enable()"
+                class="btn btn-sm btn-default">
+            <i class="fa fa-pencil-square-o"></i>
+            <translate>Inline editing</translate>
+        </button>
+        <button ng-if="inlineEditing.active && change_recommendations.length == 0" ng-click="inlineEditing.disable()"
+                class="btn btn-sm btn-default">
+            <i class="fa fa-times-circle"></i>
+            <translate>Inline editing</translate>
+        </button>
+        <button ng-if="change_recommendations.length > 0" class="btn btn-sm btn-default" disabled
+                title="{{ 'Editing the text is not possible anymore once there are change recommendations.' | translate }}">
+            <i class="fa fa-pencil-square-o"></i>
+            <translate>Inline editing</translate>
+        </button>
+    </div>
+
+    <div class="toolbar-left {{ lineNumberMode }}">
+
+        <!-- line number mode -->
+        <div class="btn-group" data-toggle="buttons">
+            <span class="btn btn-sm btn-default disabled">
+                <i class="fa fa-list-ol" aria-hidden="true"></i>
+                <translate>Line numbering</translate>:
+            </span>
+            <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'none')}"
+                   ng-click="setLineNumberMode('none')">
+                <input type="radio" name="lineNumberMode" value="none" ng-model="lineNumberMode"
+                       ng-checked="lineNumberMode == 'none'">
+                <translate>none</translate>
+            </label>
+            <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'inline')}"
+                   ng-click="setLineNumberMode('inline')">
+                <input type="radio" name="lineNumberMode" value="inline" ng-model="lineNumberMode"
+                       ng-checked="lineNumberMode == 'inline'">
+                <translate>inline</translate>
+            </label>
+            <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'outside')}"
+                   ng-click="setLineNumberMode('outside')">
+                <input type="radio" name="lineNumberMode" value="outside" ng-model="lineNumberMode"
+                       ng-checked="lineNumberMode == 'outside'">
+                <translate>outside</translate>
+            </label>
+        </div>
+
+        <!-- go to line number -->
+        <div class="goto-line-number">
+            <form class="input-group" ng-if="viewChangeRecommendations.mode == 'original' && lineNumberMode != 'none'"
+                  ng-submit="scrollToAndHighlight(gotoLinenumber)">
+                <input type="number" class="form-control input-sm" ng-model="gotoLinenumber"
+                       placeholder="{{ 'Line' | translate }}"/>
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-sm btn-default btn-slim" ng-show="gotoLinenumber"
+                            ng-click="gotoLinenumber = ''; scrollToAndHighlight(0);">
+                        <i class="fa fa-times text-danger"></i>
+                    </button>
+                    <button type="submit" class="btn btn-sm btn-default">
+                        <i class="fa fa-share"></i>
+                        <translate>go</translate>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-default" os-perms="core.can_manage_projector"
+                            ng-show="lineNumberMode != 'none' && motion.isProjected()"
+                            ng-click="toggleLinesForProjector()"
+                            uib-tooltip="{{ 'Show highlighted line also on projector.' | translate }}">
+                        <i class="fa" ng-class="linesForProjector ? 'fa-check-square-o' : 'fa-square-o'"></i>&nbsp;
+                        <i class="fa fa-video-camera"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- View Modes (Original, Diff, Changed) -->
+<div class="motion-toolbar" ng-if="change_recommendations.length > 0">
+    <div class="toolbar-left">
+        <div class="btn-group" data-toggle="buttons">
+            <span class="btn btn-sm btn-default disabled">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+                <translate>Change recommendations</translate>:
+            </span>
+            <label class="btn btn-sm btn-default" ng-class="{active: (viewChangeRecommendations.mode == 'original')}"
+                   ng-click="viewChangeRecommendations.mode = 'original';">
+                <input type="radio" name="viewChangeRecommendations.mode" value="none"
+                       ng-model="viewChangeRecommendations.mode"
+                       ng-checked="viewChangeRecommendations.mode == 'original'">
+                <translate>Original</translate>
+
+            </label>
+            <label class="btn btn-sm btn-default" ng-class="{active: (viewChangeRecommendations.mode == 'changed')}"
+                   ng-click="viewChangeRecommendations.mode = 'changed'">
+                <input type="radio" name="viewChangeRecommendations.mode" value="changed"
+                       ng-model="viewChangeRecommendations.mode"
+                       ng-checked="viewChangeRecommendations.mode == 'changed'">
+                <translate>Changed</translate>
+            </label>
+            <label class="btn btn-sm btn-default" ng-class="{active: (viewChangeRecommendations.mode == 'diff')}"
+                   ng-click="viewChangeRecommendations.mode = 'diff'">
+                <input type="radio" name="viewChangeRecommendations.mode" value="diff" ng-model="lineNumberMode"
+                       ng-checked="viewChangeRecommendations.mode == 'diff'">
+                <translate>Diff</translate>
+            </label>
+            <label class="btn btn-sm btn-default" ng-class="{active: (viewChangeRecommendations.mode == 'agreed')}"
+                   ng-click="viewChangeRecommendations.mode = 'agreed'">
+                <input type="radio" name="viewChangeRecommendations.mode" value="agreed"
+                       ng-model="viewChangeRecommendations.mode"
+                       ng-checked="viewChangeRecommendations.mode == 'agreed'">
+                <translate>Agreed</translate>
+            </label>
+        </div>
+    </div>
+</div>

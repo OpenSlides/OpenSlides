@@ -16,6 +16,7 @@ from openslides.utils.rest_api import (
 from .models import (
     Category,
     Motion,
+    MotionChangeRecommendation,
     MotionLog,
     MotionPoll,
     MotionVersion,
@@ -226,6 +227,22 @@ class MotionVersionSerializer(ModelSerializer):
             'title',
             'text',
             'reason',)
+
+
+class MotionChangeRecommendationSerializer(ModelSerializer):
+    """
+    Serializer for motion.models.MotionChangeRecommendation objects.
+    """
+    class Meta:
+        model = MotionChangeRecommendation
+        fields = (
+            'id',
+            'motion_version',
+            'status',
+            'line_from',
+            'line_to',
+            'text',
+            'creation_time',)
 
 
 class MotionSerializer(ModelSerializer):

@@ -23,6 +23,7 @@ from openslides.utils.search import user_name_helper
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
+    MotionChangeRecommendationAccessPermissions,
     WorkflowAccessPermissions,
 )
 from .exceptions import WorkflowError
@@ -695,6 +696,68 @@ class MotionVersion(RESTModelMixin, models.Model):
         Returns the motion to this instance which is the root REST element.
         """
         return self.motion
+
+
+class MotionChangeRecommendationManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all change recommendations. In the background we
+        join and prefetch all related models.
+        """
+        return self.get_queryset()
+
+
+class MotionChangeRecommendation(RESTModelMixin, models.Model):
+    """
+    A MotionChangeRecommendation object saves change recommendations for a specific MotionVersion
+    """
+
+    access_permissions = MotionChangeRecommendationAccessPermissions()
+
+    objects = MotionChangeRecommendationManager()
+
+    motion_version = models.ForeignKey(
+        MotionVersion,
+        on_delete=models.CASCADE,
+        related_name='change_recommendations')
+    """The motion version to which the change recommendation belongs."""
+
+    status = models.PositiveIntegerField(default=0)
+    """Proposed (0), Accepted (1), Rejected (2)"""
+
+    line_from = models.PositiveIntegerField()
+    """The number or the first affected line"""
+
+    line_to = models.PositiveIntegerField()
+    """The number or the last affected line (inclusive)"""
+
+    text = models.TextField(blank=True)
+    """The replacement for the section of the original text specified by version, line_from and line_to"""
+
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True)
+    """A user object, who created this change recommendation. Optional."""
+
+    creation_time = models.DateTimeField(auto_now=True)
+    """Time when the change recommendation was saved."""
+
+    class Meta:
+        default_permissions = ()
+
+    def __str__(self):
+        """Return a string, representing this object."""
+        return "Recommendation for Version %s, line %s - %s" % (self.motion_version_id, self.line_from, self.line_to)
+
+    def get_root_rest_element(self):
+        """
+        Returns this instance, which is the root REST element.
+        """
+        return self
 
 
 class Category(RESTModelMixin, models.Model):
