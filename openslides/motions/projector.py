@@ -1,3 +1,4 @@
+from openslides.agenda.views import ItemViewSet
 from openslides.core.exceptions import ProjectorException
 from openslides.core.views import TagViewSet
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
@@ -40,6 +41,10 @@ class MotionSlide(ProjectorElement):
                     view_class=MotionViewSet,
                     view_action='retrieve',
                     pk=str(motion.pk))
+                yield ProjectorRequirement(
+                    view_class=ItemViewSet,
+                    view_action='retrieve',
+                    pk=str(motion.agenda_item_id))
                 if motion.category:
                     yield ProjectorRequirement(
                         view_class=CategoryViewSet,

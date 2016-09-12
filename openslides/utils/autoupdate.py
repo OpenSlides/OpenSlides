@@ -8,6 +8,8 @@ from django.apps import apps
 from django.db import transaction
 from django.utils import timezone
 
+from openslides.core.models import Projector
+
 from ..users.auth import AnonymousUser
 from ..users.models import User
 from .access_permissions import BaseAccessPermissions
@@ -95,9 +97,16 @@ def send_data(message):
             'action': 'deleted' if message['is_deleted'] else 'changed'}
         if not message['is_deleted']:
             data = access_permissions.get_restricted_data(full_data, user)
+
             if data is None:
-                # There are no data for the user so he can't see the object. Skip him.
-                continue
+                # send data if user can see the projector and data is projected
+                if user.has_perm('core.can_see_projector'):
+                    for requirement in Projector.get_all_requirements():
+                        # TODO: only send the data if a projector is open.
+                        data = full_data
+                else:
+                    # There are no data for the user so he can't see the object. Skip him.
+                    continue
             output['data'] = data
         channel.send({'text': json.dumps(output)})
 

@@ -1,3 +1,4 @@
+from openslides.agenda.views import ItemViewSet
 from openslides.core.exceptions import ProjectorException
 from openslides.core.views import TagViewSet
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
@@ -45,6 +46,10 @@ class AssignmentSlide(ProjectorElement):
                     view_class=AssignmentViewSet,
                     view_action='retrieve',
                     pk=str(assignment.pk))
+                yield ProjectorRequirement(
+                    view_class=ItemViewSet,
+                    view_action='retrieve',
+                    pk=str(assignment.agenda_item_id))
                 for user in assignment.related_users.all():
                     yield ProjectorRequirement(
                         view_class=user.get_view_class(),

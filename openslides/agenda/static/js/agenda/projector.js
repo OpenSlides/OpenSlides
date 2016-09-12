@@ -25,8 +25,15 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         var id = $scope.element.id;
-        Agenda.find(id);
-        User.findAll();
+        Agenda.find(id).then( function(item) {
+            $scope.$watch(item.speakers, function() {
+                angular.forEach(item.speakers, function (speaker) {
+                    if (!speaker.user) {
+                        User.find(speaker.user_id);
+                    }
+                });
+            });
+        });
         Agenda.bindOne(id, $scope, 'item');
     }
 ])

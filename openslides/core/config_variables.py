@@ -1,4 +1,5 @@
 from django.core.validators import MaxLengthValidator
+
 from openslides.core.config import ConfigVariable
 
 
