@@ -112,61 +112,84 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                     }
                 },
                 // override project function of jsDataModel factory
-                project: function() {
-                    return $http.post(
-                        '/rest/core/projector/1/prune_elements/',
-                        [{name: this.content_object.collection, id: this.content_object.id}]
-                    );
+                project: function (projectorId, tree) {
+                    var isProjectedId = this.isProjected(tree);
+                    if (isProjectedId > 0) {
+                        // Deactivate
+                        $http.post('/rest/core/projector/' + isProjectedId + '/clear_elements/');
+                    }
+                    // Activate, if the projector_id is a new projector.
+                    if (isProjectedId != projectorId) {
+                        var name = tree ? 'agenda/item-list' : this.content_object.collection;
+                        var id = tree ? this.id : this.content_object.id;
+                        return $http.post(
+                            '/rest/core/projector/' + projectorId + '/prune_elements/',
+                            [{name: name, tree: tree, id: id}]
+                        );
+                    }
                 },
                 // override isProjected function of jsDataModel factory
-                isProjected: function (list) {
-                    // Returns true if there is a projector element with the same
-                    // name and the same id.
-                    var projector = Projector.get(1);
-                    var isProjected;
-                    if (typeof projector !== 'undefined') {
-                        var self = this;
-                        var predicate = function (element) {
-                            var value;
-                            if (typeof list === 'undefined') {
-                                // Releated item detail slide
-                                value = element.name == self.content_object.collection &&
-                                    typeof element.id !== 'undefined' &&
-                                    element.id == self.content_object.id;
-                            } else {
-                                // Item list slide for sub tree
-                                value = element.name == 'agenda/item-list' &&
-                                    typeof element.id !== 'undefined' &&
-                                    element.id == self.id;
-                            }
-                            return value;
-                        };
-                        isProjected = typeof _.findKey(projector.elements, predicate) === 'string';
-                    } else {
-                        isProjected = false;
+                isProjected: function (tree) {
+                    // Returns the id of the last projector with an agenda-item element. Else return 0.
+                    if (typeof tree === 'undefined') {
+                        tree = false;
                     }
+                    var self = this;
+                    var predicate = function (element) {
+                        var value;
+                        if (tree) {
+                            // Item tree slide for sub tree
+                            value = element.name == 'agenda/item-list' &&
+                                typeof element.id !== 'undefined' &&
+                                element.id == self.id;
+                        } else {
+                            // Releated item detail slide
+                            value = element.name == self.content_object.collection &&
+                                typeof element.id !== 'undefined' &&
+                                element.id == self.content_object.id;
+                        }
+                        return value;
+                    };
+                    var isProjected = 0;
+                    Projector.getAll().forEach(function (projector) {
+                        if (typeof _.findKey(projector.elements, predicate) === 'string') {
+                            isProjected = projector.id;
+                        }
+                    });
                     return isProjected;
                 },
                 // project list of speakers
-                projectListOfSpeakers: function() {
-                    return $http.post(
-                        '/rest/core/projector/1/prune_elements/',
-                        [{name: 'agenda/list-of-speakers', id: this.id}]
-                    );
+                projectListOfSpeakers: function(projectorId) {
+                    var isProjectedId = this.isListOfSpeakersProjected();
+                    if (isProjectedId > 0) {
+                        // Deactivate
+                        $http.post('/rest/core/projector/' + isProjectedId + '/clear_elements/');
+                    }
+                    // Activate
+                    if (isProjectedId != projectorId) {
+                        return $http.post(
+                            '/rest/core/projector/' + projectorId + '/prune_elements/',
+                            [{name: 'agenda/list-of-speakers', id: this.id}]
+                        );
+                    }
                 },
                 // check if list of speakers is projected
                 isListOfSpeakersProjected: function () {
-                    // Returns true if there is a projector element with the
+                    // Returns the id of the last projector with an element with the
                     // name 'agenda/list-of-speakers' and the same id.
-                    var projector = Projector.get(1);
-                    if (typeof projector === 'undefined') return false;
                     var self = this;
                     var predicate = function (element) {
                         return element.name == 'agenda/list-of-speakers' &&
                                typeof element.id !== 'undefined' &&
                                element.id == self.id;
                     };
-                    return typeof _.findKey(projector.elements, predicate) === 'string';
+                    var isProjected = 0;
+                    Projector.getAll().forEach(function (projector) {
+                        if (typeof _.findKey(projector.elements, predicate) === 'string') {
+                            isProjected = projector.id;
+                        }
+                    });
+                    return isProjected;
                 },
                 hasSubitems: function(items) {
                     var self = this;
@@ -260,6 +283,56 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 }
                 generateFlatTree(tree, 0);
                 return flatItems;
+            }
+        };
+    }
+])
+
+// TODO: Remove all find() calls from the projector logic. It is also used on the site so this has to be
+// changed with the refactoring of the site autoupdate.
+.factory('CurrentListOfSpeakersItem', [
+    'Projector',
+    'Assignment', // TODO: Remove this after refactoring of data loading on start.
+    'Topic', // TODO: Remove this after refactoring of data loading on start.
+    'Motion', // TODO: Remove this after refactoring of data loading on start.
+    'Agenda',
+    function (Projector, Assignment, Topic, Motion, Agenda) {
+        return {
+            getItem: function (projectorId) { 
+                var elementPromise;
+                return Projector.find(projectorId).then(function (projector) {
+                    // scan all elements
+                    _.forEach(projector.elements, function(element) {
+                        switch(element.name) {
+                            case 'motions/motion':
+                                elementPromise = Motion.find(element.id).then(function(motion) {
+                                    return Motion.loadRelations(motion, 'agenda_item').then(function() {
+                                        return motion.agenda_item;
+                                    });
+                                });
+                                break;
+                            case 'topics/topic':
+                                elementPromise = Topic.find(element.id).then(function(topic) {
+                                    return Topic.loadRelations(topic, 'agenda_item').then(function() {
+                                        return topic.agenda_item;
+                                    });
+                                });
+                                break;
+                            case 'assignments/assignment':
+                                elementPromise = Assignment.find(element.id).then(function(assignment) {
+                                    return Assignment.loadRelations(assignment, 'agenda_item').then(function() {
+                                        return assignment.agenda_item;
+                                    });
+                                });
+                                break;
+                            case 'agenda/list-of-speakers':
+                                elementPromise = Agenda.find(element.id).then(function(item) {
+                                    return item;
+                                });
+                        }
+                    });
+                    return elementPromise;
+                });
             }
         };
     }

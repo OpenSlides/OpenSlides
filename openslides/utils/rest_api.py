@@ -14,6 +14,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.serializers import ModelSerializer as _ModelSerializer
 from rest_framework.serializers import (  # noqa
     MANY_RELATION_KWARGS,
+    BooleanField,
     CharField,
     DictField,
     Field,
@@ -29,8 +30,6 @@ from rest_framework.serializers import (  # noqa
 )
 from rest_framework.viewsets import GenericViewSet as _GenericViewSet  # noqa
 from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
-from rest_framework.viewsets import \
-    ReadOnlyModelViewSet as _ReadOnlyModelViewSet  # noqa
 from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
 
 router = DefaultRouter()
@@ -171,10 +170,6 @@ class GenericViewSet(PermissionMixin, _GenericViewSet):
 
 
 class ModelViewSet(PermissionMixin, _ModelViewSet):
-    pass
-
-
-class ReadOnlyModelViewSet(PermissionMixin, _ReadOnlyModelViewSet):
     pass
 
 

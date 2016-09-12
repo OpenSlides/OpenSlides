@@ -64,3 +64,32 @@ class ListOfSpeakersSlide(ProjectorElement):
         # Full update if item changes because then we may have new speakers
         # and therefor need new users.
         return collection_element.collection_string == Item.get_collection_string()
+
+
+class CurrentListOfSpeakersSlide(ProjectorElement):
+    """
+    Slide for the current list of speakers.
+
+    Nothing special to check.
+    """
+    name = 'agenda/current-list-of-speakers'
+
+    def get_requirements(self, config_entry):
+        pk = config['projector_currentListOfSpeakers_reference']
+        if pk is not None:
+            # List of speakers slide.
+            try:
+                item = Item.objects.get(pk=pk)
+            except Item.DoesNotExist:
+                # Item does not exist. Just do nothing.
+                pass
+            else:
+                yield item
+                for speaker in item.speakers.filter(end_time=None):
+                    # Yield current speaker and next speakers
+                    yield speaker.user
+                query = (item.speakers.exclude(end_time=None)
+                         .order_by('-end_time')[:config['agenda_show_last_speakers']])
+                for speaker in query:
+                    # Yield last speakers
+                    yield speaker.user

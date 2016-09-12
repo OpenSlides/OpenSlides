@@ -63,10 +63,18 @@ class Projector(RESTModelMixin, models.Model):
 
     scroll = models.IntegerField(default=0)
 
-    # currently unused, but important for the multiprojector.
     width = models.PositiveIntegerField(default=1024)
 
     height = models.PositiveIntegerField(default=768)
+
+    name = models.CharField(
+        max_length=255,
+        unique=True,
+        blank=True)
+
+    blank = models.BooleanField(
+        blank=False,
+        default=False)
 
     class Meta:
         """
@@ -167,6 +175,33 @@ class Projector(RESTModelMixin, models.Model):
             result = False
 
         return result
+
+
+class ProjectionDefault(RESTModelMixin, models.Model):
+    """
+    Model for the ProjectionDefaults like Motion, Agenda, List of speakers,...
+    The name is the technical name like 'topics', 'motions'. For apps the name should
+    be the app name to get keep the ProjectionDefault for apps generic. But it is
+    possible to give some special name like 'list_of_speakers'.
+    The display_name is the shown name on the front end for the user.
+    """
+    name = models.CharField(max_length=256)
+
+    display_name = models.CharField(max_length=256)
+
+    projector = models.ForeignKey(
+        'Projector',
+        on_delete=models.CASCADE,
+        related_name='projectiondefaults')
+
+    def get_root_rest_element(self):
+        return self.projector
+
+    class Meta:
+        default_permissions = ()
+
+    def __str__(self):
+        return self.display_name
 
 
 class Tag(RESTModelMixin, models.Model):

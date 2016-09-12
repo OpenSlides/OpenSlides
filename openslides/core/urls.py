@@ -28,10 +28,10 @@ urlpatterns = [
         name='core_webclient_javascript'),
 
     # View for the projectors are handled by angular.
-    url(r'^projector.*$', views.ProjectorView.as_view()),
+    url(r'^projector/(\d+)/$', views.ProjectorView.as_view()),
 
     # Original view without resolutioncontrol for the projectors are handled by angular.
-    url(r'^real-projector.*$', views.RealProjectorView.as_view()),
+    url(r'^real-projector/(\d+)/$', views.RealProjectorView.as_view()),
 
     # Main entry point for all angular pages.
     # Has to be the last entry in the urls.py

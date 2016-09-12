@@ -156,8 +156,18 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
     'TopicForm',
     'Topic',
     'topic',
-    function($scope, ngDialog, TopicForm, Topic, topic) {
+    'Projector',
+    'ProjectionDefault',
+    function($scope, ngDialog, TopicForm, Topic, topic, Projector, ProjectionDefault) {
         Topic.bindOne(topic.id, $scope, 'topic');
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            var projectiondefault = ProjectionDefault.filter({name: 'topics'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId = projectiondefault.projector_id;
+            }
+        });
         Topic.loadRelations(topic, 'agenda_item');
         $scope.openDialog = function (topic) {
             ngDialog.open(TopicForm.getDialog(topic));

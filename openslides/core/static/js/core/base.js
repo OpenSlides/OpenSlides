@@ -33,11 +33,20 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+.factory('ProjectorID', [
+    function () {
+        return function () {
+            return /projector\/(\d+)\//.exec(location.pathname)[1];
+        };
+    }
+])
+
 .factory('autoupdate', [
     'DS',
     '$rootScope',
     'REALM',
-    function (DS, $rootScope, REALM) {
+    'ProjectorID',
+    function (DS, $rootScope, REALM, ProjectorID) {
         var socket = null;
         var recInterval = null;
         $rootScope.connected = false;
@@ -46,8 +55,7 @@ angular.module('OpenSlidesApp.core', [
         if (REALM == 'site') {
           websocketPath = '/ws/site/';
         } else if (REALM == 'projector') {
-          // TODO: At the moment there is only one projector. Find out which one is requested
-          websocketPath = '/ws/projector/1/';
+          websocketPath = '/ws/projector/' + ProjectorID() + '/';
         } else {
           console.error('The constant REALM is not set properly.');
         }
@@ -246,7 +254,7 @@ angular.module('OpenSlidesApp.core', [
         return function () {
             Config.findAll();
 
-            // Loads all projector data
+            // Loads all projector data and the projectiondefaults
             Projector.findAll();
 
             // Loads all chat messages data and their user_ids
@@ -305,34 +313,91 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+// This places a Projectorbutton in the document. Example:
+// <projector-button model="motion" default-projector.id="defPrId" additional-id="2"
+//   content="{{ 'project' | translate }}"></projector-button>
+//
+// This button references to model (in this case 'motion'). Also a defaultProjectionId has to
+// be given. In the Exable its a scope variable. The next two parameters are additional:
+// - additional-id: Then the model.project and model.isProjected will be called whith this
+//                  argument (ex.: model.project(2))
+// - content: A not trusted text placed behind the projector symbol.
+.directive('projectorButton', [
+    'Projector',
+    function (Projector) {
+        return {
+            restrict: 'E',
+            templateUrl: 'static/templates/projector-button.html',
+            link: function (scope, element, attributes) {
+                if (!attributes.model) {
+                    throw 'A model has to be given!';
+                } else if (!attributes.defaultProjectorId) {
+                    throw 'A default-projector-id has to be given!';
+                }
+
+                Projector.bindAll({}, scope, 'projectors');
+
+                scope.$watch(attributes.model, function (model) {
+                    scope.model = model;
+                });
+
+                scope.$watch(attributes.defaultProjectorId, function (defaultProjectorId) {
+                    scope.defaultProjectorId = defaultProjectorId;
+                });
+
+                if (attributes.additionalId) {
+                    scope.$watch(attributes.additionalId, function (id) {
+                        scope.additionalId = id;
+                    });
+                }
+
+                if (attributes.content) {
+                    attributes.$observe('content', function (content) {
+                        scope.content = content;
+                    });
+                }
+            }
+        };
+    }
+])
+
 .factory('jsDataModel', [
     '$http',
     'Projector',
     function($http, Projector) {
         var BaseModel = function() {};
-        BaseModel.prototype.project = function() {
-            return $http.post(
-                '/rest/core/projector/1/prune_elements/',
-                [{name: this.getResourceName(), id: this.id}]
-            );
+        BaseModel.prototype.project = function(projectorId) {
+            // if this object is already projected on projectorId, delete this element from this projector
+            var isProjectedId = this.isProjected();
+            if (isProjectedId > 0) {
+                $http.post('/rest/core/projector/' + isProjectedId + '/prune_elements/');
+            }
+            // if it was the same projector before, just delete it but not show again
+            if (isProjectedId != projectorId) {
+                return $http.post(
+                    '/rest/core/projector/' + projectorId + '/prune_elements/',
+                    [{name: this.getResourceName(), id: this.id}]
+                );
+            }
         };
         BaseModel.prototype.isProjected = function() {
-            // Returns true if there is a projector element with the same
-            // name and the same id.
-            var projector = Projector.get(1);
-            var isProjected;
-            if (typeof projector !== 'undefined') {
-                var self = this;
-                var predicate = function (element) {
-                    return element.name == self.getResourceName() &&
-                        typeof element.id !== 'undefined' &&
-                        element.id == self.id;
-                };
-                isProjected = typeof _.findKey(projector.elements, predicate) === 'string';
-            } else {
-                isProjected = false;
-            }
-            return isProjected;
+            // Returns the projector id if there is a projector element
+            // with the same name and the same id. Else returns 0.
+            // Attention: if this element is projected multiple times, only the
+            // id of the last projector is returned.
+            var self = this;
+            var predicate = function (element) {
+                return element.name == self.getResourceName() &&
+                    typeof element.id !== 'undefined' &&
+                    element.id == self.id;
+            };
+            var isProjectedId = 0;
+            Projector.getAll().forEach(function (projector) {
+                if (typeof _.findKey(projector.elements, predicate) === 'string') {
+                    isProjectedId = projector.id;
+                }
+            });
+            return isProjectedId;
         };
         return BaseModel;
     }
@@ -396,10 +461,74 @@ angular.module('OpenSlidesApp.core', [
  */
 .factory('Projector', [
     'DS',
-    function(DS) {
+    '$http',
+    'Config',
+    function(DS, $http, Config) {
         return DS.defineResource({
             name: 'core/projector',
             onConflict: 'replace',
+            relations: {
+                hasMany: {
+                    'core/projectiondefault': {
+                        localField: 'projectiondefaults',
+                        foreignKey: 'projector_id',
+                    }
+                },
+            },
+            methods: {
+                controlProjector: function(action, direction) {
+                    $http.post('/rest/core/projector/' + this.id + '/control_view/',
+                            {"action": action, "direction": direction}
+                    );
+                },
+                getStateForCurrentSlide: function () {
+                    var return_dict;
+                    $.each(this.elements, function(key, value) {
+                        if (value.name == 'agenda/list-of-speakers') {
+                            return_dict = {
+                                'state': 'agenda.item.detail',
+                                'param': {id: value.id}
+                            };
+                        } else if (
+                            value.name != 'agenda/item-list' &&
+                            value.name != 'core/clock' &&
+                            value.name != 'core/countdown' &&
+                            value.name != 'core/message' ) {
+                            return_dict = {
+                                'state': value.name.replace('/', '.')+'.detail.update',
+                                'param': {id: value.id}
+                            };
+                        }
+                    });
+                    return return_dict;
+                },
+                toggleBlank: function () {
+                    $http.post('/rest/core/projector/' + this.id + '/control_blank/',
+                        !this.blank
+                    );
+                },
+                toggleBroadcast: function () {
+                    $http.post('/rest/core/projector/' + this.id + '/broadcast/');
+                }
+            },
+        });
+    }
+])
+
+/* Model for all projection defaults */
+.factory('ProjectionDefault', [
+    'DS',
+    function(DS) {
+        return DS.defineResource({
+            name: 'core/projectiondefault',
+            relations: {
+                belongsTo: {
+                    'core/projector': {
+                        localField: 'projector',
+                        localKey: 'projector_id',
+                    }
+                }
+            }
         });
     }
 ])
@@ -522,8 +651,9 @@ angular.module('OpenSlidesApp.core', [
     'ChatMessage',
     'Config',
     'Projector',
+    'ProjectionDefault',
     'Tag',
-    function (ChatMessage, Config, Projector, Tag) {}
+    function (ChatMessage, Config, Projector, ProjectionDefault, Tag) {}
 ]);
 
 }());

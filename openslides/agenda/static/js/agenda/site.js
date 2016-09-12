@@ -99,7 +99,8 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     'TopicForm', // TODO: Remove this dependency. Use template hook for "New" and "Import" buttons.
     'AgendaTree',
     'Projector',
-    function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, TopicForm, AgendaTree, Projector) {
+    'ProjectionDefault',
+    function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, TopicForm, AgendaTree, Projector, ProjectionDefault) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -109,6 +110,17 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             if (subitems.length) {
                 $scope.agendaHasSubitems = true;
             }
+        });
+        Projector.bindAll({}, $scope, 'projectors');
+        $scope.mainListTree = true;
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            var projectiondefault =  ProjectionDefault.filter({name: 'agenda_all_items'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId_all_items = projectiondefault.projector_id;
+            }
+            $scope.projectionDefaults = ProjectionDefault.getAll();
         });
         $scope.alert = {};
 
@@ -218,34 +230,78 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             $scope.uncheckAll();
         };
 
+        /** Project functions **/
+        // get ProjectionDefault for item
+        $scope.getProjectionDefault = function (item) {
+            if (item.tree) {
+                return $scope.defaultProjectorId_all_items;
+            } else {
+                var app_name = item.content_object.collection.split('/')[0];
+                var id = 1;
+                $scope.projectionDefaults.forEach(function (projectionDefault) {
+                    if (projectionDefault.name == app_name) {
+                        id = projectionDefault.projector_id;
+                    }
+                });
+                return id;
+            }
+        };
         // project agenda
-        $scope.projectAgenda = function (tree, id) {
-            $http.post('/rest/core/projector/1/prune_elements/',
+        $scope.projectAgenda = function (projectorId, tree, id) {
+            var isAgendaProjectedId = $scope.isAgendaProjected($scope.mainListTree);
+            if (isAgendaProjectedId > 0) {
+                // Deactivate
+                $http.post('/rest/core/projector/' + isAgendaProjectedId + '/prune_elements/', []);
+            }
+            if (isAgendaProjectedId != projectorId) {
+                $http.post('/rest/core/projector/' + projectorId + '/prune_elements/',
                     [{name: 'agenda/item-list', tree: tree, id: id}]);
+            }
+        };
+        // change whether all items or only main items should be projected
+        $scope.changeMainListTree = function () {
+            var isAgendaProjectedId = $scope.isAgendaProjected($scope.mainListTree);
+            $scope.mainListTree = !$scope.mainListTree;
+            if (isAgendaProjectedId > 0) {
+                $scope.projectAgenda(isAgendaProjectedId, $scope.mainListTree);
+            }
+        };
+        // change whether one item or all subitems should be projected
+        $scope.changeItemTree = function (item) {
+            var isProjected = item.isProjected(item.tree);
+            if (isProjected > 0) {
+                // Deactivate and reactivate
+                item.project(isProjected, item.tree);
+                item.project(isProjected, !item.tree);
+            }
+            item.tree = !item.tree;
         };
         // check if agenda is projected
         $scope.isAgendaProjected = function (tree) {
             // Returns true if there is a projector element with the name
             // 'agenda/item-list'.
-            var projector = Projector.get(1);
-            if (typeof projector === 'undefined') return false;
-            var self = this;
             var predicate = function (element) {
                 var value;
-                if (typeof tree === 'undefined') {
-                    // only main agenda items
-                    value = element.name == 'agenda/item-list' &&
-                        typeof element.id === 'undefined' &&
-                        !element.tree;
-                } else {
+                if (tree) {
                     // tree with all agenda items
                     value = element.name == 'agenda/item-list' &&
                         typeof element.id === 'undefined' &&
                         element.tree;
+                } else {
+                    // only main agenda items
+                    value = element.name == 'agenda/item-list' &&
+                        typeof element.id === 'undefined' &&
+                        !element.tree;
                 }
                 return value;
             };
-            return typeof _.findKey(projector.elements, predicate) === 'string';
+            var projectorId = 0;
+            $scope.projectors.forEach(function (projector) {
+                if (typeof _.findKey(projector.elements, predicate) === 'string') {
+                    projectorId = projector.id;
+                }
+            });
+            return projectorId;
         };
         // auto numbering of agenda items
         $scope.autoNumbering = function() {
@@ -263,9 +319,24 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     'Agenda',
     'User',
     'item',
-    function ($scope, $filter, $http, $state, operator, Agenda, User, item) {
+    'Projector',
+    'ProjectionDefault',
+    function ($scope, $filter, $http, $state, operator, Agenda, User, item, Projector, ProjectionDefault) {
         Agenda.bindOne(item.id, $scope, 'item');
         User.bindAll({}, $scope, 'users');
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            var item_app_name = item.content_object.collection.split('/')[0];
+            var projectiondefaultItem = ProjectionDefault.filter({name: item_app_name})[0];
+            if (projectiondefaultItem) {
+                $scope.defaultProjectorItemId = projectiondefaultItem.projector_id;
+            }
+            var projectiondefaultListOfSpeakers = ProjectionDefault.filter({name: 'list_of_speakers'})[0];
+            if (projectiondefaultListOfSpeakers) {
+                $scope.defaultProjectorListOfSpeakersId = projectiondefaultListOfSpeakers.projector_id;
+            }
+        });
         $scope.speakerSelectBox = {};
         $scope.alert = {};
         $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
@@ -428,50 +499,69 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     '$state',
     '$http',
     'Projector',
-    'Assignment', // TODO: Remove this after refactoring of data loading on start.
-    'Topic', // TODO: Remove this after refactoring of data loading on start.
-    'Motion', // TODO: Remove this after refactoring of data loading on start.
-    'Agenda',
-    function($scope, $state, $http, Projector, Assignment, Topic, Motion, Agenda) {
-        $scope.$watch(
-            function() {
-                return Projector.lastModified(1);
-            },
-            function() {
-                Projector.find(1).then( function(projector) {
-                    $scope.AgendaItem = null;
-                    _.forEach(projector.elements, function(element) {
-                        switch(element.name) {
-                            case 'motions/motion':
-                                Motion.find(element.id).then(function(motion) {
-                                    Motion.loadRelations(motion, 'agenda_item').then(function() {
-                                        $scope.AgendaItem = motion.agenda_item;
-                                    });
-                                });
-                                break;
-                            case 'topics/topic':
-                                Topic.find(element.id).then(function(topic) {
-                                    Topic.loadRelations(topic, 'agenda_item').then(function() {
-                                        $scope.AgendaItem = topic.agenda_item;
-                                    });
-                                });
-                                break;
-                            case 'assignments/assignment':
-                                Assignment.find(element.id).then(function(assignment) {
-                                    Assignment.loadRelations(assignment, 'agenda_item').then(function() {
-                                        $scope.AgendaItem = assignment.agenda_item;
-                                    });
-                                });
-                                break;
-                            case 'agenda/list-of-speakers':
-                                Agenda.find(element.id).then(function(item) {
-                                    $scope.AgendaItem = item;
-                                });
-                        }
-                    });
+    'ProjectionDefault',
+    'Config',
+    'CurrentListOfSpeakersItem',
+    function($scope, $state, $http, Projector, ProjectionDefault, Config, CurrentListOfSpeakersItem) {
+        // Watch for changes in the current list of speakers reference
+        $scope.$watch(function () {
+            return Config.lastModified('projector_currentListOfSpeakers_reference');
+        }, function () {
+            $scope.currentListOfSpeakersReference = $scope.config('projector_currentListOfSpeakers_reference');
+            $scope.updateCurrentListOfSpeakers();
+        });
+        $scope.$watch(function() {
+            return Projector.lastModified();
+        }, function() {
+            $scope.projectors = Projector.getAll();
+            $scope.updateCurrentListOfSpeakers();
+        });
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            var projectiondefault = ProjectionDefault.filter({name: 'current_list_of_speakers'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId = projectiondefault.projector_id;
+            }
+        });
+
+        $scope.updateCurrentListOfSpeakers = function () {
+            var itemPromise = CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
+            if (itemPromise) {
+                itemPromise.then(function(item) {
+                    $scope.AgendaItem = item;
                 });
             }
-        );
+        };
+        // Project current list of speakers
+        // same logic as in core/base.js
+        $scope.projectCurrentLoS = function (projectorId) {
+            var isCurrentLoSProjectedId = $scope.isCurrentLoSProjected($scope.mainListTree);
+            if (isCurrentLoSProjectedId > 0) {
+                // Deactivate
+                $http.post('/rest/core/projector/' + isCurrentLoSProjectedId + '/prune_elements/', []);
+            }
+            if (isCurrentLoSProjectedId != projectorId) {
+                $http.post('/rest/core/projector/' + projectorId + '/prune_elements/',
+                    [{name: 'agenda/current-list-of-speakers'}]);
+            }
+        };
+        // same logic as in core/base.js
+        $scope.isCurrentLoSProjected = function () {
+            // Returns the projector id if there is a projector element with the name
+            // 'agenda/current-list-of-speakers'. Elsewise returns 0.
+            var projectorId = 0;
+            $scope.projectors.forEach(function (projector) {
+                var key = _.findKey(projector.elements, function (element) {
+                    return element.name == 'agenda/current-list-of-speakers';
+                });
+                if (typeof key === 'string') {
+                    projectorId = projector.id;
+                }
+            });
+            return projectorId;
+        };
+
         // go to the list of speakers (management) of the currently
         // displayed projector slide
         $scope.goToListOfSpeakers = function() {

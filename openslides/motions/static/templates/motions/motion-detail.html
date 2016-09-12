@@ -16,12 +16,8 @@
         <translate>List of speakers</translate>
       </a>
       <!-- project -->
-      <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-          ng-class="{ 'btn-primary': motion.isProjected() }"
-          ng-click="motion.project()"
-          title="{{ 'Project motion' | translate }}">
-        <i class="fa fa-video-camera"></i>
-      </a>
+      <projector-button model="motion" default-projector-id="defaultProjectorId">
+      </projector-button>
       <!-- edit -->
       <a ng-if="motion.isAllowed('update')" ng-click="openDialog(motion)"
           class="btn btn-default btn-sm"

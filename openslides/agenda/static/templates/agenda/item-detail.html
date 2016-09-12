@@ -10,20 +10,37 @@
         {{ item.getContentResource().verboseName | translate }}
       </a>
       <!-- project list of speakers -->
-      <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-          ng-class="{ 'btn-primary': item.isListOfSpeakersProjected() }"
-          ng-click="item.projectListOfSpeakers()">
-        <i class="fa fa-video-camera"></i>
-        <translate>List of speakers</translate>
-      </a>
+      <span class="btn-group" style="min-width:54px;" uib-dropdown
+        uib-tooltip="{{ 'Projektor' | translate }} {{ item.isListOfSpeakersProjected() }}"
+        tooltip-enable="item.isListofSpeakersProjected() > 0"
+        os-perms="core.can_manage_projector">
+        <button type="button" class="btn btn-default btn-sm"
+          ng-click="item.projectListOfSpeakers(defaultProjectorListOfSpeakersId)"
+          ng-class="{ 'btn-primary': item.isListOfSpeakersProjected() == defaultProjectorListOfSpeakersId }">
+          <i class="fa fa-video-camera"></i>
+          <translate>List of speakers</translate>
+        </button>
+        <button type="button" class="btn btn-default btn-sm slimDropDown"
+          ng-class="{ 'btn-primary': (item.isListOfSpeakersProjected() > 0 && item.isListOfSpeakersProjected() != defaultProjectorListOfSpeakersId) }"
+          ng-if="projectors.length > 1"
+          uib-dropdown-toggle>
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li role="menuitem" ng-repeat="projector in projectors">
+            <a href="" ng-click="item.projectListOfSpeakers(projector.id)"
+              ng-class="{ 'projected': (item.isListOfSpeakersProjected() == projector.id) }">
+              <i class="fa fa-video-camera" ng-show="item.isListOfSpeakersProjected() == projector.id"></i>
+              {{ projector.name }}
+              <span ng-if="defaultProjectorListOfSpeakersId == projector.id">(<translate>Standard</translate>)</span>
+            </a>
+          </li>
+        </ul>
+      </span> 
       <!-- project -->
-      <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-          ng-class="{ 'btn-primary': item.isProjected() }"
-          ng-click="item.project()"
-          title="{{ 'Project item' | translate }}">
-        <i class="fa fa-video-camera"></i>
-        {{ item.getContentResource().verboseName | translate }}
-      </a>
+      <projector-button model="item" default-projector-id="defaultProjectorItemId"
+        content="{{ item.getContentResource().verboseName | translate }}">
+      </projector-button>
     </div>
     <h1>{{ item.getTitle() }}</h1>
     <h2>

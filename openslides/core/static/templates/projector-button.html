@@ -1,0 +1,27 @@
+<div class="btn-group" style="min-width:{{ projectors.length > 1 ? '54' : '34' }}px;" uib-dropdown
+  uib-tooltip="{{ 'Projector' | translate }} {{ model.isProjected(additionalId) }}"
+  tooltip-enable="model.isProjected(additionalId) > 0"
+  os-perms="core.can_manage_projector">
+  <button type="button" class="btn btn-default btn-sm"
+    ng-click="model.project(defaultProjectorId, additionalId)"
+    ng-class="{ 'btn-primary': model.isProjected(additionalId) == defaultProjectorId }">
+    <i class="fa fa-video-camera"></i>
+    {{ content }}
+  </button>
+  <button type="button" class="btn btn-default btn-sm slimDropDown"
+    ng-class="{ 'btn-primary': (model.isProjected(additionalId) > 0 && model.isProjected(additionalId) != defaultProjectorId) }"
+    ng-if="projectors.length > 1"
+    uib-dropdown-toggle>
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <li role="menuitem" ng-repeat="projector in projectors">
+      <a href="" ng-click="model.project(projector.id, additionalId)"
+        ng-class="{ 'projected': (model.isProjected(additionalId) == projector.id) }">
+        <i class="fa fa-video-camera" ng-show="model.isProjected(additionalId) == projector.id"></i>
+        {{ projector.name }}
+        <span ng-if="defaultProjectorId == projector.id">(<translate>Standard</translate>)</span>
+      </a>
+    </li>
+  </ul>
+</div>

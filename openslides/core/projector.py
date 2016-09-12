@@ -1,3 +1,5 @@
+import uuid
+
 from django.utils.timezone import now
 
 from ..utils.projector import ProjectorElement
@@ -20,7 +22,7 @@ class Countdown(ProjectorElement):
     To start the countdown write into the config field:
 
         {
-            "status": "running",
+            "running": True,
             "countdown_time": <timestamp>,
         }
 
@@ -30,10 +32,10 @@ class Countdown(ProjectorElement):
 
     To stop the countdown set the countdown time to the current value of the
     countdown (countdown_time = countdown_time - now + serverTimeOffset)
-    and set status to "stop".
+    and set running to False.
 
     To reset the countdown (it is not a reset in a functional way) just
-    change the countdown time. The status value remains "stop".
+    change the countdown time. The running value remains False.
 
     Do not forget to send values for additional keywords like "stable" if
     you do not want to use the default.
@@ -63,50 +65,76 @@ class Countdown(ProjectorElement):
         """
         if not isinstance(config_data.get('countdown_time'), (int, float)):
             raise ProjectorException('Invalid countdown time. Use integer or float.')
-        if config_data.get('status') not in ('running', 'stop'):
-            raise ProjectorException("Invalid status. Use 'running' or 'stop'.")
+        if not isinstance(config_data.get('running'), bool):
+            raise ProjectorException("Invalid running status. Has to be a boolean.")
         if config_data.get('default') is not None and not isinstance(config_data.get('default'), int):
             raise ProjectorException('Invalid default value. Use integer.')
 
     @classmethod
-    def control(cls, action, projector_id=1, index=0):
-        """
-        Starts, stops or resets the countdown with the given index on the
-        given projector.
-
-        Action must be 'start', 'stop' or 'reset'.
-        """
+    def control(cls, action):
         if action not in ('start', 'stop', 'reset'):
-            raise ValueError("Action must be 'start', 'stop' or 'reset', not {}.".format(action))
+                raise ValueError("Action must be 'start', 'stop' or 'reset', not {}.".format(action))
 
-        projector_instance = Projector.objects.get(pk=projector_id)
-        projector_config = {}
-        found = False
-        for key, value in projector_instance.config.items():
-            if value['name'] == cls.name:
-                if index == 0:
-                    try:
-                        cls.validate_config(value)
-                    except ProjectorException:
-                        # Do not proceed if the specific procjector config data is invalid.
-                        # The variable found remains False.
-                        break
-                    found = True
-                    if action == 'start' and value['status'] == 'stop':
-                        value['status'] = 'running'
-                        value['countdown_time'] = now().timestamp() + value['countdown_time']
-                    elif action == 'stop' and value['status'] == 'running':
-                        value['status'] = 'stop'
-                        value['countdown_time'] = value['countdown_time'] - now().timestamp()
-                    elif action == 'reset':
-                        value['status'] = 'stop'
-                        value['countdown_time'] = value.get('default', config['projector_default_countdown'])
-                else:
-                    index += -1
-            projector_config[key] = value
-        if found:
-            projector_instance.config = projector_config
-            projector_instance.save()
+        # Use the countdown with the lowest index
+        projectors = Projector.objects.all()
+        lowest_index = None
+        if projectors[0]:
+            for key, value in projectors[0].config.items():
+                if value['name'] == cls.name:
+                    if lowest_index is None or value['index'] < lowest_index:
+                        lowest_index = value['index']
+
+        if lowest_index is None:
+            # create a countdown
+            for projector in projectors:
+                projector_config = {}
+                for key, value in projector.config.items():
+                    projector_config[key] = value
+                # new countdown
+                countdown = {
+                    'name': 'core/countdown',
+                    'stable': True,
+                    'index': 1,
+                    'default_time': config['projector_default_countdown'],
+                    'visible': False,
+                    'selected': True,
+                }
+                if action == 'start':
+                    countdown['running'] = True
+                    countdown['countdown_time'] = now().timestamp() + countdown['default_time']
+                elif action == 'reset' or action == 'stop':
+                    countdown['running'] = False
+                    countdown['countdown_time'] = countdown['default_time']
+                projector_config[uuid.uuid4().hex] = countdown
+                projector.config = projector_config
+                projector.save()
+        else:
+            # search for the countdown and modify it.
+            for projector in projectors:
+                projector_config = {}
+                found = False
+                for key, value in projector.config.items():
+                    if value['name'] == cls.name and value['index'] == lowest_index:
+                        try:
+                            cls.validate_config(value)
+                        except ProjectorException:
+                            # Do not proceed if the specific procjector config data is invalid.
+                            # The variable found remains False.
+                            break
+                        found = True
+                        if action == 'start':
+                            value['running'] = True
+                            value['countdown_time'] = now().timestamp() + value['default_time']
+                        elif action == 'stop' and value['running']:
+                            value['running'] = False
+                            value['countdown_time'] = value['countdown_time'] - now().timestamp()
+                        elif action == 'reset':
+                            value['running'] = False
+                            value['countdown_time'] = value['default_time']
+                    projector_config[key] = value
+                if found:
+                    projector.config = projector_config
+                    projector.save()
 
 
 class Message(ProjectorElement):

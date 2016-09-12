@@ -157,11 +157,28 @@ def get_config_variables():
         weight=185,
         group='Projector')
 
-    # set the resolution for one projector. It can be removed with the multiprojector feature.
     yield ConfigVariable(
-        name='projector_resolution',
-        default_value={'width': 1024, 'height': 768},
-        input_type='resolution',
-        label='Projector Resolution',
-        weight=200,
+        name='projector_blank_color',
+        default_value='#FFFFFF',
+        input_type='colorpicker',
+        label='Color for blanked projector',
+        weight=190,
         group='Projector')
+
+    yield ConfigVariable(
+        name='projector_broadcast',
+        default_value=0,
+        input_type='integer',
+        label='Projector which is broadcasted',
+        weight=200,
+        group='Projector',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='projector_currentListOfSpeakers_reference',
+        default_value=1,
+        input_type='integer',
+        label='Projector reference for list of speakers',
+        weight=201,
+        group='Projector',
+        hidden=True)

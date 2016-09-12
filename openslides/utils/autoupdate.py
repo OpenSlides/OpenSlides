@@ -138,11 +138,25 @@ def send_data(message):
         projectors = Projector.get_projectors_that_show_this(collection_element)
         send_all = None  # The decission is done later
 
+    broadcast_id = config['projector_broadcast']
+    if broadcast_id > 0:
+        projectors = Projector.objects.all()  # also the broadcasted projector should get data
+        broadcast_projector = Projector.objects.get(pk=broadcast_id)
+
+        send_all = True
+        # The data from the broadcasted projector
+        broadcast_projector_data = get_projector_element_data(broadcast_projector)
+    else:
+        broadcast_projector_data = None
+
     for projector in projectors:
         if send_all is None:
             send_all = projector.need_full_update_for_this(collection_element)
         if send_all:
-            output = get_projector_element_data(projector)
+            if broadcast_projector_data is None:
+                output = get_projector_element_data(projector)
+            else:
+                output = broadcast_projector_data
         else:
             output = []
         output.append(collection_element.as_autoupdate_for_projector())

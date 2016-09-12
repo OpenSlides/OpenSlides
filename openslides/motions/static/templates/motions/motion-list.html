@@ -98,7 +98,6 @@
           ng-click="checkAll()"></i>
       </div>
       <div class="col-xs-11 main-header">
-
         <span class="form-inline text-right pull-right">
           <span class="sort-spacer pointer" ng-click="reset_filters()"
             ng-if="are_filters_set()" ng-disabled="isDeleteMode"
@@ -304,12 +303,8 @@
       </div>
       <!-- projector column -->
       <div class="col-xs-1 centered" os-perms="core.can_manage_projector">
-        <a class="btn btn-default btn-sm"
-          ng-class="{ 'btn-primary': motion.isProjected() }"
-          ng-click="motion.project()"
-          title="{{ 'Project motion' | translate }}">
-          <i class="fa fa-video-camera"></i>
-        </a>
+        <projector-button model="motion", default-projector-id="defaultProjectorId">
+        </projector-button>
       </div>
       <!-- main content column -->
       <div class="col-xs-6 content">

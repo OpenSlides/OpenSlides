@@ -267,42 +267,47 @@ angular.module('OpenSlidesApp.assignments', [])
                     return "Election";
                 },
                 // override project function of jsDataModel factory
-                project: function (poll_id) {
-                    return $http.post(
-                        '/rest/core/projector/1/prune_elements/',
-                        [{name: 'assignments/assignment', id: this.id, poll: poll_id}]
-                    );
+                project: function (projectorId, pollId) {
+                    var isProjectedId = this.isProjected(pollId);
+                    if (isProjectedId > 0) {
+                        $http.post('/rest/core/projector/' + isProjectedId + '/clear_elements/');
+                    }
+                    if (isProjectedId != projectorId) {
+                        return $http.post(
+                            '/rest/core/projector/' + projectorId + '/prune_elements/',
+                            [{name: 'assignments/assignment', id: this.id, poll: pollId}]
+                        );
+                    }
                 },
                 // override isProjected function of jsDataModel factory
                 isProjected: function (poll_id) {
-                    // Returns true if there is a projector element with the name
-                    // 'assignments/assignment'.
-                    var projector = Projector.get(1);
-                    var isProjected;
-                    if (typeof projector !== 'undefined') {
-                        var self = this;
-                        var predicate = function (element) {
-                            var value;
-                            if (typeof poll_id === 'undefined') {
-                                // Assignment detail slide without poll
-                                value = element.name == 'assignments/assignment' &&
-                                    typeof element.id !== 'undefined' &&
-                                    element.id == self.id &&
-                                    typeof element.poll === 'undefined';
-                            } else {
-                                // Assignment detail slide with specific poll
-                                value = element.name == 'assignments/assignment' &&
-                                    typeof element.id !== 'undefined' &&
-                                    element.id == self.id &&
-                                    typeof element.poll !== 'undefined' &&
-                                    element.poll == poll_id;
-                            }
-                            return value;
-                        };
-                        isProjected = typeof _.findKey(projector.elements, predicate) === 'string';
-                    } else {
-                        isProjected = false;
-                    }
+                    // Returns the id of the last projector found with an element
+                    // with the name 'assignments/assignment'.
+                    var self = this;
+                    var predicate = function (element) {
+                        var value;
+                        if (typeof poll_id === 'undefined') {
+                            // Assignment detail slide without poll
+                            value = element.name == 'assignments/assignment' &&
+                                typeof element.id !== 'undefined' &&
+                                element.id == self.id &&
+                                typeof element.poll === 'undefined';
+                        } else {
+                            // Assignment detail slide with specific poll
+                            value = element.name == 'assignments/assignment' &&
+                                typeof element.id !== 'undefined' &&
+                                element.id == self.id &&
+                                typeof element.poll !== 'undefined' &&
+                                element.poll == poll_id;
+                        }
+                        return value;
+                    };
+                    var isProjected = 0;
+                    Projector.getAll().forEach(function (projector) {
+                        if (typeof _.findKey(projector.elements, predicate) === 'string') {
+                            isProjected = projector.id;
+                        }
+                    });
                     return isProjected;
                 }
             },

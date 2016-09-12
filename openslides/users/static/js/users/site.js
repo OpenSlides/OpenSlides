@@ -421,9 +421,19 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'User',
     'Group',
     'PasswordGenerator',
-    function($scope, $state, $http, ngDialog, UserForm, User, Group, PasswordGenerator) {
+    'Projector',
+    'ProjectionDefault',
+    function($scope, $state, $http, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            var projectiondefault = ProjectionDefault.filter({name: 'users'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId = projectiondefault.projector_id;
+            }
+        });
         $scope.alert = {};
         $scope.groupFilter = undefined;
 

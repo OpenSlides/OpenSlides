@@ -917,14 +917,25 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'PdfMakeDocumentProvider',
     'gettextCatalog',
     'HTMLValidizer',
+    'Projector',
+    'ProjectionDefault',
     function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionDocxExport,
-                MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter,
-                PdfMakeDocumentProvider, gettextCatalog, HTMLValidizer) {
+                MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
+                gettextCatalog, HTMLValidizer, Projector, ProjectionDefault) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         Tag.bindAll({}, $scope, 'tags');
         Workflow.bindAll({}, $scope, 'workflows');
         User.bindAll({}, $scope, 'users');
+        Projector.bindAll({}, $scope, 'projectors');
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            var projectiondefault = ProjectionDefault.filter({name: 'motions'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId = projectiondefault.projector_id;
+            }
+        });
         $scope.alert = {};
 
         // setup table sorting
@@ -1192,9 +1203,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'gettextCatalog',
     'Projector',
     'HTMLValidizer',
+    'ProjectionDefault',
     function($scope, $http, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Config,
-             motion, MotionContentProvider, PollContentProvider,
-             PdfMakeConverter, PdfMakeDocumentProvider, MotionInlineEditing, gettextCatalog, Projector, HTMLValidizer) {
+             motion, MotionContentProvider, PollContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
+             MotionInlineEditing, gettextCatalog, Projector, HTMLValidizer, ProjectionDefault) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1202,6 +1214,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
         Motion.loadRelations(motion, 'agenda_item');
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            console.log(ProjectionDefault.getAll());
+            $scope.defaultProjectorId = ProjectionDefault.filter({name: 'motions'})[0].projector_id;
+        });
         $scope.version = motion.active_version;
         $scope.isCollapsed = true;
         $scope.commentsFields = Config.get('motions_comments').value;
