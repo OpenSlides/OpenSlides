@@ -3,6 +3,10 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
+    url(r'^docxtemplate/$',
+        views.MotionDocxTemplateView.as_view(),
+        name='motions_docx_template'),
+
     url(r'^pdf/$',
         views.MotionPDFView.as_view(print_all_motions=True),
         name='motions_pdf'),

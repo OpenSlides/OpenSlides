@@ -308,9 +308,9 @@ def all_motion_cover(pdf, motions):
     """
     Create a coverpage for all motions.
     """
-    pdf.append(Paragraph(escape(config["motions_pdf_title"]), stylesheet['Heading1']))
+    pdf.append(Paragraph(escape(config["motions_export_title"]), stylesheet['Heading1']))
 
-    preamble = escape(config["motions_pdf_preamble"])
+    preamble = escape(config["motions_export_preamble"])
     if preamble:
         pdf.append(Paragraph("%s" % preamble.replace('\r\n', '<br/>'), stylesheet['Paragraph']))
 

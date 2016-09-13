@@ -1,3 +1,6 @@
+import base64
+
+from django.contrib.staticfiles import finders
 from django.db import IntegrityError, transaction
 from django.http import Http404
 from django.utils.text import slugify
@@ -16,7 +19,7 @@ from openslides.utils.rest_api import (
     ValidationError,
     detail_route,
 )
-from openslides.utils.views import PDFView, SingleObjectMixin
+from openslides.utils.views import APIView, PDFView, SingleObjectMixin
 
 from .access_permissions import (
     CategoryAccessPermissions,
@@ -462,7 +465,7 @@ class WorkflowViewSet(ModelViewSet):
         return result
 
 
-# Views to generate PDFs
+# Views to generate PDFs and for the DOCX template
 
 class MotionPollPDF(PDFView):
     """
@@ -555,3 +558,15 @@ class MotionPDFView(SingleObjectMixin, PDFView):
             motions_to_pdf(pdf, motions)
         else:
             motion_to_pdf(pdf, self.get_object())
+
+
+class MotionDocxTemplateView(APIView):
+    """
+    Returns the template for motions docx export
+    """
+    http_method_names = ['get']
+
+    def get_context_data(self, **context):
+        with open(finders.find('templates/docx/motions.docx'), "rb") as file:
+            response = base64.b64encode(file.read())
+        return response

@@ -5,7 +5,8 @@
 angular.module('OpenSlidesApp.motions', [
   'OpenSlidesApp.users',
   'OpenSlidesApp.motions.lineNumbering',
-  'OpenSlidesApp.motions.diff'
+  'OpenSlidesApp.motions.diff',
+  'OpenSlidesApp.motions.DOCX'
 ])
 
 .factory('WorkflowState', [

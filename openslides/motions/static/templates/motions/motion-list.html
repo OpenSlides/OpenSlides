@@ -45,6 +45,7 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownExport">
+          <!-- PDF export -->
           <li>
             <a ui-sref="motions_pdf" target="_blank">
               <i class="fa fa-file-pdf-o fa-lg"></i>
@@ -53,11 +54,17 @@
           </li>
           <!--CSV export -->
           <li>
-            <a href="" id="downloadLink"
-              os-perms="motions.can_manage"
+            <a href="" id="downloadLinkCSV"
               ng-click="csv_export()">
               <i class="fa fa-file-text-o fa-lg"></i>
               <translate>CSV</translate>
+            </a>
+          </li>
+          <!--DOCX export -->
+          <li>
+            <a href="" ng-click="docx_export()">
+              <i class="fa fa-file-word-o fa-lg"></i>
+              <translate>DOCX</translate>
             </a>
           </li>
         </ul>
