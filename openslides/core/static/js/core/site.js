@@ -948,11 +948,54 @@ angular.module('OpenSlidesApp.core.site', [
 // Projector Sidebar Controller
 .controller('ProjectorSidebarCtrl', [
     '$scope',
-    function ($scope) {
+    '$document',
+    '$window',
+    function ($scope, $document, $window) {
         $scope.isProjectorSidebar = false;
         $scope.showProjectorSidebar = function (show) {
             $scope.isProjectorSidebar = show;
         };
+
+        // Sidebar scroll
+        var marginTop = 20, // margin-top from #content
+            marginBottom = 30, // 30px + 20px sidebar margin-bottom = 50px from footer
+            sidebar;
+
+        var sidebarScroll = function () {
+            var sidebarHeight = sidebar.height(),
+                sidebarOffset = sidebar.offset().top,
+                sidebarMinOffset = $('#header').height() + $('#nav').height() + marginTop,
+                documentHeight = $document.height(),
+                windowHeight = $window.innerHeight,
+                scrollTop = $window.pageYOffset;
+
+            // First, check if there is a need to scroll: scroll if the sidebar is smaller then the content
+            if (sidebarHeight < $('.col1').height()) {
+                if ((scrollTop + marginTop + sidebarHeight) > (documentHeight - marginBottom)) {
+                    // Stick to the bottom
+                    var bottom = marginBottom + scrollTop + windowHeight - documentHeight;
+                    sidebar.css({'position': 'fixed', 'top': '', 'bottom': bottom});
+                } else if ((scrollTop + marginTop) > sidebarMinOffset) {
+                    // scroll with the user
+                    sidebar.css({'position': 'fixed', 'top': marginTop, 'bottom': ''});
+                } else {
+                    // Stick to the top
+                    sidebar.css({'position': 'relative', 'top': 0, 'bottom': ''});
+                }
+            } else {
+                // Stick to the top, if the sidebar is larger then the content
+                sidebar.css({'position': 'relative', 'top': 0, 'bottom': ''});
+            }
+        };
+
+        $scope.initSidebar = function () {
+            sidebar = $('#sidebar');
+            $scope.$watch(function () {
+                return sidebar.height();
+            }, sidebarScroll);
+            angular.element($window).bind('scroll', sidebarScroll);
+        };
+
     }
 ])
 
@@ -1196,7 +1239,7 @@ angular.module('OpenSlidesApp.core.site', [
         }, function () {
             var conf = Config.get('projector_resolution').value;
             // With multiprojector, get the resolution from Prjector.get(pk).{width; height}
-            if(!last_conf || last_conf.width != conf.width || last-conf.height != conf.height) {
+            if(!last_conf || last_conf.width != conf.width || last_conf.height != conf.height) {
                 last_conf = conf;
                 $scope.projectorWidth = conf.width;
                 $scope.projectorHeight = conf.height;
