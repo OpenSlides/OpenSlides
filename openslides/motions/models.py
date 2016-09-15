@@ -120,11 +120,6 @@ class Motion(RESTModelMixin, models.Model):
     Tags to categorise motions.
     """
 
-    submitters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_submitters', blank=True, through='SubmittersRelationship')
-    """
-    Users who submit this motion.
-    """
-
     supporters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_supporters', blank=True)
     """
     Users who support this motion.
@@ -614,7 +609,7 @@ class Motion(RESTModelMixin, models.Model):
             self.text or '',
             self.reason or '',
             str(self.category) if self.category else '',
-            user_name_helper(self.submitters.all()),
+            user_name_helper([sr.submitter for sr in self.submittersrelationship_set.all()]),
             user_name_helper(self.supporters.all()),
             " ".join(tag.name for tag in self.tags.all())))
 

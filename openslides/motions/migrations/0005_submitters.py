@@ -55,4 +55,8 @@ class Migration(migrations.Migration):
             unique_together=set([('submitter', 'motion'), ('weight', 'motion')]),
         ),
         migrations.RunPython(copy_submitter_motion_relationship_data),
+        migrations.RemoveField(
+            model_name='motion',
+            name='submitters',
+        ),
     ]

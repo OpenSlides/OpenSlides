@@ -841,44 +841,17 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         User.bindAll({}, $scope, 'users');
         $scope.alert = {};
 
-
         $scope.test = function () {
             console.log($scope.motions);
             if($scope.motions[0]){
-                console.log($scope.motions[0].submitters);
+                console.log($scope.motions[0].submittersrelationship_set);
             }
 
-            console.log($scope.motions[0].submitters[0].user);
+            console.log($scope.motions[0].submittersrelationship_set[0].submitter);
 
-            /*var motion = {};
-            motion.title = 'test2';
-            motion.text = 'text';
-            Motion.create(motion).then(function (motion) {
-                var sr = {
-                    submitter_id: 1,
-                    motion_id: motion.id,
-                    weight: 123
-                };
-                SubmittersRelationship.create(sr).then(function(success) {
-                    console.log(success);
-                }, function (error) {
-                    console.log(error);
-                });
-                SubmittersRelationship.findAll().then(function (sr) {
-                    console.log(motion);
-                    console.log(motion.submitters);
-                    console.log(sr);
-                    console.log(motion.submitters[0].weight);
-                    console.log(motion.submitters[0].user.username);
-                });
-            }, function (error) {
-                console.log(error);
-            });*/
-
-            SubmittersRelationship.find(2).then(function (sr) {
-                sr.weight=123;
-                SubmittersRelationship.save(sr);
-            });
+            var sr = SubmittersRelationship.get(1)
+            sr.weight=1231;
+            SubmittersRelationship.save(sr);
         };
 
 

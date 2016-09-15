@@ -247,7 +247,6 @@ class MotionSerializer(ModelSerializer):
     log_messages = MotionLogSerializer(many=True, read_only=True)
     polls = MotionPollSerializer(many=True, read_only=True)
     reason = CharField(allow_blank=True, required=False, write_only=True)
-    #submitters = SubmittersRelationshipSerializer(many=True, required=False, read_only=True, source='submittersrelationship_set')
     text = CharField(write_only=True)
     title = CharField(max_length=255, write_only=True)
     versions = MotionVersionSerializer(many=True, read_only=True)
@@ -270,7 +269,7 @@ class MotionSerializer(ModelSerializer):
             'parent',
             'category',
             'origin',
-            'submitters',
+            'submittersrelationship_set',
             'supporters',
             'comments',
             'state',
@@ -300,25 +299,6 @@ class MotionSerializer(ModelSerializer):
         motion.reset_state(validated_data.get('workflow_id'))
         motion.save()
 
-        print('serializer')
-        print(validated_data.get('submitters'))
-        print(validated_data.get('submitters_id'))
-        print(repr(validated_data))
-
-        if validated_data.get('submitters'):
-            for index, submitter in enumerate(validated_data['submitters']):
-                sr = SubmittersRelationship(
-                    submitter=submitter,
-                    motion=motion,
-                    weight=index+1)
-                sr.save()
-        elif validated_data['request_user'].is_authenticated():
-            print(repr(validated_data['request_user']))
-            sr = SubmittersRelationship(
-                submitter=validated_data['request_user'],
-                motion=motion,
-                weight=1)
-            sr.save()
         motion.supporters.add(*validated_data.get('supporters', []))
         motion.attachments.add(*validated_data.get('attachments', []))
         motion.tags.add(*validated_data.get('tags', []))
