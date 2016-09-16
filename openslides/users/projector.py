@@ -1,12 +1,12 @@
 from ..core.exceptions import ProjectorException
 from ..utils.projector import ProjectorElement, ProjectorRequirement
+from .access_permissions import UserAccessPermissions
 from .models import User
-from .views import GroupViewSet, UserViewSet
 
 
 class UserSlide(ProjectorElement):
     """
-    Slide definitions for user model.
+    Slide definitions for User model.
     """
     name = 'users/user'
 
@@ -17,18 +17,10 @@ class UserSlide(ProjectorElement):
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
         if pk is not None:
-            try:
-                user = User.objects.get(pk=pk)
-            except User.DoesNotExist:
-                # User does not exist. Just do nothing.
-                pass
-            else:
-                yield ProjectorRequirement(
-                    view_class=UserViewSet,
-                    view_action='retrieve',
-                    pk=str(user.pk))
-                for group in user.groups.all():
-                    yield ProjectorRequirement(
-                        view_class=GroupViewSet,
-                        view_action='retrieve',
-                        pk=str(group.pk))
+            yield ProjectorRequirement(
+                access_permissions=UserAccessPermissions,
+                id=str(pk))
+
+            # Hint: We do not have to yield any ProjectorRequirement
+            # instances for groups because groups are always available for
+            # everyone.

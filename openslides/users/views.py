@@ -37,9 +37,9 @@ class UserViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
+        if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().can_retrieve(self.request.user)
-        elif self.action in ('metadata', 'list', 'update', 'partial_update'):
+        elif self.action in ('metadata', 'update', 'partial_update'):
             result = self.request.user.has_perm('users.can_see_name')
         elif self.action in ('create', 'destroy', 'reset_password'):
             result = (self.request.user.has_perm('users.can_see_name') and

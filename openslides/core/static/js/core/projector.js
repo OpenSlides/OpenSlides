@@ -26,7 +26,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                             element.template = slidesMap[element.name].template;
                             elements.push(element);
                         } else {
-                            console.log("Unknown slide: " + element.name);
+                            console.error("Unknown slide: " + element.name);
                         }
                     });
                     return elements;
@@ -144,16 +144,32 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 
 .controller('SlideCustomSlideCtrl', [
     '$scope',
+    'Agenda',
     'Customslide',
-    function($scope, Customslide) {
+    function($scope, Agenda, Customslide) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         var id = $scope.element.id;
-        Customslide.find(id).then(function(customslide) {
-            Customslide.loadRelations(customslide, 'agenda_item');
+        var promise = Customslide.find(id)
+        .then(
+            function (customslide) {
+                return Customslide.loadRelations(customslide, 'agenda_item')
+            }
+        )
+        .then(
+            function () {
+                return Customslide.bindOne(id, $scope, 'customslide');
+            }
+        );
+        $scope.$on('$destroy', function () {
+            promise.then(
+                function () {
+                    Customslide.eject(id);
+                    Agenda.eject($scope.customslide.agenda_item_id);
+                }
+            );
         });
-        Customslide.bindOne(id, $scope, 'customslide');
     }
 ])
 

@@ -19,9 +19,9 @@ class MediafileViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
+        if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().can_retrieve(self.request.user)
-        elif self.action in ('metadata', 'list'):
+        elif self.action == 'metadata':
             result = self.request.user.has_perm('mediafiles.can_see')
         elif self.action == 'create':
             result = (self.request.user.has_perm('mediafiles.can_see') and

@@ -1,11 +1,11 @@
 from django.utils.timezone import now
 
-from openslides.utils.projector import ProjectorElement, ProjectorRequirement
-
+from ..agenda.access_permissions import ItemAccessPermissions
+from ..utils.projector import ProjectorElement, ProjectorRequirement
+from .access_permissions import CustomSlideAccessPermissions
 from .config import config
 from .exceptions import ProjectorException
 from .models import CustomSlide, Projector
-from .views import CustomSlideViewSet
 
 
 class CustomSlideSlide(ProjectorElement):
@@ -21,10 +21,19 @@ class CustomSlideSlide(ProjectorElement):
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
         if pk is not None:
-            yield ProjectorRequirement(
-                view_class=CustomSlideViewSet,
-                view_action='retrieve',
-                pk=str(pk))
+            try:
+                customslide = CustomSlide.objects.get(pk=pk)
+            except CustomSlide.DoesNotExist:
+                # Custom slide does not exist. Just do nothing.
+                pass
+            else:
+                # Custom slide and agenda item
+                yield ProjectorRequirement(
+                    access_permissions=CustomSlideAccessPermissions,
+                    id=str(pk))
+                yield ProjectorRequirement(
+                    access_permissions=ItemAccessPermissions,
+                    id=str(customslide.agenda_item_id))
 
 
 class Clock(ProjectorElement):
