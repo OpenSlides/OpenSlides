@@ -24,16 +24,10 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
         var id = $scope.element.id;
         var poll = $scope.element.poll;
 
-        // load assignemt object and related agenda item
-        Assignment.find(id).then(function(assignment) {
-            Assignment.loadRelations(assignment, 'agenda_item');
-        });
         Assignment.bindOne(id, $scope, 'assignment');
         Assignment.getPhases().then(function(phases) {
             $scope.phases = phases;
         });
-        // load all users
-        User.findAll();
         User.bindAll({}, $scope, 'users');
     }
 ]);

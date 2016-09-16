@@ -29,7 +29,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                             element.template = slidesMap[element.name].template;
                             elements.push(element);
                         } else {
-                            console.log("Unknown slide: " + element.name);
+                            console.error("Unknown slide: " + element.name);
                         }
                     });
                     return elements;
@@ -126,21 +126,22 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     'Projector',
     'slides',
     function($scope, Projector, slides) {
-        Projector.find(1).then(function() {
-            $scope.$watch(function () {
-                return Projector.lastModified(1);
-            }, function () {
-                $scope.elements = [];
-                _.forEach(slides.getElements(Projector.get(1)), function(element) {
-                    if (!element.error) {
-                        $scope.elements.push(element);
-                    } else {
-                        console.error("Error for slide " + element.name + ": " + element.error);
-                    }
-                });
-                $scope.scroll = -5 * Projector.get(1).scroll;
-                $scope.scale = 100 + 20 * Projector.get(1).scale;
+        $scope.$watch(function () {
+            // TODO: Use the current projector. At the moment there is only one.
+            return Projector.lastModified(1);
+        }, function () {
+            $scope.elements = [];
+            // TODO: Use the current projector. At the moment there is only one
+            _.forEach(slides.getElements(Projector.get(1)), function(element) {
+                if (!element.error) {
+                    $scope.elements.push(element);
+                } else {
+                    console.error("Error for slide " + element.name + ": " + element.error);
+                }
             });
+            // TODO: Use the current projector. At the moment there is only one
+            $scope.scroll = -5 * Projector.get(1).scroll;
+            $scope.scale = 100 + 20 * Projector.get(1).scale;
         });
     }
 ])
@@ -153,9 +154,6 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         var id = $scope.element.id;
-        Customslide.find(id).then(function(customslide) {
-            Customslide.loadRelations(customslide, 'agenda_item');
-        });
         Customslide.bindOne(id, $scope, 'customslide');
     }
 ])
