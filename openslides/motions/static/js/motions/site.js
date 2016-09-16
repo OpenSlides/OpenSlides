@@ -648,7 +648,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                         placeholder: gettextCatalog.getString('Select a parent item ...')
                     },
                     hide: !operator.hasPerms('agenda.can_manage')
-                },
+                }]
+                .concat(MotionComment.getFormFields())
+                .concat([
                 {
                     key: 'more',
                     type: 'checkbox',
@@ -708,9 +710,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                         placeholder: gettextCatalog.getString('Select or search a supporter ...')
                     },
                     hideExpression: '!model.more'
-                }]
-                .concat(MotionComment.getFormFields())
-                .concat([{
+                },
+                {
                     key: 'workflow_id',
                     type: 'select-single',
                     templateOptions: {
