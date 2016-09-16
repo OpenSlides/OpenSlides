@@ -25,18 +25,7 @@ class ItemListSlide(ProjectorElement):
                 raise ProjectorException('Item does not exist.')
 
     def get_requirements(self, config_entry):
-        pk = config_entry.get('id', 'tree')
-        if pk is None or config_entry.get('tree', False):
-            # Root list slide or slide with tree.
-            yield ProjectorRequirement(
-                collection_string=Item.get_collection_string(),
-                pks=Item.objects.values_list('pk'))#TODO????
-
-        # Root list slide and children list slide.
-        # Related objects like users and tags are not unlocked.
-        yield ProjectorRequirement(
-            view_class=ItemViewSet,
-            view_action='list')
+        yield from Item.objcets.all()
 
 
 class ListOfSpeakersSlide(ProjectorElement):
