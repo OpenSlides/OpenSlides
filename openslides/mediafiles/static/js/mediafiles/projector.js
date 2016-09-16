@@ -18,11 +18,9 @@ angular.module('OpenSlidesApp.mediafiles.projector', ['OpenSlidesApp.mediafiles'
     'Mediafile',
     function($scope, Mediafile) {
         // load mediafile object
-        var mediafile = Mediafile.find($scope.element.id);
-        mediafile.then(function(mediafile) {
-            $scope.pdfName = mediafile.title;
-            $scope.pdfUrl = mediafile.mediafileUrl;
-        });
+        var mediafile = Mediafile.get($scope.element.id);
+        $scope.pdfName = mediafile.title;
+        $scope.pdfUrl = mediafile.mediafileUrl;
     }
 ]);
 

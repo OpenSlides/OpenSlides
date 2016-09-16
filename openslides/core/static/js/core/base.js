@@ -38,10 +38,21 @@ angular.module('OpenSlidesApp.core', [
 .factory('autoupdate', [
     'DS',
     '$rootScope',
-    function (DS, $rootScope) {
+    'REALM',
+    function (DS, $rootScope, REALM) {
         var socket = null;
         var recInterval = null;
         $rootScope.connected = false;
+
+        var websocketPath;
+        if (REALM == 'site') {
+          websocketPath = '/ws/site/';
+        } else if (REALM == 'projector') {
+          // TODO: At the moment there is only one projector. Find out which one is requested
+          websocketPath = '/ws/projector/1/';
+        } else {
+          console.error('The constant REALM is not set properly.');
+        }
 
         var Autoupdate = {
             messageReceivers: [],
@@ -55,7 +66,7 @@ angular.module('OpenSlidesApp.core', [
             }
         };
         var newConnect = function () {
-            socket = new WebSocket('ws://' + location.host + '/ws/');
+            socket = new WebSocket('ws://' + location.host + websocketPath);
             clearInterval(recInterval);
             socket.onopen = function () {
                 $rootScope.connected = true;

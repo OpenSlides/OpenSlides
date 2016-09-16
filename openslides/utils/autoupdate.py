@@ -11,6 +11,7 @@ from django.utils import timezone
 from ..users.auth import AnonymousUser
 from ..users.models import User
 from .access_permissions import BaseAccessPermissions
+from ..core.models import Projector
 
 
 def get_logged_in_users():
@@ -50,9 +51,8 @@ def get_model_from_collection_string(collection_string):
     return model
 
 
-# Connected to websocket.connect
 @channel_session_user_from_http
-def ws_add(message):
+def ws_add_site(message):
     """
     Adds the websocket connection to a group specific to the connecting user.
 
@@ -61,10 +61,52 @@ def ws_add(message):
     Group('user-{}'.format(message.user.id)).add(message.reply_channel)
 
 
-# Connected to websocket.disconnect
 @channel_session_user
-def ws_disconnect(message):
+def ws_disconnect_site(message):
     Group('user-{}'.format(message.user.id)).discard(message.reply_channel)
+
+
+def ws_add_projector(message, projector_id):
+    """
+    Add a websocket connection for a specific projector.
+    """
+    #TODO: rechte Check für Projektor
+
+    # TODO: Get all elements on the projector and send them
+    #message.reply_channel.send({'text': 'bar'})
+    try:
+        projector = Projector.objects.get(pk=projector_id)
+    except Projector.DoesNotExist:
+        pass
+    else:
+        Group('projector-{}'.format(projector_id)).add(message.reply_channel)
+        for instance in projector.get_all_requirements():
+            access_permissions = instance.get_access_permissions()
+            full_data = access_permissions.get_full_data(instance)
+            data = access_permissions.get_projector_data(full_data)
+            if data is not None:
+                output = {
+                    'collection': instance.get_collection_string(),
+                    'id': instance.pk,
+                    'action': 'changed',
+                    'data': data}
+                message.reply_channel.send({'text': json.dumps(output)})
+
+        # Send projector instance
+        access_permissions = projector.get_access_permissions()
+        full_data = access_permissions.get_full_data(projector)
+        data = access_permissions.get_projector_data(full_data)
+        output = {
+            'collection': projector.get_collection_string(),
+            'id': projector.pk,
+            'action': 'changed',
+            'data': data}
+        message.reply_channel.send({'text': json.dumps(output)})
+
+
+def ws_disconnect_projector(message):
+    # TODO: woher bekomme ich die projector_id? from channels.sessions import channel_session
+    Group('projector-{}'.format(message.projector_id)).discard(message.reply_channel)
 
 
 def send_data(message):
@@ -72,27 +114,23 @@ def send_data(message):
     Informs all users about changed data.
 
     The argument message has to be a dict with the keywords collection_string
-    (string), pk (positive integer), id_deleted (boolean) and dispatch_uid
-    (string).
+    (string), pk (positive integer) and id_deleted (boolean).
     """
-    for access_permissions in BaseAccessPermissions.get_all():
-        if access_permissions.get_dispatch_uid() == message['dispatch_uid']:
-            break
-    else:
-        raise ValueError('Invalid message. A valid dispatch_uid is missing.')
-
     if not message['is_deleted']:
         Model = get_model_from_collection_string(message['collection_string'])
         instance = Model.objects.get(pk=message['pk'])
+        access_permissions = instance.get_access_permissions()
         full_data = access_permissions.get_full_data(instance)
+
+    base_output = {
+        'collection': message['collection_string'],
+        'id': message['pk'],  # == instance.get_rest_pk()
+        'action': 'deleted' if message['is_deleted'] else 'changed'}
 
     # Loop over all logged in users and the anonymous user.
     for user in itertools.chain(get_logged_in_users(), [AnonymousUser()]):
         channel = Group('user-{}'.format(user.id))
-        output = {
-            'collection': message['collection_string'],
-            'id': message['pk'],  # == instance.get_rest_pk()
-            'action': 'deleted' if message['is_deleted'] else 'changed'}
+        output = base_output.copy()
         if not message['is_deleted']:
             data = access_permissions.get_restricted_data(full_data, user)
             if data is None:
@@ -100,6 +138,16 @@ def send_data(message):
                 continue
             output['data'] = data
         channel.send({'text': json.dumps(output)})
+
+    # Send the element on any projector it is on
+    projector_ids = element_on_projector(message)
+    if projector_ids:
+        output = base_output.copy()
+        data = access_permissions.get_projector_data(full_data)
+        if data is not None:
+            for projector_id in projector_ids:
+                Group('projector-{}'.format(projector_id)).send(
+                    {'text': json.dumps(output)})
 
 
 def inform_changed_data(instance, is_deleted=False):
@@ -113,7 +161,6 @@ def inform_changed_data(instance, is_deleted=False):
             'collection_string': root_instance.get_collection_string(),
             'pk': root_instance.pk,
             'is_deleted': is_deleted and instance == root_instance,
-            'dispatch_uid': root_instance.get_access_permissions().get_dispatch_uid(),
         }
 
         # If currently there is an open database transaction, then the following

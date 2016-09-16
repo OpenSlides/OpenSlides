@@ -18,6 +18,10 @@ angular.module('OpenSlidesApp.core.site', [
     'ui.tinymce',
     'luegg.directives',
 ])
+
+// Can be used to find out if the projector or the side is used
+.constant('REALM', 'site')
+
 .factory('PdfMakeDocumentProvider', [
     'gettextCatalog',
     'Config',
