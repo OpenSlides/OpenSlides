@@ -5,6 +5,9 @@
 // The core module for the OpenSlides projector
 angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 
+// Can be used to find out if the projector or the side is used
+.constant('REALM', 'projector')
+
 // Provider to register slides in a .config() statement.
 .provider('slides', [
     function() {

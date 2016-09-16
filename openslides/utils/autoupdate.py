@@ -52,13 +52,20 @@ def get_model_from_collection_string(collection_string):
 
 # Connected to websocket.connect
 @channel_session_user_from_http
-def ws_add(message):
+def ws_add_site(message):
     """
     Adds the websocket connection to a group specific to the connecting user.
 
     The group with the name 'user-None' stands for all anonymous users.
     """
     Group('user-{}'.format(message.user.id)).add(message.reply_channel)
+
+
+def ws_add_projector(message, projector_id):
+    """
+    Add a websocket connection for a specific projector.
+    """
+    Group('projector-{}'.format(projector_id)).add(message.reply_channel)
 
 
 # Connected to websocket.disconnect
