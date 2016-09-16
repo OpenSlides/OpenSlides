@@ -53,9 +53,9 @@ class MotionViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
-            result = self.get_access_permissions().can_retrieve(self.request.user)
-        elif self.action in ('metadata', 'list', 'partial_update', 'update'):
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action in ('metadata', 'partial_update', 'update'):
             result = self.request.user.has_perm('motions.can_see')
             # For partial_update and update requests the rest of the check is
             # done in the update method. See below.
@@ -373,9 +373,9 @@ class CategoryViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
-            result = self.get_access_permissions().can_retrieve(self.request.user)
-        elif self.action in ('metadata', 'list'):
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action == 'metadata':
             result = self.request.user.has_perm('motions.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy', 'numbering'):
             result = (self.request.user.has_perm('motions.can_see') and
@@ -450,9 +450,9 @@ class WorkflowViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
-            result = self.get_access_permissions().can_retrieve(self.request.user)
-        elif self.action in ('metadata', 'list'):
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action == 'metadata':
             result = self.request.user.has_perm('motions.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             result = (self.request.user.has_perm('motions.can_see') and
