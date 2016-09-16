@@ -20,10 +20,7 @@ class CustomSlideSlide(ProjectorElement):
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
         if pk is not None:
-            yield ProjectorRequirement(
-                view_class=CustomSlideViewSet,
-                view_action='retrieve',
-                pk=str(pk))
+            yield CustomSlide.objects.get(pk=pk)
 
 
 class Clock(ProjectorElement):

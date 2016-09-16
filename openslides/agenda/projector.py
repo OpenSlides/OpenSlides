@@ -29,8 +29,8 @@ class ItemListSlide(ProjectorElement):
         if pk is None or config_entry.get('tree', False):
             # Root list slide or slide with tree.
             yield ProjectorRequirement(
-                view_class=ItemViewSet,
-                view_action='tree')
+                collection_string=Item.get_collection_string(),
+                pks=Item.objects.values_list('pk'))#TODO????
 
         # Root list slide and children list slide.
         # Related objects like users and tags are not unlocked.
