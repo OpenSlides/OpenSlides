@@ -1,7 +1,6 @@
-from openslides.core.exceptions import ProjectorException
-from openslides.core.views import TagViewSet
-from openslides.utils.projector import ProjectorElement, ProjectorRequirement
-
+from ..core.exceptions import ProjectorException
+from ..core.views import TagViewSet
+from ..utils.projector import ProjectorElement, ProjectorRequirement
 from .models import Assignment, AssignmentPoll
 from .views import AssignmentViewSet
 
@@ -10,7 +9,8 @@ class AssignmentSlide(ProjectorElement):
     """
     Slide definitions for Assignment model.
 
-    Set 'id' to get a detail slide. Omit it to get a list slide.
+    Set 'id' to get a detail slide. Omit it to get a list slide. Set
+    'poll' to get a poll slide.
     """
     name = 'assignments/assignment'
 

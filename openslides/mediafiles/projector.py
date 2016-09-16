@@ -1,6 +1,5 @@
-from openslides.core.exceptions import ProjectorException
-from openslides.utils.projector import ProjectorElement, ProjectorRequirement
-
+from ..core.exceptions import ProjectorException
+from ..utils.projector import ProjectorElement, ProjectorRequirement
 from .models import Mediafile
 from .views import MediafileViewSet
 
@@ -12,9 +11,7 @@ class MediafileSlide(ProjectorElement):
     name = 'mediafiles/mediafile'
 
     def check_data(self):
-        try:
-            Mediafile.objects.get(pk=self.config_entry.get('id'))
-        except Mediafile.DoesNotExist:
+        if not Mediafile.objects.filter(pk=self.config_entry.get('id')).exists():
             raise ProjectorException('File does not exist.')
 
     def get_requirements(self, config_entry):

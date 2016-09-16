@@ -1,7 +1,6 @@
 from django.utils.timezone import now
 
-from openslides.utils.projector import ProjectorElement, ProjectorRequirement
-
+from ..utils.projector import ProjectorElement, ProjectorRequirement
 from .config import config
 from .exceptions import ProjectorException
 from .models import CustomSlide, Projector
