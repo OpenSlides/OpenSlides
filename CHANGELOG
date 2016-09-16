@@ -34,6 +34,7 @@ Users:
 - Added new matrix-interface for managing groups and their permissions.
 
 Other:
+- Django 1.10 is now supported. Dropped support for Django 1.8 and 1.9.
 - Removed config cache to support multiple threads or processes.
 - Fixed bug, that the last change of a config value was not send via autoupdate.
 - Added template hooks for plugins (in item detail view and motion poll form).

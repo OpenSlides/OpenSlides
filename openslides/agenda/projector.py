@@ -1,6 +1,5 @@
-from openslides.core.exceptions import ProjectorException
-from openslides.utils.projector import ProjectorElement, ProjectorRequirement
-
+from ..core.exceptions import ProjectorException
+from ..utils.projector import ProjectorElement, ProjectorRequirement
 from .models import Item
 from .views import ItemViewSet
 
@@ -9,7 +8,7 @@ class ItemListSlide(ProjectorElement):
     """
     Slide definitions for Item model.
 
-    This is only for list slides.
+    This is only for item list slides.
 
     Set 'id' to None to get a list slide of all root items. Set 'id' to an
     integer to get a list slide of the children of the metioned item.
@@ -30,8 +29,8 @@ class ItemListSlide(ProjectorElement):
         if pk is None or config_entry.get('tree', False):
             # Root list slide or slide with tree.
             yield ProjectorRequirement(
-                view_class=ItemViewSet,
-                view_action='tree')
+                collection_string=Item.get_collection_string(),
+                pks=Item.objects.values_list('pk'))#TODO????
 
         # Root list slide and children list slide.
         # Related objects like users and tags are not unlocked.
@@ -49,10 +48,7 @@ class ListOfSpeakersSlide(ProjectorElement):
     name = 'agenda/list-of-speakers'
 
     def check_data(self):
-        pk = self.config_entry.get('id')
-        if pk is None:
-            raise ProjectorException('Id must not be None.')
-        if not Item.objects.filter(pk=pk).exists():
+        if not Item.objects.filter(pk=self.config_entry.get('id')).exists():
             raise ProjectorException('Item does not exist.')
 
     def get_requirements(self, config_entry):

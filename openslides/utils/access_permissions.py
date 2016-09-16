@@ -33,7 +33,7 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
         if not cls.__name__ == 'BaseAccessPermissions':
             return cls.__name__
 
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access to model instances.
         """
@@ -66,12 +66,18 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
         user has read access to model instances.
 
         Hint: You should override this method if your
-        get_serializer_class() method may return different serializer for
+        get_serializer_class() method returns different serializers for
         different users or if you have access restrictions in your view or
         viewset in methods like retrieve() or check_object_permissions().
         """
-        if self.can_retrieve(user):
+        if self.check_permissions(user):
             data = full_data
         else:
             data = None
         return data
+
+    def get_projector_data(self, full_data):
+        """
+        """
+        #TODO
+        return full_data

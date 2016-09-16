@@ -1,11 +1,11 @@
 from collections import defaultdict
-from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
@@ -415,7 +415,7 @@ class Speaker(RESTModelMixin, models.Model):
         else:
             current_speaker.end_speech()
         self.weight = None
-        self.begin_time = datetime.now()
+        self.begin_time = timezone.now()
         self.save()
         if config['agenda_couple_countdown_and_speakers']:
             Countdown.control(action='reset')
@@ -425,7 +425,7 @@ class Speaker(RESTModelMixin, models.Model):
         """
         The speech is finished. Set the time to now.
         """
-        self.end_time = datetime.now()
+        self.end_time = timezone.now()
         self.save()
         if config['agenda_couple_countdown_and_speakers']:
             Countdown.control(action='stop')

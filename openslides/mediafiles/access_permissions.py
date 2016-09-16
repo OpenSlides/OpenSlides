@@ -5,7 +5,7 @@ class MediafileAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Mediafile and MediafileViewSet.
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """

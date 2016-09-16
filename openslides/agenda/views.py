@@ -41,9 +41,9 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
-            result = self.get_access_permissions().can_retrieve(self.request.user)
-        elif self.action in ('metadata', 'list', 'manage_speaker', 'tree'):
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action in ('metadata', 'manage_speaker', 'tree'):
             result = self.request.user.has_perm('agenda.can_see')
             # For manage_speaker and tree requests the rest of the check is
             # done in the specific method. See below.
@@ -63,6 +63,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         Checks if the requesting user has permission to see also an
         organizational item if it is one.
         """
+        # TODO: Move this logic to access_permissions.ItemAccessPermissions.
         if obj.is_hidden() and not request.user.has_perm('agenda.can_see_hidden_items'):
             self.permission_denied(request)
 
@@ -70,6 +71,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         """
         Filters organizational items if the user has no permission to see them.
         """
+        # TODO: Move this logic to access_permissions.ItemAccessPermissions.
         queryset = super().get_queryset()
         if not self.request.user.has_perm('agenda.can_see_hidden_items'):
             pk_list = [item.pk for item in Item.objects.get_only_agenda_items()]

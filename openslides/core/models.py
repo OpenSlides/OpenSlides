@@ -111,11 +111,10 @@ class Projector(RESTModelMixin, models.Model):
                     result[key]['error'] = str(e)
         return result
 
-    @classmethod
-    def get_all_requirements(cls):
+    def get_all_requirements(self):
         """
         Generator which returns all ProjectorRequirement instances of all
-        active projector elements.
+        projector elements that are shown on this projector.
         """
         # Get all elements from all apps.
         elements = {}
@@ -123,12 +122,10 @@ class Projector(RESTModelMixin, models.Model):
             elements[element.name] = element
 
         # Generator
-        for projector in cls.objects.all():
-            for key, value in projector.config.items():
-                element = elements.get(value['name'])
-                if element is not None:
-                    for requirement in element.get_requirements(value):
-                        yield requirement
+        for key, value in self.config.items():
+            element = elements.get(value['name'])
+            if element is not None:
+                yield from element.get_requirements(value)
 
 
 class CustomSlide(RESTModelMixin, models.Model):

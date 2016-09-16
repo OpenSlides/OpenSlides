@@ -10,7 +10,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Motion and MotionViewSet.
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """
@@ -110,7 +110,7 @@ class CategoryAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Category and CategoryViewSet.
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """
@@ -129,7 +129,7 @@ class WorkflowAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Workflow and WorkflowViewSet.
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """

@@ -1,7 +1,6 @@
 from django.utils.timezone import now
 
-from openslides.utils.projector import ProjectorElement, ProjectorRequirement
-
+from ..utils.projector import ProjectorElement, ProjectorRequirement
 from .config import config
 from .exceptions import ProjectorException
 from .models import CustomSlide, Projector
@@ -21,10 +20,7 @@ class CustomSlideSlide(ProjectorElement):
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
         if pk is not None:
-            yield ProjectorRequirement(
-                view_class=CustomSlideViewSet,
-                view_action='retrieve',
-                pk=str(pk))
+            yield CustomSlide.objects.get(pk=pk)
 
 
 class Clock(ProjectorElement):

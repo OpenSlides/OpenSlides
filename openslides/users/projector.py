@@ -6,7 +6,7 @@ from .views import GroupViewSet, UserViewSet
 
 class UserSlide(ProjectorElement):
     """
-    Slide definitions for user model.
+    Slide definitions for User model.
     """
     name = 'users/user'
 
