@@ -130,18 +130,21 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             // TODO: Use the current projector. At the moment there is only one.
             return Projector.lastModified(1);
         }, function () {
-            $scope.elements = [];
             // TODO: Use the current projector. At the moment there is only one
-            _.forEach(slides.getElements(Projector.get(1)), function(element) {
-                if (!element.error) {
-                    $scope.elements.push(element);
-                } else {
-                    console.error("Error for slide " + element.name + ": " + element.error);
-                }
-            });
-            // TODO: Use the current projector. At the moment there is only one
-            $scope.scroll = -5 * Projector.get(1).scroll;
-            $scope.scale = 100 + 20 * Projector.get(1).scale;
+            var projector = Projector.get(1);
+            if (projector) {
+              $scope.elements = [];
+              _.forEach(slides.getElements(projector), function(element) {
+                  if (!element.error) {
+                      $scope.elements.push(element);
+                  } else {
+                      console.error("Error for slide " + element.name + ": " + element.error);
+                  }
+              });
+              // TODO: Use the current projector. At the moment there is only one
+              $scope.scroll = -5 * Projector.get(1).scroll;
+              $scope.scale = 100 + 20 * Projector.get(1).scale;
+            }
         });
     }
 ])

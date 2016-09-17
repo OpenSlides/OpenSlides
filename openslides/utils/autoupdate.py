@@ -11,7 +11,6 @@ from django.utils import timezone
 from ..users.auth import AnonymousUser
 from ..users.models import User
 from .access_permissions import BaseAccessPermissions
-from .exit_function import ExitFunction, exit_function
 from ..core.models import Projector
 
 
@@ -67,31 +66,42 @@ def ws_disconnect_site(message):
     Group('user-{}'.format(message.user.id)).discard(message.reply_channel)
 
 
-@exit_function
 def ws_add_projector(message, projector_id):
     """
     Add a websocket connection for a specific projector.
     """
+    #TODO: rechte Check für Projektor
 
     # TODO: Get all elements on the projector and send them
     #message.reply_channel.send({'text': 'bar'})
     try:
         projector = Projector.objects.get(pk=projector_id)
     except Projector.DoesNotExist:
-        raise ExitFunction()
+        pass
     else:
         Group('projector-{}'.format(projector_id)).add(message.reply_channel)
+        for instance in projector.get_all_requirements():
+            access_permissions = instance.get_access_permissions()
+            full_data = access_permissions.get_full_data(instance)
+            data = access_permissions.get_projector_data(full_data)
+            if data is not None:
+                output = {
+                    'collection': instance.get_collection_string(),
+                    'id': instance.pk,
+                    'action': 'changed',
+                    'data': data}
+                message.reply_channel.send({'text': json.dumps(output)})
 
-    for instance in projector.get_all_requirements():
-        access_permissions = instance.get_access_permissions()
-        full_data = access_permissions.get_full_data(instance)
+        # Send projector instance
+        access_permissions = projector.get_access_permissions()
+        full_data = access_permissions.get_full_data(projector)
         data = access_permissions.get_projector_data(full_data)
-        if data is not None:
-            output = {
-                'collection': instance.get_collection_string(),
-                'id': instance.pk,
-                'action': 'changed',
-                'data': data}
+        output = {
+            'collection': projector.get_collection_string(),
+            'id': projector.pk,
+            'action': 'changed',
+            'data': data}
+        message.reply_channel.send({'text': json.dumps(output)})
 
 
 def ws_disconnect_projector(message):

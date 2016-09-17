@@ -21,6 +21,7 @@ class CustomSlideSlide(ProjectorElement):
         pk = config_entry.get('id')
         if pk is not None:
             yield CustomSlide.objects.get(pk=pk)
+            yield CustomSlide.objects.get(pk=pk).agenda_item
 
 
 class Clock(ProjectorElement):
