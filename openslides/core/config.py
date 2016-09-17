@@ -141,6 +141,12 @@ class ConfigHandler:
             if config_variable.translatable:
                 yield config_variable.name
 
+    def get_collection_string(self):
+        """
+        Returns the collection_string from the CollectionStore.
+        """
+        return ConfigStore.get_collection_string()
+
 config = ConfigHandler()
 """
 Final entry point to get an set config variables. To get a config variable

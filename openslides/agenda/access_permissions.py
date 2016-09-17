@@ -5,7 +5,7 @@ class ItemAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Item and ItemViewSet.
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """
@@ -19,15 +19,28 @@ class ItemAccessPermissions(BaseAccessPermissions):
 
         return ItemSerializer
 
+    # TODO: In the following methods we use full_data['is_hidden'] but this can be out of date.
+
     def get_restricted_data(self, full_data, user):
         """
         Returns the restricted serialized data for the instance prepared
         for the user.
         """
-        if (self.can_retrieve(user) and
+        if (user.has_perm('agenda.can_see') and
             (not full_data['is_hidden'] or
              user.has_perm('agenda.can_see_hidden_items'))):
             data = full_data
         else:
             data = None
+        return data
+
+    def get_projector_data(self, full_data):
+        """
+        Returns the restricted serialized data for the instance prepared
+        for the projector. Removes several fields.
+        """
+        if full_data['is_hidden']
+            data = None
+        else:
+            data = full_data
         return data

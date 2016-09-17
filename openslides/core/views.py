@@ -177,9 +177,9 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
-            result = self.get_access_permissions().can_retrieve(self.request.user)
-        elif self.action in ('metadata', 'list'):
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action == 'metadata':
             result = self.request.user.has_perm('core.can_see_projector')
         elif self.action in ('activate_elements', 'prune_elements', 'update_elements',
                              'deactivate_elements', 'clear_elements', 'control_view', 'set_resolution'):
@@ -433,8 +433,8 @@ class CustomSlideViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
-            result = self.get_access_permissions().can_retrieve(self.request.user)
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
         else:
             result = self.request.user.has_perm('core.can_manage_projector')
         return result
@@ -454,9 +454,9 @@ class TagViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
-            result = self.get_access_permissions().can_retrieve(self.request.user)
-        elif self.action in ('metadata', 'list'):
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action == 'metadata':
             # Every authenticated user can see the metadata and list tags.
             # Anonymous users can do so if they are enabled.
             result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
@@ -510,9 +510,9 @@ class ConfigViewSet(ViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
-            result = self.get_access_permissions().can_retrieve(self.request.user)
-        elif self.action in ('metadata', 'list'):
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action == 'metadata':
             # Every authenticated user can see the metadata and list or
             # retrieve the config. Anonymous users can do so if they are
             # enabled.
@@ -579,13 +579,13 @@ class ChatMessageViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
-            result = self.get_access_permissions().can_retrieve(self.request.user)
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
         else:
             # We do not want anonymous users to use the chat even the anonymous
             # group has the permission core.can_use_chat.
             result = (
-                self.action in ('metadata', 'list', 'create') and
+                self.action in ('metadata', 'create') and
                 self.request.user.is_authenticated() and
                 self.request.user.has_perm('core.can_use_chat'))
         return result

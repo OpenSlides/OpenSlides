@@ -11,7 +11,6 @@ from ..utils.rest_api import (
 )
 from .models import Group, User
 
-
 USERCANSEESERIALIZER_FIELDS = (
             'id',
             'username',
