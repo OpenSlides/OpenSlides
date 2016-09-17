@@ -18,10 +18,14 @@ class CustomSlideSlide(ProjectorElement):
             raise ProjectorException('Custom slide does not exist.')
 
     def get_requirements(self, config_entry):
-        pk = config_entry.get('id')
-        if pk is not None:
-            yield CustomSlide.objects.get(pk=pk)
-            yield CustomSlide.objects.get(pk=pk).agenda_item
+        try:
+            custom_slide = CustomSlide.objects.get(pk=config_entry.get('id'))
+        except CustomSlide.DoesNotExist:
+            # Custom slide does not exist. Just do nothing.
+            pass
+        else:
+            yield custom_slide
+            yield custom_slide.agenda_item
 
 
 class Clock(ProjectorElement):
