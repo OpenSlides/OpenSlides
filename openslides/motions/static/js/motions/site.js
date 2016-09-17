@@ -525,6 +525,14 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     }
 ])
 
+// Load all MotionWorkflows at startup
+.run([
+    'Workflow',
+    function (Workflow) {
+        Workflow.findAll();
+    }
+])
+
 // Service for generic motion form (create and update)
 .factory('MotionForm', [
     'gettextCatalog',

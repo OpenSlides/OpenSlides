@@ -186,49 +186,67 @@ angular.module('OpenSlidesApp.core', [
         autoupdate.onMessage(function(json) {
             // TODO: when MODEL.find() is called after this
             //       a new request is fired. This could be a bug in DS
-
-            var data = JSON.parse(json);
-            console.log("Received object: " + data.collection + ", " + data.id);
-            var instance = DS.get(data.collection, data.id);
-            if (data.action == 'changed') {
-                if (instance) {
-                    // The instance is in the local db
-                    dsEject(data.collection, instance);
+            // TODO: If you don't have the permission to see a projector, the
+            //       variable json is a string with an error message. Therefor
+            //       the next line fails.
+            var dataList = JSON.parse(json);
+            _.forEach(dataList, function(data) {
+                console.log("Received object: " + data.collection + ", " + data.id);
+                var instance = DS.get(data.collection, data.id);
+                if (data.action == 'changed') {
+                    if (instance) {
+                        // The instance is in the local db
+                        dsEject(data.collection, instance);
+                    }
+                    DS.inject(data.collection, data.data);
+                } else if (data.action == 'deleted') {
+                    if (instance) {
+                        // The instance is in the local db
+                        dsEject(data.collection, instance);
+                    }
+                    DS.eject(data.collection, data.id);
                 }
-                DS.inject(data.collection, data.data);
-            } else if (data.action == 'deleted') {
-                if (instance) {
-                    // The instance is in the local db
-                    dsEject(data.collection, instance);
-                }
-                DS.eject(data.collection, data.id);
-            }
-            // If you want to handle more status codes, change server
-            // restrictions in utils/autoupdate.py.
+            });
         });
     }
 ])
 
-.factory('loadGlobalData', [
-    '$rootScope',
+// Save the server time to the rootscope.
+.run([
     '$http',
+    '$rootScope',
+    function ($http, $rootScope) {
+        // Loads server time and calculates server offset
+        $rootScope.serverOffset = Math.floor(Date.now() / 1000);
+        $http.get('/core/servertime/')
+        .then(function(data) {
+            $rootScope.serverOffset = Math.floor(Date.now() / 1000 - data.data);
+        });
+    }
+])
+
+.run([
+    'Config',
+    '$rootScope',
+    function (Config, $rootScope) {
+        $rootScope.config = function (key) {
+            try {
+                return Config.get(key).value;
+            }
+            catch(err) {
+                return '';
+            }
+        };
+    }
+])
+
+.factory('loadGlobalData', [
     'ChatMessage',
     'Config',
     'Projector',
-    function ($rootScope, $http, ChatMessage, Config, Projector) {
+    function (ChatMessage, Config, Projector) {
         return function () {
-            // Puts the config object into each scope.
-            Config.findAll().then(function() {
-                $rootScope.config = function(key) {
-                    try {
-                        return Config.get(key).value;
-                    }
-                    catch(err) {
-                        console.log("Unkown config key: " + key);
-                        return '';
-                    }
-                };
-            });
+            Config.findAll();
 
             // Loads all projector data
             Projector.findAll();
@@ -244,20 +262,7 @@ angular.module('OpenSlidesApp.core', [
                     });
                 });
             //}
-
-            // Loads server time and calculates server offset
-            $http.get('/core/servertime/').then(function(data) {
-                $rootScope.serverOffset = Math.floor( Date.now() / 1000 - data.data );
-            });
         };
-    }
-])
-
-// Load the global data on startup
-.run([
-    'loadGlobalData',
-    function(loadGlobalData) {
-        loadGlobalData();
     }
 ])
 

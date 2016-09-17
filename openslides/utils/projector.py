@@ -68,13 +68,7 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
 
     def get_requirements(self, config_entry):
         """
-        Returns an iterable of ProjectorRequirement instances to setup
-        which views should be accessable for projector clients if the
-        projector element is active. The config_entry has to be given.
+        Returns an iterable of instances that are required for this projector
+        element. The config_entry has to be given.
         """
         return ()
-
-
-class ProjectorRequirement:
-    #TODO Remove me
-    pass

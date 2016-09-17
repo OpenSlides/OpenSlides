@@ -55,7 +55,8 @@ class AssignmentViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action == 'metadata':
-            result = self.request.user.has_perm('assignments.can_see')
+            # Everybody is allowed to see the metadata.
+            result = True
         elif self.action in ('create', 'partial_update', 'update', 'destroy',
                              'mark_elected', 'create_poll'):
             result = (self.request.user.has_perm('assignments.can_see') and

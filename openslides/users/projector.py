@@ -1,7 +1,6 @@
 from ..core.exceptions import ProjectorException
-from ..utils.projector import ProjectorElement, ProjectorRequirement
+from ..utils.projector import ProjectorElement
 from .models import User
-from .views import GroupViewSet, UserViewSet
 
 
 class UserSlide(ProjectorElement):

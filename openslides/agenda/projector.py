@@ -1,7 +1,7 @@
+from ..core.config import config
 from ..core.exceptions import ProjectorException
-from ..utils.projector import ProjectorElement, ProjectorRequirement
+from ..utils.projector import ProjectorElement
 from .models import Item
-from .views import ItemViewSet
 
 
 class ItemListSlide(ProjectorElement):
@@ -25,8 +25,10 @@ class ItemListSlide(ProjectorElement):
                 raise ProjectorException('Item does not exist.')
 
     def get_requirements(self, config_entry):
-        #TODO: Only send required items.
-        yield from Item.objcets.all()
+        if self.config_entry.get('tree'):
+            yield from Item.objects.all()
+        else:
+            yield from Item.objects.filter(parent_id=self.config_entry.get('id'))
 
 
 class ListOfSpeakersSlide(ProjectorElement):
@@ -52,6 +54,11 @@ class ListOfSpeakersSlide(ProjectorElement):
                 pass
             else:
                 yield item
-                for speaker in item.speakers.all():
-                    #TODO: Only send required speakers. See config value for last speakers.
+                for speaker in item.speakers.filter(end_time=None):
+                    # Yield current speaker and next speakers
+                    yield speaker.user
+                query = (item.speakers.exclude(end_time=None)
+                         .order_by('-end_time')[:config['agenda_show_last_speakers']])
+                for speaker in query:
+                    # Yield last speakers
                     yield speaker.user

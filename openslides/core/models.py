@@ -126,27 +126,28 @@ class Projector(RESTModelMixin, models.Model):
             if element is not None:
                 yield from element.get_requirements(value)
 
-    def instance_is_shown(self, collection_element):
+    def collection_element_is_shown(self, collection_element):
         """
         Returns True if this collection element is shown on this projector.
         """
         for requirement in self.get_all_requirements():
             if (requirement.get_collection_string() == collection_element['collection_string'] and
-                    requirement.pk == collection_element['pk'])
+                    requirement.pk == collection_element['pk']):
                 result = True
                 break
-        else
+        else:
             result = False
         return result
 
     @classmethod
-    def get_projectors_that_show_this(cls, instance):
+    def get_projectors_that_show_this(cls, collection_element):
         """
-        Returns a list of the ids of the projectors that show this instance.
+        Returns a list of the ids of the projectors that show this collection
+        element.
         """
         result = []
         for projector in cls.objects.all():
-            if projector.instance_is_shown(instance):
+            if projector.collection_element_is_shown(collection_element):
                 result.append(projector.pk)
         return result
 

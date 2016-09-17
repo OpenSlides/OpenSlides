@@ -64,7 +64,9 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 .controller('ProjectorContainerCtrl', [
     '$scope',
     'Config',
-    function($scope, Config) {
+    'loadGlobalData',
+    function($scope, Config, loadGlobalData) {
+        loadGlobalData();
         // watch for changes in Config
         var last_conf;
         $scope.$watch(function () {
@@ -133,17 +135,17 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             // TODO: Use the current projector. At the moment there is only one
             var projector = Projector.get(1);
             if (projector) {
-              $scope.elements = [];
-              _.forEach(slides.getElements(projector), function(element) {
-                  if (!element.error) {
-                      $scope.elements.push(element);
-                  } else {
-                      console.error("Error for slide " + element.name + ": " + element.error);
-                  }
-              });
-              // TODO: Use the current projector. At the moment there is only one
-              $scope.scroll = -5 * Projector.get(1).scroll;
-              $scope.scale = 100 + 20 * Projector.get(1).scale;
+                $scope.elements = [];
+                _.forEach(slides.getElements(projector), function(element) {
+                    if (!element.error) {
+                        $scope.elements.push(element);
+                    } else {
+                        console.error("Error for slide " + element.name + ": " + element.error);
+                    }
+                });
+                // TODO: Use the current projector. At the moment there is only one
+                $scope.scroll = -5 * Projector.get(1).scroll;
+                $scope.scale = 100 + 20 * Projector.get(1).scale;
             }
         });
     }

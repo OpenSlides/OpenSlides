@@ -6,7 +6,6 @@ import os
 
 from openslides.global_settings import *  # noqa
 
-
 # Path to the directory for user specific data files
 
 OPENSLIDES_USER_DATA_PATH = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))

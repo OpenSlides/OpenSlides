@@ -37,3 +37,12 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
         else:
             data = None
         return data
+
+    def get_projector_data(self, full_data):
+        """
+        Returns the restricted serialized data for the instance prepared
+        for the projector. Removes several fields.
+        """
+        data = full_data.copy()
+        data['polls'] = [poll for poll in data['polls'] if poll['published']]
+        return data

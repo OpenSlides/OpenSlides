@@ -68,3 +68,17 @@ class UserAccessPermissions(BaseAccessPermissions):
                 if key in fields:
                     data[key] = full_data[key]
         return data
+
+    def get_projector_data(self, full_data):
+        """
+        Returns the restricted serialized data for the instance prepared
+        for the projector. Removes several fields.
+        """
+        from .serializers import USERCANSEESERIALIZER_FIELDS
+
+        # Let only some fields pass this method.
+        data = {}
+        for key in full_data.keys():
+            if key in USERCANSEESERIALIZER_FIELDS:
+                data[key] = full_data[key]
+        return data
