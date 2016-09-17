@@ -10,7 +10,8 @@
         <translate>PDF</translate>
       </a>
       <!-- List of speakers -->
-      <a ui-sref="agenda.item.detail({id: motion.agenda_item_id})" class="btn btn-sm btn-default">
+      <a ui-sref="agenda.item.detail({id: motion.agenda_item_id})"
+          os-perms="agenda.can_see" class="btn btn-sm btn-default">
         <i class="fa fa-microphone fa-lg"></i>
         <translate>List of speakers</translate>
       </a>
