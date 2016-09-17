@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 
+from openslides.utils.autoupdate import inform_changed_data_receiver
+
 
 def migrate_groups_and_user_permissions(apps, schema_editor):
     """
@@ -49,6 +51,11 @@ def migrate_groups_and_user_permissions(apps, schema_editor):
             for group in groups:
                 for permission in group_registered.permissions.all():
                     group.permissions.add(permission)
+
+    # Reconnect autoupdate.
+    models.signals.post_save.connect(
+        inform_changed_data_receiver,
+        dispatch_uid='inform_changed_data_receiver')
 
 
 class Migration(migrations.Migration):
