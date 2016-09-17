@@ -1,7 +1,6 @@
 from ..core.exceptions import ProjectorException
-from ..utils.projector import ProjectorElement, ProjectorRequirement
+from ..utils.projector import ProjectorElement
 from .models import Mediafile
-from .views import MediafileViewSet
 
 
 class MediafileSlide(ProjectorElement):
@@ -17,7 +16,7 @@ class MediafileSlide(ProjectorElement):
     def get_requirements(self, config_entry):
         try:
             mediafile = Mediafile.objects.get(pk=config_entry.get('id'))
-        except CustomSlide.DoesNotExist:
+        except Mediafile.DoesNotExist:
             # Mediafile does not exist. Just do nothing.
             pass
         else:

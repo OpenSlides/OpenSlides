@@ -8,11 +8,10 @@ from django.apps import apps
 from django.db import transaction
 from django.utils import timezone
 
+from ..core.config import config
+from ..core.models import Projector
 from ..users.auth import AnonymousUser
 from ..users.models import User
-from .access_permissions import BaseAccessPermissions
-from ..core.models import Projector
-from ..core.config import config
 
 
 def get_logged_in_users():
@@ -64,6 +63,10 @@ def ws_add_site(message):
 
 @channel_session_user
 def ws_disconnect_site(message):
+    """
+    This function is called, when a client on the site disconnects from a websocet
+    connection.
+    """
     Group('user-{}'.format(message.user.id)).discard(message.reply_channel)
 
 
@@ -72,9 +75,6 @@ def ws_add_projector(message, projector_id):
     Add a websocket connection for a specific projector.
     """
     #TODO: rechte Check für Projektor
-
-    # TODO: Get all elements on the projector and send them
-    #message.reply_channel.send({'text': 'bar'})
     try:
         projector = Projector.objects.get(pk=projector_id)
     except Projector.DoesNotExist:
@@ -119,9 +119,12 @@ def ws_add_projector(message, projector_id):
         message.reply_channel.send({'text': json.dumps(output)})
 
 
-def ws_disconnect_projector(message):
-    # TODO: woher bekomme ich die projector_id? from channels.sessions import channel_session
-    Group('projector-{}'.format(message.projector_id)).discard(message.reply_channel)
+def ws_disconnect_projector(message, projector_id):
+    """
+    This function is called, when a client disconnects from a projector
+    websocket connection.
+    """
+    Group('projector-{}'.format(projector_id)).discard(message.reply_channel)
 
 
 def send_data(message):

@@ -1,8 +1,6 @@
 from ..core.exceptions import ProjectorException
-from ..core.views import TagViewSet
-from ..utils.projector import ProjectorElement, ProjectorRequirement
-from .models import Assignment, AssignmentPoll
-from .views import AssignmentViewSet
+from ..utils.projector import ProjectorElement
+from .models import Assignment
 
 
 class AssignmentSlide(ProjectorElement):

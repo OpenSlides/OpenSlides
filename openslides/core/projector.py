@@ -1,10 +1,9 @@
 from django.utils.timezone import now
 
-from ..utils.projector import ProjectorElement, ProjectorRequirement
+from ..utils.projector import ProjectorElement
 from .config import config
 from .exceptions import ProjectorException
 from .models import CustomSlide, Projector
-from .views import CustomSlideViewSet
 
 
 class CustomSlideSlide(ProjectorElement):

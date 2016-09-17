@@ -79,5 +79,5 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
     def get_projector_data(self, full_data):
         """
         """
-        #TODO
+        #TODO Norman
         return full_data

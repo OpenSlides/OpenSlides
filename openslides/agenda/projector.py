@@ -1,7 +1,7 @@
 from ..core.exceptions import ProjectorException
-from ..utils.projector import ProjectorElement, ProjectorRequirement
+from ..utils.projector import ProjectorElement
 from .models import Item
-from .views import ItemViewSet
+from ..core.config import config
 
 
 class ItemListSlide(ProjectorElement):
@@ -52,6 +52,10 @@ class ListOfSpeakersSlide(ProjectorElement):
                 pass
             else:
                 yield item
-                for speaker in item.speakers.all():
-                    #TODO: Only send required speakers. See config value for last speakers.
+                for speaker in item.speakers.filter(end_time=None):
+                    # yield current speaker and next speakers
+                    yield speaker.user
+                for speaker in (item.speakers.exclude(end_time=None)
+                        .order_by('-end_time')[:config['agenda_show_last_speakers']]):
+                    # yield last speakers
                     yield speaker.user

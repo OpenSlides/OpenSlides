@@ -1,8 +1,6 @@
 from ..core.exceptions import ProjectorException
-from ..core.views import TagViewSet
-from ..utils.projector import ProjectorElement, ProjectorRequirement
+from ..utils.projector import ProjectorElement
 from .models import Motion
-from .views import CategoryViewSet, MotionViewSet, WorkflowViewSet
 
 
 class MotionSlide(ProjectorElement):
@@ -17,13 +15,13 @@ class MotionSlide(ProjectorElement):
 
     def get_requirements(self, config_entry):
         try:
-            motions = Motion.objects.get(pk=config_entry.get('id'))
+            motion = Motion.objects.get(pk=config_entry.get('id'))
         except Motion.DoesNotExist:
             # Motion does not exist. Just do nothing.
             pass
         else:
-            yield motions
-            yield motions.agenda_item
+            yield motion
+            yield motion.agenda_item
             yield motion.workflow
             yield from motion.submitters.all()
             yield from motion.supporters.all()
