@@ -142,16 +142,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         $scope.newDialog = function () {
             ngDialog.open(CustomslideForm.getDialog());
         };
-        // open edit dialog
-        $scope.editDialog = function (item) {
-            $state.go(item.content_object.collection.replace('/','.')+'.detail.update',
-                {id: item.content_object.id});
-        };
-        // detail view of related item (content object)
-        $scope.open = function (item) {
-            $state.go(item.content_object.collection.replace('/','.')+'.detail',
-                {id: item.content_object.id});
-        };
         // cancel QuickEdit mode
         $scope.cancelQuickEdit = function (item) {
             // revert all changes by restore (refresh) original item object from server
@@ -263,12 +253,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         }, function () {
             $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
         });
-
-        // go to detail view of related item (content object)
-        $scope.open = function (item) {
-            $state.go(item.content_object.collection.replace('/','.')+'.detail',
-                {id: item.content_object.id});
-        };
 
         // close/open list of speakers of current item
         $scope.closeList = function (listClosed) {
