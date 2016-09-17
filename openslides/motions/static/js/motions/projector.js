@@ -23,18 +23,8 @@ angular.module('OpenSlidesApp.motions.projector', ['OpenSlidesApp.motions'])
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         var id = $scope.element.id;
-
-        // load motion object and related agenda item
-        Motion.find(id).then(function(motion) {
-            Motion.loadRelations(motion, 'agenda_item');
-        });
         Motion.bindOne(id, $scope, 'motion');
-
-        // load all users
-        User.findAll();
         User.bindAll({}, $scope, 'users');
-
-        Config.bindOne('motions_default_line_numbering', $scope, 'line_numbering');
     }
 ]);
 

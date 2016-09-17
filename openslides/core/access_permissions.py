@@ -5,7 +5,7 @@ class ProjectorAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Projector and ProjectorViewSet.
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """
@@ -24,7 +24,7 @@ class CustomSlideAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for CustomSlide and CustomSlideViewSet.
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """
@@ -43,7 +43,7 @@ class TagAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Tag and TagViewSet.
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """
@@ -66,7 +66,7 @@ class ChatMessageAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for ChatMessage and ChatMessageViewSet.
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """
@@ -88,7 +88,7 @@ class ConfigAccessPermissions(BaseAccessPermissions):
     Access permissions container for the config (ConfigStore and
     ConfigViewSet).
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """

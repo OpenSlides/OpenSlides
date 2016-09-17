@@ -12,7 +12,7 @@
 
   <!-- Title -->
   <div id="title">
-    <h1>{{ assignment.agenda_item.getTitle() }}</h1>
+    <h1>{{ assignment.agenda_item.getTitle() || assignment.title }}</h1>
     <h2>
       <translate>Election</translate>
     </h2>

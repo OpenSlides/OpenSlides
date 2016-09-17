@@ -111,11 +111,9 @@ class Projector(RESTModelMixin, models.Model):
                     result[key]['error'] = str(e)
         return result
 
-    @classmethod
-    def get_all_requirements(cls):
+    def get_all_requirements(self):
         """
-        Generator which returns all ProjectorRequirement instances of all
-        active projector elements.
+        Generator which returns all instances that are shown on this projector.
         """
         # Get all elements from all apps.
         elements = {}
@@ -123,12 +121,38 @@ class Projector(RESTModelMixin, models.Model):
             elements[element.name] = element
 
         # Generator
+        for key, value in self.config.items():
+            element = elements.get(value['name'])
+            if element is not None:
+                yield from element.get_requirements(value)
+
+    def collection_element_is_shown(self, collection_element):
+        """
+        Returns True if this collection element is shown on this projector.
+        """
+        for requirement in self.get_all_requirements():
+            if (requirement.get_collection_string() == collection_element['collection_string'] and
+                    requirement.pk == collection_element['id']):
+                result = True
+                break
+        else:
+            result = False
+        return result
+
+    @classmethod
+    def get_projectors_that_show_this(cls, collection_element):
+        """
+        Returns a list of the projectors that show this collection element.
+        """
+        result = []
         for projector in cls.objects.all():
-            for key, value in projector.config.items():
-                element = elements.get(value['name'])
-                if element is not None:
-                    for requirement in element.get_requirements(value):
-                        yield requirement
+            if projector.collection_element_is_shown(collection_element):
+                result.append(projector)
+        return result
+
+    def need_full_update_for(self, collection_element):
+        # TODO: Implement this for all ProjectorElements (also for config values!)
+        return True
 
 
 class CustomSlide(RESTModelMixin, models.Model):

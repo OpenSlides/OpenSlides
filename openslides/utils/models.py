@@ -31,12 +31,13 @@ class RESTModelMixin:
         """
         return self
 
-    def get_access_permissions(self):
+    @classmethod
+    def get_access_permissions(cls):
         """
         Returns a container to handle access permissions for this model and
         its corresponding viewset.
         """
-        return self.access_permissions
+        return cls.access_permissions
 
     @classmethod
     def get_collection_string(cls):

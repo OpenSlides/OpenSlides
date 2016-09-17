@@ -10,7 +10,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Motion and MotionViewSet.
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """
@@ -41,6 +41,21 @@ class MotionAccessPermissions(BaseAccessPermissions):
                     except IndexError:
                         # No data in range. Just do nothing.
                         pass
+        return data
+
+    def get_projector_data(self, full_data):
+        """
+        Returns the restricted serialized data for the instance prepared
+        for the projector. Removes several fields.
+        """
+        data = full_data.copy()
+        for i, field in enumerate(self.get_comments_config_fields()):
+            if not field.get('public'):
+                try:
+                    data['comments'][i] = None
+                except IndexError:
+                    # No data in range. Just do nothing.
+                    pass
         return data
 
     def get_comments_config_fields(self):
@@ -110,7 +125,7 @@ class CategoryAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Category and CategoryViewSet.
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """
@@ -129,7 +144,7 @@ class WorkflowAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Workflow and WorkflowViewSet.
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """

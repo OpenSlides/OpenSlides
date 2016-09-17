@@ -60,14 +60,6 @@ angular.module('OpenSlidesApp.motions', [
     }
 ])
 
-// Load all MotionWorkflows at startup
-.run([
-    'Workflow',
-    function (Workflow) {
-        Workflow.findAll();
-    }
-])
-
 .factory('MotionPoll', [
     'DS',
     'gettextCatalog',
@@ -452,7 +444,8 @@ angular.module('OpenSlidesApp.motions', [
 .run([
     'Motion',
     'Category',
-    function(Motion, Category) {}
+    'Workflow',
+    function(Motion, Category, Workflow) {}
 ])
 
 

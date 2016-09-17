@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 import jsonfield.fields
-
 from django.db import migrations
 
 
