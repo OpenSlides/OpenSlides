@@ -5,6 +5,8 @@ from __future__ import unicode_literals
 import django.db.models.deletion
 from django.db import migrations, models
 
+from openslides.utils.autoupdate import inform_changed_data_receiver
+
 
 def change_label_of_state(apps, schema_editor):
     """
@@ -26,6 +28,11 @@ def change_label_of_state(apps, schema_editor):
         state.name = 'refered to committee'
         state.action_word = 'Refer to committee'
         state.save()
+
+    # Reconnect autoupdate.
+    models.signals.post_save.connect(
+        inform_changed_data_receiver,
+        dispatch_uid='inform_changed_data_receiver')
 
 
 def add_recommendation_labels(apps, schema_editor):
