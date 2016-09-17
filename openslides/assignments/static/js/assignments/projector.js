@@ -17,12 +17,21 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
     '$scope',
     'Assignment',
     'User',
-    function($scope, Assignment, User) {
+    'Projector',
+    function($scope, Assignment, User, Projector) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         var id = $scope.element.id;
         var poll = $scope.element.poll;
+        Projector.find(1).then(function(projector) {
+            $scope.overlay = projector.speakeroverlay;
+        });
+        $scope.$watch(Projector.lastModified(1), function() {
+            Projector.find(1).then(function(projector) {
+                $scope.overlay = projector.speakeroverlay;
+            });
+        });
 
         // load assignemt object and related agenda item
         Assignment.find(id).then(function(assignment) {
@@ -33,8 +42,9 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
             $scope.phases = phases;
         });
         // load all users
-        User.findAll();
-        User.bindAll({}, $scope, 'users');
+        User.findAll().then( function() {
+            User.bindAll({}, $scope, 'users');
+        });
     }
 ]);
 

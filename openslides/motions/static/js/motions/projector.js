@@ -18,11 +18,20 @@ angular.module('OpenSlidesApp.motions.projector', ['OpenSlidesApp.motions'])
     'Motion',
     'User',
     'Config',
-    function($scope, Motion, User, Config) {
+    'Projector',
+    function($scope, Motion, User, Config, Projector) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         var id = $scope.element.id;
+        Projector.find(1).then( function (projector) {
+            $scope.overlay = projector.speakeroverlay;
+        });
+        $scope.$watch(Projector.lastModified(1), function() {
+            Projector.find(1).then( function (projector) {
+                $scope.overlay = projector.speakeroverlay;
+            });
+        });
 
         // load motion object and related agenda item
         Motion.find(id).then(function(motion) {

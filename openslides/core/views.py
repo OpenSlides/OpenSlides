@@ -372,12 +372,13 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
     def control_view(self, request, pk):
         """
         REST API operation to control the projector view, i. e. scale and
-        scroll the projector.
+        scroll the projector, or toggling the list of speaker overlay
 
         It expects a POST request to
         /rest/core/projector/<pk>/control_view/ with a dictionary with an
         action ('scale' or 'scroll') and a direction ('up', 'down' or
-        'reset').
+        'reset'), in the case of action 'speakeroverlay' the 'direction'
+        should be 'on' or 'off'
 
         Example:
 
@@ -388,10 +389,18 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         """
         if not isinstance(request.data, dict):
             raise ValidationError({'detail': 'Data must be a dictionary.'})
-        if (request.data.get('action') not in ('scale', 'scroll') or
-                request.data.get('direction') not in ('up', 'down', 'reset')):
-            raise ValidationError({'detail': "Data must be a dictionary with an action ('scale' or 'scroll') "
-                                             "and a direction ('up', 'down' or 'reset')."})
+        errormessage = ({'detail': "Data must be a dictionary with an action and a direction action 'scale' "
+                         "or 'scroll': direction 'up', 'down' or 'reset'; action 'speakeroverlay' direction: "
+                         "'on' or 'off')."})
+        if request.data.get('action') in ('scale', 'scroll', 'speakeroverlay'):
+            if request.data.get('action') == 'speakeroverlay':
+                if request.data.get('direction') not in ('on', 'off'):
+                    raise ValidationError(errormessage)
+            else:
+                if request.data.get('direction') not in ('up', 'down', 'reset'):
+                    raise ValidationError(errormessage)
+        else:
+            raise ValidationError(errormessage)
 
         projector_instance = self.get_object()
         if request.data['action'] == 'scale':
@@ -402,8 +411,7 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
             else:
                 # request.data['direction'] == 'reset'
                 projector_instance.scale = 0
-        else:
-            # request.data['action'] == 'scroll'
+        elif request.data['action'] == 'scroll':
             if request.data['direction'] == 'up':
                 projector_instance.scroll = F('scroll') + 1
             elif request.data['direction'] == 'down':
@@ -411,6 +419,12 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
             else:
                 # request.data['direction'] == 'reset'
                 projector_instance.scroll = 0
+        else:
+            # request.data['action'] == 'speakeroverlay'
+            if request.data['direction'] == 'on':
+                projector_instance.speakeroverlay = True
+            else:
+                projector_instance.speakeroverlay = False
 
         projector_instance.save()
         message = '{action} {direction} was successful.'.format(

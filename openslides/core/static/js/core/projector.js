@@ -145,15 +145,28 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 .controller('SlideCustomSlideCtrl', [
     '$scope',
     'Customslide',
-    function($scope, Customslide) {
+    'Projector',
+    'Agenda',
+    'User',
+    function($scope, Customslide, Projector, Agenda, User) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
+        User.findAll();
+        User.bindAll({}, $scope, 'user');
         var id = $scope.element.id;
         Customslide.find(id).then(function(customslide) {
             Customslide.loadRelations(customslide, 'agenda_item');
-        });
+            });
         Customslide.bindOne(id, $scope, 'customslide');
+        Projector.find(1).then(function(projector) {
+            $scope.overlay = projector.speakeroverlay;
+        });
+        $scope.$watch(Projector.lastModified(1), function() {
+            Projector.find(1).then(function(projector) {
+                $scope.overlay = projector.speakeroverlay;
+            });
+        });
     }
 ])
 

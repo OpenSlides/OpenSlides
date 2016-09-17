@@ -36,7 +36,8 @@ class ProjectorAPI(TestCase):
             'scale': 0,
             'scroll': 0,
             'width': 1024,
-            'height': 768})
+            'height': 768,
+            'speakeroverlay': False})
 
     def test_invalid_slide_on_default_projector(self):
         self.client.login(username='admin', password='admin')
@@ -58,7 +59,8 @@ class ProjectorAPI(TestCase):
             'scale': 0,
             'scroll': 0,
             'width': 1024,
-            'height': 768})
+            'height': 768,
+            'speakeroverlay': False})
 
 
 class VersionView(TestCase):
