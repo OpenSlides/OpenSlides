@@ -6,7 +6,7 @@
   {{ alert.msg }}
 </uib-alert>
 
-<form name="motionForm" ng-submit="save(model)">
+<form name="motionForm" ng-submit="save(model)" novalidate>
   <formly-form model="model" fields="formFields">
     <button type="submit" ng-disabled="motionForm.$invalid" class="btn btn-primary" translate>
       Save
