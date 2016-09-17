@@ -16,7 +16,6 @@ Assignments:
 - Remove unused assignment config to publish winner election results only.
 
 Core:
-- Used Django Channels instead of Tornado.
 - Added support for big assemblies with lots of users.
 - Added HTML support for messages on the projector.
 
@@ -38,6 +37,7 @@ Other:
 - Removed config cache to support multiple threads or processes.
 - Fixed bug, that the last change of a config value was not send via autoupdate.
 - Added template hooks for plugins (in item detail view and motion poll form).
+- Used Django Channels instead of Tornado. Refactoring of the autoupdate process.
 
 
 Version 2.0 (2016-04-18)

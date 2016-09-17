@@ -4,7 +4,6 @@ import json
 from asgiref.inmemory import ChannelLayer
 from channels import Channel, Group
 from channels.auth import channel_session_user, channel_session_user_from_http
-from django.apps import apps
 from django.db import transaction
 from django.utils import timezone
 
@@ -12,6 +11,7 @@ from ..core.config import config
 from ..core.models import Projector
 from ..users.auth import AnonymousUser
 from ..users.models import User
+from .collection import CollectionElement
 
 
 def get_logged_in_users():
@@ -23,32 +23,19 @@ def get_logged_in_users():
     return User.objects.exclude(session=None).filter(session__expire_date__gte=timezone.now()).distinct()
 
 
-def get_model_from_collection_string(collection_string):
+def get_projector_element_data(projector):
     """
-    Returns a model class which belongs to the argument collection_string.
-    """
-    def model_generator():
-        """
-        Yields all models of all apps.
-        """
-        for app_config in apps.get_app_configs():
-            for model in app_config.get_models():
-                yield model
+    Returns a list of dicts that are required for a specific projector.
 
-    for model in model_generator():
-        try:
-            model_collection_string = model.get_collection_string()
-        except AttributeError:
-            # Skip models which do not have the method get_collection_string.
-            pass
-        else:
-            if model_collection_string == collection_string:
-                # The model was found.
-                break
-    else:
-        # No model was found in all apps.
-        raise ValueError('Invalid message. A valid collection_string is missing.')
-    return model
+    The argument projector has to be a projector instance.
+    """
+    output = []
+    for requirement in projector.get_all_requirements():
+        required_collection_element = CollectionElement.from_instance(requirement)
+        element_dict = required_collection_element.as_autoupdate_for_projector()
+        if element_dict is not None:
+            output.append(element_dict)
+    return output
 
 
 @channel_session_user_from_http
@@ -76,6 +63,7 @@ def ws_add_projector(message, projector_id):
     Also sends all data that are shown on the projector.
     """
     user = message.user
+    # user is the django anonymous user. We have our own.
     if user.is_anonymous:
         user = AnonymousUser()
 
@@ -91,18 +79,8 @@ def ws_add_projector(message, projector_id):
             # informed if the data change.
             Group('projector-{}'.format(projector_id)).add(message.reply_channel)
 
-            output = []
             # Send all elements that are on the projector.
-            for instance in projector.get_all_requirements():
-                access_permissions = instance.get_access_permissions()
-                full_data = access_permissions.get_full_data(instance)
-                data = access_permissions.get_projector_data(full_data)
-                if data is not None:
-                    output.append({
-                        'collection': instance.get_collection_string(),
-                        'id': instance.pk,
-                        'action': 'changed',
-                        'data': data})
+            output = get_projector_element_data(projector)
 
             # Send all config elements.
             for key, value in config.items():
@@ -113,14 +91,8 @@ def ws_add_projector(message, projector_id):
                     'data': {'key': key, 'value': value}})
 
             # Send the projector instance.
-            access_permissions = projector.get_access_permissions()
-            full_data = access_permissions.get_full_data(projector)
-            data = access_permissions.get_projector_data(full_data)
-            output.append({
-                'collection': projector.get_collection_string(),
-                'id': projector.pk,
-                'action': 'changed',
-                'data': data})
+            collection_element = CollectionElement.from_instance(projector)
+            output.append(collection_element.as_autoupdate_for_projector())
 
             # Send all the data that was only collected before
             message.reply_channel.send({'text': json.dumps(output)})
@@ -136,73 +108,47 @@ def ws_disconnect_projector(message, projector_id):
 def send_data(message):
     """
     Informs all users about changed data.
-
-    The argument message has to be a dict with the keywords collection_string
-    (string), pk (positive integer) and id_deleted (boolean).
     """
-    if not message['is_deleted']:
-        Model = get_model_from_collection_string(message['collection_string'])
-        instance = Model.objects.get(pk=message['pk'])
-        access_permissions = instance.get_access_permissions()
-        full_data = access_permissions.get_full_data(instance)
-
-    base_output = {
-        'collection': message['collection_string'],
-        'id': message['pk'],  # == instance.get_rest_pk()
-        'action': 'deleted' if message['is_deleted'] else 'changed'}
+    collection_element = CollectionElement.from_values(**message)
 
     # Loop over all logged in users and the anonymous user.
     for user in itertools.chain(get_logged_in_users(), [AnonymousUser()]):
         channel = Group('user-{}'.format(user.id))
-        output = base_output.copy()
-        if not message['is_deleted']:
-            data = access_permissions.get_restricted_data(full_data, user)
-            if data is None:
-                # There are no data for the user so he can't see the object. Skip him.
-                continue
-            output['data'] = data
+        output = collection_element.as_autoupdate_for_user(user)
+        if output is None:
+            # There are no data for the user so he can't see the object. Skip him.
+            continue
         channel.send({'text': json.dumps([output])})
 
-    # Send the element to the projector:
-    if message['collection_string'] == config.get_collection_string():
+    # Get the projector elements where data have to be sent and if whole projector
+    # has to be updated.
+    if collection_element.collection_string == config.get_collection_string():
         # Config elements are always send to each projector
-        projector_ids = Projector.objects.values_list('pk', flat=True)
+        projectors = Projector.objects.all()
+        send_all = None  # The decission is done later
+    elif collection_element.collection_string == Projector.get_collection_string():
+        # Update a projector, when the projector element is updated.
+        projectors = [collection_element.get_instance()]
+        send_all = True
+    elif collection_element.is_deleted():
+        projectors = Projector.objects.all()
+        send_all = False
     else:
         # Other elements are only send to the projector they are currently shown
-        projector_ids = Projector.get_projectors_that_show_this(message)
+        projectors = Projector.get_projectors_that_show_this(message)
+        send_all = None  # The decission is done later
 
-    if projector_ids:
-        output = base_output.copy()
-        data = access_permissions.get_projector_data(full_data)
-        if data is not None:
-            for projector_id in projector_ids:
-                output['data'] = data
-                Group('projector-{}'.format(projector_id)).send(
-                    {'text': json.dumps([output])})
-
-    # Send all elements that are on the projector, if the active slide changes
-    if message['collection_string'] == Projector.get_collection_string():
-        projector_id = message['pk']
-
-        # Send the projector instance
-        output = [base_output.copy()]
-        data = access_permissions.get_projector_data(full_data)
-        output[0]['data'] = data
-
-        # Send all elements on the projector
-        for element in instance.get_all_requirements():
-            access_permissions = element.get_access_permissions()
-            full_data = access_permissions.get_full_data(element)
-            data = access_permissions.get_projector_data(full_data)
-            if data is not None:
-                output.append({
-                    'collection': element.get_collection_string(),
-                    'id': element.pk,
-                    'action': 'changed',
-                    'data': data})
-
-        Group('projector-{}'.format(projector_id)).send(
-            {'text': json.dumps(output)})
+    for projector in projectors:
+        if send_all is None:
+            send_all = projector.need_full_update_for(message)
+        if send_all:
+            output = get_projector_element_data(projector)
+        else:
+            output = []
+        output.append(collection_element.as_autoupdate_for_projector())
+        if output:
+            Group('projector-{}'.format(projector.pk)).send(
+                {'text': json.dumps(output)})
 
 
 def inform_changed_data(instance, is_deleted=False):
@@ -212,22 +158,20 @@ def inform_changed_data(instance, is_deleted=False):
         # Instance has no method get_root_rest_element. Just ignore it.
         pass
     else:
-        message_dict = {
-            'collection_string': root_instance.get_collection_string(),
-            'pk': root_instance.pk,
-            'is_deleted': is_deleted and instance == root_instance,
-        }
+        collection_element = CollectionElement.from_instance(
+            root_instance,
+            is_deleted=is_deleted and instance == root_instance)
 
         # If currently there is an open database transaction, then the following
         # function is only called, when the transaction is commited. If there
         # is currently no transaction, then the function is called immediately.
-        def send_autoupdate(message):
+        def send_autoupdate():
             try:
-                Channel('autoupdate.send_data').send(message)
+                Channel('autoupdate.send_data').send(collection_element.as_channels_message())
             except ChannelLayer.ChannelFull:
                 pass
 
-        transaction.on_commit(lambda: send_autoupdate(message_dict))
+        transaction.on_commit(send_autoupdate)
 
 
 def inform_changed_data_receiver(sender, instance, **kwargs):
