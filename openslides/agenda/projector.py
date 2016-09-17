@@ -26,7 +26,7 @@ class ItemListSlide(ProjectorElement):
 
     def get_requirements(self, config_entry):
         #TODO: Only send required items.
-        yield from Item.objcets.all()
+        yield from Item.objects.all()
 
 
 class ListOfSpeakersSlide(ProjectorElement):

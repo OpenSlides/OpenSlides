@@ -154,16 +154,24 @@ def send_data(message):
             output['data'] = data
         channel.send({'text': json.dumps([output])})
 
-    # Send the element on any projector it is on
-    projector_ids = element_on_projector(message)
+    # Send the element to the projector:
+    if message['collection_string'] in (
+            Projector.get_collection_string(),
+            config.get_collection_string()):
+        # Config- and projector-elements are always send to each projector
+        projector_ids = Projector.objects.values_list('pk', flat=True)
+    else:
+        # Other elements are only send to the projector they are currently shown
+        projector_ids = Projector.get_projectors_that_show_this(message)
+
     if projector_ids:
         output = base_output.copy()
         data = access_permissions.get_projector_data(full_data)
         if data is not None:
             for projector_id in projector_ids:
+                output['data'] = data
                 Group('projector-{}'.format(projector_id)).send(
                     {'text': json.dumps([output])})
-    #TODO: config elemente immer an alle projektoren schicken
 
 
 def inform_changed_data(instance, is_deleted=False):
