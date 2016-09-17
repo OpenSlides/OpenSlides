@@ -97,8 +97,8 @@
           <th translate>Is committee</th>
           <th ng-if="duplicates > 0" translate>
             <i class="fa fa-exclamation-triangle text-danger"></i>
-            <strong class="text-danger" ng-if="duplicates == 1">1 Duplicate</strong>
-            <strong class="text-danger" ng-if="duplicates > 1">{{ duplicates }} Duplicates</strong>
+            <strong class="text-danger" ng-if="duplicates == 1">1 <translate>duplicate</translate></strong>
+            <strong class="text-danger" ng-if="duplicates > 1">{{ duplicates }} <translate>duplicates</translate></strong>
 
               <div uib-dropdown>
                 <button type="button" class="btn btn-default btn-danger btn-sm" uib-dropdown-toggle>
@@ -107,7 +107,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-entries">
                     <li role="menuitem" ng-repeat="action in duplicateActions" class="pointer"
-                      ng-click="setGlobalAction(action)">
+                        ng-click="setGlobalAction(action)">
                       <translate>{{ action }}</translate>
                   </li>
                 </ul>

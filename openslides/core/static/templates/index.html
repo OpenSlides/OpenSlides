@@ -5,7 +5,7 @@
 <base href="/">
 <title>OpenSlides</title>
 <meta name="description" content="">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <link rel="stylesheet" href="static/css/openslides-libs.css">
 <link rel="stylesheet" href="static/css/app.css">
 <link rel="icon" href="/static/img/favicon.png">
@@ -70,11 +70,11 @@
 
           <!-- user settings / logout button -->
           <span uib-dropdown>
-            <a href class="headerlink" uib-dropdown-toggle>
+            <a href class="headerlink" uib-dropdown-toggle id="user-settings-dropdown">
               <i class="fa fa-user"></i>
               <span class="hide-sm">{{ operator.user.get_short_name() }}</span>
             </a>
-            <ul class="uib-dropdown-menu pull-right" role="menu" aria-labelledby="simple-dropdown">
+            <ul class="dropdown-menu pull-right" uib-dropdown-menu aria-labelledby="user-settings-dropdown">
               <li>
                 <a ui-sref="users.user.detail.profile({ id: operator.user.id })">
                   <i class="fa fa-cog"></i>
@@ -104,12 +104,12 @@
       </div>
 
       <!-- language switcher -->
-      <span uib-dropdown>
-        | <a href class="headerlink" uib-dropdown-toggle>
+      <span uib-dropdown> |
+        <a href="" class="headerlink" uib-dropdown-toggle id="language-dropdown">
           <i class="fa fa-flag"></i>
           <span class="hide-sm">{{ selectedLanguage[0].name | translate }}</span>
         </a>
-        <ul class="uib-dropdown-menu pull-right" role="menu" aria-labelledby="simple-dropdown">
+        <ul class="dropdown-menu pull-right" uib-dropdown-menu aria-labelledby="language-dropdown">
           <li ng-repeat="language in languages">
             <a href="" ng-click="switchLanguage(language.code)">
               <i ng-if="language.selected" class="fa fa-check"></i>

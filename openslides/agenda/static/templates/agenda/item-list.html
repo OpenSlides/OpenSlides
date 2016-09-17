@@ -40,6 +40,7 @@
           <!-- project agenda button -->
           <div os-perms="core.can_manage_projector" class="btn-group" uib-dropdown>
             <button
+                id="project-agenda-button"
                 type="button"
                 class="btn btn-default"
                 title="{{ 'Project agenda' | translate }}"
@@ -54,7 +55,7 @@
                 uib-dropdown-toggle>
               <span class="caret"></span>
             </button>
-            <ul class="uib-dropdown-menu" role="menu" aria-labelledby="split-button">
+            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="project-agenda-button">
               <li role="menuitem"><a href="" ng-click="projectAgenda(tree=true)" translate>All agenda items (Default)</a>
               <li role="menuitem"><a href="" ng-click="projectAgenda(tree=false)" translate>Only main agenda items</a>
             </ul>
@@ -144,6 +145,7 @@
         <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
           <div class="btn-group" style="width:54px;" uib-dropdown>
             <button os-perms="core.can_manage_projector"
+                id="project-item"
                 type="button"
                 class="btn btn-default btn-sm"
                 title="{{ 'Project item' | translate }}"
@@ -157,7 +159,7 @@
                 uib-dropdown-toggle>
               <span class="caret"></span>
             </button>
-            <ul class="uib-dropdown-menu" role="menu" aria-labelledby="split-button">
+            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="project-item">
               <li role="menuitem"><a href="" ng-click="item.project()" translate>Project item (Default)</a>
               <li role="menuitem"><a href="" ng-click="projectAgenda(tree=true, id=item.id)" translate>Project all sub items</a>
             </ul>

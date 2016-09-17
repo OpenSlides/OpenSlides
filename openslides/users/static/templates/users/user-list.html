@@ -14,12 +14,13 @@
         <translate>Import</translate>
       </a>
       <div class="btn-group" uib-dropdown>
-        <button os-perms="users.can_manage" class="btn btn-default btn-sm" uib-dropdown-toggle>
+        <button os-perms="users.can_manage" class="btn btn-default btn-sm" uib-dropdown-toggle
+            id="user-pdf-dropdown">
           <i class="fa fa-file-pdf-o fa-lg"></i>
           <translate>PDF</translate>
           <span class="caret"></span>
         </button>
-        <ul class="uib-dropdown-menu uib-dropdown-menu-right">
+        <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="user-pdf-dropdown">
           <li><a ui-sref="user_listpdf" target="_blank">
                 <i class="fa fa-list fa-fw"></i>
                 <translate>List of participants</translate>
