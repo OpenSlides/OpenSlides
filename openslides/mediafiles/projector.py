@@ -15,9 +15,10 @@ class MediafileSlide(ProjectorElement):
             raise ProjectorException('File does not exist.')
 
     def get_requirements(self, config_entry):
-        pk = config_entry.get('id')
-        if pk is not None:
-            yield ProjectorRequirement(
-                view_class=MediafileViewSet,
-                view_action='retrieve',
-                pk=str(pk))
+        try:
+            mediafile = Mediafile.objects.get(pk=config_entry.get('id'))
+        except CustomSlide.DoesNotExist:
+            # Mediafile does not exist. Just do nothing.
+            pass
+        else:
+            yield mediafile

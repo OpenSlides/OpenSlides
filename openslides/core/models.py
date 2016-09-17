@@ -113,8 +113,7 @@ class Projector(RESTModelMixin, models.Model):
 
     def get_all_requirements(self):
         """
-        Generator which returns all ProjectorRequirement instances of all
-        projector elements that are shown on this projector.
+        Generator which returns all instances that are shown on this projector.
         """
         # Get all elements from all apps.
         elements = {}
@@ -126,6 +125,30 @@ class Projector(RESTModelMixin, models.Model):
             element = elements.get(value['name'])
             if element is not None:
                 yield from element.get_requirements(value)
+
+    def instance_is_shown(self, collection_element):
+        """
+        Returns True if this collection element is shown on this projector.
+        """
+        for requirement in self.get_all_requirements():
+            if (requirement.get_collection_string() == collection_element['collection_string'] and
+                    requirement.pk == collection_element['pk'])
+                result = True
+                break
+        else
+            result = False
+        return result
+
+    @classmethod
+    def get_projectors_that_show_this(cls, instance):
+        """
+        Returns a list of the ids of the projectors that show this instance.
+        """
+        result = []
+        for projector in cls.objects.all():
+            if projector.instance_is_shown(instance):
+                result.append(projector.pk)
+        return result
 
 
 class CustomSlide(RESTModelMixin, models.Model):
