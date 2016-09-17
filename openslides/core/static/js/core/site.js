@@ -806,6 +806,14 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+// Load the global data on startup
+.run([
+    'loadGlobalData',
+    function(loadGlobalData) {
+        loadGlobalData();
+    }
+])
+
 // Options for TinyMCE editor used in various create and edit views.
 .factory('Editor', [
     'gettextCatalog',

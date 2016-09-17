@@ -10,9 +10,14 @@ def listen_to_related_object_post_save(sender, instance, created, **kwargs):
     Receiver function to create agenda items. It is connected to the signal
     django.db.models.signals.post_save during app loading.
     """
-    if created and hasattr(instance, 'get_agenda_title'):
-        Item.objects.create(content_object=instance)
-        inform_changed_data(instance)
+    if hasattr(instance, 'agenda_item'):
+        if created:
+            # If the object is created, the related_object has to be send again
+            Item.objects.create(content_object=instance)
+            inform_changed_data(instance)
+        else:
+            # if the object is changed, then also the agenda_item has to be send
+            inform_change_data(instance.agenda_item)
 
 
 def listen_to_related_object_post_delete(sender, instance, **kwargs):

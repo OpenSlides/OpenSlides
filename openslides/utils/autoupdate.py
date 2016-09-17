@@ -12,6 +12,7 @@ from ..users.auth import AnonymousUser
 from ..users.models import User
 from .access_permissions import BaseAccessPermissions
 from ..core.models import Projector
+from ..core.config import config
 
 
 def get_logged_in_users():
@@ -79,28 +80,42 @@ def ws_add_projector(message, projector_id):
     except Projector.DoesNotExist:
         pass
     else:
+        # At first, the client is added to the projector group, so it gets
+        # informed when the data change
         Group('projector-{}'.format(projector_id)).add(message.reply_channel)
+        output = []
+
+        # Send all elements that are on the projector
         for instance in projector.get_all_requirements():
             access_permissions = instance.get_access_permissions()
             full_data = access_permissions.get_full_data(instance)
             data = access_permissions.get_projector_data(full_data)
             if data is not None:
-                output = {
+                output.append({
                     'collection': instance.get_collection_string(),
                     'id': instance.pk,
                     'action': 'changed',
-                    'data': data}
-                message.reply_channel.send({'text': json.dumps(output)})
+                    'data': data})
 
-        # Send projector instance
+        # Send all config elements.
+        for key, value in config.items():
+            output.append({
+                'collection': config.get_collection_string(),
+                'id': key,
+                'action': 'changed',
+                'data': {'key': key, 'value': value}})
+
+        # Send the projector instance.
         access_permissions = projector.get_access_permissions()
         full_data = access_permissions.get_full_data(projector)
         data = access_permissions.get_projector_data(full_data)
-        output = {
+        output.append({
             'collection': projector.get_collection_string(),
             'id': projector.pk,
             'action': 'changed',
-            'data': data}
+            'data': data})
+
+        # Send all the data that was only collected before
         message.reply_channel.send({'text': json.dumps(output)})
 
 
@@ -137,7 +152,7 @@ def send_data(message):
                 # There are no data for the user so he can't see the object. Skip him.
                 continue
             output['data'] = data
-        channel.send({'text': json.dumps(output)})
+        channel.send({'text': json.dumps([output])})
 
     # Send the element on any projector it is on
     projector_ids = element_on_projector(message)
@@ -147,7 +162,8 @@ def send_data(message):
         if data is not None:
             for projector_id in projector_ids:
                 Group('projector-{}'.format(projector_id)).send(
-                    {'text': json.dumps(output)})
+                    {'text': json.dumps([output])})
+    #TODO: config elemente immer an alle projektoren schicken
 
 
 def inform_changed_data(instance, is_deleted=False):

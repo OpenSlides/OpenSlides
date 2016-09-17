@@ -64,7 +64,9 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 .controller('ProjectorContainerCtrl', [
     '$scope',
     'Config',
-    function($scope, Config) {
+    'loadGlobalData',
+    function($scope, Config, loadGlobalData) {
+        loadGlobalData();
         // watch for changes in Config
         var last_conf;
         $scope.$watch(function () {
@@ -125,7 +127,8 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     '$scope',
     'Projector',
     'slides',
-    function($scope, Projector, slides) {
+    'configToRootscope',
+    function($scope, Projector, slides, configToRootscope) {
         $scope.$watch(function () {
             // TODO: Use the current projector. At the moment there is only one.
             return Projector.lastModified(1);
@@ -133,6 +136,8 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             // TODO: Use the current projector. At the moment there is only one
             var projector = Projector.get(1);
             if (projector) {
+              // Now the config is loaded. Add it to the rootscope.
+              configToRootscope();
               $scope.elements = [];
               _.forEach(slides.getElements(projector), function(element) {
                   if (!element.error) {
