@@ -18,7 +18,7 @@
     "angular-sanitize": "~1.4.10",
     "angular-scroll-glue": "~2.0.6",
     "angular-ui-router": "~0.2.17",
-    "angular-ui-tinymce": "0.0.14",
+    "angular-ui-tinymce": "~0.0.17",
     "angular-ui-tree": "~2.17.0",
     "bootstrap-css-only": "~3.3.6",
     "font-awesome-bower": "~4.5.0",
@@ -33,7 +33,7 @@
     "pdfmake-dist": "~0.1.27",
     "open-sans-fontface": "https://github.com/OpenSlides/open-sans.git#1.4.2.post1",
     "roboto-condensed": "~0.3.0",
-    "tinymce-dist": "4.3.12",
+    "tinymce": "~4.4.3",
     "tinymce-i18n": "OpenSlides/tinymce-i18n#a186ad61e0aa30fdf657e88f405f966d790f0805"
   },
   "overrides": {
@@ -43,7 +43,7 @@
     "pdfjs-dist": {
       "main": "build/pdf.combined.js"
     },
-    "tinymce-dist": {
+    "tinymce": {
       "main": [
         "tinymce.js",
         "themes/modern/theme.js",
