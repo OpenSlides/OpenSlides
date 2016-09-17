@@ -187,7 +187,7 @@
         <!-- user data colums -->
         <td ng-mouseover="user.hover=true" ng-mouseleave="user.hover=false">
           <strong>
-            <i ng-show="!user.is_active" class="fa fa-ban"
+            <i ng-show="user.is_active === false" class="fa fa-ban"
               title="{{ 'Is inactive' | translate }}"></i>
             <i ng-show="user.is_committee" class="fa fa-users"
               title="{{ 'Is a committee' | translate }}"></i>
