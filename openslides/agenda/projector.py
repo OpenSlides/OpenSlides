@@ -25,6 +25,7 @@ class ItemListSlide(ProjectorElement):
                 raise ProjectorException('Item does not exist.')
 
     def get_requirements(self, config_entry):
+        #TODO: Only send required items.
         yield from Item.objcets.all()
 
 
@@ -50,12 +51,7 @@ class ListOfSpeakersSlide(ProjectorElement):
                 # Item does not exist. Just do nothing.
                 pass
             else:
-                yield ProjectorRequirement(
-                    view_class=ItemViewSet,
-                    view_action='retrieve',
-                    pk=str(item.pk))
+                yield item
                 for speaker in item.speakers.all():
-                    yield ProjectorRequirement(
-                        view_class=speaker.user.get_view_class(),
-                        view_action='retrieve',
-                        pk=str(speaker.user_id))
+                    #TODO: Only send required speakers. See config value for last speakers.
+                    yield speaker.user
