@@ -415,11 +415,13 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 .controller('UserListCtrl', [
     '$scope',
     '$state',
+    '$http',
     'ngDialog',
     'UserForm',
     'User',
     'Group',
-    function($scope, $state, ngDialog, UserForm, User, Group) {
+    'PasswordGenerator',
+    function($scope, $state, $http, ngDialog, UserForm, User, Group, PasswordGenerator) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.alert = {};
@@ -515,6 +517,22 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                         user.groups_id.splice(groupIndex, 1);
                         User.save(user);
                     }
+                }
+            });
+            $scope.isSelectMode = false;
+            $scope.uncheckAll();
+        };
+        // generate new passwords
+        $scope.generateNewPasswordsMultiple = function () {
+            angular.forEach($scope.users, function (user) {
+                if (user.selected) {
+                    var newPassword = PasswordGenerator.generate();
+                    user.default_password = newPassword;
+                    User.save(user);
+                    $http.post(
+                        '/rest/users/user/' + user.id + '/reset_password/',
+                        {'password': newPassword}
+                    );
                 }
             });
             $scope.isSelectMode = false;

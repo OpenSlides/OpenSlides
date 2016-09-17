@@ -87,6 +87,7 @@
         <option value="delete" translate>Delete</option>
         <option value="addGroup" translate>Add group</option>
         <option value="removeGroup" translate>Remove group</option>
+        <option value="generatePasswords" translate>Generate new passwords</option>
       </select>
       <!-- delete button -->
       <a ng-show="selectedAction == 'delete'"
@@ -112,6 +113,12 @@
           ng-click="removeGroupMultiple(selectedGroup)" class="btn btn-default">
         <i class="fa fa-minus fa-lg"></i>
         <translate>Remove group</translate>
+      </a>
+      <!-- generate new password button -->
+      <a ng-show="selectedAction == 'generatePasswords'" class="btn btn-default"
+        ng-click="generateNewPasswordsMultiple()">
+        <i class="fa fa-magic"></i>
+        <translate>Generate new passwords</translate>
       </a>
     </div>
   </div>
