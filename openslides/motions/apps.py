@@ -8,7 +8,7 @@ class MotionsAppConfig(AppConfig):
     angular_site_module = True
     angular_projector_module = True
     js_files = ['js/motions/base.js', 'js/motions/site.js', 'js/motions/projector.js',
-                'js/motions/linenumbering.js', 'js/motions/diff.js']
+                'js/motions/linenumbering.js', 'js/motions/diff.js', 'js/motions/motion-services.js']
 
     def ready(self):
         # Load projector elements.
