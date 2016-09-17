@@ -315,7 +315,8 @@ angular.module('OpenSlidesApp.motions', [
 // Service for generic comment fields
 .factory('MotionComment', [
     'Config',
-    function (Config) {
+    'operator',
+    function (Config, operator) {
         return {
             getFields: function () {
                 // Take input from config field and parse it. It can be some
@@ -396,7 +397,7 @@ angular.module('OpenSlidesApp.motions', [
                             templateOptions: {
                                 label: field.name,
                             },
-                            hideExpression: '!model.more'
+                            hide: !operator.hasPerms("motions.can_see_and_manage_comments")
                         };
                     }
                 );

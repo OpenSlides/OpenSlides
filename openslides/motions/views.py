@@ -106,10 +106,13 @@ class MotionViewSet(ModelViewSet):
             self.permission_denied(request)
 
         # Check permission to send comment data.
-        if (not request.user.has_perm('motions.can_see_and_manage_comments') and
-                request.data.get('comments')):
-            # Some users are not allowed to send comments data.
-            self.permission_denied(request)
+        if not request.user.has_perm('motions.can_see_and_manage_comments'):
+            try:
+                # Ignore comments data if user is not allowed to send comments.
+                del request.data['comments']
+            except KeyError:
+                # No comments here. Just do nothing.
+                pass
 
         # Validate data and create motion.
         serializer = self.get_serializer(data=request.data)
