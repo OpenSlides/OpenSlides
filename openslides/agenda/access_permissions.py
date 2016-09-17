@@ -19,7 +19,7 @@ class ItemAccessPermissions(BaseAccessPermissions):
 
         return ItemSerializer
 
-    # TODO: In the following methods we use full_data['is_hidden'] but this can be out of date.
+    # TODO: In the following method we use full_data['is_hidden'] but this can be out of date.
 
     def get_restricted_data(self, full_data, user):
         """
@@ -37,10 +37,10 @@ class ItemAccessPermissions(BaseAccessPermissions):
     def get_projector_data(self, full_data):
         """
         Returns the restricted serialized data for the instance prepared
-        for the projector. Removes several fields.
+        for the projector. Removes field 'comment'.
         """
-        if full_data['is_hidden']:
-            data = None
-        else:
-            data = full_data
+        data = {}
+        for key in full_data.keys():
+            if key != 'comment':
+                data[key] = full_data[key]
         return data

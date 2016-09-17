@@ -444,7 +444,8 @@ angular.module('OpenSlidesApp.motions', [
 .run([
     'Motion',
     'Category',
-    function(Motion, Category) {}
+    'Workflow',
+    function(Motion, Category, Workflow) {}
 ])
 
 

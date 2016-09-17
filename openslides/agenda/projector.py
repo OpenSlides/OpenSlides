@@ -25,10 +25,7 @@ class ItemListSlide(ProjectorElement):
                 raise ProjectorException('Item does not exist.')
 
     def get_requirements(self, config_entry):
-        if self.config_entry.get('tree'):
-            yield from Item.objects.all()
-        else:
-            yield from Item.objects.filter(parent_id=self.config_entry.get('id'))
+        yield from Item.objects.all()
 
 
 class ListOfSpeakersSlide(ProjectorElement):
