@@ -1,8 +1,8 @@
 <h1><translate>Vote</translate> {{ voteNumber }}</h1>
 
-<uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+<div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
   {{ alert.msg }}
-</uib-alert>
+</div>
 
 <p>
   <translate>Special values</translate>:

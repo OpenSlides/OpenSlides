@@ -94,9 +94,9 @@
     </ol>
 
     <div class="form-group">
-      <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+      <div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
         {{ alert.msg }}
-      </uib-alert>
+      </div>
       <div os-perms="assignments.can_nominate_other">
         <select chosen ng-model="candidateSelectBox.selected" ng-change="addCandidate(candidateSelectBox.selected)"
             ng-options="user.id as user.get_full_name() for user in users"
