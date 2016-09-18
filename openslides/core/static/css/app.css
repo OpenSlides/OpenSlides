@@ -681,7 +681,7 @@ img {
 }
 
 #motion-table .data-row > div {
-    padding: 5px;
+    padding: 12px 0;
 }
 
 #motion-table .header-row {
@@ -759,6 +759,7 @@ img {
 }
 
 #motion-table .title {
+    font-size: 110%;
     margin-right: 10px;
     padding: 0;
     background-color: transparent;

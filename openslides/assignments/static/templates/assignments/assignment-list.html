@@ -54,7 +54,7 @@
       <!-- phase filter -->
       <select ng-model="phaseFilter" class="form-control" id="phaseFilter">
         <option value="" translate>--- Select phase ---</option>
-        <option ng-repeat="phase in phases" value="{{ phase.value }}">{{ phase.display_name }}</option>
+        <option ng-repeat="phase in phases" value="{{ phase.value }}">{{ phase.display_name | translate }}</option>
       </select>
     </div>
   </div>
@@ -161,7 +161,7 @@
           <span class="label" ng-class="{'label-primary': assignment.phase == 0,
                                          'label-warning': assignment.phase == 1,
                                          'label-success': assignment.phase == 2 }">
-            {{ phases[assignment.phase].display_name }}
+            {{ phases[assignment.phase].display_name | translate }}
           </span>
 
         <!-- quickEdit columns -->
@@ -183,7 +183,7 @@
             <div class="row">
               <div class="col-xs-6">
                 <label for="selectPhase" translate>Phase</label>
-                <select ng-options="phase.value as phase.display_name for phase in phases"
+                <select ng-options="phase.value as phase.display_name | translate for phase in phases"
                     ng-model="assignment.phase" class="form-control" id="selectPhase">
                 </select>
               </div>
