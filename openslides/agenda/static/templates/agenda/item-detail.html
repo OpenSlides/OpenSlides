@@ -135,9 +135,9 @@
 
   <!-- Select speakers form -->
   <div class="form-group spacer">
-    <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+    <div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
       {{ alert.msg }}
-    </uib-alert>
+    </div>
     <div os-perms="agenda.can_manage">
       <select chosen
           ng-model="speakerSelectBox.selected"

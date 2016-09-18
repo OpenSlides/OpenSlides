@@ -3,9 +3,9 @@
     <img src="/static/img/openslides-logo.png" alt="OpenSlides" class="login-logo center-block">
   </div>
   <div class="modal-body loginForm">
-    <uib-alert ng-repeat="alert in alerts" type="{{ alert.type }}" close="closeAlert($index)">
+    <div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + (alert.type || 'warning')" close="closeAlert($index)">
       <span ng-bind-html="alert.msg"><span>
-    </uib-alert>
+    </div>
     <div class="input-group form-group">
       <div class="input-group-addon"><i class="fa fa-user"></i></div>
       <input os-focus-me type="text" ng-model="username" class="form-control input-lg"
