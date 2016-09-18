@@ -4,9 +4,12 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.agenda.models import Item, Speaker
+from openslides.assignments.models import Assignment
 from openslides.core.config import config
 from openslides.core.models import Projector
+from openslides.motions.models import Motion
 from openslides.topics.models import Topic
+from openslides.users.models import User
 from openslides.utils.test import TestCase
 
 
@@ -37,7 +40,61 @@ class RetrieveItem(TestCase):
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
         group.permissions.remove(permission)
         response = self.client.get(reverse('item-detail', args=[self.item.pk]))
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, 403)
+
+
+class TestDBQueries(TestCase):
+    """
+    Tests that receiving elements only need the required db queries.
+
+    Therefore in setup some agenda items are created and received with different
+    user accounts.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        config['general_system_enable_anonymous'] = True
+        for index in range(10):
+            Topic.objects.create(title='topic{}'.format(index))
+        parent = Topic.objects.create(title='parent').agenda_item
+        child = Topic.objects.create(title='child').agenda_item
+        child.parent = parent
+        child.save()
+        Motion.objects.create(title='motion1')
+        Motion.objects.create(title='motion2')
+        Assignment.objects.create(title='assignment', open_posts=5)
+
+    def test_admin(self):
+        """
+        Tests that only the following db queries are done:
+        * 5 requests to get the session an the request user with its permissions,
+        * 2 requests to get the list of all agenda items,
+        * 1 request to get all speakers,
+        * 3 requests to get the assignments, motions and topics and
+
+        * 2 requests for the motionsversions.
+
+        TODO: There could be less requests to get the session and the request user.
+        The last two request for the motionsversions are a bug.
+        """
+        self.client.force_login(User.objects.get(pk=1))
+        with self.assertNumQueries(13):
+            self.client.get(reverse('item-list'))
+
+    def test_anonymous(self):
+        """
+        Tests that only the following db queries are done:
+        * 2 requests to get the permission for anonymous (config and permissions)
+        * 2 requests to get the list of all agenda items,
+        * 1 request to get all speakers,
+        * 3 requests to get the assignments, motions and topics and
+
+        * 32 requests for the motionsversions.
+
+        TODO: The last 32 requests are a bug.
+        """
+        with self.assertNumQueries(40):
+            self.client.get(reverse('item-list'))
 
 
 class ManageSpeaker(TestCase):

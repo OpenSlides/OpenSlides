@@ -18,6 +18,7 @@ from django.utils.timezone import now
 
 from openslides import __version__ as version
 from openslides.utils import views as utils_views
+from openslides.utils.collection import Collection, CollectionElement
 from openslides.utils.plugins import (
     get_plugin_description,
     get_plugin_verbose_name,
@@ -41,7 +42,7 @@ from .access_permissions import (
 )
 from .config import config
 from .exceptions import ConfigError, ConfigNotFound
-from .models import ChatMessage, ProjectionDefault, Projector, Tag
+from .models import ChatMessage, ConfigStore, ProjectionDefault, Projector, Tag
 
 
 # Special Django views
@@ -606,22 +607,25 @@ class ConfigViewSet(ViewSet):
 
     def list(self, request):
         """
-        Lists all config variables. Everybody can see them.
+        Lists all config variables.
         """
-        return Response([{'key': key, 'value': value} for key, value in config.items()])
+        collection = Collection(config.get_collection_string())
+        return Response(collection.as_list_for_user(request.user))
 
     def retrieve(self, request, *args, **kwargs):
         """
-        Retrieves a config variable. Everybody can see it.
+        Retrieves a config variable.
         """
         key = kwargs['pk']
+        collection_element = CollectionElement.from_values(config.get_collection_string(), key)
         try:
-            value = config[key]
-        except ConfigNotFound:
+            content = collection_element.as_dict_for_user(request.user)
+        except ConfigStore.DoesNotExist:
             raise Http404
-        # Attention: The format of this response has to be the same as in
-        # the get_full_data method of ConfigAccessPermissions.
-        return Response({'key': key, 'value': value})
+        if content is None:
+            # If content is None, the user has no permissions to see the item.
+            self.permission_denied()
+        return Response(content)
 
     def update(self, request, *args, **kwargs):
         """

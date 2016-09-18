@@ -12,79 +12,24 @@ from ..utils.rest_api import (
 from .models import Group, User
 
 USERCANSEESERIALIZER_FIELDS = (
-            'id',
-            'username',
-            'title',
-            'first_name',
-            'last_name',
-            'structure_level',
-            'number',
-            'about_me',
-            'groups',
-            'is_committee',
-        )
+    'id',
+    'username',
+    'title',
+    'first_name',
+    'last_name',
+    'structure_level',
+    'number',
+    'about_me',
+    'groups',
+    'is_committee',
+)
 
 
-class UserCanSeeSerializer(ModelSerializer):
-    """
-    Serializer for users.models.User objects to be used by users who have
-    only the permission to see users and to change some date of theirselfs.
-
-    Attention: Viewset has to ensure that a user can update only himself.
-    """
-    class Meta:
-        model = User
-        fields = USERCANSEESERIALIZER_FIELDS
-        read_only_fields = (
-            'number',
-            'groups',
-            'is_comittee',
-        )
-
-
-USERCANSEEEXTRASERIALIZER_FIELDS = (
-            'id',
-            'is_present',
-            'username',
-            'title',
-            'first_name',
-            'last_name',
-            'number',
-            'structure_level',
-            'about_me',
-            'comment',
-            'groups',
-            'is_active',
-            'is_committee',
-        )
-
-
-class UserCanSeeExtraSerializer(ModelSerializer):
-    """
-    Serializer for users.models.User objects to be used by users who have
-    the permission to see users with extra data and to change some date of
-    theirselfs.
-
-    Attention: Viewset has to ensure that a user can update only himself.
-    """
-    groups = IdPrimaryKeyRelatedField(
-        many=True,
-        queryset=Group.objects.exclude(pk=1),
-        help_text=ugettext_lazy('The groups this user belongs to. A user will '
-                                'get all permissions granted to each of '
-                                'his/her groups.'))
-
-    class Meta:
-        model = User
-        fields = USERCANSEEEXTRASERIALIZER_FIELDS
-        read_only_fields = (
-            'is_present',
-            'number',
-            'comment',
-            'groups',
-            'is_comittee',
-            'is_active',
-        )
+USERCANSEEEXTRASERIALIZER_FIELDS = USERCANSEESERIALIZER_FIELDS + (
+    'is_present',
+    'comment',
+    'is_active',
+)
 
 
 class UserFullSerializer(ModelSerializer):

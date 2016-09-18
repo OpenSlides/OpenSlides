@@ -18,7 +18,7 @@ from ..utils.views import APIView, PDFView
 from .access_permissions import UserAccessPermissions
 from .models import Group, User
 from .pdf import users_passwords_to_pdf, users_to_pdf
-from .serializers import GroupSerializer, UserFullSerializer
+from .serializers import GroupSerializer
 
 
 # Viewsets for the REST API
@@ -48,19 +48,6 @@ class UserViewSet(ModelViewSet):
         else:
             result = False
         return result
-
-    def get_serializer_class(self):
-        """
-        Returns different serializer classes with respect to action.
-        """
-        if self.action in ('create', 'partial_update', 'update'):
-            # Return the UserFullSerializer for edit requests.
-            serializer_class = UserFullSerializer
-        else:
-            # Return different serializers according to user permsissions via
-            # access permissions class.
-            serializer_class = super().get_serializer_class()
-        return serializer_class
 
     def update(self, request, *args, **kwargs):
         """
@@ -138,7 +125,7 @@ class GroupViewSet(ModelViewSet):
     partial_update, update and destroy.
     """
     metadata_class = GroupViewSetMetadata
-    queryset = Group.objects.all()
+    queryset = Group.objects.prefetch_related('permissions', 'permissions__content_type')
     serializer_class = GroupSerializer
 
     def check_view_permissions(self):

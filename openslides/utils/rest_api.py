@@ -1,15 +1,13 @@
 from collections import OrderedDict
 
+from django.http import Http404
 from rest_framework import status  # noqa
 from rest_framework.decorators import detail_route, list_route  # noqa
 from rest_framework.metadata import SimpleMetadata  # noqa
-from rest_framework.mixins import (  # noqa
-    DestroyModelMixin,
-    ListModelMixin,
-    RetrieveModelMixin,
-    UpdateModelMixin,
-)
-from rest_framework.response import Response  # noqa
+from rest_framework.mixins import ListModelMixin as _ListModelMixin
+from rest_framework.mixins import RetrieveModelMixin as _RetrieveModelMixin
+from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin  # noqa
+from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.serializers import ModelSerializer as _ModelSerializer
 from rest_framework.serializers import (  # noqa
@@ -30,6 +28,8 @@ from rest_framework.serializers import (  # noqa
 from rest_framework.viewsets import GenericViewSet as _GenericViewSet  # noqa
 from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
 from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
+
+from .collection import Collection, CollectionElement
 
 router = DefaultRouter()
 
@@ -164,11 +164,63 @@ class ModelSerializer(_ModelSerializer):
         return fields
 
 
+class ListModelMixin(_ListModelMixin):
+    """
+    Mixin to add the caching system to list requests.
+
+    It is not allowed to use the method get_queryset() in derivated classes.
+    The attribute queryset has to be used in the following form:
+
+    queryset = Model.objects.all()
+    """
+    def list(self, request, *args, **kwargs):
+        model = self.get_queryset().model
+        try:
+            collection_string = model.get_collection_string()
+        except AttributeError:
+            # The corresponding queryset does not support caching.
+            response = super().list(request, *args, **kwargs)
+        else:
+            collection = Collection(collection_string)
+            response = Response(collection.as_list_for_user(request.user))
+        return response
+
+
+class RetrieveModelMixin(_RetrieveModelMixin):
+    """
+    Mixin to add the caching system to retrieve requests.
+
+    It is not allowed to use the method get_queryset() in derivated classes.
+    The attribute queryset has to be used in the following form:
+
+    queryset = Model.objects.all()
+    """
+    def retrieve(self, request, *args, **kwargs):
+        model = self.get_queryset().model
+        try:
+            collection_string = model.get_collection_string()
+        except AttributeError:
+            # The corresponding queryset does not support caching.
+            response = super().retrieve(request, *args, **kwargs)
+        else:
+            lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+            collection_element = CollectionElement.from_values(
+                collection_string, self.kwargs[lookup_url_kwarg])
+            try:
+                content = collection_element.as_dict_for_user(request.user)
+            except collection_element.get_model().DoesNotExist:
+                raise Http404
+            if content is None:
+                self.permission_denied(request)
+            response = Response(content)
+        return response
+
+
 class GenericViewSet(PermissionMixin, _GenericViewSet):
     pass
 
 
-class ModelViewSet(PermissionMixin, _ModelViewSet):
+class ModelViewSet(PermissionMixin, ListModelMixin, RetrieveModelMixin, _ModelViewSet):
     pass
 
 

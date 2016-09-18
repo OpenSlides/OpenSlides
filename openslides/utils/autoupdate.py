@@ -11,7 +11,7 @@ from ..core.config import config
 from ..core.models import Projector
 from ..users.auth import AnonymousUser
 from ..users.models import User
-from .collection import CollectionElement
+from .collection import Collection, CollectionElement
 
 
 def get_logged_in_users():
@@ -23,18 +23,19 @@ def get_logged_in_users():
     return User.objects.exclude(session=None).filter(session__expire_date__gte=timezone.now()).distinct()
 
 
-def get_projector_element_data(projector):
+def get_projector_element_data(projector, on_slide=None):
     """
     Returns a list of dicts that are required for a specific projector.
 
     The argument projector has to be a projector instance.
+
+    If on_slide is a string that matches an slide on the projector, then only
+    elements on this slide are returned.
     """
     output = []
-    for requirement in projector.get_all_requirements():
+    for requirement in projector.get_all_requirements(on_slide):
         required_collection_element = CollectionElement.from_instance(requirement)
-        element_dict = required_collection_element.as_autoupdate_for_projector()
-        if element_dict is not None:
-            output.append(element_dict)
+        output.append(required_collection_element.as_autoupdate_for_projector())
     return output
 
 
@@ -83,12 +84,8 @@ def ws_add_projector(message, projector_id):
             output = get_projector_element_data(projector)
 
             # Send all config elements.
-            for key, value in config.items():
-                output.append({
-                    'collection': config.get_collection_string(),
-                    'id': key,
-                    'action': 'changed',
-                    'data': {'key': key, 'value': value}})
+            collection = Collection(config.get_collection_string())
+            output.extend(collection.as_autoupdate_for_projector())
 
             # Send the projector instance.
             collection_element = CollectionElement.from_instance(projector)
@@ -115,9 +112,6 @@ def send_data(message):
     for user in itertools.chain(get_logged_in_users(), [AnonymousUser()]):
         channel = Group('user-{}'.format(user.id))
         output = collection_element.as_autoupdate_for_user(user)
-        if output is None:
-            # There are no data for the user so he can't see the object. Skip him.
-            continue
         channel.send({'text': json.dumps([output])})
 
     # Get the projector elements where data have to be sent and if whole projector
@@ -157,14 +151,20 @@ def send_data(message):
             else:
                 output = broadcast_projector_data
         else:
+            # The list will be filled in the next lines.
             output = []
+
         output.append(collection_element.as_autoupdate_for_projector())
         if output:
             Group('projector-{}'.format(projector.pk)).send(
                 {'text': json.dumps(output)})
 
 
-def inform_changed_data(instance, is_deleted=False):
+def inform_changed_data(instance, information=None):
+    """
+    Informs the autoupdate system and the caching system about the creation or
+    update of an element.
+    """
     try:
         root_instance = instance.get_root_rest_element()
     except AttributeError:
@@ -173,29 +173,39 @@ def inform_changed_data(instance, is_deleted=False):
     else:
         collection_element = CollectionElement.from_instance(
             root_instance,
-            is_deleted=is_deleted and instance == root_instance)
+            information=information)
 
-        # If currently there is an open database transaction, then the following
-        # function is only called, when the transaction is commited. If there
-        # is currently no transaction, then the function is called immediately.
-        def send_autoupdate():
-            try:
-                Channel('autoupdate.send_data').send(collection_element.as_channels_message())
-            except ChannelLayer.ChannelFull:
-                pass
+        transaction.on_commit(lambda: send_autoupdate(collection_element))
 
-        transaction.on_commit(send_autoupdate)
-
-
-def inform_changed_data_receiver(sender, instance, **kwargs):
+def inform_deleted_data(collection_string, id, information=None):
     """
-    Receiver for the inform_changed_data function to use in a signal.
+    Informs the autoupdate system and the caching system about the deletion of
+    an element.
     """
-    inform_changed_data(instance)
+    collection_element = CollectionElement.from_values(
+        collection_string=collection_string,
+        id=id,
+        deleted=True,
+        information=information)
+
+    # If currently there is an open database transaction, then the following
+    # function is only called, when the transaction is commited. If there
+    # is currently no transaction, then the function is called immediately.
+    def send_autoupdate():
+        try:
+            Channel('autoupdate.send_data').send(collection_element.as_channels_message())
+        except ChannelLayer.ChannelFull:
+            pass
+
+    transaction.on_commit(lambda: send_autoupdate(collection_element))
 
 
-def inform_deleted_data_receiver(sender, instance, **kwargs):
+def send_autoupdate(collection_element):
     """
-    Receiver for the inform_changed_data function to use in a signal.
+    Helper function, that sends a collection_element through a channel to the
+    autoupdate system.
     """
-    inform_changed_data(instance, is_deleted=True)
+    try:
+        Channel('autoupdate.send_data').send(collection_element.as_channels_message())
+    except ChannelLayer.ChannelFull:
+        pass

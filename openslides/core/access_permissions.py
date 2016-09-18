@@ -87,4 +87,8 @@ class ConfigAccessPermissions(BaseAccessPermissions):
 
         # Attention: The format of this response has to be the same as in
         # the retrieve method of ConfigViewSet.
+        if isinstance(instance, dict):
+            # It happens, that the caching system already sends the correct dict
+            # as instance.
+            return instance
         return {'key': instance.key, 'value': config[instance.key]}

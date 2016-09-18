@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_noop
@@ -50,11 +50,21 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
         return self.assignment
 
 
+class AssignmentManager(models.Manager):
+    def get_full_queryset(self):
+        return self.get_queryset().prefetch_related(
+            'related_users',
+            'agenda_items',
+            'polls')
+
+
 class Assignment(RESTModelMixin, models.Model):
     """
     Model for assignments.
     """
     access_permissions = AssignmentAccessPermissions()
+
+    objects = AssignmentManager()
 
     PHASE_SEARCH = 0
     PHASE_VOTING = 1
@@ -110,6 +120,10 @@ class Assignment(RESTModelMixin, models.Model):
     """
     Tags for the assignment.
     """
+
+    # In theory there could be one then more agenda_item. But support only one.
+    # See the property agenda_item.
+    agenda_items = GenericRelation(Item, related_name='assignments')
 
     class Meta:
         default_permissions = ()
@@ -290,8 +304,7 @@ class Assignment(RESTModelMixin, models.Model):
         """
         Returns the related agenda item.
         """
-        content_type = ContentType.objects.get_for_model(self)
-        return Item.objects.get(object_id=self.pk, content_type=content_type)
+        return self.agenda_items.all()[0]
 
     @property
     def agenda_item_id(self):

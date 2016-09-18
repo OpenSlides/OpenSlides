@@ -16,7 +16,6 @@ class CoreAppConfig(AppConfig):
         from django.db.models import signals
         from openslides.core.config import config
         from openslides.core.signals import post_permission_creation
-        from openslides.utils.autoupdate import inform_changed_data_receiver, inform_deleted_data_receiver
         from openslides.utils.rest_api import router
         from openslides.utils.search import index_add_instance, index_del_instance
         from .config_variables import get_config_variables
@@ -44,15 +43,6 @@ class CoreAppConfig(AppConfig):
         router.register(self.get_model('ChatMessage').get_collection_string(), ChatMessageViewSet)
         router.register(self.get_model('Tag').get_collection_string(), TagViewSet)
         router.register(self.get_model('ConfigStore').get_collection_string(), ConfigViewSet, 'config')
-
-        # Update data when any model of any installed app is saved or deleted.
-        # TODO: Test if the m2m_changed signal is also needed.
-        signals.post_save.connect(
-            inform_changed_data_receiver,
-            dispatch_uid='inform_changed_data_receiver')
-        signals.post_delete.connect(
-            inform_deleted_data_receiver,
-            dispatch_uid='inform_deleted_data_receiver')
 
         # Update the search when a model is saved or deleted
         signals.post_save.connect(

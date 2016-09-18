@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models import Max
 from django.utils import formats
@@ -28,6 +28,21 @@ from .access_permissions import (
 from .exceptions import WorkflowError
 
 
+class MotionManager(models.Manager):
+    def get_full_queryset(self):
+        return (super().get_queryset()
+                .select_related('active_version')
+                .prefetch_related(
+                    'versions',
+                    'agenda_items',
+                    'log_messages',
+                    'polls',
+                    'attachments',
+                    'tags',
+                    'submitters',
+                    'supporters'))
+
+
 class Motion(RESTModelMixin, models.Model):
     """
     The Motion Class.
@@ -35,6 +50,8 @@ class Motion(RESTModelMixin, models.Model):
     This class is the main entry point to all other classes related to a motion.
     """
     access_permissions = MotionAccessPermissions()
+
+    objects = MotionManager()
 
     active_version = models.ForeignKey(
         'MotionVersion',
@@ -133,6 +150,10 @@ class Motion(RESTModelMixin, models.Model):
     """
     Configurable fields for comments. Contains a list of strings.
     """
+
+    # In theory there could be one then more agenda_item. But support only one.
+    # See the property agenda_item.
+    agenda_items = GenericRelation(Item, related_name='motions')
 
     class Meta:
         default_permissions = ()
@@ -519,8 +540,7 @@ class Motion(RESTModelMixin, models.Model):
         """
         Returns the related agenda item.
         """
-        content_type = ContentType.objects.get_for_model(self)
-        return Item.objects.get(object_id=self.pk, content_type=content_type)
+        return self.agenda_items.all()[0]
 
     @property
     def agenda_item_id(self):
@@ -940,11 +960,20 @@ class State(RESTModelMixin, models.Model):
         return self.workflow
 
 
+class WorkflowManager(models.Manager):
+    def get_full_queryset(self):
+        return (self.get_queryset()
+                .select_related('first_state')
+                .prefetch_related('states', 'states__next_states'))
+
+
 class Workflow(RESTModelMixin, models.Model):
     """
     Defines a workflow for a motion.
     """
     access_permissions = WorkflowAccessPermissions()
+
+    objects = WorkflowManager()
 
     name = models.CharField(max_length=255)
     """A string representing the workflow."""

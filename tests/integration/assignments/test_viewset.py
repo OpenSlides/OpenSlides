@@ -4,7 +4,59 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.assignments.models import Assignment
+from openslides.core.config import config
+from openslides.users.models import User
 from openslides.utils.test import TestCase
+
+
+class TestDBQueries(TestCase):
+    """
+    Tests that receiving elements only need the required db queries.
+
+    Therefore in setup some assignments are created and received with different
+    user accounts.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        config['general_system_enable_anonymous'] = True
+        for index in range(10):
+            Assignment.objects.create(title='motion{}'.format(index), open_posts=1)
+
+    def test_admin(self):
+        """
+        Tests that only the following db queries are done:
+        * 5 requests to get the session an the request user with its permissions,
+        * 2 requests to get the list of all assignments,
+        * 1 request to get all related users,
+        * 1 request to get the agenda item,
+        * 1 request to get the polls,
+
+        * 10 request to featch each related user again.
+
+        TODO: There could be less requests to get the session and the request user.
+        The eleven request are a bug.
+        """
+        self.client.force_login(User.objects.get(pk=1))
+        with self.assertNumQueries(30):
+            self.client.get(reverse('assignment-list'))
+
+    def test_anonymous(self):
+        """
+        Tests that only the following db queries are done:
+        * 2 requests to get the permission for anonymous (config and permissions)
+        * 2 requests to get the list of all assignments,
+        * 1 request to get all related users,
+        * 1 request to get the agenda item,
+        * 1 request to get the polls,
+        * 1 request to get the tags,
+
+        * lots of permissions requests.
+
+        TODO: The last requests are a bug.
+        """
+        with self.assertNumQueries(57):
+            self.client.get(reverse('assignment-list'))
 
 
 class CanidatureSelf(TestCase):

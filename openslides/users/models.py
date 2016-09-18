@@ -23,6 +23,10 @@ class UserManager(BaseUserManager):
     Customized manager that creates new users only with a password and a
     username.
     """
+
+    def get_full_queryset(self):
+        return self.get_queryset().prefetch_related('groups')
+
     def create_user(self, username, password, **kwargs):
         """
         Creates a new user only with a password and a username.

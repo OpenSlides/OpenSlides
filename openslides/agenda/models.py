@@ -23,6 +23,9 @@ class ItemManager(models.Manager):
     Customized model manager with special methods for agenda tree and
     numbering.
     """
+    def get_full_queryset(self):
+        return self.get_queryset().prefetch_related('speakers', 'content_object')
+
     def get_only_agenda_items(self):
         """
         Generator, which yields only agenda items. Skips hidden items.
