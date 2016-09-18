@@ -26,6 +26,8 @@ var argv = require('yargs').argv,
     mainBowerFiles = require('main-bower-files'),
     path = require('path'),
     rename = require('gulp-rename'),
+    sourcemaps = require('gulp-sourcemaps'),
+    templateCache = require('gulp-angular-templatecache'),
     through = require('through2'),
     uglify = require('gulp-uglify'),
     vsprintf = require('sprintf-js').vsprintf;
@@ -38,13 +40,44 @@ var output_directory = path.join('openslides', 'static');
  * Default tasks to be run before start.
  */
 
+// Catches all JavaScript files from all core apps and concats them to one
+// file js/openslides.js. In production mode the file is uglified.
+gulp.task('js', function () {
+    return gulp.src(path.join('openslides', '*', 'static', 'js', '**', '*.js'))
+        .pipe(sourcemaps.init())
+        .pipe(concat('openslides.js'))
+        .pipe(sourcemaps.write())
+        .pipe(gulpif(argv.production, uglify()))
+        .pipe(gulp.dest(path.join(output_directory, 'js')));
+});
+
 // Catches all JavaScript files from all bower components and concats them to
 // one file js/openslides-libs.js. In production mode the file is uglified.
 gulp.task('js-libs', function () {
     return gulp.src(mainBowerFiles({
             filter: /\.js$/
         }))
+        .pipe(sourcemaps.init())
         .pipe(concat('openslides-libs.js'))
+        .pipe(sourcemaps.write())
+        .pipe(gulpif(argv.production, uglify()))
+        .pipe(gulp.dest(path.join(output_directory, 'js')));
+});
+
+// Catches all template files from all core apps and concats them to one
+// file js/openslides-templates.js. In production mode the file is uglified.
+gulp.task('templates', function () {
+    return gulp.src(path.join('openslides', '*', 'static', 'templates', '**', '*.html'))
+        .pipe(templateCache('openslides-templates.js', {
+            module: 'OpenSlidesApp-templates',
+            standalone: true,
+            moduleSystem: 'IIFE',
+            transformUrl: function (url) {
+                var pathList = url.split(path.sep);
+                pathList.shift();
+                return pathList.join(path.sep);
+            },
+        }))
         .pipe(gulpif(argv.production, uglify()))
         .pipe(gulp.dest(path.join(output_directory, 'js')));
 });
@@ -117,12 +150,18 @@ gulp.task('translations', function () {
 });
 
 // Gulp default task. Runs all other tasks before.
-gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs', 'tinymce', 'angular-chosen-img', 'translations'], function () {});
+gulp.task('default', ['js', 'js-libs', 'templates', 'css-libs', 'fonts-libs', 'tinymce', 'angular-chosen-img', 'translations'], function () {});
 
 
 /**
  * Extra tasks that have to be called manually. Useful for development.
  */
+
+// Watches changes in JavaScript and templates.
+gulp.task('watch', ['js', 'templates'], function () {
+    gulp.watch(path.join('openslides', '*', 'static', 'js', '**', '*.js'), ['js']);
+    gulp.watch(path.join('openslides', '*', 'static', 'templates', '**', '*.html'), ['templates']);
+});
 
 // Extracts translatable strings using angular-gettext and saves them in file
 // openslides/locale/angular-gettext/template-en.pot.

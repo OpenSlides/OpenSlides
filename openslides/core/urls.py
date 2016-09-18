@@ -23,9 +23,9 @@ urlpatterns = [
         views.MediaEncoder.as_view(),
         name="core_mediaencoding"),
 
-    url(r'^angular_js/(?P<openslides_app>site|projector)/$',
-        views.AppsJsView.as_view(),
-        name='core_apps_js'),
+    url(r'^webclient/(?P<realm>site|projector)/$',
+        views.WebclientJavaScriptView.as_view(),
+        name='core_webclient_javascript'),
 
     # View for the projectors are handled by angular.
     url(r'^projector.*$', views.ProjectorView.as_view()),

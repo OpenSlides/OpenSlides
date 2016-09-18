@@ -5,6 +5,7 @@ import re
 import uuid
 from collections import OrderedDict
 from operator import attrgetter
+from textwrap import dedent
 from urllib.parse import unquote
 
 from django.apps import apps
@@ -92,72 +93,81 @@ class RealProjectorView(utils_views.View):
         return HttpResponse(content)
 
 
-class AppsJsView(utils_views.View):
+class WebclientJavaScriptView(utils_views.View):
     """
-    Returns javascript code to be called in the angular app.
-
-    The javascript code loads all js-files defined by the installed (django)
-    apps and creates the angular modules for each angular app.
+    This view returns JavaScript code for the main entry point in the
+    AngularJS app for the requested realm (site or projector). Also code
+    for plugins is appended. The result is not uglified.
     """
     def get(self, *args, **kwargs):
         angular_modules = []
         js_files = []
+        realm = kwargs.get('realm')  # Result is 'site' or 'projector'
         for app_config in apps.get_app_configs():
-            # Add the angular app, if the module has one.
-            if getattr(app_config,
-                       'angular_{}_module'.format(kwargs.get('openslides_app')),
-                       False):
-                angular_modules.append('OpenSlidesApp.{app_name}.{app}'.format(
-                    app=kwargs.get('openslides_app'),
-                    app_name=app_config.label))
+            # Add the angular app if the module has one.
+            if getattr(app_config, 'angular_{}_module'.format(realm), False):
+                angular_modules.append('OpenSlidesApp.{app_name}.{realm}'.format(
+                    app_name=app_config.label,
+                    realm=realm))
 
-            # Add all js files that the module needs
-            try:
-                app_js_files = app_config.js_files
-            except AttributeError:
-                # The app needs no js-files
-                pass
-            else:
-                js_files += [
-                    '{static}{path}'.format(
-                        static=settings.STATIC_URL,
-                        path=path)
-                    for path in app_js_files]
-        # Use javascript loadScript function from
+            # Add all JavaScript files that the module needs. Our core apps
+            # are delivered by an extra file js/openslides.js which can be
+            # created via gulp.
+            core_apps = (
+                'openslides.core',
+                'openslides.agenda',
+                'openslides.motions',
+                'openslides.assignments',
+                'openslides.users',
+                'openslides.mediafiles',
+            )
+            if app_config.name not in core_apps:
+                try:
+                    app_js_files = app_config.js_files
+                except AttributeError:
+                    # The app needs no JavaScript files.
+                    pass
+                else:
+                    js_files.extend(app_js_files)
+
+        # Use JavaScript loadScript function from
         # http://balpha.de/2011/10/jquery-script-insertion-and-its-consequences-for-debugging/
-        return HttpResponse(
+        # jQuery is required.
+        content = dedent(
             """
-            var loadScript = function (path) {
-                var result = $.Deferred(),
-                    script = document.createElement("script");
-                script.async = "async";
-                script.type = "text/javascript";
-                script.src = path;
-                script.onload = script.onreadystatechange = function(_, isAbort) {
-                    if (!script.readyState || /loaded|complete/.test(script.readyState)) {
-                        if (isAbort)
-                            result.reject();
-                        else
-                            result.resolve();
-                    }
+            (function () {
+                var loadScript = function (path) {
+                    var result = $.Deferred(),
+                        script = document.createElement("script");
+                    script.async = "async";
+                    script.type = "text/javascript";
+                    script.src = path;
+                    script.onload = script.onreadystatechange = function(_, isAbort) {
+                        if (!script.readyState || /loaded|complete/.test(script.readyState)) {
+                            if (isAbort)
+                                result.reject();
+                            else
+                                result.resolve();
+                        }
+                    };
+                    script.onerror = function () { result.reject(); };
+                    $("head")[0].appendChild(script);
+                    return result.promise();
                 };
-                script.onerror = function () { result.reject(); };
-                $("head")[0].appendChild(script);
-                return result.promise();
-            };
             """ +
             """
-            angular.module('OpenSlidesApp.{app}', {angular_modules});
-            var deferres = [];
-            {js_files}.forEach( function(js_file) {{ deferres.push(loadScript(js_file)); }} );
-            $.when.apply(this,deferres).done(function() {{
-                angular.bootstrap(document,['OpenSlidesApp.{app}']);
-            }} );
+                angular.module('OpenSlidesApp.{realm}', {angular_modules});
+                var deferres = [];
+                {js_files}.forEach( function(js_file) {{ deferres.push(loadScript(js_file)); }} );
+                $.when.apply(this,deferres).done( function() {{
+                    angular.bootstrap(document,['OpenSlidesApp.{realm}']);
+                }} );
+            """.format(realm=realm, angular_modules=angular_modules, js_files=js_files) +
             """
-            .format(
-                app=kwargs.get('openslides_app'),
-                angular_modules=angular_modules,
-                js_files=js_files))
+            }());
+            """)
+
+        return HttpResponse(content, content_type='application/javascript')
 
 
 # Viewsets for the REST API

@@ -6,7 +6,6 @@ class MediafilesAppConfig(AppConfig):
     verbose_name = 'OpenSlides Mediafiles'
     angular_site_module = True
     angular_projector_module = True
-    js_files = ['js/mediafiles/base.js', 'js/mediafiles/site.js', 'js/mediafiles/projector.js']
 
     def ready(self):
         # Load projector elements.

@@ -6,7 +6,6 @@ class AgendaAppConfig(AppConfig):
     verbose_name = 'OpenSlides Agenda'
     angular_site_module = True
     angular_projector_module = True
-    js_files = ['js/agenda/base.js', 'js/agenda/site.js', 'js/agenda/projector.js']
 
     def ready(self):
         # Load projector elements.

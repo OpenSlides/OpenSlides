@@ -6,7 +6,6 @@ class UsersAppConfig(AppConfig):
     verbose_name = 'OpenSlides Users'
     angular_site_module = True
     angular_projector_module = True
-    js_files = ['js/users/base.js', 'js/users/site.js', 'js/users/projector.js']
 
     def ready(self):
         # Load projector elements.

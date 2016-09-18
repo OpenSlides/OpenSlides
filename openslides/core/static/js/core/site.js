@@ -869,7 +869,7 @@ angular.module('OpenSlidesApp.core.site', [
         return {
             restrict: 'E',
             scope: true,
-            templateUrl: '/static/templates/config-form-field.html',
+            templateUrl: 'static/templates/config-form-field.html',
             link: function ($scope, iElement, iAttrs, controller, transcludeFn) {
                 var field = $parse(iAttrs.field)($scope);
                 var config = Config.get(field.key);

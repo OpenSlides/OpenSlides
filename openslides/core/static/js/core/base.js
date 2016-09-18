@@ -10,7 +10,8 @@ angular.module('OpenSlidesApp.core', [
     'ngSanitize',  // TODO: only use this in functions that need it.
     'ui.bootstrap',
     'ui.tree',
-    'pdf'
+    'pdf',
+    'OpenSlidesApp-templates',
 ])
 
 .config([
