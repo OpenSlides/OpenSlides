@@ -1,5 +1,5 @@
 {
-  "name": "OpenSlides",
+  "name": "openslides",
   "private": true,
   "scripts": {
     "prepublish": "bower install && gulp"

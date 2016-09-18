@@ -10,5 +10,6 @@ natsort>=3.2,<5.1
 PyPDF2>=1.25.0,<1.27
 reportlab>=3.0,<3.4
 roman>=2.0,<2.1
-setuptools>=18.5,<26.0
+setuptools>=18.5,<28.0
+twisted>=16.2,<16.4
 Whoosh>=2.7.0,<2.8
