@@ -18,9 +18,6 @@ angular.module('OpenSlidesApp.core', [
     'DSProvider',
     'DSHttpAdapterProvider',
     function(DSProvider, DSHttpAdapterProvider) {
-        // Reloads everything after 5 minutes.
-        // TODO: * find a way only to reload things that are still needed
-        DSProvider.defaults.maxAge = 5 * 60 * 1000;  // 5 minutes
         DSProvider.defaults.reapAction = 'none';
         DSProvider.defaults.basePath = '/rest';
         DSProvider.defaults.afterReap = function(model, items) {
