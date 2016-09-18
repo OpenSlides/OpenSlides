@@ -68,10 +68,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 url: '/sort',
                 controller: 'AgendaSortCtrl',
             })
-            .state('agenda.item.import', {
-                url: '/import',
-                controller: 'AgendaImportCtrl',
-            })
             .state('agenda.current-list-of-speakers', {
                 url: '/speakers',
                 controller: 'ListOfSpeakersViewCtrl',
@@ -100,10 +96,10 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     'operator',
     'ngDialog',
     'Agenda',
-    'CustomslideForm',
+    'TopicForm', // TODO: Remove this dependency. Use template hook for "New" and "Import" buttons.
     'AgendaTree',
     'Projector',
-    function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, CustomslideForm, AgendaTree, Projector) {
+    function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, TopicForm, AgendaTree, Projector) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -125,11 +121,12 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         };
 
         // check open permission
+        // TODO: Use generic solution here.
         $scope.isAllowedToSeeOpenLink = function (item) {
             var collection = item.content_object.collection;
             switch (collection) {
-                case 'core/customslide':
-                    return operator.hasPerms('core.can_manage_projector');
+                case 'topics/topic':
+                    return operator.hasPerms('agenda.can_see');
                 case 'motions/motion':
                     return operator.hasPerms('motions.can_see');
                 case 'assignments/assignment':
@@ -138,9 +135,9 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                     return false;
             }
         };
-        // open new dialog
+        // open dialog for new topics // TODO Remove this. Don't forget import button in template.
         $scope.newDialog = function () {
-            ngDialog.open(CustomslideForm.getDialog());
+            ngDialog.open(TopicForm.getDialog());
         };
         // cancel QuickEdit mode
         $scope.cancelQuickEdit = function (item) {
@@ -185,7 +182,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 });
             }
         };
-        // delete selected items only if items are customslides
+        // delete selected items
         $scope.deleteMultiple = function () {
             angular.forEach($scope.items, function (item) {
                 if (item.selected) {
@@ -401,161 +398,16 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     }
 ])
 
-.controller('AgendaImportCtrl', [
-    '$scope',
-    'gettext',
-    'Agenda',
-    'Customslide',
-    function($scope, gettext, Agenda, Customslide) {
-        // import from textarea
-        $scope.importByLine = function () {
-            if ($scope.itemlist) {
-                $scope.titleItems = $scope.itemlist[0].split("\n");
-                $scope.importcounter = 0;
-                $scope.titleItems.forEach(function(title, index) {
-                    var item = {title: title};
-                    // TODO: create all items in bulk mode
-                    Customslide.create(item).then(
-                        function(success) {
-                            // find related agenda item
-                            Agenda.find(success.agenda_item_id).then(function(item) {
-                                // import all items as type AGENDA_ITEM = 1
-                                item.type = 1;
-                                item.weight = 1000 + index;
-                                Agenda.save(item);
-                            });
-                            $scope.importcounter++;
-                        }
-                    );
-                });
-            }
-        };
-
-        // *** CSV import ***
-        // set initial data for csv import
-        $scope.items = [];
-        $scope.separator = ',';
-        $scope.encoding = 'UTF-8';
-        $scope.encodingOptions = ['UTF-8', 'ISO-8859-1'];
-        $scope.accept = '.csv, .txt';
-        $scope.csv = {
-            content: null,
-            header: true,
-            headerVisible: false,
-            separator: $scope.separator,
-            separatorVisible: false,
-            encoding: $scope.encoding,
-            encodingVisible: false,
-            accept: $scope.accept,
-            result: null
-        };
-        // set csv file encoding
-        $scope.setEncoding = function () {
-            $scope.csv.encoding = $scope.encoding;
-        };
-        // set csv file encoding
-        $scope.setSeparator = function () {
-            $scope.csv.separator = $scope.separator;
-        };
-        // detect if csv file is loaded
-        $scope.$watch('csv.result', function () {
-            $scope.items = [];
-            var quotionRe = /^"(.*)"$/;
-            angular.forEach($scope.csv.result, function (item, index) {
-                // title
-                if (item.title) {
-                    item.title = item.title.replace(quotionRe, '$1');
-                }
-                if (!item.title) {
-                    item.importerror = true;
-                    item.title_error = gettext('Error: Title is required.');
-                }
-                // text
-                if (item.text) {
-                    item.text = item.text.replace(quotionRe, '$1');
-                }
-                // duration
-                if (item.duration) {
-                    item.duration = item.duration.replace(quotionRe, '$1');
-                }
-                // comment
-                if (item.comment) {
-                    item.comment = item.comment.replace(quotionRe, '$1');
-                }
-                // is_hidden
-                if (item.is_hidden) {
-                    item.is_hidden = item.is_hidden.replace(quotionRe, '$1');
-                    if (item.is_hidden == '1') {
-                        item.type = 2;
-                    } else {
-                        item.type = 1;
-                    }
-                } else {
-                    item.type = 1;
-                }
-                // set weight for right csv row order
-                // (Use 1000+ to protect existing items and prevent collision
-                // with new items which use weight 10000 as default.)
-                item.weight = 1000 + index;
-                $scope.items.push(item);
-            });
-        });
-
-        // import from csv file
-        $scope.import = function () {
-            $scope.csvImporting = true;
-            angular.forEach($scope.items, function (item) {
-                if (!item.importerror) {
-                    Customslide.create(item).then(
-                        function(success) {
-                            item.imported = true;
-                            // find related agenda item
-                            Agenda.find(success.agenda_item_id).then(function(agendaItem) {
-                                agendaItem.duration = item.duration;
-                                agendaItem.comment = item.comment;
-                                agendaItem.type = item.type;
-                                agendaItem.weight = item.weight;
-                                Agenda.save(agendaItem);
-                            });
-                        }
-                    );
-                }
-            });
-            $scope.csvimported = true;
-        };
-        $scope.clear = function () {
-            $scope.csv.result = null;
-        };
-        // download CSV example file
-        $scope.downloadCSVExample = function () {
-            var element = document.getElementById('downloadLink');
-            var csvRows = [
-                // column header line
-                ['title', 'text', 'duration', 'comment', 'is_hidden'],
-                // example entries
-                ['Demo 1', 'Demo text 1', '1:00', 'test comment', ''],
-                ['Break', '', '0:10', '', '1'],
-                ['Demo 2', 'Demo text 2', '1:30', '', '']
-
-            ];
-            var csvString = csvRows.join("%0A");
-            element.href = 'data:text/csv;charset=utf-8,' + csvString;
-            element.download = 'agenda-example.csv';
-            element.target = '_blank';
-        };
-     }
-])
-
 .controller('ListOfSpeakersViewCtrl', [
     '$scope',
     '$state',
     '$http',
     'Projector',
-    'Assignment',
-    'Customslide',
-    'Motion',
+    'Assignment', // TODO: Remove this after refactoring of data loading on start.
+    'Topic', // TODO: Remove this after refactoring of data loading on start.
+    'Motion', // TODO: Remove this after refactoring of data loading on start.
     'Agenda',
-    function($scope, $state, $http, Projector, Assignment, Customslide, Motion, Agenda) {
+    function($scope, $state, $http, Projector, Assignment, Topic, Motion, Agenda) {
         $scope.$watch(
             function() {
                 return Projector.lastModified(1);
@@ -572,10 +424,10 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                                     });
                                 });
                                 break;
-                            case 'core/customslide':
-                                Customslide.find(element.id).then(function(customslide) {
-                                    Customslide.loadRelations(customslide, 'agenda_item').then(function() {
-                                        $scope.AgendaItem = customslide.agenda_item;
+                            case 'topics/topic':
+                                Topic.find(element.id).then(function(topic) {
+                                    Topic.loadRelations(topic, 'agenda_item').then(function() {
+                                        $scope.AgendaItem = topic.agenda_item;
                                     });
                                 });
                                 break;

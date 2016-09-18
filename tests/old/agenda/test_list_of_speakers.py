@@ -1,5 +1,5 @@
 from openslides.agenda.models import Item, Speaker
-from openslides.core.models import CustomSlide
+from openslides.topics.models import Topic
 from openslides.users.models import User
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.test import TestCase
@@ -7,8 +7,8 @@ from openslides.utils.test import TestCase
 
 class ListOfSpeakerModelTests(TestCase):
     def setUp(self):
-        self.item1 = CustomSlide.objects.create(title='item1').agenda_item
-        self.item2 = CustomSlide.objects.create(title='item2').agenda_item
+        self.item1 = Topic.objects.create(title='item1').agenda_item
+        self.item2 = Topic.objects.create(title='item2').agenda_item
         self.speaker1 = User.objects.create(username='user1')
         self.speaker2 = User.objects.create(username='user2')
 

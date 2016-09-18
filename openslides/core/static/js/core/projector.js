@@ -42,10 +42,6 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 .config([
     'slidesProvider',
     function(slidesProvider) {
-        slidesProvider.registerSlide('core/customslide', {
-            template: 'static/templates/core/slide_customslide.html',
-        });
-
         slidesProvider.registerSlide('core/clock', {
             template: 'static/templates/core/slide_clock.html',
         });
@@ -148,18 +144,6 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                 $scope.scale = 100 + 20 * Projector.get(1).scale;
             }
         });
-    }
-])
-
-.controller('SlideCustomSlideCtrl', [
-    '$scope',
-    'Customslide',
-    function($scope, Customslide) {
-        // Attention! Each object that is used here has to be dealt on server side.
-        // Add it to the coresponding get_requirements method of the ProjectorElement
-        // class.
-        var id = $scope.element.id;
-        Customslide.bindOne(id, $scope, 'customslide');
     }
 ])
 

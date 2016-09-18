@@ -713,48 +713,6 @@ angular.module('OpenSlidesApp.core.site', [
                 templateUrl: 'static/templates/search.html',
             })
 
-            // customslide
-            .state('core.customslide', {
-                url: '/customslide',
-                abstract: true,
-                template: "<ui-view/>",
-            })
-            .state('core.customslide.detail', {
-                resolve: {
-                    customslide: function(Customslide, $stateParams) {
-                        return Customslide.find($stateParams.id);
-                    },
-                    items: function(Agenda) {
-                        return Agenda.findAll();
-                    }
-                }
-            })
-            // redirects to customslide detail and opens customslide edit form dialog, uses edit url,
-            // used by ui-sref links from agenda only
-            // (from customslide controller use CustomSlideForm factory instead to open dialog in front
-            // of current view without redirect)
-            .state('core.customslide.detail.update', {
-                onEnter: ['$stateParams', '$state', 'ngDialog', 'Customslide', 'Agenda',
-                    function($stateParams, $state, ngDialog, Customslide, Agenda) {
-                        ngDialog.open({
-                            template: 'static/templates/core/customslide-form.html',
-                            controller: 'CustomslideUpdateCtrl',
-                            className: 'ngdialog-theme-default wide-form',
-                            resolve: {
-                                customslide: function() {
-                                    return Customslide.find($stateParams.id);
-                                },
-                                items: function() {
-                                    return Agenda.findAll();
-                                }
-                            },
-                            preCloseCallback: function() {
-                                $state.go('core.customslide.detail', {customslide: $stateParams.id});
-                                return true;
-                            }
-                        });
-                    }],
-            })
             // tag
             .state('core.tag', {
                 url: '/tag',
@@ -1144,7 +1102,7 @@ angular.module('OpenSlidesApp.core.site', [
                 if ($scope.filterMotion && result.urlState == 'motions.motion.detail') {
                     return result;
                 }
-                if ($scope.filterAgenda && result.urlState == 'core.customslide.detail') {
+                if ($scope.filterAgenda && result.urlState == 'topics.topic.detail') {
                     return result;
                 }
                 if ($scope.filterAssignment && result.urlState == 'assignments.assignment.detail') {
@@ -1155,88 +1113,6 @@ angular.module('OpenSlidesApp.core.site', [
                 }
                 return;
             };
-        };
-    }
-])
-
-
-// Provide generic customslide form fields for create and update view
-.factory('CustomslideForm', [
-    'gettextCatalog',
-    'Editor',
-    'Mediafile',
-    'Agenda',
-    'AgendaTree',
-    function (gettextCatalog, Editor, Mediafile, Agenda, AgendaTree) {
-        return {
-            // ngDialog for customslide form
-            getDialog: function (customslide) {
-                var resolve = {};
-                if (customslide) {
-                    resolve = {
-                        customslide: function(Customslide) {return Customslide.find(customslide.id);}
-                    };
-                }
-                resolve.mediafiles = function(Mediafile) {return Mediafile.findAll();};
-                return {
-                    template: 'static/templates/core/customslide-form.html',
-                    controller: (customslide) ? 'CustomslideUpdateCtrl' : 'CustomslideCreateCtrl',
-                    className: 'ngdialog-theme-default wide-form',
-                    closeByEscape: false,
-                    closeByDocument: false,
-                    resolve: (resolve) ? resolve : null
-                };
-            },
-            getFormFields: function () {
-                var images = Mediafile.getAllImages();
-                return [
-                {
-                    key: 'title',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Title'),
-                        required: true
-                    }
-                },
-                {
-                    key: 'text',
-                    type: 'editor',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Text')
-                    },
-                    data: {
-                        tinymceOption: Editor.getOptions(images)
-                    }
-                },
-                {
-                    key: 'attachments_id',
-                    type: 'select-multiple',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Attachment'),
-                        options: Mediafile.getAll(),
-                        ngOptions: 'option.id as option.title_or_filename for option in to.options',
-                        placeholder: gettextCatalog.getString('Select or search an attachment ...')
-                    }
-                },
-                {
-                    key: 'showAsAgendaItem',
-                    type: 'checkbox',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Show as agenda item'),
-                        description: gettextCatalog.getString('If deactivated it appears as internal item on agenda.')
-                    }
-                },
-                {
-                    key: 'agenda_parent_item_id',
-                    type: 'select-single',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Parent item'),
-                        options: AgendaTree.getFlatTree(Agenda.getAll()),
-                        ngOptions: 'item.id as item.getListViewTitle() for item in to.options | notself : model.agenda_item_id',
-                        placeholder: gettextCatalog.getString('Select a parent item ...')
-                    }
-                }];
-            }
         };
     }
 ])
@@ -1450,101 +1326,6 @@ angular.module('OpenSlidesApp.core.site', [
                     $state.go(value.name.replace('/', '.')+'.detail.update', {id: value.id});
                 }
             });
-        };
-    }
-])
-
-// Customslide Controllers
-.controller('CustomslideDetailCtrl', [
-    '$scope',
-    'ngDialog',
-    'CustomslideForm',
-    'Customslide',
-    'customslide',
-    function($scope, ngDialog, CustomslideForm, Customslide, customslide) {
-        Customslide.bindOne(customslide.id, $scope, 'customslide');
-        Customslide.loadRelations(customslide, 'agenda_item');
-        // open edit dialog
-        $scope.openDialog = function (customslide) {
-            ngDialog.open(CustomslideForm.getDialog(customslide));
-        };
-    }
-])
-
-.controller('CustomslideCreateCtrl', [
-    '$scope',
-    '$state',
-    'Customslide',
-    'CustomslideForm',
-    'Agenda',
-    'AgendaUpdate',
-    function($scope, $state, Customslide, CustomslideForm, Agenda, AgendaUpdate) {
-        $scope.customslide = {};
-        $scope.model = {};
-        $scope.model.showAsAgendaItem = true;
-        // get all form fields
-        $scope.formFields = CustomslideForm.getFormFields();
-        // save form
-        $scope.save = function (customslide) {
-            Customslide.create(customslide).then(
-                function(success) {
-                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
-                    // see openslides.agenda.models.Item.ITEM_TYPE.
-                    var changes = [{key: 'type', value: (customslide.showAsAgendaItem ? 1 : 2)},
-                                   {key: 'parent_id', value: customslide.agenda_parent_item_id}];
-                    AgendaUpdate.saveChanges(success.agenda_item_id,changes);
-                });
-            $scope.closeThisDialog();
-        };
-    }
-])
-
-.controller('CustomslideUpdateCtrl', [
-    '$scope',
-    '$state',
-    'Customslide',
-    'CustomslideForm',
-    'Agenda',
-    'AgendaUpdate',
-    'customslide',
-    function($scope, $state, Customslide, CustomslideForm, Agenda, AgendaUpdate, customslide) {
-        Customslide.loadRelations(customslide, 'agenda_item');
-        $scope.alert = {};
-        // set initial values for form model by create deep copy of customslide object
-        // so list/detail view is not updated while editing
-        $scope.model = angular.copy(customslide);
-        // get all form fields
-        $scope.formFields = CustomslideForm.getFormFields();
-        for (var i = 0; i < $scope.formFields.length; i++) {
-            if ($scope.formFields[i].key == "showAsAgendaItem") {
-                // get state from agenda item (hidden/internal or agenda item)
-                $scope.formFields[i].defaultValue = !customslide.agenda_item.is_hidden;
-            } else if($scope.formFields[i].key == "agenda_parent_item_id") {
-                $scope.formFields[i].defaultValue = customslide.agenda_item.parent_id;
-            }
-        }
-
-        // save form
-        $scope.save = function (customslide) {
-            Customslide.create(customslide).then(
-                function(success) {
-                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
-                    // see openslides.agenda.models.Item.ITEM_TYPE.
-                    var changes = [{key: 'type', value: (customslide.showAsAgendaItem ? 1 : 2)},
-                                   {key: 'parent_id', value: customslide.agenda_parent_item_id}];
-                    AgendaUpdate.saveChanges(success.agenda_item_id,changes);
-                    $scope.closeThisDialog();
-                }, function (error) {
-                    // save error: revert all changes by restore
-                    // (refresh) original customslide object from server
-                    Customslide.refresh(customslide);
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
-                }
-            );
         };
     }
 ])

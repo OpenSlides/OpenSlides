@@ -3,28 +3,7 @@ from django.utils.timezone import now
 from ..utils.projector import ProjectorElement
 from .config import config
 from .exceptions import ProjectorException
-from .models import CustomSlide, Projector
-
-
-class CustomSlideSlide(ProjectorElement):
-    """
-    Slide definitions for custom slide model.
-    """
-    name = 'core/customslide'
-
-    def check_data(self):
-        if not CustomSlide.objects.filter(pk=self.config_entry.get('id')).exists():
-            raise ProjectorException('Custom slide does not exist.')
-
-    def get_requirements(self, config_entry):
-        try:
-            custom_slide = CustomSlide.objects.get(pk=config_entry.get('id'))
-        except CustomSlide.DoesNotExist:
-            # Custom slide does not exist. Just do nothing.
-            pass
-        else:
-            yield custom_slide
-            yield custom_slide.agenda_item
+from .models import Projector
 
 
 class Clock(ProjectorElement):

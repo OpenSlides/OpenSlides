@@ -6,34 +6,34 @@
         <translate>Back to overview</translate>
       </a>
       <!-- List of speakers -->
-      <a ui-sref="agenda.item.detail({id: customslide.agenda_item_id})" class="btn btn-sm btn-default">
+      <a ui-sref="agenda.item.detail({id: topic.agenda_item_id})" class="btn btn-sm btn-default">
         <i class="fa fa-microphone fa-lg"></i>
         <translate>List of speakers</translate>
       </a>
       <!-- project -->
       <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-          ng-class="{ 'btn-primary': customslide.isProjected() }"
-          ng-click="customslide.project()"
-          title="{{ 'Project agenda item' | translate }}">
+          ng-class="{ 'btn-primary': topic.isProjected() }"
+          ng-click="topic.project()"
+          title="{{ 'Project topic' | translate }}">
         <i class="fa fa-video-camera"></i>
       </a>
       <!-- edit -->
-      <a os-perms="agenda.can_manage" ng-click="openDialog(customslide)"
+      <a os-perms="agenda.can_manage" ng-click="openDialog(topic)"
           class="btn btn-default btn-sm"
           title="{{ 'Edit' | translate}}">
         <i class="fa fa-pencil"></i>
       </a>
     </div>
-    <h1>{{ customslide.agenda_item.getTitle() }}</h1>
-    <h2 translate>Agenda item</h2>
+    <h1>{{ topic.agenda_item.getTitle() }}</h1>
+    <h2 translate>Topic</h2>
   </div>
 </div>
 
 <div class="details">
-  <div ng-bind-html="customslide.text | trusted"></div>
-  <h3 ng-if="customslide.attachments.length > 0" translate>Attachments</h3>
+  <div ng-bind-html="topic.text | trusted"></div>
+  <h3 ng-if="topic.attachments.length > 0" translate>Attachments</h3>
   <ul>
-    <li ng-repeat="attachment in customslide.attachments">
+    <li ng-repeat="attachment in topic.attachments">
       <a href="{{ attachment.mediafileUrl }}" target="_blank">
         {{ attachment.title_or_filename }}
       </a>

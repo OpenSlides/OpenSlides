@@ -338,50 +338,6 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-.factory('Customslide', [
-    'DS',
-    'jsDataModel',
-    'gettext',
-    function(DS, jsDataModel, gettext) {
-        var name = 'core/customslide';
-        return DS.defineResource({
-            name: name,
-            useClass: jsDataModel,
-            verboseName: gettext('Agenda item'),
-            methods: {
-                getResourceName: function () {
-                    return name;
-                },
-                getAgendaTitle: function () {
-                    return this.title;
-                },
-                // link name which is shown in search result
-                getSearchResultName: function () {
-                    return this.getAgendaTitle();
-                },
-                // subtitle of search result
-                getSearchResultSubtitle: function () {
-                    return "Agenda item";
-                },
-            },
-            relations: {
-                belongsTo: {
-                    'agenda/item': {
-                        localKey: 'agenda_item_id',
-                        localField: 'agenda_item',
-                    }
-                },
-                hasMany: {
-                    'mediafiles/mediafile': {
-                        localField: 'attachments',
-                        localKeys: 'attachments_id',
-                    }
-                }
-            }
-        });
-    }
-])
-
 .factory('Tag', [
     'DS',
     function(DS) {
@@ -544,10 +500,9 @@ angular.module('OpenSlidesApp.core', [
 .run([
     'ChatMessage',
     'Config',
-    'Customslide',
     'Projector',
     'Tag',
-    function (ChatMessage, Config, Customslide, Projector, Tag) {}
+    function (ChatMessage, Config, Projector, Tag) {}
 ]);
 
 }());

@@ -9,7 +9,7 @@
         <i class="fa fa-sitemap fa-lg"></i>
         <translate>Sort agenda</translate>
       </a>
-      <a ui-sref="agenda.item.import" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
+      <a ui-sref="topics.topic.import" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
         <i class="fa fa-download fa-lg"></i>
         <translate>Import</translate>
       </a>
@@ -202,7 +202,7 @@
           <span os-perms="!agenda.can_manage">
             <i ng-if="item.closed" class="fa fa-check-square-o"></i>
           </span>
-          <input os-perms="agenda.can_manage" type="checkbox" ng-model="item.closed" ng-change="save(item.id);">
+          <input os-perms="agenda.can_manage" type="checkbox" ng-model="item.closed" ng-change="save(item);">
         <!-- quickEdit columns -->
         <td ng-show="item.quickEdit" os-perms="agenda.can_manage" colspan="3">
           <h4>{{ item.getTitle() }} <span class="text-muted">&ndash; QuickEdit</span></h4>
