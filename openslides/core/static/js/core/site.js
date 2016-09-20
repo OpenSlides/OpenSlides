@@ -352,7 +352,9 @@ angular.module('OpenSlidesApp.core.site', [
                                             lineNumberObject = {
                                                 width: 20,
                                                 text: lineNumberOutline,
-                                                color: "gray"
+                                                color: "gray",
+                                                fontSize: 8,
+                                                margin: [0, 2, 0, 0]
                                         },
                                             col = {
                                                 columns: [
