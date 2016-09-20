@@ -89,6 +89,22 @@ angular.module('OpenSlidesApp.core.site', [
                         header: header,
                         footer: footer,
                         content: content,
+                        styles: {
+                            title: {
+                                fontSize: 30,
+                                margin: [0,0,0,20],
+                                bold: true
+                            },
+                            heading: {
+                                fontSize: 16,
+                                margin: [0,0,0,10],
+                                bold: true
+                            },
+                            tableofcontent: {
+                                fontSize: 12,
+                                margin: [0,3]
+                            }
+                        }
                     };
                 };
             return {
