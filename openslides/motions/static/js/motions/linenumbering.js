@@ -63,6 +63,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         this._currentLineNumber++;
         node.setAttribute('class', 'os-line-number line-number-' + lineNumber);
         node.setAttribute('data-line-number', lineNumber + '');
+        node.setAttribute('name', 'L' + lineNumber);
         node.setAttribute('contenteditable', 'false');
         node.innerHTML = '&nbsp;'; // Prevent tinymce from stripping out empty span's
         return node;
@@ -78,23 +79,36 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
      * @returns Array
      * @private
      */
-    this._textNodeToLines = function (node, length) {
+    this._textNodeToLines = function (node, length, highlight) {
         var out = [],
             currLineStart = 0,
             i = 0,
             firstTextNode = true,
             lastBreakableIndex = null,
             service = this;
-
-        var addLine = function (text) {
-            var newNode = document.createTextNode(text);
+        var addLine = function (text, highlight) {
+            var node;
             if (firstTextNode) {
+                if (highlight == service._currentLineNumber - 1) {
+                    node = document.createElement('span');
+                    node.setAttribute('class', 'highlight');
+                    node.innerHTML = text;
+                } else {
+                    node = document.createTextNode(text);
+                }
                 firstTextNode = false;
             } else {
+                if (service._currentLineNumber == highlight) {
+                    node = document.createElement('span');
+                    node.setAttribute('class', 'highlight');
+                    node.innerHTML = text;
+                } else {
+                    node = document.createTextNode(text);
+                }
                 out.push(service._createLineBreak());
                 out.push(service._createLineNumber());
             }
-            out.push(newNode);
+            out.push(node);
         };
 
         if (node.nodeValue == "\n") {
@@ -122,7 +136,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                 }
                 if (lineBreakAt !== null && node.nodeValue[i] != ' ') {
                     var currLine = node.nodeValue.substring(currLineStart, lineBreakAt + 1);
-                    addLine(currLine);
+                    addLine(currLine, highlight);
 
                     currLineStart = lineBreakAt + 1;
                     this._currentInlineOffset = i - lineBreakAt - 1;
@@ -137,7 +151,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                 i++;
 
             }
-            addLine(node.nodeValue.substring(currLineStart));
+            addLine(node.nodeValue.substring(currLineStart), highlight);
         }
         return out;
     };
@@ -177,7 +191,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         }
     };
 
-    this._insertLineNumbersToInlineNode = function (node, length) {
+    this._insertLineNumbersToInlineNode = function (node, length, highlight) {
         var oldChildren = [], i;
         for (i = 0; i < node.childNodes.length; i++) {
             oldChildren.push(node.childNodes[i]);
@@ -189,7 +203,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
         for (i = 0; i < oldChildren.length; i++) {
             if (oldChildren[i].nodeType == TEXT_NODE) {
-                var ret = this._textNodeToLines(oldChildren[i], length);
+                var ret = this._textNodeToLines(oldChildren[i], length, highlight);
                 for (var j = 0; j < ret.length; j++) {
                     node.appendChild(ret[j]);
                 }
@@ -201,8 +215,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                     node.appendChild(this._createLineBreak());
                     node.appendChild(this._createLineNumber());
                 }
-
-                var changedNode = this._insertLineNumbersToNode(oldChildren[i], length);
+                var changedNode = this._insertLineNumbersToNode(oldChildren[i], length, highlight);
                 this._moveLeadingLineBreaksToOuterNode(changedNode, node);
                 node.appendChild(changedNode);
             } else {
@@ -253,7 +266,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         return Math.ceil(newLength);
     };
 
-    this._insertLineNumbersToBlockNode = function (node, length) {
+    this._insertLineNumbersToBlockNode = function (node, length, highlight) {
         this._currentInlineOffset = 0;
         this._prependLineNumberToFirstText = true;
 
@@ -268,7 +281,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
         for (i = 0; i < oldChildren.length; i++) {
             if (oldChildren[i].nodeType == TEXT_NODE) {
-                var ret = this._textNodeToLines(oldChildren[i], length);
+                var ret = this._textNodeToLines(oldChildren[i], length, highlight);
                 for (var j = 0; j < ret.length; j++) {
                     node.appendChild(ret[j]);
                 }
@@ -280,8 +293,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                     node.appendChild(this._createLineBreak());
                     node.appendChild(this._createLineNumber());
                 }
-
-                var changedNode = this._insertLineNumbersToNode(oldChildren[i], length);
+                var changedNode = this._insertLineNumbersToNode(oldChildren[i], length, highlight);
                 this._moveLeadingLineBreaksToOuterNode(changedNode, node);
                 node.appendChild(changedNode);
             } else {
@@ -295,15 +307,15 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         return node;
     };
 
-    this._insertLineNumbersToNode = function (node, length) {
+    this._insertLineNumbersToNode = function (node, length, highlight) {
         if (node.nodeType !== ELEMENT_NODE) {
             throw 'This method may only be called for ELEMENT-nodes: ' + node.nodeValue;
         }
         if (this._isInlineElement(node)) {
-            return this._insertLineNumbersToInlineNode(node, length);
+            return this._insertLineNumbersToInlineNode(node, length, highlight);
         } else {
             var newLength = this._calcBlockNodeLength(node, length);
-            return this._insertLineNumbersToBlockNode(node, newLength);
+            return this._insertLineNumbersToBlockNode(node, newLength, highlight);
         }
     };
 
@@ -329,7 +341,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         return root.innerHTML;
     };
 
-    this.insertLineNumbersNode = function (html, lineLength) {
+    this.insertLineNumbersNode = function (html, lineLength, highlight) {
         var root = document.createElement('div');
         root.innerHTML = html;
 
@@ -337,11 +349,15 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         this._currentLineNumber = 1;
         this._prependLineNumberToFirstText = true;
 
-        return this._insertLineNumbersToNode(root, lineLength);
+        return this._insertLineNumbersToNode(root, lineLength, highlight);
     };
 
-    this.insertLineNumbers = function (html, lineLength) {
-        var newRoot = this.insertLineNumbersNode(html, lineLength);
+    this.insertLineNumbers = function (html, lineLength, highlight, callback) {
+        var newRoot = this.insertLineNumbersNode(html, lineLength, highlight);
+
+        if (callback) {
+            callback();
+        }
 
         return newRoot.innerHTML;
     };

@@ -162,11 +162,11 @@ angular.module('OpenSlidesApp.motions', [
                 getText: function (versionId) {
                     return this.getVersion(versionId).text;
                 },
-                getTextWithLineBreaks: function (versionId) {
+                getTextWithLineBreaks: function (versionId, highlight, callback) {
                     var lineLength = Config.get('motions_line_length').value,
                         html = this.getVersion(versionId).text;
 
-                    return lineNumberingService.insertLineNumbers(html, lineLength);
+                    return lineNumberingService.insertLineNumbers(html, lineLength, highlight, callback);
                 },
                 setTextStrippingLineBreaks: function (versionId, text) {
                     this.text = lineNumberingService.stripLineNumbers(text);

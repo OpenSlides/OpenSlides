@@ -70,7 +70,7 @@
   </div>
 
   <!-- Text -->
-  <div ng-bind-html="motion.getTextWithLineBreaks() | trusted"
+  <div ng-bind-html="motion.getTextWithLineBreaks(null, line, scroll) | trusted"
        class="motion-text line-numbers-{{ config('motions_default_line_numbering') }}"></div>
 
   <!-- Reason -->

@@ -287,7 +287,7 @@
     </div>
 
     <div class="line-number-setter {{ lineNumberMode }}">
-      <div class="btn-group" data-toggle="buttons">
+      <span class="btn-group" data-toggle="buttons">
         <div class="btn btn-default disabled" title="{{ 'Line Numbering' | translate }}">
           <i class="fa fa-list-ol" aria-hidden="true"></i>
         </div>
@@ -309,9 +309,29 @@
                  ng-checked="lineNumberMode == 'outside'">
           <translate>Outside</translate>
         </label>
-      </div>
+      </span>
+      <span>
+        <form class="input-group" style="max-width: 220px;" ng-if="lineNumberMode != 'none'" ng-submit="scrollToAndHighlight(gotoLinenumber)">
+          <input type="number" class="form-control" ng-model="gotoLinenumber" placeholder="{{ 'Line' | translate }}"></input>
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default btn-slim" ng-show="gotoLinenumber"
+              ng-click="gotoLinenumber = ''; scrollToAndHighlight(0);">
+              <i class="fa fa-times text-danger"></i>
+            </button>
+            <button type="submit" class="btn btn-default">
+              <i class="fa fa-share"></i>
+              <translate>go</translate>
+            </button>
+            <button type="button" class="btn btn-default" os-perms="core.can_manage_projector"
+              ng-show="lineNumberMode != 'none' && motion.isProjected()" ng-click="toggleLinesForProjector()"
+              uib-tooltip="{{ 'Show highlighted line also on projector.' | translate }}">
+              <i class="fa" ng-class="linesForProjector ? 'fa-check-square-o' : 'fa-square-o'"></i>
+              <i class="fa fa-video-camera"></i>
+            </button>
+          </span>
+        </form>
+      </span>
     </div>
-
     <div  ng-class="{'col-sm-8': (lineNumberMode != 'outside'), 'col-sm-12': (lineNumberMode == 'outside')}">
 
       <div ng-if="motion.isAllowed('update') && version == motion.getVersion(-1).id">
@@ -319,7 +339,7 @@
           <div ui-tinymce="inlineEditing.tinymceOptions" ng-model="inlineEditing.lineBrokenText"
             class="motion-text line-numbers-{{ lineNumberMode }}"></div>
         </div>
-        <div ng-show="!inlineEditing.active" ng-bind-html="motion.getTextWithLineBreaks(version) | trusted"
+        <div ng-show="!inlineEditing.active" ng-bind-html="motion.getTextWithLineBreaks(version, highlight) | trusted"
            class="motion-text line-numbers-{{ lineNumberMode }}"></div>
 
         <div class="motion-save-toolbar" ng-class="{ 'visible': (inlineEditing.changed && inlineEditing.active) }">
@@ -332,7 +352,7 @@
         </div>
       </div>
       <div ng-if="!(motion.isAllowed('update') && version == motion.getVersion(-1).id)">
-        <div ng-bind-html="motion.getTextWithLineBreaks(version) | trusted"
+        <div ng-bind-html="motion.getTextWithLineBreaks(version, highlight) | trusted"
            class="motion-text line-numbers-{{ lineNumberMode }}"></div>
       </div>
 

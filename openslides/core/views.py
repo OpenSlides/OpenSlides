@@ -192,7 +192,8 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         elif self.action == 'metadata':
             result = self.request.user.has_perm('core.can_see_projector')
         elif self.action in ('activate_elements', 'prune_elements', 'update_elements',
-                             'deactivate_elements', 'clear_elements', 'control_view', 'set_resolution'):
+                             'deactivate_elements', 'clear_elements', 'control_view',
+                             'set_resolution', 'set_scroll'):
             result = (self.request.user.has_perm('core.can_see_projector') and
                       self.request.user.has_perm('core.can_manage_projector'))
         else:
@@ -426,6 +427,25 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         message = '{action} {direction} was successful.'.format(
             action=request.data['action'].capitalize(),
             direction=request.data['direction'])
+        return Response({'detail': message})
+
+    @detail_route(methods=['post'])
+    def set_scroll(self, request, pk):
+        """
+        REST API operation to scroll the projector.
+
+        It expects a POST request to
+        /rest/core/projector/<pk>/set_scroll/ with a new value for scroll.
+        """
+        if not isinstance(request.data, int):
+            raise ValidationError({'detail': 'Data must be an int.'})
+
+        projector_instance = self.get_object()
+        projector_instance.scroll = request.data
+
+        projector_instance.save()
+        message = 'Setting scroll to {scroll} was successful.'.format(
+            scroll=request.data)
         return Response({'detail': message})
 
 

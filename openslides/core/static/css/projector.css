@@ -381,6 +381,10 @@ tr.elected td {
 
 
 /*** Line numbers ***/
+.motion-text .highlight {
+    background-color: #ff0;
+}
+
 .motion-text.line-numbers-outside {
     padding-left: 0;
     margin-left: 25px;
@@ -424,5 +428,5 @@ tr.elected td {
     display: none;
 }
 .motion-text.line-numbers-none .os-line-number {
-    display: none;
+    visibility: hidden;
 }
