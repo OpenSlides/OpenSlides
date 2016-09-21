@@ -171,8 +171,9 @@
           <a ui-sref="legalnotice" translate>Legal notice</a>
         </div><!--end footer-->
     </div>
-    <div class="col2" os-perms="core.can_see_projector"
-        ng-class="isProjectorSidebar ? 'max' : 'min'">
+    <div id="sidebar" class="col2" os-perms="core.can_see_projector"
+        ng-class="isProjectorSidebar ? 'max' : 'min'"
+        ng-init="initSidebar()">
       <!-- sidebar maximized -->
       <div class="projector_full" ng-if="isProjectorSidebar">
         <div class="title" ng-click="showProjectorSidebar(false)">
