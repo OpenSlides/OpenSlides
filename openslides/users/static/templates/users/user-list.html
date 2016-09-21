@@ -92,8 +92,9 @@
       </select>
       <!-- delete button -->
       <a ng-show="selectedAction == 'delete'"
-          ng-click="deleteMultiple()"
-          class="btn btn-default">
+        ng-bootbox-confirm="{{ 'Are you sure you want to delete all selected users?' | translate }}"
+        ng-bootbox-confirm-action="deleteMultiple()"
+        class="btn btn-default">
         <i class="fa fa-trash fa-lg"></i>
         <translate>Delete selected participants</translate>
       </a>

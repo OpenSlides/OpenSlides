@@ -186,7 +186,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             }
         };
         // delete selected items only if items are customslides
-        $scope.delete = function () {
+        $scope.deleteMultiple = function () {
             angular.forEach($scope.items, function (item) {
                 if (item.selected) {
                     DS.destroy(item.content_object.collection, item.content_object.id);
