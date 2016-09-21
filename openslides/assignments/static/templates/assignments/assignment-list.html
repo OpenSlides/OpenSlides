@@ -61,9 +61,10 @@
   <div uib-collapse="!isDeleteMode" class="row spacer">
     <div class="col-sm-12 text-left">
       <!-- delete button -->
-      <a ng-show="isDeleteMode"
-          os-perms="assignments.can_manage" ng-click="deleteMultiple()"
-          class="btn btn-primary">
+      <a ng-show="isDeleteMode" os-perms="assignments.can_manage"
+        ng-bootbox-confirm="{{ 'Are you sure you want to delete all selected elections?' | translate }}"
+        ng-bootbox-confirm-action="deleteMultiple()"
+        class="btn btn-primary">
         <i class="fa fa-trash fa-lg"></i>
         <translate>Delete selected elections</translate>
       </a>
