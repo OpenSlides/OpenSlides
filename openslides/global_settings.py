@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'channels',
     'openslides.agenda',
+    'openslides.topics',
     'openslides.motions',
     'openslides.assignments',
     'openslides.mediafiles',

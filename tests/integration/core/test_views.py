@@ -6,7 +6,8 @@ from rest_framework.test import APIClient
 
 from openslides import __version__ as version
 from openslides.core.config import ConfigVariable, config
-from openslides.core.models import CustomSlide, Projector
+from openslides.core.models import Projector
+from openslides.topics.models import Topic
 from openslides.utils.rest_api import ValidationError
 from openslides.utils.test import TestCase
 
@@ -17,10 +18,10 @@ class ProjectorAPI(TestCase):
     """
     def test_slide_on_default_projector(self):
         self.client.login(username='admin', password='admin')
-        customslide = CustomSlide.objects.create(title='title_que1olaish5Wei7que6i', text='text_aishah8Eh7eQuie5ooji')
+        topic = Topic.objects.create(title='title_que1olaish5Wei7que6i', text='text_aishah8Eh7eQuie5ooji')
         default_projector = Projector.objects.get(pk=1)
         default_projector.config = {
-            'aae4a07b26534cfb9af4232f361dce73': {'name': 'core/customslide', 'id': customslide.id}}
+            'aae4a07b26534cfb9af4232f361dce73': {'name': 'topics/topic', 'id': topic.id}}
         default_projector.save()
 
         response = self.client.get(reverse('projector-detail', args=['1']))
@@ -30,9 +31,9 @@ class ProjectorAPI(TestCase):
             'id': 1,
             'elements': {
                 'aae4a07b26534cfb9af4232f361dce73':
-                    {'id': customslide.id,
+                    {'id': topic.id,
                      'uuid': 'aae4a07b26534cfb9af4232f361dce73',
-                     'name': 'core/customslide'}},
+                     'name': 'topics/topic'}},
             'scale': 0,
             'scroll': 0,
             'width': 1024,

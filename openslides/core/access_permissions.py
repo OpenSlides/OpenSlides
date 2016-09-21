@@ -20,25 +20,6 @@ class ProjectorAccessPermissions(BaseAccessPermissions):
         return ProjectorSerializer
 
 
-class CustomSlideAccessPermissions(BaseAccessPermissions):
-    """
-    Access permissions container for CustomSlide and CustomSlideViewSet.
-    """
-    def check_permissions(self, user):
-        """
-        Returns True if the user has read access model instances.
-        """
-        return user.has_perm('core.can_manage_projector')
-
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import CustomSlideSerializer
-
-        return CustomSlideSerializer
-
-
 class TagAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Tag and TagViewSet.

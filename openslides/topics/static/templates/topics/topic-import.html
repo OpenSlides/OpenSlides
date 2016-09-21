@@ -6,14 +6,13 @@
         <translate>Back to overview</translate>
       </a>
     </div>
-    <h1 translate>Import agenda items</h1>
+    <h1 translate>Import topics</h1>
   </div>
 </div>
 
 <div class="details">
 <h2 translate>Import by copy/paste</h2>
-<p translate>Copy and paste your agenda item titles in this textbox.
-Keep each item in a single line.</p>
+<p translate>Copy and paste your topic titles in this textbox. Keep each item in a single line.</p>
 
 <div class="row">
   <div class="form-group col-sm-6">
@@ -114,20 +113,20 @@ Keep each item in a single line.</p>
       <div ng-repeat="item in itemsFailed = (items | filter:{importerror:true})"></div>
       <i class="fa fa-exclamation-triangle"></i>
       {{ itemsFailed.length }}
-      <translate>agenda items will be not imported.</translate>
+      <translate>topics will be not imported.</translate>
     </div>
     <div>
       <div ng-repeat="item in itemsPassed = (items | filter:{importerror:false})"></div>
       <i class="fa fa-check-circle-o fa-lg"></i>
       {{ items.length - itemsFailed.length }}
-      <translate>items will be imported.</translate>
+      <translate>topics will be imported.</translate>
     </div>
     <div ng-repeat="item in itemsImported = (items | filter:{imported:true})"></div>
     <div ng-if="itemsImported.length > 0" class="text-success">
       <hr class="smallhr">
       <i class="fa fa-check-circle fa-lg"></i>
       {{ itemsImported.length }}
-      <translate>items were successfully imported.</translate>
+      <translate>topics were successfully imported.</translate>
     </div>
 
     <div class="spacer">
@@ -135,7 +134,7 @@ Keep each item in a single line.</p>
         Clear preview
       </button>
       <button ng-if="!csvImporting" ng-click="import()" class="btn btn-primary" translate>
-        Import {{ items.length - itemsFailed.length }} items
+        Import {{ items.length - itemsFailed.length }} topics
       </button>
     </div>
     <div class="spacer">

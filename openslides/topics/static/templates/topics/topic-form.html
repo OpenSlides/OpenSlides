@@ -1,13 +1,13 @@
-<h1 ng-if="model.id" translate>Edit agenda item</h1>
-<h1 ng-if="!model.id" translate>New agenda item</h1>
+<h1 ng-if="model.id" translate>Edit topic</h1>
+<h1 ng-if="!model.id" translate>New topic</h1>
 
 <div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
   {{ alert.msg }}
 </div>
 
-<form name="customslideForm" ng-submit="save(model)">
+<form name="topicForm" ng-submit="save(model)">
   <formly-form model="model" fields="formFields">
-    <button type="submit" ng-disabled="customslideForm.$invalid" class="btn btn-primary" translate>
+    <button type="submit" ng-disabled="topicForm.$invalid" class="btn btn-primary" translate>
       Save
     </button>
     <button type="button" ng-click="closeThisDialog()" class="btn btn-default" translate>

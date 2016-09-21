@@ -24,7 +24,6 @@ class CoreAppConfig(AppConfig):
         from .views import (
             ChatMessageViewSet,
             ConfigViewSet,
-            CustomSlideViewSet,
             ProjectorViewSet,
             TagViewSet,
         )
@@ -40,7 +39,6 @@ class CoreAppConfig(AppConfig):
         # Register viewsets.
         router.register(self.get_model('Projector').get_collection_string(), ProjectorViewSet)
         router.register(self.get_model('ChatMessage').get_collection_string(), ChatMessageViewSet)
-        router.register(self.get_model('CustomSlide').get_collection_string(), CustomSlideViewSet)
         router.register(self.get_model('Tag').get_collection_string(), TagViewSet)
         router.register(self.get_model('ConfigStore').get_collection_string(), ConfigViewSet, 'config')
 

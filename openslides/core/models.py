@@ -1,17 +1,14 @@
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.models import Session as DjangoSession
 from django.db import models
 from jsonfield import JSONField
 
-from openslides.mediafiles.models import Mediafile
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.projector import ProjectorElement
 
 from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,
-    CustomSlideAccessPermissions,
     ProjectorAccessPermissions,
     TagAccessPermissions,
 )
@@ -32,7 +29,7 @@ class Projector(RESTModelMixin, models.Model):
 
     {
         "881d875cf01741718ca926279ac9c99c": {
-            "name": "core/customslide",
+            "name": "topics/topic",
             "id": 1
         },
         "191c0878cdc04abfbd64f3177a21891a": {
@@ -153,61 +150,6 @@ class Projector(RESTModelMixin, models.Model):
     def need_full_update_for(self, collection_element):
         # TODO: Implement this for all ProjectorElements (also for config values!)
         return True
-
-
-class CustomSlide(RESTModelMixin, models.Model):
-    """
-    Model for slides with custom content.
-    """
-    access_permissions = CustomSlideAccessPermissions()
-
-    title = models.CharField(
-        max_length=256)
-    text = models.TextField(
-        blank=True)
-    weight = models.IntegerField(
-        default=0)
-    attachments = models.ManyToManyField(
-        Mediafile,
-        blank=True)
-
-    class Meta:
-        default_permissions = ()
-        ordering = ('weight', 'title', )
-
-    def __str__(self):
-        return self.title
-
-    @property
-    def agenda_item(self):
-        """
-        Returns the related agenda item.
-        """
-        # TODO: Move the agenda app in the core app to fix circular dependencies
-        from openslides.agenda.models import Item
-        content_type = ContentType.objects.get_for_model(self)
-        return Item.objects.get(object_id=self.pk, content_type=content_type)
-
-    @property
-    def agenda_item_id(self):
-        """
-        Returns the id of the agenda item object related to this object.
-        """
-        return self.agenda_item.pk
-
-    def get_agenda_title(self):
-        return self.title
-
-    def get_agenda_list_view_title(self):
-        return self.title
-
-    def get_search_index_string(self):
-        """
-        Returns a string that can be indexed for the search.
-        """
-        return " ".join((
-            self.title,
-            self.text))
 
 
 class Tag(RESTModelMixin, models.Model):

@@ -5,7 +5,8 @@ from rest_framework.test import APIClient
 
 from openslides.agenda.models import Item, Speaker
 from openslides.core.config import config
-from openslides.core.models import CustomSlide, Projector
+from openslides.core.models import Projector
+from openslides.topics.models import Topic
 from openslides.utils.test import TestCase
 
 
@@ -16,7 +17,7 @@ class RetrieveItem(TestCase):
     def setUp(self):
         self.client = APIClient()
         config['general_system_enable_anonymous'] = True
-        self.item = CustomSlide.objects.create(title='test_title_Idais2pheepeiz5uph1c').agenda_item
+        self.item = Topic.objects.create(title='test_title_Idais2pheepeiz5uph1c').agenda_item
 
     def test_normal_by_anonymous_without_perm_to_see_hidden_items(self):
         group = get_user_model().groups.field.related_model.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
@@ -47,7 +48,7 @@ class ManageSpeaker(TestCase):
         self.client = APIClient()
         self.client.login(username='admin', password='admin')
 
-        self.item = CustomSlide.objects.create(title='test_title_aZaedij4gohn5eeQu8fe').agenda_item
+        self.item = Topic.objects.create(title='test_title_aZaedij4gohn5eeQu8fe').agenda_item
         self.user = get_user_model().objects.create_user(
             username='test_user_jooSaex1bo5ooPhuphae',
             password='test_password_e6paev4zeeh9n')
@@ -164,7 +165,7 @@ class Speak(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.client.login(username='admin', password='admin')
-        self.item = CustomSlide.objects.create(title='test_title_KooDueco3zaiGhiraiho').agenda_item
+        self.item = Topic.objects.create(title='test_title_KooDueco3zaiGhiraiho').agenda_item
         self.user = get_user_model().objects.create_user(
             username='test_user_Aigh4vohb3seecha4aa4',
             password='test_password_eneupeeVo5deilixoo8j')
@@ -273,19 +274,19 @@ class Numbering(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.client.login(username='admin', password='admin')
-        self.item_1 = CustomSlide.objects.create(title='test_title_thuha8eef7ohXar3eech').agenda_item
+        self.item_1 = Topic.objects.create(title='test_title_thuha8eef7ohXar3eech').agenda_item
         self.item_1.type = Item.AGENDA_ITEM
         self.item_1.weight = 1
         self.item_1.save()
-        self.item_2 = CustomSlide.objects.create(title='test_title_eisah7thuxa1eingaeLo').agenda_item
+        self.item_2 = Topic.objects.create(title='test_title_eisah7thuxa1eingaeLo').agenda_item
         self.item_2.type = Item.AGENDA_ITEM
         self.item_2.weight = 2
         self.item_2.save()
-        self.item_2_1 = CustomSlide.objects.create(title='test_title_Qui0audoaz5gie1phish').agenda_item
+        self.item_2_1 = Topic.objects.create(title='test_title_Qui0audoaz5gie1phish').agenda_item
         self.item_2_1.type = Item.AGENDA_ITEM
         self.item_2_1.parent = self.item_2
         self.item_2_1.save()
-        self.item_3 = CustomSlide.objects.create(title='test_title_ah7tphisheineisgaeLo').agenda_item
+        self.item_3 = Topic.objects.create(title='test_title_ah7tphisheineisgaeLo').agenda_item
         self.item_3.type = Item.AGENDA_ITEM
         self.item_3.weight = 3
         self.item_3.save()

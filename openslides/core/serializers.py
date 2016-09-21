@@ -1,6 +1,6 @@
 from openslides.utils.rest_api import Field, ModelSerializer, ValidationError
 
-from .models import ChatMessage, CustomSlide, Projector, Tag
+from .models import ChatMessage, Projector, Tag
 
 
 class JSONSerializerField(Field):
@@ -31,15 +31,6 @@ class ProjectorSerializer(ModelSerializer):
     class Meta:
         model = Projector
         fields = ('id', 'config', 'elements', 'scale', 'scroll', 'width', 'height',)
-
-
-class CustomSlideSerializer(ModelSerializer):
-    """
-    Serializer for core.models.CustomSlide objects.
-    """
-    class Meta:
-        model = CustomSlide
-        fields = ('id', 'title', 'text', 'weight', 'attachments', 'agenda_item_id')
 
 
 class TagSerializer(ModelSerializer):

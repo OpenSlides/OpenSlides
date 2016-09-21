@@ -3,15 +3,15 @@ import json
 from rest_framework.test import APIClient
 
 from openslides.agenda.models import Item
-from openslides.core.models import CustomSlide
+from openslides.topics.models import Topic
 from openslides.utils.test import TestCase
 
 
 class AgendaTreeTest(TestCase):
     def setUp(self):
-        CustomSlide.objects.create(title='item1')
-        item2 = CustomSlide.objects.create(title='item2').agenda_item
-        item3 = CustomSlide.objects.create(title='item2a').agenda_item
+        Topic.objects.create(title='item1')
+        item2 = Topic.objects.create(title='item2').agenda_item
+        item3 = Topic.objects.create(title='item2a').agenda_item
         item3.parent = item2
         item3.save()
         self.client = APIClient()
@@ -90,7 +90,7 @@ class TestAgendaPDF(TestCase):
         """
         Tests that a requst on the pdf-page returns with statuscode 200.
         """
-        CustomSlide.objects.create(title='item1')
+        Topic.objects.create(title='item1')
         self.client.login(username='admin', password='admin')
 
         response = self.client.get('/agenda/print/')

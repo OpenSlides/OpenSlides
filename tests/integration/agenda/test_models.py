@@ -1,5 +1,5 @@
 from openslides.agenda.models import Item
-from openslides.core.models import CustomSlide
+from openslides.topics.models import Topic
 from openslides.utils.test import TestCase
 
 
@@ -9,7 +9,7 @@ class TestItemManager(TestCase):
         Test that get_root_and_children needs only one db query.
         """
         for i in range(10):
-            CustomSlide.objects.create(title='item{}'.format(i))
+            Topic.objects.create(title='item{}'.format(i))
 
         with self.assertNumQueries(1):
             Item.objects.get_root_and_children()

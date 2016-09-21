@@ -82,8 +82,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             // (from assignment controller use AssignmentForm factory instead to open dialog in front
             // of current view without redirect)
             .state('assignments.assignment.detail.update', {
-                onEnter: ['$stateParams', '$state', 'ngDialog', 'Assignment', 'Agenda',
-                    function($stateParams, $state, ngDialog, Assignment, Agenda) {
+                onEnter: ['$stateParams', '$state', 'ngDialog', 'Assignment',
+                    function($stateParams, $state, ngDialog, Assignment) {
                         ngDialog.open({
                             template: 'static/templates/assignments/assignment-form.html',
                             controller: 'AssignmentUpdateCtrl',

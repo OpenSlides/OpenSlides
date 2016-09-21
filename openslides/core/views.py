@@ -37,13 +37,12 @@ from openslides.utils.search import search
 from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,
-    CustomSlideAccessPermissions,
     ProjectorAccessPermissions,
     TagAccessPermissions,
 )
 from .config import config
 from .exceptions import ConfigError, ConfigNotFound
-from .models import ChatMessage, CustomSlide, Projector, Tag
+from .models import ChatMessage, Projector, Tag
 
 
 # Special Django views
@@ -447,27 +446,6 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         message = 'Setting scroll to {scroll} was successful.'.format(
             scroll=request.data)
         return Response({'detail': message})
-
-
-class CustomSlideViewSet(ModelViewSet):
-    """
-    API endpoint for custom slides.
-
-    There are the following views: metadata, list, retrieve, create,
-    partial_update, update and destroy.
-    """
-    access_permissions = CustomSlideAccessPermissions()
-    queryset = CustomSlide.objects.all()
-
-    def check_view_permissions(self):
-        """
-        Returns True if the user has required permissions.
-        """
-        if self.action in ('list', 'retrieve'):
-            result = self.get_access_permissions().check_permissions(self.request.user)
-        else:
-            result = self.request.user.has_perm('core.can_manage_projector')
-        return result
 
 
 class TagViewSet(ModelViewSet):
