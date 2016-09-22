@@ -58,6 +58,7 @@ class MediafileSerializer(ModelSerializer):
             'media_url_prefix',
             'uploader',
             'filesize',
+            'private',
             'timestamp',)
 
     def get_filesize(self, mediafile):

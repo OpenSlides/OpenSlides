@@ -1324,6 +1324,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         gettext('Can see the list of files');
         gettext('Can upload files');
         gettext('Can manage files');
+        gettext('Can see private files');
         // motions
         gettext('Can see motions');
         gettext('Can create motions');

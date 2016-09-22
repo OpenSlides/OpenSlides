@@ -32,6 +32,7 @@ def create_builtin_groups_and_admin(**kwargs):
         'core.can_use_chat',
         'mediafiles.can_manage',
         'mediafiles.can_see',
+        'mediafiles.can_see_private',
         'mediafiles.can_upload',
         'motions.can_create',
         'motions.can_manage',
@@ -110,7 +111,8 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['motions.can_see_and_manage_comments'],
         permission_dict['users.can_see_name'],
         permission_dict['users.can_manage'],
-        permission_dict['users.can_see_extra_data'],)
+        permission_dict['users.can_see_extra_data'],
+        permission_dict['mediafiles.can_see_private'],)
     group_staff = Group.objects.create(name='Staff', pk=3)
     group_staff.permissions.add(*staff_permissions)
 
