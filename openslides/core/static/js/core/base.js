@@ -429,6 +429,29 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+/* Converts number of minutes into string "h:mm" or "hh:mm" */
+.filter('osMinutesToTime', [
+    function () {
+        return function (totalminutes) {
+            if (!totalminutes) {
+                return '';
+            } else {
+                var time = "";
+                if (totalminutes < 0) {
+                    time = "-";
+                    totalminutes = -totalminutes;
+                }
+                var hh = Math.floor(totalminutes / 60);
+                var mm = Math.floor(totalminutes % 60);
+                // Add leading "0" for double digit values
+                mm = ("0"+mm).slice(-2);
+                time += hh + ":" + mm;
+                return time;
+            }
+        };
+    }
+])
+
 .filter('osFilter', [
     function () {
         return function (array, string, getFilterString) {
