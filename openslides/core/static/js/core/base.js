@@ -433,10 +433,8 @@ angular.module('OpenSlidesApp.core', [
 .filter('osMinutesToTime', [
     function () {
         return function (totalminutes) {
-            if (!totalminutes) {
-                return '';
-            } else {
-                var time = "";
+            var time = '';
+            if (totalminutes) {
                 if (totalminutes < 0) {
                     time = "-";
                     totalminutes = -totalminutes;
@@ -444,10 +442,10 @@ angular.module('OpenSlidesApp.core', [
                 var hh = Math.floor(totalminutes / 60);
                 var mm = Math.floor(totalminutes % 60);
                 // Add leading "0" for double digit values
-                mm = ("0"+mm).slice(-2);
+                mm = ("0" + mm).slice(-2);
                 time += hh + ":" + mm;
-                return time;
             }
+            return time;
         };
     }
 ])

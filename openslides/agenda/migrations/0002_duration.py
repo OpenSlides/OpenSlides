@@ -9,7 +9,6 @@ def convert_duration(apps, schema_editor):
     Item = apps.get_model('agenda', 'item')
     for item in Item.objects.all():
         duration = item.duration
-
         item.duration_tmp = None
         if is_int(duration):
             # assuming that these are minutes
@@ -26,9 +25,10 @@ def convert_duration(apps, schema_editor):
 def is_int(s):
     try:
         int(s)
-        return True
     except ValueError:
         return False
+    else:
+        return True
 
 
 class Migration(migrations.Migration):

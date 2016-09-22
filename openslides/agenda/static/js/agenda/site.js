@@ -129,7 +129,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             if (startTime) {
                 var timestamp = Date.parse(startTime) + totalDuration * 60 * 1000;
                 var endDate = new Date(timestamp);
-                var mm = ("0"+endDate.getMinutes()).slice(-2);
+                var mm = ("0" + endDate.getMinutes()).slice(-2);
                 var dateStr = endDate.getHours() + ':' + mm;
                 return dateStr;
             } else {
