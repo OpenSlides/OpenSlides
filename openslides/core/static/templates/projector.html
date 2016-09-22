@@ -40,6 +40,12 @@
       margin-top: {{scroll}}px !important;
       font-size: {{scale}}%;
     }
+    .mediascrollcontent {
+      margin-top: {{scroll/2}}em !important;
+      -webkit-transform: scale({{scale/100}});
+      -ms-transform: scale({{scale/100}});
+      transform: scale({{scale/100}});
+    }
   </style>
   <div ng-repeat="element in elements | orderBy:'index'">
     <div ng-include="element.template"></div>

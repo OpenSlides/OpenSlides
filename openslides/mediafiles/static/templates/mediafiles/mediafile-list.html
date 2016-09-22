@@ -26,7 +26,7 @@
       <div class="col-md-12">
         <div ng-repeat="presentedMediafile in presentedMediafiles">
           <h3>{{ getTitle(presentedMediafile) }}</h3>
-          <nav ng-class="getNavStyle(scroll)" class="form-inline">
+          <nav ng-show="getType(presentedMediafile) === 'pdf'" ng-class="getNavStyle(scroll)" class="form-inline">
             <div class="btn-group">
               <button class="btn btn-default" ng-click="mediafileGoToPage(presentedMediafile.page - 1)"
                   ng-class="{ 'disabled': (presentedMediafile.page - 1) < 1 }"
@@ -63,9 +63,42 @@
               </button>
             </div>
           </nav>
+          <nav ng-show="getType(presentedMediafile) === 'image'" ng-class="getNavStyle(scroll)" class="form-inline">
+            <div class="btn-group">
+              <button class="btn btn-default" ng-click="mediafileToggleFullscreen()" title="{{ 'Toggle fullscreen' | translate }}"
+                  ng-class="presentedMediafile.fullscreen ? 'btn-primary' : 'btn-default'">
+                <i class="fa fa-arrows-alt"></i>
+              </button>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-default" ng-click="mediafileRotate()" title="{{ 'Rotate clockwise' | translate }}">
+                <i class="fa fa-repeat"></i>
+              </button>
+            </div>
+          </nav>
+          <nav ng-show="getType(presentedMediafile) === 'video'" ng-class="getNavStyle(scroll)" class="form-inline">
+            <div class="btn-group">
+              <button class="btn btn-default" ng-click="mediafileToggleFullscreen()" title="{{ 'Toggle fullscreen' | translate }}"
+                  ng-class="presentedMediafile.fullscreen ? 'btn-primary' : 'btn-default'">
+                <i class="fa fa-arrows-alt"></i>
+              </button>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-default" ng-click="setPlaying(false)" title="{{ 'Stop' | translate }}"
+                  ng-class="presentedMediafile.playing ? 'btn-default' : 'btn-primary'">
+                <i class="fa fa-stop"></i>
+              </button>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-default" ng-click="setPlaying(true)" title="{{ 'Play' | translate }}"
+                  ng-class="presentedMediafile.playing ? 'btn-primary' : 'btn-default'">
+                <i class="fa fa-play"></i>
+              </button>
+            </div>
+          </nav>
         </div>
         <div ng-show="!presentedMediafiles.length" class="spacer">
-          <i translate>No PDF file projected.</i>
+          <i translate>No media file projected.</i>
         </div>
       </div>
     </div>
@@ -163,9 +196,9 @@
         <td ng-show="!isDeleteMode"
             os-perms="core.can_manage_projector">
           <a class="btn btn-default btn-sm"
-              ng-if="mediafile.mediafile.type == 'application/pdf'"
+              ng-if="mediafile.is_presentable"
               ng-class="{ 'btn-primary': mediafile.isProjected() }"
-              ng-click="showPdf(mediafile)"
+              ng-click="showMediafile(mediafile)"
               title="{{ 'Project mediafile' | translate }}">
             <i class="fa fa-video-camera"></i>
           </a>
