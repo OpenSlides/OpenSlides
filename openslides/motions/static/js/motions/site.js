@@ -1607,37 +1607,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                 }
             });
 
-            // TODO (Issue #2293):
-            // fix _.uniqWith(importedXXX, _.isEqual);
-            // (You need lodash version >= 4.0.0)
-
-            // unique users
-            var importedUsersUnique = [];
-            importedUsers.forEach(function (u1) {
-                var unique = true;
-                importedUsersUnique.forEach(function (u2) {
-                    if (u1.first_name == u2.first_name &&
-                        u1.last_name == u2.last_name) {
-                        unique = false;
-                    }
-                });
-                if (unique) {
-                    importedUsersUnique.push(u1);
-                }
+            // unique users and categories
+            var importedUsersUnique = _.uniqWith(importedUsers, function (u1, u2) {
+                return u1.first_name == u2.first_name &&
+                    u1.last_name == u2.last_name;
             });
-
-            // unique categories
-            var importedCategoriesUnique = [];
-            importedCategories.forEach(function (c1) {
-                var unique = true;
-                importedCategoriesUnique.forEach(function (c2) {
-                    if (c1.name == c2.name) {
-                        unique = false;
-                    }
-                });
-                if (unique) {
-                    importedCategoriesUnique.push(c1);
-                }
+            var importedCategoriesUnique = _.uniqWith(importedCategories, function (c1, c2) {
+                return c1.name == c2.name;
             });
 
             // Promises for users and categories

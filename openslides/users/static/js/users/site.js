@@ -189,7 +189,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             link: function($scope, $element, $attr, ctrl, $transclude) {
                 var block, childScope, previousElements, perms;
                 if ($attr.osPerms[0] === '!') {
-                    perms = _.trimLeft($attr.osPerms, '!');
+                    perms = _.trimStart($attr.osPerms, '!');
                 } else {
                     perms = $attr.osPerms;
                 }
