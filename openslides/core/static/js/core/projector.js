@@ -85,24 +85,17 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             var scale_width = window.innerWidth / $scope.projectorWidth;
             var scale_height = window.innerHeight / $scope.projectorHeight;
 
-            if (scale_width > 1 && scale_height > 1) {
-                // Iframe fits in full size in the window
-                $scope.scale = 1;
-                $scope.iframeWidth = $scope.projectorWidth;
-                $scope.iframeHeight = $scope.projectorHeight;
+            // Iframe has to be scaled down or saceUp is activated
+            if (scale_width <= scale_height) {
+                // width is the reference
+                $scope.iframeWidth = window.innerWidth;
+                $scope.scale = scale_width;
+                $scope.iframeHeight = $scope.projectorHeight * scale_width;
             } else {
-                // Iframe has to be scaled down
-                if (scale_width <= scale_height) {
-                    // width is the reference
-                    $scope.iframeWidth = window.innerWidth;
-                    $scope.scale = scale_width;
-                    $scope.iframeHeight = $scope.projectorHeight * scale_width;
-                } else {
-                    // height is the reference
-                    $scope.iframeHeight = window.innerHeight;
-                    $scope.scale = scale_height;
-                    $scope.iframeWidth = $scope.projectorWidth * scale_height;
-                }
+                // height is the reference
+                $scope.iframeHeight = window.innerHeight;
+                $scope.scale = scale_height;
+                $scope.iframeWidth = $scope.projectorWidth * scale_height;
             }
         };
 
