@@ -112,6 +112,31 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         });
         $scope.alert = {};
 
+        $scope.sumDurations = function () {
+            var totalDuration = 0;
+            $scope.items.forEach(function (item) {
+                if (item.duration) {
+                    totalDuration += item.duration;
+                }
+            });
+            return totalDuration;
+        };
+
+        $scope.calculateEndTime = function () {
+            var totalDuration = $scope.sumDurations();
+            var startTime = $scope.config('agenda_start_event_date_time');
+            // This date-time has a fixed structure: DD.MM.YYYY HH:MM
+            if (startTime) {
+                var timestamp = Date.parse(startTime) + totalDuration * 60 * 1000;
+                var endDate = new Date(timestamp);
+                var mm = ("0" + endDate.getMinutes()).slice(-2);
+                var dateStr = endDate.getHours() + ':' + mm;
+                return dateStr;
+            } else {
+                return '';
+            }
+        };
+
         // pagination
         $scope.currentPage = 1;
         $scope.itemsPerPage = 100;

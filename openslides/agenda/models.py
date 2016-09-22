@@ -220,7 +220,7 @@ class Item(RESTModelMixin, models.Model):
     See Item.ITEM_TYPE for more information.
     """
 
-    duration = models.CharField(null=True, blank=True, max_length=5)
+    duration = models.IntegerField(null=True, blank=True)
     """
     The intended duration for the topic.
     """
