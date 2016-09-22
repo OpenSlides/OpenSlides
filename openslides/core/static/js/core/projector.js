@@ -186,10 +186,10 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     'Motion',
     'Assignment',
     'Agenda',
-    'Customslide',
+    'Topic',
     'Projector',
     'User',
-    function($scope, Motion, Assignment, Agenda, Customslide, Projector, User) {
+    function($scope, Motion, Assignment, Agenda, Topic, Projector, User) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
@@ -200,16 +200,16 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             angular.forEach($scope.$parent.elements, function(element){
                 if (element.name == 'motions/motion') {
                     displayedElement = ['motion', element.id];
-                } else if (element.name == 'core/customslide') {
-                    displayedElement = ['agenda', element.id];
+                } else if (element.name =='topics/topic') {
+                    displayedElement = ['topic', element.id];
                 } else if (element.name == 'assignments/assignment') {
                     displayedElement = ['assignment', element.id];
                 }
             });
             if (displayedElement[0] == 'motion') {
                 $scope.AgendaItem = Motion.get(displayedElement[1]).agenda_item;
-            } else if (displayedElement[0] == 'agenda') {
-                $scope.AgendaItem = Customslide.get(displayedElement[1]).agenda_item;
+            } else if (displayedElement[0] == 'topic') {
+                $scope.AgendaItem = Topic.get(displayedElement[1]).agenda_item;
             } else if (displayedElement[0] == 'assignment') {
                 $scope.AgendaItem = Assignment.get(displayedElement[1]).agenda_item;
             } else {

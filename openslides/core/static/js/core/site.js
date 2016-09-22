@@ -1125,10 +1125,10 @@ angular.module('OpenSlidesApp.core.site', [
     '$state',
     'Config',
     'Projector',
-    'Customslide',
+    'Topic',
     'Motion',
     'Assignment',
-    function($scope, $http, $interval, $state, Config, Projector, Customslide, Motion, Assignment) {
+    function($scope, $http, $interval, $state, Config, Projector, Topic, Motion, Assignment) {
         // bind projector elements to the scope, update after projector changed
         $scope.$watch(function () {
             return Projector.lastModified(1);
@@ -1348,8 +1348,8 @@ angular.module('OpenSlidesApp.core.site', [
             angular.forEach(Projector.get(1).elements, function(element) {
                 if (element.name == 'motions/motion') {
                     $state.go('agenda.item.detail', {id: Motion.get(element.id).agenda_item_id});
-                } else if (element.name == 'core/customslide') {
-                    $state.go('agenda.item.detail',{id: Customslide.get(element.id).agenda_item_id});
+                } else if (element.name == 'topics/topic') {
+                    $state.go('agenda.item.detail',{id: Topic.get(element.id).agenda_item_id});
                 } else if (element.name == 'assignments/assignment') {
                     $state.go('agenda.item.detail',{id: Assignment.get(element.id).agenda_item_id});
                 }
