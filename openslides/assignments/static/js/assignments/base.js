@@ -21,28 +21,85 @@ angular.module('OpenSlidesApp.assignments', [])
                     var poll = this.poll;
                     var votes = [];
                     var config = Config.get('assignments_poll_100_percent_base').value;
+                    var impossible = false;
+                    var yes = null, no = null, abstain = null;
+                    angular.forEach(this.votes, function(vote) {
+                        if (vote.value == "Yes" || vote.value == "Votes") {
+                            yes = vote.weight;
+                        } else if (vote.value == "No") {
+                            no = vote.weight;
+                        } else if (vote.value == "Abstain") {
+                            abstain = vote.weight;
+                        }
+                    });
+                    //calculation for several candidates without yes/no options
+                    var do_sum_of_all = false;
+                    var sum_of_votes = 0;
+                    if (poll.options.length > 1 && poll.pollmethod == 'votes') {
+                        do_sum_of_all = true;
+                    }
+                    if (do_sum_of_all === true) {
+                        angular.forEach(poll.options, function(option) {
+                            angular.forEach(option.votes, function(vote) {
+                                if (vote.value == "Votes") {
+                                    if (vote.weight >= 0 ) {
+                                        sum_of_votes = sum_of_votes + vote.weight;
+                                    } else {
+                                        impossible = true;
+                                    }
+                                }
+                            });
+                        });
+                    }
                     angular.forEach(this.votes, function(vote) {
                         // check for special value
                         var value;
                         switch (vote.weight) {
                             case -1:
                                 value = gettextCatalog.getString('majority');
+                                impossible = true;
                                 break;
                             case -2:
                                 value = gettextCatalog.getString('undocumented');
+                                impossible = true;
                                 break;
                             default:
-                                value = vote.weight;
+                                if (vote.weight >= 0) {
+                                    value = vote.weight;
+                                } else {
+                                    value = 0;
+                                }
                                 break;
                         }
                         // calculate percent value
-                        var percentStr, percentNumber;
-                        if (config == "WITHOUT_INVALID" && poll.votesvalid > 0 && vote.weight >= 0) {
-                            percentNumber = Math.round(vote.weight * 100 / poll.votesvalid * 10) / 10;
-                        } else if (config == "WITH_INVALID" && poll.votescast > 0 && vote.weight >= 0) {
-                            percentNumber = Math.round(vote.weight * 100 / (poll.votescast) * 10) / 10;
+                        var percentStr, percentNumber, base;
+                        if (config == "VALID") {
+                            if (poll.votesvalid && poll.votesvalid > 0) {
+                                base = poll.votesvalid;
+                            }
+                        } else if ( config == "CAST") {
+                            if (poll.votescast && poll.votescast > 0) {
+                                base = poll.votescast;
+                            }
+                        } else if (config == "YES_NO" && !impossible) {
+                            if (vote.value == "Yes" || vote.value == "No" || vote.value == "Votes"){
+                                if (do_sum_of_all) {
+                                    base = sum_of_votes;
+                                } else {
+                                    base = yes + no;
+                                }
+                            }
+                        } else if (config == "YES_NO_ABSTAIN" && !impossible) {
+                            if (do_sum_of_all) {
+                                base = sum_of_votes;
+                            } else {
+                                base = yes + no + abstain;
+                            }
                         }
-                        if (percentNumber >= 0 ) {
+                        if (base !== 'undefined' && vote.weight >= 0) {
+                            percentNumber = Math.round(vote.weight * 100 / base * 10) / 10;
+                        }
+                        if (percentNumber >= 0 && percentNumber !== 'undefined') {
                             percentStr = "(" + percentNumber + "%)";
                         }
                         votes.push({
@@ -88,34 +145,50 @@ angular.module('OpenSlidesApp.assignments', [])
                     return name;
                 },
                 // returns object with value and percent (for votes valid/invalid/cast only)
-                getVote: function (vote) {
-                    if (!this.has_votes || !vote) {
-                        return;
-                    }
-                    var value = '';
-                    switch (vote) {
-                        case -1:
-                            value = gettextCatalog.getString('majority');
+                getVote: function (type) {
+                    var value, percentStr, vote;
+                    switch(type) {
+                        case 'votesinvalid':
+                            vote = this.votesinvalid;
                             break;
-                        case -2:
-                            value = gettextCatalog.getString('undocumented');
+                        case 'votesvalid':
+                            vote = this.votesvalid;
                             break;
-                        default:
-                            value = vote;
+                        case 'votescast':
+                            vote = this.votescast;
                             break;
                     }
-                    // calculate percent value
-                    var config = Config.get('assignments_poll_100_percent_base').value;
-                    var percent;
-                    if ((config == "WITHOUT_INVALID" && vote == this.votesvalid && vote >= 0) ||
-                        (config == "WITH_INVALID" && vote == this.votescast && vote >= 0)) {
-                        percent = '(100%)';
+                    if (this.has_votes && vote) {
+                        switch (vote) {
+                            case -1:
+                                value = gettextCatalog.getString('majority');
+                                break;
+                            case -2:
+                                value = gettextCatalog.getString('undocumented');
+                                break;
+                            default:
+                                value = vote;
+                        }
+                        if (vote >= 0) {
+                            var config = Config.get('assignments_poll_100_percent_base').value;
+                            var percentNumber;
+                            if (config == "CAST" && this.votescast && this.votescast > 0) {
+                                percentNumber = Math.round(vote * 100 / this.votescast * 10) / 10;
+                            } else if (config == "VALID" && this.votesvalid && this.votesvalid >= 0) {
+                                if (type === 'votesvalid'){
+                                    percentNumber = Math.round(vote * 100 / this.votesvalid * 10) / 10;
+                                }
+                            }
+                            if (percentNumber !== 'undefined' && percentNumber >= 0 && percentNumber <=100) {
+                                percentStr = "(" + percentNumber + "%)";
+                            }
+                        }
                     }
                     return {
                         'value': value,
-                        'percent': percent
+                        'percentStr': percentStr
                     };
-                },
+                }
             },
             relations: {
                 belongsTo: {

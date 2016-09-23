@@ -65,11 +65,6 @@ class BaseVote(models.Model):
             percent_base = 0
         return print_value(self.weight, percent_base)
 
-PERCENT_BASE_CHOICES = (
-    {'value': 'WITHOUT_INVALID', 'display_name': 'All valid votes (Yes/No/Abstain)'},
-    {'value': 'WITH_INVALID', 'display_name': 'All votes cast (including invalid votes)'},
-    {'value': 'DISABLED', 'display_name': 'Disabled (no percents)'})
-
 
 class CollectDefaultVotesMixin(models.Model):
     """
@@ -91,39 +86,9 @@ class CollectDefaultVotesMixin(models.Model):
 
     def get_percent_base_choice(self):
         """
-        Returns one of the three strings in PERCENT_BASE_CHOICES.
+        Returns one of the strings of the percent base.
         """
         raise NotImplementedError('You have to provide a get_percent_base_choice() method.')
-
-    def print_votesvalid(self):
-        if self.get_percent_base_choice() == 'DISABLED':
-            value = print_value(self.votesvalid, None)
-        else:
-            value = print_value(self.votesvalid, self.get_percent_base())
-        return value
-
-    def print_votesinvalid(self):
-        if self.get_percent_base_choice() == 'WITH_INVALID':
-            value = print_value(self.votesinvalid, self.get_percent_base())
-        else:
-            value = print_value(self.votesinvalid, None)
-        return value
-
-    def print_votescast(self):
-        if self.get_percent_base_choice() == 'WITH_INVALID':
-            value = print_value(self.votescast, self.get_percent_base())
-        else:
-            value = print_value(self.votescast, None)
-        return value
-
-    def get_percent_base(self):
-        if self.get_percent_base_choice() == "WITHOUT_INVALID" and self.votesvalid and self.votesvalid > 0:
-            base = 100 / float(self.votesvalid)
-        elif self.get_percent_base_choice() == "WITH_INVALID" and self.votescast and self.votescast > 0:
-            base = 100 / float(self.votescast)
-        else:
-            base = None
-        return base
 
 
 class PublishPollMixin(models.Model):

@@ -82,30 +82,48 @@ angular.module('OpenSlidesApp.motions', [
                     if (!this.has_votes) {
                         return;
                     }
+                    var impossible = false;
                     var value = '';
                     switch (vote) {
                         case -1:
                             value = gettextCatalog.getString('majority');
+                            impossible = true;
                             break;
                         case -2:
                             value = gettextCatalog.getString('undocumented');
+                            impossible = true;
                             break;
                         default:
-                            value = vote;
+                            if (vote >= 0) {
+                                value = vote;
+                            } else {
+                                value = 0; //value was not defined
+                            }
                             break;
                     }
                     // calculate percent value
                     var config = Config.get('motions_poll_100_percent_base').value;
                     var percentStr;
                     var percentNumber = null;
-                    if (config == "WITHOUT_INVALID" && this.votesvalid > 0 && vote >= 0) {
-                        percentNumber = Math.round(vote * 100 / this.votesvalid * 10) / 10;
-                    } else if (config == "WITH_INVALID" && this.votescast > 0 && vote >= 0) {
-                        percentNumber = Math.round(vote * 100 / (this.votescast) * 10) / 10;
-                    } else if (config == "WITHOUT_ABSTAIN" && vote >= 0) {
-                        if (type == 'yes' || type == 'no') {
-                            percentNumber = Math.round(vote * 100 / (this.yes + this.no) * 10) / 10;
+                    var base = null;
+                    if (!impossible) {
+                        if (config == "YES_NO_ABSTAIN") {
+                            if (type == 'yes' || type == 'no' || type == 'abstain') {
+                                base = this.yes + this.no + this.abstain;
+                            }
+                        } else if (config == "YES_NO") {
+                            if (type == 'yes' || type == 'no') {
+                                base = this.yes + this.no;
+                            }
+                        } else if (config == "VALID" && type !== 'votescast' && type !== 'votesinvalid' && 
+                            this.votesvalid > 0) {
+                            base = this.votesvalid;
+                        } else if (config == "CAST" && this.votescast > 0) {
+                            base = this.votescast;
                         }
+                    }
+                    if (base !== null) {
+                        percentNumber = Math.round(vote * 100 / (base) * 10) / 10;
                     }
                     if (percentNumber !== null) {
                         percentStr = "(" + percentNumber + "%)";

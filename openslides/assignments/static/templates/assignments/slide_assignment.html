@@ -51,12 +51,12 @@
       <!-- votes -->
       <td ng-if="poll.has_votes">
         <div ng-init="votes = option.getVotes()">
-          <div ng-show="poll.yesnoabstain || poll.yesno">
-            <span ng-show="poll.yesnoabstain">
+          <div ng-show="poll.pollmethod == 'yna' || poll.pollmethod == 'yn'">
+            <span ng-show="poll.pollmethod == 'yna'">
               {{ votes[0].label }}: <strong>{{ votes[0].value }}</strong> ·
               {{ votes[1].label }}: {{ votes[1].value }} ·
               {{ votes[2].label }}: {{ votes[2].value }} </span>
-            <span ng-show="poll.yesno">
+            <span ng-show="poll.pollmethod == 'yn'">
               {{ votes[0].label }}: <strong>{{ votes[0].value }}</strong> ·
               {{ votes[1].label }}: {{ votes[1].value }}</span>
             <uib-progress ng-if="votes[0].percentNumber>=0">
@@ -71,7 +71,7 @@
               </uib-bar>
             </uib-progress>
           </div>
-          <div ng-hide="poll.yesnoabstain || poll.yesno">
+          <div ng-show="poll.pollmethod == 'votes'">
             <div ng-repeat="vote in votes">
               {{ vote.value }} {{ vote.percentStr }}
               <div ng-if="vote.percentNumber >= 0">
@@ -84,19 +84,19 @@
     <!-- total votes (valid/invalid/casts) -->
     <tr class="total">
       <td>
-        <translate>Valid votes</translate>
+        <translate>Valid ballots</translate>
       <td ng-if="poll.has_votes" ng-init="vote = poll.getVote(poll.votesvalid)">
-        {{ vote.value }} {{ vote.percent }}
+        {{ vote.value }} {{ vote.percentStr }}
     <tr class="total">
       <td>
-        <translate>Invalid votes</translate>
+        <translate>Invalid ballots</translate>
       <td ng-if="poll.has_votes" ng-init="vote = poll.getVote(poll.votesinvalid)">
-        {{ vote.value }}
+        {{ vote.value }} {{ vote.percentStr }}
     <tr class="total bg-info">
       <td>
-        <translate>Votes cast</translate>
+        <translate>Casted ballots</translate>
       <td ng-if="poll.has_votes" ng-init="vote = poll.getVote(poll.votescast)">
-        {{ vote.value }} {{ vote.percent }}
+        {{ vote.value }} {{ vote.percentStr }}
     </table>
   </div>
 </div>

@@ -358,7 +358,7 @@ class AssignmentPDF(PDFView):
             footrow_one.append(_("Valid votes"))
             votesvalid_is_used = False
             for poll in polls:
-                footrow_one.append(poll.print_votesvalid())
+                footrow_one.append(poll.votesvalid)
                 if poll.votesvalid is not None:
                     votesvalid_is_used = True
             if votesvalid_is_used:
@@ -369,7 +369,7 @@ class AssignmentPDF(PDFView):
             footrow_two.append(_("Invalid votes"))
             votesinvalid_is_used = False
             for poll in polls:
-                footrow_two.append(poll.print_votesinvalid())
+                footrow_two.append(poll.votesinvalid)
                 if poll.votesinvalid is not None:
                     votesinvalid_is_used = True
             if votesinvalid_is_used:
@@ -380,7 +380,7 @@ class AssignmentPDF(PDFView):
             footrow_three.append(_("Votes cast"))
             votescast_is_used = False
             for poll in polls:
-                footrow_three.append(poll.print_votescast())
+                footrow_three.append(poll.votescast)
                 if poll.votescast is not None:
                     votescast_is_used = True
             if votescast_is_used:
@@ -488,7 +488,7 @@ class AssignmentPollPDF(PDFView):
         counter = 0
         cellcolumnA = []
         # Choose kind of ballot paper (YesNoAbstain, YesNo or Yes)
-        if self.poll.yesnoabstain or self.poll.yesno:  # YesNoAbstain/YesNo ballot: max 27 candidates
+        if self.poll.pollmethod in ['yna', 'yn']:  # YesNoAbstain/YesNo ballot: max 27 candidates
             for option in options:
                 counter += 1
                 candidate = option.candidate
@@ -498,7 +498,7 @@ class AssignmentPollPDF(PDFView):
                     cell.append(Paragraph(
                         "(%s)" % candidate.structure_level,
                         stylesheet['Ballot_option_suffix_YNA']))
-                if self.poll.yesnoabstain:
+                if self.poll.pollmethod == 'yna':
                     cell.append(Paragraph(
                         "&nbsp;", stylesheet['Ballot_option_suffix_YNA']))
                     cell.append(Paragraph("<font name='circlefont' size='15'>%(circle)s</font> \

@@ -208,29 +208,23 @@ class Assignment(RESTModelMixin, models.Model):
 
         # Find out the method of the election
         if config['assignments_poll_vote_values'] == 'votes':
-            yesnoabstain = False
-            yesno = False
+            pollmethod = 'votes'
         elif config['assignments_poll_vote_values'] == 'yesnoabstain':
-            yesnoabstain = True
-            yesno = False
+            pollmethod = 'yna'
         elif config['assignments_poll_vote_values'] == 'yesno':
-            yesnoabstain = False
-            yesno = True
+            pollmethod = 'yn'
         else:
             # config['assignments_poll_vote_values'] == 'auto'
             # candidates <= available posts -> yes/no/abstain
             if len(candidates) <= (self.open_posts - self.elected.count()):
-                yesno = False
-                yesnoabstain = True
+                pollmethod = 'yna'
             else:
-                yesno = False
-                yesnoabstain = False
+                pollmethod = 'votes'
 
         # Create the poll with the candidates.
         poll = self.polls.create(
             description=self.poll_description_default,
-            yesnoabstain=yesnoabstain,
-            yesno=yesno)
+            pollmethod=pollmethod)
         poll.set_options({'candidate': user} for user in candidates)
 
         # Add all candidates to list of speakers of related agenda item
@@ -364,8 +358,9 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
         Assignment,
         on_delete=models.CASCADE,
         related_name='polls')
-    yesnoabstain = models.BooleanField(default=False)
-    yesno = models.BooleanField(default=False)
+    pollmethod = models.CharField(
+        max_length=5,
+        default='yna')
     description = models.CharField(
         max_length=79,
         blank=True)
@@ -377,9 +372,9 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
         return self.assignment
 
     def get_vote_values(self):
-        if self.yesnoabstain:
+        if self.pollmethod == 'yna':
             return ['Yes', 'No', 'Abstain']
-        elif self.yesno:
+        elif self.pollmethod == 'yn':
             return ['Yes', 'No']
         else:
             return ['Votes']

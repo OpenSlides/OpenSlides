@@ -160,7 +160,7 @@
           <i class="fa fa-video-camera"></i>
           4. <translate>Project</translate>
         </button>
-        | <a class="btn btn-danger btn-sm"
+          <a class="btn btn-danger btn-sm"
             ng-bootbox-confirm="{{ 'Are you sure you want to delete this ballot?' | translate }}"
             ng-bootbox-confirm-action="deleteBallot(poll)">
           <i class="fa fa-times"></i>
@@ -178,53 +178,51 @@
           <th translate>Candidates
           <th ng-if="poll.has_votes" class="col-sm-6" translate>Votes</th>
 
-        <!-- candidates (poll options) -->
-        <tr ng-repeat="option in poll.options">
+          <!-- candidates (poll options) -->
+          <tr ng-repeat="option in poll.options">
+             <!-- elected -->
+            <td class="minimum">
+              <button os-perms="assignments.can_manage"
+                  ng-click="markElected(option.candidate_id, option.is_elected)" class="btn btn-default btn-xs">
+                <i ng-if="option.is_elected" class="fa fa-star" title="{{ 'is elected' | translate }}"></i>
+                <i ng-if="!option.is_elected" class="fa fa-star-o" title="{{ 'is not elected' | translate }}"></i>
+              </button>
+            <!-- candidate name -->
+            <td>
+              <a ui-sref="users.user.detail({id: option.candidate.id})">{{ option.candidate.get_full_name() }}</a>
 
-          <!-- elected -->
-          <td class="minimum">
-            <button os-perms="assignments.can_manage"
-                ng-click="markElected(option.candidate_id, option.is_elected)" class="btn btn-default btn-xs">
-              <i ng-if="option.is_elected" class="fa fa-star" title="{{ 'is elected' | translate }}"></i>
-              <i ng-if="!option.is_elected" class="fa fa-star-o" title="{{ 'is not elected' | translate }}"></i>
-            </button>
-
-          <!-- candidate name -->
-          <td>
-            <a ui-sref="users.user.detail({id: option.candidate.id})">{{ option.candidate.get_full_name() }}</a>
-
-          <!-- votes -->
-          <td ng-if="poll.has_votes">
-            <div ng-init="votes = option.getVotes()">
-              <div ng-repeat="vote in votes">
-                <span ng-if="poll.yesnoabstain || poll.yesno">{{ vote.label }}:</span>
-                {{ vote.value }} {{ vote.percentStr }}
-                <div ng-if="vote.percentNumber">
-                  <uib-progressbar value="vote.percentNumber" type="success"></uib-progressbar>
+            <!-- votes -->
+            <td ng-if="poll.has_votes">
+              <div ng-init="votes = option.getVotes()">
+                <div ng-repeat="vote in votes">
+                  <span ng-if="poll.pollmethod == 'yna' || poll.pollmethod == 'yn'">{{ vote.label }}:</span>
+                  {{ vote.value }} {{ vote.percentStr }}
+                  <div ng-if="vote.percentNumber">
+                    <uib-progressbar value="vote.percentNumber" type="success"></uib-progressbar>
+                  </div>
                 </div>
               </div>
-            </div>
 
-        <!-- total votes (valid/invalid/casts) -->
-        <tr>
-          <td>
-          <td>
-            <translate>Valid votes</translate>
-          <td ng-if="poll.has_votes" ng-init="vote = poll.getVote(poll.votesvalid)">
-            {{ vote.value }} {{ vote.percent }}
-        <tr>
-          <td>
-          <td>
-            <translate>Invalid votes</translate>
-          <td ng-if="poll.has_votes" ng-init="vote = poll.getVote(poll.votesinvalid)">
-            {{ vote.value }}
-        <tr class="total bg-info">
-          <td>
-          <td>
-            <translate>Votes cast</translate>
-          <td ng-if="poll.has_votes" ng-init="vote = poll.getVote(poll.votescast)">
-            {{ vote.value }} {{ vote.percent }}
-      </table>
+          <!-- total votes (valid/invalid/casts) -->
+          <tr>
+            <td>
+            <td>
+              <translate>Valid ballots</translate>
+            <td ng-if="poll.has_votes" ng-init="vote = poll.getVote('votesvalid')">
+              {{ vote.value }} {{ vote.percentStr }}
+          <tr>
+            <td>
+            <td>
+              <translate>Invalid ballots</translate>
+            <td ng-if="poll.has_votes" ng-init="vote = poll.getVote('votesinvalid')">
+              {{ vote.value }} {{ vote.percentStr }}
+          <tr class="total bg-info">
+            <td>
+            <td>
+              <translate>Casted ballots</translate>
+            <td ng-if="poll.has_votes" ng-init="vote = poll.getVote('votescast')">
+              {{ vote.value }} {{ vote.percentStr }}
+        </table>
       </div>
     </uib-tab>
   </uib-tabset>

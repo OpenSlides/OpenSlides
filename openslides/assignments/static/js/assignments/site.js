@@ -460,6 +460,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 $scope.alert = { type: 'danger', msg: message, show: true };
             });
         };
+
         // mark candidate as (not) elected
         $scope.markElected = function (user, reverse) {
             if (reverse) {
@@ -590,8 +591,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         // add dynamic form fields
         assignmentpoll.options.forEach(function(option) {
             var defaultValue;
-            if (assignmentpoll.yesnoabstain || assignmentpoll.yesno) {
-                if (assignmentpoll.yesnoabstain) {
+            if (assignmentpoll.pollmethod == 'yna' || assignmentpoll.pollmethod == 'yn') {
+                if (assignmentpoll.pollmethod == 'yna') {
                     defaultValue = {
                         'yes': '',
                         'no': '',
@@ -608,7 +609,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 if (option.votes.length) {
                     defaultValue.yes = option.votes[0].weight;
                     defaultValue.no = option.votes[1].weight;
-                    if (assignmentpoll.yesnoabstain){
+                    if (assignmentpoll.pollmethod == 'yna'){
                         defaultValue.abstain = option.votes[2].weight;
                     }
                 }
@@ -637,7 +638,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         },
                         defaultValue: defaultValue.no
                     });
-                if (assignmentpoll.yesnoabstain){
+                if (assignmentpoll.pollmethod == 'yna'){
                     $scope.formFields.push(
                     {
                         key:'abstain_' + option.candidate_id,
@@ -673,7 +674,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'votesvalid',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Votes valid'),
+                        label: gettextCatalog.getString('Valid ballots'),
                         type: 'number'
                     }
                 },
@@ -681,7 +682,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'votesinvalid',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Votes invalid'),
+                        label: gettextCatalog.getString('Invalid ballots'),
                         type: 'number'
                     }
                 },
@@ -689,7 +690,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'votescast',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Votes cast'),
+                        label: gettextCatalog.getString('Casted ballots'),
                         type: 'number'
                     }
                 },
@@ -707,7 +708,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         // save assignmentpoll
         $scope.save = function (poll) {
             var votes = [];
-            if (assignmentpoll.yesnoabstain) {
+            if (assignmentpoll.pollmethod == 'yna') {
                 assignmentpoll.options.forEach(function(option) {
                     votes.push({
                         "Yes": poll['yes_' + option.candidate_id],
@@ -715,7 +716,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         "Abstain": poll['abstain_' + option.candidate_id]
                     });
                 });
-            } else if (assignmentpoll.yesno) {
+            } else if (assignmentpoll.pollmethod == 'yn') {
                     assignmentpoll.options.forEach(function(option) {
                         votes.push({
                             "Yes": poll['yes_' + option.candidate_id],
@@ -764,8 +765,13 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         gettext('Elections');
         gettext('Ballot and ballot papers');
         gettext('The 100 % base of an election result consists of');
-        gettext('All valid votes (Yes/No/Abstain)');
-        gettext('All votes cast (including invalid votes)');
+        gettext('For Yes/No/Abstain and Yes/No the 100 % base depends on the election method: If there are ' +
+                'more candidates than open posts, the sum of all votes of all candidates is 100 %. Otherwise ' +
+                'the sum of all votes per candidate is 100 %.');
+        gettext('Yes/No/Abstain per candidate');
+        gettext('Yes/No per candidate');
+        gettext('All valid ballots');
+        gettext('All casted ballots');
         gettext('Disabled (no percents)');
         gettext('Number of ballot papers (selection)');
         gettext('Number of all delegates');
