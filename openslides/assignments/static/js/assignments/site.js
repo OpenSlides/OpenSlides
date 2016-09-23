@@ -765,9 +765,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         gettext('Elections');
         gettext('Ballot and ballot papers');
         gettext('The 100 % base of an election result consists of');
-        gettext('For Yes/No/Abstain and Yes/No the 100 % base depends ' +
-                'on the election method: If there are more candidates ' +
-                'than open posts, the sum of all votes of all candidates is 100 %.');
+        gettext('For Yes/No/Abstain and Yes/No the 100 % base depends on the election method: If there are ' +
+                'more candidates than open posts, the sum of all votes of all candidates is 100 %. Otherwise ' +
+                'the sum of all votes per candidate is 100 %.');
         gettext('Yes/No/Abstain per candidate');
         gettext('Yes/No per candidate');
         gettext('All valid ballots');

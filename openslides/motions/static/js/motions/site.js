@@ -1867,7 +1867,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         gettext('All valid ballots');
         gettext('All casted ballots');
         gettext('Disabled (no percents)');
-        gettext('Yes and No votes');
         gettext('Number of ballot papers (selection)');
         gettext('Number of all delegates');
         gettext('Number of all participants');

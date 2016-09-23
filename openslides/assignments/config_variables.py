@@ -37,7 +37,7 @@ def get_config_variables():
             {'value': 'CAST', 'display_name': 'All casted ballots'},
             {'value': 'DISABLED', 'display_name': 'Disabled (no percents)'}),
         help_text="For Yes/No/Abstain and Yes/No the 100 % base depends on the election method: If there are " +
-                  "more candidates than open posts, the sum of all votes of all candidates is 100%. Otherwise " +
+                  "more candidates than open posts, the sum of all votes of all candidates is 100 %. Otherwise " +
                   "the sum of all votes per candidate is 100 %.",
         weight=420,
         group='Elections',
