@@ -242,6 +242,29 @@
         </a>
       </div>
     </div>
-  </div><!-- end div ProjectorControlCtrl -->
 
+    <!-- List of speakers -->
+    <div class="section" os-perms="core.can_manage_projector">
+      <a href="#" ng-click="isSpeakerList = !isSpeakerList">
+        <i class="fa toggle-icon" ng-class="isSpeakerList ? 'fa-angle-up' : 'fa-angle-down'"></i>
+        <h4 translate>List of speakers</h4>
+      </a>
+      <div uib-collapse="!isSpeakerList" ng-cloak>
+        <div class="projectorbtn">
+            <a class="btn btn-default btn-sm"
+                ng-model="speakeroverlay.visible"
+                ng-click="speakeroverlaytoggle()"
+                ng-class="{ 'btn-primary': speakeroverlay.visible }"
+                title="{{ 'Project current list of speakers as overlay' | translate }}">
+              <i class="fa fa-video-camera"></i>
+            </a>
+            <a os-perms="agenda.can_manage" ng-click="goToListofSpeakers()"
+              class="btn btn-default btn-sm"
+              title="{{ 'Manage current list of speakers' | translate}}">
+            <i class="fa fa-microphone"></i>
+          </a>
+        <div>
+      </div>
+    </div>
+  </div><!-- end div ProjectorControlCtrl -->
 </div>

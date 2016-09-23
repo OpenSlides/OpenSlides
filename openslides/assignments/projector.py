@@ -1,3 +1,4 @@
+from ..core.config import config
 from ..core.exceptions import ProjectorException
 from ..utils.projector import ProjectorElement
 from .models import Assignment
@@ -27,3 +28,9 @@ class AssignmentSlide(ProjectorElement):
             for poll in assignment.polls.all().prefetch_related('options'):
                 for option in poll.options.all():
                     yield option.candidate
+                for speaker in assignment.agenda_item.speakers.filter(end_time=None):
+                    yield speaker.user
+                query = (assignment.agenda_item.speakers.exclude(end_time=None)
+                         .order_by('-end_time')[:config['agenda_show_last_speakers']])
+                for speaker in query:
+                    yield speaker.user

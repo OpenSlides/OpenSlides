@@ -53,6 +53,9 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         slidesProvider.registerSlide('core/message', {
             template: 'static/templates/core/slide_message.html',
         });
+        slidesProvider.registerSlide('core/speakeroverlay', {
+            template: 'static/templates/core/slide_speakeroverlay.html',
+        });
     }
 ])
 
@@ -175,6 +178,41 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             // Cancel the interval if the controller is destroyed
             $interval.cancel(interval);
         });
+    }
+])
+
+.controller('SlideSpeakerOverlayCtrl', [
+    '$scope',
+    'DS',
+    'Motion',
+    'Assignment',
+    'Agenda',
+    'Topic',
+    'Projector',
+    'User',
+    function($scope, DS, Motion, Assignment, Agenda, Topic, Projector, User) {
+        // Attention! Each object that is used here has to be dealt on server side.
+        // Add it to the coresponding get_requirements method of the ProjectorElement
+        // class.
+
+        $scope.visible = $scope.element.visible;
+        $scope.displayedElement = function() {
+            var current_element = _.find($scope.$parent.elements, function(element) {
+                if (element.name == 'motions/motion' ||
+                    element.name == 'topics/topic' ||
+                    element.name == 'assignments/assignment') {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            if (current_element === undefined) {
+                $scope.AgendaItem = null;
+            } else {
+                $scope.AgendaItem = DS.get('agenda/item', current_element.agenda_item_id);
+            }
+        };
+        $scope.$watch($scope.$parent.elements, $scope.displayedElement());
     }
 ])
 
