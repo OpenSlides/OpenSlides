@@ -831,7 +831,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'Workflow',
     'User',
     'Agenda',
-    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda) {
+    'MotionDocxExport',
+    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionDocxExport) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         Tag.bindAll({}, $scope, 'tags');
@@ -989,9 +990,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             ngDialog.open(MotionForm.getDialog(motion));
         };
 
-        // Export the given motions as a csv file
+        // Export as a csv file
         $scope.csv_export = function () {
-            var element = document.getElementById('downloadLink');
+            var element = document.getElementById('downloadLinkCSV');
             var csvRows = [
                 ['identifier', 'title', 'text', 'reason', 'submitter', 'category', 'origin'],
             ];
@@ -1012,6 +1013,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             element.href = 'data:text/csv;charset=utf-8,' + csvString;
             element.download = 'motions-export.csv';
             element.target = '_blank';
+        };
+        // Export as docx file
+        $scope.docx_export = function () {
+            MotionDocxExport.export($scope.motionsFiltered, $scope.categories);
         };
 
         // *** delete mode functions ***

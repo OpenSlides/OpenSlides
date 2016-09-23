@@ -13,6 +13,7 @@ angular.module('OpenSlidesApp.core.site', [
     'localytics.directives',
     'ngBootbox',
     'ngDialog',
+    'ngFileSaver',
     'ngMessages',
     'ngCsvImport',
     'ui.tinymce',

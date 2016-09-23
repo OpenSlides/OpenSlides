@@ -211,24 +211,24 @@ def get_config_variables():
         subgroup='Voting and ballot papers',
         validators=(MinValueValidator(1),))
 
-    # PDF
+    # PDF and DOCX export
 
     yield ConfigVariable(
-        name='motions_pdf_title',
+        name='motions_export_title',
         default_value='Motions',
-        label='Title for PDF document (all motions)',
+        label='Title for PDF and DOCX documents (all motions)',
         weight=370,
         group='Motions',
-        subgroup='PDF',
+        subgroup='Export',
         translatable=True)
 
     yield ConfigVariable(
-        name='motions_pdf_preamble',
+        name='motions_export_preamble',
         default_value='',
-        label='Preamble text for PDF document (all motions)',
+        label='Preamble text for PDF and DOCX documents (all motions)',
         weight=375,
         group='Motions',
-        subgroup='PDF')
+        subgroup='Export')
 
     yield ConfigVariable(
         name='motions_pdf_paragraph_numbering',
@@ -237,4 +237,4 @@ def get_config_variables():
         label='Show paragraph numbering (only in PDF)',
         weight=380,
         group='Motions',
-        subgroup='PDF')
+        subgroup='Export')
