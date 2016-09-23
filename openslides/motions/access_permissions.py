@@ -9,7 +9,7 @@ from ..utils.access_permissions import BaseAccessPermissions
 class SubmittersRelationshipAccessPermissions(BaseAccessPermissions):
     """
     """
-    def can_retrieve(self, user):
+    def check_permissions(self, user):
         """
         Returns True if the user has read access model instances.
         """
