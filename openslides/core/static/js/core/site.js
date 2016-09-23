@@ -23,6 +23,44 @@ angular.module('OpenSlidesApp.core.site', [
 // Can be used to find out if the projector or the side is used
 .constant('REALM', 'site')
 
+.factory('DateTimePickerTranslation', [
+    'gettextCatalog',
+    function (gettextCatalog) {
+        return {
+            getButtons: function () {
+                return {
+                    show: true,
+                    now: {
+                        show: true,
+                        text: gettextCatalog.getString('now')
+                    },
+                    today: {
+                        show: true,
+                        text: gettextCatalog.getString('today')
+                    },
+                    clear: {
+                        show: true,
+                        text: gettextCatalog.getString('clear')
+                    },
+                    date: {
+                        show: true,
+                        text: gettextCatalog.getString('date')
+                    },
+                    time: {
+                        show: true,
+                        text: gettextCatalog.getString('time')
+                    },
+                    close: {
+                        show: true,
+                        text: gettextCatalog.getString('close')
+                    }
+                };
+            }
+        };
+    }
+
+])
+
 // Provider to register entries for the main menu.
 .provider('mainMenu', [
     function() {
@@ -393,8 +431,9 @@ angular.module('OpenSlidesApp.core.site', [
                 integer: 'number',
                 boolean: 'checkbox',
                 choice: 'choice',
-                colorpicker: 'colorpicker',
                 comments: 'comments',
+                colorpicker: 'colorpicker',
+                datetimepicker: 'datetimepicker',
             }[type];
         }
 
@@ -549,9 +588,11 @@ angular.module('OpenSlidesApp.core.site', [
     'Config',
     'configOptions',
     'gettextCatalog',
-    function($scope, Config, configOptions, gettextCatalog) {
+    'DateTimePickerTranslation',
+    function($scope, Config, configOptions, gettextCatalog, DateTimePickerTranslation) {
         Config.bindAll({}, $scope, 'configs');
         $scope.configGroups = configOptions.data.config_groups;
+        $scope.dateTimePickerTranslatedButtons = DateTimePickerTranslation.getButtons();
 
         // save changed config value
         $scope.save = function(key, value) {
