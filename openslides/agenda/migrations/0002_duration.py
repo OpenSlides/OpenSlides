@@ -13,7 +13,7 @@ def convert_duration(apps, schema_editor):
         if is_int(duration):
             # assuming that these are minutes
             item.duration_tmp = int(duration)
-        else:
+        elif isinstance(duration, str):
             split = duration.split(':')
             # assuming format (h)h:(m)m
             if len(split) == 2 and is_int(split[0]) and is_int(split[1]):
@@ -25,7 +25,7 @@ def convert_duration(apps, schema_editor):
 def is_int(s):
     try:
         int(s)
-    except ValueError:
+    except (ValueError, TypeError):
         return False
     else:
         return True
