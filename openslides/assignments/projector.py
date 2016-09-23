@@ -1,17 +1,28 @@
 from ..core.exceptions import ProjectorException
 from ..utils.projector import ProjectorElement
-from .models import Assignment
+from .models import Assignment, AssignmentPoll
 
 
 class AssignmentSlide(ProjectorElement):
     """
     Slide definitions for Assignment model.
+
+    You can send a poll id to get a poll slide.
     """
     name = 'assignments/assignment'
 
     def check_data(self):
         if not Assignment.objects.filter(pk=self.config_entry.get('id')).exists():
             raise ProjectorException('Election does not exist.')
+        poll_id = self.config_entry.get('poll')
+        if poll_id:
+            # Poll slide.
+            try:
+                poll = AssignmentPoll.objects.get(pk=poll_id)
+            except AssignmentPoll.DoesNotExist:
+                raise ProjectorException('Poll does not exist.')
+            if poll.assignment_id != self.config_entry.get('id'):
+                raise ProjectorException('Assignment id and poll do not belong together.')
 
     def get_requirements(self, config_entry):
         try:
@@ -22,15 +33,18 @@ class AssignmentSlide(ProjectorElement):
         else:
             yield assignment
             yield assignment.agenda_item
-            for user in assignment.related_users.all():
-                # Yield user instances of current candidates (i. e. future
-                # poll participants) and elected persons (i. e. former poll
-                # participants).
-                yield user
-            for poll in assignment.polls.all().prefetch_related('options'):
-                # Yield user instances of the participants of all polls.
-                for option in poll.options.all():
-                    yield option.candidate
+            if not config_entry.get('poll'):
+                # Assignment detail slide. Yield user instances of current
+                # candidates (i. e. future poll participants) and elected
+                # persons (i. e. former poll participants).
+                for user in assignment.related_users.all():
+                    yield user
+            else:
+                # Assignment poll slide. Yield user instances of the
+                # participants of all polls.
+                for poll in assignment.polls.all().prefetch_related('options'):
+                    for option in poll.options.all():
+                        yield option.candidate
 
     def need_full_update_for_this(self, collection_element):
         # Full update if assignment changes because then we may have new
