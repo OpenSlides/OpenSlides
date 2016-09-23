@@ -183,37 +183,33 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 
 .controller('SlideSpeakerOverlayCtrl', [
     '$scope',
+    'DS',
     'Motion',
     'Assignment',
     'Agenda',
     'Topic',
     'Projector',
     'User',
-    function($scope, Motion, Assignment, Agenda, Topic, Projector, User) {
+    function($scope, DS, Motion, Assignment, Agenda, Topic, Projector, User) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
 
         $scope.visible = $scope.element.visible;
         $scope.displayedElement = function() {
-            var displayedElement = [];
-            angular.forEach($scope.$parent.elements, function(element){
-                if (element.name == 'motions/motion') {
-                    displayedElement = ['motion', element.id];
-                } else if (element.name =='topics/topic') {
-                    displayedElement = ['topic', element.id];
-                } else if (element.name == 'assignments/assignment') {
-                    displayedElement = ['assignment', element.id];
+            var current_element = _.find($scope.$parent.elements, function(element) {
+                if (element.name == 'motions/motion' ||
+                    element.name == 'topics/topic' ||
+                    element.name == 'assignments/assignment') {
+                    return true;
+                } else {
+                    return false;
                 }
             });
-            if (displayedElement[0] == 'motion') {
-                $scope.AgendaItem = Motion.get(displayedElement[1]).agenda_item;
-            } else if (displayedElement[0] == 'topic') {
-                $scope.AgendaItem = Topic.get(displayedElement[1]).agenda_item;
-            } else if (displayedElement[0] == 'assignment') {
-                $scope.AgendaItem = Assignment.get(displayedElement[1]).agenda_item;
-            } else {
+            if (current_element === undefined) {
                 $scope.AgendaItem = null;
+            } else {
+                $scope.AgendaItem = DS.get('agenda/item', current_element.agenda_item_id);
             }
         };
         $scope.$watch($scope.$parent.elements, $scope.displayedElement());

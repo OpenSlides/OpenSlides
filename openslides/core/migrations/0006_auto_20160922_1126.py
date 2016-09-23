@@ -6,6 +6,7 @@ import uuid
 
 from django.db import migrations, models
 from openslides.core.models import Projector
+from openslides.utils.autoupdate import inform_changed_data_receiver
 
 
 def add_speaker_overlay(apps, schema_editor):
@@ -26,6 +27,10 @@ def add_speaker_overlay(apps, schema_editor):
         'stable': True}
     projector.save()
 
+    # Reconnect autoupdate.
+    models.signals.post_save.connect(
+        inform_changed_data_receiver,
+        dispatch_uid='inform_changed_data_receiver')
 
 class Migration(migrations.Migration):
 

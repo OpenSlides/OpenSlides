@@ -1120,15 +1120,13 @@ angular.module('OpenSlidesApp.core.site', [
 // Projector Control Controller
 .controller('ProjectorControlCtrl', [
     '$scope',
+    'DS',
     '$http',
     '$interval',
     '$state',
     'Config',
     'Projector',
-    'Topic',
-    'Motion',
-    'Assignment',
-    function($scope, $http, $interval, $state, Config, Projector, Topic, Motion, Assignment) {
+    function($scope, DS, $http, $interval, $state, Config, Projector) {
         // bind projector elements to the scope, update after projector changed
         $scope.$watch(function () {
             return Projector.lastModified(1);
@@ -1345,15 +1343,18 @@ angular.module('OpenSlidesApp.core.site', [
             $http.post('/rest/core/projector/1/update_elements/', data);
         };
         $scope.goToListofSpeakers = function() {
-            angular.forEach(Projector.get(1).elements, function(element) {
-                if (element.name == 'motions/motion') {
-                    $state.go('agenda.item.detail', {id: Motion.get(element.id).agenda_item_id});
-                } else if (element.name == 'topics/topic') {
-                    $state.go('agenda.item.detail',{id: Topic.get(element.id).agenda_item_id});
-                } else if (element.name == 'assignments/assignment') {
-                    $state.go('agenda.item.detail',{id: Assignment.get(element.id).agenda_item_id});
+            var current_element = _.find($scope.$parent.elements, function(element) {
+                if (element.name == 'motions/motion' ||
+                    element.name == 'topics/topic' ||
+                    element.name == 'assignments/assignment') {
+                    return true;
+                } else {
+                    return false;
                 }
             });
+            if (current_element !== undefined) {
+                $state.go('agenda.item.detail', {id: DS.get(current_element).agenda_item_id});
+            }
         };
     }
 ])
