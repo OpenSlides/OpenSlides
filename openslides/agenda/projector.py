@@ -59,3 +59,8 @@ class ListOfSpeakersSlide(ProjectorElement):
                 for speaker in query:
                     # Yield last speakers
                     yield speaker.user
+
+    def need_full_update_for_this(self, collection_element):
+        # Full update if item changes because then we may have new speakers
+        # and therefor need new users.
+        return collection_element.collection_string == Item.get_collection_string()

@@ -23,7 +23,16 @@ class AssignmentSlide(ProjectorElement):
             yield assignment
             yield assignment.agenda_item
             for user in assignment.related_users.all():
+                # Yield user instances of current candidates (i. e. future
+                # poll participants) and elected persons (i. e. former poll
+                # participants).
                 yield user
             for poll in assignment.polls.all().prefetch_related('options'):
+                # Yield user instances of the participants of all polls.
                 for option in poll.options.all():
                     yield option.candidate
+
+    def need_full_update_for_this(self, collection_element):
+        # Full update if assignment changes because then we may have new
+        # candidates and therefor need new users.
+        return collection_element.collection_string == Assignment.get_collection_string()
