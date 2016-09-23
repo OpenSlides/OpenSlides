@@ -135,12 +135,12 @@ def send_data(message):
         send_all = False
     else:
         # Other elements are only send to the projector they are currently shown
-        projectors = Projector.get_projectors_that_show_this(message)
+        projectors = Projector.get_projectors_that_show_this(collection_element)
         send_all = None  # The decission is done later
 
     for projector in projectors:
         if send_all is None:
-            send_all = projector.need_full_update_for(message)
+            send_all = projector.need_full_update_for_this(collection_element)
         if send_all:
             output = get_projector_element_data(projector)
         else:

@@ -72,3 +72,12 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
         element. The config_entry has to be given.
         """
         return ()
+
+    def need_full_update_for_this(self, collection_element):
+        """
+        Returns True if this projector element needs to be updated with all
+        instances as defined in get_requirements(). The given
+        collection_element contains information about the changed instance.
+        Default is False.
+        """
+        return False

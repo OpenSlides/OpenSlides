@@ -128,8 +128,8 @@ class Projector(RESTModelMixin, models.Model):
         Returns True if this collection element is shown on this projector.
         """
         for requirement in self.get_all_requirements():
-            if (requirement.get_collection_string() == collection_element['collection_string'] and
-                    requirement.pk == collection_element['id']):
+            if (requirement.get_collection_string() == collection_element.collection_string and
+                    requirement.pk == collection_element.id):
                 result = True
                 break
         else:
@@ -147,9 +147,26 @@ class Projector(RESTModelMixin, models.Model):
                 result.append(projector)
         return result
 
-    def need_full_update_for(self, collection_element):
-        # TODO: Implement this for all ProjectorElements (also for config values!)
-        return True
+    def need_full_update_for_this(self, collection_element):
+        """
+        Returns True if this projector needs to be updated with all
+        instances as defined in get_all_requirements() because one active
+        projector element requires this.
+        """
+        # Get all elements from all apps.
+        elements = {}
+        for element in ProjectorElement.get_all():
+            elements[element.name] = element
+
+        for key, value in self.config.items():
+            element = elements.get(value['name'])
+            if element is not None and element.need_full_update_for_this(collection_element):
+                result = True
+                break
+        else:
+            result = False
+
+        return result
 
 
 class Tag(RESTModelMixin, models.Model):

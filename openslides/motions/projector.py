@@ -25,3 +25,11 @@ class MotionSlide(ProjectorElement):
             yield motion.state.workflow
             yield from motion.submitters.all()
             yield from motion.supporters.all()
+
+    def need_full_update_for_this(self, collection_element):
+        # Full update if motion changes because then we may have new
+        # submitters or supporters and therefor need new users.
+        #
+        # Add some logic here if we support live changing of workflows later.
+        #
+        return collection_element.collection_string == Motion.get_collection_string()
