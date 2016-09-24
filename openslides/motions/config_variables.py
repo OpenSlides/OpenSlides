@@ -227,12 +227,3 @@ def get_config_variables():
         weight=375,
         group='Motions',
         subgroup='Export')
-
-    yield ConfigVariable(
-        name='motions_pdf_paragraph_numbering',
-        default_value=False,
-        input_type='boolean',
-        label='Show paragraph numbering (only in PDF)',
-        weight=380,
-        group='Motions',
-        subgroup='Export')

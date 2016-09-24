@@ -273,7 +273,6 @@ def convert_html_to_reportlab(pdf, text):
             tag.unwrap()
     # print paragraphs with numbers
     text = soup.body.contents
-    paragraph_number = 1
     for paragraph in text:
         paragraph = str(paragraph)
         # ignore empty paragraphs (created by newlines/tabs of ckeditor)
@@ -281,11 +280,7 @@ def convert_html_to_reportlab(pdf, text):
             continue
         if "<pre>" in paragraph:
             txt = paragraph.replace('\n', '<br/>').replace(' ', '&nbsp;')
-            if config["motions_pdf_paragraph_numbering"]:
-                pdf.append(Paragraph(txt, stylesheet['InnerMonotypeParagraph'], str(paragraph_number)))
-                paragraph_number += 1
-            else:
-                pdf.append(Paragraph(txt, stylesheet['InnerMonotypeParagraph']))
+            pdf.append(Paragraph(txt, stylesheet['InnerMonotypeParagraph']))
         elif "<para>" in paragraph:
             pdf.append(Paragraph(paragraph, stylesheet['InnerListParagraph']))
         elif "<seqreset" in paragraph:
@@ -297,11 +292,7 @@ def convert_html_to_reportlab(pdf, text):
         elif "<h3>" in paragraph:
             pdf.append(Paragraph(paragraph, stylesheet['InnerH3Paragraph']))
         else:
-            if config["motions_pdf_paragraph_numbering"]:
-                pdf.append(Paragraph(paragraph, stylesheet['InnerParagraph'], str(paragraph_number)))
-                paragraph_number += 1
-            else:
-                pdf.append(Paragraph(paragraph, stylesheet['InnerParagraph']))
+            pdf.append(Paragraph(paragraph, stylesheet['InnerParagraph']))
 
 
 def all_motion_cover(pdf, motions):
