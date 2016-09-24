@@ -24,6 +24,7 @@ from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
     WorkflowAccessPermissions,
+    SubmittersRelationshipAccessPermissions,
 )
 from .exceptions import WorkflowError
 
@@ -117,11 +118,6 @@ class Motion(RESTModelMixin, models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     """
     Tags to categorise motions.
-    """
-
-    submitters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_submitters', blank=True)
-    """
-    Users who submit this motion.
     """
 
     supporters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_supporters', blank=True)
@@ -613,9 +609,23 @@ class Motion(RESTModelMixin, models.Model):
             self.text or '',
             self.reason or '',
             str(self.category) if self.category else '',
-            user_name_helper(self.submitters.all()),
+            user_name_helper([sr.submitter for sr in self.submittersrelationship_set.all()]),
             user_name_helper(self.supporters.all()),
             " ".join(tag.name for tag in self.tags.all())))
+
+
+class SubmittersRelationship (RESTModelMixin, models.Model):
+
+    access_permissions = SubmittersRelationshipAccessPermissions()
+
+    submitter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    motion = models.ForeignKey(Motion, on_delete=models.CASCADE)
+    weight = models.IntegerField()
+
+    class Meta:
+        default_permissions = ()
+        db_table = 'motions_submittersrelationship'
+        unique_together = (('submitter', 'motion'), ('weight', 'motion'))
 
 
 class MotionVersion(RESTModelMixin, models.Model):

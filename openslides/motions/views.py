@@ -10,6 +10,7 @@ from reportlab.platypus import SimpleDocTemplate
 from rest_framework import status
 
 from openslides.core.config import config
+from openslides.users.models import User
 from openslides.utils.rest_api import (
     DestroyModelMixin,
     GenericViewSet,
@@ -25,6 +26,7 @@ from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
     WorkflowAccessPermissions,
+    SubmittersRelationshipAccessPermissions,
 )
 from .exceptions import WorkflowError
 from .models import (
@@ -34,12 +36,26 @@ from .models import (
     MotionVersion,
     State,
     Workflow,
+    SubmittersRelationship,
 )
 from .pdf import motion_poll_to_pdf, motion_to_pdf, motions_to_pdf
 from .serializers import MotionPollSerializer
 
 
 # Viewsets for the REST API
+
+class SubmittersRelationshipViewSet(ModelViewSet):
+    """
+    API endpoint for SubmittersRelationship
+    """
+    access_permissions = SubmittersRelationshipAccessPermissions()
+    queryset = SubmittersRelationship.objects.all()
+
+    def check_view_permissions(self):
+        return True
+
+    def get_access_permissions(self):
+        return self.access_permissions
 
 class MotionViewSet(ModelViewSet):
     """
@@ -121,6 +137,33 @@ class MotionViewSet(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         motion = serializer.save(request_user=request.user)
+
+        print(motion)
+        print(repr(motion))
+        print(motion.id)
+
+        print(repr(motion.submittersrelationship_set.all()))
+
+        # Create submitter relationships
+        if isinstance(request.data.get('submitters_id'), list):
+            for index, submitter_id in enumerate(request.data['submitters_id']):
+                submitter = User.objects.get(pk=submitter_id)
+                sr = SubmittersRelationship(
+                    submitter=submitter,
+                    motion=motion,
+                    weight=index+1)
+                sr.save()
+            request.data['submitters_id'] = None
+        elif request.user.is_authenticated():
+            sr = SubmittersRelationship(
+                submitter=request.user,
+                motion=motion,
+                weight=1)
+            sr.save()
+
+        print(repr(motion.submittersrelationship_set.all()))
+
+        print(repr([sr.submitter.username for sr in motion.submittersrelationship_set.all()]))
 
         # Write the log message and initiate response.
         motion.write_log([ugettext_noop('Motion created')], request.user)

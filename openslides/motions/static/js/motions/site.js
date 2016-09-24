@@ -831,13 +831,28 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'User',
     'Agenda',
     'MotionDocxExport',
-    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionDocxExport) {
+    'SubmittersRelationship',
+    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionDocxExport, SubmittersRelationship) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         Tag.bindAll({}, $scope, 'tags');
         Workflow.bindAll({}, $scope, 'workflows');
         User.bindAll({}, $scope, 'users');
         $scope.alert = {};
+
+        $scope.test = function () {
+            console.log($scope.motions);
+            if($scope.motions[0]){
+                console.log($scope.motions[0].submittersrelationship_set);
+            }
+
+            console.log($scope.motions[0].submittersrelationship_set[0].submitter);
+
+            var sr = SubmittersRelationship.get(1)
+            sr.weight=1231;
+            SubmittersRelationship.save(sr);
+        };
+
 
         // setup table sorting
         $scope.sortColumn = 'identifier';

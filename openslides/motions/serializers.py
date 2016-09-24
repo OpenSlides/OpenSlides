@@ -20,6 +20,7 @@ from .models import (
     MotionPoll,
     MotionVersion,
     State,
+    SubmittersRelationship,
     Workflow,
 )
 
@@ -228,6 +229,15 @@ class MotionVersionSerializer(ModelSerializer):
             'reason',)
 
 
+class SubmittersRelationshipSerializer(ModelSerializer):
+    """
+    Serializer for motion.models.SubmittersRelationship objects.
+    """
+    class Meta:
+        model = SubmittersRelationship
+        fields = ('id', 'submitter', 'motion', 'weight')  # Just the submitter and the weight
+
+
 class MotionSerializer(ModelSerializer):
     """
     Serializer for motion.models.Motion objects.
@@ -259,7 +269,7 @@ class MotionSerializer(ModelSerializer):
             'parent',
             'category',
             'origin',
-            'submitters',
+            'submittersrelationship_set',
             'supporters',
             'comments',
             'state',
@@ -288,10 +298,7 @@ class MotionSerializer(ModelSerializer):
         motion.parent = validated_data.get('parent')
         motion.reset_state(validated_data.get('workflow_id'))
         motion.save()
-        if validated_data.get('submitters'):
-            motion.submitters.add(*validated_data['submitters'])
-        elif validated_data['request_user'].is_authenticated():
-            motion.submitters.add(validated_data['request_user'])
+
         motion.supporters.add(*validated_data.get('supporters', []))
         motion.attachments.add(*validated_data.get('attachments', []))
         motion.tags.add(*validated_data.get('tags', []))
@@ -326,11 +333,21 @@ class MotionSerializer(ModelSerializer):
 
         motion.save(use_version=version)
 
-        # Submitters, supporters, attachments and tags
-        for key in ('submitters', 'supporters', 'attachments', 'tags'):
+        # Supporters, attachments and tags
+        for key in ('supporters', 'attachments', 'tags'):
             if key in validated_data.keys():
                 attr = getattr(motion, key)
                 attr.clear()
                 attr.add(*validated_data[key])
+
+        # Submitters
+        if 'submitters' in validated_data.keys():
+            motion.submitters.clear()
+            for index, submitter in enumerate(validated_data['submitters']):
+                sr = SubmittersRelationship(
+                    submitter=submitter,
+                    motion=motion,
+                    weight=index+1)
+                sr.save()
 
         return motion

@@ -1,6 +1,10 @@
 <div class="header">
   <div class="title">
     <div class="submenu">
+      <a ng-click="test()" os-perms="motions.can_create" class="btn btn-default btn-sm">
+        <i class="fa fa-plus fa-lg"></i>
+        test
+      </a>
       <a ng-click="openDialog()" os-perms="motions.can_create" class="btn btn-primary btn-sm">
         <i class="fa fa-plus fa-lg"></i>
         <translate>New</translate>
@@ -363,8 +367,8 @@
           <div>
             <small>
               <span class="optional" translate>by</span> 
-              <span class="optional" ng-repeat="submitter in motion.submitters | limitTo:3">
-                {{ submitter.get_full_name() }}<span ng-if="!$last">,</span></span><span ng-if="motion.submitters.length > 3">, ...</span>
+              <span class="optional" ng-repeat="submitter in motion.submitters | limitTo:3 | orderBy: 'weight' : true">
+                {{ submitter.weight + submitter.submitter.get_full_name() }}<span ng-if="!$last">,</span></span><span ng-if="motion.submitters.length > 3">, ...</span>
               <!-- sorry for merging them together, but otherwise there would be a whitespace because of the new line -->
             </small>
           </div>

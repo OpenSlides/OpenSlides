@@ -293,14 +293,14 @@ angular.module('OpenSlidesApp.motions', [
                     },
                     'users/user': [
                         {
-                            localField: 'submitters',
-                            localKeys: 'submitters_id',
-                        },
-                        {
                             localField: 'supporters',
                             localKeys: 'supporters_id',
                         }
                     ],
+                    'motions/submittersrelationship': {
+                        localField: 'submittersrelationship_set',
+                        localKeys: 'submittersrelationship_set_id',
+                    },
                     'motions/motionpoll': {
                         localField: 'polls',
                         foreignKey: 'motion_id',
@@ -320,6 +320,36 @@ angular.module('OpenSlidesApp.motions', [
                 }
             }
         });
+    }
+])
+
+.factory('SubmittersRelationship', [
+    'DS',
+    function (DS) {
+        var name = 'motions/submittersrelationship';
+        return DS.defineResource({
+            name: name,
+            relations: {
+                hasOne: {
+                    'users/user': {
+                        localField: 'submitter',
+                        localKey: 'submitter_id'
+                    },
+                    'motions/motion': {
+                        localField: 'motion',
+                        localKey: 'motion_id',
+                    }
+                }
+            }
+        });
+    }
+])
+
+// Load all Relationships at startup
+.run([
+    'SubmittersRelationship',
+    function (SubmittersRelationship) {
+        SubmittersRelationship.findAll();
     }
 ])
 
@@ -396,7 +426,8 @@ angular.module('OpenSlidesApp.motions', [
     'Motion',
     'Category',
     'Workflow',
-    function(Motion, Category, Workflow) {}
+    'SubmittersRelationship',
+    function(Motion, Category, Workflow, SubmittersRelationship) {}
 ])
 
 
