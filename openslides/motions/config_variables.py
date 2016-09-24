@@ -161,12 +161,9 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='motions_comments',
-        default_value='Comment',
-        input_type='text',
+        default_value=[{'name': 'Comment', 'public': True}],
+        input_type='comments',
         label='Comment fields for motions',
-        help_text='Use comma separated list of field names for public '
-                  'fields or use special JSON. Example: [{"name": "Hidden Comment", '
-                  '"public": false}, {"name": "Public Comment", "public": true}]',
         weight=353,
         group='Motions',
         subgroup='Comments')

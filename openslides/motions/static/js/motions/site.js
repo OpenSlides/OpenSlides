@@ -1056,7 +1056,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     '$scope',
     '$http',
     'ngDialog',
-    'MotionComment',
     'MotionForm',
     'Motion',
     'Category',
@@ -1074,9 +1073,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'MotionInlineEditing',
     'gettextCatalog',
     'Projector',
-    function($scope, $http, ngDialog, MotionComment, MotionForm, Motion, Category, Mediafile, Tag,
-             User, Workflow, Config, motion, SingleMotionContentProvider, MotionContentProvider,
-             PollContentProvider, PdfMakeConverter, PdfMakeDocumentProvider, MotionInlineEditing, gettextCatalog, Projector) {
+    function($scope, $http, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Config,
+             motion, SingleMotionContentProvider, MotionContentProvider, PollContentProvider,
+             PdfMakeConverter, PdfMakeDocumentProvider, MotionInlineEditing, gettextCatalog, Projector) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1086,7 +1085,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         Motion.loadRelations(motion, 'agenda_item');
         $scope.version = motion.active_version;
         $scope.isCollapsed = true;
-        $scope.commentsFields = MotionComment.getFields();
+        $scope.commentsFields = Config.get('motions_comments').value;
         $scope.lineNumberMode = Config.get('motions_default_line_numbering').value;
         if (motion.parent_id) {
             Motion.bindOne(motion.parent_id, $scope, 'parent');
