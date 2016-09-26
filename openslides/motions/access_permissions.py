@@ -45,7 +45,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
         for the projector. Removes several fields.
         """
         data = full_data.copy()
-        for i, field in enumerate(self.get_comments_config_fields()):
+        for i, field in enumerate(config['motions_comments']):
             if not field.get('public'):
                 try:
                     data['comments'][i] = None
