@@ -916,9 +916,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'PdfMakeConverter',
     'PdfMakeDocumentProvider',
     'gettextCatalog',
+    'HTMLValidizer',
     function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionDocxExport,
                 MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter,
-                PdfMakeDocumentProvider, gettextCatalog) {
+                PdfMakeDocumentProvider, gettextCatalog, HTMLValidizer) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         Tag.bindAll({}, $scope, 'tags');
@@ -1084,7 +1085,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 
             //save the arrays of the filtered motions to an array
             angular.forEach($scope.motionsFiltered, function (motion) {
-                var content = motion.getText() + motion.getReason();
+                var content = HTMLValidizer.validize(motion.getText($scope.version)) + HTMLValidizer.validize(motion.getReason($scope.version));
                 var map = Function.prototype.call.bind([].map);
                 var tmp_image_sources = map($(content).find("img"), function(element) {
                     return element.getAttribute("src");
@@ -1190,9 +1191,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'MotionInlineEditing',
     'gettextCatalog',
     'Projector',
+    'HTMLValidizer',
     function($scope, $http, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Config,
              motion, MotionContentProvider, PollContentProvider,
-             PdfMakeConverter, PdfMakeDocumentProvider, MotionInlineEditing, gettextCatalog, Projector) {
+             PdfMakeConverter, PdfMakeDocumentProvider, MotionInlineEditing, gettextCatalog, Projector, HTMLValidizer) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1242,7 +1244,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         };
 
         $scope.makePDF = function() {
-            var content = motion.getText() + motion.getReason();
+            var content = HTMLValidizer.validize(motion.getText($scope.version)) + HTMLValidizer.validize(motion.getReason($scope.version));
             var map = Function.prototype.call.bind([].map);
             var image_sources = map($(content).find("img"), function(element) {
                 return element.getAttribute("src");

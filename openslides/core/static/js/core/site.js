@@ -23,6 +23,29 @@ angular.module('OpenSlidesApp.core.site', [
 // Can be used to find out if the projector or the side is used
 .constant('REALM', 'site')
 
+//for global usage
+.factory('HTMLValidizer', function() {
+    var HTMLValidizer = {};
+
+    //checks if str is valid HTML. Returns valid HTML if not,
+    //return emptystring if empty
+    HTMLValidizer.validize = function(str) {
+        if (str) {
+            var a = document.createElement('div');
+            a.innerHTML = str;
+            angular.forEach(a.childNodes, function (child) {
+                if (child.nodeType == 1) {
+                    return str;
+                }
+            });
+            return "<p>" + str + "</p>";
+        } else {
+            return ""; //needed for blank "reaons" field
+        }
+    };
+    return HTMLValidizer;
+})
+
 .factory('PdfMakeDocumentProvider', [
     'gettextCatalog',
     'Config',
@@ -116,7 +139,9 @@ angular.module('OpenSlidesApp.core.site', [
         };
     }
 ])
-.factory('PdfMakeConverter', function() {
+.factory('PdfMakeConverter', [
+    'HTMLValidizer',
+    function(HTMLValidizer) {
         /**
          * Converter component for HTML->JSON for pdfMake
          * @constructor
@@ -471,7 +496,8 @@ angular.module('OpenSlidesApp.core.site', [
                          * @param {object} htmlText   -
                          */
                         ParseHtml = function(converted, htmlText) {
-                            var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, ""));
+                            var html = HTMLValidizer.validize(htmlText);
+                            html = $(html.replace(/\t/g, "").replace(/\n/g, ""));
                             var emptyParagraph = create("text");
                             slice(html).forEach(function(element) {
                                 ParseElement(converted, element);
@@ -509,7 +535,7 @@ angular.module('OpenSlidesApp.core.site', [
         return {
             createInstance: createInstance
         };
-})
+}])
 
 // Provider to register entries for the main menu.
 .provider('mainMenu', [
