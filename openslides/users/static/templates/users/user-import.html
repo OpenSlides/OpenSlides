@@ -169,7 +169,7 @@
                     <li role="menuitem" ng-repeat="action in duplicateActions" class="pointer"
                       ng-click="user.duplicateAction = action; calcStats()">
                       <i class="fa fa-check" ng-if="user.duplicateAction == action"></i>
-                      <translate>{{ action }}</translate>
+                      <translate>{{ action | translate }}</translate>
                   </li>
                 </ul>
     </table>

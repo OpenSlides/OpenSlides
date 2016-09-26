@@ -1966,6 +1966,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         gettext('Remove all supporters of a motion if a submitter edits his ' +
                 'motion in early state');
 
+        // subgroup Suppoerters
+        gettext('Comments');
+        gettext('Comment fields for motions');
+        gettext('Public');
+        gettext('Private');
+
         // subgroup Voting and ballot papers
         gettext('Voting and ballot papers');
         gettext('The 100 % base of a voting result consists of');
@@ -1982,7 +1988,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 
         // subgroup PDF
         gettext('Title for PDF and DOCX documents (all motions)');
-        gettext('Preamble text for PDF and DOCX documents (all motioqns)');
+        gettext('Preamble text for PDF and DOCX documents (all motions)');
     }
 ]);
 
