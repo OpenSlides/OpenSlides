@@ -1873,9 +1873,8 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         gettext('Custom number of ballot papers');
 
         // subgroup PDF
-        gettext('Title for PDF document (all motions)');
-        gettext('Preamble text for PDF document (all motioqns)');
-        gettext('Show paragraph numbering (only in PDF)');
+        gettext('Title for PDF and DOCX documents (all motions)');
+        gettext('Preamble text for PDF and DOCX documents (all motioqns)');
     }
 ]);
 
