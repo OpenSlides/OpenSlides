@@ -789,9 +789,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
         };
         $scope.duplicateActions = [
-            'keep original',
-            'override new',
-            'create duplicate'
+            gettext('keep original'),
+            gettext('override new'),
+            gettext('create duplicate')
         ];
         // detect if csv file is loaded
         $scope.$watch('csv.result', function () {

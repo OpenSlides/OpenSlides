@@ -95,7 +95,7 @@
           <th translate>Comment
           <th translate>Is active
           <th translate>Is committee</th>
-          <th ng-if="duplicates > 0" translate>
+          <th ng-if="duplicates > 0">
             <i class="fa fa-exclamation-triangle text-danger"></i>
             <strong class="text-danger" ng-if="duplicates == 1">1 <translate>duplicate</translate></strong>
             <strong class="text-danger" ng-if="duplicates > 1">{{ duplicates }} <translate>duplicates</translate></strong>
@@ -108,7 +108,7 @@
                 <ul class="dropdown-menu dropdown-entries">
                     <li role="menuitem" ng-repeat="action in duplicateActions" class="pointer"
                         ng-click="setGlobalAction(action)">
-                      <translate>{{ action }}</translate>
+                      {{ action | translate }}
                   </li>
                 </ul>
               </div>
