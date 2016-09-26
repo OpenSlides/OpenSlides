@@ -9,223 +9,182 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
      * Provides the content as JS objects for Motions in pdfMake context
      * @constructor
      */
-    var createInstance = function(converter) {
-        /**
-         * Text of motion
-         * @function
-         * @param {object} motion - Current motion
-         * @param {object} $scope - Current $scope
-         */
-        var textContent = function(motion, $scope) {
-                if ($scope.lineNumberMode == "inline" || $scope.lineNumberMode == "outside") {
-                    /* in order to distinguish between the line-number-types we need to pass the scope
-                     * to the convertHTML function.
-                     * We should avoid this, since this completly breaks compatibilty for every
-                     * other project that might want to use this HTML to PDF parser.
-                     * https://github.com/OpenSlides/OpenSlides/issues/2361
-                     */
-                    return converter.convertHTML($scope.lineBrokenText, $scope);
-                } else {
-                    return converter.convertHTML(motion.getText($scope.version), $scope);
-                }
-            },
-            /**
-             * Generate text of reason
-             * @function
-             * @param {object} motion - Current motion
-             * @param {object} $scope - Current $scope
-             */
-            reasonContent = function(motion, $scope) {
-                return converter.convertHTML(motion.getReason($scope.version), $scope);
-            },
-            /**
-             * Generate header text of motion
-             * @function
-             * @param {object} motion - Current motion
-             * @param {object} $scope - Current $scope
-             */
-            motionHeader = function(motion, $scope) {
-                var header = converter.createElement("text", gettextCatalog.getString("Motion") + " " + motion.identifier + ": " + motion.getTitle($scope.version));
-                header.bold = true;
-                header.fontSize = 26;
-                return header;
-            },
-            /**
-             * Generate text of signment
-             * @function
-             * @param {object} motion - Current motion
-             * @param {object} $scope - Current $scope
-             * @param {object} User - Current user
-             */
-            signment = function(motion, $scope, User) {
-                var label = converter.createElement("text", gettextCatalog.getString('Submitter') + ':\nStatus:');
-                var state = converter.createElement("text", User.get(motion.submitters_id[0]).full_name + '\n'+gettextCatalog.getString(motion.state.name));
-                state.width = "70%";
-                label.width = "30%";
-                label.bold = true;
-                var signment = converter.createElement("columns", [label, state]);
-                signment.margin = [10, 20, 0, 10];
-                signment.lineHeight = 2.5;
-                return signment;
-            },
-            /**
-             * Generates polls
-             * @function
-             * @param {object} motion - Current motion
-             * @param {object} $scope - Current $scope
-             */
-            polls = function(motion, $scope) {
-                if (!motion.polls.length) return {};
-                var pollLabel = converter.createElement("text", gettextCatalog.getString('Voting result') + ":"),
-                    results = function() {
-                        return motion.polls.map(function(poll, index) {
-                            var id = index + 1,
-                                yes = poll.yes ? poll.yes : '-', // if no poll.yes is given set it to '-'
-                                yesRelative = poll.getVote(poll.yes, 'yes').percentStr,
-                                no = poll.no ? poll.no : '-',
-                                noRelative = poll.getVote(poll.no, 'no').percentStr,
-                                abstain = poll.abstain ? poll.abstain : '-',
-                                abstainRelative = poll.getVote(poll.abstain, 'abstain').percentStr,
-                                valid = poll.votesvalid  ? poll.votesvalid : '-',
-                                validRelative = poll.getVote(poll.votesvalid, 'votesvalid').percentStr,
-                                number = {
-                                    text: id + ".",
-                                    width: "5%"
-                                },
-                                headerText = {
-                                    text: gettextCatalog.getString('Vote'),
-                                    width: "15%"
-                                },
-                                /**
-                                 * Generates a part (consisting of different columns) of the polls
-                                 *
-                                 * Example Ja      100 ( 90% )
-                                 *
-                                 * @function
-                                 * @param {string} name - E.g. "Ja"
-                                 * @param {number} value - E.g.100
-                                 * @param {number} relValue - E.g. 90
-                                 */
-                                createPart = function(name, value, relValue) {
-                                    var indexColumn = converter.createElement("text");
-                                    var nameColumn = converter.createElement("text", "" + name);
-                                    var valueColumn = converter.createElement("text", "" + value);
-                                    var relColumn = converter.createElement("text", relValue);
-                                    valueColumn.width = "40%";
-                                    indexColumn.width = "5%";
-                                    valueColumn.width = "5%";
-                                    valueColumn.alignment = "right";
-                                    relColumn.margin = [5, 0, 0, 0];
-                                    return [indexColumn, nameColumn, valueColumn, relColumn];
-                                },
-                                yesPart = converter.createElement("columns", createPart(gettextCatalog.getString("Yes"), yes, yesRelative)),
-                                noPart = converter.createElement("columns", createPart(gettextCatalog.getString("No"), no, noRelative)),
-                                abstainPart = converter.createElement("columns", createPart(gettextCatalog.getString("Abstain"), abstain, abstainRelative)),
-                                totalPart = converter.createElement("columns", createPart(gettextCatalog.getString("Valid ballots"), valid, validRelative)),
-                                heading = converter.createElement("columns", [number, headerText]),
-                                pollResult = converter.createElement("stack", [
-                                    heading, yesPart, noPart, abstainPart, totalPart
-                                ]);
 
-                            return pollResult;
-                        }, {});
-                    };
-                pollLabel.width = '35%';
-                pollLabel.bold = true;
-                var result = converter.createElement("columns", [pollLabel, results()]);
-                result.margin = [10, 0, 0, 10];
-                result.lineHeight = 1;
-                return result;
-            },
-            /**
-             * Generates title section for motion
-             * @function
-             * @param {object} motion - Current motion
-             * @param {object} $scope - Current $scope
-             */
-            titleSection = function(motion, $scope) {
-                var title = converter.createElement("text", motion.getTitle($scope.version));
-                title.bold = true;
-                title.fontSize = 14;
-                title.margin = [0, 0, 0, 10];
-                return title;
-            },
-            /**
-             * Generates reason section for polls
-             * @function
-             * @param {object} motion - Current motion
-             * @param {object} $scope - Current $scope
-             */
-            reason = function(motion, $scope) {
-                var r = converter.createElement("text", gettextCatalog.getString("Reason") + ":");
-                r.bold = true;
-                r.fontSize = 14;
-                r.margin = [0, 30, 0, 10];
-                return r;
-            },
-            /**
-             * Generates content as a pdfmake consumable
-             * @function
-             * @param {object} motion - Current motion
-             * @param {object} $scope - Current $scope
-             * @param {object} User - Current user
-             */
-            getContent = function(motion, $scope, User) {
-                if (reasonContent(motion, $scope).length === 0 ) {
-                    return [
-                        motionHeader(motion, $scope),
-                        signment(motion, $scope, User),
-                        polls(motion, $scope),
-                        titleSection(motion, $scope),
-                        textContent(motion, $scope),
-                    ];
-                } else {
-                    return [
-                        motionHeader(motion, $scope),
-                        signment(motion, $scope, User),
-                        polls(motion, $scope),
-                        titleSection(motion, $scope),
-                        textContent(motion, $scope),
-                        reason(motion, $scope),
-                        reasonContent(motion, $scope)
-                    ];
-                }
-            };
+    var createInstance = function(converter, motion, $scope, User) {
+
+        // generates the text of the motion. Also septerates between line-numbers
+        var textContent = function() {
+            if ($scope.lineNumberMode == "inline" || $scope.lineNumberMode == "outside") {
+                /* in order to distinguish between the line-number-types we need to pass the scope
+                * to the convertHTML function.
+                * We should avoid this, since this completly breaks compatibilty for every
+                * other project that might want to use this HTML to PDF parser.
+                * https://github.com/OpenSlides/OpenSlides/issues/2361
+                */
+                return converter.convertHTML($scope.lineBrokenText, $scope);
+            } else {
+                return converter.convertHTML(motion.getText($scope.version), $scope);
+            }
+        };
+
+        // Generate text of reason
+        var reasonContent = function() {
+            return converter.convertHTML(motion.getReason($scope.version), $scope);
+        };
+
+        // Generate header text of motion
+        var motionHeader = function() {
+            var header = converter.createElement("text", gettextCatalog.getString("Motion") + " " + motion.identifier + ": " + motion.getTitle($scope.version));
+            header.bold = true;
+            header.fontSize = 26;
+            return header;
+        };
+
+        // Generate text of signment
+        var signment = function() {
+            var label = converter.createElement("text", gettextCatalog.getString('Submitter') + ':\nStatus:');
+            var state = converter.createElement("text", User.get(motion.submitters_id[0]).full_name + '\n'+gettextCatalog.getString(motion.state.name));
+            state.width = "70%";
+            label.width = "30%";
+            label.bold = true;
+            var signment = converter.createElement("columns", [label, state]);
+            signment.margin = [10, 20, 0, 10];
+            signment.lineHeight = 2.5;
+            return signment;
+        };
+
+        // Generates polls
+        var polls = function() {
+            if (!motion.polls.length) return {};
+            var pollLabel = converter.createElement("text", gettextCatalog.getString('Voting result') + ":"),
+                results = function() {
+                    return motion.polls.map(function(poll, index) {
+                        var id = index + 1,
+                            yes = poll.yes ? poll.yes : '-', // if no poll.yes is given set it to '-'
+                            yesRelative = poll.getVote(poll.yes, 'yes').percentStr,
+                            no = poll.no ? poll.no : '-',
+                            noRelative = poll.getVote(poll.no, 'no').percentStr,
+                            abstain = poll.abstain ? poll.abstain : '-',
+                            abstainrelativeGet = poll.getVote(poll.abstain, 'abstain').percentStr,
+                            abstainRelative = abstainrelativeGet ? abstainrelativeGet : '',
+                            valid = poll.votesvalid  ? poll.votesvalid : '-',
+                            validRelative = poll.getVote(poll.votesvalid, 'votesvalid').percentStr,
+                            number = {
+                                text: id + ".",
+                                width: "5%"
+                            },
+                            headerText = {
+                                text: gettextCatalog.getString('Vote'),
+                                width: "15%"
+                            },
+                            /**
+                             * Generates a part (consisting of different columns) of the polls
+                             *
+                             * Example Ja      100 ( 90% )
+                             *
+                             * @function
+                             * @param {string} name - E.g. "Ja"
+                             * @param {number} value - E.g.100
+                             * @param {number} relValue - E.g. 90
+                             */
+                            createPart = function(name, value, relValue) {
+                                var indexColumn = converter.createElement("text");
+                                var nameColumn = converter.createElement("text", "" + name);
+                                var valueColumn = converter.createElement("text", "" + value);
+                                var relColumn = converter.createElement("text", relValue);
+                                valueColumn.width = "40%";
+                                indexColumn.width = "5%";
+                                valueColumn.width = "5%";
+                                valueColumn.alignment = "right";
+                                relColumn.margin = [5, 0, 0, 0];
+                                return [indexColumn, nameColumn, valueColumn, relColumn];
+                            },
+                            yesPart = converter.createElement("columns", createPart(gettextCatalog.getString("Yes"), yes, yesRelative)),
+                            noPart = converter.createElement("columns", createPart(gettextCatalog.getString("No"), no, noRelative)),
+                            abstainPart = converter.createElement("columns", createPart(gettextCatalog.getString("Abstain"), abstain, abstainRelative)),
+                            totalPart = converter.createElement("columns", createPart(gettextCatalog.getString("Valid votes"), valid, validRelative)),
+                            heading = converter.createElement("columns", [number, headerText]),
+                            pollResult = converter.createElement("stack", [
+                                heading, yesPart, noPart, abstainPart, totalPart
+                            ]);
+
+                        return pollResult;
+                    }, {});
+                };
+            pollLabel.width = '35%';
+            pollLabel.bold = true;
+            var result = converter.createElement("columns", [pollLabel, results()]);
+            result.margin = [10, 0, 0, 10];
+            result.lineHeight = 1;
+            return result;
+        };
+
+        // Generates title section for motion
+        var titleSection = function() {
+            var title = converter.createElement("text", motion.getTitle($scope.version));
+            title.bold = true;
+            title.fontSize = 14;
+            title.margin = [0, 0, 0, 10];
+            return title;
+        };
+
+        // Generates reason section for polls
+        var reason = function() {
+            var r = converter.createElement("text", gettextCatalog.getString("Reason") + ":");
+            r.bold = true;
+            r.fontSize = 14;
+            r.margin = [0, 30, 0, 10];
+            return r;
+        };
+
+        //getters
+        var getTitle = function() {
+            return motion.getTitle($scope.verion);
+        };
+
+        var getIdentifier = function() {
+            return motion.identifier;
+        };
+
+        var getCategory = function() {
+            return motion.category;
+        };
+
+        // Generates content as a pdfmake consumable
+        var getContent = function() {
+            if (reasonContent().length === 0 ) {
+                return [
+                    motionHeader(),
+                    signment(),
+                    polls(),
+                    titleSection(),
+                    textContent(),
+                ];
+            } else {
+                return [
+                    motionHeader(),
+                    signment(),
+                    polls(),
+                    titleSection(),
+                    textContent(),
+                    reason(),
+                    reasonContent()
+                ];
+            }
+        };
         return {
-            getContent: getContent
+            getContent: getContent,
+            getTitle: getTitle,
+            getIdentifier: getIdentifier,
+            getCategory: getCategory
         };
     };
+
     return {
         createInstance: createInstance
     };
 }])
-.factory('SingleMotionContentProvider', function() {
-    /**
-     * Generates a content provider
-     * @constructor
-     * @param {object} motionContentProvider - Generates pdfMake structure from motion
-     * @param {object} $scope - Current $scope
-     * @param {object} User - Current User
-     */
-    var createInstance = function(motionContentProvider, motion, $scope, User) {
-        /**
-         * Returns Content for single motion
-         * @function
-         * @param {object} motion - Current motion
-         * @param {object} $scope - Current $scope
-         * @param {object} User - Current User
-         */
-        var getContent = function() {
-            return motionContentProvider.getContent(motion, $scope, User);
-        };
-        return {
-            getContent: getContent
-        };
-    };
-    return {
-        createInstance: createInstance
-    };
-})
+
 .factory('PollContentProvider', function() {
     /**
     * Generates a content provider for polls
@@ -355,6 +314,127 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         createInstance: createInstance
     };
 })
+
+.factory('MotionCatalogContentProvider', ['gettextCatalog', function(gettextCatalog) {
+
+    /**
+    * Constructor
+    * @function
+    * @param {object} allMotions - A sorted array of all motions to parse
+    * @param {object} $scope - Current $scope
+    * @param {object} User - Current user
+    */
+    var createInstance = function(allMotions, $scope, User, Category) {
+
+        //function to create the Table of contents
+        var createTitle = function() {
+
+            return {
+                text: gettextCatalog.getString("Motions"),
+                style: "title"
+            };
+        };
+
+        var createTOContent = function(motionTitles) {
+
+            var heading = {
+                text: gettextCatalog.getString("Table of contents"),
+                style: "heading",
+            };
+
+            var toc = [];
+            angular.forEach(motionTitles, function(title) {
+                toc.push({
+                    text: gettextCatalog.getString("Motion") + " " + title,
+                    style: "tableofcontent",
+                });
+            });
+
+            return [
+                heading,
+                toc,
+                addPageBreak()
+            ];
+        };
+
+        // function to create the table of catergories (if any)
+        var createTOCatergories = function() {
+            if (Category.getAll().length > 0) {
+                var heading = {
+                    text: gettextCatalog.getString("Categories"),
+                    style: "heading"
+                };
+
+                var toc = [];
+                angular.forEach(Category.getAll(), function(cat) {
+                    toc.push(
+                        {
+                            columns: [
+                                {
+                                    text: cat.prefix,
+                                    style: 'tableofcontent',
+                                    width: 30
+                                },
+                                {
+                                    text: cat.name,
+                                    style: 'tableofcontent'
+                                }
+                            ]
+                        }
+                    );
+                });
+
+                return [
+                    heading,
+                    toc,
+                    addPageBreak()
+                ];
+            } else {
+                // if there are no categories, return "empty string"
+                // pdfmake takes "null" literally and throws an error
+                return "";
+            }
+        };
+
+        // function to apply a pagebreak-keyword
+        var addPageBreak = function() {
+            return [
+                {
+                    text: '',
+                    pageBreak: 'after'
+                }
+            ];
+        };
+
+        // returns the pure content of the motion, parseable by makepdf
+        var getContent = function() {
+            var motionContent = [];
+            var motionTitles = [];
+            var motionCategories = [];
+            angular.forEach(allMotions, function(motion, key) {
+                motionTitles.push(motion.getIdentifier() + ": " + motion.getTitle());
+                motionContent.push(motion.getContent());
+                if (key < allMotions.length - 1) {
+                    motionContent.push(addPageBreak());
+                }
+            });
+
+            return [
+                createTitle(),
+                createTOCatergories(),
+                createTOContent(motionTitles),
+                motionContent
+            ];
+        };
+        return {
+            getContent: getContent
+        };
+    };
+
+    return {
+        createInstance: createInstance
+    };
+}])
 
 .config([
     'mainMenuProvider',
@@ -831,7 +911,14 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'User',
     'Agenda',
     'MotionDocxExport',
-    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionDocxExport) {
+    'MotionContentProvider',
+    'MotionCatalogContentProvider',
+    'PdfMakeConverter',
+    'PdfMakeDocumentProvider',
+    'gettextCatalog',
+    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionDocxExport,
+                MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter,
+                PdfMakeDocumentProvider, gettextCatalog) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         Tag.bindAll({}, $scope, 'tags');
@@ -866,7 +953,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                     // add id
                     $scope.multiselectFilter[filter].push(id);
                 }
-
             }
         };
         // function to sort by clicked column
@@ -989,6 +1075,38 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             ngDialog.open(MotionForm.getDialog(motion));
         };
 
+
+        // Export as a pdf file
+        $scope.pdf_export = function() {
+
+            var filename = gettextCatalog.getString("Motions") + ".pdf";
+            var image_sources = [];
+
+            //save the arrays of the filtered motions to an array
+            angular.forEach($scope.motionsFiltered, function (motion) {
+                var content = motion.getText() + motion.getReason();
+                var map = Function.prototype.call.bind([].map);
+                var tmp_image_sources = map($(content).find("img"), function(element) {
+                    return element.getAttribute("src");
+                });
+                image_sources = image_sources.concat(tmp_image_sources);
+            });
+
+            //post-request to convert the images. Async.
+            $http.post('/core/encode_media/', JSON.stringify(image_sources)).success(function(data) {
+                var converter = PdfMakeConverter.createInstance(data.images, data.fonts, pdfMake);
+                var motionContentProviderArray = [];
+
+                //convert the filtered motions to motionContentProviders
+                angular.forEach($scope.motionsFiltered, function (motion) {
+                    motionContentProviderArray.push(MotionContentProvider.createInstance(converter, motion, $scope, User, $http));
+                });
+                var motionCatalogContentProvider = MotionCatalogContentProvider.createInstance(motionContentProviderArray, $scope, User, Category);
+                var documentProvider = PdfMakeDocumentProvider.createInstance(motionCatalogContentProvider, data.defaultFont);
+                pdfMake.createPdf(documentProvider.getDocument()).download(filename);
+            });
+        };
+
         // Export as a csv file
         $scope.csv_export = function () {
             var element = document.getElementById('downloadLinkCSV');
@@ -1065,7 +1183,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'Workflow',
     'Config',
     'motion',
-    'SingleMotionContentProvider',
     'MotionContentProvider',
     'PollContentProvider',
     'PdfMakeConverter',
@@ -1074,7 +1191,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'gettextCatalog',
     'Projector',
     function($scope, $http, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Config,
-             motion, SingleMotionContentProvider, MotionContentProvider, PollContentProvider,
+             motion, MotionContentProvider, PollContentProvider,
              PdfMakeConverter, PdfMakeDocumentProvider, MotionInlineEditing, gettextCatalog, Projector) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
@@ -1125,29 +1242,20 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         };
 
         $scope.makePDF = function() {
-          var id = motion.identifier,
-              slice = Function.prototype.call.bind([].slice),
-              map = Function.prototype.call.bind([].map),
-              image_sources = map($(content).find("img"), function(element) {
-                  return element.getAttribute("src");
-              });
+            var content = motion.getText() + motion.getReason();
+            var map = Function.prototype.call.bind([].map);
+            var image_sources = map($(content).find("img"), function(element) {
+                return element.getAttribute("src");
+            });
 
-          $http.post('/core/encode_media/', JSON.stringify(image_sources)).success(function(data) {
-              /**
-               * Converter for use with pdfMake
-               * @constructor
-               * @param {object} images  - An object to resolve the BASE64 encoded images { "$src":$BASE64DATA }
-               * @param {object} fonts   - An object representing the available custom fonts
-               * @param {object} pdfMake - pdfMake object for enhancement with custom fonts
-               */
+            $http.post('/core/encode_media/', JSON.stringify(image_sources)).success(function(data) {
+                var converter = PdfMakeConverter.createInstance(data.images, data.fonts, pdfMake);
+                var motionContentProvider = MotionContentProvider.createInstance(converter, motion, $scope, User, $http);
+                var documentProvider = PdfMakeDocumentProvider.createInstance(motionContentProvider, data.defaultFont);
+                var filename = gettextCatalog.getString("Motion") + "-" + motion.identifier + ".pdf";
+                pdfMake.createPdf(documentProvider.getDocument()).download(filename);
+            });
 
-              var converter = PdfMakeConverter.createInstance(data.images, data.fonts, pdfMake),
-                  motionContentProvider = MotionContentProvider.createInstance(converter),
-                  contentProvider = SingleMotionContentProvider.createInstance(motionContentProvider, motion, $scope, User),
-                  documentProvider = PdfMakeDocumentProvider.createInstance(contentProvider, data.defaultFont),
-                  filename = gettextCatalog.getString("Motion") + "-" + id + ".pdf";
-              pdfMake.createPdf(documentProvider.getDocument()).download(filename);
-          });
         };
 
         //make PDF for polls

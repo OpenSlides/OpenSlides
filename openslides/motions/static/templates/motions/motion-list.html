@@ -47,7 +47,7 @@
         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownExport">
           <!-- PDF export -->
           <li>
-            <a ui-sref="motions_pdf" target="_blank">
+            <a href="" ng-click="pdf_export()">
               <i class="fa fa-file-pdf-o fa-lg"></i>
               PDF
             </a>
@@ -180,7 +180,7 @@
                   <translate translate-comment="short form of agenda item">Item</translate>
                   <span class="spacer-right pull-right"></span>
                   <i class="pull-right fa"
-                    ng-style="{'visibility': sortColumn === 'agenda_item.getItemNumberWithAncestors()' && header.sortable != false ? 'visible' : 'hidden'}" 
+                    ng-style="{'visibility': sortColumn === 'agenda_item.getItemNumberWithAncestors()' && header.sortable != false ? 'visible' : 'hidden'}"
                     ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
                   </i>
                 </div>
@@ -191,7 +191,7 @@
                   <translate>Identifier</translate>
                 <span class="spacer-right pull-right"></span>
                   <i class="pull-right fa"
-                    ng-style="{'visibility': sortColumn === 'identifier' && header.sortable != false ? 'visible' : 'hidden'}" 
+                    ng-style="{'visibility': sortColumn === 'identifier' && header.sortable != false ? 'visible' : 'hidden'}"
                     ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
                   </i>
                 </div>
@@ -202,7 +202,7 @@
                   <translate>Title</translate>
                   <span class="spacer-right pull-right"></span>
                   <i class="pull-right fa"
-                    ng-style="{'visibility': sortColumn === 'getTitle()' && header.sortable != false ? 'visible' : 'hidden'}" 
+                    ng-style="{'visibility': sortColumn === 'getTitle()' && header.sortable != false ? 'visible' : 'hidden'}"
                     ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
                   </i>
                 </div>
@@ -213,7 +213,7 @@
                   <translate>Submitters</translate>
                   <span class="spacer-right pull-right"></span>
                   <i class="pull-right fa"
-                    ng-style="{'visibility': sortColumn === 'submitters' && header.sortable != false ? 'visible' : 'hidden'}" 
+                    ng-style="{'visibility': sortColumn === 'submitters' && header.sortable != false ? 'visible' : 'hidden'}"
                     ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
                   </i>
                 </div>
@@ -224,7 +224,7 @@
                   <translate>Category</translate>
                   <span class="spacer-right pull-right"></span>
                   <i class="pull-right fa"
-                    ng-style="{'visibility': sortColumn === 'category' && header.sortable != false ? 'visible' : 'hidden'}" 
+                    ng-style="{'visibility': sortColumn === 'category' && header.sortable != false ? 'visible' : 'hidden'}"
                     ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
                   </i>
                 </div>
@@ -235,7 +235,7 @@
                   <translate>State</translate>
                   <span class="spacer-right pull-right"></span>
                   <i class="pull-right fa"
-                    ng-style="{'visibility': sortColumn === 'state.name' && header.sortable != false ? 'visible' : 'hidden'}" 
+                    ng-style="{'visibility': sortColumn === 'state.name' && header.sortable != false ? 'visible' : 'hidden'}"
                     ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
                   </i>
                 </div>
@@ -295,7 +295,7 @@
         | SelectMultipleFilter: multiselectFilter.category : getItemId.category
         | SelectMultipleFilter: multiselectFilter.tag : getItemId.tag
         | orderBy: sortColumn : reverse)">
-        
+
       <!-- select column -->
       <div ng-show="isDeleteMode" os-perms="motions.can_manage"
         class="col-xs-1 centered" ng-class="{'deleteColumn' : motion.selected}">
@@ -362,7 +362,7 @@
           <!-- Submitters -->
           <div>
             <small>
-              <span class="optional" translate>by</span> 
+              <span class="optional" translate>by</span>
               <span class="optional" ng-repeat="submitter in motion.submitters | limitTo:3">
                 {{ submitter.get_full_name() }}<span ng-if="!$last">,</span></span><span ng-if="motion.submitters.length > 3">, ...</span>
               <!-- sorry for merging them together, but otherwise there would be a whitespace because of the new line -->
