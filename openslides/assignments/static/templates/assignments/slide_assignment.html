@@ -85,17 +85,17 @@
     <tr class="total">
       <td>
         <translate>Valid ballots</translate>
-      <td ng-if="poll.has_votes" ng-init="vote = poll.getVote(poll.votesvalid)">
+      <td ng-if="poll.has_votes" ng-init="vote = poll.getVote('votesvalid')">
         {{ vote.value }} {{ vote.percentStr }}
     <tr class="total">
       <td>
         <translate>Invalid ballots</translate>
-      <td ng-if="poll.has_votes" ng-init="vote = poll.getVote(poll.votesinvalid)">
+      <td ng-if="poll.has_votes" ng-init="vote = poll.getVote('votesinvalid')">
         {{ vote.value }} {{ vote.percentStr }}
     <tr class="total bg-info">
       <td>
         <translate>Casted ballots</translate>
-      <td ng-if="poll.has_votes" ng-init="vote = poll.getVote(poll.votescast)">
+      <td ng-if="poll.has_votes" ng-init="vote = poll.getVote('votescast')">
         {{ vote.value }} {{ vote.percentStr }}
     </table>
   </div>
