@@ -760,7 +760,7 @@ img {
     display: inline-block;
 }
 
-#motion-table .dropdown > span, #motion-table .sort-spacer {
+#motion-table .header-row .dropdown > span, #motion-table .sort-spacer {
     padding: 5px 10px 5px 10px;
 }
 
