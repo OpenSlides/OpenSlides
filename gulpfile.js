@@ -109,7 +109,7 @@ gulp.task('angular-chosen-img', function () {
 
 // Catches all skins files for TinyMCE editor.
 gulp.task('tinymce-skins', function () {
-    return gulp.src(path.join('bower_components', 'tinymce-dist', 'skins', '**'))
+    return gulp.src(path.join('bower_components', 'tinymce', 'skins', '**'))
         .pipe(gulp.dest(path.join(output_directory, 'tinymce', 'skins')));
 });
 
