@@ -484,6 +484,12 @@ angular.module('OpenSlidesApp.core.site', [
                                     if (styles) {
                                         ComputeStyle(temporary, styles);
                                     }
+                                    // TODO: This if-clause is a hotfix for issue #2442.
+                                    // Do this right! Why is currentParagraph undefined?
+                                    if (!currentParagraph) {
+                                        currentParagraph = {};
+                                        currentParagraph.text = [];
+                                    }
                                     currentParagraph.text.push(temporary);
                                     break;
                             }
