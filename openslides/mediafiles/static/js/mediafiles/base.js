@@ -40,17 +40,17 @@ angular.module('OpenSlidesApp.mediafiles', [])
             computed: {
                 is_pdf: ['filetype', function (filetype) {
                     var PDF_FILE_TYPES = ['application/pdf'];
-                    return _.contains(PDF_FILE_TYPES, filetype);
+                    return _.includes(PDF_FILE_TYPES, filetype);
                 }],
                 is_image: ['filetype', function (filetype) {
                     var IMAGE_FILE_TYPES = ['image/png', 'image/jpeg', 'image/gif'];
-                    return _.contains(IMAGE_FILE_TYPES, filetype);
+                    return _.includes(IMAGE_FILE_TYPES, filetype);
                 }],
                 is_video: ['filetype', function (filetype) {
                     var VIDEO_FILE_TYPES = [ 'video/quicktime', 'video/mp4', 'video/webm',
                         'video/ogg', 'video/x-flv', 'application/x-mpegURL', 'video/MP2T',
                         'video/3gpp', 'video/x-msvideo', 'video/x-ms-wmv', 'video/x-matroska' ];
-                    return _.contains(VIDEO_FILE_TYPES, filetype);
+                    return _.includes(VIDEO_FILE_TYPES, filetype);
                 }],
                 is_presentable: ['is_pdf', 'is_image', 'is_video', function (is_pdf, is_image, is_video) {
                     return is_pdf || is_image || is_video;
