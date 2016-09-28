@@ -78,8 +78,10 @@
 </div>
 
 <div class="details">
-  <h3 translate>Description</h3>
-  <div class="white-space-pre-line">{{ assignment.description }}</div>
+  <div ng-if="assignment.description">
+    <h3 translate>Description</h3>
+    <div class="white-space-pre-line">{{ assignment.description }}</div>
+  </div>
 
   <div ng-if="assignment.phase != 2">
     <h3 translate>Candidates</h3>

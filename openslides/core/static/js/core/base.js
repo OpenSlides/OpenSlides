@@ -215,7 +215,7 @@ angular.module('OpenSlidesApp.core', [
     '$rootScope',
     function ($http, $rootScope) {
         // Loads server time and calculates server offset
-        $rootScope.serverOffset = Math.floor(Date.now() / 1000);
+        $rootScope.serverOffset = 0;
         $http.get('/core/servertime/')
         .then(function(data) {
             $rootScope.serverOffset = Math.floor(Date.now() / 1000 - data.data);
