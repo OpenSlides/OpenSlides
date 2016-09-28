@@ -162,14 +162,14 @@
               <div ng-if="user.duplicate" uib-tooltip="{{ user.duplicate_info }}" uib-dropdown>
                 <button type="button" class="btn btn-default btn-sm"
                   uib-dropdown-toggle ng-class="user.duplicateAction == duplicateActions[0] ? 'btn-warning' : (user.duplicateAction == duplicateActions[1] ? 'btn-danger' : 'btn-success')">
-                  {{ user.duplicateAction }}
+                  {{ user.duplicateAction | translate }}
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-entries">
                     <li role="menuitem" ng-repeat="action in duplicateActions" class="pointer"
                       ng-click="user.duplicateAction = action; calcStats()">
                       <i class="fa fa-check" ng-if="user.duplicateAction == action"></i>
-                      <translate>{{ action | translate }}</translate>
+                      {{ action | translate }}
                   </li>
                 </ul>
     </table>
