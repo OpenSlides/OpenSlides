@@ -88,6 +88,9 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             service = this;
         var addLine = function (text, highlight) {
             var node;
+            if (typeof highlight === 'undefined') {
+                highlight = 0;
+            }
             if (firstTextNode) {
                 if (highlight == service._currentLineNumber - 1) {
                     node = document.createElement('span');
