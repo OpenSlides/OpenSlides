@@ -196,7 +196,7 @@
         <td ng-show="!isDeleteMode"
             os-perms="core.can_manage_projector">
           <div class="btn-group" style="min-width:54px;" uib-dropdown
-            ng-if="mediafile.mediafile.is_presentable"
+            ng-if="mediafile.is_presentable"
             uib-tooltip="{{ 'Projektor' | translate }} {{ mediafile.isProjected() }}"
             tooltip-enable="mediafile.isProjected() > 0">
             <button type="button" class="btn btn-default btn-sm"

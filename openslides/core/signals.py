@@ -27,18 +27,20 @@ def delete_django_app_permissions(sender, **kwargs):
 def create_builtin_projection_defaults(**kwargs):
     """
     Creates the builtin defaults:
-     - agenda_all_items, agenda_item
+     - agenda_all_items, agenda_list_of_speakers, agenda_current_list_of_speakers
+     - topics
      - assignments
      - mediafiles
      - motion
      - users
-     - list_of_speakers
-     - current_list_of_speakers
-    """
 
-    # Check whether ProjectionDefaults exists
+    These strings have to be used in the controllers where you want to
+    define a projector button. Use the string to get the id of the
+    responsible projector and pass this id to the projector button directive.
+    """
+    # Check whether ProjectionDefault objects exist.
     if ProjectionDefault.objects.all().exists():
-        # Do completely nothing if the defaults are already in the database.
+        # Do completely nothing if some defaults are already in the database.
         return
 
     default_projector = Projector.objects.get(pk=1)
@@ -52,11 +54,11 @@ def create_builtin_projection_defaults(**kwargs):
         display_name='Topics',
         projector=default_projector)
     ProjectionDefault.objects.create(
-        name='list_of_speakers',
+        name='agenda_list_of_speakers',
         display_name='List of speakers',
         projector=default_projector)
     ProjectionDefault.objects.create(
-        name='current_list_of_speakers',
+        name='agenda_current_list_of_speakers',
         display_name='Current list of speakers',
         projector=default_projector)
     ProjectionDefault.objects.create(

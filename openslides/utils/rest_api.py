@@ -14,7 +14,6 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.serializers import ModelSerializer as _ModelSerializer
 from rest_framework.serializers import (  # noqa
     MANY_RELATION_KWARGS,
-    BooleanField,
     CharField,
     DictField,
     Field,

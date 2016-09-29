@@ -179,18 +179,19 @@ class Projector(RESTModelMixin, models.Model):
 
 class ProjectionDefault(RESTModelMixin, models.Model):
     """
-    Model for the ProjectionDefaults like Motion, Agenda, List of speakers,...
-    The name is the technical name like 'topics', 'motions'. For apps the name should
-    be the app name to get keep the ProjectionDefault for apps generic. But it is
-    possible to give some special name like 'list_of_speakers'.
-    The display_name is the shown name on the front end for the user.
+    Model for the projection defaults like motions, agenda, list of
+    speakers and thelike. The name is the technical name like 'topics' or
+    'motions'. For apps the name should be the app name to get keep the
+    ProjectionDefault for apps generic. But it is possible to give some
+    special name like 'list_of_speakers'. The display_name is the shown
+    name on the front end for the user.
     """
     name = models.CharField(max_length=256)
 
     display_name = models.CharField(max_length=256)
 
     projector = models.ForeignKey(
-        'Projector',
+        Projector,
         on_delete=models.CASCADE,
         related_name='projectiondefaults')
 

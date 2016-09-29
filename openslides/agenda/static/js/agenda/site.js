@@ -251,7 +251,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             var isAgendaProjectedId = $scope.isAgendaProjected($scope.mainListTree);
             if (isAgendaProjectedId > 0) {
                 // Deactivate
-                $http.post('/rest/core/projector/' + isAgendaProjectedId + '/prune_elements/', []);
+                $http.post('/rest/core/projector/' + isAgendaProjectedId + '/clear_elements/');
             }
             if (isAgendaProjectedId != projectorId) {
                 $http.post('/rest/core/projector/' + projectorId + '/prune_elements/',
@@ -332,7 +332,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             if (projectiondefaultItem) {
                 $scope.defaultProjectorItemId = projectiondefaultItem.projector_id;
             }
-            var projectiondefaultListOfSpeakers = ProjectionDefault.filter({name: 'list_of_speakers'})[0];
+            var projectiondefaultListOfSpeakers = ProjectionDefault.filter({name: 'agenda_list_of_speakers'})[0];
             if (projectiondefaultListOfSpeakers) {
                 $scope.defaultProjectorListOfSpeakersId = projectiondefaultListOfSpeakers.projector_id;
             }
@@ -515,16 +515,11 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         }, function() {
             $scope.projectors = Projector.getAll();
             $scope.updateCurrentListOfSpeakers();
-        });
-        $scope.$watch(function () {
-            return Projector.lastModified();
-        }, function () {
-            var projectiondefault = ProjectionDefault.filter({name: 'current_list_of_speakers'})[0];
+            var projectiondefault = ProjectionDefault.filter({name: 'agenda_current_list_of_speakers'})[0];
             if (projectiondefault) {
                 $scope.defaultProjectorId = projectiondefault.projector_id;
             }
         });
-
         $scope.updateCurrentListOfSpeakers = function () {
             var itemPromise = CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
             if (itemPromise) {
@@ -539,7 +534,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             var isCurrentLoSProjectedId = $scope.isCurrentLoSProjected($scope.mainListTree);
             if (isCurrentLoSProjectedId > 0) {
                 // Deactivate
-                $http.post('/rest/core/projector/' + isCurrentLoSProjectedId + '/prune_elements/', []);
+                $http.post('/rest/core/projector/' + isCurrentLoSProjectedId + '/clear_elements/');
             }
             if (isCurrentLoSProjectedId != projectorId) {
                 $http.post('/rest/core/projector/' + projectorId + '/prune_elements/',

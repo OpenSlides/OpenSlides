@@ -79,9 +79,7 @@ angular.module('OpenSlidesApp.motions.projector', ['OpenSlidesApp.motions'])
             }
         };
 
-        Motion.find(id).then(function (motion) {
-            $scope.motion = motion;
-        });
+        Motion.bindOne(id, $scope, 'motion');
         User.bindAll({}, $scope, 'users');
 
     }

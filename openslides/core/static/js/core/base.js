@@ -192,10 +192,12 @@ angular.module('OpenSlidesApp.core', [
         autoupdate.onMessage(function(json) {
             // TODO: when MODEL.find() is called after this
             //       a new request is fired. This could be a bug in DS
-            // TODO: If you don't have the permission to see a projector, the
-            //       variable json is a string with an error message. Therefor
-            //       the next line fails.
-            var dataList = JSON.parse(json);
+            var dataList = [];
+            try {
+                 dataList = JSON.parse(json);
+            } catch(err) {
+                console.error(json);
+            }
             _.forEach(dataList, function(data) {
                 console.log("Received object: " + data.collection + ", " + data.id);
                 var instance = DS.get(data.collection, data.id);
@@ -313,15 +315,17 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-// This places a Projectorbutton in the document. Example:
-// <projector-button model="motion" default-projector.id="defPrId" additional-id="2"
-//   content="{{ 'project' | translate }}"></projector-button>
-//
-// This button references to model (in this case 'motion'). Also a defaultProjectionId has to
-// be given. In the Exable its a scope variable. The next two parameters are additional:
-// - additional-id: Then the model.project and model.isProjected will be called whith this
-//                  argument (ex.: model.project(2))
-// - content: A not trusted text placed behind the projector symbol.
+/*
+ * This places a projector button in the document.
+ *
+ * Example: <projector-button model="motion" default-projector.id="defPrId"
+ *           additional-id="2" content="{{ 'project' | translate }}"></projector-button>
+ * This button references to model (in this example 'motion'). Also a defaultProjectionId
+ * has to be given. In the example it's a scope variable. The next two parameters are additional:
+ *   - additional-id: Then the model.project and model.isProjected will be called with
+ *                    this argument (e. g.: model.project(2))
+ *   - content: A text placed behind the projector symbol.
+ */
 .directive('projectorButton', [
     'Projector',
     function (Projector) {
@@ -370,7 +374,7 @@ angular.module('OpenSlidesApp.core', [
             // if this object is already projected on projectorId, delete this element from this projector
             var isProjectedId = this.isProjected();
             if (isProjectedId > 0) {
-                $http.post('/rest/core/projector/' + isProjectedId + '/prune_elements/');
+                $http.post('/rest/core/projector/' + isProjectedId + '/clear_elements/');
             }
             // if it was the same projector before, just delete it but not show again
             if (isProjectedId != projectorId) {
@@ -483,7 +487,7 @@ angular.module('OpenSlidesApp.core', [
                 },
                 getStateForCurrentSlide: function () {
                     var return_dict;
-                    $.each(this.elements, function(key, value) {
+                    angular.forEach(this.elements, function(key, value) {
                         if (value.name == 'agenda/list-of-speakers') {
                             return_dict = {
                                 'state': 'agenda.item.detail',
@@ -592,11 +596,13 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-// This filter filters all items in array. If the filterArray is empty, the array is passed.
-// The filterArray contains numbers of the multiselect: [1, 3, 4].
-// Then, all items in array are passed, if the item_id (get with id_function) matches one of the
-// ids in filterArray. id_function could also return a list of ids. Example:
-// Item 1 has two tags with ids [1, 4]. filterArray = [3, 4] --> match
+/*
+ * This filter filters all items in an array. If the filterArray is empty, the
+ * array is passed. The filterArray contains numbers of the multiselect, e. g. [1, 3, 4].
+ * Then, all items in the array are passed, if the item_id (get with id_function) matches
+ * one of the ids in filterArray. id_function could also return a list of ids. Example:
+ * Item 1 has two tags with ids [1, 4]. filterArray == [3, 4] --> match
+ */
 .filter('SelectMultipleFilter', [
     function () {
         return function (array, filterArray, idFunction) {

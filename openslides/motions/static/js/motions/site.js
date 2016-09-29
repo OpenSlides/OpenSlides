@@ -1217,7 +1217,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         $scope.$watch(function () {
             return Projector.lastModified();
         }, function () {
-            console.log(ProjectionDefault.getAll());
             $scope.defaultProjectorId = ProjectionDefault.filter({name: 'motions'})[0].projector_id;
         });
         $scope.version = motion.active_version;

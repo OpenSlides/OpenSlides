@@ -158,7 +158,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
         $scope.showMediafile = function (projectorId, mediafile) {
             var isProjectedId = mediafile.isProjected();
             if (isProjectedId > 0) {
-                $http.post('/rest/core/projector/' + isProjectedId + '/prune_elements/', []);
+                $http.post('/rest/core/projector/' + isProjectedId + '/clear_elements/');
             }
             if (isProjectedId != projectorId) {
                 var postUrl = '/rest/core/projector/' + projectorId + '/prune_elements/';
@@ -177,15 +177,12 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
             }
         };
 
-        // To avoid some kind of 60,000000000001% in template
-        $scope.round = function (val) {return Math.round(val);};
-
         var sendMediafileCommand = function (mediafile, data) {
             var updateData = _.extend({}, mediafile);
             _.extend(updateData, data);
             var postData = {};
             postData[mediafile.uuid] = updateData;
-            
+
             // Find Projector where the mediafile is projected
             $scope.projectors.forEach(function (projector) {
                 if (_.find(projector.elements, function (e) {return e.uuid == mediafile.uuid;})) {

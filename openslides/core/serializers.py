@@ -40,8 +40,8 @@ class ProjectorSerializer(ModelSerializer):
 
     class Meta:
         model = Projector
-        fields = ('id', 'config', 'elements', 'scale', 'scroll', 'name', 'blank', 'width', 'height', 'projectiondefaults')
-        read_only_fields = ('scale', 'scroll', 'blank', 'width', 'height', 'projectiondefaults')
+        fields = ('id', 'config', 'elements', 'scale', 'scroll', 'name', 'blank', 'width', 'height', 'projectiondefaults', )
+        read_only_fields = ('scale', 'scroll', 'blank', 'width', 'height', )
 
 
 class TagSerializer(ModelSerializer):

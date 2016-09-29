@@ -56,7 +56,7 @@
               <li ng-repeat="projectiondefault in projectiondefaults | orderBy:'id'"
                   ng-click="setProjectionDefault(projector, projectiondefault)">
                 <i class="fa fa-check" ng-if="projectiondefault.projector_id === projector.id"></i>
-                <translate>{{ projectiondefault.display_name }}</translate>
+                {{ projectiondefault.display_name | translate }}
               </li>
             </ul>
           </div>

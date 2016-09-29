@@ -18,7 +18,6 @@ from django.utils.timezone import now
 
 from openslides import __version__ as version
 from openslides.utils import views as utils_views
-from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.plugins import (
     get_plugin_description,
     get_plugin_verbose_name,
@@ -190,23 +189,25 @@ class ProjectorViewSet(ModelViewSet):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action == 'metadata':
             result = self.request.user.has_perm('core.can_see_projector')
-        elif self.action in ('activate_elements', 'prune_elements', 'update_elements',
-                             'deactivate_elements', 'clear_elements', 'control_view',
-                             'set_resolution', 'set_scroll', 'control_blank', 'destroy',
-                             'create', 'update', 'broadcast', 'set_projectiondefault'):
+        elif self.action in (
+            'create', 'update', 'partial_update', 'destroy',
+            'activate_elements', 'prune_elements', 'update_elements', 'deactivate_elements', 'clear_elements',
+            'control_view', 'set_resolution', 'set_scroll', 'control_blank', 'broadcast',
+            'set_projectiondefault',
+        ):
             result = (self.request.user.has_perm('core.can_see_projector') and
                       self.request.user.has_perm('core.can_manage_projector'))
         else:
             result = False
         return result
 
-    # Assign all projectionDefaults from this projector to the default projector (pk=1)
+    # Assign all ProjectionDefault objects from this projector to the default projector (pk=1).
     def destroy(self, *args, **kwargs):
         projector_instance = self.get_object()
-        for a in ProjectionDefault.objects.all():
-            if a.projector.id == projector_instance.id:
-                a.projector = Projector.objects.get(pk=1)
-                a.save()
+        for projection_default in ProjectionDefault.objects.all():
+            if projection_default.projector.id == projector_instance.id:
+                projection_default.projector_id = 1
+                projection_default.save()
         return super(ProjectorViewSet, self).destroy(*args, **kwargs)
 
     @detail_route(methods=['post'])
@@ -486,8 +487,6 @@ class ProjectorViewSet(ModelViewSet):
         """
         if config['projector_broadcast'] == 0:
             config['projector_broadcast'] = pk
-            projector_instance = self.get_object()
-            inform_changed_data(projector_instance)
             message = "Setting projector {id} as broadcast projector was successful.".format(
                 id=pk)
         else:

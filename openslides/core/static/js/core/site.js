@@ -1205,7 +1205,7 @@ angular.module('OpenSlidesApp.core.site', [
             });
         };
 
-        // Get all message and countdown data from the defaultprojector (id=1)    
+        // Get all message and countdown data from the defaultprojector (id=1)
         var rebuildAllElements = function () {
             $scope.countdowns = [];
             $scope.messages = [];
@@ -1246,7 +1246,7 @@ angular.module('OpenSlidesApp.core.site', [
 
             // stop ALL interval timer
             cancelIntervalTimers();
-            
+
             rebuildAllElements();
         });
         $scope.$on('$destroy', function() {
@@ -1424,7 +1424,7 @@ angular.module('OpenSlidesApp.core.site', [
                         $http.post('/rest/core/projector/' + projector.id + '/update_elements/', data);
                     }
                 });
-            }); 
+            });
         };
         $scope.isProjected = function (element) {
             var projectorIds = [];
@@ -1616,7 +1616,7 @@ angular.module('OpenSlidesApp.core.site', [
         };
         $scope.removeIdentifierMessages = function () {
             Projector.getAll().forEach(function (projector) {
-                $.each(projector.elements, function (uuid, value) {
+                angular.forEach(projector.elements, function (uuid, value) {
                     if (value.name == 'core/message' && value.type == 'identify') {
                         $http.post('/rest/core/projector/' + projector.id + '/deactivate_elements/', [uuid]);
                     }

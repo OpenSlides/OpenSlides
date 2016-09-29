@@ -26,22 +26,12 @@ class ProjectorAPI(TestCase):
 
         response = self.client.get(reverse('projector-detail', args=['1']))
         content = json.loads(response.content.decode())
-        del content['projectiondefaults']
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(content, {
-            'id': 1,
-            'elements': {
-                'aae4a07b26534cfb9af4232f361dce73':
-                    {'id': topic.id,
-                     'uuid': 'aae4a07b26534cfb9af4232f361dce73',
-                     'name': 'topics/topic'}},
-            'scale': 0,
-            'scroll': 0,
-            'name': 'Defaultprojector',
-            'blank': False,
-            'width': 1024,
-            'height': 768})
+        self.assertEqual(content['elements'], {
+            'aae4a07b26534cfb9af4232f361dce73':
+                {'id': topic.id,
+                 'uuid': 'aae4a07b26534cfb9af4232f361dce73',
+                 'name': 'topics/topic'}})
 
     def test_invalid_slide_on_default_projector(self):
         self.client.login(username='admin', password='admin')

@@ -13,7 +13,7 @@ def name_default_projector(apps, schema_editor):
     Set the name of the default projector to 'Defaultprojector'
     """
     Projector = apps.get_model('core', 'Projector')
-    Projector.objects.filter(pk=1).update(name='Defaultprojector')
+    Projector.objects.filter(pk=1).update(name='Default projector')
 
 
 class Migration(migrations.Migration):

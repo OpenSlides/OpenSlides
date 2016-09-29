@@ -60,10 +60,11 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 .controller('ProjectorContainerCtrl', [
     '$scope',
     '$location',
+    'gettext',
     'loadGlobalData',
     'Projector',
     'ProjectorID',
-    function($scope, $location, loadGlobalData, Projector, ProjectorID) {
+    function($scope, $location, gettext, loadGlobalData, Projector, ProjectorID) {
         loadGlobalData();
 
         $scope.projector_id = ProjectorID();
@@ -73,17 +74,15 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         $scope.$watch(function () {
             return Projector.lastModified($scope.projector_id);
         }, function () {
-            Projector.find($scope.projector_id).then(function (projector) {
+            var projector = Projector.get($scope.projector_id)
+            if (projector) {
+                $scope.error = '';
                 $scope.projectorWidth = projector.width;
                 $scope.projectorHeight = projector.height;
                 $scope.recalculateIframe();
-            }, function (error) {
-                if (error.status == 404) {
-                    $scope.error = 'Projector not found.';
-                } else if (error.status == 403) {
-                    $scope.error = 'You have to login to see the projector.';
-                }
-            });
+            } else {
+                $scope.error = gettext('Can not open the projector.');
+            }
         });
 
         // recalculate the actual Iframesize and scale
@@ -164,34 +163,31 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         $scope.$watch(function () {
             return Config.lastModified('projector_broadcast');
         }, function () {
-            Config.findAll().then(function () {
-                var bc = Config.get('projector_broadcast').value;
-                if ($scope.broadcast != bc) {
-                    $scope.broadcast = bc;
-                    if ($scope.broadcastDeregister) {
-                        // revert to original $scope.projector
-                        $scope.broadcastDeregister();
-                        $scope.broadcastDeregister = null;
-                        setElements($scope.projector);
-                        $scope.blank = $scope.projector.blank;
+            var bc = Config.get('projector_broadcast').value;
+            if ($scope.broadcast != bc) {
+                $scope.broadcast = bc;
+                if ($scope.broadcastDeregister) {
+                    // revert to original $scope.projector
+                    $scope.broadcastDeregister();
+                    $scope.broadcastDeregister = null;
+                    setElements($scope.projector);
+                    $scope.blank = $scope.projector.blank;
+                }
+            }
+            if ($scope.broadcast > 0) {
+                // get elements and blank from broadcast projector
+                $scope.broadcastDeregister = $scope.$watch(function () {
+                    return Projector.lastModified($scope.broadcast);
+                }, function () {
+                    if ($scope.broadcast > 0) {
+                        // var broadcast_projector = Projector.get($scope.broadcast);
+                        Projector.find($scope.broadcast).then(function (broadcast_projector) {
+                            setElements(broadcast_projector);
+                            $scope.blank = broadcast_projector.blank;
+                        });
                     }
-                }
-
-                if ($scope.broadcast > 0) {
-                    // get elements and blank from broadcast projector
-                    $scope.broadcastDeregister = $scope.$watch(function () {
-                        return Projector.lastModified($scope.broadcast);
-                    }, function () {
-                        if ($scope.broadcast > 0) {
-                            // var broadcast_projector = Projector.get($scope.broadcast);
-                            Projector.find($scope.broadcast).then(function (broadcast_projector) {
-                                setElements(broadcast_projector);
-                                $scope.blank = broadcast_projector.blank;
-                            });
-                        }
-                    });
-                }
-            });
+                });
+            }
         });
 
         $scope.$on('$destroy', function() {
