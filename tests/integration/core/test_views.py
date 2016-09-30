@@ -54,7 +54,7 @@ class ProjectorAPI(TestCase):
                      'error': 'Projector element does not exist.'}},
             'scale': 0,
             'scroll': 0,
-            'name': 'Defaultprojector',
+            'name': 'Default projector',
             'blank': False,
             'width': 1024,
             'height': 768})

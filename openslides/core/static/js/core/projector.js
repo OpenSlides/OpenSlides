@@ -163,30 +163,32 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         $scope.$watch(function () {
             return Config.lastModified('projector_broadcast');
         }, function () {
-            var bc = Config.get('projector_broadcast').value;
-            if ($scope.broadcast != bc) {
-                $scope.broadcast = bc;
-                if ($scope.broadcastDeregister) {
-                    // revert to original $scope.projector
-                    $scope.broadcastDeregister();
-                    $scope.broadcastDeregister = null;
-                    setElements($scope.projector);
-                    $scope.blank = $scope.projector.blank;
-                }
-            }
-            if ($scope.broadcast > 0) {
-                // get elements and blank from broadcast projector
-                $scope.broadcastDeregister = $scope.$watch(function () {
-                    return Projector.lastModified($scope.broadcast);
-                }, function () {
-                    if ($scope.broadcast > 0) {
-                        // var broadcast_projector = Projector.get($scope.broadcast);
-                        Projector.find($scope.broadcast).then(function (broadcast_projector) {
-                            setElements(broadcast_projector);
-                            $scope.blank = broadcast_projector.blank;
-                        });
+            var bc = Config.get('projector_broadcast');
+            if (bc) {
+                if ($scope.broadcast != bc.value) {
+                    $scope.broadcast = bc.value;
+                    if ($scope.broadcastDeregister) {
+                        // revert to original $scope.projector
+                        $scope.broadcastDeregister();
+                        $scope.broadcastDeregister = null;
+                        setElements($scope.projector);
+                        $scope.blank = $scope.projector.blank;
                     }
-                });
+                }
+                if ($scope.broadcast > 0) {
+                    // get elements and blank from broadcast projector
+                    $scope.broadcastDeregister = $scope.$watch(function () {
+                        return Projector.lastModified($scope.broadcast);
+                    }, function () {
+                        if ($scope.broadcast > 0) {
+                            var broadcast_projector = Projector.get($scope.broadcast);
+                            if (broadcast_projector) {
+                                setElements(broadcast_projector);
+                                $scope.blank = broadcast_projector.blank;
+                            }
+                        }
+                    });
+                }
             }
         });
 

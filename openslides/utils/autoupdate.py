@@ -143,6 +143,8 @@ def send_data(message):
         projectors = Projector.objects.all()  # Also the broadcasted projector should get his data
         send_all = True
         broadcast_projector_data = get_projector_element_data(Projector.objects.get(pk=broadcast_id))
+        broadcast_projector_data.append(CollectionElement.from_values(
+            collection_string=Projector.get_collection_string(), id=broadcast_id).as_autoupdate_for_projector())
     else:
         broadcast_projector_data = None
 
