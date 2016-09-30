@@ -252,25 +252,17 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                 {rotate: rotation}
             );
         };
-        $scope.mediafileScroll = function(scroll) {
-            var mediafileElement = getCurrentlyPresentedMediafile();
-            sendMediafileCommand({
-                scroll: scroll
-            });
+        $scope.mediafileToggleFullscreen = function(mediafile) {
+            sendMediafileCommand(
+                mediafile,
+                {fullscreen: !mediafile.fullscreen}
+            );
         };
-        var setFullscreen = function(fullscreen) {
-            sendMediafileCommand({
-                fullscreen: fullscreen
-            });
-        };
-        $scope.mediafileToggleFullscreen = function() {
-            var mediafileElement = getCurrentlyPresentedMediafile();
-            setFullscreen(!mediafileElement.fullscreen);
-        };
-        $scope.setPlaying = function(playing) {
-            sendMediafileCommand({
-                playing: playing
-            });
+        $scope.mediafileTogglePlaying = function(mediafile) {
+            sendMediafileCommand(
+                mediafile,
+                {playing: !mediafile.playing}
+            );
         };
     }
 ])

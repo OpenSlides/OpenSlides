@@ -74,7 +74,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         $scope.$watch(function () {
             return Projector.lastModified($scope.projector_id);
         }, function () {
-            var projector = Projector.get($scope.projector_id)
+            var projector = Projector.get($scope.projector_id);
             if (projector) {
                 $scope.error = '';
                 $scope.projectorWidth = projector.width;

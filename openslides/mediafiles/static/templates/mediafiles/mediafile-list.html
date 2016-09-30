@@ -26,6 +26,7 @@
       <div class="col-md-12">
         <div ng-repeat="presentedMediafile in presentedMediafiles">
           <h3>{{ getTitle(presentedMediafile) }}</h3>
+          <!-- PDF -->
           <nav ng-show="getType(presentedMediafile) === 'pdf'" ng-class="getNavStyle(scroll)" class="form-inline">
             <div class="btn-group">
               <button class="btn btn-default" ng-click="mediafileGoToPage(presentedMediafile, presentedMediafile.page - 1)"
@@ -46,53 +47,58 @@
               <span class="input-group-addon"><translate>of</translate> {{presentedMediafile.numPages}}</span>
             </div>
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="mediafileRotate(presentedMediafile)" title="{{ 'Rotate clockwise' | translate }}">
+              <button class="btn btn-default" ng-click="mediafileRotate(presentedMediafile)"
+                  title="{{ 'Rotate clockwise' | translate }}">
                 <i class="fa fa-repeat"></i>
               </button>
             </div>
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="mediafileZoomOut(presentedMediafile)" title="{{ 'Zoom out' | translate }}">
+              <button class="btn btn-default" ng-click="mediafileZoomOut(presentedMediafile)"
+                  title="{{ 'Zoom out' | translate }}">
                 <i class="fa fa-search-minus"></i>
               </button>
-              <button class="btn" ng-click="mediafileFit(presentedMediafile)" title="{{ 'Reset zoom' | translate }}"
+              <button class="btn" ng-click="mediafileFit(presentedMediafile)"
+                  title="{{ 'Reset zoom' | translate }}"
                   ng-class="presentedMediafile.scale=='page-fit' ? 'btn-primary' : 'btn-default'">
                 <i class="fa fa-arrows-alt"></i>
               </button>
-              <button class="btn btn-default" ng-click="mediafileZoomIn(presentedMediafile)" title="{{ 'Zoom in' | translate }}">
+              <button class="btn btn-default" ng-click="mediafileZoomIn(presentedMediafile)"
+                  title="{{ 'Zoom in' | translate }}">
                 <i class="fa fa-search-plus"></i>
               </button>
             </div>
           </nav>
+
+          <!-- Image -->
           <nav ng-show="getType(presentedMediafile) === 'image'" ng-class="getNavStyle(scroll)" class="form-inline">
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="mediafileToggleFullscreen()" title="{{ 'Toggle fullscreen' | translate }}"
+              <button class="btn btn-default" ng-click="mediafileToggleFullscreen(presentedMediafile)"
+                  title="{{ 'Toggle fullscreen' | translate }}"
                   ng-class="presentedMediafile.fullscreen ? 'btn-primary' : 'btn-default'">
                 <i class="fa fa-arrows-alt"></i>
               </button>
             </div>
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="mediafileRotate()" title="{{ 'Rotate clockwise' | translate }}">
+              <button class="btn btn-default" ng-click="mediafileRotate(presentedMediafile)"
+                  title="{{ 'Rotate clockwise' | translate }}">
                 <i class="fa fa-repeat"></i>
               </button>
             </div>
           </nav>
+
+          <!-- Video -->
           <nav ng-show="getType(presentedMediafile) === 'video'" ng-class="getNavStyle(scroll)" class="form-inline">
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="mediafileToggleFullscreen()" title="{{ 'Toggle fullscreen' | translate }}"
+              <button class="btn btn-default" ng-click="mediafileToggleFullscreen(presentedMediafile)"
+                  title="{{ 'Toggle fullscreen' | translate }}"
                   ng-class="presentedMediafile.fullscreen ? 'btn-primary' : 'btn-default'">
                 <i class="fa fa-arrows-alt"></i>
               </button>
             </div>
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="setPlaying(false)" title="{{ 'Stop' | translate }}"
-                  ng-class="presentedMediafile.playing ? 'btn-default' : 'btn-primary'">
-                <i class="fa fa-stop"></i>
-              </button>
-            </div>
-            <div class="btn-group">
-              <button class="btn btn-default" ng-click="setPlaying(true)" title="{{ 'Play' | translate }}"
-                  ng-class="presentedMediafile.playing ? 'btn-primary' : 'btn-default'">
-                <i class="fa fa-play"></i>
+              <button class="btn btn-default" ng-click="mediafileTogglePlaying(presentedMediafile)"
+                  title="{{ 'Start/stop video' | translate }}">
+                <i class="fa" ng-class="presentedMediafile.playing ? 'fa-stop' : 'fa-play'"></i>
               </button>
             </div>
           </nav>
