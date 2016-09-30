@@ -26,9 +26,10 @@ class TestProjectorDBQueries(TestCase):
         Tests that only the following db queries are done:
         * 5 requests to get the session an the request user with its permissions,
         * 2 requests to get the list of all projectors,
+        * 1 request to get the list of the projector defaults.
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(7):
+        with self.assertNumQueries(8):
             self.client.get(reverse('projector-list'))
 
     def test_anonymous(self):
@@ -36,12 +37,13 @@ class TestProjectorDBQueries(TestCase):
         Tests that only the following db queries are done:
         * 2 requests to get the permission for anonymous (config and permissions)
         * 2 requests to get the list of all projectors,
+        * 1 request to get the list of the projector defaults and
 
         * 11 requests for permissions.
 
         TODO: The last 11 requests are a bug.
         """
-        with self.assertNumQueries(15):
+        with self.assertNumQueries(16):
             self.client.get(reverse('projector-list'))
 
 

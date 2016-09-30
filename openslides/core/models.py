@@ -15,6 +15,19 @@ from .access_permissions import (
 from .exceptions import ProjectorException
 
 
+class ProjectorManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all projectors. In the background
+        projector defaults are prefetched from the database.
+        """
+        return self.get_queryset().prefetch_related(
+            'projectiondefaults')
+
+
 class Projector(RESTModelMixin, models.Model):
     """
     Model for all projectors. At the moment we support only one projector,
@@ -56,6 +69,8 @@ class Projector(RESTModelMixin, models.Model):
     on e. g. the URL /rest/core/projector/1/activate_elements/.
     """
     access_permissions = ProjectorAccessPermissions()
+
+    objects = ProjectorManager()
 
     config = JSONField()
 

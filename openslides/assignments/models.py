@@ -16,6 +16,7 @@ from openslides.poll.models import (
     CollectDefaultVotesMixin,
     PublishPollMixin,
 )
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.search import user_name_helper
@@ -209,6 +210,7 @@ class Assignment(RESTModelMixin, models.Model):
         Delete the connection from the assignment to the user.
         """
         self.assignment_related_users.filter(user=user).delete()
+        inform_changed_data(self)
 
     def set_phase(self, phase):
         """

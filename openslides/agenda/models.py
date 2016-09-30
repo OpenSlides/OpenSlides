@@ -284,20 +284,6 @@ class Item(RESTModelMixin, models.Model):
     def __str__(self):
         return self.title
 
-    def delete(self, with_children=False):
-        """
-        Delete the Item.
-
-        If with_children is True, all children of the item will be deleted as
-        well. If with_children is False, all children will be children of the
-        parent of the item.
-        """
-        if not with_children:
-            for child in self.children.all():
-                child.parent = self.parent
-                child.save()
-        super().delete()
-
     @property
     def title(self):
         """

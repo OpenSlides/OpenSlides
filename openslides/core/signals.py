@@ -20,8 +20,7 @@ def delete_django_app_permissions(sender, **kwargs):
         Q(app_label='auth') |
         Q(app_label='contenttypes') |
         Q(app_label='sessions'))
-    for permission in Permission.objects.filter(content_type__in=contenttypes):
-        permission.delete()
+    Permission.objects.filter(content_type__in=contenttypes).delete()
 
 
 def create_builtin_projection_defaults(**kwargs):

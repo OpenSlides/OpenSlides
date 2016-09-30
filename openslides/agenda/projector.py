@@ -62,7 +62,7 @@ class ListOfSpeakersSlide(ProjectorElement):
                     yield speaker.user
 
     def get_collection_elements_required_for_this(self, collection_element, config_entry):
-        output = super().get_collections_required_for_this(collection_element, config_entry)
+        output = super().get_collection_elements_required_for_this(collection_element, config_entry)
         # Full update if item changes because then we may have new
         # candidates and therefor need new users.
         if collection_element == CollectionElement.from_values(Item.get_collection_string(), config_entry.get('id')):
