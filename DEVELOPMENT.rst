@@ -109,3 +109,31 @@ a. Running Angular.js test cases
 ''''''''''''''''''''''''''''''''
 
     $ node_modules/.bin/karma start tests/karma/karma.conf.js
+
+
+Installation Openslides in big mode
+===================================
+
+1. Install PostgreSQL und redis:
+
+apt-get install postgresql redis-server libpg-dev
+
+TODO: Configure postgresql
+
+2. Install python dependencies
+
+pip install django-redis asgi-redis psycopg2
+
+3. Change settings.py
+
+(See comments in the settings)
+
+The relevant settings are: DATABASES, CHANNEL_LAYERS, CACHES
+
+4. Start one or more workers:
+
+python manage.py runworker
+
+5. Start daphne. Set the DJANGO_SETTINGS_MODULE and the PYTHONPATH
+
+DJANGO_SETTINGS_MODULE=settings PYTHONPATH=personal_data/var/ daphne openslides.asgi:channel_layer

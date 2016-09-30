@@ -46,6 +46,17 @@ DEBUG = %(debug)s
 
 # Change this setting to use e. g. PostgreSQL or MySQL.
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'mydatabase',
+#         'USER': 'mydatabaseuser',
+#         'PASSWORD': 'mypassword',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -64,7 +75,12 @@ DATABASES = {
 
 # CHANNEL_LAYERS['default']['BACKEND'] = 'asgi_redis.RedisChannelLayer'
 
-# https://niwinz.github.io/django-redis/latest/#_user_guide
+
+# Caching
+
+# Django uses a inmemory cache at default. This supports only one thread. If
+# you use more then one thread another caching backend is required. We recommand
+# django-redis: https://niwinz.github.io/django-redis/latest/#_user_guide
 
 # CACHES = {
 #     "default": {

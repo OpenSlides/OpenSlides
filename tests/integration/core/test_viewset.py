@@ -19,7 +19,7 @@ class TestProjectorDBQueries(TestCase):
         self.client = APIClient()
         config['general_system_enable_anonymous'] = True
         for index in range(10):
-            Projector.objects.create()
+            Projector.objects.create(name="Projector{}".format(index))
 
     def test_admin(self):
         """
@@ -137,9 +137,9 @@ class TestConfigDBQueries(TestCase):
         * 2 requests to get the permission for anonymous (config and permissions),
         * 1 to get all config value and
 
-        * 55 requests to find out if anonymous is enabled.
+        * 57 requests to find out if anonymous is enabled.
 
-        TODO: The last 55 requests are a bug.
+        TODO: The last 57 requests are a bug.
         """
-        with self.assertNumQueries(58):
+        with self.assertNumQueries(60):
             self.client.get(reverse('config-list'))

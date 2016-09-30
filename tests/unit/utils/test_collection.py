@@ -90,7 +90,8 @@ class TestCollectionElement(TestCase):
             collection_element.as_channels_message(),
             {'collection_string': 'testmodule/model',
              'id': 42,
-             'deleted': False})
+             'deleted': False,
+             'information': {}})
 
     def test_as_autoupdate_for_user(self):
         collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
@@ -209,6 +210,20 @@ class TestCollectionElement(TestCase):
         mock_cache.set.assert_called_once_with('testmodule/model:42', 'get_instance_value')
         mock_Collection.assert_called_once_with('testmodule/model')
         mock_Collection().add_id_to_cache.assert_called_once_with(42)
+
+    def test_equal(self):
+        self.assertEqual(
+            collection.CollectionElement.from_values('testmodule/model', 1),
+            collection.CollectionElement.from_values('testmodule/model', 1))
+        self.assertEqual(
+            collection.CollectionElement.from_values('testmodule/model', 1),
+            collection.CollectionElement.from_values('testmodule/model', 1, deleted=True))
+        self.assertNotEqual(
+            collection.CollectionElement.from_values('testmodule/model', 1),
+            collection.CollectionElement.from_values('testmodule/model', 2))
+        self.assertNotEqual(
+            collection.CollectionElement.from_values('testmodule/model', 1),
+            collection.CollectionElement.from_values('testmodule/other_model', 1))
 
 
 class TestCollection(TestCase):

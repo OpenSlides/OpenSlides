@@ -35,7 +35,7 @@ class CollectionElement:
         self.instance = instance
         self.deleted = deleted
         self.full_data = full_data
-        self.information = information
+        self.information = information or {}
         if instance is not None:
             self.collection_string = instance.get_collection_string()
             self.id = instance.pk
@@ -55,6 +55,16 @@ class CollectionElement:
             # If this element is created via instance and the instance is not deleted
             # then update the cache.
             self.save_to_cache()
+
+    def __eq__(self, collection_element):
+        """
+        Compares two collection_elements.
+
+        Two collection elements are equal, if they have the same collection_string
+        and id.
+        """
+        return (self.collection_string == collection_element.collection_string and
+                self.id == collection_element.id)
 
     def as_channels_message(self):
         """
@@ -224,7 +234,7 @@ class Collection:
         """
         key = get_element_list_cache_key(self.collection_string)
         if raw:
-            key = self.make_key(key)
+            key = cache.make_key(key)
         return key
 
     def get_model(self):
