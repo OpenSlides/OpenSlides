@@ -153,7 +153,7 @@ def get_config_variables():
         name='projector_default_countdown',
         default_value=60,
         input_type='integer',
-        label='Default countdown',
+        label='Predefined seconds of new countdowns',
         weight=185,
         group='Projector')
 

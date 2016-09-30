@@ -3,11 +3,7 @@
     <div class="submenu">
       <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
         <i class="fa fa-angle-double-left fa-lg"></i>
-        <translate>All motions</translate>
-      </a>
-      <a ng-click="makePDF()" class="btn btn-default btn-sm">
-        <i class="fa fa-file-pdf-o fa-lg"></i>
-        <translate>PDF</translate>
+        <translate>Back to overview</translate>
       </a>
       <!-- List of speakers -->
       <a ui-sref="agenda.item.detail({id: motion.agenda_item_id})"
@@ -23,6 +19,11 @@
           class="btn btn-default btn-sm"
           title="{{ 'Edit' | translate}}">
         <i class="fa fa-pencil"></i>
+      </a>
+      <!-- pdf -->
+      <a ng-click="makePDF()" class="btn btn-default btn-sm">
+        <i class="fa fa-file-pdf-o fa-lg"></i>
+        <translate>PDF</translate>
       </a>
     </div>
     <h1>{{ motion.agenda_item.getTitle() || motion.getTitle() }}</h1>
@@ -41,7 +42,7 @@
   </div>
 </div>
 
-<div class="meta">
+<div class="meta motion-detail">
   <div class="title" ng-click="isMeta = !isMeta">
     <div class="name">
       <i class="fa fa-info-circle"></i>
@@ -161,7 +162,7 @@
       </div>
       <div class="col-md-4">
           <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
-          <ol class="slimlist">
+          <ol>
             <li ng-repeat="poll in motion.polls" class="spacer"
                 ng-if="poll.has_votes || operator.hasPerms('motions.can_manage')">
               <strong translate-comment='ballot of a motion' translate>Vote</strong>
@@ -264,64 +265,71 @@
 
 <div class="details">
   <div class="row">
+  <div class="linenumber-toolbar">
+    <!-- inline editing -->
     <div class="pull-right inline-editing-activator"
          ng-if="motion.isAllowed('update') && version == motion.getVersion(-1).id">
       <button ng-if="!inlineEditing.active" ng-click="inlineEditing.enable()" class="btn btn-sm btn-default">
-        <i class="fa fa-toggle-off"></i>
-        <translate>Inline editing inactive</translate>
+        <i class="fa fa-pencil-square-o"></i>
+        <translate>Inline editing</translate>
       </button>
       <button ng-if="inlineEditing.active" ng-click="inlineEditing.disable()" class="btn btn-sm btn-default">
-        <i class="fa fa-toggle-on"></i>
-        <translate>Inline editing active</translate>
+        <i class="fa fa-times-circle"></i>
+        <translate>Inline editing</translate>
       </button>
     </div>
 
+    <!-- line number mode -->
     <div class="line-number-setter {{ lineNumberMode }}">
       <span class="btn-group" data-toggle="buttons">
-        <div class="btn btn-default disabled" title="{{ 'Line Numbering' | translate }}">
+        <div class="btn btn-sm btn-default disabled" title="{{ 'Line Numbering' | translate }}">
           <i class="fa fa-list-ol" aria-hidden="true"></i>
         </div>
-        <label class="btn btn-default" ng-class="{active: (lineNumberMode == 'none')}"
+        <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'none')}"
                ng-click="lineNumberMode = 'none';">
           <input type="radio" name="lineNumberMode" value="none" ng-model="lineNumberMode"
                  ng-checked="lineNumberMode == 'none'">
-          <translate>None</translate>
+          <translate>none</translate>
         </label>
-        <label class="btn btn-default" ng-class="{active: (lineNumberMode == 'inline')}"
+        <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'inline')}"
                ng-click="lineNumberMode = 'inline'">
           <input type="radio" name="lineNumberMode" value="inline" ng-model="lineNumberMode"
                  ng-checked="lineNumberMode == 'inline'">
-          <translate>Inline</translate>
+          <translate>inline</translate>
         </label>
-        <label class="btn btn-default" ng-class="{active: (lineNumberMode == 'outside')}"
+        <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'outside')}"
                ng-click="lineNumberMode = 'outside'">
           <input type="radio" name="lineNumberMode" value="outside" ng-model="lineNumberMode"
                  ng-checked="lineNumberMode == 'outside'">
-          <translate>Outside</translate>
+          <translate>outside</translate>
         </label>
       </span>
+
+      <!-- go to line number -->
       <span>
         <form class="input-group" style="max-width: 220px;" ng-if="lineNumberMode != 'none'" ng-submit="scrollToAndHighlight(gotoLinenumber)">
-          <input type="number" class="form-control" ng-model="gotoLinenumber" placeholder="{{ 'Line' | translate }}"></input>
+          <input type="number" class="form-control input-sm" ng-model="gotoLinenumber" placeholder="{{ 'Line' | translate }}"></input>
           <span class="input-group-btn">
-            <button type="button" class="btn btn-default btn-slim" ng-show="gotoLinenumber"
+            <button type="button" class="btn btn-sm btn-default btn-slim" ng-show="gotoLinenumber"
               ng-click="gotoLinenumber = ''; scrollToAndHighlight(0);">
               <i class="fa fa-times text-danger"></i>
             </button>
-            <button type="submit" class="btn btn-default">
+            <button type="submit" class="btn btn-sm btn-default">
               <i class="fa fa-share"></i>
               <translate>go</translate>
             </button>
-            <button type="button" class="btn btn-default" os-perms="core.can_manage_projector"
+            <button type="button" class="btn btn-sm btn-default" os-perms="core.can_manage_projector"
               ng-show="lineNumberMode != 'none' && motion.isProjected()" ng-click="toggleLinesForProjector()"
               uib-tooltip="{{ 'Show highlighted line also on projector.' | translate }}">
-              <i class="fa" ng-class="linesForProjector ? 'fa-check-square-o' : 'fa-square-o'"></i>
+              <i class="fa" ng-class="linesForProjector ? 'fa-check-square-o' : 'fa-square-o'"></i>&nbsp;
               <i class="fa fa-video-camera"></i>
             </button>
           </span>
         </form>
       </span>
     </div>
+  </div>
+
     <div  ng-class="{'col-sm-8': (lineNumberMode != 'outside'), 'col-sm-12': (lineNumberMode == 'outside')}">
 
       <div ng-if="motion.isAllowed('update') && version == motion.getVersion(-1).id">
@@ -393,7 +401,7 @@
       </div>
 
       <!-- log -->
-      <button type="button" class="btn btn-default spacer" ng-click="isCollapsed = !isCollapsed" translate>
+      <button type="button" class="btn btn-sm btn-default spacer" ng-click="isCollapsed = !isCollapsed" translate>
         Show history
       </button>
       <div uib-collapse="isCollapsed">
@@ -410,7 +418,7 @@
   </div>
 </div>
 
-<div class="details" ng-if="motion.comments">
+<div class="details" ng-if="isAllowedToSeeCommentField()">
   <h3>Motion Comments</h3>
   <div ng-repeat="field in commentsFields">
     <p ng-if="field.public || operator.hasPerms('motions.can_see_and_manage_comments')">

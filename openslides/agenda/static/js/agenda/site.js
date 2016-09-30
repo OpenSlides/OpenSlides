@@ -337,9 +337,21 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 $scope.defaultProjectorListOfSpeakersId = projectiondefaultListOfSpeakers.projector_id;
             }
         });
+
+        $scope.$watch(function () {
+            return Agenda.lastModified();
+        }, function () {
+            // all speakers
+            $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
+            // next speakers
+            $scope.nextSpeakers = $filter('filter')($scope.speakers, {'begin_time': null});
+            // current speaker
+            $scope.currentSpeaker = $filter('filter')($scope.speakers, {'begin_time': '!!', 'end_time': null});
+            // last speakers
+            $scope.lastSpeakers = $filter('filter')($scope.speakers, {'end_time': '!!'});
+        });
         $scope.speakerSelectBox = {};
         $scope.alert = {};
-        $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
 
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -403,20 +415,31 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             $scope.speakers = item.speakers;
         };
 
-        // check if user is allowed to see 'add me' / 'remove me' button
+        // Return true if the requested user is allowed to do a specific action
+        // and see the corresponding button (e.g. 'add me' or 'remove me').
         $scope.isAllowed = function (action) {
             var nextUsers = [];
-            var nextSpeakers = $filter('filter')($scope.speakers, {'begin_time': null});
-            angular.forEach(nextSpeakers, function (speaker) {
+            angular.forEach($scope.nextSpeakers, function (speaker) {
                 nextUsers.push(speaker.user_id);
             });
-            if (action == 'add') {
-                return (operator.hasPerms('agenda.can_be_speaker') &&
-                        !item.speaker_list_closed &&
-                        $.inArray(operator.user.id, nextUsers) == -1);
-            }
-            if (action == 'remove') {
-                return ($.inArray(operator.user.id, nextUsers) != -1);
+            switch (action) {
+                case 'add':
+                    return (operator.hasPerms('agenda.can_be_speaker') &&
+                            !item.speaker_list_closed &&
+                            $.inArray(operator.user.id, nextUsers) == -1);
+                case 'remove':
+                    return ($.inArray(operator.user.id, nextUsers) != -1);
+                case 'removeAll':
+                    return (operator.hasPerms('agenda.can_manage') &&
+                            $scope.speakers.length > 0);
+                case 'beginNextSpeech':
+                    return (operator.hasPerms('agenda.can_manage') &&
+                            $scope.nextSpeakers.length > 0);
+                case 'endCurrentSpeech':
+                    return (operator.hasPerms('agenda.can_manage') &&
+                            $scope.currentSpeaker.length > 0);
+                case 'showLastSpeakers':
+                    return $scope.lastSpeakers.length > 0;
             }
         };
 

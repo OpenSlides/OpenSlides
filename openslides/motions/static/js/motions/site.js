@@ -1185,6 +1185,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
 .controller('MotionDetailCtrl', [
     '$scope',
     '$http',
+    'operator',
     'ngDialog',
     'MotionForm',
     'Motion',
@@ -1204,7 +1205,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
     'Projector',
     'HTMLValidizer',
     'ProjectionDefault',
-    function($scope, $http, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Config,
+    function($scope, $http, operator, ngDialog, MotionForm, Motion, Category, Mediafile, Tag, User, Workflow, Config,
              motion, MotionContentProvider, PollContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
              MotionInlineEditing, gettextCatalog, Projector, HTMLValidizer, ProjectionDefault) {
         Motion.bindOne(motion.id, $scope, 'motion');
@@ -1373,6 +1374,19 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                 .then(function(success) {
                     $scope.showVersion(motion.active_version);
                 });
+        };
+        // check if user is allowed to see at least one comment field
+        $scope.isAllowedToSeeCommentField = function () {
+            var isAllowed = false;
+            if ($scope.commentsFields.length > 0) {
+                isAllowed = operator.hasPerms('motions.can_see_and_manage_comments') || _.find(
+                        $scope.commentsFields,
+                        function(field) {
+                            return field.public;
+                        }
+                );
+            }
+            return Boolean(isAllowed);
         };
 
         // Inline editing functions

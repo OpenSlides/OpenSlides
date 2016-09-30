@@ -51,10 +51,11 @@
   </div>
 </div>
 
-<div ng-if="item" class="details listOfSpeakers">
+<div ng-if="item" class="details">
+<div class="speakers-toolbar">
   <div class="pull-right">
     <span os-perms="agenda.can_manage">
-      <button class="btn btn-danger"
+      <button ng-if="isAllowed('removeAll')" class="btn btn-sm btn-danger"
           ng-bootbox-confirm="{{ 'Are you sure you want to remove all speakers from this list?'| translate }}"
           ng-bootbox-confirm-action="removeAllSpeakers()">
           <i class="fa fa-trash fa-lg"></i>
@@ -74,32 +75,35 @@
   </div>
 
   <!-- Start/Stop controls -->
-  <div os-perms="agenda.can_manage">
-    <button ng-click="beginSpeech()"
-        class="btn btn-sm btn-primary">
-      <i class="fa fa-microphone"></i>
-      <translate>Begin next speech</translate>
-    </button>
-    <button ng-click="endSpeech()"
-        class="btn btn-sm btn-default">
-      <i class="fa fa-microphone-slash"></i>
-      <translate>End current speech</translate>
-    </button>
-  </div>
+  <button ng-if="isAllowed('endCurrentSpeech')" ng-click="endSpeech()"
+      class="btn btn-sm btn-default">
+    <i class="fa fa-stop"></i>
+    <translate>End current speech</translate>
+  </button>
+  <button ng-if="isAllowed('beginNextSpeech')" ng-click="beginSpeech()"
+      class="btn btn-sm btn-default">
+    <i class="fa fa-play"></i>
+    <translate>Begin next speech</translate>
+  </button>
+</div>
+
+  <!-- text for empty list -->
+  <p ng-if="speakers.length == 0" translate>
+    The list of speakers is empty.
+  </p>
 
   <template-hook hook-name="itemDetailListOfSpeakersButtons"></template-hook>
 
   <!-- Last speakers -->
-  <div class="spacer">
-    <h3 translate>Last speakers</h3>
-    <button ng-click="showOldSpeakers = !showOldSpeakers"
-        class="btn btn-sm btn-default">
-      <translate ng-if="!showOldSpeakers">Show</translate>
-      <translate ng-if="showOldSpeakers">Hide</translate>
+  <div class="spacer-top-lg">
+    <button ng-if="isAllowed('showLastSpeakers')" ng-click="$parent.showOldSpeakers = !$parent.showOldSpeakers"
+        class="btn btn-xs btn-default">
+      <translate ng-if="!$parent.showOldSpeakers">Last speakers</translate>
+      <translate ng-if="$parent.showOldSpeakers">Hide</translate>
     </button>
     <div uib-collapse="!showOldSpeakers">
-      <ol class="indentation-lg">
-        <li ng-repeat="speaker in item.speakers | filter: {end_time: '!!'}">
+      <ol class="indentation">
+        <li ng-repeat="speaker in lastSpeakers">
           {{ speaker.user.get_full_name() }}
           <small class="grey">
             {{ getDuration(speaker) | osSecondsToTime }} <translate>minutes</translate>
@@ -115,9 +119,8 @@
   </div>
 
   <!-- Current speaker -->
-  <h3 translate class="">Current speaker</h3>
-  <strong class="indentation" ng-repeat="speaker in item.speakers |
-      filter: {end_time: null, begin_time: '!!'}">
+  <p ng-repeat="speaker in currentSpeaker" class="currentSpeaker spacer indentation">
+    <i class="fa fa-microphone fa-lg"></i>
     {{ speaker.user.get_full_name() }}
     <button os-perms="agenda.can_manage" ng-click="endSpeech()"
         class="btn btn-default btn-sm" title="{{ 'End speech' | translate }}">
@@ -127,17 +130,17 @@
         class="btn btn-default btn-sm" title="{{ 'Remove' | translate }}">
       <i class="fa fa-times"></i>
     </button>
-  </strong>
+  </p>
 
   <!-- Next speakers -->
-  <h3 translate>Next speakers</h3>
-  <div ng-show="speakers.length > 0">
+  <div ng-show="nextSpeakers.length > 0">
     <div ui-tree="treeOptions">
       <ol ui-tree-nodes="" ng-model="speakers">
-        <li ng-repeat="speaker in speakers | filter: {begin_time: null}" ui-tree-node>
+        <li ng-repeat="speaker in nextSpeakers | orderBy:'weight'" ui-tree-node>
           <i os-perms="agenda.can_manage" ui-tree-handle="" class="fa fa-arrows-v"></i>
           {{ $index + 1 }}.
           {{ speaker.user.get_full_name() }}
+          &nbsp;
           <button os-perms="agenda.can_manage" ng-click="beginSpeech(speaker.id)"
               class="btn btn-default btn-sm" title="{{ 'Begin speech' | translate }}">
             <i class="fa fa-microphone"></i> <translate>Start</translate>
@@ -151,7 +154,7 @@
   </div>
 
   <!-- Select speakers form -->
-  <div class="form-group spacer">
+  <div class="form-group spacer-top-lg">
     <div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
       {{ alert.msg }}
     </div>
