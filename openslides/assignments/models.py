@@ -51,7 +51,15 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
 
 
 class AssignmentManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
     def get_full_queryset(self):
+        """
+        Returns the normal queryset with all assignments. In the background
+        all related users (candidates), the related agenda item and all
+        polls are prefetched from the database.
+        """
         return self.get_queryset().prefetch_related(
             'related_users',
             'agenda_items',
@@ -121,8 +129,8 @@ class Assignment(RESTModelMixin, models.Model):
     Tags for the assignment.
     """
 
-    # In theory there could be one then more agenda_item. But support only one.
-    # See the property agenda_item.
+    # In theory there could be one then more agenda_item. But we support only
+    # one. See the property agenda_item.
     agenda_items = GenericRelation(Item, related_name='assignments')
 
     class Meta:
@@ -304,6 +312,8 @@ class Assignment(RESTModelMixin, models.Model):
         """
         Returns the related agenda item.
         """
+        # We support only one agenda item so just return the first element of
+        # the queryset.
         return self.agenda_items.all()[0]
 
     @property

@@ -23,7 +23,7 @@ def get_logged_in_users():
     return User.objects.exclude(session=None).filter(session__expire_date__gte=timezone.now()).distinct()
 
 
-def get_projector_element_data(projector, on_slide=None):
+def get_projector_element_data(projector, on_slide=None):  #TODO
     """
     Returns a list of dicts that are required for a specific projector.
 
@@ -81,7 +81,7 @@ def ws_add_projector(message, projector_id):
             Group('projector-{}'.format(projector_id)).add(message.reply_channel)
 
             # Send all elements that are on the projector.
-            output = get_projector_element_data(projector)
+            output = get_projector_element_data(projector)  #TODO
 
             # Send all config elements.
             collection = Collection(config.get_collection_string())
@@ -102,7 +102,7 @@ def ws_disconnect_projector(message, projector_id):
     Group('projector-{}'.format(projector_id)).discard(message.reply_channel)
 
 
-def send_data(message):
+def send_data(message):  #TODO
     """
     Informs all users about changed data.
     """
@@ -174,8 +174,12 @@ def inform_changed_data(instance, information=None):
         collection_element = CollectionElement.from_instance(
             root_instance,
             information=information)
-
+        # If currently there is an open database transaction, then the
+        # send_autoupdate function is only called, when the transaction is
+        # commited. If there is currently no transaction, then the function
+        # is called immediately.
         transaction.on_commit(lambda: send_autoupdate(collection_element))
+
 
 def inform_deleted_data(collection_string, id, information=None):
     """
@@ -187,16 +191,10 @@ def inform_deleted_data(collection_string, id, information=None):
         id=id,
         deleted=True,
         information=information)
-
-    # If currently there is an open database transaction, then the following
-    # function is only called, when the transaction is commited. If there
-    # is currently no transaction, then the function is called immediately.
-    def send_autoupdate():
-        try:
-            Channel('autoupdate.send_data').send(collection_element.as_channels_message())
-        except ChannelLayer.ChannelFull:
-            pass
-
+    # If currently there is an open database transaction, then the
+    # send_autoupdate function is only called, when the transaction is
+    # commited. If there is currently no transaction, then the function
+    # is called immediately.
     transaction.on_commit(lambda: send_autoupdate(collection_element))
 
 

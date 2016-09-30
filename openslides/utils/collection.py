@@ -459,6 +459,9 @@ def get_collection_id_from_cache_key(cache_key):
 
 
 def use_redis_cache():
+    """
+    Returns True if Redis is used als caching backend.
+    """
     try:
         from django_redis.cache import RedisCache
     except ImportError:

@@ -40,7 +40,7 @@ class RetrieveItem(TestCase):
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
         group.permissions.remove(permission)
         response = self.client.get(reverse('item-detail', args=[self.item.pk]))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_PERMISSION_DENIED)
 
 
 class TestDBQueries(TestCase):

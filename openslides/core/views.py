@@ -624,6 +624,7 @@ class ConfigViewSet(ViewSet):
             raise Http404
         if content is None:
             # If content is None, the user has no permissions to see the item.
+            # See ConfigAccessPermissions or rather its parent class.
             self.permission_denied()
         return Response(content)
 

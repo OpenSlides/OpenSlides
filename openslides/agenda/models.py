@@ -24,6 +24,11 @@ class ItemManager(models.Manager):
     numbering.
     """
     def get_full_queryset(self):
+        """
+        Returns the normal queryset with all items. In the background all
+        speakers and related items (topics, motions, assignments) are
+        prefetched from the database.
+        """
         return self.get_queryset().prefetch_related('speakers', 'content_object')
 
     def get_only_agenda_items(self):

@@ -42,6 +42,7 @@ Other:
 - Fixed bug, that the last change of a config value was not send via autoupdate.
 - Added template hooks for plugins (in item detail view and motion poll form).
 - Used Django Channels instead of Tornado. Refactoring of the autoupdate process.
+- Added new caching system with support for Redis.
 
 
 Version 2.0 (2016-04-18)

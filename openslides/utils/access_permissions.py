@@ -68,7 +68,7 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
         Hint: You should override this method if your get_serializer_class()
         method returns different serializers for different users or if you
         have access restrictions in your view or viewset in methods like
-        retrieve(), list() or check_object_permissions().
+        retrieve() or list().
         """
         if self.check_permissions(user):
             data = full_data
@@ -78,8 +78,8 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
 
     def get_projector_data(self, full_data):
         """
-        Returns the serialized data for the projector. Returns None if has no
-        access to this specific data. Returns reduced data if the user has
-        limited access. Default: Returns full data.
+        Returns the serialized data for the projector. Returns None if the
+        user has no access to this specific data. Returns reduced data if
+        the user has limited access. Default: Returns full data.
         """
         return full_data

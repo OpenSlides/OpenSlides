@@ -21,12 +21,12 @@ USERCANSEESERIALIZER_FIELDS = (
     'number',
     'about_me',
     'groups',
+    'is_present',
     'is_committee',
 )
 
 
 USERCANSEEEXTRASERIALIZER_FIELDS = USERCANSEESERIALIZER_FIELDS + (
-    'is_present',
     'comment',
     'is_active',
 )

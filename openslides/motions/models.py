@@ -29,8 +29,15 @@ from .exceptions import WorkflowError
 
 
 class MotionManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
     def get_full_queryset(self):
-        return (super().get_queryset()
+        """
+        Returns the normal queryset with all motions. In the background we
+        join and prefetch all related models.
+        """
+        return (self.get_queryset()
                 .select_related('active_version')
                 .prefetch_related(
                     'versions',
@@ -45,7 +52,7 @@ class MotionManager(models.Manager):
 
 class Motion(RESTModelMixin, models.Model):
     """
-    The Motion Class.
+    Model for motions.
 
     This class is the main entry point to all other classes related to a motion.
     """
@@ -151,8 +158,8 @@ class Motion(RESTModelMixin, models.Model):
     Configurable fields for comments. Contains a list of strings.
     """
 
-    # In theory there could be one then more agenda_item. But support only one.
-    # See the property agenda_item.
+    # In theory there could be one then more agenda_item. But we support only
+    # one. See the property agenda_item.
     agenda_items = GenericRelation(Item, related_name='motions')
 
     class Meta:
@@ -540,6 +547,8 @@ class Motion(RESTModelMixin, models.Model):
         """
         Returns the related agenda item.
         """
+        # We support only one agenda item so just return the first element of
+        # the queryset.
         return self.agenda_items.all()[0]
 
     @property
@@ -961,7 +970,15 @@ class State(RESTModelMixin, models.Model):
 
 
 class WorkflowManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
     def get_full_queryset(self):
+        """
+        Returns the normal queryset with all workflows. In the background
+        the first state is joined and all states and next states are
+        prefetched from the database.
+        """
         return (self.get_queryset()
                 .select_related('first_state')
                 .prefetch_related('states', 'states__next_states'))
