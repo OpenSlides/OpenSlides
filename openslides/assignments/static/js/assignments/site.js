@@ -233,9 +233,19 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'Tag',
     'Agenda',
     'phases',
-    function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, phases) {
+    'Projector',
+    'ProjectionDefault',
+    function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, phases, Projector, ProjectionDefault) {
         Assignment.bindAll({}, $scope, 'assignments');
         Tag.bindAll({}, $scope, 'tags');
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            var projectiondefault = ProjectionDefault.filter({name: 'assignments'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId = projectiondefault.projector_id;
+            }
+        });
         $scope.phases = phases;
         $scope.alert = {};
 
@@ -339,10 +349,21 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'User',
     'assignment',
     'phases',
-    function($scope, $http, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment, User, assignment, phases) {
+    'Projector',
+    'ProjectionDefault',
+    function($scope, $http, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment, User,
+        assignment, phases, Projector, ProjectionDefault) {
         User.bindAll({}, $scope, 'users');
         Assignment.bindOne(assignment.id, $scope, 'assignment');
         Assignment.loadRelations(assignment, 'agenda_item');
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            var projectiondefault = ProjectionDefault.filter({name: 'assignments'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId = projectiondefault.projector_id;
+            }
+        });
         $scope.candidateSelectBox = {};
         $scope.phases = phases;
         $scope.alert = {};

@@ -20,6 +20,7 @@ Core:
 - Added support for big assemblies with lots of users.
 - Added HTML support for messages on the projector.
 - Moved custom slides to own app "topics". Renamed it to "Topic".
+- Added support for multiple projectors.
 
 Motions:
 - Added origin field.

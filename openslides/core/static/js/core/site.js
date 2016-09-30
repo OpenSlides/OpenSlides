@@ -717,7 +717,7 @@ angular.module('OpenSlidesApp.core.site', [
                 templateUrl: 'static/templates/home.html'
             })
             .state('projector', {
-                url: '/projector',
+                url: '/projector/{id:int}',
                 templateUrl: 'static/templates/projector-container.html',
                 data: {extern: true},
                 onEnter: function($window) {
@@ -725,12 +725,17 @@ angular.module('OpenSlidesApp.core.site', [
                 }
             })
             .state('real-projector', {
-                url: '/real-projector',
+                url: '/real-projector/{id:int}',
                 templateUrl: 'static/templates/projector.html',
                 data: {extern: true},
                 onEnter: function($window) {
                     $window.location.href = this.url;
                 }
+            })
+            .state('manage-projectors', {
+                url: '/manage-projectors',
+                templateUrl: 'static/templates/core/manage-projectors.html',
+                controller: 'ManageProjectorsCtrl'
             })
             .state('core', {
                 url: '/core',
@@ -901,7 +906,6 @@ angular.module('OpenSlidesApp.core.site', [
     'Config',
     'gettextCatalog',
     function($parse, Config, gettextCatalog) {
-        // remove resolution when changing to multiprojector
         function getHtmlType(type) {
             return {
                 string: 'text',
@@ -911,7 +915,6 @@ angular.module('OpenSlidesApp.core.site', [
                 choice: 'choice',
                 colorpicker: 'colorpicker',
                 comments: 'comments',
-                resolution: 'resolution',
             }[type];
         }
 
@@ -1187,209 +1190,439 @@ angular.module('OpenSlidesApp.core.site', [
     '$http',
     '$interval',
     '$state',
+    '$q',
     'Config',
     'Projector',
-    function($scope, $http, $interval, $state, Config, Projector) {
-         // bind projector elements to the scope, update after projector changed
-        $scope.$watch(function () {
-            return Projector.lastModified(1);
-        }, function () {
-            // stop ALL interval timer
-            for (var i=0; i<$scope.countdowns.length; i++) {
-                if ( $scope.countdowns[i].interval ) {
-                    $interval.cancel($scope.countdowns[i].interval);
+    function($scope, $http, $interval, $state, $q, Config, Projector) {
+        $scope.countdowns = [];
+        $scope.highestCountdownIndex = 0;
+        $scope.messages = [];
+        $scope.highestMessageIndex = 0;
+
+        var cancelIntervalTimers = function () {
+            $scope.countdowns.forEach(function (countdown) {
+                $interval.cancel(countdown.interval);
+            });
+        };
+
+        // Get all message and countdown data from the defaultprojector (id=1)
+        var rebuildAllElements = function () {
+            $scope.countdowns = [];
+            $scope.messages = [];
+
+            _.forEach(Projector.get(1).elements, function (element, uuid) {
+                if (element.name == 'core/countdown') {
+                    $scope.countdowns.push(element);
+
+                    if (element.running) {
+                        // calculate remaining seconds directly because interval starts with 1 second delay
+                        $scope.calculateCountdownTime(element);
+                        // start interval timer (every second)
+                        element.interval = $interval(function () { $scope.calculateCountdownTime(element); }, 1000);
+                    } else {
+                        element.seconds = element.countdown_time;
+                    }
+
+                    if (element.index > $scope.highestCountdownIndex) {
+                        $scope.highestCountdownIndex = element.index;
+                    }
+                } else if (element.name == 'core/message') {
+                    $scope.messages.push(element);
+
+                    if (element.index > $scope.highestMessageIndex) {
+                        $scope.highestMessageIndex = element.index;
+                    }
                 }
+            });
+        };
+
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            $scope.projectors = Projector.getAll();
+            if (!$scope.active_projector) {
+                $scope.changeProjector($scope.projectors[0]);
             }
-            // rebuild all variables after projector update
-            $scope.rebuildAllElements();
+
+            // stop ALL interval timer
+            cancelIntervalTimers();
+
+            rebuildAllElements();
         });
         $scope.$on('$destroy', function() {
             // Cancel all intervals if the controller is destroyed
-            for (var i=0; i<$scope.countdowns.length; i++) {
-                if ( $scope.countdowns[i].interval ) {
-                    $interval.cancel($scope.countdowns[i].interval);
-                }
-            }
-
+            cancelIntervalTimers();
         });
 
-        // watch for changes in Config
-        var last_conf;
+        // watch for changes in projector_broadcast
+        var last_broadcast;
         $scope.$watch(function () {
             return Config.lastModified();
         }, function () {
-            var conf = Config.get('projector_resolution').value;
-            // With multiprojector, get the resolution from Prjector.get(pk).{width; height}
-            if(!last_conf || last_conf.width != conf.width || last_conf.height != conf.height) {
-                last_conf = conf;
-                $scope.projectorWidth = conf.width;
-                $scope.projectorHeight = conf.height;
-                $scope.scale = 256.0 / $scope.projectorWidth;
-                $scope.iframeHeight = $scope.scale * $scope.projectorHeight;
+            var broadcast = Config.get('projector_broadcast').value;
+            if (!last_broadcast || last_broadcast != broadcast) {
+                last_broadcast = broadcast;
+                $scope.broadcast = broadcast;
             }
         });
+
+        $scope.changeProjector = function (projector) {
+            $scope.active_projector = projector;
+            $scope.scale = 256.0 / projector.width;
+            $scope.iframeHeight = $scope.scale * projector.height;
+        };
+
+        $scope.editCurrentSlide = function (projector) {
+            var state = projector.getStateForCurrentSlide();
+            if (state) {
+                $state.go(state.state, state.param);
+            }
+        };
 
         // *** countdown functions ***
         $scope.calculateCountdownTime = function (countdown) {
             countdown.seconds = Math.floor( countdown.countdown_time - Date.now() / 1000 + $scope.serverOffset );
         };
-        $scope.rebuildAllElements = function () {
-            $scope.countdowns = [];
-            $scope.messages = [];
-            // iterate via all projector elements and catch all countdowns and messages
-            $.each(Projector.get(1).elements, function(key, value) {
-                if (value.name == 'core/countdown') {
-                    $scope.countdowns.push(value);
-                    if (value.status == "running") {
-                        // calculate remaining seconds directly because interval starts with 1 second delay
-                        $scope.calculateCountdownTime(value);
-                        // start interval timer (every second)
-                        value.interval = $interval( function() { $scope.calculateCountdownTime(value); }, 1000);
-                    } else {
-                        value.seconds = value.countdown_time;
+        $scope.editCountdown = function (countdown) {
+            countdown.editFlag = false;
+            $scope.projectors.forEach(function (projector) {
+                _.forEach(projector.elements, function (element, uuid) {
+                    if (element.name == 'core/countdown' && element.index == countdown.index) {
+                        var data = {};
+                        data[uuid] = {
+                            "description": countdown.description,
+                            "default_time": parseInt(countdown.default_time)
+                        };
+                        if (!countdown.running) {
+                            data[uuid].countdown_time = parseInt(countdown.default_time);
+                        }
+                        $http.post('/rest/core/projector/' + projector.id + '/update_elements/', data);
                     }
-                }
-                if (value.name == 'core/message') {
-                    $scope.messages.push(value);
-                }
+                });
             });
-            $scope.scrollLevel = Projector.get(1).scroll;
-            $scope.scaleLevel = Projector.get(1).scale;
         };
-
-        // get initial values for $scope.countdowns, $scope.messages, $scope.scrollLevel
-        // and $scope.scaleLevel (after page reload)
-        $scope.rebuildAllElements();
-
         $scope.addCountdown = function () {
-            var defaultvalue = parseInt(Config.get('projector_default_countdown').value);
-            $http.post('/rest/core/projector/1/activate_elements/', [{
+            var default_time = parseInt($scope.config('projector_default_countdown'));
+            $scope.highestCountdownIndex++;
+            // select all projectors on creation, so write the countdown to all projectors
+            $scope.projectors.forEach(function (projector) {
+                $http.post('/rest/core/projector/' + projector.id + '/activate_elements/', [{
                     name: 'core/countdown',
-                    status: 'stop',
+                    countdown_time: default_time,
+                    default_time: default_time,
                     visible: false,
-                    index: $scope.countdowns.length,
-                    countdown_time: defaultvalue,
-                    default: defaultvalue,
-                    stable: true
-            }]);
+                    selected: true,
+                    index: $scope.highestCountdownIndex,
+                    running: false,
+                    stable: true,
+                }]);
+            });
         };
         $scope.removeCountdown = function (countdown) {
-            var data = {};
-            var delta = 0;
-            // rebuild index for all countdowns after the selected (deleted) countdown
-            for (var i=0; i<$scope.countdowns.length; i++) {
-                if ( $scope.countdowns[i].uuid == countdown.uuid ) {
-                    delta = 1;
-                } else if (delta > 0) {
-                        data[$scope.countdowns[i].uuid] = { "index": i - delta };
-                }
-            }
-            $http.post('/rest/core/projector/1/deactivate_elements/', [countdown.uuid]);
-            if (Object.keys(data).length > 0) {
-                $http.post('/rest/core/projector/1/update_elements/', data);
-            }
-        };
-        $scope.showCountdown = function (countdown) {
-            var data = {};
-            data[countdown.uuid] = { "visible": !countdown.visible };
-            $http.post('/rest/core/projector/1/update_elements/', data);
-        };
-        $scope.editCountdown = function (countdown) {
-            var data = {};
-            data[countdown.uuid] = {
-                "description": countdown.description,
-                "default": parseInt(countdown.default)
-            };
-            if (countdown.status == "stop") {
-                data[countdown.uuid].countdown_time = parseInt(countdown.default);
-            }
-            $http.post('/rest/core/projector/1/update_elements/', data);
+            $scope.projectors.forEach(function (projector) {
+                var countdowns = [];
+                _.forEach(projector.elements, function (element, uuid) {
+                    if (element.name == 'core/countdown' && element.index == countdown.index) {
+                        $http.post('/rest/core/projector/' + projector.id + '/deactivate_elements/', [uuid]);
+                    }
+                });
+            });
         };
         $scope.startCountdown = function (countdown) {
-            var data = {};
-            // calculate end point of countdown (in seconds!)
-            var endTimestamp = Date.now() / 1000 - $scope.serverOffset + countdown.countdown_time;
-            data[countdown.uuid] = {
-                "status": "running",
-                "countdown_time": endTimestamp
-            };
-            $http.post('/rest/core/projector/1/update_elements/', data);
+            $scope.projectors.forEach(function (projector) {
+                _.forEach(projector.elements, function (element, uuid) {
+                    if (element.name == 'core/countdown' && element.index == countdown.index) {
+                        var data = {};
+                        // calculate end point of countdown (in seconds!)
+                        var endTimestamp = Date.now() / 1000 - $scope.serverOffset + countdown.countdown_time;
+                        data[uuid] = {
+                            'running': true,
+                            'countdown_time': endTimestamp
+                        };
+                        $http.post('/rest/core/projector/' + projector.id + '/update_elements/', data);
+                    }
+                });
+            });
         };
         $scope.stopCountdown = function (countdown) {
-            var data = {};
-            // calculate rest duration of countdown (in seconds!)
-            var newDuration = Math.floor( countdown.countdown_time - Date.now() / 1000 + $scope.serverOffset );
-            data[countdown.uuid] = {
-                "status": "stop",
-                "countdown_time": newDuration
-            };
-            $http.post('/rest/core/projector/1/update_elements/', data);
+            $scope.projectors.forEach(function (projector) {
+                _.forEach(projector.elements, function (element, uuid) {
+                    if (element.name == 'core/countdown' && element.index == countdown.index) {
+                        var data = {};
+                        // calculate rest duration of countdown (in seconds!)
+                        var newDuration = Math.floor( countdown.countdown_time - Date.now() / 1000 + $scope.serverOffset );
+                        data[uuid] = {
+                            'running': false,
+                            'countdown_time': newDuration
+                        };
+                        $http.post('/rest/core/projector/' + projector.id + '/update_elements/', data);
+                    }
+                });
+            });
         };
         $scope.resetCountdown = function (countdown) {
-            var data = {};
-            data[countdown.uuid] = {
-                "status": "stop",
-                "countdown_time": countdown.default,
-            };
-            $http.post('/rest/core/projector/1/update_elements/', data);
+            $scope.projectors.forEach(function (projector) {
+                _.forEach(projector.elements, function (element, uuid) {
+                    if (element.name == 'core/countdown' && element.index == countdown.index) {
+                        var data = {};
+                        data[uuid] = {
+                            'running': false,
+                            'countdown_time': countdown.default_time,
+                        };
+                        $http.post('/rest/core/projector/' + projector.id + '/update_elements/', data);
+                    }
+                });
+            });
         };
 
         // *** message functions ***
+        $scope.editMessage = function (message) {
+            message.editFlag = false;
+            $scope.projectors.forEach(function (projector) {
+                _.forEach(projector.elements, function (element, uuid) {
+                    if (element.name == 'core/message' && element.index == message.index) {
+                        var data = {};
+                        data[uuid] = {
+                            message: message.message,
+                        };
+                        $http.post('/rest/core/projector/' + projector.id + '/update_elements/', data);
+                    }
+                });
+            });
+        };
         $scope.addMessage = function () {
-            $http.post('/rest/core/projector/1/activate_elements/', [{
+            $scope.highestMessageIndex++;
+            // select all projectors on creation, so write the countdown to all projectors
+            $scope.projectors.forEach(function (projector) {
+                $http.post('/rest/core/projector/' + projector.id + '/activate_elements/', [{
                     name: 'core/message',
                     visible: false,
-                    index: $scope.messages.length,
+                    selected: true,
+                    index: $scope.highestMessageIndex,
                     message: '',
-                    stable: true
-            }]);
+                    stable: true,
+                }]);
+            });
         };
         $scope.removeMessage = function (message) {
-            $http.post('/rest/core/projector/1/deactivate_elements/', [message.uuid]);
-        };
-        $scope.showMessage = function (message) {
-            var data = {};
-            // if current message is activated, deactivate all other messages
-            if ( !message.visible ) {
-                for (var i=0; i<$scope.messages.length; i++) {
-                    if ( $scope.messages[i].uuid == message.uuid ) {
-                        data[$scope.messages[i].uuid] = { "visible": true };
-                    } else {
-                        data[$scope.messages[i].uuid] = { "visible": false };
+            $scope.projectors.forEach(function (projector) {
+                _.forEach(projector.elements, function (element, uuid) {
+                    if (element.name == 'core/message' && element.index == message.index) {
+                        $http.post('/rest/core/projector/' + projector.id + '/deactivate_elements/', [uuid]);
                     }
-                }
-            } else {
-                data[message.uuid] = { "visible": false };
-            }
-            $http.post('/rest/core/projector/1/update_elements/', data);
-        };
-        $scope.editMessage = function (message) {
-            var data = {};
-            data[message.uuid] = {
-                "message": message.message,
-            };
-            $http.post('/rest/core/projector/1/update_elements/', data);
-            message.editMessageFlag = false;
+                });
+            });
         };
 
-        // *** projector controls ***
-        $scope.scrollLevel = Projector.get(1).scroll;
-        $scope.scaleLevel = Projector.get(1).scale;
-        $scope.controlProjector = function (action, direction) {
-            $http.post('/rest/core/projector/1/control_view/', {"action": action, "direction": direction});
+        /* project functions*/
+        $scope.project = function (element) {
+            $scope.projectors.forEach(function (projector) {
+                _.forEach(projector.elements, function (projectorElement, uuid) {
+                    if (element.name == projectorElement.name && element.index == projectorElement.index) {
+                        var data = {};
+                        data[uuid] = {visible: !projectorElement.visible};
+                        $http.post('/rest/core/projector/' + projector.id + '/update_elements/', data);
+                    }
+                });
+            });
         };
-        $scope.editCurrentSlide = function () {
-            $.each(Projector.get(1).elements, function(key, value) {
-                if (value.name == 'agenda/list-of-speakers') {
-                    $state.go('agenda.item.detail', {id: value.id});
-                } else if (
-                    value.name != 'agenda/item-list' &&
-                    value.name != 'core/clock' &&
-                    value.name != 'core/countdown' &&
-                    value.name != 'core/message' ) {
-                    $state.go(value.name.replace('/', '.')+'.detail.update', {id: value.id});
+        $scope.isProjected = function (element) {
+            var projectorIds = [];
+            $scope.projectors.forEach(function (projector) {
+                _.forEach(projector.elements, function (projectorElement, uuid) {
+                    if (element.name == projectorElement.name && element.index == projectorElement.index) {
+                        if (projectorElement.visible && projectorElement.selected) {
+                            projectorIds.push(projector.id);
+                        }
+                    }
+                });
+            });
+            return projectorIds;
+        };
+        $scope.isProjectedOn = function (element, projector) {
+            var projectedIds = $scope.isProjected(element);
+            return _.indexOf(projectedIds, projector.id) > -1;
+        };
+        $scope.hasProjector = function (element, projector) {
+            var hasProjector = false;
+            _.forEach(projector.elements, function (projectorElement, uuid) {
+                if (element.name == projectorElement.name && element.index == projectorElement.index) {
+                    if (projectorElement.selected) {
+                        hasProjector = true;
+                    }
                 }
             });
+            return hasProjector;
+        };
+        $scope.toggleProjector = function (element, projector) {
+            _.forEach(projector.elements, function (projectorElement, uuid) {
+                if (element.name == projectorElement.name && element.index == projectorElement.index) {
+                    var data = {};
+                    data[uuid] = {
+                        'selected': !projectorElement.selected,
+                    };
+                    $http.post('/rest/core/projector/' + projector.id + '/update_elements/', data);
+                }
+            });
+        };
+        $scope.selectAll = function (element, value) {
+            $scope.projectors.forEach(function (projector) {
+                _.forEach(projector.elements, function (projectorElement, uuid) {
+                    if (element.name == projectorElement.name && element.index == projectorElement.index) {
+                        var data = {};
+                        data[uuid] = {
+                            'selected': value,
+                        };
+                        $http.post('/rest/core/projector/' + projector.id + '/update_elements/', data);
+                    }
+                });
+            });
+        };
+
+        $scope.preventClose = function (e) {
+            e.stopPropagation();
+        };
+    }
+])
+
+.controller('ManageProjectorsCtrl', [
+    '$scope',
+    '$http',
+    '$state',
+    '$timeout',
+    'Projector',
+    'ProjectionDefault',
+    'Config',
+    'gettextCatalog',
+    function ($scope, $http, $state, $timeout, Projector, ProjectionDefault, Config, gettextCatalog) {
+        ProjectionDefault.bindAll({}, $scope, 'projectiondefaults');
+
+        // watch for changes in projector_broadcast
+        // and projector_currentListOfSpeakers_reference
+        var last_broadcast, last_clos;
+        $scope.$watch(function () {
+            return Config.lastModified();
+        }, function () {
+            var broadcast = $scope.config('projector_broadcast'),
+            currentListOfSpeakers = $scope.config('projector_currentListOfSpeakers_reference');
+            if (!last_broadcast || last_broadcast != broadcast) {
+                last_broadcast = broadcast;
+                $scope.broadcast = broadcast;
+            }
+            if (!last_clos || last_clos != currentListOfSpeakers) {
+                last_clos = currentListOfSpeakers;
+                $scope.currentListOfSpeakers = currentListOfSpeakers;
+            }
+        });
+
+        // watch for changes in Projector, and recalc scale and iframeHeight
+        var first_watch = true;
+        $scope.resolutions = [];
+        $scope.edit = [];
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            $scope.projectors = Projector.getAll();
+            $scope.projectors.forEach(function (projector) {
+                projector.iframeScale = 256.0 / projector.width;
+                projector.iframeHeight = projector.iframeScale * projector.height;
+                if (first_watch) {
+                    $scope.resolutions[projector.id] = {
+                        width: projector.width,
+                        height: projector.height
+                    };
+                    $scope.edit[projector.id] = false;
+                }
+            });
+            if ($scope.projectors.length) {
+                first_watch = false;
+            }
+        });
+
+        // Set list of speakers reference
+        $scope.setListOfSpeakers = function (projector) {
+            Config.get('projector_currentListOfSpeakers_reference').value = projector.id;
+            Config.save('projector_currentListOfSpeakers_reference');
+        };
+
+        // Projector functions
+        $scope.setProjectionDefault = function (projector, def) {
+            $http.post('/rest/core/projector/' + projector.id + '/set_projectiondefault/', def.id);
+        };
+        $scope.createProjector = function (name) {
+            var projector = {
+                name: name,
+                config: {},
+                scale: 0,
+                scroll: 0,
+                blank: false,
+                projectiondefaults: [],
+            };
+            Projector.create(projector).then(function (projector) {
+                $http.post('/rest/core/projector/' + projector.id + '/activate_elements/', [{
+                    name: 'core/clock',
+                    stable: true
+                }]);
+                $scope.resolutions[projector.id] = {
+                    width: projector.width,
+                    height: projector.height
+                };
+            });
+        };
+        $scope.deleteProjector = function (projector) {
+            if (projector.id != 1) {
+                Projector.destroy(projector.id);
+            }
+        };
+        $scope.editCurrentSlide = function (projector) {
+            var state = projector.getStateForCurrentSlide();
+            if (state) {
+                $state.go(state.state, state.param);
+            }
+        };
+        $scope.editName = function (projector) {
+            projector.config = projector.elements;
+            Projector.save(projector);
+        };
+        $scope.changeResolution = function (projectorId) {
+            $http.post(
+                '/rest/core/projector/' + projectorId + '/set_resolution/',
+                $scope.resolutions[projectorId]
+            ).then(function (success) {
+                $scope.resolutions[projectorId].error = null;
+            }, function (error) {
+                $scope.resolutions[projectorId].error = error.data.detail;
+            });
+        };
+
+        // Identify projectors
+        $scope.identifyProjectors = function () {
+            if ($scope.identifyPromise) {
+                $timeout.cancel($scope.identifyPromise);
+                $scope.removeIdentifierMessages();
+            } else {
+                $scope.projectors.forEach(function (projector) {
+                    $http.post('/rest/core/projector/' + projector.id + '/activate_elements/', [{
+                        name: 'core/message',
+                        stable: true,
+                        selected: true,
+                        visible: true,
+                        message: gettextCatalog.getString('Projector') + ' ' + projector.id + ': ' + projector.name,
+                        type: 'identify'
+                    }]);
+                });
+                $scope.identifyPromise = $timeout($scope.removeIdentifierMessages, 3000);
+            }
+        };
+        $scope.removeIdentifierMessages = function () {
+            Projector.getAll().forEach(function (projector) {
+                angular.forEach(projector.elements, function (uuid, value) {
+                    if (value.name == 'core/message' && value.type == 'identify') {
+                        $http.post('/rest/core/projector/' + projector.id + '/deactivate_elements/', [uuid]);
+                    }
+                });
+            });
+            $scope.identifyPromise = null;
         };
     }
 ])

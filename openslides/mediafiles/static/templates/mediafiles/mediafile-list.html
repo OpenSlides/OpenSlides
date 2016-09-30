@@ -26,14 +26,15 @@
       <div class="col-md-12">
         <div ng-repeat="presentedMediafile in presentedMediafiles">
           <h3>{{ getTitle(presentedMediafile) }}</h3>
+          <!-- PDF -->
           <nav ng-show="getType(presentedMediafile) === 'pdf'" ng-class="getNavStyle(scroll)" class="form-inline">
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="mediafileGoToPage(presentedMediafile.page - 1)"
+              <button class="btn btn-default" ng-click="mediafileGoToPage(presentedMediafile, presentedMediafile.page - 1)"
                   ng-class="{ 'disabled': (presentedMediafile.page - 1) < 1 }"
                   title="{{ 'Previous page' | translate }}">
                 <i class="fa fa-backward"></i>
               </button>
-              <button class="btn btn-default" ng-click="mediafileGoToPage(presentedMediafile.page + 1)"
+              <button class="btn btn-default" ng-click="mediafileGoToPage(presentedMediafile, presentedMediafile.page + 1)"
                   ng-class="{ 'disabled': (presentedMediafile.page + 1) > presentedMediafile.numPages }"
                   title="{{ 'Next page' | translate }}">
                 <i class="fa fa-forward"></i>
@@ -42,57 +43,62 @@
             <div class="input-group">
               <span class="input-group-addon" translate>Page</span>
               <input type="number" min=1 ng-model="presentedMediafile.page" class="form-control" style="width: 80px"
-                  ng-change="mediafileGoToPage(presentedMediafile.page)">
+                  ng-change="mediafileGoToPage(presentedMediafile, presentedMediafile.page)">
               <span class="input-group-addon"><translate>of</translate> {{presentedMediafile.numPages}}</span>
             </div>
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="mediafileRotate()" title="{{ 'Rotate clockwise' | translate }}">
+              <button class="btn btn-default" ng-click="mediafileRotate(presentedMediafile)"
+                  title="{{ 'Rotate clockwise' | translate }}">
                 <i class="fa fa-repeat"></i>
               </button>
             </div>
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="mediafileZoomOut()" title="{{ 'Zoom out' | translate }}">
+              <button class="btn btn-default" ng-click="mediafileZoomOut(presentedMediafile)"
+                  title="{{ 'Zoom out' | translate }}">
                 <i class="fa fa-search-minus"></i>
               </button>
-              <button class="btn" ng-click="mediafileFit()" title="{{ 'Reset zoom' | translate }}"
+              <button class="btn" ng-click="mediafileFit(presentedMediafile)"
+                  title="{{ 'Reset zoom' | translate }}"
                   ng-class="presentedMediafile.scale=='page-fit' ? 'btn-primary' : 'btn-default'">
                 <i class="fa fa-arrows-alt"></i>
               </button>
-              <button class="btn btn-default" ng-click="mediafileZoomIn()" title="{{ 'Zoom in' | translate }}">
+              <button class="btn btn-default" ng-click="mediafileZoomIn(presentedMediafile)"
+                  title="{{ 'Zoom in' | translate }}">
                 <i class="fa fa-search-plus"></i>
               </button>
             </div>
           </nav>
+
+          <!-- Image -->
           <nav ng-show="getType(presentedMediafile) === 'image'" ng-class="getNavStyle(scroll)" class="form-inline">
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="mediafileToggleFullscreen()" title="{{ 'Toggle fullscreen' | translate }}"
+              <button class="btn btn-default" ng-click="mediafileToggleFullscreen(presentedMediafile)"
+                  title="{{ 'Toggle fullscreen' | translate }}"
                   ng-class="presentedMediafile.fullscreen ? 'btn-primary' : 'btn-default'">
                 <i class="fa fa-arrows-alt"></i>
               </button>
             </div>
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="mediafileRotate()" title="{{ 'Rotate clockwise' | translate }}">
+              <button class="btn btn-default" ng-click="mediafileRotate(presentedMediafile)"
+                  title="{{ 'Rotate clockwise' | translate }}">
                 <i class="fa fa-repeat"></i>
               </button>
             </div>
           </nav>
+
+          <!-- Video -->
           <nav ng-show="getType(presentedMediafile) === 'video'" ng-class="getNavStyle(scroll)" class="form-inline">
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="mediafileToggleFullscreen()" title="{{ 'Toggle fullscreen' | translate }}"
+              <button class="btn btn-default" ng-click="mediafileToggleFullscreen(presentedMediafile)"
+                  title="{{ 'Toggle fullscreen' | translate }}"
                   ng-class="presentedMediafile.fullscreen ? 'btn-primary' : 'btn-default'">
                 <i class="fa fa-arrows-alt"></i>
               </button>
             </div>
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="setPlaying(false)" title="{{ 'Stop' | translate }}"
-                  ng-class="presentedMediafile.playing ? 'btn-default' : 'btn-primary'">
-                <i class="fa fa-stop"></i>
-              </button>
-            </div>
-            <div class="btn-group">
-              <button class="btn btn-default" ng-click="setPlaying(true)" title="{{ 'Play' | translate }}"
-                  ng-class="presentedMediafile.playing ? 'btn-primary' : 'btn-default'">
-                <i class="fa fa-play"></i>
+              <button class="btn btn-default" ng-click="mediafileTogglePlaying(presentedMediafile)"
+                  title="{{ 'Start/stop video' | translate }}">
+                <i class="fa" ng-class="presentedMediafile.playing ? 'fa-stop' : 'fa-play'"></i>
               </button>
             </div>
           </nav>
@@ -195,13 +201,32 @@
         <!-- projector column -->
         <td ng-show="!isDeleteMode"
             os-perms="core.can_manage_projector">
-          <a class="btn btn-default btn-sm"
-              ng-if="mediafile.is_presentable"
-              ng-class="{ 'btn-primary': mediafile.isProjected() }"
-              ng-click="showMediafile(mediafile)"
-              title="{{ 'Project mediafile' | translate }}">
-            <i class="fa fa-video-camera"></i>
-          </a>
+          <div class="btn-group" style="min-width:54px;" uib-dropdown
+            ng-if="mediafile.is_presentable"
+            uib-tooltip="{{ 'Projektor' | translate }} {{ mediafile.isProjected() }}"
+            tooltip-enable="mediafile.isProjected() > 0">
+            <button type="button" class="btn btn-default btn-sm"
+              ng-click="showMediafile(defaultProjectorId, mediafile)"
+              ng-class="{ 'btn-primary': mediafile.isProjected() == defaultProjectorId }">
+              <i class="fa fa-video-camera"></i>
+            </button>
+            <button type="button" class="btn btn-default btn-sm slimDropDown"
+              ng-class="{ 'btn-primary': (mediafile.isProjected() > 0 && mediafile.isProjected() != defaultProjectorId) }"
+              ng-if="projectors.length > 1"
+              uib-dropdown-toggle>
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li role="menuitem" ng-repeat="projector in projectors">
+                <a href="" ng-click="showMediafile(projector.id, mediafile)"
+                  ng-class="{ 'projected': (mediafile.isProjected() == projector.id) }">
+                  <i class="fa fa-video-camera" ng-show="mediafile.isProjected() == projector.id"></i>
+                  {{ projector.name }}
+                  <span ng-if="defaultProjectorId == projector.id">(<translate>Standard</translate>)</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         <!-- delete selection column -->
         <td ng-show="isDeleteMode" os-perms="mediafiles.can_manage" class="deleteColumn">
           <input type="checkbox" ng-model="mediafile.selected">

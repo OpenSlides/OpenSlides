@@ -11,12 +11,8 @@
         <translate>List of speakers</translate>
       </a>
       <!-- project -->
-      <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-          ng-class="{ 'btn-primary': topic.isProjected() }"
-          ng-click="topic.project()"
-          title="{{ 'Project topic' | translate }}">
-        <i class="fa fa-video-camera"></i>
-      </a>
+      <projector-button model="topic" default-projector-id="defaultProjectorId">
+      </projector-button>
       <!-- edit -->
       <a os-perms="agenda.can_manage" ng-click="openDialog(topic)"
           class="btn btn-default btn-sm"

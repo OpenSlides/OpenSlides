@@ -59,24 +59,29 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 // Projector Container Controller
 .controller('ProjectorContainerCtrl', [
     '$scope',
-    'Config',
+    '$location',
+    'gettext',
     'loadGlobalData',
-    function($scope, Config, loadGlobalData) {
+    'Projector',
+    'ProjectorID',
+    function($scope, $location, gettext, loadGlobalData, Projector, ProjectorID) {
         loadGlobalData();
-        // watch for changes in Config
-        var last_conf;
+
+        $scope.projector_id = ProjectorID();
+        $scope.error = '';
+
+        // watch for changes in Projector
         $scope.$watch(function () {
-            return Config.lastModified();
+            return Projector.lastModified($scope.projector_id);
         }, function () {
-            // With multiprojector, get the resolution from Prjector.get(pk).{width; height}
-            if (typeof $scope.config === 'function') {
-                var conf = $scope.config('projector_resolution');
-                if(!last_conf || last_conf.width != conf.width || last_conf.height != conf.height) {
-                    last_conf = conf;
-                    $scope.projectorWidth = conf.width;
-                    $scope.projectorHeight = conf.height;
-                    $scope.recalculateIframe();
-                }
+            var projector = Projector.get($scope.projector_id);
+            if (projector) {
+                $scope.error = '';
+                $scope.projectorWidth = projector.width;
+                $scope.projectorHeight = projector.height;
+                $scope.recalculateIframe();
+            } else {
+                $scope.error = gettext('Can not open the projector.');
             }
         });
 
@@ -114,27 +119,83 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 
 .controller('ProjectorCtrl', [
     '$scope',
+    '$location',
     'Projector',
     'slides',
-    function($scope, Projector, slides) {
+    'Config',
+    'ProjectorID',
+    function($scope, $location, Projector, slides, Config, ProjectorID) {
+        var projector_id = ProjectorID();
+
+        $scope.broadcast = 0;
+
+        var setElements = function (projector) {
+            $scope.elements = [];
+            _.forEach(slides.getElements(projector), function(element) {
+                if (!element.error) {
+                    $scope.elements.push(element);
+                } else {
+                    console.error("Error for slide " + element.name + ": " + element.error);
+                }
+            });
+        };
+
         $scope.$watch(function () {
-            // TODO: Use the current projector. At the moment there is only one.
-            return Projector.lastModified(1);
+            return Projector.lastModified(projector_id);
         }, function () {
-            // TODO: Use the current projector. At the moment there is only one
-            var projector = Projector.get(1);
-            if (projector) {
+            $scope.projector = Projector.get(projector_id);
+            if ($scope.projector) {
+                if ($scope.broadcast === 0) {
+                    setElements($scope.projector);
+                    $scope.blank = $scope.projector.blank;
+                }
+            } else {
+                // Blank projector on error
                 $scope.elements = [];
-                _.forEach(slides.getElements(projector), function(element) {
-                    if (!element.error) {
-                        $scope.elements.push(element);
-                    } else {
-                        console.error("Error for slide " + element.name + ": " + element.error);
+                $scope.projector = {
+                    scroll: 0,
+                    scale: 0,
+                    blank: true
+                };
+            }
+        });
+
+        $scope.$watch(function () {
+            return Config.lastModified('projector_broadcast');
+        }, function () {
+            var bc = Config.get('projector_broadcast');
+            if (bc) {
+                if ($scope.broadcast != bc.value) {
+                    $scope.broadcast = bc.value;
+                    if ($scope.broadcastDeregister) {
+                        // revert to original $scope.projector
+                        $scope.broadcastDeregister();
+                        $scope.broadcastDeregister = null;
+                        setElements($scope.projector);
+                        $scope.blank = $scope.projector.blank;
                     }
-                });
-                // TODO: Use the current projector. At the moment there is only one
-                $scope.scroll = -80 * Projector.get(1).scroll;
-                $scope.scale = 100 + 20 * Projector.get(1).scale;
+                }
+                if ($scope.broadcast > 0) {
+                    // get elements and blank from broadcast projector
+                    $scope.broadcastDeregister = $scope.$watch(function () {
+                        return Projector.lastModified($scope.broadcast);
+                    }, function () {
+                        if ($scope.broadcast > 0) {
+                            var broadcast_projector = Projector.get($scope.broadcast);
+                            if (broadcast_projector) {
+                                setElements(broadcast_projector);
+                                $scope.blank = broadcast_projector.blank;
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        $scope.$on('$destroy', function() {
+            if ($scope.broadcastDeregister) {
+                $scope.broadcastDeregister();
+                $scope.broadcastDeregister = null;
             }
         });
     }
@@ -158,13 +219,14 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         $scope.seconds = Math.floor( $scope.element.countdown_time - Date.now() / 1000 + $scope.serverOffset );
-        $scope.status = $scope.element.status;
+        $scope.running = $scope.element.running;
         $scope.visible = $scope.element.visible;
+        $scope.selected = $scope.element.selected;
         $scope.index = $scope.element.index;
         $scope.description = $scope.element.description;
         // start interval timer if countdown status is running
         var interval;
-        if ($scope.status == "running") {
+        if ($scope.running) {
             interval = $interval( function() {
                 $scope.seconds = Math.floor( $scope.element.countdown_time - Date.now() / 1000 + $scope.serverOffset );
             }, 1000);
@@ -186,6 +248,8 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         // class.
         $scope.message = $scope.element.message;
         $scope.visible = $scope.element.visible;
+        $scope.selected = $scope.element.selected;
+        $scope.type = $scope.element.type;
     }
 ]);
 

@@ -64,7 +64,7 @@ def ws_add_projector(message, projector_id):
     """
     user = message.user
     # user is the django anonymous user. We have our own.
-    if user.is_anonymous:
+    if user.is_anonymous and config['general_systen_enable_anonymous']:
         user = AnonymousUser()
 
     if not user.has_perm('core.can_see_projector'):
@@ -138,11 +138,24 @@ def send_data(message):
         projectors = Projector.get_projectors_that_show_this(collection_element)
         send_all = None  # The decission is done later
 
+    broadcast_id = config['projector_broadcast']
+    if broadcast_id > 0:
+        projectors = Projector.objects.all()  # Also the broadcasted projector should get his data
+        send_all = True
+        broadcast_projector_data = get_projector_element_data(Projector.objects.get(pk=broadcast_id))
+        broadcast_projector_data.append(CollectionElement.from_values(
+            collection_string=Projector.get_collection_string(), id=broadcast_id).as_autoupdate_for_projector())
+    else:
+        broadcast_projector_data = None
+
     for projector in projectors:
         if send_all is None:
             send_all = projector.need_full_update_for_this(collection_element)
         if send_all:
-            output = get_projector_element_data(projector)
+            if broadcast_projector_data is None:
+                output = get_projector_element_data(projector)
+            else:
+                output = broadcast_projector_data
         else:
             output = []
         output.append(collection_element.as_autoupdate_for_projector())

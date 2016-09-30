@@ -37,9 +37,13 @@
       }
     </style>
 
-    <div id="iframewrapper">
-      <iframe id="iframe" src="/real-projector" frameborder="0"></iframe>
+    <div id="iframewrapper" ng-hide="error">
+      <iframe id="iframe" ng-src="{{ '/real-projector/' + projector_id }}" frameborder="0"></iframe>
       <div id="iframeoverlay"></div>
+    </div>
+
+    <div class="error" ng-show="error">
+      <p>{{ error | translate }}</p>
     </div>
   </div>
 </div>

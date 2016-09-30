@@ -184,12 +184,8 @@
           ng-class="{ 'activeline': user.isProjected(), 'selected': user.selected  }">
         <!-- projector column -->
         <td ng-show="!isSelectMode" os-perms="core.can_manage_projector">
-          <a class="btn btn-default btn-sm"
-              ng-class="{ 'btn-primary': user.isProjected() }"
-              ng-click="user.project()"
-              title="{{ 'Project user' | translate }}">
-            <i class="fa fa-video-camera"></i>
-          </a>
+          <projector-button model="user" default-projector-id="defaultProjectorId">
+          </projector-button>
         <!-- selection column -->
         <td ng-show="isSelectMode" os-perms="users.can_manage" class="deleteColumn">
           <input type="checkbox" ng-model="user.selected">

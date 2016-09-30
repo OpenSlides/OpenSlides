@@ -25,7 +25,6 @@ from openslides.utils.plugins import (
 )
 from openslides.utils.rest_api import (
     ModelViewSet,
-    ReadOnlyModelViewSet,
     Response,
     SimpleMetadata,
     ValidationError,
@@ -42,7 +41,7 @@ from .access_permissions import (
 )
 from .config import config
 from .exceptions import ConfigError, ConfigNotFound
-from .models import ChatMessage, Projector, Tag
+from .models import ChatMessage, ProjectionDefault, Projector, Tag
 
 
 # Special Django views
@@ -171,7 +170,7 @@ class WebclientJavaScriptView(utils_views.View):
 
 # Viewsets for the REST API
 
-class ProjectorViewSet(ReadOnlyModelViewSet):
+class ProjectorViewSet(ModelViewSet):
     """
     API endpoint for the projector slide info.
 
@@ -190,14 +189,26 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action == 'metadata':
             result = self.request.user.has_perm('core.can_see_projector')
-        elif self.action in ('activate_elements', 'prune_elements', 'update_elements',
-                             'deactivate_elements', 'clear_elements', 'control_view',
-                             'set_resolution', 'set_scroll'):
+        elif self.action in (
+            'create', 'update', 'partial_update', 'destroy',
+            'activate_elements', 'prune_elements', 'update_elements', 'deactivate_elements', 'clear_elements',
+            'control_view', 'set_resolution', 'set_scroll', 'control_blank', 'broadcast',
+            'set_projectiondefault',
+        ):
             result = (self.request.user.has_perm('core.can_see_projector') and
                       self.request.user.has_perm('core.can_manage_projector'))
         else:
             result = False
         return result
+
+    # Assign all ProjectionDefault objects from this projector to the default projector (pk=1).
+    def destroy(self, *args, **kwargs):
+        projector_instance = self.get_object()
+        for projection_default in ProjectionDefault.objects.all():
+            if projection_default.projector.id == projector_instance.id:
+                projection_default.projector_id = 1
+                projection_default.save()
+        return super(ProjectorViewSet, self).destroy(*args, **kwargs)
 
     @detail_route(methods=['post'])
     def activate_elements(self, request, pk):
@@ -446,6 +457,68 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         message = 'Setting scroll to {scroll} was successful.'.format(
             scroll=request.data)
         return Response({'detail': message})
+
+    @detail_route(methods=['post'])
+    def control_blank(self, request, pk):
+        """
+        REST API operation to blank the projector.
+
+        It expects a POST request to
+        /rest/core/projector/<pk>/control_blank/ with a value for blank.
+        """
+        if not isinstance(request.data, bool):
+            raise ValidationError({'detail': 'Data must be a bool.'})
+
+        projector_instance = self.get_object()
+        projector_instance.blank = request.data
+        projector_instance.save()
+        message = "Setting 'blank' to {blank} was successful.".format(
+            blank=request.data)
+        return Response({'detail': message})
+
+    @detail_route(methods=['post'])
+    def broadcast(self, request, pk):
+        """
+        REST API operation to (un-)broadcast the given projector.
+        This method takes care, that all other projectors get the new requirements.
+
+        It expects a POST request to
+        /rest/core/projector/<pk>/broadcast/ without an argument
+        """
+        if config['projector_broadcast'] == 0:
+            config['projector_broadcast'] = pk
+            message = "Setting projector {id} as broadcast projector was successful.".format(
+                id=pk)
+        else:
+            config['projector_broadcast'] = 0
+            message = "Disabling broadcast was successful."
+        return Response({'detail': message})
+
+    @detail_route(methods=['post'])
+    def set_projectiondefault(self, request, pk):
+        """
+        REST API operation to set a projectiondefault to the requested projector. The argument
+        has to be an int representing the pk from the projectiondefault to be set.
+
+        It expects a POST request to
+        /rest/core/projector/<pk>/set_projectiondefault/ with the projectiondefault id as the argument
+        """
+        if not isinstance(request.data, int):
+            raise ValidationError({'detail': 'Data must be an int.'})
+
+        try:
+            projectiondefault = ProjectionDefault.objects.get(pk=request.data)
+        except ProjectionDefault.DoesNotExist:
+            raise ValidationError({'detail': 'The projectiondefault with pk={pk} was not found.'.format(
+                pk=request.data)})
+        else:
+            projector_instance = self.get_object()
+            projectiondefault.projector = projector_instance
+            projectiondefault.save()
+
+        return Response('Setting projectiondefault "{name}" to projector {projector_id} was successful.'.format(
+            name=projectiondefault.display_name,
+            projector_id=projector_instance.pk))
 
 
 class TagViewSet(ModelViewSet):

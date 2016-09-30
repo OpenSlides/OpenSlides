@@ -270,6 +270,12 @@ img {
     float: right;
 }
 
+.col1 .header .submenu > div {
+    display: inline-block;
+    float: left;
+    margin-left: 5px;
+}
+
 .col1 .meta .title {
     width: 100%;
     cursor: pointer;
@@ -329,15 +335,6 @@ img {
 }
 .col1 ul, .col1 ol {
     margin-left: 20px;
-}
-
-/* .resolution can be removed with the multiprojector, but maybe
- * it could be reused for the settings in the projectormanage-view */
-.col1 .input-group .resolution {
-    float: none;
-    display: inline-block;
-    width: 80px;
-    border-radius: 4px !important;
 }
 
 /* Toolbar to save motion in inline editing mode */
@@ -586,7 +583,6 @@ img {
 
 #content .col2 .section a:hover {
     text-decoration: none;
-    opacity: 0.5;
 }
 
 #content .toggle-icon {
@@ -652,20 +648,20 @@ img {
     color: #CC0000;
 }
 
-.col2 .notNull {
+.notNull {
     color: red;
     font-weight: bold;
 }
 
 /* iframe for live view */
-.col2 #iframe {
+.iframe {
     -moz-transform-origin: 0 0;
     -webkit-transform-origin: 0 0;
     -o-transform-origin: 0 0;
     transform-origin: 0 0 0;
 }
 
-.col2 #iframewrapper {
+.iframewrapper {
     width: 256px;
     position: relative;
     overflow: hidden;
@@ -673,7 +669,7 @@ img {
     margin-bottom: 10px;
 }
 
-.col2 #iframeoverlay {
+.iframeoverlay {
     width: 256px;
     position: absolute;
     top: 0px;
@@ -780,6 +776,77 @@ img {
 /** Config **/
 .input-comments > div {
     margin-bottom: 5px
+}
+
+/** Pojector sidebar **/
+.col2 .projectorSelector {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.col2 .projectorSelector > div > div {
+    width: 65%;
+    padding-right: 5px;
+    float: left;
+}
+
+.col2 .projectorSelector > div > div > button {
+    width: 100%;
+}
+
+.col2 .projectorSelector .manageBtn {
+    width: 35%;
+}
+
+.col2 .projectorSelector .btn-group {
+    margin-left: auto;
+    margin-right: auto;
+    display: table;
+}
+
+.col2 .projectorSelector > div {
+    margin-bottom: 10px;
+}
+
+/** manage-projectors **/
+
+.projectorContainer > div {
+    display: inline-table;
+    width: 256px;
+    margin: 10px 20px 35px 10px;
+}
+
+.projectorContainer > div > div {
+    margin-bottom: 10px;
+}
+
+.projectorContainer .middle {
+    width: 100%;
+}
+
+.projectorContainer .middle > div {
+    margin-left: auto;
+    margin-right: auto;
+    display: table;
+}
+
+.projectorContainer .dropdown {
+    width: 65%;
+    padding-right: 5px;
+    float: left;
+}
+
+.projectorContainer .dropdown > button {
+    width: 100%;
+}
+
+.projectorContainer .btn-danger {
+    width: 35%;
+}
+
+.projectorContainer .resolution {
+    display: inline-block;
+    width: 120px;
 }
 
 /** Footer **/
@@ -988,21 +1055,6 @@ img {
 }
 
 /* List of speakers view */
-.fullscreendiv {
-    position: absolute;
-    font-size:120%;
-    top:0;
-    bottom:0;
-    right:0;
-    left:0;
-    padding: 50px;
-    background: #fff;
-    overflow: hidden;
-    width: 100vw;
-    height: 100vh;
-    z-index: 99;
-}
-
 .fullscreendiv-title {
     border-bottom: 5px solid #d3d3d3;
     margin-bottom: 40px;

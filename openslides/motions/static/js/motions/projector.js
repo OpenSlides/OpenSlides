@@ -21,7 +21,8 @@ angular.module('OpenSlidesApp.motions.projector', ['OpenSlidesApp.motions'])
     'User',
     'Config',
     'Projector',
-    function($scope, $rootScope, $http, Motion, User, Config, Projector) {
+    '$timeout',
+    function($scope, $rootScope, $http, Motion, User, Config, Projector, $timeout) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
@@ -80,6 +81,7 @@ angular.module('OpenSlidesApp.motions.projector', ['OpenSlidesApp.motions'])
 
         Motion.bindOne(id, $scope, 'motion');
         User.bindAll({}, $scope, 'users');
+
     }
 ]);
 

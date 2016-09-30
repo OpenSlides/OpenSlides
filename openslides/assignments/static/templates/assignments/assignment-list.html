@@ -121,12 +121,8 @@
 
         <!-- projector -->
         <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
-          <a class="btn btn-default btn-sm"
-              ng-class="{ 'btn-primary': assignment.isProjected() }"
-              ng-click="assignment.project()"
-              title="{{ 'Project election' | translate }}">
-            <i class="fa fa-video-camera"></i>
-          </a>
+          <projector-button model="assignment" default-projector-id="defaultProjectorId">
+          </projector-button>
 
         <!-- delete selection -->
         <td ng-show="isDeleteMode" os-perms="assignments.can_manage" class="deleteColumn">

@@ -3,7 +3,11 @@
  *
  */
 
-body{
+html, body {
+    height: 100%;
+}
+
+body {
     font-size: 20px !important;
     line-height: 24px !important;
     overflow: hidden;
@@ -34,7 +38,7 @@ body{
     transform-origin: 0 0 0;
 }
 
-.pContainer #iframewrapper {
+.pContainer #iframewrapper, .pContainer .error {
     position: relative;
     overflow: hidden;
     margin-left: auto;
@@ -47,6 +51,12 @@ body{
     left: 0px;
     display: block;
     z-index: 1;
+}
+
+.pContainer .error > p {
+    color: #f00;
+    font-size: 150%;
+    text-align: center;
 }
 
 /*** HEADER ***/
@@ -278,6 +288,10 @@ hr {
     line-height: normal !important;
     z-index: 301;
 }
+.identify {
+    background-color: #D9F8C4;
+    z-index: 400;
+}
 
 /*** PDF presentation ***/
 .rotate0 {
@@ -377,7 +391,6 @@ tr.elected td {
 .nextSpeakers li {
     line-height: 150%;
 }
-
 
 
 /*** Line numbers ***/

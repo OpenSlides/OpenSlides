@@ -1,5 +1,5 @@
 <div ng-controller="SlideCountdownCtrl">
-  <div ng-if="visible">
+  <div ng-if="visible && selected">
     <div class="countdown well pull-right"
         ng-class="{
           'negative': seconds <= 0,
