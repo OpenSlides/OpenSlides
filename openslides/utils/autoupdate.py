@@ -23,22 +23,6 @@ def get_logged_in_users():
     return User.objects.exclude(session=None).filter(session__expire_date__gte=timezone.now()).distinct()
 
 
-def get_projector_element_data(projector, on_slide=None):  # TODO autoupdate
-    """
-    Returns a list of dicts that are required for a specific projector.
-
-    The argument projector has to be a projector instance.
-
-    If on_slide is a string that matches an slide on the projector, then only
-    elements on this slide are returned.
-    """
-    output = []
-    for requirement in projector.get_all_requirements(on_slide):
-        required_collection_element = CollectionElement.from_instance(requirement)
-        output.append(required_collection_element.as_autoupdate_for_projector())
-    return output
-
-
 @channel_session_user_from_http
 def ws_add_site(message):
     """
@@ -81,7 +65,10 @@ def ws_add_projector(message, projector_id):
             Group('projector-{}'.format(projector_id)).add(message.reply_channel)
 
             # Send all elements that are on the projector.
-            output = get_projector_element_data(projector)  # TODO autoupdate
+            output = []
+            for requirement in projector.get_all_requirements():
+                required_collection_element = CollectionElement.from_instance(requirement)
+                output.append(required_collection_element.as_autoupdate_for_projector())
 
             # Send all config elements.
             collection = Collection(config.get_collection_string())
@@ -102,59 +89,25 @@ def ws_disconnect_projector(message, projector_id):
     Group('projector-{}'.format(projector_id)).discard(message.reply_channel)
 
 
-def send_data(message):  # TODO autoupdate
+def send_data(message):
     """
-    Informs all users about changed data.
+    Informs all site users and projector clients about changed data.
     """
     collection_element = CollectionElement.from_values(**message)
 
-    # Loop over all logged in users and the anonymous user.
+    # Loop over all logged in site users and the anonymous user and send changed data.
     for user in itertools.chain(get_logged_in_users(), [AnonymousUser()]):
         channel = Group('user-{}'.format(user.id))
-        output = collection_element.as_autoupdate_for_user(user)
-        channel.send({'text': json.dumps([output])})
+        output = [collection_element.as_autoupdate_for_user(user)]
+        channel.send({'text': json.dumps(output)})
 
-    # Get the projector elements where data have to be sent and if whole projector
-    # has to be updated.
-    if collection_element.collection_string == config.get_collection_string():
-        # Config elements are always send to each projector
-        projectors = Projector.objects.all()
-        send_all = None  # The decission is done later
-    elif collection_element.collection_string == Projector.get_collection_string():
-        # Update a projector, when the projector element is updated.
-        projectors = [collection_element.get_instance()]
-        send_all = True
-    elif collection_element.is_deleted():
-        projectors = Projector.objects.all()
-        send_all = False
-    else:
-        # Other elements are only send to the projector they are currently shown
-        projectors = Projector.get_projectors_that_show_this(collection_element)
-        send_all = None  # The decission is done later
-
-    broadcast_id = config['projector_broadcast']
-    if broadcast_id > 0:
-        projectors = Projector.objects.all()  # Also the broadcasted projector should get his data
-        send_all = True
-        broadcast_projector_data = get_projector_element_data(Projector.objects.get(pk=broadcast_id))
-        broadcast_projector_data.append(CollectionElement.from_values(
-            collection_string=Projector.get_collection_string(), id=broadcast_id).as_autoupdate_for_projector())
-    else:
-        broadcast_projector_data = None
-
-    for projector in projectors:
-        if send_all is None:
-            send_all = projector.need_full_update_for_this(collection_element)
-        if send_all:
-            if broadcast_projector_data is None:
-                output = get_projector_element_data(projector)
-            else:
-                output = broadcast_projector_data
+    # Loop over all projectors and send data that they need.
+    for projector in Projector.objects.all():
+        if collection_element.is_deleted():
+            output = [collection_element.as_autoupdate_for_projector()]
         else:
-            # The list will be filled in the next lines.
-            output = []
-
-        output.append(collection_element.as_autoupdate_for_projector())
+            collection_elements = projector.get_collection_elements_required_for_this(collection_element)
+            output = [collection_element.as_autoupdate_for_projector() for collection_element in collection_elements]
         if output:
             Group('projector-{}'.format(projector.pk)).send(
                 {'text': json.dumps(output)})

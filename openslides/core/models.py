@@ -116,7 +116,7 @@ class Projector(RESTModelMixin, models.Model):
                     result[key]['error'] = str(e)
         return result
 
-    def get_all_requirements(self, on_slide=None):  # TODO autoupdate: Refactor or rename this.
+    def get_all_requirements(self):
         """
         Generator which returns all instances that are shown on this projector.
         """
@@ -131,50 +131,35 @@ class Projector(RESTModelMixin, models.Model):
             if element is not None:
                 yield from element.get_requirements(value)
 
-    def collection_element_is_shown(self, collection_element):
+    def get_collection_elements_required_for_this(self, collection_element):
         """
-        Returns True if this collection element is shown on this projector.
+        Returns an iterable of CollectionElements that have to be sent to this
+        projector according to the given collection_element and information.
         """
-        for requirement in self.get_all_requirements():
-            if (requirement.get_collection_string() == collection_element.collection_string and
-                    requirement.pk == collection_element.id):
-                result = True
-                break
+        from .config import config
+
+        output = []
+        changed_fields = collection_element.information.get('changed_fields', [])
+        if (collection_element.collection_string == self.get_collection_string() and
+                changed_fields and
+                'config' not in changed_fields):
+            # Projector model changed without changeing the projector config. So we just send this data.
+            output.append(collection_element)
         else:
-            result = False
-        return result
-
-    @classmethod
-    def get_projectors_that_show_this(cls, collection_element):
-        """
-        Returns a list of the projectors that show this collection element.
-        """
-        result = []
-        for projector in cls.objects.all():
-            if projector.collection_element_is_shown(collection_element):
-                result.append(projector)
-        return result
-
-    def need_full_update_for_this(self, collection_element):
-        """
-        Returns True if this projector needs to be updated with all
-        instances as defined in get_all_requirements() because one active
-        projector element requires this.
-        """
-        # Get all elements from all apps.
-        elements = {}
-        for element in ProjectorElement.get_all():
-            elements[element.name] = element
-
-        for key, value in self.config.items():
-            element = elements.get(value['name'])
-            if element is not None and element.need_full_update_for_this(collection_element):
-                result = True
-                break
-        else:
-            result = False
-
-        return result
+            # It is necessary to parse all active projector elements to check whether they require some data.
+            this_projector = collection_element.collection_string == self.get_collection_string() and collection_element.id == self.pk
+            collection_element.information['this_projector'] = this_projector
+            elements = {}
+            for element in ProjectorElement.get_all():
+                elements[element.name] = element
+            for key, value in self.config.items():
+                element = elements.get(value['name'])
+                if element is not None:
+                    output.extend(element.get_collection_elements_required_for_this(collection_element, value))
+            # If config changed, send also this to the projector.
+            if collection_element.collection_string == config.get_collection_string():
+                output.append(collection_element)
+        return output
 
 
 class ProjectionDefault(RESTModelMixin, models.Model):

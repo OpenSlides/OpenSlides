@@ -1,5 +1,6 @@
 from ..core.config import config
 from ..core.exceptions import ProjectorException
+from ..utils.collection import CollectionElement
 from ..utils.projector import ProjectorElement
 from .models import Item
 
@@ -60,10 +61,13 @@ class ListOfSpeakersSlide(ProjectorElement):
                     # Yield last speakers
                     yield speaker.user
 
-    def need_full_update_for_this(self, collection_element):
-        # Full update if item changes because then we may have new speakers
-        # and therefor need new users.
-        return collection_element.collection_string == Item.get_collection_string()
+    def get_collection_elements_required_for_this(self, collection_element, config_entry):
+        output = super().get_collections_required_for_this(collection_element, config_entry)
+        # Full update if item changes because then we may have new
+        # candidates and therefor need new users.
+        if collection_element == CollectionElement.from_values(Item.get_collection_string(), config_entry.get('id')):
+            output.extend(self.get_requirements_as_collection_elements(config_entry))
+        return output
 
 
 class CurrentListOfSpeakersSlide(ProjectorElement):

@@ -1,4 +1,5 @@
 from ..core.exceptions import ProjectorException
+from ..utils.collection import CollectionElement
 from ..utils.projector import ProjectorElement
 from .models import Assignment, AssignmentPoll
 
@@ -46,7 +47,10 @@ class AssignmentSlide(ProjectorElement):
                     for option in poll.options.all():
                         yield option.candidate
 
-    def need_full_update_for_this(self, collection_element):
+    def get_collection_elements_required_for_this(self, collection_element, config_entry):
+        output = super().get_collection_elements_required_for_this(collection_element, config_entry)
         # Full update if assignment changes because then we may have new
         # candidates and therefor need new users.
-        return collection_element.collection_string == Assignment.get_collection_string()
+        if collection_element == CollectionElement.from_values(Assignment.get_collection_string(), config_entry.get('id')):
+            output.extend(self.get_requirements_as_collection_elements(config_entry))
+        return output
