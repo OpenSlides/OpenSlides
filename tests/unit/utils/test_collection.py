@@ -90,8 +90,7 @@ class TestCollectionElement(TestCase):
             collection_element.as_channels_message(),
             {'collection_string': 'testmodule/model',
              'id': 42,
-             'deleted': False,
-             'information': {}})
+             'deleted': False})
 
     def test_as_autoupdate_for_user(self):
         collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
