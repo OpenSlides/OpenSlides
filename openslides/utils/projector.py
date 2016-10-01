@@ -85,7 +85,7 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
         """
         Returns a list of CollectionElements that have to be sent to every
         projector that shows this projector element according to the given
-        collection_element and information.
+        collection_element.
 
         Default: Returns only the collection_element if it belongs to the
         requirements but return all requirements if the projector changes.

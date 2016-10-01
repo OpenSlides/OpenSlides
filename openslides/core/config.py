@@ -101,7 +101,12 @@ class ConfigHandler:
                     raise ConfigError(_('public property has to be bool.'))
 
         # Save the new value to the database.
-        ConfigStore.objects.update_or_create(key=key, defaults={'value': value})
+        try:
+            db_value = ConfigStore.objects.get(key=key)
+        except ConfigStore.DoesNotExist:
+            db_value = ConfigStore(key=key)
+        db_value.value = value
+        db_value.save(information={'changed_config': key})
 
         # Call on_change callback.
         if config_variable.on_change:
