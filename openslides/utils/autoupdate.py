@@ -49,7 +49,7 @@ def ws_add_projector(message, projector_id):
     """
     user = message.user
     # user is the django anonymous user. We have our own.
-    if user.is_anonymous and config['general_systen_enable_anonymous']:
+    if user.is_anonymous and config['general_system_enable_anonymous']:
         user = AnonymousUser()
 
     if not user.has_perm('core.can_see_projector'):
@@ -64,21 +64,30 @@ def ws_add_projector(message, projector_id):
             # informed if the data change.
             Group('projector-{}'.format(projector_id)).add(message.reply_channel)
 
-            # Send all elements that are on the projector.
+            # Then it is also added to the global projector group which is
+            # used for broadcasting data.
+            Group('projector-all').add(message.reply_channel)
+
+            # Now check whether broadcast is active at the moment. If yes,
+            # change the local projector variable.
+            if config['projector_broadcast'] > 0:
+                projector = Projector.objects.get(pk=config['projector_broadcast'])
+
+            # Collect all elements that are on the projector.
             output = []
             for requirement in projector.get_all_requirements():
                 required_collection_element = CollectionElement.from_instance(requirement)
                 output.append(required_collection_element.as_autoupdate_for_projector())
 
-            # Send all config elements.
+            # Collect all config elements.
             collection = Collection(config.get_collection_string())
             output.extend(collection.as_autoupdate_for_projector())
 
-            # Send the projector instance.
+            # Collect the projector instance.
             collection_element = CollectionElement.from_instance(projector)
             output.append(collection_element.as_autoupdate_for_projector())
 
-            # Send all the data that was only collected before
+            # Send all the data that were only collected before.
             message.reply_channel.send({'text': json.dumps(output)})
 
 
@@ -101,16 +110,27 @@ def send_data(message):
         output = [collection_element.as_autoupdate_for_user(user)]
         channel.send({'text': json.dumps(output)})
 
+    # Check whether broadcast is active at the moment and set the local
+    # projector queryset.
+    if config['projector_broadcast'] > 0:
+        queryset = Projector.objects.filter(pk=config['projector_broadcast'])
+    else:
+        queryset = Projector.objects.all()
+
     # Loop over all projectors and send data that they need.
-    for projector in Projector.objects.all():
+    for projector in queryset:
         if collection_element.is_deleted():
             output = [collection_element.as_autoupdate_for_projector()]
         else:
             collection_elements = projector.get_collection_elements_required_for_this(collection_element)
             output = [collection_element.as_autoupdate_for_projector() for collection_element in collection_elements]
         if output:
-            Group('projector-{}'.format(projector.pk)).send(
-                {'text': json.dumps(output)})
+            if config['projector_broadcast'] > 0:
+                Group('projector-all').send(
+                    {'text': json.dumps(output)})
+            else:
+                Group('projector-{}'.format(projector.pk)).send(
+                    {'text': json.dumps(output)})
 
 
 def inform_changed_data(instance, information=None):

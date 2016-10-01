@@ -3,8 +3,9 @@ from django.contrib.sessions.models import Session as DjangoSession
 from django.db import models
 from jsonfield import JSONField
 
-from openslides.utils.models import RESTModelMixin
-from openslides.utils.projector import ProjectorElement
+from ..utils.collection import CollectionElement
+from ..utils.models import RESTModelMixin
+from ..utils.projector import ProjectorElement
 
 from .access_permissions import (
     ChatMessageAccessPermissions,
@@ -149,12 +150,13 @@ class Projector(RESTModelMixin, models.Model):
     def get_collection_elements_required_for_this(self, collection_element):
         """
         Returns an iterable of CollectionElements that have to be sent to this
-        projector according to the given collection_element and information.
+        projector according to the given collection_element.
         """
         from .config import config
 
         output = []
         changed_fields = collection_element.information.get('changed_fields', [])
+
         if (collection_element.collection_string == self.get_collection_string() and
                 changed_fields and
                 'config' not in changed_fields):
@@ -165,15 +167,29 @@ class Projector(RESTModelMixin, models.Model):
             this_projector = collection_element.collection_string == self.get_collection_string() and collection_element.id == self.pk
             collection_element.information['this_projector'] = this_projector
             elements = {}
+
+            # Build projector elements.
             for element in ProjectorElement.get_all():
                 elements[element.name] = element
+
+            # Iterate over all active projector elements.
             for key, value in self.config.items():
                 element = elements.get(value['name'])
                 if element is not None:
-                    output.extend(element.get_collection_elements_required_for_this(collection_element, value))
-            # If config changed, send also this to the projector.
+                    if collection_element.information.get('changed_config') == 'projector_broadcast':
+                        # In case of broadcast we need full update.
+                        output.extend(element.get_requirements_as_collection_elements(value))
+                    else:
+                        # In normal case we need all collections required by the element.
+                        output.extend(element.get_collection_elements_required_for_this(collection_element, value))
+
+            # If config changed, send also this config to the projector.
             if collection_element.collection_string == config.get_collection_string():
                 output.append(collection_element)
+                if collection_element.information.get('changed_config') == 'projector_broadcast':
+                    # In case of broadcast we also need the projector himself.
+                    output.append(CollectionElement.from_instance(self))
+
         return output
 
 
