@@ -3,10 +3,8 @@ import base64
 from django.contrib.staticfiles import finders
 from django.db import IntegrityError, transaction
 from django.http import Http404
-from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_noop
-from reportlab.platypus import SimpleDocTemplate
 from rest_framework import status
 
 from ..core.config import config
@@ -20,7 +18,8 @@ from ..utils.rest_api import (
     ValidationError,
     detail_route,
 )
-from ..utils.views import APIView, PDFView, SingleObjectMixin
+from ..utils.views import APIView
+
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
@@ -39,7 +38,6 @@ from .models import (
     State,
     Workflow,
 )
-from .pdf import motion_poll_to_pdf, motion_to_pdf, motions_to_pdf
 from .serializers import MotionPollSerializer
 
 
@@ -521,101 +519,6 @@ class WorkflowViewSet(ModelViewSet):
         else:
             result = False
         return result
-
-
-# Views to generate PDFs and for the DOCX template
-
-class MotionPollPDF(PDFView):
-    """
-    Generates a ballotpaper.
-    """
-
-    required_permission = 'motions.can_manage'
-    top_space = 0
-
-    def get(self, request, *args, **kwargs):
-        self.poll = MotionPoll.objects.get(pk=self.kwargs['poll_pk'])
-        return super().get(request, *args, **kwargs)
-
-    def get_filename(self):
-        """
-        Return the filename for the PDF.
-        """
-        return u'%s_%s' % (_("Motion"), _("Vote"))
-
-    def get_template(self, buffer):
-        return SimpleDocTemplate(
-            buffer, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0,
-            showBoundary=False)
-
-    def build_document(self, pdf_document, story):
-        pdf_document.build(story)
-
-    def append_to_pdf(self, pdf):
-        """
-        Append PDF objects.
-        """
-        motion_poll_to_pdf(pdf, self.poll)
-
-
-class MotionPDFView(SingleObjectMixin, PDFView):
-    """
-    Create the PDF for one or for all motions.
-
-    If self.print_all_motions is True, the view returns a PDF with all motions.
-
-    If self.print_all_motions is False, the view returns a PDF with only one
-    motion.
-    """
-    model = Motion
-    top_space = 0
-    print_all_motions = False
-
-    def check_permission(self, request, *args, **kwargs):
-        """
-        Checks if the requesting user has the permission to see the motion as
-        PDF.
-        """
-        if self.print_all_motions:
-            is_allowed = request.user.has_perm('motions.can_see')
-        else:
-            is_allowed = self.get_object().get_allowed_actions(request.user)['see']
-        return is_allowed
-
-    def get_object(self, *args, **kwargs):
-        if self.print_all_motions:
-            obj = None
-        else:
-            obj = super().get_object(*args, **kwargs)
-        return obj
-
-    def get_filename(self):
-        """
-        Return the filename for the PDF.
-        """
-        if self.print_all_motions:
-            return _("Motions")
-        else:
-            if self.get_object().identifier:
-                suffix = self.get_object().identifier.replace(' ', '')
-            else:
-                suffix = self.get_object().title.replace(' ', '_')
-                suffix = slugify(suffix)
-            return '%s-%s' % (_("Motion"), suffix)
-
-    def append_to_pdf(self, pdf):
-        """
-        Append PDF objects.
-        """
-        if self.print_all_motions:
-            motions = []
-            for motion in Motion.objects.all():
-                if (not motion.state.required_permission_to_see or
-                        self.request.user.has_perm(motion.state.required_permission_to_see)):
-                    motions.append(motion)
-            motions_to_pdf(pdf, motions)
-        else:
-            motion_to_pdf(pdf, self.get_object())
 
 
 class MotionDocxTemplateView(APIView):

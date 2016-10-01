@@ -1,55 +1,7 @@
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from openslides.utils import views
-
-
-@patch('builtins.super')
-class SingleObjectMixinTest(TestCase):
-    def test_get_object_cache(self, mock_super):
-        """
-        Test that the method get_object caches his result.
-
-        Tests that get_object from the django view is only called once, even if
-        get_object on our class is called twice.
-        """
-        view = views.SingleObjectMixin()
-
-        view.get_object()
-        view.get_object()
-
-        mock_super().get_object.assert_called_once_with()
-
-    def test_dispatch_with_existin_object(self, mock_super):
-        view = views.SingleObjectMixin()
-        view.object = 'old_object'
-        view.get_object = MagicMock()
-
-        view.dispatch()
-
-        mock_super().dispatch.assert_called_with()
-        self.assertEqual(
-            view.object,
-            'old_object',
-            "view.object should not be changed")
-        self.assertFalse(
-            view.get_object.called,
-            "view.get_object() should not be called")
-
-    def test_dispatch_without_existin_object(self, mock_super):
-        view = views.SingleObjectMixin()
-        view.get_object = MagicMock(return_value='new_object')
-
-        view.dispatch()
-
-        mock_super().dispatch.assert_called_with()
-        self.assertEqual(
-            view.object,
-            'new_object',
-            "view.object should be changed")
-        self.assertTrue(
-            view.get_object.called,
-            "view.get_object() should be called")
 
 
 class TestAPIView(TestCase):

@@ -3,7 +3,6 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy
 
 from ..core.config import config
 from ..utils.rest_api import (
@@ -14,10 +13,9 @@ from ..utils.rest_api import (
     detail_route,
     status,
 )
-from ..utils.views import APIView, PDFView
+from ..utils.views import APIView
 from .access_permissions import UserAccessPermissions
 from .models import Group, User
-from .pdf import users_passwords_to_pdf, users_to_pdf
 from .serializers import GroupSerializer
 
 
@@ -251,38 +249,3 @@ class SetPasswordView(APIView):
         else:
             raise ValidationError({'detail': _('Old password does not match.')})
         return super().post(request, *args, **kwargs)
-
-
-# Views to generate PDFs
-
-class UsersListPDF(PDFView):
-    """
-    Generate a list of all users as PDF.
-    """
-    required_permission = 'users.can_see_extra_data'
-    filename = ugettext_lazy('user-list')
-    document_title = ugettext_lazy('List of users')
-
-    def append_to_pdf(self, pdf):
-        """
-        Append PDF objects.
-        """
-        users_to_pdf(pdf)
-
-
-class UsersPasswordsPDF(PDFView):
-    """
-    Generate the access data welcome paper for all users as PDF.
-    """
-    required_permission = 'users.can_manage'
-    filename = ugettext_lazy('user-access-data')
-    top_space = 0
-
-    def build_document(self, pdf_document, story):
-        pdf_document.build(story)
-
-    def append_to_pdf(self, pdf):
-        """
-        Append PDF objects.
-        """
-        users_passwords_to_pdf(pdf)
