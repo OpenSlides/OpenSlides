@@ -8,6 +8,86 @@ from openslides.users.serializers import UserFullSerializer
 from openslides.utils.test import TestCase
 
 
+class TestUserDBQueries(TestCase):
+    """
+    Tests that receiving elements only need the required db queries.
+
+    Therefore in setup some objects are created and received with different
+    user accounts.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        config['general_system_enable_anonymous'] = True
+        for index in range(10):
+            User.objects.create(username='user{}'.format(index))
+
+    def test_admin(self):
+        """
+        Tests that only the following db queries are done:
+        * 5 requests to get the session an the request user with its permissions,
+        * 2 requests to get the list of all assignments and
+        * 1 request to get all groups.
+        """
+        self.client.force_login(User.objects.get(pk=1))
+        with self.assertNumQueries(8):
+            self.client.get(reverse('user-list'))
+
+    def test_anonymous(self):
+        """
+        Tests that only the following db queries are done:
+        * 2 requests to get the permission for anonymous (config and permissions)
+        * 2 requests to get the list of all users,
+        * 1 request to get all groups and
+
+        * lots of permissions requests.
+
+        TODO: The last requests are a bug.
+        """
+        with self.assertNumQueries(27):
+            self.client.get(reverse('user-list'))
+
+
+class TestGroupDBQueries(TestCase):
+    """
+    Tests that receiving elements only need the required db queries.
+
+    Therefore in setup some objects are created and received with different
+    user accounts.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        config['general_system_enable_anonymous'] = True
+        for index in range(10):
+            Group.objects.create(name='group{}'.format(index))
+
+    def test_admin(self):
+        """
+        Tests that only the following db queries are done:
+        * 2 requests to get the session an the request user with its permissions,
+        * 1 request to get the list of all groups,
+        * 1 request to get the permissions and
+        * 1 request to get the content_object for the permissions.
+        """
+        self.client.force_login(User.objects.get(pk=1))
+        with self.assertNumQueries(5):
+            self.client.get(reverse('group-list'))
+
+    def test_anonymous(self):
+        """
+        Tests that only the following db queries are done:
+        * 2 requests to find out if anonymous is enabled
+        * 1 request to get the list of all groups,
+        * 1 request to get the permissions and
+        * 1 request to get the content_object for the permissions.
+
+        TODO: There should be only one request to find out if anonymous is enabled.
+        """
+        with self.assertNumQueries(5):
+            self.client.get(reverse('group-list'))
+
+
 class UserGetTest(TestCase):
     """
     Tests to receive a users via REST API.

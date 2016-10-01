@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_noop
@@ -16,6 +16,7 @@ from openslides.poll.models import (
     CollectDefaultVotesMixin,
     PublishPollMixin,
 )
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.search import user_name_helper
@@ -50,11 +51,29 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
         return self.assignment
 
 
+class AssignmentManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all assignments. In the background
+        all related users (candidates), the related agenda item and all
+        polls are prefetched from the database.
+        """
+        return self.get_queryset().prefetch_related(
+            'related_users',
+            'agenda_items',
+            'polls')
+
+
 class Assignment(RESTModelMixin, models.Model):
     """
     Model for assignments.
     """
     access_permissions = AssignmentAccessPermissions()
+
+    objects = AssignmentManager()
 
     PHASE_SEARCH = 0
     PHASE_VOTING = 1
@@ -110,6 +129,10 @@ class Assignment(RESTModelMixin, models.Model):
     """
     Tags for the assignment.
     """
+
+    # In theory there could be one then more agenda_item. But we support only
+    # one. See the property agenda_item.
+    agenda_items = GenericRelation(Item, related_name='assignments')
 
     class Meta:
         default_permissions = ()
@@ -187,6 +210,7 @@ class Assignment(RESTModelMixin, models.Model):
         Delete the connection from the assignment to the user.
         """
         self.assignment_related_users.filter(user=user).delete()
+        inform_changed_data(self)
 
     def set_phase(self, phase):
         """
@@ -290,8 +314,9 @@ class Assignment(RESTModelMixin, models.Model):
         """
         Returns the related agenda item.
         """
-        content_type = ContentType.objects.get_for_model(self)
-        return Item.objects.get(object_id=self.pk, content_type=content_type)
+        # We support only one agenda item so just return the first element of
+        # the queryset.
+        return self.agenda_items.all()[0]
 
     @property
     def agenda_item_id(self):

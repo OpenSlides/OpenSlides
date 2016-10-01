@@ -5,16 +5,11 @@ from __future__ import unicode_literals
 import django.db.models.deletion
 from django.db import migrations, models
 
-from openslides.utils.autoupdate import inform_changed_data_receiver
-
 
 def change_label_of_state(apps, schema_editor):
     """
     Changes the label of former state "commited a bill" to "refered to committee".
     """
-    # Disconnect autoupdate. We do not want to trigger it here.
-    models.signals.post_save.disconnect(dispatch_uid='inform_changed_data_receiver')
-
     # We get the model from the versioned app registry;
     # if we directly import it, it will be the wrong version.
     State = apps.get_model('motions', 'State')
@@ -29,19 +24,11 @@ def change_label_of_state(apps, schema_editor):
         state.action_word = 'Refer to committee'
         state.save()
 
-    # Reconnect autoupdate.
-    models.signals.post_save.connect(
-        inform_changed_data_receiver,
-        dispatch_uid='inform_changed_data_receiver')
-
 
 def add_recommendation_labels(apps, schema_editor):
     """
     Adds recommendation labels to some of the built-in states.
     """
-    # Disconnect autoupdate. We do not want to trigger it here.
-    models.signals.post_save.disconnect(dispatch_uid='inform_changed_data_receiver')
-
     # We get the model from the versioned app registry;
     # if we directly import it, it will be the wrong version.
     State = apps.get_model('motions', 'State')

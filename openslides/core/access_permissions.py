@@ -84,7 +84,13 @@ class ConfigAccessPermissions(BaseAccessPermissions):
         Returns the serlialized config data.
         """
         from .config import config
+        from .models import ConfigStore
 
         # Attention: The format of this response has to be the same as in
         # the retrieve method of ConfigViewSet.
-        return {'key': instance.key, 'value': config[instance.key]}
+        if isinstance(instance, ConfigStore):
+            result = {'key': instance.key, 'value': config[instance.key]}
+        else:
+            # It is possible, that the caching system already sends the correct data as "instance".
+            result = instance
+        return result

@@ -21,8 +21,15 @@ from .access_permissions import UserAccessPermissions
 class UserManager(BaseUserManager):
     """
     Customized manager that creates new users only with a password and a
-    username.
+    username. It also supports our get_full_queryset method.
     """
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all users. In the background all
+        groups are prefetched from the database.
+        """
+        return self.get_queryset().prefetch_related('groups')
+
     def create_user(self, username, password, **kwargs):
         """
         Creates a new user only with a password and a username.

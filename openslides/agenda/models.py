@@ -23,6 +23,14 @@ class ItemManager(models.Manager):
     Customized model manager with special methods for agenda tree and
     numbering.
     """
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all items. In the background all
+        speakers and related items (topics, motions, assignments) are
+        prefetched from the database.
+        """
+        return self.get_queryset().prefetch_related('speakers', 'content_object')
+
     def get_only_agenda_items(self):
         """
         Generator, which yields only agenda items. Skips hidden items.
@@ -275,20 +283,6 @@ class Item(RESTModelMixin, models.Model):
 
     def __str__(self):
         return self.title
-
-    def delete(self, with_children=False):
-        """
-        Delete the Item.
-
-        If with_children is True, all children of the item will be deleted as
-        well. If with_children is False, all children will be children of the
-        parent of the item.
-        """
-        if not with_children:
-            for child in self.children.all():
-                child.parent = self.parent
-                child.save()
-        super().delete()
 
     @property
     def title(self):

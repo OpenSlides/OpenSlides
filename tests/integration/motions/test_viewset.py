@@ -8,7 +8,137 @@ from rest_framework.test import APIClient
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.motions.models import Category, Motion, State
+from openslides.users.models import User
 from openslides.utils.test import TestCase
+
+
+class TestMotionDBQueries(TestCase):
+    """
+    Tests that receiving elements only need the required db queries.
+
+    Therefore in setup some objects are created and received with different
+    user accounts.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        config['general_system_enable_anonymous'] = True
+        for index in range(10):
+            Motion.objects.create(title='motion{}'.format(index))
+        # TODO: Create some polls etc.
+
+    def test_admin(self):
+        """
+        Tests that only the following db queries are done:
+        * 5 requests to get the session an the request user with its permissions,
+        * 2 requests to get the list of all motions,
+        * 1 request to get the motion versions,
+        * 1 request to get the agenda item,
+        * 1 request to get the motion log,
+        * 1 request to get the polls,
+        * 1 request to get the attachments,
+        * 1 request to get the tags,
+        * 2 requests to get the submitters and supporters
+        """
+        self.client.force_login(User.objects.get(pk=1))
+        with self.assertNumQueries(15):
+            self.client.get(reverse('motion-list'))
+
+    def test_anonymous(self):
+        """
+        Tests that only the following db queries are done:
+        * 2 requests to get the permission for anonymous (config and permissions)
+        * 2 requests to get the list of all motions,
+        * 1 request to get the motion versions,
+        * 1 request to get the agenda item,
+        * 1 request to get the motion log,
+        * 1 request to get the polls,
+        * 1 request to get the attachments,
+        * 1 request to get the tags,
+        * 2 requests to get the submitters and supporters
+
+        * 10 requests for permissions.
+
+        TODO: The last 10 requests are a bug.
+        """
+        with self.assertNumQueries(22):
+            self.client.get(reverse('motion-list'))
+
+
+class TestCategoryDBQueries(TestCase):
+    """
+    Tests that receiving elements only need the required db queries.
+
+    Therefore in setup some objects are created and received with different
+    user accounts.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        config['general_system_enable_anonymous'] = True
+        for index in range(10):
+            Category.objects.create(name='category{}'.format(index))
+
+    def test_admin(self):
+        """
+        Tests that only the following db queries are done:
+        * 5 requests to get the session an the request user with its permissions and
+        * 2 requests to get the list of all categories.
+        """
+        self.client.force_login(User.objects.get(pk=1))
+        with self.assertNumQueries(7):
+            self.client.get(reverse('category-list'))
+
+    def test_anonymous(self):
+        """
+        Tests that only the following db queries are done:
+        * 2 requests to get the permission for anonymous (config and permissions)
+        * 2 requests to get the list of all motions and
+
+        * 10 requests for permissions.
+
+        TODO: The last 10 requests are a bug.
+        """
+        with self.assertNumQueries(14):
+            self.client.get(reverse('category-list'))
+
+
+class TestWorkflowDBQueries(TestCase):
+    """
+    Tests that receiving elements only need the required db queries.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        config['general_system_enable_anonymous'] = True
+        # There do not need to be more workflows
+
+    def test_admin(self):
+        """
+        Tests that only the following db queries are done:
+        * 5 requests to get the session an the request user with its permissions,
+        * 2 requests to get the list of all workflows,
+        * 1 request to get all states and
+        * 1 request to get the next states of all states.
+        """
+        self.client.force_login(User.objects.get(pk=1))
+        with self.assertNumQueries(9):
+            self.client.get(reverse('workflow-list'))
+
+    def test_anonymous(self):
+        """
+        Tests that only the following db queries are done:
+        * 2 requests to get the permission for anonymous (config and permissions),
+        * 2 requests to get the list of all workflows,
+        * 1 request to get all states and
+        * 1 request to get the next states of all states.
+
+        * 2 requests for permissions.
+
+        TODO: The last 2 requests are a bug.
+        """
+        with self.assertNumQueries(8):
+            self.client.get(reverse('workflow-list'))
 
 
 class CreateMotion(TestCase):

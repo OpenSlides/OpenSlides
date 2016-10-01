@@ -24,13 +24,22 @@ class TestGetLoggedInUsers(TestCase):
         User.objects.create(username='user3')
 
         # Create a session with a user, that expires in 5 hours
-        Session.objects.create(user=user1, expire_data=timezone.now() + timedelta(hours=5))
+        Session.objects.create(
+            user=user1,
+            expire_date=timezone.now() + timedelta(hours=5),
+            session_key='1')
 
         # Create a session with a user, that is expired before 5 hours
-        Session.objects.create(user=user2, expire_data=timezone.now() + timedelta(hours=-5))
+        Session.objects.create(
+            user=user2,
+            expire_date=timezone.now() + timedelta(hours=-5),
+            session_key='2')
 
         # Create a session with an anonymous user, that expires in 5 hours
-        Session.objects.create(user=None, expire_data=timezone.now() + timedelta(hours=5))
+        Session.objects.create(
+            user=None,
+            expire_date=timezone.now() + timedelta(hours=5),
+            session_key='3')
 
         self.assertEqual(list(get_logged_in_users()), [user1])
 
@@ -40,7 +49,13 @@ class TestGetLoggedInUsers(TestCase):
         The user should be returned only once.
         """
         user1 = User.objects.create(username='user1')
-        Session.objects.create(user=user1, expire_data=timezone.now() + timedelta(hours=1))
-        Session.objects.create(user=user1, expire_data=timezone.now() + timedelta(hours=2))
+        Session.objects.create(
+            user=user1,
+            expire_date=timezone.now() + timedelta(hours=1),
+            session_key='1')
+        Session.objects.create(
+            user=user1,
+            expire_date=timezone.now() + timedelta(hours=2),
+            session_key='2')
 
         self.assertEqual(list(get_logged_in_users()), [user1])

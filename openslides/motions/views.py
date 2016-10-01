@@ -77,27 +77,6 @@ class MotionViewSet(ModelViewSet):
             result = False
         return result
 
-    def list(self, request, *args, **kwargs):
-        """
-        Customized view endpoint to list all motions.
-
-        Hides non public comment fields for some users.
-        """
-        response = super().list(request, *args, **kwargs)
-        for i, motion in enumerate(response.data):
-            response.data[i] = self.get_access_permissions().get_restricted_data(motion, self.request.user)
-        return response
-
-    def retrieve(self, request, *args, **kwargs):
-        """
-        Customized view endpoint to retrieve a motion.
-
-        Hides non public comment fields for some users.
-        """
-        response = super().retrieve(request, *args, **kwargs)
-        response.data = self.get_access_permissions().get_restricted_data(response.data, self.request.user)
-        return response
-
     def create(self, request, *args, **kwargs):
         """
         Customized view endpoint to create a new motion.

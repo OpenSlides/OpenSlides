@@ -15,15 +15,9 @@ class UserAccessPermissions(BaseAccessPermissions):
         """
         Returns different serializer classes with respect user's permissions.
         """
-        from .serializers import UserCanSeeSerializer, UserCanSeeExtraSerializer, UserFullSerializer
+        from .serializers import UserFullSerializer
 
-        if (user is None or (user.has_perm('users.can_see_extra_data') and user.has_perm('users.can_manage'))):
-            serializer_class = UserFullSerializer
-        elif user.has_perm('users.can_see_extra_data'):
-            serializer_class = UserCanSeeExtraSerializer
-        else:
-            serializer_class = UserCanSeeSerializer
-        return serializer_class
+        return UserFullSerializer
 
     def get_restricted_data(self, full_data, user):
         """

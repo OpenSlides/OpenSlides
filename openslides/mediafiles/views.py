@@ -15,13 +15,6 @@ class MediafileViewSet(ModelViewSet):
     access_permissions = MediafileAccessPermissions()
     queryset = Mediafile.objects.all()
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        user = self.request.user
-        if not user.has_perm('mediafiles.can_see_private'):
-            queryset = queryset.filter(private=False)
-        return queryset
-
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.

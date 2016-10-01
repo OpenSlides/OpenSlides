@@ -58,26 +58,6 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             result = False
         return result
 
-    def check_object_permissions(self, request, obj):
-        """
-        Checks if the requesting user has permission to see also an
-        organizational item if it is one.
-        """
-        # TODO: Move this logic to access_permissions.ItemAccessPermissions.
-        if obj.is_hidden() and not request.user.has_perm('agenda.can_see_hidden_items'):
-            self.permission_denied(request)
-
-    def get_queryset(self):
-        """
-        Filters organizational items if the user has no permission to see them.
-        """
-        # TODO: Move this logic to access_permissions.ItemAccessPermissions.
-        queryset = super().get_queryset()
-        if not self.request.user.has_perm('agenda.can_see_hidden_items'):
-            pk_list = [item.pk for item in Item.objects.get_only_agenda_items()]
-            queryset = queryset.filter(pk__in=pk_list)
-        return queryset
-
     @detail_route(methods=['POST', 'DELETE'])
     def manage_speaker(self, request, pk=None):
         """
@@ -242,31 +222,6 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
 
         # Initiate response.
         return Response({'detail': _('List of speakers successfully sorted.')})
-
-    @list_route(methods=['get', 'put'])
-    def tree(self, request):
-        """
-        Returns or sets the agenda tree.
-        """
-        if request.method == 'PUT':
-            if not (request.user.has_perm('agenda.can_manage') and
-                    request.user.has_perm('agenda.can_see_hidden_items')):
-                self.permission_denied(request)
-            try:
-                tree = request.data['tree']
-            except KeyError as error:
-                response = Response({'detail': 'Agenda tree is missing.'}, status=400)
-            else:
-                try:
-                    Item.objects.set_tree(tree)
-                except ValueError as error:
-                    response = Response({'detail': str(error)}, status=400)
-                else:
-                    response = Response({'detail': 'Agenda tree successfully updated.'})
-        else:
-            # request.method == 'GET'
-            response = Response(Item.objects.get_tree())
-        return response
 
     @list_route(methods=['post'])
     def numbering(self, request):

@@ -1,4 +1,5 @@
 from ..core.exceptions import ProjectorException
+from ..utils.collection import CollectionElement
 from ..utils.projector import ProjectorElement
 from .models import Motion
 
@@ -26,10 +27,13 @@ class MotionSlide(ProjectorElement):
             yield from motion.submitters.all()
             yield from motion.supporters.all()
 
-    def need_full_update_for_this(self, collection_element):
+    def get_collection_elements_required_for_this(self, collection_element, config_entry):
+        output = super().get_collection_elements_required_for_this(collection_element, config_entry)
         # Full update if motion changes because then we may have new
         # submitters or supporters and therefor need new users.
         #
         # Add some logic here if we support live changing of workflows later.
         #
-        return collection_element.collection_string == Motion.get_collection_string()
+        if collection_element == CollectionElement.from_values(Motion.get_collection_string(), config_entry.get('id')):
+            output.extend(self.get_requirements_as_collection_elements(config_entry))
+        return output
