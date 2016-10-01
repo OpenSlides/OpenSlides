@@ -38,7 +38,12 @@ class CollectionElement:
         self.information = information or {}
         if instance is not None:
             self.collection_string = instance.get_collection_string()
-            self.id = instance.pk
+            from openslides.core.config import config
+            if self.collection_string == config.get_collection_string():
+                # For config objects we do not work with the pk but with the key.
+                self.id = instance.key
+            else:
+                self.id = instance.pk
         elif collection_string is not None and id is not None:
             self.collection_string = collection_string
             self.id = id
@@ -144,8 +149,7 @@ class CollectionElement:
             # The config instance has to be get from the config element, because
             # some config values are not in the db.
             from openslides.core.config import config
-            if (self.collection_string == config.get_collection_string() and
-                    isinstance(self.id, str)):
+            if self.collection_string == config.get_collection_string():
                 self.instance = {'key': self.id, 'value': config[self.id]}
             else:
                 model = self.get_model()

@@ -225,6 +225,22 @@ class TestCollectionElement(TestCase):
             collection.CollectionElement.from_values('testmodule/model', 1),
             collection.CollectionElement.from_values('testmodule/other_model', 1))
 
+    def test_config_cache_key(self):
+        """
+        Test that collection elements for config values do always use the
+        config key as cache key.
+        """
+        fake_config_instance = MagicMock()
+        fake_config_instance.get_collection_string.return_value = 'core/config'
+        fake_config_instance.key = 'test_config_key'
+
+        self.assertEqual(
+            collection.CollectionElement.from_values('core/config', 'test_config_key').get_cache_key(),
+            'core/config:test_config_key')
+        self.assertEqual(
+            collection.CollectionElement.from_instance(fake_config_instance).get_cache_key(),
+            'core/config:test_config_key')
+
 
 class TestCollection(TestCase):
     @patch('openslides.utils.collection.CollectionElement')
