@@ -80,8 +80,12 @@ class CollectionElement:
             'collection_string': self.collection_string,
             'id': self.id,
             'deleted': self.is_deleted()}
-        if self.information is not None:
+        if self.information:
             channel_message['information'] = self.information
+        if self.full_data:
+            # Do not use the method get_full_data but the attribute, so the
+            # full_data is not generated.
+            channel_message['full_data'] = self.full_data
         return channel_message
 
     def as_autoupdate(self, method, *args):
