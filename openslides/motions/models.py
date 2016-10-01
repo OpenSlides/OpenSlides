@@ -23,6 +23,7 @@ from openslides.utils.search import user_name_helper
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
+    MotionBlockAccessPermissions,
     MotionChangeRecommendationAccessPermissions,
     WorkflowAccessPermissions,
 )
@@ -114,6 +115,15 @@ class Motion(RESTModelMixin, models.Model):
         blank=True)
     """
     ForeignKey to one category of motions.
+    """
+
+    motion_block = models.ForeignKey(
+        'MotionBlock',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True)
+    """
+    ForeignKey to one block of motions.
     """
 
     origin = models.CharField(max_length=255, blank=True)
@@ -781,6 +791,66 @@ class Category(RESTModelMixin, models.Model):
 
     def __str__(self):
         return self.name
+
+
+class MotionBlockManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all motion blocks. In the
+        background the related agenda item is prefetched from the database.
+        """
+        return self.get_queryset().prefetch_related('agenda_items')
+
+
+class MotionBlock(RESTModelMixin, models.Model):
+    """
+    Model for blocks of motions.
+    """
+    access_permissions = MotionBlockAccessPermissions()
+
+    objects = MotionBlockManager()
+
+    title = models.CharField(max_length=255)
+
+    # In theory there could be one then more agenda_item. But we support only
+    # one. See the property agenda_item.
+    agenda_items = GenericRelation(Item, related_name='topics')
+
+    class Meta:
+        default_permissions = ()
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def agenda_item(self):
+        """
+        Returns the related agenda item.
+        """
+        # We support only one agenda item so just return the first element of
+        # the queryset.
+        return self.agenda_items.all()[0]
+
+    @property
+    def agenda_item_id(self):
+        """
+        Returns the id of the agenda item object related to this object.
+        """
+        return self.agenda_item.pk
+
+    def get_agenda_title(self):
+        return self.title
+
+    def get_agenda_list_view_title(self):
+        return self.title
+
+    @classmethod
+    def get_collection_string(cls):
+        # TODO: Fix generic method to support camelCase, #2480.
+        return 'motions/motion-block'
 
 
 class MotionLog(RESTModelMixin, models.Model):

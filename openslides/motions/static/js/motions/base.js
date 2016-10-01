@@ -3,10 +3,11 @@
 "use strict";
 
 angular.module('OpenSlidesApp.motions', [
-  'OpenSlidesApp.users',
-  'OpenSlidesApp.motions.lineNumbering',
-  'OpenSlidesApp.motions.diff',
-  'OpenSlidesApp.motions.DOCX'
+    'OpenSlidesApp.motions.motionBlock',
+    'OpenSlidesApp.motions.lineNumbering',
+    'OpenSlidesApp.motions.diff',
+    'OpenSlidesApp.motions.DOCX',
+    'OpenSlidesApp.users',
 ])
 
 .factory('WorkflowState', [
@@ -115,7 +116,7 @@ angular.module('OpenSlidesApp.motions', [
                             if (type == 'yes' || type == 'no') {
                                 base = this.yes + this.no;
                             }
-                        } else if (config == "VALID" && type !== 'votescast' && type !== 'votesinvalid' && 
+                        } else if (config == "VALID" && type !== 'votescast' && type !== 'votesinvalid' &&
                             this.votesvalid > 0) {
                             base = this.votesvalid;
                         } else if (config == "CAST" && this.votescast > 0) {
@@ -388,6 +389,10 @@ angular.module('OpenSlidesApp.motions', [
                     'motions/category': {
                         localField: 'category',
                         localKey: 'category_id',
+                    },
+                    'motions/motion-block': {
+                        localField: 'motionBlock',
+                        localKey: 'motion_block_id',
                     },
                     'agenda/item': {
                         localKey: 'agenda_item_id',

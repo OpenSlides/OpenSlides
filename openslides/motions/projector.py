@@ -1,7 +1,7 @@
 from ..core.exceptions import ProjectorException
 from ..utils.collection import CollectionElement
 from ..utils.projector import ProjectorElement
-from .models import Motion
+from .models import Motion, MotionBlock
 
 
 class MotionSlide(ProjectorElement):
@@ -47,4 +47,45 @@ class MotionSlide(ProjectorElement):
             pass
         else:
             data = {'agenda_item_id': motion.agenda_item_id}
+        return data
+
+
+class MotionBlockSlide(ProjectorElement):
+    """
+    Slide definitions for a block of motions (MotionBlock model).
+    """
+    name = 'motions/motion-block'
+
+    def check_data(self):
+        if not MotionBlock.objects.filter(pk=self.config_entry.get('id')).exists():
+            raise ProjectorException('MotionBlock does not exist.')
+
+    def get_requirements(self, config_entry):
+        try:
+            motion_block = MotionBlock.objects.get(pk=config_entry.get('id'))
+        except MotionBlock.DoesNotExist:
+            # MotionBlock does not exist. Just do nothing.
+            pass
+        else:
+            yield motion_block
+            yield motion_block.agenda_item
+            yield from motion_block.motion_set.all()
+
+    def get_collection_elements_required_for_this(self, collection_element, config_entry):
+        output = super().get_collection_elements_required_for_this(collection_element, config_entry)
+        # Full update if a motion changes because then it may be appended to
+        # or removed from the block.
+        if collection_element.collection_string == Motion.get_collection_string():
+            output.extend(self.get_requirements_as_collection_elements(config_entry))
+        return output
+
+    def update_data(self):
+        data = None
+        try:
+            motion_block = MotionBlock.objects.get(pk=self.config_entry.get('id'))
+        except MotionBlock.DoesNotExist:
+            # MotionBlock does not exist, so just do nothing.
+            pass
+        else:
+            data = {'agenda_item_id': motion_block.agenda_item_id}
         return data

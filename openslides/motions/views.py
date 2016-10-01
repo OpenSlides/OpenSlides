@@ -24,6 +24,7 @@ from openslides.utils.views import APIView, PDFView, SingleObjectMixin
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
+    MotionBlockAccessPermissions,
     MotionChangeRecommendationAccessPermissions,
     WorkflowAccessPermissions,
 )
@@ -31,6 +32,7 @@ from .exceptions import WorkflowError
 from .models import (
     Category,
     Motion,
+    MotionBlock,
     MotionChangeRecommendation,
     MotionPoll,
     MotionVersion,
@@ -88,6 +90,8 @@ class MotionViewSet(ModelViewSet):
                 (request.data.get('submitters_id') or request.data.get('supporters_id'))):
             # Non-staff users are not allowed to send submitter or supporter data.
             self.permission_denied(request)
+
+        # TODO: Should non staff users be allowed to set motions to blocks or send categories, ...? #2506
 
         # Check permission to send comment data.
         if not request.user.has_perm('motions.can_see_and_manage_comments'):
@@ -373,7 +377,7 @@ class CategoryViewSet(ModelViewSet):
     API endpoint for categories.
 
     There are the following views: metadata, list, retrieve, create,
-    partial_update, update and destroy.
+    partial_update, update, destroy and numbering.
     """
     access_permissions = CategoryAccessPermissions()
     queryset = Category.objects.all()
@@ -443,6 +447,32 @@ class CategoryViewSet(ModelViewSet):
                         'successfully.').format(category=category)
             response = Response({'detail': message})
         return response
+
+
+class MotionBlockViewSet(ModelViewSet):
+    """
+    API endpoint for motion blocks.
+
+    There are the following views: metadata, list, retrieve, create,
+    partial_update, update and destroy.
+    """
+    access_permissions = MotionBlockAccessPermissions()
+    queryset = MotionBlock.objects.all()
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action == 'metadata':
+            result = self.request.user.has_perm('motions.can_see')
+        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
+            result = (self.request.user.has_perm('motions.can_see') and
+                      self.request.user.has_perm('motions.can_manage'))
+        else:
+            result = False
+        return result
 
 
 class WorkflowViewSet(ModelViewSet):
