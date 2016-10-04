@@ -678,7 +678,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
             getFormFields: function () {
                 var workflows = Workflow.getAll();
                 var images = Mediafile.getAllImages();
-                return [
+                var formFields = [
                 {
                     key: 'identifier',
                     type: 'input',
@@ -817,19 +817,26 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
                         placeholder: gettextCatalog.getString('Select or search a supporter ...')
                     },
                     hideExpression: '!model.more'
-                },
-                {
-                    key: 'workflow_id',
-                    type: 'select-single',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Workflow'),
-                        optionsAttr: 'bs-options',
-                        options: workflows,
-                        ngOptions: 'option.id as option.name | translate for option in to.options',
-                        placeholder: gettextCatalog.getString('Select or search a workflow ...')
-                    },
-                    hideExpression: '!model.more',
                 }]);
+
+                if (workflows.length > 1) {
+                    formFields = formFields.concat([
+                        {
+                            key: 'workflow_id',
+                            type: 'select-single',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Workflow'),
+                                optionsAttr: 'bs-options',
+                                options: workflows,
+                                ngOptions: 'option.id as option.name | translate for option in to.options',
+                                placeholder: gettextCatalog.getString('Select or search a workflow ...')
+                            },
+                            hideExpression: '!model.more',
+                        }
+                    ]);
+                }
+
+                return formFields;
             }
         };
     }
