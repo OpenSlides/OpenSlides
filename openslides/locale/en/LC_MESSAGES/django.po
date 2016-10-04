@@ -5,93 +5,93 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-26 12:43+0200\n"
+"POT-Creation-Date: 2016-10-04 11:15+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: agenda/models.py:196
+#: agenda/models.py:204
 msgid "Agenda item"
 msgstr ""
 
-#: agenda/models.py:197
+#: agenda/models.py:205
 msgid "Hidden item"
 msgstr ""
 
-#: agenda/models.py:348
+#: agenda/models.py:342
 #, python-brace-format
 msgid "{user} is already on the list of speakers."
 msgstr ""
 
-#: agenda/models.py:351
+#: agenda/models.py:345
 msgid "An anonymous user can not be on lists of speakers."
 msgstr ""
 
-#: agenda/views.py:111
+#: agenda/views.py:91
 msgid "The list of speakers is closed."
 msgstr ""
 
-#: agenda/views.py:120
+#: agenda/views.py:100
 msgid "User does not exist."
 msgstr ""
 
-#: agenda/views.py:128
+#: agenda/views.py:108
 #, python-format
 msgid "User %s was successfully added to the list of speakers."
 msgstr ""
 
-#: agenda/views.py:145
+#: agenda/views.py:125
 msgid "You are not on the list of speakers."
 msgstr ""
 
-#: agenda/views.py:148
+#: agenda/views.py:128
 msgid "You are successfully removed from the list of speakers."
 msgstr ""
 
-#: agenda/views.py:159 agenda/views.py:188
+#: agenda/views.py:139 agenda/views.py:168
 msgid "Speaker does not exist."
 msgstr ""
 
-#: agenda/views.py:162
+#: agenda/views.py:142
 #, python-format
 msgid "Speaker %s was successfully removed from the list of speakers."
 msgstr ""
 
-#: agenda/views.py:183
+#: agenda/views.py:163
 msgid "The list of speakers is empty."
 msgstr ""
 
-#: agenda/views.py:190
+#: agenda/views.py:170
 msgid "User is now speaking."
 msgstr ""
 
-#: agenda/views.py:201
+#: agenda/views.py:181
 #, python-format
 msgid "There is no one speaking at the moment according to %(item)s."
 msgstr ""
 
-#: agenda/views.py:203
+#: agenda/views.py:183
 msgid "The speech is finished now."
 msgstr ""
 
-#: agenda/views.py:222 agenda/views.py:234
+#: agenda/views.py:202 agenda/views.py:214
 msgid "Invalid data."
 msgstr ""
 
-#: agenda/views.py:244
+#: agenda/views.py:224
 msgid "List of speakers successfully sorted."
 msgstr ""
 
-#: agenda/views.py:278
+#: agenda/views.py:233
 msgid "The agenda has been numbered."
 msgstr ""
 
-#: agenda/views.py:288 agenda/views.py:289
+#: agenda/views.py:243 agenda/views.py:244
 msgid "Agenda"
 msgstr ""
 
-#: assignments/models.py:123 assignments/views.py:235 assignments/views.py:431
+#: assignments/models.py:146 assignments/views.py:235 assignments/views.py:431
 #: assignments/views.py:448
 msgid "Election"
 msgstr ""
@@ -307,72 +307,60 @@ msgstr ""
 msgid "Abstain"
 msgstr ""
 
-#: core/config.py:39 core/config.py:66
+#: core/config.py:37 core/config.py:64
 msgid "The config variable {} was not found."
 msgstr ""
 
-#: core/config.py:75
+#: core/config.py:73
 #, python-format
 msgid "Wrong datatype. Expected %(expected_type)s, got %(got_type)s."
 msgstr ""
 
-#: core/config.py:85
+#: core/config.py:83
 msgid "Invalid input. Choice does not match."
 msgstr ""
 
-#: core/config.py:95
-msgid "A width and a height have to be given."
-msgstr ""
-
-#: core/config.py:97
-msgid "Data has to be integers."
-msgstr ""
-
-#: core/config.py:100
-msgid "The Resolution have to be between 800x600 and 3840x2160."
-msgstr ""
-
-#: core/config.py:104
+#: core/config.py:92
 msgid "motions_comments has to be a list."
 msgstr ""
 
-#: core/config.py:107
+#: core/config.py:95
 msgid "Each element in motions_comments has to be a dict."
 msgstr ""
 
-#: core/config.py:109
+#: core/config.py:97
 msgid "A name and a public property have to be given."
 msgstr ""
 
-#: core/config.py:111
+#: core/config.py:99
 msgid "name has to be string."
 msgstr ""
 
-#: core/config.py:113
+#: core/config.py:101
 msgid "public property has to be bool."
 msgstr ""
 
-#: core/config.py:133
+#: core/config.py:126
 msgid "Too many values for config variable {} found."
 msgstr ""
 
-#: core/config.py:202
+#: core/config.py:195
 msgid "Invalid value for config attribute input_type."
 msgstr ""
 
-#: core/config.py:204
+#: core/config.py:197
 msgid ""
 "Either config attribute 'choices' must not be None or 'input_type' must not "
 "be 'choice'."
 msgstr ""
 
-#: core/config.py:207
+#: core/config.py:200
 msgid ""
 "Either config attribute 'choices' must be None or 'input_type' must be "
 "'choice'."
 msgstr ""
 
-#: core/config.py:217
+#: core/config.py:210
 msgid "General"
 msgstr ""
 
@@ -380,16 +368,16 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: motions/models.py:147 motions/pdf.py:38 motions/pdf.py:328
-#: motions/views.py:486 motions/views.py:546
+#: motions/models.py:175 motions/pdf.py:38 motions/pdf.py:328
+#: motions/views.py:465 motions/views.py:525
 msgid "Motion"
 msgstr ""
 
-#: motions/models.py:656
+#: motions/models.py:685
 msgid "new"
 msgstr ""
 
-#: motions/models.py:728
+#: motions/models.py:757
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr ""
@@ -410,7 +398,7 @@ msgstr ""
 msgid "State"
 msgstr ""
 
-#: motions/pdf.py:91 motions/views.py:204 motions/views.py:216
+#: motions/pdf.py:91 motions/views.py:183 motions/views.py:195
 msgid "Version"
 msgstr ""
 
@@ -418,7 +406,7 @@ msgstr ""
 msgid "Vote result"
 msgstr ""
 
-#: motions/pdf.py:121 motions/views.py:486
+#: motions/pdf.py:121 motions/views.py:465
 msgid "Vote"
 msgstr ""
 
@@ -464,7 +452,7 @@ msgstr ""
 msgid "published"
 msgstr ""
 
-#: motions/signals.py:47 motions/views.py:206
+#: motions/signals.py:47 motions/views.py:185
 msgid "permitted"
 msgstr ""
 
@@ -492,112 +480,112 @@ msgstr ""
 msgid "rejected (not authorized)"
 msgstr ""
 
-#: motions/views.py:126
+#: motions/views.py:105
 msgid "Motion created"
 msgstr ""
 
-#: motions/views.py:174
+#: motions/views.py:153
 msgid "Motion updated"
 msgstr ""
 
-#: motions/views.py:178
+#: motions/views.py:157
 msgid "All supporters removed"
 msgstr ""
 
-#: motions/views.py:208
+#: motions/views.py:187
 #, python-format
 msgid "Version %d permitted successfully."
 msgstr ""
 
-#: motions/views.py:213
+#: motions/views.py:192
 msgid "You can not delete the active version of a motion."
 msgstr ""
 
-#: motions/views.py:218
+#: motions/views.py:197
 msgid "deleted"
 msgstr ""
 
-#: motions/views.py:220
+#: motions/views.py:199
 #, python-format
 msgid "Version %d deleted successfully."
 msgstr ""
 
-#: motions/views.py:241
+#: motions/views.py:220
 msgid "You can not support this motion."
 msgstr ""
 
-#: motions/views.py:243
+#: motions/views.py:222
 msgid "Motion supported"
 msgstr ""
 
-#: motions/views.py:244
+#: motions/views.py:223
 msgid "You have supported this motion successfully."
 msgstr ""
 
-#: motions/views.py:249
+#: motions/views.py:228
 msgid "You can not unsupport this motion."
 msgstr ""
 
-#: motions/views.py:251
+#: motions/views.py:230
 msgid "Motion unsupported"
 msgstr ""
 
-#: motions/views.py:252
+#: motions/views.py:231
 msgid "You have unsupported this motion successfully."
 msgstr ""
 
-#: motions/views.py:275
+#: motions/views.py:254
 msgid "Invalid data. State must be an integer."
 msgstr ""
 
-#: motions/views.py:278
+#: motions/views.py:257
 #, python-format
 msgid "You can not set the state to %(state_id)d."
 msgstr ""
 
-#: motions/views.py:286
+#: motions/views.py:265
 #, python-format
 msgid "The state of the motion was set to %s."
 msgstr ""
 
-#: motions/views.py:290
+#: motions/views.py:269
 msgid "State set to"
 msgstr ""
 
-#: motions/views.py:312
+#: motions/views.py:291
 msgid "Invalid data. Recommendation must be an integer."
 msgstr ""
 
-#: motions/views.py:316
+#: motions/views.py:295
 #, python-brace-format
 msgid "You can not set the recommendation to {recommendation_state_id}."
 msgstr ""
 
-#: motions/views.py:326
+#: motions/views.py:305
 #, python-format
 msgid "The recommendation of the motion was set to %s."
 msgstr ""
 
-#: motions/views.py:330
+#: motions/views.py:309
 msgid "Recommendation set to"
 msgstr ""
 
-#: motions/views.py:345
+#: motions/views.py:324
 msgid "Vote created successfully."
 msgstr ""
 
-#: motions/views.py:432
+#: motions/views.py:411
 msgid ""
 "Error: At least one identifier of this category does already exist in "
 "another category."
 msgstr ""
 
-#: motions/views.py:436
+#: motions/views.py:415
 #, python-brace-format
 msgid "All motions in category {category} numbered successfully."
 msgstr ""
 
-#: motions/views.py:539
+#: motions/views.py:518
 msgid "Motions"
 msgstr ""
 
@@ -661,66 +649,66 @@ msgstr ""
 msgid "Scan this QRCode to open URL."
 msgstr ""
 
-#: users/serializers.py:73 users/serializers.py:99
+#: users/serializers.py:44
 msgid ""
 "The groups this user belongs to. A user will get all permissions granted to "
 "each of his/her groups."
 msgstr ""
 
-#: users/serializers.py:113
+#: users/serializers.py:58
 msgid "Username, first name and last name can not all be empty."
 msgstr ""
 
-#: users/serializers.py:145
+#: users/serializers.py:90
 #, python-brace-format
 msgid "Incorrect value \"{value}\". Expected app_label.codename string."
 msgstr ""
 
-#: users/serializers.py:146
+#: users/serializers.py:91
 #, python-brace-format
 msgid "Invalid permission \"{value}\". Object does not exist."
 msgstr ""
 
-#: users/views.py:79
+#: users/views.py:66
 msgid "You can not deactivate yourself."
 msgstr ""
 
-#: users/views.py:95
+#: users/views.py:82
 msgid "You can not delete yourself."
 msgstr ""
 
-#: users/views.py:108
+#: users/views.py:95
 msgid "Password successfully reset."
 msgstr ""
 
-#: users/views.py:185
+#: users/views.py:172
 msgid "Username or password is not correct."
 msgstr ""
 
-#: users/views.py:211
+#: users/views.py:198
 #, python-brace-format
 msgid ""
 "Installation was successfully. Use {username} and {password} for first "
 "login. Important: Please change your password!"
 msgstr ""
 
-#: users/views.py:232
+#: users/views.py:219
 msgid "You are not authenticated."
 msgstr ""
 
-#: users/views.py:266
+#: users/views.py:253
 msgid "Old password does not match."
 msgstr ""
 
-#: users/views.py:277
+#: users/views.py:264
 msgid "user-list"
 msgstr ""
 
-#: users/views.py:278
+#: users/views.py:265
 msgid "List of users"
 msgstr ""
 
-#: users/views.py:292
+#: users/views.py:279
 msgid "user-access-data"
 msgstr ""
 
