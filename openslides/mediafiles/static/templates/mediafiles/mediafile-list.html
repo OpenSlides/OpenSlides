@@ -203,7 +203,7 @@
             os-perms="core.can_manage_projector">
           <div class="btn-group" style="min-width:54px;" uib-dropdown
             ng-if="mediafile.is_presentable"
-            uib-tooltip="{{ 'Projektor' | translate }} {{ mediafile.isProjected() }}"
+            uib-tooltip="{{ 'Projector' | translate }} {{ mediafile.isProjected() }}"
             tooltip-enable="mediafile.isProjected() > 0">
             <button type="button" class="btn btn-default btn-sm"
               ng-click="showMediafile(defaultProjectorId, mediafile)"
@@ -222,7 +222,7 @@
                   ng-class="{ 'projected': (mediafile.isProjected() == projector.id) }">
                   <i class="fa fa-video-camera" ng-show="mediafile.isProjected() == projector.id"></i>
                   {{ projector.name }}
-                  <span ng-if="defaultProjectorId == projector.id">(<translate>Standard</translate>)</span>
+                  <span ng-if="defaultProjectorId == projector.id">(<translate>Default</translate>)</span>
                 </a>
               </li>
             </ul>

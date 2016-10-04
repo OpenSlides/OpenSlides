@@ -11,7 +11,7 @@
       </a>
       <!-- project list of speakers -->
       <span class="btn-group" style="min-width:54px;" uib-dropdown
-        uib-tooltip="{{ 'Projektor' | translate }} {{ item.isListOfSpeakersProjected() }}"
+        uib-tooltip="{{ 'Projector' | translate }} {{ item.isListOfSpeakersProjected() }}"
         tooltip-enable="item.isListofSpeakersProjected() > 0"
         os-perms="core.can_manage_projector">
         <button type="button" class="btn btn-default btn-sm"
@@ -32,7 +32,7 @@
               ng-class="{ 'projected': (item.isListOfSpeakersProjected() == projector.id) }">
               <i class="fa fa-video-camera" ng-show="item.isListOfSpeakersProjected() == projector.id"></i>
               {{ projector.name }}
-              <span ng-if="defaultProjectorListOfSpeakersId == projector.id">(<translate>Standard</translate>)</span>
+              <span ng-if="defaultProjectorListOfSpeakersId == projector.id">(<translate>Default</translate>)</span>
             </a>
           </li>
         </ul>
