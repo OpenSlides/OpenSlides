@@ -1,5 +1,6 @@
 import itertools
 import json
+from collections import Iterable
 
 from asgiref.inmemory import ChannelLayer
 from channels import Channel, Group
@@ -11,7 +12,7 @@ from ..core.config import config
 from ..core.models import Projector
 from ..users.auth import AnonymousUser
 from ..users.models import User
-from .collection import Collection, CollectionElement
+from .collection import Collection, CollectionElement, CollectionElementList
 
 
 def get_logged_in_users():
@@ -102,12 +103,12 @@ def send_data(message):
     """
     Informs all site users and projector clients about changed data.
     """
-    collection_element = CollectionElement.from_values(**message)
+    collection_elements = CollectionElementList.from_channels_message(message)
 
     # Loop over all logged in site users and the anonymous user and send changed data.
     for user in itertools.chain(get_logged_in_users(), [AnonymousUser()]):
         channel = Group('user-{}'.format(user.id))
-        output = [collection_element.as_autoupdate_for_user(user)]
+        output = collection_elements.as_autoupdate_for_user(user)
         channel.send({'text': json.dumps(output)})
 
     # Check whether broadcast is active at the moment and set the local
@@ -119,11 +120,13 @@ def send_data(message):
 
     # Loop over all projectors and send data that they need.
     for projector in queryset:
-        if collection_element.is_deleted():
-            output = [collection_element.as_autoupdate_for_projector()]
-        else:
-            collection_elements = projector.get_collection_elements_required_for_this(collection_element)
-            output = [collection_element.as_autoupdate_for_projector() for collection_element in collection_elements]
+        output = []
+        for collection_element in collection_elements:
+            if collection_element.is_deleted():
+                output.append(collection_element.as_autoupdate_for_projector())
+            else:
+                for element in projector.get_collection_elements_required_for_this(collection_element):
+                    output.append(collection_element.as_autoupdate_for_projector())
         if output:
             if config['projector_broadcast'] > 0:
                 Group('projector-all').send(
@@ -133,50 +136,81 @@ def send_data(message):
                     {'text': json.dumps(output)})
 
 
-def inform_changed_data(instance, information=None):
+def inform_changed_data(instances, information=None):
     """
     Informs the autoupdate system and the caching system about the creation or
     update of an element.
-    """
-    try:
-        root_instance = instance.get_root_rest_element()
-    except AttributeError:
-        # Instance has no method get_root_rest_element. Just ignore it.
-        pass
-    else:
-        collection_element = CollectionElement.from_instance(
-            root_instance,
-            information=information)
-        # If currently there is an open database transaction, then the
-        # send_autoupdate function is only called, when the transaction is
-        # commited. If there is currently no transaction, then the function
-        # is called immediately.
-        transaction.on_commit(lambda: send_autoupdate(collection_element))
 
+    The argument instances can be one instance or an interable over instances.
+    """
+    root_instances = set()
+    if not isinstance(instances, Iterable):
+        # Make surce instance is an iterable
+        instances = (instances, )
+    for instance in instances:
+        try:
+            root_instances.add(instance.get_root_rest_element())
+        except AttributeError:
+            # Instance has no method get_root_rest_element. Just ignore it.
+            pass
 
-def inform_deleted_data(collection_string, id, information=None):
-    """
-    Informs the autoupdate system and the caching system about the deletion of
-    an element.
-    """
-    collection_element = CollectionElement.from_values(
-        collection_string=collection_string,
-        id=id,
-        deleted=True,
-        information=information)
+    # Generates an collection element list for the root_instances.
+    collection_elements = CollectionElementList()
+    for root_instance in root_instances:
+        collection_elements.append(
+            CollectionElement.from_instance(
+                root_instance,
+                information=information))
     # If currently there is an open database transaction, then the
     # send_autoupdate function is only called, when the transaction is
     # commited. If there is currently no transaction, then the function
     # is called immediately.
-    transaction.on_commit(lambda: send_autoupdate(collection_element))
+    transaction.on_commit(lambda: send_autoupdate(collection_elements))
 
 
-def send_autoupdate(collection_element):
+def inform_deleted_data(*args, information=None):
     """
-    Helper function, that sends a collection_element through a channel to the
+    Informs the autoupdate system and the caching system about the deletion of
+    elements.
+
+    The function has to be called with the attributes collection_string and id.
+    Multible elements can be used. For example:
+
+    inform_deleted_data('motions/motion', 1, 'assignments/assignment', 5)
+
+    The argument information is added to each collection element.
+    """
+    if len(args) % 2 or not args:
+        raise ValueError(
+            "inform_deleted_data has to be called with the same number of "
+            "collection strings and ids. It has to be at least one collection "
+            "string and one id.")
+
+    # Go through each pair of collection_string and id and generate a collection
+    # element from it.
+    collection_elements = CollectionElementList()
+    for index in range(0, len(args), 2):
+        collection_elements.append(CollectionElement.from_values(
+            collection_string=args[index],
+            id=args[index + 1],
+            deleted=True,
+            information=information))
+    # If currently there is an open database transaction, then the
+    # send_autoupdate function is only called, when the transaction is
+    # commited. If there is currently no transaction, then the function
+    # is called immediately.
+    transaction.on_commit(lambda: send_autoupdate(collection_elements))
+
+
+def send_autoupdate(collection_elements):
+    """
+    Helper function, that sends collection_elements through a channel to the
     autoupdate system.
+
+    Does nothing if collection_elements is empty.
     """
-    try:
-        Channel('autoupdate.send_data').send(collection_element.as_channels_message())
-    except ChannelLayer.ChannelFull:
-        pass
+    if collection_elements:
+        try:
+            Channel('autoupdate.send_data').send(collection_elements.as_channels_message())
+        except ChannelLayer.ChannelFull:
+            pass

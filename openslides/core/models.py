@@ -6,7 +6,6 @@ from jsonfield import JSONField
 from ..utils.collection import CollectionElement
 from ..utils.models import RESTModelMixin
 from ..utils.projector import ProjectorElement
-
 from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,

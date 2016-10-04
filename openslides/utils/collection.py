@@ -225,6 +225,43 @@ class CollectionElement:
         Collection(self.collection_string).add_id_to_cache(self.id)
 
 
+class CollectionElementList(list):
+    """
+    List for collection elements that can hold collection elements from
+    different collections.
+
+    It acts like a normal python list but with the following methods.
+    """
+
+    @classmethod
+    def from_channels_message(cls, message):
+        """
+        Creates a collection element list from a channel message.
+        """
+        self = cls()
+        for values in message['elements']:
+            self.append(CollectionElement.from_values(**values))
+        return self
+
+    def as_channels_message(self):
+        """
+        Returns a list of dicts that can be send through the channel system.
+        """
+        message = {'elements': []}
+        for element in self:
+            message['elements'].append(element.as_channels_message())
+        return message
+
+    def as_autoupdate_for_user(self, user):
+        """
+        Returns a list of dicts, that can be send though the websocket to a user.
+        """
+        result = []
+        for element in self:
+            result.append(element.as_autoupdate_for_user(user))
+        return result
+
+
 class Collection:
     """
     Represents all elements of one collection.

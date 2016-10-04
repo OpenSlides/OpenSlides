@@ -92,6 +92,26 @@ class TestCollectionElement(TestCase):
              'id': 42,
              'deleted': False})
 
+    def test_channel_message(self):
+        """
+        Test that CollectionElement.from_values() works together with
+        collection_element.as_channels_message().
+        """
+        collection_element = collection.CollectionElement.from_values(
+            'testmodule/model',
+            42,
+            full_data={'data': 'value'},
+            information={'some': 'information'})
+
+        created_collection_element = collection.CollectionElement.from_values(
+            **collection_element.as_channels_message())
+
+        self.assertEqual(
+            collection_element,
+            created_collection_element)
+        self.assertEqual(created_collection_element.full_data, {'data': 'value'})
+        self.assertEqual(created_collection_element.information, {'some': 'information'})
+
     def test_as_autoupdate_for_user(self):
         collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
         fake_user = MagicMock()
@@ -241,6 +261,38 @@ class TestCollectionElement(TestCase):
             'core/config:test_config_key')
 
 
+class TestcollectionElementList(TestCase):
+    def test_channel_message(self):
+        """
+        Test that a channel message from three collection elements can crate
+        the same collection element list.
+        """
+        collection_elements = collection.CollectionElementList((
+            collection.CollectionElement.from_values('testmodule/model', 1),
+            collection.CollectionElement.from_values('testmodule/model', 2),
+            collection.CollectionElement.from_values('testmodule/model2', 1)))
+
+        self.assertEqual(
+            collection_elements,
+            collection.CollectionElementList.from_channels_message(collection_elements.as_channels_message()))
+
+    def test_as_autoupdate_for_user(self):
+        """
+        Test that as_autoupdate_for_user is a list of as_autoupdate_for_user
+        for each individual element in the list.
+        """
+        fake_user = MagicMock()
+        collection_elements = collection.CollectionElementList((
+            collection.CollectionElement.from_values('testmodule/model', 1),
+            collection.CollectionElement.from_values('testmodule/model', 2),
+            collection.CollectionElement.from_values('testmodule/model2', 1)))
+
+        with patch.object(collection.CollectionElement, 'as_autoupdate_for_user', return_value='for_user'):
+            value = collection_elements.as_autoupdate_for_user(fake_user)
+
+        self.assertEqual(value, ['for_user'] * 3)
+
+
 class TestCollection(TestCase):
     @patch('openslides.utils.collection.CollectionElement')
     @patch('openslides.utils.collection.cache')
@@ -264,3 +316,8 @@ class TestCollection(TestCase):
         test_collection.get_model().objects.get_full_queryset().filter.assert_called_once_with(pk__in={3})
         self.assertEqual(mock_CollectionElement.from_values.call_count, 2)
         self.assertEqual(mock_CollectionElement.from_instance.call_count, 1)
+
+    def test_raw_cache_key(self):
+        test_collection = collection.Collection('testmodule/model')
+
+        self.assertEqual(test_collection.get_cache_key(raw=True), ':1:testmodule/model')
