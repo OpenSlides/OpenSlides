@@ -100,7 +100,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='motions_recommendations_by',
-        default_value='Recommendation committee',
+        default_value='',
         label='Name of recommendation committee',
         help_text='Use an empty value to disable the recommendation system.',
         weight=332,
@@ -161,7 +161,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='motions_comments',
-        default_value=[{'name': 'Comment', 'public': True}],
+        default_value=[],
         input_type='comments',
         label='Comment fields for motions',
         weight=353,

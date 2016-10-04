@@ -1,26 +1,58 @@
 <div class="header">
   <div class="title">
     <div class="submenu">
-      <a ng-click="newDialog()" os-perms="agenda.can_manage" class="btn btn-primary btn-sm">
+      <!-- new -->
+      <a ng-click="newDialog()" os-perms="agenda.can_manage"
+          class="btn btn-primary btn-sm">
         <i class="fa fa-plus fa-lg"></i>
         <translate>New</translate>
       </a>
-      <a ui-sref="agenda.item.sort" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
-        <i class="fa fa-sitemap fa-lg"></i>
-        <translate>Sort agenda</translate>
-      </a>
-      <a ui-sref="topics.topic.import" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
+      <!-- import -->
+      <a ui-sref="topics.topic.import" os-perms="agenda.can_manage"
+          class="btn btn-default btn-sm">
         <i class="fa fa-download fa-lg"></i>
         <translate>Import</translate>
       </a>
-      <a ui-sref="core.tag.list" os-perms="core.can_manage_tags" class="btn btn-default btn-sm">
-        <i class="fa fa-tags fa-lg"></i>
-        <translate>Tags</translate>
+      <!-- current list of speakers -->
+      <a ui-sref="agenda.current-list-of-speakers" os-perms="users.can_see_name"
+          class="btn btn-default btn-sm">
+        <i class="fa fa-microphone"></i>
+        <translate>Current list of speakers</translate>
       </a>
-      <a ui-sref="agenda_pdf" target="_blank" class="btn btn-default btn-sm">
-        <i class="fa fa-file-pdf-o fa-lg"></i>
-        <translate>PDF</translate>
-      </a>
+      <!-- project agenda button -->
+      <div class="btn-group button" uib-dropdown
+        uib-tooltip="{{ 'Projector' | translate }} {{ isAgendaProjected(mainListTree) }}"
+        tooltip-enable="isAgendaProjected(mainListTree) > 0"
+        os-perms="core.can_manage_projector"> 
+        <button type="button" class="btn btn-default btn-sm"
+            title="{{ 'Project agenda' | translate }}"
+            ng-click="projectAgenda(defaultProjectorId_all_items, mainListTree)"
+            ng-class="{ 'btn-primary': isAgendaProjected(mainListTree) > 0 && isAgendaProjected(mainListTree) == defaultProjectorId_all_items}">
+          <i class="fa fa-video-camera"></i>
+          <translate>Agenda</translate>
+        </button>
+        <button type="button" class="btn btn-default btn-sm" uib-dropdown-toggle
+            ng-class="{ 'btn-primary': isAgendaProjected(mainListTree) > 0 && isAgendaProjected(mainListTree) != defaultProjectorId_all_items}">
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="split-button">
+          <li role="menuitem" ng-show="agendaHasSubitems">
+            <a href="" ng-click="changeMainListTree(); $event.stopPropagation();">
+              <i class="fa" ng-class="mainListTree ? 'fa-square-o' : 'fa-check-square-o'"></i>
+              <translate>Only main agenda items</translate>
+            </a>
+          </li>
+          <li class="divider" ng-show="agendaHasSubitems"></li>
+          <li role="menuitem" ng-repeat="projector in projectors">
+            <a href="" ng-click="projectAgenda(projectorId=projector.id, tree=mainListTree)"
+              ng-class="{ 'projected': isAgendaProjected(mainListTree) == projector.id }">
+              <i class="fa fa-video-camera" ng-show="isAgendaProjected(mainListTree) == projector.id"></i>
+              {{ projector.name }}
+              <span ng-if="projector.id == defaultProjectorId_all_items">(<translate>Standard</translate>)</span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
     <h1 translate>Agenda</h1>
   </div>
@@ -31,58 +63,29 @@
     <div class="col-sm-7">
       <div class="form-inline">
           <!-- delete mode -->
-          <button os-perms="agenda.can_manage" class="btn"
+          <button os-perms="agenda.can_manage" class="btn btn-sm"
               ng-class="$parent.isDeleteMode ? 'btn-primary' : 'btn-default'"
               ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
             <i class="fa fa-check-square-o"></i>
             <translate>Select ...</translate>
           </button>
-          <!-- project agenda button -->
-          <div class="btn-group" uib-dropdown
-            uib-tooltip="{{ 'Projector' | translate }} {{ isAgendaProjected(mainListTree) }}"
-            tooltip-enable="isAgendaProjected(mainListTree) > 0"
-            os-perms="core.can_manage_projector"> 
-            <button type="button" class="btn btn-default"
-                title="{{ 'Project agenda' | translate }}"
-                ng-click="projectAgenda(defaultProjectorId_all_items, mainListTree)"
-                ng-class="{ 'btn-primary': isAgendaProjected(mainListTree) > 0 && isAgendaProjected(mainListTree) == defaultProjectorId_all_items}">
-              <i class="fa fa-video-camera"></i>
-              <translate>Agenda</translate>
-            </button>
-            <button type="button" class="btn btn-default" uib-dropdown-toggle
-                ng-class="{ 'btn-primary': isAgendaProjected(mainListTree) > 0 && isAgendaProjected(mainListTree) != defaultProjectorId_all_items}">
-              <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="split-button">
-              <li role="menuitem" ng-show="agendaHasSubitems">
-                <a href="" ng-click="changeMainListTree(); $event.stopPropagation();">
-                  <i class="fa" ng-class="mainListTree ? 'fa-square-o' : 'fa-check-square-o'"></i>
-                  <translate>Only main agenda items</translate>
-                </a>
-              </li>
-              <li class="divider" ng-show="agendaHasSubitems"></li>
-              <li role="menuitem" ng-repeat="projector in projectors">
-                <a href="" ng-click="projectAgenda(projectorId=projector.id, tree=mainListTree)"
-                  ng-class="{ 'projected': isAgendaProjected(mainListTree) == projector.id }">
-                  <i class="fa fa-video-camera" ng-show="isAgendaProjected(mainListTree) == projector.id"></i>
-                  {{ projector.name }}
-                  <span ng-if="projector.id == defaultProjectorId_all_items">(<translate>Standard</translate>)</span>
-                </a>
-              </li>
-            </ul>
-          </div>
+
+          <!-- sort button -->
+          <a ui-sref="agenda.item.sort" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
+            <i class="fa fa-sitemap fa-lg"></i>
+            <translate>Sort ...</translate>
+          </a>
           <!-- auto numbering button -->
           <a os-perms="core.can_manage_projector"
-              class="btn btn-default"
+              class="btn btn-default btn-sm"
               ng-click="autoNumbering()">
             <i class="fa fa-sort-numeric-asc"></i>
             <translate>Numbering</translate>
           </a>
-          <!--current list of speakers button-->
-          <a os-perms="users.can_see_name" class="btn btn-default"
-            ui-sref="agenda.current-list-of-speakers">
-            <i class="fa fa-microphone"></i>
-            <translate>Current list of speakers</translate>
+          <!-- pdf -->
+          <a ui-sref="agenda_pdf" target="_blank" class="btn btn-default btn-sm">
+            <i class="fa fa-file-pdf-o fa-lg"></i>
+            <translate>PDF</translate>
           </a>
       </div>
     </div>

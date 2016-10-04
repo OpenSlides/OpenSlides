@@ -312,19 +312,6 @@
           <div class="nobr" ng-show="motion.identifier">
             {{ motion.identifier }}:
           </div>
-          <!-- hover menu -->
-          <div ng-if="motion.isAllowed('update')" ng-class="{'hiddenDiv': !motion.hover}">
-            <span ng-if="motion.isAllowed('update')">
-              <a href="" ng-click="openDialog(motion)">
-                <i class="fa fa-pencil"></i></a>
-            </span>
-            <span ng-if="motion.isAllowed('delete')">
-              &nbsp;<a href="" ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
-                <b>{{ motion.getTitle() }}</b>"
-                ng-bootbox-confirm-action="delete(motion)">
-                <i class="fa fa-trash text-danger"></i></a>
-            </span>
-          </div>
         </div>
         <div class="title-col">
           <!-- ID and title -->
@@ -358,9 +345,23 @@
           <div>
             <small>
               <span class="optional" translate>by</span>
-              <span class="optional" ng-repeat="submitter in motion.submitters | limitTo:3">
-                {{ submitter.get_full_name() }}<span ng-if="!$last">,</span></span><span ng-if="motion.submitters.length > 3">, ...</span>
+              <span class="optional" ng-repeat="submitter in motion.submitters | limitTo:1">
+                {{ submitter.get_full_name() }}<span ng-if="!$last">,</span></span><span ng-if="motion.submitters.length > 1">,
+                ... [+{{ motion.submitters.length - 1 }}]</span>
               <!-- sorry for merging them together, but otherwise there would be a whitespace because of the new line -->
+            </small>
+          </div>
+          <!-- hover menu -->
+          <div ng-if="motion.isAllowed('update')" ng-class="{'hiddenDiv': !motion.hover}">
+            <small>
+              <span ng-if="motion.isAllowed('update')">
+                <a href="" ng-click="openDialog(motion)" translate>Edit</a>
+              </span>
+              <span ng-if="motion.isAllowed('delete')"> &middot;
+                <a href="" class="text-danger"
+                    ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br><b>{{ motion.getTitle() }}</b>"
+                    ng-bootbox-confirm-action="delete(motion)" translate>Delete</a>
+              </span>
             </small>
           </div>
 

@@ -1884,7 +1884,7 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('Background color of projector header and footer');
         gettext('Font color of projector header and footer');
         gettext('Font color of projector headline');
-        gettext('Default countdown');
+        gettext('Predefined seconds of new countdowns');
     }
 ]);
 

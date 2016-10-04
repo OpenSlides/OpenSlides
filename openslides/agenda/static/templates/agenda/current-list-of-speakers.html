@@ -1,7 +1,19 @@
 <div class="header">
   <div class="title">
     <div class="submenu">
-      <div class="form-inline">
+      <a ui-sref="agenda.item.list" class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to overview</translate>
+      </a>
+      <!-- manage list of speakers -->
+      <button os-perms="agenda.can_manage"
+        ng-click="goToListOfSpeakers()"
+        class="btn btn-sm btn-default">
+        <i class="fa fa-microphone"></i>
+        <translate>Manage list</translate>
+      </button>
+      <!-- project -->
+      <div class="form-inline button">
         <div os-perms="core.can_manage_projector" class="btn-group" uib-dropdown
           uib-tooltip="{{ 'Projector' | translate }} {{ isCurrentLoSProjected() }}"
           tooltip-enable="isCurrentLoSProjected() > 0">
@@ -27,12 +39,6 @@
             </li>
           </ul>
         </div>
-        <button os-perms="agenda.can_manage"
-          ng-click="goToListOfSpeakers()"
-          class="btn btn-sm btn-default">
-          <i class="fa fa-microphone"></i>
-          <translate>Manage list</translate>
-        </button>
       </div>
     </div>
     <h1 translate>Current list of speakers</h1>

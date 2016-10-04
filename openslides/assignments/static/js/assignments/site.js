@@ -367,6 +367,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         $scope.candidateSelectBox = {};
         $scope.phases = phases;
         $scope.alert = {};
+        $scope.activeTab = 0;
+
         // open edit dialog
         $scope.openDialog = function (assignment) {
             ngDialog.open(AssignmentForm.getDialog(assignment));
@@ -431,6 +433,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         };
         // create new ballot
         $scope.createBallot = function () {
+            $scope.activeTab = 0;
             $http.post('/rest/assignments/assignment/' + assignment.id + '/create_poll/')
                 .success(function(data){
                     $scope.alert.show = false;
@@ -465,10 +468,10 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             });
         };
         // publish ballot
-        $scope.publishBallot = function (poll, isPublished) {
+        $scope.togglePublishBallot = function (poll) {
             poll.DSUpdate({
                     assignment_id: assignment.id,
-                    published: isPublished,
+                    published: !poll.published,
             })
             .then(function(success) {
                 $scope.alert.show = false;

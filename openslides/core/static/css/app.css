@@ -275,7 +275,10 @@ img {
     float: left;
     margin-left: 5px;
 }
-
+.col1 .header .submenu > div.button {
+    float: none;
+    margin-left: 0;
+}
 .col1 .meta .title {
     width: 100%;
     cursor: pointer;
@@ -333,9 +336,23 @@ img {
     max-width: 100%;
     height: auto;
 }
-.col1 ul, .col1 ol {
-    margin-left: 20px;
+.col1 ol {
+    margin-left: 15px;
 }
+.ballot-tabs ul {
+    margin-left: 0px;
+}
+.ballot-tabs li.active a {
+    background-color: #f5f5f5 !important;
+}
+.ballot-tabs .tab-content {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-width: 0px 1px 1px 1px;
+    padding: 15px;
+
+}
+
 
 /* Toolbar to save motion in inline editing mode */
 .motion-save-toolbar {
@@ -689,14 +706,26 @@ img {
 }
 
 #motion-table .data-row > div {
-    padding: 12px 0;
+    padding: 10px 0;
 }
 
 #motion-table .header-row {
     border-top: 1px solid #ddd;
     background-color: #f5f5f5;
 }
+.linenumber-toolbar, .speakers-toolbar {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    padding: 12px 0 10px 0;
+    height: 54px;
+    margin: -20px -5px 50px -5px;
+}
 
+.speakers-toolbar {
+    margin: -20px -20px 30px -20px;
+    padding: 12px 15px 10px 15px;
+
+}
 .header-row > div {
     padding: 10px;
 }
@@ -733,7 +762,7 @@ img {
 }
 
 #motion-table .content > div > div {
-    margin-bottom: 5px;
+    margin-bottom: 3px;
 }
 
 #motion-table .content > div > div:last-child {
@@ -948,16 +977,12 @@ img {
     white-space: pre-line;
 }
 
-.slimlist {
-    padding-left: 20px;
-}
-
 .slimlabel.label {
     padding: 0px 10px;
 }
 
 .indentation, .indentation20 {
-    margin-left: 20px;
+    margin-left: 20px !important;
 }
 
 .indentation-lg {
@@ -970,10 +995,6 @@ img {
 
 .badge-info {
     background-color: #f0ad4e;
-}
-
-.listOfSpeakers h3 {
-    padding-bottom: 0;
 }
 
 .smallhr {
@@ -1062,12 +1083,13 @@ img {
 
 .lastSpeakers {
     color: #9a9898;
+}
+.lastSpeakers .indentation {
     margin-left: 27px;
 }
 
 .currentSpeaker {
     font-weight: bold;
-    margin-left: 0px;
 }
 
 .currentSpeaker i {
@@ -1275,6 +1297,10 @@ tr.selected td {
 
     h3 { font-size: 18px; padding-bottom: 10px; }
 
+    .col-md-4 {
+        float: left;
+        width: 50%;
+    }
 }
 
 
