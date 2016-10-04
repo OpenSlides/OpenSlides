@@ -94,16 +94,6 @@
           </div>
       </div>
       <div class="col-md-4">
-          <!-- Category -->
-          <h3 ng-if="motion.category" translate>Category</h3>
-          {{ motion.category.name }}
-
-          <!-- Tags -->
-          <h3 ng-if="motion.tags.length > 0" translate>Tags</h3>
-          <span ng-repeat="tag in motion.tags">
-            {{ tag.name }}{{$last ? '' : ', '}}
-          </span>
-
           <!-- State -->
           <h3 ng-if="!motion.isAllowed('change_state')" class="heading" translate>State</h3>
           <div ng-if="motion.isAllowed('change_state')" class="heading">
@@ -155,6 +145,16 @@
               {{ motion.recommendation.recommendation_label | translate }}
             </div>
           </div>
+
+          <!-- Category -->
+          <h3 ng-if="motion.category" translate>Category</h3>
+          {{ motion.category.name }}
+
+          <!-- Tags -->
+          <h3 ng-if="motion.tags.length > 0" translate>Tags</h3>
+          <span ng-repeat="tag in motion.tags">
+            {{ tag.name }}{{$last ? '' : ', '}}
+          </span>
 
           <!-- Origin -->
           <h3 ng-if="motion.origin" translate>Origin</h3>
@@ -282,8 +282,9 @@
     <!-- line number mode -->
     <div class="line-number-setter {{ lineNumberMode }}">
       <span class="btn-group" data-toggle="buttons">
-        <div class="btn btn-sm btn-default disabled" title="{{ 'Line Numbering' | translate }}">
+        <div class="btn btn-sm btn-default disabled">
           <i class="fa fa-list-ol" aria-hidden="true"></i>
+          <translate>Line numbering</translate>:
         </div>
         <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'none')}"
                ng-click="lineNumberMode = 'none';">
