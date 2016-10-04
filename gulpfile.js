@@ -47,7 +47,8 @@ gulp.task('js', function () {
         .pipe(sourcemaps.init())
         .pipe(concat('openslides.js'))
         .pipe(sourcemaps.write())
-        .pipe(gulpif(argv.production, uglify()))
+        //TODO: Needs rework in all js files that uglified code works correctly.
+        //.pipe(gulpif(argv.production, uglify()))
         .pipe(gulp.dest(path.join(output_directory, 'js')));
 });
 
