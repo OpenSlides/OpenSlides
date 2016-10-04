@@ -48,7 +48,7 @@
               ng-class="{ 'projected': isAgendaProjected(mainListTree) == projector.id }">
               <i class="fa fa-video-camera" ng-show="isAgendaProjected(mainListTree) == projector.id"></i>
               {{ projector.name }}
-              <span ng-if="projector.id == defaultProjectorId_all_items">(<translate>Standard</translate>)</span>
+              <span ng-if="projector.id == defaultProjectorId_all_items">(<translate>Default</translate>)</span>
             </a>
           </li>
         </ul>
@@ -192,7 +192,7 @@
                   ng-class="{ 'projected': item.isProjected(item.tree) == projector.id }">
                   <i class="fa fa-video-camera" ng-show="item.isProjected(item.tree) == projector.id"></i>
                   {{ projector.name }}
-                  <span ng-if="projector.id == getProjectionDefault(item)">(<translate>Standard</translate>)</span>
+                  <span ng-if="projector.id == getProjectionDefault(item)">(<translate>Default</translate>)</span>
                 </a>
               </li>
             </ul>

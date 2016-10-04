@@ -197,7 +197,7 @@ msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:225
 #: assignments/static/templates/assignments/assignment-list.html:145
-#: core/static/templates/core/manage-projectors.html:65
+#: core/static/templates/core/manage-projectors.html:66
 #: core/static/templates/core/tag-list.html:42
 #: motions/static/templates/motions/category-list.html:49
 #: motions/static/templates/motions/motion-list.html:362
@@ -309,18 +309,18 @@ msgstr ""
 msgid "Begin speech"
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:148
+#: core/static/templates/core/manage-projectors.html:149
 #: core/static/templates/core/projector-controls.html:104
 msgid "Bigger"
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:193
+#: core/static/templates/core/manage-projectors.html:194
 #: core/static/templates/core/projector-controls.html:55
 #: core/static/templates/core/projector-controls.html:74
 msgid "Blank"
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:187
+#: core/static/templates/core/manage-projectors.html:188
 #: core/static/templates/core/projector-controls.html:68
 msgid "Broadcast"
 msgstr ""
@@ -582,18 +582,11 @@ msgstr ""
 msgid "Create new group"
 msgstr ""
 
-#: agenda/static/templates/agenda/slide-current-list-of-speakers.html:3
-msgid "Current List of speakers"
-msgstr ""
-
 #: agenda/static/templates/agenda/current-list-of-speakers.html:25
 #: agenda/static/templates/agenda/current-list-of-speakers.html:44
 #: agenda/static/templates/agenda/item-list.html:20
+#: agenda/static/templates/agenda/slide-current-list-of-speakers.html:3
 msgid "Current list of speakers"
-msgstr ""
-
-#: core/static/templates/core/manage-projectors.html:14
-msgid "Current list of speakers reference"
 msgstr ""
 
 #: assignments/static/js/assignments/site.js:804
@@ -605,6 +598,11 @@ msgstr ""
 msgid "Czech"
 msgstr ""
 
+#: agenda/static/templates/agenda/current-list-of-speakers.html:37
+#: agenda/static/templates/agenda/item-detail.html:35
+#: agenda/static/templates/agenda/item-list.html:195
+#: agenda/static/templates/agenda/item-list.html:51
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:225
 #: projector-button.html:23
 #: users/static/js/users/base.js:202
 msgid "Default"
@@ -630,7 +628,7 @@ msgstr ""
 #: agenda/static/templates/agenda/item-list.html:224
 #: assignments/static/templates/assignments/assignment-detail.html:139
 #: assignments/static/templates/assignments/assignment-list.html:144
-#: core/static/templates/core/manage-projectors.html:69
+#: core/static/templates/core/manage-projectors.html:70
 #: core/static/templates/core/tag-list.html:41
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:241
 #: motions/static/templates/motions/category-list.html:48
@@ -752,7 +750,7 @@ msgstr ""
 msgid "Edit countdown"
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:135
+#: core/static/templates/core/manage-projectors.html:136
 #: core/static/templates/core/projector-controls.html:91
 msgid "Edit current slide"
 msgstr ""
@@ -1007,7 +1005,7 @@ msgstr ""
 msgid "Identifier, reason, submitter, category and origin are optional and may be empty."
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:28
+#: core/static/templates/core/manage-projectors.html:29
 msgid "Identify"
 msgstr ""
 
@@ -1227,6 +1225,10 @@ msgstr ""
 msgid "Manage list"
 msgstr ""
 
+#: core/static/templates/core/manage-projectors.html:33
+msgid "Manage projectors"
+msgstr ""
+
 #: core/static/templates/core/projector-controls.html:269
 msgid "Message"
 msgstr ""
@@ -1268,7 +1270,7 @@ msgstr ""
 msgid "Motions"
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:74
+#: core/static/templates/core/manage-projectors.html:75
 #: core/static/templates/core/tag-form.html:17
 #: core/static/templates/core/tag-list.html:30
 #: motions/static/templates/motions/category-form.html:21
@@ -1682,28 +1684,21 @@ msgstr ""
 msgid "Project user"
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:52
+#: core/static/templates/core/manage-projectors.html:53
 msgid "Projection defaults"
 msgstr ""
 
 #: agenda/static/templates/agenda/current-list-of-speakers.html:18
+#: agenda/static/templates/agenda/item-detail.html:14
 #: agenda/static/templates/agenda/item-list.html:168
 #: agenda/static/templates/agenda/item-list.html:24
 #: core/static/js/core/site.js:1610
 #: core/static/js/core/site.js:1882
 #: index.html:182
+#: mediafiles/static/templates/mediafiles/mediafile-list.html:206
 #: projector-button.html:2
 #: users/static/js/users/site.js:1066
 msgid "Projector"
-msgstr ""
-
-#: agenda/static/templates/agenda/item-detail.html:14
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:206
-msgid "Projektor"
-msgstr ""
-
-#: core/static/templates/core/manage-projectors.html:32
-msgid "Projektoren verwalten"
 msgstr ""
 
 #: motions/static/js/motions/site.js:2005
@@ -1735,6 +1730,10 @@ msgstr ""
 
 #: motions/static/js/motions/base.js:441
 msgid "Refer to committee"
+msgstr ""
+
+#: core/static/templates/core/manage-projectors.html:15
+msgid "Reference for current list of speakers"
 msgstr ""
 
 #: motions/static/js/motions/base.js:442
@@ -1811,12 +1810,12 @@ msgstr ""
 msgid "Reset recommendation"
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:153
+#: core/static/templates/core/manage-projectors.html:154
 #: core/static/templates/core/projector-controls.html:109
 msgid "Reset scaling"
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:173
+#: core/static/templates/core/manage-projectors.html:174
 #: core/static/templates/core/projector-controls.html:129
 msgid "Reset scrolling"
 msgstr ""
@@ -1830,7 +1829,7 @@ msgstr ""
 msgid "Reset zoom"
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:80
+#: core/static/templates/core/manage-projectors.html:81
 msgid "Resolution"
 msgstr ""
 
@@ -1860,12 +1859,12 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:168
+#: core/static/templates/core/manage-projectors.html:169
 #: core/static/templates/core/projector-controls.html:124
 msgid "Scroll down"
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:163
+#: core/static/templates/core/manage-projectors.html:164
 #: core/static/templates/core/projector-controls.html:119
 msgid "Scroll up"
 msgstr ""
@@ -1942,6 +1941,10 @@ msgstr ""
 #: motions/static/js/motions/site.js:776
 #: topics/static/js/topics/site.js:127
 msgid "Select or search an attachment ..."
+msgstr ""
+
+#: core/static/templates/core/manage-projectors.html:13
+msgid "Select the projector to which the current list of speakers refers to."
 msgstr ""
 
 #: motions/static/templates/motions/motion-import.html:20
@@ -2031,7 +2034,7 @@ msgstr ""
 msgid "Simple Workflow"
 msgstr ""
 
-#: core/static/templates/core/manage-projectors.html:143
+#: core/static/templates/core/manage-projectors.html:144
 #: core/static/templates/core/projector-controls.html:99
 msgid "Smaller"
 msgstr ""
@@ -2069,14 +2072,6 @@ msgstr ""
 #: users/static/js/users/base.js:204
 #: users/static/templates/users/user-import.html:74
 msgid "Staff"
-msgstr ""
-
-#: agenda/static/templates/agenda/current-list-of-speakers.html:37
-#: agenda/static/templates/agenda/item-detail.html:35
-#: agenda/static/templates/agenda/item-list.html:195
-#: agenda/static/templates/agenda/item-list.html:51
-#: mediafiles/static/templates/mediafiles/mediafile-list.html:225
-msgid "Standard"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-detail.html:146

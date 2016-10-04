@@ -1999,7 +1999,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions', 'OpenSlid
         gettext('Remove all supporters of a motion if a submitter edits his ' +
                 'motion in early state');
 
-        // subgroup Suppoerters
+        // subgroup Supporters
         gettext('Comments');
         gettext('Comment fields for motions');
         gettext('Public');

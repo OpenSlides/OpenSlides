@@ -34,7 +34,7 @@
                 ng-class="{ 'projected': isCurrentLoSProjected() == projector.id }">
                 <i class="fa fa-video-camera" ng-show="isCurrentLoSProjected() == projector.id"></i>
                 {{ projector.name }}
-                <span ng-if="projector.id == defaultProjectorId">(<translate>Standard</translate>)</span>
+                <span ng-if="projector.id == defaultProjectorId">(<translate>Default</translate>)</span>
               </a>
             </li>
           </ul>
