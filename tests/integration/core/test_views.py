@@ -31,7 +31,8 @@ class ProjectorAPI(TestCase):
             'aae4a07b26534cfb9af4232f361dce73':
                 {'id': topic.id,
                  'uuid': 'aae4a07b26534cfb9af4232f361dce73',
-                 'name': 'topics/topic'}})
+                 'name': 'topics/topic',
+                 'agenda_item_id': topic.agenda_item_id}})
 
     def test_invalid_slide_on_default_projector(self):
         self.client.login(username='admin', password='admin')

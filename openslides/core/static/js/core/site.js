@@ -714,11 +714,15 @@ angular.module('OpenSlidesApp.core.site', [
     '$q',
     'Config',
     'Projector',
-    function($scope, $http, $interval, $state, $q, Config, Projector) {
+    'CurrentListOfSpeakersItem',
+    'ListOfSpeakersOverlay',
+    'ProjectionDefault',
+    function($scope, $http, $interval, $state, $q, Config, Projector, CurrentListOfSpeakersItem, ListOfSpeakersOverlay, ProjectionDefault) {
         $scope.countdowns = [];
         $scope.highestCountdownIndex = 0;
         $scope.messages = [];
         $scope.highestMessageIndex = 0;
+        $scope.listofspeakers = ListOfSpeakersOverlay;
 
         var cancelIntervalTimers = function () {
             $scope.countdowns.forEach(function (countdown) {
@@ -764,18 +768,27 @@ angular.module('OpenSlidesApp.core.site', [
             if (!$scope.active_projector) {
                 $scope.changeProjector($scope.projectors[0]);
             }
-
+            $scope.getDefaultOverlayProjector();
             // stop ALL interval timer
             cancelIntervalTimers();
 
             rebuildAllElements();
         });
+        // gets the default projector where the current list of speakers overlay will be displayed
+        $scope.getDefaultOverlayProjector = function () {
+            var projectiondefault = ProjectionDefault.filter({name: 'agenda_current_list_of_speakers'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId = projectiondefault.projector_id;
+            } else {
+                $scope.defaultProjectorId = 1;
+            }
+        };
         $scope.$on('$destroy', function() {
             // Cancel all intervals if the controller is destroyed
             cancelIntervalTimers();
         });
 
-        // watch for changes in projector_broadcast
+        // watch for changes in projector_broadcast and currentListOfSpeakersReference
         var last_broadcast;
         $scope.$watch(function () {
             return Config.lastModified();
@@ -785,6 +798,7 @@ angular.module('OpenSlidesApp.core.site', [
                 last_broadcast = broadcast;
                 $scope.broadcast = broadcast;
             }
+            $scope.currentListOfSpeakersReference = $scope.config('projector_currentListOfSpeakers_reference');
         });
 
         $scope.changeProjector = function (projector) {
@@ -1002,6 +1016,13 @@ angular.module('OpenSlidesApp.core.site', [
 
         $scope.preventClose = function (e) {
             e.stopPropagation();
+        };
+
+        /* go to the list of speakers(management) of the currently displayed list of speakers reference slide*/
+        $scope.goToListOfSpeakers = function() {
+            CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference).then(function (success) {
+                $state.go('agenda.item.detail', {id: success.id});
+            });
         };
     }
 ])
@@ -1406,6 +1427,7 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('Font color of projector header and footer');
         gettext('Font color of projector headline');
         gettext('Predefined seconds of new countdowns');
+        gettext('List of speakers overlay');
     }
 ]);
 
