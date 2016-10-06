@@ -9,6 +9,7 @@ angular.module('OpenSlidesApp.core', [
     'ngAnimate',
     'ngSanitize',  // TODO: only use this in functions that need it.
     'ui.bootstrap',
+    'ui.bootstrap.datetimepicker',
     'ui.tree',
     'pdf',
     'OpenSlidesApp-templates',

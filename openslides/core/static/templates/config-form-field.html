@@ -51,6 +51,18 @@
            ng-change="save(configOption.key, $parent.value)"
            type="text">
 
+    <!-- datetimepicker -->
+    <input ng-if="type == 'datetimepicker'"
+           class="form-control"
+           datetime-picker="dd.MM.yyyy HH:mm"
+           ng-model="$parent.value"
+           ng-change="save(configOption.key, $parent.value)"
+           is-open="datetimeOpen[key]"
+           ng-focus="datetimeOpen[key]=true;"
+           save-as="'number'"
+           button-bar="dateTimePickerTranslatedButtons"
+           default-time="10:00:00">
+
     <!-- textarea -->
     <textarea ng-if="type == 'textarea'"
               ng-model="$parent.value"
