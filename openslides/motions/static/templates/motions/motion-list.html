@@ -324,7 +324,7 @@
               <span class="label" ng-class="'label-'+motion.state.css_class">
                 {{ motion.state.name | translate }}
               </span>
-              <span ng-class="{'hiddenDiv': !motion.stateHover}" uib-dropdown>
+              <span os-perms="motions.can_manage" ng-class="{'hiddenDiv': !motion.stateHover}" uib-dropdown>
                 <i class="fa fa-cog pointer" uib-dropdown-toggle id="state-dropdown{{ motion.id }}"></i>
                 <ul uib-dropdown-menu aria-labelledby="state-dropdown{{ motion.id }}">
                   <li ng-repeat="state in motion.state.getNextStates()">
@@ -376,11 +376,11 @@
       <div class="col-xs-4 content">
         <div style="width: 60%;" class="optional">
           <small>
-            <div ng-mouseover="motion.categoryHover=true"
-              ng-mouseleave="motion.categoryHover=false"
-              ng-show="categories.length > 0">
-              <!-- Category dropdown -->
-              <span uib-dropdown>
+            <!-- Category dropdown for manage user -->
+            <div os-perms="motions.can_manage" ng-show="categories.length > 0"
+                ng-mouseover="motion.categoryHover=true"
+                ng-mouseleave="motion.categoryHover=false">
+              <span uib-dropdown >
                 <span id="dropdown-category{{ motion.id }}" class="pointer"
                   uib-dropdown-toggle uib-tooltip="{{ 'Set a category' | translate }}"
                   tooltip-class="nobr">
@@ -405,9 +405,16 @@
                 </ul>
               </span>
             </div>
-            <div ng-mouseover="motion.tagHover=true"
-              ng-mouseleave="motion.tagHover=false"
-              ng-show="tags.length > 0">
+            <!-- Category string for normal user -->
+            <div os-perms="!motions.can_manage" ng-show="motion.category != null">
+              <i class="fa fa-sitemap spacer-right"></i>
+              {{ motion.category.name }}
+            </div>
+
+            <!-- Tag dropdown for manage user -->
+            <div os-perms="motions.can_manage" ng-show="tags.length > 0"
+                ng-mouseover="motion.tagHover=true"
+                ng-mouseleave="motion.tagHover=false">
               <span uib-dropdown>
                 <span id="dropdown-tags{{ motion.id }}" class="pointer"
                   uib-dropdown-toggle uib-tooltip="{{ 'Add a tag' | translate }}"
@@ -434,6 +441,15 @@
                 </ul>
               </span>
             </div>
+            <!-- Tag string for normal user -->
+            <div os-perms="!motions.can_manage" ng-show="motion.tags.length > 0">
+              <i class="fa fa-tags spacer-right"></i>
+              <span ng-repeat="tag in motion.tags">
+                {{ tag.name }}<span ng-if="!$last">,</span>
+              </span>
+            </div>
+
+            <!-- Origin -->
             <div ng-if="motion.origin">
               <i class="fa fa-share spacer-right" uib-tooltip="{{ 'Origin' | translate }}"></i>
                 {{ motion.origin | limitTo:25 }}{{ motion.origin.length > 25 ? '...' : '' }}

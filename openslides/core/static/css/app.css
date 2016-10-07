@@ -270,15 +270,6 @@ img {
     float: right;
 }
 
-.col1 .header .submenu > div {
-    display: inline-block;
-    float: left;
-    margin-left: 5px;
-}
-.col1 .header .submenu > div.button {
-    float: none;
-    margin-left: 0;
-}
 .col1 .meta .title {
     width: 100%;
     cursor: pointer;
