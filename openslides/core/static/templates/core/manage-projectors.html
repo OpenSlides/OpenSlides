@@ -1,34 +1,35 @@
 <div class="header">
   <div class="title">
     <div class="submenu">
-      <div>
-        <button class="btn btn-primary" ng-bootbox-prompt="{{ 'Please enter a name for the new projector' | translate }}"
-          ng-bootbox-prompt-action="createProjector(result)">
-          <i class="fa fa-plus"></i>
-          <translate>New</translate>
-        </button>
-      </div>
-      <div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" id="menuListofSpeakers" data-toggle="dropdown"
+      <!-- New -->
+      <button class="btn btn-primary" ng-bootbox-prompt="{{ 'Please enter a name for the new projector' | translate }}"
+        ng-bootbox-prompt-action="createProjector(result)">
+        <i class="fa fa-plus"></i>
+        <translate>New</translate>
+      </button>
+      <!-- Reference for current list of speakers -->
+      <div class="btn-group" uib-dropdown>
+        <button class="btn btn-default" id="menuListofSpeakers" uib-dropdown-toggle
             uib-tooltip="{{ 'Select the projector to which the current list of speakers refers to.' | translate }}"
             aria-haspopup="true" aria-expanded="true">
+          <i class="fa fa-microphone"></i>
           <translate>Reference for current list of speakers</translate>
           <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu dropdown-entries" aria-labelledby="menuListOfSpeakers">
-          <li ng-repeat="projector in projectors"
-            ng-click="setListOfSpeakers(projector)">
-            <i class="fa fa-check" ng-if="projector.id == currentListOfSpeakers"></i>
-            {{ projector.name }}
+        <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="menuListOfSpeakers">
+          <li ng-repeat="projector in projectors">
+            <a href ng-click="setListOfSpeakers(projector)">
+              <i class="fa fa-check" ng-if="projector.id == currentListOfSpeakers"></i>
+              {{ projector.name }}
+            </a>
           </li>
         </ul>
       </div>
-      <div>
-        <button class="btn" ng-click="identifyProjectors()" ng-class="identifyPromise ? 'btn-primary' : 'btn-default'">
-          <i class="fa fa-binoculars"></i>
-          <translate>Identify</translate>
-        </button>
-      </div>
+      <!-- Identity -->
+      <button class="btn" ng-click="identifyProjectors()" ng-class="identifyPromise ? 'btn-primary' : 'btn-default'">
+        <i class="fa fa-binoculars"></i>
+        <translate>Identify</translate>
+      </button>
     </div>
     <h1 translate>Manage projectors</h1>
   </div>
