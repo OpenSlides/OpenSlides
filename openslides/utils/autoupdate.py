@@ -126,7 +126,7 @@ def send_data(message):
                 output.append(collection_element.as_autoupdate_for_projector())
             else:
                 for element in projector.get_collection_elements_required_for_this(collection_element):
-                    output.append(collection_element.as_autoupdate_for_projector())
+                    output.append(element.as_autoupdate_for_projector())
         if output:
             if config['projector_broadcast'] > 0:
                 Group('projector-all').send(
