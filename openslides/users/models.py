@@ -1,12 +1,9 @@
 from random import choice
 
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import (
+from django.contrib.auth.base_user import (
     AbstractBaseUser,
     BaseUserManager,
-    Group,
-    Permission,
-    PermissionsMixin,
 )
 from django.db import models
 from django.db.models import Q
@@ -16,6 +13,7 @@ from openslides.utils.search import user_name_helper
 from ..core.config import config
 from ..utils.models import RESTModelMixin
 from .access_permissions import UserAccessPermissions
+from ..utils.permissions import permission_choices
 
 
 class UserManager(BaseUserManager):
@@ -100,7 +98,7 @@ class UserManager(BaseUserManager):
         return ''.join([choice(chars) for i in range(size)])
 
 
-class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
+class User(RESTModelMixin, AbstractBaseUser):
     """
     Model for users in OpenSlides. A client can login as an user with
     credentials. An user can also just be used as representation for a person
@@ -222,3 +220,16 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             user_name_helper(self),
             self.structure_level,
             self.about_me))
+
+
+class Group(models.Model):
+    name = models.CharField('name', max_length=80, unique=True)
+    users = models.ManyToManyField(User, related_name='groups')
+
+
+class GroupPermission(models.Model):
+    group = models.ForeignKey(Group, related_name='permissions')
+    permission = models.CharField(max_length=255, choices=permission_choices())
+
+    class Meta:
+        unique_together = ('group', 'permission')

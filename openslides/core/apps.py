@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from ..utils.permissions import Permission
 
 
 class CoreAppConfig(AppConfig):
@@ -6,6 +7,16 @@ class CoreAppConfig(AppConfig):
     verbose_name = 'OpenSlides Core'
     angular_site_module = True
     angular_projector_module = True
+
+    def get_permissions(self):
+        return (
+            Permission(self, 'can_see_projector', 'Can see the projector', (1, 2, 3, 4)),
+            Permission(self, 'can_manage_projector', 'Can manage the projector', (3, )),
+            Permission(self, 'can_see_frontpage', 'Can see the front page', (1, 2, 3, 4)),
+            Permission(self, 'can_manage_tags', 'Can manage tags', (3, )),
+            Permission(self, 'can_manage_config', 'Can manage configuration', (3, )),
+            Permission(self, 'can_use_chat', 'Can use the chat', (3, )),
+        )
 
     def ready(self):
         # Load projector elements.
@@ -15,11 +26,10 @@ class CoreAppConfig(AppConfig):
         # Import all required stuff.
         from django.db.models import signals
         from openslides.core.config import config
-        from openslides.core.signals import post_permission_creation
         from openslides.utils.rest_api import router
         from openslides.utils.search import index_add_instance, index_del_instance
         from .config_variables import get_config_variables
-        from .signals import delete_django_app_permissions, create_builtin_projection_defaults
+        from .signals import create_builtin_projection_defaults
         from .views import (
             ChatMessageViewSet,
             ConfigViewSet,
@@ -31,12 +41,10 @@ class CoreAppConfig(AppConfig):
         config.update_config_variables(get_config_variables())
 
         # Connect signals.
-        post_permission_creation.connect(
-            delete_django_app_permissions,
-            dispatch_uid='delete_django_app_permissions')
-        post_permission_creation.connect(
-            create_builtin_projection_defaults,
-            dispatch_uid='create_builtin_projection_defaults')
+        #TODO
+        # post_permission_creation.connect(
+        #     create_builtin_projection_defaults,
+        #     dispatch_uid='create_builtin_projection_defaults')
 
         # Register viewsets.
         router.register(self.get_model('Projector').get_collection_string(), ProjectorViewSet)
