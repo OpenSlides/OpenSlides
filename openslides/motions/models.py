@@ -703,7 +703,7 @@ class Category(RESTModelMixin, models.Model):
     """
     access_permissions = CategoryAccessPermissions()
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     """Name of the category."""
 
     prefix = models.CharField(blank=True, max_length=32)
