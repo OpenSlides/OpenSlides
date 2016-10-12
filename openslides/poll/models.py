@@ -163,7 +163,7 @@ class BasePoll(models.Model):
         """
         return self.get_vote_class().objects.filter(option__poll__id=self.id)
 
-    def set_vote_objects_with_values(self, option, data):
+    def set_vote_objects_with_values(self, option, data, skip_autoupdate=False):
         """
         Creates or updates the vote objects for the poll.
         """
@@ -173,7 +173,7 @@ class BasePoll(models.Model):
             except ObjectDoesNotExist:
                 vote = self.get_vote_class()(option=option, value=value)
             vote.weight = data[value]
-            vote.save()
+            vote.save(skip_autoupdate=skip_autoupdate)
 
     def get_vote_objects_with_values(self, option_id):
         """
