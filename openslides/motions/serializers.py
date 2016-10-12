@@ -203,7 +203,7 @@ class MotionPollSerializer(ModelSerializer):
                 if vote_value not in instance.get_vote_values():
                     raise ValidationError({
                         'detail': _('Vote value %s is invalid.') % vote_value})
-            instance.set_vote_objects_with_values(instance.get_options().get(), votes)
+            instance.set_vote_objects_with_values(instance.get_options().get(), votes, skip_autoupdate=True)
 
         # Update remaining writeable fields.
         instance.votesvalid = validated_data.get('votesvalid', instance.votesvalid)

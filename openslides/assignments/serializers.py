@@ -144,7 +144,7 @@ class AssignmentAllPollSerializer(ModelSerializer):
                     if vote_value not in instance.get_vote_values():
                         raise ValidationError({
                             'detail': _('Vote value %s is invalid.') % vote_value})
-                instance.set_vote_objects_with_values(option, votes[index])
+                instance.set_vote_objects_with_values(option, votes[index], skip_autoupdate=True)
 
         # Update remaining writeable fields.
         instance.description = validated_data.get('description', instance.description)
