@@ -21,7 +21,8 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="user-pdf-dropdown">
-          <li><a ui-sref="user_listpdf" target="_blank">
+          <li>
+              <a ng-click="makePDF_userList()" class="btn">
                 <i class="fa fa-list fa-fw"></i>
                 <translate>List of participants</translate>
               </a>
