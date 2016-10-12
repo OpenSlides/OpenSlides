@@ -4,6 +4,21 @@
 
 angular.module('OpenSlidesApp.core.pdf', [])
 
+.factory('PdfPredefinedFunctions', [
+    function() {
+        var PdfPredefinedFunctions = {};
+
+        PdfPredefinedFunctions.createTitle = function(titleString) {
+            return {
+                text: titleString,
+                style: "title"
+            };
+        };
+
+        return PdfPredefinedFunctions;
+    }
+])
+
 .factory('HTMLValidizer', function() {
     var HTMLValidizer = {};
 
@@ -106,6 +121,14 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             tableofcontent: {
                                 fontSize: 12,
                                 margin: [0,3]
+                            },
+                            listParent: {
+                                fontSize: 14,
+                                margin: [0,5]
+                            },
+                            listChild: {
+                                fontSize: 11,
+                                margin: [0,5]
                             }
                         }
                     };

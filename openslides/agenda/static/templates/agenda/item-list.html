@@ -23,7 +23,7 @@
       <div class="btn-group button" uib-dropdown
         uib-tooltip="{{ 'Projector' | translate }} {{ isAgendaProjected(mainListTree) }}"
         tooltip-enable="isAgendaProjected(mainListTree) > 0"
-        os-perms="core.can_manage_projector"> 
+        os-perms="core.can_manage_projector">
         <button type="button" class="btn btn-default btn-sm"
             title="{{ 'Project agenda' | translate }}"
             ng-click="projectAgenda(defaultProjectorId_all_items, mainListTree)"
@@ -83,7 +83,7 @@
             <translate>Numbering</translate>
           </a>
           <!-- pdf -->
-          <a ui-sref="agenda_pdf" target="_blank" class="btn btn-default btn-sm">
+          <a ng-click="makePDF()" class="btn btn-default btn-sm">
             <i class="fa fa-file-pdf-o fa-lg"></i>
             <translate>PDF</translate>
           </a>

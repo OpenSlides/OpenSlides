@@ -2,7 +2,11 @@
 
 'use strict';
 
-angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
+angular.module('OpenSlidesApp.agenda.site', [
+    'OpenSlidesApp.agenda',
+    'OpenSlidesApp.core.pdf',
+    'OpenSlidesApp.agenda.pdf'
+])
 
 .config([
     'mainMenuProvider',
@@ -100,7 +104,11 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     'AgendaTree',
     'Projector',
     'ProjectionDefault',
-    function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, TopicForm, AgendaTree, Projector, ProjectionDefault) {
+    'AgendaContentProvider',
+    'PdfMakeDocumentProvider',
+    'gettextCatalog',
+    function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, TopicForm, AgendaTree, Projector,
+        ProjectionDefault, AgendaContentProvider, PdfMakeDocumentProvider, gettextCatalog) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -305,6 +313,13 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         // auto numbering of agenda items
         $scope.autoNumbering = function() {
             $http.post('/rest/agenda/item/numbering/', {});
+        };
+
+        $scope.makePDF = function() {
+            var filename = gettextCatalog.getString("Agenda")+".pdf";
+            var agendaContentProvider = AgendaContentProvider.createInstance($scope.items);
+            var documentProvider = PdfMakeDocumentProvider.createInstance(agendaContentProvider);
+            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
         };
     }
 ])

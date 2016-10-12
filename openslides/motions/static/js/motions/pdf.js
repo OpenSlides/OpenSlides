@@ -2,15 +2,21 @@
 
 "use strict";
 
-angular.module('OpenSlidesApp.motions.pdf', [])
+angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
-.factory('MotionContentProvider', ['gettextCatalog', function(gettextCatalog) {
+.factory('MotionContentProvider', [
+    'gettextCatalog',
+    'PdfPredefinedFunctions',
+    function(gettextCatalog, PdfPredefinedFunctions) {
     /**
      * Provides the content as JS objects for Motions in pdfMake context
      * @constructor
      */
 
     var createInstance = function(converter, motion, $scope, User) {
+
+        var header = PdfPredefinedFunctions.createTitle(gettextCatalog.getString("Motion") + " " +
+            motion.identifier + ": " + motion.getTitle($scope.version));
 
         // generates the text of the motion. Also septerates between line-numbers
         var textContent = function() {
@@ -30,14 +36,6 @@ angular.module('OpenSlidesApp.motions.pdf', [])
         // Generate text of reason
         var reasonContent = function() {
             return converter.convertHTML(motion.getReason($scope.version), $scope);
-        };
-
-        // Generate header text of motion
-        var motionHeader = function() {
-            var header = converter.createElement("text", gettextCatalog.getString("Motion") + " " + motion.identifier + ": " + motion.getTitle($scope.version));
-            header.bold = true;
-            header.fontSize = 26;
-            return header;
         };
 
         // Generate text of signment
@@ -119,7 +117,7 @@ angular.module('OpenSlidesApp.motions.pdf', [])
             return result;
         };
 
-        // Generates title section for motion
+        //Generates title section for motion
         var titleSection = function() {
             var title = converter.createElement("text", motion.getTitle($scope.version));
             title.bold = true;
@@ -154,7 +152,7 @@ angular.module('OpenSlidesApp.motions.pdf', [])
         var getContent = function() {
             if (reasonContent().length === 0 ) {
                 return [
-                    motionHeader(),
+                    header,
                     signment(),
                     polls(),
                     titleSection(),
@@ -162,7 +160,7 @@ angular.module('OpenSlidesApp.motions.pdf', [])
                 ];
             } else {
                 return [
-                    motionHeader(),
+                    header,
                     signment(),
                     polls(),
                     titleSection(),
@@ -315,7 +313,10 @@ angular.module('OpenSlidesApp.motions.pdf', [])
     };
 })
 
-.factory('MotionCatalogContentProvider', ['gettextCatalog', function(gettextCatalog) {
+.factory('MotionCatalogContentProvider', [
+    'gettextCatalog',
+    'PdfPredefinedFunctions',
+    function(gettextCatalog, PdfPredefinedFunctions) {
 
     /**
     * Constructor
@@ -326,14 +327,7 @@ angular.module('OpenSlidesApp.motions.pdf', [])
     */
     var createInstance = function(allMotions, $scope, User, Category) {
 
-        //function to create the Table of contents
-        var createTitle = function() {
-
-            return {
-                text: gettextCatalog.getString("Motions"),
-                style: "title"
-            };
-        };
+        var title = PdfPredefinedFunctions.createTitle("Motions");
 
         var createTOContent = function(motionTitles) {
 
@@ -420,7 +414,7 @@ angular.module('OpenSlidesApp.motions.pdf', [])
             });
 
             return [
-                createTitle(),
+                title,
                 createTOCatergories(),
                 createTOContent(motionTitles),
                 motionContent
