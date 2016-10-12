@@ -1,7 +1,7 @@
 FROM python:3.5
 RUN apt-get -y update && apt-get -y upgrade
 
-RUN apt-get install -y libpq-dev
+RUN apt-get install -y libpq-dev supervisor
 ## BUILD JS STUFF
 RUN cd /tmp
 RUN wget https://nodejs.org/dist/v4.5.0/node-v4.5.0-linux-x64.tar.xz
@@ -27,10 +27,6 @@ RUN node_modules/.bin/gulp
 RUN rm -fr /tmp/node-v4.5.0-linux-x64/
 RUN rm -fr /app/bower_components
 RUN rm -fr /app/node_modules
-
-ADD docker/run.sh /usr/local/bin/run
-
-RUN apt-get -y install supervisor
 
 RUN mkdir /data && chown openslides /data
 USER openslides
