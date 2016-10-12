@@ -429,6 +429,7 @@ angular.module('OpenSlidesApp.core.site', [
                 string: 'text',
                 text: 'textarea',
                 integer: 'number',
+                float: 'number',
                 boolean: 'checkbox',
                 choice: 'choice',
                 comments: 'comments',

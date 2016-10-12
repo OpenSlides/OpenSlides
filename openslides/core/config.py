@@ -12,7 +12,8 @@ INPUT_TYPE_MAPPING = {
     'choice': str,
     'comments': list,
     'colorpicker': str,
-    'datetimepicker': int}
+    'datetimepicker': int,
+    'float': float}
 
 
 class ConfigHandler:

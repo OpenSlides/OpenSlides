@@ -163,7 +163,7 @@
       <div class="col-md-4">
           <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
           <ol>
-            <li ng-repeat="poll in motion.polls" class="spacer"
+            <li ng-controller="MotionPollDetailCtrl" ng-repeat="poll in motion.polls" class="spacer"
                 ng-if="poll.has_votes || operator.hasPerms('motions.can_manage')">
               <strong translate-comment='ballot of a motion' translate>Vote</strong>
               <!-- Edit poll -->
@@ -185,7 +185,24 @@
               </a>
               <!-- template hook for motion poll buttons -->
               <template-hook hook-name="motionPollSmallButtons"></template-hook>
-
+              <!--setting for majority calculations-->
+              <div class="input-group">
+                <input type="checkbox" ng-model="isMajorityCalculation">
+                <span translate> calculate majorities</span>
+                <a href="#" ng-click="isMajorityDetails = !isMajorityDetails">
+                  <i class="fa toggle-icon" ng-class="isMajorityDetails ? 'fa-angle-up' : 'fa-angle-down'"></i>
+                </a>
+              </div>
+              <div uib-collapse="!isMajorityDetails" ng-cloak>
+                <div class="input-group">
+                  <span translate> Minimal percentage needed:</span> <input type="number" min=0 max=100 step="any" ng-model="quorum"
+                  ng-model-options="{debounce: 1000}" maxlength=9> %
+                </div>
+                <div class="input-group">
+                  <span translate> Calculation base:</span>
+                  <select ng-model="base" ng-options="option.value as option.display_name for option in basechoices"/>
+                </div>
+              </div>
               <!-- Poll results -->
               <div ng-show="poll.has_votes" class="pollresults">
                 <table class="table">
@@ -252,6 +269,19 @@
                       <span class="result_value">
                         {{ votesCast.value }} {{ votesCast.percentStr }}
                       </span>
+                  <!-- majority calculation -->
+                  <tr ng-if="isMajorityCalculation">
+                    <td class="icon">
+                    <td>
+                      <span class="text-warning"  ng-if="isPossible() === false" translate>Calculation impossible</span>
+                      <span class="text-success" ng-if=" isReached() >= 0">
+                        <translate>Quorum reached, </translate>
+                        {{isReached()}} <translate>votes more than needed.</translate>
+                      </span>
+                      <span class="text-danger" ng-if="isReached() < 0">
+                       <translate>Quorum not reached, </translate>
+                       {{-(isReached())}} <translate> votes missing.</translate>
+                     </span>
                 </table>
           </ol>
           <button ng-if="motion.isAllowed('create_poll')" ng-click="create_poll()" class="btn btn-default btn-sm">

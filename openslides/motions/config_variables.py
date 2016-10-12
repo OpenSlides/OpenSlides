@@ -1,4 +1,4 @@
-from django.core.validators import MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from openslides.core.config import ConfigVariable
 
@@ -185,6 +185,17 @@ def get_config_variables():
         weight=355,
         group='Motions',
         subgroup='Voting and ballot papers')
+
+    yield ConfigVariable(
+        name='motions_poll_default_quorum',
+        default_value=50,
+        input_type='float',
+        label='Quorum for Majority tests',
+        help_text='Default percentage that must be surpassed for a motion to be successfull',
+        weight=357,
+        group='Motions',
+        subgroup='Voting and ballot papers',
+        validators=(MinValueValidator(0), MaxValueValidator(100),))
 
     yield ConfigVariable(
         name='motions_pdf_ballot_papers_selection',
