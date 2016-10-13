@@ -22,3 +22,14 @@ class TopicSlide(ProjectorElement):
         else:
             yield topic
             yield topic.agenda_item
+
+    def update_data(self):
+        data = None
+        try:
+            topic = Topic.objects.get(pk=self.config_entry.get('id'))
+        except Topic.DoesNotExist:
+            # Topic does not exist, so just do nothing.
+            pass
+        else:
+            data = {'agenda_item_id': topic.agenda_item_id}
+        return data

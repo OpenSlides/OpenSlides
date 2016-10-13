@@ -54,3 +54,14 @@ class AssignmentSlide(ProjectorElement):
         if collection_element == CollectionElement.from_values(Assignment.get_collection_string(), config_entry.get('id')):
             output.extend(self.get_requirements_as_collection_elements(config_entry))
         return output
+
+    def update_data(self):
+        data = None
+        try:
+            assignment = Assignment.objects.get(pk=self.config_entry.get('id'))
+        except Assignment.DoesNotExist:
+            # Assignment does not exist, so just do nothing.
+            pass
+        else:
+            data = {'agenda_item_id': assignment.agenda_item_id}
+        return data

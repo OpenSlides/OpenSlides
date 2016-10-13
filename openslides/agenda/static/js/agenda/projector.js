@@ -16,6 +16,9 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
         slidesProvider.registerSlide('agenda/current-list-of-speakers', {
             template: 'static/templates/agenda/slide-current-list-of-speakers.html',
         });
+        slidesProvider.registerSlide('agenda/current-list-of-speakers-overlay', {
+            template: 'static/templates/agenda/slide-current-list-of-speakers-overlay.html',
+        });
     }
 ])
 

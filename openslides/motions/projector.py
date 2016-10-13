@@ -37,3 +37,14 @@ class MotionSlide(ProjectorElement):
         if collection_element == CollectionElement.from_values(Motion.get_collection_string(), config_entry.get('id')):
             output.extend(self.get_requirements_as_collection_elements(config_entry))
         return output
+
+    def update_data(self):
+        data = None
+        try:
+            motion = Motion.objects.get(pk=self.config_entry.get('id'))
+        except Motion.DoesNotExist:
+            # Motion does not exist, so just do nothing.
+            pass
+        else:
+            data = {'agenda_item_id': motion.agenda_item_id}
+        return data

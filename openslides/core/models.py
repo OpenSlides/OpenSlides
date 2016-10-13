@@ -30,8 +30,7 @@ class ProjectorManager(models.Manager):
 
 class Projector(RESTModelMixin, models.Model):
     """
-    Model for all projectors. At the moment we support only one projector,
-    the default projector (pk=1).
+    Model for all projectors.
 
     The config field contains a dictionary which uses UUIDs as keys. Every
     element must have at least the property "name". The property "stable"
