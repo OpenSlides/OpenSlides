@@ -177,12 +177,12 @@ angular.module('OpenSlidesApp.core.site', [
 
                 // Split up state name
                 // example: "motions.motion.detail.update" -> ['motions', 'motion', 'detail', 'update']
-                var patterns = state.name.split('.')
+                var patterns = state.name.split('.');
 
                 // set app and module name from state
                 // - appName: patterns[0] (e.g. "motions")
                 // - moduleNames: patterns without first element (e.g. ["motion", "detail", "update"])
-                var appName = ''
+                var appName = '';
                 var moduleName = '';
                 var moduleNames = [];
                 if (patterns.length > 0) {
@@ -194,7 +194,7 @@ angular.module('OpenSlidesApp.core.site', [
                     // example: ["motionBlock", "detail"] -> ["motion-block", "detail"]
                     for (var i = 0; i < moduleNames.length; i++) {
                         moduleNames[i] =  moduleNames[i].replace(/([a-z\d])([A-Z])/g, '$1-$2').toLowerCase();
-                    };
+                    }
 
                     // use special templateUrl for create and update view
                     // example: ["motion", "detail", "update"] -> "motion-form"
@@ -1436,7 +1436,11 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-.filter("toArray", function(){
+.filter('toArray', function(){
+    /*
+     * Transforms an object to an array. Items of the array are the values of
+     * the object elements.
+     */
     return function(obj) {
         var result = [];
         angular.forEach(obj, function(val, key) {

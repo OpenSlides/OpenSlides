@@ -26,12 +26,11 @@
 </div>
 
 <div class="details">
-  <!-- set state button (TODO)-->
   <a os-perms="motions.can_manage" class="btn btn-default btn"
       ng-bootbox-confirm="{{ 'Are you sure you want to override the state of all motions of this motion block?' | translate }}"
-      ng-bootbox-confirm-action="" translate>
+      ng-bootbox-confirm-action="followRecommendations()" translate>
     <i class="fa fa-magic fa-lg"></i>
-    <translate>Set state for each motion according to their recommendation</translate>
+    <translate>Follow recommendations for all motions</translate>
   </a>
 
   <div class="row spacer form-group">

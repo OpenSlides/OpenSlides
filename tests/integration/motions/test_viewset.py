@@ -7,7 +7,7 @@ from rest_framework.test import APIClient
 
 from openslides.core.config import config
 from openslides.core.models import Tag
-from openslides.motions.models import Category, Motion, State
+from openslides.motions.models import Category, Motion, MotionBlock, State
 from openslides.users.models import User
 from openslides.utils.test import TestCase
 
@@ -726,3 +726,40 @@ class NumberMotionsInCategory(TestCase):
         self.assertEqual(Motion.objects.get(pk=self.motion.pk).identifier, None)
         self.assertEqual(Motion.objects.get(pk=self.motion_2.pk).identifier, 'test_prefix_ahz6tho2mooH8 2')
         self.assertEqual(Motion.objects.get(pk=self.motion_3.pk).identifier, 'test_prefix_ahz6tho2mooH8 1')
+
+
+class FollowRecommendationsForMotionBlock(TestCase):
+    """
+    Tests following the recommendations of motions in an motion block.
+    """
+    def setUp(self):
+        self.state_id_accepted = 2  # This should be the id of the state 'accepted'.
+        self.state_id_rejected = 3  # This should be the id of the state 'rejected'.
+
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+
+        self.motion_block = MotionBlock.objects.create(
+            title='test_motion_block_name_Ufoopiub7quaezaepeic')
+
+        self.motion = Motion(
+            title='test_title_yo8ohy5eifeiyied2AeD',
+            text='test_text_chi1aeth5faPhueQu8oh',
+            motion_block=self.motion_block)
+        self.motion.save()
+        self.motion.set_recommendation(self.state_id_accepted)
+        self.motion.save()
+
+        self.motion_2 = Motion(
+            title='test_title_eith0EemaW8ahZa9Piej',
+            text='test_text_haeho1ohk3ou7pau2Jee',
+            motion_block=self.motion_block)
+        self.motion_2.save()
+        self.motion_2.set_recommendation(self.state_id_rejected)
+        self.motion_2.save()
+
+    def test_follow_recommendations_for_motion_block(self):
+        response = self.client.post(reverse('motionblock-follow-recommendations', args=[self.motion_block.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Motion.objects.get(pk=self.motion.pk).state.id, self.state_id_accepted)
+        self.assertEqual(Motion.objects.get(pk=self.motion_2.pk).state.id, self.state_id_rejected)

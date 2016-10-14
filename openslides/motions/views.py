@@ -9,8 +9,9 @@ from django.utils.translation import ugettext_noop
 from reportlab.platypus import SimpleDocTemplate
 from rest_framework import status
 
-from openslides.core.config import config
-from openslides.utils.rest_api import (
+from ..core.config import config
+from ..utils.autoupdate import inform_changed_data
+from ..utils.rest_api import (
     DestroyModelMixin,
     GenericViewSet,
     ModelViewSet,
@@ -19,8 +20,7 @@ from openslides.utils.rest_api import (
     ValidationError,
     detail_route,
 )
-from openslides.utils.views import APIView, PDFView, SingleObjectMixin
-
+from ..utils.views import APIView, PDFView, SingleObjectMixin
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
@@ -467,12 +467,34 @@ class MotionBlockViewSet(ModelViewSet):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action == 'metadata':
             result = self.request.user.has_perm('motions.can_see')
-        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
+        elif self.action in ('create', 'partial_update', 'update', 'destroy', 'follow_recommendations'):
             result = (self.request.user.has_perm('motions.can_see') and
                       self.request.user.has_perm('motions.can_manage'))
         else:
             result = False
         return result
+
+    @detail_route(methods=['post'])
+    def follow_recommendations(self, request, pk=None):
+        """
+        View to set the states of all motions of this motion block each to
+        its recommendation. It is a POST request without any data.
+        """
+        motion_block = self.get_object()
+        instances = []
+        with transaction.atomic():
+            for motion in motion_block.motion_set.all():
+                # Follow recommendation.
+                motion.follow_recommendation()
+                motion.save(skip_autoupdate=True)
+                # Write the log message.
+                motion.write_log(
+                    message_list=[ugettext_noop('State set to'), ' ', motion.state.name],
+                    person=request.user,
+                    skip_autoupdate=True)
+                instances.append(motion)
+        inform_changed_data(instances)
+        return Response({'detail': _('Followed recommendations successfully.')})
 
 
 class WorkflowViewSet(ModelViewSet):
