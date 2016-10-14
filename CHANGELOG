@@ -30,6 +30,7 @@ Motions:
 - Added recommendations for motions.
 - Changed label of former state "commited a bill" to "refered to committee".
 - Added options to calculate percentages on different bases.
+- Changed field attribute of category.name to unique for weighted voting.
 
 Users:
 - Added field is_committee and new default group Committees.
