@@ -10,7 +10,6 @@ MODULE_DIR = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
 INSTALLED_APPS = [
     'openslides.core',
     'openslides.users',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
@@ -31,7 +30,7 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'openslides.users.middleware.AuthenticationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -94,7 +93,7 @@ STATICFILES_DIRS = [
 AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = [
-    'openslides.users.auth.CustomizedModelBackend',
+    'openslides.users.auth.ModelBackend',
 ]
 
 SESSION_ENGINE = 'openslides.core.session_backend'

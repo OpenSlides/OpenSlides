@@ -90,16 +90,6 @@ class Projector(RESTModelMixin, models.Model):
         blank=False,
         default=False)
 
-    class Meta:
-        """
-        Contains general permissions that can not be placed in a specific app.
-        """
-        default_permissions = ()
-        permissions = (
-            ('can_see_projector', 'Can see the projector'),
-            ('can_manage_projector', 'Can manage the projector'),
-            ('can_see_frontpage', 'Can see the front page'),)
-
     @property
     def elements(self):
         """
@@ -212,9 +202,6 @@ class ProjectionDefault(RESTModelMixin, models.Model):
     def get_root_rest_element(self):
         return self.projector
 
-    class Meta:
-        default_permissions = ()
-
     def __str__(self):
         return self.display_name
 
@@ -232,9 +219,6 @@ class Tag(RESTModelMixin, models.Model):
 
     class Meta:
         ordering = ('name',)
-        default_permissions = ()
-        permissions = (
-            ('can_manage_tags', 'Can manage tags'),)
 
     def __str__(self):
         return self.name
@@ -251,11 +235,6 @@ class ConfigStore(RESTModelMixin, models.Model):
 
     value = JSONField()
     """The value of the config variable. """
-
-    class Meta:
-        default_permissions = ()
-        permissions = (
-            ('can_manage_config', 'Can manage configuration'),)
 
     @classmethod
     def get_collection_string(cls):
@@ -284,11 +263,6 @@ class ChatMessage(RESTModelMixin, models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE)
 
-    class Meta:
-        default_permissions = ()
-        permissions = (
-            ('can_use_chat', 'Can use the chat'),)
-
     def __str__(self):
         return 'Message {}'.format(self.timestamp)
 
@@ -302,9 +276,6 @@ class Session(DjangoSession):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True)
-
-    class Meta:
-        default_permissions = ()
 
     @classmethod
     def get_session_store_class(cls):

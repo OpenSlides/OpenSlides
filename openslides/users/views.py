@@ -1,6 +1,5 @@
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
-from django.contrib.auth.forms import AuthenticationForm
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
@@ -167,7 +166,9 @@ class UserLoginView(APIView):
     http_method_names = ['get', 'post']
 
     def post(self, *args, **kwargs):
-        form = AuthenticationForm(self.request, data=self.request.data)
+        #TODO use authenticate instead of the form. Make sure to test for inactive
+        # users
+        #form = AuthenticationForm(self.request, data=self.request.data)
         if not form.is_valid():
             raise ValidationError({'detail': _('Username or password is not correct.')})
         self.user = form.get_user()

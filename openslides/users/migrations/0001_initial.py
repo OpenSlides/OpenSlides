@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('auth', '0006_require_contenttypes_0002'),
+        #('auth', '0006_require_contenttypes_0002'),
         # The next line is not a dependency because we also want to support Django 1.8.
         # ('auth', '0007_alter_validators_add_error_messages'),
     ]
