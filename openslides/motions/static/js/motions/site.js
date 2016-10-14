@@ -229,6 +229,9 @@ angular.module('OpenSlidesApp.motions.site', [
                     motionBlock: function(MotionBlock, $stateParams) {
                         return MotionBlock.find($stateParams.id);
                     },
+                    motions: function(Motion) {
+                        return Motion.findAll();
+                    },
                     items: function(Agenda) {
                         return Agenda.findAll().catch(
                             function () {
@@ -246,7 +249,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 onEnter: ['$stateParams', '$state', 'ngDialog', 'MotionBlock',
                     function($stateParams, $state, ngDialog, MotionBlock) {
                         ngDialog.open({
-                            template: 'static/templates/motions/motionBlock-form.html',
+                            template: 'static/templates/motions/motion-block-form.html',
                             controller: 'MotionBlockUpdateCtrl',
                             className: 'ngdialog-theme-default wide-form',
                             closeByEscape: false,
@@ -707,6 +710,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'Workflow',
     'User',
     'Agenda',
+    'MotionBlock',
     'MotionDocxExport',
     'MotionContentProvider',
     'MotionCatalogContentProvider',
@@ -716,11 +720,12 @@ angular.module('OpenSlidesApp.motions.site', [
     'HTMLValidizer',
     'Projector',
     'ProjectionDefault',
-    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionDocxExport,
-                MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
+    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionBlock,
+                MotionDocxExport, MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
                 gettextCatalog, HTMLValidizer, Projector, ProjectionDefault) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
+        MotionBlock.bindAll({}, $scope, 'motionBlocks');
         Tag.bindAll({}, $scope, 'tags');
         Workflow.bindAll({}, $scope, 'workflows');
         User.bindAll({}, $scope, 'users');
@@ -743,11 +748,13 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.multiselectFilter = {
             state: [],
             category: [],
+            motionBlock: [],
             tag: []
         };
         $scope.getItemId = {
             state: function (motion) {return motion.state_id;},
             category: function (motion) {return motion.category_id;},
+            motionBlock: function (motion) {return motion.motion_block_id;},
             tag: function (motion) {return motion.tags_id;}
         };
         // function to operate the multiselectFilter
@@ -777,6 +784,10 @@ angular.module('OpenSlidesApp.motions.site', [
             if (motion.category) {
                 category = motion.category.name;
             }
+            var motionBlock = '';
+            if (motion.motionBlock) {
+                motionBlock = motion.motionBlock.title;
+            }
             return [
                 motion.identifier,
                 motion.getTitle(),
@@ -802,6 +813,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     }
                 ).join(" "),
                 category,
+                motionBlock
             ].join(" ");
         };
         // for reset-button
@@ -809,6 +821,7 @@ angular.module('OpenSlidesApp.motions.site', [
             $scope.multiselectFilter = {
                 state: [],
                 category: [],
+                motionBlock: [],
                 tag: []
             };
             if ($scope.filter) {
@@ -818,6 +831,7 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.are_filters_set = function () {
             return $scope.multiselectFilter.state.length > 0 ||
                    $scope.multiselectFilter.category.length > 0 ||
+                   $scope.multiselectFilter.motionBlock.length > 0 ||
                    $scope.multiselectFilter.tag.length > 0 ||
                    ($scope.filter ? $scope.filter.search : false);
         };
@@ -875,6 +889,14 @@ angular.module('OpenSlidesApp.motions.site', [
                 motion.category_id = null;
             } else {
                 motion.category_id = category.id;
+            }
+            save(motion);
+        };
+        $scope.toggle_motionBlock = function (motion, block) {
+            if (motion.motion_block_id == block.id) {
+                motion.motion_block_id = null;
+            } else {
+                motion.motion_block_id = block.id;
             }
             save(motion);
         };

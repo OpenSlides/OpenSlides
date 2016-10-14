@@ -58,7 +58,7 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
             // Get ngDialog configuration.
             getDialog: function (motionBlock) {
                 return {
-                    template: 'static/templates/motions/motionBlock-form.html',
+                    template: 'static/templates/motions/motion-block-form.html',
                     controller: (motionBlock) ? 'MotionBlockUpdateCtrl' : 'MotionBlockCreateCtrl',
                     className: 'ngdialog-theme-default wide-form',
                     closeByEscape: false,
@@ -104,8 +104,7 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
     }
 ])
 
-// TODO: Rename this to MotionBlockListCtrl after $stateProvider is fixed, see #2479.
-.controller('MotionblockListCtrl', [
+.controller('MotionBlockListCtrl', [
     '$scope',
     'ngDialog',
     'MotionBlock',
@@ -123,22 +122,21 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
         $scope.delete = function (motionBlock) {
             MotionBlock.destroy(motionBlock.id);
         };
-
-        // TODO: In template we have filter toggleSort reverse sortColumn header. Use this stuff or remove it.
     }
 ])
 
-// TODO: Rename this to MotionBlockDetailCtrl after $stateProvider is fixed, see #2479.
-.controller('MotionblockDetailCtrl', [
+.controller('MotionBlockDetailCtrl', [
     '$scope',
     'ngDialog',
+    'Motion',
     'MotionBlockForm',
     'MotionBlock',
     'motionBlock',
     'Projector',
     'ProjectionDefault',
-    function($scope, ngDialog, MotionBlockForm, MotionBlock, motionBlock, Projector, ProjectionDefault) {
+    function($scope, ngDialog, Motion, MotionBlockForm, MotionBlock, motionBlock, Projector, ProjectionDefault) {
         MotionBlock.bindOne(motionBlock.id, $scope, 'motionBlock');
+        Motion.bindAll({}, $scope, 'motions');
         $scope.$watch(function () {
             return Projector.lastModified();
         }, function () {
