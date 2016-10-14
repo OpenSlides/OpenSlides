@@ -2,7 +2,11 @@
 
 'use strict';
 
-angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
+angular.module('OpenSlidesApp.users.site', [
+    'OpenSlidesApp.users',
+    'OpenSlidesApp.core.pdf',
+    'OpenSlidesApp.users.pdf'
+])
 
 .config([
     'mainMenuProvider',
@@ -423,7 +427,11 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'PasswordGenerator',
     'Projector',
     'ProjectionDefault',
-    function($scope, $state, $http, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault) {
+    'UserListContentProvider',
+    'PdfMakeDocumentProvider',
+    'gettextCatalog',
+    function($scope, $state, $http, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
+        UserListContentProvider, PdfMakeDocumentProvider, gettextCatalog) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.$watch(function () {
@@ -547,6 +555,13 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             });
             $scope.isSelectMode = false;
             $scope.uncheckAll();
+        };
+
+        $scope.makePDF_userList = function () {
+            var filename = gettextCatalog.getString("List of participants")+".pdf";
+            var userListContentProvider = UserListContentProvider.createInstance($scope.users, $scope.groups);
+            var documentProvider = PdfMakeDocumentProvider.createInstance(userListContentProvider);
+            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
         };
     }
 ])
@@ -959,7 +974,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                         existingUsers.forEach(function(user_) {
                             if (user_.first_name == user.first_name &&
                                 user_.last_name == user.last_name &&
-                                user_.structure_level == user.structure_level) {  
+                                user_.structure_level == user.structure_level) {
                                 deletePromises.push(User.destroy(user_.id));
                             }
                         });
@@ -968,7 +983,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                                 function(success) {
                                     user.imported = true;
                                 }
-                            );   
+                            );
                         });
                     } else if (!user.duplicate ||
                                (user.duplicateAction == $scope.duplicateActions[2])) {

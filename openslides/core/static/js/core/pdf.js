@@ -129,6 +129,15 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             listChild: {
                                 fontSize: 11,
                                 margin: [0,5]
+                            },
+                            tableHeader: {
+                                bold: true
+                            },
+                            tableEven: {
+                                fillColor: 'white'
+                            },
+                            tableOdd: {
+                                fillColor: '#e7e7e7'
                             }
                         }
                     };
