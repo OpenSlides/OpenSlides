@@ -5,6 +5,7 @@
 // The core module for the OpenSlides site
 angular.module('OpenSlidesApp.core.site', [
     'OpenSlidesApp.core',
+    'OpenSlidesApp.poll.majority',
     'ui.router',
     'angular-loading-bar',
     'colorpicker.module',
@@ -424,19 +425,19 @@ angular.module('OpenSlidesApp.core.site', [
     'Config',
     'gettextCatalog',
     function($parse, Config, gettextCatalog) {
-        function getHtmlType(type) {
+        var getHtmlType = function (type) {
             return {
                 string: 'text',
                 text: 'textarea',
                 integer: 'number',
-                float: 'number',
                 boolean: 'checkbox',
                 choice: 'choice',
                 comments: 'comments',
                 colorpicker: 'colorpicker',
                 datetimepicker: 'datetimepicker',
+                majorityMethod: 'choice',
             }[type];
-        }
+        };
 
         return {
             restrict: 'E',
@@ -586,11 +587,12 @@ angular.module('OpenSlidesApp.core.site', [
 // Config Controller
 .controller('ConfigCtrl', [
     '$scope',
+    'MajorityMethodChoices',
     'Config',
     'configOptions',
     'gettextCatalog',
     'DateTimePickerTranslation',
-    function($scope, Config, configOptions, gettextCatalog, DateTimePickerTranslation) {
+    function($scope, MajorityMethodChoices, Config, configOptions, gettextCatalog, DateTimePickerTranslation) {
         Config.bindAll({}, $scope, 'configs');
         $scope.configGroups = configOptions.data.config_groups;
         $scope.dateTimePickerTranslatedButtons = DateTimePickerTranslation.getButtons();
@@ -601,7 +603,7 @@ angular.module('OpenSlidesApp.core.site', [
             Config.save(key);
         };
 
-        /* For comments input */
+        // For comments input
         $scope.addComment = function (key, parent) {
             parent.value.push({
                 name: gettextCatalog.getString('New'),
@@ -613,6 +615,26 @@ angular.module('OpenSlidesApp.core.site', [
             parent.value.splice(index, 1);
             $scope.save(key, parent.value);
         };
+
+        // For majority method
+        angular.forEach(
+            _.filter($scope.configGroups, function (configGroup) {
+                return configGroup.name === 'Motions' || configGroup.name === 'Elections';
+            }),
+            function (configGroup) {
+                var configItem;
+                _.forEach(configGroup.subgroups, function (subgroup) {
+                    configItem = _.find(subgroup.items, ['input_type', 'majorityMethod']);
+                    if (configItem !== undefined) {
+                        // Break the forEach loop if we found something.
+                        return false;
+                    }
+                });
+                if (configItem !== undefined) {
+                    configItem.choices = MajorityMethodChoices;
+                }
+            }
+        );
     }
 ])
 

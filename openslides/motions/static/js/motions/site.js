@@ -6,6 +6,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'OpenSlidesApp.motions',
     'OpenSlidesApp.motions.diff',
     'OpenSlidesApp.motions.motionservices',
+    'OpenSlidesApp.poll.majority',
     'OpenSlidesApp.core.pdf',
     'OpenSlidesApp.motions.pdf'
 ])
@@ -479,83 +480,51 @@ angular.module('OpenSlidesApp.motions.site', [
     }
 ])
 
-// child controller of MotionDetailCtrl for each single poll.
-// TODO for now it is ust needed for majority Tests, which may be moved to a more generic
-// place later
+// Cache for MotionPollDetailCtrl so that users choices are keeped during user actions (e. g. save poll form).
+.value('MotionPollDetailCtrlCache', {})
+
+// Child controller of MotionDetailCtrl for each single poll.
 .controller('MotionPollDetailCtrl', [
     '$scope',
+    'MajorityMethodChoices',
+    'MotionMajority',
     'Config',
-    function($scope, Config) {
-        $scope.base = Config.get('motions_poll_100_percent_base').value;
-        $scope.basechoices = [{'value': 'YES_NO_ABSTAIN', 'display_name': 'Yes/No/Abstain'},
-            {'value': 'YES_NO', 'display_name': 'Yes/No'},
-            {'value': 'VALID', 'display_name': 'All valid ballots'},
-            {'value': 'CAST', 'display_name': 'All casted ballots'},
-            {'value': 'DISABLED', 'display_name': 'Disabled (no percents)'}];
-        $scope.quorum = Config.get('motions_poll_default_quorum').value;
-        $scope.isPossible = function() {
-            if ($scope.base == 'CAST' && $scope.poll.votescast > 0) {
-                    return true;
-            } else if ($scope.base == 'VALID' && $scope.poll.votesvalid > 0) {
-                return true;
-            } else if ($scope.base == 'YES_NO_ABSTAIN' &&
-                (!$scope.poll.yes || $scope.poll.yes >= 0) && 
-                (!$scope.poll.no ||$scope.poll.no >= 0) &&
-                (!$scope.poll.abstain || $scope.poll.abstain >= 0) &&
-                ($scope.poll.yes + $scope.poll.no + $scope.poll.abstain > 0)) {
-                return true;
-            } else if ($scope.base == 'YES_NO' &&
-                (!$scope.poll.yes || $scope.poll.yes >= 0) && 
-                (!$scope.poll.no ||$scope.poll.no >= 0) &&
-                ($scope.poll.yes + $scope.poll.no > 0)) {
-                return true;
-            } else {
-                return false;
-            }
+    'MotionPollDetailCtrlCache',
+    function ($scope, MajorityMethodChoices, MotionMajority, Config, MotionPollDetailCtrlCache) {
+        // Define choices.
+        $scope.methodChoices = MajorityMethodChoices;
+        // TODO: Get $scope.baseChoices from config_variables.py without copying them.
+
+        // Setup empty cache with default values.
+        if (MotionPollDetailCtrlCache[$scope.poll.id] === undefined) {
+            MotionPollDetailCtrlCache[$scope.poll.id] = {
+                isMajorityCalculation: true,
+                isMajorityDetails: false,
+                method: $scope.config('motions_poll_default_majority_method'),
+                base: $scope.config('motions_poll_100_percent_base')
+            };
+        }
+
+        // Fetch users choices from cache.
+        $scope.isMajorityCalculation = MotionPollDetailCtrlCache[$scope.poll.id].isMajorityCalculation;
+        $scope.isMajorityDetails = MotionPollDetailCtrlCache[$scope.poll.id].isMajorityDetails;
+        $scope.method = MotionPollDetailCtrlCache[$scope.poll.id].method;
+        $scope.base = MotionPollDetailCtrlCache[$scope.poll.id].base;
+
+        // Define result function.
+        $scope.isReached = function () {
+            return MotionMajority.isReached($scope.base, $scope.method, $scope.poll);
         };
-        // returns an integer. 0 and positive numbers indicate a success and the amount of votes
-        // in excess, negative numbers are a failure (amount of missing votes), or null in case of error
-        $scope.isReached = function() {
-            var basenr;
-            if ($scope.base == 'CAST' && $scope.poll.votescast > 0) {
-                basenr = $scope.poll.votescast;
-            } else if ($scope.base == 'VALID' && $scope.poll.votesvalid > 0) {
-                basenr = $scope.poll.votesvalid;
-            } else if ($scope.base == 'YES_NO') {
-                basenr = 0;
-                if ($scope.poll.yes > 0) {
-                    basenr = $scope.poll.yes;
-                }
-                if ($scope.poll.no > 0) {
-                    basenr = basenr + $scope.poll.no;
-                }
-            } else if ($scope.base == 'YES_NO_ABSTAIN') {
-                basenr = 0;
-                if ($scope.poll.yes > 0) {
-                    basenr = $scope.poll.yes;
-                }
-                if ($scope.poll.no > 0) {
-                    basenr = basenr + $scope.poll.no;
-                }
-                if ($scope.poll.abstain > 0) {
-                    basenr = basenr + $scope.poll.abstain;
-                }
-            }
-            if (basenr > 0) {
-                var needed = Math.ceil(basenr / 100 * $scope.quorum);
-                if ((basenr / 100 * $scope.quorum) % 1 === 0) {
-                    //the quorum is exactly reached, not passed
-                    needed = needed + 1;
-                }
-                if ($scope.poll.yes >= 0) {
-                    var result = $scope.poll.yes - needed;
-                    return result;
-                }
-            } else {
-                return 'undefined';
-            }
-        };
-        //isPlausible: TODO: check if the sums match up
+
+        // Save current values to cache on detroy of this controller.
+        $scope.$on('$destroy', function() {
+            MotionPollDetailCtrlCache[$scope.poll.id] = {
+                isMajorityCalculation: $scope.isMajorityCalculation,
+                isMajorityDetails: $scope.isMajorityDetails,
+                method: $scope.method,
+                base: $scope.base
+            };
+        });
     }
 ])
 
@@ -1224,12 +1193,11 @@ angular.module('OpenSlidesApp.motions.site', [
 .controller('MotionPollUpdateCtrl', [
     '$scope',
     'gettextCatalog',
-    'Config',
     'MotionPoll',
     'MotionPollForm',
     'motionpoll',
     'voteNumber',
-    function($scope, gettextCatalog, Config, MotionPoll, MotionPollForm, motionpoll, voteNumber) {
+    function($scope, gettextCatalog, MotionPoll, MotionPollForm, motionpoll, voteNumber) {
         // set initial values for form model by create deep copy of motionpoll object
         // so detail view is not updated while editing poll
         $scope.model = angular.copy(motionpoll);
