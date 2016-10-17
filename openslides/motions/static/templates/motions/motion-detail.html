@@ -163,14 +163,16 @@
       <div class="col-md-4">
           <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
           <ol>
-            <li ng-repeat="poll in motion.polls" class="spacer"
+            <li ng-controller="MotionPollDetailCtrl" ng-repeat="poll in motion.polls" class="spacer"
                 ng-if="poll.has_votes || operator.hasPerms('motions.can_manage')">
               <strong translate-comment='ballot of a motion' translate>Vote</strong>
+
               <!-- Edit poll -->
               <button os-perms="motions.can_manage" ng-click="openPollDialog(poll, $index+1)"
                   class="btn btn-default btn-xs" title="{{ 'Edit' | translate }}">
                 <i class="fa fa-pencil"></i>
               </button>
+
               <!-- Delete poll -->
               <button os-perms="motions.can_manage" class="btn btn-default btn-xs"
                   ng-bootbox-confirm="{{ 'Are you sure you want to delete this poll?' | translate }}"
@@ -178,13 +180,24 @@
                   title="{{ 'Delete' | translate }}">
                 <i class="fa fa-times"></i>
               </button>
-              <!-- print poll PDF -->
-              <a ng-click="makePollPDF()" class="btn btn-default btn-xs"
+
+              <!-- Print poll PDF -->
+              <a os-perms="motions.can_manage" ng-click="makePollPDF()" class="btn btn-default btn-xs"
                   title="{{ 'Print ballot paper' | translate }}">
                 <i class="fa fa-file-pdf-o"></i>
               </a>
-              <!-- template hook for motion poll buttons -->
+
+              <!-- Template hook for motion poll buttons -->
               <template-hook hook-name="motionPollSmallButtons"></template-hook>
+
+              <!-- Settings for majority calculations -->
+              <div os-perms="motions.can_manage" ng-hide="config('motions_poll_default_majority_method') == 'disabled'" ng-cloak>
+                <div class="input-group">
+                  <span><translate>Required majority</translate>: </span>
+                  <select ng-init="config('motions_poll_default_majority_method')" ng-model="$parent.method"
+                      ng-options="option.value as option.display_name for option in methodChoices" />
+                </div>
+              </div>
 
               <!-- Poll results -->
               <div ng-show="poll.has_votes" class="pollresults">
@@ -252,6 +265,17 @@
                       <span class="result_value">
                         {{ votesCast.value }} {{ votesCast.percentStr }}
                       </span>
+                  <!-- majority calculation -->
+                  <tr os-perms="motions.can_manage" ng-hide="method == 'disabled'">
+                    <td class="icon">
+                    <td>
+                      <span class="text-warning"  ng-if="isReached() === undefined" translate>Calculation impossible</span>
+                      <span class="text-success" ng-if="isReached() >= 0" translate>
+                        Quorum reached, {{ isReached() }} votes more than needed.
+                      </span>
+                      <span class="text-danger" ng-if="isReached() < 0" translate>
+                        Quorum not reached, {{ -(isReached()) }} <translate>votes missing.
+                     </span>
                 </table>
           </ol>
           <button ng-if="motion.isAllowed('create_poll')" ng-click="create_poll()" class="btn btn-default btn-sm">

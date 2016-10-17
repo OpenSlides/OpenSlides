@@ -12,7 +12,9 @@ INPUT_TYPE_MAPPING = {
     'choice': str,
     'comments': list,
     'colorpicker': str,
-    'datetimepicker': int}
+    'datetimepicker': int,
+    'majorityMethod': str,
+}
 
 
 class ConfigHandler:

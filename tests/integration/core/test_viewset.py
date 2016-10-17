@@ -143,5 +143,5 @@ class TestConfigDBQueries(TestCase):
 
         TODO: The last 57 requests are a bug.
         """
-        with self.assertNumQueries(60):
+        with self.assertNumQueries(61):
             self.client.get(reverse('config-list'))

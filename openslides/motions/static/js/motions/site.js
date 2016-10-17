@@ -6,6 +6,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'OpenSlidesApp.motions',
     'OpenSlidesApp.motions.diff',
     'OpenSlidesApp.motions.motionservices',
+    'OpenSlidesApp.poll.majority',
     'OpenSlidesApp.core.pdf',
     'OpenSlidesApp.motions.pdf'
 ])
@@ -476,6 +477,54 @@ angular.module('OpenSlidesApp.motions.site', [
                 }];
             }
         };
+    }
+])
+
+// Cache for MotionPollDetailCtrl so that users choices are keeped during user actions (e. g. save poll form).
+.value('MotionPollDetailCtrlCache', {})
+
+// Child controller of MotionDetailCtrl for each single poll.
+.controller('MotionPollDetailCtrl', [
+    '$scope',
+    'MajorityMethodChoices',
+    'MotionMajority',
+    'Config',
+    'MotionPollDetailCtrlCache',
+    function ($scope, MajorityMethodChoices, MotionMajority, Config, MotionPollDetailCtrlCache) {
+        // Define choices.
+        $scope.methodChoices = MajorityMethodChoices;
+        // TODO: Get $scope.baseChoices from config_variables.py without copying them.
+
+        // Setup empty cache with default values.
+        if (MotionPollDetailCtrlCache[$scope.poll.id] === undefined) {
+            MotionPollDetailCtrlCache[$scope.poll.id] = {
+                isMajorityCalculation: true,
+                isMajorityDetails: false,
+                method: $scope.config('motions_poll_default_majority_method'),
+                base: $scope.config('motions_poll_100_percent_base')
+            };
+        }
+
+        // Fetch users choices from cache.
+        $scope.isMajorityCalculation = MotionPollDetailCtrlCache[$scope.poll.id].isMajorityCalculation;
+        $scope.isMajorityDetails = MotionPollDetailCtrlCache[$scope.poll.id].isMajorityDetails;
+        $scope.method = MotionPollDetailCtrlCache[$scope.poll.id].method;
+        $scope.base = MotionPollDetailCtrlCache[$scope.poll.id].base;
+
+        // Define result function.
+        $scope.isReached = function () {
+            return MotionMajority.isReached($scope.base, $scope.method, $scope.poll);
+        };
+
+        // Save current values to cache on detroy of this controller.
+        $scope.$on('$destroy', function() {
+            MotionPollDetailCtrlCache[$scope.poll.id] = {
+                isMajorityCalculation: $scope.isMajorityCalculation,
+                isMajorityDetails: $scope.isMajorityDetails,
+                method: $scope.method,
+                base: $scope.base
+            };
+        });
     }
 ])
 
@@ -1594,6 +1643,12 @@ angular.module('OpenSlidesApp.motions.site', [
         gettext('All valid ballots');
         gettext('All casted ballots');
         gettext('Disabled (no percents)');
+        gettext('Required majority');
+        gettext('Default method to check whether a motion has reached the required majority.');
+        gettext('Simple majority');
+        gettext('Two-thirds majority');
+        gettext('Three-quarters majority');
+        gettext('Disabled');
         gettext('Number of ballot papers (selection)');
         gettext('Number of all delegates');
         gettext('Number of all participants');
