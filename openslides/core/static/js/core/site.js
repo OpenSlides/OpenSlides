@@ -1296,6 +1296,10 @@ angular.module('OpenSlidesApp.core.site', [
                 }
             }
         });
+
+        $scope.clearChatHistory = function () {
+            console.log("Clear");
+        };
     }
 ])
 
