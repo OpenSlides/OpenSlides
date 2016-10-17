@@ -34,7 +34,6 @@
             <div class="dropdown" ng-show="projectors.length > 1">
               <button class="btn btn-default btn-sm dropdown-toggle" id="menuProjector" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="true">
-                <i class="fa fa-video-camera"></i>
                 {{ active_projector.name }}
                 <span class="caret"></span>
               </button>
@@ -42,7 +41,7 @@
                 <li ng-repeat="projector in projectors"
                   ng-class="{'projected': projector === active_projector}"
                   ng-click="changeProjector(projector)">
-                  <i ng-show="projector === active_projector" class="fa fa-video-camera"></i>
+                  <i ng-show="projector === active_projector" class="fa fa-check"></i>
                   {{ projector.name }}
                   <i ng-show="projector.id == broadcast" class="fa fa-star-o spacer-left"></i>
                 </li>
