@@ -63,6 +63,12 @@
                       <button type="submit" class="btn btn-default" id="messageSendButton">
                         <i class="fa fa-comment"></i>
                       </button>
+                      <button os-perms="core.can_manage_chat" type="button"
+                        class="btn btn-default btn-danger" id="clearchatHistory"
+                        ng-bootbox-confirm="{{ 'Are you sure to delete the chat history?' | translate }}"
+                        ng-bootbox-confirm-action="clearChatHistory()">
+                        <i class="fa fa-trash"></i>
+                      </button>
                     </span>
                   </div>
                 </form>

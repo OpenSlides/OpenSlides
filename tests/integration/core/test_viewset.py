@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.core.config import config
@@ -145,3 +146,18 @@ class TestConfigDBQueries(TestCase):
         """
         with self.assertNumQueries(61):
             self.client.get(reverse('config-list'))
+
+
+class ChatMessageViewSet(TestCase):
+    """
+    Tests requests to deal with chat messages.
+    """
+    def setUp(self):
+        admin = User.objects.get(pk=1)
+        self.client.force_login(admin)
+        ChatMessage.objects.create(message='test_message_peechiel8IeZoohaem9e', user=admin)
+
+    def test_clear_chat(self):
+        response = self.client.post(reverse('chatmessage-clear'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ChatMessage.objects.all().count(), 0)

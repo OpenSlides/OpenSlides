@@ -287,7 +287,8 @@ class ChatMessage(RESTModelMixin, models.Model):
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_use_chat', 'Can use the chat'),)
+            ('can_use_chat', 'Can use the chat'),
+            ('can_manage_chat', 'Can manage the chat'),)
 
     def __str__(self):
         return 'Message {}'.format(self.timestamp)

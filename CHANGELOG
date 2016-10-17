@@ -22,6 +22,7 @@ Core:
 - Moved custom slides to own app "topics". Renamed it to "Topic".
 - Added support for multiple projectors.
 - Added an overlay for the current list of speakers.
+- Added button to clear the chatbox.
 
 Motions:
 - Added origin field.
