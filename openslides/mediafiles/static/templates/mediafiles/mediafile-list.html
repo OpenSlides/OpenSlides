@@ -201,7 +201,7 @@
         <!-- projector column -->
         <td ng-show="!isDeleteMode"
             os-perms="core.can_manage_projector">
-          <div class="btn-group" style="min-width:54px;" uib-dropdown
+          <div class="btn-group" style="min-width:{{ projectors.length > 1 ? '54' : '34' }}px;" uib-dropdown
             ng-if="mediafile.is_presentable"
             uib-tooltip="{{ 'Projector' | translate }} {{ mediafile.isProjected() }}"
             tooltip-enable="mediafile.isProjected() > 0">
@@ -216,7 +216,7 @@
               uib-dropdown-toggle>
               <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu" ng-if="projectors.length > 1">
               <li role="menuitem" ng-repeat="projector in projectors">
                 <a href="" ng-click="showMediafile(projector.id, mediafile)"
                   ng-class="{ 'projected': (mediafile.isProjected() == projector.id) }">
