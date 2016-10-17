@@ -56,12 +56,12 @@
           <strong>
             <a ui-sref="motions.motion.detail({id: motion.id})">{{ motion.identifier }} {{ motion.getTitle() }}</a>
           </strong>
-          <div class="hoverActions" ng-class="{'hiddenDiv': !motion.hover}">
+          <div os-perms="motions.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !motion.hover}">
             <!-- delete -->
             <a href="" class="text-danger"
               ng-bootbox-confirm="{{ 'Are you sure you want to remove this motion from motion block?' | translate }}<br>
                 <b>{{ motion.getTitle() }}</b>"
-              ng-bootbox-confirm-action="delete(motionBlock)" translate>Remove from motion block</a>
+              ng-bootbox-confirm-action="delete(motion)" translate>Remove from motion block</a>
           </div>
         <td>
           <div class="label" ng-class="'label-'+motion.state.css_class">

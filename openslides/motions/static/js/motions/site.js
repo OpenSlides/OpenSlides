@@ -215,6 +215,9 @@ angular.module('OpenSlidesApp.motions.site', [
                     motionBlocks: function (MotionBlock) {
                         return MotionBlock.findAll();
                     },
+                    motions: function(Motion) {
+                        return Motion.findAll();
+                    },
                     items: function(Agenda) {
                         return Agenda.findAll().catch(
                             function () {

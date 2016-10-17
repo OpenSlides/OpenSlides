@@ -26,13 +26,14 @@
     <thead>
       <tr>
         <th><translate>Name</translate>
+        <th><translate>Motions</translate>
     <tbody>
       <tr ng-repeat="motionBlock in motionBlocks | filter: filter.search | orderBy: 'title'">
         <td ng-mouseover="motionBlock.hover=true" ng-mouseleave="motionBlock.hover=false">
           <strong>
             <a ui-sref="motions.motionBlock.detail({id: motionBlock.id})">{{ motionBlock.title }}</a>
           </strong>
-          <div class="hoverActions" ng-class="{'hiddenDiv': !motionBlock.hover}">
+          <div os-perms="motions.can_manage"  class="hoverActions" ng-class="{'hiddenDiv': !motionBlock.hover}">
             <!-- edit -->
             <a ng-click="openFormDialog(motionBlock)" translate>Edit</a> |
             <!-- delete -->
@@ -41,5 +42,7 @@
                 <b>{{ motionBlock.name }}</b>"
               ng-bootbox-confirm-action="delete(motionBlock)" translate>Delete</a>
           </div>
+        <td>
+          {{ motionBlock.motions.length }}
   </table>
 </div>

@@ -32,6 +32,9 @@ Motions:
 - Changed label of former state "commited a bill" to "refered to committee".
 - Added options to calculate percentages on different bases.
 - Added majority calculation.
+- Added blocks for motions which can set as agenda item.
+  Set states for multiple motions of a motion block by following
+  the recommendations of each motion.
 
 Users:
 - Added field is_committee and new default group Committees.

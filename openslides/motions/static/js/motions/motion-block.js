@@ -158,6 +158,13 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
                 $scope.alert = { type: 'danger', msg: data.detail, show: true };
             });
         };
+        $scope.delete = function (motion) {
+            motion.motion_block_id = null;
+            motion.title = motion.getTitle(-1);
+            motion.text = motion.getText(-1);
+            motion.reason = motion.getReason(-1);
+            Motion.save(motion);
+        };
     }
 ])
 
