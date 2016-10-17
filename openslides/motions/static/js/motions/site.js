@@ -4,7 +4,6 @@
 
 angular.module('OpenSlidesApp.motions.site', [
     'OpenSlidesApp.motions',
-    'OpenSlidesApp.motions.diff',
     'OpenSlidesApp.motions.motionservices',
     'OpenSlidesApp.poll.majority',
     'OpenSlidesApp.core.pdf',
@@ -50,6 +49,9 @@ angular.module('OpenSlidesApp.motions.site', [
                     categories: function(Category) {
                         return Category.findAll();
                     },
+                    motionBlocks: function(MotionBlock) {
+                        return MotionBlock.findAll();
+                    },
                     tags: function(Tag) {
                         return Tag.findAll();
                     },
@@ -80,6 +82,9 @@ angular.module('OpenSlidesApp.motions.site', [
                     },
                     categories: function(Category) {
                         return Category.findAll();
+                    },
+                    motionBlocks: function(MotionBlock) {
+                        return MotionBlock.findAll();
                     },
                     users: function(User) {
                         return User.findAll().catch(
@@ -198,6 +203,72 @@ angular.module('OpenSlidesApp.motions.site', [
                 },
                 controller: 'CategorySortCtrl',
                 templateUrl: 'static/templates/motions/category-sort.html'
+            })
+            // MotionBlock
+            .state('motions.motionBlock', {
+                url: '/blocks',
+                abstract: true,
+                template: '<ui-view/>',
+            })
+            .state('motions.motionBlock.list', {
+               resolve: {
+                    motionBlocks: function (MotionBlock) {
+                        return MotionBlock.findAll();
+                    },
+                    motions: function(Motion) {
+                        return Motion.findAll();
+                    },
+                    items: function(Agenda) {
+                        return Agenda.findAll().catch(
+                            function () {
+                                return null;
+                            }
+                        );
+                    }
+                }
+            })
+            .state('motions.motionBlock.detail', {
+                resolve: {
+                    motionBlock: function(MotionBlock, $stateParams) {
+                        return MotionBlock.find($stateParams.id);
+                    },
+                    motions: function(Motion) {
+                        return Motion.findAll();
+                    },
+                    items: function(Agenda) {
+                        return Agenda.findAll().catch(
+                            function () {
+                                return null;
+                            }
+                        );
+                    }
+                }
+            })
+            // redirects to motionBlock detail and opens motionBlock edit form dialog, uses edit url,
+            // used by ui-sref links from agenda only
+            // (from motionBlock controller use MotionBlockForm factory instead to open dialog in front
+            // of current view without redirect)
+            .state('motions.motionBlock.detail.update', {
+                onEnter: ['$stateParams', '$state', 'ngDialog', 'MotionBlock',
+                    function($stateParams, $state, ngDialog, MotionBlock) {
+                        ngDialog.open({
+                            template: 'static/templates/motions/motion-block-form.html',
+                            controller: 'MotionBlockUpdateCtrl',
+                            className: 'ngdialog-theme-default wide-form',
+                            closeByEscape: false,
+                            closeByDocument: false,
+                            resolve: {
+                                motionBlock: function () {
+                                    return motionBlock;
+                                }
+                            },
+                            preCloseCallback: function() {
+                                $state.go('motions.motionBlock.detail', {motionBlock: $stateParams.id});
+                                return true;
+                            }
+                        });
+                    }
+                ],
             });
     }
 ])
@@ -306,12 +377,13 @@ angular.module('OpenSlidesApp.motions.site', [
     'Category',
     'Config',
     'Mediafile',
+    'MotionBlock',
     'Tag',
     'User',
     'Workflow',
     'Agenda',
     'AgendaTree',
-    function (gettextCatalog, operator, Editor, MotionComment, Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaTree) {
+    function (gettextCatalog, operator, Editor, MotionComment, Category, Config, Mediafile, MotionBlock, Tag, User, Workflow, Agenda, AgendaTree) {
         return {
             // ngDialog for motion form
             getDialog: function (motion) {
@@ -450,6 +522,17 @@ angular.module('OpenSlidesApp.motions.site', [
                         options: Category.getAll(),
                         ngOptions: 'option.id as option.name for option in to.options',
                         placeholder: gettextCatalog.getString('Select or search a category ...')
+                    },
+                    hideExpression: '!model.more'
+                },
+                {
+                    key: 'motion_block_id',
+                    type: 'select-single',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Motion block'),
+                        options: MotionBlock.getAll(),
+                        ngOptions: 'option.id as option.title for option in to.options',
+                        placeholder: gettextCatalog.getString('Select or search a motion block ...')
                     },
                     hideExpression: '!model.more'
                 },
@@ -630,6 +713,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'Workflow',
     'User',
     'Agenda',
+    'MotionBlock',
     'MotionDocxExport',
     'MotionContentProvider',
     'MotionCatalogContentProvider',
@@ -639,11 +723,12 @@ angular.module('OpenSlidesApp.motions.site', [
     'HTMLValidizer',
     'Projector',
     'ProjectionDefault',
-    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionDocxExport,
-                MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
+    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionBlock,
+                MotionDocxExport, MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
                 gettextCatalog, HTMLValidizer, Projector, ProjectionDefault) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
+        MotionBlock.bindAll({}, $scope, 'motionBlocks');
         Tag.bindAll({}, $scope, 'tags');
         Workflow.bindAll({}, $scope, 'workflows');
         User.bindAll({}, $scope, 'users');
@@ -666,11 +751,13 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.multiselectFilter = {
             state: [],
             category: [],
+            motionBlock: [],
             tag: []
         };
         $scope.getItemId = {
             state: function (motion) {return motion.state_id;},
             category: function (motion) {return motion.category_id;},
+            motionBlock: function (motion) {return motion.motion_block_id;},
             tag: function (motion) {return motion.tags_id;}
         };
         // function to operate the multiselectFilter
@@ -700,6 +787,10 @@ angular.module('OpenSlidesApp.motions.site', [
             if (motion.category) {
                 category = motion.category.name;
             }
+            var motionBlock = '';
+            if (motion.motionBlock) {
+                motionBlock = motion.motionBlock.title;
+            }
             return [
                 motion.identifier,
                 motion.getTitle(),
@@ -725,6 +816,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     }
                 ).join(" "),
                 category,
+                motionBlock
             ].join(" ");
         };
         // for reset-button
@@ -732,6 +824,7 @@ angular.module('OpenSlidesApp.motions.site', [
             $scope.multiselectFilter = {
                 state: [],
                 category: [],
+                motionBlock: [],
                 tag: []
             };
             if ($scope.filter) {
@@ -741,6 +834,7 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.are_filters_set = function () {
             return $scope.multiselectFilter.state.length > 0 ||
                    $scope.multiselectFilter.category.length > 0 ||
+                   $scope.multiselectFilter.motionBlock.length > 0 ||
                    $scope.multiselectFilter.tag.length > 0 ||
                    ($scope.filter ? $scope.filter.search : false);
         };
@@ -798,6 +892,14 @@ angular.module('OpenSlidesApp.motions.site', [
                 motion.category_id = null;
             } else {
                 motion.category_id = category.id;
+            }
+            save(motion);
+        };
+        $scope.toggle_motionBlock = function (motion, block) {
+            if (motion.motion_block_id == block.id) {
+                motion.motion_block_id = null;
+            } else {
+                motion.motion_block_id = block.id;
             }
             save(motion);
         };

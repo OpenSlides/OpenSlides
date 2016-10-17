@@ -295,8 +295,9 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
     'Assignment', // TODO: Remove this after refactoring of data loading on start.
     'Topic', // TODO: Remove this after refactoring of data loading on start.
     'Motion', // TODO: Remove this after refactoring of data loading on start.
+    'MotionBlock', // TODO: Remove this after refactoring of data loading on start.
     'Agenda',
-    function (Projector, Assignment, Topic, Motion, Agenda) {
+    function (Projector, Assignment, Topic, Motion, MotionBlock, Agenda) {
         return {
             getItem: function (projectorId) {
                 var elementPromise;
@@ -308,6 +309,13 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                                 elementPromise = Motion.find(element.id).then(function(motion) {
                                     return Motion.loadRelations(motion, 'agenda_item').then(function() {
                                         return motion.agenda_item;
+                                    });
+                                });
+                                break;
+                            case 'motions/motion-block':
+                                elementPromise = MotionBlock.find(element.id).then(function(motionBlock) {
+                                    return MotionBlock.loadRelations(motionBlock, 'agenda_item').then(function() {
+                                        return motionBlock.agenda_item;
                                     });
                                 });
                                 break;

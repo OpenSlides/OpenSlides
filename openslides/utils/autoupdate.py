@@ -145,7 +145,7 @@ def inform_changed_data(instances, information=None):
     """
     root_instances = set()
     if not isinstance(instances, Iterable):
-        # Make surce instance is an iterable
+        # Make sure instances is an iterable
         instances = (instances, )
     for instance in instances:
         try:

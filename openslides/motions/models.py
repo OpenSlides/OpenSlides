@@ -17,12 +17,14 @@ from openslides.poll.models import (
     BaseVote,
     CollectDefaultVotesMixin,
 )
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.search import user_name_helper
 
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
+    MotionBlockAccessPermissions,
     MotionChangeRecommendationAccessPermissions,
     WorkflowAccessPermissions,
 )
@@ -116,6 +118,15 @@ class Motion(RESTModelMixin, models.Model):
     ForeignKey to one category of motions.
     """
 
+    motion_block = models.ForeignKey(
+        'MotionBlock',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True)
+    """
+    ForeignKey to one block of motions.
+    """
+
     origin = models.CharField(max_length=255, blank=True)
     """
     A string to describe the origin of this motion e. g. that it was
@@ -182,7 +193,7 @@ class Motion(RESTModelMixin, models.Model):
         return self.title
 
     # TODO: Use transaction
-    def save(self, use_version=None, *args, **kwargs):
+    def save(self, use_version=None, skip_autoupdate=False, *args, **kwargs):
         """
         Save the motion.
 
@@ -215,14 +226,19 @@ class Motion(RESTModelMixin, models.Model):
         if not self.identifier and isinstance(self.identifier, str):
             self.identifier = None
 
-        super(Motion, self).save(*args, **kwargs)
+        # Always skip autoupdate. Maybe we run it later in this method.
+        super(Motion, self).save(skip_autoupdate=True, *args, **kwargs)
 
         if 'update_fields' in kwargs:
             # Do not save the version data if only some motion fields are updated.
+            if not skip_autoupdate:
+                inform_changed_data(self)
             return
 
         if use_version is False:
             # We do not need to save the version.
+            if not skip_autoupdate:
+                inform_changed_data(self)
             return
         elif use_version is None:
             use_version = self.get_last_version()
@@ -239,6 +255,8 @@ class Motion(RESTModelMixin, models.Model):
         if use_version.id is None:
             if not self.version_data_changed(use_version):
                 # We do not need to save the version.
+                if not skip_autoupdate:
+                    inform_changed_data(self)
                 return
             version_number = self.versions.aggregate(Max('version_number'))['version_number__max'] or 0
             use_version.version_number = version_number + 1
@@ -246,16 +264,22 @@ class Motion(RESTModelMixin, models.Model):
         # Necessary line if the version was set before the motion got an id.
         use_version.motion = use_version.motion
 
-        use_version.save()
+        # Always skip autoupdate. Maybe we run it later in this method.
+        use_version.save(skip_autoupdate=True)
 
         # Set the active version of this motion. This has to be done after the
         # version is saved in the database.
         # TODO: Move parts of these last lines of code outside the save method
-        # when other versions than the last ones should be edited later on.
+        # when other versions than the last one should be edited later on.
         if self.active_version is None or not self.state.leave_old_version_active:
             # TODO: Don't call this if it was not a new version
             self.active_version = use_version
-            self.save(update_fields=['active_version'])
+            # Always skip autoupdate. Maybe we run it later in this method.
+            self.save(update_fields=['active_version'], skip_autoupdate=True)
+
+        # Finally run autoupdate if it is not skipped by caller.
+        if not skip_autoupdate:
+            inform_changed_data(self)
 
     def version_data_changed(self, version):
         """
@@ -520,6 +544,13 @@ class Motion(RESTModelMixin, models.Model):
             recommendation = State.objects.get(pk=recommendation)
         self.recommendation = recommendation
 
+    def follow_recommendation(self):
+        """
+        Set the state of this motion to its recommendation.
+        """
+        if self.recommendation is not None:
+            self.set_state(self.recommendation)
+
     def get_agenda_title(self):
         """
         Return a simple title string for the agenda.
@@ -614,7 +645,7 @@ class Motion(RESTModelMixin, models.Model):
 
         return actions
 
-    def write_log(self, message_list, person=None):
+    def write_log(self, message_list, person=None, skip_autoupdate=False):
         """
         Write a log message.
 
@@ -623,7 +654,8 @@ class Motion(RESTModelMixin, models.Model):
         """
         if person and not person.is_authenticated():
             person = None
-        MotionLog.objects.create(motion=self, message_list=message_list, person=person)
+        motion_log = MotionLog(motion=self, message_list=message_list, person=person)
+        motion_log.save(skip_autoupdate=skip_autoupdate)
 
     def is_amendment(self):
         """
@@ -781,6 +813,66 @@ class Category(RESTModelMixin, models.Model):
 
     def __str__(self):
         return self.name
+
+
+class MotionBlockManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all motion blocks. In the
+        background the related agenda item is prefetched from the database.
+        """
+        return self.get_queryset().prefetch_related('agenda_items')
+
+
+class MotionBlock(RESTModelMixin, models.Model):
+    """
+    Model for blocks of motions.
+    """
+    access_permissions = MotionBlockAccessPermissions()
+
+    objects = MotionBlockManager()
+
+    title = models.CharField(max_length=255)
+
+    # In theory there could be one then more agenda_item. But we support only
+    # one. See the property agenda_item.
+    agenda_items = GenericRelation(Item, related_name='topics')
+
+    class Meta:
+        default_permissions = ()
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def agenda_item(self):
+        """
+        Returns the related agenda item.
+        """
+        # We support only one agenda item so just return the first element of
+        # the queryset.
+        return self.agenda_items.all()[0]
+
+    @property
+    def agenda_item_id(self):
+        """
+        Returns the id of the agenda item object related to this object.
+        """
+        return self.agenda_item.pk
+
+    def get_agenda_title(self):
+        return self.title
+
+    def get_agenda_list_view_title(self):
+        return self.title
+
+    @classmethod
+    def get_collection_string(cls):
+        # TODO: Fix generic method to support camelCase, #2480.
+        return 'motions/motion-block'
 
 
 class MotionLog(RESTModelMixin, models.Model):

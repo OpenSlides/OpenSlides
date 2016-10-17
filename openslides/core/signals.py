@@ -65,6 +65,10 @@ def create_builtin_projection_defaults(**kwargs):
         display_name='Motions',
         projector=default_projector)
     ProjectionDefault.objects.create(
+        name='motionBlocks',
+        display_name='Motion Blocks',
+        projector=default_projector)
+    ProjectionDefault.objects.create(
         name='assignments',
         display_name='Elections',
         projector=default_projector)

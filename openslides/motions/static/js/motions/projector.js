@@ -2,7 +2,10 @@
 
 'use strict';
 
-angular.module('OpenSlidesApp.motions.projector', ['OpenSlidesApp.motions'])
+angular.module('OpenSlidesApp.motions.projector', [
+    'OpenSlidesApp.motions',
+    'OpenSlidesApp.motions.motionBlockProjector',
+])
 
 .config([
     'slidesProvider',

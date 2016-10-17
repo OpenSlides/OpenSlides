@@ -16,6 +16,7 @@ from openslides.utils.rest_api import (
 from .models import (
     Category,
     Motion,
+    MotionBlock,
     MotionChangeRecommendation,
     MotionLog,
     MotionPoll,
@@ -40,6 +41,15 @@ class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
         fields = ('id', 'name', 'prefix',)
+
+
+class MotionBlockSerializer(ModelSerializer):
+    """
+    Serializer for motion.models.Category objects.
+    """
+    class Meta:
+        model = MotionBlock
+        fields = ('id', 'title', 'agenda_item_id',)
 
 
 class StateSerializer(ModelSerializer):
@@ -275,6 +285,7 @@ class MotionSerializer(ModelSerializer):
             'active_version',
             'parent',
             'category',
+            'motion_block',
             'origin',
             'submitters',
             'supporters',
@@ -300,6 +311,7 @@ class MotionSerializer(ModelSerializer):
         motion.reason = validated_data.get('reason', '')
         motion.identifier = validated_data.get('identifier')
         motion.category = validated_data.get('category')
+        motion.motion_block = validated_data.get('motion_block')
         motion.origin = validated_data.get('origin', '')
         motion.comments = validated_data.get('comments')
         motion.parent = validated_data.get('parent')
@@ -319,8 +331,8 @@ class MotionSerializer(ModelSerializer):
         """
         Customized method to update a motion.
         """
-        # Identifier, category, origin and comments.
-        for key in ('identifier', 'category', 'origin', 'comments'):
+        # Identifier, category, motion_block, origin and comments.
+        for key in ('identifier', 'category', 'motion_block', 'origin', 'comments'):
             if key in validated_data.keys():
                 setattr(motion, key, validated_data[key])
 

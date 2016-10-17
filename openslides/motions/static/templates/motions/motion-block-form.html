@@ -1,0 +1,17 @@
+<h1 ng-if="model.id" translate>Edit motion block</h1>
+<h1 ng-if="!model.id" translate>New motion block</h1>
+
+<div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
+  {{ alert.msg }}
+</div>
+
+<form name="motionBlockForm" ng-submit="save(model)">
+  <formly-form model="model" fields="formFields">
+    <button type="submit" ng-disabled="motionBlockForm.$invalid" class="btn btn-primary" translate>
+      Save
+    </button>
+    <button ng-click="closeThisDialog()" class="btn btn-default" translate>
+      Cancel
+    </button>
+  </formly-form>
+</form>

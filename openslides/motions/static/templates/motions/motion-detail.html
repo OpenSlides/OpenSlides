@@ -150,6 +150,12 @@
           <h3 ng-if="motion.category" translate>Category</h3>
           {{ motion.category.name }}
 
+          <!-- Motion block -->
+          <h3 translate>Motion block</h3>
+          <a ui-sref="motions.motionBlock.detail({id: motion.motionBlock.id})"
+              os-perms="motions.can_manage">{{ motion.motionBlock.title }}</a>
+          <span os-perms="!motions.can_manage">{{ motion.motionBlock.title }}</span>
+
           <!-- Tags -->
           <h3 ng-if="motion.tags.length > 0" translate>Tags</h3>
           <span ng-repeat="tag in motion.tags">
@@ -159,6 +165,7 @@
           <!-- Origin -->
           <h3 ng-if="motion.origin" translate>Origin</h3>
           {{ motion.origin }}
+
       </div>
       <div class="col-md-4">
           <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>

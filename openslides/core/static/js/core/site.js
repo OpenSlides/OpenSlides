@@ -165,10 +165,8 @@ angular.module('OpenSlidesApp.core.site', [
             }
 
             angular.forEach(views, function(config, name) {
-
-                // Sets default values for templateUrl
-                var patterns = state.name.split('.'),
-                    templateUrl,
+                // Sets additional default values for templateUrl
+                var templateUrl,
                     controller,
                     defaultControllers = {
                         create: 'CreateCtrl',
@@ -177,22 +175,43 @@ angular.module('OpenSlidesApp.core.site', [
                         detail: 'DetailCtrl',
                     };
 
-                // templateUrl
-                if (_.last(patterns).match(/(create|update)/)) {
-                    // When state_patterns is in the form "app.module.create" or
-                    // "app.module.update", use the form template.
-                    templateUrl = 'static/templates/' + patterns[0] + '/' + patterns[1] + '-form.html';
-                } else {
-                    // Replaces the first point through a slash (the app name)
-                    var appName = state.name.replace('.', '/');
-                    // Replaces any folowing points though a -
-                    templateUrl = 'static/templates/' + appName.replace(/\./g, '-') + '.html';
+                // Split up state name
+                // example: "motions.motion.detail.update" -> ['motions', 'motion', 'detail', 'update']
+                var patterns = state.name.split('.');
+
+                // set app and module name from state
+                // - appName: patterns[0] (e.g. "motions")
+                // - moduleNames: patterns without first element (e.g. ["motion", "detail", "update"])
+                var appName = '';
+                var moduleName = '';
+                var moduleNames = [];
+                if (patterns.length > 0) {
+                    appName = patterns[0];
+                    moduleNames = patterns.slice(1);
                 }
+                if (moduleNames.length > 0) {
+                    // convert from camcelcase to dash notation
+                    // example: ["motionBlock", "detail"] -> ["motion-block", "detail"]
+                    for (var i = 0; i < moduleNames.length; i++) {
+                        moduleNames[i] =  moduleNames[i].replace(/([a-z\d])([A-Z])/g, '$1-$2').toLowerCase();
+                    }
+
+                    // use special templateUrl for create and update view
+                    // example: ["motion", "detail", "update"] -> "motion-form"
+                    if (_.last(moduleNames).match(/(create|update)/)) {
+                        moduleName = '/' + moduleNames[0] + '-form';
+                    } else {
+                        // convert modelNames array to url string
+                        // example: ["motion-block", "detail"] -> "motion-block-detail"
+                        moduleName = '/' + moduleNames.join('-');
+                    }
+                }
+                templateUrl = 'static/templates/' + appName + moduleName + '.html';
                 config.templateUrl = state.templateUrl || templateUrl;
 
                 // controller
                 if (patterns.length >= 3) {
-                    controller = _.capitalize(patterns[1]) + defaultControllers[_.last(patterns)];
+                    controller = _.upperFirst(patterns[1]) + defaultControllers[_.last(patterns)];
                     config.controller = state.controller || controller;
                 }
                 result[name] = config;
@@ -1416,6 +1435,20 @@ angular.module('OpenSlidesApp.core.site', [
         };
     }
 ])
+
+.filter('toArray', function(){
+    /*
+     * Transforms an object to an array. Items of the array are the values of
+     * the object elements.
+     */
+    return function(obj) {
+        var result = [];
+        angular.forEach(obj, function(val, key) {
+            result.push(val);
+        });
+        return result;
+    };
+})
 
 //Mark all core config strings for translation in Javascript
 .config([
