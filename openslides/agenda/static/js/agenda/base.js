@@ -369,9 +369,8 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                          [{name: 'agenda/current-list-of-speakers-overlay',stable: true}]);
                 }
             },
-            isProjected: function (additionalId) {
+            isProjected: function () {
                 // Returns the id of the last projector with an agenda-item element. Else return 0.
-                // additionalId is not needed
                 var isProjected = 0;
                 var predicate = function (element) {
                     var value;
