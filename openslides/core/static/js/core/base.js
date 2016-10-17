@@ -327,11 +327,11 @@ angular.module('OpenSlidesApp.core', [
  * This places a projector button in the document.
  *
  * Example: <projector-button model="motion" default-projector.id="defPrId"
- *           additional-id="2" content="{{ 'project' | translate }}"></projector-button>
+ *           arg="2" content="{{ 'project' | translate }}"></projector-button>
  * This button references to model (in this example 'motion'). Also a defaultProjectionId
  * has to be given. In the example it's a scope variable. The next two parameters are additional:
- *   - additional-id: Then the model.project and model.isProjected will be called with
- *                    this argument (e. g.: model.project(2))
+ *   - arg: Then the model.project and model.isProjected will be called with
+ *          this argument (e. g.: model.project(2))
  *   - content: A text placed behind the projector symbol.
  */
 .directive('projectorButton', [
@@ -357,9 +357,9 @@ angular.module('OpenSlidesApp.core', [
                     scope.defaultProjectorId = defaultProjectorId;
                 });
 
-                if (attributes.additionalId) {
-                    scope.$watch(attributes.additionalId, function (id) {
-                        scope.additionalId = id;
+                if (attributes.arg) {
+                    scope.$watch(attributes.arg, function (arg) {
+                        scope.arg = arg;
                     });
                 }
 
