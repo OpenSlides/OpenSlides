@@ -15,25 +15,27 @@ from django.core.urlresolvers import get_resolver
 from django.db.models import F
 from django.http import Http404, HttpResponse
 from django.utils.timezone import now
+from django.utils.translation import ugettext as _
 
-from openslides import __version__ as version
-from openslides.utils import views as utils_views
-from openslides.utils.collection import Collection, CollectionElement
-from openslides.utils.plugins import (
+from .. import __version__ as version
+from ..utils import views as utils_views
+from ..utils.autoupdate import inform_deleted_data
+from ..utils.collection import Collection, CollectionElement
+from ..utils.plugins import (
     get_plugin_description,
     get_plugin_verbose_name,
     get_plugin_version,
 )
-from openslides.utils.rest_api import (
+from ..utils.rest_api import (
     ModelViewSet,
     Response,
     SimpleMetadata,
     ValidationError,
     ViewSet,
     detail_route,
+    list_route,
 )
-from openslides.utils.search import search
-
+from ..utils.search import search
 from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,
@@ -667,13 +669,18 @@ class ChatMessageViewSet(ModelViewSet):
         """
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        else:
+        elif self.action in ('metadata', 'create'):
             # We do not want anonymous users to use the chat even the anonymous
             # group has the permission core.can_use_chat.
             result = (
-                self.action in ('metadata', 'create') and
                 self.request.user.is_authenticated() and
                 self.request.user.has_perm('core.can_use_chat'))
+        elif self.action == 'clear':
+            result = (
+                self.request.user.has_perm('core.can_use_chat') and
+                self.request.user.has_perm('core.can_manage_chat'))
+        else:
+            result = False
         return result
 
     def perform_create(self, serializer):
@@ -682,6 +689,22 @@ class ChatMessageViewSet(ModelViewSet):
         method so that the request.user can be saved into the model field.
         """
         serializer.save(user=self.request.user)
+
+    @list_route(methods=['post'])
+    def clear(self, request):
+        """
+        Deletes all chat messages.
+        """
+        # Collect all chat messages with their collection_string and id
+        chatmessages = ChatMessage.objects.all()
+        args = []
+        for chatmessage in chatmessages:
+            args.append(chatmessage.get_collection_string())
+            args.append(chatmessage.pk)
+        chatmessages.delete()
+        # Trigger autoupdate and setup response.
+        inform_deleted_data(*args)
+        return Response({'detail': _('All chat messages deleted successfully.')})
 
 
 # Special API views

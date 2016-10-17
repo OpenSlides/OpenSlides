@@ -1298,7 +1298,7 @@ angular.module('OpenSlidesApp.core.site', [
         });
 
         $scope.clearChatHistory = function () {
-            console.log("Clear");
+            $http.post('/rest/core/chatmessage/clear/');
         };
     }
 ])
