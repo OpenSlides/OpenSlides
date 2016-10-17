@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-04 11:15+0200\n"
-"PO-Revision-Date: 2016-10-04 09:25+0000\n"
+"POT-Creation-Date: 2016-10-17 22:06+0200\n"
+"PO-Revision-Date: 2016-10-17 20:54+0000\n"
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/openslides/openslides/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -109,12 +109,12 @@ msgstr "Wahl"
 msgid "You have to submit data for %d candidates."
 msgstr "Sie müssen Daten für %d Kandidaten übermitteln."
 
-#: assignments/serializers.py:142 motions/serializers.py:201
+#: assignments/serializers.py:142 motions/serializers.py:212
 #, python-format
 msgid "You have to submit data for %d vote values."
 msgstr "Sie müssen Daten für %d Stimmen übermitteln."
 
-#: assignments/serializers.py:146 motions/serializers.py:205
+#: assignments/serializers.py:146 motions/serializers.py:216
 #, python-format
 msgid "Vote value %s is invalid."
 msgstr "Wert für Stimme %s ist ungültig."
@@ -315,77 +315,81 @@ msgstr "Nein"
 msgid "Abstain"
 msgstr "Enthaltung"
 
-#: core/config.py:37 core/config.py:64
+#: core/config.py:40 core/config.py:67
 msgid "The config variable {} was not found."
 msgstr "Die Konfigurationsvariable {} wurde nicht gefunden."
 
-#: core/config.py:73
+#: core/config.py:76
 #, python-format
 msgid "Wrong datatype. Expected %(expected_type)s, got %(got_type)s."
 msgstr "Falscher Datentyp. Erwartete %(expected_type)s, erhielt %(got_type)s."
 
-#: core/config.py:83
+#: core/config.py:86
 msgid "Invalid input. Choice does not match."
 msgstr "Ungültige Eingabe. Auswahl nicht gefunden."
 
-#: core/config.py:92
+#: core/config.py:95
 msgid "motions_comments has to be a list."
 msgstr "motions_comments muss eine Liste sein."
 
-#: core/config.py:95
+#: core/config.py:98
 msgid "Each element in motions_comments has to be a dict."
 msgstr "Jedes Element in motions_comments muss ein dict sein."
 
-#: core/config.py:97
+#: core/config.py:100
 msgid "A name and a public property have to be given."
 msgstr "Ein Name und eine public Eigenschaft müssen angegeben werden."
 
-#: core/config.py:99
+#: core/config.py:102
 msgid "name has to be string."
 msgstr "Name muss ein String sein."
 
-#: core/config.py:101
+#: core/config.py:104
 msgid "public property has to be bool."
 msgstr "Public-Eigenschaft muss ein Boolean sein."
 
-#: core/config.py:126
+#: core/config.py:129
 msgid "Too many values for config variable {} found."
 msgstr "Zu viele Werte für Konfigurationsvariable {} gefunden."
 
-#: core/config.py:195
+#: core/config.py:198
 msgid "Invalid value for config attribute input_type."
 msgstr "Ungültiger Wert für Konfigurationsattribut input_type."
 
-#: core/config.py:197
+#: core/config.py:200
 msgid ""
 "Either config attribute 'choices' must not be None or 'input_type' must not "
 "be 'choice'."
 msgstr "Entweder das Konfigurationsattribut 'choices' darf nicht None sein oder 'input_type' darf nicht 'choice' sein."
 
-#: core/config.py:200
+#: core/config.py:203
 msgid ""
 "Either config attribute 'choices' must be None or 'input_type' must be "
 "'choice'."
 msgstr "Entweder das Konfigurationsattribut 'choices' muss None sein oder 'input_type' muss 'choice' sein."
 
-#: core/config.py:210
+#: core/config.py:213
 msgid "General"
 msgstr "Allgemein"
+
+#: core/views.py:707
+msgid "All chat messages deleted successfully."
+msgstr "Alle Chatnachrichten erfolgreich gelöscht."
 
 #: mediafiles/models.py:65
 msgid "unknown"
 msgstr "unbekannt"
 
-#: motions/models.py:175 motions/pdf.py:38 motions/pdf.py:328
-#: motions/views.py:465 motions/views.py:525
+#: motions/models.py:187 motions/pdf.py:38 motions/pdf.py:328
+#: motions/views.py:544 motions/views.py:604
 msgid "Motion"
 msgstr "Antrag"
 
-#: motions/models.py:685
+#: motions/models.py:718
 msgid "new"
 msgstr "Neu"
 
-#: motions/models.py:757
+#: motions/models.py:912
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr "%(time_and_messages)s durch %(person)s"
@@ -406,7 +410,7 @@ msgstr "Unterstützer/innen"
 msgid "State"
 msgstr "Status"
 
-#: motions/pdf.py:91 motions/views.py:183 motions/views.py:195
+#: motions/pdf.py:91 motions/views.py:189 motions/views.py:201
 msgid "Version"
 msgstr "Version"
 
@@ -414,7 +418,7 @@ msgstr "Version"
 msgid "Vote result"
 msgstr "Abstimmungsergebnis"
 
-#: motions/pdf.py:121 motions/views.py:465
+#: motions/pdf.py:121 motions/views.py:544
 msgid "Vote"
 msgstr "Stimme"
 
@@ -435,7 +439,7 @@ msgstr "Keine Anträge vorhanden."
 msgid "Motion No. %s"
 msgstr "Antrag Nr. %s"
 
-#: motions/serializers.py:32
+#: motions/serializers.py:34
 #, python-format
 msgid "Workflow %(pk)d does not exist."
 msgstr "Arbeitsablauf %(pk)d existiert nicht."
@@ -460,7 +464,7 @@ msgstr "nicht entschieden"
 msgid "published"
 msgstr "veröffentlicht"
 
-#: motions/signals.py:47 motions/views.py:185
+#: motions/signals.py:47 motions/views.py:191
 msgid "permitted"
 msgstr "zugelassen"
 
@@ -488,112 +492,116 @@ msgstr "Benötigt Review"
 msgid "rejected (not authorized)"
 msgstr "Verworfen (nicht zulässig)"
 
-#: motions/views.py:105
+#: motions/views.py:111
 msgid "Motion created"
 msgstr "Antrag erstellt"
 
-#: motions/views.py:153
+#: motions/views.py:159
 msgid "Motion updated"
 msgstr "Antrag aktualisiert"
 
-#: motions/views.py:157
+#: motions/views.py:163
 msgid "All supporters removed"
 msgstr "Alle Unterstützer entfernt"
 
-#: motions/views.py:187
+#: motions/views.py:193
 #, python-format
 msgid "Version %d permitted successfully."
 msgstr "Version %d erfolgreich zugelassen"
 
-#: motions/views.py:192
+#: motions/views.py:198
 msgid "You can not delete the active version of a motion."
 msgstr "Sie dürfen die aktive Version eines Antrags nicht löschen."
 
-#: motions/views.py:197
+#: motions/views.py:203
 msgid "deleted"
 msgstr "Gelöscht"
 
-#: motions/views.py:199
+#: motions/views.py:205
 #, python-format
 msgid "Version %d deleted successfully."
 msgstr "Version %d erfolgreich gelöscht."
 
-#: motions/views.py:220
+#: motions/views.py:226
 msgid "You can not support this motion."
 msgstr "Sie dürfen diesen Antrag nicht unterstützen."
 
-#: motions/views.py:222
+#: motions/views.py:228
 msgid "Motion supported"
 msgstr "Antrag unterstützt"
 
-#: motions/views.py:223
+#: motions/views.py:229
 msgid "You have supported this motion successfully."
 msgstr "Sie haben den Antrag erfolgreich unterstützt."
 
-#: motions/views.py:228
+#: motions/views.py:234
 msgid "You can not unsupport this motion."
 msgstr "Sie dürfen diesem Antrag Ihre Unterstützung nicht entziehen."
 
-#: motions/views.py:230
+#: motions/views.py:236
 msgid "Motion unsupported"
 msgstr "Unterstützung zurückgezogen"
 
-#: motions/views.py:231
+#: motions/views.py:237
 msgid "You have unsupported this motion successfully."
 msgstr "Sie haben dem Antrag erfolgreich Ihre Unterstützung entzogen."
 
-#: motions/views.py:254
+#: motions/views.py:260
 msgid "Invalid data. State must be an integer."
 msgstr "Ungültige Daten. Status muss eine Ganzzahl sein."
 
-#: motions/views.py:257
+#: motions/views.py:263
 #, python-format
 msgid "You can not set the state to %(state_id)d."
 msgstr "Sie dürfen den Antragsstatus nicht auf %(state_id)d setzen."
 
-#: motions/views.py:265
+#: motions/views.py:271
 #, python-format
 msgid "The state of the motion was set to %s."
 msgstr "Der Status des Antrags wurde auf %s gesetzt."
 
-#: motions/views.py:269
+#: motions/views.py:275 motions/views.py:492
 msgid "State set to"
 msgstr "Status gesetzt auf"
 
-#: motions/views.py:291
+#: motions/views.py:297
 msgid "Invalid data. Recommendation must be an integer."
 msgstr "Ungültige Daten. Empfehlung muss ein Integer sein."
 
-#: motions/views.py:295
+#: motions/views.py:301
 #, python-brace-format
 msgid "You can not set the recommendation to {recommendation_state_id}."
 msgstr "Sie können die Empfehlung nicht auf {recommendation_state_id} setzen."
 
-#: motions/views.py:305
+#: motions/views.py:311
 #, python-format
 msgid "The recommendation of the motion was set to %s."
 msgstr "Die Empfehlung des Antrags wurde auf %s gesetzt."
 
-#: motions/views.py:309
+#: motions/views.py:315
 msgid "Recommendation set to"
 msgstr "Empfehlung gesetzt auf"
 
-#: motions/views.py:324
+#: motions/views.py:330
 msgid "Vote created successfully."
 msgstr "Abstimmung erfolgreich angelegt."
 
-#: motions/views.py:411
+#: motions/views.py:442
 msgid ""
 "Error: At least one identifier of this category does already exist in "
 "another category."
 msgstr "Fehler: Mindestens ein Bezeichner von diesem Sachgebiet existiert bereits in einem anderen Sachgebiet."
 
-#: motions/views.py:415
+#: motions/views.py:446
 #, python-brace-format
 msgid "All motions in category {category} numbered successfully."
 msgstr "Alle Anträge im Sachgebiet {category} wurden erfolgreich nummeriert."
 
-#: motions/views.py:518
+#: motions/views.py:497
+msgid "Followed recommendations successfully."
+msgstr "Empfehlungen erfolgreich gefolgt."
+
+#: motions/views.py:597
 msgid "Motions"
 msgstr "Anträge"
 

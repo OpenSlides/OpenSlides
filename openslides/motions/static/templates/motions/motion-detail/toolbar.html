@@ -88,7 +88,7 @@
                 <input type="radio" name="viewChangeRecommendations.mode" value="none"
                        ng-model="viewChangeRecommendations.mode"
                        ng-checked="viewChangeRecommendations.mode == 'original'">
-                <translate>Original</translate>
+                <translate>Original version</translate>
 
             </label>
             <label class="btn btn-sm btn-default" ng-class="{active: (viewChangeRecommendations.mode == 'changed')}"
@@ -96,20 +96,20 @@
                 <input type="radio" name="viewChangeRecommendations.mode" value="changed"
                        ng-model="viewChangeRecommendations.mode"
                        ng-checked="viewChangeRecommendations.mode == 'changed'">
-                <translate>Changed</translate>
+                <translate>Changed version</translate>
             </label>
             <label class="btn btn-sm btn-default" ng-class="{active: (viewChangeRecommendations.mode == 'diff')}"
                    ng-click="viewChangeRecommendations.mode = 'diff'">
                 <input type="radio" name="viewChangeRecommendations.mode" value="diff" ng-model="lineNumberMode"
                        ng-checked="viewChangeRecommendations.mode == 'diff'">
-                <translate>Diff</translate>
+                <translate>Diff version</translate>
             </label>
             <label class="btn btn-sm btn-default" ng-class="{active: (viewChangeRecommendations.mode == 'agreed')}"
                    ng-click="viewChangeRecommendations.mode = 'agreed'">
                 <input type="radio" name="viewChangeRecommendations.mode" value="agreed"
                        ng-model="viewChangeRecommendations.mode"
                        ng-checked="viewChangeRecommendations.mode == 'agreed'">
-                <translate>Agreed</translate>
+                <translate translate-context="decision making">Resolution</translate>
             </label>
         </div>
     </div>

@@ -1,16 +1,16 @@
 <!-- A summary of all changes -->
 <section class="change-recommendation-overview">
     <h2>
-        <translate>Change recommendation summary</translate>
+        <translate>Summary of change recommendations</translate>
     </h2>
     <ul ng-if="change_recommendations.length > 0">
         <li ng-repeat="change in (changes = (change_recommendations | filter:{motion_version_id:version}:true | orderBy: 'line_from')) "
             ng-click="viewChangeRecommendations.scrollToDiffBox(change.id)">
             <span ng-if="change.line_from >= change.line_to - 1" class="line-number">
-                Line {{ change.line_from }}:
+                <translate>Line</translate> {{ change.line_from }}:
             </span>
             <span ng-if="change.line_from < change.line_to - 1" class="line-number">
-                Line {{ change.line_from }} - {{ change.line_to - 1 }}:
+                <translate>Line</translate> {{ change.line_from }} - {{ change.line_to - 1 }}:
             </span>
             <span class="operation">
                 <translate ng-if="change.getType(motion.getVersion(version).text) == 0">Replacement</translate>
