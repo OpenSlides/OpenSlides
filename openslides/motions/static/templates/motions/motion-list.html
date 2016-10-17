@@ -273,6 +273,28 @@
                   </i>
                 </div>
               </li>
+              <li>
+                <!-- creation date -->
+                <div class="pointer dropdown-entry" ng-click="toggleSort('log_messages[log_messages.length-1].time')">
+                  <translate>Creation date</translate>
+                  <span class="spacer-right pull-right"></span>
+                  <i class="pull-right fa"
+                    ng-style="{'visibility': sortColumn === 'log_messages[log_messages.length-1].time' && header.sortable != false ? 'visible' : 'hidden'}"
+                    ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+                  </i>
+                </div>
+              </li>
+              <li>
+                <!-- last modified -->
+                <div class="pointer dropdown-entry" ng-click="toggleSort('log_messages[0].time')">
+                  <translate>Last modified</translate>
+                  <span class="spacer-right pull-right"></span>
+                  <i class="pull-right fa"
+                    ng-style="{'visibility': sortColumn === 'log_messages[0].time' && header.sortable != false ? 'visible' : 'hidden'}"
+                    ng-class="reverse ? 'fa-sort-asc' : 'fa-sort-desc'">
+                  </i>
+                </div>
+              </li>
             </ul>
           </span>
           <!-- search field -->
