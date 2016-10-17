@@ -52,6 +52,13 @@ angular.module('OpenSlidesApp.core', [
         var recInterval = null;
         $rootScope.connected = false;
 
+        var websocketProtocol;
+        if (location.protocol == 'https:') {
+            websocketProtocol = 'wss:';
+        } else {
+            websocketProtocol = 'ws:';
+        }
+
         var websocketPath;
         if (REALM == 'site') {
           websocketPath = '/ws/site/';
@@ -73,7 +80,7 @@ angular.module('OpenSlidesApp.core', [
             }
         };
         var newConnect = function () {
-            socket = new WebSocket('ws://' + location.host + websocketPath);
+            socket = new WebSocket(websocketProtocol + '//' + location.host + websocketPath);
             clearInterval(recInterval);
             socket.onopen = function () {
                 $rootScope.connected = true;
