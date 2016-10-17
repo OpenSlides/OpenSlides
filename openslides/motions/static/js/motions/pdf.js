@@ -27,7 +27,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 * other project that might want to use this HTML to PDF parser.
                 * https://github.com/OpenSlides/OpenSlides/issues/2361
                 */
-                return converter.convertHTML(motion.getTextWithLineBreaks($scope.version), $scope);
+                var text = motion.getTextByMode($scope.viewChangeRecommendations.mode, $scope.version);
+                return converter.convertHTML(text, $scope);
             } else {
                 return converter.convertHTML(motion.getText($scope.version), $scope);
             }

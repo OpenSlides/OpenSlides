@@ -1,0 +1,54 @@
+<div ng-if="viewChangeRecommendations.mode == 'diff'">
+    <ng-include src="'static/templates/motions/motion-detail/change-summary.html'"></ng-include>
+
+    <!-- The actual diff view -->
+    <div class="motion-text-with-diffs line-numbers-{{ lineNumberMode }}">
+        <div ng-repeat="change in (changes = (change_recommendations | filter:{motion_version_id:version}:true | orderBy: 'line_from')) ">
+            <div class="motion-text original-text line-numbers-{{ lineNumberMode }}"
+                 ng-bind-html="motion.getTextBetweenChangeRecommendations(version, changes[$index - 1], change) | trusted"></div>
+
+            <div class="diff-box diff-box-{{ change.id }} clearfix">
+                <div class="action-row" ng-if="motion.isAllowed('can_manage')">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-sm btn-default" ng-class="{active: (change.status == 0)}"
+                               title="{{ 'Suggested' | translate }}" ng-click="change.status = 0; change.saveStatus();">
+                            <input type="radio" name="changeRecommendationStatus[{{ change.id }}]" value="0"
+                               ng-change="change.saveStatus()" ng-model="change.status" ng-checked="change.status == 0">
+                            <i class="fa fa-question"></i>
+                        </label>
+                        <label class="btn btn-sm btn-default" ng-class="{active: (change.status == 1)}"
+                               title="{{ 'Accepted' | translate }}" ng-click="change.status = 1; change.saveStatus();">
+                            <input type="radio" name="changeRecommendationStatus[{{ change.id }}]" value="1"
+                               ng-change="change.saveStatus()" ng-model="change.status" ng-checked="change.status == 1">
+                            <i class="fa fa-thumbs-up"></i>
+                        </label>
+                        <label class="btn btn-sm btn-default" ng-class="{active: (change.status == 2)}"
+                               title="{{ 'Rejected' | translate }}" ng-click="change.status = 2; change.saveStatus();">
+                            <input type="radio" name="changeRecommendationStatus[{{ change.id }}]" value="2"
+                               ng-change="change.saveStatus()" ng-model="change.status" ng-checked="change.status == 2">
+                            <i class="fa fa-thumbs-down"></i>
+                        </label>
+                    </div>
+
+                    <button class="btn btn-default btn-sm pull-right btn-delete"
+                            ng-bootbox-confirm="{{ 'Are you sure you want to delete this change recommendation?' | translate }}"
+                            ng-bootbox-confirm-action="viewChangeRecommendations.delete(change.id)"
+                            title="{{ 'Delete' | translate }}">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+                <div class="status-row" ng-if="!motion.isAllowed('can_manage')">
+                    <span ng-if="change.status == 0"><translate>Suggested</translate></span>
+                    <span ng-if="change.status == 1"><translate>Accepted</translate></span>
+                    <span ng-if="change.status == 2"><translate>Rejected</translate></span>
+                </div>
+
+                <div class="motion-text motion-text-diff line-numbers-{{ lineNumberMode }}"
+                     ng-bind-html="change.format(motion, version) | trusted"></div>
+            </div>
+        </div>
+
+        <div class="motion-text original-text line-numbers-{{ lineNumberMode }}"
+             ng-bind-html="motion.getTextRemainderAfterLastChangeRecommendation(version, changes) | trusted"></div>
+    </div>
+</div>

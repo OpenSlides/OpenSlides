@@ -9,6 +9,9 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         TEXT_NODE = 3,
         DOCUMENT_FRAGMENT_NODE = 11;
 
+    this.TYPE_REPLACEMENT = 0;
+    this.TYPE_INSERTION = 1;
+    this.TYPE_DELETION = 2;
 
     this.getLineNumberNode = function(fragment, lineNumber) {
         return fragment.querySelector('os-linebreak.os-line-number.line-number-' + lineNumber);
@@ -24,31 +27,100 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         return context;
     };
 
+    // Adds elements like <OS-LINEBREAK class="os-line-number line-number-23" data-line-number="23"/>
     this._insertInternalLineMarkers = function(fragment) {
         if (fragment.querySelectorAll('OS-LINEBREAK').length > 0) {
             // Prevent duplicate calls
             return;
         }
-        var lineNumbers = fragment.querySelectorAll('span.os-line-number');
+        var lineNumbers = fragment.querySelectorAll('span.os-line-number'),
+            lineMarker, maxLineNumber;
+
         for (var i = 0; i < lineNumbers.length; i++) {
             var insertBefore = lineNumbers[i];
             while (insertBefore.parentNode.nodeType != DOCUMENT_FRAGMENT_NODE && insertBefore.parentNode.childNodes[0] == insertBefore) {
                 insertBefore = insertBefore.parentNode;
             }
-            var lineMarker = document.createElement('OS-LINEBREAK');
+            lineMarker = document.createElement('OS-LINEBREAK');
             lineMarker.setAttribute('data-line-number', lineNumbers[i].getAttribute('data-line-number'));
             lineMarker.setAttribute('class', lineNumbers[i].getAttribute('class'));
             insertBefore.parentNode.insertBefore(lineMarker, insertBefore);
+            maxLineNumber = lineNumbers[i].getAttribute('data-line-number');
+        }
+
+        // Add one more "fake" line number at the end and beginning, so we can select the last line as well
+        lineMarker = document.createElement('OS-LINEBREAK');
+        lineMarker.setAttribute('data-line-number', (parseInt(maxLineNumber) + 1));
+        lineMarker.setAttribute('class', 'os-line-number line-number-' + (parseInt(maxLineNumber) + 1));
+        fragment.appendChild(lineMarker);
+
+        lineMarker = document.createElement('OS-LINEBREAK');
+        lineMarker.setAttribute('data-line-number', '0');
+        lineMarker.setAttribute('class', 'os-line-number line-number-0');
+        fragment.insertBefore(lineMarker, fragment.firstChild);
+    };
+
+    // @TODO Check if this is actually necessary
+    this._insertInternalLiNumbers = function(fragment) {
+        if (fragment.querySelectorAll('LI[os-li-number]').length > 0) {
+            // Prevent duplicate calls
+            return;
+        }
+        var ols = fragment.querySelectorAll('OL');
+        for (var i = 0; i < ols.length; i++) {
+            var ol = ols[i],
+                liNo = 0;
+            for (var j = 0; j < ol.childNodes.length; j++) {
+                if (ol.childNodes[j].nodeName == 'LI') {
+                    liNo++;
+                    ol.childNodes[j].setAttribute('os-li-number', liNo);
+                }
+            }
         }
     };
 
-  /*
-   * Returns an array with the following values:
-   * 0: the most specific DOM-node that contains both line numbers
-   * 1: the context of node1 (an array of dom-elements; 0 is the document fragment)
-   * 2: the context of node2 (an array of dom-elements; 0 is the document fragment)
-   * 3: the index of [0] in the two arrays
-   */
+    this._addStartToOlIfNecessary = function(node) {
+        var firstLiNo = null;
+        for (var i = 0; i < node.childNodes.length && firstLiNo === null; i++) {
+            if (node.childNode[i].nodeName == 'LI') {
+                var lineNo = node.childNode[i].getAttribute('ol-li-number');
+                if (lineNo) {
+                    firstLiNo = parseInt(lineNo);
+                }
+            }
+        }
+        if (firstLiNo > 1) {
+            node.setAttribute('start', firstLiNo);
+        }
+    };
+
+    this._isWithinNthLIOfOL = function(olNode, descendantNode) {
+        var nthLIOfOL = null;
+        while (descendantNode.parentNode) {
+            if (descendantNode.parentNode == olNode) {
+                var lisBeforeOl = 0,
+                    foundMe = false;
+                for (var i = 0; i < olNode.childNodes.length && !foundMe; i++) {
+                    if (olNode.childNodes[i] == descendantNode) {
+                        foundMe = true;
+                    } else if (olNode.childNodes[i].nodeName == 'LI') {
+                        lisBeforeOl++;
+                    }
+                }
+                nthLIOfOL = lisBeforeOl + 1;
+            }
+            descendantNode = descendantNode.parentNode;
+        }
+        return nthLIOfOL;
+    };
+
+   /*
+    * Returns an array with the following values:
+    * 0: the most specific DOM-node that contains both line numbers
+    * 1: the context of node1 (an array of dom-elements; 0 is the document fragment)
+    * 2: the context of node2 (an array of dom-elements; 0 is the document fragment)
+    * 3: the index of [0] in the two arrays
+    */
     this._getCommonAncestor = function(node1, node2) {
         var trace1 = this._getNodeContextTrace(node1),
             trace2 = this._getNodeContextTrace(node2),
@@ -84,8 +156,10 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         }
         var html = '<' + node.nodeName;
         for (var i = 0; i < node.attributes.length; i++) {
-          var attr = node.attributes[i];
-          html += " " + attr.name + "=\"" + attr.value + "\"";
+            var attr = node.attributes[i];
+            if (attr.name != 'os-li-number') {
+                html += ' ' + attr.name + '="' + attr.value + '"';
+            }
         }
         html += '>';
         return html;
@@ -158,7 +232,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         }
         if (!found) {
             console.trace();
-            throw "Inconsistency or invalid call of this function detected";
+            throw "Inconsistency or invalid call of this function detected (to)";
         }
         return html;
     };
@@ -196,7 +270,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         }
         if (!found) {
             console.trace();
-            throw "Inconsistency or invalid call of this function detected";
+            throw "Inconsistency or invalid call of this function detected (from)";
         }
         if (node.nodeType != DOCUMENT_FRAGMENT_NODE) {
             html += '</' + node.nodeName + '>';
@@ -221,6 +295,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
      *
      * Hint:
      * - The last line (toLine) is not included anymore, as the number refers to the line breaking element
+     * - if toLine === null, then everything from fromLine to the end of the fragment is returned
      *
      * In addition to the HTML snippet, additional information is provided regarding the most specific DOM element
      * that contains the whole section specified by the line numbers (like a P-element if only one paragraph is selected
@@ -246,11 +321,19 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
      * - followingHtmlStartSnippet: A HTML snippet that opens all HTML tags necessary to render "followingHtml"
      *
      */
-    this.extractRangeByLineNumbers = function(fragment, fromLine, toLine) {
+    this.extractRangeByLineNumbers = function(fragment, fromLine, toLine, debug) {
+        if (typeof(fragment) == 'string') {
+            fragment = this.htmlToFragment(fragment);
+        }
         this._insertInternalLineMarkers(fragment);
+        this._insertInternalLiNumbers(fragment);
+        if (toLine === null) {
+            var internalLineMarkers = fragment.querySelectorAll('OS-LINEBREAK');
+            toLine = parseInt(internalLineMarkers[internalLineMarkers.length - 1].getAttribute("data-line-number"));
+        }
 
         var fromLineNode = this.getLineNumberNode(fragment, fromLine),
-            toLineNode = this.getLineNumberNode(fragment, toLine),
+            toLineNode = (toLine ? this.getLineNumberNode(fragment, toLine) : null),
             ancestorData = this._getCommonAncestor(fromLineNode, toLineNode);
 
         var fromChildTraceRel = ancestorData.trace1,
@@ -264,7 +347,8 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             innerContextStart = '',
             innerContextEnd = '',
             previousHtmlEndSnippet = '',
-            followingHtmlStartSnippet = '';
+            followingHtmlStartSnippet = '',
+            fakeOl;
 
 
         fromChildTraceAbs.shift();
@@ -288,7 +372,13 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             if (fromChildTraceRel[i].nodeName == 'OS-LINEBREAK') {
                 found = true;
             } else {
-                innerContextStart += this._serializeTag(fromChildTraceRel[i]);
+                if (fromChildTraceRel[i].nodeName == 'OL') {
+                    fakeOl = fromChildTraceRel[i].cloneNode(false);
+                    fakeOl.setAttribute('start', this._isWithinNthLIOfOL(fromChildTraceRel[i], fromLineNode));
+                    innerContextStart += this._serializeTag(fakeOl);
+                } else {
+                    innerContextStart += this._serializeTag(fromChildTraceRel[i]);
+                }
             }
         }
         found = false;
@@ -317,7 +407,13 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
         currNode = ancestor;
         while (currNode.parentNode) {
-            outerContextStart = this._serializeTag(currNode) + outerContextStart;
+            if (currNode.nodeName == 'OL') {
+                fakeOl = currNode.cloneNode(false);
+                fakeOl.setAttribute('start', this._isWithinNthLIOfOL(currNode, fromLineNode));
+                outerContextStart = this._serializeTag(fakeOl) + outerContextStart;
+            } else {
+                outerContextStart = this._serializeTag(currNode) + outerContextStart;
+            }
             outerContextEnd += '</' + currNode.nodeName + '>';
             currNode = currNode.parentNode;
         }
@@ -334,9 +430,16 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             'followingHtml': followingHtml,
             'followingHtmlStartSnippet': followingHtmlStartSnippet
         };
-
     };
 
+    /*
+     * This functions merges to arrays of nodes. The last element of nodes1 and the first element of nodes2
+     * are merged, if they are of the same type.
+     *
+     * This is done recursively until a TEMPLATE-Tag is is found, which was inserted in this.replaceLines.
+     * Using a TEMPLATE-Tag is a rather dirty hack, as it is allowed inside of any other element, including <ul>.
+     *
+     */
     this._replaceLinesMergeNodeArrays = function(nodes1, nodes2) {
         if (nodes1.length === 0) {
             return nodes2;
@@ -350,56 +453,179 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             out.push(nodes1[i]);
         }
 
-        out.push(nodes1[nodes1.length - 1]);
-        out.push(nodes2[0]);
+        var lastNode = nodes1[nodes1.length - 1],
+            firstNode = nodes2[0];
+        if (lastNode.nodeType == TEXT_NODE && firstNode.nodeType == TEXT_NODE) {
+            var newTextNode = lastNode.ownerDocument.createTextNode(lastNode.nodeValue + firstNode.nodeValue);
+            out.push(newTextNode);
+        } else if (lastNode.nodeName == firstNode.nodeName) {
+            var newNode = lastNode.ownerDocument.createElement(lastNode.nodeName);
+            for (i = 0; i < lastNode.attributes.length; i++) {
+                var attr = lastNode.attributes[i];
+                newNode.setAttribute(attr.name, attr.value);
+            }
+
+            // Remove #text nodes inside of List elements, as they are confusing
+            var lastChildren, firstChildren;
+            if (lastNode.nodeName == 'OL' || lastNode.nodeName == 'UL') {
+                lastChildren = [];
+                firstChildren = [];
+                for (i = 0; i < firstNode.childNodes.length; i++) {
+                    if (firstNode.childNodes[i].nodeType == ELEMENT_NODE) {
+                        firstChildren.push(firstNode.childNodes[i]);
+                    }
+                }
+                for (i = 0; i < lastNode.childNodes.length; i++) {
+                    if (lastNode.childNodes[i].nodeType == ELEMENT_NODE) {
+                        lastChildren.push(lastNode.childNodes[i]);
+                    }
+                }
+            } else {
+                lastChildren = lastNode.childNodes;
+                firstChildren = firstNode.childNodes;
+            }
+
+            var children = this._replaceLinesMergeNodeArrays(lastChildren, firstChildren);
+            for (i = 0; i < children.length; i++) {
+                newNode.appendChild(children[i]);
+            }
+            out.push(newNode);
+        } else {
+            if (lastNode.nodeName != 'TEMPLATE') {
+                out.push(lastNode);
+            }
+            if (firstNode.nodeName != 'TEMPLATE') {
+                out.push(firstNode);
+            }
+        }
 
         for (i = 1; i < nodes2.length; i++) {
             out.push(nodes2[i]);
         }
 
-        /*
-        if (node1.nodeName != node2.nodeName) {
-            return null;
-        }
-        var newNode = node1.ownerDocument.createElement(node1.nodeName);
-        for (var i = 0; i < node1.attributes.length; i++) {
-            var attr = node1.attributes[i];
-            newNode.setAttribute(attr.name, attr.value);
-        }
-        return newNode;
-        */
         return out;
+    };
+
+    /**
+     * @param {string} htmlOld
+     * @param {string} htmlNew
+     * @returns {number}
+     */
+    this.detectReplacementType = function (htmlOld, htmlNew) {
+        // Convert all HTML tags to uppercase, strip trailing whitespaces
+        var normalizeHtml = function(html) {
+            html = html.replace(/<[^>]+>/g, function(tag) { return tag.toUpperCase(); });
+            html = html.replace(/\s+<\/P>/gi, '</P>').replace(/\s+<\/DIV>/gi, '</DIV>').replace(/\s+<\/LI>/gi, '</LI>');
+            html = html.replace(/\s+<LI>/gi, '<LI>').replace(/<\/LI>\s+/gi, '</LI>');
+            html = html.replace(/&nbsp;/gi, ' ').replace(/\u00A0/g, ' '); // non-breaking spaces
+            return html;
+        };
+        htmlOld = normalizeHtml(htmlOld);
+        htmlNew = normalizeHtml(htmlNew);
+
+        if (htmlOld == htmlNew) {
+            return this.TYPE_REPLACEMENT;
+        }
+
+        var i, foundDiff;
+        for (i = 0, foundDiff = false; i < htmlOld.length && i < htmlNew.length && foundDiff === false; i++) {
+            if (htmlOld[i] != htmlNew[i]) {
+                foundDiff = true;
+            }
+        }
+
+        var remainderOld = htmlOld.substr(i - 1),
+            remainderNew = htmlNew.substr(i - 1),
+            type = this.TYPE_REPLACEMENT;
+
+        if (remainderOld.length > remainderNew.length) {
+            if (remainderOld.substr(remainderOld.length - remainderNew.length) == remainderNew) {
+                type = this.TYPE_DELETION;
+            }
+        } else if (remainderOld.length < remainderNew.length) {
+            if (remainderNew.substr(remainderNew.length - remainderOld.length) == remainderOld) {
+                type = this.TYPE_INSERTION;
+            }
+        }
+
+        return type;
     };
 
     this.replaceLines = function (fragment, newHTML, fromLine, toLine) {
         var data = this.extractRangeByLineNumbers(fragment, fromLine, toLine),
-            previousHtml = data.previousHtml + data.previousHtmlEndSnippet,
+            previousHtml = data.previousHtml + '<TEMPLATE></TEMPLATE>' + data.previousHtmlEndSnippet,
             previousFragment = this.htmlToFragment(previousHtml),
-            followingHtml = data.followingHtmlStartSnippet + data.followingHtml,
+            followingHtml = data.followingHtmlStartSnippet + '<TEMPLATE></TEMPLATE>' + data.followingHtml,
+            followingFragment = this.htmlToFragment(followingHtml),
+            newFragment = this.htmlToFragment(newHTML);
+
+        var merged = this._replaceLinesMergeNodeArrays(previousFragment.childNodes, newFragment.childNodes);
+        merged = this._replaceLinesMergeNodeArrays(merged, followingFragment.childNodes);
+
+        var mergedFragment = document.createDocumentFragment();
+        for (var i = 0; i < merged.length; i++) {
+            mergedFragment.appendChild(merged[i]);
+        }
+
+        var forgottenTemplates = mergedFragment.querySelectorAll("TEMPLATE");
+        for (i = 0; i < forgottenTemplates.length; i++) {
+            var el = forgottenTemplates[i];
+            el.parentNode.removeChild(el);
+        }
+
+        return this._serializeDom(mergedFragment, true);
+    };
+
+    this.addCSSClass = function (node, className) {
+        if (node.nodeType != ELEMENT_NODE) {
+            return;
+        }
+        var classes = node.getAttribute('class');
+        classes = (classes ? classes.split(' ') : []);
+        if (classes.indexOf(className) == -1) {
+            classes.push(className);
+        }
+        node.setAttribute('class', classes);
+    };
+
+    this.addDiffMarkup = function (fragment, newHTML, fromLine, toLine, diffFormatterCb) {
+        var data = this.extractRangeByLineNumbers(fragment, fromLine, toLine),
+            previousHtml = data.previousHtml + '<TEMPLATE></TEMPLATE>' + data.previousHtmlEndSnippet,
+            previousFragment = this.htmlToFragment(previousHtml),
+            followingHtml = data.followingHtmlStartSnippet + '<TEMPLATE></TEMPLATE>' + data.followingHtml,
             followingFragment = this.htmlToFragment(followingHtml),
             newFragment = this.htmlToFragment(newHTML),
-            child;
+            oldHTML = data.outerContextStart + data.innerContextStart + data.html +
+                data.innerContextEnd + data.outerContextEnd,
+            oldFragment = this.htmlToFragment(oldHTML),
+            el;
 
-        var merged = document.createDocumentFragment();
+        var diffFragment = diffFormatterCb(oldFragment, newFragment);
 
-        while (previousFragment.children.length > 0) {
-            child = previousFragment.children[0];
-            previousFragment.removeChild(child);
-            merged.appendChild(child);
+        var mergedFragment = document.createDocumentFragment();
+        while (previousFragment.firstChild) {
+            el = previousFragment.firstChild;
+            previousFragment.removeChild(el);
+            mergedFragment.appendChild(el);
         }
-        while (newFragment.children.length > 0) {
-            child = newFragment.children[0];
-            newFragment.removeChild(child);
-            merged.appendChild(child);
+        while (diffFragment.firstChild) {
+            el = diffFragment.firstChild;
+            diffFragment.removeChild(el);
+            mergedFragment.appendChild(el);
         }
-        while (followingFragment.children.length > 0) {
-            child = followingFragment.children[0];
-            followingFragment.removeChild(child);
-            merged.appendChild(child);
+        while (followingFragment.firstChild) {
+            el = followingFragment.firstChild;
+            followingFragment.removeChild(el);
+            mergedFragment.appendChild(el);
         }
-        //var merged = this._replaceLinesAttemptMerge(lastOfPrevious, firstOfReplaced);
 
-        return this._serializeDom(merged, true);
+        var forgottenTemplates = mergedFragment.querySelectorAll("TEMPLATE");
+        for (var i = 0; i < forgottenTemplates.length; i++) {
+            el = forgottenTemplates[i];
+            el.parentNode.removeChild(el);
+        }
+
+        return this._serializeDom(mergedFragment, true);
     };
 });
 

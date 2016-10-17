@@ -1,0 +1,17 @@
+<h1 ng-if="model.id" translate>Edit change recommendation</h1>
+<h1 ng-if="!model.id" translate>New change recommendation</h1>
+
+<uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+  {{ alert.msg }}
+</uib-alert>
+
+<form name="changeRecommendationForm" ng-submit="save(model)">
+  <formly-form model="model" fields="formFields">
+    <button type="submit" ng-disabled="changeRecommendation.$invalid" class="btn btn-primary" translate>
+      Save
+    </button>
+    <button ng-click="closeThisDialog()" class="btn btn-default" translate>
+      Cancel
+    </button>
+  </formly-form>
+</form>

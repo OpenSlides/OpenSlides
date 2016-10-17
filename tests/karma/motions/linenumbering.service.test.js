@@ -5,10 +5,10 @@ describe('linenumbering', function () {
   var lineNumberingService,
       brMarkup = function (no) {
         return '<br class="os-line-break">' +
-            '<span class="os-line-number line-number-' + no + '" data-line-number="' + no + '" contenteditable="false">&nbsp;</span>';
+            '<span class="os-line-number line-number-' + no + '" data-line-number="' + no + '" name="L' + no + '" contenteditable="false">&nbsp;</span>';
       },
       noMarkup = function (no) {
-        return '<span class="os-line-number line-number-' + no + '" data-line-number="' + no + '" contenteditable="false">&nbsp;</span>';
+        return '<span class="os-line-number line-number-' + no + '" data-line-number="' + no + '" name="L' + no + '" contenteditable="false">&nbsp;</span>';
       },
       longstr = function (length) {
         var outstr = '';
@@ -26,6 +26,7 @@ describe('linenumbering', function () {
     it('breaks very short lines', function () {
       var textNode = document.createTextNode("0123");
       lineNumberingService._currentInlineOffset = 0;
+      lineNumberingService._currentLineNumber = 1;
       var out = lineNumberingService._textNodeToLines(textNode, 5);
       var outHtml = lineNumberingService._nodesToHtml(out);
       expect(outHtml).toBe('0123');

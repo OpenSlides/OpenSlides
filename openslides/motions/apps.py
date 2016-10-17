@@ -18,7 +18,7 @@ class MotionsAppConfig(AppConfig):
         from openslides.utils.rest_api import router
         from .config_variables import get_config_variables
         from .signals import create_builtin_workflows
-        from .views import CategoryViewSet, MotionViewSet, MotionPollViewSet, WorkflowViewSet
+        from .views import CategoryViewSet, MotionViewSet, MotionPollViewSet, MotionChangeRecommendationViewSet, WorkflowViewSet
 
         # Define config variables
         config.update_config_variables(get_config_variables())
@@ -30,4 +30,6 @@ class MotionsAppConfig(AppConfig):
         router.register(self.get_model('Category').get_collection_string(), CategoryViewSet)
         router.register(self.get_model('Motion').get_collection_string(), MotionViewSet)
         router.register(self.get_model('Workflow').get_collection_string(), WorkflowViewSet)
+        router.register(self.get_model('MotionChangeRecommendation').get_collection_string(),
+                        MotionChangeRecommendationViewSet)
         router.register('motions/motionpoll', MotionPollViewSet)

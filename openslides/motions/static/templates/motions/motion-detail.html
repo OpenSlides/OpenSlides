@@ -21,7 +21,7 @@
         <i class="fa fa-pencil"></i>
       </a>
       <!-- pdf -->
-      <a ng-click="makePDF()" class="btn btn-default btn-sm">
+      <a ng-click="pdfExport.createMotion()" class="btn btn-default btn-sm">
         <i class="fa fa-file-pdf-o fa-lg"></i>
         <translate>PDF</translate>
       </a>
@@ -182,7 +182,7 @@
               </button>
 
               <!-- Print poll PDF -->
-              <a os-perms="motions.can_manage" ng-click="makePollPDF()" class="btn btn-default btn-xs"
+              <a os-perms="motions.can_manage" ng-click="pdfExport.createPoll()" class="btn btn-default btn-xs"
                   title="{{ 'Print ballot paper' | translate }}">
                 <i class="fa fa-file-pdf-o"></i>
               </a>
@@ -289,94 +289,48 @@
 
 <div class="details">
   <div class="row">
-  <div class="linenumber-toolbar">
-    <!-- inline editing -->
-    <div class="pull-right inline-editing-activator"
-         ng-if="motion.isAllowed('update') && version == motion.getVersion(-1).id">
-      <button ng-if="!inlineEditing.active" ng-click="inlineEditing.enable()" class="btn btn-sm btn-default">
-        <i class="fa fa-pencil-square-o"></i>
-        <translate>Inline editing</translate>
-      </button>
-      <button ng-if="inlineEditing.active" ng-click="inlineEditing.disable()" class="btn btn-sm btn-default">
-        <i class="fa fa-times-circle"></i>
-        <translate>Inline editing</translate>
-      </button>
-    </div>
 
-    <!-- line number mode -->
-    <div class="line-number-setter {{ lineNumberMode }}">
-      <span class="btn-group" data-toggle="buttons">
-        <div class="btn btn-sm btn-default disabled">
-          <i class="fa fa-list-ol" aria-hidden="true"></i>
-          <translate>Line numbering</translate>:
-        </div>
-        <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'none')}"
-               ng-click="lineNumberMode = 'none';">
-          <input type="radio" name="lineNumberMode" value="none" ng-model="lineNumberMode"
-                 ng-checked="lineNumberMode == 'none'">
-          <translate>none</translate>
-        </label>
-        <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'inline')}"
-               ng-click="lineNumberMode = 'inline'">
-          <input type="radio" name="lineNumberMode" value="inline" ng-model="lineNumberMode"
-                 ng-checked="lineNumberMode == 'inline'">
-          <translate>inline</translate>
-        </label>
-        <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'outside')}"
-               ng-click="lineNumberMode = 'outside'">
-          <input type="radio" name="lineNumberMode" value="outside" ng-model="lineNumberMode"
-                 ng-checked="lineNumberMode == 'outside'">
-          <translate>outside</translate>
-        </label>
-      </span>
+    <!-- Motion toolbar -->
+    <ng-include src="'static/templates/motions/motion-detail/toolbar.html'"></ng-include>
 
-      <!-- go to line number -->
-      <span>
-        <form class="input-group" style="max-width: 220px;" ng-if="lineNumberMode != 'none'" ng-submit="scrollToAndHighlight(gotoLinenumber)">
-          <input type="number" class="form-control input-sm" ng-model="gotoLinenumber" placeholder="{{ 'Line' | translate }}"></input>
-          <span class="input-group-btn">
-            <button type="button" class="btn btn-sm btn-default btn-slim" ng-show="gotoLinenumber"
-              ng-click="gotoLinenumber = ''; scrollToAndHighlight(0);">
-              <i class="fa fa-times text-danger"></i>
+    <div ng-class="{'col-sm-8': (lineNumberMode != 'outside'), 'col-sm-12': (lineNumberMode == 'outside')}">
+      <div class="motion-text-holder">
+
+        <!-- Original view -->
+        <ng-include src="'static/templates/motions/motion-detail/view-original.html'"></ng-include>
+
+        <!-- Diff View -->
+        <ng-include src="'static/templates/motions/motion-detail/view-diff.html'"></ng-include>
+
+        <!-- Changed View -->
+        <div ng-if="viewChangeRecommendations.mode == 'changed'">
+          <div ng-bind-html="motion.getTextWithChangeRecommendations(version) | trusted"
+               class="motion-text motion-text-changed line-numbers-{{ lineNumberMode }}"></div>
+
+          <div style="text-align: right;" ng-if="motion.state.versioning && (change_recommendations | filter:{motion_version_id:version}:true).length > 0">
+            <button class="btn btn-default"
+                    ng-bootbox-confirm="{{ 'Do you want to create a new version of this motion based on this changes?' | translate }}"
+                    ng-bootbox-confirm-action="viewChangeRecommendations.newVersionIncludingChanges(motion, version, true)">
+              <i class="fa fa-file-text"></i>
+              <translate>New version on these changes</translate>
             </button>
-            <button type="submit" class="btn btn-sm btn-default">
-              <i class="fa fa-share"></i>
-              <translate>go</translate>
-            </button>
-            <button type="button" class="btn btn-sm btn-default" os-perms="core.can_manage_projector"
-              ng-show="lineNumberMode != 'none' && motion.isProjected()" ng-click="toggleLinesForProjector()"
-              uib-tooltip="{{ 'Show highlighted line also on projector.' | translate }}">
-              <i class="fa" ng-class="linesForProjector ? 'fa-check-square-o' : 'fa-square-o'"></i>&nbsp;
-              <i class="fa fa-video-camera"></i>
-            </button>
-          </span>
-        </form>
-      </span>
-    </div>
-  </div>
-
-    <div  ng-class="{'col-sm-8': (lineNumberMode != 'outside'), 'col-sm-12': (lineNumberMode == 'outside')}">
-
-      <div ng-if="motion.isAllowed('update') && version == motion.getVersion(-1).id">
-        <div ng-show="inlineEditing.active">
-          <div ui-tinymce="inlineEditing.tinymceOptions" ng-model="inlineEditing.lineBrokenText"
-            class="motion-text line-numbers-{{ lineNumberMode }}"></div>
+          </div>
         </div>
-        <div ng-show="!inlineEditing.active" ng-bind-html="motion.getTextWithLineBreaks(version, highlight) | trusted"
-           class="motion-text line-numbers-{{ lineNumberMode }}"></div>
 
-        <div class="motion-save-toolbar" ng-class="{ 'visible': (inlineEditing.changed && inlineEditing.active) }">
-          <div class="changed-hint" translate>The text has been changed.</div>
-          <button type="button" ng-click="inlineEditing.save()" class="btn btn-primary">Save</button>
-          <label ng-if="motion.state.versioning && config('motions_allow_disable_versioning')">
-            <input type="checkbox" ng-model="inlineEditing.trivialChange" value="1">
-            <span translate>Trivial change</span>
-          </label>
+        <!-- Agreed View -->
+        <div ng-if="viewChangeRecommendations.mode == 'agreed'">
+          <div ng-bind-html="motion.getTextWithAcceptedChangeRecommendations(version) | trusted"
+               class="motion-text motion-text-changed line-numbers-{{ lineNumberMode }}"></div>
+
+          <div style="text-align: right;" ng-if="motion.state.versioning && (change_recommendations | filter:{motion_version_id:version}:true).length > 0">
+            <button class="btn btn-default"
+                    ng-bootbox-confirm="{{ 'Do you want to create a new version of this motion based on this changes?' | translate }}"
+                    ng-bootbox-confirm-action="viewChangeRecommendations.newVersionIncludingChanges(motion, version, false)">
+              <i class="fa fa-file-text"></i>
+              <translate>New version on these changes</translate>
+            </button>
+          </div>
         </div>
-      </div>
-      <div ng-if="!(motion.isAllowed('update') && version == motion.getVersion(-1).id)">
-        <div ng-bind-html="motion.getTextWithLineBreaks(version, highlight) | trusted"
-           class="motion-text line-numbers-{{ lineNumberMode }}"></div>
       </div>
 
       <!-- reason -->
