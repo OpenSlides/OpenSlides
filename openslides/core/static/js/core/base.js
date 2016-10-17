@@ -488,7 +488,7 @@ angular.module('OpenSlidesApp.core', [
                 },
                 getStateForCurrentSlide: function () {
                     var return_dict;
-                    angular.forEach(this.elements, function(key, value) {
+                    angular.forEach(this.elements, function(value, key) {
                         if (value.name == 'agenda/list-of-speakers') {
                             return_dict = {
                                 'state': 'agenda.item.detail',
