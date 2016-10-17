@@ -182,7 +182,7 @@
               </button>
 
               <!-- Print poll PDF -->
-              <a ng-click="makePollPDF()" class="btn btn-default btn-xs"
+              <a os-perms="motions.can_manage" ng-click="makePollPDF()" class="btn btn-default btn-xs"
                   title="{{ 'Print ballot paper' | translate }}">
                 <i class="fa fa-file-pdf-o"></i>
               </a>
@@ -191,17 +191,11 @@
               <template-hook hook-name="motionPollSmallButtons"></template-hook>
 
               <!-- Settings for majority calculations -->
-              <div class="input-group">
-                <input type="checkbox" ng-model="isMajorityCalculation">
-                <span translate>Calculate majority</span>
-                <a href="#" ng-click="isMajorityDetails = !isMajorityDetails">
-                  <i class="fa toggle-icon" ng-class="isMajorityDetails ? 'fa-angle-up' : 'fa-angle-down'"></i>
-                </a>
-              </div>
-              <div uib-collapse="!isMajorityDetails" ng-cloak>
+              <div os-perms="motions.can_manage" ng-hide="config('motions_poll_default_majority_method') == 'disabled'" ng-cloak>
                 <div class="input-group">
-                  <span translate>Majority method:</span>
-                  <select ng-model="method" ng-options="option.value as option.display_name for option in methodChoices" />
+                  <span><translate>Required majority</translate>: </span>
+                  <select ng-init="config('motions_poll_default_majority_method')" ng-model="$parent.method"
+                      ng-options="option.value as option.display_name for option in methodChoices" />
                 </div>
               </div>
 
@@ -272,17 +266,15 @@
                         {{ votesCast.value }} {{ votesCast.percentStr }}
                       </span>
                   <!-- majority calculation -->
-                  <tr ng-if="isMajorityCalculation">
+                  <tr os-perms="motions.can_manage" ng-hide="method == 'disabled'">
                     <td class="icon">
                     <td>
                       <span class="text-warning"  ng-if="isReached() === undefined" translate>Calculation impossible</span>
-                      <span class="text-success" ng-if="isReached() >= 0">
-                        <translate>Quorum reached,</translate>
-                        {{ isReached() }} <translate>votes more than needed.</translate>
+                      <span class="text-success" ng-if="isReached() >= 0" translate>
+                        Quorum reached, {{ isReached() }} votes more than needed.
                       </span>
-                      <span class="text-danger" ng-if="isReached() < 0">
-                        <translate>Quorum not reached,</translate>
-                        {{ -(isReached()) }} <translate>votes missing.</translate>
+                      <span class="text-danger" ng-if="isReached() < 0" translate>
+                        Quorum not reached, {{ -(isReached()) }} <translate>votes missing.
                      </span>
                 </table>
           </ol>

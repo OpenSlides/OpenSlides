@@ -191,8 +191,8 @@ def get_config_variables():
         name='motions_poll_default_majority_method',
         default_value='simple_majority',
         input_type='majorityMethod',
-        label='Method for majority tests',
-        help_text='Default method to determine whether a motion is successful.',
+        label='Required majority',
+        help_text='Default method to check whether a motion has reached the required majority.',
         weight=357,
         group='Motions',
         subgroup='Voting and ballot papers')

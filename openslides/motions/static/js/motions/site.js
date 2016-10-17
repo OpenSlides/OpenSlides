@@ -1643,6 +1643,12 @@ angular.module('OpenSlidesApp.motions.site', [
         gettext('All valid ballots');
         gettext('All casted ballots');
         gettext('Disabled (no percents)');
+        gettext('Required majority');
+        gettext('Default method to check whether a motion has reached the required majority.');
+        gettext('Simple majority');
+        gettext('Two-thirds majority');
+        gettext('Three-quarters majority');
+        gettext('Disabled');
         gettext('Number of ballot papers (selection)');
         gettext('Number of all delegates');
         gettext('Number of all participants');

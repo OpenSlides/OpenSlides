@@ -8,6 +8,7 @@ angular.module('OpenSlidesApp.poll.majority', [])
     {'value': 'simple_majority', 'display_name': 'Simple majority'},
     {'value': 'two-thirds_majority', 'display_name': 'Two-thirds majority'},
     {'value': 'three-quarters_majority', 'display_name': 'Three-quarters majority'},
+    {'value': 'disabled', 'display_name': 'Disabled'},
 ])
 
 .factory('MajorityMethods', [
@@ -29,6 +30,9 @@ angular.module('OpenSlidesApp.poll.majority', [])
                     result = Math.ceil(result) - 1;
                 }
                 return result;
+            },
+            'disabled': function () {
+                return undefined;
             },
         };
     }
