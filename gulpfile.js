@@ -170,6 +170,7 @@ gulp.task('pot', function () {
     return gulp.src([
             'openslides/core/static/templates/*.html',
             'openslides/*/static/templates/*/*.html',
+            'openslides/*/static/templates/*/*/*.html',
             'openslides/*/static/js/*/*.js',
         ])
         .pipe(gettext.extract('template-en.pot', {}))

@@ -151,7 +151,7 @@
           {{ motion.category.name }}
 
           <!-- Motion block -->
-          <h3 translate>Motion block</h3>
+          <h3 ng-if="motion.motionBlock" translate>Motion block</h3>
           <a ui-sref="motions.motionBlock.detail({id: motion.motionBlock.id})"
               os-perms="motions.can_manage">{{ motion.motionBlock.title }}</a>
           <span os-perms="!motions.can_manage">{{ motion.motionBlock.title }}</span>
@@ -281,7 +281,7 @@
                         Quorum reached, {{ isReached() }} votes more than needed.
                       </span>
                       <span class="text-danger" ng-if="isReached() < 0" translate>
-                        Quorum not reached, {{ -(isReached()) }} <translate>votes missing.
+                        Quorum not reached, {{ -(isReached()) }} votes missing.
                      </span>
                 </table>
           </ol>
