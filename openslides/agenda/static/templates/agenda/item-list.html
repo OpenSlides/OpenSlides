@@ -164,7 +164,7 @@
           ng-class="{ 'activeline': item.isProjected(), 'selected': item.selected, 'hiddenrow': item.is_hidden}">
         <!-- projector column -->
         <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
-          <div class="btn-group" style="min-width:54px;" uib-dropdown
+          <div class="btn-group" style="min-width:{{ projectors.length > 1 ? '54' : '34' }}px;" uib-dropdown
             uib-tooltip="{{ 'Projector' | translate }} {{ item.isProjected(item.tree) }}"
             tooltip-enable="item.isProjected(item.tree) > 0">
             <button class="btn btn-default btn-sm"
@@ -175,11 +175,12 @@
             </button>
             <button type="button" class="btn btn-default btn-sm slimDropDown"
                 ng-class="{ 'btn-primary': item.isProjected(item.tree) > 0 && item.isProjected(item.tree) != getProjectionDefault(item)}"
-                ng-show="item.hasSubitems(items) || projectors.length > 1"
+                ng-if="item.hasSubitems(items) || projectors.length > 1"
                 uib-dropdown-toggle>
               <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="split-button">
+            <ul class="dropdown-menu" role="menu" aria-labelledby="split-button"
+              ng-if="item.hasSubitems(items) || projectors.length > 1">
               <li role="menuitem" ng-show="item.hasSubitems(items)">
                 <a href="" ng-click="changeItemTree(item); $event.stopPropagation();">
                   <i class="fa" ng-class="item.tree ? 'fa-check-square-o' : 'fa-square-o'"></i>

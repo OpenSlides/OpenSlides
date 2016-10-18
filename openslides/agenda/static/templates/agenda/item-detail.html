@@ -26,7 +26,7 @@
           uib-dropdown-toggle>
           <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" ng-if="projectors.length > 1">
           <li role="menuitem" ng-repeat="projector in projectors">
             <a href="" ng-click="item.projectListOfSpeakers(projector.id)"
               ng-class="{ 'projected': (item.isListOfSpeakersProjected() == projector.id) }">
