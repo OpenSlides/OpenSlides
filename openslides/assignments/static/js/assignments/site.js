@@ -2,7 +2,11 @@
 
 'use strict';
 
-angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
+angular.module('OpenSlidesApp.assignments.site', [
+    'OpenSlidesApp.assignments',
+    'OpenSlidesApp.core.pdf',
+    'OpenSlidesApp.assignments.pdf'
+])
 
 .config([
     'mainMenuProvider',
@@ -351,8 +355,14 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'phases',
     'Projector',
     'ProjectionDefault',
+    'AssignmentContentProvider',
+    'BallotContentProvider',
+    'PdfMakeDocumentProvider',
+    'PdfMakeBallotPaperProvider',
+    'gettextCatalog',
     function($scope, $http, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment, User,
-        assignment, phases, Projector, ProjectionDefault) {
+        assignment, phases, Projector, ProjectionDefault, AssignmentContentProvider, BallotContentProvider,
+        PdfMakeDocumentProvider, PdfMakeBallotPaperProvider, gettextCatalog) {
         User.bindAll({}, $scope, 'users');
         Assignment.bindOne(assignment.id, $scope, 'assignment');
         Assignment.loadRelations(assignment, 'agenda_item');
@@ -510,6 +520,30 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     });
             }
 
+        };
+
+        //creates the document as pdf
+        $scope.makePDF_singleAssignment = function() {
+            var filename = gettextCatalog.getString("Election") + " " + $scope.assignment.title + ".pdf";
+            var assignmentContentProvider = AssignmentContentProvider.createInstance($scope, assignment.polls);
+            var documentProvider = PdfMakeDocumentProvider.createInstance(assignmentContentProvider);
+            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
+        };
+
+        //creates the ballotpaper as pdf
+        $scope.makePDF_assignmentpoll = function(pollID) {
+            var thePoll;
+            var pollNumber;
+            angular.forEach(assignment.polls, function(poll, pollIndex) {
+                if (poll.id == pollID) {
+                    thePoll = poll;
+                    pollNumber = pollIndex+1;
+                }
+            });
+            var filename = gettextCatalog.getString("Ballot") + " " + pollNumber + " " + $scope.assignment.title + ".pdf";
+            var ballotContentProvider = BallotContentProvider.createInstance($scope, thePoll, pollNumber);
+            var documentProvider = PdfMakeBallotPaperProvider.createInstance(ballotContentProvider);
+            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
         };
 
         // Just mark some vote value strings for translation.

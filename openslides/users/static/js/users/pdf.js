@@ -20,14 +20,6 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
 
             angular.forEach(userList, function (user, counter) {
 
-                //check if the row is even or odd
-                var rowStyle = [];
-                if (counter % 2 === 0) {
-                    rowStyle = 'tableEven';
-                } else {
-                    rowStyle = 'tableOdd';
-                }
-
                 //parse for the group names
                 var userGroups = [];
                 angular.forEach(user.groups_id, function (id) {
@@ -43,19 +35,19 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                 var userJsonObj = [
                     {
                         text: "" + (counter+1),
-                        style: rowStyle
+                        style: PdfPredefinedFunctions.flipTableRowStyle(userJsonList.length)
                     },
                     {
                         text: user.short_name,
-                        style: rowStyle
+                        style: PdfPredefinedFunctions.flipTableRowStyle(userJsonList.length)
                     },
                     {
                         text: user.structure_level,
-                        style: rowStyle
+                        style: PdfPredefinedFunctions.flipTableRowStyle(userJsonList.length)
                     },
                     {
                         text: userGroups.join(" "),
-                        style: rowStyle
+                        style: PdfPredefinedFunctions.flipTableRowStyle(userJsonList.length)
                     }
                 ];
                 userJsonList.push(userJsonObj);
