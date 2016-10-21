@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.sessions.models import Session as DjangoSession
 from django.db import models
+from django.utils.timezone import now
 from jsonfield import JSONField
 
 from ..utils.collection import CollectionElement
@@ -9,7 +10,9 @@ from ..utils.projector import ProjectorElement
 from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,
+    CountdownAccessPermissions,
     ProjectorAccessPermissions,
+    ProjectorMessageAccessPermissions,
     TagAccessPermissions,
 )
 from .exceptions import ProjectorException
@@ -292,6 +295,51 @@ class ChatMessage(RESTModelMixin, models.Model):
 
     def __str__(self):
         return 'Message {}'.format(self.timestamp)
+
+
+class ProjectorMessage(RESTModelMixin, models.Model):
+    """
+    Model for ProjectorMessages.
+    """
+    access_permissions = ProjectorMessageAccessPermissions()
+
+    message = models.TextField(blank=True)
+
+    class Meta:
+        default_permissions = ()
+
+
+class Countdown(RESTModelMixin, models.Model):
+    """
+    Model for countdowns.
+    """
+    access_permissions = CountdownAccessPermissions()
+
+    description = models.CharField(max_length=256, blank=True)
+
+    running = models.BooleanField(default=False)
+
+    default_time = models.PositiveIntegerField(default=60)
+
+    countdown_time = models.FloatField(default=60)
+
+    class Meta:
+        default_permissions = ()
+
+    def control(self, action):
+        if action not in ('start', 'stop', 'reset'):
+            raise ValueError("Action must be 'start', 'stop' or 'reset', not {}.".format(action))
+
+        if action == 'start':
+            self.running = True
+            self.countdown_time = now().timestamp() + self.default_time
+        elif action == 'stop' and self.running:
+            self.running = False
+            self.countdown_time = self.countdown_time - now().timestamp()
+        else:  # reset
+            self.running = False
+            self.countdown_time = self.default_time
+        self.save()
 
 
 class Session(DjangoSession):

@@ -1,6 +1,13 @@
 from openslides.utils.rest_api import Field, ModelSerializer, ValidationError
 
-from .models import ChatMessage, ProjectionDefault, Projector, Tag
+from .models import (
+    ChatMessage,
+    Countdown,
+    ProjectionDefault,
+    Projector,
+    ProjectorMessage,
+    Tag,
+)
 
 
 class JSONSerializerField(Field):
@@ -61,3 +68,21 @@ class ChatMessageSerializer(ModelSerializer):
         model = ChatMessage
         fields = ('id', 'message', 'timestamp', 'user', )
         read_only_fields = ('user', )
+
+
+class ProjectorMessageSerializer(ModelSerializer):
+    """
+    Serializer for core.models.ProjectorMessage objects.
+    """
+    class Meta:
+        model = ProjectorMessage
+        fields = ('id', 'message', )
+
+
+class CountdownSerializer(ModelSerializer):
+    """
+    Serializer for core.models.Countdown objects.
+    """
+    class Meta:
+        model = Countdown
+        fields = ('id', 'description', 'default_time', 'countdown_time', 'running', )

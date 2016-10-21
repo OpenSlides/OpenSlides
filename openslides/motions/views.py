@@ -19,7 +19,6 @@ from ..utils.rest_api import (
     detail_route,
 )
 from ..utils.views import APIView
-
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,

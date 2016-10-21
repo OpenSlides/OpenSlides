@@ -50,7 +50,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             template: 'static/templates/core/slide_countdown.html',
         });
 
-        slidesProvider.registerSlide('core/message', {
+        slidesProvider.registerSlide('core/projectormessage', {
             template: 'static/templates/core/slide_message.html',
         });
     }
@@ -214,42 +214,60 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 .controller('SlideCountdownCtrl', [
     '$scope',
     '$interval',
-    function($scope, $interval) {
+    'Countdown',
+    function($scope, $interval, Countdown) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
-        $scope.seconds = Math.floor( $scope.element.countdown_time - Date.now() / 1000 + $scope.serverOffset );
-        $scope.running = $scope.element.running;
-        $scope.visible = $scope.element.visible;
-        $scope.selected = $scope.element.selected;
-        $scope.index = $scope.element.index;
-        $scope.description = $scope.element.description;
-        // start interval timer if countdown status is running
+        var id = $scope.element.id;
         var interval;
-        if ($scope.running) {
-            interval = $interval( function() {
-                $scope.seconds = Math.floor( $scope.element.countdown_time - Date.now() / 1000 + $scope.serverOffset );
-            }, 1000);
-        } else {
-             $scope.seconds = $scope.element.countdown_time;
-        }
+        var calculateCountdownTime = function (countdown) {
+            countdown.seconds = Math.floor( $scope.countdown.countdown_time - Date.now() / 1000 + $scope.serverOffset );
+        };
+        $scope.$watch(function () {
+            return Countdown.lastModified(id);
+        }, function () {
+            $scope.countdown = Countdown.get(id);
+            if (interval) {
+                $interval.cancel(interval);
+            }
+            if ($scope.countdown) {
+                if ($scope.countdown.running) {
+                    calculateCountdownTime($scope.countdown);
+                    interval = $interval(function () { calculateCountdownTime($scope.countdown); }, 1000);
+                } else {
+                    $scope.countdown.seconds = $scope.countdown.countdown_time;
+                }
+            }
+        });
         $scope.$on('$destroy', function() {
             // Cancel the interval if the controller is destroyed
-            $interval.cancel(interval);
+            if (interval) {
+                $interval.cancel(interval);
+            }
         });
     }
 ])
 
 .controller('SlideMessageCtrl', [
     '$scope',
-    function($scope) {
+    'ProjectorMessage',
+    'Projector',
+    'ProjectorID',
+    'gettextCatalog',
+    function($scope, ProjectorMessage, Projector, ProjectorID, gettextCatalog) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
-        $scope.message = $scope.element.message;
-        $scope.visible = $scope.element.visible;
-        $scope.selected = $scope.element.selected;
-        $scope.type = $scope.element.type;
+        var id = $scope.element.id;
+
+        if ($scope.element.identify) {
+            var projector = Projector.get(ProjectorID());
+            $scope.identifyMessage = gettextCatalog.getString('Projector') + ' ' + projector.id + ': ' + projector.name; 
+        } else {
+            $scope.message = ProjectorMessage.get(id);
+            ProjectorMessage.bindOne(id, $scope, 'message');
+        }
     }
 ]);
 

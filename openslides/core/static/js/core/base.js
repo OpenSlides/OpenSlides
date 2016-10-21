@@ -287,12 +287,16 @@ angular.module('OpenSlidesApp.core', [
     'ChatMessage',
     'Config',
     'Projector',
-    function (ChatMessage, Config, Projector) {
+    'ProjectorMessage',
+    'Countdown',
+    function (ChatMessage, Config, Projector, ProjectorMessage, Countdown) {
         return function () {
             Config.findAll();
 
             // Loads all projector data and the projectiondefaults
             Projector.findAll();
+            ProjectorMessage.findAll();
+            Countdown.findAll();
 
             // Loads all chat messages data and their user_ids
             // TODO: add permission check if user has required chat permission
@@ -640,6 +644,112 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+/* Model for ProjectorMessages */
+.factory('ProjectorMessage', [
+    'DS',
+    'jsDataModel',
+    'gettext',
+    '$http',
+    'Projector',
+    function(DS, jsDataModel, gettext, $http, Projector) {
+        var name = 'core/projectormessage';
+        return DS.defineResource({
+            name: name,
+            useClass: jsDataModel,
+            verboseName: gettext('Message'),
+            verbosenamePlural: gettext('Messages'),
+            methods: {
+                getResourceName: function () {
+                    return name;
+                },
+                // Override the BaseModel.project function
+                project: function(projectorId) {
+                    // if this object is already projected on projectorId, delete this element from this projector
+                    var isProjectedIds = this.isProjected();
+                    var self = this;
+                    var predicate = function (element) {
+                        return element.name == name && element.id == self.id;
+                    };
+                    _.forEach(isProjectedIds, function (id) {
+                        var uuid = _.findKey(Projector.get(id).elements, predicate);
+                        $http.post('/rest/core/projector/' + id + '/deactivate_elements/', [uuid]);
+                    });
+                    // if it was the same projector before, just delete it but not show again
+                    if (_.indexOf(isProjectedIds, projectorId) == -1) {
+                        return $http.post(
+                            '/rest/core/projector/' + projectorId + '/activate_elements/',
+                            [{name: name, id: self.id, stable: true}]
+                        );
+                    }
+                },
+            }
+        });
+    }
+])
+
+/* Model for Countdowns */
+.factory('Countdown', [
+    'DS',
+    'jsDataModel',
+    'gettext',
+    '$rootScope',
+    '$http',
+    'Projector',
+    function(DS, jsDataModel, gettext, $rootScope, $http, Projector) {
+        var name = 'core/countdown';
+        return DS.defineResource({
+            name: name,
+            useClass: jsDataModel,
+            verboseName: gettext('Countdown'),
+            verbosenamePlural: gettext('Countdowns'),
+            methods: {
+                getResourceName: function () {
+                    return name;
+                },
+                start: function () {
+                    // calculate end point of countdown (in seconds!)
+                    var endTimestamp = Date.now() / 1000 - $rootScope.serverOffset + this.countdown_time;
+                    this.running = true;
+                    this.countdown_time = endTimestamp;
+                    DS.save(name, this.id);
+                },
+                stop: function () {
+                    // calculate rest duration of countdown (in seconds!)
+                    var newDuration = Math.floor( this.countdown_time - Date.now() / 1000 + $rootScope.serverOffset );
+                    this.running = false;
+                    this.countdown_time = newDuration;
+                    DS.save(name, this.id);
+                },
+                reset: function () {
+                    this.running = false;
+                    this.countdown_time = this.default_time;
+                    DS.save(name, this.id);
+                },
+                // Override the BaseModel.project function
+                project: function(projectorId) {
+                    // if this object is already projected on projectorId, delete this element from this projector
+                    var isProjectedIds = this.isProjected();
+                    var self = this;
+                    var predicate = function (element) {
+                        return element.name == name && element.id == self.id;
+                    };
+                    _.forEach(isProjectedIds, function (id) {
+                        var uuid = _.findKey(Projector.get(id).elements, predicate);
+                        $http.post('/rest/core/projector/' + id + '/deactivate_elements/', [uuid]);
+                    });
+                    // if it was the same projector before, just delete it but not show again
+                    if (_.indexOf(isProjectedIds, projectorId) == -1) {
+                        return $http.post(
+                            '/rest/core/projector/' + projectorId + '/activate_elements/',
+                            [{name: name, id: self.id, stable: true}]
+                        );
+                    }
+                },
+            },
+        });
+    }
+])
+
 /* Converts number of seconds into string "h:mm:ss" or "mm:ss" */
 .filter('osSecondsToTime', [
     function () {
@@ -733,10 +843,12 @@ angular.module('OpenSlidesApp.core', [
 .run([
     'ChatMessage',
     'Config',
+    'Countdown',
+    'ProjectorMessage',
     'Projector',
     'ProjectionDefault',
     'Tag',
-    function (ChatMessage, Config, Projector, ProjectionDefault, Tag) {}
+    function (ChatMessage, Config, Countdown, ProjectorMessage, Projector, ProjectionDefault, Tag) {}
 ]);
 
 }());
