@@ -32,18 +32,19 @@
           <translate>Agenda</translate>
         </button>
         <button type="button" class="btn btn-default btn-sm" uib-dropdown-toggle
-            ng-class="{ 'btn-primary': isAgendaProjected(mainListTree) > 0 && isAgendaProjected(mainListTree) != defaultProjectorId_all_items}">
+            ng-class="{ 'btn-primary': isAgendaProjected(mainListTree) > 0 && isAgendaProjected(mainListTree) != defaultProjectorId_all_items}"
+            ng-if="agendaHasSubitems || projectors.length > 1">
           <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="split-button">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="split-button" ng-if="agendaHasSubitems || projectors.length > 1">
           <li role="menuitem" ng-show="agendaHasSubitems">
             <a href="" ng-click="changeMainListTree(); $event.stopPropagation();">
               <i class="fa" ng-class="mainListTree ? 'fa-square-o' : 'fa-check-square-o'"></i>
               <translate>Only main agenda items</translate>
             </a>
           </li>
-          <li class="divider" ng-show="agendaHasSubitems"></li>
-          <li role="menuitem" ng-repeat="projector in projectors">
+          <li class="divider" ng-show="agendaHasSubitems && projectors.length > 1"></li>
+          <li role="menuitem" ng-repeat="projector in projectors" ng-show="projectors.length > 1">
             <a href="" ng-click="projectAgenda(projectorId=projector.id, tree=mainListTree)"
               ng-class="{ 'projected': isAgendaProjected(mainListTree) == projector.id }">
               <i class="fa fa-video-camera" ng-show="isAgendaProjected(mainListTree) == projector.id"></i>
