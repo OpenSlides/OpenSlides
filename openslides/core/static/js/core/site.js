@@ -1130,8 +1130,10 @@ angular.module('OpenSlidesApp.core.site', [
         };
 
         // Projector functions
-        $scope.setProjectionDefault = function (projector, def) {
-            $http.post('/rest/core/projector/' + projector.id + '/set_projectiondefault/', def.id);
+        $scope.setProjectionDefault = function (projector, projectiondefault) {
+            if (projectiondefault.projector_id !== projector.id) {
+                $http.post('/rest/core/projector/' + projector.id + '/set_projectiondefault/', projectiondefault.id);
+            }
         };
         $scope.createProjector = function (name) {
             var projector = {
