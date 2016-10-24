@@ -19,7 +19,7 @@ def convert_duration(apps, schema_editor):
             if len(split) == 2 and is_int(split[0]) and is_int(split[1]):
                 # duration = hours * 60 + minutes
                 item.duration_tmp = int(split[0]) * 60 + int(split[1])
-        item.save()
+        item.save(skip_autoupdate=True)
 
 
 def is_int(s):
