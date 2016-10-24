@@ -31,9 +31,9 @@ def migrate_groups_and_user_permissions(apps, schema_editor):
         if group_default.name == 'Guests' and group_registered.name == 'Registered users':
             # Rename groups pk 1 and 2.
             group_default.name = 'Default'
-            group_default.save()
+            group_default.save(skip_autoupdate=True)
             group_registered.name = 'Previous group Registered'
-            group_registered.save()
+            group_registered.save(skip_autoupdate=True)
 
             # Move users without groups to group pk 2.
             users = User.objects.all()
