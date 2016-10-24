@@ -24,7 +24,7 @@ def move_custom_slides_to_topics(apps, schema_editor):
         item = Item.objects.get(object_id=custom_slide.pk, content_type=content_type_custom_slide)
         item.object_id = topic.pk
         item.content_type = content_type_topic
-        item.save()
+        item.save(skip_autoupdate=True)
 
     # Delete old data.
     CustomSlide.objects.all().delete()

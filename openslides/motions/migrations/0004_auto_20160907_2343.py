@@ -22,7 +22,7 @@ def change_label_of_state(apps, schema_editor):
     else:
         state.name = 'refered to committee'
         state.action_word = 'Refer to committee'
-        state.save()
+        state.save(skip_autoupdate=True)
 
 
 def add_recommendation_labels(apps, schema_editor):
@@ -46,7 +46,7 @@ def add_recommendation_labels(apps, schema_editor):
     for state in State.objects.all():
         if name_label_map.get(state.name):
             state.recommendation_label = name_label_map[state.name]
-            state.save()
+            state.save(skip_autoupdate=True)
 
 
 class Migration(migrations.Migration):
