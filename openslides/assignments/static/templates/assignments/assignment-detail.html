@@ -224,18 +224,21 @@
           <tr>
             <td>
               <translate>Valid ballots</translate>
-            <td ng-init="vote = poll.getVote('votesvalid')">
-              {{ vote.value }} {{ vote.percentStr }}
+            <td>
+              {{ poll.getVote('votesvalid').value }}
+              {{ poll.getVote('votesvalid').percentStr }}
           <tr>
             <td>
               <translate>Invalid ballots</translate>
-            <td ng-init="vote = poll.getVote('votesinvalid')">
-              {{ vote.value }} {{ vote.percentStr }}
+            <td>
+              {{ poll.getVote('votesinvalid').value }}
+              {{ poll.getVote('votesinvalid').percentStr }}
           <tr class="total bg-info">
             <td>
               <translate>Casted ballots</translate>
-            <td ng-init="vote = poll.getVote('votescast')">
-              {{ vote.value }} {{ vote.percentStr }}
+            <td>
+              {{ poll.getVote('votescast').value }}
+              {{ poll.getVote('votescast').percentStr }}
         </table>
       </div>
     </uib-tab>
