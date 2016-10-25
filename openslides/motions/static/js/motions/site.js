@@ -909,10 +909,8 @@ angular.module('OpenSlidesApp.motions.site', [
             ngDialog.open(MotionForm.getDialog(motion));
         };
 
-
         // Export as a pdf file
         $scope.pdf_export = function() {
-
             var filename = gettextCatalog.getString("Motions") + ".pdf";
             var image_sources = [];
 
