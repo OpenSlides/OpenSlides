@@ -329,6 +329,8 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
                 // duration
                 if (item.duration) {
                     item.duration = item.duration.replace(quotionRe, '$1');
+                } else {
+                    item.duration = null;
                 }
                 // comment
                 if (item.comment) {
