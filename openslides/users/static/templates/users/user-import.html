@@ -66,7 +66,7 @@
   </div>
 
   <h4 translate>Please note:</h4>
-  <ul>
+  <ul class="indentation">
       <li><translate>Required comma or semicolon separated values with these column header names in the first row</translate>:<br>
           <code>title, first_name, last_name, structure_level, number, groups, comment, is_active, is_committee</code>
       <li><translate>Default groups</translate>:
@@ -127,7 +127,7 @@
               <i class="fa fa-check-circle fa-lg"></i>
             </span>
           <td>
-            {{ $index + 1 }}
+            {{ (currentPage - 1) * itemsPerPage + $index + 1 }}
           <td>
             {{ user.title }}
           <td ng-class="{ 'text-danger': user.name_error }">
@@ -173,7 +173,18 @@
                   </li>
                 </ul>
     </table>
-    <uib-pagination total-items="users.length" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()"></uib-pagination>
+    <ul uib-pagination
+        ng-show="users.length > itemsPerPage"
+        total-items="users.length"
+        items-per-page="itemsPerPage"
+        ng-model="currentPage"
+        ng-change="pageChanged()"
+        class="pagination-sm"
+        direction-links="false"
+        boundary-links="true"
+        first-text="&laquo;"
+        last-text="&raquo;">
+    </ul>
 
     <div class="text-danger">
       <i class="fa fa-exclamation-triangle"></i>

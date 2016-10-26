@@ -275,8 +275,16 @@
                 class="pull-right"><translate>Edit ...</translate></a>
           </div>
   </table>
-  <uib-pagination ng-show="itemsFiltered.length > itemsPerPage" total-items="itemsFiltered.length" items-per-page="itemsPerPage" ng-model="currentPage"
+  <ul uib-pagination
+      ng-show="itemsFiltered.length > itemsPerPage"
+      total-items="itemsFiltered.length"
+      items-per-page="itemsPerPage"
+      ng-model="currentPage"
       ng-change="pageChanged()"
-      class="pagination-sm" direction-links="false" boundary-links="true" first-text="&laquo;" last-text="&raquo;">
-  </uib-pagination>
+      class="pagination-sm"
+      direction-links="false"
+      boundary-links="true"
+      first-text="&laquo;"
+      last-text="&raquo;">
+  </ul>
 </div>
