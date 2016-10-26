@@ -89,7 +89,7 @@ on port 8000. That means that the server will be available to everyone on your
 local network (at least for commonly used network configurations).
 
 If you use a virtual environment (see step b.), do not forget to activate
-the environment before restart after you have closed the terminal::
+the environment before restart after you closed the terminal::
 
     $ source .virtualenv/bin/activate
 
@@ -101,7 +101,7 @@ You can store settings, database and other personal files in a local
 subdirectory and use these files e. g. if you want to run multiple
 instances of OpenSlides::
 
-    $ openslides --local-installation
+    $ openslides start --local-installation
 
 
 2. Installation on Windows
