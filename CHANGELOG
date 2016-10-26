@@ -15,6 +15,7 @@ Agenda:
 Assignments:
 - Remove unused assignment config to publish winner election results only.
 - Added options to calculate percentages on different bases.
+- Added majority calculation.
 
 Core:
 - Added support for big assemblies with lots of users.

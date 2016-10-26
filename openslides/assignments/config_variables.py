@@ -44,6 +44,17 @@ def get_config_variables():
         group='Elections',
         subgroup='Ballot and ballot papers')
 
+    # TODO: Add server side validation of the choices.
+    yield ConfigVariable(
+        name='assignments_poll_default_majority_method',
+        default_value='simple_majority',
+        input_type='majorityMethod',
+        label='Required majority',
+        help_text='Default method to check whether a candidate has reached the required majority.',
+        weight=425,
+        group='Elections',
+        subgroup='Ballot and ballot papers')
+
     yield ConfigVariable(
         name='assignments_pdf_ballot_papers_selection',
         default_value='CUSTOM_NUMBER',

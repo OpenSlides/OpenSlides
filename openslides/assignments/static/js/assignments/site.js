@@ -5,7 +5,8 @@
 angular.module('OpenSlidesApp.assignments.site', [
     'OpenSlidesApp.assignments',
     'OpenSlidesApp.core.pdf',
-    'OpenSlidesApp.assignments.pdf'
+    'OpenSlidesApp.assignments.pdf',
+    'OpenSlidesApp.poll.majority'
 ])
 
 .config([
@@ -241,6 +242,100 @@ angular.module('OpenSlidesApp.assignments.site', [
                 return formFields;
             }
         };
+    }
+])
+
+// Cache for AssignmentPollDetailCtrl so that users choices are keeped during user actions (e. g. save poll form).
+.value('AssignmentPollDetailCtrlCache', {})
+
+// Child controller of AssignmentDetailCtrl for each single poll.
+.controller('AssignmentPollDetailCtrl', [
+    '$scope',
+    'MajorityMethodChoices',
+    'MajorityCalculation',
+    'Config',
+    'AssignmentPollDetailCtrlCache',
+    function ($scope, MajorityMethodChoices, MajorityCalculation, Config, AssignmentPollDetailCtrlCache) {
+        $scope.poll_options_with_majorities = $scope.poll.options;
+        // Define choices.
+        $scope.methodChoices = MajorityMethodChoices;
+        // TODO: Get $scope.baseChoices from config_variables.py without copying them.
+
+        // Setup empty cache with default values.
+        if (AssignmentPollDetailCtrlCache[$scope.poll.id] === undefined) {
+            AssignmentPollDetailCtrlCache[$scope.poll.id] = {
+                isMajorityCalculation: true,
+                isMajorityDetails: false,
+                method: $scope.config('assignments_poll_default_majority_method'),
+                base: $scope.config('assignments_poll_100_percent_base')
+            };
+        }
+
+        // Fetch users choices from cache.
+        $scope.isMajorityCalculation = AssignmentPollDetailCtrlCache[$scope.poll.id].isMajorityCalculation;
+        $scope.isMajorityDetails = AssignmentPollDetailCtrlCache[$scope.poll.id].isMajorityDetails;
+        $scope.method = AssignmentPollDetailCtrlCache[$scope.poll.id].method;
+        $scope.base = AssignmentPollDetailCtrlCache[$scope.poll.id].base;
+
+        // (re)calculate the base of poll calculations.
+        $scope.calculateBase = function() {
+            var base;
+            switch($scope.base) {
+                case 'YES_NO_ABSTAIN':
+                case 'YES_NO':
+                    if ($scope.poll.pollmethod == 'votes') {
+                        base = MajorityCalculation.options_yes_sum($scope.poll);
+                    }
+                    break;
+                case 'VALID':
+                    base = $scope.poll.votesvalid;
+                    break;
+                case 'CAST':
+                    base = $scope.poll.votescast;
+                    break;
+                // case 'DISABLED have no bases
+            }
+            return base;
+        };
+
+        // calculates if majority thresholds have been reached. Returns 0+ when reached, or negative int when not reached
+        $scope.recalculateMajorities = function (method) {
+            $scope.method = method;
+            $scope.calculationError = false;
+            var base_nmbr = $scope.calculateBase();
+            _.forEach($scope.poll_options_with_majorities, function(option) {
+                var optionvotes = {};
+                _.forEach(option.votes, function(vote) {
+                    switch (vote.value) {
+                        case 'Yes':
+                        case 'Votes':
+                            optionvotes.yes = vote.weight;
+                            break;
+                        case 'No':
+                            optionvotes.no = vote.weight;
+                            break;
+                        case 'Abstain':
+                            optionvotes.abstain = vote.weight;
+                            break;
+                    }
+                });
+                option.isReached = MajorityCalculation.isReached($scope.base, method, optionvotes, base_nmbr);
+                if (option.reached === 'undefined'){
+                    $scope.calculationError = true;
+                }
+            });
+        };
+        $scope.recalculateMajorities($scope.method);
+
+        // Save current values to cache on destroy of this controller.
+        $scope.$on('$destroy', function() {
+            AssignmentPollDetailCtrlCache[$scope.poll.id] = {
+                isMajorityCalculation: $scope.isMajorityCalculation,
+                isMajorityDetails: $scope.isMajorityDetails,
+                method: $scope.method,
+                base: $scope.base
+            };
+        });
     }
 ])
 
@@ -883,6 +978,12 @@ angular.module('OpenSlidesApp.assignments.site', [
         gettext('Number of all participants');
         gettext('Use the following custom number');
         gettext('Custom number of ballot papers');
+        gettext('Required majority');
+        gettext('Default method to check whether a candidate has reached the required majority.');
+        gettext('Simple majority');
+        gettext('Two-thirds majority');
+        gettext('Three-quarters majority');
+        gettext('Disabled');
         gettext('Title for PDF document (all elections)');
         gettext('Preamble text for PDF document (all elections)');
         //other translations

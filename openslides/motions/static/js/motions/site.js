@@ -740,10 +740,10 @@ angular.module('OpenSlidesApp.motions.site', [
 .controller('MotionPollDetailCtrl', [
     '$scope',
     'MajorityMethodChoices',
-    'MotionMajority',
+    'MajorityCalculation',
     'Config',
     'MotionPollDetailCtrlCache',
-    function ($scope, MajorityMethodChoices, MotionMajority, Config, MotionPollDetailCtrlCache) {
+    function ($scope, MajorityMethodChoices, MajorityCalculation, Config, MotionPollDetailCtrlCache) {
         // Define choices.
         $scope.methodChoices = MajorityMethodChoices;
         // TODO: Get $scope.baseChoices from config_variables.py without copying them.
@@ -766,7 +766,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // Define result function.
         $scope.isReached = function () {
-            return MotionMajority.isReached($scope.base, $scope.method, $scope.poll);
+            return MajorityCalculation.isReached($scope.base, $scope.method, $scope.poll);
         };
 
         // Save current values to cache on detroy of this controller.
