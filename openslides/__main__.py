@@ -45,7 +45,9 @@ def get_parser():
     """
     Parses all command line arguments.
     """
-    if len(sys.argv) == 1 and not is_local_installation():
+    if len(sys.argv) == 1:
+        # Use start subcommand if called by openslides console script without
+        # any other arguments.
         sys.argv.append('start')
 
     # Init parser
@@ -55,7 +57,7 @@ def get_parser():
             If it is called without any argument, this will be treated as
             if it is called with the 'start' subcommand. That means
             OpenSlides will setup default settings and database, start the
-            tornado webserver, launch the default web browser and open the
+            webserver, launch the default web browser and open the
             webinterface.
             """
     epilog = """
@@ -86,7 +88,7 @@ def get_parser():
 
     # Subcommand start
     start_help = (
-        'Setup settings and database, start tornado webserver, launch the '
+        'Setup settings and database, start webserver, launch the '
         'default web browser and open the webinterface. The environment '
         'variable DJANGO_SETTINGS_MODULE is ignored.')
     subcommand_start = subparsers.add_parser(
@@ -193,7 +195,8 @@ def start(args):
         '{}:{}'.format(args.host, args.port),
         '--noreload',
         '--insecure',
-        '--nothreading'])
+        '--nothreading',
+    ])
 
 
 def createsettings(args):
