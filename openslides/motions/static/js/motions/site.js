@@ -1013,6 +1013,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'MotionChangeRecommendation',
     'MotionPDFExport',
     'Motion',
+    'MotionComment',
     'Category',
     'Mediafile',
     'Tag',
@@ -1026,9 +1027,8 @@ angular.module('OpenSlidesApp.motions.site', [
     'ProjectionDefault',
     function($scope, $http, operator, ngDialog, MotionForm,
              ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation, MotionPDFExport,
-             Motion, Category, Mediafile, Tag, User, Workflow, Config, motion, MotionInlineEditing, gettextCatalog,
+             Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motion, MotionInlineEditing, gettextCatalog,
              Projector, ProjectionDefault) {
-        Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1041,10 +1041,17 @@ angular.module('OpenSlidesApp.motions.site', [
         }, function () {
             $scope.defaultProjectorId = ProjectionDefault.filter({name: 'motions'})[0].projector_id;
         });
+        $scope.$watch(function () {
+            return Motion.lastModified(motion.id);
+        }, function () {
+            $scope.motion = Motion.get(motion.id);
+            MotionComment.populateFields($scope.motion);
+        });
+        $scope.commentsFields = Config.get('motions_comments').value;
+        $scope.commentFieldForState = MotionComment.getFieldNameForFlag('forState');
+        $scope.commentFieldForRecommendation = MotionComment.getFieldNameForFlag('forRecommendation');
         $scope.version = motion.active_version;
         $scope.isCollapsed = true;
-        $scope.commentsFields = Config.get('motions_comments').value;
-
         $scope.lineNumberMode = Config.get('motions_default_line_numbering').value;
         $scope.setLineNumberMode = function(mode) {
             $scope.lineNumberMode = mode;
@@ -1119,6 +1126,26 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.reset_state = function () {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {});
         };
+        // save additional state field
+        $scope.saveAdditionalStateField = function (stateExtension) {
+            if (stateExtension) {
+                motion["comment " + $scope.commentFieldForState] = stateExtension;
+                motion.title = motion.getTitle(-1);
+                motion.text = motion.getText(-1);
+                motion.reason = motion.getReason(-1);
+                Motion.save(motion);
+            }
+        };
+        // save additional recommendation field
+        $scope.saveAdditionalRecommendationField = function (recommendationExtension) {
+            if (recommendationExtension) {
+                motion["comment " + $scope.commentFieldForRecommendation] = recommendationExtension;
+                motion.title = motion.getTitle(-1);
+                motion.text = motion.getText(-1);
+                motion.reason = motion.getReason(-1);
+                Motion.save(motion);
+            }
+        };
         // update recommendation
         $scope.updateRecommendation = function (recommendation_id) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_recommendation/', {'recommendation': recommendation_id});
@@ -1183,7 +1210,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 isAllowed = operator.hasPerms('motions.can_see_and_manage_comments') || _.find(
                         $scope.commentsFields,
                         function(field) {
-                            return field.public;
+                            return field.public && !field.forState && !field.forRecommendation;
                         }
                 );
             }

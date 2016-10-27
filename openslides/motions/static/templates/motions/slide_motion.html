@@ -3,7 +3,7 @@
   <div id="sidebox">
     <!-- State -->
     <h3 translate>State</h3>
-    {{ motion.state.name | translate }}
+    {{ motion.getStateName() }}
 
     <!-- Submitters -->
     <h3 ng-if="motion.submitters.length > 0" translate>Submitters</h3>

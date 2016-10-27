@@ -389,7 +389,7 @@
             <i class="fa fa-paperclip" ng-if="motion.attachments_id.length > 0"></i>
             <span style="padding: 5px;" ng-mouseover="motion.stateHover=true" ng-mouseleave="motion.stateHover=false">
               <span class="label" ng-class="'label-'+motion.state.css_class">
-                {{ motion.state.name | translate }}
+                {{ motion.getStateName() }}
               </span>
               <span os-perms="motions.can_manage" ng-class="{'hiddenDiv': !motion.stateHover}" uib-dropdown>
                 <i class="fa fa-cog pointer" uib-dropdown-toggle id="state-dropdown{{ motion.id }}"></i>

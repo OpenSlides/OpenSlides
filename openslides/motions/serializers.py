@@ -71,6 +71,8 @@ class StateSerializer(ModelSerializer):
             'versioning',
             'leave_old_version_active',
             'dont_set_identifier',
+            'show_state_extension_field',
+            'show_recommendation_extension_field',
             'next_states',
             'workflow')
 

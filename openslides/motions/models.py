@@ -1085,6 +1085,20 @@ class State(RESTModelMixin, models.Model):
     this one, else it does.
     """
 
+    show_state_extension_field = models.BooleanField(default=False)
+    """
+    If true, an additional input field (from motion comment) is visible
+    to extend the state name. The full state name is composed of the given
+    state name and the entered value of this input field.
+    """
+
+    show_recommendation_extension_field = models.BooleanField(default=False)
+    """
+    If true, an additional input field (from motion comment) is visible
+    to extend the recommendation label. The full recommendation string is
+    composed of the given recommendation label and the entered value of this input field.
+    """
+
     class Meta:
         default_permissions = ()
 
