@@ -281,8 +281,8 @@ angular.module('OpenSlidesApp.assignments', [])
                 },
                 // override isProjected function of jsDataModel factory
                 isProjected: function (poll_id) {
-                    // Returns the id of the last projector found with an element
-                    // with the name 'assignments/assignment'.
+                    // Returns the ids of all projectors with an element
+                    // with the name 'assignments/assignment'. Else returns an empty list.
                     var self = this;
                     var predicate = function (element) {
                         var value;
@@ -302,13 +302,13 @@ angular.module('OpenSlidesApp.assignments', [])
                         }
                         return value;
                     };
-                    var isProjected = 0;
+                    var isProjectedIds = [];
                     Projector.getAll().forEach(function (projector) {
                         if (typeof _.findKey(projector.elements, predicate) === 'string') {
-                            isProjected = projector.id;
+                            isProjectedIds.push(projector.id);
                         }
                     });
-                    return isProjected;
+                    return isProjectedIds;
                 }
             },
             relations: {

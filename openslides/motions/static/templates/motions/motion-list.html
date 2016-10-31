@@ -352,7 +352,7 @@
     <!-- data row -->
     <div class="row data-row" ng-mouseover="motion.hover=true"
       ng-mouseleave="motion.hover=false"
-      ng-class="{'projected': motion.isProjected()}"
+      ng-class="{'projected': motion.isProjected().length}"
       ng-repeat="motion in motionsFiltered = (motions
         | osFilter: filter.search : getFilterString
         | SelectMultipleFilter: multiselectFilter.state : getItemId.state

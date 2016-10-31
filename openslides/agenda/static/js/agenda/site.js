@@ -285,8 +285,8 @@ angular.module('OpenSlidesApp.agenda.site', [
         };
         // check if agenda is projected
         $scope.isAgendaProjected = function (tree) {
-            // Returns true if there is a projector element with the name
-            // 'agenda/item-list'.
+            // Returns the ids of all projectors with an element with
+            // the name 'agenda/item-list'. Else returns an empty list.
             var predicate = function (element) {
                 var value;
                 if (tree) {
@@ -302,13 +302,13 @@ angular.module('OpenSlidesApp.agenda.site', [
                 }
                 return value;
             };
-            var projectorId = 0;
+            var projectorIds = [];
             $scope.projectors.forEach(function (projector) {
                 if (typeof _.findKey(projector.elements, predicate) === 'string') {
-                    projectorId = projector.id;
+                    projectorIds.push(projector.id);
                 }
             });
-            return projectorId;
+            return projectorIds;
         };
         // auto numbering of agenda items
         $scope.autoNumbering = function() {
@@ -580,18 +580,18 @@ angular.module('OpenSlidesApp.agenda.site', [
         };
         // same logic as in core/base.js
         $scope.isCurrentLoSProjected = function () {
-            // Returns the projector id if there is a projector element with the name
-            // 'agenda/current-list-of-speakers'. Elsewise returns 0.
-            var projectorId = 0;
+            // Returns the ids of all projectors with an element with the name
+            // 'agenda/current-list-of-speakers'. Elsewise returns an empty list.
+            var projectorIds = [];
             $scope.projectors.forEach(function (projector) {
                 var key = _.findKey(projector.elements, function (element) {
                     return element.name == 'agenda/current-list-of-speakers';
                 });
                 if (typeof key === 'string') {
-                    projectorId = projector.id;
+                    projectorIds.push(projector.id);
                 }
             });
-            return projectorId;
+            return projectorIds;
         };
 
         // go to the list of speakers (management) of the currently

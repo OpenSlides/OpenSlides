@@ -11,17 +11,17 @@
       </a>
       <!-- project list of speakers -->
       <span class="btn-group" style="min-width:54px;" uib-dropdown
-        uib-tooltip="{{ 'Projector' | translate }} {{ item.isListOfSpeakersProjected() }}"
-        tooltip-enable="item.isListofSpeakersProjected() > 0"
+        uib-tooltip="{{ 'Projector' | translate }} {{ item.isListOfSpeakersProjected()[0] || '' }}"
+        tooltip-enable="item.isListofSpeakersProjected().length"
         os-perms="core.can_manage_projector">
         <button type="button" class="btn btn-default btn-sm"
           ng-click="item.projectListOfSpeakers(defaultProjectorListOfSpeakersId)"
-          ng-class="{ 'btn-primary': item.isListOfSpeakersProjected() == defaultProjectorListOfSpeakersId }">
+          ng-class="{ 'btn-primary': inArray(item.isListOfSpeakersProjected(), defaultProjectorListOfSpeakersId)  }">
           <i class="fa fa-video-camera"></i>
           <translate>List of speakers</translate>
         </button>
         <button type="button" class="btn btn-default btn-sm slimDropDown"
-          ng-class="{ 'btn-primary': (item.isListOfSpeakersProjected() > 0 && item.isListOfSpeakersProjected() != defaultProjectorListOfSpeakersId) }"
+          ng-class="{ 'btn-primary': (item.isListOfSpeakersProjected().length && !inArray(item.isListOfSpeakersProjected(), defaultProjectorListOfSpeakersId) ) }"
           ng-if="projectors.length > 1"
           uib-dropdown-toggle>
           <span class="caret"></span>
@@ -29,8 +29,8 @@
         <ul class="dropdown-menu" ng-if="projectors.length > 1">
           <li role="menuitem" ng-repeat="projector in projectors">
             <a href="" ng-click="item.projectListOfSpeakers(projector.id)"
-              ng-class="{ 'projected': (item.isListOfSpeakersProjected() == projector.id) }">
-              <i class="fa fa-video-camera" ng-show="item.isListOfSpeakersProjected() == projector.id"></i>
+              ng-class="{ 'projected': inArray(item.isListOfSpeakersProjected(), projector.id) }">
+              <i class="fa fa-video-camera" ng-show="inArray(item.isListOfSpeakersProjected(), projector.id) "></i>
               {{ projector.name }}
               <span ng-if="defaultProjectorListOfSpeakersId == projector.id">(<translate>Default</translate>)</span>
             </a>

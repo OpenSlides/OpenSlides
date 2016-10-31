@@ -182,7 +182,7 @@
           </i>
     <tbody>
       <tr ng-repeat="user in usersFiltered | limitTo : itemsPerPage : limitBegin" class="animate-item"
-          ng-class="{ 'activeline': user.isProjected(), 'selected': user.selected  }">
+          ng-class="{ 'activeline': user.isProjected().length, 'selected': user.selected  }">
         <!-- projector column -->
         <td ng-show="!isSelectMode" os-perms="core.can_manage_projector">
           <projector-button model="user" default-projector-id="defaultProjectorId">
