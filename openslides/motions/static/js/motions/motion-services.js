@@ -10,12 +10,13 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
     'User',
     'PdfMakeConverter',
     'PdfMakeDocumentProvider',
+    'PdfMakeBallotPaperProvider',
     'MotionContentProvider',
     'PollContentProvider',
     'gettextCatalog',
     '$http',
-    function (HTMLValidizer, Motion, User, PdfMakeConverter, PdfMakeDocumentProvider, MotionContentProvider,
-              PollContentProvider, gettextCatalog, $http) {
+    function (HTMLValidizer, Motion, User, PdfMakeConverter, PdfMakeDocumentProvider, PdfMakeBallotPaperProvider,
+            MotionContentProvider, PollContentProvider, gettextCatalog, $http) {
         var obj = {};
 
         var $scope;
@@ -39,12 +40,12 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
 
         //make PDF for polls
         obj.createPoll = function() {
-            var id = $scope.motion.identifier.replace(" ", ""),
-                title = $scope.motion.getTitle($scope.version),
-                filename = gettextCatalog.getString("Motion") + "-" + id + "-" + gettextCatalog.getString("ballot-paper") + ".pdf",
-                content = PollContentProvider.createInstance(title, id, gettextCatalog);
-
-            pdfMake.createPdf(content).download(filename);
+            var id = $scope.motion.identifier.replace(" ", "");
+            var title = $scope.motion.getTitle($scope.version);
+            var filename = gettextCatalog.getString("Motion") + "-" + id + "-" + gettextCatalog.getString("ballot-paper") + ".pdf";
+            var pollContentProvider = PollContentProvider.createInstance(title, id, gettextCatalog);
+            var documentProvider = PdfMakeBallotPaperProvider.createInstance(pollContentProvider);
+            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
         };
 
         obj.init = function (_scope) {

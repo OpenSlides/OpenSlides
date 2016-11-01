@@ -7,11 +7,71 @@ angular.module('OpenSlidesApp.core.pdf', [])
 .factory('PdfPredefinedFunctions', [
     function() {
         var PdfPredefinedFunctions = {};
+        var BallotCircleDimensions = {
+            yDistance: 6,
+            size: 8
+        };
 
         PdfPredefinedFunctions.createTitle = function(titleString) {
             return {
                 text: titleString,
                 style: "title"
+            };
+        };
+
+        PdfPredefinedFunctions.flipTableRowStyle = function(currentTableSize) {
+            if (currentTableSize % 2 === 0) {
+                return "tableEven";
+            } else {
+                return "tableOdd";
+            }
+        };
+
+        //draws a circle
+        PdfPredefinedFunctions.drawCircle = function(y, size) {
+            return [
+                {
+                    type: 'ellipse',
+                    x: 0,
+                    y: y,
+                    lineColor: 'black',
+                    r1: size,
+                    r2: size
+                }
+            ];
+        };
+
+        //Returns an entry in the ballot with a circle to draw into
+        PdfPredefinedFunctions.createBallotEntry = function(decision) {
+            return {
+                margin: [40+BallotCircleDimensions.size, 10, 0, 0],
+                columns: [
+                    {
+                        width: 15,
+                        canvas: PdfPredefinedFunctions.drawCircle(BallotCircleDimensions.yDistance, BallotCircleDimensions.size)
+                    },
+                    {
+                        width: "auto",
+                        text: decision
+                    }
+                ],
+            };
+        };
+
+        PdfPredefinedFunctions.getBallotLayoutLines = function() {
+            return {
+                hLineWidth: function(i, node) {
+                    return (i === 0 || i === node.table.body.length) ? 0 : 0.5;
+                },
+                vLineWidth: function(i, node) {
+                    return (i === 0 || i === node.table.widths.length) ? 0 : 0.5;
+                },
+                hLineColor: function(i, node) {
+                    return (i === 0 || i === node.table.body.length) ? 'none' : 'gray';
+                },
+                vLineColor: function(i, node) {
+                    return (i === 0 || i === node.table.widths.length) ? 'none' : 'gray';
+                },
             };
         };
 
@@ -113,6 +173,10 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 margin: [0,0,0,20],
                                 bold: true
                             },
+                            textItem: {
+                                fontSize: 11,
+                                margin: [0,7]
+                            },
                             heading: {
                                 fontSize: 16,
                                 margin: [0,0,0,10],
@@ -131,17 +195,70 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 margin: [0,5]
                             },
                             tableHeader: {
-                                bold: true
+                                bold: true,
+                                fillColor: 'white'
                             },
                             tableEven: {
                                 fillColor: 'white'
                             },
                             tableOdd: {
-                                fillColor: '#e7e7e7'
+                                fillColor: '#eee'
+                            },
+                            tableConclude: {
+                                fillColor: '#ddd',
+                                bold: true
                             }
                         }
                     };
                 };
+            return {
+                getDocument: getDocument
+            };
+        };
+        return {
+            createInstance: createInstance
+        };
+    }
+])
+
+.factory('PdfMakeBallotPaperProvider', [
+    'gettextCatalog',
+    'Config',
+    function(gettextCatalog, Config) {
+        /**
+         * Provides the global Document
+         * @constructor
+         * @param {object} contentProvider - Object with on method `getContent`, which returns an array for content
+         * @param {string} defaultFont - Default font for the document
+         */
+        var createInstance = function(contentProvider, defaultFont) {
+            /**
+             * Generates the document(definition) for pdfMake
+             * @function
+             */
+            var getDocument = function() {
+                var content = contentProvider.getContent();
+                return {
+                    pageSize: 'A4',
+                    pageMargins: [0, 0, 0, 0],
+                    defaultStyle: {
+                        font: defaultFont,
+                        fontSize: 10
+                    },
+                    content: content,
+                    styles: {
+                        title: {
+                            fontSize: 14,
+                            bold: true,
+                            margin: [30, 30, 0, 0]
+                        },
+                        description: {
+                            fontSize: 11,
+                            margin: [30, 0, 0, 0]
+                        }
+                    }
+                };
+            };
             return {
                 getDocument: getDocument
             };

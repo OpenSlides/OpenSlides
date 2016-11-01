@@ -184,7 +184,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     };
 }])
 
-.factory('PollContentProvider', function() {
+.factory('PollContentProvider', [
+    'PdfPredefinedFunctions',
+    function(PdfPredefinedFunctions) {
     /**
     * Generates a content provider for polls
     * @constructor
@@ -192,84 +194,25 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     * @param {string} id - if of poll
     * @param {object} gettextCatalog - for translation
     */
-    var createInstance = function(title, id, gettextCatalog){
-
-        //left and top margin for a single sheet
-        var space = {
-            left: 30,
-            top: 30,
-            bottom: 10
-        },
-            //size and position of the signing circle
-            circle = {
-            yDistance: 6,
-            size: 8
-        },
-            //margin for the decision
-            singleItemMargin = 10,
-            //space between circle and dicision
-            columnwidth = 20,
-            //defines the space under a single sheet
-            sheetend = 65,
-            //defines the used fontsize
-            fontSize = 14;
-
-        /**
-        * draws a single circle
-        * @function
-        * @param {int} y - the relative y coordinate
-        * @param {int} size - size of the circle in px
-        */
-        var drawCircle = function(y, size) {
-            return [
-                {
-                    type: 'ellipse',
-                    x: 0,
-                    y: y,
-                    lineColor: 'black',
-                    r1: size,
-                    r2: size
-                }
-            ];
-        };
-
-        /**
-        * Returns an entry in the ballot with a circle to draw into
-        * @function
-        * @param {string} decision - the name of an entry to decide between, e.g. 'yes' or 'no'
-        */
-        var createBallotEntry = function(decision) {
-            return {
-                margin: [space.left+circle.size, singleItemMargin, 0, 0],
-                columns: [
-                    {
-                        width: columnwidth,
-                        canvas: drawCircle(circle.yDistance, circle.size)
-                    },
-                    {
-                        text: decision
-                    }
-                ],
-            };
-        };
+    var createInstance = function(title, id, gettextCatalog) {
 
         /**
         * Returns a single section on the ballot paper
         * @function
         */
         var createSection = function() {
+            var sheetend = 75;
             return {
                 stack: [{
                     text: gettextCatalog.getString("Motion") + " " + id,
-                    style: 'header',
-                    margin: [space.left, space.top, 0, 0]
+                    style: 'title',
                 }, {
                     text: title,
-                    margin: [space.left, 0, 0, space.bottom]
+                    style: 'description'
                 },
-                createBallotEntry(gettextCatalog.getString("Yes")),
-                createBallotEntry(gettextCatalog.getString("No")),
-                createBallotEntry(gettextCatalog.getString("Abstain")),
+                PdfPredefinedFunctions.createBallotEntry(gettextCatalog.getString("Yes")),
+                PdfPredefinedFunctions.createBallotEntry(gettextCatalog.getString("No")),
+                PdfPredefinedFunctions.createBallotEntry(gettextCatalog.getString("Abstain")),
                 ],
                 margin: [0, 0, 0, sheetend]
             };
@@ -280,8 +223,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         * @function
         * @param {string} id - if of poll
         */
-        return {
-            content: [{
+
+        var getContent = function() {
+            return [{
                 table: {
                     headerRows: 1,
                     widths: ['*', '*'],
@@ -292,27 +236,18 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         [createSection(), createSection()]
                     ],
                 },
-                layout: {
-                    hLineWidth: function() {return 0.5;},
-                    vLineWidth: function() {return 0.5;},
-                    hLineColor: function() {return 'gray';},
-                    vLineColor: function() {return 'gray';},
-                }
-            }],
-            pageSize: 'A4',
-            pageMargins: [0, 0, 0, 0],
-            styles: {
-                header: {
-                    fontSize: fontSize,
-                    bold: true
-                }
-            },
+                layout: PdfPredefinedFunctions.getBallotLayoutLines()
+            }];
+        };
+
+        return {
+            getContent: getContent,
         };
     };
     return {
         createInstance: createInstance
     };
-})
+}])
 
 .factory('MotionCatalogContentProvider', [
     'gettextCatalog',
