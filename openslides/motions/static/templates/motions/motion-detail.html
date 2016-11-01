@@ -115,7 +115,19 @@
             </span>
           </div>
           <div class="label" ng-class="'label-'+motion.state.css_class">
-            {{ motion.state.name | translate }}
+            {{ motion.getStateName() }}
+          </div>
+          <div os-perms="motions.can_manage" class="input-group spacer"
+              ng-show="motion.state.show_state_extension_field">
+            <label class="sr-only" for="stateExtensionField">{{ commentFieldForState }}</label>
+            <input type="text" ng-model="stateExtension"
+                id="stateNameExtensionField" class="form-control input-sm"
+                placeholder="{{ commentFieldForState }}">
+            <span class="input-group-btn">
+              <button ng-click="saveAdditionalStateField(stateExtension)" class="btn btn-default btn-sm">
+                <i class="fa fa-check"></i>
+              </button>
+            </span>
           </div>
 
           <!-- Recommendation -->
@@ -142,7 +154,19 @@
               </span>
             </div>
             <div class="label" ng-class="'label-'+motion.recommendation.css_class">
-              {{ motion.recommendation.recommendation_label | translate }}
+              {{ motion.getRecommendationName() }}
+            </div>
+            <div class="input-group spacer"
+                ng-show="motion.recommendation.show_recommendation_extension_field">
+              <label class="sr-only" for="recommendationExtensionField">{{ commentFieldForRecommendation }}</label>
+              <input type="text" ng-model="recommendationExtension"
+                  id="recommendationExtensionField" class="form-control input-sm"
+                  placeholder="{{ commentFieldForRecommendation }}">
+              <span class="input-group-btn">
+                <button ng-click="saveAdditionalRecommendationField(recommendationExtension)" class="btn btn-default btn-sm">
+                  <i class="fa fa-check"></i>
+                </button>
+              </span>
             </div>
           </div>
 
@@ -407,9 +431,10 @@
 </div>
 
 <div class="details" ng-if="isAllowedToSeeCommentField()">
-  <h3>Motion Comments</h3>
+  <h3 translate>Comments</h3>
   <div ng-repeat="field in commentsFields">
-    <div ng-if="field.public || operator.hasPerms('motions.can_see_and_manage_comments')">
+    <div ng-if="(field.public && !field.forState && !field.forRecommendation) ||
+        (operator.hasPerms('motions.can_see_and_manage_comments') && !field.forState && !field.forRecommendation)">
       <h4>
         {{ field.name }}
         <span ng-if="!field.public" class="label label-warning" translate>internal</span>

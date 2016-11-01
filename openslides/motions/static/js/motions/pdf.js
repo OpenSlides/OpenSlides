@@ -42,7 +42,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         // Generate text of signment
         var signment = function() {
             var label = converter.createElement("text", gettextCatalog.getString('Submitter') + ':\nStatus:');
-            var state = converter.createElement("text", User.get(motion.submitters_id[0]).full_name + '\n'+gettextCatalog.getString(motion.state.name));
+            var state = converter.createElement("text", User.get(motion.submitters_id[0]).full_name + '\n' + motion.getStateName());
             state.width = "70%";
             label.width = "30%";
             label.bold = true;

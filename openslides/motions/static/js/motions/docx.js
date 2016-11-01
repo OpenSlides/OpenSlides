@@ -82,7 +82,7 @@ angular.module('OpenSlidesApp.motions.DOCX', [])
                                     }).join(', '),
                         signature_translation: signature_translation,
                         status_translation: status_translation,
-                        status: gettextCatalog.getString(motion.state.name),
+                        status: motion.getStateName(),
                         text: html2docx(motion.getText()),
                         reason_translation: motion.getReason().length === 0 ? '' : reason_translation,
                         reason: html2docx(motion.getReason()),

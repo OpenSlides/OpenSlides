@@ -65,11 +65,11 @@
           </div>
         <td>
           <div class="label" ng-class="'label-'+motion.state.css_class">
-            {{ motion.state.name | translate }}
+            {{ motion.getStateName() }}
           </div>
         <td>
-            <div class="label" ng-class="'label-'+motion.recommendation.css_class">
-              {{ motion.recommendation.recommendation_label | translate }}
-            </div>
+          <div class="label" ng-class="'label-'+motion.recommendation.css_class">
+            {{ motion.getRecommendationName() }}
+          </div>
   </table>
 </div>

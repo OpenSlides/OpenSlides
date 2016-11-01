@@ -147,11 +147,12 @@ angular.module('OpenSlidesApp.motions', [
     'MotionComment',
     'jsDataModel',
     'gettext',
+    'gettextCatalog',
     'operator',
     'Config',
     'lineNumberingService',
     'diffService',
-    function(DS, MotionPoll, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, operator, Config,
+    function(DS, MotionPoll, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog, operator, Config,
              lineNumberingService, diffService) {
         var name = 'motions/motion';
         return DS.defineResource({
@@ -287,6 +288,38 @@ angular.module('OpenSlidesApp.motions', [
                 },
                 getReason: function (versionId) {
                     return this.getVersion(versionId).reason;
+                },
+                // full state name - optional with custom state name extension
+                // depended by state and provided by a custom comment field
+                getStateName: function () {
+                    var additionalName = '';
+                    if (this.state.show_state_extension_field) {
+                        // check motion comment fields for flag 'forState'
+                        var fields = Config.get('motions_comments').value;
+                        var index = _.findIndex(fields, ['forState', true]);
+                        if (index > -1) {
+                            additionalName = ' ' + this.comments[index];
+                        }
+                    }
+                    return gettextCatalog.getString(this.state.name) + additionalName;
+                },
+                // full recommendation string - optional with custom recommendationextension
+                // depended by state and provided by a custom comment field
+                getRecommendationName: function () {
+                    var recommendation = '';
+                    var additionalName = '';
+                    if (this.recommendation) {
+                        recommendation = gettextCatalog.getString(this.recommendation.recommendation_label);
+                        if (this.recommendation.show_recommendation_extension_field) {
+                            // check motion comment fields for flag 'forRecommendation'
+                            var fields = Config.get('motions_comments').value;
+                            var index = _.findIndex(fields, ['forRecommendation', true]);
+                            if (index > -1) {
+                                additionalName = ' ' + this.comments[index];
+                            }
+                        }
+                    }
+                    return recommendation + additionalName;
                 },
                 // link name which is shown in search result
                 getSearchResultName: function () {
@@ -450,7 +483,7 @@ angular.module('OpenSlidesApp.motions', [
             getFormFields: function () {
                 var fields = Config.get('motions_comments').value;
                 return _.map(
-                    fields,
+                    _.filter(fields, function(element) { return !element.forState && !element.forRecommendation; }),
                     function (field) {
                         return {
                             key: 'comment ' + field.name,
@@ -484,7 +517,16 @@ angular.module('OpenSlidesApp.motions', [
                 for (var i = 0; i < fields.length; i++) {
                     motion.comments.push(motion['comment ' + fields[i].name] || '');
                 }
-            }
+            },
+            getFieldNameForFlag: function (flag) {
+                var fields = Config.get('motions_comments').value;
+                var fieldName = '';
+                var index = _.findIndex(fields, [flag, true]);
+                if (index > -1) {
+                    fieldName = fields[index].name;
+                }
+                return fieldName;
+            },
         };
     }
 ])
