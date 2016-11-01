@@ -444,7 +444,8 @@ angular.module('OpenSlidesApp.motions', [
 .factory('MotionComment', [
     'Config',
     'operator',
-    function (Config, operator) {
+    'Editor',
+    function (Config, operator, Editor) {
         return {
             getFormFields: function () {
                 var fields = Config.get('motions_comments').value;
@@ -453,9 +454,12 @@ angular.module('OpenSlidesApp.motions', [
                     function (field) {
                         return {
                             key: 'comment ' + field.name,
-                            type: 'input',
+                            type: 'editor',
                             templateOptions: {
                                 label: field.name,
+                            },
+                            data: {
+                                tinymceOption: Editor.getOptions()
                             },
                             hide: !operator.hasPerms("motions.can_see_and_manage_comments")
                         };

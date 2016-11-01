@@ -407,11 +407,12 @@
 <div class="details" ng-if="isAllowedToSeeCommentField()">
   <h3>Motion Comments</h3>
   <div ng-repeat="field in commentsFields">
-    <p ng-if="field.public || operator.hasPerms('motions.can_see_and_manage_comments')">
-      <b>{{ field.name }}:</b>
-      <span ng-if="!field.public" class="label label-warning" translate>internal</span>
-      <br>
-      {{ motion.comments[$index] }}
-    </p>
+    <div ng-if="field.public || operator.hasPerms('motions.can_see_and_manage_comments')">
+      <h4>
+        {{ field.name }}
+        <span ng-if="!field.public" class="label label-warning" translate>internal</span>
+      </h4>
+      <div ng-bind-html="motion.comments[$index]"></div>
+    </div>
   </div>
 </div>
