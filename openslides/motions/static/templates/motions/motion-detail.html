@@ -202,7 +202,7 @@
                 <div class="input-group">
                   <span><translate>Required majority</translate>: </span>
                   <select ng-init="config('motions_poll_default_majority_method')" ng-model="$parent.method"
-                      ng-options="option.value as option.display_name for option in methodChoices" />
+                      ng-options="option.value as option.display_name | translate for option in methodChoices" />
                 </div>
               </div>
 
@@ -387,16 +387,18 @@
       </div>
 
       <!-- log -->
-      <button type="button" class="btn btn-sm btn-default spacer" ng-click="isCollapsed = !isCollapsed" translate>
-        Show history
-      </button>
-      <div uib-collapse="isCollapsed">
-        <div class="well well-sm">
-          <ul class="list-unstyled">
-            <li ng-repeat="message in motion.log_messages">
-              <small>{{ message.message }}</small>
-            </li>
-          </ul>
+      <div os-perms="motions.can_manage">
+        <button type="button" class="btn btn-sm btn-default spacer" ng-click="isCollapsed = !isCollapsed" translate>
+          Show history
+        </button>
+        <div uib-collapse="isCollapsed">
+          <div class="well well-sm">
+            <ul class="list-unstyled">
+              <li ng-repeat="message in motion.log_messages">
+                <small>{{ message.message }}</small>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
