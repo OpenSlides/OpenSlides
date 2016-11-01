@@ -467,19 +467,21 @@ angular.module('OpenSlidesApp.core.site', [
                 var config = Config.get(field.key);
                 $scope.type = getHtmlType(field.input_type);
                 if ($scope.type == 'choice') {
-                    $scope.choices = [];
-                    angular.forEach(field.choices, function(choice) {
-                        choice.display_name = gettextCatalog.getString(choice.display_name);
-                        $scope.choices.push(choice);
-                    });
+                    $scope.choices = field.choices;
+                    $scope.value = config.value;
+                } else {
+                    $scope.value = gettextCatalog.getString(config.value);
                 }
                 $scope.label = field.label;
                 $scope.key = 'field-' + field.key;
-                $scope.value = gettextCatalog.getString(config.value);
                 $scope.help_text = field.help_text;
                 $scope.default_value = field.default_value;
                 $scope.reset = function () {
-                    $scope.value = gettextCatalog.getString($scope.default_value);
+                    if ($scope.type == 'choice') {
+                        $scope.value = $scope.default_value;
+                    } else {
+                        $scope.value = gettextCatalog.getString($scope.default_value);
+                    }
                     $scope.save(field.key, $scope.value);
                 };
             }

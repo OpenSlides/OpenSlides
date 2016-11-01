@@ -64,7 +64,7 @@ def get_config_variables():
         choices=(
             {'value': 'outside', 'display_name': 'Outside'},
             {'value': 'inline', 'display_name': 'Inline'},
-            {'value': 'none', 'display_name': 'None'}),
+            {'value': 'none', 'display_name': 'Disabled'}),
         weight=322,
         group='Motions',
         subgroup='General')
