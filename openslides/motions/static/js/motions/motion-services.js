@@ -452,7 +452,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             }, 0, false);
         };
 
-        obj.init = function (_scope) {
+        obj.init = function (_scope, viewMode) {
             $scope = _scope;
             $scope.$evalAsync(function() {
                 obj.repositionOriginalAnnotations();
@@ -477,6 +477,8 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             $scope.$on('$destroy', function() {
                 $interval.cancel(sizeChecker);
             });
+
+            obj.mode = viewMode;
         };
 
         return obj;

@@ -1200,7 +1200,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // Change recommendation viewing
         $scope.viewChangeRecommendations = ChangeRecommmendationView;
-        $scope.viewChangeRecommendations.init($scope);
+        $scope.viewChangeRecommendations.init($scope, 'original');
 
         // PDF creating functions
         $scope.pdfExport = MotionPDFExport;
