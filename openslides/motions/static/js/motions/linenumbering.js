@@ -14,369 +14,398 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
  * No constructs like <a...><div></div></a> are allowed. CSS-attributes like 'display: block' are ignored.
  */
 
-.service('lineNumberingService', function () {
-    var ELEMENT_NODE = 1,
-        TEXT_NODE = 3;
+.service('lineNumberingService', [
+    '$cacheFactory',
+    function ($cacheFactory) {
+        var ELEMENT_NODE = 1,
+            TEXT_NODE = 3;
 
-    this._currentInlineOffset = null;
-    this._currentLineNumber = null;
-    this._prependLineNumberToFirstText = false;
+        this._currentInlineOffset = null;
+        this._currentLineNumber = null;
+        this._prependLineNumberToFirstText = false;
 
-    this._isInlineElement = function (node) {
-        var inlineElements = [
-            'SPAN', 'A', 'EM', 'S', 'B', 'I', 'STRONG', 'U', 'BIG', 'SMALL', 'SUB', 'SUP', 'TT'
-        ];
-        return (inlineElements.indexOf(node.nodeName) > -1);
-    };
+        var lineNumberCache = $cacheFactory('linenumbering.service');
 
-    this._isOsLineBreakNode = function (node) {
-        var isLineBreak = false;
-        if (node && node.nodeType === ELEMENT_NODE && node.nodeName == 'BR' && node.hasAttribute('class')) {
-            var classes = node.getAttribute('class').split(' ');
-            if (classes.indexOf('os-line-break') > -1) {
-                isLineBreak = true;
+        this.djb2hash = function(str) {
+            var hash = 5381, char;
+            for (var i = 0; i < str.length; i++) {
+                char = str.charCodeAt(i);
+                hash = ((hash << 5) + hash) + char;
             }
-        }
-        return isLineBreak;
-    };
-
-    this._isOsLineNumberNode = function (node) {
-        var isLineNumber = false;
-        if (node && node.nodeType === ELEMENT_NODE && node.nodeName == 'SPAN' && node.hasAttribute('class')) {
-            var classes = node.getAttribute('class').split(' ');
-            if (classes.indexOf('os-line-number') > -1) {
-                isLineNumber = true;
-            }
-        }
-        return isLineNumber;
-    };
-
-    this._createLineBreak = function () {
-        var br = document.createElement('br');
-        br.setAttribute('class', 'os-line-break');
-        return br;
-    };
-
-    this._createLineNumber = function () {
-        var node = document.createElement('span');
-        var lineNumber = this._currentLineNumber;
-        this._currentLineNumber++;
-        node.setAttribute('class', 'os-line-number line-number-' + lineNumber);
-        node.setAttribute('data-line-number', lineNumber + '');
-        node.setAttribute('name', 'L' + lineNumber);
-        node.setAttribute('contenteditable', 'false');
-        node.innerHTML = '&nbsp;'; // Prevent tinymce from stripping out empty span's
-        return node;
-    };
-
-    /**
-     * Splits a TEXT_NODE into an array of TEXT_NODEs and BR-Elements separating them into lines.
-     * Each line has a maximum length of 'length', with one exception: spaces are accepted to exceed the length.
-     * Otherwise the string is split by the last space or dash in the line.
-     *
-     * @param node
-     * @param length
-     * @param highlight
-     * @returns Array
-     * @private
-     */
-    this._textNodeToLines = function (node, length, highlight) {
-        var out = [],
-            currLineStart = 0,
-            i = 0,
-            firstTextNode = true,
-            lastBreakableIndex = null,
-            service = this;
-        var addLine = function (text, highlight) {
-            var node;
-            if (typeof highlight === 'undefined') {
-                highlight = -1;
-            }
-            if (firstTextNode) {
-                if (highlight == service._currentLineNumber - 1) {
-                    node = document.createElement('span');
-                    node.setAttribute('class', 'highlight');
-                    node.innerHTML = text;
-                } else {
-                    node = document.createTextNode(text);
-                }
-                firstTextNode = false;
-            } else {
-                if (service._currentLineNumber == highlight) {
-                    node = document.createElement('span');
-                    node.setAttribute('class', 'highlight');
-                    node.innerHTML = text;
-                } else {
-                    node = document.createTextNode(text);
-                }
-                out.push(service._createLineBreak());
-                out.push(service._createLineNumber());
-            }
-            out.push(node);
+            return hash.toString();
         };
 
-        if (node.nodeValue == "\n") {
-            out.push(node);
-        } else {
+        this._isInlineElement = function (node) {
+            var inlineElements = [
+                'SPAN', 'A', 'EM', 'S', 'B', 'I', 'STRONG', 'U', 'BIG', 'SMALL', 'SUB', 'SUP', 'TT'
+            ];
+            return (inlineElements.indexOf(node.nodeName) > -1);
+        };
 
-            // This happens if a previous inline element exactly stretches to the end of the line
-            if (this._currentInlineOffset >= length) {
-                out.push(service._createLineBreak());
-                out.push(service._createLineNumber());
-                this._currentInlineOffset = 0;
-            } else if (this._prependLineNumberToFirstText) {
-                out.push(service._createLineNumber());
+        this._isOsLineBreakNode = function (node) {
+            var isLineBreak = false;
+            if (node && node.nodeType === ELEMENT_NODE && node.nodeName == 'BR' && node.hasAttribute('class')) {
+                var classes = node.getAttribute('class').split(' ');
+                if (classes.indexOf('os-line-break') > -1) {
+                    isLineBreak = true;
+                }
             }
-            this._prependLineNumberToFirstText = false;
+            return isLineBreak;
+        };
 
-            while (i < node.nodeValue.length) {
-                var lineBreakAt = null;
-                if (this._currentInlineOffset >= length) {
-                    if (lastBreakableIndex !== null) {
-                        lineBreakAt = lastBreakableIndex;
+        this._isOsLineNumberNode = function (node) {
+            var isLineNumber = false;
+            if (node && node.nodeType === ELEMENT_NODE && node.nodeName == 'SPAN' && node.hasAttribute('class')) {
+                var classes = node.getAttribute('class').split(' ');
+                if (classes.indexOf('os-line-number') > -1) {
+                    isLineNumber = true;
+                }
+            }
+            return isLineNumber;
+        };
+
+        this._createLineBreak = function () {
+            var br = document.createElement('br');
+            br.setAttribute('class', 'os-line-break');
+            return br;
+        };
+
+        this._createLineNumber = function () {
+            var node = document.createElement('span');
+            var lineNumber = this._currentLineNumber;
+            this._currentLineNumber++;
+            node.setAttribute('class', 'os-line-number line-number-' + lineNumber);
+            node.setAttribute('data-line-number', lineNumber + '');
+            node.setAttribute('name', 'L' + lineNumber);
+            node.setAttribute('contenteditable', 'false');
+            node.innerHTML = '&nbsp;'; // Prevent tinymce from stripping out empty span's
+            return node;
+        };
+
+        /**
+         * Splits a TEXT_NODE into an array of TEXT_NODEs and BR-Elements separating them into lines.
+         * Each line has a maximum length of 'length', with one exception: spaces are accepted to exceed the length.
+         * Otherwise the string is split by the last space or dash in the line.
+         *
+         * @param node
+         * @param length
+         * @param highlight
+         * @returns Array
+         * @private
+         */
+        this._textNodeToLines = function (node, length, highlight) {
+            var out = [],
+                currLineStart = 0,
+                i = 0,
+                firstTextNode = true,
+                lastBreakableIndex = null,
+                service = this;
+            var addLine = function (text, highlight) {
+                var node;
+                if (typeof highlight === 'undefined') {
+                    highlight = -1;
+                }
+                if (firstTextNode) {
+                    if (highlight == service._currentLineNumber - 1) {
+                        node = document.createElement('span');
+                        node.setAttribute('class', 'highlight');
+                        node.innerHTML = text;
                     } else {
-                        lineBreakAt = i - 1;
+                        node = document.createTextNode(text);
                     }
+                    firstTextNode = false;
+                } else {
+                    if (service._currentLineNumber == highlight) {
+                        node = document.createElement('span');
+                        node.setAttribute('class', 'highlight');
+                        node.innerHTML = text;
+                    } else {
+                        node = document.createTextNode(text);
+                    }
+                    out.push(service._createLineBreak());
+                    out.push(service._createLineNumber());
                 }
-                if (lineBreakAt !== null && node.nodeValue[i] != ' ') {
-                    var currLine = node.nodeValue.substring(currLineStart, lineBreakAt + 1);
-                    addLine(currLine, highlight);
+                out.push(node);
+            };
 
-                    currLineStart = lineBreakAt + 1;
-                    this._currentInlineOffset = i - lineBreakAt - 1;
-                    lastBreakableIndex = null;
-                }
+            if (node.nodeValue == "\n") {
+                out.push(node);
+            } else {
 
-                if (node.nodeValue[i] == ' ' || node.nodeValue[i] == '-') {
-                    lastBreakableIndex = i;
-                }
-
-                this._currentInlineOffset++;
-                i++;
-
-            }
-            addLine(node.nodeValue.substring(currLineStart), highlight);
-        }
-        return out;
-    };
-
-
-    /**
-     * Moves line breaking and line numbering markup before inline elements
-     *
-     * @param innerNode
-     * @param outerNode
-     * @private
-     */
-    this._moveLeadingLineBreaksToOuterNode = function (innerNode, outerNode) {
-        if (this._isInlineElement(innerNode)) {
-            if (this._isOsLineBreakNode(innerNode.firstChild)) {
-                var br = innerNode.firstChild;
-                innerNode.removeChild(br);
-                outerNode.appendChild(br);
-            }
-            if (this._isOsLineNumberNode(innerNode.firstChild)) {
-                var span = innerNode.firstChild;
-                innerNode.removeChild(span);
-                outerNode.appendChild(span);
-            }
-        }
-    };
-
-    this._lengthOfFirstInlineWord = function (node) {
-        if (!node.firstChild) {
-            return 0;
-        }
-        if (node.firstChild.nodeType == TEXT_NODE) {
-            var parts = node.firstChild.nodeValue.split(' ');
-            return parts[0].length;
-        } else {
-            return this._lengthOfFirstInlineWord(node.firstChild);
-        }
-    };
-
-    this._insertLineNumbersToInlineNode = function (node, length, highlight) {
-        var oldChildren = [], i;
-        for (i = 0; i < node.childNodes.length; i++) {
-            oldChildren.push(node.childNodes[i]);
-        }
-
-        while (node.firstChild) {
-            node.removeChild(node.firstChild);
-        }
-
-        for (i = 0; i < oldChildren.length; i++) {
-            if (oldChildren[i].nodeType == TEXT_NODE) {
-                var ret = this._textNodeToLines(oldChildren[i], length, highlight);
-                for (var j = 0; j < ret.length; j++) {
-                    node.appendChild(ret[j]);
-                }
-            } else if (oldChildren[i].nodeType == ELEMENT_NODE) {
-                var firstword = this._lengthOfFirstInlineWord(oldChildren[i]),
-                    overlength = ((this._currentInlineOffset + firstword) > length && this._currentInlineOffset > 0);
-                if (overlength && this._isInlineElement(oldChildren[i])) {
+                // This happens if a previous inline element exactly stretches to the end of the line
+                if (this._currentInlineOffset >= length) {
+                    out.push(service._createLineBreak());
+                    out.push(service._createLineNumber());
                     this._currentInlineOffset = 0;
-                    node.appendChild(this._createLineBreak());
-                    node.appendChild(this._createLineNumber());
+                } else if (this._prependLineNumberToFirstText) {
+                    out.push(service._createLineNumber());
                 }
-                var changedNode = this._insertLineNumbersToNode(oldChildren[i], length, highlight);
-                this._moveLeadingLineBreaksToOuterNode(changedNode, node);
-                node.appendChild(changedNode);
-            } else {
-                throw 'Unknown nodeType: ' + i + ': ' + oldChildren[i];
-            }
-        }
+                this._prependLineNumberToFirstText = false;
 
-        return node;
-    };
-
-    this._calcBlockNodeLength = function (node, oldLength) {
-        var newLength = oldLength;
-        switch (node.nodeName) {
-            case 'LI':
-                newLength -= 5;
-                break;
-            case 'BLOCKQUOTE':
-                newLength -= 20;
-                break;
-            case 'DIV':
-            case 'P':
-                var styles = node.getAttribute("style"),
-                    padding = 0;
-                if (styles) {
-                    var leftpad = styles.split("padding-left:");
-                    if (leftpad.length > 1) {
-                        leftpad = parseInt(leftpad[1]);
-                        padding += leftpad;
+                while (i < node.nodeValue.length) {
+                    var lineBreakAt = null;
+                    if (this._currentInlineOffset >= length) {
+                        if (lastBreakableIndex !== null) {
+                            lineBreakAt = lastBreakableIndex;
+                        } else {
+                            lineBreakAt = i - 1;
+                        }
                     }
-                    var rightpad = styles.split("padding-right:");
-                    if (rightpad.length > 1) {
-                        rightpad = parseInt(rightpad[1]);
-                        padding += rightpad;
+                    if (lineBreakAt !== null && node.nodeValue[i] != ' ') {
+                        var currLine = node.nodeValue.substring(currLineStart, lineBreakAt + 1);
+                        addLine(currLine, highlight);
+
+                        currLineStart = lineBreakAt + 1;
+                        this._currentInlineOffset = i - lineBreakAt - 1;
+                        lastBreakableIndex = null;
                     }
-                    newLength -= (padding / 5);
+
+                    if (node.nodeValue[i] == ' ' || node.nodeValue[i] == '-') {
+                        lastBreakableIndex = i;
+                    }
+
+                    this._currentInlineOffset++;
+                    i++;
+
                 }
-                break;
-            case 'H1':
-                newLength *= 0.5;
-                break;
-            case 'H2':
-                newLength *= 0.66;
-                break;
-            case 'H3':
-                newLength *= 0.66;
-                break;
-        }
-        return Math.ceil(newLength);
-    };
+                addLine(node.nodeValue.substring(currLineStart), highlight);
+            }
+            return out;
+        };
 
-    this._insertLineNumbersToBlockNode = function (node, length, highlight) {
-        this._currentInlineOffset = 0;
-        this._prependLineNumberToFirstText = true;
 
-        var oldChildren = [], i;
-        for (i = 0; i < node.childNodes.length; i++) {
-            oldChildren.push(node.childNodes[i]);
-        }
-
-        while (node.firstChild) {
-            node.removeChild(node.firstChild);
-        }
-
-        for (i = 0; i < oldChildren.length; i++) {
-            if (oldChildren[i].nodeType == TEXT_NODE) {
-                var ret = this._textNodeToLines(oldChildren[i], length, highlight);
-                for (var j = 0; j < ret.length; j++) {
-                    node.appendChild(ret[j]);
+        /**
+         * Moves line breaking and line numbering markup before inline elements
+         *
+         * @param innerNode
+         * @param outerNode
+         * @private
+         */
+        this._moveLeadingLineBreaksToOuterNode = function (innerNode, outerNode) {
+            if (this._isInlineElement(innerNode)) {
+                if (this._isOsLineBreakNode(innerNode.firstChild)) {
+                    var br = innerNode.firstChild;
+                    innerNode.removeChild(br);
+                    outerNode.appendChild(br);
                 }
-            } else if (oldChildren[i].nodeType == ELEMENT_NODE) {
-                var firstword = this._lengthOfFirstInlineWord(oldChildren[i]),
-                    overlength = ((this._currentInlineOffset + firstword) > length && this._currentInlineOffset > 0);
-                if (overlength && this._isInlineElement(oldChildren[i])) {
-                    this._currentInlineOffset = 0;
-                    node.appendChild(this._createLineBreak());
-                    node.appendChild(this._createLineNumber());
+                if (this._isOsLineNumberNode(innerNode.firstChild)) {
+                    var span = innerNode.firstChild;
+                    innerNode.removeChild(span);
+                    outerNode.appendChild(span);
                 }
-                var changedNode = this._insertLineNumbersToNode(oldChildren[i], length, highlight);
-                this._moveLeadingLineBreaksToOuterNode(changedNode, node);
-                node.appendChild(changedNode);
+            }
+        };
+
+        this._lengthOfFirstInlineWord = function (node) {
+            if (!node.firstChild) {
+                return 0;
+            }
+            if (node.firstChild.nodeType == TEXT_NODE) {
+                var parts = node.firstChild.nodeValue.split(' ');
+                return parts[0].length;
             } else {
-                throw 'Unknown nodeType: ' + i + ': ' + oldChildren[i];
+                return this._lengthOfFirstInlineWord(node.firstChild);
             }
-        }
+        };
 
-        this._currentInlineOffset = 0;
-        this._prependLineNumberToFirstText = true;
+        this._insertLineNumbersToInlineNode = function (node, length, highlight) {
+            var oldChildren = [], i;
+            for (i = 0; i < node.childNodes.length; i++) {
+                oldChildren.push(node.childNodes[i]);
+            }
 
-        return node;
-    };
+            while (node.firstChild) {
+                node.removeChild(node.firstChild);
+            }
 
-    this._insertLineNumbersToNode = function (node, length, highlight) {
-        if (node.nodeType !== ELEMENT_NODE) {
-            throw 'This method may only be called for ELEMENT-nodes: ' + node.nodeValue;
-        }
-        if (this._isInlineElement(node)) {
-            return this._insertLineNumbersToInlineNode(node, length, highlight);
-        } else {
-            var newLength = this._calcBlockNodeLength(node, length);
-            return this._insertLineNumbersToBlockNode(node, newLength, highlight);
-        }
-    };
+            for (i = 0; i < oldChildren.length; i++) {
+                if (oldChildren[i].nodeType == TEXT_NODE) {
+                    var ret = this._textNodeToLines(oldChildren[i], length, highlight);
+                    for (var j = 0; j < ret.length; j++) {
+                        node.appendChild(ret[j]);
+                    }
+                } else if (oldChildren[i].nodeType == ELEMENT_NODE) {
+                    var firstword = this._lengthOfFirstInlineWord(oldChildren[i]),
+                        overlength = ((this._currentInlineOffset + firstword) > length && this._currentInlineOffset > 0);
+                    if (overlength && this._isInlineElement(oldChildren[i])) {
+                        this._currentInlineOffset = 0;
+                        node.appendChild(this._createLineBreak());
+                        node.appendChild(this._createLineNumber());
+                    }
+                    var changedNode = this._insertLineNumbersToNode(oldChildren[i], length, highlight);
+                    this._moveLeadingLineBreaksToOuterNode(changedNode, node);
+                    node.appendChild(changedNode);
+                } else {
+                    throw 'Unknown nodeType: ' + i + ': ' + oldChildren[i];
+                }
+            }
 
-    this._stripLineNumbers = function (node) {
+            return node;
+        };
 
-        for (var i = 0; i < node.childNodes.length; i++) {
-            if (this._isOsLineBreakNode(node.childNodes[i]) || this._isOsLineNumberNode(node.childNodes[i])) {
-                node.removeChild(node.childNodes[i]);
-                i--;
+        this._calcBlockNodeLength = function (node, oldLength) {
+            var newLength = oldLength;
+            switch (node.nodeName) {
+                case 'LI':
+                    newLength -= 5;
+                    break;
+                case 'BLOCKQUOTE':
+                    newLength -= 20;
+                    break;
+                case 'DIV':
+                case 'P':
+                    var styles = node.getAttribute("style"),
+                        padding = 0;
+                    if (styles) {
+                        var leftpad = styles.split("padding-left:");
+                        if (leftpad.length > 1) {
+                            leftpad = parseInt(leftpad[1]);
+                            padding += leftpad;
+                        }
+                        var rightpad = styles.split("padding-right:");
+                        if (rightpad.length > 1) {
+                            rightpad = parseInt(rightpad[1]);
+                            padding += rightpad;
+                        }
+                        newLength -= (padding / 5);
+                    }
+                    break;
+                case 'H1':
+                    newLength *= 0.5;
+                    break;
+                case 'H2':
+                    newLength *= 0.66;
+                    break;
+                case 'H3':
+                    newLength *= 0.66;
+                    break;
+            }
+            return Math.ceil(newLength);
+        };
+
+        this._insertLineNumbersToBlockNode = function (node, length, highlight) {
+            this._currentInlineOffset = 0;
+            this._prependLineNumberToFirstText = true;
+
+            var oldChildren = [], i;
+            for (i = 0; i < node.childNodes.length; i++) {
+                oldChildren.push(node.childNodes[i]);
+            }
+
+            while (node.firstChild) {
+                node.removeChild(node.firstChild);
+            }
+
+            for (i = 0; i < oldChildren.length; i++) {
+                if (oldChildren[i].nodeType == TEXT_NODE) {
+                    var ret = this._textNodeToLines(oldChildren[i], length, highlight);
+                    for (var j = 0; j < ret.length; j++) {
+                        node.appendChild(ret[j]);
+                    }
+                } else if (oldChildren[i].nodeType == ELEMENT_NODE) {
+                    var firstword = this._lengthOfFirstInlineWord(oldChildren[i]),
+                        overlength = ((this._currentInlineOffset + firstword) > length && this._currentInlineOffset > 0);
+                    if (overlength && this._isInlineElement(oldChildren[i])) {
+                        this._currentInlineOffset = 0;
+                        node.appendChild(this._createLineBreak());
+                        node.appendChild(this._createLineNumber());
+                    }
+                    var changedNode = this._insertLineNumbersToNode(oldChildren[i], length, highlight);
+                    this._moveLeadingLineBreaksToOuterNode(changedNode, node);
+                    node.appendChild(changedNode);
+                } else {
+                    throw 'Unknown nodeType: ' + i + ': ' + oldChildren[i];
+                }
+            }
+
+            this._currentInlineOffset = 0;
+            this._prependLineNumberToFirstText = true;
+
+            return node;
+        };
+
+        this._insertLineNumbersToNode = function (node, length, highlight) {
+            if (node.nodeType !== ELEMENT_NODE) {
+                throw 'This method may only be called for ELEMENT-nodes: ' + node.nodeValue;
+            }
+            if (this._isInlineElement(node)) {
+                return this._insertLineNumbersToInlineNode(node, length, highlight);
             } else {
-                this._stripLineNumbers(node.childNodes[i]);
+                var newLength = this._calcBlockNodeLength(node, length);
+                return this._insertLineNumbersToBlockNode(node, newLength, highlight);
             }
-        }
-    };
+        };
 
-    this._nodesToHtml = function (nodes) {
-        var root = document.createElement('div');
-        for (var i in nodes) {
-            if (nodes.hasOwnProperty(i)) {
-                root.appendChild(nodes[i]);
+        this._stripLineNumbers = function (node) {
+
+            for (var i = 0; i < node.childNodes.length; i++) {
+                if (this._isOsLineBreakNode(node.childNodes[i]) || this._isOsLineNumberNode(node.childNodes[i])) {
+                    node.removeChild(node.childNodes[i]);
+                    i--;
+                } else {
+                    this._stripLineNumbers(node.childNodes[i]);
+                }
             }
-        }
-        return root.innerHTML;
-    };
+        };
 
-    this.insertLineNumbersNode = function (html, lineLength, highlight, firstLine) {
-        var root = document.createElement('div');
-        root.innerHTML = html;
+        this._nodesToHtml = function (nodes) {
+            var root = document.createElement('div');
+            for (var i in nodes) {
+                if (nodes.hasOwnProperty(i)) {
+                    root.appendChild(nodes[i]);
+                }
+            }
+            return root.innerHTML;
+        };
 
-        this._currentInlineOffset = 0;
-        if (firstLine) {
-            this._currentLineNumber = firstLine;
-        } else {
-            this._currentLineNumber = 1;
-        }
-        this._prependLineNumberToFirstText = true;
+        this.insertLineNumbersNode = function (html, lineLength, highlight, firstLine) {
+            var root = document.createElement('div');
+            root.innerHTML = html;
 
-        return this._insertLineNumbersToNode(root, lineLength, highlight);
-    };
+            this._currentInlineOffset = 0;
+            if (firstLine) {
+                this._currentLineNumber = firstLine;
+            } else {
+                this._currentLineNumber = 1;
+            }
+            this._prependLineNumberToFirstText = true;
 
-    this.insertLineNumbers = function (html, lineLength, highlight, callback, firstLine) {
-        var newRoot = this.insertLineNumbersNode(html, lineLength, highlight, firstLine);
+            return this._insertLineNumbersToNode(root, lineLength, highlight);
+        };
 
-        if (callback) {
-            callback();
-        }
+        this.insertLineNumbers = function (html, lineLength, highlight, callback, firstLine) {
+            var newHtml, newRoot;
 
-        return newRoot.innerHTML;
-    };
+            if (highlight > 0) {
+                // Caching versions with highlighted line numbers is probably not worth it
+                newRoot = this.insertLineNumbersNode(html, lineLength, highlight, firstLine);
+                newHtml = newRoot.innerHTML;
+            } else {
+                var cacheKey = this.djb2hash(html);
+                newHtml = lineNumberCache.get(cacheKey);
 
-    this.stripLineNumbers = function (html) {
-        var root = document.createElement('div');
-        root.innerHTML = html;
-        this._stripLineNumbers(root);
-        return root.innerHTML;
-    };
-});
+                if (angular.isUndefined(newHtml)) {
+                    newRoot = this.insertLineNumbersNode(html, lineLength, highlight, firstLine);
+                    newHtml = newRoot.innerHTML;
+                    lineNumberCache.put(cacheKey, newHtml);
+                }
+            }
+
+            if (callback) {
+                callback();
+            }
+
+            return newHtml;
+        };
+
+        this.stripLineNumbers = function (html) {
+            var root = document.createElement('div');
+            root.innerHTML = html;
+            this._stripLineNumbers(root);
+            return root.innerHTML;
+        };
+    }
+]);
 
 
 }());
