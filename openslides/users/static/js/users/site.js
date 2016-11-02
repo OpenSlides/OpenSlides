@@ -428,10 +428,12 @@ angular.module('OpenSlidesApp.users.site', [
     'Projector',
     'ProjectionDefault',
     'UserListContentProvider',
+    'Config',
+    'UserAccessDataListContentProvider',
     'PdfMakeDocumentProvider',
     'gettextCatalog',
     function($scope, $state, $http, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
-        UserListContentProvider, PdfMakeDocumentProvider, gettextCatalog) {
+        UserListContentProvider, Config, UserAccessDataListContentProvider, PdfMakeDocumentProvider, gettextCatalog) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.$watch(function () {
@@ -561,6 +563,14 @@ angular.module('OpenSlidesApp.users.site', [
             var filename = gettextCatalog.getString("List of participants")+".pdf";
             var userListContentProvider = UserListContentProvider.createInstance($scope.users, $scope.groups);
             var documentProvider = PdfMakeDocumentProvider.createInstance(userListContentProvider);
+            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
+        };
+
+        $scope.makePDF_userAccessDataList = function () {
+            var filename = gettextCatalog.getString("List of access data")+".pdf";
+            var userAccessDataListContentProvider = UserAccessDataListContentProvider.createInstance(
+                $scope.users, $scope.groups, Config);
+            var documentProvider = PdfMakeDocumentProvider.createInstance(userAccessDataListContentProvider);
             pdfMake.createPdf(documentProvider.getDocument()).download(filename);
         };
     }
