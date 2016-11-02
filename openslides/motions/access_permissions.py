@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from ..core.config import config
 from ..utils.access_permissions import BaseAccessPermissions
 
@@ -29,7 +31,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
         if user.has_perm('motions.can_see_and_manage_comments') or not full_data.get('comments'):
             data = full_data
         else:
-            data = full_data.copy()
+            data = deepcopy(full_data)
             for i, field in enumerate(config['motions_comments']):
                 if not field.get('public'):
                     try:
