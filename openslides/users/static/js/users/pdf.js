@@ -6,13 +6,13 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('UserListContentProvider', [
     'gettextCatalog',
-    'PdfPredefinedFunctions',
-    function(gettextCatalog, PdfPredefinedFunctions) {
+    'PDFLayout',
+    function(gettextCatalog, PDFLayout) {
 
     var createInstance = function(userList, groups) {
 
         //use the Predefined Functions to create the title
-        var title = PdfPredefinedFunctions.createTitle(gettextCatalog.getString("List of participants"));
+        var title = PDFLayout.createTitle(gettextCatalog.getString("List of participants"));
 
         //function to generate the user list
         var createUserList = function() {
@@ -35,19 +35,19 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                 var userJsonObj = [
                     {
                         text: "" + (counter+1),
-                        style: PdfPredefinedFunctions.flipTableRowStyle(userJsonList.length)
+                        style: PDFLayout.flipTableRowStyle(userJsonList.length)
                     },
                     {
                         text: user.short_name,
-                        style: PdfPredefinedFunctions.flipTableRowStyle(userJsonList.length)
+                        style: PDFLayout.flipTableRowStyle(userJsonList.length)
                     },
                     {
                         text: user.structure_level,
-                        style: PdfPredefinedFunctions.flipTableRowStyle(userJsonList.length)
+                        style: PDFLayout.flipTableRowStyle(userJsonList.length)
                     },
                     {
                         text: userGroups.join(" "),
-                        style: PdfPredefinedFunctions.flipTableRowStyle(userJsonList.length)
+                        style: PDFLayout.flipTableRowStyle(userJsonList.length)
                     }
                 ];
                 userJsonList.push(userJsonObj);
@@ -107,8 +107,8 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('UserAccessDataListContentProvider', [
     'gettextCatalog',
-    'PdfPredefinedFunctions',
-    function(gettextCatalog, PdfPredefinedFunctions) {
+    'PDFLayout',
+    function(gettextCatalog, PDFLayout) {
 
         var createInstance = function(userList, groups, Config) {
 

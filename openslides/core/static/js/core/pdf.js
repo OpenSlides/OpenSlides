@@ -4,23 +4,51 @@
 
 angular.module('OpenSlidesApp.core.pdf', [])
 
-.factory('PdfPredefinedFunctions', [
+/*
+ * General layout functions for building PDFs with pdfmake.
+ */
+.factory('PDFLayout', [
     function() {
-        var PdfPredefinedFunctions = {};
+        var PDFLayout = {};
         var BallotCircleDimensions = {
             yDistance: 6,
             size: 8
         };
 
-        PdfPredefinedFunctions.createTitle = function(titleString) {
+        // Set and return default font family.
+        //
+        // To use custom ttf font files you have to replace the vfs_fonts.js file.
+        // See https://github.com/pdfmake/pdfmake/wiki/Custom-Fonts---client-side
+        PDFLayout.getFontName = function() {
+            pdfMake.fonts = {
+                Roboto: {
+                    normal: 'Roboto-Regular.ttf',
+                    bold: 'Roboto-Medium.ttf',
+                    italics: 'Roboto-Italic.ttf',
+                    bolditalics: 'Roboto-Italic.ttf'
+                }
+            };
+            return "Roboto";
+        };
+
+        // page title
+        PDFLayout.createTitle = function(title) {
             return {
-                text: titleString,
+                text: title,
                 style: "title"
             };
         };
 
-        // function to apply a pagebreak-keyword
-        PdfPredefinedFunctions.addPageBreak = function() {
+        // page subtitle
+        PDFLayout.createSubtitle = function(subtitle) {
+            return {
+                text: subtitle,
+                style: "subtitle"
+            };
+        };
+
+        // pagebreak
+        PDFLayout.addPageBreak = function() {
             return [
                 {
                     text: '',
@@ -29,7 +57,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
             ];
         };
 
-        PdfPredefinedFunctions.flipTableRowStyle = function(currentTableSize) {
+        // table row style
+        PDFLayout.flipTableRowStyle = function(currentTableSize) {
             if (currentTableSize % 2 === 0) {
                 return "tableEven";
             } else {
@@ -37,8 +66,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
             }
         };
 
-        //draws a circle
-        PdfPredefinedFunctions.drawCircle = function(y, size) {
+        // draws a circle
+        PDFLayout.drawCircle = function(y, size) {
             return [
                 {
                     type: 'ellipse',
@@ -51,14 +80,15 @@ angular.module('OpenSlidesApp.core.pdf', [])
             ];
         };
 
-        //Returns an entry in the ballot with a circle to draw into
-        PdfPredefinedFunctions.createBallotEntry = function(decision) {
+        // returns an entry in the ballot with a circle to draw into
+        PDFLayout.createBallotEntry = function(decision) {
             return {
                 margin: [40+BallotCircleDimensions.size, 10, 0, 0],
                 columns: [
                     {
                         width: 15,
-                        canvas: PdfPredefinedFunctions.drawCircle(BallotCircleDimensions.yDistance, BallotCircleDimensions.size)
+                        canvas: PDFLayout.drawCircle(BallotCircleDimensions.yDistance,
+                                BallotCircleDimensions.size)
                     },
                     {
                         width: "auto",
@@ -68,7 +98,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
             };
         };
 
-        PdfPredefinedFunctions.getBallotLayoutLines = function() {
+        // crop marks for ballot papers
+        PDFLayout.getBallotLayoutLines = function() {
             return {
                 hLineWidth: function(i, node) {
                     return (i === 0 || i === node.table.body.length) ? 0 : 0.5;
@@ -85,9 +116,10 @@ angular.module('OpenSlidesApp.core.pdf', [])
             };
         };
 
-        return PdfPredefinedFunctions;
+        return PDFLayout;
     }
 ])
+
 
 .factory('HTMLValidizer', function() {
     var HTMLValidizer = {};
@@ -111,138 +143,163 @@ angular.module('OpenSlidesApp.core.pdf', [])
     return HTMLValidizer;
 })
 
+
 .factory('PdfMakeDocumentProvider', [
     'gettextCatalog',
     'Config',
-    function(gettextCatalog, Config) {
+    'PDFLayout',
+    function(gettextCatalog, Config, PDFLayout) {
         /**
-         * Provides the global Document
+         * Provides the global document
          * @constructor
-         * @param {object} contentProvider - Object with on method `getContent`, which returns an array for content
-         * @param {string} defaultFont - Default font for the document
+         * @param {object} contentProvider - Object with on method `getContent`, which
+         * returns an array for content
          */
-        var createInstance = function(contentProvider, defaultFont) {
-            /**
-             * Generates header for PDF
-             * @constructor
-             */
+        var createInstance = function(contentProvider) {
+            // PDF header
             var header = function() {
-                    var date = new Date();
-                    return {
-                        // alignment: 'center',
-                        color: '#555',
-                        fontSize: 10,
-                        margin: [80, 50, 80, 0], //margin: [left, top, right, bottom]
-                        columns: [
-                          {
-                            text: Config.get('general_event_name').value + ' · ' + Config.get('general_event_description').value ,
-                            fontSize:10,
-                            width: '70%'
-                          },
-                          {
-                            fontSize: 6,
-                            width: '30%',
-                            text: gettextCatalog.getString('As of') + " " + date.toLocaleDateString() + " " + date.toLocaleTimeString(),
-                            alignment: 'right'
-                        }]
-                    };
-                },
-                /**
-                 * Generates footer line
-                 * @function
-                 * @param {object} currentPage   - An object representing the current page
-                 * @param {number} pageCount - number for pages
-                 */
-                footer = function(currentPage, pageCount) {
-                    return {
-                        alignment: 'center',
-                        fontSize: 8,
-                        color: '#555',
-                        text: gettextCatalog.getString('Page') + ' ' + currentPage.toString() + ' / ' + pageCount.toString()
-                    };
-                },
-                /**
-                 * Generates the document(definition) for pdfMake
-                 * @function
-                 */
-                getDocument = function() {
-                    var content = contentProvider.getContent();
-                    return {
-                        pageSize: 'A4',
-                        pageMargins: [80, 90, 80, 60],
-                        defaultStyle: {
-                            font: defaultFont,
-                            fontSize: 10
-                        },
-                        header: header,
-                        footer: footer,
-                        content: content,
-                        styles: {
-                            title: {
-                                fontSize: 30,
-                                margin: [0,0,0,20],
-                                bold: true
-                            },
-                            preamble: {
-                                fontSize: 12,
-                                margin: [0,0,0,10],
-                            },
-                            userDataTitle: {
-                                fontSize: 26,
-                                margin: [0,0,0,0],
-                                bold: true
-                            },
-                            textItem: {
-                                fontSize: 11,
-                                margin: [0,7]
-                            },
-                            heading: {
-                                fontSize: 16,
-                                margin: [0,0,0,10],
-                                bold: true
-                            },
-                            userDataHeading: {
-                                fontSize: 14,
-                                margin: [0,10],
-                                bold: true
-                            },
-                            userDataTopic: {
-                                fontSize: 12,
-                                margin: [0,5]
-                            },
-                            userDataValue: {
-                                fontSize: 12,
-                                margin: [15,5]
-                            },
-                            tableofcontent: {
-                                fontSize: 12,
-                                margin: [0,3]
-                            },
-                            listParent: {
-                                fontSize: 14,
-                                margin: [0,5]
-                            },
-                            listChild: {
-                                fontSize: 11,
-                                margin: [0,5]
-                            },
-                            tableHeader: {
-                                bold: true,
-                                fillColor: 'white'
-                            },
-                            tableEven: {
-                                fillColor: 'white'
-                            },
-                            tableOdd: {
-                                fillColor: '#eee'
-                            },
-                            tableConclude: {
-                                fillColor: '#ddd',
-                                bold: true
-                            }
-                        }
-                    };
+                var date = new Date();
+                var columns = [];
+
+                // add here your custom logo (which has to be added to a custom vfs_fonts.js)
+                // see https://github.com/pdfmake/pdfmake/wiki/Custom-Fonts---client-side
+                /*
+                columns.push({
+                    image: 'logo.png',
+                    fit: [180,40]
+                });*/
+
+                var line1 = [
+                    Config.get('general_event_name').value,
+                    Config.get('general_event_description').value
+                ].join(' – ');
+                var line2 = [
+                    Config.get('general_event_location').value,
+                    Config.get('general_event_date').value
+                ].join(', ');
+                var text = [line1, line2].join('\n');
+                columns.push({
+                    text: text,
+                    fontSize:10,
+                    width: '100%'
+                });
+                return {
+                    color: '#555',
+                    fontSize: 9,
+                    margin: [80, 30, 80, 10], // [left, top, right, bottom]
+                    columns: columns,
+                    columnGap: 10
                 };
+            };
+
+            // PDF footer
+            var footer = function(currentPage, pageCount) {
+                return {
+                    alignment: 'center',
+                    fontSize: 8,
+                    color: '#555',
+                    text: gettextCatalog.getString('Page') + ' ' + currentPage.toString() +
+                        ' / ' + pageCount.toString()
+                };
+            };
+            // Generates the document(definition) for pdfMake
+            var getDocument = function() {
+                var content = contentProvider.getContent();
+                return {
+                    pageSize: 'A4',
+                    pageMargins: [80, 90, 80, 60],
+                    defaultStyle: {
+                        font: PDFLayout.getFontName(),
+                        fontSize: 10
+                    },
+                    header: header,
+                    footer: footer,
+                    content: content,
+                    styles: {
+                        title: {
+                            fontSize: 18,
+                            margin: [0,0,0,20],
+                            bold: true
+                        },
+                        subtitle: {
+                            fontSize: 9,
+                            margin: [0,-20,0,20],
+                        },
+                        preamble: {
+                            fontSize: 10,
+                            margin: [0,0,0,10],
+                        },
+                        userDataTitle: {
+                            fontSize: 26,
+                            margin: [0,0,0,0],
+                            bold: true
+                        },
+                        textItem: {
+                            fontSize: 11,
+                            margin: [0,7]
+                        },
+                        heading2: {
+                            fontSize: 14,
+                            margin: [0,0,0,10],
+                            bold: true
+                        },
+                        heading3: {
+                            fontSize: 12,
+                            margin: [0,10,0,0],
+                            bold: true
+                        },
+                        userDataHeading: {
+                            fontSize: 14,
+                            margin: [0,10],
+                            bold: true
+                        },
+                        userDataTopic: {
+                            fontSize: 12,
+                            margin: [0,5]
+                        },
+                        userDataValue: {
+                            fontSize: 12,
+                            margin: [15,5]
+                        },
+                        tableofcontent: {
+                            fontSize: 12,
+                            margin: [0,3]
+                        },
+                        listParent: {
+                            fontSize: 12,
+                            margin: [0,5]
+                        },
+                        listChild: {
+                            fontSize: 10,
+                            margin: [0,5]
+                        },
+                        tableHeader: {
+                            bold: true,
+                            fillColor: 'white'
+                        },
+                        tableEven: {
+                            fillColor: 'white'
+                        },
+                        tableOdd: {
+                            fillColor: '#eee'
+                        },
+                        tableConclude: {
+                            fillColor: '#ddd',
+                            bold: true
+                        },
+                        grey: {
+                            fillColor: '#ddd',
+                        },
+                        lightgrey: {
+                            fillColor: '#aaa',
+                        },
+                        bold: {
+                            bold: true,
+                        }
+                    }
+                };
+            };
+
             return {
                 getDocument: getDocument
             };
@@ -256,14 +313,14 @@ angular.module('OpenSlidesApp.core.pdf', [])
 .factory('PdfMakeBallotPaperProvider', [
     'gettextCatalog',
     'Config',
-    function(gettextCatalog, Config) {
+    'PDFLayout',
+    function(gettextCatalog, Config, PDFLayout) {
         /**
          * Provides the global Document
          * @constructor
          * @param {object} contentProvider - Object with on method `getContent`, which returns an array for content
-         * @param {string} defaultFont - Default font for the document
          */
-        var createInstance = function(contentProvider, defaultFont) {
+        var createInstance = function(contentProvider) {
             /**
              * Generates the document(definition) for pdfMake
              * @function
@@ -274,7 +331,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     pageSize: 'A4',
                     pageMargins: [0, 0, 0, 0],
                     defaultStyle: {
-                        font: defaultFont,
+                        font: PDFLayout.getFontName(),
                         fontSize: 10
                     },
                     content: content,
@@ -308,10 +365,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
          * Converter component for HTML->JSON for pdfMake
          * @constructor
          * @param {object} images   - Key-Value structure representing image.src/BASE64 of images
-         * @param {object} fonts    - Key-Value structure representing fonts (detailed description below)
          * @param {object} pdfMake  - the converter component enhances pdfMake
          */
-        var createInstance = function(images, fonts, pdfMake) {
+        var createInstance = function(images, pdfMake) {
             var slice = Function.prototype.call.bind([].slice),
                 map = Function.prototype.call.bind([].map),
 
@@ -319,47 +375,6 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 DIFF_MODE_INSERT = 1,
                 DIFF_MODE_DELETE = 2,
 
-                /**
-                 * Adds a custom font to pdfMake.vfs
-                 * @function
-                 * @param {object} fontFiles - object with Files to add to pdfMake.vfs
-                 * {
-                 *      normal: $Filename
-                 *      bold: $Filename
-                 *      italics: $Filename
-                 *      bolditalics: $Filename
-                 *  }
-                 */
-                addFontToVfs = function(fontFiles) {
-                    Object.keys(fontFiles).forEach(function(name) {
-                        var file = fontFiles[name];
-                        pdfMake.vfs[file.name] = file.content;
-                    });
-                },
-                /**
-                 * Adds custom fonts to pdfMake
-                 * @function
-                 * @param {object} fontInfo - Font configuration from Backend
-                 * {
-                 *     $FontName : {
-                 *         normal: $Filename
-                 *         bold: $Filename
-                 *         italics: $Filename
-                 *         bolditalics: $Filename
-                 *      }
-                 *  }
-                 */
-                registerFont = function(fontInfo) {
-                    Object.keys(fontInfo).forEach(function(name) {
-                        var font = fontInfo[name];
-                        addFontToVfs(font);
-                        pdfMake.fonts = pdfMake.fonts || {};
-                        pdfMake.fonts[name] = Object.keys(font).reduce(function(fontDefinition, style) {
-                            fontDefinition[style] = font[style].name;
-                            return fontDefinition;
-                        }, {});
-                    });
-                },
                 /**
                  * Convertes HTML for use with pdfMake
                  * @function
@@ -726,9 +741,6 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     o[name] = content;
                     return o;
                 };
-            fonts.forEach(function(fontInfo) {
-                registerFont(fontInfo);
-            });
             return {
                 convertHTML: convertHTML,
                 createElement: create

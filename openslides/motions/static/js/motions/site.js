@@ -926,7 +926,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
             //post-request to convert the images. Async.
             $http.post('/core/encode_media/', JSON.stringify(image_sources)).success(function(data) {
-                var converter = PdfMakeConverter.createInstance(data.images, data.fonts, pdfMake);
+                var converter = PdfMakeConverter.createInstance(data.images, pdfMake);
                 var motionContentProviderArray = [];
 
                 //convert the filtered motions to motionContentProviders
@@ -934,7 +934,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     motionContentProviderArray.push(MotionContentProvider.createInstance(converter, motion, $scope, User, $http));
                 });
                 var motionCatalogContentProvider = MotionCatalogContentProvider.createInstance(motionContentProviderArray, $scope, User, Category);
-                var documentProvider = PdfMakeDocumentProvider.createInstance(motionCatalogContentProvider, data.defaultFont);
+                var documentProvider = PdfMakeDocumentProvider.createInstance(motionCatalogContentProvider);
                 pdfMake.createPdf(documentProvider.getDocument()).download(filename);
             });
         };

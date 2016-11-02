@@ -315,7 +315,7 @@ angular.module('OpenSlidesApp.agenda.site', [
         };
 
         $scope.makePDF = function() {
-            var filename = gettextCatalog.getString("Agenda")+".pdf";
+            var filename = gettextCatalog.getString('Agenda') + '.pdf';
             var agendaContentProvider = AgendaContentProvider.createInstance($scope.items);
             var documentProvider = PdfMakeDocumentProvider.createInstance(agendaContentProvider);
             pdfMake.createPdf(documentProvider.getDocument()).download(filename);
