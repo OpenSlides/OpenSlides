@@ -405,37 +405,6 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-// Options for TinyMCE editor used in various create and edit views.
-.factory('Editor', [
-    'gettextCatalog',
-    function (gettextCatalog) {
-        return {
-            getOptions: function (images, inlineMode) {
-                if (inlineMode === undefined) {
-                    inlineMode = false;
-                }
-                return {
-                    language_url: '/static/tinymce/i18n/' + gettextCatalog.getCurrentLanguage() + '.js',
-                    theme_url: '/static/js/openslides-libs.js',
-                    skin_url: '/static/tinymce/skins/lightgray/',
-                    inline: inlineMode,
-                    browser_spellcheck: true,
-                    image_advtab: true,
-                    image_list: images,
-                    plugins: [
-                      'lists link autolink charmap preview searchreplace code fullscreen',
-                      'paste textcolor colorpicker image imagetools wordcount'
-                    ],
-                    menubar: '',
-                    toolbar: 'undo redo searchreplace | styleselect | bold italic underline strikethrough ' +
-                        'forecolor backcolor removeformat | bullist numlist | outdent indent | ' +
-                        'link image charmap table | code preview fullscreen'
-                };
-            }
-        };
-    }
-])
-
 // html-tag os-form-field to generate generic from fields
 // TODO: make it possible to use other fields then config fields
 .directive('osFormField', [

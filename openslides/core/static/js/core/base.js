@@ -460,6 +460,40 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+// Options for TinyMCE editor used in various create and edit views.
+// Required in core/base.js because MotionComment factory which used this
+// factory has to placed in motions/base.js.
+.factory('Editor', [
+    'gettextCatalog',
+    function (gettextCatalog) {
+        return {
+            getOptions: function (images, inlineMode) {
+                if (inlineMode === undefined) {
+                    inlineMode = false;
+                }
+                return {
+                    language_url: '/static/tinymce/i18n/' + gettextCatalog.getCurrentLanguage() + '.js',
+                    theme_url: '/static/js/openslides-libs.js',
+                    skin_url: '/static/tinymce/skins/lightgray/',
+                    inline: inlineMode,
+                    statusbar: false,
+                    browser_spellcheck: true,
+                    image_advtab: true,
+                    image_list: images,
+                    plugins: [
+                      'lists link autolink charmap preview searchreplace code fullscreen',
+                      'paste textcolor colorpicker image imagetools'
+                    ],
+                    menubar: '',
+                    toolbar: 'undo redo searchreplace | styleselect | bold italic underline strikethrough ' +
+                        'forecolor backcolor removeformat | bullist numlist | outdent indent | ' +
+                        'link image charmap table | code preview fullscreen'
+                };
+            }
+        };
+    }
+])
+
 /* Model for a projector.
  *
  * At the moment we use only one projector, so there will be only one object
