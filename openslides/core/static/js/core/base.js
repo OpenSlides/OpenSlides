@@ -476,13 +476,12 @@ angular.module('OpenSlidesApp.core', [
                     theme_url: '/static/js/openslides-libs.js',
                     skin_url: '/static/tinymce/skins/lightgray/',
                     inline: inlineMode,
-                    statusbar: false,
                     browser_spellcheck: true,
                     image_advtab: true,
                     image_list: images,
                     plugins: [
                       'lists link autolink charmap preview searchreplace code fullscreen',
-                      'paste textcolor colorpicker image imagetools'
+                      'paste textcolor colorpicker image imagetools wordcount'
                     ],
                     menubar: '',
                     toolbar: 'undo redo searchreplace | styleselect | bold italic underline strikethrough ' +
