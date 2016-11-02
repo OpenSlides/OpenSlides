@@ -103,6 +103,151 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
         createInstance: createInstance
     };
 
-}]);
+}])
 
+.factory('UserAccessDataListContentProvider', [
+    'gettextCatalog',
+    'PdfPredefinedFunctions',
+    function(gettextCatalog, PdfPredefinedFunctions) {
+
+        var createInstance = function(userList, groups, Config) {
+
+            var getConfigValue = function(val) {
+                if (Config.get(val).value) {
+                    return Config.get(val).value;
+                } else {
+                    return "-";
+                }
+            };
+
+            var creadeUserHeadLine = function(user) {
+                var titleLine = [];
+                titleLine.push({
+                    text: user.get_short_name(),
+                    style: 'userDataTitle'
+                });
+                if (user.structure_level) {
+                    titleLine.push({
+                        text: user.structure_level,
+                        style: 'userDataHeading'
+                    });
+                }
+                return titleLine;
+            };
+
+            var createAccessDataContent = function(user) {
+                var accessDataColumns = {
+                    columns: [
+                        {
+                            stack: [
+                                {
+                                    text: gettextCatalog.getString("WLAN access data"),
+                                    style: 'userDataHeading'
+                                },
+                                {
+                                    text: gettextCatalog.getString("WLAN name (SSID)") + ":",
+                                    style: 'userDataTopic'
+                                },
+                                {
+                                    text: getConfigValue('users_pdf_wlan_ssid'),
+                                    style: 'userDataValue'
+                                },
+                                {
+                                    text: gettextCatalog.getString("WLAN password") + ":",
+                                    style: 'userDataTopic'
+                                },
+                                {
+                                    text: getConfigValue('users_pdf_wlan_password'),
+                                    style: 'userDataValue'
+                                },
+                                {
+                                    text: gettextCatalog.getString("WLAN encryption") + ":",
+                                    style: 'userDataTopic'
+                                },
+                                {
+                                    text: getConfigValue('users_pdf_wlan_encryption'),
+                                    style: 'userDataValue'
+                                },
+                            ]
+                        },
+                        {
+                            stack: [
+                                {
+                                    text: gettextCatalog.getString("OpenSlides access data"),
+                                    style: 'userDataHeading'
+                                },
+                                {
+                                    text: gettextCatalog.getString("Username") + ":",
+                                    style: 'userDataTopic'
+                                },
+                                {
+                                    text: user.username,
+                                    style: 'userDataValue'
+                                },
+                                {
+                                    text: gettextCatalog.getString("Initial password") + ":",
+                                    style: 'userDataTopic'
+                                },
+                                {
+                                    text: user.default_password,
+                                    style: 'userDataValue'
+                                },
+                                {
+                                    text: "URL:",
+                                    style: 'userDataTopic'
+                                },
+                                {
+                                    text: getConfigValue('users_pdf_url'),
+                                    link: getConfigValue('users_pdf_url'),
+                                    style: 'userDataValue'
+                                },
+                            ]
+                        }
+                    ],
+                    margin: [0,20]
+                };
+
+                return accessDataColumns;
+            };
+
+            var createWelcomeText = function() {
+                return [
+                    {
+                        text:   getConfigValue('users_pdf_welcometitle'),
+                        style: 'userDataHeading'
+                    },
+                    {
+                        text:   getConfigValue('users_pdf_welcometext'),
+                        style: 'userDataTopic'
+                    }
+                ];
+            };
+
+            var getContent = function() {
+                var content = [];
+                angular.forEach(userList, function (user) {
+                    content.push(creadeUserHeadLine(user));
+                    content.push(createAccessDataContent(user));
+                    content.push(createWelcomeText());
+                    content.push({
+                        text: '',
+                        pageBreak: 'after'
+                    });
+                });
+
+                return [
+                    content
+                ];
+            };
+
+            return {
+                getContent: getContent
+            };
+        };
+
+        return {
+            createInstance: createInstance
+        };
+    }
+]);
 }());

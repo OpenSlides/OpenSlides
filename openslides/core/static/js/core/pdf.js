@@ -173,6 +173,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 margin: [0,0,0,20],
                                 bold: true
                             },
+                            userDataTitle: {
+                                fontSize: 26,
+                                margin: [0,0,0,0],
+                                bold: true
+                            },
                             textItem: {
                                 fontSize: 11,
                                 margin: [0,7]
@@ -181,6 +186,19 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 fontSize: 16,
                                 margin: [0,0,0,10],
                                 bold: true
+                            },
+                            userDataHeading: {
+                                fontSize: 14,
+                                margin: [0,10],
+                                bold: true
+                            },
+                            userDataTopic: {
+                                fontSize: 12,
+                                margin: [0,5]
+                            },
+                            userDataValue: {
+                                fontSize: 12,
+                                margin: [15,5]
                             },
                             tableofcontent: {
                                 fontSize: 12,
