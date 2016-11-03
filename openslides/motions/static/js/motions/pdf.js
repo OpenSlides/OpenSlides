@@ -283,7 +283,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             return [
                 heading,
                 toc,
-                addPageBreak()
+                PdfPredefinedFunctions.addPageBreak()
             ];
         };
 
@@ -317,23 +317,13 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 return [
                     heading,
                     toc,
-                    addPageBreak()
+                    PdfPredefinedFunctions.addPageBreak()
                 ];
             } else {
                 // if there are no categories, return "empty string"
                 // pdfmake takes "null" literally and throws an error
                 return "";
             }
-        };
-
-        // function to apply a pagebreak-keyword
-        var addPageBreak = function() {
-            return [
-                {
-                    text: '',
-                    pageBreak: 'after'
-                }
-            ];
         };
 
         // returns the pure content of the motion, parseable by makepdf
@@ -345,7 +335,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 motionTitles.push(motion.getIdentifier() + ": " + motion.getTitle());
                 motionContent.push(motion.getContent());
                 if (key < allMotions.length - 1) {
-                    motionContent.push(addPageBreak());
+                    motionContent.push(PdfPredefinedFunctions.addPageBreak());
                 }
             });
 

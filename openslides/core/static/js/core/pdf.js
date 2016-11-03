@@ -19,6 +19,16 @@ angular.module('OpenSlidesApp.core.pdf', [])
             };
         };
 
+        // function to apply a pagebreak-keyword
+        PdfPredefinedFunctions.addPageBreak = function() {
+            return [
+                {
+                    text: '',
+                    pageBreak: 'after'
+                }
+            ];
+        };
+
         PdfPredefinedFunctions.flipTableRowStyle = function(currentTableSize) {
             if (currentTableSize % 2 === 0) {
                 return "tableEven";
@@ -172,6 +182,10 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 fontSize: 30,
                                 margin: [0,0,0,20],
                                 bold: true
+                            },
+                            preamble: {
+                                fontSize: 12,
+                                margin: [0,0,0,10],
                             },
                             userDataTitle: {
                                 fontSize: 26,

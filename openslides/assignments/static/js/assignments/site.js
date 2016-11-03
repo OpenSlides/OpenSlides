@@ -40,6 +40,9 @@ angular.module('OpenSlidesApp.assignments.site', [
                     assignments: function(Assignment) {
                         return Assignment.findAll();
                     },
+                    users: function(User) {     //TODO: Load only related users cause of better performance
+                        return User.findAll();
+                    },
                     tags: function(Tag) {
                         return Tag.findAll();
                     },
@@ -239,7 +242,13 @@ angular.module('OpenSlidesApp.assignments.site', [
     'phases',
     'Projector',
     'ProjectionDefault',
-    function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, phases, Projector, ProjectionDefault) {
+    'gettextCatalog',
+    'Config',
+    'AssignmentContentProvider',
+    'AssignmentCatalogContentProvider',
+    'PdfMakeDocumentProvider',
+    function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, phases, Projector, ProjectionDefault,
+        gettextCatalog, Config, AssignmentContentProvider, AssignmentCatalogContentProvider, PdfMakeDocumentProvider) {
         Assignment.bindAll({}, $scope, 'assignments');
         Tag.bindAll({}, $scope, 'tags');
         $scope.$watch(function () {
@@ -337,6 +346,20 @@ angular.module('OpenSlidesApp.assignments.site', [
         // delete single assignment
         $scope.delete = function (assignment) {
             Assignment.destroy(assignment.id);
+        };
+        // create the PDF List
+        $scope.makePDF_assignmentList = function () {
+            var filename = gettextCatalog.getString("Elections") + ".pdf";
+            var assignmentContentProviderArray = [];
+
+            //convert the filtered assignments to content providers
+            angular.forEach($scope.assignmentsFiltered, function(assignment) {
+                assignmentContentProviderArray.push(AssignmentContentProvider.createInstance(assignment));
+            });
+
+            var assignmentCatalogContentProvider = AssignmentCatalogContentProvider.createInstance(assignmentContentProviderArray, Config);
+            var documentProvider = PdfMakeDocumentProvider.createInstance(assignmentCatalogContentProvider);
+            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
         };
     }
 ])
@@ -525,7 +548,7 @@ angular.module('OpenSlidesApp.assignments.site', [
         //creates the document as pdf
         $scope.makePDF_singleAssignment = function() {
             var filename = gettextCatalog.getString("Election") + " " + $scope.assignment.title + ".pdf";
-            var assignmentContentProvider = AssignmentContentProvider.createInstance($scope, assignment.polls);
+            var assignmentContentProvider = AssignmentContentProvider.createInstance(assignment);
             var documentProvider = PdfMakeDocumentProvider.createInstance(assignmentContentProvider);
             pdfMake.createPdf(documentProvider.getDocument()).download(filename);
         };

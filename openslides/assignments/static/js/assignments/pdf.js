@@ -9,16 +9,16 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
     'PdfPredefinedFunctions',
     function(gettextCatalog, PdfPredefinedFunctions) {
 
-        var createInstance = function(scope, polls) {
+        var createInstance = function(assignment) {
 
             //use the Predefined Functions to create the title
             var title = PdfPredefinedFunctions.createTitle(
-                gettextCatalog.getString("Election") + ": " + scope.assignment.title);
+                gettextCatalog.getString("Election") + ": " + assignment.title);
 
             //create the preamble
             var createPreamble = function() {
                 var preambleText = gettextCatalog.getString("Number of posts to be elected") + ": ";
-                var memberNumber = ""+scope.assignment.open_posts;
+                var memberNumber = ""+assignment.open_posts;
                 var preamble = {
                     text: [
                         {
@@ -37,7 +37,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 
             //adds the description if present in the assignment
             var createDescription = function() {
-                if (scope.assignment.description) {
+                if (assignment.description) {
                     var descriptionText = gettextCatalog.getString("Description") + ":";
                     var description = [
                         {
@@ -46,7 +46,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                             style: 'textItem'
                         },
                         {
-                            text: scope.assignment.description,
+                            text: assignment.description,
                             style: 'textItem',
                             margin: [10, 0, 0, 0]
                         }
@@ -59,11 +59,11 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 
             //creates the candidate list in columns if the assignment phase is 'voting'
             var createCandidateList = function() {
-                if (scope.assignment.phase != 2) {
+                if (assignment.phase != 2) {
                     var candidatesText = gettextCatalog.getString("Candidates") + ": ";
                     var userList = [];
 
-                    angular.forEach(scope.assignment.assignment_related_users, function(assignmentsRelatedUser) {
+                    angular.forEach(assignment.assignment_related_users, function(assignmentsRelatedUser) {
                         userList.push({
                                 text: assignmentsRelatedUser.user.get_full_name(),
                                 margin: [0, 0, 0, 10],
@@ -110,7 +110,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             //creates the pull result table
             var createPollResultTable = function() {
                 var resultBody = [];
-                angular.forEach(polls, function(poll, pollIndex) {
+                angular.forEach(assignment.polls, function(poll, pollIndex) {
                     if (poll.published) {
                         var voteNrTotal = poll.votescast;
                         var voteNrValid = poll.votesvalid;
@@ -253,6 +253,10 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 return resultBody;
             };
 
+            var getTitle = function() {
+                return assignment.title;
+            };
+
             var getContent = function() {
                 return [
                     title,
@@ -264,7 +268,8 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             };
 
             return {
-                getContent: getContent
+                getContent: getContent,
+                getTitle: getTitle
             };
         };
 
@@ -440,7 +445,78 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
     return {
         createInstance: createInstance
     };
+}])
 
+.factory('AssignmentCatalogContentProvider', [
+    'gettextCatalog',
+    'PdfPredefinedFunctions',
+    function(gettextCatalog, PdfPredefinedFunctions) {
+
+        var createInstance = function(allAssignmnets, Config) {
+
+            var title = PdfPredefinedFunctions.createTitle(Config.get('assignments_pdf_title').value);
+
+            var createPreamble = function() {
+                var preambleText = Config.get('assignments_pdf_preamble').value;
+                if (preambleText) {
+                    return {
+                        text: preambleText,
+                        style: "preamble"
+                    };
+                } else {
+                    return "";
+                }
+            };
+
+            var createTOContent = function(assignmentTitles) {
+                var heading = {
+                    text: gettextCatalog.getString("Table of contents"),
+                    style: "heading",
+                };
+
+                var toc = [];
+                angular.forEach(assignmentTitles, function(title, key) {
+                    toc.push({
+                        text: gettextCatalog.getString("Election") + " " + (key+1) + ": " + title,
+                        style: "tableofcontent",
+                    });
+                });
+
+                return [
+                    heading,
+                    toc,
+                    PdfPredefinedFunctions.addPageBreak()
+                ];
+            };
+
+            var getContent = function() {
+                var content = [];
+                var assignmentContent = [];
+                var assignmentTitles = [];
+
+                angular.forEach(allAssignmnets, function(assignment, key) {
+                    assignmentTitles.push(assignment.getTitle());
+                    assignmentContent.push(assignment.getContent());
+                    if (key < allAssignmnets.length - 1) {
+                        assignmentContent.push(PdfPredefinedFunctions.addPageBreak());
+                    }
+                });
+
+                content.push(title);
+                content.push(createPreamble());
+                content.push(createTOContent(assignmentTitles));
+                content.push(assignmentContent);
+                return content;
+            };
+
+            return {
+                getContent: getContent
+            };
+        };
+
+    return {
+        createInstance: createInstance
+    };
 }]);
 
 }());
