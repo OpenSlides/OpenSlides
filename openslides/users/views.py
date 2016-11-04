@@ -148,11 +148,10 @@ class GroupViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         """
-        Protects builtin groups 'Anonymous' (pk=1) and 'Registered' (pk=2)
-        from being deleted.
+        Protects builtin groups 'Default' (pk=1) from being deleted.
         """
         instance = self.get_object()
-        if instance.pk in (1, 2):
+        if instance.pk == 1:
             self.permission_denied(request)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
