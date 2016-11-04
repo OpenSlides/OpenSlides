@@ -416,6 +416,35 @@ angular.module('OpenSlidesApp.users.site', [
     }
 ])
 
+.factory('UserCsvExport', [
+    function () {
+        return function (element, users) {
+            var csvRows = [
+                ['title', 'first_name', 'last_name', 'structure_level', 'number', 'groups', 'comment', 'is_active', 'is_present', 'is_committee'],
+            ];
+            _.forEach(users, function (user) {
+                var row = [];
+                row.push('"' + user.title + '"');
+                row.push('"' + user.first_name + '"');
+                row.push('"' + user.last_name + '"');
+                row.push('"' + user.structure_level + '"');
+                row.push('"' + user.number + '"');
+                row.push('"' + user.groups_id.join(',') + '"');
+                row.push('"' + user.comment + '"');
+                row.push(user.is_active ? '1' : '0');
+                row.push(user.is_present ? '1' : '0');
+                row.push(user.is_committee ? '1' : '0');
+                csvRows.push(row);
+            });
+
+            var csvString = csvRows.join("%0A");
+            element.href = 'data:text/csv;charset=utf-8,' + csvString;
+            element.download = 'users-export.csv';
+            element.target = '_blank';
+        };
+    }
+])
+
 .controller('UserListCtrl', [
     '$scope',
     '$state',
@@ -432,8 +461,11 @@ angular.module('OpenSlidesApp.users.site', [
     'UserAccessDataListContentProvider',
     'PdfMakeDocumentProvider',
     'gettextCatalog',
+    'UserCsvExport',
+    'Multiselect',
     function($scope, $state, $http, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
-        UserListContentProvider, Config, UserAccessDataListContentProvider, PdfMakeDocumentProvider, gettextCatalog) {
+        UserListContentProvider, Config, UserAccessDataListContentProvider, PdfMakeDocumentProvider, gettextCatalog,
+        UserCsvExport, Multiselect) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.$watch(function () {
@@ -445,10 +477,40 @@ angular.module('OpenSlidesApp.users.site', [
             }
         });
         $scope.alert = {};
-        $scope.groupFilter = undefined;
 
+        $scope.multiselect = Multiselect.instance();
+        $scope.multiselect.filters = {
+            group: [],
+        };
+        $scope.multiselect.propertyList = ['first_name', 'last_name', 'title', 'number', 'comment', 'structure_level'];
+        $scope.multiselect.PropertyDict = {
+            'groups_id' : function (group_id) {
+                return Group.get(group_id).name;
+            },
+        };
+        $scope.getItemId = {
+            group: function (user) {return user.groups_id;},
+        };
         // setup table sorting
-        $scope.sortColumn = 'first_name'; //TODO: sort by first OR last name
+        $scope.sortOptions = [
+            {name: 'first_name',
+             display_name: 'First name'},
+            {name: 'last_name',
+             display_name: 'Last name'},
+            {name: 'is_present',
+             display_name: 'Present'},
+            {name: 'is_active',
+             display_name: 'Active'},
+            {name: 'is_committee',
+             display_name: 'Committee'},
+            {name: 'number',
+             display_name: 'Number'},
+            {name: 'structure_level',
+             display_name: 'Structure level'},
+            {name: 'comment',
+             display_name: 'Comment'},
+        ];
+        $scope.sortColumn = $scope.config('users_sort_by');
         $scope.filterPresent = '';
         $scope.reverse = false;
         // function to sort by clicked column
@@ -457,6 +519,29 @@ angular.module('OpenSlidesApp.users.site', [
                 $scope.reverse = !$scope.reverse;
             }
             $scope.sortColumn = column;
+        };
+        // function to operate the multiselectFilter
+        $scope.operateMultiselectFilter = function (filter, id) {
+            if (!$scope.isSelectMode) {
+                $scope.multiselect.operate(filter, id);
+            }
+        };
+        // for reset-button
+        $scope.resetFilters = function () {
+            $scope.multiselect.resetFilters();
+            if ($scope.filter) {
+                $scope.filter.search = '';
+            }
+            $scope.isPresentFilter = undefined;
+            $scope.isActiveFilter = undefined;
+            $scope.isCommitteeFilter = undefined;
+        };
+        $scope.areFiltersSet = function () {
+            return $scope.multiselect.areFiltersSet() ||
+                   $scope.isPresentFilter ||
+                   $scope.isActiveFilter ||
+                   $scope.isCommitteeFilter ||
+                   ($scope.filter ? $scope.filter.search : false);
         };
 
         // pagination
@@ -467,6 +552,17 @@ angular.module('OpenSlidesApp.users.site', [
             $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
         };
 
+        // Toggle group from user
+        $scope.toggleGroup = function (user, group) {
+            if (_.indexOf(user.groups_id, group.id) > -1) {
+                user.groups_id = _.filter(user.groups_id, function (group_id) {
+                    return group_id != group.id;
+                });
+            } else {
+                user.groups_id.push(group.id);
+            }
+            $scope.save(user);
+        };
         // open new/edit dialog
         $scope.openDialog = function (user) {
             ngDialog.open(UserForm.getDialog(user));
@@ -490,7 +586,8 @@ angular.module('OpenSlidesApp.users.site', [
         $scope.isSelectMode = false;
         // check all checkboxes
         $scope.checkAll = function () {
-            angular.forEach($scope.users, function (user) {
+            $scope.selectedAll = !$scope.selectedAll;
+            _.forEach($scope.usersFiltered, function (user) {
                 user.selected = $scope.selectedAll;
             });
         };
@@ -559,19 +656,24 @@ angular.module('OpenSlidesApp.users.site', [
             $scope.uncheckAll();
         };
 
-        $scope.makePDF_userList = function () {
+        // Export as PDF
+        $scope.pdfExportUserList = function () {
             var filename = gettextCatalog.getString("List of participants")+".pdf";
-            var userListContentProvider = UserListContentProvider.createInstance($scope.users, $scope.groups);
+            var userListContentProvider = UserListContentProvider.createInstance($scope.usersFiltered, $scope.groups);
             var documentProvider = PdfMakeDocumentProvider.createInstance(userListContentProvider);
             pdfMake.createPdf(documentProvider.getDocument()).download(filename);
         };
-
-        $scope.makePDF_userAccessDataList = function () {
+        $scope.pdfExportUserAccessDataList = function () {
             var filename = gettextCatalog.getString("List of access data")+".pdf";
             var userAccessDataListContentProvider = UserAccessDataListContentProvider.createInstance(
-                $scope.users, $scope.groups, Config);
+                $scope.usersFiltered, $scope.groups, Config);
             var documentProvider = PdfMakeDocumentProvider.createInstance(userAccessDataListContentProvider);
             pdfMake.createPdf(documentProvider.getDocument()).download(filename);
+        };
+        // Export as a csv file
+        $scope.csvExport = function () {
+            var element = document.getElementById('downloadLinkCSV');
+            UserCsvExport(element, $scope.usersFiltered);
         };
     }
 ])

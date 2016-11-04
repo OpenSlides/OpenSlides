@@ -653,6 +653,33 @@ angular.module('OpenSlidesApp.motions.site', [
     }
 ])
 
+.factory('MotionCsvExport', [
+    function () {
+        return function (element, motions) {
+            var csvRows = [
+                ['identifier', 'title', 'text', 'reason', 'submitter', 'category', 'origin'],
+            ];
+            _.forEach(motions, function (motion) {
+                var row = [];
+                row.push('"' + motion.identifier + '"');
+                row.push('"' + motion.getTitle() + '"');
+                row.push('"' + motion.getText() + '"');
+                row.push('"' + motion.getReason() + '"');
+                row.push('"' + motion.submitters[0].get_full_name() + '"');
+                var category = motion.category ? motion.category.name : '';
+                row.push('"' + category + '"');
+                row.push('"' + motion.origin + '"');
+                csvRows.push(row);
+            });
+
+            var csvString = csvRows.join("%0A");
+            element.href = 'data:text/csv;charset=utf-8,' + csvString;
+            element.download = 'motions-export.csv';
+            element.target = '_blank';
+        };
+    }
+])
+
 // Cache for MotionPollDetailCtrl so that users choices are keeped during user actions (e. g. save poll form).
 .value('MotionPollDetailCtrlCache', {})
 
@@ -723,9 +750,11 @@ angular.module('OpenSlidesApp.motions.site', [
     'HTMLValidizer',
     'Projector',
     'ProjectionDefault',
+    'MotionCsvExport',
+    'Multiselect',
     function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionBlock,
                 MotionDocxExport, MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
-                gettextCatalog, HTMLValidizer, Projector, ProjectionDefault) {
+                gettextCatalog, HTMLValidizer, Projector, ProjectionDefault, MotionCsvExport, Multiselect) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         MotionBlock.bindAll({}, $scope, 'motionBlocks');
@@ -743,16 +772,31 @@ angular.module('OpenSlidesApp.motions.site', [
         });
         $scope.alert = {};
 
-        // setup table sorting
-        $scope.sortColumn = 'identifier';
-        $scope.filterPresent = '';
-        $scope.reverse = false;
-
-        $scope.multiselectFilter = {
+        $scope.multiselect = Multiselect.instance();
+        $scope.multiselect.filters = {
             state: [],
             category: [],
             motionBlock: [],
             tag: []
+        };
+        $scope.multiselect.propertyList = ['identifier', 'origin'];
+        $scope.multiselect.propertyFunctionList = [
+            function (motion) {return motion.getTitle();},
+            function (motion) {return motion.getText();},
+            function (motion) {return motion.getReason();},
+            function (motion) {return motion.category ? motion.category.name : '';},
+            function (motion) {return motion.motionBlock ? motion.motionBlock.name : '';},
+        ];
+        $scope.multiselect.PropertyDict = {
+            'submitters' : function (submitter) {
+                return submitter.get_short_name();
+            },
+            'supporters' : function (submitter) {
+                return supporter.get_short_name();
+            },
+            'tags' : function (tag) {
+                return tag.name;
+            },
         };
         $scope.getItemId = {
             state: function (motion) {return motion.state_id;},
@@ -760,18 +804,33 @@ angular.module('OpenSlidesApp.motions.site', [
             motionBlock: function (motion) {return motion.motion_block_id;},
             tag: function (motion) {return motion.tags_id;}
         };
+        // setup table sorting
+        $scope.sortOptions = [
+            {name: 'identifier',
+             display_name: 'Identifier'},
+            {name: 'getTitle()',
+             display_name: 'Title'},
+            {name: 'submitters',
+             display_name: 'Submitters'},
+            {name: 'category.name',
+             display_name: 'Category'},
+            {name: 'motionBlock.title',
+             display_name: 'Motion block'},
+            {name: 'state.name',
+             display_name: 'State'},
+            {name: 'log_messages[log_messages.length-1].time',
+             display_name: 'Creation date'},
+            {name: 'log_messages[0].time',
+             display_name: 'Last modified'},
+        ];
+        $scope.sortColumn = 'identifier';
+        $scope.filterPresent = '';
+        $scope.reverse = false;
+
         // function to operate the multiselectFilter
         $scope.operateMultiselectFilter = function (filter, id) {
             if (!$scope.isDeleteMode) {
-                if (_.indexOf($scope.multiselectFilter[filter], id) > -1) {
-                    // remove id
-                    $scope.multiselectFilter[filter] = _.filter($scope.multiselectFilter[filter], function (_id) {
-                        return _id != id;
-                    });
-                } else {
-                    // add id
-                    $scope.multiselectFilter[filter].push(id);
-                }
+                $scope.multiselect.operate(filter, id);
             }
         };
         // function to sort by clicked column
@@ -781,61 +840,15 @@ angular.module('OpenSlidesApp.motions.site', [
             }
             $scope.sortColumn = column;
         };
-        // define custom search filter string
-        $scope.getFilterString = function (motion) {
-            var category = '';
-            if (motion.category) {
-                category = motion.category.name;
-            }
-            var motionBlock = '';
-            if (motion.motionBlock) {
-                motionBlock = motion.motionBlock.title;
-            }
-            return [
-                motion.identifier,
-                motion.getTitle(),
-                motion.getText(),
-                motion.getReason(),
-                motion.origin,
-                _.map(
-                    motion.submitters,
-                    function (submitter) {
-                        return submitter.get_short_name();
-                    }
-                ).join(" "),
-                _.map(
-                    motion.supporters,
-                    function (supporter) {
-                        return supporter.get_short_name();
-                    }
-                ).join(" "),
-                _.map(
-                    motion.tags,
-                    function (tag) {
-                        return tag.name;
-                    }
-                ).join(" "),
-                category,
-                motionBlock
-            ].join(" ");
-        };
         // for reset-button
-        $scope.reset_filters = function () {
-            $scope.multiselectFilter = {
-                state: [],
-                category: [],
-                motionBlock: [],
-                tag: []
-            };
+        $scope.resetFilters = function () {
+            $scope.multiselect.resetFilters();
             if ($scope.filter) {
                 $scope.filter.search = '';
             }
         };
-        $scope.are_filters_set = function () {
-            return $scope.multiselectFilter.state.length > 0 ||
-                   $scope.multiselectFilter.category.length > 0 ||
-                   $scope.multiselectFilter.motionBlock.length > 0 ||
-                   $scope.multiselectFilter.tag.length > 0 ||
+        $scope.areFiltersSet = function () {
+            return $scope.multiselect.areFiltersSet() ||
                    ($scope.filter ? $scope.filter.search : false);
         };
 
@@ -910,7 +923,7 @@ angular.module('OpenSlidesApp.motions.site', [
         };
 
         // Export as a pdf file
-        $scope.pdf_export = function() {
+        $scope.pdfExport = function() {
             var filename = gettextCatalog.getString("Motions") + ".pdf";
             var image_sources = [];
 
@@ -940,31 +953,12 @@ angular.module('OpenSlidesApp.motions.site', [
         };
 
         // Export as a csv file
-        $scope.csv_export = function () {
+        $scope.csvExport = function () {
             var element = document.getElementById('downloadLinkCSV');
-            var csvRows = [
-                ['identifier', 'title', 'text', 'reason', 'submitter', 'category', 'origin'],
-            ];
-            angular.forEach($scope.motionsFiltered, function (motion) {
-                var row = [];
-                row.push('"' + motion.identifier + '"');
-                row.push('"' + motion.getTitle() + '"');
-                row.push('"' + motion.getText() + '"');
-                row.push('"' + motion.getReason() + '"');
-                row.push('"' + motion.submitters[0].get_full_name() + '"');
-                var category = motion.category ? motion.category.name : '';
-                row.push('"' + category + '"');
-                row.push('"' + motion.origin + '"');
-                csvRows.push(row);
-            });
-
-            var csvString = csvRows.join("%0A");
-            element.href = 'data:text/csv;charset=utf-8,' + csvString;
-            element.download = 'motions-export.csv';
-            element.target = '_blank';
+            MotionCsvExport(element, $scope.motionsFiltered);
         };
         // Export as docx file
-        $scope.docx_export = function () {
+        $scope.docxExport = function () {
             MotionDocxExport.export($scope.motionsFiltered, $scope.categories);
         };
 
