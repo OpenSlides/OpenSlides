@@ -29,16 +29,17 @@ def get_config_variables():
         name='assignments_poll_100_percent_base',
         default_value='YES_NO_ABSTAIN',
         input_type='choice',
-        label='The 100 % base of an election result consists of',
+        label='The 100-%-base of an election result consists of',
         choices=(
             {'value': 'YES_NO_ABSTAIN', 'display_name': 'Yes/No/Abstain per candidate'},
             {'value': 'YES_NO', 'display_name': 'Yes/No per candidate'},
             {'value': 'VALID', 'display_name': 'All valid ballots'},
             {'value': 'CAST', 'display_name': 'All casted ballots'},
             {'value': 'DISABLED', 'display_name': 'Disabled (no percents)'}),
-        help_text="For Yes/No/Abstain and Yes/No the 100 % base depends on the election method: If there are " +
-                  "more candidates than open posts, the sum of all votes of all candidates is 100 %. Otherwise " +
-                  "the sum of all votes per candidate is 100 %.",
+        help_text=('For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base '
+                   'depends on the election method: If there is only one option per candidate, '
+                   'the sum of all votes of all candidates is 100 %. Otherwise for each '
+                   'candidate the sum of all votes is 100 %.'),
         weight=420,
         group='Elections',
         subgroup='Ballot and ballot papers')
