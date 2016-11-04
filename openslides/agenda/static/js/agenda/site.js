@@ -442,7 +442,10 @@ angular.module('OpenSlidesApp.agenda.site', [
                             !item.speaker_list_closed &&
                             $.inArray(operator.user.id, nextUsers) == -1);
                 case 'remove':
-                    return ($.inArray(operator.user.id, nextUsers) != -1);
+                    if (operator.user) {
+                        return ($.inArray(operator.user.id, nextUsers) != -1);
+                    }
+                    return false;
                 case 'removeAll':
                     return (operator.hasPerms('agenda.can_manage') &&
                             $scope.speakers.length > 0);

@@ -68,7 +68,7 @@
   <h4 translate>Please note:</h4>
   <ul class="indentation">
       <li><translate>Required comma or semicolon separated values with these column header names in the first row</translate>:<br>
-          <code>title, first_name, last_name, structure_level, number, groups, comment, is_active, is_committee</code>
+          <code>title, first_name, last_name, structure_level, number, groups, comment, is_active, is_present, is_committee</code>
       <li><translate>Default groups</translate>:
           <translate>Delegates</translate> <code>2</code>,
           <translate>Staff</translate> <code>3</code>
@@ -94,6 +94,7 @@
           <th translate>Groups
           <th translate>Comment
           <th translate>Is active
+          <th translate>Is present
           <th translate>Is committee</th>
           <th ng-if="duplicates > 0">
             <i class="fa fa-exclamation-triangle text-danger"></i>
@@ -155,6 +156,9 @@
           <td>
             <i class="fa pointer" ng-class="user.is_active ? 'fa-check-square-o' : 'fa-square-o'"
               ng-click="user.is_active = !user.is_active"></i>
+          <td>
+            <i class="fa pointer" ng-class="user.is_present ? 'fa-check-square-o' : 'fa-square-o'"
+              ng-click="user.is_present = !user.is_present"></i>
           <td>
             <i class="fa pointer" ng-class="user.is_committee ? 'fa-check-square-o' : 'fa-square-o'"
               ng-click="user.is_committee = !user.is_committee"></i>

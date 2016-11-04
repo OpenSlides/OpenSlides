@@ -69,7 +69,8 @@ angular.module('OpenSlidesApp.users', [])
     'Group',
     'jsDataModel',
     'gettext',
-    function(DS, Group, jsDataModel, gettext) {
+    'Config',
+    function(DS, Group, jsDataModel, gettext, Config) {
         var name = 'users/user';
         return DS.defineResource({
             name: name,
@@ -88,41 +89,54 @@ angular.module('OpenSlidesApp.users', [])
                 getResourceName: function () {
                     return name;
                 },
+                /*
+                 * Returns a short form of the name.
+                 *
+                 * Example:
+                 * - Dr. Max Mustermann
+                 * - Professor Dr. Enders, Christoph
+                 */
                 get_short_name: function() {
-                    // should be the same as in the python user model.
                     var title = _.trim(this.title),
                         firstName = _.trim(this.first_name),
                         lastName = _.trim(this.last_name),
                         name = '';
-
-                    if (title) {
-                        name = title + ' ';
-                    }
-                    if (firstName && lastName) {
-                        name += [firstName, lastName].join(' ');
+                    if (Config.get('users_sort_by').value == 'lastName') {
+                        if (lastName && firstName) {
+                            name += [lastName, firstName].join(', ');
+                        } else {
+                            name += lastName || firstName;
+                        }
                     } else {
-                        name += firstName || lastName || this.username;
+                        name += [firstName, lastName].join(' ');
+                    }
+                    if (title !== '') {
+                        name = title + ' ' + name;
                     }
                     return name;
                 },
+                /*
+                 * Returns a long form of the name.
+                 *
+                 * Example:
+                 * - Dr. Max Mustermann (Villingen)
+                 * - Professor Dr. Enders, Christoph (Leipzig)
+                 */
                 get_full_name: function() {
-                    // should be the same as in the python user model.
-                    var title = _.trim(this.title),
-                        firstName = _.trim(this.first_name),
-                        lastName = _.trim(this.last_name),
+                    var name = this.get_short_name(),
                         structure_level = _.trim(this.structure_level),
-                        name = '';
+                        number = _.trim(this.number),
+                        addition = [];
 
-                    if (title) {
-                        name = title + ' ';
-                    }
-                    if (firstName && lastName) {
-                        name += [firstName, lastName].join(' ');
-                    } else {
-                        name += firstName || lastName || this.username;
+                    // addition: add number and structure level
+                    if (number) {
+                        addition.push(number);
                     }
                     if (structure_level) {
-                        name += " (" + structure_level + ")";
+                        addition.push(structure_level);
+                    }
+                    if (addition.length > 0) {
+                        name += ' (' + addition.join(', ') + ')';
                     }
                     return name;
                 },
