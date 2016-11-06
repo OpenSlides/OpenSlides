@@ -280,7 +280,7 @@ angular.module('OpenSlidesApp.motions', [
                             text = '';
                             for (var i = 0; i < changes.length; i++) {
                                 text += this.getTextBetweenChangeRecommendations(versionId, (i === 0 ? null : changes[i - 1]), changes[i], highlight);
-                                text += changes[i].format(this, versionId, highlight);
+                                text += changes[i].getDiff(this, versionId);
                             }
                             text += this.getTextRemainderAfterLastChangeRecommendation(versionId, changes);
                             break;
@@ -584,37 +584,16 @@ angular.module('OpenSlidesApp.motions', [
                 saveStatus: function() {
                     this.DSSave();
                 },
-                format: function(motion, version, highlight) {
+                getDiff: function(motion, version, highlight) {
                     var lineLength = Config.get('motions_line_length').value,
                         html = lineNumberingService.insertLineNumbers(motion.getVersion(version).text, lineLength);
 
                     var data = diffService.extractRangeByLineNumbers(html, this.line_from, this.line_to),
                         oldText = data.outerContextStart + data.innerContextStart +
-                            data.html + data.innerContextEnd + data.outerContextEnd,
-                        oldTextWithBreaks = lineNumberingService.insertLineNumbersNode(oldText, lineLength, highlight, this.line_from),
-                        newTextWithBreaks = lineNumberingService.insertLineNumbersNode(this.text, lineLength, null, this.line_from);
+                            data.html + data.innerContextEnd + data.outerContextEnd;
 
-                    for (var i = 0; i < oldTextWithBreaks.childNodes.length; i++) {
-                        diffService.addCSSClass(oldTextWithBreaks.childNodes[i], 'delete');
-                    }
-                    for (i = 0; i < newTextWithBreaks.childNodes.length; i++) {
-                        diffService.addCSSClass(newTextWithBreaks.childNodes[i], 'insert');
-                    }
-
-                    var mergedFragment = document.createDocumentFragment(),
-                        el;
-                    while (oldTextWithBreaks.firstChild) {
-                        el = oldTextWithBreaks.firstChild;
-                        oldTextWithBreaks.removeChild(el);
-                        mergedFragment.appendChild(el);
-                    }
-                    while (newTextWithBreaks.firstChild) {
-                        el = newTextWithBreaks.firstChild;
-                        newTextWithBreaks.removeChild(el);
-                        mergedFragment.appendChild(el);
-                    }
-
-                    return diffService._serializeDom(mergedFragment);
+                    var diff = diffService.diff(oldText, this.text, lineLength, this.line_from);
+                    return lineNumberingService.insertLineNumbers(diff, lineLength, highlight, null, this.line_from);
                 },
                 getType: function(original_full_html) {
                     var lineLength = Config.get('motions_line_length').value,

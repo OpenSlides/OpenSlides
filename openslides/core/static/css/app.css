@@ -399,6 +399,14 @@ img {
 .motion-text li {
     margin-left: 30px;
 }
+.motion-text ins {
+    color: green;
+    text-decoration: underline;
+}
+.motion-text del {
+    color: red;
+    text-decoration: line-through;
+}
 .motion-text.line-numbers-outside {
     padding-left: 40px;
     position: relative;

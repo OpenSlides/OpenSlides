@@ -287,4 +287,53 @@ describe('linenumbering', function () {
       expect(calculatedType).toBe(diffService.TYPE_REPLACEMENT);
     });
   });
+
+  describe('the core diff algorithm', function() {
+    it('acts as documented by the official documentation', function () {
+      var before = "The red brown fox jumped over the rolling log.",
+          after = "The brown spotted fox leaped over the rolling log.";
+      var diff = diffService.diff(before, after);
+      expect(diff).toBe('The <del>red </del>brown <ins>spotted </ins>fox <del>jum</del><ins>lea</ins>ped over the rolling log.');
+    });
+
+    it('ignores changing cases in HTML tags', function () {
+      var before = "The <strong>brown</strong> spotted fox jumped over the rolling log.",
+          after = "The <STRONG>brown</STRONG> spotted fox leaped over the rolling log.";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('The <strong>brown</strong> spotted fox <del>jum</del><ins>lea</ins>ped over the rolling log.');
+    });
+
+    it('merges multiple inserts and deletes', function () {
+      var before = "Test1 Test2 Test3 Test4 Test5 Test9",
+          after = "Test1 Test6 Test7 Test8 Test9";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('Test1 <del>Test2 Test3 Test4 Test5 </del><ins>Test6 Test7 Test8 </ins>Test9');
+    });
+
+    it('detects insertions and deletions in a word (1)', function () {
+      var before = "Test1 Test2 Test3 Test4 Test5 Test6 Test7",
+          after = "Test1 Test Test3 Test4addon Test5 Test6 Test7";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('Test1 Test<del>2</del> Test3 Test4<ins>addon</ins> Test5 Test6 Test7');
+    });
+
+    it('detects insertions and deletions in a word (2)', function () {
+      var before = "Test Test",
+          after = "Test Testappend";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('Test Test<ins>append</ins>');
+    });
+
+    it('cannot handle changing CSS-classes', function () {
+      var before = "<p class='p1'>Test1 Test2</p>",
+          after = "<p class='p2'>Test1 Test2</p>";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe("<P class=\"p1 delete\">Test1 Test2</P><P class=\"p2 insert\">Test1 Test2</P>");
+    });
+  });
 });
