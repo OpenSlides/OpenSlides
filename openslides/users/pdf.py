@@ -24,10 +24,7 @@ def users_to_pdf(pdf):
     Create a list of all users as PDF.
     """
     data = [['#', _('Name'), _('Structure level'), _('Group')]]
-    if config['users_sort_users_by_first_name']:
-        sort = 'first_name'
-    else:
-        sort = 'last_name'
+    sort = 'first_name'
     counter = 0
     for user in User.objects.all().order_by(sort):
         counter += 1
@@ -73,10 +70,7 @@ def users_passwords_to_pdf(pdf):
     users_pdf_welcometitle = config["users_pdf_welcometitle"]
     users_pdf_welcometext = config["users_pdf_welcometext"]
 
-    if config['users_sort_users_by_first_name']:
-        sort = 'first_name'
-    else:
-        sort = 'last_name'
+    sort = 'first_name'
     qrcode_size = 2 * cm
     # qrcode for system url
     qrcode_url = QrCodeWidget(users_pdf_url)

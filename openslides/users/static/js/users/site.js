@@ -897,6 +897,17 @@ angular.module('OpenSlidesApp.users.site', [
                 } else {
                     user.is_active = false;
                 }
+                // is present
+                if (user.is_present) {
+                    user.is_present = user.is_present.replace(quotionRe, '$1');
+                    if (user.is_present == '1') {
+                        user.is_present = true;
+                    } else {
+                        user.is_present = false;
+                    }
+                } else {
+                    user.is_present = false;
+                }
                 // is committee
                 if (user.is_committee) {
                     user.is_committee = user.is_committee.replace(quotionRe, '$1');
@@ -1016,12 +1027,12 @@ angular.module('OpenSlidesApp.users.site', [
             var element = document.getElementById('downloadLink');
             var csvRows = [
                 // column header line
-                ['title', 'first_name', 'last_name', 'structure_level', 'number', 'groups', 'comment', 'is_active', 'is_committee'],
+                ['title', 'first_name', 'last_name', 'structure_level', 'number', 'groups', 'comment', 'is_active', 'is_present', 'is_committee'],
                 // example entries
-                ['Dr.', 'Max', 'Mustermann', 'Berlin','1234567890', '"3,4"', 'xyz', '1', ''],
-                ['', 'John', 'Doe', 'Washington','75/99/8-2', '3', 'abc', '1', ''],
-                ['', 'Fred', 'Bloggs', 'London', '', '', '', '', ''],
-                ['', '', 'Executive Board', '', '', '5', '', '', '1'],
+                ['Dr.', 'Max', 'Mustermann', 'Berlin','1234567890', '"3,4"', 'xyz', '1', '1', ''],
+                ['', 'John', 'Doe', 'Washington','75/99/8-2', '3', 'abc', '1', '1', ''],
+                ['', 'Fred', 'Bloggs', 'London', '', '', '', '', '', ''],
+                ['', '', 'Executive Board', '', '', '5', '', '', '', '1'],
 
             ];
             var csvString = csvRows.join("%0A");
@@ -1373,14 +1384,15 @@ angular.module('OpenSlidesApp.users.site', [
         gettext('Can manage users');
 
         // config strings in users/config_variables.py
-        gettext('[Place for your welcome and help text.]');
-        gettext('Sort users by first name');
-        gettext('Disable for sorting by last name');
+        gettext('General');
+        gettext('Sort name of participants by');
         gettext('Participants');
-        gettext('Sorting');
+        gettext('First name');
+        gettext('Last name');
+        gettext('PDF');
         gettext('Welcome to OpenSlides');
         gettext('Title for access data and welcome PDF');
-        gettext('PDF');
+        gettext('[Place for your welcome and help text.]');
         gettext('Help text for access data and welcome PDF');
         gettext('System URL');
         gettext('Used for QRCode in PDF of access data.');

@@ -97,10 +97,9 @@ def user_name_helper(users):
     then the str(users) is returned.
     """
     if isinstance(users, list) or isinstance(users, QuerySet):
-        user_string = " ".join(
-            user.get_short_name(sort_by_first_name=True) for user in users)
+        user_string = " ".join(str(user) for user in users)
     elif isinstance(users, get_user_model()):
-        user_string = users.get_short_name(sort_by_first_name=True)
+        user_string = str(users)
     else:
         user_string = str(users)
     return user_string

@@ -13,7 +13,6 @@ from django.db.models import Q
 
 from openslides.utils.search import user_name_helper
 
-from ..core.config import config
 from ..utils.models import RESTModelMixin
 from .access_permissions import UserAccessPermissions
 
@@ -175,44 +174,27 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         ordering = ('last_name', 'first_name', 'username', )
 
     def __str__(self):
-        return self.get_full_name()
-
-    def get_full_name(self):
-        """
-        Returns a long form of the name.
-
-        E. g.: * Dr. Max Mustermann (Villingen)
-               * Professor Dr. Enders, Christoph (Leipzig)
-        """
-        structure = '(%s)' % self.structure_level if self.structure_level else ''
-        return ' '.join((self.title, self.get_short_name(), structure)).strip()
-
-    def get_short_name(self, sort_by_first_name=None):
-        """
-        Returns only the name of the user.
-
-        E. g.: * Max Mustermann
-               * Enders, Christoph
-        """
         # Strip white spaces from the name parts
         first_name = self.first_name.strip()
         last_name = self.last_name.strip()
 
         # The user has a last_name and a first_name
         if first_name and last_name:
-            if sort_by_first_name is None:
-                sort_by_first_name = config['users_sort_users_by_first_name']
-            if sort_by_first_name:
-                name = ' '.join((first_name, last_name))
-            else:
-                name = ', '.join((last_name, first_name))
-
+            name = ' '.join((self.first_name, self.last_name))
         # The user has only a first_name or a last_name or no name
         else:
             name = first_name or last_name or self.username
 
         # Return result
         return name
+
+    # TODO: remove this function after PR#2476 is merged. (see Issue#2594)
+    def get_full_name(self):
+        return ''
+
+    # TODO: remove this function after PR#2476 is merged. (see Issue#2594)
+    def get_short_name(self):
+        return ''
 
     def get_search_index_string(self):
         """
