@@ -188,14 +188,6 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         # Return result
         return name
 
-    # TODO: remove this function after PR#2476 is merged. (see Issue#2594)
-    def get_full_name(self):
-        return ''
-
-    # TODO: remove this function after PR#2476 is merged. (see Issue#2594)
-    def get_short_name(self):
-        return ''
-
     def get_search_index_string(self):
         """
         Returns a string that can be indexed for the search.
