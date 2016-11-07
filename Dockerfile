@@ -20,6 +20,10 @@ ADD requirements_production.txt /app/requirements_production.txt
 RUN pip install -r /app/requirements_production.txt
 RUN pip install daphne psycopg2 asgi_redis
 
+## Clean up
+RUN apt-get remove -y python3-pip wget
+RUN rm -rf /var/lib/apt/lists/*
+
 # BUILD APP
 ADD . /app
 
