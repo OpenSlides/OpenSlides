@@ -29,7 +29,7 @@ msgstr ""
 msgid "--- Set phase ---"
 msgstr ""
 
-#: core/static/js/core/site.js:1467
+#: core/static/js/core/site.js:1435
 msgid "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based presentation and assembly system for visualizing and controlling agenda, motions and elections of an assembly."
 msgstr ""
 
@@ -120,7 +120,7 @@ msgstr ""
 #: agenda/static/js/agenda/pdf.js:15
 #: agenda/static/js/agenda/site.js:18
 #: agenda/static/js/agenda/site.js:319
-#: agenda/static/js/agenda/site.js:611
+#: agenda/static/js/agenda/site.js:614
 #: agenda/static/templates/agenda/item-detail.html:6
 #: agenda/static/templates/agenda/item-list.html:32
 #: agenda/static/templates/agenda/item-list.html:58
@@ -141,12 +141,12 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:832
+#: assignments/static/js/assignments/site.js:833
 #: motions/static/js/motions/site.js:1895
 msgid "All casted ballots"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:831
+#: assignments/static/js/assignments/site.js:832
 #: motions/static/js/motions/site.js:1894
 msgid "All valid ballots"
 msgstr ""
@@ -155,7 +155,7 @@ msgstr ""
 msgid "All your changes are saved immediately. Changes you make are only effective once you (or the users concerned) reload the page."
 msgstr ""
 
-#: core/static/js/core/site.js:1482
+#: core/static/js/core/site.js:1450
 msgid "Allow access for anonymous guest users"
 msgstr ""
 
@@ -188,7 +188,7 @@ msgstr ""
 msgid "Apply title and text for new amendments"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:614
+#: agenda/static/js/agenda/site.js:617
 msgid "Arabic"
 msgstr ""
 
@@ -316,12 +316,12 @@ msgstr ""
 msgid "Back to overview"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:218
+#: users/static/templates/users/user-import.html:222
 #: users/static/templates/users/user-import.html:36
 msgid "Back to users overview"
 msgstr ""
 
-#: core/static/js/core/site.js:1490
+#: core/static/js/core/site.js:1458
 msgid "Background color of projector header and footer"
 msgstr ""
 
@@ -341,7 +341,7 @@ msgstr ""
 msgid "Begin next speech"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:616
+#: agenda/static/js/agenda/site.js:619
 msgid "Begin of event"
 msgstr ""
 
@@ -369,51 +369,51 @@ msgstr ""
 msgid "Calculation impossible"
 msgstr ""
 
-#: users/static/js/users/site.js:1356
+#: users/static/js/users/site.js:1377
 msgid "Can create motions"
 msgstr ""
 
-#: users/static/js/users/site.js:1333
+#: users/static/js/users/site.js:1354
 msgid "Can manage agenda"
 msgstr ""
 
-#: users/static/js/users/site.js:1346
+#: users/static/js/users/site.js:1367
 msgid "Can manage configuration"
 msgstr ""
 
-#: users/static/js/users/site.js:1340
+#: users/static/js/users/site.js:1361
 msgid "Can manage elections"
 msgstr ""
 
-#: users/static/js/users/site.js:1352
+#: users/static/js/users/site.js:1373
 msgid "Can manage files"
 msgstr ""
 
-#: users/static/js/users/site.js:1358
+#: users/static/js/users/site.js:1379
 msgid "Can manage motions"
 msgstr ""
 
-#: users/static/js/users/site.js:1345
+#: users/static/js/users/site.js:1366
 msgid "Can manage tags"
 msgstr ""
 
-#: users/static/js/users/site.js:1348
+#: users/static/js/users/site.js:1369
 msgid "Can manage the chat"
 msgstr ""
 
-#: users/static/js/users/site.js:1343
+#: users/static/js/users/site.js:1364
 msgid "Can manage the projector"
 msgstr ""
 
-#: users/static/js/users/site.js:1363
+#: users/static/js/users/site.js:1384
 msgid "Can manage users"
 msgstr ""
 
-#: users/static/js/users/site.js:1338
+#: users/static/js/users/site.js:1359
 msgid "Can nominate another participant"
 msgstr ""
 
-#: users/static/js/users/site.js:1339
+#: users/static/js/users/site.js:1360
 msgid "Can nominate oneself"
 msgstr ""
 
@@ -421,63 +421,63 @@ msgstr ""
 msgid "Can not open the projector."
 msgstr ""
 
-#: users/static/js/users/site.js:1335
+#: users/static/js/users/site.js:1356
 msgid "Can put oneself on the list of speakers"
 msgstr ""
 
-#: users/static/js/users/site.js:1332
+#: users/static/js/users/site.js:1353
 msgid "Can see agenda"
 msgstr ""
 
-#: users/static/js/users/site.js:1359
+#: users/static/js/users/site.js:1380
 msgid "Can see and manage comments"
 msgstr ""
 
-#: users/static/js/users/site.js:1337
+#: users/static/js/users/site.js:1358
 msgid "Can see elections"
 msgstr ""
 
-#: users/static/js/users/site.js:1362
+#: users/static/js/users/site.js:1383
 msgid "Can see extra data of users (e.g. present and comment)"
 msgstr ""
 
-#: users/static/js/users/site.js:1334
+#: users/static/js/users/site.js:1355
 msgid "Can see hidden items and time scheduling of agenda"
 msgstr ""
 
-#: users/static/js/users/site.js:1355
+#: users/static/js/users/site.js:1376
 msgid "Can see motions"
 msgstr ""
 
-#: users/static/js/users/site.js:1361
+#: users/static/js/users/site.js:1382
 msgid "Can see names of users"
 msgstr ""
 
-#: users/static/js/users/site.js:1353
+#: users/static/js/users/site.js:1374
 msgid "Can see private files"
 msgstr ""
 
-#: users/static/js/users/site.js:1344
+#: users/static/js/users/site.js:1365
 msgid "Can see the front page"
 msgstr ""
 
-#: users/static/js/users/site.js:1350
+#: users/static/js/users/site.js:1371
 msgid "Can see the list of files"
 msgstr ""
 
-#: users/static/js/users/site.js:1342
+#: users/static/js/users/site.js:1363
 msgid "Can see the projector"
 msgstr ""
 
-#: users/static/js/users/site.js:1357
+#: users/static/js/users/site.js:1378
 msgid "Can support motions"
 msgstr ""
 
-#: users/static/js/users/site.js:1351
+#: users/static/js/users/site.js:1372
 msgid "Can upload files"
 msgstr ""
 
-#: users/static/js/users/site.js:1347
+#: users/static/js/users/site.js:1368
 msgid "Can use the chat"
 msgstr ""
 
@@ -572,7 +572,7 @@ msgstr ""
 
 #: motions/static/templates/motions/motion-import.html:129
 #: topics/static/templates/topics/topic-import.html:133
-#: users/static/templates/users/user-import.html:208
+#: users/static/templates/users/user-import.html:212
 msgid "Clear preview"
 msgstr ""
 
@@ -605,7 +605,7 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
-#: users/static/js/users/base.js:205
+#: users/static/js/users/base.js:219
 #: users/static/templates/users/user-import.html:75
 msgid "Committees"
 msgstr ""
@@ -636,7 +636,7 @@ msgstr ""
 msgid "Countdowns"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:622
+#: agenda/static/js/agenda/site.js:625
 msgid "Couple countdown with the list of speakers"
 msgstr ""
 
@@ -655,7 +655,7 @@ msgstr ""
 msgid "Current list of speakers"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:838
+#: assignments/static/js/assignments/site.js:839
 #: motions/static/js/motions/site.js:1907
 msgid "Custom number of ballot papers"
 msgstr ""
@@ -670,7 +670,7 @@ msgstr ""
 #: agenda/static/templates/agenda/item-list.html:52
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:225
 #: projector-button.html:23
-#: users/static/js/users/base.js:202
+#: users/static/js/users/base.js:216
 msgid "Default"
 msgstr ""
 
@@ -690,7 +690,7 @@ msgstr ""
 msgid "Default method to check whether a motion has reached the required majority."
 msgstr ""
 
-#: users/static/js/users/base.js:203
+#: users/static/js/users/base.js:217
 #: users/static/templates/users/user-import.html:73
 msgid "Delegates"
 msgstr ""
@@ -761,15 +761,11 @@ msgstr ""
 msgid "Diff version"
 msgstr ""
 
-#: users/static/js/users/site.js:1368
-msgid "Disable for sorting by last name"
-msgstr ""
-
 #: motions/static/js/motions/site.js:1902
 msgid "Disabled"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:833
+#: assignments/static/js/assignments/site.js:834
 #: motions/static/js/motions/site.js:1896
 msgid "Disabled (no percents)"
 msgstr ""
@@ -946,7 +942,7 @@ msgstr ""
 msgid "English"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:621
+#: agenda/static/js/agenda/site.js:624
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 
@@ -954,7 +950,7 @@ msgstr ""
 msgid "Enter votes"
 msgstr ""
 
-#: users/static/js/users/site.js:843
+#: users/static/js/users/site.js:853
 msgid "Error: First or last name is required."
 msgstr ""
 
@@ -975,23 +971,23 @@ msgstr ""
 msgid "Estimated end:"
 msgstr ""
 
-#: core/static/js/core/site.js:1472
+#: core/static/js/core/site.js:1440
 msgid "Event"
 msgstr ""
 
-#: core/static/js/core/site.js:1474
+#: core/static/js/core/site.js:1442
 msgid "Event date"
 msgstr ""
 
-#: core/static/js/core/site.js:1475
+#: core/static/js/core/site.js:1443
 msgid "Event location"
 msgstr ""
 
-#: core/static/js/core/site.js:1466
+#: core/static/js/core/site.js:1434
 msgid "Event name"
 msgstr ""
 
-#: core/static/js/core/site.js:1476
+#: core/static/js/core/site.js:1444
 msgid "Event organizer"
 msgstr ""
 
@@ -1030,10 +1026,11 @@ msgstr ""
 msgid "Filter ..."
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:844
+#: assignments/static/js/assignments/site.js:845
 msgid "Finished"
 msgstr ""
 
+#: users/static/js/users/site.js:1390
 #: users/static/js/users/site.js:315
 #: users/static/templates/users/user-detail-profile.html:26
 #: users/static/templates/users/user-import.html:90
@@ -1044,16 +1041,16 @@ msgstr ""
 msgid "Follow recommendations for all motions"
 msgstr ""
 
-#: core/static/js/core/site.js:1491
+#: core/static/js/core/site.js:1459
 msgid "Font color of projector header and footer"
 msgstr ""
 
-#: core/static/js/core/site.js:1492
+#: core/static/js/core/site.js:1460
 msgid "Font color of projector headline"
 msgstr ""
 
 #: assignments/static/js/assignments/site.js:826
-msgid "For Yes/No/Abstain and Yes/No the 100 % base depends on the election method: If there are more candidates than open posts, the sum of all votes of all candidates is 100 %. Otherwise the sum of all votes per candidate is 100 %."
+msgid "For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base depends on the election method: If there is only one option per candidate, the sum of all votes of all candidates is 100 %. Otherwise for each candidate the sum of all votes is 100 %."
 msgstr ""
 
 #: core/static/js/core/base.js:120
@@ -1064,17 +1061,18 @@ msgstr ""
 msgid "From Line"
 msgstr ""
 
-#: core/static/js/core/site.js:1480
+#: core/static/js/core/site.js:1448
 msgid "Front page text"
 msgstr ""
 
-#: core/static/js/core/site.js:1478
+#: core/static/js/core/site.js:1446
 msgid "Front page title"
 msgstr ""
 
-#: core/static/js/core/site.js:1471
+#: core/static/js/core/site.js:1439
 #: motions/static/js/motions/site.js:1848
-#: users/static/js/users/site.js:1083
+#: users/static/js/users/site.js:1104
+#: users/static/js/users/site.js:1387
 msgid "General"
 msgstr ""
 
@@ -1102,7 +1100,7 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
-#: users/static/js/users/site.js:1374
+#: users/static/js/users/site.js:1396
 msgid "Help text for access data and welcome PDF"
 msgstr ""
 
@@ -1181,7 +1179,7 @@ msgstr ""
 msgid "Import {{ motions.length - motionsFailed.length }} motions"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:211
+#: users/static/templates/users/user-import.html:215
 msgid "Import {{ usersWillBeImported }} participants"
 msgstr ""
 
@@ -1189,6 +1187,7 @@ msgstr ""
 msgid "Include all sub items"
 msgstr ""
 
+#: users/static/js/users/pdf.js:188
 #: users/static/js/users/site.js:354
 #: users/static/templates/users/user-change-password.html:39
 msgid "Initial password"
@@ -1210,7 +1209,7 @@ msgstr ""
 msgid "Inline editing"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:617
+#: agenda/static/js/agenda/site.js:620
 msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr ""
 
@@ -1237,7 +1236,7 @@ msgstr ""
 msgid "Invalid ballots"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:612
+#: agenda/static/js/agenda/site.js:615
 msgid "Invalid input."
 msgstr ""
 
@@ -1251,7 +1250,7 @@ msgstr ""
 msgid "Is active"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:97
+#: users/static/templates/users/user-import.html:98
 msgid "Is committee"
 msgstr ""
 
@@ -1264,6 +1263,7 @@ msgid "Is inactive"
 msgstr ""
 
 #: users/static/js/users/site.js:388
+#: users/static/templates/users/user-import.html:97
 #: users/static/templates/users/user-list.html:80
 msgid "Is present"
 msgstr ""
@@ -1283,6 +1283,7 @@ msgstr ""
 msgid "Last modified"
 msgstr ""
 
+#: users/static/js/users/site.js:1391
 #: users/static/js/users/site.js:322
 #: users/static/templates/users/user-detail-profile.html:30
 #: users/static/templates/users/user-import.html:91
@@ -1293,7 +1294,7 @@ msgstr ""
 msgid "Last speakers"
 msgstr ""
 
-#: core/static/js/core/site.js:1477
+#: core/static/js/core/site.js:1445
 #: index.html:177
 #: legalnotice.html:3
 msgid "Legal notice"
@@ -1313,17 +1314,18 @@ msgstr ""
 msgid "Line numbering"
 msgstr ""
 
+#: users/static/js/users/site.js:570
 #: users/static/templates/users/user-list.html:32
 msgid "List of access data"
 msgstr ""
 
 #: users/static/js/users/pdf.js:15
-#: users/static/js/users/site.js:561
+#: users/static/js/users/site.js:563
 #: users/static/templates/users/user-list.html:27
 msgid "List of participants"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:619
+#: agenda/static/js/agenda/site.js:622
 #: agenda/static/templates/agenda/item-detail.html:21
 #: agenda/static/templates/agenda/item-detail.html:47
 #: agenda/static/templates/agenda/item-list.html:221
@@ -1338,7 +1340,7 @@ msgid "List of speakers"
 msgstr ""
 
 #: agenda/static/js/agenda/base.js:358
-#: core/static/js/core/site.js:1494
+#: core/static/js/core/site.js:1462
 msgid "List of speakers overlay"
 msgstr ""
 
@@ -1346,7 +1348,7 @@ msgstr ""
 msgid "Live view"
 msgstr ""
 
-#: core/static/js/core/site.js:497
+#: core/static/js/core/site.js:465
 msgid "Loading ..."
 msgstr ""
 
@@ -1453,7 +1455,7 @@ msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:8
 #: assignments/static/templates/assignments/assignment-list.html:6
-#: core/static/js/core/site.js:630
+#: core/static/js/core/site.js:598
 #: core/static/templates/core/manage-projectors.html:8
 #: core/static/templates/core/tag-list.html:10
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:6
@@ -1567,7 +1569,7 @@ msgstr ""
 msgid "No decision"
 msgstr ""
 
-#: users/static/js/users/site.js:1385
+#: users/static/js/users/site.js:1407
 msgid "No encryption"
 msgstr ""
 
@@ -1602,22 +1604,22 @@ msgstr ""
 msgid "Number of (minimum) required supporters for a motion"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:835
+#: assignments/static/js/assignments/site.js:836
 #: motions/static/js/motions/site.js:1904
 msgid "Number of all delegates"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:836
+#: assignments/static/js/assignments/site.js:837
 #: motions/static/js/motions/site.js:1905
 msgid "Number of all participants"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:834
+#: assignments/static/js/assignments/site.js:835
 #: motions/static/js/motions/site.js:1903
 msgid "Number of ballot papers (selection)"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:618
+#: agenda/static/js/agenda/site.js:621
 msgid "Number of last speakers to be shown on the projector"
 msgstr ""
 
@@ -1640,11 +1642,11 @@ msgstr ""
 msgid "Numbering"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:609
+#: agenda/static/js/agenda/site.js:612
 msgid "Numbering prefix for agenda items"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:613
+#: agenda/static/js/agenda/site.js:616
 msgid "Numeral system for agenda items"
 msgstr ""
 
@@ -1678,6 +1680,10 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+#: users/static/js/users/pdf.js:176
+msgid "OpenSlides access data"
+msgstr ""
+
 #: motions/static/js/motions/site.js:543
 #: motions/static/templates/motions/motion-detail.html:190
 #: motions/static/templates/motions/motion-import.html:61
@@ -1698,7 +1704,7 @@ msgstr ""
 #: assignments/static/templates/assignments/assignment-detail.html:26
 #: assignments/static/templates/assignments/assignment-list.html:14
 #: motions/static/templates/motions/motion-detail.html:26
-#: users/static/js/users/site.js:1373
+#: users/static/js/users/site.js:1392
 #: users/static/templates/users/user-list.html:20
 msgid "PDF"
 msgstr ""
@@ -1726,9 +1732,9 @@ msgid "Participant number"
 msgstr ""
 
 #: search.html:29
-#: users/static/js/users/base.js:77
 #: users/static/js/users/base.js:78
-#: users/static/js/users/site.js:1369
+#: users/static/js/users/base.js:79
+#: users/static/js/users/site.js:1389
 #: users/static/js/users/site.js:18
 #: users/static/templates/users/user-list.html:37
 msgid "Participants"
@@ -1799,11 +1805,11 @@ msgstr ""
 msgid "Preamble text for PDF and DOCX documents (all motions)"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:840
+#: assignments/static/js/assignments/site.js:841
 msgid "Preamble text for PDF document (all elections)"
 msgstr ""
 
-#: core/static/js/core/site.js:1493
+#: core/static/js/core/site.js:1461
 msgid "Predefined seconds of new countdowns"
 msgstr ""
 
@@ -1824,7 +1830,7 @@ msgstr ""
 msgid "Present"
 msgstr ""
 
-#: core/static/js/core/site.js:1465
+#: core/static/js/core/site.js:1433
 msgid "Presentation and assembly system"
 msgstr ""
 
@@ -1881,12 +1887,12 @@ msgstr ""
 #: agenda/static/templates/agenda/item-detail.html:14
 #: agenda/static/templates/agenda/item-list.html:169
 #: agenda/static/templates/agenda/item-list.html:24
-#: core/static/js/core/site.js:1198
-#: core/static/js/core/site.js:1488
+#: core/static/js/core/site.js:1166
+#: core/static/js/core/site.js:1456
 #: index.html:188
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:206
 #: projector-button.html:2
-#: users/static/js/users/site.js:1081
+#: users/static/js/users/site.js:1102
 msgid "Projector"
 msgstr ""
 
@@ -2056,7 +2062,7 @@ msgstr ""
 msgid "Resolution"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:615
+#: agenda/static/js/agenda/site.js:618
 msgid "Roman"
 msgstr ""
 
@@ -2108,7 +2114,7 @@ msgstr ""
 msgid "Search results"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:842
+#: assignments/static/js/assignments/site.js:843
 msgid "Searching for candidates"
 msgstr ""
 
@@ -2195,7 +2201,7 @@ msgstr ""
 msgid "Set a motion block"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:105
+#: users/static/templates/users/user-import.html:106
 msgid "Set global action"
 msgstr ""
 
@@ -2208,7 +2214,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: core/static/js/core/site.js:1473
+#: core/static/js/core/site.js:1441
 msgid "Short description of event"
 msgstr ""
 
@@ -2245,19 +2251,19 @@ msgstr ""
 msgid "Show internal items"
 msgstr ""
 
-#: core/static/js/core/site.js:1484
+#: core/static/js/core/site.js:1452
 msgid "Show logo on projector"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:620
+#: agenda/static/js/agenda/site.js:623
 msgid "Show orange countdown in the last x seconds of speaking time"
 msgstr ""
 
-#: core/static/js/core/site.js:1483
+#: core/static/js/core/site.js:1451
 msgid "Show this text on the login page."
 msgstr ""
 
-#: core/static/js/core/site.js:1489
+#: core/static/js/core/site.js:1457
 msgid "Show title and description of event on projector"
 msgstr ""
 
@@ -2291,12 +2297,8 @@ msgstr ""
 msgid "Sort agenda"
 msgstr ""
 
-#: users/static/js/users/site.js:1367
-msgid "Sort users by first name"
-msgstr ""
-
-#: users/static/js/users/site.js:1370
-msgid "Sorting"
+#: users/static/js/users/site.js:1388
+msgid "Sort name of participants by"
 msgstr ""
 
 #: core/static/js/core/base.js:121
@@ -2308,7 +2310,7 @@ msgstr ""
 msgid "Special values"
 msgstr ""
 
-#: users/static/js/users/base.js:204
+#: users/static/js/users/base.js:218
 #: users/static/templates/users/user-import.html:74
 msgid "Staff"
 msgstr ""
@@ -2392,7 +2394,7 @@ msgstr ""
 msgid "Supporters"
 msgstr ""
 
-#: users/static/js/users/site.js:1375
+#: users/static/js/users/site.js:1397
 msgid "System URL"
 msgstr ""
 
@@ -2436,7 +2438,7 @@ msgid "The 100 % base of a voting result consists of"
 msgstr ""
 
 #: assignments/static/js/assignments/site.js:825
-msgid "The 100 % base of an election result consists of"
+msgid "The 100-%-base of an election result consists of"
 msgstr ""
 
 #: motions/static/js/motions/site.js:1855
@@ -2455,7 +2457,7 @@ msgstr ""
 msgid "The text has been changed."
 msgstr ""
 
-#: users/static/js/users/site.js:910
+#: users/static/js/users/site.js:931
 msgid "There are more than one duplicates of this user!"
 msgstr ""
 
@@ -2463,7 +2465,7 @@ msgstr ""
 msgid "This is the last active version."
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:610
+#: agenda/static/js/agenda/site.js:613
 msgid "This prefix will be set if you run the automatic agenda numbering."
 msgstr ""
 
@@ -2497,11 +2499,11 @@ msgstr ""
 msgid "Title for PDF and DOCX documents (all motions)"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:839
+#: assignments/static/js/assignments/site.js:840
 msgid "Title for PDF document (all elections)"
 msgstr ""
 
-#: users/static/js/users/site.js:1372
+#: users/static/js/users/site.js:1394
 msgid "Title for access data and welcome PDF"
 msgstr ""
 
@@ -2554,22 +2556,23 @@ msgstr ""
 msgid "Use an empty value to disable the recommendation system."
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:837
+#: assignments/static/js/assignments/site.js:838
 #: motions/static/js/motions/site.js:1906
 msgid "Use the following custom number"
 msgstr ""
 
-#: users/static/js/users/site.js:1376
+#: users/static/js/users/site.js:1398
 msgid "Used for QRCode in PDF of access data."
 msgstr ""
 
-#: users/static/js/users/site.js:1378
-#: users/static/js/users/site.js:1380
-#: users/static/js/users/site.js:1382
+#: users/static/js/users/site.js:1400
+#: users/static/js/users/site.js:1402
+#: users/static/js/users/site.js:1404
 msgid "Used for WLAN QRCode in PDF of access data."
 msgstr ""
 
 #: core/static/templates/core/login-form.html:12
+#: users/static/js/users/pdf.js:180
 #: users/static/js/users/site.js:299
 #: users/static/templates/users/user-detail-profile.html:13
 #: users/static/templates/users/user-detail.html:45
@@ -2620,7 +2623,7 @@ msgstr ""
 msgid "Votes"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:843
+#: assignments/static/js/assignments/site.js:844
 msgid "Voting"
 msgstr ""
 
@@ -2634,28 +2637,35 @@ msgstr ""
 msgid "Voting result"
 msgstr ""
 
-#: users/static/js/users/site.js:1383
+#: users/static/js/users/site.js:1405
 msgid "WEP"
 msgstr ""
 
-#: users/static/js/users/site.js:1381
+#: users/static/js/users/pdf.js:144
+msgid "WLAN access data"
+msgstr ""
+
+#: users/static/js/users/pdf.js:164
+#: users/static/js/users/site.js:1403
 msgid "WLAN encryption"
 msgstr ""
 
-#: users/static/js/users/site.js:1377
+#: users/static/js/users/pdf.js:148
+#: users/static/js/users/site.js:1399
 msgid "WLAN name (SSID)"
 msgstr ""
 
-#: users/static/js/users/site.js:1379
+#: users/static/js/users/pdf.js:156
+#: users/static/js/users/site.js:1401
 msgid "WLAN password"
 msgstr ""
 
-#: users/static/js/users/site.js:1384
+#: users/static/js/users/site.js:1406
 msgid "WPA/WPA2"
 msgstr ""
 
-#: core/static/js/core/site.js:1479
-#: users/static/js/users/site.js:1371
+#: core/static/js/core/site.js:1447
+#: users/static/js/users/site.js:1393
 msgid "Welcome to OpenSlides"
 msgstr ""
 
@@ -2694,7 +2704,7 @@ msgstr ""
 msgid "Yes/No"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:830
+#: assignments/static/js/assignments/site.js:831
 #: assignments/static/templates/assignments/assignment-detail.html:186
 msgid "Yes/No per candidate"
 msgstr ""
@@ -2703,7 +2713,7 @@ msgstr ""
 msgid "Yes/No/Abstain"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:829
+#: assignments/static/js/assignments/site.js:830
 #: assignments/static/templates/assignments/assignment-detail.html:185
 msgid "Yes/No/Abstain per candidate"
 msgstr ""
@@ -2712,7 +2722,7 @@ msgstr ""
 msgid "You are not allowed to lock yourself out of the configuration!"
 msgstr ""
 
-#: core/static/js/core/site.js:1485
+#: core/static/js/core/site.js:1453
 msgid "You can replace the logo. Just copy a file to \"static/img/logo-projector.png\" in your OpenSlides data path."
 msgstr ""
 
@@ -2728,15 +2738,15 @@ msgstr ""
 msgid "Zoom out"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:623
+#: agenda/static/js/agenda/site.js:626
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
 msgstr ""
 
-#: users/static/js/users/site.js:1366
+#: users/static/js/users/site.js:1395
 msgid "[Place for your welcome and help text.]"
 msgstr ""
 
-#: core/static/js/core/site.js:1481
+#: core/static/js/core/site.js:1449
 msgid "[Space for your welcome text.]"
 msgstr ""
 
@@ -2749,7 +2759,7 @@ msgstr ""
 msgid "adjourned"
 msgstr ""
 
-#: users/static/js/users/site.js:929
+#: users/static/js/users/site.js:950
 msgid "already exists."
 msgstr ""
 
@@ -2769,7 +2779,7 @@ msgstr ""
 msgid "close"
 msgstr ""
 
-#: users/static/js/users/site.js:819
+#: users/static/js/users/site.js:829
 msgid "create duplicate"
 msgstr ""
 
@@ -2777,11 +2787,11 @@ msgstr ""
 msgid "date"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:100
+#: users/static/templates/users/user-import.html:101
 msgid "duplicate"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:101
+#: users/static/templates/users/user-import.html:102
 msgid "duplicates"
 msgstr ""
 
@@ -2831,7 +2841,7 @@ msgstr ""
 msgid "items"
 msgstr ""
 
-#: users/static/js/users/site.js:817
+#: users/static/js/users/site.js:827
 msgid "keep original"
 msgstr ""
 
@@ -2884,7 +2894,7 @@ msgstr ""
 msgid "now"
 msgstr ""
 
-#: users/static/js/users/site.js:925
+#: users/static/js/users/site.js:946
 msgid "number"
 msgstr ""
 
@@ -2896,7 +2906,7 @@ msgstr ""
 msgid "outside"
 msgstr ""
 
-#: users/static/js/users/site.js:818
+#: users/static/js/users/site.js:828
 msgid "override new"
 msgstr ""
 
@@ -2904,15 +2914,15 @@ msgstr ""
 msgid "participants"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:204
+#: users/static/templates/users/user-import.html:208
 msgid "participants were successfully imported."
 msgstr ""
 
-#: users/static/templates/users/user-import.html:197
+#: users/static/templates/users/user-import.html:201
 msgid "participants will be imported."
 msgstr ""
 
-#: users/static/templates/users/user-import.html:192
+#: users/static/templates/users/user-import.html:196
 msgid "participants will be not imported."
 msgstr ""
 
@@ -2949,7 +2959,7 @@ msgstr ""
 msgid "speakers"
 msgstr ""
 
-#: users/static/js/users/site.js:927
+#: users/static/js/users/site.js:948
 msgid "structure level"
 msgstr ""
 
@@ -2985,7 +2995,7 @@ msgstr ""
 msgid "undocumented"
 msgstr ""
 
-#: users/static/js/users/site.js:928
+#: users/static/js/users/site.js:949
 msgid "username"
 msgstr ""
 
