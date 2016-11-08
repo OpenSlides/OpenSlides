@@ -358,9 +358,9 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
             verboseName: gettext('List of speakers overlay'),
             project: function (projectorId, overlay) {
                 var isProjectedId = this.isProjected(overlay);
-                if (isProjectedId > 0) {
+                if (isProjectedId.length > 0) {
                     // Deactivate
-                    var projector = Projector.get(isProjectedId);
+                    var projector = Projector.get(isProjectedId[0]);
                     var uuid;
                     _.forEach(projector.elements, function (element) {
                         if (element.name == 'agenda/current-list-of-speakers-overlay') {

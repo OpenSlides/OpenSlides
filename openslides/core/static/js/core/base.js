@@ -390,12 +390,12 @@ angular.module('OpenSlidesApp.core', [
         var BaseModel = function() {};
         BaseModel.prototype.project = function(projectorId) {
             // if this object is already projected on projectorId, delete this element from this projector
-            var isProjectedId = this.isProjected();
-            if (isProjectedId > 0) {
-                $http.post('/rest/core/projector/' + isProjectedId + '/clear_elements/');
+            var isProjectedIds = this.isProjected();
+            if (isProjectedIds.length > 0) {
+                $http.post('/rest/core/projector/' + isProjectedIds[0] + '/clear_elements/');
             }
             // if it was the same projector before, just delete it but not show again
-            if (isProjectedId != projectorId) {
+            if (isProjectedIds[0] != projectorId) {
                 return $http.post(
                     '/rest/core/projector/' + projectorId + '/prune_elements/',
                     [{name: this.getResourceName(), id: this.id}]
