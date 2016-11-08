@@ -101,7 +101,7 @@ angular.module('OpenSlidesApp.users', [])
                         firstName = _.trim(this.first_name),
                         lastName = _.trim(this.last_name),
                         name = '';
-                    if (Config.get('users_sort_by').value == 'lastName') {
+                    if (Config.get('users_sort_by') && Config.get('users_sort_by').value == 'lastName') {
                         if (lastName && firstName) {
                             name += [lastName, firstName].join(', ');
                         } else {
