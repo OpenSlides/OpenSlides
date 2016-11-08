@@ -13,32 +13,30 @@
         <translate>Manage list</translate>
       </button>
       <!-- project -->
-      <div class="form-inline button">
-        <div os-perms="core.can_manage_projector" class="btn-group" uib-dropdown
-          uib-tooltip="{{ 'Projector' | translate }} {{ isCurrentLoSProjected()[0] || '' }}"
-          tooltip-enable="isCurrentLoSProjected().length">
-          <button type="button" class="btn btn-default btn-sm"
-              title="{{ 'Project current list of speakers' | translate }}"
-              ng-click="projectCurrentLoS(defaultProjectorId)"
-              ng-class="{ 'btn-primary': isCurrentLoSProjected().length && inArray(isCurrentLoSProjected(), defaultProjectorId) }">
-            <i class="fa fa-video-camera"></i>
-            <translate>Current list of speakers</translate>
-          </button>
-          <button type="button" class="btn btn-default btn-sm" uib-dropdown-toggle
-              ng-class="{ 'btn-primary': isCurrentLoSProjected().length && !inArray(isCurrentLoSProjected(), defaultProjectorId) }">
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="split-button">
-            <li role="menuitem" ng-repeat="projector in projectors">
-              <a href="" ng-click="projectCurrentLoS(projector.id)"
-                ng-class="{ 'projected': inArray(isCurrentLoSProjected(), projector.id) }">
-                <i class="fa fa-video-camera" ng-show="inArray(isCurrentLoSProjected(), projector.id) "></i>
-                {{ projector.name }}
-                <span ng-if="projector.id == defaultProjectorId">(<translate>Default</translate>)</span>
-              </a>
-            </li>
-          </ul>
-        </div>
+      <div os-perms="core.can_manage_projector" class="btn-group" uib-dropdown
+        uib-tooltip="{{ 'Projector' | translate }} {{ isCurrentLoSProjected()[0] || '' }}"
+        tooltip-enable="isCurrentLoSProjected().length">
+        <button type="button" class="btn btn-default btn-sm"
+            title="{{ 'Project current list of speakers' | translate }}"
+            ng-click="projectCurrentLoS(defaultProjectorId)"
+            ng-class="{ 'btn-primary': isCurrentLoSProjected().length && inArray(isCurrentLoSProjected(), defaultProjectorId) }">
+          <i class="fa fa-video-camera"></i>
+          <translate>Current list of speakers</translate>
+        </button>
+        <button type="button" class="btn btn-default btn-sm" uib-dropdown-toggle
+            ng-class="{ 'btn-primary': isCurrentLoSProjected().length && !inArray(isCurrentLoSProjected(), defaultProjectorId) }">
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="split-button">
+          <li role="menuitem" ng-repeat="projector in projectors">
+            <a href="" ng-click="projectCurrentLoS(projector.id)"
+              ng-class="{ 'projected': inArray(isCurrentLoSProjected(), projector.id) }">
+              <i class="fa fa-video-camera" ng-show="inArray(isCurrentLoSProjected(), projector.id) "></i>
+              {{ projector.name }}
+              <span ng-if="projector.id == defaultProjectorId">(<translate>Default</translate>)</span>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
     <h1 translate>Current list of speakers</h1>
