@@ -19,7 +19,7 @@ from django.utils.translation import ugettext as _
 
 from .. import __version__ as version
 from ..utils import views as utils_views
-from ..utils.autoupdate import inform_deleted_data
+from ..utils.autoupdate import inform_changed_data, inform_deleted_data
 from ..utils.collection import Collection, CollectionElement
 from ..utils.plugins import (
     get_plugin_description,
@@ -436,7 +436,9 @@ class ProjectorViewSet(ModelViewSet):
                 # request.data['direction'] == 'reset'
                 projector_instance.scroll = 0
 
-        projector_instance.save()
+        projector_instance.save(skip_autoupdate=True)
+        projector_instance.refresh_from_db()
+        inform_changed_data(projector_instance)
         message = '{action} {direction} was successful.'.format(
             action=request.data['action'].capitalize(),
             direction=request.data['direction'])
