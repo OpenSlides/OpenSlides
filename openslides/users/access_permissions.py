@@ -58,9 +58,10 @@ class UserAccessPermissions(BaseAccessPermissions):
                 fields = USERCANSEESERIALIZER_FIELDS
             # Let only some fields pass this method.
             data = {}
-            for key in full_data.keys():
-                if key in fields:
-                    data[key] = full_data[key]
+            for base_key in fields:
+                for key in (base_key, base_key + '_id'):
+                    if key in full_data.keys():
+                        data[key] = full_data[key]
         return data
 
     def get_projector_data(self, full_data):
