@@ -128,3 +128,11 @@ class GroupSerializer(ModelSerializer):
             'name',
             'permissions',
         )
+
+    def update(self, *args, **kwargs):
+        """
+        Customized update method. We just refresh the instance from the
+        database because of an unknown bug in Django REST framework.
+        """
+        instance = super().update(*args, **kwargs)
+        return Group.objects.get(pk=instance.pk)
