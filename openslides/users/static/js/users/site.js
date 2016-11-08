@@ -1295,7 +1295,8 @@ angular.module('OpenSlidesApp.users.site', [
     '$http',
     '$stateParams',
     'operator',
-    function ($rootScope, $scope, $http, $stateParams, operator ) {
+    'gettext',
+    function ($rootScope, $scope, $http, $stateParams, operator, gettext) {
         $scope.alerts = [];
 
         // get login info-text from server
@@ -1307,6 +1308,14 @@ angular.module('OpenSlidesApp.users.site', [
                 });
             }
         });
+        // check if cookies are enabled
+        if (!navigator.cookieEnabled) {
+            $scope.alerts.push({
+                type: 'danger',
+                msg: gettext('You have to enable cookies to use OpenSlides.'),
+            });
+        }
+
         // close alert function
         $scope.closeAlert = function(index) {
             $scope.alerts.splice(index, 1);
