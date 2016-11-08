@@ -108,7 +108,8 @@ angular.module('OpenSlidesApp.core', [
 .factory('Languages', [
     'gettext',
     'gettextCatalog',
-    function (gettext, gettextCatalog) {
+    'OpenSlidesPlugins',
+    function (gettext, gettextCatalog, OpenSlidesPlugins) {
         return {
             // get all available languages
             getLanguages: function () {
@@ -144,6 +145,7 @@ angular.module('OpenSlidesApp.core', [
             // set current language and return updated languages object array
             setCurrentLanguage: function (lang) {
                 var languages = this.getLanguages();
+                var plugins = OpenSlidesPlugins.getAll();
                 angular.forEach(languages, function (language) {
                     language.selected = false;
                     if (language.code == lang) {
@@ -151,6 +153,12 @@ angular.module('OpenSlidesApp.core', [
                         gettextCatalog.setCurrentLanguage(lang);
                         if (lang != 'en') {
                             gettextCatalog.loadRemote("static/i18n/" + lang + ".json");
+                            // load language files from plugins
+                            angular.forEach(plugins, function (plugin) {
+                                if (plugin.languages.indexOf(lang) != -1) {
+                                    gettextCatalog.loadRemote("static/i18n/" + plugin.name + '/' + lang + ".json");
+                                }
+                            });
                         }
                     }
                 });
@@ -457,6 +465,43 @@ angular.module('OpenSlidesApp.core', [
                 }
             }
         });
+    }
+])
+
+/*
+ * Provides a function for plugins to register as new plugin.
+ *
+ * Get all registerd plugins via 'OpenSlidesPlugins.getAll()'.
+ *
+ * Example code for plugins:
+ *
+ *  .config([
+ *      'OpenSlidesPluginsProvider',
+ *       function(OpenSlidesPluginsProvider) {
+ *          OpenSlidesPluginsProvider.registerPlugin({
+ *              name: 'openslides_votecollector',
+ *              display_name: 'VoteCollector',
+ *              languages: ['de']
+ *          });
+ *      }
+ *  ])
+ */
+.provider('OpenSlidesPlugins', [
+    function () {
+        var provider = this;
+        provider.plugins = [];
+        provider.registerPlugin = function (plugin) {
+            provider.plugins.push(plugin);
+        };
+        provider.$get = [
+            function () {
+                return {
+                    getAll: function () {
+                        return provider.plugins;
+                    }
+                };
+            }
+        ];
     }
 ])
 
