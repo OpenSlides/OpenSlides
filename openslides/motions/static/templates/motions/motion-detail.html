@@ -221,15 +221,6 @@
               <!-- Template hook for motion poll buttons -->
               <template-hook hook-name="motionPollSmallButtons"></template-hook>
 
-              <!-- Settings for majority calculations -->
-              <div os-perms="motions.can_manage" ng-hide="config('motions_poll_default_majority_method') == 'disabled'" ng-cloak>
-                <div class="input-group">
-                  <span><translate>Required majority</translate>: </span>
-                  <select ng-init="config('motions_poll_default_majority_method')" ng-model="$parent.method"
-                      ng-options="option.value as option.display_name | translate for option in methodChoices" />
-                </div>
-              </div>
-
               <!-- Poll results -->
               <div ng-show="poll.has_votes" class="pollresults">
                 <table class="table">
@@ -296,19 +287,36 @@
                       <span class="result_value">
                         {{ votesCast.value }} {{ votesCast.percentStr }}
                       </span>
+
                   <!-- majority calculation -->
-                  <tr os-perms="motions.can_manage" ng-hide="method == 'disabled'">
-                    <td class="icon">
+                  <tr>
                     <td>
-                      <span class="text-warning"  ng-if="isReached() === undefined" translate>Calculation impossible</span>
-                      <span class="text-success" ng-if="isReached() >= 0" translate>
-                        Quorum reached, {{ isReached() }} votes more than needed.
-                      </span>
-                      <span class="text-danger" ng-if="isReached() < 0" translate>
-                        Quorum not reached, {{ -(isReached()) }} votes missing.
-                     </span>
+                    <td>
+                      <div os-perms="motions.can_manage"
+                          ng-hide="config('motions_poll_default_majority_method') == 'disabled' ||
+                            isReached() === undefined" ng-cloak>
+                        <div class="input-group">
+                          <span><translate>Required majority</translate>: </span>
+                          <select ng-init="config('motions_poll_default_majority_method')"
+                              ng-model="$parent.method"
+                              ng-options="option.value as option.display_name | translate for option in methodChoices">
+                        </div>
+                      </div>
+                  <tr>
+                    <td>
+                    <td>
+                      <div os-perms="motions.can_manage">
+                        <span class="text-success" ng-if="isReached() >= 0" translate>
+                          Quorum reached, {{ isReached() }} votes more than needed.
+                        </span>
+                        <span class="text-danger" ng-if="isReached() < 0" translate>
+                          Quorum not reached, {{ -(isReached()) }} votes missing.
+                       </span>
+                      </div>
+
                 </table>
           </ol>
+
           <button ng-if="motion.isAllowed('create_poll')" ng-click="create_poll()" class="btn btn-default btn-sm">
             <i class="fa fa-bar-chart fa-lg"></i>
             <translate>New vote</translate>

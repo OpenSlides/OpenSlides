@@ -102,6 +102,11 @@ angular.module('OpenSlidesApp.motions', [
                             }
                             break;
                     }
+                    // 100% base impossible if at leat one value has set an
+                    // speacial value (-1 or -2).
+                    if (this.yes < 0 || this.no < 0 || this.abstain < 0) {
+                        impossible = true;
+                    }
                     // calculate percent value
                     var config = Config.get('motions_poll_100_percent_base').value;
                     var percentStr;
@@ -292,16 +297,20 @@ angular.module('OpenSlidesApp.motions', [
                 // full state name - optional with custom state name extension
                 // depended by state and provided by a custom comment field
                 getStateName: function () {
+                    var name = '';
                     var additionalName = '';
-                    if (this.state.show_state_extension_field) {
-                        // check motion comment fields for flag 'forState'
-                        var fields = Config.get('motions_comments').value;
-                        var index = _.findIndex(fields, ['forState', true]);
-                        if (index > -1) {
-                            additionalName = ' ' + this.comments[index];
+                    if (this.state) {
+                        name = gettextCatalog.getString(this.state.name);
+                        if (this.state.show_state_extension_field) {
+                            // check motion comment fields for flag 'forState'
+                            var fields = Config.get('motions_comments').value;
+                            var index = _.findIndex(fields, ['forState', true]);
+                            if (index > -1) {
+                                additionalName = ' ' + this.comments[index];
+                            }
                         }
                     }
-                    return gettextCatalog.getString(this.state.name) + additionalName;
+                    return name + additionalName;
                 },
                 // full recommendation string - optional with custom recommendationextension
                 // depended by state and provided by a custom comment field

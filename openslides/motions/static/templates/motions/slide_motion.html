@@ -28,7 +28,7 @@
                 <span class="result_value">
                   {{ voteYes.value }} {{ voteYes.percentStr }}
                 </span>
-                <div ng-if="voteYes.percentNumber >= 0">
+                <div ng-if="voteYes.percentNumber">
                   <uib-progressbar value="voteYes.percentNumber" type="success"></uib-progressbar>
                 </div>
             <!-- no -->
@@ -40,7 +40,7 @@
                 <span class="result_value" >
                   {{ voteNo.value }} {{ voteNo.percentStr }}
                 </span>
-                <div ng-if="voteNo.percentNumber >= 0">
+                <div ng-if="voteNo.percentNumber">
                   <uib-progressbar value="voteNo.percentNumber" type="danger"></uib-progressbar>
                 </div>
             <!-- abstain -->
