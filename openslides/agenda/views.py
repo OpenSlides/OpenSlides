@@ -1,14 +1,9 @@
-from html import escape
-
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy
-from reportlab.platypus import Paragraph
 
 from openslides.core.config import config
 from openslides.utils.exceptions import OpenSlidesError
-from openslides.utils.pdf import stylesheet
 from openslides.utils.rest_api import (
     GenericViewSet,
     ListModelMixin,
@@ -19,7 +14,6 @@ from openslides.utils.rest_api import (
     detail_route,
     list_route,
 )
-from openslides.utils.views import PDFView
 
 from .access_permissions import ItemAccessPermissions
 from .models import Item, Speaker
@@ -231,38 +225,3 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         """
         Item.objects.number_all(numeral_system=config['agenda_numeral_system'])
         return Response({'detail': _('The agenda has been numbered.')})
-
-
-# Views to generate PDFs
-
-class AgendaPDF(PDFView):
-    """
-    Create a full agenda-PDF.
-    """
-    required_permission = 'agenda.can_see'
-    filename = ugettext_lazy('Agenda')
-    document_title = ugettext_lazy('Agenda')
-
-    def append_to_pdf(self, story):
-        tree = Item.objects.get_tree(only_agenda_items=True, include_content=True)
-
-        def walk_tree(tree, ancestors=0):
-            """
-            Generator that yields a two-element-tuple. The first element is an
-            agenda-item and the second a number for steps to the root element.
-            """
-            for element in tree:
-                yield element['item'], ancestors
-                yield from walk_tree(element['children'], ancestors + 1)
-
-        for item, ancestors in walk_tree(tree):
-            item_number = "{} ".format(item.item_number) if item.item_number else ''
-            if ancestors:
-                space = "&nbsp;" * 6 * ancestors
-                story.append(Paragraph(
-                    "%s%s%s" % (space, item_number, escape(item.title)),
-                    stylesheet['Subitem']))
-            else:
-                story.append(Paragraph(
-                    "%s%s" % (item_number, escape(item.title)),
-                    stylesheet['Item']))

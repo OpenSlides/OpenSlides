@@ -1,13 +1,9 @@
 # Requirements for OpenSlides in production in alphabetical order
 Django>=1.10.1,<1.11
-beautifulsoup4>=4.5,<4.6
 channels>=0.15,<1.0
 djangorestframework>=3.4,<3.5
-html5lib>=0.99,<1.0
 jsonfield>=0.9.19,<1.1
-natsort>=3.2,<5.1
 PyPDF2>=1.25.0,<1.27
-reportlab>=3.0,<3.4
 roman>=2.0,<2.1
 setuptools>=18.5,<28.0
 twisted>=16.2,<16.4

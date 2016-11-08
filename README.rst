@@ -28,13 +28,7 @@ a. Check requirements
 '''''''''''''''''''''
 
 Make sure that you have installed `Python (>= 3.4)
-<https://www.python.org/>`_ on your system. You also need the Python
-development headers, the Independent JPEG Group's JPEG runtime library
-(dependency package) and the compression library (development).
-
-\E. g. for Ubuntu run::
-
-    $ sudo apt-get install python3-dev libjpeg-dev zlib1g-dev
+<https://www.python.org/>`_ on your system.
 
 
 b. Setup a virtual Python environment (optional)
@@ -156,27 +150,17 @@ OpenSlides uses the following projects or parts of them:
 * `backports-abc <https://github.com/cython/backports_abc>`_,
   License: Python Software Foundation License
 
-* `Beautiful Soup <http://www.crummy.com/software/BeautifulSoup/>`_,
-  License: MIT
-
 * `Django <https://www.djangoproject.com>`_, License: BSD
 
 * `Django REST framework <http://www.django-rest-framework.org>`_, License:
   BSD
-
-* `html5lib <https://github.com/html5lib/html5lib-python>`_, License: MIT
 
 * `Django Channels <https://github.com/andrewgodwin/channels/>`_, License: MIT
 
 * `django-jsonfield <https://github.com/bradjasper/django-jsonfield/>`_,
   License: MIT
 
-* `natsort <https://pypi.python.org/pypi/natsort>`_, License: MIT
-
 * `PyPDF2 <http://mstamy2.github.io/PyPDF2/>`_, License: BSD
-
-* `ReportLab <http://www.reportlab.com/opensource/>`_,
-  License: BSD
 
 * `roman <https://pypi.python.org/pypi/roman>`_, License: Python 2.1.1
 
