@@ -15,8 +15,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
     var createInstance = function(converter, motion, $scope, User) {
 
-        var header = PdfPredefinedFunctions.createTitle(gettextCatalog.getString("Motion") + " " +
-            motion.identifier + ": " + motion.getTitle($scope.version));
+        var identifier = motion.identifier ? ' ' + motion.identifier : '';
+        var header = PdfPredefinedFunctions.createTitle(gettextCatalog.getString("Motion") + identifier +
+                ': ' + motion.getTitle($scope.version));
 
         // generates the text of the motion. Also septerates between line-numbers
         var textContent = function() {
@@ -142,7 +143,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         };
 
         var getIdentifier = function() {
-            return motion.identifier;
+            return motion.identifier ? motion.identifier : '';
         };
 
         var getCategory = function() {
@@ -252,7 +253,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 .factory('MotionCatalogContentProvider', [
     'gettextCatalog',
     'PdfPredefinedFunctions',
-    function(gettextCatalog, PdfPredefinedFunctions) {
+    'Config',
+    function(gettextCatalog, PdfPredefinedFunctions, Config) {
 
     /**
     * Constructor
@@ -263,21 +265,46 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     */
     var createInstance = function(allMotions, $scope, User, Category) {
 
-        var title = PdfPredefinedFunctions.createTitle("Motions");
+        var title = PdfPredefinedFunctions.createTitle(
+                gettextCatalog.getString(Config.get('motions_export_title').value)
+        );
 
-        var createTOContent = function(motionTitles) {
+        var createPreamble = function() {
+            var preambleText = Config.get('motions_export_preamble').value;
+            if (preambleText) {
+                return {
+                    text: preambleText,
+                    style: "preamble"
+                };
+            } else {
+                return "";
+            }
+        };
 
+        var createTOContent = function() {
             var heading = {
                 text: gettextCatalog.getString("Table of contents"),
-                style: "heading",
+                style: "heading"
             };
 
             var toc = [];
-            angular.forEach(motionTitles, function(title) {
-                toc.push({
-                    text: gettextCatalog.getString("Motion") + " " + title,
-                    style: "tableofcontent",
-                });
+            angular.forEach(allMotions, function(motion) {
+                var identifier = motion.getIdentifier() ? motion.getIdentifier() : '';
+                toc.push(
+                    {
+                        columns: [
+                            {
+                                text: identifier,
+                                style: 'tableofcontent',
+                                width: 30
+                            },
+                            {
+                                text: motion.getTitle(),
+                                style: 'tableofcontent'
+                            }
+                        ]
+                    }
+                );
             });
 
             return [
@@ -288,7 +315,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         };
 
         // function to create the table of catergories (if any)
-        var createTOCatergories = function() {
+        var createTOCategories = function() {
             if (Category.getAll().length > 0) {
                 var heading = {
                     text: gettextCatalog.getString("Categories"),
@@ -329,10 +356,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         // returns the pure content of the motion, parseable by makepdf
         var getContent = function() {
             var motionContent = [];
-            var motionTitles = [];
-            var motionCategories = [];
             angular.forEach(allMotions, function(motion, key) {
-                motionTitles.push(motion.getIdentifier() + ": " + motion.getTitle());
                 motionContent.push(motion.getContent());
                 if (key < allMotions.length - 1) {
                     motionContent.push(PdfPredefinedFunctions.addPageBreak());
@@ -341,8 +365,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
             return [
                 title,
-                createTOCatergories(),
-                createTOContent(motionTitles),
+                createPreamble(),
+                createTOCategories(),
+                createTOContent(),
                 motionContent
             ];
         };

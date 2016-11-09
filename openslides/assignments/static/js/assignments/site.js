@@ -40,9 +40,6 @@ angular.module('OpenSlidesApp.assignments.site', [
                     assignments: function(Assignment) {
                         return Assignment.findAll();
                     },
-                    users: function(User) {     //TODO: Load only related users cause of better performance
-                        return User.findAll();
-                    },
                     tags: function(Tag) {
                         return Tag.findAll();
                     },
@@ -243,12 +240,12 @@ angular.module('OpenSlidesApp.assignments.site', [
     'Projector',
     'ProjectionDefault',
     'gettextCatalog',
-    'Config',
     'AssignmentContentProvider',
     'AssignmentCatalogContentProvider',
     'PdfMakeDocumentProvider',
+    'User',
     function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, phases, Projector, ProjectionDefault,
-        gettextCatalog, Config, AssignmentContentProvider, AssignmentCatalogContentProvider, PdfMakeDocumentProvider) {
+        gettextCatalog, AssignmentContentProvider, AssignmentCatalogContentProvider, PdfMakeDocumentProvider, User) {
         Assignment.bindAll({}, $scope, 'assignments');
         Tag.bindAll({}, $scope, 'tags');
         $scope.$watch(function () {
@@ -349,17 +346,21 @@ angular.module('OpenSlidesApp.assignments.site', [
         };
         // create the PDF List
         $scope.makePDF_assignmentList = function () {
-            var filename = gettextCatalog.getString("Elections") + ".pdf";
-            var assignmentContentProviderArray = [];
+            User.findAll().then( function(users) {
+                var filename = gettextCatalog.getString("Elections") + ".pdf";
+                var assignmentContentProviderArray = [];
 
-            //convert the filtered assignments to content providers
-            angular.forEach($scope.assignmentsFiltered, function(assignment) {
-                assignmentContentProviderArray.push(AssignmentContentProvider.createInstance(assignment));
+                //convert the filtered assignments to content providers
+                angular.forEach($scope.assignmentsFiltered, function(assignment) {
+                    assignmentContentProviderArray.push(AssignmentContentProvider.createInstance(assignment));
+                });
+
+                var assignmentCatalogContentProvider =
+                    AssignmentCatalogContentProvider.createInstance(assignmentContentProviderArray);
+                var documentProvider =
+                    PdfMakeDocumentProvider.createInstance(assignmentCatalogContentProvider);
+                pdfMake.createPdf(documentProvider.getDocument()).download(filename);
             });
-
-            var assignmentCatalogContentProvider = AssignmentCatalogContentProvider.createInstance(assignmentContentProviderArray, Config);
-            var documentProvider = PdfMakeDocumentProvider.createInstance(assignmentCatalogContentProvider);
-            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
         };
     }
 ])

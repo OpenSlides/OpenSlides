@@ -76,6 +76,7 @@ class Index:
             return open_dir(path)
         return self.create_index()
 
+
 index = Index()
 
 
