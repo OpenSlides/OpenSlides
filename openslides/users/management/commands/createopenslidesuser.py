@@ -1,11 +1,11 @@
 from django.core.management.base import BaseCommand
 
-from openslides.users.models import UserManager
+from ...models import User
 
 
 class Command(BaseCommand):
     """
-    Command to create a new OpenSlides user
+    Command to create an OpenSlides user.
     """
     help = 'Creates an OpenSlides user.'
 
@@ -32,4 +32,4 @@ class Command(BaseCommand):
             'first_name': options['first_name'],
             'last_name': options['last_name'],
         }
-        UserManager.create_user(options['username'], options['password'], **user_data)
+        User.objects.create_user(options['username'], options['password'], **user_data)
