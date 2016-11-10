@@ -174,7 +174,7 @@
           <div ng-if="!poll.has_votes">
             <strong translate>Candidates</strong>
             <ul class="list-unstyled">
-              <li ng-repeat="option in options">
+              <li ng-repeat="option in poll.options">
                 <a ui-sref="users.user.detail({id: option.candidate.id})">
                   {{ option.candidate.get_full_name() }}
                 </a>
@@ -186,11 +186,12 @@
           </div>
 
           <!-- Settings for majority calculations -->
-          <div os-perms="assignments.can_manage" ng-hide="config('assignments_poll_default_majority_method') == 'disabled' || !poll.has_votes" ng-cloak>
+          <div os-perms="assignments.can_manage" ng-show="poll.has_votes" ng-cloak>
             <div class="input-group">
               <span><translate>Required majority</translate>: </span>
               <select ng-model="method"
-                ng-change="recalculateMajorities(method)" ng-options="option.value as option.display_name | translate for option in methodChoices" />
+                      ng-change="recalculateMajorities(method)"
+                      ng-options="option.value as option.display_name | translate for option in methodChoices" />
             </div>
           </div>
           <!-- election result of poll -->
@@ -198,10 +199,10 @@
           <tr>
             <th translate>Candidates
             <th translate>Votes
-            <th ng-if="method != 'disabled'" translate>Quorum reached
+            <th translate ng-hide="method === 'disabled'">Quorum
             </th>
             <!-- candidates (poll options) -->
-            <tr ng-repeat="option in poll_options_with_majorities">
+            <tr ng-repeat="option in poll.options">
               <!-- candidate name -->
               <td>
                 <span os-perms="assignments.can_manage">
@@ -221,14 +222,18 @@
                   <div ng-repeat="vote in votes">
                     <span ng-if="poll.pollmethod == 'yna' || poll.pollmethod == 'yn'">{{ vote.label }}:</span>
                     {{ vote.value }} {{ vote.percentStr }}
-                    <div ng-if="vote.percentNumber">
+                    <div ng-if="vote.percentNumber >= 0">
                       <uib-progressbar value="vote.percentNumber" type="success"></uib-progressbar>
                     </div>
                   </div>
                 </div>
-              <td ng-if="method != 'disabled'">
-                <span ng-if="option.isReached < 0" class="text-danger" translate> Quorum not reached, {{ -option.isReached }} votes missing.</span>
-                <span ng-if="option.isReached >= 0" class="text-success" translate> Quorum reached, {{ option.isReached }} votes more than needed.</span>
+              <td ng-hide="method === 'disabled'">
+                <span ng-if="option.majorityReached >= 0" class="text-success" translate>
+                    Quorum ({{ option.getVoteYes() - option.majorityReached }}) reached.
+                </span>
+                <span ng-if="option.majorityReached < 0" class="text-danger" translate>
+                    Quorum ({{ option.getVoteYes() - option.majorityReached }}) not reached.
+                </span>
 
             <!-- total votes (valid/invalid/casts) -->
             <tr>
@@ -250,8 +255,6 @@
                 {{ poll.getVote('votescast').value }}
                 {{ poll.getVote('votescast').percentStr }}
           </table>
-          <!-- majority calculation message-->
-          <span class="text-warning" ng-if="calculationError" translate>Calculation impossible</span>
         </div>
       </div>
     </uib-tab>
