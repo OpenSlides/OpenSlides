@@ -156,11 +156,11 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
         // ** PDF presentation functions **/
         // show document on projector
         $scope.showMediafile = function (projectorId, mediafile) {
-            var isProjectedId = mediafile.isProjected();
-            if (isProjectedId > 0) {
-                $http.post('/rest/core/projector/' + isProjectedId + '/clear_elements/');
-            }
-            if (isProjectedId != projectorId) {
+            var isProjectedIds = mediafile.isProjected();
+            _.forEach(isProjectedIds, function (id) {
+                $http.post('/rest/core/projector/' + id + '/clear_elements/');
+            });
+            if (_.indexOf(isProjectedIds, projectorId) == -1) {
                 var postUrl = '/rest/core/projector/' + projectorId + '/prune_elements/';
                 var data = [{
                         name: 'mediafiles/mediafile',

@@ -268,11 +268,11 @@ angular.module('OpenSlidesApp.assignments', [])
                 },
                 // override project function of jsDataModel factory
                 project: function (projectorId, pollId) {
-                    var isProjectedId = this.isProjected(pollId);
-                    if (isProjectedId > 0) {
-                        $http.post('/rest/core/projector/' + isProjectedId + '/clear_elements/');
-                    }
-                    if (isProjectedId != projectorId) {
+                    var isProjectedIds = this.isProjected(pollId);
+                    _.forEach(isProjectedIds, function (id) {
+                        $http.post('/rest/core/projector/' + id + '/clear_elements/');
+                    });
+                    if (_.indexOf(isProjectedIds, projectorId) == -1) {
                         return $http.post(
                             '/rest/core/projector/' + projectorId + '/prune_elements/',
                             [{name: 'assignments/assignment', id: this.id, poll: pollId}]
@@ -281,8 +281,8 @@ angular.module('OpenSlidesApp.assignments', [])
                 },
                 // override isProjected function of jsDataModel factory
                 isProjected: function (poll_id) {
-                    // Returns the id of the last projector found with an element
-                    // with the name 'assignments/assignment'.
+                    // Returns the ids of all projectors with an element
+                    // with the name 'assignments/assignment'. Else returns an empty list.
                     var self = this;
                     var predicate = function (element) {
                         var value;
@@ -302,13 +302,13 @@ angular.module('OpenSlidesApp.assignments', [])
                         }
                         return value;
                     };
-                    var isProjected = 0;
+                    var isProjectedIds = [];
                     Projector.getAll().forEach(function (projector) {
                         if (typeof _.findKey(projector.elements, predicate) === 'string') {
-                            isProjected = projector.id;
+                            isProjectedIds.push(projector.id);
                         }
                     });
-                    return isProjected;
+                    return isProjectedIds;
                 }
             },
             relations: {

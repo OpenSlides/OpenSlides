@@ -264,6 +264,16 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+// Make the indexOf available in every scope; needed for the projectorbuttons
+.run([
+    '$rootScope',
+    function ($rootScope) {
+        $rootScope.inArray = function (array, value) {
+            return _.indexOf(array, value) > -1;
+        };
+    }
+])
+
 .factory('loadGlobalData', [
     'ChatMessage',
     'Config',
@@ -388,12 +398,12 @@ angular.module('OpenSlidesApp.core', [
         var BaseModel = function() {};
         BaseModel.prototype.project = function(projectorId) {
             // if this object is already projected on projectorId, delete this element from this projector
-            var isProjectedId = this.isProjected();
-            if (isProjectedId > 0) {
-                $http.post('/rest/core/projector/' + isProjectedId + '/clear_elements/');
-            }
-            // if it was the same projector before, just delete it but not show again
-            if (isProjectedId != projectorId) {
+            var isProjectedIds = this.isProjected();
+            _.forEach(isProjectedIds, function (id) {
+                $http.post('/rest/core/projector/' + id + '/clear_elements/');
+            });
+            // Show the element, if it was not projected before on the given projector
+            if (_.indexOf(isProjectedIds, projectorId) == -1) {
                 return $http.post(
                     '/rest/core/projector/' + projectorId + '/prune_elements/',
                     [{name: this.getResourceName(), id: this.id}]
@@ -401,23 +411,21 @@ angular.module('OpenSlidesApp.core', [
             }
         };
         BaseModel.prototype.isProjected = function() {
-            // Returns the projector id if there is a projector element
-            // with the same name and the same id. Else returns 0.
-            // Attention: if this element is projected multiple times, only the
-            // id of the last projector is returned.
+            // Returns the ids of all projectors if there is a projector element
+            // with the same name and the same id. Else returns an empty list.
             var self = this;
             var predicate = function (element) {
                 return element.name == self.getResourceName() &&
                     typeof element.id !== 'undefined' &&
                     element.id == self.id;
             };
-            var isProjectedId = 0;
+            var isProjectedIds = [];
             Projector.getAll().forEach(function (projector) {
                 if (typeof _.findKey(projector.elements, predicate) === 'string') {
-                    isProjectedId = projector.id;
+                    isProjectedIds.push(projector.id);
                 }
             });
-            return isProjectedId;
+            return isProjectedIds;
         };
         return BaseModel;
     }

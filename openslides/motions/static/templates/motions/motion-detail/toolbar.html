@@ -63,7 +63,7 @@
                         <translate>go</translate>
                     </button>
                     <button type="button" class="btn btn-sm btn-default" os-perms="core.can_manage_projector"
-                            ng-show="lineNumberMode != 'none' && motion.isProjected()"
+                            ng-show="lineNumberMode != 'none' && motion.isProjected().length"
                             ng-click="toggleLinesForProjector()"
                             uib-tooltip="{{ 'Show highlighted line also on projector.' | translate }}">
                         <i class="fa" ng-class="linesForProjector ? 'fa-check-square-o' : 'fa-square-o'"></i>&nbsp;
