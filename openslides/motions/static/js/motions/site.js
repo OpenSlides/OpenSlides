@@ -1066,15 +1066,17 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.linesForProjector = false;
         // Set 0 for disable highlighting on projector
         var setHighlightOnProjector = function (line) {
-            var elements = _.map(Projector.get(1).elements, function(element) { return element; });
-            elements.forEach(function (element) {
-                if (element.name == 'motions/motion') {
-                    var data = {};
-                    data[element.uuid] = {
-                        highlightAndScroll: line,
-                    };
-                    $http.post('/rest/core/projector/1/update_elements/', data);
-                }
+            _.forEach(Projector.getAll(), function (projector) {
+                var elements = _.map(projector.elements, function(element) { return element; });
+                elements.forEach(function (element) {
+                    if (element.name == 'motions/motion' && element.id == motion.id) {
+                        var data = {};
+                        data[element.uuid] = {
+                            highlightAndScroll: line,
+                        };
+                        $http.post('/rest/core/projector/' + projector.id + '/update_elements/', data);
+                    }
+                });
             });
         };
         $scope.scrollToAndHighlight = function (line) {
