@@ -255,12 +255,11 @@ angular.module('OpenSlidesApp.agenda.site', [
         };
         // project agenda
         $scope.projectAgenda = function (projectorId, tree, id) {
-            var isAgendaProjectedId = $scope.isAgendaProjected($scope.mainListTree);
-            if (isAgendaProjectedId > 0) {
-                // Deactivate
-                $http.post('/rest/core/projector/' + isAgendaProjectedId + '/clear_elements/');
-            }
-            if (isAgendaProjectedId != projectorId) {
+            var isAgendaProjectedIds = $scope.isAgendaProjected($scope.mainListTree);
+            _.forEach(isAgendaProjectedIds, function (id) {
+                $http.post('/rest/core/projector/' + id + '/clear_elements/');
+            });
+            if (_.indexOf(isAgendaProjectedIds, projectorId) == -1) {
                 $http.post('/rest/core/projector/' + projectorId + '/prune_elements/',
                     [{name: 'agenda/item-list', tree: tree, id: id}]);
             }
@@ -568,12 +567,11 @@ angular.module('OpenSlidesApp.agenda.site', [
         // Project current list of speakers
         // same logic as in core/base.js
         $scope.projectCurrentLoS = function (projectorId) {
-            var isCurrentLoSProjectedId = $scope.isCurrentLoSProjected($scope.mainListTree);
-            if (isCurrentLoSProjectedId > 0) {
-                // Deactivate
-                $http.post('/rest/core/projector/' + isCurrentLoSProjectedId + '/clear_elements/');
-            }
-            if (isCurrentLoSProjectedId != projectorId) {
+            var isCurrentLoSProjectedIds = $scope.isCurrentLoSProjected($scope.mainListTree);
+            _.forEach(isCurrentLoSProjectedIds, function (id) {
+                $http.post('/rest/core/projector/' + id + '/clear_elements/');
+            });
+            if (_.indexOf(isCurrentLoSProjectedIds, projectorId) == -1) {
                 $http.post('/rest/core/projector/' + projectorId + '/prune_elements/',
                     [{name: 'agenda/current-list-of-speakers'}]);
             }

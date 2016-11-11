@@ -268,11 +268,11 @@ angular.module('OpenSlidesApp.assignments', [])
                 },
                 // override project function of jsDataModel factory
                 project: function (projectorId, pollId) {
-                    var isProjectedId = this.isProjected(pollId);
-                    if (isProjectedId > 0) {
-                        $http.post('/rest/core/projector/' + isProjectedId + '/clear_elements/');
-                    }
-                    if (isProjectedId != projectorId) {
+                    var isProjectedIds = this.isProjected(pollId);
+                    _.forEach(isProjectedIds, function (id) {
+                        $http.post('/rest/core/projector/' + id + '/clear_elements/');
+                    });
+                    if (_.indexOf(isProjectedIds, projectorId) == -1) {
                         return $http.post(
                             '/rest/core/projector/' + projectorId + '/prune_elements/',
                             [{name: 'assignments/assignment', id: this.id, poll: pollId}]

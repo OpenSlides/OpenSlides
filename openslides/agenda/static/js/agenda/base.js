@@ -113,13 +113,12 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 },
                 // override project function of jsDataModel factory
                 project: function (projectorId, tree) {
-                    var isProjectedId = this.isProjected(tree);
-                    if (isProjectedId > 0) {
-                        // Deactivate
-                        $http.post('/rest/core/projector/' + isProjectedId + '/clear_elements/');
-                    }
+                    var isProjectedIds = this.isProjected(tree);
+                    _.forEach(isProjectedIds, function (id) {
+                        $http.post('/rest/core/projector/' + id + '/clear_elements/');
+                    });
                     // Activate, if the projector_id is a new projector.
-                    if (isProjectedId != projectorId) {
+                    if (_.indexOf(isProjectedIds, projectorId) == -1) {
                         var name = tree ? 'agenda/item-list' : this.content_object.collection;
                         var id = tree ? this.id : this.content_object.id;
                         return $http.post(
@@ -160,13 +159,11 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 },
                 // project list of speakers
                 projectListOfSpeakers: function(projectorId) {
-                    var isProjectedId = this.isListOfSpeakersProjected();
-                    if (isProjectedId > 0) {
-                        // Deactivate
-                        $http.post('/rest/core/projector/' + isProjectedId + '/clear_elements/');
-                    }
-                    // Activate
-                    if (isProjectedId != projectorId) {
+                    var isProjectedIds = this.isListOfSpeakersProjected();
+                    _.forEach(isProjectedIds, function (id) {
+                        $http.post('/rest/core/projector/' + id + '/clear_elements/');
+                    });
+                    if (_.indexOf(isProjectedIds, projectorId) == -1) {
                         return $http.post(
                             '/rest/core/projector/' + projectorId + '/prune_elements/',
                             [{name: 'agenda/list-of-speakers', id: this.id}]
