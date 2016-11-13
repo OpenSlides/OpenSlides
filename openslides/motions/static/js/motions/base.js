@@ -616,14 +616,7 @@ angular.module('OpenSlidesApp.motions', [
                     return diffService._serializeDom(mergedFragment);
                 },
                 getType: function(original_full_html) {
-                    var lineLength = Config.get('motions_line_length').value,
-                        html = lineNumberingService.insertLineNumbers(original_full_html, lineLength);
-
-                    var data = diffService.extractRangeByLineNumbers(html, this.line_from, this.line_to),
-                        oldText = data.outerContextStart + data.innerContextStart +
-                            data.html + data.innerContextEnd + data.outerContextEnd;
-
-                    return diffService.detectReplacementType(oldText, this.text);
+                    return this.type;
                 },
                 getTitle: function(original_full_html) {
                     var title;
