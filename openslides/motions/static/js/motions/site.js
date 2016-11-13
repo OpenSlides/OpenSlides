@@ -1251,8 +1251,7 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.alert = {};
 
         var html = motion.getTextWithLineBreaks(version),
-            fragment = diffService.htmlToFragment(html),
-            lineData = diffService.extractRangeByLineNumbers(fragment, lineFrom, lineTo);
+            lineData = diffService.extractRangeByLineNumbers(html, lineFrom, lineTo);
 
         $scope.model = {
             text: lineData.outerContextStart + lineData.innerContextStart +

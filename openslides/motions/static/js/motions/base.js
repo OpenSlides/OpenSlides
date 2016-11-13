@@ -248,8 +248,7 @@ angular.module('OpenSlidesApp.motions', [
                         var change = changes[i];
                         if (statusCompareCb === undefined || statusCompareCb(change.status)) {
                             html = lineNumberingService.insertLineNumbers(html, lineLength);
-                            fragment = diffService.htmlToFragment(html);
-                            html = diffService.replaceLines(fragment, change.text, change.line_from, change.line_to);
+                            html = diffService.replaceLines(html, change.text, change.line_from, change.line_to);
                         }
                     }
 
