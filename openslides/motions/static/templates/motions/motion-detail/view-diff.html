@@ -10,22 +10,16 @@
             <div class="diff-box diff-box-{{ change.id }} clearfix">
                 <div class="action-row" ng-if="motion.isAllowed('can_manage')">
                     <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-sm btn-default" ng-class="{active: (change.status == 0)}"
-                               title="{{ 'Suggested' | translate }}" ng-click="change.status = 0; change.saveStatus();">
-                            <input type="radio" name="changeRecommendationStatus[{{ change.id }}]" value="0"
-                               ng-change="change.saveStatus()" ng-model="change.status" ng-checked="change.status == 0">
-                            <i class="fa fa-question"></i>
-                        </label>
-                        <label class="btn btn-sm btn-default" ng-class="{active: (change.status == 1)}"
-                               title="{{ 'Accepted' | translate }}" ng-click="change.status = 1; change.saveStatus();">
-                            <input type="radio" name="changeRecommendationStatus[{{ change.id }}]" value="1"
-                               ng-change="change.saveStatus()" ng-model="change.status" ng-checked="change.status == 1">
+                        <label class="btn btn-sm btn-default" ng-class="{active: !change.rejected}"
+                               title="{{ 'Not rejected' | translate }}" ng-click="change.rejected = false; change.saveStatus();">
+                            <input type="radio" name="changeRecommendationRejected[{{ change.id }}]" value="0"
+                               ng-change="change.saveStatus()" ng-model="change.rejected" ng-checked="change.rejected == false">
                             <i class="fa fa-thumbs-up"></i>
                         </label>
-                        <label class="btn btn-sm btn-default" ng-class="{active: (change.status == 2)}"
-                               title="{{ 'Rejected' | translate }}" ng-click="change.status = 2; change.saveStatus();">
-                            <input type="radio" name="changeRecommendationStatus[{{ change.id }}]" value="2"
-                               ng-change="change.saveStatus()" ng-model="change.status" ng-checked="change.status == 2">
+                        <label class="btn btn-sm btn-default" ng-class="{active: change.rejected}"
+                               title="{{ 'Rejected' | translate }}" ng-click="change.rejected = true; change.saveStatus();">
+                            <input type="radio" name="changeRecommendationRejected[{{ change.id }}]" value="1"
+                               ng-change="change.saveStatus()" ng-model="change.rejected" ng-checked="change.rejected == true">
                             <i class="fa fa-thumbs-down"></i>
                         </label>
                     </div>
@@ -37,10 +31,8 @@
                         <i class="fa fa-trash"></i>
                     </button>
                 </div>
-                <div class="status-row" ng-if="!motion.isAllowed('can_manage')">
-                    <span ng-if="change.status == 0"><translate>Suggested</translate></span>
-                    <span ng-if="change.status == 1"><translate>Accepted</translate></span>
-                    <span ng-if="change.status == 2"><translate>Rejected</translate></span>
+                <div class="status-row" ng-if="!motion.isAllowed('can_manage') && change.rejected">
+                    <translate>Rejected</translate>
                 </div>
 
                 <div class="motion-text motion-text-diff line-numbers-{{ lineNumberMode }}"

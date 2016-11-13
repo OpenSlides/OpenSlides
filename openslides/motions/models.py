@@ -757,8 +757,8 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
         related_name='change_recommendations')
     """The motion version to which the change recommendation belongs."""
 
-    status = models.PositiveIntegerField(default=0)
-    """Proposed (0), Accepted (1), Rejected (2)"""
+    rejected = models.BooleanField(default=False)
+    """If true, this change recommendation has been rejected"""
 
     line_from = models.PositiveIntegerField()
     """The number or the first affected line"""

@@ -411,17 +411,12 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             });
         };
 
-        obj.newVersionIncludingChanges = function (motion, version, includeProposed) {
+        obj.newVersionIncludingChanges = function (motion, version) {
             if (!motion.isAllowed('update')) {
                 throw 'No permission to update motion';
             }
 
-            var newHtml = (
-                includeProposed ?
-                motion.getTextWithoutRejectedChangeRecommendations(version) :
-                motion.getTextWithAcceptedChangeRecommendations(version)
-            );
-
+            var newHtml = motion.getTextByMode('agreed');
             motion.setTextStrippingLineBreaks(newHtml);
 
             Motion.inject(motion);

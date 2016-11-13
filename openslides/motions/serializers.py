@@ -250,7 +250,7 @@ class MotionChangeRecommendationSerializer(ModelSerializer):
         fields = (
             'id',
             'motion_version',
-            'status',
+            'rejected',
             'line_from',
             'line_to',
             'text',
