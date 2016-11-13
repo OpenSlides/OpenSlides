@@ -461,6 +461,13 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             $scope.$watch(function() {
                 return $('.change-recommendation-list').children().length;
             }, obj.repositionOriginalAnnotations);
+            $scope.$watch(function () {
+                return $scope.change_recommendations.length;
+            }, function () {
+                if ($scope.change_recommendations.length === 0) {
+                    obj.mode = 'original';
+                }
+            });
 
             var sizeCheckerLastSize = null,
                 sizeCheckerLastClass = null,
