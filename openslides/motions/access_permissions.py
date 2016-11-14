@@ -47,13 +47,14 @@ class MotionAccessPermissions(BaseAccessPermissions):
         for the projector. Removes several fields.
         """
         data = full_data.copy()
-        for i, field in enumerate(config['motions_comments']):
-            if not field.get('public'):
-                try:
-                    data['comments'][i] = None
-                except IndexError:
-                    # No data in range. Just do nothing.
-                    pass
+        if data.get('comments') is not None:
+            for i, field in enumerate(config['motions_comments']):
+                if not field.get('public'):
+                    try:
+                        data['comments'][i] = None
+                    except IndexError:
+                        # No data in range. Just do nothing.
+                        pass
         return data
 
 
