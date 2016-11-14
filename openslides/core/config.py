@@ -157,6 +157,7 @@ class ConfigHandler:
         """
         return ConfigStore.get_collection_string()
 
+
 config = ConfigHandler()
 """
 Final entry point to get an set config variables. To get a config variable
