@@ -109,7 +109,7 @@ angular.module('OpenSlidesApp.motions', [
                     }
                     // calculate percent value
                     var config = Config.get('motions_poll_100_percent_base').value;
-                    var percentStr;
+                    var percentStr = '';
                     var percentNumber = null;
                     var base = null;
                     if (!impossible) {
@@ -137,7 +137,8 @@ angular.module('OpenSlidesApp.motions', [
                     return {
                         'value': value,
                         'percentStr': percentStr,
-                        'percentNumber': percentNumber
+                        'percentNumber': percentNumber,
+                        'display': value + ' ' + percentStr
                     };
                 }
             }

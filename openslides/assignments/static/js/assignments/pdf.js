@@ -6,15 +6,15 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('AssignmentContentProvider', [
     'gettextCatalog',
-    'PdfPredefinedFunctions',
-    function(gettextCatalog, PdfPredefinedFunctions) {
+    'PDFLayout',
+    function(gettextCatalog, PDFLayout) {
 
         var createInstance = function(assignment) {
 
-            //use the Predefined Functions to create the title
-            var title = PdfPredefinedFunctions.createTitle(assignment.title);
+            // page title
+            var title = PDFLayout.createTitle(assignment.title);
 
-            //create the preamble
+            // number of posts
             var createPreamble = function() {
                 var preambleText = gettextCatalog.getString("Number of posts to be elected") + ": ";
                 var memberNumber = ""+assignment.open_posts;
@@ -34,7 +34,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 return preamble;
             };
 
-            //adds the description if present in the assignment
+            // description
             var createDescription = function() {
                 if (assignment.description) {
                     var descriptionText = gettextCatalog.getString("Description") + ":";
@@ -56,7 +56,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 }
             };
 
-            //creates the candidate list in columns if the assignment phase is 'voting'
+            // show candidate list (if assignment phase is not 'finished')
             var createCandidateList = function() {
                 if (assignment.phase != 2) {
                     var candidatesText = gettextCatalog.getString("Candidates") + ": ";
@@ -90,23 +90,23 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 }
             };
 
-            //handles the case if a candidate is elected or not
+            // handles the case if a candidate is elected or not
             var electedCandidateLine = function(candidateName, pollOption, pollTableBody) {
                 if (pollOption.is_elected) {
                     return {
                         text: candidateName + "*",
                         bold: true,
-                        style: PdfPredefinedFunctions.flipTableRowStyle(pollTableBody.length)
+                        style: PDFLayout.flipTableRowStyle(pollTableBody.length)
                     };
                 } else {
                     return {
                         text: candidateName,
-                        style: PdfPredefinedFunctions.flipTableRowStyle(pollTableBody.length)
+                        style: PDFLayout.flipTableRowStyle(pollTableBody.length)
                     };
                 }
             };
 
-            //creates the pull result table
+            // creates the election result table
             var createPollResultTable = function() {
                 var resultBody = [];
                 angular.forEach(assignment.polls, function(poll, pollIndex) {
@@ -144,7 +144,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                                     electedCandidateLine(candidateName, pollOption, pollTableBody),
                                     {
                                         text: votes[0].value + " " + votes[0].percentStr,
-                                        style: PdfPredefinedFunctions.flipTableRowStyle(pollTableBody.length)
+                                        style: PDFLayout.flipTableRowStyle(pollTableBody.length)
                                     }
                                 ]);
                             } else if (poll.pollmethod == 'yn') {
@@ -163,7 +163,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                                                     votes[1].percentStr
                                             }
                                         ],
-                                        style: PdfPredefinedFunctions.flipTableRowStyle(pollTableBody.length)
+                                        style: PDFLayout.flipTableRowStyle(pollTableBody.length)
                                     }
                                 ]);
                             } else if (poll.pollmethod == 'yna') {
@@ -187,7 +187,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                                                     votes[2].percentStr
                                             }
                                         ],
-                                        style: PdfPredefinedFunctions.flipTableRowStyle(pollTableBody.length)
+                                        style: PDFLayout.flipTableRowStyle(pollTableBody.length)
                                     }
                                 ]);
                             }
@@ -247,7 +247,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                     }
                 });
 
-                //Add the legend to the result body
+                // add the legend to the result body
                 if (assignment.polls.length > 0) {
                     resultBody.push({
                         text: "* = " + gettextCatalog.getString("is elected"),
@@ -281,12 +281,12 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('BallotContentProvider', [
     'gettextCatalog',
-    'PdfPredefinedFunctions',
-    function(gettextCatalog, PdfPredefinedFunctions) {
+    'PDFLayout',
+    function(gettextCatalog, PDFLayout) {
 
         var createInstance = function(scope, poll, pollNumber) {
 
-            // use the Predefined Functions to create the title
+            // page title
             var createTitle = function() {
                 return {
                     text: scope.assignment.title,
@@ -294,7 +294,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 };
             };
 
-            //function to create the poll hint
+            // poll description
             var createPollHint = function() {
                 var description = poll.description ? ': ' + poll.description : '';
                 return {
@@ -303,19 +303,19 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 };
             };
 
-            //function to create the selection entries
+            // election entries
             var createYNBallotEntry = function(decision) {
                 var YNColumn = [
                     {
                         width: "auto",
                         stack: [
-                            PdfPredefinedFunctions.createBallotEntry(gettextCatalog.getString("Yes"))
+                            PDFLayout.createBallotEntry(gettextCatalog.getString("Yes"))
                         ]
                     },
                     {
                         width: "auto",
                         stack: [
-                            PdfPredefinedFunctions.createBallotEntry(gettextCatalog.getString("No"))
+                            PDFLayout.createBallotEntry(gettextCatalog.getString("No"))
                         ]
                     },
                 ];
@@ -324,7 +324,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                     YNColumn.push({
                         width: "auto",
                         stack: [
-                            PdfPredefinedFunctions.createBallotEntry(gettextCatalog.getString("Abstain"))
+                            PDFLayout.createBallotEntry(gettextCatalog.getString("Abstain"))
                         ]
                     });
                 }
@@ -346,7 +346,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 if (poll.pollmethod == 'votes') {
                     angular.forEach(poll.options, function(option) {
                         var candidate = option.candidate.get_full_name();
-                        candidateBallotList.push(PdfPredefinedFunctions.createBallotEntry(candidate));
+                        candidateBallotList.push(PDFLayout.createBallotEntry(candidate));
                     });
                 } else {
                     angular.forEach(poll.options, function(option) {
@@ -361,7 +361,6 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 
                 // since it is not possible to give a column a fixed height, we draw an "empty" column
                 // with a one px width and a fixed top-margin
-
                 return {
                     columns : [
                         {
@@ -431,7 +430,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                         widths: ['50%', '50%'],
                         body: tableBody
                     },
-                    layout: PdfPredefinedFunctions.getBallotLayoutLines()
+                    layout: PDFLayout.getBallotLayoutLines()
                 }];
             };
 
@@ -451,13 +450,13 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('AssignmentCatalogContentProvider', [
     'gettextCatalog',
-    'PdfPredefinedFunctions',
+    'PDFLayout',
     'Config',
-    function(gettextCatalog, PdfPredefinedFunctions, Config) {
+    function(gettextCatalog, PDFLayout, Config) {
 
         var createInstance = function(allAssignmnets) {
 
-            var title = PdfPredefinedFunctions.createTitle(
+            var title = PDFLayout.createTitle(
                     gettextCatalog.getString(Config.get('assignments_pdf_title').value)
             );
 
@@ -476,7 +475,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             var createTOContent = function(assignmentTitles) {
                 var heading = {
                     text: gettextCatalog.getString("Table of contents"),
-                    style: "heading",
+                    style: "heading2",
                 };
 
                 var toc = [];
@@ -490,7 +489,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 return [
                     heading,
                     toc,
-                    PdfPredefinedFunctions.addPageBreak()
+                    PDFLayout.addPageBreak()
                 ];
             };
 
@@ -503,7 +502,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                     assignmentTitles.push(assignment.title);
                     assignmentContent.push(assignment.getContent());
                     if (key < allAssignmnets.length - 1) {
-                        assignmentContent.push(PdfPredefinedFunctions.addPageBreak());
+                        assignmentContent.push(PDFLayout.addPageBreak());
                     }
                 });
 

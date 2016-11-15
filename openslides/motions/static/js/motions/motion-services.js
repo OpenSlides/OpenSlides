@@ -30,9 +30,9 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             });
 
             $http.post('/core/encode_media/', JSON.stringify(image_sources)).success(function(data) {
-                var converter = PdfMakeConverter.createInstance(data.images, data.fonts, pdfMake);
+                var converter = PdfMakeConverter.createInstance(data.images, pdfMake);
                 var motionContentProvider = MotionContentProvider.createInstance(converter, $scope.motion, $scope, User, $http);
-                var documentProvider = PdfMakeDocumentProvider.createInstance(motionContentProvider, data.defaultFont);
+                var documentProvider = PdfMakeDocumentProvider.createInstance(motionContentProvider);
                 var filename = gettextCatalog.getString("Motion") + "-" + $scope.motion.identifier + ".pdf";
                 pdfMake.createPdf(documentProvider.getDocument()).download(filename);
             });

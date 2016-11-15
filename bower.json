@@ -40,7 +40,10 @@
   },
   "overrides": {
     "pdfmake-dist-dist": {
-      "main": "build/pdfmake.min.js"
+      "main": [
+          "build/pdfmake.min.js",
+          "build/vfs_fonts.js"
+      ]
     },
     "pdfjs-dist": {
       "main": "build/pdf.combined.js"

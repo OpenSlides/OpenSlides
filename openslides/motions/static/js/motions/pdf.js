@@ -6,21 +6,199 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('MotionContentProvider', [
     'gettextCatalog',
-    'PdfPredefinedFunctions',
-    function(gettextCatalog, PdfPredefinedFunctions) {
+    'PDFLayout',
+    'Category',
+    'Config',
+    function(gettextCatalog, PDFLayout, Category, Config) {
     /**
      * Provides the content as JS objects for Motions in pdfMake context
      * @constructor
      */
 
-    var createInstance = function(converter, motion, $scope, User) {
+    var createInstance = function(converter, motion, $scope) {
 
+        // title
         var identifier = motion.identifier ? ' ' + motion.identifier : '';
-        var header = PdfPredefinedFunctions.createTitle(gettextCatalog.getString("Motion") + identifier +
-                ': ' + motion.getTitle($scope.version));
+        var title = PDFLayout.createTitle(
+                gettextCatalog.getString('Motion') + identifier + ': ' +
+                motion.getTitle($scope.version)
+        );
 
-        // generates the text of the motion. Also septerates between line-numbers
-        var textContent = function() {
+        // subtitle
+        var subtitle = PDFLayout.createSubtitle(
+                gettextCatalog.getString('Sequential number') + ': ' +  motion.id
+        );
+
+        // meta data table
+        var metaTable = function() {
+            var metaTableBody = [];
+
+            // submitters
+            var submitters = _.map(motion.submitters, function (submitter) {
+                return submitter.get_full_name();
+            }).join(', ');
+            metaTableBody.push([
+                {
+                    text: gettextCatalog.getString('Submitters') + ':',
+                    style: ['bold', 'grey']
+                },
+                {
+                    text: submitters,
+                    style: 'grey'
+                }
+            ]);
+
+            // state
+            metaTableBody.push([
+                {
+                    text: gettextCatalog.getString('State') + ':',
+                    style: ['bold', 'grey']
+                },
+                {
+                    text: motion.getStateName(),
+                    style: 'grey'
+                }
+            ]);
+
+            // recommendation
+            if (motion.getRecommendationName()) {
+                metaTableBody.push([
+                    {
+                        text: Config.get('motions_recommendations_by').value + ':',
+                        style: ['bold', 'grey']
+                    },
+                    {
+                        text: motion.getRecommendationName(),
+                        style: 'grey'
+                    }
+                ]);
+            }
+
+            // category
+            if (motion.category) {
+                metaTableBody.push([
+                    {
+                        text: gettextCatalog.getString('Category') + ':',
+                        style: ['bold', 'grey']
+                    },
+                    {
+                        text: motion.category.name,
+                        style: 'grey'
+                    }
+                ]);
+            }
+
+            // voting result
+            var column1 = [];
+            var column2 = [];
+            var column3 = [];
+            motion.polls.map(function(poll, index) {
+                var votenumber = '';
+                if (motion.polls.length > 1) {
+                    votenumber = index + 1 + '. ' + gettextCatalog.getString('Vote');
+                }
+
+                // yes
+                var yes = poll.getVote(poll.yes, 'yes');
+                column1.push(gettextCatalog.getString('Yes') + ':');
+                column2.push(yes.value);
+                column3.push(yes.percentStr);
+                // no
+                var no = poll.getVote(poll.no, 'no');
+                column1.push(gettextCatalog.getString('No') + ':');
+                column2.push(no.value);
+                column3.push(no.percentStr);
+                // abstain
+                var abstain = poll.getVote(poll.abstain, 'abstain');
+                column1.push(gettextCatalog.getString('Abstain') + ':');
+                column2.push(abstain.value);
+                column3.push(abstain.percentStr);
+                // votes valid
+                if (poll.votesvalid) {
+                    var valid = poll.getVote(poll.votesvalid, 'votesvalid');
+                    column1.push(gettextCatalog.getString('Valid votes') + ':');
+                    column2.push(valid.value);
+                    column3.push(valid.percentStr);
+                }
+                // votes invalid
+                if (poll.votesvalid) {
+                    var invalid = poll.getVote(poll.votesinvalid, 'votesinvalid');
+                    column1.push(gettextCatalog.getString('Invalid votes') + ':');
+                    column2.push(invalid.value);
+                    column3.push(invalid.percentStr);
+                }
+                // votes cast
+                if (poll.votescast) {
+                    var cast = poll.getVote(poll.votescast, 'votescast');
+                    column1.push(gettextCatalog.getString('Votes cast') + ':');
+                    column2.push(cast.value);
+                    column3.push(cast.percentStr);
+                }
+            });
+            metaTableBody.push([
+                {
+                    text: gettextCatalog.getString('Voting result') + ':',
+                    style: ['bold', 'grey']
+                },
+                {
+                    columns: [
+                        {
+                            text: column1.join('\n'),
+                            width: 'auto'
+                        },
+                        {
+                            text: column2.join('\n'),
+                            width: 'auto',
+                            alignment: 'right'
+                        },
+                        {
+                            text: column3.join('\n'),
+                            width: 'auto',
+                            alignment: 'right'
+                        },
+                    ],
+                    columnGap: 7,
+                    style: 'grey'
+                }
+            ]);
+
+
+            // build table
+            var metaTableJsonString = {
+                table: {
+                    widths: ['30%','70%'],
+                    body: metaTableBody,
+                },
+                margin: [0, 0, 0, 20],
+                layout: {
+                    hLineWidth: function(i, node) {
+                        return (i === 0 || i === node.table.body.length) ? 0 : 0.5;
+                    },
+                    vLineWidth: function(i, node) {
+                        return (i === 0 || i === node.table.widths.length) ? 0 : 0;
+                    },
+                    hLineColor: function(i, node) {
+                        return (i === 0 || i === node.table.body.length) ? '' : 'white';
+                    },
+                    vLineColor: function(i, node) {
+                        return (i === 0 || i === node.table.widths.length) ? '' : 'white';
+                    }
+                }
+            };
+            return metaTableJsonString;
+        };
+
+        // motion title
+        var motionTitle = function() {
+            return [{
+                text: motion.getTitle($scope.version),
+                style: 'heading3'
+            }];
+        };
+
+
+        // motion text (with line-numbers)
+        var motionText = function() {
             if ($scope.lineNumberMode == "inline" || $scope.lineNumberMode == "outside") {
                 /* in order to distinguish between the line-number-types we need to pass the scope
                 * to the convertHTML function.
@@ -35,109 +213,18 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             }
         };
 
-        // Generate text of reason
-        var reasonContent = function() {
-            return converter.convertHTML(motion.getReason($scope.version), $scope);
+        // motion reason heading
+        var motionReason = function() {
+            var reason = [{
+                text:  gettextCatalog.getString('Reason'),
+                style: 'heading3'
+            }];
+            reason.push(converter.convertHTML(motion.getReason($scope.version), $scope));
+            return reason;
         };
 
-        // Generate text of signment
-        var signment = function() {
-            var label = converter.createElement("text", gettextCatalog.getString('Submitter') + ':\nStatus:');
-            var state = converter.createElement("text", User.get(motion.submitters_id[0]).full_name + '\n' + motion.getStateName());
-            state.width = "70%";
-            label.width = "30%";
-            label.bold = true;
-            var signment = converter.createElement("columns", [label, state]);
-            signment.margin = [10, 20, 0, 10];
-            signment.lineHeight = 2.5;
-            return signment;
-        };
 
-        // Generates polls
-        var polls = function() {
-            if (!motion.polls.length) return {};
-            var pollLabel = converter.createElement("text", gettextCatalog.getString('Voting result') + ":"),
-                results = function() {
-                    return motion.polls.map(function(poll, index) {
-                        var id = index + 1,
-                            yes = poll.yes ? poll.yes : '-', // if no poll.yes is given set it to '-'
-                            yesRelative = poll.getVote(poll.yes, 'yes').percentStr,
-                            no = poll.no ? poll.no : '-',
-                            noRelative = poll.getVote(poll.no, 'no').percentStr,
-                            abstain = poll.abstain ? poll.abstain : '-',
-                            abstainrelativeGet = poll.getVote(poll.abstain, 'abstain').percentStr,
-                            abstainRelative = abstainrelativeGet ? abstainrelativeGet : '',
-                            valid = poll.votesvalid  ? poll.votesvalid : '-',
-                            validRelative = poll.getVote(poll.votesvalid, 'votesvalid').percentStr,
-                            number = {
-                                text: id + ".",
-                                width: "5%"
-                            },
-                            headerText = {
-                                text: gettextCatalog.getString('Vote'),
-                                width: "15%"
-                            },
-                            /**
-                             * Generates a part (consisting of different columns) of the polls
-                             *
-                             * Example Ja      100 ( 90% )
-                             *
-                             * @function
-                             * @param {string} name - E.g. "Ja"
-                             * @param {number} value - E.g.100
-                             * @param {number} relValue - E.g. 90
-                             */
-                            createPart = function(name, value, relValue) {
-                                var indexColumn = converter.createElement("text");
-                                var nameColumn = converter.createElement("text", "" + name);
-                                var valueColumn = converter.createElement("text", "" + value);
-                                var relColumn = converter.createElement("text", relValue);
-                                valueColumn.width = "40%";
-                                indexColumn.width = "5%";
-                                valueColumn.width = "5%";
-                                valueColumn.alignment = "right";
-                                relColumn.margin = [5, 0, 0, 0];
-                                return [indexColumn, nameColumn, valueColumn, relColumn];
-                            },
-                            yesPart = converter.createElement("columns", createPart(gettextCatalog.getString("Yes"), yes, yesRelative)),
-                            noPart = converter.createElement("columns", createPart(gettextCatalog.getString("No"), no, noRelative)),
-                            abstainPart = converter.createElement("columns", createPart(gettextCatalog.getString("Abstain"), abstain, abstainRelative)),
-                            totalPart = converter.createElement("columns", createPart(gettextCatalog.getString("Valid votes"), valid, validRelative)),
-                            heading = converter.createElement("columns", [number, headerText]),
-                            pollResult = converter.createElement("stack", [
-                                heading, yesPart, noPart, abstainPart, totalPart
-                            ]);
-
-                        return pollResult;
-                    }, {});
-                };
-            pollLabel.width = '35%';
-            pollLabel.bold = true;
-            var result = converter.createElement("columns", [pollLabel, results()]);
-            result.margin = [10, 0, 0, 10];
-            result.lineHeight = 1;
-            return result;
-        };
-
-        //Generates title section for motion
-        var titleSection = function() {
-            var title = converter.createElement("text", motion.getTitle($scope.version));
-            title.bold = true;
-            title.fontSize = 14;
-            title.margin = [0, 0, 0, 10];
-            return title;
-        };
-
-        // Generates reason section for polls
-        var reason = function() {
-            var r = converter.createElement("text", gettextCatalog.getString("Reason") + ":");
-            r.bold = true;
-            r.fontSize = 14;
-            r.margin = [0, 30, 0, 10];
-            return r;
-        };
-
-        //getters
+        // getters
         var getTitle = function() {
             return motion.getTitle($scope.verion);
         };
@@ -152,25 +239,17 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
         // Generates content as a pdfmake consumable
         var getContent = function() {
-            if (reasonContent().length === 0 ) {
-                return [
-                    header,
-                    signment(),
-                    polls(),
-                    titleSection(),
-                    textContent(),
-                ];
-            } else {
-                return [
-                    header,
-                    signment(),
-                    polls(),
-                    titleSection(),
-                    textContent(),
-                    reason(),
-                    reasonContent()
-                ];
+            var content = [
+                title,
+                subtitle,
+                metaTable(),
+                motionTitle(),
+                motionText(),
+            ];
+            if (motionReason()) {
+                content.push(motionReason());
             }
+            return content;
         };
         return {
             getContent: getContent,
@@ -186,8 +265,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 }])
 
 .factory('PollContentProvider', [
-    'PdfPredefinedFunctions',
-    function(PdfPredefinedFunctions) {
+    'PDFLayout',
+    function(PDFLayout) {
     /**
     * Generates a content provider for polls
     * @constructor
@@ -211,9 +290,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     text: title,
                     style: 'description'
                 },
-                PdfPredefinedFunctions.createBallotEntry(gettextCatalog.getString("Yes")),
-                PdfPredefinedFunctions.createBallotEntry(gettextCatalog.getString("No")),
-                PdfPredefinedFunctions.createBallotEntry(gettextCatalog.getString("Abstain")),
+                PDFLayout.createBallotEntry(gettextCatalog.getString("Yes")),
+                PDFLayout.createBallotEntry(gettextCatalog.getString("No")),
+                PDFLayout.createBallotEntry(gettextCatalog.getString("Abstain")),
                 ],
                 margin: [0, 0, 0, sheetend]
             };
@@ -237,7 +316,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         [createSection(), createSection()]
                     ],
                 },
-                layout: PdfPredefinedFunctions.getBallotLayoutLines()
+                layout: PDFLayout.getBallotLayoutLines()
             }];
         };
 
@@ -252,20 +331,20 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('MotionCatalogContentProvider', [
     'gettextCatalog',
-    'PdfPredefinedFunctions',
+    'PDFLayout',
+    'Category',
     'Config',
-    function(gettextCatalog, PdfPredefinedFunctions, Config) {
+    function(gettextCatalog, PDFLayout, Category, Config) {
 
     /**
     * Constructor
     * @function
     * @param {object} allMotions - A sorted array of all motions to parse
     * @param {object} $scope - Current $scope
-    * @param {object} User - Current user
     */
-    var createInstance = function(allMotions, $scope, User, Category) {
+    var createInstance = function(allMotions, $scope) {
 
-        var title = PdfPredefinedFunctions.createTitle(
+        var title = PDFLayout.createTitle(
                 gettextCatalog.getString(Config.get('motions_export_title').value)
         );
 
@@ -284,7 +363,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         var createTOContent = function() {
             var heading = {
                 text: gettextCatalog.getString("Table of contents"),
-                style: "heading"
+                style: "heading2"
             };
 
             var toc = [];
@@ -310,7 +389,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             return [
                 heading,
                 toc,
-                PdfPredefinedFunctions.addPageBreak()
+                PDFLayout.addPageBreak()
             ];
         };
 
@@ -319,7 +398,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             if (Category.getAll().length > 0) {
                 var heading = {
                     text: gettextCatalog.getString("Categories"),
-                    style: "heading"
+                    style: "heading2"
                 };
 
                 var toc = [];
@@ -344,7 +423,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 return [
                     heading,
                     toc,
-                    PdfPredefinedFunctions.addPageBreak()
+                    PDFLayout.addPageBreak()
                 ];
             } else {
                 // if there are no categories, return "empty string"
@@ -359,7 +438,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             angular.forEach(allMotions, function(motion, key) {
                 motionContent.push(motion.getContent());
                 if (key < allMotions.length - 1) {
-                    motionContent.push(PdfPredefinedFunctions.addPageBreak());
+                    motionContent.push(PDFLayout.addPageBreak());
                 }
             });
 

@@ -132,11 +132,13 @@
 
           <!-- Recommendation -->
           <div ng-if="config('motions_recommendations_by') != ''">
-            <h3 ng-if="!motion.isAllowed('change_recommendation')" class="heading" translate>Recommendation</h3>
+            <h3 ng-if="!motion.isAllowed('change_recommendation')" class="heading">
+              {{ config('motions_recommendations_by') }}
+            </h3>
             <div ng-if="motion.isAllowed('change_recommendation')" class="heading">
               <span uib-dropdown>
                 <a href id="recommendation-dropdown" class="drop-down-name" uib-dropdown-toggle>
-                  <translate>Recommendation</translate>
+                  {{ config('motions_recommendations_by') }}
                   <i class="fa fa-cog"></i>
                 </a>
                 <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="recommendation-dropdown">

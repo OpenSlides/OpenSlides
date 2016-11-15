@@ -6,15 +6,15 @@ angular.module('OpenSlidesApp.agenda.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('AgendaContentProvider', [
     'gettextCatalog',
-    'PdfPredefinedFunctions',
-    function(gettextCatalog, PdfPredefinedFunctions) {
+    'PDFLayout',
+    function(gettextCatalog, PDFLayout) {
 
     var createInstance = function(items) {
 
-        //use the Predefined Functions to create the title
-        var title = PdfPredefinedFunctions.createTitle(gettextCatalog.getString("Agenda"));
+        // page title
+        var title = PDFLayout.createTitle(gettextCatalog.getString("Agenda"));
 
-        //function to generate the item list out of the given "items" object
+        // generate the item list with all subitems
         var createItemList = function() {
             var agenda_items = [];
             angular.forEach(items, function (item) {
