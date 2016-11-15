@@ -1450,6 +1450,7 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('Font color of projector header and footer');
         gettext('Font color of projector headline');
         gettext('Predefined seconds of new countdowns');
+        gettext('Color for blanked projector');
         gettext('List of speakers overlay');
     }
 ]);
