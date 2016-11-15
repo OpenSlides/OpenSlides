@@ -2425,7 +2425,7 @@ msgstr "Test von Zeile %from% bis %to%"
 
 #: motions/static/js/motions/site.js:355
 msgid "Text in line %from%"
-msgstr "Text in Zeile "
+msgstr "Text in Zeile %from%"
 
 #: motions/static/js/motions/site.js:1891
 msgid "The 100 % base of a voting result consists of"
