@@ -326,17 +326,20 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
          * - followingHtmlStartSnippet: A HTML snippet that opens all HTML tags necessary to render "followingHtml"
          *
          */
-        this.extractRangeByLineNumbers = function(fragment, fromLine, toLine, debug) {
+        this.extractRangeByLineNumbers = function(htmlIn, fromLine, toLine, debug) {
+            if (typeof(htmlIn) !== 'string') {
+                throw 'Invalid call - extractRangeByLineNumbers expects a string as first argument';
+            }
 
-            var cacheKey = fromLine + "-" + toLine + "-" + lineNumberingService.djb2hash(fragment),
+            var cacheKey = fromLine + "-" + toLine + "-" + lineNumberingService.djb2hash(htmlIn),
                 cached = diffCache.get(cacheKey);
+
             if (!angular.isUndefined(cached)) {
                 return cached;
             }
 
-            if (typeof(fragment) == 'string') {
-                fragment = this.htmlToFragment(fragment);
-            }
+            var fragment = this.htmlToFragment(htmlIn);
+
             this._insertInternalLineMarkers(fragment);
             this._insertInternalLiNumbers(fragment);
             if (toLine === null) {
@@ -353,7 +356,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 toChildTraceRel = ancestorData.trace2,
                 toChildTraceAbs = this._getNodeContextTrace(toLineNode),
                 ancestor = ancestorData.commonAncestor,
-                html = '',
+                htmlOut = '',
                 outerContextStart = '',
                 outerContextEnd = '',
                 innerContextStart = '',
@@ -407,13 +410,13 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 if (ancestor.childNodes[i] == fromChildTraceRel[0]) {
                     found = true;
                     fromChildTraceRel.shift();
-                    html += this._serializePartialDomFromChild(ancestor.childNodes[i], fromChildTraceRel, true);
+                    htmlOut += this._serializePartialDomFromChild(ancestor.childNodes[i], fromChildTraceRel, true);
                 } else if (ancestor.childNodes[i] == toChildTraceRel[0]) {
                     found = false;
                     toChildTraceRel.shift();
-                    html += this._serializePartialDomToChild(ancestor.childNodes[i], toChildTraceRel, true);
+                    htmlOut += this._serializePartialDomToChild(ancestor.childNodes[i], toChildTraceRel, true);
                 } else if (found === true) {
-                    html += this._serializeDom(ancestor.childNodes[i], true);
+                    htmlOut += this._serializeDom(ancestor.childNodes[i], true);
                 }
             }
 
@@ -431,7 +434,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             }
 
             var ret = {
-                'html': html,
+                'html': htmlOut,
                 'ancestor': ancestor,
                 'outerContextStart': outerContextStart,
                 'outerContextEnd': outerContextEnd,
@@ -566,8 +569,14 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             return type;
         };
 
-        this.replaceLines = function (fragment, newHTML, fromLine, toLine) {
-            var data = this.extractRangeByLineNumbers(fragment, fromLine, toLine),
+        /**
+         * @param {string} oldHtml
+         * @param {string} newHTML
+         * @param {number} fromLine
+         * @param {number} toLine
+         */
+        this.replaceLines = function (oldHtml, newHTML, fromLine, toLine) {
+            var data = this.extractRangeByLineNumbers(oldHtml, fromLine, toLine),
                 previousHtml = data.previousHtml + '<TEMPLATE></TEMPLATE>' + data.previousHtmlEndSnippet,
                 previousFragment = this.htmlToFragment(previousHtml),
                 followingHtml = data.followingHtmlStartSnippet + '<TEMPLATE></TEMPLATE>' + data.followingHtml,
@@ -603,8 +612,8 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             node.setAttribute('class', classes);
         };
 
-        this.addDiffMarkup = function (fragment, newHTML, fromLine, toLine, diffFormatterCb) {
-            var data = this.extractRangeByLineNumbers(fragment, fromLine, toLine),
+        this.addDiffMarkup = function (originalHTML, newHTML, fromLine, toLine, diffFormatterCb) {
+            var data = this.extractRangeByLineNumbers(originalHTML, fromLine, toLine),
                 previousHtml = data.previousHtml + '<TEMPLATE></TEMPLATE>' + data.previousHtmlEndSnippet,
                 previousFragment = this.htmlToFragment(previousHtml),
                 followingHtml = data.followingHtmlStartSnippet + '<TEMPLATE></TEMPLATE>' + data.followingHtml,

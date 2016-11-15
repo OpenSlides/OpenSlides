@@ -2,7 +2,7 @@ describe('linenumbering', function () {
 
   beforeEach(module('OpenSlidesApp.motions.diff'));
 
-  var diffService, baseHtmlDom1, baseHtmlDom2, baseHtmlDom3,
+  var diffService, baseHtml1, baseHtmlDom1, baseHtml2, baseHtmlDom2, baseHtml3, baseHtmlDom3,
       brMarkup = function (no) {
         return '<br class="os-line-break">' +
             '<span class="os-line-number line-number-' + no + '" data-line-number="' + no + '" contenteditable="false">&nbsp;</span>';
@@ -14,7 +14,7 @@ describe('linenumbering', function () {
   beforeEach(inject(function (_diffService_) {
     diffService = _diffService_;
 
-    baseHtmlDom1 = diffService.htmlToFragment('<p>' +
+    baseHtml1 = '<p>' +
           noMarkup(1) + 'Line 1 ' + brMarkup(2) + 'Line 2 ' +
           brMarkup(3) + 'Line <strong>3<br>' + noMarkup(4) + 'Line 4 ' + brMarkup(5) + 'Line</strong> 5</p>' +
           '<ul class="ul-class">' +
@@ -24,9 +24,10 @@ describe('linenumbering', function () {
               '<li>' + noMarkup(9) + 'Level 2 LI 9</li>' +
             '</ul></li>' +
           '</ul>' +
-          '<p>' + noMarkup(10) + 'Line 10 ' + brMarkup(11) + 'Line 11</p>');
+          '<p>' + noMarkup(10) + 'Line 10 ' + brMarkup(11) + 'Line 11</p>';
+    baseHtmlDom1 = diffService.htmlToFragment(baseHtml1);
 
-    baseHtmlDom2 = diffService.htmlToFragment('<p>' + noMarkup(1) + 'Single text line</p>\
+    baseHtml2 = '<p>' + noMarkup(1) + 'Single text line</p>\
 <p>' + noMarkup(2) + 'sdfsdfsdfsdf dsfsdfsdfdsflkewjrl ksjfl ksdjf&nbsp;klnlkjBavaria ipsum dolor sit amet Biazelt Auffisteign ' + brMarkup(3) + 'Schorsch mim Radl foahn Ohrwaschl Steckerleis wann griagd ma nacha wos z’dringa glacht Mamalad, ' +
         brMarkup(4) + 'muass? I bin a woschechta Bayer sowos oamoi und sei und glei wirds no fui lustiga: Jo mei khkhis des ' + brMarkup(5) + 'schee middn ognudelt, Trachtnhuat Biawambn gscheid: Griasd eich midnand etza nix Gwiass woass ma ned ' +
         brMarkup(6) + 'owe. Dahoam gscheckate middn Spuiratz des is a gmahde Wiesn. Des is schee so Obazda san da, Haferl ' + brMarkup(7) + 'pfenningguat schoo griasd eich midnand.</p>\
@@ -45,9 +46,10 @@ describe('linenumbering', function () {
 <p>' + noMarkup(24) + 'Wui helfgod Wiesn, ognudelt schaugn: Dahoam gelbe Rüam Schneid singan wo hi sauba i moan scho aa no ' + brMarkup(25) + 'a Maß a Maß und no a Maß nimma. Is umananda a ganze Hoiwe zwoa, Schneid. Vui huift vui Brodzeid kumm ' +
         brMarkup(26) + 'geh naa i daad vo de allerweil, gor. Woaß wia Gams, damischa. A ganze Hoiwe Ohrwaschl Greichats ' + brMarkup(27) + 'iabaroi Prosd Engelgwand nix Reiwadatschi.Weibaleid ognudelt Ledahosn noch da Giasinga Heiwog i daad ' +
         brMarkup(28) + 'Almrausch, Ewig und drei Dog nackata wea ko, dea ko. Meidromml Graudwiggal nois dei, nackata. No ' + brMarkup(29) + 'Diandldrahn nix Gwiass woass ma ned hod boarischer: Samma sammawiedaguad wos, i hoam Brodzeid. Jo ' +
-        brMarkup(30) + 'mei Sepp Gaudi, is ma Wuascht do Hendl Xaver Prosd eana an a bravs. Sauwedda an Brezn, abfieseln.</p>');
+        brMarkup(30) + 'mei Sepp Gaudi, is ma Wuascht do Hendl Xaver Prosd eana an a bravs. Sauwedda an Brezn, abfieseln.</p>';
+    baseHtmlDom2 = diffService.htmlToFragment(baseHtml2);
 
-    baseHtmlDom3 = diffService.htmlToFragment('<ol>' +
+    baseHtml3 = '<ol>' +
         '<li>' + noMarkup(1) + 'Line 1</li>' +
         '<li>' + noMarkup(2) + 'Line 2</li>' +
         '<li><ol>' +
@@ -55,7 +57,8 @@ describe('linenumbering', function () {
             '<li>' + noMarkup(4) + 'Line 3.2</li>' +
             '<li>' + noMarkup(5) + 'Line 3.3</li>' +
         '</ol></li>' +
-        '<li>' + noMarkup(6) + ' Line 4</li></ol>');
+        '<li>' + noMarkup(6) + ' Line 4</li></ol>';
+    baseHtmlDom3 = diffService.htmlToFragment(baseHtml3);
 
     diffService._insertInternalLineMarkers(baseHtmlDom1);
     diffService._insertInternalLineMarkers(baseHtmlDom2);
@@ -122,14 +125,14 @@ describe('linenumbering', function () {
     });
 
     it('extracts a single line', function () {
-      var diff = diffService.extractRangeByLineNumbers(baseHtmlDom1, 1, 2);
+      var diff = diffService.extractRangeByLineNumbers(baseHtml1, 1, 2);
       expect(diff.html).toBe('<P>Line 1 ');
       expect(diff.outerContextStart).toBe('');
       expect(diff.outerContextEnd).toBe('');
     });
 
     it('extracts lines from nested UL/LI-structures', function () {
-      var diff = diffService.extractRangeByLineNumbers(baseHtmlDom1, 7, 9);
+      var diff = diffService.extractRangeByLineNumbers(baseHtml1, 7, 9);
       expect(diff.html).toBe('Line 7</LI><LI class="li-class"><UL><LI>Level 2 LI 8</LI>');
       expect(diff.ancestor.nodeName).toBe('UL');
       expect(diff.outerContextStart).toBe('<UL class="ul-class">');
@@ -141,7 +144,7 @@ describe('linenumbering', function () {
     });
 
     it('extracts lines from a more complex example', function () {
-      var diff = diffService.extractRangeByLineNumbers(baseHtmlDom2, 6, 11);
+      var diff = diffService.extractRangeByLineNumbers(baseHtml2, 6, 11);
 
       expect(diff.html).toBe('owe. Dahoam gscheckate middn Spuiratz des is a gmahde Wiesn. Des is schee so Obazda san da, Haferl pfenningguat schoo griasd eich midnand.</P><UL><LI>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</LI><LI>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</LI>');
       expect(diff.ancestor.nodeName).toBe('#document-fragment');
@@ -154,7 +157,7 @@ describe('linenumbering', function () {
     });
 
     it('extracts the end of a section', function () {
-      var diff = diffService.extractRangeByLineNumbers(baseHtmlDom2, 29, null);
+      var diff = diffService.extractRangeByLineNumbers(baseHtml2, 29, null);
 
       expect(diff.html).toBe('Diandldrahn nix Gwiass woass ma ned hod boarischer: Samma sammawiedaguad wos, i hoam Brodzeid. Jo mei Sepp Gaudi, is ma Wuascht do Hendl Xaver Prosd eana an a bravs. Sauwedda an Brezn, abfieseln.</P>');
       expect(diff.ancestor.nodeName).toBe('#document-fragment');
@@ -168,7 +171,7 @@ describe('linenumbering', function () {
     });
 
     it('preserves the numbering of OLs (1)', function () {
-      var diff = diffService.extractRangeByLineNumbers(baseHtmlDom3, 5, 7, true);
+      var diff = diffService.extractRangeByLineNumbers(baseHtml3, 5, 7, true);
 
       expect(diff.html).toBe('<LI>Line 3.3</LI></OL></LI><LI> Line 4</LI></OL>');
       expect(diff.ancestor.nodeName).toBe('#document-fragment');
@@ -178,7 +181,7 @@ describe('linenumbering', function () {
     });
 
     it('preserves the numbering of OLs (2)', function () {
-      var diff = diffService.extractRangeByLineNumbers(baseHtmlDom3, 3, 5, true);
+      var diff = diffService.extractRangeByLineNumbers(baseHtml3, 3, 5, true);
 
       expect(diff.html).toBe('<LI><OL><LI>Line 3.1</LI><LI>Line 3.2</LI>');
       expect(diff.ancestor.nodeName).toBe('OL');
@@ -204,17 +207,17 @@ describe('linenumbering', function () {
 
   describe('replacing lines in the original motion', function () {
     it('replaces LIs by a P', function () {
-      var merged = diffService.replaceLines(baseHtmlDom1, '<p>Replaced a UL by a P</p>', 6, 9);
+      var merged = diffService.replaceLines(baseHtml1, '<p>Replaced a UL by a P</p>', 6, 9);
       expect(merged).toBe('<P>Line 1 Line 2 Line <STRONG>3<BR>Line 4 Line</STRONG> 5</P><P>Replaced a UL by a P</P><UL class="ul-class"><LI class="li-class"><UL><LI>Level 2 LI 9</LI></UL></LI></UL><P>Line 10 Line 11</P>');
     });
 
     it('replaces LIs by another LI', function () {
-      var merged = diffService.replaceLines(baseHtmlDom1, '<UL class="ul-class"><LI>A new LI</LI></UL>', 6, 9);
+      var merged = diffService.replaceLines(baseHtml1, '<UL class="ul-class"><LI>A new LI</LI></UL>', 6, 9);
       expect(merged).toBe('<P>Line 1 Line 2 Line <STRONG>3<BR>Line 4 Line</STRONG> 5</P><UL class="ul-class"><LI>A new LI<UL><LI>Level 2 LI 9</LI></UL></LI></UL><P>Line 10 Line 11</P>');
     });
 
     it('breaks up a paragraph into two', function() {
-      var merged = diffService.replaceLines(baseHtmlDom1, '<P>Replaced Line 10</P><P>Inserted Line 11 </P>', 10, 11);
+      var merged = diffService.replaceLines(baseHtml1, '<P>Replaced Line 10</P><P>Inserted Line 11 </P>', 10, 11);
       expect(merged).toBe('<P>Line 1 Line 2 Line <STRONG>3<BR>Line 4 Line</STRONG> 5</P><UL class="ul-class"><LI class="li-class">Line 6 Line 7</LI><LI class="li-class"><UL><LI>Level 2 LI 8</LI><LI>Level 2 LI 9</LI></UL></LI></UL><P>Replaced Line 10</P><P>Inserted Line 11 Line 11</P>');
     });
 
