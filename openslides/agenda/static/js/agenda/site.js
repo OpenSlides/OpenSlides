@@ -156,6 +156,14 @@ angular.module('OpenSlidesApp.agenda.site', [
             }
         };
 
+        $scope.getUpdateStatePrefix = function (item) {
+            var prefix = item.content_object.collection.replace('/','.');
+            // Hotfix for Issue 2566.
+            // The changes could be reverted if Issue 2480 is closed.
+            prefix = prefix.replace('motion-block', 'motionBlock');
+            return prefix;
+        };
+
         // pagination
         $scope.currentPage = 1;
         $scope.itemsPerPage = 100;

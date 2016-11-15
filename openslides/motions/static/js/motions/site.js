@@ -259,7 +259,7 @@ angular.module('OpenSlidesApp.motions.site', [
                             closeByDocument: false,
                             resolve: {
                                 motionBlock: function () {
-                                    return motionBlock;
+                                    return MotionBlock.find($stateParams.id);
                                 }
                             },
                             preCloseCallback: function() {
