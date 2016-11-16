@@ -215,11 +215,14 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
         // motion reason heading
         var motionReason = function() {
-            var reason = [{
-                text:  gettextCatalog.getString('Reason'),
-                style: 'heading3'
-            }];
-            reason.push(converter.convertHTML(motion.getReason($scope.version), $scope));
+            var reason = [];
+            if (motion.getReason($scope.version)) {
+                reason.push({
+                    text:  gettextCatalog.getString('Reason'),
+                    style: 'heading3'
+                });
+                reason.push(converter.convertHTML(motion.getReason($scope.version), $scope));
+            }
             return reason;
         };
 
