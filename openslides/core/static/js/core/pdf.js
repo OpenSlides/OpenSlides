@@ -172,11 +172,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 var line1 = [
                     Config.get('general_event_name').value,
                     Config.get('general_event_description').value
-                ].join(' – ');
+                ].filter(Boolean).join(' – ');
                 var line2 = [
                     Config.get('general_event_location').value,
                     Config.get('general_event_date').value
-                ].join(', ');
+                ].filter(Boolean).join(', ');
                 var text = [line1, line2].join('\n');
                 columns.push({
                     text: text,
@@ -224,6 +224,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                         subtitle: {
                             fontSize: 9,
                             margin: [0,-20,0,20],
+                            color: 'grey'
                         },
                         preamble: {
                             fontSize: 10,
