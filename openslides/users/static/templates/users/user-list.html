@@ -13,26 +13,6 @@
         <i class="fa fa-download fa-lg"></i>
         <translate>Import</translate>
       </a>
-      <div class="dropdown pull-right" uib-dropdown>
-        <button os-perms="users.can_manage" class="btn btn-default btn-sm" uib-dropdown-toggle
-            id="user-pdf-dropdown">
-          <i class="fa fa-file-pdf-o fa-lg"></i>
-          <translate>PDF</translate>
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" dropdown-menu-right aria-labelledby="user-pdf-dropdown">
-          <li>
-              <a href="" ng-click="makePDF_userList()">
-                <i class="fa fa-list fa-fw"></i>
-                <translate>List of participants</translate>
-              </a>
-          <li os-perms="users.can_manage">
-              <a href="" ng-click="makePDF_userAccessDataList()">
-                <i class="fa fa-qrcode fa-fw"></i>
-                <translate>List of access data</translate>
-              </a>
-        </ul>
-      </div>
     </div>
     <h1 translate>Participants</h1>
   </div>
@@ -50,35 +30,36 @@
       </button>
     </div>
     <div class="col-sm-6">
-      <div class="form-inline text-right">
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-addon"><i class="fa fa-search"></i></div>
-            <input type="text" ng-model="filter.search" ng-model-options="{debounce: 500}" class="form-control"
-               placeholder="{{ 'Search' | translate}}">
-          </div>
-        </div>
-        <button class="btn btn-default" ng-click="$parent.isFilterOpen = !$parent.isFilterOpen"
-            ng-class="$parent.isFilterOpen ? 'btn-primary' : 'btn-default'">
-          <i class="fa fa-filter"></i>
-          <translate>Filter ...</translate>
+      <div class="dropdown pull-right" uib-dropdown>
+        <button os-perms="users.can_manage" class="btn btn-default" uib-dropdown-toggle
+            id="user-pdf-dropdown">
+          <i class="fa fa-upload"></i>
+          <span ng-if="usersFiltered.length == users.length" translate>
+            Export all
+          </span>
+          <span ng-if="usersFiltered.length != users.length" translate>
+            Export filtered
+          </span>
+          <span class="caret"></span>
         </button>
+        <ul class="dropdown-menu" dropdown-menu-right aria-labelledby="user-pdf-dropdown">
+          <li>
+              <a href="" ng-click="pdfExportUserList()">
+                <i class="fa fa-list fa-fw"></i>
+                <translate>List of participants</translate> (PDF)
+              </a>
+          <li os-perms="users.can_manage">
+              <a href="" ng-click="pdfExportUserAccessDataList()">
+                <i class="fa fa-qrcode fa-fw"></i>
+                <translate>List of access data</translate> (PDF)
+              </a>
+          <li>
+              <a href="" id="downloadLinkCSV" ng-click="csvExport()">
+                <i class="fa fa-file-text-o fa-fw"></i>
+                CSV
+              </a>
+        </ul>
       </div>
-    </div>
-  </div>
-  <div uib-collapse="!$parent.isFilterOpen" class="row spacer">
-    <div class="col-sm-6 text-right"></div>
-    <div class="col-sm-6 text-right form-inline">
-      <!-- group filter -->
-      <select ng-model="groupFilter" class="form-control" id="groupFilter">
-        <option ng-click="groupFilter = undefined" value="" translate>--- Select group ---</option>
-        <option ng-repeat="group in groups" value="{{ group.id }}">{{ group.name | translate }}</option>
-      </select>
-      <!-- isPresent filter -->
-      <span os-perms="users.can_see_extra_data">
-        <input  type="checkbox" ng-model="$parent.filterPresent" ng-false-value="''">
-        <translate>Is present</translate>
-      </span>
     </div>
   </div>
   <div uib-collapse="!isSelectMode" class="row spacer">
@@ -134,94 +115,311 @@
 
   <!-- filter users (for user with 'can_see_extra_data' permission) - consider present filter -->
   <div os-perms="users.can_see_extra_data">
-    <span ng-repeat="user in $parent.usersFiltered = (users | filter: filter.search | filter: {groups_id: groupFilter} |
-          filter: {is_present: filterPresent} | orderBy: sortColumn:reverse)"></span>
+    <span ng-repeat="user in $parent.usersFiltered = (users
+      | osFilter: filter.search : multiselect.getFilterString
+      | filter: {is_present: isPresentFilter}
+      | filter: {is_active: isActiveFilter}
+      | filter: {is_committee: isCommitteeFilter}
+      | MultiselectFilter: multiselect.filters.group : getItemId.group
+      | orderBy: sortColumn:reverse)"></span>
   </div>
   <!-- filter users (for user without 'can_see_extra_data' permission) -->
   <div os-perms="!users.can_see_extra_data"
-      ng-repeat="user in $parent.usersFiltered = (users | filter: filter.search | filter: {groups_id: groupFilter} |
-          orderBy: sortColumn:reverse)"></div>
+      ng-repeat="user in $parent.usersFiltered = (users
+      | osFilter: filter.search : multiselect.getFilterString
+      | filter: {is_committee: isCommitteeFilter}
+      | MultiselectFilter: multiselect.filters.group : getItemId.group
+      | orderBy: sortColumn:reverse)"></div>
 
-  <table class="table table-striped table-bordered table-hover">
-    <thead>
-      <tr>
-        <!-- projector column -->
-        <th ng-show="!isSelectMode" os-perms="core.can_manage_projector" class="minimum">
-
-        <!-- selection column -->
-        <th ng-show="isSelectMode" os-perms="users.can_manage" class="minimum deleteColumn">
-          <input type="checkbox" ng-model="$parent.selectedAll" ng-change="checkAll()">
-
-        <!-- name column -->
-        <th ng-click="toggleSort('first_name')" class="sortable">
-          <translate>Name</translate>
-          <!-- TODO: sort by first OR last name -->
-          <i class="pull-right fa" ng-show="sortColumn === 'first_name' && header.sortable != false"
-              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-          </i>
-
-        <!-- structure level column -->
-        <th ng-click="toggleSort('structure_level')" class="sortable optional">
-          <translate>Structure level</translate>
-          <i class="pull-right fa" ng-show="sortColumn === 'structure_level' && header.sortable != false"
-              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-          </i>
-
-        <!-- groups column -->
-        <th ng-click="toggleSort('groups')" class="sortable optional">
-          <translate>Groups</translate>
-          <i class="pull-right fa" ng-show="sortColumn === 'groups' && header.sortable != false"
-              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-          </i>
-
-        <!-- present column -->
-        <th os-perms="users.can_see_extra_data" ng-click="toggleSort('is_present')" class="sortable minimum">
-          <translate>Present</translate>
-          <i class="pull-right fa" ng-show="sortColumn === 'is_present' && header.sortable != false"
-              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-          </i>
-    <tbody>
-      <tr ng-repeat="user in usersFiltered | limitTo : itemsPerPage : limitBegin" class="animate-item"
-          ng-class="{ 'activeline': user.isProjected().length, 'selected': user.selected  }">
-        <!-- projector column -->
-        <td ng-show="!isSelectMode" os-perms="core.can_manage_projector">
-          <projector-button model="user" default-projector-id="defaultProjectorId">
-          </projector-button>
-        <!-- selection column -->
-        <td ng-show="isSelectMode" os-perms="users.can_manage" class="deleteColumn">
-          <input type="checkbox" ng-model="user.selected">
-        <!-- user data colums -->
-        <td ng-mouseover="user.hover=true" ng-mouseleave="user.hover=false">
-          <strong>
-            <i ng-show="user.is_active === false" class="fa fa-ban"
-              title="{{ 'Is inactive' | translate }}"></i>
-            <i ng-show="user.is_committee" class="fa fa-users"
-              title="{{ 'Is a committee' | translate }}"></i>
-            <a ui-sref="users.user.detail({id: user.id})">{{ user.get_short_name() }}</a>
-          </strong>
-          <div ng-if="user.comment">
-            <small><i class="fa fa-info-circle"></i> {{ user.comment }}</small>
-          </div>
-          <div ng-if="user.number"> {{ user.number }} </div>
-          <div os-perms="users.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !user.hover}">
-            <a href="" ng-click="openDialog(user)" translate>Edit</a> |
-            <a ui-sref="users.user.change-password({id: user.id})" translate>Change password</a> |
-            <a href="" class="text-danger"
-                ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
-                <b>{{ user.get_short_name() }}</b>"
-                ng-bootbox-confirm-action="delete(user)" translate>Delete</a>
-          </div>
-        <td class="optional">{{ user.structure_level }}
-        <td class="optional">
-          <div ng-repeat="group in user.groups_id">
-            {{ (groups | filter: {id: group})[0].name | translate }}
-          </div>
-        <td os-perms="users.can_see_extra_data">
-          <span os-perms="!users.can_manage">
-            <i ng-if="user.is_present" class="fa fa-check-square-o"></i>
+  <div class="os-table container-fluid">
+    <div class="row header-row">
+      <div class="col-xs-1 centered" ng-show="isSelectMode" os-perms="users.can_manage">
+        <i class="fa text-danger pointer" ng-class="selectedAll ? 'fa-check-square-o' : 'fa-square-o'"
+          ng-click="checkAll()"></i>
+      </div>
+      <div class="col-xs-11 main-header">
+        <span class="form-inline text-right pull-right">
+          <!-- reset Filters -->
+          <span class="sort-spacer pointer" ng-click="resetFilters()"
+            ng-if="areFiltersSet()" ng-disabled="isSelectMode"
+            ng-class="{'disabled': isSelectMode}">
+            <i class="fa fa-times-circle"></i>
+            <translate>Filter</translate>
           </span>
-          <input os-perms="users.can_manage" type="checkbox" ng-model="user.is_present" ng-click="save(user)">
-  </table>
+          <!-- Group filter -->
+          <span class="dropdown" uib-dropdown>
+            <span class="pointer" id="dropdownGroup" uib-dropdown-toggle
+              ng-class="{'bold': multiselect.filters.group.length > 0, 'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
+              <translate>Groups</translate>
+              <span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu dropdown-menu-right dropdown-entries" aria-labelledby="dropdownGroup">
+              <li ng-repeat="group in groups">
+                <div ng-click="operateMultiselectFilter('group', group.id)">
+                  <i class="fa fa-check" ng-if="multiselect.filters.group.indexOf(group.id) > -1"></i>
+                  {{ group.name | translate }}
+                </div>
+              </li>
+            </ul>
+          </span>
+          <!-- Present filter -->
+          <span class="dropdown" uib-dropdown>
+            <span class="pointer" id="dropdownPresent" uib-dropdown-toggle
+              ng-class="{'bold': isPresentFilter !== undefined, 'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
+              <translate>Present</translate>
+              <span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu dropdown-menu-right dropdown-entries" aria-labelledby="dropdownPresent">
+              <li>
+                <div ng-click="isPresentFilter = (isPresentFilter ? undefined : true)">
+                  <i class="fa" ng-class="{'fa-check': isPresentFilter === true}"></i>
+                  <translate>Is present</translate>
+                </div>
+              </li>
+              <li>
+                <div ng-click="isPresentFilter = (isPresentFilter === false) ? undefined : false">
+                  <i class="fa" ng-class="{'fa-check': isPresentFilter === false}"></i>
+                  <translate>Is not present</translate>
+                </div>
+              </li>
+            </ul>
+          </span>
+          <!-- Active filter -->
+          <span class="dropdown" uib-dropdown>
+            <span class="pointer" id="dropdownActive" uib-dropdown-toggle
+              ng-class="{'bold': isActiveFilter !== undefined, 'disabled': isSelectMode}"
+              ng-disabled="isSelecteMode">
+              <translate>Active</translate>
+              <span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu dropdown-menu-right dropdown-entries" aria-labelledby="dropdownActive">
+              <li>
+                <div ng-click="isActiveFilter = (isActiveFilter ? undefined : true)">
+                  <i class="fa" ng-class="{'fa-check': isActiveFilter === true}"></i>
+                  <translate>Is active</translate>
+                </div>
+              </li>
+              <li>
+                <div ng-click="isActiveFilter = (isActiveFilter === false ? undefined : false)">
+                  <i class="fa" ng-class="{'fa-check': isActiveFilter === false}"></i>
+                  <translate>Is not active</translate>
+                </div>
+              </li>
+            </ul>
+          </span>
+          <!-- Committee filter -->
+          <span class="dropdown" uib-dropdown>
+            <span class="pointer" id="dropdownCommittee" uib-dropdown-toggle
+              ng-class="{'bold': isCommitteeFilter !== undefined, 'disabled': isSelectMode}"
+              ng-disabled="isSelecteMode">
+              <translate>Committee</translate>
+              <span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu dropdown-menu-right dropdown-entries" aria-labelledby="dropdownCommittee">
+              <li>
+                <div ng-click="isCommitteeFilter = (isCommitteeFilter ? undefined : true)">
+                  <i class="fa" ng-class="{'fa-check': isCommitteeFilter === true}"></i>
+                  <translate>Yes</translate>
+                </div>
+              </li>
+              <li>
+                <div ng-click="isCommitteeFilter = (isCommitteeFilter === false ? undefined : false)">
+                  <i class="fa" ng-class="{'fa-check': isCommitteeFilter === false}"></i>
+                  <translate>No</translate>
+                </div>
+              </li>
+            </ul>
+          </span>
+          <!-- dropdown sort -->
+          <span class="dropdown" uib-dropdown>
+            <span class="pointer" id="dropdownSort" uib-dropdown-toggle
+              ng-class="{'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
+              <translate>Sort</translate>
+              <span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu dropdown-menu-right dropdown-entries" aria-labelledby="dropdownSort">
+              <li ng-repeat="option in sortOptions">
+                <div ng-click="toggleSort(option.name)">
+                  {{ option.display_name | translate }}
+                  <span class="spacer-right pull-right"></span>
+                  <i class="pull-right fa"
+                    ng-style="{'visibility': sortColumn === option.name ? 'visible' : 'hidden'}"
+                    ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+                  </i>
+                </div>
+              </li>
+            </ul>
+          </span>
+          <!-- search field -->
+          <span class="form-group">
+            <span class="input-group">
+              <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              <input type="text" ng-model="filter.search" class="form-control" ng-model-options="{debounce: 500}" 
+                 placeholder="{{ 'Search' | translate}}" ng-disabled="isSelectMode">
+            </span>
+          </span>
+        </span>
+        <!-- show all selected multiselectoptions -->
+        <span>
+          <span ng-repeat="group in groups" class="pointer spacer-left-lg"
+            ng-if="multiselect.filters.group.indexOf(group.id) > -1"
+            ng-click="operateMultiselectFilter('group', group.id)"
+            ng-class="{'disabled': isSelectMode}">
+            <span class="nobr">
+              <i class="fa fa-times-circle"></i>
+              {{ group.name | translate }}
+            </span>
+          </span>
+          <span ng-hide="isPresentFilter === undefined"
+            class="pointer spacer-left-lg"
+            ng-click="isPresentFilter = undefined;"
+            ng-class="{'disabled': isSelectMode}">
+            <span class="nobr">
+              <i class="fa fa-times-circle"></i>
+              {{ isPresentFilter ? 'Is present' : 'Is not present' | translate }}
+            </span>
+          </span>
+          <span ng-hide="isActiveFilter === undefined"
+            class="pointer spacer-left-lg"
+            ng-click="isActiveFilter = undefined;"
+            ng-class="{'disabled': isSelectMode}">
+            <span class="nobr">
+              <i class="fa fa-times-circle"></i>
+              {{ isActiveFilter ? 'Is active' : 'Is not active' | translate }}
+            </span>
+          </span>
+          <span ng-hide="isCommitteeFilter === undefined"
+            class="pointer spacer-left-lg"
+            ng-click="isCommitteeFilter = undefined;"
+            ng-class="{'disabled': isSelectMode}">
+            <span class="nobr">
+              <i class="fa fa-times-circle"></i>
+              {{ isCommitteeFilter ? 'Is committee' : 'Is not committee' | translate }}
+            </span>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!-- main table -->
+    <div class="row data-row" ng-mouseover="user.hover=true"
+      ng-mouseleave="user.hover=false"
+      ng-class="{'projected': user.isProjected().length}"
+      ng-repeat="user in usersFiltered
+      | limitTo : itemsPerPage : limitBegin">
+
+      <!-- select column -->
+      <div ng-show="isSelectMode" os-perms="users.can_manage" class="col-xs-1 centered">
+        <i class="fa text-danger pointer" ng-click="user.selected=!user.selected"
+        ng-class="user.selected ? 'fa-check-square-o' : 'fa-square-o'"></i>
+      </div>
+      <!-- projector column -->
+      <div class="col-xs-1 centered projector" os-perms="core.can_manage_projector">
+        <projector-button model="user", default-projector-id="defaultProjectorId">
+        </projector-button>
+      </div>
+      <!-- main content column -->
+      <div class="col-xs-6 content">
+        <div class="spacer-right"> <!-- horizontal block -->
+            <strong>
+              <i ng-style="{'visibility': user.is_active === false ? 'visible' : 'hidden'}" class="fa fa-ban"
+                title="{{ 'Is inactive' | translate }}"></i>
+              <i ng-style="{'visibility': user.is_committee ? 'visible' : 'hidden'}" class="fa fa-university"
+                title="{{ 'Is a committee' | translate }}"></i>
+            </strong>
+        </div>
+        <div>
+          <div> <!-- vertical block -->
+            <strong>
+              <a ui-sref="users.user.detail({id: user.id})" class="title">{{ user.get_short_name() }}</a>
+            </strong>
+          </div>
+          <div ng-if="user.number"><translate>No.</translate> {{ user.number }} </div>
+          <div os-perms="users.can_manage" ng-class="{'hiddenDiv': !user.hover}">
+            <small>
+              <a href="" ng-click="openDialog(user)" translate>Edit</a> &middot;
+              <a ui-sref="users.user.change-password({id: user.id})" translate>Change password</a> &middot;
+              <a href="" class="text-danger"
+                  ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
+                  <b>{{ user.get_short_name() }}</b>"
+                  ng-bootbox-confirm-action="delete(user)" translate>Delete</a>
+            </small>
+          </div>
+        </div>
+      </div>
+      <!-- additional content column -->
+      <style>
+        .os-table .row .col-xs-4 {
+          width: calc(50% - {{ isSelectMode ? '120' : '70' }}px);
+        }
+      </style>
+      <div class="col-xs-4 content">
+        <div style="width: 60%;" class="optional">
+          <small>
+            <!-- Group dropdown for manage user -->
+            <div os-perms="users.can_manage" ng-show="groups.length > 0"
+              uib-tooltip="{{ 'Groups' | translate }}" tooltip-placement="top-left"
+              ng-mouseover="user.groupHover=true"
+              ng-mouseleave="user.groupHover=false">
+              <span uib-dropdown>
+                <span id="dropdown-group{{ user.id }}" class="pointer" uib-dropdown-toggle>
+                  <span ng-if="!user.groups_id.length" ng-show="user.hover">
+                    <i class="fa fa-users"></i>
+                    <i class="fa fa-plus"></i>
+                  </span>
+                  <span ng-if="user.groups_id.length">
+                    <i class="fa fa-users"></i>
+                    <span ng-repeat="group in user.groups_id | limitTo:2">
+                      {{ (groups | filter: {id: group})[0].name | translate }}<span ng-if="!$last">,</span></span><span ng-if="user.groups_id.length > 2">,
+                      ... [+{{ user.groups_id.length - 2}}]</span>
+                    <i class="fa fa-cog fa-lg spcaer-left" ng-show="user.groupHover"></i>
+                  </span>
+                </span>
+                <ul class="dropdown-menu dropdown-entries" aria-labelledby="dropdown-group{{ user.id }}">
+                  <li ng-repeat="group in groups">
+                    <div ng-click="toggleGroup(user, group)">
+                      <i class="fa fa-check" ng-if="inArray(user.groups_id, group.id)"></i>
+                      {{ group.name | translate }}
+                    </div>
+                  </li>
+                </ul>
+              </span>
+            </div>
+            <!-- Group dropdown for normal user -->
+            <div os-perms="!users.can_manage" ng-show="user.groups_id.length"
+              uib-tooltip="{{ 'Groups' | translate }}" tooltip-placement="top-left">
+              <i class="fa fa-users"></i>
+              <span ng-repeat="group in user.groups_id | limitTo:2">
+                {{ (groups | filter: {id: group})[0].name | translate }}<span ng-if="!$last">,</span></span><span ng-if="user.groups_id.length > 2">,
+                ... [+{{ user.groups_id.length - 2}}]</span>
+              <!-- sorry for merging them together, but otherwise there would be a whitespace because of the new line -->
+            </div>
+            <div ng-if="user.structure_level" uib-tooltip="{{ 'Structure level' | translate }}" tooltip-placement="top-left">
+              <i class="fa fa-flag"></i>
+              {{ user.structure_level }}
+            </div>
+            <div ng-if="user.comment" uib-tooltip="{{ 'Comment' | translate }}" tooltip-placement="top-left">
+              <i class="fa fa-info-circle"></i>
+              {{ user.comment | limitTo:25}}{{ user.comment.length > 25 ? '...' : '' }}
+            </div>
+          </small>
+        </div>
+        <div style="width: 40%;" class="pull-right" os-perms="users.can_see_extra_data">
+          <div os-perms="users.can_manage">
+            <span class="pointer" ng-click="user.is_present = !user.is_present; save(user);">
+              <i class="fa" ng-class="user.is_present ? 'fa-check-square-o' : 'fa-square-o'"></i>
+              <span class="spacer-left" translate>Present</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end data row -->
+  </div><!-- end os-table -->
+
   <ul uib-pagination
       total-items="usersFiltered.length"
       items-per-page="itemsPerPage"

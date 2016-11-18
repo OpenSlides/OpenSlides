@@ -342,6 +342,91 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+.factory('Multiselect', [
+    function () {
+        var instance = function () {
+            var areFiltersSet = function () {
+                var areFiltersSet = false;
+                _.forEach(self.filters, function (filterList, filter) {
+                    if (filterList.length > 0) {
+                        areFiltersSet = true;
+                    }
+                });
+                return areFiltersSet;
+            };
+            var resetFilters = function () {
+                _.forEach(self.filters, function (filterList, filter) {
+                    self.filters[filter] = [];
+                });
+            };
+            var getFilterString = function (obj) {
+                var newList = [];
+                _.forEach(self.propertyList, function (property) {
+                    newList.push(obj[property]);
+                });
+                _.forEach(self.propertyFunctionList, function (fn) {
+                    newList.push(fn(obj));
+                });
+                _.forEach(self.propertyDict, function (idFunction, property) {
+                    newList.push(_.map(obj[property], idFunction).join(' '));
+                });
+                return newList.join(' ');
+            };
+            var operate = function (filter, id) {
+                if (_.indexOf(self.filters[filter], id) > -1) {
+                    // remove id
+                    self.filters[filter] = _.filter(self.filters[filter], function (_id) {
+                        return _id != id;
+                    });
+                } else {
+                    // add id
+                    self.filters[filter].push(id);
+                }
+            };
+
+            var self = {
+                filters: {},
+                areFiltersSet: areFiltersSet,
+                resetFilters: resetFilters,
+                operate: operate,
+                getFilterString: getFilterString,
+            };
+            resetFilters(); //Initiate filters
+            return self;
+        };
+
+        return {
+            instance: instance
+        };
+    }
+])
+
+/*
+ * This filter filters all items in an array. If the filterArray is empty, the
+ * array is passed. The filterArray contains numbers of the multiselect, e. g. [1, 3, 4].
+ * Then, all items in the array are passed, if the item_id (get with id_function) matches
+ * one of the ids in filterArray. id_function could also return a list of ids. Example:
+ * Item 1 has two tags with ids [1, 4]. filterArray == [3, 4] --> match
+ */
+.filter('MultiselectFilter', [
+    function () {
+        return function (array, filterArray, idFunction) {
+            if (filterArray.length === 0) {
+                return array;
+            }
+            return Array.prototype.filter.call(array, function (item) {
+                var id = idFunction(item);
+                if (!id) {
+                    return false;
+                } else if (typeof id === 'number') {
+                    id = [id];
+                }
+                return _.intersection(id, filterArray).length > 0;
+            });
+        };
+    }
+])
+
 // Load the django url patterns
 .run([
     'runtimeStates',

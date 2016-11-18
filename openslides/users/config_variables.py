@@ -11,12 +11,12 @@ def get_config_variables():
     # Sorting
     yield ConfigVariable(
         name='users_sort_by',
-        default_value='firstName',
+        default_value='first_name',
         input_type='choice',
         label='Sort name of participants by',
         choices=(
-            {'value': 'firstName', 'display_name': 'First name'},
-            {'value': 'lastName', 'display_name': 'Last name'}),
+            {'value': 'first_name', 'display_name': 'First name'},
+            {'value': 'last_name', 'display_name': 'Last name'}),
         weight=510,
         group='Participants',
         subgroup='General')
