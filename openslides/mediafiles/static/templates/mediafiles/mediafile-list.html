@@ -233,7 +233,9 @@
         <!-- mediafile data colums -->
         <td ng-mouseover="mediafile.hover=true" ng-mouseleave="mediafile.hover=false">
           <strong><a ng-href="{{ mediafile.mediafileUrl }}" target="_blank">{{ mediafile.title_or_filename }}</a></strong>
-          <br><small><i class="fa fa-file"></i> {{ mediafile.filetype }}</small>
+          <br><small><i class="fa fa-file"></i> {{ mediafile.filetype }}
+            <span ng-if="mediafile.mediafile.encrypted">(<translate>Encrypted</translate>)</span>
+          </small>
           <br><small><i class="fa fa-database"></i> {{ mediafile.filesize }}</small>
           <span ng-if="mediafile.private"><br><small><i class="fa fa-lock"></i> <translate>Private</translate></small></span>
           <div os-perms="mediafiles.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !mediafile.hover}">
