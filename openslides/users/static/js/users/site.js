@@ -462,10 +462,12 @@ angular.module('OpenSlidesApp.users.site', [
     'PdfMakeDocumentProvider',
     'gettextCatalog',
     'UserCsvExport',
-    'Multiselect',
+    'osTableFilter',
+    'osTableSort',
+    'gettext',
     function($scope, $state, $http, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
         UserListContentProvider, Config, UserAccessDataListContentProvider, PdfMakeDocumentProvider, gettextCatalog,
-        UserCsvExport, Multiselect) {
+        UserCsvExport, osTableFilter, osTableSort, gettext) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.$watch(function () {
@@ -478,20 +480,46 @@ angular.module('OpenSlidesApp.users.site', [
         });
         $scope.alert = {};
 
-        $scope.multiselect = Multiselect.instance();
-        $scope.multiselect.filters = {
+        // Filtering
+        $scope.filter = osTableFilter.createInstance();
+        $scope.filter.multiselectFilters = {
             group: [],
         };
-        $scope.multiselect.propertyList = ['first_name', 'last_name', 'title', 'number', 'comment', 'structure_level'];
-        $scope.multiselect.PropertyDict = {
+        $scope.filter.propertyList = ['first_name', 'last_name', 'title', 'number', 'comment', 'structure_level'];
+        $scope.filter.propertyDict = {
             'groups_id' : function (group_id) {
                 return Group.get(group_id).name;
             },
         };
+        $scope.filter.booleanFilters = {
+            isPresent: {
+                value: undefined,
+                displayName: gettext('Present'),
+                choiceYes: gettext('Is present'),
+                choiceNo: gettext('Is not present'),
+                needExtraPermission: true,
+            },
+            isActive: {
+                value: undefined,
+                displayName: gettext('Active'),
+                choiceYes: gettext('Is active'),
+                choiceNo: gettext('Is not active'),
+                needExtraPermission: true,
+            },
+            isCommittee: {
+                value: undefined,
+                displayName: gettext('Committee'),
+                choiceYes: gettext('Is committee'),
+                choiceNo: gettext('Is not committee'),
+            },
+
+        };
         $scope.getItemId = {
             group: function (user) {return user.groups_id;},
         };
-        // setup table sorting
+        // Sorting
+        $scope.sort = osTableSort.createInstance();
+        $scope.sort.column = $scope.config('users_sort_by');
         $scope.sortOptions = [
             {name: 'first_name',
              display_name: 'First name'},
@@ -510,39 +538,6 @@ angular.module('OpenSlidesApp.users.site', [
             {name: 'comment',
              display_name: 'Comment'},
         ];
-        $scope.sortColumn = $scope.config('users_sort_by');
-        $scope.filterPresent = '';
-        $scope.reverse = false;
-        // function to sort by clicked column
-        $scope.toggleSort = function ( column ) {
-            if ( $scope.sortColumn === column ) {
-                $scope.reverse = !$scope.reverse;
-            }
-            $scope.sortColumn = column;
-        };
-        // function to operate the multiselectFilter
-        $scope.operateMultiselectFilter = function (filter, id) {
-            if (!$scope.isSelectMode) {
-                $scope.multiselect.operate(filter, id);
-            }
-        };
-        // for reset-button
-        $scope.resetFilters = function () {
-            $scope.multiselect.resetFilters();
-            if ($scope.filter) {
-                $scope.filter.search = '';
-            }
-            $scope.isPresentFilter = undefined;
-            $scope.isActiveFilter = undefined;
-            $scope.isCommitteeFilter = undefined;
-        };
-        $scope.areFiltersSet = function () {
-            return $scope.multiselect.areFiltersSet() ||
-                   $scope.isPresentFilter ||
-                   $scope.isActiveFilter ||
-                   $scope.isCommitteeFilter ||
-                   ($scope.filter ? $scope.filter.search : false);
-        };
 
         // pagination
         $scope.currentPage = 1;

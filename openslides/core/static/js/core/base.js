@@ -796,19 +796,6 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-.filter('osFilter', [
-    function () {
-        return function (array, string, getFilterString) {
-            if (!string) {
-                return array;
-            }
-            return Array.prototype.filter.call(array, function (item) {
-                return getFilterString(item).toLowerCase().indexOf(string.toLowerCase()) > -1;
-            });
-        };
-    }
-])
-
 // mark HTML as "trusted"
 .filter('trusted', [
     '$sce',
@@ -837,7 +824,6 @@ angular.module('OpenSlidesApp.core', [
         return result;
     };
 })
-
 
 // Make sure that the DS factories are loaded by making them a dependency
 .run([

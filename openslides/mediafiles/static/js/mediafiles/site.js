@@ -57,7 +57,10 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
     'User',
     'Projector',
     'ProjectionDefault',
-    function($scope, $http, ngDialog, Mediafile, MediafileForm, User, Projector, ProjectionDefault) {
+    'osTableFilter',
+    'osTableSort',
+    'gettext',
+    function($scope, $http, ngDialog, Mediafile, MediafileForm, User, Projector, ProjectionDefault, osTableFilter, osTableSort, gettext) {
         Mediafile.bindAll({}, $scope, 'mediafiles');
         User.bindAll({}, $scope, 'users');
         $scope.$watch(function() {
@@ -95,44 +98,61 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
 
         updatePresentedMediafiles();
 
-        // setup table sorting
-        $scope.sortColumn = 'title';
-        $scope.filterPresent = '';
-        $scope.reverse = false;
-
-        // function to sort by clicked column
-        $scope.toggleSort = function ( column ) {
-            if ( $scope.sortColumn === column ) {
-                $scope.reverse = !$scope.reverse;
-            }
-            $scope.sortColumn = column;
+        // Filtering
+        $scope.filter = osTableFilter.createInstance();
+        $scope.filter.booleanFilters = {
+            isPrivate: {
+                value: undefined,
+                displayName: gettext('Private'),
+                choiceYes: gettext('Is private'),
+                choiceNo: gettext('Is not private'),
+                needExtraPermission: true,
+            },
+            isPdf: {
+                value: undefined,
+                displayName: gettext('Is PDF'),
+                choiceYes: gettext('Is PDF file'),
+                choiceNo: gettext('Is no PDF file'),
+            },
         };
-        // define custom search filter string
-        $scope.getFilterString = function (mediafile) {
-            return [
-                mediafile.title,
-                mediafile.mediafile.type,
-                mediafile.mediafile.name,
-                mediafile.uploader.get_short_name()
-            ].join(" ");
-        };
+        $scope.filter.propertyList = ['title_or_filename'];
+        $scope.filter.propertyFunctionList = [
+            function (mediafile) {return mediafile.uploader.get_short_name();},
+            function (mediafile) {return mediafile.mediafile.type;},
+            function (mediafile) {return mediafile.mediafile.name;},
+        ];
+        // Sorting
+        $scope.sort = osTableSort.createInstance();
+        $scope.sort.column = 'title_or_filename';
+        $scope.sortOptions = [
+            {name: 'title_or_filename',
+             display_name: 'Title'},
+            {name: 'timestamp',
+             display_name: 'UploadTime'},
+            {name: 'uploader.get_short_name()',
+             display_name: 'Uploader'},
+            {name: 'mediafile.type',
+             display_name: 'Type'},
+            {name: 'filesize',
+             display_name: 'Filesize'},
+        ];
 
         // open new/edit dialog
         $scope.openDialog = function (mediafile) {
             ngDialog.open(MediafileForm.getDialog(mediafile));
         };
 
-        // *** delete mode functions ***
-        $scope.isDeleteMode = false;
+        // *** select mode functions ***
+        $scope.isSelectMode = false;
         // check all checkboxes
         $scope.checkAll = function () {
             angular.forEach($scope.mediafiles, function (mediafile) {
                 mediafile.selected = $scope.selectedAll;
             });
         };
-        // uncheck all checkboxes if isDeleteMode is closed
+        // uncheck all checkboxes if SelectMode is closed
         $scope.uncheckAll = function () {
-            if (!$scope.isDeleteMode) {
+            if (!$scope.isSelectMode) {
                 $scope.selectedAll = false;
                 angular.forEach($scope.mediafiles, function (mediafile) {
                     mediafile.selected = false;
@@ -145,7 +165,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                 if (mediafile.selected)
                     Mediafile.destroy(mediafile.id);
             });
-            $scope.isDeleteMode = false;
+            $scope.isSelectMode = false;
             $scope.uncheckAll();
         };
         // delete single mediafile

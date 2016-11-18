@@ -116,20 +116,20 @@
   <!-- filter users (for user with 'can_see_extra_data' permission) - consider present filter -->
   <div os-perms="users.can_see_extra_data">
     <span ng-repeat="user in $parent.usersFiltered = (users
-      | osFilter: filter.search : multiselect.getFilterString
-      | filter: {is_present: isPresentFilter}
-      | filter: {is_active: isActiveFilter}
-      | filter: {is_committee: isCommitteeFilter}
-      | MultiselectFilter: multiselect.filters.group : getItemId.group
-      | orderBy: sortColumn:reverse)"></span>
+      | osFilter: filter.filterString : filter.getObjectQueryString
+      | filter: {is_present: filter.booleanFilters.isPresent.value}
+      | filter: {is_active: filter.booleanFilters.isActive.value}
+      | filter: {is_committee: filter.booleanFilters.isCommittee.value}
+      | MultiselectFilter: filter.multiselectFilters.group : getItemId.group
+      | orderBy: sort.column: sort.reverse)"></span>
   </div>
   <!-- filter users (for user without 'can_see_extra_data' permission) -->
   <div os-perms="!users.can_see_extra_data"
       ng-repeat="user in $parent.usersFiltered = (users
-      | osFilter: filter.search : multiselect.getFilterString
-      | filter: {is_committee: isCommitteeFilter}
-      | MultiselectFilter: multiselect.filters.group : getItemId.group
-      | orderBy: sortColumn:reverse)"></div>
+      | osFilter: filter.filterString : filter.getObjectQueryString
+      | filter: {is_committee: filter.booleanFilters.isCommittee.value}
+      | MultiselectFilter: filter.multiselectFilters.group : getItemId.group
+      | orderBy: sort.column: sort.reverse)"></div>
 
   <div class="os-table container-fluid">
     <div class="row header-row">
@@ -140,100 +140,62 @@
       <div class="col-xs-11 main-header">
         <span class="form-inline text-right pull-right">
           <!-- reset Filters -->
-          <span class="sort-spacer pointer" ng-click="resetFilters()"
-            ng-if="areFiltersSet()" ng-disabled="isSelectMode"
+          <span class="sort-spacer pointer" ng-click="filter.reset()"
+            ng-if="filter.areFiltersSet()" ng-disabled="isSelectMode"
             ng-class="{'disabled': isSelectMode}">
             <i class="fa fa-times-circle"></i>
             <translate>Filter</translate>
           </span>
           <!-- Group filter -->
-          <span class="dropdown" uib-dropdown>
+          <span uib-dropdown>
             <span class="pointer" id="dropdownGroup" uib-dropdown-toggle
-              ng-class="{'bold': multiselect.filters.group.length > 0, 'disabled': isSelectMode}"
+              ng-class="{'bold': filter.multiselectFilters.group.length > 0, 'disabled': isSelectMode}"
               ng-disabled="isSelectMode">
               <translate>Groups</translate>
               <span class="caret"></span>
             </span>
-            <ul class="dropdown-menu dropdown-menu-right dropdown-entries" aria-labelledby="dropdownGroup">
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownGroup">
               <li ng-repeat="group in groups">
-                <div ng-click="operateMultiselectFilter('group', group.id)">
-                  <i class="fa fa-check" ng-if="multiselect.filters.group.indexOf(group.id) > -1"></i>
+                <a href ng-click="filter.operateMultiselectFilter('group', group.id, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.group.indexOf(group.id) > -1"></i>
                   {{ group.name | translate }}
-                </div>
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href ng-click="filter.operateMultiselectFilter('group', -1, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.group.indexOf(-1) > -1"></i>
+                  <translate>No group set</translate>
+                </a>
               </li>
             </ul>
           </span>
-          <!-- Present filter -->
-          <span class="dropdown" uib-dropdown>
-            <span class="pointer" id="dropdownPresent" uib-dropdown-toggle
-              ng-class="{'bold': isPresentFilter !== undefined, 'disabled': isSelectMode}"
+          <!-- boolean Filters -->
+          <span ng-repeat="(name, booleanFilter) in filter.booleanFilters"
+            ng-if="!booleanFilter.needExtraPermission || operator.hasPerms('users.can_see_extra_data')" uib-dropdown>
+            <span class="pointer" id="dropdown{{ name }}" uib-dropdown-toggle
+              ng-class="{'bold': booleanFilter.value !== undefined, 'disabled': isSelectMode}"
               ng-disabled="isSelectMode">
-              <translate>Present</translate>
+              {{ booleanFilter.displayName }}
               <span class="caret"></span>
             </span>
-            <ul class="dropdown-menu dropdown-menu-right dropdown-entries" aria-labelledby="dropdownPresent">
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown{{ name }}">
               <li>
-                <div ng-click="isPresentFilter = (isPresentFilter ? undefined : true)">
-                  <i class="fa" ng-class="{'fa-check': isPresentFilter === true}"></i>
-                  <translate>Is present</translate>
-                </div>
+                <a href ng-click="booleanFilter.value = (booleanFilter.value ? undefined : true)">
+                  <i class="fa" ng-class="{'fa-check': booleanFilter.value === true}"></i>
+                  {{ booleanFilter.choiceYes }}
+                </a>
               </li>
               <li>
-                <div ng-click="isPresentFilter = (isPresentFilter === false) ? undefined : false">
-                  <i class="fa" ng-class="{'fa-check': isPresentFilter === false}"></i>
-                  <translate>Is not present</translate>
-                </div>
-              </li>
-            </ul>
-          </span>
-          <!-- Active filter -->
-          <span class="dropdown" uib-dropdown>
-            <span class="pointer" id="dropdownActive" uib-dropdown-toggle
-              ng-class="{'bold': isActiveFilter !== undefined, 'disabled': isSelectMode}"
-              ng-disabled="isSelecteMode">
-              <translate>Active</translate>
-              <span class="caret"></span>
-            </span>
-            <ul class="dropdown-menu dropdown-menu-right dropdown-entries" aria-labelledby="dropdownActive">
-              <li>
-                <div ng-click="isActiveFilter = (isActiveFilter ? undefined : true)">
-                  <i class="fa" ng-class="{'fa-check': isActiveFilter === true}"></i>
-                  <translate>Is active</translate>
-                </div>
-              </li>
-              <li>
-                <div ng-click="isActiveFilter = (isActiveFilter === false ? undefined : false)">
-                  <i class="fa" ng-class="{'fa-check': isActiveFilter === false}"></i>
-                  <translate>Is not active</translate>
-                </div>
-              </li>
-            </ul>
-          </span>
-          <!-- Committee filter -->
-          <span class="dropdown" uib-dropdown>
-            <span class="pointer" id="dropdownCommittee" uib-dropdown-toggle
-              ng-class="{'bold': isCommitteeFilter !== undefined, 'disabled': isSelectMode}"
-              ng-disabled="isSelecteMode">
-              <translate>Committee</translate>
-              <span class="caret"></span>
-            </span>
-            <ul class="dropdown-menu dropdown-menu-right dropdown-entries" aria-labelledby="dropdownCommittee">
-              <li>
-                <div ng-click="isCommitteeFilter = (isCommitteeFilter ? undefined : true)">
-                  <i class="fa" ng-class="{'fa-check': isCommitteeFilter === true}"></i>
-                  <translate>Yes</translate>
-                </div>
-              </li>
-              <li>
-                <div ng-click="isCommitteeFilter = (isCommitteeFilter === false ? undefined : false)">
-                  <i class="fa" ng-class="{'fa-check': isCommitteeFilter === false}"></i>
-                  <translate>No</translate>
-                </div>
+                <a href ng-click="booleanFilter.value = (booleanFilter.value === false) ? undefined : false">
+                  <i class="fa" ng-class="{'fa-check': booleanFilter.value === false}"></i>
+                  {{ booleanFilter.choiceNo }}
+                </a>
               </li>
             </ul>
           </span>
           <!-- dropdown sort -->
-          <span class="dropdown" uib-dropdown>
+          <span uib-dropdown>
             <span class="pointer" id="dropdownSort" uib-dropdown-toggle
               ng-class="{'disabled': isSelectMode}"
               ng-disabled="isSelectMode">
@@ -242,14 +204,14 @@
             </span>
             <ul class="dropdown-menu dropdown-menu-right dropdown-entries" aria-labelledby="dropdownSort">
               <li ng-repeat="option in sortOptions">
-                <div ng-click="toggleSort(option.name)">
+                <a href ng-click="sort.toggle(option.name)">
                   {{ option.display_name | translate }}
                   <span class="spacer-right pull-right"></span>
                   <i class="pull-right fa"
-                    ng-style="{'visibility': sortColumn === option.name ? 'visible' : 'hidden'}"
-                    ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+                    ng-style="{'visibility': sort.column === option.name ? 'visible' : 'hidden'}"
+                    ng-class="sort.reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
                   </i>
-                </div>
+                </a>
               </li>
             </ul>
           </span>
@@ -257,7 +219,7 @@
           <span class="form-group">
             <span class="input-group">
               <span class="input-group-addon"><i class="fa fa-search"></i></span>
-              <input type="text" ng-model="filter.search" class="form-control" ng-model-options="{debounce: 500}" 
+              <input type="text" ng-model="filter.filterString" class="form-control" ng-model-options="{debounce: 500}" 
                  placeholder="{{ 'Search' | translate}}" ng-disabled="isSelectMode">
             </span>
           </span>
@@ -265,39 +227,29 @@
         <!-- show all selected multiselectoptions -->
         <span>
           <span ng-repeat="group in groups" class="pointer spacer-left-lg"
-            ng-if="multiselect.filters.group.indexOf(group.id) > -1"
-            ng-click="operateMultiselectFilter('group', group.id)"
+            ng-if="filter.multiselectFilters.group.indexOf(group.id) > -1"
+            ng-click="filter.operateMultiselectFilter('group', group.id, isSelectMode)"
             ng-class="{'disabled': isSelectMode}">
             <span class="nobr">
               <i class="fa fa-times-circle"></i>
               {{ group.name | translate }}
             </span>
           </span>
-          <span ng-hide="isPresentFilter === undefined"
-            class="pointer spacer-left-lg"
-            ng-click="isPresentFilter = undefined;"
+          <span ng-if="filter.multiselectFilters.group.indexOf(-1) > -1" class="pointer spacer-left-lg"
+            ng-click="filter.operateMultiselectFilter('group', -1, isSelectMode)"
             ng-class="{'disabled': isSelectMode}">
-            <span class="nobr">
-              <i class="fa fa-times-circle"></i>
-              {{ isPresentFilter ? 'Is present' : 'Is not present' | translate }}
-            </span>
+            <i class="fa fa-times-circle"></i>
+            <translate>No group set</translate>
           </span>
-          <span ng-hide="isActiveFilter === undefined"
+          <!-- for all boolean Filters -->
+          <span ng-repeat="(name, booleanFilter) in filter.booleanFilters"
+            ng-hide="booleanFilter.value === undefined"
             class="pointer spacer-left-lg"
-            ng-click="isActiveFilter = undefined;"
+            ng-click="booleanFilter.value = undefined;"
             ng-class="{'disabled': isSelectMode}">
             <span class="nobr">
               <i class="fa fa-times-circle"></i>
-              {{ isActiveFilter ? 'Is active' : 'Is not active' | translate }}
-            </span>
-          </span>
-          <span ng-hide="isCommitteeFilter === undefined"
-            class="pointer spacer-left-lg"
-            ng-click="isCommitteeFilter = undefined;"
-            ng-class="{'disabled': isSelectMode}">
-            <span class="nobr">
-              <i class="fa fa-times-circle"></i>
-              {{ isCommitteeFilter ? 'Is committee' : 'Is not committee' | translate }}
+              {{ booleanFilter.value ? booleanFilter.choiceYes : booleanFilter.choiceNo | translate }}
             </span>
           </span>
         </span>
@@ -350,13 +302,9 @@
           </div>
         </div>
       </div>
+
       <!-- additional content column -->
-      <style>
-        .os-table .row .col-xs-4 {
-          width: calc(50% - {{ isSelectMode ? '120' : '70' }}px);
-        }
-      </style>
-      <div class="col-xs-4 content">
+      <div class="col-xs-4 content" ng-style="{'width': isSelectMode ? 'calc(50% - 120px)' : 'calc(50% - 70px)'}">
         <div style="width: 60%;" class="optional">
           <small>
             <!-- Group dropdown for manage user -->
@@ -378,12 +326,12 @@
                     <i class="fa fa-cog fa-lg spcaer-left" ng-show="user.groupHover"></i>
                   </span>
                 </span>
-                <ul class="dropdown-menu dropdown-entries" aria-labelledby="dropdown-group{{ user.id }}">
+                <ul class="dropdown-menu" aria-labelledby="dropdown-group{{ user.id }}">
                   <li ng-repeat="group in groups">
-                    <div ng-click="toggleGroup(user, group)">
+                    <a href ng-click="toggleGroup(user, group)">
                       <i class="fa fa-check" ng-if="inArray(user.groups_id, group.id)"></i>
                       {{ group.name | translate }}
-                    </div>
+                    </a>
                   </li>
                 </ul>
               </span>
@@ -409,7 +357,7 @@
         </div>
         <div style="width: 40%;" class="pull-right" os-perms="users.can_see_extra_data">
           <div os-perms="users.can_manage">
-            <span class="pointer" ng-click="user.is_present = !user.is_present; save(user);">
+            <span class="pointer nobr" ng-click="user.is_present = !user.is_present; save(user);">
               <i class="fa" ng-class="user.is_present ? 'fa-check-square-o' : 'fa-square-o'"></i>
               <span class="spacer-left" translate>Present</span>
             </span>

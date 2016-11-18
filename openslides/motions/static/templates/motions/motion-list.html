@@ -29,16 +29,16 @@
 <div class="details">
   <div class="row">
     <div class="col-sm-12">
-      <!-- delete mode -->
+      <!-- select mode -->
       <button os-perms="motions.can_manage" class="btn"
-          ng-class="$parent.isDeleteMode ? 'btn-primary' : 'btn-default'"
-          ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
+          ng-class="$parent.isSelectMode ? 'btn-primary' : 'btn-default'"
+          ng-click="$parent.isSelectMode = !$parent.isSelectMode; uncheckAll()">
         <i class="fa fa-check-square-o"></i>
         <translate>Select ...</translate>
       </button>
       <!-- Export dropdown -->
       <div class="dropdown pull-right" uib-dropdown>
-        <button type=button" class="btn btn-default" id="dropdownExport" uib-dropdown-toggle>
+        <button type="button" class="btn btn-default" id="dropdownExport" uib-dropdown-toggle>
           <i class="fa fa-upload"></i>
           <span ng-if="motionsFiltered.length == motions.length" translate>
             Export all
@@ -76,10 +76,10 @@
     </div>
   </div>
 
-  <div uib-collapse="!isDeleteMode" class="row spacer">
+  <div uib-collapse="!isSelectMode" class="row spacer">
     <div class="col-sm-12 text-left">
       <!-- delete button -->
-      <a ng-show="isDeleteMode" os-perms="motions.can_manage"
+      <a ng-show="isSelectMode" os-perms="motions.can_manage"
         ng-bootbox-confirm="{{ 'Are you sure you want to delete all selected motions?' | translate }}"
         ng-bootbox-confirm-action="deleteMultiple()"
         class="btn btn-primary">
@@ -95,125 +95,144 @@
     {{(motions|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
   </div>
 
-  <div id="motion-os-table" class="os-table container-fluid">
+  <div class="os-table container-fluid">
     <div class="row header-row">
-      <div class="col-xs-1 centered" ng-show="isDeleteMode">
+      <div class="col-xs-1 centered" ng-show="isSelectMode">
         <i class="fa text-danger pointer" ng-class=" selectedAll ? 'fa-check-square-o' : 'fa-square-o'"
           ng-click="checkAll()"></i>
       </div>
       <div class="col-xs-11 main-header">
         <span class="form-inline text-right pull-right">
-          <span class="sort-spacer pointer" ng-click="resetFilters()"
-            ng-if="areFiltersSet()" ng-disabled="isDeleteMode"
-            ng-class="{'disabled': isDeleteMode}">
+          <!-- clear all filters -->
+          <span class="sort-spacer pointer" ng-click="filter.reset()"
+            ng-if="filter.areFiltersSet()" ng-disabled="isSelectMode"
+            ng-class="{'disabled': isSelectMode}">
             <i class="fa fa-times-circle"></i>
             <translate>Filter</translate>
           </span>
           <!-- State filter -->
-          <span class="dropdown" uib-dropdown>
+          <span uib-dropdown>
             <span class="pointer" id="dropdownState" uib-dropdown-toggle
-              ng-class="{'bold': multiselect.filters.state.length > 0, 'disabled': isDeleteMode}"
-              ng-disabled="isDeleteMode">
+              ng-class="{'bold': filter.multiselectFilters.state.length > 0, 'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
               <translate>State</translate>
               <span class="caret"></span>
             </span>
-            <ul class="dropdown-menu dropdown-menu-right dropdown-entries" aria-labelledby="dropdownState">
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownState">
               <li ng-repeat="state in states" ng-class="state.workflowHeader ? 'dropdown-header' : ''">
-                <div ng-if="state.workflowHeader">
+                <a ng-if="state.workflowHeader">
                   {{ state.name | translate }}
-                </div>
-                <div ng-if="!state.workflowHeader"
-                  ng-click="operateMultiselectFilter('state', state.id)">
-                  <i class="fa fa-check" ng-if="multiselect.filters.state.indexOf(state.id) > -1"></i>
+                </a>
+                <a href ng-if="!state.workflowHeader"
+                  ng-click="filter.operateMultiselectFilter('state', state.id, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.state.indexOf(state.id) > -1"></i>
                   {{ state.name | translate }}
-                </div>
+                </a>
               </li>
             </ul>
           </span>
           <!-- Category filter -->
-          <span class="dropdown" uib-dropdown ng-if="categories.length > 0">
+          <span uib-dropdown ng-if="categories.length > 0">
             <span class="pointer" id="dropdownCategory" uib-dropdown-toggle
-              ng-class="{'bold': multiselect.filters.category.length > 0, 'disabled': isDeleteMode}"
-              ng-disabled="isDeleteMode">
+              ng-class="{'bold': filter.multiselectFilters.category.length > 0, 'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
               <translate>Category</translate>
               <span class="caret"></span>
             </span>
-            <ul class="dropdown-menu dropdown-menu-right dropdown-entries"
-              aria-labelledby="dropdownCategory">
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCategory">
               <li ng-repeat="category in categories">
-                <div ng-click="operateMultiselectFilter('category', category.id)">
-                  <i class="fa fa-check" ng-if="multiselect.filters.category.indexOf(category.id) > -1"></i>
+                <a href ng-click="filter.operateMultiselectFilter('category', category.id, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.category.indexOf(category.id) > -1"></i>
                   {{ category.name }}
-                </div>
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href ng-click="filter.operateMultiselectFilter('category', -1, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.category.indexOf(-1) > -1"></i>
+                  <translate>No category set</translate>
+                </a>
               </li>
             </ul>
           </span>
           <!-- Motion block filter -->
-          <span class="dropdown" uib-dropdown ng-if="motionBlocks.length > 0">
+          <span uib-dropdown ng-if="motionBlocks.length > 0">
             <span class="pointer" id="dropdownBlock" uib-dropdown-toggle
-              ng-class="{'bold': multiselect.filters.motionBlock.length > 0, 'disabled': isDeleteMode}"
-              ng-disabled="isDeleteMode">
+              ng-class="{'bold': filter.multiselectFilters.motionBlock.length > 0, 'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
               <translate>Motion block</translate>
               <span class="caret"></span>
             </span>
-            <ul class="dropdown-menu dropdown-menu-right dropdown-entries"
-              aria-labelledby="dropdownBlock">
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownBlock">
               <li ng-repeat="block in motionBlocks">
-                <div ng-click="operateMultiselectFilter('motionBlock', block.id)">
-                  <i class="fa fa-check" ng-if="multiselect.filters.motionBlock.indexOf(block.id) > -1"></i>
+                <a href ng-click="filter.operateMultiselectFilter('motionBlock', block.id, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.motionBlock.indexOf(block.id) > -1"></i>
                   {{ block.title }}
-                </div>
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href ng-click="filter.operateMultiselectFilter('motionBlock', -1, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.motionBlock.indexOf(-1) > -1"></i>
+                  <translate>No motion block set</translate>
+                </a>
               </li>
             </ul>
           </span>
           <!-- Tag filter -->
-          <span class="dropdown" uib-dropdown ng-if="tags.length > 0">
+          <span uib-dropdown ng-if="tags.length > 0">
             <span class="pointer" id="dropdownTag" uib-dropdown-toggle
-              ng-class="{'bold': multiselect.filters.tag.length > 0, 'disabled': isDeleteMode}"
-              ng-disabled="isDeleteMode">
+              ng-class="{'bold': filter.multiselectFilters.tag.length > 0, 'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
               <translate>Tag</translate>
               <span class="caret"></span>
             </span>
-            <ul class="dropdown-menu dropdown-menu-right dropdown-entries"
-              aria-labelledby="dropdownTag">
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownTag">
               <li ng-repeat="tag in tags">
-                <div ng-click="operateMultiselectFilter('tag', tag.id)">
-                  <i class="fa fa-check" ng-if="multiselect.filters.tag.indexOf(tag.id) > -1"></i>
+                <a href ng-click="filter.operateMultiselectFilter('tag', tag.id, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.tag.indexOf(tag.id) > -1"></i>
                   {{ tag.name }}
-                </div>
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href ng-click="filter.operateMultiselectFilter('tag', -1, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.tag.indexOf(-1) > -1"></i>
+                  <translate>No tag set</translate>
+                </a>
               </li>
             </ul>
           </span>
           <!-- dropdown sort -->
-          <span class="dropdown" uib-dropdown>
+          <span uib-dropdown>
             <span class="pointer" id="dropdownSort" uib-dropdown-toggle
-              ng-class="{'disabled': isDeleteMode}"
-              ng-disabled="isDeleteMode">
+              ng-class="{'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
               <translate>Sort</translate>
               <span class="caret"></span>
             </span>
-            <ul class="dropdown-menu dropdown-menu-right dropdown-entries" aria-labelledby="dropdownSort">
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownSort">
               <!-- item -->
               <li>
-                <div ng-click="toggleSort('agenda_item.getItemNumberWithAncestors()')">
+                <a href ng-click="sort.toggle('agenda_item.getItemNumberWithAncestors()')">
                   <translate translate-comment="short form of agenda item">Item</translate>
                   <span class="spacer-right pull-right"></span>
                   <i class="pull-right fa"
-                    ng-style="{'visibility': sortColumn === 'agenda_item.getItemNumberWithAncestors()' ? 'visible' : 'hidden'}"
-                    ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+                    ng-style="{'visibility': sort.column === 'agenda_item.getItemNumberWithAncestors()' ? 'visible' : 'hidden'}"
+                    ng-class="sort.reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
                   </i>
-                </div>
+                </a>
               </li>
               <!-- all other sortOptions -->
               <li ng-repeat="option in sortOptions">
-                <div ng-click="toggleSort(option.name)">
+                <a href ng-click="sort.toggle(option.name)">
                 {{ option.display_name | translate }}
                 <span class="spacer-right pull-right"></span>
                   <i class="pull-right fa"
-                    ng-style="{'visibility': sortColumn === option.name ? 'visible' : 'hidden'}"
-                    ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+                    ng-style="{'visibility': sort.column === option.name ? 'visible' : 'hidden'}"
+                    ng-class="sort.reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
                   </i>
-                </div>
+                </a>
               </li>
             </ul>
           </span>
@@ -221,48 +240,70 @@
           <span class="form-group">
             <span class="input-group">
               <span class="input-group-addon"><i class="fa fa-search"></i></span>
-              <input type="text" ng-model="filter.search" class="form-control"
-                 placeholder="{{ 'Search' | translate}}" ng-disabled="isDeleteMode">
+              <input type="text" ng-model="filter.filterString" class="form-control"
+                 placeholder="{{ 'Search' | translate}}" ng-disabled="isSelectMode">
             </span>
           </span>
         </span>
         <!-- show all selected multiselectoptions -->
         <span>
+          <!-- state -->
           <span ng-repeat="state in states" class="pointer spacer-left-lg"
-            ng-if="!state.workflowHeader && multiselect.filters.state.indexOf(state.id) > -1"
-            ng-click="operateMultiselectFilter('state', state.id)"
-            ng-class="{'disabled': isDeleteMode}">
+            ng-if="!state.workflowHeader && filter.multiselectFilters.state.indexOf(state.id) > -1"
+            ng-click="filter.operateMultiselectFilter('state', state.id, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
             <span class="nobr">
               <i class="fa fa-times-circle"></i>
               {{ state.name | translate }}
             </span>
           </span>
+          <!-- category -->
           <span ng-repeat="category in categories" class="pointer spacer-left-lg"
-            ng-if="multiselect.filters.category.indexOf(category.id) > -1"
-            ng-click="operateMultiselectFilter('category', category.id)"
-            ng-class="{'disabled': isDeleteMode}">
+            ng-if="filter.multiselectFilters.category.indexOf(category.id) > -1"
+            ng-click="filter.operateMultiselectFilter('category', category.id, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
             <span class="nobr">
               <i class="fa fa-times-circle"></i>
               {{ category.name }}
             </span>
           </span>
+          <span ng-if="filter.multiselectFilters.category.indexOf(-1) > -1" class="pointer spacer-left-lg"
+            ng-click="filter.operateMultiselectFilter('category', -1, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
+            <i class="fa fa-times-circle"></i>
+            <translate>No category set</translate>
+          </span>
+          <!-- motion block -->
           <span ng-repeat="motionBlock in motionBlocks" class="pointer spacer-left-lg"
-            ng-if="multiselect.filters.motionBlock.indexOf(motionBlock.id) > -1"
-            ng-click="operateMultiselectFilter('motionBlock', motionBlock.id)"
-            ng-class="{'disabled': isDeleteMode}">
+            ng-if="filter.multiselectFilters.motionBlock.indexOf(motionBlock.id) > -1"
+            ng-click="filter.operateMultiselectFilter('motionBlock', motionBlock.id, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
             <span class="nobr">
               <i class="fa fa-times-circle"></i>
               {{ motionBlock.title }}
             </span>
           </span>
+          <span ng-if="filter.multiselectFilters.motionBlock.indexOf(-1) > -1" class="pointer spacer-left-lg"
+            ng-click="filter.operateMultiselectFilter('motionBlock', -1, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
+            <i class="fa fa-times-circle"></i>
+            <translate>No motion block set</translate>
+          </span>
+          <!-- tags -->
           <span ng-repeat="tag in tags" class="pointer spacer-left-lg"
-            ng-if="multiselect.flters.tag.indexOf(tag.id) > -1"
-            ng-click="operateMultiselectFilter('tag', tag.id)"
-            ng-class="{'disabled': isDeleteMode}">
+            ng-if="filter.multiselectFilters.tag.indexOf(tag.id) > -1"
+            ng-click="filter.operateMultiselectFilter('tag', tag.id, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
             <span class="nobr">
               <i class="fa fa-times-circle"></i>
               {{ tag.name }}
             </span>
+          </span>
+          <span ng-if="filter.multiselectFilters.tag.indexOf(-1) > -1" class="pointer spacer-left-lg"
+            ng-click="filter.operateMultiselectFilter('tag', -1, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
+            <i class="fa fa-times-circle"></i>
+            <translate>No tag set</translate>
           </span>
         </span>
       </div>
@@ -273,16 +314,16 @@
       ng-mouseleave="motion.hover=false"
       ng-class="{'projected': motion.isProjected().length}"
       ng-repeat="motion in motionsFiltered = (motions
-        | osFilter: filter.search : multiselect.getFilterString
-        | MultiselectFilter: multiselect.filters.state : getItemId.state
-        | MultiselectFilter: multiselect.filters.category : getItemId.category
-        | MultiselectFilter: multiselect.filters.motionBlock : getItemId.motionBlock
-        | MultiselectFilter: multiselect.filters.tag : getItemId.tag
+        | osFilter: filter.filterString : filter.getObjectQueryString
+        | MultiselectFilter: filter.multiselectFilters.state : getItemId.state
+        | MultiselectFilter: filter.multiselectFilters.category : getItemId.category
+        | MultiselectFilter: filter.multiselectFilters.motionBlock : getItemId.motionBlock
+        | MultiselectFilter: filter.multiselectFilters.tag : getItemId.tag
         | toArray
-        | orderBy: sortColumn : reverse)">
+        | orderBy: sort.column : sort.reverse)">
 
       <!-- select column -->
-      <div ng-show="isDeleteMode" os-perms="motions.can_manage" class="col-xs-1 centered">
+      <div ng-show="isSelectMode" os-perms="motions.can_manage" class="col-xs-1 centered">
         <i class="fa text-danger pointer" ng-click="motion.selected=!motion.selected"
         ng-class="motion.selected ? 'fa-check-square-o' : 'fa-square-o'"></i>
       </div>
@@ -293,12 +334,12 @@
       </div>
       <!-- main content column -->
       <div class="col-xs-6 content">
-        <div class="identifier-col">
+        <div class="id-col">
           <span ng-show="motion.identifier">
             {{ motion.identifier }}
           </span>
         </div>
-        <div class="title-col">
+        <div>
           <!-- ID and title -->
           <div>
             <strong>
@@ -310,8 +351,8 @@
                 {{ motion.getStateName() }}
               </span>
               <span os-perms="motions.can_manage" ng-class="{'hiddenDiv': !motion.stateHover}" uib-dropdown>
-                <i class="fa fa-cog pointer" uib-dropdown-toggle id="state-dropdown{{ motion.id }}"></i>
-                <ul uib-dropdown-menu aria-labelledby="state-dropdown{{ motion.id }}">
+                <i class="fa fa-cog pointer" uib-dropdown-toggle id="stateDropdown{{ motion.id }}"></i>
+                <ul class="dropdown-menu" aria-labelledby="stateDropdown{{ motion.id }}">
                   <li ng-repeat="state in motion.state.getNextStates()">
                     <a href ng-click="updateState(motion, state.id)">{{ state.action_word | translate }}</a>
                   </li>
@@ -353,12 +394,7 @@
         </div>
       </div>
       <!-- additional content column -->
-      <style>
-        #motion-table .row .col-xs-4 {
-          width: calc(50% - {{ isDeleteMode ? '120' : '70' }}px);
-        }
-      </style>
-      <div class="col-xs-4 content">
+      <div class="col-xs-4 content" ng-style="{'width': isSelectMode ? 'calc(50% - 120px)' : 'calc(50% - 70px)'}">
         <div style="width: 60%;" class="optional">
           <small>
             <!-- Category dropdown for manage user -->
@@ -366,7 +402,7 @@
                 ng-mouseover="motion.categoryHover=true"
                 ng-mouseleave="motion.categoryHover=false">
               <span uib-dropdown>
-                <span id="dropdown-category{{ motion.id }}" class="pointer"
+                <span id="dropdownCategory{{ motion.id }}" class="pointer"
                   uib-dropdown-toggle uib-tooltip="{{ 'Set a category' | translate }}"
                   tooltip-class="nobr">
                   <span ng-if="motion.category == null" ng-show="motion.hover">
@@ -379,12 +415,12 @@
                     <i class="fa fa-cog fa-lg spacer-left" ng-show="motion.categoryHover"></i>
                   </span>
                 </span>
-                <ul class="dropdown-menu dropdown-entries" aria-labelledby="dropdown-category{{ motion.id }}">
+                <ul class="dropdown-menu" aria-labelledby="dropdownCategory{{ motion.id }}">
                   <li ng-repeat="category in categories">
-                    <div ng-click="toggle_category(motion, category)">
+                    <a href ng-click="toggleCategory(motion, category)">
                       <i class="fa fa-check" ng-if="category.id == motion.category.id"></i>
                       {{ category.name }}
-                    </div>
+                    </a>
                   </li>
                 </ul>
               </span>
@@ -400,7 +436,7 @@
                 ng-mouseover="motion.motionBlockHover=true"
                 ng-mouseleave="motion.motionBlockHover=false">
               <span uib-dropdown>
-                <span id="dropdown-motionBlock{{ motion.id }}" class="pointer"
+                <span id="dropdownMotionBlock{{ motion.id }}" class="pointer"
                   uib-dropdown-toggle uib-tooltip="{{ 'Set a motion block' | translate }}"
                   tooltip-class="nobr">
                   <span ng-if="motion.motionBlock == null" ng-show="motion.hover">
@@ -413,12 +449,12 @@
                     <i class="fa fa-cog fa-lg spacer-left" ng-show="motion.motionBlockHover"></i>
                   </span>
                 </span>
-                <ul class="dropdown-menu dropdown-entries" aria-labelledby="dropdown-motionBlock{{ motion.id }}">
+                <ul class="dropdown-menu" aria-labelledby="dropdownMotionBlock{{ motion.id }}">
                   <li ng-repeat="motionBlock in motionBlocks">
-                    <div ng-click="toggle_motionBlock(motion, motionBlock)">
+                    <a href ng-click="toggleMotionBlock(motion, motionBlock)">
                       <i class="fa fa-check" ng-if="motionBlock.id == motion.motionBlock.id"></i>
                       {{ motionBlock.title }}
-                    </div>
+                    </a>
                   </li>
                 </ul>
               </span>
@@ -434,7 +470,7 @@
                 ng-mouseover="motion.tagHover=true"
                 ng-mouseleave="motion.tagHover=false">
               <span uib-dropdown>
-                <span id="dropdown-tags{{ motion.id }}" class="pointer"
+                <span id="dropdownTags{{ motion.id }}" class="pointer"
                   uib-dropdown-toggle uib-tooltip="{{ 'Add a tag' | translate }}"
                   tooltip-class="nobr">
                   <span ng-if="motion.tags.length == 0" ng-show="motion.hover">
@@ -449,12 +485,12 @@
                     <i class="fa fa-cog fa-lg spacer-left" ng-show="motion.tagHover"></i>
                   </span>
                 </span>
-                <ul class="dropdown-menu dropdown-entries" aria-labelledby="dropdown-tags{{ motion.id }}">
+                <ul class="dropdown-menu" aria-labelledby="dropdownTags{{ motion.id }}">
                   <li ng-repeat="tag in tags">
-                    <div ng-click="toggle_tag(motion, tag)">
-                      <i class="fa fa-check" ng-if="has_tag(motion, tag)"></i>
+                    <a href ng-click="toggleTag(motion, tag)">
+                      <i class="fa fa-check" ng-if="hasTag(motion, tag)"></i>
                       {{ tag.name }}
-                    </div>
+                    </a>
                   </li>
                 </ul>
               </span>
@@ -475,7 +511,7 @@
           </small>
         </div>
         <div style="width: 10%;" class="pull-right optional">
-          <div class="pull-right" ng-if="config('motions_min_supporters') != 0"
+          <div class="centered" ng-if="config('motions_min_supporters') != 0"
             uib-tooltip="{{ motion.supporters.length }} {{ 'Supporters' | translate }}
             {{ (config('motions_min_supporters') - motion.supporters.length) > 0 ? '(' +  (config('motions_min_supporters') - motion.supporters.length) + ' ' + ('needed' | translate) + ')': '' }}"
             tooltip-class="nobr">
