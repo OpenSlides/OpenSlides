@@ -239,15 +239,14 @@ angular.module('OpenSlidesApp.motions', [
 
                     return html;
                 },
-                getTextWithChangeRecommendations: function (versionId, statusCompareCb) {
+                _getTextWithChangeRecommendations: function (versionId, statusCompareCb) {
                     var lineLength = Config.get('motions_line_length').value,
                         html = this.getVersion(versionId).text,
-                        changes = this.getChangeRecommendations(versionId, 'DESC'),
-                        fragment;
+                        changes = this.getChangeRecommendations(versionId, 'DESC');
 
                     for (var i = 0; i < changes.length; i++) {
                         var change = changes[i];
-                        if (statusCompareCb === undefined || statusCompareCb(change.status)) {
+                        if (statusCompareCb === undefined || statusCompareCb(change.rejected)) {
                             html = lineNumberingService.insertLineNumbers(html, lineLength);
                             html = diffService.replaceLines(html, change.text, change.line_from, change.line_to);
                         }
@@ -255,9 +254,14 @@ angular.module('OpenSlidesApp.motions', [
 
                     return lineNumberingService.insertLineNumbers(html, lineLength);
                 },
-                getTextWithAcceptedChangeRecommendations: function (versionId) {
-                    return this.getTextWithChangeRecommendations(versionId, function(status) {
-                        return (status == 1);
+                getTextWithAllChangeRecommendations: function (versionId) {
+                    return this._getTextWithChangeRecommendations(versionId, function() {
+                        return true;
+                    });
+                },
+                getTextWithoutRejectedChangeRecommendations: function (versionId) {
+                    return this._getTextWithChangeRecommendations(versionId, function(rejected) {
+                        return !rejected;
                     });
                 },
                 getTextByMode: function(mode, versionId) {
@@ -280,10 +284,10 @@ angular.module('OpenSlidesApp.motions', [
                             text += this.getTextRemainderAfterLastChangeRecommendation(versionId, changes);
                             break;
                         case 'changed':
-                            text = this.getTextWithChangeRecommendations(versionId);
+                            text = this.getTextWithAllChangeRecommendations(versionId);
                             break;
                         case 'agreed':
-                            text = this.getTextWithAcceptedChangeRecommendations(versionId);
+                            text = this.getTextWithoutRejectedChangeRecommendations(versionId);
                             break;
                     }
                     return text;
