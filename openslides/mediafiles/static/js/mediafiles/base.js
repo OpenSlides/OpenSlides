@@ -53,7 +53,7 @@ angular.module('OpenSlidesApp.mediafiles', [])
                     return _.includes(VIDEO_FILE_TYPES, filetype);
                 }],
                 is_presentable: ['is_pdf', 'is_image', 'is_video', function (is_pdf, is_image, is_video) {
-                    return is_pdf || is_image || is_video;
+                    return (is_pdf && !this.mediafile.encrypted) || is_image || is_video;
                 }],
                 mediafileUrl: [function () {
                     return this.media_url_prefix + this.mediafile.name;
