@@ -89,17 +89,3 @@ class TestUserLoginView(TestCase):
             {'username': 'wrong', 'password': 'wrong'})
 
         self.assertEqual(response.status_code, 400)
-
-
-class TestUsersPasswordsPDF(TestCase):
-    def test_get(self):
-        """
-        Tests that the view returns the status code 200.
-        """
-        self.client.login(username='admin', password='admin')
-        response = self.client.get('/users/passwords/print/')
-
-        self.assertEqual(
-            response.status_code,
-            200,
-            "The status code of the user password PDF view should be 200.")
