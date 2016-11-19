@@ -315,6 +315,17 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             $content.on("mouseover", ".line-numbers-outside .os-line-number.selectable", obj.mouseOver);
             $content.on("mouseover", ".motion-text-original", obj.startCreating);
 
+            $scope.$watch(function () {
+                return $scope.change_recommendations.length;
+            }, function () {
+                if (obj.mode == MODE_INACTIVE || obj.mode == MODE_SELECTING_FROM) {
+                    // Recalculate the affected lines so we cannot select lines affected by a recommendation
+                    // that has just been created
+                    $(".motion-text-original .os-line-number").removeClass("selected selectable");
+                    obj.startCreating();
+                }
+            });
+
             $scope.$on("$destroy", function () {
                 obj.destroy();
             });
