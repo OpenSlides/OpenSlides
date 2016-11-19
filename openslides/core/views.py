@@ -204,13 +204,20 @@ class ProjectorViewSet(ModelViewSet):
             result = False
         return result
 
-    # Assign all ProjectionDefault objects from this projector to the default projector (pk=1).
     def destroy(self, *args, **kwargs):
+        """
+        REST API operation for DELETE requests.
+
+        Assigns all ProjectionDefault objects from this projector to the
+        default projector (pk=1). Resets broadcast if set to this projector.
+        """
         projector_instance = self.get_object()
         for projection_default in ProjectionDefault.objects.all():
             if projection_default.projector.id == projector_instance.id:
                 projection_default.projector_id = 1
                 projection_default.save()
+        if config['projector_broadcast'] == projector_instance.pk:
+            config['projector_broadcast'] = 0
         return super(ProjectorViewSet, self).destroy(*args, **kwargs)
 
     @detail_route(methods=['post'])
