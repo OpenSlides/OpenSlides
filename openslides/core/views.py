@@ -205,12 +205,15 @@ class ProjectorViewSet(ModelViewSet):
         return result
 
     # Assign all ProjectionDefault objects from this projector to the default projector (pk=1).
+    # If this projector is broadcasted disable broadcasting
     def destroy(self, *args, **kwargs):
         projector_instance = self.get_object()
         for projection_default in ProjectionDefault.objects.all():
             if projection_default.projector.id == projector_instance.id:
                 projection_default.projector_id = 1
                 projection_default.save()
+        if config['projector_broadcast'] == projector_instance.id:
+            config['projector_broadcast'] = 0
         return super(ProjectorViewSet, self).destroy(*args, **kwargs)
 
     @detail_route(methods=['post'])
