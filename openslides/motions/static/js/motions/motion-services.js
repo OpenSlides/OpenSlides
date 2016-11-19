@@ -304,6 +304,10 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             version = _version;
         };
 
+        obj.editDialog = function(change_recommendation) {
+            ngDialog.open(ChangeRecommendationForm.getEditDialog(change_recommendation));
+        };
+
         obj.init = function (_scope, _motion) {
             $scope = _scope;
             motion = _motion;

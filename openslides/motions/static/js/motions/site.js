@@ -311,6 +311,20 @@ angular.module('OpenSlidesApp.motions.site', [
                     }
                 };
             },
+            getEditDialog: function(change) {
+                return {
+                    template: 'static/templates/motions/change-recommendation-form.html',
+                    controller: 'ChangeRecommendationUpdateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: {
+                        change: function() {
+                            return change;
+                        }
+                    }
+                };
+            },
             // angular-formly fields for motion form
             getFormFields: function (line_from, line_to) {
                 return [
@@ -1228,6 +1242,39 @@ angular.module('OpenSlidesApp.motions.site', [
         // PDF creating functions
         $scope.pdfExport = MotionPDFExport;
         $scope.pdfExport.init($scope);
+    }
+])
+
+.controller('ChangeRecommendationUpdateCtrl', [
+    '$scope',
+    'MotionChangeRecommendation',
+    'ChangeRecommendationForm',
+    'change',
+    function ($scope, MotionChangeRecommendation, ChangeRecommendationForm, change) {
+        $scope.alert = {};
+        $scope.model = angular.copy(change);
+
+        // get all form fields
+        $scope.formFields = ChangeRecommendationForm.getFormFields(change.line_from, change.line_to);
+        // save motion
+        $scope.save = function (change) {
+            // inject the changed change recommendation (copy) object back into DS store
+            MotionChangeRecommendation.inject(change);
+            // save changed change recommendation object on server
+            MotionChangeRecommendation.save(change, { method: 'PATCH' }).then(
+                function(success) {
+                    $scope.closeThisDialog();
+                },
+                function (error) {
+                    MotionChangeRecommendation.refresh(change);
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
+                }
+            );
+        };
     }
 ])
 
