@@ -1248,7 +1248,7 @@ angular.module('OpenSlidesApp.core.site', [
         };
         $scope.removeIdentifierMessages = function () {
             Projector.getAll().forEach(function (projector) {
-                angular.forEach(projector.elements, function (uuid, value) {
+                angular.forEach(projector.elements, function (value, uuid) {
                     if (value.name == 'core/message' && value.type == 'identify') {
                         $http.post('/rest/core/projector/' + projector.id + '/deactivate_elements/', [uuid]);
                     }
