@@ -39,12 +39,22 @@ from ..utils.search import search
 from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,
+    CountdownAccessPermissions,
     ProjectorAccessPermissions,
+    ProjectorMessageAccessPermissions,
     TagAccessPermissions,
 )
 from .config import config
 from .exceptions import ConfigError, ConfigNotFound
-from .models import ChatMessage, ConfigStore, ProjectionDefault, Projector, Tag
+from .models import (
+    ChatMessage,
+    ConfigStore,
+    Countdown,
+    ProjectionDefault,
+    Projector,
+    ProjectorMessage,
+    Tag,
+)
 
 
 # Special Django views
@@ -707,6 +717,50 @@ class ChatMessageViewSet(ModelViewSet):
         # Trigger autoupdate and setup response.
         inform_deleted_data(*args)
         return Response({'detail': _('All chat messages deleted successfully.')})
+
+
+class ProjectorMessageViewSet(ModelViewSet):
+    """
+    API endpoint for messages.
+
+    There are the following views: list, retrieve, create, update and destroy.
+    """
+    access_permissions = ProjectorMessageAccessPermissions()
+    queryset = ProjectorMessage.objects.all()
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action in ('create', 'update', 'destroy'):
+            result = self.request.user.has_perm('core.can_manage_projector')
+        else:
+            result = False
+        return result
+
+
+class CountdownViewSet(ModelViewSet):
+    """
+    API endpoint for Countdown.
+
+    There are the following views: list, retrieve, create, update and destroy.
+    """
+    access_permissions = CountdownAccessPermissions()
+    queryset = Countdown.objects.all()
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action in ('create', 'update', 'destroy'):
+            result = self.request.user.has_perm('core.can_manage_projector')
+        else:
+            result = False
+        return result
 
 
 # Special API views

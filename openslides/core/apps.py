@@ -19,10 +19,12 @@ class CoreAppConfig(AppConfig):
         from openslides.utils.rest_api import router
         from openslides.utils.search import index_add_instance, index_del_instance
         from .config_variables import get_config_variables
-        from .signals import delete_django_app_permissions, create_builtin_projection_defaults
+        from .signals import delete_django_app_permissions
         from .views import (
             ChatMessageViewSet,
             ConfigViewSet,
+            CountdownViewSet,
+            ProjectorMessageViewSet,
             ProjectorViewSet,
             TagViewSet,
         )
@@ -34,15 +36,14 @@ class CoreAppConfig(AppConfig):
         post_permission_creation.connect(
             delete_django_app_permissions,
             dispatch_uid='delete_django_app_permissions')
-        post_permission_creation.connect(
-            create_builtin_projection_defaults,
-            dispatch_uid='create_builtin_projection_defaults')
 
         # Register viewsets.
         router.register(self.get_model('Projector').get_collection_string(), ProjectorViewSet)
         router.register(self.get_model('ChatMessage').get_collection_string(), ChatMessageViewSet)
         router.register(self.get_model('Tag').get_collection_string(), TagViewSet)
         router.register(self.get_model('ConfigStore').get_collection_string(), ConfigViewSet, 'config')
+        router.register(self.get_model('ProjectorMessage').get_collection_string(), ProjectorMessageViewSet)
+        router.register(self.get_model('Countdown').get_collection_string(), CountdownViewSet)
 
         # Update the search when a model is saved or deleted
         signals.post_save.connect(

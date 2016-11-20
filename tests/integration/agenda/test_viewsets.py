@@ -6,7 +6,7 @@ from rest_framework.test import APIClient
 from openslides.agenda.models import Item, Speaker
 from openslides.assignments.models import Assignment
 from openslides.core.config import config
-from openslides.core.models import Projector
+from openslides.core.models import Countdown
 from openslides.motions.models import Motion
 from openslides.topics.models import Topic
 from openslides.users.models import User
@@ -278,29 +278,20 @@ class Speak(TestCase):
         self.client.put(
             reverse('item-speak', args=[self.item.pk]),
             {'speaker': speaker.pk})
-        for key, value in Projector.objects.get().config.items():
-            if value['name'] == 'core/countdown':
-                self.assertTrue(value['running'])
-                # If created, the countdown should have index 1
-                created = value['index'] == 1
-                break
-        else:
-            created = False
-        self.assertTrue(created)
+        # Countdown should be created with pk=1 and running
+        self.assertEqual(Countdown.objects.all().count(), 1)
+        countdown = Countdown.objects.get(pk=1)
+        self.assertTrue(countdown.running)
 
     def test_end_speech_with_countdown(self):
         config['agenda_couple_countdown_and_speakers'] = True
         speaker = Speaker.objects.add(get_user_model().objects.get(username='admin'), self.item)
         speaker.begin_speech()
         self.client.delete(reverse('item-speak', args=[self.item.pk]))
-        for key, value in Projector.objects.get().config.items():
-            if value['name'] == 'core/countdown':
-                self.assertFalse(value['running'])
-                success = True
-                break
-        else:
-            success = False
-        self.assertTrue(success)
+        # Countdown should be created with pk=1 and stopped
+        self.assertEqual(Countdown.objects.all().count(), 1)
+        countdown = Countdown.objects.get(pk=1)
+        self.assertFalse(countdown.running)
 
 
 class Numbering(TestCase):

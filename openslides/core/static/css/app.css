@@ -86,9 +86,7 @@ img {
     margin: 0 auto 0 auto;
 }
 
-
 /** Header **/
-
 #header {
     float: left;
     width: 100%;
@@ -799,7 +797,7 @@ img {
     padding: 10px 15px;
 }
 
-.col2 .message .projectorbtn {
+.col2 .message projector-button {
     float: left;
     width: auto;
     margin: 5px 10px 5px 0px;

@@ -10,7 +10,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
 from openslides.core.config import config
-from openslides.core.projector import Countdown
+from openslides.core.models import Countdown
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.utils import to_roman
@@ -412,8 +412,12 @@ class Speaker(RESTModelMixin, models.Model):
         self.begin_time = timezone.now()
         self.save()
         if config['agenda_couple_countdown_and_speakers']:
-            Countdown.control(action='reset')
-            Countdown.control(action='start')
+            countdown, created = Countdown.objects.get_or_create(pk=1, defaults={
+                'default_time': config['projector_default_countdown'],
+                'countdown_time': config['projector_default_countdown']})
+            if not created:
+                countdown.control(action='reset')
+            countdown.control(action='start')
 
     def end_speech(self):
         """
@@ -422,7 +426,12 @@ class Speaker(RESTModelMixin, models.Model):
         self.end_time = timezone.now()
         self.save()
         if config['agenda_couple_countdown_and_speakers']:
-            Countdown.control(action='stop')
+            try:
+                countdown = Countdown.objects.get(pk=1)
+            except Countdown.DoesNotExist:
+                pass  # Do not create a new countdown on stop action
+            else:
+                countdown.control(action='stop')
 
     def get_root_rest_element(self):
         """

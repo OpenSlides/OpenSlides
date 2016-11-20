@@ -141,7 +141,7 @@
         <h4 translate>Countdowns</h4>
       </a>
       <div uib-collapse="!isCountdowns" ng-cloak>
-        <div ng-repeat="countdown in countdowns | orderBy: 'index'" id="countdown{{countdown.uuid}}" class="countdown panel panel-default">
+        <div ng-repeat="countdown in countdowns | orderBy: 'index'" id="countdown{{countdown.id}}" class="countdown panel panel-default">
           <div class="panel-heading">
             <span ng-if="countdown.description">{{ countdown.description }}</span>
             <span ng-if="!countdown.description">Countdown {{ $index +1 }}</span>
@@ -153,63 +153,34 @@
             </button>
             <!-- edit countdown button -->
             <button type="button" class="close editicon"
-                ng-click="countdown.editFlag=true;"
+                ng-click="countdown.editFlag=true; countdown.new_description = countdown.description;"
                 title="{{ 'Edit countdown' | translate}}">
                 <i class="fa fa-pencil"></i>
             </button>
           </div>
           <div class="panel-body"
             ng-class="{ 'projected': isProjected(countdown).length }">
-            <!-- project countdown button -->
-            <div class="btn-group" style="width:54px;" uib-dropdown>
-              <button type="button" class="btn btn-default btn-sm"
-                ng-click="project(countdown)"
-                ng-class="{ 'btn-primary': isProjected(countdown).length }">
-                <i class="fa fa-video-camera"></i>
-              </button>
-              <button ng-if="projectors.length > 1" type="button" class="btn btn-default btn-sm slimDropDown" uib-dropdown-toggle>
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu">
-                <li role="menuitem" ng-if="projectors.length > 1" style="text-align: center;">
-                  <span class="pointer" ng-click="selectAll(countdown, true); preventClose($event)" translate>
-                    All
-                  </span>
-                  | <span class="pointer" ng-click="selectAll(countdown, false); preventClose($event)" translate>
-                    None
-                  </span>
-                </li>
-                <li class="divider" ng-if="projectors.length > 1"></li>
-                <li role="menuitem" ng-repeat="projector in projectors">
-                  <a href="" ng-click="toggleProjector(countdown, projector); preventClose($event)"
-                      ng-class="{ 'projected': isProjectedOn(countdown, projector) }">
-                    <i class="fa fa-square-o" ng-hide="hasProjector(countdown, projector)"></i>
-                    <i class="fa fa-check-square-o" ng-show="hasProjector(countdown, projector)"></i>
-                    {{ projector.name }}
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <projector-button model="countdown" default-projector-id="countdownDefaultProjectorId"></projector-button>
             &nbsp;&nbsp;
             <!-- countdown controls -->
             <a class="btn btn-default vcenter"
-                ng-click="resetCountdown(countdown)"
+                ng-click="countdown.reset()"
                 ng-class="{ 'disabled': !countdown.running && countdown.default_time == countdown.countdown_time }"
                 title="{{ 'Reset countdown' | translate}}">
               <i class="fa fa-stop"></i>
             </a>
             <a ng-if="!countdown.running" class="btn btn-default vcenter"
-                ng-click="startCountdown(countdown)"
+                ng-click="countdown.start()"
                 title="{{ 'Start' | translate}}">
               <i  class="fa fa-play"></i>
               <i ng-if="countdown.running" class="fa fa-pause"></i>
             </a>
             <a ng-if="countdown.running" class="btn btn-default vcenter"
-                ng-click="stopCountdown(countdown)"
+                ng-click="countdown.stop()"
                 title="{{ 'Pause' | translate}}">
               <i  class="fa fa-pause"></i>
             </a>
-            <span ng-if="!editTime" class="countdown_timer vcenter"
+            <span ng-if="!countdown.editTime" class="countdown_timer vcenter"
                   ng-class="{
                     'negative': countdown.seconds <= 0,
                     'warning': countdown.seconds <= config('agenda_countdown_warning_time') && countdown.seconds > 0 }">
@@ -220,7 +191,7 @@
               ng-submit="editCountdown(countdown)">
               <div class="form-group">
                 <label translate>Description</label>
-                <input ng-model="countdown.description" type="text" class="form-control input-sm">
+                <input ng-model="countdown.new_description" type="text" class="form-control input-sm">
               </div>
               <div class="form-group">
                 <label translate>Start time</label>
@@ -281,39 +252,7 @@
 
           <div class="panel-body"
               ng-class="{ 'projected': isProjected(message).length }">
-            <div class="projectorbtn">
-              <!-- project message button -->
-              <div class="btn-group" style="width:54px;" uib-dropdown>
-                <button type="button" class="btn btn-default btn-sm"
-                  ng-click="project(message)"
-                  ng-class="{ 'btn-primary': isProjected(message).length }">
-                  <i class="fa fa-video-camera"></i>
-                </button>
-                <button type="button" ng-if="projectors.length > 1" class="btn btn-default btn-sm slimDropDown" uib-dropdown-toggle>
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                  <li role="menuitem" ng-if="projectors.length > 1" style="text-align: center;">
-                    <span class="pointer" ng-click="selectAll(message, true); preventClose($event)" translate>
-                      All
-                    </span>
-                    | <span class="pointer" ng-click="selectAll(message, false); preventClose($event)" translate>
-                      None
-                    </span>
-                  </li>
-                  <li class="divider" ng-if="projectors.length > 1"></li>
-                  <li role="menuitem" ng-repeat="projector in projectors">
-                    <a href="" ng-click="toggleProjector(message, projector); preventClose($event)"
-                        ng-class="{ 'projected': isProjectedOn(message, projector) }">
-                      <i class="fa fa-square-o" ng-hide="hasProjector(message, projector)"></i>
-                      <i class="fa fa-check-square-o" ng-show="hasProjector(message, projector)"></i>
-                      {{ projector.name }}
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-            </div>
+            <projector-button model="message" default-projector-id="messageDefaultProjectorId"></projector-button>
             &nbsp;&nbsp;
             <div class="innermessage" ng-bind-html="message.message"> </div>
 
@@ -344,7 +283,7 @@
         <h4 translate>List of speakers</h4>
       </a>
       <div uib-collapse="!isSpeakerList" ng-cloak>
-        <projector-button model="listofspeakers" default-projector-id="defaultProjectorId">
+        <projector-button model="listofspeakers" default-projector-id="listOfSpeakersDefaultProjectorId">
         </projector-button>
         <div class="btn-group" os-perms="agenda.can_manage">
           <a ng-click="goToListOfSpeakers()" class="btn btn-default btn-sm"

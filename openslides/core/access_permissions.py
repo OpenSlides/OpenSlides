@@ -64,6 +64,44 @@ class ChatMessageAccessPermissions(BaseAccessPermissions):
         return ChatMessageSerializer
 
 
+class ProjectorMessageAccessPermissions(BaseAccessPermissions):
+    """
+    Access permissions for ProjectorMessage.
+    """
+    def check_permissions(self, user):
+        """
+        Returns True if the user has read access model instances.
+        """
+        return user.has_perm('core.can_see_projector')
+
+    def get_serializer_class(self, user=None):
+        """
+        Returns serializer class.
+        """
+        from .serializers import ProjectorMessageSerializer
+
+        return ProjectorMessageSerializer
+
+
+class CountdownAccessPermissions(BaseAccessPermissions):
+    """
+    Access permissions for Countdown.
+    """
+    def check_permissions(self, user):
+        """
+        Returns True if the user has read access model instances.
+        """
+        return user.has_perm('core.can_see_projector')
+
+    def get_serializer_class(self, user=None):
+        """
+        Returns serializer class.
+        """
+        from .serializers import CountdownSerializer
+
+        return CountdownSerializer
+
+
 class ConfigAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for the config (ConfigStore and
