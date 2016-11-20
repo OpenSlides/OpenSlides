@@ -1075,11 +1075,20 @@ angular.module('OpenSlidesApp.motions.site', [
         };
         $scope.scrollToAndHighlight = function (line) {
             $scope.highlight = line;
-            var lineElement = document.getElementsByName('L' + line);
-            if (lineElement[0]) {
-                // Scroll local
+
+            // The same line number can occur twice in diff view; we scroll to the first one in this case
+            var scrollTop = null;
+            $(".line-number-" + line).each(function() {
+                var top = $(this).offset().top;
+                if (top > 0 && (scrollTop === null || top < scrollTop)) {
+                    scrollTop = top;
+                }
+            });
+
+            if (scrollTop) {
+                // Scroll local; 50 pixel above the line, so it's not completely squeezed to the screen border
                 $('html, body').animate({
-                    scrollTop: lineElement[0].getBoundingClientRect().top
+                    'scrollTop': scrollTop - 50
                 }, 1000);
             }
             // set highlight and scroll on Projector

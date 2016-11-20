@@ -345,7 +345,7 @@
 
         <!-- Changed View -->
         <div ng-if="viewChangeRecommendations.mode == 'changed'">
-          <div ng-bind-html="motion.getTextByMode('changed', version) | trusted"
+          <div ng-bind-html="motion.getTextByMode('changed', version, highlight) | trusted"
                class="motion-text motion-text-changed line-numbers-{{ lineNumberMode }}"></div>
 
           <div style="text-align: right;" ng-if="motion.state.versioning && (change_recommendations | filter:{motion_version_id:version}:true).length > 0">
@@ -360,7 +360,7 @@
 
         <!-- Agreed View -->
         <div ng-if="viewChangeRecommendations.mode == 'agreed'">
-          <div ng-bind-html="motion.getTextByMode('agreed', version) | trusted"
+          <div ng-bind-html="motion.getTextByMode('agreed', version, highlight) | trusted"
                class="motion-text motion-text-changed line-numbers-{{ lineNumberMode }}"></div>
 
           <div style="text-align: right;" ng-if="motion.state.versioning && (change_recommendations | filter:{motion_version_id:version}:true).length > 0">

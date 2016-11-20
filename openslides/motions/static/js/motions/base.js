@@ -198,7 +198,7 @@ angular.module('OpenSlidesApp.motions', [
 
                     return lineNumberingService.insertLineNumbers(html, lineLength, highlight, callback);
                 },
-                getTextBetweenChangeRecommendations: function (versionId, change1, change2) {
+                getTextBetweenChangeRecommendations: function (versionId, change1, change2, highlight) {
                     var line_from = (change1 ? change1.line_to : 1),
                         line_to = (change2 ? change2.line_from : null);
 
@@ -216,11 +216,11 @@ angular.module('OpenSlidesApp.motions', [
 
                     html = data.outerContextStart + data.innerContextStart + data.html +
                         data.innerContextEnd + data.outerContextEnd;
-                    html = lineNumberingService.insertLineNumbers(html, lineLength, null, null, line_from);
+                    html = lineNumberingService.insertLineNumbers(html, lineLength, highlight, null, line_from);
 
                     return html;
                 },
-                getTextRemainderAfterLastChangeRecommendation: function(versionId, changes) {
+                getTextRemainderAfterLastChangeRecommendation: function(versionId, changes, highlight) {
                     var maxLine = 0;
                     for (var i = 0; i < changes.length; i++) {
                         if (changes[i].line_to > maxLine) {
@@ -235,11 +235,11 @@ angular.module('OpenSlidesApp.motions', [
                     html = data.outerContextStart + data.innerContextStart +
                         data.html +
                         data.innerContextEnd + data.outerContextEnd;
-                    html = lineNumberingService.insertLineNumbers(html, lineLength, null, null, maxLine);
+                    html = lineNumberingService.insertLineNumbers(html, lineLength, highlight, null, maxLine);
 
                     return html;
                 },
-                _getTextWithChangeRecommendations: function (versionId, statusCompareCb) {
+                _getTextWithChangeRecommendations: function (versionId, highlight, statusCompareCb) {
                     var lineLength = Config.get('motions_line_length').value,
                         html = this.getVersion(versionId).text,
                         changes = this.getChangeRecommendations(versionId, 'DESC');
@@ -252,42 +252,43 @@ angular.module('OpenSlidesApp.motions', [
                         }
                     }
 
-                    return lineNumberingService.insertLineNumbers(html, lineLength);
+                    return lineNumberingService.insertLineNumbers(html, lineLength, highlight);
                 },
-                getTextWithAllChangeRecommendations: function (versionId) {
-                    return this._getTextWithChangeRecommendations(versionId, function() {
+                getTextWithAllChangeRecommendations: function (versionId, highlight) {
+                    return this._getTextWithChangeRecommendations(versionId, highlight, function() {
                         return true;
                     });
                 },
-                getTextWithoutRejectedChangeRecommendations: function (versionId) {
-                    return this._getTextWithChangeRecommendations(versionId, function(rejected) {
+                getTextWithoutRejectedChangeRecommendations: function (versionId, highlight) {
+                    return this._getTextWithChangeRecommendations(versionId, highlight, function(rejected) {
                         return !rejected;
                     });
                 },
-                getTextByMode: function(mode, versionId) {
+                getTextByMode: function(mode, versionId, highlight) {
                     /*
                      * @param mode ['original', 'diff', 'changed', 'agreed']
                      * @param versionId [if undefined, active_version will be used]
+                     * @param highlight [the line number to highlight]
                      */
                     var text;
                     switch (mode) {
                         case 'original':
-                            text = this.getTextWithLineBreaks(versionId);
+                            text = this.getTextWithLineBreaks(versionId, highlight);
                             break;
                         case 'diff':
                             var changes = this.getChangeRecommendations(versionId, 'ASC');
                             text = '';
                             for (var i = 0; i < changes.length; i++) {
-                                text += this.getTextBetweenChangeRecommendations(versionId, (i === 0 ? null : changes[i - 1]), changes[i]);
-                                text += changes[i].format(this, versionId);
+                                text += this.getTextBetweenChangeRecommendations(versionId, (i === 0 ? null : changes[i - 1]), changes[i], highlight);
+                                text += changes[i].format(this, versionId, highlight);
                             }
                             text += this.getTextRemainderAfterLastChangeRecommendation(versionId, changes);
                             break;
                         case 'changed':
-                            text = this.getTextWithAllChangeRecommendations(versionId);
+                            text = this.getTextWithAllChangeRecommendations(versionId, highlight);
                             break;
                         case 'agreed':
-                            text = this.getTextWithoutRejectedChangeRecommendations(versionId);
+                            text = this.getTextWithoutRejectedChangeRecommendations(versionId, highlight);
                             break;
                     }
                     return text;
@@ -583,14 +584,14 @@ angular.module('OpenSlidesApp.motions', [
                 saveStatus: function() {
                     this.DSSave();
                 },
-                format: function(motion, version) {
+                format: function(motion, version, highlight) {
                     var lineLength = Config.get('motions_line_length').value,
                         html = lineNumberingService.insertLineNumbers(motion.getVersion(version).text, lineLength);
 
                     var data = diffService.extractRangeByLineNumbers(html, this.line_from, this.line_to),
                         oldText = data.outerContextStart + data.innerContextStart +
                             data.html + data.innerContextEnd + data.outerContextEnd,
-                        oldTextWithBreaks = lineNumberingService.insertLineNumbersNode(oldText, lineLength, null, this.line_from),
+                        oldTextWithBreaks = lineNumberingService.insertLineNumbersNode(oldText, lineLength, highlight, this.line_from),
                         newTextWithBreaks = lineNumberingService.insertLineNumbersNode(this.text, lineLength, null, this.line_from);
 
                     for (var i = 0; i < oldTextWithBreaks.childNodes.length; i++) {

@@ -5,10 +5,10 @@ describe('linenumbering', function () {
   var lineNumberingService,
       brMarkup = function (no) {
         return '<br class="os-line-break">' +
-            '<span class="os-line-number line-number-' + no + '" data-line-number="' + no + '" name="L' + no + '" contenteditable="false">&nbsp;</span>';
+            '<span class="os-line-number line-number-' + no + '" data-line-number="' + no + '" contenteditable="false">&nbsp;</span>';
       },
       noMarkup = function (no) {
-        return '<span class="os-line-number line-number-' + no + '" data-line-number="' + no + '" name="L' + no + '" contenteditable="false">&nbsp;</span>';
+        return '<span class="os-line-number line-number-' + no + '" data-line-number="' + no + '" contenteditable="false">&nbsp;</span>';
       },
       longstr = function (length) {
         var outstr = '';
