@@ -5,12 +5,14 @@ from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 
 from ..core.config import config
+from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
     ModelViewSet,
     Response,
     SimpleMetadata,
     ValidationError,
     detail_route,
+    list_route,
     status,
 )
 from ..utils.views import APIView
@@ -39,7 +41,7 @@ class UserViewSet(ModelViewSet):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action in ('metadata', 'update', 'partial_update'):
             result = self.request.user.has_perm('users.can_see_name')
-        elif self.action in ('create', 'destroy', 'reset_password'):
+        elif self.action in ('create', 'destroy', 'reset_password', 'mass_import'):
             result = (self.request.user.has_perm('users.can_see_name') and
                       self.request.user.has_perm('users.can_see_extra_data') and
                       self.request.user.has_perm('users.can_manage'))
@@ -87,12 +89,36 @@ class UserViewSet(ModelViewSet):
         View to reset the password using the requested password.
         """
         user = self.get_object()
-        if isinstance(request.data.get('password'), str):
-            user.set_password(request.data.get('password'))
-            user.save()
-            return Response({'detail': _('Password successfully reset.')})
-        else:
+        if not isinstance(request.data.get('password'), str):
             raise ValidationError({'detail': 'Password has to be a string.'})
+        user.set_password(request.data.get('password'))
+        user.save()
+        return Response({'detail': _('Password successfully reset.')})
+
+    @list_route(methods=['post'])
+    def mass_import(self, request):
+        """
+        API endpoint to create multiple users at once. Settings groups is not
+        supported.
+
+        Example: {"users": [{"first_name": "Max"}, {"first_name": "Maxi"}]}
+
+        Attention: This method triggers autoupdate for all users, not only
+        for the new ones.
+        """
+        users = request.data.get('users')
+        if not isinstance(users, list):
+            raise ValidationError({'detail': 'Users has to be a list.'})
+        create_users = []
+        for user in users:
+            serializer = self.get_serializer(data=user)
+            serializer.is_valid(raise_exception=True)
+            data = serializer.prepare_password(serializer.data)
+            del data['groups_id']
+            create_users.append(User(**data))
+        User.objects.bulk_create(create_users)
+        inform_changed_data(User.objects.all())
+        return Response({'detail': _('{number} users successfully imported.').format(number=len(users))})
 
 
 class GroupViewSetMetadata(SimpleMetadata):

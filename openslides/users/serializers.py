@@ -70,16 +70,21 @@ class UserFullSerializer(ModelSerializer):
                 data.get('last_name', ''))
         return data
 
-    def create(self, validated_data):
+    def prepare_password(self, validated_data):
         """
-        Creates the user. Sets the default password.
+        Sets the default password.
         """
         # Prepare setup password.
         if not validated_data.get('default_password'):
             validated_data['default_password'] = User.objects.generate_password()
         validated_data['password'] = make_password(validated_data['default_password'], '', 'md5')
-        # Perform creation in the database and return new user.
-        return super().create(validated_data)
+        return validated_data
+
+    def create(self, validated_data):
+        """
+        Creates the user.
+        """
+        return super().create(self.prepare_password(validated_data))
 
 
 class PermissionRelatedField(RelatedField):
