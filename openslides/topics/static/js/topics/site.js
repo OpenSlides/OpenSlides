@@ -328,7 +328,22 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
                 }
                 // duration
                 if (item.duration) {
-                    item.duration = item.duration.replace(quotionRe, '$1');
+                    var time = item.duration.replace(quotionRe, '$1').split(':'),
+                        len = time.length,
+                        data = '';
+                    if (len > 1 && !isNaN(time[len-2]) && !isNaN(time[len-1])) { // minutes and hours
+                        // e.g.: [sl:1000:]10:34 (the [] will not be parsed)
+                        data = (+time[len-2]) * 60 + (+time[len-1]);
+                    } else if (len == 1) { // just interpret minutes
+                        data = (+time[0]);
+                    } else {
+                        data = null;
+                    }
+
+                    if (data < 0 || data === '') {
+                        data = null; // no negative duration
+                    }
+                    item.duration = data;
                 } else {
                     item.duration = null;
                 }
