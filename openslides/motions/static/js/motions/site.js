@@ -1093,7 +1093,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // open edit dialog
         $scope.openDialog = function (motion) {
             if ($scope.inlineEditing.active) {
-                $scope.disableInlineEditing();
+                $scope.inlineEditing.disable();
             }
             ngDialog.open(MotionForm.getDialog(motion));
         };
