@@ -49,8 +49,7 @@
 
         <!-- go to line number -->
         <div class="goto-line-number">
-            <form class="input-group" ng-if="viewChangeRecommendations.mode == 'original' && lineNumberMode != 'none'"
-                  ng-submit="scrollToAndHighlight(gotoLinenumber)">
+            <form class="input-group" ng-if="lineNumberMode != 'none'" ng-submit="scrollToAndHighlight(gotoLinenumber)">
                 <input type="number" class="form-control input-sm" ng-model="gotoLinenumber"
                        placeholder="{{ 'Line' | translate }}"/>
                 <div class="input-group-btn">

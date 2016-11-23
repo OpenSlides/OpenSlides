@@ -76,7 +76,6 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             this._currentLineNumber++;
             node.setAttribute('class', 'os-line-number line-number-' + lineNumber);
             node.setAttribute('data-line-number', lineNumber + '');
-            node.setAttribute('name', 'L' + lineNumber);
             node.setAttribute('contenteditable', 'false');
             node.innerHTML = '&nbsp;'; // Prevent tinymce from stripping out empty span's
             return node;
