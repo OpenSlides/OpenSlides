@@ -26,7 +26,8 @@
         </ul>
       </div>
       <!-- Identity -->
-      <button class="btn" ng-click="identifyProjectors()" ng-class="identifyPromise ? 'btn-primary' : 'btn-default'">
+      <button class="btn" ng-click="identifyProjectors()" ng-class="identifyPromise ? 'btn-primary' : 'btn-default'"
+        uib-tooltip="{{ 'Display an identifier message on all projectors with the id and the name.' | translate }}">
         <i class="fa fa-binoculars"></i>
         <translate>Identify</translate>
       </button>
@@ -184,7 +185,8 @@
         <div class="btn-group">
           <button class="btn btn-sm" ng-class="broadcast == projector.id ? 'btn-primary' : 'btn-default'"
             ng-click="projector.toggleBroadcast(projector)"
-            ng-disabled="broadcast > 0 && broadcast != projector.id">
+            ng-disabled="broadcast > 0 && broadcast != projector.id"
+            uib-tooltip="{{ 'Broadcast the content of this projector to all other projectors.' | translate }}">
             <i class="fa" ng-class="broadcast == projector.id ? 'fa-star' : 'fa-star-o'"></i>
             <translate>Broadcast</translate>
           </button>

@@ -685,9 +685,19 @@ angular.module('OpenSlidesApp.users.site', [
     'User',
     'user',
     'Group',
-    function($scope, ngDialog, UserForm, User, user, Group) {
+    'Projector',
+    'ProjectionDefault',
+    function($scope, ngDialog, UserForm, User, user, Group, Projector, ProjectionDefault) {
         User.bindOne(user.id, $scope, 'user');
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            var projectiondefault = ProjectionDefault.filter({name: 'users'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId = projectiondefault.projector_id;
+            }
+        });
 
         // open edit dialog
         $scope.openDialog = function (user) {
