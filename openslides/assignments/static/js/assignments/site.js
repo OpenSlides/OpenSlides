@@ -548,7 +548,7 @@ angular.module('OpenSlidesApp.assignments.site', [
 
         //creates the document as pdf
         $scope.makePDF_singleAssignment = function() {
-            var filename = gettextCatalog.getString("Election") + " " + $scope.assignment.title + ".pdf";
+            var filename = gettextCatalog.getString("Election") + "_" + $scope.assignment.title + ".pdf";
             var assignmentContentProvider = AssignmentContentProvider.createInstance(assignment);
             var documentProvider = PdfMakeDocumentProvider.createInstance(assignmentContentProvider);
             pdfMake.createPdf(documentProvider.getDocument()).download(filename);
@@ -564,7 +564,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                     pollNumber = pollIndex+1;
                 }
             });
-            var filename = gettextCatalog.getString("Ballot") + " " + pollNumber + " " + $scope.assignment.title + ".pdf";
+            var filename = gettextCatalog.getString("Ballot") + "_" + pollNumber + "_" + $scope.assignment.title + ".pdf";
             var ballotContentProvider = BallotContentProvider.createInstance($scope, thePoll, pollNumber);
             var documentProvider = PdfMakeBallotPaperProvider.createInstance(ballotContentProvider);
             pdfMake.createPdf(documentProvider.getDocument()).download(filename);
