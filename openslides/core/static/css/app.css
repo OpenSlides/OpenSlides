@@ -1196,6 +1196,16 @@ img {
     padding: 5px;
 }
 
+.no-padding {
+    padding: 0 !important;
+}
+.no-padding-left {
+    padding-left: 0 !important;
+}
+.no-padding-right {
+    padding-right: 0 !important;
+}
+
 /* user details */
 .user_details fieldset {
     margin-bottom: 10px;
@@ -1292,16 +1302,42 @@ img {
 }
 
 .ngdialog.ngdialog-theme-default.wide-form .ngdialog-content {
-    width: 650px;
+    width: 750px;
+    line-height: 1em;
 }
 
 .ngdialog h2 {
     margin-top: 5px;
 }
 
+.ngdialog .row:after, .ngdialog .row:before {
+    display: table-cell !important;
+}
+
+.help-block {
+    font-size: 85%;
+    margin-top: 2px;
+    margin-left: 2px;
+}
+
 /* angular-chosen: override default width of select fields in quickmode */
 .chosen-container {
     width: 100% !important;
+    font-size: 14px;
+}
+.chosen-container .chosen-choices {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.chosen-container-active .chosen-choices {
+    border-color: rgba(82,168,236,.8);
+    box-shadow: 0 0 8px rgba(82,168,236,.6);
+}
+.chosen-container .chosen-choices li.search-choice {
+    margin: 6px 5px 0 0 !important;
+}
+.chosen-container input {
+    margin: 4px 0 !important;
 }
 
 /* angular-ui-tree style */

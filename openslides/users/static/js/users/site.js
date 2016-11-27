@@ -293,48 +293,61 @@ angular.module('OpenSlidesApp.users.site', [
                 var images = Mediafile.getAllImages();
                 return [
                 {
+                    className: "row",
+                    fieldGroup: [
+                        {
+                            key: 'title',
+                            type: 'input',
+                            className: "col-xs-2 no-padding-left",
+                            templateOptions: {
+                                label: gettextCatalog.getString('Title')
+                            }
+                        },
+                        {
+                            key: 'first_name',
+                            type: 'input',
+                            className: "col-xs-5 no-padding",
+                            templateOptions: {
+                                label: gettextCatalog.getString('First name')
+                            }
+                        },
+                        {
+                            key: 'last_name',
+                            type: 'input',
+                            className: "col-xs-5 no-padding-right",
+                            templateOptions: {
+                                label: gettextCatalog.getString('Last name')
+                            }
+                        }
+                    ]
+                },
+                {
+                    className: "row",
+                    fieldGroup: [
+                        {
+                            key: 'structure_level',
+                            type: 'input',
+                            className: "col-xs-9 no-padding-left",
+                            templateOptions: {
+                                label: gettextCatalog.getString('Structure level'),
+                            }
+                        },
+                        {   key: 'number',
+                            type: 'input',
+                            className: "col-xs-3 no-padding-left no-padding-right",
+                            templateOptions: {
+                                label:gettextCatalog.getString('Participant number')
+                            }
+                        }
+                    ]
+                },
+                {
                     key: 'username',
                     type: 'input',
                     templateOptions: {
                         label: gettextCatalog.getString('Username')
                     },
                     hide: hideOnCreateForm
-                },
-                {
-                    key: 'title',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Title'),
-                        description: gettextCatalog.getString('Will be shown before the name.')
-                    }
-                },
-                {
-                    key: 'first_name',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('First name')
-                    }
-                },
-                {
-                    key: 'last_name',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Last name')
-                    }
-                },
-                {
-                    key: 'structure_level',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Structure level'),
-                        description: gettextCatalog.getString('Will be shown after the name.')
-                    }
-                },
-                {   key: 'number',
-                    type: 'input',
-                    templateOptions: {
-                        label:gettextCatalog.getString('Participant number')
-                    }
                 },
                 {
                     key: 'groups_id',
@@ -368,18 +381,19 @@ angular.module('OpenSlidesApp.users.site', [
                     type: 'input',
                     templateOptions: {
                         label: gettextCatalog.getString('Comment'),
-                        description: gettextCatalog.getString('Only for notes.')
+                        description: gettextCatalog.getString('Only for internal notes.')
                     }
                 },
                 {
-                    key: 'about_me',
-                    type: 'editor',
+                    key: 'more',
+                    type: 'checkbox',
                     templateOptions: {
-                        label: gettextCatalog.getString('About me'),
-                    },
-                    data: {
-                        tinymceOption: Editor.getOptions(images)
+                        label: gettextCatalog.getString('Show extended fields')
                     }
+                },
+                {
+                    template: '<hr class="smallhr">',
+                    hideExpression: '!model.more'
                 },
                 {
                     key: 'is_present',
@@ -388,7 +402,8 @@ angular.module('OpenSlidesApp.users.site', [
                         label: gettextCatalog.getString('Is present'),
                         description: gettextCatalog.getString('Designates whether this user is in the room or not.')
                     },
-                    defaultValue: true
+                    defaultValue: true,
+                    hideExpression: '!model.more'
                 },
                 {
                     key: 'is_active',
@@ -399,7 +414,8 @@ angular.module('OpenSlidesApp.users.site', [
                             'Designates whether this user should be treated as ' +
                             'active. Unselect this instead of deleting the account.')
                     },
-                    defaultValue: true
+                    defaultValue: true,
+                    hideExpression: '!model.more'
                 },
                 {
                     key: 'is_committee',
@@ -409,8 +425,21 @@ angular.module('OpenSlidesApp.users.site', [
                         description: gettextCatalog.getString(
                             'Designates whether this user should be treated as a committee.')
                     },
-                    defaultValue: false
-                }];
+                    defaultValue: false,
+                    hideExpression: '!model.more'
+                },
+                {
+                    key: 'about_me',
+                    type: 'editor',
+                    templateOptions: {
+                        label: gettextCatalog.getString('About me'),
+                    },
+                    data: {
+                        tinymceOption: Editor.getOptions(images)
+                    },
+                    hideExpression: '!model.more'
+                }
+                ];
             }
         };
     }

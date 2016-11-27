@@ -96,9 +96,9 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
                     resolve: (resolve) ? resolve : null
                 };
             },
-            getFormFields: function () {
+            getFormFields: function (isCreateForm) {
                 var images = Mediafile.getAllImages();
-                return [
+                var formFields = [
                 {
                     key: 'title',
                     type: 'input',
@@ -116,35 +116,45 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
                     data: {
                         tinymceOption: Editor.getOptions(images)
                     }
-                },
-                {
-                    key: 'attachments_id',
-                    type: 'select-multiple',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Attachment'),
-                        options: Mediafile.getAll(),
-                        ngOptions: 'option.id as option.title_or_filename for option in to.options',
-                        placeholder: gettextCatalog.getString('Select or search an attachment ...')
-                    }
-                },
-                {
+                }];
+                // attachments
+                if (Mediafile.getAll().length > 0) {
+                    formFields.push({
+                        key: 'attachments_id',
+                        type: 'select-multiple',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Attachment'),
+                            options: Mediafile.getAll(),
+                            ngOptions: 'option.id as option.title_or_filename for option in to.options',
+                            placeholder: gettextCatalog.getString('Select or search an attachment ...')
+                        }
+                    });
+                }
+                // show as agenda item
+                formFields.push({
                     key: 'showAsAgendaItem',
                     type: 'checkbox',
                     templateOptions: {
                         label: gettextCatalog.getString('Show as agenda item'),
                         description: gettextCatalog.getString('If deactivated it appears as internal item on agenda.')
                     }
-                },
-                {
-                    key: 'agenda_parent_item_id',
-                    type: 'select-single',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Parent item'),
-                        options: AgendaTree.getFlatTree(Agenda.getAll()),
-                        ngOptions: 'item.id as item.getListViewTitle() for item in to.options | notself : model.agenda_item_id',
-                        placeholder: gettextCatalog.getString('Select a parent item ...')
-                    }
-                }];
+                });
+
+                // parent item
+                if (isCreateForm) {
+                    formFields.push({
+                        key: 'agenda_parent_item_id',
+                        type: 'select-single',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Parent item'),
+                            options: AgendaTree.getFlatTree(Agenda.getAll()),
+                            ngOptions: 'item.id as item.getListViewTitle() for item in to.options | notself : model.agenda_item_id',
+                            placeholder: gettextCatalog.getString('Select a parent item ...')
+                        }
+                    });
+                }
+
+                return formFields;
             }
         };
     }
@@ -187,7 +197,7 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
         $scope.model = {};
         $scope.model.showAsAgendaItem = true;
         // get all form fields
-        $scope.formFields = TopicForm.getFormFields();
+        $scope.formFields = TopicForm.getFormFields(true);
         // save form
         $scope.save = function (topic) {
             Topic.create(topic).then(
