@@ -204,6 +204,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                 return;
             }
 
+            $(".tt_change_recommendation_create_help").removeClass("opened");
             var $lineNumbers = $(".motion-text-original .os-line-number");
             if ($lineNumbers.filter(".selectable").length === 0) {
                 obj.mode = MODE_SELECTING_FROM;
@@ -238,7 +239,6 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                 foundCollission = false;
 
             $(".motion-text-original .os-line-number").each(function () {
-
                 var $this = $(this);
                 if ($this.data("line-number") >= line && !foundCollission) {
                     if (alreadyAffectedLines.indexOf($this.data("line-number")) == -1) {
@@ -251,6 +251,9 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                     $(this).removeClass("selectable");
                 }
             });
+
+            var tt_pos = $(".motion-text-original .line-number-" + line).position().top - 45;
+            $(".tt_change_recommendation_create_help").css("top", tt_pos).addClass("opened");
         };
 
         obj.setToLine = function (line) {
