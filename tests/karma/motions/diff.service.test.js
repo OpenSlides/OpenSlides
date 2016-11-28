@@ -221,6 +221,22 @@ describe('linenumbering', function () {
       expect(merged).toBe('<P>Line 1 Line 2 Line <STRONG>3<BR>Line 4 Line</STRONG> 5</P><UL class="ul-class"><LI class="li-class">Line 6 Line 7</LI><LI class="li-class"><UL><LI>Level 2 LI 8</LI><LI>Level 2 LI 9</LI></UL></LI></UL><P>Replaced Line 10</P><P>Inserted Line 11 Line 11</P>');
     });
 
+    it('does not accidently merge two separate words', function() {
+      var merged = diffService.replaceLines(baseHtml1, '<p>Line 1INSERTION</p>', 1, 2),
+          containsError = merged.indexOf("Line 1INSERTIONLine 2"),
+          containsCorrectVersion = merged.indexOf("Line 1INSERTION Line 2");
+      expect(containsError).toBe(-1);
+      expect(containsCorrectVersion).toBe(3);
+    });
+
+    it('does not accidently merge two separate words, even in lists', function() {
+      // The newlines between UL and LI are the problem here
+      var merged = diffService.replaceLines(baseHtml1, '<ul class="ul-class">' + "\n" + '<li class="li-class">Line 6Inserted</li>' + "\n" + '</ul>', 6, 7),
+          containsError = merged.indexOf("Line 6InsertedLine 7"),
+          containsCorrectVersion = merged.indexOf("Line 6Inserted Line 7");
+      expect(containsError).toBe(-1);
+      expect(containsCorrectVersion > 0).toBe(true);
+    });
   });
 
   describe('detecting the type of change', function() {

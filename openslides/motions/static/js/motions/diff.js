@@ -451,6 +451,32 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         };
 
         /*
+         * This is a workardoun to prevent the last word of the inserted text from accidently being merged with the
+         * first word of the following line.
+         *
+         * This happens as trailing spaces in the change recommendation's text are frequently stripped,
+         * which is pretty nasty if the original text goes on after the affected line. So we insert a space
+         * if the original line ends with one.
+         */
+        this._insertDanglingSpace = function(element) {
+            if (element.childNodes.length > 0) {
+                var lastChild = element.childNodes[element.childNodes.length - 1];
+                if (lastChild.nodeType == TEXT_NODE && !lastChild.nodeValue.match(/[\S]/) && element.childNodes.length > 1) {
+                    // If the text node only contains whitespaces, chances are high it's just space between block elmeents,
+                    // like a line break between </LI> and </UL>
+                    lastChild = element.childNodes[element.childNodes.length - 2];
+                }
+                if (lastChild.nodeType == TEXT_NODE) {
+                    if (lastChild.nodeValue === '' || lastChild.nodeValue.substr(-1) != ' ') {
+                        lastChild.nodeValue += ' ';
+                    }
+                } else {
+                    this._insertDanglingSpace(lastChild);
+                }
+            }
+        };
+
+        /*
          * This functions merges to arrays of nodes. The last element of nodes1 and the first element of nodes2
          * are merged, if they are of the same type.
          *
@@ -582,6 +608,10 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 followingHtml = data.followingHtmlStartSnippet + '<TEMPLATE></TEMPLATE>' + data.followingHtml,
                 followingFragment = this.htmlToFragment(followingHtml),
                 newFragment = this.htmlToFragment(newHTML);
+
+            if (data.html.length > 0 && data.html.substr(-1) == ' ') {
+                this._insertDanglingSpace(newFragment);
+            }
 
             var merged = this._replaceLinesMergeNodeArrays(previousFragment.childNodes, newFragment.childNodes);
             merged = this._replaceLinesMergeNodeArrays(merged, followingFragment.childNodes);
