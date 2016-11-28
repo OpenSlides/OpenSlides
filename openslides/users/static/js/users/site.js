@@ -24,12 +24,16 @@ angular.module('OpenSlidesApp.users.site', [
 
 .config([
     '$stateProvider',
-    function($stateProvider) {
+    'gettext',
+    function($stateProvider, gettext) {
         $stateProvider
         .state('users', {
             url: '/users',
             abstract: true,
             template: "<ui-view/>",
+            data: {
+                title: gettext('Participants'),
+            },
         })
         .state('users.user', {
             abstract: true,
@@ -123,6 +127,9 @@ angular.module('OpenSlidesApp.users.site', [
             url: '/groups',
             abstract: true,
             template: "<ui-view/>",
+            data: {
+                title: gettext('Groups'),
+            },
         })
         .state('users.group.list', {
             resolve: {
@@ -146,7 +153,10 @@ angular.module('OpenSlidesApp.users.site', [
                     closeByEscape: $stateParams.guest_enabled,
                     closeByDocument: $stateParams.guest_enabled,
                 });
-            }]
+            }],
+            data: {
+                title: 'Login',
+            },
         });
     }
 ])

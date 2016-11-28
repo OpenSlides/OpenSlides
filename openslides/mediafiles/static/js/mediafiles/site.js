@@ -20,12 +20,16 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
 
 .config([
     '$stateProvider',
-    function($stateProvider) {
+    'gettext',
+    function($stateProvider, gettext) {
         $stateProvider
             .state('mediafiles', {
                 url: '/mediafiles',
                 abstract: true,
                 template: "<ui-view/>",
+                data: {
+                    title: gettext('Files'),
+                },
             })
             .state('mediafiles.mediafile', {
                 abstract: true,

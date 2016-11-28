@@ -67,14 +67,14 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     function($scope, $location, gettext, loadGlobalData, Projector, ProjectorID) {
         loadGlobalData();
 
-        $scope.projector_id = ProjectorID();
+        $scope.projectorId = ProjectorID();
         $scope.error = '';
 
         // watch for changes in Projector
         $scope.$watch(function () {
-            return Projector.lastModified($scope.projector_id);
+            return Projector.lastModified($scope.projectorId);
         }, function () {
-            var projector = Projector.get($scope.projector_id);
+            var projector = Projector.get($scope.projectorId);
             if (projector) {
                 $scope.error = '';
                 $scope.projectorWidth = projector.width;
@@ -125,7 +125,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     'Config',
     'ProjectorID',
     function($scope, $location, Projector, slides, Config, ProjectorID) {
-        var projector_id = ProjectorID();
+        var projectorId = ProjectorID();
 
         $scope.broadcast = 0;
 
@@ -141,9 +141,9 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         };
 
         $scope.$watch(function () {
-            return Projector.lastModified(projector_id);
+            return Projector.lastModified(projectorId);
         }, function () {
-            $scope.projector = Projector.get(projector_id);
+            $scope.projector = Projector.get(projectorId);
             if ($scope.projector) {
                 if ($scope.broadcast === 0) {
                     setElements($scope.projector);

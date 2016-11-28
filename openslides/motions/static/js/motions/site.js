@@ -26,12 +26,16 @@ angular.module('OpenSlidesApp.motions.site', [
 
 .config([
     '$stateProvider',
-    function($stateProvider) {
+    'gettext',
+    function($stateProvider, gettext) {
         $stateProvider
             .state('motions', {
                 url: '/motions',
                 abstract: true,
                 template: "<ui-view/>",
+                data: {
+                    title: gettext('Motions'),
+                },
             })
             .state('motions.motion', {
                 abstract: true,
@@ -170,6 +174,9 @@ angular.module('OpenSlidesApp.motions.site', [
                 url: '/category',
                 abstract: true,
                 template: "<ui-view/>",
+                data: {
+                    title: gettext('Categories'),
+                },
             })
             .state('motions.category.list', {
                 resolve: {
@@ -209,6 +216,9 @@ angular.module('OpenSlidesApp.motions.site', [
                 url: '/blocks',
                 abstract: true,
                 template: '<ui-view/>',
+                data: {
+                    title: gettext('Motion blocks'),
+                },
             })
             .state('motions.motionBlock.list', {
                resolve: {
@@ -1043,12 +1053,11 @@ angular.module('OpenSlidesApp.motions.site', [
     'Config',
     'motion',
     'MotionInlineEditing',
-    'gettextCatalog',
     'Projector',
     'ProjectionDefault',
     function($scope, $http, operator, ngDialog, MotionForm,
              ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation, MotionPDFExport,
-             Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motion, MotionInlineEditing, gettextCatalog,
+             Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motion, MotionInlineEditing,
              Projector, ProjectionDefault) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
