@@ -615,8 +615,11 @@ img {
     opacity: 1;
 }
 .diff-box .action-row .btn-delete {
-    margin-left: 10px;
+    margin-left: 5px;
     color: red;
+}
+.diff-box .action-row .btn-edit {
+    margin-left: 5px;
 }
 .diff-box .status-row {
     font-style: italic;

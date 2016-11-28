@@ -30,6 +30,11 @@
                             title="{{ 'Delete' | translate }}">
                         <i class="fa fa-trash"></i>
                     </button>
+
+                    <button class="btn btn-default btn-sm pull-right btn-edit" ng-click="createChangeRecommendation.editDialog(change)"
+                            title="{{ 'Edit' | translate }}">
+                        <i class="fa fa-pencil"></i>
+                    </button>
                 </div>
                 <div class="status-row" ng-if="!motion.isAllowed('can_manage') && change.rejected">
                     <translate>Rejected</translate>
