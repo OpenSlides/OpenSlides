@@ -152,8 +152,8 @@ angular.module('OpenSlidesApp.assignments.site', [
                 };
             },
             // angular-formly fields for assignment form
-            getFormFields: function () {
-                return [
+            getFormFields: function (isCreateForm) {
+                var formFields = [
                 {
                     key: 'title',
                     type: 'input',
@@ -193,37 +193,52 @@ angular.module('OpenSlidesApp.assignments.site', [
                         description: gettextCatalog.getString('If deactivated the election appears as internal item on agenda.')
                     },
                     hide: !operator.hasPerms('assignments.can_manage')
-                },
-                {
-                    key: 'agenda_parent_item_id',
-                    type: 'select-single',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Parent item'),
-                        options: AgendaTree.getFlatTree(Agenda.getAll()),
-                        ngOptions: 'item.id as item.getListViewTitle() for item in to.options | notself : model.agenda_item_id',
-                        placeholder: gettextCatalog.getString('Select a parent item ...')
-                    },
-                    hide: !operator.hasPerms('agenda.can_manage')
-                },
-                {
-                    key: 'more',
-                    type: 'checkbox',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Show extended fields')
-                    },
-                    hide: !operator.hasPerms('assignments.can_manage')
-                },
-                {
-                    key: 'tags_id',
-                    type: 'select-multiple',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Tags'),
-                        options: Tag.getAll(),
-                        ngOptions: 'option.id as option.name for option in to.options',
-                        placeholder: gettextCatalog.getString('Select or search a tag ...')
-                    },
-                    hideExpression: '!model.more'
                 }];
+
+                // parent item
+                if (isCreateForm) {
+                    formFields.push({
+                        key: 'agenda_parent_item_id',
+                        type: 'select-single',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Parent item'),
+                            options: AgendaTree.getFlatTree(Agenda.getAll()),
+                            ngOptions: 'item.id as item.getListViewTitle() for item in to.options | notself : model.agenda_item_id',
+                            placeholder: gettextCatalog.getString('Select a parent item ...')
+                        },
+                        hide: !operator.hasPerms('agenda.can_manage')
+                    });
+                }
+                // more (with tags field)
+                if (Tag.getAll().length > 0) {
+                    formFields.push(
+                        {
+                            key: 'more',
+                            type: 'checkbox',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Show extended fields')
+                            },
+                            hide: !operator.hasPerms('assignments.can_manage')
+                        },
+                        {
+                            template: '<hr class="smallhr">',
+                            hideExpression: '!model.more'
+                        },
+                        {
+                            key: 'tags_id',
+                            type: 'select-multiple',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Tags'),
+                                options: Tag.getAll(),
+                                ngOptions: 'option.id as option.name for option in to.options',
+                                placeholder: gettextCatalog.getString('Select or search a tag ...')
+                            },
+                            hideExpression: '!model.more'
+                        }
+                    );
+                }
+
+                return formFields;
             }
         };
     }
@@ -588,7 +603,7 @@ angular.module('OpenSlidesApp.assignments.site', [
         // set default value for open posts form field
         $scope.model.open_posts = 1;
         // get all form fields
-        $scope.formFields = AssignmentForm.getFormFields();
+        $scope.formFields = AssignmentForm.getFormFields(true);
         // save assignment
         $scope.save = function(assignment) {
             Assignment.create(assignment).then(

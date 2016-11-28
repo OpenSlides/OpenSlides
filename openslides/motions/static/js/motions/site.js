@@ -412,7 +412,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 };
             },
             // angular-formly fields for motion form
-            getFormFields: function () {
+            getFormFields: function (isCreateForm) {
                 var workflows = Workflow.getAll();
                 var images = Mediafile.getAllImages();
                 var formFields = [
@@ -481,107 +481,134 @@ angular.module('OpenSlidesApp.motions.site', [
                         description: gettextCatalog.getString('If deactivated the motion appears as internal item on agenda.')
                     },
                     hide: !operator.hasPerms('motions.can_manage')
-                },
-                {
-                    key: 'agenda_parent_item_id',
-                    type: 'select-single',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Parent item'),
-                        options: AgendaTree.getFlatTree(Agenda.getAll()),
-                        ngOptions: 'item.id as item.getListViewTitle() for item in to.options | notself : model.agenda_item_id',
-                        placeholder: gettextCatalog.getString('Select a parent item ...')
+                }];
+
+                // parent item
+                if (isCreateForm) {
+                    formFields.push({
+                        key: 'agenda_parent_item_id',
+                        type: 'select-single',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Parent item'),
+                            options: AgendaTree.getFlatTree(Agenda.getAll()),
+                            ngOptions: 'item.id as item.getListViewTitle() for item in to.options | notself : model.agenda_item_id',
+                            placeholder: gettextCatalog.getString('Select a parent item ...')
+                        },
+                        hide: !operator.hasPerms('agenda.can_manage')
+                    });
+                }
+
+                // motion comments
+                formFields = formFields.concat(MotionComment.getFormFields());
+
+                // more
+                formFields.push(
+                    {
+                        key: 'more',
+                        type: 'checkbox',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Show extended fields')
+                        },
+                        hide: !operator.hasPerms('motions.can_manage')
                     },
-                    hide: !operator.hasPerms('agenda.can_manage')
-                }]
-                .concat(MotionComment.getFormFields())
-                .concat([
-                {
-                    key: 'more',
-                    type: 'checkbox',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Show extended fields')
-                    },
-                    hide: !operator.hasPerms('motions.can_manage')
-                },
-                {
-                    key: 'attachments_id',
-                    type: 'select-multiple',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Attachment'),
-                        options: Mediafile.getAll(),
-                        ngOptions: 'option.id as option.title_or_filename for option in to.options',
-                        placeholder: gettextCatalog.getString('Select or search an attachment ...')
-                    },
-                    hideExpression: '!model.more'
-                },
-                {
-                    key: 'category_id',
-                    type: 'select-single',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Category'),
-                        options: Category.getAll(),
-                        ngOptions: 'option.id as option.name for option in to.options',
-                        placeholder: gettextCatalog.getString('Select or search a category ...')
-                    },
-                    hideExpression: '!model.more'
-                },
-                {
-                    key: 'motion_block_id',
-                    type: 'select-single',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Motion block'),
-                        options: MotionBlock.getAll(),
-                        ngOptions: 'option.id as option.title for option in to.options',
-                        placeholder: gettextCatalog.getString('Select or search a motion block ...')
-                    },
-                    hideExpression: '!model.more'
-                },
-                {
+                    {
+                        template: '<hr class="smallhr">',
+                        hideExpression: '!model.more'
+                    }
+                );
+                // attachments
+                if (Mediafile.getAll().length > 0) {
+                    formFields.push({
+                        key: 'attachments_id',
+                        type: 'select-multiple',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Attachment'),
+                            options: Mediafile.getAll(),
+                            ngOptions: 'option.id as option.title_or_filename for option in to.options',
+                            placeholder: gettextCatalog.getString('Select or search an attachment ...')
+                        },
+                        hideExpression: '!model.more'
+                    });
+                }
+                // category
+                if (Category.getAll().length > 0) {
+                    formFields.push({
+                        key: 'category_id',
+                        type: 'select-single',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Category'),
+                            options: Category.getAll(),
+                            ngOptions: 'option.id as option.name for option in to.options',
+                            placeholder: gettextCatalog.getString('Select or search a category ...')
+                        },
+                        hideExpression: '!model.more'
+                    });
+                }
+                // motion block
+                if (MotionBlock.getAll().length > 0) {
+                    formFields.push({
+                        key: 'motion_block_id',
+                        type: 'select-single',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Motion block'),
+                            options: MotionBlock.getAll(),
+                            ngOptions: 'option.id as option.title for option in to.options',
+                            placeholder: gettextCatalog.getString('Select or search a motion block ...')
+                        },
+                        hideExpression: '!model.more'
+                    });
+                }
+                // origin
+                formFields.push({
                     key: 'origin',
                     type: 'input',
                     templateOptions: {
                         label: gettextCatalog.getString('Origin'),
                     },
                     hideExpression: '!model.more'
-                },
-                {
-                    key: 'tags_id',
-                    type: 'select-multiple',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Tags'),
-                        options: Tag.getAll(),
-                        ngOptions: 'option.id as option.name for option in to.options',
-                        placeholder: gettextCatalog.getString('Select or search a tag ...')
-                    },
-                    hideExpression: '!model.more'
-                },
-                {
-                    key: 'supporters_id',
-                    type: 'select-multiple',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Supporters'),
-                        options: User.getAll(),
-                        ngOptions: 'option.id as option.full_name for option in to.options',
-                        placeholder: gettextCatalog.getString('Select or search a supporter ...')
-                    },
-                    hideExpression: '!model.more'
-                }]);
-
+                });
+                // tags
+                if (Tag.getAll().length > 0) {
+                    formFields.push({
+                        key: 'tags_id',
+                        type: 'select-multiple',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Tags'),
+                            options: Tag.getAll(),
+                            ngOptions: 'option.id as option.name for option in to.options',
+                            placeholder: gettextCatalog.getString('Select or search a tag ...')
+                        },
+                        hideExpression: '!model.more'
+                    });
+                }
+                // supporters
+                if (Config.get('motions_min_supporters') > 0) {
+                    formFields.push({
+                        key: 'supporters_id',
+                        type: 'select-multiple',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Supporters'),
+                            options: User.getAll(),
+                            ngOptions: 'option.id as option.full_name for option in to.options',
+                            placeholder: gettextCatalog.getString('Select or search a supporter ...')
+                        },
+                        hideExpression: '!model.more'
+                    });
+                }
+                // workflows
                 if (workflows.length > 1) {
-                    formFields = formFields.concat([
-                        {
-                            key: 'workflow_id',
-                            type: 'select-single',
-                            templateOptions: {
-                                label: gettextCatalog.getString('Workflow'),
-                                optionsAttr: 'bs-options',
-                                options: workflows,
-                                ngOptions: 'option.id as option.name | translate for option in to.options',
-                                placeholder: gettextCatalog.getString('Select or search a workflow ...')
-                            },
-                            hideExpression: '!model.more',
-                        }
-                    ]);
+                    formFields.push({
+                        key: 'workflow_id',
+                        type: 'select-single',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Workflow'),
+                            optionsAttr: 'bs-options',
+                            options: workflows,
+                            ngOptions: 'option.id as option.name | translate for option in to.options',
+                            placeholder: gettextCatalog.getString('Select or search a workflow ...')
+                        },
+                        hideExpression: '!model.more',
+                    });
                 }
 
                 return formFields;
@@ -1323,7 +1350,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // ... preselect default workflow
         $scope.model.workflow_id = Config.get('motions_workflow').value;
         // get all form fields
-        $scope.formFields = MotionForm.getFormFields();
+        $scope.formFields = MotionForm.getFormFields(true);
 
         // save motion
         $scope.save = function (motion) {
