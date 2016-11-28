@@ -39,11 +39,17 @@ angular.module('OpenSlidesApp.motions.projector', [
             // (if this check is removed this happends: controller loads --> call of $scope.scroll
             // --> same line but scrollRequest --> projector updates --> controller loads --> ... )
             if ($scope.line !== $rootScope.motion_projector_line) {
-                // line value has changed
-                var lineElement = document.getElementsByName('L' + $scope.line);
-                if (lineElement[0]) {
+                // The same line number can occur twice in diff view; we scroll to the first one in this case
+                var scrollTop = null;
+                $(".line-number-" + $scope.line).each(function() {
+                    var top = $(this).offset().top;
+                    if (top > 0 && (scrollTop === null || top < scrollTop)) {
+                        scrollTop = top;
+                    }
+                });
+                if (scrollTop) {
                     $rootScope.motion_projector_line = $scope.line;
-                    var pos = lineElement[0].getBoundingClientRect().top + thisProjector.scroll*80;
+                    var pos = scrollTop + thisProjector.scroll*80;
                     $http.post('/rest/core/projector/' + thisProjector.id + '/set_scroll/', Math.floor(pos/80.0) - 1);
                 } else if ($scope.line === 0) {
                     $rootScope.motion_projector_line = $scope.line;
