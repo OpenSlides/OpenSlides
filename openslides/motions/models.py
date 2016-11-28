@@ -760,6 +760,9 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
     rejected = models.BooleanField(default=False)
     """If true, this change recommendation has been rejected"""
 
+    type = models.PositiveIntegerField(default=0)
+    """Replacement (0), Insertion (1), Deletion (2)"""
+
     line_from = models.PositiveIntegerField()
     """The number or the first affected line"""
 

@@ -1,0 +1,6 @@
+<div class="btn-group" data-toggle="buttons">
+    <label ng-repeat="(key, option) in to.options" ng-click="model[options.key] = option.value;"
+           class="btn btn-default btn-sm" ng-class="{active: (model[options.key] == option.value)}">
+        <input type="radio" tabindex="0" ng-value="option.value" ng-model="model[options.key]">{{option.name}}
+    </label>
+</div>

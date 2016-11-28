@@ -470,6 +470,14 @@ angular.module('OpenSlidesApp.core.site', [
           extends: 'select',
           templateUrl: 'static/templates/core/select-multiple.html'
         });
+        formlyConfig.setType({
+          name: 'radio-buttons',
+          templateUrl: 'static/templates/core/radio-buttons.html',
+          wrapper: ['bootstrapHasError'],
+          defaultOptions: {
+            noFormControl: false
+          }
+        });
     }
 ])
 

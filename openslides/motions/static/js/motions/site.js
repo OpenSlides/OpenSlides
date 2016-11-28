@@ -347,6 +347,18 @@ angular.module('OpenSlidesApp.motions.site', [
                         hide: true
                     },
                     {
+                        key: 'type',
+                        type: 'radio-buttons',
+                        templateOptions: {
+                            name: 'type',
+                            options: [
+                                {name: gettextCatalog.getString('Replacement'), value: 0},
+                                {name: gettextCatalog.getString('Insertion'), value: 1},
+                                {name: gettextCatalog.getString('Deletion'), value: 2}
+                            ]
+                        }
+                    },
+                    {
                         key: 'text',
                         type: 'editor',
                         templateOptions: {
