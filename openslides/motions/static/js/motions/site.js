@@ -1457,6 +1457,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // set initial values for form model by create deep copy of motion object
         // so list/detail view is not updated while editing
         $scope.model = angular.copy(motion);
+        $scope.model.disable_versioning = false;
         $scope.model.more = false;
 
         // get all form fields
@@ -1479,10 +1480,9 @@ angular.module('OpenSlidesApp.motions.site', [
                 // get reason of latest version
                 $scope.formFields[i].defaultValue = motion.getReason(-1);
             }
-            if ($scope.formFields[i].key == "disable_versioning" &&
-                Config.get('motions_allow_disable_versioning')) {
-                // check current state if versioning is active
-                if (motion.state.versioning) {
+            if ($scope.formFields[i].key == "disable_versioning") {
+                if (Config.get('motions_allow_disable_versioning').value && motion.state.versioning) {
+                    // check current state if versioning is active
                     $scope.formFields[i].hide = false;
                 }
             }

@@ -78,10 +78,6 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             motion = _motion;
             obj.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
             obj.originalHtml = obj.lineBrokenText;
-
-            if (motion.state.versioning && Config.get('motions_allow_disable_versioning').value) {
-                obj.trivialChange = true;
-            }
         };
 
 
