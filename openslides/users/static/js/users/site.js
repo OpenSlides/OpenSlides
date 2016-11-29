@@ -1197,8 +1197,9 @@ angular.module('OpenSlidesApp.users.site', [
     'Motion',
     'User',
     'ngDialog',
-    function($scope, $http, operator, Group, permissions, gettext, Agenda, Assignment, Mediafile, Motion, User, ngDialog) {
-        //Group.bindAll({}, $scope, 'groups');
+    'OpenSlidesPlugins',
+    function($scope, $http, operator, Group, permissions, gettext, Agenda, Assignment, Mediafile,
+        Motion, User, ngDialog, OpenSlidesPlugins) {
         $scope.permissions = permissions;
 
         $scope.$watch(function() {
@@ -1220,6 +1221,11 @@ angular.module('OpenSlidesApp.users.site', [
             $scope.group_danger = groups_danger.length == 1 ? groups_danger[0] : null;
         });
 
+        // Dict to map plugin name -> display_name
+        var pluginTranslation = {};
+        _.forEach(OpenSlidesPlugins.getAll(), function (plugin) {
+            pluginTranslation[plugin.name] = plugin.display_name;
+        });
         $scope.apps = [];
         // Create the main clustering with appname->permissions
         angular.forEach(permissions, function(perm) {
@@ -1261,7 +1267,8 @@ angular.module('OpenSlidesApp.users.site', [
                     insert(5, perm, User.verboseNamePlural);
                     break;
                 default: // plugins: id>5
-                    var display_name = permissionApp.charAt(0).toUpperCase() + permissionApp.slice(1);
+                    var display_name = pluginTranslation[permissionApp] || permissionApp.charAt(0).toUpperCase() +
+                        permissionApp.slice(1);
                     // does the app exists?
                     var result = -1;
                     angular.forEach($scope.apps, function (app, index) {
