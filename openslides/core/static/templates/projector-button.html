@@ -19,7 +19,7 @@
       <a href="" ng-click="model.project(projector.id, arg)"
         ng-class="{ 'projected': inArray(model.isProjected(arg), projector.id) }">
         <i class="fa fa-video-camera" ng-show="inArray(model.isProjected(arg), projector.id)"></i>
-        {{ projector.name }}
+        {{ projector.name | translate }}
         <span ng-if="defaultProjectorId == projector.id">(<translate>Default</translate>)</span>
       </a>
     </li>

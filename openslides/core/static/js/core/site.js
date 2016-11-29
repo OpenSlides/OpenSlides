@@ -1442,6 +1442,9 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('Predefined seconds of new countdowns');
         gettext('Color for blanked projector');
         gettext('List of speakers overlay');
+
+        // Mark the string 'Default projector' here, because it does not appear in the templates.
+        gettext('Default projector');
     }
 ]);
 

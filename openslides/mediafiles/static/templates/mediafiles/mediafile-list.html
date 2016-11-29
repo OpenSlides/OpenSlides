@@ -268,7 +268,7 @@
               <a href="" ng-click="showMediafile(projector.id, mediafile)"
                 ng-class="{ 'projected': inArray(mediafile.isProjected(), projector.id)  }">
                 <i class="fa fa-video-camera" ng-show="inArray(mediafile.isProjected(), projector.id) "></i>
-                {{ projector.name }}
+                {{ projector.name | translate }}
                 <span ng-if="defaultProjectorId == projector.id">(<translate>Default</translate>)</span>
               </a>
             </li>

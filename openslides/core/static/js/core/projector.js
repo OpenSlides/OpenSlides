@@ -263,7 +263,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 
         if ($scope.element.identify) {
             var projector = Projector.get(ProjectorID());
-            $scope.identifyMessage = gettextCatalog.getString('Projector') + ' ' + projector.id + ': ' + projector.name; 
+            $scope.identifyMessage = gettextCatalog.getString('Projector') + ' ' + projector.id + ': ' + gettextCatalog.getString(projector.name);
         } else {
             $scope.message = ProjectorMessage.get(id);
             ProjectorMessage.bindOne(id, $scope, 'message');

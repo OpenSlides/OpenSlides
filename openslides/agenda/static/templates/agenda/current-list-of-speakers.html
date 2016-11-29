@@ -32,7 +32,7 @@
             <a href="" ng-click="projectCurrentLoS(projector.id)"
               ng-class="{ 'projected': inArray(isCurrentLoSProjected(), projector.id) }">
               <i class="fa fa-video-camera" ng-show="inArray(isCurrentLoSProjected(), projector.id) "></i>
-              {{ projector.name }}
+              {{ projector.name | translate }}
               <span ng-if="projector.id == defaultProjectorId">(<translate>Default</translate>)</span>
             </a>
           </li>
