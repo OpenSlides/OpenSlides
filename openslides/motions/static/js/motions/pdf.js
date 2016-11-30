@@ -188,6 +188,36 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             return metaTableJsonString;
         };
 
+        //if the diff version shall be printed
+        var motionDiffLog = function() {
+            if ($scope.viewChangeRecommendations.mode == "diff") {
+                var motionDiffLogBox = [];
+                motionDiffLogBox.push({
+                    text: gettextCatalog.getString('Summary of change recommendations'),
+                    style: 'heading3'
+                });
+
+                angular.forEach($scope.change_recommendations, function(change) {
+                    var changeType = "";
+
+                    if (change.getType(motion.getVersion($scope.version).text) === 0) {
+                        changeType = gettextCatalog.getString("Replacement");
+                    } else if (change.getType(motion.getVersion($scope.version).text) === 1) {
+                        changeType = gettextCatalog.getString("Insertion");
+                    } else if (change.getType(motion.getVersion($scope.version).text) === 2) {
+                        changeType = gettextCatalog.getString("Deletion");
+                    }
+
+                    motionDiffLogBox.push({
+                        text: gettextCatalog.getString('Line') + " " + change.line_from + ": " + changeType + "\n"
+                    });
+                });
+                return motionDiffLogBox;
+            } else {
+                return "";
+            }
+        };
+
         // motion title
         var motionTitle = function() {
             return [{
@@ -246,6 +276,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 title,
                 subtitle,
                 metaTable(),
+                motionDiffLog(),
                 motionTitle(),
                 motionText(),
             ];
