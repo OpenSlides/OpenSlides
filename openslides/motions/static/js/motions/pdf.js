@@ -188,17 +188,18 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             return metaTableJsonString;
         };
 
-        //if the diff version shall be printed
-        var motionDiffLog = function() {
+        // summary of change recommendations (for motion diff version only)
+        var motionDiffSummary = function() {
             if ($scope.viewChangeRecommendations.mode == "diff") {
                 var motionDiffLogBox = [];
                 motionDiffLogBox.push({
                     text: gettextCatalog.getString('Summary of change recommendations'),
-                    style: 'heading3'
+                    style: 'bold'
                 });
 
                 angular.forEach($scope.change_recommendations, function(change) {
                     var changeType = "";
+                    var lineNumbers = "";
 
                     if (change.getType(motion.getVersion($scope.version).text) === 0) {
                         changeType = gettextCatalog.getString("Replacement");
@@ -208,9 +209,17 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         changeType = gettextCatalog.getString("Deletion");
                     }
 
+                    if (change.line_from >= change.line_to - 1) {
+                        lineNumbers = change.line_from;
+                    } else {
+                        lineNumbers = change.line_from + " - " + (change.line_to - 1);
+                    }
                     motionDiffLogBox.push({
-                        text: gettextCatalog.getString('Line') + " " + change.line_from + ": " + changeType + "\n"
+                        text: gettextCatalog.getString('Line') + " " + lineNumbers + ": " + changeType + "\n"
                     });
+                });
+                motionDiffLogBox.push({
+                        text: "\n\n"
                 });
                 return motionDiffLogBox;
             } else {
@@ -276,7 +285,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 title,
                 subtitle,
                 metaTable(),
-                motionDiffLog(),
+                motionDiffSummary(),
                 motionTitle(),
                 motionText(),
             ];
