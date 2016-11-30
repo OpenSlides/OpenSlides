@@ -259,8 +259,11 @@ angular.module('OpenSlidesApp.assignments.site', [
     'AssignmentCatalogContentProvider',
     'PdfMakeDocumentProvider',
     'User',
+    'osTableFilter',
+    'osTableSort',
     function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, phases, Projector, ProjectionDefault,
-        gettextCatalog, AssignmentContentProvider, AssignmentCatalogContentProvider, PdfMakeDocumentProvider, User) {
+        gettextCatalog, AssignmentContentProvider, AssignmentCatalogContentProvider, PdfMakeDocumentProvider,
+        User, osTableFilter, osTableSort) {
         Assignment.bindAll({}, $scope, 'assignments');
         Tag.bindAll({}, $scope, 'tags');
         $scope.$watch(function () {
@@ -274,72 +277,76 @@ angular.module('OpenSlidesApp.assignments.site', [
         $scope.phases = phases;
         $scope.alert = {};
 
-        // setup table sorting
-        $scope.sortColumn = 'title';
-        $scope.filterPresent = '';
-        $scope.reverse = false;
-        // function to sort by clicked column
-        $scope.toggleSort = function (column) {
-            if ( $scope.sortColumn === column ) {
-                $scope.reverse = !$scope.reverse;
+        // Filtering
+        $scope.filter = osTableFilter.createInstance();
+        $scope.filter.multiselectFilters = {
+            tag: [],
+            phase: [],
+        };
+        $scope.filter.propertyList = ['title', 'description'];
+        $scope.filter.propertyFunctionList = [
+            function (assignment) {
+                return gettextCatalog.getString($scope.phases[assignment.phase].display_name);
+            },
+        ];
+        $scope.filter.propertyDict = {
+            'assignment_related_users': function (candidate) {
+                return candidate.user.get_short_name();
+            },
+            'tags': function (tag) {
+                return tag.name;
+            },
+        };
+        $scope.getItemId = {
+            tag: function (assignment) {return assignment.tags_id;},
+            phase: function (assignment) {return assignment.phase;},
+        };
+        // Sorting
+        $scope.sort = osTableSort.createInstance();
+        $scope.sort.column = 'title';
+        $scope.sortOptions = [
+            {name: 'agenda_item.getItemNumberWithAncestors()',
+             display_name: 'Item'},
+            {name: 'title',
+             display_name: 'Title'},
+            {name: 'open_posts',
+             display_name: 'Open posts'},
+            {name: 'phase',
+             display_name: 'Phase'},
+        ];
+        $scope.hasTag = function (assignment, tag) {
+            return _.indexOf(assignment.tags_id, tag.id) > -1;
+        };
+        $scope.toggleTag = function (assignment, tag) {
+            if ($scope.hasTag(assignment, tag)) {
+                assignment.tags_id = _.filter(assignment.tags_id, function (tag_id){
+                    return tag_id != tag.id;
+                });
+            } else {
+                assignment.tags_id.push(tag.id);
             }
-            $scope.sortColumn = column;
+            Assignment.save(assignment);
         };
-        // define custom search filter string
-        $scope.getFilterString = function (assignment) {
-            return [
-                assignment.title,
-                assignment.description,
-                $scope.phases[assignment.phase].display_name,
-                _.map(assignment.assignment_related_users,
-                    function (candidate) {
-                        return candidate.user.get_short_name();
-                    }
-                ).join(" "),
-                _.map(assignment.tags,
-                    function (tag) {
-                        return tag.name;
-                    }
-                ).join(" "),
-            ].join(" ");
+        // update phase
+        $scope.updatePhase = function (assignment, phase_id) {
+            assignment.phase = phase_id;
+            Assignment.save(assignment);
         };
-
         // open new/edit dialog
         $scope.openDialog = function (assignment) {
             ngDialog.open(AssignmentForm.getDialog(assignment));
         };
-        // cancel QuickEdit mode
-        $scope.cancelQuickEdit = function (assignment) {
-            // revert all changes by restore (refresh) original assignment object from server
-            Assignment.refresh(assignment);
-            assignment.quickEdit = false;
-        };
-        // save changed assignment
-        $scope.save = function (assignment) {
-            Assignment.save(assignment).then(
-                function(success) {
-                    assignment.quickEdit = false;
-                    $scope.alert.show = false;
-                },
-                function(error) {
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = { type: 'danger', msg: message, show: true };
-                });
-        };
-        // *** delete mode functions ***
-        $scope.isDeleteMode = false;
+        // *** select mode functions ***
+        $scope.isSelectMode = false;
         // check all checkboxes
         $scope.checkAll = function () {
             angular.forEach($scope.assignments, function (assignment) {
                 assignment.selected = $scope.selectedAll;
             });
         };
-        // uncheck all checkboxes if isDeleteMode is closed
+        // uncheck all checkboxes if isSelectMode is closed
         $scope.uncheckAll = function () {
-            if (!$scope.isDeleteMode) {
+            if (!$scope.isSelectMode) {
                 $scope.selectedAll = false;
                 angular.forEach($scope.assignments, function (assignment) {
                     assignment.selected = false;
@@ -352,7 +359,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                 if (assignment.selected)
                     Assignment.destroy(assignment.id);
             });
-            $scope.isDeleteMode = false;
+            $scope.isSelectMode = false;
             $scope.uncheckAll();
         };
         // delete single assignment

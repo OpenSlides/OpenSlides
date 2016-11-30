@@ -342,61 +342,107 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-.factory('Multiselect', [
+/* This factory handles the filtering of the OS-data-tables. It contains
+ * all logic needed for the table header filtering. Things to configure:
+ * - multiselectFilters: A dict associating the filter name to a list (empty per default). E.g.
+ *       { tag: [],
+ *         category: [], }
+ * - booleanFilters: A dict containing a dict for every filter. The value property is a must.
+ *   For displaying properties like displayName, choiceYes and choiceNo could be usefull. E.g.
+ *      { isPresent: {
+ *          value: undefined,
+ *          displayName: gettext('Is present'), } }
+ * - propertyList, propertyFunctionList, propertyDict: See function getObjectQueryString
+ */
+.factory('osTableFilter', [
     function () {
-        var instance = function () {
-            var areFiltersSet = function () {
-                var areFiltersSet = false;
-                _.forEach(self.filters, function (filterList, filter) {
-                    if (filterList.length > 0) {
-                        areFiltersSet = true;
+        var createInstance = function () {
+            var self = {
+                multiselectFilters: {},
+                booleanFilters: {},
+                filterString: '',
+            };
+            self.areFiltersSet = function () {
+                var areFiltersSet = _.find(self.multiselectFilters, function (filterList) {
+                    return filterList.length > 0;
+                });
+                areFiltersSet = areFiltersSet || _.find(self.booleanFilters, function (filterDict) {
+                    return filterDict.value !== undefined;
+                });
+                areFiltersSet = areFiltersSet || (self.filterString !== '');
+                return areFiltersSet !== false;
+            };
+            self.reset = function () {
+                _.forEach(self.multiselectFilters, function (filterList, filter) {
+                    self.multiselectFilters[filter] = [];
+                });
+                _.forEach(self.booleanFilters, function (filterDict, filter) {
+                    self.booleanFilters[filter].value = undefined;
+                });
+                self.filterString = '';
+            };
+            self.operateMultiselectFilter = function (filter, id, danger) {
+                if (!danger) {
+                    if (_.indexOf(self.multiselectFilters[filter], id) > -1) {
+                        // remove id
+                        self.multiselectFilters[filter].splice(_.indexOf(self.multiselectFilters[filter], id), 1);
+                    } else {
+                        // add id
+                        self.multiselectFilters[filter].push(id);
                     }
-                });
-                return areFiltersSet;
-            };
-            var resetFilters = function () {
-                _.forEach(self.filters, function (filterList, filter) {
-                    self.filters[filter] = [];
-                });
-            };
-            var getFilterString = function (obj) {
-                var newList = [];
-                _.forEach(self.propertyList, function (property) {
-                    newList.push(obj[property]);
-                });
-                _.forEach(self.propertyFunctionList, function (fn) {
-                    newList.push(fn(obj));
-                });
-                _.forEach(self.propertyDict, function (idFunction, property) {
-                    newList.push(_.map(obj[property], idFunction).join(' '));
-                });
-                return newList.join(' ');
-            };
-            var operate = function (filter, id) {
-                if (_.indexOf(self.filters[filter], id) > -1) {
-                    // remove id
-                    self.filters[filter] = _.filter(self.filters[filter], function (_id) {
-                        return _id != id;
-                    });
-                } else {
-                    // add id
-                    self.filters[filter].push(id);
                 }
             };
-
-            var self = {
-                filters: {},
-                areFiltersSet: areFiltersSet,
-                resetFilters: resetFilters,
-                operate: operate,
-                getFilterString: getFilterString,
+            /* Three things are could be given to create the query string:
+             * - propertyList: Just a list of object's properties like ['title', 'name']
+             * - propertyFunktionList: A list of functions returning a property (e.g. [function(motion) {return motion.getTitle();}] for retrieving the motions title)
+             * - propertyDict: A dict association properties that are lists to functions on how to handle them.
+             *   E.g.: {'tags': function (tag) {return tag.name;}, }
+             *         The list of tags will be mapped with this function to a list of strings (tag names).
+             */
+            self.getObjectQueryString = function (obj) {
+                var stringList = [];
+                _.forEach(self.propertyList, function (property) {
+                    stringList.push(obj[property]);
+                });
+                _.forEach(self.propertyFunctionList, function (fn) {
+                    stringList.push(fn(obj));
+                });
+                _.forEach(self.propertyDict, function (idFunction, property) {
+                    stringList.push(_.map(obj[property], idFunction).join(' '));
+                });
+                return stringList.join(' ');
             };
-            resetFilters(); //Initiate filters
             return self;
         };
 
         return {
-            instance: instance
+            createInstance: createInstance
+        };
+    }
+])
+
+/* This factory takes care of the sorting of OS-data-tables. Things to configure:
+ * - column: the default column which is the list sorted by (e.g.
+ *   instance.column='title')
+ */
+.factory('osTableSort', [
+    function () {
+        var createInstance = function () {
+            var self = {
+                column: '',
+                reverse: false,
+            };
+            self.toggle = function (column) {
+                if (self.column === column) {
+                    self.reverse = !self.reverse;
+                }
+                self.column = column;
+            };
+            return self;
+        };
+
+        return {
+            createInstance: createInstance
         };
     }
 ])
@@ -407,6 +453,9 @@ angular.module('OpenSlidesApp.core.site', [
  * Then, all items in the array are passed, if the item_id (get with id_function) matches
  * one of the ids in filterArray. id_function could also return a list of ids. Example:
  * Item 1 has two tags with ids [1, 4]. filterArray == [3, 4] --> match
+ *
+ * If -1 is in the array items without an id will not be filtered. This is for implementing
+ * a filter option like: "All items without a category"
  */
 .filter('MultiselectFilter', [
     function () {
@@ -414,14 +463,28 @@ angular.module('OpenSlidesApp.core.site', [
             if (filterArray.length === 0) {
                 return array;
             }
+            var itemsWithoutProperty = _.indexOf(filterArray, -1) > -1;
             return Array.prototype.filter.call(array, function (item) {
                 var id = idFunction(item);
-                if (!id) {
-                    return false;
-                } else if (typeof id === 'number') {
+                if (typeof id === 'number') {
                     id = [id];
+                } else if (id === null || !id.length) {
+                    return itemsWithoutProperty;
                 }
                 return _.intersection(id, filterArray).length > 0;
+            });
+        };
+    }
+])
+
+.filter('osFilter', [
+    function () {
+        return function (array, string, getFilterString) {
+            if (!string) {
+                return array;
+            }
+            return Array.prototype.filter.call(array, function (item) {
+                return getFilterString(item).toLowerCase().indexOf(string.toLowerCase()) > -1;
             });
         };
     }

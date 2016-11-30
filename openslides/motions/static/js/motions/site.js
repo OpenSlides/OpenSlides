@@ -804,10 +804,11 @@ angular.module('OpenSlidesApp.motions.site', [
     'Projector',
     'ProjectionDefault',
     'MotionCsvExport',
-    'Multiselect',
+    'osTableFilter',
+    'osTableSort',
     function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionBlock,
                 MotionDocxExport, MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
-                gettextCatalog, HTMLValidizer, Projector, ProjectionDefault, MotionCsvExport, Multiselect) {
+                gettextCatalog, HTMLValidizer, Projector, ProjectionDefault, MotionCsvExport, osTableFilter, osTableSort) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         MotionBlock.bindAll({}, $scope, 'motionBlocks');
@@ -825,22 +826,23 @@ angular.module('OpenSlidesApp.motions.site', [
         });
         $scope.alert = {};
 
-        $scope.multiselect = Multiselect.instance();
-        $scope.multiselect.filters = {
+        // Filtering
+        $scope.filter = osTableFilter.createInstance();
+        $scope.filter.multiselectFilters = {
             state: [],
             category: [],
             motionBlock: [],
             tag: []
         };
-        $scope.multiselect.propertyList = ['identifier', 'origin'];
-        $scope.multiselect.propertyFunctionList = [
+        $scope.filter.propertyList = ['identifier', 'origin'];
+        $scope.filter.propertyFunctionList = [
             function (motion) {return motion.getTitle();},
             function (motion) {return motion.getText();},
             function (motion) {return motion.getReason();},
             function (motion) {return motion.category ? motion.category.name : '';},
             function (motion) {return motion.motionBlock ? motion.motionBlock.name : '';},
         ];
-        $scope.multiselect.PropertyDict = {
+        $scope.filter.propertyDict = {
             'submitters' : function (submitter) {
                 return submitter.get_short_name();
             },
@@ -857,7 +859,9 @@ angular.module('OpenSlidesApp.motions.site', [
             motionBlock: function (motion) {return motion.motion_block_id;},
             tag: function (motion) {return motion.tags_id;}
         };
-        // setup table sorting
+        // Sorting
+        $scope.sort = osTableSort.createInstance();
+        $scope.sort.column = 'identifier';
         $scope.sortOptions = [
             {name: 'identifier',
              display_name: 'Identifier'},
@@ -876,34 +880,6 @@ angular.module('OpenSlidesApp.motions.site', [
             {name: 'log_messages[0].time',
              display_name: 'Last modified'},
         ];
-        $scope.sortColumn = 'identifier';
-        $scope.filterPresent = '';
-        $scope.reverse = false;
-
-        // function to operate the multiselectFilter
-        $scope.operateMultiselectFilter = function (filter, id) {
-            if (!$scope.isDeleteMode) {
-                $scope.multiselect.operate(filter, id);
-            }
-        };
-        // function to sort by clicked column
-        $scope.toggleSort = function (column) {
-            if ( $scope.sortColumn === column ) {
-                $scope.reverse = !$scope.reverse;
-            }
-            $scope.sortColumn = column;
-        };
-        // for reset-button
-        $scope.resetFilters = function () {
-            $scope.multiselect.resetFilters();
-            if ($scope.filter) {
-                $scope.filter.search = '';
-            }
-        };
-        $scope.areFiltersSet = function () {
-            return $scope.multiselect.areFiltersSet() ||
-                   ($scope.filter ? $scope.filter.search : false);
-        };
 
         // collect all states of all workflows
         // TODO: regard workflows only which are used by motions
@@ -930,7 +906,7 @@ angular.module('OpenSlidesApp.motions.site', [
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {});
         };
 
-        $scope.has_tag = function (motion, tag) {
+        $scope.hasTag = function (motion, tag) {
             return _.indexOf(motion.tags_id, tag.id) > -1;
         };
 
@@ -942,8 +918,8 @@ angular.module('OpenSlidesApp.motions.site', [
             motion.reason = motion.getReason(-1);
             Motion.save(motion);
         };
-        $scope.toggle_tag = function (motion, tag) {
-            if ($scope.has_tag(motion, tag)) {
+        $scope.toggleTag = function (motion, tag) {
+            if ($scope.hasTag(motion, tag)) {
                 // remove
                 motion.tags_id = _.filter(motion.tags_id, function (tag_id){
                     return tag_id != tag.id;
@@ -953,7 +929,7 @@ angular.module('OpenSlidesApp.motions.site', [
             }
             save(motion);
         };
-        $scope.toggle_category = function (motion, category) {
+        $scope.toggleCategory = function (motion, category) {
             if (motion.category_id == category.id) {
                 motion.category_id = null;
             } else {
@@ -961,7 +937,7 @@ angular.module('OpenSlidesApp.motions.site', [
             }
             save(motion);
         };
-        $scope.toggle_motionBlock = function (motion, block) {
+        $scope.toggleMotionBlock = function (motion, block) {
             if (motion.motion_block_id == block.id) {
                 motion.motion_block_id = null;
             } else {
@@ -1015,8 +991,8 @@ angular.module('OpenSlidesApp.motions.site', [
             MotionDocxExport.export($scope.motionsFiltered, $scope.categories);
         };
 
-        // *** delete mode functions ***
-        $scope.isDeleteMode = false;
+        // *** select mode functions ***
+        $scope.isSelectMode = false;
         // check all checkboxes from filtered motions
         $scope.checkAll = function () {
             $scope.selectedAll = !$scope.selectedAll;
@@ -1024,9 +1000,9 @@ angular.module('OpenSlidesApp.motions.site', [
                 motion.selected = $scope.selectedAll;
             });
         };
-        // uncheck all checkboxes if isDeleteMode is closed
+        // uncheck all checkboxes if isSelectMode is closed
         $scope.uncheckAll = function () {
-            if (!$scope.isDeleteMode) {
+            if (!$scope.isSelectMode) {
                 $scope.selectedAll = false;
                 angular.forEach($scope.motions, function (motion) {
                     motion.selected = false;
@@ -1039,7 +1015,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 if (motion.selected)
                     Motion.destroy(motion.id);
             });
-            $scope.isDeleteMode = false;
+            $scope.isSelectMode = false;
             $scope.uncheckAll();
         };
         // delete single motion
