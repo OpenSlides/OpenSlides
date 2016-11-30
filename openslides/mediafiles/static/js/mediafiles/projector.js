@@ -23,15 +23,17 @@ angular.module('OpenSlidesApp.mediafiles.projector', ['OpenSlidesApp.mediafiles'
 
         // Allow the elements to render properly
         setTimeout(function() {
-            if ($scope.mediafile.is_pdf) {
-                $scope.pdfName = mediafile.title;
-                $scope.pdfUrl = mediafile.mediafileUrl;
-            } else if ($scope.mediafile.is_video) {
-                var player = angular.element.find('#video-player')[0];
-                if ($scope.element.playing) {
-                    player.play();
-                } else {
-                    player.pause();
+            if ($scope.mediafile) {
+                if ($scope.mediafile.is_pdf) {
+                    $scope.pdfName = mediafile.title;
+                    $scope.pdfUrl = mediafile.mediafileUrl;
+                } else if ($scope.mediafile.is_video) {
+                    var player = angular.element.find('#video-player')[0];
+                    if ($scope.element.playing) {
+                        player.play();
+                    } else {
+                        player.pause();
+                    }
                 }
             }
         }, 0);
