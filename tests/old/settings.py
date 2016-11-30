@@ -66,6 +66,11 @@ MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, '')
 SEARCH_INDEX = 'ram'
 
 
+# Customization of OpenSlides apps
+
+MOTION_IDENTIFIER_MIN_DIGITS = 1
+
+
 # Special settings only for testing
 
 TEST_RUNNER = 'openslides.utils.test.OpenSlidesDiscoverRunner'
