@@ -7,6 +7,7 @@ angular.module('OpenSlidesApp.motions', [
     'OpenSlidesApp.motions.lineNumbering',
     'OpenSlidesApp.motions.diff',
     'OpenSlidesApp.motions.DOCX',
+    'OpenSlidesApp.poll.majority',
     'OpenSlidesApp.users',
 ])
 
@@ -66,7 +67,8 @@ angular.module('OpenSlidesApp.motions', [
     'DS',
     'gettextCatalog',
     'Config',
-    function (DS, gettextCatalog, Config) {
+    'MajorityMethods',
+    function (DS, gettextCatalog, Config, MajorityMethods) {
         return DS.defineResource({
             name: 'motions/motionpoll',
             relations: {
@@ -78,61 +80,84 @@ angular.module('OpenSlidesApp.motions', [
                 }
             },
             methods: {
-                // returns object with value and percent
+                // Returns percent base. Returns undefined if calculation is not possible in general.
+                getPercentBase: function (config, type) {
+                    var base;
+                    switch (config) {
+                        case 'CAST':
+                            if (this.votescast <= 0 || this.votesinvalid < 0) {
+                                // It would be OK to check only this.votescast < 0 because 0
+                                // is checked again later but this is a little bit faster.
+                                break;
+                            }
+                            base = this.votescast;
+                            /* falls through */
+                        case 'VALID':
+                            if (this.votesvalid < 0) {
+                                base = void 0;
+                                break;
+                            }
+                            if (typeof base === 'undefined' && type !== 'votescast' && type !== 'votesinvalid') {
+                                base = this.votesvalid;
+                            }
+                            /* falls through */
+                        case 'YES_NO_ABSTAIN':
+                            if (this.abstain < 0) {
+                                base = void 0;
+                                break;
+                            }
+                            if (typeof base === 'undefined' && type !== 'votescast' && type !== 'votesinvalid' && type !== 'votesvalid') {
+                                base = this.yes + this.no + this.abstain;
+                            }
+                            /* falls through */
+                        case 'YES_NO':
+                            if (this.yes < 0 || this.no < 0 || this.abstain === -1 ) {
+                                // It is not allowed to set 'Abstain' to 'majority' but exclude it from calculation.
+                                // Setting 'Abstain' to 'undocumented' is possible, of course.
+                                base = void 0;
+                                break;
+                            }
+                            if (typeof base === 'undefined' && (type === 'yes' || type === 'no')) {
+                                base = this.yes + this.no;
+                            }
+                    }
+                    return base;
+                },
+
+                // Returns object with value and percent for this poll.
                 getVote: function (vote, type) {
                     if (!this.has_votes) {
+                        // Return undefined if this poll has no votes.
                         return;
                     }
-                    var impossible = false;
-                    var value = '';
+
+                    // Initial values
+                    var value = '',
+                        percentStr = '',
+                        percentNumber,
+                        config = Config.get('motions_poll_100_percent_base').value;
+
+                    // Check special values
                     switch (vote) {
                         case -1:
                             value = gettextCatalog.getString('majority');
-                            impossible = true;
                             break;
                         case -2:
                             value = gettextCatalog.getString('undocumented');
-                            impossible = true;
                             break;
                         default:
                             if (vote >= 0) {
                                 value = vote;
                             } else {
-                                value = 0; //value was not defined
+                                value = 0;  // Vote was not defined. Set value to 0.
                             }
-                            break;
                     }
-                    // 100% base impossible if at leat one value has set an
-                    // speacial value (-1 or -2).
-                    if (this.yes < 0 || this.no < 0 || this.abstain < 0) {
-                        impossible = true;
-                    }
-                    // calculate percent value
-                    var config = Config.get('motions_poll_100_percent_base').value;
-                    var percentStr = '';
-                    var percentNumber = null;
-                    var base = null;
-                    if (!impossible) {
-                        if (config == "YES_NO_ABSTAIN") {
-                            if (type == 'yes' || type == 'no' || type == 'abstain') {
-                                base = this.yes + this.no + this.abstain;
-                            }
-                        } else if (config == "YES_NO") {
-                            if (type == 'yes' || type == 'no') {
-                                base = this.yes + this.no;
-                            }
-                        } else if (config == "VALID" && type !== 'votescast' && type !== 'votesinvalid' &&
-                            this.votesvalid > 0) {
-                            base = this.votesvalid;
-                        } else if (config == "CAST" && this.votescast > 0) {
-                            base = this.votescast;
-                        }
-                    }
-                    if (base !== null) {
+
+                    // Calculate percent value
+                    var base = this.getPercentBase(config, type);
+                    if (base) {
                         percentNumber = Math.round(vote * 100 / (base) * 10) / 10;
-                    }
-                    if (percentNumber !== null) {
-                        percentStr = "(" + percentNumber + "%)";
+                        percentStr = '(' + percentNumber + ' %)';
                     }
                     return {
                         'value': value,
@@ -140,6 +165,25 @@ angular.module('OpenSlidesApp.motions', [
                         'percentNumber': percentNumber,
                         'display': value + ' ' + percentStr
                     };
+                },
+
+                // Returns 0 or positive integer if quorum is reached or surpassed.
+                // Returns negativ integer if quorum is not reached.
+                // Returns undefined if we can not calculate the quorum.
+                isReached: function (method) {
+                    if (!this.has_votes) {
+                        // Return undefined if this poll has no votes.
+                        return;
+                    }
+
+                    var isReached;
+                    var config = Config.get('motions_poll_100_percent_base').value;
+                    var base = this.getPercentBase(config, 'yes');
+                    if (base) {
+                        // Provide result only if base is not undefined and not 0.
+                        isReached = MajorityMethods[method](this.yes, base);
+                    }
+                    return isReached;
                 }
             }
         });
@@ -246,7 +290,7 @@ angular.module('OpenSlidesApp.motions', [
 
                     for (var i = 0; i < changes.length; i++) {
                         var change = changes[i];
-                        if (statusCompareCb === undefined || statusCompareCb(change.rejected)) {
+                        if (typeof statusCompareCb === 'undefined' || statusCompareCb(change.rejected)) {
                             html = lineNumberingService.insertLineNumbers(html, lineLength);
                             html = diffService.replaceLines(html, change.text, change.line_from, change.line_to);
                         }

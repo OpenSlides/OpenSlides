@@ -9,97 +9,55 @@ angular.module('OpenSlidesApp.assignments', [])
     'jsDataModel',
     'gettextCatalog',
     'Config',
-    function (DS, jsDataModel, gettextCatalog, Config) {
+    'MajorityMethods',
+    function (DS, jsDataModel, gettextCatalog, Config, MajorityMethods) {
         return DS.defineResource({
             name: 'assignments/polloption',
             useClass: jsDataModel,
             methods: {
                 getVotes: function () {
                     if (!this.poll.has_votes) {
+                        // Return undefined if this poll has no votes.
                         return;
                     }
-                    var poll = this.poll;
-                    var votes = [];
-                    var config = Config.get('assignments_poll_100_percent_base').value;
-                    var impossible = false;
-                    var yes = null, no = null, abstain = null;
-                    angular.forEach(this.votes, function(vote) {
-                        if (vote.value == "Yes" || vote.value == "Votes") {
-                            yes = vote.weight;
-                        } else if (vote.value == "No") {
-                            no = vote.weight;
-                        } else if (vote.value == "Abstain") {
-                            abstain = vote.weight;
-                        }
-                    });
-                    //calculation for several candidates without yes/no options
-                    var do_sum_of_all = false;
-                    var sum_of_votes = 0;
-                    if (poll.options.length > 1 && poll.pollmethod == 'votes') {
-                        do_sum_of_all = true;
+
+                    // Initial values for the option
+                    var votes = [],
+                        config = Config.get('assignments_poll_100_percent_base').value;
+
+                    var base = this.poll.getPercentBase(config);
+                    if (typeof base === 'object') {
+                        // this.poll.pollmethod === 'yna'
+                        base = base[this.id];
                     }
-                    if (do_sum_of_all === true) {
-                        angular.forEach(poll.options, function(option) {
-                            angular.forEach(option.votes, function(vote) {
-                                if (vote.value == "Votes") {
-                                    if (vote.weight >= 0 ) {
-                                        sum_of_votes = sum_of_votes + vote.weight;
-                                    } else {
-                                        impossible = true;
-                                    }
-                                }
-                            });
-                        });
-                    }
-                    angular.forEach(this.votes, function(vote) {
-                        // check for special value
-                        var value;
+
+                    _.forEach(this.votes, function (vote) {
+                        // Initial values for the vote
+                        var value = '',
+                            percentStr = '',
+                            percentNumber;
+
+                        // Check for special value
                         switch (vote.weight) {
                             case -1:
                                 value = gettextCatalog.getString('majority');
-                                impossible = true;
                                 break;
                             case -2:
                                 value = gettextCatalog.getString('undocumented');
-                                impossible = true;
                                 break;
                             default:
                                 if (vote.weight >= 0) {
                                     value = vote.weight;
                                 } else {
-                                    value = 0;
+                                    value = 0;  // Vote was not defined. Set value to 0.
                                 }
-                                break;
                         }
-                        // calculate percent value
-                        var percentStr, percentNumber, base;
-                        if (config == "VALID") {
-                            if (poll.votesvalid && poll.votesvalid > 0) {
-                                base = poll.votesvalid;
-                            }
-                        } else if ( config == "CAST") {
-                            if (poll.votescast && poll.votescast > 0) {
-                                base = poll.votescast;
-                            }
-                        } else if (config == "YES_NO" && !impossible) {
-                            if (vote.value == "Yes" || vote.value == "No" || vote.value == "Votes"){
-                                if (do_sum_of_all) {
-                                    base = sum_of_votes;
-                                } else {
-                                    base = yes + no;
-                                }
-                            }
-                        } else if (config == "YES_NO_ABSTAIN" && !impossible) {
-                            if (do_sum_of_all) {
-                                base = sum_of_votes;
-                            } else {
-                                base = yes + no + abstain;
-                            }
-                        }
-                        if (base !== 'undefined' && vote.weight >= 0) {
+
+                        // Special case where to skip percents
+                        var skipPercents = config === 'YES_NO' && vote.value === 'Abstain';
+
+                        if (base && !skipPercents) {
                             percentNumber = Math.round(vote.weight * 100 / base * 10) / 10;
-                        }
-                        if (percentNumber >= 0 && percentNumber !== 'undefined') {
                             percentStr = "(" + percentNumber + "%)";
                         }
                         votes.push({
@@ -110,6 +68,45 @@ angular.module('OpenSlidesApp.assignments', [])
                         });
                     });
                     return votes;
+                },
+
+                // Returns 0 or positive integer if quorum is reached or surpassed.
+                // Returns negativ integer if quorum is not reached.
+                // Returns undefined if we can not calculate the quorum.
+                isReached: function (method) {
+                    if (!this.poll.has_votes) {
+                        // Return undefined if this poll has no votes.
+                        return;
+                    }
+                    var isReached;
+                    var config = Config.get('assignments_poll_100_percent_base').value;
+                    var base = this.poll.getPercentBase(config);
+                    if (typeof base === 'object') {
+                        // this.poll.pollmethod === 'yna'
+                        base = base[this.id];
+                    }
+                    if (base) {
+                        // Provide result only if base is not undefined and not 0.
+                        isReached = MajorityMethods[method](this.getVoteYes(), base);
+                    }
+                    return isReached;
+                },
+
+                // Returns the weight for the vote or the vote 'yes' in case of YNA poll method.
+                getVoteYes: function () {
+                    var voteYes = 0;
+                    if (this.poll.pollmethod === 'yna') {
+                        var voteObj = _.find(this.votes, function (vote) {
+                            return vote.value === 'Yes';
+                        });
+                        if (voteObj) {
+                            voteYes = voteObj.weight;
+                        }
+                    } else {
+                        // pollmethod === 'votes'
+                        voteYes = this.votes[0].weight;
+                    }
+                    return voteYes;
                 }
             },
             relations: {
@@ -144,10 +141,88 @@ angular.module('OpenSlidesApp.assignments', [])
                 getResourceName: function () {
                     return name;
                 },
-                // returns object with value and percent (for votes valid/invalid/cast only)
+
+                // Returns percent base. Returns undefined if calculation is not possible in general.
+                getPercentBase: function (config, type) {
+                    var base;
+                    switch (config) {
+                        case 'CAST':
+                            if (this.votescast <= 0 || this.votesinvalid < 0) {
+                                // It would be OK to check only this.votescast < 0 because 0
+                                // is checked again later but this is a little bit faster.
+                                break;
+                            }
+                            base = this.votescast;
+                            /* falls through */
+                        case 'VALID':
+                            if (this.votesvalid < 0) {
+                                base = void 0;
+                                break;
+                            }
+                            if (typeof base === 'undefined' && type !== 'votescast' && type !== 'votesinvalid') {
+                                base = this.votesvalid;
+                            }
+                            /* falls through */
+                        case 'YES_NO_ABSTAIN':
+                        case 'YES_NO':
+                            if (this.pollmethod === 'yna') {
+                                if (typeof base === 'undefined' && type !== 'votescast' && type !== 'votesinvalid' && type !== 'votesvalid') {
+                                    base = {};
+                                    _.forEach(this.options, function (option) {
+                                        var allVotes = option.votes;
+                                        if (config === 'YES_NO') {
+                                            allVotes = _.filter(allVotes, function (vote) {
+                                                // Extract abstain votes in case of YES_NO percent base.
+                                                // Do not extract abstain vote if it is set to majority so the predicate later
+                                                // fails and therefor we get an undefined base. Reason: It should not be possible
+                                                // to set abstain to majority and nevertheless calculate percents of yes and no.
+                                                return vote.value !== 'Abstain' || vote.weight === -1;
+                                            });
+                                        }
+                                        var predicate = function (vote) {
+                                            return vote.weight < 0;
+                                        };
+                                        if (_.findIndex(allVotes, predicate) === -1) {
+                                            base[option.id] = _.reduce(allVotes, function (sum, vote) {
+                                                return sum + vote.weight;
+                                            }, 0);
+                                        }
+                                    });
+                                }
+                            } else {
+                                // this.pollmethod === 'votes'
+                                var predicate = function (option) {
+                                    return option.votes[0].weight < 0;
+                                };
+                                if (_.findIndex(this.options, predicate) !== -1) {
+                                    base = void 0;
+                                } else {
+                                    if (typeof base === 'undefined' && type !== 'votescast' && type !== 'votesinvalid' && type !== 'votesvalid') {
+                                        base = _.reduce(this.options, function (sum, option) {
+                                            return sum + option.votes[0].weight;
+                                        }, 0);
+                                    }
+                                }
+                            }
+                    }
+                    return base;
+                },
+
+                // Returns object with value and percent for this poll (for votes valid/invalid/cast only).
                 getVote: function (type) {
-                    var value, percentStr, vote;
-                    switch(type) {
+                    if (!this.has_votes) {
+                        // Return undefined if this poll has no votes.
+                        return;
+                    }
+
+                    // Initial values
+                    var value = '',
+                        percentStr = '',
+                        percentNumber,
+                        vote,
+                        config = Config.get('assignments_poll_100_percent_base').value;
+
+                    switch (type) {
                         case 'votesinvalid':
                             vote = this.votesinvalid;
                             break;
@@ -158,35 +233,34 @@ angular.module('OpenSlidesApp.assignments', [])
                             vote = this.votescast;
                             break;
                     }
-                    if (this.has_votes && vote) {
-                        switch (vote) {
-                            case -1:
-                                value = gettextCatalog.getString('majority');
-                                break;
-                            case -2:
-                                value = gettextCatalog.getString('undocumented');
-                                break;
-                            default:
+
+                    // Check special values
+                    switch (vote) {
+                        case -1:
+                            value = gettextCatalog.getString('majority');
+                            break;
+                        case -2:
+                            value = gettextCatalog.getString('undocumented');
+                            break;
+                        default:
+                            if (vote >= 0) {
                                 value = vote;
-                        }
-                        if (vote >= 0) {
-                            var config = Config.get('assignments_poll_100_percent_base').value;
-                            var percentNumber;
-                            if (config == "CAST" && this.votescast && this.votescast > 0) {
-                                percentNumber = Math.round(vote * 100 / this.votescast * 10) / 10;
-                            } else if (config == "VALID" && this.votesvalid && this.votesvalid >= 0) {
-                                if (type === 'votesvalid'){
-                                    percentNumber = Math.round(vote * 100 / this.votesvalid * 10) / 10;
-                                }
+                            } else {
+                                value = 0; // value was not defined
                             }
-                            if (percentNumber !== 'undefined' && percentNumber >= 0 && percentNumber <=100) {
-                                percentStr = "(" + percentNumber + "%)";
-                            }
-                        }
+                    }
+
+                    // Calculate percent value
+                    var base = this.getPercentBase(config, type);
+                    if (base) {
+                        percentNumber = Math.round(vote * 100 / (base) * 10) / 10;
+                        percentStr = '(' + percentNumber + ' %)';
                     }
                     return {
                         'value': value,
-                        'percentStr': percentStr
+                        'percentStr': percentStr,
+                        'percentNumber': percentNumber,
+                        'display': value + ' ' + percentStr
                     };
                 }
             },

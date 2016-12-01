@@ -740,42 +740,37 @@ angular.module('OpenSlidesApp.motions.site', [
 .controller('MotionPollDetailCtrl', [
     '$scope',
     'MajorityMethodChoices',
-    'MotionMajority',
     'Config',
     'MotionPollDetailCtrlCache',
-    function ($scope, MajorityMethodChoices, MotionMajority, Config, MotionPollDetailCtrlCache) {
+    function ($scope, MajorityMethodChoices, Config, MotionPollDetailCtrlCache) {
         // Define choices.
         $scope.methodChoices = MajorityMethodChoices;
         // TODO: Get $scope.baseChoices from config_variables.py without copying them.
 
         // Setup empty cache with default values.
-        if (MotionPollDetailCtrlCache[$scope.poll.id] === undefined) {
+        if (typeof MotionPollDetailCtrlCache[$scope.poll.id] === 'undefined') {
             MotionPollDetailCtrlCache[$scope.poll.id] = {
-                isMajorityCalculation: true,
-                isMajorityDetails: false,
                 method: $scope.config('motions_poll_default_majority_method'),
-                base: $scope.config('motions_poll_100_percent_base')
             };
         }
 
         // Fetch users choices from cache.
-        $scope.isMajorityCalculation = MotionPollDetailCtrlCache[$scope.poll.id].isMajorityCalculation;
-        $scope.isMajorityDetails = MotionPollDetailCtrlCache[$scope.poll.id].isMajorityDetails;
         $scope.method = MotionPollDetailCtrlCache[$scope.poll.id].method;
-        $scope.base = MotionPollDetailCtrlCache[$scope.poll.id].base;
 
         // Define result function.
         $scope.isReached = function () {
-            return MotionMajority.isReached($scope.base, $scope.method, $scope.poll);
+            return $scope.poll.isReached($scope.method);
+        };
+
+        // Define template controll function
+        $scope.hideMajorityCalculation = function () {
+            return typeof $scope.isReached() === 'undefined' && $scope.method !== 'disabled';
         };
 
         // Save current values to cache on detroy of this controller.
         $scope.$on('$destroy', function() {
             MotionPollDetailCtrlCache[$scope.poll.id] = {
-                isMajorityCalculation: $scope.isMajorityCalculation,
-                isMajorityDetails: $scope.isMajorityDetails,
                 method: $scope.method,
-                base: $scope.base
             };
         });
     }
@@ -1146,7 +1141,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // open dialog for new amendment
         $scope.newAmendment = function () {
             var dialog = MotionForm.getDialog();
-            if (dialog.scope === undefined) {
+            if (typeof dialog.scope === 'undefined') {
                 dialog.scope = {};
             }
             dialog.scope = $scope;

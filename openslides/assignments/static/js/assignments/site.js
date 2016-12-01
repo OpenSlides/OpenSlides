@@ -5,7 +5,8 @@
 angular.module('OpenSlidesApp.assignments.site', [
     'OpenSlidesApp.assignments',
     'OpenSlidesApp.core.pdf',
-    'OpenSlidesApp.assignments.pdf'
+    'OpenSlidesApp.assignments.pdf',
+    'OpenSlidesApp.poll.majority'
 ])
 
 .config([
@@ -241,6 +242,47 @@ angular.module('OpenSlidesApp.assignments.site', [
                 return formFields;
             }
         };
+    }
+])
+
+// Cache for AssignmentPollDetailCtrl so that users choices are keeped during user actions (e. g. save poll form).
+.value('AssignmentPollDetailCtrlCache', {})
+
+// Child controller of AssignmentDetailCtrl for each single poll.
+.controller('AssignmentPollDetailCtrl', [
+    '$scope',
+    'MajorityMethodChoices',
+    'Config',
+    'AssignmentPollDetailCtrlCache',
+    function ($scope, MajorityMethodChoices, Config, AssignmentPollDetailCtrlCache) {
+        // Define choices.
+        $scope.methodChoices = MajorityMethodChoices;
+        // TODO: Get $scope.baseChoices from config_variables.py without copying them.
+
+        // Setup empty cache with default values.
+        if (typeof AssignmentPollDetailCtrlCache[$scope.poll.id] === 'undefined') {
+            AssignmentPollDetailCtrlCache[$scope.poll.id] = {
+                method: $scope.config('assignments_poll_default_majority_method'),
+            };
+        }
+
+        // Fetch users choices from cache.
+        $scope.method = AssignmentPollDetailCtrlCache[$scope.poll.id].method;
+
+        $scope.recalculateMajorities = function (method) {
+            $scope.method = method;
+            _.forEach($scope.poll.options, function (option) {
+                option.majorityReached = option.isReached(method);
+            });
+        };
+        $scope.recalculateMajorities($scope.method);
+
+        // Save current values to cache on destroy of this controller.
+        $scope.$on('$destroy', function() {
+            AssignmentPollDetailCtrlCache[$scope.poll.id] = {
+                method: $scope.method,
+            };
+        });
     }
 ])
 
@@ -883,6 +925,12 @@ angular.module('OpenSlidesApp.assignments.site', [
         gettext('Number of all participants');
         gettext('Use the following custom number');
         gettext('Custom number of ballot papers');
+        gettext('Required majority');
+        gettext('Default method to check whether a candidate has reached the required majority.');
+        gettext('Simple majority');
+        gettext('Two-thirds majority');
+        gettext('Three-quarters majority');
+        gettext('Disabled');
         gettext('Title for PDF document (all elections)');
         gettext('Preamble text for PDF document (all elections)');
         //other translations

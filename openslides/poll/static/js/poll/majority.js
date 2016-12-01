@@ -36,50 +36,6 @@ angular.module('OpenSlidesApp.poll.majority', [])
             },
         };
     }
-])
-
-.factory('MotionMajority', [
-    'MajorityMethods',
-    function (MajorityMethods) {
-        return {
-            isReached: function (base, method, votes) {
-                var methodFunction = MajorityMethods[method];
-                var yes = parseInt(votes.yes);
-                var no = parseInt(votes.no);
-                var abstain = parseInt(votes.abstain);
-                var valid = parseInt(votes.votesvalid);
-                var cast = parseInt(votes.votescast);
-                var result;
-                var isValid = function (vote) {
-                    return !isNaN(vote) && vote >= 0;
-                };
-                switch (base) {
-                    case 'YES_NO_ABSTAIN':
-                        if (isValid(yes) && isValid(no) && isValid(abstain)) {
-                            result = methodFunction(yes, yes + no + abstain);
-                        }
-                        break;
-                    case 'YES_NO':
-                        if (isValid(yes) && isValid(no)) {
-                            result = methodFunction(yes, yes + no);
-                        }
-                        break;
-                    case 'VALID':
-                        if (isValid(yes) && isValid(valid)) {
-                            result = methodFunction(yes, valid);
-                        }
-                        break;
-                    case 'CAST':
-                        if (isValid(yes) && isValid(cast)) {
-                            result = methodFunction(yes, cast);
-                        }
-                        break;
-                    // case 'DISABLED': result remains undefined
-                }
-                return result;
-            },
-        };
-    }
 ]);
 
 }());

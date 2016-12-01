@@ -295,13 +295,12 @@
                     <td>
                     <td>
                       <div os-perms="motions.can_manage"
-                          ng-hide="config('motions_poll_default_majority_method') == 'disabled' ||
-                            isReached() === undefined" ng-cloak>
+                           ng-hide="hideMajorityCalculation()"
+                           ng-cloak>
                         <div class="input-group">
                           <span><translate>Required majority</translate>: </span>
-                          <select ng-init="config('motions_poll_default_majority_method')"
-                              ng-model="$parent.method"
-                              ng-options="option.value as option.display_name | translate for option in methodChoices">
+                          <select ng-model="$parent.method"
+                                  ng-options="option.value as option.display_name | translate for option in methodChoices">
                         </div>
                       </div>
                   <tr>
@@ -309,10 +308,10 @@
                     <td>
                       <div os-perms="motions.can_manage">
                         <span class="text-success" ng-if="isReached() >= 0" translate>
-                          Quorum reached, {{ isReached() }} votes more than needed.
+                          Quorum ({{ voteYes.value - isReached() }}) reached.
                         </span>
                         <span class="text-danger" ng-if="isReached() < 0" translate>
-                          Quorum not reached, {{ -(isReached()) }} votes missing.
+                          Quorum ({{ voteYes.value - isReached() }}) not reached.
                        </span>
                       </div>
 
