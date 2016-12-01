@@ -1930,8 +1930,8 @@ angular.module('OpenSlidesApp.motions.site', [
         gettext('The maximum number of characters per line. Relevant when line numbering is enabled. Min: 40');
         gettext('Stop submitting new motions by non-staff users');
         gettext('Allow to disable versioning');
-        gettext('Name of recommendation committee');
-        gettext('Use an empty value to disable the recommendation system.');
+        gettext('Name of recommender');
+        gettext('Will be displayed as label before selected recommendation. Use an empty value to disable the recommendation system.');
 
         // subgroup Amendments
         gettext('Amendments');

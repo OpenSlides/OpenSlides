@@ -5,6 +5,12 @@
     <h3 translate>State</h3>
     {{ motion.getStateName() }}
 
+    <!-- Recommendation -->
+    <div ng-if="motion.getRecommendationName() != ''">
+      <h3 translate>{{ config('motions_recommendations_by') }}</h3>
+      {{ motion.getRecommendationName() }}
+    </div>
+
     <!-- Submitters -->
     <h3 ng-if="motion.submitters.length > 0" translate>Submitters</h3>
     <div ng-repeat="submitter in motion.submitters">

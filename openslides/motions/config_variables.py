@@ -101,8 +101,8 @@ def get_config_variables():
     yield ConfigVariable(
         name='motions_recommendations_by',
         default_value='',
-        label='Name of recommendation committee',
-        help_text='Use an empty value to disable the recommendation system.',
+        label='Name of recommender',
+        help_text='Will be displayed as label before selected recommendation. Use an empty value to disable the recommendation system.',
         weight=332,
         group='Motions',
         subgroup='General',

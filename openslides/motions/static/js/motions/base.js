@@ -322,7 +322,7 @@ angular.module('OpenSlidesApp.motions', [
                 getRecommendationName: function () {
                     var recommendation = '';
                     var additionalName = '';
-                    if (this.recommendation) {
+                    if (Config.get('motions_recommendations_by').value !== '' && this.recommendation) {
                         recommendation = gettextCatalog.getString(this.recommendation.recommendation_label);
                         if (this.recommendation.show_recommendation_extension_field) {
                             // check motion comment fields for flag 'forRecommendation'
