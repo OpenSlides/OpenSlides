@@ -34,7 +34,7 @@
             <div class="dropdown" ng-show="projectors.length > 1">
               <button class="btn btn-default btn-sm dropdown-toggle" id="menuProjector" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="true">
-                {{ active_projector.name }}
+                {{ active_projector.name | translate }}
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu dropdown-entries" aria-labelledby="menuProjector">
@@ -42,7 +42,7 @@
                   ng-class="{'projected': projector === active_projector}"
                   ng-click="changeProjector(projector)">
                   <i ng-show="projector === active_projector" class="fa fa-check"></i>
-                  {{ projector.name }}
+                  {{ projector.name | translate }}
                   <i ng-show="projector.id == broadcast" class="fa fa-star-o spacer-left"></i>
                 </li>
               </ul>

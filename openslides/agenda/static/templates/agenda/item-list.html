@@ -48,7 +48,7 @@
             <a href="" ng-click="projectAgenda(projectorId=projector.id, tree=mainListTree)"
               ng-class="{ 'projected': inArray(isAgendaProjected(mainListTree), projector.id) }">
               <i class="fa fa-video-camera" ng-show="inArray(isAgendaProjected(mainListTree), projector.id) "></i>
-              {{ projector.name }}
+              {{ projector.name | translate }}
               <span ng-if="projector.id == defaultProjectorId_all_items">(<translate>Default</translate>)</span>
             </a>
           </li>
@@ -193,7 +193,7 @@
                 <a href="" ng-click="item.project(projector.id, item.tree)"
                   ng-class="{ 'projected': inArray(item.isProjected(item.tree), projector.id) }">
                   <i class="fa fa-video-camera" ng-show="inArray(item.isProjected(item.tree), projector.id)"></i>
-                  {{ projector.name }}
+                  {{ projector.name | translate }}
                   <span ng-if="projector.id == getProjectionDefault(item)">(<translate>Default</translate>)</span>
                 </a>
               </li>
