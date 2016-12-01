@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models import Max
 from django.utils import formats
@@ -330,13 +331,26 @@ class Motion(RESTModelMixin, models.Model):
             prefix = '%s ' % self.category.prefix
 
         number += 1
-        identifier = '%s%d' % (prefix, number)
+        identifier = '%s%s' % (prefix, self.extend_identifier_number(number))
         while Motion.objects.filter(identifier=identifier).exists():
             number += 1
-            identifier = '%s%d' % (prefix, number)
+            identifier = '%s%s' % (prefix, self.extend_identifier_number(number))
 
         self.identifier = identifier
         self.identifier_number = number
+
+    def extend_identifier_number(self, number):
+        """
+        Returns the number used in the set_identifier method with leading
+        zero charaters according to the settings value
+        MOTION_IDENTIFIER_MIN_DIGITS.
+        """
+        result = str(number)
+        if hasattr(settings, 'MOTION_IDENTIFIER_MIN_DIGITS') and settings.MOTION_IDENTIFIER_MIN_DIGITS:
+            if not isinstance(settings.MOTION_IDENTIFIER_MIN_DIGITS, int):
+                raise ImproperlyConfigured('Settings value MOTION_IDENTIFIER_MIN_DIGITS must be an integer.')
+            result = '0' * (settings.MOTION_IDENTIFIER_MIN_DIGITS - len(str(number))) + result
+        return result
 
     def get_title(self):
         """

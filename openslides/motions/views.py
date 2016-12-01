@@ -431,7 +431,7 @@ class CategoryViewSet(ModelViewSet):
                         parent_identifier = motion.parent.identifier or ''
                         prefix = '%s %s ' % (parent_identifier, config['motions_amendments_prefix'])
                     number += 1
-                    identifier = '%s%d' % (prefix, number)
+                    identifier = '%s%s' % (prefix, motion.extend_identifier_number(number))
                     motion.identifier = identifier
                     motion.identifier_number = number
                     motion.save()
