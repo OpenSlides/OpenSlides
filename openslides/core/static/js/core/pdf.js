@@ -394,7 +394,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             "h4": ["font-size:24"],
                             "h5": ["font-size:22"],
                             "h6": ["font-size:20"],
-                            "a": ["color:blue", "text-decoration:underline"]
+                            "a": ["color:blue", "text-decoration:underline"],
+                            "del": ["color:red", "text-decoration:line-through"],
+                            "ins": ["color:green", "text-decoration:underline"]
                         },
                         classStyles = {
                             "delete": ["color:red", "text-decoration:line-through"],
@@ -541,6 +543,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "u":
                                 case "em":
                                 case "i":
+                                case "ins":
+                                case "del":
                                     parseChildren(alreadyConverted, element, currentParagraph, styles.concat(elementStyles[nodeName]), diff_mode);
                                     break;
                                 case "table":

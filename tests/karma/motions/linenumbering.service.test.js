@@ -126,6 +126,13 @@ describe('linenumbering', function () {
       expect(outHtml).toBe(noMarkup(1) + '<span>Lorem ' + brMarkup(2) + '<strong>ipsum ' + brMarkup(3) + 'dolor' + brMarkup(4) + 'sit</strong> ' + brMarkup(5) + 'amet</span>');
       expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
     });
+
+    it('counts within DEL nodes', function () {
+      var inHtml = "1234 <del>1234</del> 1234 1234";
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml, 10);
+      expect(outHtml).toBe(noMarkup(1) + '1234 <del>1234</del> ' + brMarkup(2) + '1234 1234');
+      expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
+    });
   });
 
 
@@ -225,6 +232,22 @@ describe('linenumbering', function () {
       var inHtml = "<p><span>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie <strong>consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio</strong>.</span></p>";
       var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
       expect(outHtml).toBe('<p>' + noMarkup(1) + '<span>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie ' + brMarkup(2) + '<strong>consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan ' + brMarkup(3) + 'et iusto odio</strong>.</span></p>');
+      expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
+    });
+  });
+
+  describe('line numbering in regard to the inline diff', function() {
+    it('does not count within INS nodes', function () {
+      var inHtml = "1234 <ins>1234</ins> 1234 1234";
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml, 10);
+      expect(outHtml).toBe(noMarkup(1) + '1234 <ins>1234</ins> 1234 ' + brMarkup(2) + '1234');
+      expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
+    });
+
+    it('does not create a new line for a trailing INS', function () {
+      var inHtml = "<p>et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur<ins>dsfsdf23</ins></p>";
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+      expect(outHtml).toBe('<p>' + noMarkup(1) + 'et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata ' + brMarkup(2) + 'sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur<ins>dsfsdf23</ins></p>');
       expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
     });
   });

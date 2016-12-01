@@ -9,6 +9,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
  *
  * Only the following inline elements are supported:
  * - 'SPAN', 'A', 'EM', 'S', 'B', 'I', 'STRONG', 'U', 'BIG', 'SMALL', 'SUB', 'SUP', 'TT'
+ * - 'INS' and 'DEL' are supported, but line numbering does not affect the content of 'INS'-elements
  *
  * Only other inline elements are allowed within inline elements.
  * No constructs like <a...><div></div></a> are allowed. CSS-attributes like 'display: block' are ignored.
@@ -37,9 +38,13 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
         this._isInlineElement = function (node) {
             var inlineElements = [
-                'SPAN', 'A', 'EM', 'S', 'B', 'I', 'STRONG', 'U', 'BIG', 'SMALL', 'SUB', 'SUP', 'TT'
+                'SPAN', 'A', 'EM', 'S', 'B', 'I', 'STRONG', 'U', 'BIG', 'SMALL', 'SUB', 'SUP', 'TT', 'INS', 'DEL'
             ];
             return (inlineElements.indexOf(node.nodeName) > -1);
+        };
+
+        this._isIgnoredByLineNumbering = function (node) {
+            return (node.nodeName == 'INS');
         };
 
         this._isOsLineBreakNode = function (node) {
@@ -304,7 +309,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                 } else if (oldChildren[i].nodeType == ELEMENT_NODE) {
                     var firstword = this._lengthOfFirstInlineWord(oldChildren[i]),
                         overlength = ((this._currentInlineOffset + firstword) > length && this._currentInlineOffset > 0);
-                    if (overlength && this._isInlineElement(oldChildren[i])) {
+                    if (overlength && this._isInlineElement(oldChildren[i]) && !this._isIgnoredByLineNumbering(oldChildren[i])) {
                         this._currentInlineOffset = 0;
                         node.appendChild(this._createLineBreak());
                         node.appendChild(this._createLineNumber());
@@ -327,7 +332,9 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             if (node.nodeType !== ELEMENT_NODE) {
                 throw 'This method may only be called for ELEMENT-nodes: ' + node.nodeValue;
             }
-            if (this._isInlineElement(node)) {
+            if (this._isIgnoredByLineNumbering(node)) {
+                return node;
+            } else if (this._isInlineElement(node)) {
                 return this._insertLineNumbersToInlineNode(node, length, highlight);
             } else {
                 var newLength = this._calcBlockNodeLength(node, length);
@@ -357,6 +364,13 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             return root.innerHTML;
         };
 
+        /**
+         *
+         * @param {string} html
+         * @param {number} lineLength
+         * @param {number} highlight - optional
+         * @param {number} firstLine
+         */
         this.insertLineNumbersNode = function (html, lineLength, highlight, firstLine) {
             var root = document.createElement('div');
             root.innerHTML = html;

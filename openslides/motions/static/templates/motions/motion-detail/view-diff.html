@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="motion-text motion-text-diff line-numbers-{{ lineNumberMode }}"
-                     ng-bind-html="change.format(motion, version, highlight) | trusted"></div>
+                     ng-bind-html="change.getDiff(motion, version, highlight) | trusted"></div>
             </div>
         </div>
 

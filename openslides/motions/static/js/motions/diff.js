@@ -551,21 +551,48 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         };
 
         /**
+         *
+         * @param {string} html
+         * @returns {string}
+         * @private
+         */
+        this._normalizeHtmlForDiff = function (html) {
+            // Convert all HTML tags to uppercase, strip trailing whitespaces
+            html = html.replace(/<[^>]+>/g, function (tag) {
+                return tag.toUpperCase();
+            });
+
+            var entities = {
+                '&nbsp;': ' ',
+                '&ndash;': '-',
+                '&auml;': 'ä',
+                '&ouml;': 'ö',
+                '&uuml;': 'ü',
+                '&Auml;': 'Ä',
+                '&Ouml;': 'Ö',
+                '&Uuml;': 'Ü',
+                '&szlig;': 'ß'
+            };
+
+            html = html.replace(/\s+<\/P>/gi, '</P>').replace(/\s+<\/DIV>/gi, '</DIV>').replace(/\s+<\/LI>/gi, '</LI>');
+            html = html.replace(/\s+<LI>/gi, '<LI>').replace(/<\/LI>\s+/gi, '</LI>');
+            html = html.replace(/\u00A0/g, ' ');
+            html = html.replace(/\u2013/g, '-');
+            for (var ent in entities) {
+                html = html.replace(new RegExp(ent, 'g'), entities[ent]);
+            }
+
+            return html;
+        };
+
+        /**
          * @param {string} htmlOld
          * @param {string} htmlNew
          * @returns {number}
          */
         this.detectReplacementType = function (htmlOld, htmlNew) {
-            // Convert all HTML tags to uppercase, strip trailing whitespaces
-            var normalizeHtml = function(html) {
-                html = html.replace(/<[^>]+>/g, function(tag) { return tag.toUpperCase(); });
-                html = html.replace(/\s+<\/P>/gi, '</P>').replace(/\s+<\/DIV>/gi, '</DIV>').replace(/\s+<\/LI>/gi, '</LI>');
-                html = html.replace(/\s+<LI>/gi, '<LI>').replace(/<\/LI>\s+/gi, '</LI>');
-                html = html.replace(/&nbsp;/gi, ' ').replace(/\u00A0/g, ' '); // non-breaking spaces
-                return html;
-            };
-            htmlOld = normalizeHtml(htmlOld);
-            htmlNew = normalizeHtml(htmlNew);
+            htmlOld = this._normalizeHtmlForDiff(htmlOld);
+            htmlNew = this._normalizeHtmlForDiff(htmlNew);
 
             if (htmlOld == htmlNew) {
                 return this.TYPE_REPLACEMENT;
@@ -639,7 +666,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             if (classes.indexOf(className) == -1) {
                 classes.push(className);
             }
-            node.setAttribute('class', classes);
+            node.setAttribute('class', classes.join(' '));
         };
 
         this.addDiffMarkup = function (originalHTML, newHTML, fromLine, toLine, diffFormatterCb) {
@@ -680,6 +707,274 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             }
 
             return this._serializeDom(mergedFragment, true);
+        };
+
+        /**
+         * Adapted from http://ejohn.org/projects/javascript-diff-algorithm/
+         * by John Resig, MIT License
+         * @param {array} oldArr
+         * @param {array} newArr
+         * @returns {object}
+         */
+        this._diff = function (oldArr, newArr) {
+            var ns = {},
+                os = {},
+                i;
+
+            for (i = 0; i < newArr.length; i++) {
+                if (ns[newArr[i]] === undefined)
+                    ns[newArr[i]] = {rows: [], o: null};
+                ns[newArr[i]].rows.push(i);
+            }
+
+            for (i = 0; i < oldArr.length; i++) {
+                if (os[oldArr[i]] === undefined)
+                    os[oldArr[i]] = {rows: [], n: null};
+                os[oldArr[i]].rows.push(i);
+            }
+
+            for (i in ns) {
+                if (ns[i].rows.length == 1 && typeof(os[i]) != "undefined" && os[i].rows.length == 1) {
+                    newArr[ns[i].rows[0]] = {text: newArr[ns[i].rows[0]], row: os[i].rows[0]};
+                    oldArr[os[i].rows[0]] = {text: oldArr[os[i].rows[0]], row: ns[i].rows[0]};
+                }
+            }
+
+            for (i = 0; i < newArr.length - 1; i++) {
+                if (newArr[i].text !== null && newArr[i + 1].text === undefined && newArr[i].row + 1 < oldArr.length &&
+                    oldArr[newArr[i].row + 1].text === undefined && newArr[i + 1] == oldArr[newArr[i].row + 1]) {
+                    newArr[i + 1] = {text: newArr[i + 1], row: newArr[i].row + 1};
+                    oldArr[newArr[i].row + 1] = {text: oldArr[newArr[i].row + 1], row: i + 1};
+                }
+            }
+
+            for (i = newArr.length - 1; i > 0; i--) {
+                if (newArr[i].text !== null && newArr[i - 1].text === undefined && newArr[i].row > 0 &&
+                    oldArr[newArr[i].row - 1].text === undefined && newArr[i - 1] == oldArr[newArr[i].row - 1]) {
+                    newArr[i - 1] = {text: newArr[i - 1], row: newArr[i].row - 1};
+                    oldArr[newArr[i].row - 1] = {text: oldArr[newArr[i].row - 1], row: i - 1};
+                }
+            }
+
+            return {o: oldArr, n: newArr};
+        };
+
+        this._tokenizeHtml = function (str) {
+            var splitArrayEntries = function (arr, by, prepend) {
+                var newArr = [];
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i][0] == '<' && (by == " " || by == "\n")) {
+                        // Don't split HTML tags
+                        newArr.push(arr[i]);
+                        continue;
+                    }
+
+                    var parts = arr[i].split(by);
+                    if (parts.length == 1) {
+                        newArr.push(arr[i]);
+                    } else {
+                        var j;
+                        if (prepend) {
+                            if (parts[0] !== '') {
+                                newArr.push(parts[0]);
+                            }
+                            for (j = 1; j < parts.length; j++) {
+                                newArr.push(by + parts[j]);
+                            }
+                        } else {
+                            for (j = 0; j < parts.length - 1; j++) {
+                                newArr.push(parts[j] + by);
+                            }
+                            if (parts[parts.length - 1] !== '') {
+                                newArr.push(parts[parts.length - 1]);
+                            }
+                        }
+                    }
+                }
+                return newArr;
+            };
+            var arr = splitArrayEntries([str], '<', true);
+            arr = splitArrayEntries(arr, '>', false);
+            arr = splitArrayEntries(arr, " ", false);
+            arr = splitArrayEntries(arr, "\n", false);
+            return arr;
+        };
+
+        this._outputcharcode = function (pre, str) {
+            var arr = [];
+            for (var i = 0; i < str.length; i++) {
+                arr.push(str.charCodeAt(i));
+            }
+            console.log(str, pre, arr);
+        };
+
+        /**
+         * @param {string} oldStr
+         * @param {string} newStr
+         * @returns {string}
+         */
+        this._diffString = function (oldStr, newStr) {
+            oldStr = this._normalizeHtmlForDiff(oldStr.replace(/\s+$/, '').replace(/^\s+/, ''));
+            newStr = this._normalizeHtmlForDiff(newStr.replace(/\s+$/, '').replace(/^\s+/, ''));
+
+            var out = this._diff(this._tokenizeHtml(oldStr), this._tokenizeHtml(newStr));
+            var str = "";
+            var i;
+
+            if (out.n.length === 0) {
+                for (i = 0; i < out.o.length; i++) {
+                    //this._outputcharcode('del', out.o[i]);
+                    str += '<del>' + out.o[i] + "</del>";
+                }
+            } else {
+                if (out.n[0].text === undefined) {
+                    for (var k = 0; k < out.o.length && out.o[k].text === undefined; k++) {
+                        //this._outputcharcode('del', out.o[k]);
+                        str += '<del>' + out.o[k] + "</del>";
+                    }
+                }
+
+                for (i = 0; i < out.n.length; i++) {
+                    if (out.n[i].text === undefined) {
+                        //this._outputcharcode('ins', out.n[i]);
+                        str += '<ins>' + out.n[i] + "</ins>";
+                    } else {
+                        var pre = "";
+
+                        for (var j = out.n[i].row + 1; j < out.o.length && out.o[j].text === undefined; j++) {
+                            //this._outputcharcode('del', out.o[j]);
+                            pre += '<del>' + out.o[j] + "</del>";
+                        }
+                        str += out.n[i].text + pre;
+                    }
+                }
+            }
+
+            return str.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/ {2,}/g, ' ');
+        };
+
+        /**
+         *
+         * @param {string} html
+         * @returns {boolean}
+         * @private
+         */
+        this._diffDetectBrokenDiffHtml = function(html) {
+            var match = html.match(/<(ins|del)><[^>]*><\/(ins|del)>/gi);
+            return (match !== null && match.length > 0);
+        };
+
+        this._diffParagraphs = function(oldText, newText, lineLength, firstLineNumber) {
+            var oldTextWithBreaks, newTextWithBreaks;
+
+            if (lineLength !== undefined) {
+                oldTextWithBreaks = lineNumberingService.insertLineNumbersNode(oldText, lineLength, null, firstLineNumber);
+                newTextWithBreaks = lineNumberingService.insertLineNumbersNode(newText, lineLength, null, firstLineNumber);
+            } else {
+                oldTextWithBreaks = document.createElement('div');
+                oldTextWithBreaks.innerHTML = oldText;
+                newTextWithBreaks = document.createElement('div');
+                newTextWithBreaks.innerHTML = newText;
+            }
+
+            for (var i = 0; i < oldTextWithBreaks.childNodes.length; i++) {
+                this.addCSSClass(oldTextWithBreaks.childNodes[i], 'delete');
+            }
+            for (i = 0; i < newTextWithBreaks.childNodes.length; i++) {
+                this.addCSSClass(newTextWithBreaks.childNodes[i], 'insert');
+            }
+
+            var mergedFragment = document.createDocumentFragment(),
+                el;
+            while (oldTextWithBreaks.firstChild) {
+                el = oldTextWithBreaks.firstChild;
+                oldTextWithBreaks.removeChild(el);
+                mergedFragment.appendChild(el);
+            }
+            while (newTextWithBreaks.firstChild) {
+                el = newTextWithBreaks.firstChild;
+                newTextWithBreaks.removeChild(el);
+                mergedFragment.appendChild(el);
+            }
+
+            return this._serializeDom(mergedFragment);
+        };
+
+        /**
+         * This function calculates the diff between two strings and tries to fix problems with the resulting HTML.
+         * If lineLength and firstLineNumber is given, line numbers will be returned es well
+         *
+         * @param {number} lineLength
+         * @param {number} firstLineNumber
+         * @param {string} htmlOld
+         * @param {string} htmlNew
+         * @returns {string}
+         */
+        this.diff = function (htmlOld, htmlNew, lineLength, firstLineNumber) {
+            var cacheKey = lineLength + ' ' + firstLineNumber + ' ' +
+                    lineNumberingService.djb2hash(htmlOld) + lineNumberingService.djb2hash(htmlNew),
+                cached = diffCache.get(cacheKey);
+            if (!angular.isUndefined(cached)) {
+                return cached;
+            }
+
+            var str = this._diffString(htmlOld, htmlNew),
+                diffUnnormalized = str.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/ {2,}/g, ' ')
+                .replace(/<\/ins><ins>/gi, '').replace(/<\/del><del>/gi, '');
+
+            diffUnnormalized = diffUnnormalized.replace(/<del>([a-z0-9,_-]* ?)<\/del><ins>([a-z0-9,_-]* ?)<\/ins>/gi, function (found, oldText, newText) {
+                var foundDiff = false, commonStart = '', commonEnd = '',
+                    remainderOld = oldText, remainderNew = newText;
+
+                while (remainderOld.length > 0 && remainderNew.length > 0 && !foundDiff) {
+                    if (remainderOld[0] == remainderNew[0]) {
+                        commonStart += remainderOld[0];
+                        remainderOld = remainderOld.substr(1);
+                        remainderNew = remainderNew.substr(1);
+                    } else {
+                        foundDiff = true;
+                    }
+                }
+
+                foundDiff = false;
+                while (remainderOld.length > 0 && remainderNew.length > 0 && !foundDiff) {
+                    if (remainderOld[remainderOld.length - 1] == remainderNew[remainderNew.length - 1]) {
+                        commonEnd = remainderOld[remainderOld.length - 1] + commonEnd;
+                        remainderNew = remainderNew.substr(0, remainderNew.length - 1);
+                        remainderOld = remainderOld.substr(0, remainderOld.length - 1);
+                    } else {
+                        foundDiff = true;
+                    }
+                }
+
+                var out = commonStart;
+                if (remainderOld !== '') {
+                    out += '<del>' + remainderOld + '</del>';
+                }
+                if (remainderNew !== '') {
+                    out += '<ins>' + remainderNew + '</ins>';
+                }
+                out += commonEnd;
+
+                return out;
+            });
+            
+            var diff;
+            if (this._diffDetectBrokenDiffHtml(diffUnnormalized)) {
+                diff = this._diffParagraphs(htmlOld, htmlNew, lineLength, firstLineNumber);
+            } else {
+                var node = document.createElement('div');
+                node.innerHTML = diffUnnormalized;
+                diff = node.innerHTML;
+
+                if (lineLength !== undefined && firstLineNumber !== undefined) {
+                    node = lineNumberingService.insertLineNumbersNode(diff, lineLength, null, firstLineNumber);
+                    diff = node.innerHTML;
+                }
+            }
+
+            diffCache.put(cacheKey, diff);
+            return diff;
         };
     }
 ]);
