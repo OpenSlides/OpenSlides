@@ -13,6 +13,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 
             // page title
             var title = PDFLayout.createTitle(assignment.title);
+            var isElectedSemaphore = false;
 
             // number of posts
             var createPreamble = function() {
@@ -93,6 +94,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             // handles the case if a candidate is elected or not
             var electedCandidateLine = function(candidateName, pollOption, pollTableBody) {
                 if (pollOption.is_elected) {
+                    isElectedSemaphore = true;
                     return {
                         text: candidateName + "*",
                         bold: true,
@@ -104,6 +106,24 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                         style: PDFLayout.flipTableRowStyle(pollTableBody.length)
                     };
                 }
+            };
+
+            //creates the voting string for the result table and differentiates between special values
+            var parseVoteValue = function(voteObject, printLabel) {
+                var voteVal = "";
+
+                if (printLabel) {
+                    voteVal += voteObject.label + ": ";
+                }
+
+                voteVal += voteObject.value;
+
+                if (voteObject.percentStr) {
+                    voteVal += " " + voteObject.percentStr;
+                }
+
+                voteVal += "\n";
+                return voteVal;
             };
 
             // creates the election result table
@@ -137,60 +157,29 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                         angular.forEach(poll.options, function(pollOption, optionIndex) {
                             var candidateName = pollOption.candidate.get_full_name();
                             var votes = pollOption.getVotes(); // 0 = yes, 1 = no, 2 = abstain
-                            var candidateLine;
+                            var tableLine = [];
 
+                            tableLine.push(electedCandidateLine(candidateName, pollOption, pollTableBody));
                             if (poll.pollmethod == 'votes') {
-                                pollTableBody.push([
-                                    electedCandidateLine(candidateName, pollOption, pollTableBody),
+                                tableLine.push(
                                     {
-                                        text: votes[0].value + " " + votes[0].percentStr,
+                                        text: parseVoteValue(votes[0], false),
                                         style: PDFLayout.flipTableRowStyle(pollTableBody.length)
                                     }
-                                ]);
-                            } else if (poll.pollmethod == 'yn') {
-                                pollTableBody.push([
-                                    electedCandidateLine(candidateName, pollOption, pollTableBody),
+                                );
+                            } else {
+                                var resultBlock = [];
+                                angular.forEach(votes, function(vote) {
+                                    resultBlock.push(parseVoteValue(vote, true));
+                                });
+                                tableLine.push(
                                     {
-                                        text: [
-                                            {
-                                                text: votes[0].label + ": " +
-                                                    votes[0].value + " " +
-                                                    votes[0].percentStr + "\n"
-                                            },
-                                            {
-                                                text: votes[1].label + ": " +
-                                                    votes[1].value + " " +
-                                                    votes[1].percentStr
-                                            }
-                                        ],
+                                        text: resultBlock,
                                         style: PDFLayout.flipTableRowStyle(pollTableBody.length)
                                     }
-                                ]);
-                            } else if (poll.pollmethod == 'yna') {
-                                pollTableBody.push([
-                                    electedCandidateLine(candidateName, pollOption, pollTableBody),
-                                    {
-                                        text: [
-                                            {
-                                                text: votes[0].label + ": " +
-                                                    votes[0].value + " " +
-                                                    votes[0].percentStr + "\n"
-                                            },
-                                            {
-                                                text: votes[1].label + ": " +
-                                                    votes[1].value + " " +
-                                                    votes[1].percentStr + "\n"
-                                            },
-                                            {
-                                                text: votes[2].label + ": " +
-                                                    votes[2].value + " " +
-                                                    votes[2].percentStr
-                                            }
-                                        ],
-                                        style: PDFLayout.flipTableRowStyle(pollTableBody.length)
-                                    }
-                                ]);
+                                );
                             }
+                            pollTableBody.push(tableLine);
                         });
 
                         //it is technically possible to make a single push-statement
@@ -248,7 +237,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 });
 
                 // add the legend to the result body
-                if (assignment.polls.length > 0) {
+                if (assignment.polls.length > 0 && isElectedSemaphore) {
                     resultBody.push({
                         text: "* = " + gettextCatalog.getString("is elected"),
                         margin: [0, 5, 0, 0],
