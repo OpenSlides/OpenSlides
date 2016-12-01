@@ -1,16 +1,16 @@
-<!-- Original view, Inline Editing is possible -->
-<div ng-if="viewChangeRecommendations.mode == 'original' && motion.isAllowed('update') && version == motion.getVersion(-1).id">
-    <div ng-show="inlineEditing.active">
-        <div ui-tinymce="inlineEditing.tinymceOptions" ng-model="inlineEditing.lineBrokenText"
-             class="motion-text line-numbers-{{ lineNumberMode }}"></div>
+<!-- Original view -->
+<div ng-if="viewChangeRecommendations.mode == 'original' && version == motion.getVersion(-1).id">
+    <div id="view-original-inline-editor" ng-bind-html="motion.getTextWithLineBreaks(version, highlight) | trusted"
+      class="motion-text motion-text-original line-numbers-{{ lineNumberMode }}"
+      contenteditable= "{{ inlineEditing.isEditable }}">
     </div>
-    <div ng-show="!inlineEditing.active" ng-bind-html="motion.getTextWithLineBreaks(version, highlight) | trusted"
-         class="motion-text motion-text-original line-numbers-{{ lineNumberMode }}"></div>
-
     <div class="motion-save-toolbar" ng-class="{ 'visible': (inlineEditing.changed && inlineEditing.active) }">
         <div class="changed-hint" translate>The text has been changed.</div>
         <button type="button" ng-click="inlineEditing.save()" class="btn btn-primary" translate>
             Save
+        </button>
+        <button type="button" ng-click="inlineEditing.revert()" class="btn btn-primary" translate>
+            Revert
         </button>
         <label ng-if="motion.state.versioning && config('motions_allow_disable_versioning')">
             <input type="checkbox" ng-model="inlineEditing.trivialChange" value="1">
@@ -18,13 +18,6 @@
         </label>
     </div>
 </div>
-
-<!-- Original view, Inline Editing is NOT possible -->
-<div ng-if="viewChangeRecommendations.mode == 'original' && !(motion.isAllowed('update') && version == motion.getVersion(-1).id)">
-    <div ng-bind-html="motion.getTextWithLineBreaks(version, highlight) | trusted"
-         class="motion-text motion-text-original line-numbers-{{ lineNumberMode }}"></div>
-</div>
-
 <!-- Original view, Change list -->
 <ul ng-if="viewChangeRecommendations.mode == 'original'" ng-show="lineNumberMode != 'none'"
     class="change-recommendation-list">

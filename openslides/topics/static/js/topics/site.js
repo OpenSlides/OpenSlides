@@ -118,7 +118,7 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
                         label: gettextCatalog.getString('Text')
                     },
                     data: {
-                        tinymceOption: Editor.getOptions(images)
+                        ckeditorOptions: Editor.getOptions(images)
                     }
                 }];
                 // attachments

@@ -108,37 +108,12 @@ gulp.task('angular-chosen-img', function () {
         .pipe(gulp.dest(path.join(output_directory, 'css')));
 });
 
-// Catches all skins files for TinyMCE editor.
-gulp.task('tinymce-skins', function () {
-    return gulp.src(path.join('bower_components', 'tinymce', 'skins', '**'))
-        .pipe(gulp.dest(path.join(output_directory, 'tinymce', 'skins')));
+// Extra task only for CKEditor
+gulp.task('ckeditor', function () {
+    return gulp.src(path.join('bower_components', 'ckeditor', '**'))
+        .pipe(gulp.dest(path.join(output_directory, 'ckeditor')));
 });
 
-// Catches all required i18n files for TinyMCE editor.
-gulp.task('tinymce-i18n', function () {
-    return gulp.src([
-            'bower_components/tinymce-i18n/langs/en_GB.js',
-            'bower_components/tinymce-i18n/langs/cs.js',
-            'bower_components/tinymce-i18n/langs/de.js',
-            'bower_components/tinymce-i18n/langs/es.js',
-            'bower_components/tinymce-i18n/langs/fr_FR.js',
-            'bower_components/tinymce-i18n/langs/pt_PT.js',
-            ])
-        .pipe(rename(function (path) {
-            if (path.basename === 'en_GB') {
-                path.basename = 'en';
-            } else if (path.basename === 'fr_FR') {
-                path.basename = 'fr';
-            } else if (path.basename === 'pt_PT') {
-                path.basename = 'pt';
-            }
-        }))
-        .pipe(gulpif(argv.production, uglify()))
-        .pipe(gulp.dest(path.join(output_directory, 'tinymce', 'i18n')));
-});
-
-// Combines all TinyMCE related tasks.
-gulp.task('tinymce', ['tinymce-skins', 'tinymce-i18n'], function () {});
 
 // Compiles translation files (*.po) to *.json and saves them in the directory
 // openslides/static/i18n/.
@@ -151,7 +126,7 @@ gulp.task('translations', function () {
 });
 
 // Gulp default task. Runs all other tasks before.
-gulp.task('default', ['js', 'js-libs', 'templates', 'css-libs', 'fonts-libs', 'tinymce', 'angular-chosen-img', 'translations'], function () {});
+gulp.task('default', ['js', 'js-libs', 'templates', 'css-libs', 'fonts-libs',  'ckeditor', 'angular-chosen-img', 'translations'], function () {});
 
 
 /**

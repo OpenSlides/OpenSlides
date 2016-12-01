@@ -18,7 +18,7 @@ angular.module('OpenSlidesApp.core.site', [
     'ngMessages',
     'ngCsvImport',
     'ngStorage',
-    'ui.tinymce',
+    'ckeditor',
     'luegg.directives',
     'xeditable',
 ])

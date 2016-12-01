@@ -548,33 +548,96 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-// Options for TinyMCE editor used in various create and edit views.
-// Required in core/base.js because MotionComment factory which used this
-// factory has to placed in motions/base.js.
+// Options for CKEditor used in various create and edit views.
 .factory('Editor', [
     'gettextCatalog',
-    function (gettextCatalog) {
+    function(gettextCatalog) {
         return {
-            getOptions: function (images, inlineMode) {
-                if (inlineMode === undefined) {
-                    inlineMode = false;
-                }
+            getOptions: function (images) {
                 return {
-                    language_url: '/static/tinymce/i18n/' + gettextCatalog.getCurrentLanguage() + '.js',
-                    theme_url: '/static/js/openslides-libs.js',
-                    skin_url: '/static/tinymce/skins/lightgray/',
-                    inline: inlineMode,
-                    browser_spellcheck: true,
-                    image_advtab: true,
-                    image_list: images,
-                    plugins: [
-                      'lists link autolink charmap preview searchreplace code fullscreen',
-                      'paste textcolor colorpicker image imagetools wordcount'
-                    ],
-                    menubar: '',
-                    toolbar: 'undo redo searchreplace | styleselect | bold italic underline strikethrough ' +
-                        'forecolor backcolor removeformat | bullist numlist | outdent indent | ' +
-                        'link image charmap table | code preview fullscreen'
+                    on: {
+                        instanceReady: function() {
+                            // add a listener to ckeditor that parses the clipboard content and, after the regular filter,
+                            // additionally strips out all empty <p> paragraphs
+                            // TODO: check all kind of clipboard html content if "isEmpty" is a reliable property
+                            this.on('paste', function(evt) {
+                                if (evt.data.type == 'html') {
+                                    var fragment = CKEDITOR.htmlParser.fragment.fromHtml(evt.data.dataValue);
+                                    var writer = new CKEDITOR.htmlParser.basicWriter();
+                                    // html content will now be in a dom-like structure inside 'fragment'.
+                                    this.filter.applyTo(fragment);
+                                    if (fragment.children) {
+                                        var new_content_children = [];
+                                        for (var i = 0; i < fragment.children.length; i++) {
+                                            var empty = true;
+                                            if (fragment.children[i].children){
+                                                for (var j = 0; j < fragment.children[i].children.length; j++) {
+                                                    var child = fragment.children[i].children[j];
+                                                    if (child.name != 'p' && child.name != 'br') {
+                                                        empty = false;
+                                                    } else if (child.isEmpty !== true) {
+                                                        empty = false;
+                                                    }
+                                                }
+                                                if (empty === false) {
+                                                    new_content_children.push(fragment.children[i]);
+                                                }
+                                            } else {
+                                                if (fragment.children[i].name != 'p' && fragment.children[i].name != 'br' &&
+                                                    fragment.children[i].isEmpty !== true){
+                                                    new_content_children.push(fragment.children[i]);
+                                                }
+                                            }
+                                        }
+                                        fragment.children = new_content_children;
+                                    }
+                                    fragment.writeHtml(writer);
+                                    evt.data.dataValue = writer.getHtml();
+                                }
+                            });
+                        }
+                    },
+                    customConfig: '',
+                    disableNativeSpellChecker: false,
+                    language_list: [
+                        'fr:français',
+                        'es:español',
+                        'pt:português',
+                        'en:english',
+                        'de:deutsch',
+                        'cs:čeština'],
+                    language: gettextCatalog.getCurrentLanguage(),
+                    allowedContent:
+                        'h1 h2 h3 b i u strike sup sub strong em;' +
+                        'blockquote p pre table' +
+                        '(text-align-left,text-align-center,text-align-right,text-align-justify){text-align};' +
+                        'a[!href];' +
+                        'img[!src,alt]{width,height,float};' +
+                        'tr th td caption;' +
+                        'li; ol[start]{list-style-type};' +
+                        'ul{list-style};' +
+                        'span[data-line-number,contenteditable]{color,background-color}(os-line-number,line-number-*);' +
+                        'br(os-line-break);',
+
+                    // there seems to be an error in CKeditor that parses spaces in extraPlugins as part of the plugin name.
+                    extraPlugins: 'colorbutton,find,liststyle,sourcedialog,justify,showblocks',
+                    removePlugins: 'wsc,scayt,a11yhelp,filebrowser,sourcearea',
+                    removeButtons: 'Scayt,Anchor,Styles,HorizontalRule',
+                    toolbarGroups: [
+                        { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+                        { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
+                        { name: 'links', groups: [ 'links' ] },
+                        { name: 'insert', groups: [ 'insert' ] },
+                        { name: 'tools', groups: [ 'tools' ] },
+                        { name: 'document', groups: [ 'mode' ] },
+                        '/',
+                        { name: 'styles', groups: [ 'styles' ] },
+                        { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                        { name: 'colors', groups: [ 'colors' ] },
+                        { name: 'paragraph', groups: [ 'list', 'indent' ] },
+                        { name: 'align'},
+                        { name: 'paragraph', groups: [ 'blocks' ] }
+                    ]
                 };
             }
         };

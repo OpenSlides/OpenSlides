@@ -61,13 +61,12 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
     'Motion',
     'Config',
     '$timeout',
-    function (Editor, Motion, Config, $timeout) {
+    'gettextCatalog',
+    function (Editor, Motion, Config, $timeout, gettextCatalog) {
         var obj = {
             active: false,
             changed: false,
             trivialChange: false,
-            editor: null,
-            lineBrokenText: null,
             originalHtml: null
         };
 
@@ -76,62 +75,77 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
         obj.init = function (_scope, _motion) {
             $scope = _scope;
             motion = _motion;
-            obj.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
-            obj.originalHtml = obj.lineBrokenText;
-        };
-
-
-        obj.tinymceOptions = Editor.getOptions(null, true);
-        obj.tinymceOptions.readonly = 1;
-        obj.tinymceOptions.setup = function (editor) {
-            obj.editor = editor;
-            editor.on('init', function () {
-                obj.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
-                obj.editor.setContent(obj.lineBrokenText);
-                obj.originalHtml = obj.editor.getContent();
-                obj.changed = false;
-            });
-            editor.on('change', function () {
-                obj.changed = (editor.getContent() != obj.originalHtml);
-            });
-            editor.on('undo', function () {
-                obj.changed = (editor.getContent() != obj.originalHtml);
-            });
+            obj.ckeditorOptions = Editor.getOptions();
+            obj.ckeditorOptions.readOnly = true;
+            obj.isEditable = false;
+            obj.changed = false;
         };
 
         obj.setVersion = function (_motion, versionId) {
             motion = _motion; // If this is not updated,
-            obj.lineBrokenText = motion.getTextWithLineBreaks(versionId);
+            obj.originalHtml = motion.getTextWithLineBreaks(versionId);
             obj.changed = false;
-            obj.active = false;
+            obj.editor.setReadOnly(true);
             if (obj.editor) {
-                obj.editor.setContent(obj.lineBrokenText);
-                obj.editor.setMode('readonly');
-                obj.originalHtml = obj.editor.getContent();
-            } else {
-                obj.originalHtml = obj.lineBrokenText;
+                obj.editor.setData(obj.originalHtml);
             }
         };
 
         obj.enable = function () {
-            obj.editor.setMode('design');
-            obj.active = true;
-            obj.changed = false;
-
-            obj.lineBrokenText = motion.getTextWithLineBreaks($scope.version);
-            obj.editor.setContent(obj.lineBrokenText);
-            obj.originalHtml = obj.editor.getContent();
-            $timeout(function () {
-                obj.editor.focus();
-            }, 100);
+            if (motion.isAllowed('update')) {
+                obj.active = true;
+                obj.isEditable = true;
+                obj.ckeditorOptions.language = gettextCatalog.getCurrentLanguage();
+                obj.editor = CKEDITOR.inline('view-original-inline-editor', obj.ckeditorOptions);
+                obj.editor.on('change', function () {
+                    $timeout(function() {
+                        if (obj.editor.getData() != obj.originalHtml) {
+                            obj.changed = true;
+                        } else {
+                            obj.changed = false;
+                        }
+                    });
+                });
+                obj.revert();
+            } else {
+                obj.disable();
+            }
         };
 
         obj.disable = function () {
-            obj.editor.setMode('readonly');
-            obj.active = false;
-            obj.changed = false;
-            obj.lineBrokenText = obj.originalHtml;
-            obj.editor.setContent(obj.originalHtml);
+            if (obj.editor) {
+                obj.editor.setReadOnly(true);
+                obj.editor.setData(obj.originalHtml, {
+                    callback: function() {
+                        obj.editor.destroy();
+                    }
+                });
+            }
+            $timeout(function() {
+                obj.active = false;
+                obj.changed = false;
+                obj.isEditable = false;
+            });
+        };
+
+        // sets editor content to the initial motion state
+        obj.revert = function() {
+            if (obj.editor) {
+                obj.originalHtml = motion.getTextWithLineBreaks($scope.version);
+                obj.editor.setData(
+                    motion.getTextWithLineBreaks($scope.version), {
+                    callback: function() {
+                        obj.originalHtml = obj.editor.getData();
+                        obj.editor.setReadOnly(false);
+                        $timeout(function() {
+                            obj.changed = false;
+                        });
+                        $timeout(function () {
+                            obj.editor.focus();
+                        }, 100);
+                    }
+                });
+            }
         };
 
         obj.save = function () {
@@ -139,7 +153,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                 throw 'No permission to update motion';
             }
 
-            motion.setTextStrippingLineBreaks(obj.editor.getContent());
+            motion.setTextStrippingLineBreaks(obj.editor.getData());
             motion.disable_versioning = (obj.trivialChange && Config.get('motions_allow_disable_versioning').value);
 
             Motion.inject(motion);
@@ -147,11 +161,13 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             Motion.save(motion, {method: 'PATCH'}).then(
                 function (success) {
                     $scope.showVersion(motion.getVersion(-1));
+                    obj.revert();
                 },
                 function (error) {
                     // save error: revert all changes by restore
                     // (refresh) original motion object from server
                     Motion.refresh(motion);
+                    obj.revert();
                     var message = '';
                     for (var e in error.data) {
                         message += e + ': ' + error.data[e] + ' ';
