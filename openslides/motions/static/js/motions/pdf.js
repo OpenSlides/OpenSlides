@@ -188,6 +188,45 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             return metaTableJsonString;
         };
 
+        // summary of change recommendations (for motion diff version only)
+        var motionDiffSummary = function() {
+            if ($scope.viewChangeRecommendations.mode == "diff") {
+                var motionDiffLogBox = [];
+                motionDiffLogBox.push({
+                    text: gettextCatalog.getString('Summary of change recommendations'),
+                    style: 'bold'
+                });
+
+                angular.forEach($scope.change_recommendations, function(change) {
+                    var changeType = "";
+                    var lineNumbers = "";
+
+                    if (change.getType(motion.getVersion($scope.version).text) === 0) {
+                        changeType = gettextCatalog.getString("Replacement");
+                    } else if (change.getType(motion.getVersion($scope.version).text) === 1) {
+                        changeType = gettextCatalog.getString("Insertion");
+                    } else if (change.getType(motion.getVersion($scope.version).text) === 2) {
+                        changeType = gettextCatalog.getString("Deletion");
+                    }
+
+                    if (change.line_from >= change.line_to - 1) {
+                        lineNumbers = change.line_from;
+                    } else {
+                        lineNumbers = change.line_from + " - " + (change.line_to - 1);
+                    }
+                    motionDiffLogBox.push({
+                        text: gettextCatalog.getString('Line') + " " + lineNumbers + ": " + changeType + "\n"
+                    });
+                });
+                motionDiffLogBox.push({
+                        text: "\n\n"
+                });
+                return motionDiffLogBox;
+            } else {
+                return "";
+            }
+        };
+
         // motion title
         var motionTitle = function() {
             return [{
@@ -246,6 +285,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 title,
                 subtitle,
                 metaTable(),
+                motionDiffSummary(),
                 motionTitle(),
                 motionText(),
             ];
