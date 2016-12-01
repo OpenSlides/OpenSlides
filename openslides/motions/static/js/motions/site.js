@@ -608,7 +608,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     });
                 }
                 // supporters
-                if (Config.get('motions_min_supporters') > 0) {
+                if (Config.get('motions_min_supporters').value > 0) {
                     formFields.push({
                         key: 'supporters_id',
                         type: 'select-multiple',

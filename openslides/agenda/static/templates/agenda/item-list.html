@@ -206,7 +206,7 @@
         <td ng-if="!item.quickEdit" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false"
             style="padding-left: calc(8px + {{ item.parentCount }}*15px)">
           <strong>
-            <a ui-sref="{{ item.content_object.collection.replace('/','.') }}.detail({id: item.content_object.id})" ng-show="isAllowedToSeeOpenLink(item)">
+            <a ui-sref="{{ getUpdateStatePrefix(item) }}.detail({id: item.content_object.id})" ng-show="isAllowedToSeeOpenLink(item)">
               {{ item.getListViewTitle() }}
             </a>
             <span ng-hide="isAllowedToSeeOpenLink(item)">
