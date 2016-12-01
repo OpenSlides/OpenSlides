@@ -141,6 +141,18 @@ class WebclientJavaScriptView(utils_views.View):
                 else:
                     js_files.extend(app_js_files)
 
+        client_settings_keys = [
+            # Add new settings to personal settings.py, utils/settings.py.tpl and to this list. Remove this comment later.
+        ]
+        client_settings = {}
+        for key in client_settings_keys:
+            try:
+                client_settings[key] = getattr(settings, key)
+            except AttributeError:
+                # Settings key does not exist. Do nothing. The client will
+                # treat this as undefined.
+                pass
+
         # Use JavaScript loadScript function from
         # http://balpha.de/2011/10/jquery-script-insertion-and-its-consequences-for-debugging/
         # jQuery is required.
@@ -167,13 +179,14 @@ class WebclientJavaScriptView(utils_views.View):
                 };
             """ +
             """
-                angular.module('OpenSlidesApp.{realm}', {angular_modules});
+                angular.module('OpenSlidesApp.{realm}', {angular_modules})
+                .constant('OpenSlidesSettings', {settings});
                 var deferres = [];
                 {js_files}.forEach( function(js_file) {{ deferres.push(loadScript(js_file)); }} );
                 $.when.apply(this,deferres).done( function() {{
                     angular.bootstrap(document,['OpenSlidesApp.{realm}']);
                 }} );
-            """.format(realm=realm, angular_modules=angular_modules, js_files=js_files) +
+            """.format(realm=realm, angular_modules=angular_modules, settings=client_settings, js_files=js_files) +
             """
             }());
             """)
