@@ -127,10 +127,11 @@ def get_config_variables():
         subgroup='Amendments')
 
     yield ConfigVariable(
-        name='motions_amendments_apply_title_text',
+        name='motions_amendments_apply_text',
         default_value=False,
         input_type='boolean',
-        label='Apply title and text for new amendments',
+        label='Apply text for new amendments',
+        help_text='The title of the motion is always applied.',
         weight=342,
         group='Motions',
         subgroup='Amendments')
