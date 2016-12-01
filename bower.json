@@ -39,7 +39,7 @@
     "tinymce-i18n": "OpenSlides/tinymce-i18n#a186ad61e0aa30fdf657e88f405f966d790f0805"
   },
   "overrides": {
-    "pdfmake-dist-dist": {
+    "pdfmake-dist": {
       "main": [
           "build/pdfmake.min.js",
           "build/vfs_fonts.js"

@@ -181,6 +181,8 @@ angular.module('OpenSlidesApp.agenda.site', [
                     return operator.hasPerms('agenda.can_see');
                 case 'motions/motion':
                     return operator.hasPerms('motions.can_see');
+                case 'motions/motion-block':
+                    return operator.hasPerms('motions.can_see');
                 case 'assignments/assignment':
                     return operator.hasPerms('assignments.can_see');
                 default:
