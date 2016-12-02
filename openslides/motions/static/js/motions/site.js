@@ -1370,10 +1370,10 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.model.text = gettextCatalog.getString(Config.get('motions_preamble').value);
         // ... for amendments add parent_id
         if (isAmendment) {
-            if (Config.get('motions_amendments_apply_title_text').value) {
-                $scope.model.title = $scope.$parent.motion.getTitle();
+            if (Config.get('motions_amendments_apply_text').value) {
                 $scope.model.text = $scope.$parent.motion.getText();
             }
+            $scope.model.title = $scope.$parent.motion.getTitle();
             $scope.model.parent_id = $scope.$parent.motion.id;
             Motion.bindOne($scope.model.parent_id, $scope, 'parent');
         }
@@ -1932,7 +1932,8 @@ angular.module('OpenSlidesApp.motions.site', [
         gettext('Amendments');
         gettext('Activate amendments');
         gettext('Prefix for the identifier for amendments');
-        gettext('Apply title and text for new amendments');
+        gettext('Apply text for new amendments');
+        gettext('The title of the motion is always applied.');
 
         // subgroup Suppoerters
         gettext('Supporters');
