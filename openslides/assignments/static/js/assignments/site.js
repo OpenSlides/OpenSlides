@@ -174,7 +174,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                     key: 'open_posts',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Number of posts to be elected'),
+                        label: gettextCatalog.getString('Number of persons to be elected'),
                         type: 'number',
                         required: true
                     }
