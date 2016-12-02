@@ -292,11 +292,11 @@
           </div>
           <div os-perms="users.can_manage"> <!-- user number -->
             <div ng-if="user.number" editable-text="user.number" onaftersave="save(user)">
-              <translate>No.</translate> {{ user.number }}
+              <translate translate-comment="abbreviation for number">No.</translate> {{ user.number }}
             </div>
           </div>
           <div os-perms="!users.can_manage" ng-if="user.number">
-              <translate>No.</translate> {{ user.number }}
+              <translate translate-comment="abbreviation for number">No.</translate> {{ user.number }}
           </div>
           <div os-perms="users.can_manage" ng-class="{'hiddenDiv': !user.hover}">
             <small>

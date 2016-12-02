@@ -164,7 +164,6 @@ angular.module('OpenSlidesApp.agenda.site', [
         ];
         $scope.filter.propertyDict = {
             'speakers' : function (speaker) {
-                console.log(speaker);
                 return '';
             },
         };
