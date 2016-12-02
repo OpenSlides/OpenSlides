@@ -303,9 +303,10 @@ angular.module('OpenSlidesApp.assignments.site', [
     'User',
     'osTableFilter',
     'osTableSort',
+    'gettext',
     function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, phases, Projector, ProjectionDefault,
         gettextCatalog, AssignmentContentProvider, AssignmentCatalogContentProvider, PdfMakeDocumentProvider,
-        User, osTableFilter, osTableSort) {
+        User, osTableFilter, osTableSort, gettext) {
         Assignment.bindAll({}, $scope, 'assignments');
         Tag.bindAll({}, $scope, 'tags');
         $scope.$watch(function () {
@@ -320,11 +321,14 @@ angular.module('OpenSlidesApp.assignments.site', [
         $scope.alert = {};
 
         // Filtering
-        $scope.filter = osTableFilter.createInstance();
-        $scope.filter.multiselectFilters = {
-            tag: [],
-            phase: [],
-        };
+        $scope.filter = osTableFilter.createInstance('AssignmentTableFilter');
+
+        if (!$scope.filter.existsCookie()) {
+            $scope.filter.multiselectFilters = {
+                tag: [],
+                phase: [],
+            };
+        }
         $scope.filter.propertyList = ['title', 'description'];
         $scope.filter.propertyFunctionList = [
             function (assignment) {

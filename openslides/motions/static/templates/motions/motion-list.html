@@ -241,7 +241,8 @@
             <span class="input-group">
               <span class="input-group-addon"><i class="fa fa-search"></i></span>
               <input type="text" ng-model="filter.filterString" class="form-control"
-                 placeholder="{{ 'Search' | translate}}" ng-disabled="isSelectMode">
+                 placeholder="{{ 'Search' | translate}}" ng-disabled="isSelectMode"
+                 ng-change="filter.save()">
             </span>
           </span>
         </span>
@@ -506,7 +507,11 @@
             <!-- Origin -->
             <div ng-if="motion.origin">
               <i class="fa fa-share spacer-right" uib-tooltip="{{ 'Origin' | translate }}"></i>
-                {{ motion.origin | limitTo:25 }}{{ motion.origin.length > 25 ? '...' : '' }}
+                <div class="popover-wrapper">
+                  <span editable-text="motion.origin" onaftersave="save(motion)">
+                    {{ motion.origin | limitTo:25 }}{{ motion.origin.length > 25 ? '...' : '' }}
+                  </span>
+                </div>
             </div>
           </small>
         </div>

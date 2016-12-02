@@ -162,7 +162,8 @@
             <span class="input-group">
               <span class="input-group-addon"><i class="fa fa-search"></i></span>
               <input type="text" ng-model="filter.filterString" class="form-control"
-                 placeholder="{{ 'Search' | translate}}">
+                 placeholder="{{ 'Search' | translate}}" ng-disable="isSelectMode"
+                 ng-change="filter.save()">
             </span>
           </span>
 
@@ -224,7 +225,9 @@
           <!-- title and phase -->
           <div>
             <strong>
-              <a ui-sref="assignments.assignment.detail({id: assignment.id})">{{ assignment.title }}</a>
+              <a ui-sref="assignments.assignment.detail({id: assignment.id})">
+                {{ assignment.title }}
+              </a>
             </strong>
             <span style="padding: 5px;" ng-mouseover="assignment.phaseHover=true" ng-mouseleave="assignment.phaseHover=false">
               <span class="label" ng-class="{'label-primary': assignment.phase == 0,

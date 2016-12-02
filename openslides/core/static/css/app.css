@@ -978,7 +978,7 @@ img {
 
 .os-table .title {
     font-size: 115%;
-    margin-right: 5px;
+    margin-right: 3px;
     padding: 0;
     background-color: transparent;
 }
@@ -1368,6 +1368,21 @@ img {
 .animate-item.ng-leave {
     -webkit-animation: fade-out 0.25s linear;
     animation: fade-out 0.25s linear;
+}
+
+/* xeditable */
+.editable-click {
+    border: none;
+    cursor: pointer;
+    color: #555;
+}
+
+.editable-click:hover {
+    color: #555;
+}
+
+.popover-wrapper .editable-hide {
+    display: inline !important;
 }
 
 @keyframes fade-out {

@@ -107,8 +107,12 @@ angular.module('OpenSlidesApp.agenda.site', [
     'AgendaContentProvider',
     'PdfMakeDocumentProvider',
     'gettextCatalog',
+    'gettext',
+    'osTableFilter',
+    'AgendaCsvExport',
     function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, TopicForm, AgendaTree, Projector,
-        ProjectionDefault, AgendaContentProvider, PdfMakeDocumentProvider, gettextCatalog) {
+        ProjectionDefault, AgendaContentProvider, PdfMakeDocumentProvider, gettextCatalog, gettext, osTableFilter,
+        AgendaCsvExport) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -132,6 +136,87 @@ angular.module('OpenSlidesApp.agenda.site', [
         });
         $scope.alert = {};
 
+
+        // Filtering
+        $scope.filter = osTableFilter.createInstance('AgendaTableFilter');
+
+        if (!$scope.filter.existsCookie()) {
+            $scope.filter.booleanFilters = {
+                closed: {
+                    value: undefined,
+                    displayName: gettext('Closed items'),
+                    choiceYes: gettext('Closed items'),
+                    choiceNo: gettext('Open items'),
+                },
+                is_hidden: {
+                    value: undefined,
+                    displayName: gettext('Internal items'),
+                    choiceYes: gettext('Internal items'),
+                    choiceNo: gettext('No internal items'),
+                },
+            };
+
+            $scope.filter.save();
+        }
+        $scope.filter.propertyList = ['item_number', 'title', 'title_list_view', 'comment', 'duration'];
+        $scope.filter.propertyFunctionList = [
+            function (item) {return item.getListViewTitle();},
+        ];
+        $scope.filter.propertyDict = {
+            'speakers' : function (speaker) {
+                console.log(speaker);
+                return '';
+            },
+        };
+
+        // pagination
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 100;
+        $scope.limitBegin = 0;
+        $scope.pageChanged = function() {
+            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+        };
+
+        // parse duration for inline editing
+        $scope.generateDurationText = function (item) {
+            //convert data from model format (m) to view format (hh:mm)
+            if (item.duration) {
+                var time = "",
+                    totalminutes = item.duration;
+                if (totalminutes < 0) {
+                    time = "-";
+                    totalminutes = -totalminutes;
+                }
+                var hh = Math.floor(totalminutes / 60);
+                var mm = Math.floor(totalminutes % 60);
+                // Add leading "0" for double digit values
+                mm = ("0"+mm).slice(-2);
+                time += hh + ":" + mm;
+                item.durationText = time;
+            } else {
+                item.durationText = "";
+            }
+        };
+        $scope.setDurationText = function (item) {
+            //convert data from view format (hh:mm) to model format (m)
+            var time = item.durationText.replace('h', '').split(':');
+            var data;
+            if (time.length > 1 && !isNaN(time[0]) && !isNaN(time[1])) {
+                data = (+time[0]) * 60 + (+time[1]);
+                if (data < 0) {
+                    data = "-"+data;
+                }
+                item.duration = parseInt(data);
+            } else if (time.length == 1 && !isNaN(time[0])) {
+                data = (+time[0]);
+                item.duration = parseInt(data);
+            } else {
+                item.duration = 0;
+            }
+            $scope.save(item);
+        };
+
+        /** Duration calculations **/
         $scope.sumDurations = function () {
             var totalDuration = 0;
             $scope.items.forEach(function (item) {
@@ -141,7 +226,6 @@ angular.module('OpenSlidesApp.agenda.site', [
             });
             return totalDuration;
         };
-
         $scope.calculateEndTime = function () {
             var totalDuration = $scope.sumDurations();
             var startTimestamp = $scope.config('agenda_start_event_date_time');
@@ -156,22 +240,33 @@ angular.module('OpenSlidesApp.agenda.site', [
             }
         };
 
-        $scope.getUpdateStatePrefix = function (item) {
-            var prefix = item.content_object.collection.replace('/','.');
-            // Hotfix for Issue 2566.
-            // The changes could be reverted if Issue 2480 is closed.
-            prefix = prefix.replace('motion-block', 'motionBlock');
-            return prefix;
+        /** Agenda item functions **/
+        // open dialog for new topics // TODO Remove this. Don't forget import button in template.
+        $scope.newDialog = function () {
+            ngDialog.open(TopicForm.getDialog());
         };
-
-        // pagination
-        $scope.currentPage = 1;
-        $scope.itemsPerPage = 100;
-        $scope.limitBegin = 0;
-        $scope.pageChanged = function() {
-            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+        // save changed item
+        $scope.save = function (item) {
+            Agenda.save(item).then(
+                function(success) {
+                    $scope.alert.show = false;
+                },
+                function(error){
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = { type: 'danger', msg: message, show: true };
+                });
         };
-
+        // delete related item
+        $scope.deleteRelatedItem = function (item) {
+            DS.destroy(item.content_object.collection, item.content_object.id);
+        };
+        // auto numbering of agenda items
+        $scope.autoNumbering = function() {
+            $http.post('/rest/agenda/item/numbering/', {});
+        };
         // check open permission
         // TODO: Use generic solution here.
         $scope.isAllowedToSeeOpenLink = function (item) {
@@ -189,47 +284,37 @@ angular.module('OpenSlidesApp.agenda.site', [
                     return false;
             }
         };
-        // open dialog for new topics // TODO Remove this. Don't forget import button in template.
-        $scope.newDialog = function () {
-            ngDialog.open(TopicForm.getDialog());
+        $scope.getUpdateStatePrefix = function (item) {
+            var prefix = item.content_object.collection.replace('/','.');
+            // Hotfix for Issue 2566.
+            // The changes could be reverted if Issue 2480 is closed.
+            prefix = prefix.replace('motion-block', 'motionBlock');
+            return prefix;
         };
-        // cancel QuickEdit mode
-        $scope.cancelQuickEdit = function (item) {
-            // revert all changes by restore (refresh) original item object from server
-            Agenda.refresh(item);
-            item.quickEdit = false;
+        // export
+        $scope.pdfExport = function () {
+            var filename = gettextCatalog.getString('Agenda') + '.pdf';
+            var agendaContentProvider = AgendaContentProvider.createInstance($scope.itemsFiltered);
+            var documentProvider = PdfMakeDocumentProvider.createInstance(agendaContentProvider);
+            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
         };
-        // save changed item
-        $scope.save = function (item) {
-            Agenda.save(item).then(
-                function(success) {
-                    item.quickEdit = false;
-                    $scope.alert.show = false;
-                },
-                function(error){
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = { type: 'danger', msg: message, show: true };
-                });
-        };
-        // delete related item
-        $scope.deleteRelatedItem = function (item) {
-            DS.destroy(item.content_object.collection, item.content_object.id);
+        $scope.csvExport = function () {
+            var element = document.getElementById('downloadLinkCSV');
+            AgendaCsvExport(element, $scope.itemsFiltered);
         };
 
-        // *** delete mode functions ***
-        $scope.isDeleteMode = false;
+        /** select mode functions **/
+        $scope.isSelectMode = false;
         // check all checkboxes
         $scope.checkAll = function () {
+            $scope.selectedAll = !$scope.selectedAll;
             angular.forEach($scope.items, function (item) {
                 item.selected = $scope.selectedAll;
             });
         };
         // uncheck all checkboxes if isDeleteMode is closed
         $scope.uncheckAll = function () {
-            if (!$scope.isDeleteMode) {
+            if (!$scope.isSelectMode) {
                 $scope.selectedAll = false;
                 angular.forEach($scope.items, function (item) {
                     item.selected = false;
@@ -243,7 +328,7 @@ angular.module('OpenSlidesApp.agenda.site', [
                     DS.destroy(item.content_object.collection, item.content_object.id);
                 }
             });
-            $scope.isDeleteMode = false;
+            $scope.isSelectMode = false;
             $scope.uncheckAll();
         };
 
@@ -318,17 +403,6 @@ angular.module('OpenSlidesApp.agenda.site', [
                 }
             });
             return projectorIds;
-        };
-        // auto numbering of agenda items
-        $scope.autoNumbering = function() {
-            $http.post('/rest/agenda/item/numbering/', {});
-        };
-
-        $scope.makePDF = function() {
-            var filename = gettextCatalog.getString('Agenda') + '.pdf';
-            var agendaContentProvider = AgendaContentProvider.createInstance($scope.items);
-            var documentProvider = PdfMakeDocumentProvider.createInstance(agendaContentProvider);
-            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
         };
     }
 ])
@@ -609,6 +683,30 @@ angular.module('OpenSlidesApp.agenda.site', [
         // displayed projector slide
         $scope.goToListOfSpeakers = function() {
             $state.go('agenda.item.detail', {id: $scope.AgendaItem.id});
+        };
+    }
+])
+
+.factory('AgendaCsvExport', [
+    function () {
+        return function (element, agenda) {
+            var csvRows = [
+                ['title', 'text', 'duration', 'comment', 'is_hidden'],
+            ];
+            _.forEach(agenda, function (item) {
+                var row = [];
+                row.push('"' + (item.title || '') + '"');
+                row.push('"' + (item.text || '') + '"');
+                row.push('"' + (item.duration || '') + '"');
+                row.push('"' + (item.comment || '') + '"');
+                row.push('"' + (item.is_hidden ? '1' : '')  + '"');
+                csvRows.push(row);
+            });
+
+            var csvString = csvRows.join("%0A");
+            element.href = 'data:text/csv;charset=utf-8,' + csvString;
+            element.download = 'agenda-export.csv';
+            element.target = '_blank';
         };
     }
 ])
