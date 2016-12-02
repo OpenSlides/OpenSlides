@@ -170,6 +170,15 @@
                 </button>
               </span>
             </div>
+            <button
+                ng-if="motion.recommendation &&
+                       motion.isAllowed('change_state') &&
+                       motion.state.next_states_id.indexOf(motion.recommendation.id) !== -1"
+                ng-click="updateState(motion.recommendation.id)"
+                class="btn btn-default btn-sm">
+              <i class="fa fa-magic"></i>
+              <translate>Follow recommendation</translate>
+            </button>
           </div>
 
           <!-- Category -->
