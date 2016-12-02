@@ -203,11 +203,21 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 
 .controller('SlideClockCtrl', [
     '$scope',
-    function($scope) {
+    '$interval',
+    function($scope, $interval) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         $scope.servertime = ( Date.now() / 1000 - $scope.serverOffset ) * 1000;
+        var interval = $interval(function () {
+            $scope.servertime = ( Date.now() / 1000 - $scope.serverOffset ) * 1000;
+        }, 30000); // Update the clock every 30 seconds
+
+        $scope.$on('$destroy', function() {
+            if (interval) {
+                $interval.cancel(interval);
+            }
+        });
     }
 ])
 
