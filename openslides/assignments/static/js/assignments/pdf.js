@@ -15,9 +15,9 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             var title = PDFLayout.createTitle(assignment.title);
             var isElectedSemaphore = false;
 
-            // number of posts
+            // open posts
             var createPreamble = function() {
-                var preambleText = gettextCatalog.getString("Number of posts to be elected") + ": ";
+                var preambleText = gettextCatalog.getString("Number of persons to be elected") + ": ";
                 var memberNumber = ""+assignment.open_posts;
                 var preamble = {
                     text: [
