@@ -260,7 +260,7 @@ hr {
     font-weight: bold;
     text-align: right;
     border-radius: 7px 7px 7px 7px;
-    z-index: 200;
+    z-index: 320;
     font-family: "Roboto Condensed",Helvetica,Arial,sans-serif;
 }
 .countdown .description {
@@ -299,7 +299,7 @@ hr {
     font-size: 2.75em;
     padding: 0.2em 0;
     line-height: normal !important;
-    z-index: 301;
+    z-index: 350;
 }
 .identify {
     background-color: #D9F8C4;
