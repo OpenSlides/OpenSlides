@@ -99,22 +99,25 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
         updatePresentedMediafiles();
 
         // Filtering
-        $scope.filter = osTableFilter.createInstance();
-        $scope.filter.booleanFilters = {
-            isPrivate: {
-                value: undefined,
-                displayName: gettext('Private'),
-                choiceYes: gettext('Is private'),
-                choiceNo: gettext('Is not private'),
-                needExtraPermission: true,
-            },
-            isPdf: {
-                value: undefined,
-                displayName: gettext('Is PDF'),
-                choiceYes: gettext('Is PDF file'),
-                choiceNo: gettext('Is no PDF file'),
-            },
-        };
+        $scope.filter = osTableFilter.createInstance('MediafilesTableFilter');
+
+        if (!$scope.filter.existsCookie()) {
+            $scope.filter.booleanFilters = {
+                isPrivate: {
+                    value: undefined,
+                    displayName: gettext('Private'),
+                    choiceYes: gettext('Is private'),
+                    choiceNo: gettext('Is not private'),
+                    needExtraPermission: true,
+                },
+                isPdf: {
+                    value: undefined,
+                    displayName: gettext('Is PDF'),
+                    choiceYes: gettext('Is PDF file'),
+                    choiceNo: gettext('Is no PDF file'),
+                },
+            };
+        }
         $scope.filter.propertyList = ['title_or_filename'];
         $scope.filter.propertyFunctionList = [
             function (mediafile) {return mediafile.uploader.get_short_name();},

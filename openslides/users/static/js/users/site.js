@@ -510,38 +510,41 @@ angular.module('OpenSlidesApp.users.site', [
         $scope.alert = {};
 
         // Filtering
-        $scope.filter = osTableFilter.createInstance();
-        $scope.filter.multiselectFilters = {
-            group: [],
-        };
+        $scope.filter = osTableFilter.createInstance('UserTableFilter');
+
+        if (!$scope.filter.existsCookie()) {
+            $scope.filter.multiselectFilters = {
+                group: [],
+            };
+            $scope.filter.booleanFilters = {
+                isPresent: {
+                    value: undefined,
+                    displayName: gettext('Present'),
+                    choiceYes: gettext('Is present'),
+                    choiceNo: gettext('Is not present'),
+                    needExtraPermission: true,
+                },
+                isActive: {
+                    value: undefined,
+                    displayName: gettext('Active'),
+                    choiceYes: gettext('Is active'),
+                    choiceNo: gettext('Is not active'),
+                    needExtraPermission: true,
+                },
+                isCommittee: {
+                    value: undefined,
+                    displayName: gettext('Committee'),
+                    choiceYes: gettext('Is committee'),
+                    choiceNo: gettext('Is not committee'),
+                },
+
+            };
+        }
         $scope.filter.propertyList = ['first_name', 'last_name', 'title', 'number', 'comment', 'structure_level'];
         $scope.filter.propertyDict = {
             'groups_id' : function (group_id) {
                 return Group.get(group_id).name;
             },
-        };
-        $scope.filter.booleanFilters = {
-            isPresent: {
-                value: undefined,
-                displayName: gettext('Present'),
-                choiceYes: gettext('Is present'),
-                choiceNo: gettext('Is not present'),
-                needExtraPermission: true,
-            },
-            isActive: {
-                value: undefined,
-                displayName: gettext('Active'),
-                choiceYes: gettext('Is active'),
-                choiceNo: gettext('Is not active'),
-                needExtraPermission: true,
-            },
-            isCommittee: {
-                value: undefined,
-                displayName: gettext('Committee'),
-                choiceYes: gettext('Is committee'),
-                choiceNo: gettext('Is not committee'),
-            },
-
         };
         $scope.getItemId = {
             group: function (user) {return user.groups_id;},

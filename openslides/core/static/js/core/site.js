@@ -13,12 +13,14 @@ angular.module('OpenSlidesApp.core.site', [
     'formlyBootstrap',
     'localytics.directives',
     'ngBootbox',
+    'ngCookies',
     'ngDialog',
     'ngFileSaver',
     'ngMessages',
     'ngCsvImport',
     'ui.tinymce',
     'luegg.directives',
+    'xeditable',
 ])
 
 // Can be used to find out if the projector or the side is used
@@ -102,8 +104,22 @@ angular.module('OpenSlidesApp.core.site', [
 .run([
     'loadGlobalData',
     'operator',
-    function(loadGlobalData, operator) {
+    function (loadGlobalData, operator) {
         operator.onOperatorChange(loadGlobalData);
+    }
+])
+
+.run([
+    'editableOptions',
+    'gettext',
+    function (editableOptions, gettext) {
+        editableOptions.theme = 'bs3';
+        editableOptions.cancelButtonAriaLabel = gettext('Cancel');
+        editableOptions.cancelButtonTitle = gettext('Cancel');
+        editableOptions.clearButtonAriaLabel = gettext('Clear');
+        editableOptions.clearButtonTitle = gettext('Clear');
+        editableOptions.submitButtonAriaLabel = gettext('Submit');
+        editableOptions.submitButtonTitle = gettext('Submit');
     }
 ])
 
@@ -355,12 +371,25 @@ angular.module('OpenSlidesApp.core.site', [
  * - propertyList, propertyFunctionList, propertyDict: See function getObjectQueryString
  */
 .factory('osTableFilter', [
-    function () {
-        var createInstance = function () {
+    '$cookies',
+    function ($cookies) {
+        var createInstance = function (cookieName) {
             var self = {
                 multiselectFilters: {},
                 booleanFilters: {},
                 filterString: '',
+            };
+            var existsCookie = function () {
+                return $cookies.getObject(cookieName);
+            };
+            var cookie = existsCookie();
+            if (cookie) {
+                self = cookie;
+            }
+
+            self.existsCookie = existsCookie;
+            self.save = function () {
+                $cookies.putObject(cookieName, self);
             };
             self.areFiltersSet = function () {
                 var areFiltersSet = _.find(self.multiselectFilters, function (filterList) {
@@ -380,6 +409,7 @@ angular.module('OpenSlidesApp.core.site', [
                     self.booleanFilters[filter].value = undefined;
                 });
                 self.filterString = '';
+                self.save();
             };
             self.operateMultiselectFilter = function (filter, id, danger) {
                 if (!danger) {
@@ -390,6 +420,7 @@ angular.module('OpenSlidesApp.core.site', [
                         // add id
                         self.multiselectFilters[filter].push(id);
                     }
+                    self.save();
                 }
             };
             /* Three things are could be given to create the query string:

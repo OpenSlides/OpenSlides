@@ -822,13 +822,16 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.alert = {};
 
         // Filtering
-        $scope.filter = osTableFilter.createInstance();
-        $scope.filter.multiselectFilters = {
-            state: [],
-            category: [],
-            motionBlock: [],
-            tag: []
-        };
+        $scope.filter = osTableFilter.createInstance('MotionTableFilter');
+
+        if (!$scope.filter.existsCookie()) {
+            $scope.filter.multiselectFilters = {
+                state: [],
+                category: [],
+                motionBlock: [],
+                tag: []
+            };
+        }
         $scope.filter.propertyList = ['identifier', 'origin'];
         $scope.filter.propertyFunctionList = [
             function (motion) {return motion.getTitle();},
@@ -907,7 +910,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // Use this methon instead of Motion.save(), because otherwise
         // you have to provide always a title and a text
-        var save = function (motion) {
+        $scope.save = function (motion) {
             motion.title = motion.getTitle(-1);
             motion.text = motion.getText(-1);
             motion.reason = motion.getReason(-1);
@@ -922,7 +925,7 @@ angular.module('OpenSlidesApp.motions.site', [
             } else {
                 motion.tags_id.push(tag.id);
             }
-            save(motion);
+            $scope.save(motion);
         };
         $scope.toggleCategory = function (motion, category) {
             if (motion.category_id == category.id) {
@@ -930,7 +933,7 @@ angular.module('OpenSlidesApp.motions.site', [
             } else {
                 motion.category_id = category.id;
             }
-            save(motion);
+            $scope.save(motion);
         };
         $scope.toggleMotionBlock = function (motion, block) {
             if (motion.motion_block_id == block.id) {
@@ -938,7 +941,7 @@ angular.module('OpenSlidesApp.motions.site', [
             } else {
                 motion.motion_block_id = block.id;
             }
-            save(motion);
+            $scope.save(motion);
         };
 
         // open new/edit dialog
