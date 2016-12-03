@@ -1869,6 +1869,7 @@ angular.module('OpenSlidesApp.motions.site', [
         Category.bindOne(category.id, $scope, 'category');
         Motion.bindAll({}, $scope, 'motions');
         $scope.filter = { category_id: category.id,
+                          parent_id: null,
                           orderBy: 'identifier' };
 
         $scope.$watch(

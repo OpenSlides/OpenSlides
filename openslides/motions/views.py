@@ -1,4 +1,5 @@
 import base64
+import re
 
 from django.contrib.staticfiles import finders
 from django.db import IntegrityError, transaction
@@ -404,10 +405,16 @@ class CategoryViewSet(ModelViewSet):
         Send POST {'motions': [<list of motion ids>]} to sort the given
         motions in a special order. Ids of motions which do not belong to
         the category are just ignored. Send just POST {} to sort all
-        motions in the category by id.
+        motions in the category by database id.
+
+        Amendments will get a new identifier prefix if the old prefix matches
+        the old parent motion identifier.
         """
         category = self.get_object()
         number = 0
+        instances = []
+
+        # Prepare ordered list of motions.
         if not category.prefix:
             prefix = ''
         else:
@@ -420,25 +427,50 @@ class CategoryViewSet(ModelViewSet):
                 motion_dict[motion.pk] = motion
             motions = [motion_dict[pk] for pk in motion_list]
 
-        instances = []
+        # Change identifiers.
         try:
             with transaction.atomic():
-                for motion in motions:
-                    motion.identifier = None
-                    motion.skip_autoupdate = True  # This line is to skip agenda item autoupdate. See agenda/signals.py.
-                    motion.save(skip_autoupdate=True)
-
+                # Collect old and new identifiers.
+                motions_to_be_sorted = []
                 for motion in motions:
                     if motion.is_amendment():
                         parent_identifier = motion.parent.identifier or ''
                         prefix = '%s %s ' % (parent_identifier, config['motions_amendments_prefix'])
                     number += 1
-                    identifier = '%s%s' % (prefix, motion.extend_identifier_number(number))
-                    motion.identifier = identifier
-                    motion.identifier_number = number
+                    new_identifier = '%s%s' % (prefix, motion.extend_identifier_number(number))
+                    motions_to_be_sorted.append({
+                        'motion': motion,
+                        'old_identifier': motion.identifier,
+                        'new_identifier': new_identifier,
+                        'number': number
+                    })
+
+                # Remove old identifiers
+                for motion in motions:
+                    motion.identifier = None
+                    motion.skip_autoupdate = True  # This line is to skip agenda item autoupdate. See agenda/signals.py.
+                    motion.save(skip_autoupdate=True)
+
+                # Set new identifers and change identifiers of amendments.
+                for obj in motions_to_be_sorted:
+                    motion = obj['motion']
+                    motion.identifier = obj['new_identifier']
+                    motion.identifier_number = obj['number']
                     motion.save(skip_autoupdate=True)
                     instances.append(motion)
                     instances.append(motion.agenda_item)
+                    # Change identifiers of amendments.
+                    for child in motion.get_amendments_deep():
+                        if child.identifier.startswith(obj['old_identifier']):
+                            child.identifier = re.sub(
+                                obj['old_identifier'],
+                                obj['new_identifier'],
+                                child.identifier,
+                                count=1)
+                            child.skip_autoupdate = True  # This line is to skip agenda item autoupdate. See agenda/signals.py.
+                            child.save(skip_autoupdate=True)
+                            instances.append(child)
+                            instances.append(child.agenda_item)
         except IntegrityError:
             message = _('Error: At least one identifier of this category does '
                         'already exist in another category.')
