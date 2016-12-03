@@ -19,6 +19,7 @@ module.exports = function(config) {
       'node_modules/angular-mocks/angular-mocks.js',
       'openslides/motions/static/js/motions/linenumbering.js',
       'openslides/motions/static/js/motions/diff.js',
+      'openslides/core/static/js/core/pdf.js',
       'tests/karma/*/*.test.js'
     ],
 
