@@ -420,11 +420,13 @@ class CategoryViewSet(ModelViewSet):
                 motion_dict[motion.pk] = motion
             motions = [motion_dict[pk] for pk in motion_list]
 
+        instances = []
         try:
             with transaction.atomic():
                 for motion in motions:
                     motion.identifier = None
-                    motion.save()
+                    motion.skip_autoupdate = True  # This line is to skip agenda item autoupdate. See agenda/signals.py.
+                    motion.save(skip_autoupdate=True)
 
                 for motion in motions:
                     if motion.is_amendment():
@@ -434,12 +436,15 @@ class CategoryViewSet(ModelViewSet):
                     identifier = '%s%s' % (prefix, motion.extend_identifier_number(number))
                     motion.identifier = identifier
                     motion.identifier_number = number
-                    motion.save()
+                    motion.save(skip_autoupdate=True)
+                    instances.append(motion)
+                    instances.append(motion.agenda_item)
         except IntegrityError:
             message = _('Error: At least one identifier of this category does '
                         'already exist in another category.')
             response = Response({'detail': message}, status_code=400)
         else:
+            inform_changed_data(instances)
             message = _('All motions in category {category} numbered '
                         'successfully.').format(category=category)
             response = Response({'detail': message})

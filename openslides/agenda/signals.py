@@ -9,13 +9,17 @@ def listen_to_related_object_post_save(sender, instance, created, **kwargs):
     """
     Receiver function to create agenda items. It is connected to the signal
     django.db.models.signals.post_save during app loading.
+
+    Do not run caching and autoupdate if the instance as an attribute
+    skip_autoupdate (regardless of its truthy or falsy conent).
     """
     if hasattr(instance, 'get_agenda_title'):
         if created:
             # If the object is created, the related_object has to be sent again.
             Item.objects.create(content_object=instance)
-            inform_changed_data(instance)
-        else:
+            if not hasattr(instance, 'skip_autoupdate'):
+                inform_changed_data(instance)
+        elif not hasattr(instance, 'skip_autoupdate'):
             # If the object has changed, then also the agenda item has to be sent.
             inform_changed_data(instance.agenda_item)
 
