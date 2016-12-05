@@ -42,6 +42,7 @@ Users:
 - Added field is_committee and new default group Committees.
 - Added field number.
 - Added new matrix-interface for managing groups and their permissions.
+- Added mass import of users.
 
 Other:
 - Django 1.10 is now supported. Dropped support for Django 1.8 and 1.9.
