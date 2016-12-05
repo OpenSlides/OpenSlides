@@ -512,7 +512,7 @@ angular.module('OpenSlidesApp.users.site', [
         // Filtering
         $scope.filter = osTableFilter.createInstance('UserTableFilter');
 
-        if (!$scope.filter.existsCookie()) {
+        if (!$scope.filter.existsStorageEntry()) {
             $scope.filter.multiselectFilters = {
                 group: [],
             };

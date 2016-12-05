@@ -323,7 +323,7 @@ angular.module('OpenSlidesApp.assignments.site', [
         // Filtering
         $scope.filter = osTableFilter.createInstance('AssignmentTableFilter');
 
-        if (!$scope.filter.existsCookie()) {
+        if (!$scope.filter.existsStorageEntry()) {
             $scope.filter.multiselectFilters = {
                 tag: [],
                 phase: [],

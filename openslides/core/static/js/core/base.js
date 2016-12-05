@@ -19,7 +19,7 @@ angular.module('OpenSlidesApp.core', [
     '$httpProvider',
     function($httpProvider) {
         // Combine the django csrf system with the angular csrf system
-        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfCookieName = 'OpenSlidesCsrfToken';
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     }
 ])

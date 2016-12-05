@@ -178,7 +178,6 @@ OpenSlides uses the following projects or parts of them:
   * `angular-bootstrap <http://angular-ui.github.io/bootstrap>`_, License: MIT
   * `angular-bootstrap-colorpicker <https://github.com/buberdds/angular-bootstrap-colorpicker>`_, License: MIT
   * `angular-chosen-localytics <http://github.com/leocaseiro/angular-chosen>`_, License: MIT
-  * `angular-cookies <https://github.com/angular/bower-angular-cookies>`_, License: MIT
   * `angular-csv-import <https://github.com/bahaaldine/angular-csv-import>`_, License: MIT
   * `angular-formly <http://formly-js.github.io/angular-formly/>`_, License: MIT
   * `angular-formly-templates-bootstrap <https://github.com/formly-js/angular-formly-templates-bootstrap>`_, License: MIT
@@ -206,6 +205,7 @@ OpenSlides uses the following projects or parts of them:
   * `lodash <https://lodash.com/>`_, License: MIT
   * `ng-dialog <https://github.com/likeastore/ngDialog>`_, License: MIT
   * `ng-file-upload <https://github.com/danialfarid/ng-file-upload>`_, License: MIT
+  * `ngStorage <https://github.com/gsklee/ngStorage>`_, License: MIT
   * `ngbootbox <https://github.com/eriktufvesson/ngBootbox>`_, License: MIT
   * `open-sans-fontface <https://github.com/FontFaceKit/open-sans>`_, License: Apache License version 2.0
   * `pdfjs-dist <http://mozilla.github.io/pdf.js/>`_, License: Apache-2.0

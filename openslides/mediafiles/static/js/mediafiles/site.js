@@ -101,7 +101,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
         // Filtering
         $scope.filter = osTableFilter.createInstance('MediafilesTableFilter');
 
-        if (!$scope.filter.existsCookie()) {
+        if (!$scope.filter.existsStorageEntry()) {
             $scope.filter.booleanFilters = {
                 isPrivate: {
                     value: undefined,

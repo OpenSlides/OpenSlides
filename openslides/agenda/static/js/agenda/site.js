@@ -140,7 +140,7 @@ angular.module('OpenSlidesApp.agenda.site', [
         // Filtering
         $scope.filter = osTableFilter.createInstance('AgendaTableFilter');
 
-        if (!$scope.filter.existsCookie()) {
+        if (!$scope.filter.existsStorageEntry()) {
             $scope.filter.booleanFilters = {
                 closed: {
                     value: undefined,
@@ -155,8 +155,6 @@ angular.module('OpenSlidesApp.agenda.site', [
                     choiceNo: gettext('No internal items'),
                 },
             };
-
-            $scope.filter.save();
         }
         $scope.filter.propertyList = ['item_number', 'title', 'title_list_view', 'comment', 'duration'];
         $scope.filter.propertyFunctionList = [

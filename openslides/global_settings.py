@@ -101,6 +101,12 @@ SESSION_ENGINE = 'openslides.core.session_backend'
 
 SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+CSRF_COOKIE_NAME = 'OpenSlidesCsrfToken'
+
+CSRF_COOKIE_AGE = None
+
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',

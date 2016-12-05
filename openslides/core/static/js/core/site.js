@@ -13,11 +13,11 @@ angular.module('OpenSlidesApp.core.site', [
     'formlyBootstrap',
     'localytics.directives',
     'ngBootbox',
-    'ngCookies',
     'ngDialog',
     'ngFileSaver',
     'ngMessages',
     'ngCsvImport',
+    'ngStorage',
     'ui.tinymce',
     'luegg.directives',
     'xeditable',
@@ -343,6 +343,13 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+.config([
+    '$sessionStorageProvider',
+    function ($sessionStorageProvider) {
+        $sessionStorageProvider.setKeyPrefix('OpenSlides');
+    }
+])
+
 // Helper to add ui.router states at runtime.
 // Needed for the django url_patterns.
 .provider('runtimeStates', [
@@ -371,25 +378,25 @@ angular.module('OpenSlidesApp.core.site', [
  * - propertyList, propertyFunctionList, propertyDict: See function getObjectQueryString
  */
 .factory('osTableFilter', [
-    '$cookies',
-    function ($cookies) {
-        var createInstance = function (cookieName) {
+    '$sessionStorage',
+    function ($sessionStorage) {
+        var createInstance = function (tableName) {
             var self = {
                 multiselectFilters: {},
                 booleanFilters: {},
                 filterString: '',
             };
-            var existsCookie = function () {
-                return $cookies.getObject(cookieName);
+            var existsStorageEntry = function () {
+                return $sessionStorage[tableName];
             };
-            var cookie = existsCookie();
-            if (cookie) {
-                self = cookie;
+            var storage = existsStorageEntry();
+            if (storage) {
+                self = storage;
             }
 
-            self.existsCookie = existsCookie;
+            self.existsStorageEntry = existsStorageEntry;
             self.save = function () {
-                $cookies.putObject(cookieName, self);
+                $sessionStorage[tableName] = self;
             };
             self.areFiltersSet = function () {
                 var areFiltersSet = _.find(self.multiselectFilters, function (filterList) {
