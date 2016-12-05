@@ -279,7 +279,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
         // getters
         var getTitle = function() {
-            return motion.getTitle($scope.verion);
+            return motion.getTitle($scope.version);
         };
 
         var getIdentifier = function() {
