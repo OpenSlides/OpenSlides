@@ -680,6 +680,15 @@ class Motion(RESTModelMixin, models.Model):
         """
         return config['motions_amendments_enabled'] and self.parent is not None
 
+    def get_amendments_deep(self):
+        """
+        Generator that yields all amendments of this motion including all
+        amendment decendents.
+.       """
+        for amendment in self.amendments.all():
+            yield amendment
+            yield from amendment.get_amendments_deep()
+
     def get_search_index_string(self):
         """
         Returns a string that can be indexed for the search.
