@@ -3,6 +3,7 @@ from django.contrib.auth.models import Permission
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
+from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
     IdPrimaryKeyRelatedField,
     ModelSerializer,
@@ -79,7 +80,10 @@ class UserFullSerializer(ModelSerializer):
             validated_data['default_password'] = User.objects.generate_password()
         validated_data['password'] = make_password(validated_data['default_password'], '', 'md5')
         # Perform creation in the database and return new user.
-        return super().create(validated_data)
+        user = super().create(validated_data)
+        # TODO: This autoupdate call is redundant (required by issue #2727). See #2736.
+        inform_changed_data(user)
+        return user
 
 
 class PermissionRelatedField(RelatedField):
