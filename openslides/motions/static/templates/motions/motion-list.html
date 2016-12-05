@@ -369,7 +369,7 @@
             </span>
           </div>
           <!-- Submitters -->
-          <div>
+          <div ng-if="motion.submitters.length">
             <small>
               <span class="optional" translate>by</span>
               <span class="optional" ng-repeat="submitter in motion.submitters | limitTo:1">
