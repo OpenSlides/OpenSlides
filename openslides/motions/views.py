@@ -442,7 +442,7 @@ class CategoryViewSet(ModelViewSet):
         except IntegrityError:
             message = _('Error: At least one identifier of this category does '
                         'already exist in another category.')
-            response = Response({'detail': message}, status_code=400)
+            response = Response({'detail': message}, status=400)
         else:
             inform_changed_data(instances)
             message = _('All motions in category {category} numbered '
