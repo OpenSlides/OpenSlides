@@ -28,7 +28,7 @@
           <span class="optional">
             {{ group.name | translate }}
           </span>
-          <span class="optional-show" uib-tooltip="{{ group.name }}">
+          <span class="optional-show" uib-tooltip="{{ group.name | translate }}">
             {{ group.name | translate | limitTo: 1 }}...
           </span>
           <i class="fa fa-info-circle" ng-if="group.id == 1"

@@ -356,13 +356,13 @@ angular.module('OpenSlidesApp.assignments.site', [
         $scope.sort.column = 'title';
         $scope.sortOptions = [
             {name: 'agenda_item.getItemNumberWithAncestors()',
-             display_name: 'Item'},
+             display_name: gettext('Item')},
             {name: 'title',
-             display_name: 'Title'},
-            {name: 'open_posts',
-             display_name: 'Open posts'},
+             display_name: gettext('Title')},
             {name: 'phase',
-             display_name: 'Phase'},
+             display_name: gettext('Phase')},
+            {name: 'assignment.assignment_related_users.length',
+             display_name: gettext('Number of candidates')},
         ];
         $scope.hasTag = function (assignment, tag) {
             return _.indexOf(assignment.tags_id, tag.id) > -1;

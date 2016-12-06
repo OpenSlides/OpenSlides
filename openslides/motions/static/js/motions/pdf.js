@@ -168,49 +168,51 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             }
 
             // summary of change recommendations (for motion diff version only)
-            if ($scope.viewChangeRecommendations.mode == "diff") {
-                var columnLineNumbers = [];
-                var columnChangeType = [];
-                angular.forEach($scope.change_recommendations, function(change) {
-                    // line numbers column
-                    var line;
-                    if (change.line_from >= change.line_to - 1) {
-                        line = change.line_from;
-                    } else {
-                        line = change.line_from + ' - ' + (change.line_to - 1);
-                    }
-                    columnLineNumbers.push(
-                        gettextCatalog.getString('Line') + ' ' + line + ': '
-                    );
-                    // change type column
-                    if (change.getType(motion.getVersion($scope.version).text) === 0) {
-                        columnChangeType.push(gettextCatalog.getString("Replacement"));
-                    } else if (change.getType(motion.getVersion($scope.version).text) === 1) {
-                        columnChangeType.push(gettextCatalog.getString("Insertion"));
-                    } else if (change.getType(motion.getVersion($scope.version).text) === 2) {
-                        columnChangeType.push(gettextCatalog.getString("Deletion"));
-                    }
-                });
-                metaTableBody.push([
-                    {
-                        text: gettextCatalog.getString('Summary of change recommendations'),
-                        style: ['bold', 'grey']
-                    },
-                    {
-                        columns: [
-                            {
-                                text: columnLineNumbers.join('\n'),
-                                width: 'auto'
-                            },
-                            {
-                                text: columnChangeType.join('\n'),
-                                width: 'auto'
-                            }
-                        ],
-                        columnGap: 7,
-                        style: 'grey'
-                    }
-                ]);
+            if ($scope.viewChangeRecommendations) {
+                if ($scope.viewChangeRecommendations.mode == "diff") {
+                    var columnLineNumbers = [];
+                    var columnChangeType = [];
+                    angular.forEach($scope.change_recommendations, function(change) {
+                        // line numbers column
+                        var line;
+                        if (change.line_from >= change.line_to - 1) {
+                            line = change.line_from;
+                        } else {
+                            line = change.line_from + ' - ' + (change.line_to - 1);
+                        }
+                        columnLineNumbers.push(
+                            gettextCatalog.getString('Line') + ' ' + line + ': '
+                        );
+                        // change type column
+                        if (change.getType(motion.getVersion($scope.version).text) === 0) {
+                            columnChangeType.push(gettextCatalog.getString("Replacement"));
+                        } else if (change.getType(motion.getVersion($scope.version).text) === 1) {
+                            columnChangeType.push(gettextCatalog.getString("Insertion"));
+                        } else if (change.getType(motion.getVersion($scope.version).text) === 2) {
+                            columnChangeType.push(gettextCatalog.getString("Deletion"));
+                        }
+                    });
+                    metaTableBody.push([
+                        {
+                            text: gettextCatalog.getString('Summary of change recommendations'),
+                            style: ['bold', 'grey']
+                        },
+                        {
+                            columns: [
+                                {
+                                    text: columnLineNumbers.join('\n'),
+                                    width: 'auto'
+                                },
+                                {
+                                    text: columnChangeType.join('\n'),
+                                    width: 'auto'
+                                }
+                            ],
+                            columnGap: 7,
+                            style: 'grey'
+                        }
+                    ]);
+                }
             }
 
             // build table
@@ -398,7 +400,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     var createInstance = function(allMotions, $scope) {
 
         var title = PDFLayout.createTitle(
-                gettextCatalog.getString(Config.get('motions_export_title').value)
+                Config.translate(Config.get('motions_export_title').value)
         );
 
         var createPreamble = function() {
