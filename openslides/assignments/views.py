@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.rest_api import (
     DestroyModelMixin,
     GenericViewSet,
@@ -13,7 +14,7 @@ from openslides.utils.rest_api import (
 )
 
 from .access_permissions import AssignmentAccessPermissions
-from .models import Assignment, AssignmentPoll
+from .models import Assignment, AssignmentPoll, AssignmentRelatedUser
 from .serializers import AssignmentAllPollSerializer
 
 
@@ -40,7 +41,7 @@ class AssignmentViewSet(ModelViewSet):
             # Everybody is allowed to see the metadata.
             result = True
         elif self.action in ('create', 'partial_update', 'update', 'destroy',
-                             'mark_elected', 'create_poll'):
+                             'mark_elected', 'create_poll', 'sort_related_users'):
             result = (self.request.user.has_perm('assignments.can_see') and
                       self.request.user.has_perm('assignments.can_manage'))
         elif self.action == 'candidature_self':
@@ -185,6 +186,48 @@ class AssignmentViewSet(ModelViewSet):
         with transaction.atomic():
             assignment.create_poll()
         return Response({'detail': _('Ballot created successfully.')})
+
+    @detail_route(methods=['post'])
+    def sort_related_users(self, request, pk=None):
+        """
+        Special view endpoint to sort the assignment related users.
+
+        Expects a list of IDs of the related users (pk of AssignmentRelatedUser model).
+        """
+        assignment = self.get_object()
+
+        # Check data
+        related_user_ids = request.data.get('related_users')
+        if not isinstance(related_user_ids, list):
+            raise ValidationError(
+                {'detail': _('users has to be a list of IDs.')})
+
+        # Get all related users from AssignmentRelatedUser.
+        related_users = {}
+        for related_user in AssignmentRelatedUser.objects.filter(assignment__id=assignment.id):
+            related_users[related_user.pk] = related_user
+
+        # Check all given candidates from the request
+        valid_related_users = []
+        for related_user_id in related_user_ids:
+            if not isinstance(related_user_id, int) or related_users.get(related_user_id) is None:
+                raise ValidationError(
+                    {'detail': _('Invalid data.')})
+            valid_related_users.append(related_users[related_user_id])
+
+        # Sort the related users
+        weight = 1
+        with transaction.atomic():
+            for valid_related_user in valid_related_users:
+                valid_related_user.weight = weight
+                valid_related_user.save(skip_autoupdate=True)
+                weight += 1
+
+        # send autoupdate
+        inform_changed_data(assignment)
+
+        # Initiate response.
+        return Response({'detail': _('Assignment related users successfully sorted.')})
 
 
 class AssignmentPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):

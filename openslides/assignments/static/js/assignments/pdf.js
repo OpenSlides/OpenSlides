@@ -5,9 +5,10 @@
 angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('AssignmentContentProvider', [
+    '$filter',
     'gettextCatalog',
     'PDFLayout',
-    function(gettextCatalog, PDFLayout) {
+    function($filter, gettextCatalog, PDFLayout) {
 
         var createInstance = function(assignment) {
 
@@ -60,10 +61,11 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             // show candidate list (if assignment phase is not 'finished')
             var createCandidateList = function() {
                 if (assignment.phase != 2) {
+                    var candidates = $filter('orderBy')(assignment.assignment_related_users, 'weight');
                     var candidatesText = gettextCatalog.getString("Candidates") + ": ";
                     var userList = [];
 
-                    angular.forEach(assignment.assignment_related_users, function(assignmentsRelatedUser) {
+                    angular.forEach(candidates, function(assignmentsRelatedUser) {
                         userList.push({
                                 text: assignmentsRelatedUser.user.get_full_name(),
                                 margin: [0, 0, 0, 10],
@@ -263,9 +265,10 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 }])
 
 .factory('BallotContentProvider', [
+    '$filter',
     'gettextCatalog',
     'PDFLayout',
-    function(gettextCatalog, PDFLayout) {
+    function($filter, gettextCatalog, PDFLayout) {
 
         var createInstance = function(scope, poll, pollNumber) {
 
@@ -324,15 +327,16 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             };
 
             var createSelectionField = function() {
+                var candidates = $filter('orderBy')(poll.options, 'weight');
                 var candidateBallotList = [];
 
                 if (poll.pollmethod == 'votes') {
-                    angular.forEach(poll.options, function(option) {
+                    angular.forEach(candidates, function(option) {
                         var candidate = option.candidate.get_full_name();
                         candidateBallotList.push(PDFLayout.createBallotEntry(candidate));
                     });
                 } else {
-                    angular.forEach(poll.options, function(option) {
+                    angular.forEach(candidates, function(option) {
                         var candidate = option.candidate.get_full_name();
                         candidateBallotList.push(createYNBallotEntry(candidate));
                     });

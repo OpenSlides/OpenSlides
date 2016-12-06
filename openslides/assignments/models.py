@@ -28,14 +28,31 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
     """
     Many to Many table between an assignment and user.
     """
+
     assignment = models.ForeignKey(
         'Assignment',
         on_delete=models.CASCADE,
         related_name='assignment_related_users')
+    """
+    ForeinKey to the assignment.
+    """
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE)
+    """
+    ForeinKey to the user who is related to the assignment.
+    """
+
     elected = models.BooleanField(default=False)
+    """
+    Saves the election state of each user
+    """
+
+    weight = models.IntegerField(default=0)
+    """
+    The sort order of the candidates.
+    """
 
     class Meta:
         default_permissions = ()
@@ -193,9 +210,14 @@ class Assignment(RESTModelMixin, models.Model):
         """
         Adds the user as candidate.
         """
+        weight = self.assignment_related_users.aggregate(
+            models.Max('weight'))['weight__max'] or 0
+        defaults = {
+            'elected': False,
+            'weight': weight + 1}
         related_user, __ = self.assignment_related_users.update_or_create(
             user=user,
-            defaults={'elected': False})
+            defaults=defaults)
 
     def set_elected(self, user):
         """
@@ -249,7 +271,13 @@ class Assignment(RESTModelMixin, models.Model):
         poll = self.polls.create(
             description=self.poll_description_default,
             pollmethod=pollmethod)
-        poll.set_options({'candidate': user} for user in candidates)
+        options = []
+        related_users = AssignmentRelatedUser.objects.filter(assignment__id=self.id)
+        for related_user in related_users:
+            options.append({
+                'candidate': related_user.user,
+                'weight': related_user.weight})
+        poll.set_options(options)
 
         # Add all candidates to list of speakers of related agenda item
         # TODO: Try to do this in a bulk create
@@ -360,6 +388,8 @@ class AssignmentOption(RESTModelMixin, BaseOption):
     candidate = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE)
+    weight = models.IntegerField(default=0)
+
     vote_class = AssignmentVote
 
     class Meta:

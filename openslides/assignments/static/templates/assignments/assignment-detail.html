@@ -82,17 +82,21 @@
 
   <div ng-if="assignment.phase != 2">
     <h3 translate>Candidates</h3>
-    <ul>
-      <li ng-repeat="related_user in assignment.assignment_related_users">
-        <a ui-sref="users.user.detail({id: related_user.user_id})">{{ related_user.user.get_full_name() }}</a>
-        <i ng-if="related_user.elected" class="fa fa-star" title="{{ 'is elected' | translate }}"></i>
-        <button os-perms="assignments.can_manage" ng-click="removeCandidate(related_user.user_id)"
-            class="btn btn-default btn-xs">
-          <i class="fa fa-times"></i>
-        </button>
-    </ul>
+    <div ui-tree="treeOptions" ng-if="assignment.assignment_related_users.length">
+      <ol ui-tree-nodes="" ng-model="relatedUsersSorted">
+        <li ui-tree-node ng-repeat="related_user in assignment.assignment_related_users | orderBy:'weight'">
+          <i ui-tree-handle="" class="fa fa-arrows-v spacer-right" os-perms="assignments.can_manage"></i>
+          <a class="spacer-right" ui-sref="users.user.detail({id: related_user.user_id})">
+            {{ related_user.user.get_full_name() }}
+          </a>
+          <i ng-if="related_user.elected" class="fa fa-star" title="{{ 'is elected' | translate }}"></i>
+          <a href os-perms="assignments.can_manage" ng-click="removeCandidate(related_user.user_id)" class="btn btn-default btn-xs">
+            <i class="fa fa-times"></i>
+          </a>
+      </ol>
+    </div>
 
-    <div class="form-group">
+    <div class="form-group spacer-top-lg">
       <div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
         {{ alert.msg }}
       </div>
@@ -174,7 +178,7 @@
           <div ng-if="!poll.has_votes">
             <strong translate>Candidates</strong>
             <ul class="list-unstyled">
-              <li ng-repeat="option in poll.options">
+              <li ng-repeat="option in poll.options | orderBy:'weight'">
                 <a ui-sref="users.user.detail({id: option.candidate.id})">
                   {{ option.candidate.get_full_name() }}
                 </a>
@@ -202,7 +206,7 @@
             <th translate ng-hide="method === 'disabled'">Quorum
             </th>
             <!-- candidates (poll options) -->
-            <tr ng-repeat="option in poll.options">
+            <tr ng-repeat="option in poll.options | orderBy:'weight'">
               <!-- candidate name -->
               <td>
                 <span os-perms="assignments.can_manage">

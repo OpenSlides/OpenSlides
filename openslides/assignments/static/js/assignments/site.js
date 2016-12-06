@@ -440,6 +440,7 @@ angular.module('OpenSlidesApp.assignments.site', [
 .controller('AssignmentDetailCtrl', [
     '$scope',
     '$http',
+    '$filter',
     'filterFilter',
     'gettext',
     'ngDialog',
@@ -456,11 +457,10 @@ angular.module('OpenSlidesApp.assignments.site', [
     'PdfMakeDocumentProvider',
     'PdfMakeBallotPaperProvider',
     'gettextCatalog',
-    function($scope, $http, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment, User,
-        assignment, phases, Projector, ProjectionDefault, AssignmentContentProvider, BallotContentProvider,
+    function($scope, $http, $filter, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment,
+        User, assignment, phases, Projector, ProjectionDefault, AssignmentContentProvider, BallotContentProvider,
         PdfMakeDocumentProvider, PdfMakeBallotPaperProvider, gettextCatalog) {
         User.bindAll({}, $scope, 'users');
-        Assignment.bindOne(assignment.id, $scope, 'assignment');
         Assignment.loadRelations(assignment, 'agenda_item');
         $scope.$watch(function () {
             return Projector.lastModified();
@@ -469,6 +469,13 @@ angular.module('OpenSlidesApp.assignments.site', [
             if (projectiondefault) {
                 $scope.defaultProjectorId = projectiondefault.projector_id;
             }
+        });
+        $scope.$watch(function () {
+            return Assignment.lastModified(assignment.id);
+        }, function () {
+            // setup sorting of candidates
+            $scope.relatedUsersSorted = $filter('orderBy')(assignment.assignment_related_users, 'weight');
+            $scope.assignment = Assignment.get(assignment.id);
         });
         $scope.candidateSelectBox = {};
         $scope.phases = phases;
@@ -531,6 +538,18 @@ angular.module('OpenSlidesApp.assignments.site', [
                 return true;
             else
                 return false;
+        };
+        // Sort all candidates
+        $scope.treeOptions = {
+            dropped: function () {
+                var sortedCandidates = [];
+                _.forEach($scope.relatedUsersSorted, function (user) {
+                    sortedCandidates.push(user.id);
+                });
+                $http.post('/rest/assignments/assignment/' + $scope.assignment.id + '/sort_related_users/',
+                    {related_users: sortedCandidates}
+                );
+            }
         };
         // update phase
         $scope.updatePhase = function (phase_id) {
@@ -730,11 +749,12 @@ angular.module('OpenSlidesApp.assignments.site', [
 
 .controller('AssignmentPollUpdateCtrl', [
     '$scope',
+    '$filter',
     'gettextCatalog',
     'AssignmentPoll',
     'assignmentpoll',
     'ballot',
-    function($scope, gettextCatalog, AssignmentPoll, assignmentpoll, ballot) {
+    function($scope, $filter, gettextCatalog, AssignmentPoll, assignmentpoll, ballot) {
         // set initial values for form model by create deep copy of assignmentpoll object
         // so detail view is not updated while editing poll
         $scope.model = angular.copy(assignmentpoll);
@@ -743,7 +763,8 @@ angular.module('OpenSlidesApp.assignments.site', [
         $scope.alert = {};
 
         // add dynamic form fields
-        assignmentpoll.options.forEach(function(option) {
+        var options = $filter('orderBy')(assignmentpoll.options, 'weight');
+        options.forEach(function(option) {
             var defaultValue;
             if (assignmentpoll.pollmethod == 'yna' || assignmentpoll.pollmethod == 'yn') {
                 if (assignmentpoll.pollmethod == 'yna') {

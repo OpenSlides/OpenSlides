@@ -17,7 +17,7 @@
   <div ng-if="!showResult">
     <h3 translate>Candidates</h3>
     <ul>
-      <li ng-repeat="related_user in assignment.assignment_related_users">
+      <li ng-repeat="related_user in assignment.assignment_related_users | orderBy:'weight'">
         {{ related_user.user.get_full_name() }}
         <i ng-if="related_user.elected" class="fa fa-star" title="{{ 'is elected' | translate }}"></i>
     </ul>
@@ -31,7 +31,7 @@
       <th ng-if="poll.has_votes" class="col-sm-6" translate>Votes</th>
 
     <!-- candidates (poll options) -->
-    <tr ng-repeat="option in poll.options">
+    <tr ng-repeat="option in poll.options | orderBy:'weight'">
 
       <!-- candidate name -->
       <td>
