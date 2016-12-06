@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html ng-controller="ProjectorContainerCtrl" lang="en" class="no-js">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <base href="/">
-<title>OpenSlides &ndash; Projector</title>
+<title ng-if="projectorId===undefined">OpenSlides &ndash; Projector</title> <!-- avoid {{ ... }} in title while angular is not loaded -->
+<title ng-if="projectorId!==undefined">OpenSlides &ndash; {{ 'Projector' | translate }} {{ projectorId }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <link rel="stylesheet" href="static/css/openslides-libs.css">
 <link rel="stylesheet" href="static/css/projector.css">
@@ -12,7 +13,7 @@
 <script src="static/js/openslides.js"></script>
 <script src="static/js/openslides-templates.js"></script>
 
-<div ng-controller="ProjectorContainerCtrl" class="pContainer">
+<div class="pContainer">
   <div>
     <style>
       .pContainer #iframe {
@@ -38,7 +39,7 @@
     </style>
 
     <div id="iframewrapper" ng-hide="error">
-      <iframe id="iframe" ng-src="{{ '/real-projector/' + projector_id }}" frameborder="0"></iframe>
+      <iframe id="iframe" ng-src="{{ '/real-projector/' + projectorId }}" frameborder="0"></iframe>
       <div id="iframeoverlay"></div>
     </div>
 

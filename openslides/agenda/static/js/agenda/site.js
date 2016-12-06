@@ -24,12 +24,16 @@ angular.module('OpenSlidesApp.agenda.site', [
 
 .config([
     '$stateProvider',
-    function($stateProvider) {
+    'gettext',
+    function($stateProvider, gettext) {
         $stateProvider
             .state('agenda', {
                 url: '/agenda',
                 abstract: true,
                 template: "<ui-view/>",
+                data: {
+                    title: gettext('Agenda'),
+                },
             })
             .state('agenda.item', {
                 abstract: true,
@@ -86,7 +90,10 @@ angular.module('OpenSlidesApp.agenda.site', [
                     items: function(Agenda) {
                        return Agenda.findAll();
                     }
-                }
+                },
+                data: {
+                    title: gettext('Current list of speakers'),
+                },
             });
     }
 ])

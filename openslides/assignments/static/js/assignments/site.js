@@ -25,12 +25,16 @@ angular.module('OpenSlidesApp.assignments.site', [
 
 .config([
     '$stateProvider',
-    function($stateProvider) {
+    'gettext',
+    function($stateProvider, gettext) {
         $stateProvider
             .state('assignments', {
                 url: '/assignments',
                 abstract: true,
                 template: "<ui-view/>",
+                data: {
+                    title: gettext('Elections'),
+                },
             })
             .state('assignments.assignment', {
                 abstract: true,

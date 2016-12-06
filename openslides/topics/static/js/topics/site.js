@@ -6,12 +6,16 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
 
 .config([
     '$stateProvider',
-    function($stateProvider) {
+    'gettext',
+    function($stateProvider, gettext) {
         $stateProvider
             .state('topics', {
                 url: '/topics',
                 abstract: true,
                 template: "<ui-view/>",
+                data: {
+                    title: gettext('Topics'),
+                },
             })
 
             .state('topics.topic', {

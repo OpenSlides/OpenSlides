@@ -123,6 +123,18 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+// Set up the activeAppTitle for the title from the webpage
+.run([
+    '$rootScope',
+    'gettextCatalog',
+    function ($rootScope, gettextCatalog) {
+        $rootScope.activeAppTitle = '';
+        $rootScope.$on('$stateChangeSuccess', function(evt, toState) {
+            $rootScope.activeAppTitle = toState.data ? toState.data.title : '';
+        });
+    }
+])
+
 .config([
     'mainMenuProvider',
     'gettext',
@@ -254,12 +266,16 @@ angular.module('OpenSlidesApp.core.site', [
 .config([
     '$stateProvider',
     '$locationProvider',
-    function($stateProvider, $locationProvider) {
+    'gettext',
+    function($stateProvider, $locationProvider, gettext) {
         // Core urls
         $stateProvider
             .state('home', {
                 url: '/',
-                templateUrl: 'static/templates/home.html'
+                templateUrl: 'static/templates/home.html',
+                data: {
+                    title: gettext('Home'),
+                },
             })
             .state('projector', {
                 url: '/projector/{id:int}',
@@ -280,7 +296,10 @@ angular.module('OpenSlidesApp.core.site', [
             .state('manage-projectors', {
                 url: '/manage-projectors',
                 templateUrl: 'static/templates/core/manage-projectors.html',
-                controller: 'ManageProjectorsCtrl'
+                controller: 'ManageProjectorsCtrl',
+                data: {
+                    title: gettext('Manage projectors'),
+                },
             })
             .state('core', {
                 url: '/core',
@@ -292,6 +311,9 @@ angular.module('OpenSlidesApp.core.site', [
             .state('legalnotice', {
                 url: '/legalnotice',
                 controller: 'LegalNoticeCtrl',
+                data: {
+                    title: gettext('Legal notice'),
+                },
             })
 
             //config
@@ -302,7 +324,10 @@ angular.module('OpenSlidesApp.core.site', [
                     configOptions: function(Config) {
                         return Config.getConfigOptions();
                     }
-                }
+                },
+                data: {
+                    title: gettext('Settings'),
+                },
             })
 
             // search
@@ -310,6 +335,9 @@ angular.module('OpenSlidesApp.core.site', [
                 url: '/search?q',
                 controller: 'SearchCtrl',
                 templateUrl: 'static/templates/search.html',
+                data: {
+                    title: gettext('Search'),
+                },
             })
 
             // tag
@@ -317,6 +345,9 @@ angular.module('OpenSlidesApp.core.site', [
                 url: '/tag',
                 abstract: true,
                 template: "<ui-view/>",
+                data: {
+                    title: gettext('Tags'),
+                },
             })
             .state('core.tag.list', {
                 resolve: {
