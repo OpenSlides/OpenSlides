@@ -619,42 +619,47 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     alreadyConverted.push(st);
                                     break;
                                 case "span":
-                                    if (lineNumberMode == "inline") {
-                                        if (diff_mode != DIFF_MODE_INSERT) {
-                                            var lineNumberInline = element.getAttribute("data-line-number"),
-                                                lineNumberObjInline = {
-                                                    text: lineNumberInline,
+                                    if (element.getAttribute("data-line-number")) {
+                                        if (lineNumberMode == "inline") {
+                                            if (diff_mode != DIFF_MODE_INSERT) {
+                                                var lineNumberInline = element.getAttribute("data-line-number"),
+                                                    lineNumberObjInline = {
+                                                        text: lineNumberInline,
+                                                        color: "gray",
+                                                        fontSize: 5
+                                                    };
+                                                currentParagraph.text.push(lineNumberObjInline);
+                                            }
+                                            parseChildren(alreadyConverted, element, currentParagraph, styles, diff_mode);
+                                        } else if (lineNumberMode == "outside") {
+                                            var lineNumberOutline;
+                                            if (diff_mode == DIFF_MODE_INSERT) {
+                                                lineNumberOutline = "";
+                                            } else {
+                                                lineNumberOutline = element.getAttribute("data-line-number");
+                                            }
+                                            var lineNumberObject = {
+                                                    width: 20,
+                                                    text: lineNumberOutline,
                                                     color: "gray",
-                                                    fontSize: 5
-                                                };
-                                            currentParagraph.text.push(lineNumberObjInline);
+                                                    fontSize: 8,
+                                                    margin: [0, 2, 0, 0]
+                                            },
+                                                col = {
+                                                    columns: [
+                                                        lineNumberObject,
+                                                    ]
+                                            };
+                                            currentParagraph = create("text");
+                                            col.columns.push(currentParagraph);
+                                            parseChildren(col.columns[0], element, currentParagraph, styles, diff_mode);
+                                            alreadyConverted.push(col);
                                         }
-                                        parseChildren(alreadyConverted, element, currentParagraph, styles, diff_mode);
-                                    } else if (lineNumberMode == "outside") {
-                                        var lineNumberOutline;
-                                        if (diff_mode == DIFF_MODE_INSERT) {
-                                            lineNumberOutline = "";
-                                        } else {
-                                            lineNumberOutline = element.getAttribute("data-line-number");
-                                        }
-                                        var lineNumberObject = {
-                                                width: 20,
-                                                text: lineNumberOutline,
-                                                color: "gray",
-                                                fontSize: 8,
-                                                margin: [0, 2, 0, 0]
-                                        },
-                                            col = {
-                                                columns: [
-                                                    lineNumberObject,
-                                                ]
-                                        };
-                                        currentParagraph = create("text");
-                                        col.columns.push(currentParagraph);
-                                        parseChildren(col.columns[0], element, currentParagraph, styles, diff_mode);
-                                        alreadyConverted.push(col);
-                                    } else {
-                                        parseChildren(alreadyConverted, element, currentParagraph, styles, diff_mode);
+                                    }
+                                    else {
+                                        var spanText = create("text", element.textContent.replace(/\n/g, ""));
+                                        ComputeStyle(spanText, styles);
+                                        currentParagraph.text.push(spanText);
                                     }
                                     break;
                                 case "br":
@@ -704,7 +709,6 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         width *= scaleByHeight;
                                         height *= scaleByHeight;
                                     }
-
                                     alreadyConverted.push({
                                         image: BaseMap[element.getAttribute("src")],
                                         width: width,
@@ -745,17 +749,12 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     }
                                     break;
                                 default:
-                                    var temporary = create("text", element.textContent.replace(/\n/g, ""));
-                                    if (styles) {
-                                        ComputeStyle(temporary, styles);
-                                    }
-                                    // TODO: This if-clause is a hotfix for issue #2442.
-                                    // Do this right! Why is currentParagraph undefined?
+                                    var defaultText = create("text", element.textContent.replace(/\n/g, ""));
                                     if (!currentParagraph) {
                                         currentParagraph = {};
                                         currentParagraph.text = [];
                                     }
-                                    currentParagraph.text.push(temporary);
+                                    currentParagraph.text.push(defaultText);
                                     break;
                             }
                             return currentParagraph;
