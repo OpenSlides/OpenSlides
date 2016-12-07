@@ -380,8 +380,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                  * Convertes HTML for use with pdfMake
                  * @function
                  * @param {object} html - html
+                 * @param {string} lineNumberMode - [inline, outside, none]
                  */
-                convertHTML = function(html, scope) {
+                convertHTML = function(html, lineNumberMode) {
                     var elementStyles = {
                             "b": ["font-weight:bold"],
                             "strong": ["font-weight:bold"],
@@ -401,6 +402,31 @@ angular.module('OpenSlidesApp.core.pdf', [])
                         classStyles = {
                             "delete": ["color:red", "text-decoration:line-through"],
                             "insert": ["color:green", "text-decoration:underline"]
+                        },
+                        /**
+                         * Removes all line number nodes (not line-breaks)
+                         * and returns an array containing the reoved numbers (as integer, not as node)
+                         *
+                         * @function
+                         * @param {object} element
+                         */
+                        extractLineNumbers = function(element) {
+                            var foundLineNumbers = [];
+                            if (element.nodeName == 'SPAN' && element.getAttribute('class').indexOf('os-line-number') > -1) {
+                                foundLineNumbers.push(element.getAttribute('data-line-number'));
+                                element.parentNode.removeChild(element);
+                            } else {
+                                var children = element.childNodes,
+                                    childrenLength = children.length;
+                                for (var i = 0; i < children.length; i++) {
+                                    foundLineNumbers = _.union(foundLineNumbers, extractLineNumbers(children[i]));
+                                    if (children.length < childrenLength) {
+                                        i -= (childrenLength - children.length);
+                                        childrenLength = children.length;
+                                    }
+                                }
+                            }
+                            return foundLineNumbers;
                         },
                         /**
                          * Parses Children of the current paragraph
@@ -593,7 +619,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     alreadyConverted.push(st);
                                     break;
                                 case "span":
-                                    if (scope.lineNumberMode == "inline") {
+                                    if (lineNumberMode == "inline") {
                                         if (diff_mode != DIFF_MODE_INSERT) {
                                             var lineNumberInline = element.getAttribute("data-line-number"),
                                                 lineNumberObjInline = {
@@ -604,7 +630,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                             currentParagraph.text.push(lineNumberObjInline);
                                         }
                                         parseChildren(alreadyConverted, element, currentParagraph, styles, diff_mode);
-                                    } else if (scope.lineNumberMode == "outside") {
+                                    } else if (lineNumberMode == "outside") {
                                         var lineNumberOutline;
                                         if (diff_mode == DIFF_MODE_INSERT) {
                                             lineNumberOutline = "";
@@ -633,7 +659,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     break;
                                 case "br":
                                     //in case of inline-line-numbers and the os-line-break class ignore the break
-                                    if (!(scope.lineNumberMode == "inline" && element.getAttribute("class") == "os-line-break")) {
+                                    if (!(lineNumberMode == "inline" && element.getAttribute("class") == "os-line-break")) {
                                         currentParagraph = create("text");
                                         alreadyConverted.push(currentParagraph);
                                     }
@@ -686,14 +712,37 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     });
                                     break;
                                 case "ul":
-                                    var u = create("ul");
-                                    parseChildren(u.ul, element, currentParagraph, styles, diff_mode);
-                                    alreadyConverted.push(u);
-                                    break;
                                 case "ol":
-                                    var o = create("ol");
-                                    parseChildren(o.ol, element, currentParagraph, styles, diff_mode);
-                                    alreadyConverted.push(o);
+                                    var list = create(nodeName);
+                                    if (lineNumberMode == "outside") {
+                                        var lines = extractLineNumbers(element);
+                                        parseChildren(list[nodeName], element, currentParagraph, styles, diff_mode);
+                                        if (lines.length > 0) {
+                                            var listCol = {
+                                                    columns: [{
+                                                        width: 20,
+                                                        stack: []
+                                                    }]
+                                                };
+                                            _.forEach(lines, function(line) {
+                                                listCol.columns[0].stack.push({
+                                                    width: 20,
+                                                    text: line,
+                                                    color: "gray",
+                                                    fontSize: 8,
+                                                    margin: [0, 2.35, 0, 0]
+                                                });
+                                            });
+                                            listCol.columns.push(list);
+                                            listCol.margin = [0,10,0,0];
+                                            alreadyConverted.push(listCol);
+                                        } else {
+                                            alreadyConverted.push(list);
+                                        }
+                                    } else {
+                                        parseChildren(list[nodeName], element, currentParagraph, styles, diff_mode);
+                                        alreadyConverted.push(list);
+                                    }
                                     break;
                                 default:
                                     var temporary = create("text", element.textContent.replace(/\n/g, ""));

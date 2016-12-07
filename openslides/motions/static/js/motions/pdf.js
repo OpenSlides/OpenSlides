@@ -257,9 +257,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 * https://github.com/OpenSlides/OpenSlides/issues/2361
                 */
                 var text = motion.getTextByMode($scope.viewChangeRecommendations.mode, $scope.version);
-                return converter.convertHTML(text, $scope);
+                return converter.convertHTML(text, $scope.lineNumberMode);
             } else {
-                return converter.convertHTML(motion.getText($scope.version), $scope);
+                return converter.convertHTML(motion.getText($scope.version), $scope.lineNumberMode);
             }
         };
 
@@ -271,7 +271,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     text:  gettextCatalog.getString('Reason'),
                     style: 'heading3'
                 });
-                reason.push(converter.convertHTML(motion.getReason($scope.version), $scope));
+                reason.push(converter.convertHTML(motion.getReason($scope.version), $scope.lineNumberMode));
             }
             return reason;
         };
