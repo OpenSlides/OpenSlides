@@ -834,7 +834,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // Filtering
         $scope.filter = osTableFilter.createInstance('MotionTableFilter');
 
-        if (!$scope.filter.existsCookie()) {
+        if (!$scope.filter.existsStorageEntry()) {
             $scope.filter.multiselectFilters = {
                 state: [],
                 category: [],
