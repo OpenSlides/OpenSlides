@@ -1,7 +1,55 @@
 /*
- * OpenSlides template styles of web interface
+ * Font definitions for OpenSlides site
  */
 
+@font-face {
+  font-family: 'Roboto Condensed';
+  src: url('../fonts/Roboto-Condensed-Regular.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+    font-family: 'Roboto Condensed Light';
+    src: url('../fonts/Roboto-Condensed-Light.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url('../fonts/Roboto-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Roboto Medium';
+  src: url('../fonts/Roboto-Medium.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+}
+strong, b, .os-table .title {
+    font-family: "Roboto Medium";
+    font-family: "Roboto Medium", sans-serif;
+    font-weight: normal;
+}
+h1, h2, h3, h4, h5, h6, #header .title {
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 400;
+}
+#content .col2 h4 {
+    font-family: 'Roboto Condensed Light';
+    font-weight: 300;
+}
+#content .col1 .meta .heading .drop-down-name, #content .col1 .meta h3 {
+    font-family: 'Roboto Condensed Light';
+}
+
+/*
+ * Template styles for OpenSlides site
+ */
 
 * { /* set margin/padding for all (block) elements to null */
     margin: 0;
@@ -9,15 +57,12 @@
 }
 
 body {
-    font-family: "Open Sans",Helvetica,Arial,sans-serif;
-    font-weight: 400;
     font-size: 14px;
     line-height: 1.5;
     color: #222;
     text-align: center;
     background: #e8eaed;
 }
-
 
 div {
     text-align: left;
@@ -28,8 +73,6 @@ blockquote {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: "Roboto Condensed",Helvetica,Arial,sans-serif;
-    font-weight: 400;
     line-height: 1.1;
 }
 
@@ -114,8 +157,6 @@ img {
 #header .title {
     float: left;
     margin: 2px 0 0 -5px;
-    font-family: "Roboto Condensed",Helvetica,Arial,sans-serif;
-    font-weight: 400;
     color: #fff;
 }
 
@@ -425,11 +466,10 @@ img {
     content: attr(data-line-number);
     position: absolute;
     left: 20px;
-    top: 12px;
+    top: 10px;
     vertical-align: top;
     color: gray;
-    font-family: Courier, serif;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: normal;
 }
 
@@ -443,10 +483,9 @@ img {
     display: inline-block;
     content: attr(data-line-number);
     vertical-align: top;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: normal;
     color: gray;
-    font-family: Courier, serif;
     margin-top: -3px;
     margin-left: 0;
     margin-right: 0;
@@ -678,8 +717,6 @@ img {
 #content .col2 h4 {
     font-size: 22px;
     line-height: 24px;
-    font-family: 'Roboto Condensed Light';
-    font-weight: 300;
     color: #444;
 }
 #content .col1 .meta .heading, #content .col1 .meta h3 {
@@ -690,9 +727,6 @@ img {
     padding-bottom: 0;
     margin-top: 20px;
     margin-bottom: 5px;
-}
-#content .col1 .meta .heading .drop-down-name, #content .col1 .meta h3 {
-    font-family: 'Roboto Condensed Light';
 }
 
 #content .col2 a:hover h4 {
@@ -1404,7 +1438,7 @@ img {
 /* override booststrap's label class to fix linebreak and add spacing */
 .label {
     display: inline-block;
-    padding: .3em .6em;
+    padding: .4em .6em;
     margin-right: .2em;
 }
 
@@ -1522,6 +1556,11 @@ tr.selected td {
     .col-md-4 {
         float: left;
         width: 50%;
+    }
+
+    .motion-text.line-numbers-outside .os-line-number:after {
+        font-size: 10px;
+        top: 9px;
     }
 }
 

@@ -343,9 +343,7 @@
         <div>
           <!-- ID and title -->
           <div>
-            <strong>
               <a class="title" ui-sref="motions.motion.detail({id: motion.id})">{{ motion.getTitle() }}</a>
-            </strong>
             <i class="fa fa-paperclip" ng-if="motion.attachments_id.length > 0"></i>
             <span style="padding: 5px;" ng-mouseover="motion.stateHover=true" ng-mouseleave="motion.stateHover=false">
               <span class="label" ng-class="'label-'+motion.state.css_class">

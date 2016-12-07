@@ -277,18 +277,14 @@
       <!-- main content column -->
       <div class="col-xs-6 content">
         <div class="spacer-right"> <!-- horizontal block -->
-            <strong>
-              <i ng-style="{'visibility': user.is_active === false ? 'visible' : 'hidden'}" class="fa fa-ban"
-                title="{{ 'Is inactive' | translate }}"></i>
-              <i ng-style="{'visibility': user.is_committee ? 'visible' : 'hidden'}" class="fa fa-university"
-                title="{{ 'Is a committee' | translate }}"></i>
-            </strong>
+          <i ng-style="{'visibility': user.is_active === false ? 'visible' : 'hidden'}" class="fa fa-ban"
+            title="{{ 'Is inactive' | translate }}"></i>
+          <i ng-style="{'visibility': user.is_committee ? 'visible' : 'hidden'}" class="fa fa-university"
+            title="{{ 'Is a committee' | translate }}"></i>
         </div>
         <div>
           <div> <!-- vertical block -->
-            <strong>
-              <a ui-sref="users.user.detail({id: user.id})" class="title">{{ user.get_short_name() }}</a>
-            </strong>
+            <a ui-sref="users.user.detail({id: user.id})" class="title">{{ user.get_short_name() }}</a>
           </div>
           <div os-perms="users.can_manage"> <!-- user number -->
             <div ng-if="user.number" editable-text="user.number" onaftersave="save(user)">

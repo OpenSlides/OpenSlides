@@ -279,16 +279,12 @@
       <!-- main content column -->
       <div class="col-xs-6 content">
         <div class="spacer-right"> <!-- horizontal block -->
-            <strong>
-              <i ng-style="{'visibility': mediafile.private ? 'visible' : 'hidden'}" class="fa fa-lock fa-lg"
-                title="{{ 'Is private' | translate }}"></i>
-            </strong>
+          <i ng-style="{'visibility': mediafile.private ? 'visible' : 'hidden'}" class="fa fa-lock fa-lg"
+              title="{{ 'Is private' | translate }}"></i>
         </div>
         <div>
           <div> <!-- vertical block -->
-            <strong>
-              <a ng-href="{{ mediafile.mediafileUrl }}" target="_blank">{{ mediafile.title_or_filename }}</a>
-            </strong>
+            <a ng-href="{{ mediafile.mediafileUrl }}" class="title" target="_blank">{{ mediafile.title_or_filename }}</a>
           </div>
           <div><small>{{ mediafile.uploader.get_full_name() }}</small></div>
           <div os-perms="mediafiles.can_manage" ng-class="{'hiddenDiv': !mediafile.hover}">

@@ -224,11 +224,9 @@
         <div class="title-col">
           <!-- title and phase -->
           <div>
-            <strong>
-              <a ui-sref="assignments.assignment.detail({id: assignment.id})">
-                {{ assignment.title }}
-              </a>
-            </strong>
+            <a class="title" ui-sref="assignments.assignment.detail({id: assignment.id})">
+              {{ assignment.title }}
+            </a>
             <span style="padding: 5px;" ng-mouseover="assignment.phaseHover=true" ng-mouseleave="assignment.phaseHover=false">
               <span class="label" ng-class="{'label-primary': assignment.phase == 0,
                                              'label-warning': assignment.phase == 1,
