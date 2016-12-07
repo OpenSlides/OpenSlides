@@ -1,15 +1,5 @@
 <div ng-controller="SlideAssignmentCtrl" class="content scrollcontent">
 
-  <div id="sidebox">
-    <!-- Phase -->
-    <h3 translate>State</h3>
-    {{ phases[assignment.phase].display_name | translate }}
-
-    <!-- Posts -->
-    <h3 translate>Posts</h3>
-    {{ assignment.open_posts }}
-  </div>
-
   <!-- Title -->
   <div id="title">
     <h1>{{ assignment.agenda_item.getTitle() || assignment.title }}</h1>
