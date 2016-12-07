@@ -318,7 +318,7 @@ angular.module('OpenSlidesApp.users.site', [
                             type: 'input',
                             className: "col-xs-5 no-padding",
                             templateOptions: {
-                                label: gettextCatalog.getString('First name')
+                                label: gettextCatalog.getString('Given name')
                             }
                         },
                         {
@@ -326,7 +326,7 @@ angular.module('OpenSlidesApp.users.site', [
                             type: 'input',
                             className: "col-xs-5 no-padding-right",
                             templateOptions: {
-                                label: gettextCatalog.getString('Last name')
+                                label: gettextCatalog.getString('Surname')
                             }
                         }
                     ]
@@ -564,9 +564,9 @@ angular.module('OpenSlidesApp.users.site', [
         $scope.sort.column = $scope.config('users_sort_by');
         $scope.sortOptions = [
             {name: 'first_name',
-             display_name: 'First name'},
+             display_name: 'Given name'},
             {name: 'last_name',
-             display_name: 'Last name'},
+             display_name: 'Surname'},
             {name: 'is_present',
              display_name: 'Present'},
             {name: 'is_active',
@@ -999,7 +999,7 @@ angular.module('OpenSlidesApp.users.site', [
                 }
                 if (!user.first_name && !user.last_name) {
                     user.importerror = true;
-                    user.name_error = gettext('Error: First or last name is required.');
+                    user.name_error = gettext('Error: Given name or surname is required.');
                 }
                 // structure level
                 if (user.structure_level) {
@@ -1092,10 +1092,10 @@ angular.module('OpenSlidesApp.users.site', [
                                 user.duplicate_info += user_.last_name;
                             user.duplicate_info += ' (';
                             if (user_.number)
-                                user.duplicate_info += gettextCatalog.getString('number') + ': ' + user_.number + ', ';
+                                user.duplicate_info += gettextCatalog.getString('Number') + ': ' + user_.number + ', ';
                             if (user_.structure_level)
-                                user.duplicate_info += gettextCatalog.getString('structure level') + ': ' + user_.structure_level + ', ';
-                            user.duplicate_info += gettextCatalog.getString('username') + ': ' + user_.username + ') '+
+                                user.duplicate_info += gettextCatalog.getString('Structure level') + ': ' + user_.structure_level + ', ';
+                            user.duplicate_info += gettextCatalog.getString('Username') + ': ' + user_.username + ') '+
                                 gettextCatalog.getString('already exists.');
 
                             $scope.duplicates++;
@@ -1552,8 +1552,8 @@ angular.module('OpenSlidesApp.users.site', [
         gettext('General');
         gettext('Sort name of participants by');
         gettext('Participants');
-        gettext('First name');
-        gettext('Last name');
+        gettext('Given name');
+        gettext('Surname');
         gettext('PDF');
         gettext('Welcome to OpenSlides');
         gettext('Title for access data and welcome PDF');

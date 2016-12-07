@@ -15,8 +15,8 @@ def get_config_variables():
         input_type='choice',
         label='Sort name of participants by',
         choices=(
-            {'value': 'first_name', 'display_name': 'First name'},
-            {'value': 'last_name', 'display_name': 'Last name'}),
+            {'value': 'first_name', 'display_name': 'Given name'},
+            {'value': 'last_name', 'display_name': 'Surname'}),
         weight=510,
         group='Participants',
         subgroup='General')
