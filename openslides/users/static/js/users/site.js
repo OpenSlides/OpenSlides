@@ -682,7 +682,7 @@ angular.module('OpenSlidesApp.users.site', [
         // Export as a csv file
         $scope.csvExport = function () {
             var element = document.getElementById('downloadLinkCSV');
-            UserCsvExport(element, $scope.usersFiltered);
+            UserCsvExport.export(element, $scope.usersFiltered);
         };
     }
 ])
@@ -886,7 +886,8 @@ angular.module('OpenSlidesApp.users.site', [
     'gettextCatalog',
     'User',
     'Group',
-    function($scope, $q, gettext, gettextCatalog, User, Group) {
+    'UserCsvExport',
+    function($scope, $q, gettext, gettextCatalog, User, Group, UserCsvExport) {
         // import from textarea
         $scope.importByLine = function () {
             $scope.usernames = $scope.userlist[0].split("\n");
@@ -984,24 +985,29 @@ angular.module('OpenSlidesApp.users.site', [
                     user.number = "";
                 }
                 // groups
+                user.groups_id = []; // will be overwritten if there are groups
                 if (user.groups) {
-                    var csvGroups = user.groups.replace(quotionRe, '$1').split(",");
-                    user.groups_id = [];
-                    user.groupnames = [];
-                    if (csvGroups !== '') {
-                        // All group objects are already loaded via the resolve statement from ui-router.
-                        var allGroups = Group.getAll();
-                        csvGroups.forEach(function(csvGroup) {
-                            allGroups.forEach(function (allGroup) {
-                                if (csvGroup == allGroup.id) {
-                                    user.groups_id.push(allGroup.id);
-                                    user.groupnames.push(allGroup.name);
-                                }
-                            });
-                        });
-                    }
-                } else {
-                    user.groups_id = [];
+                    user.groups = user.groups.replace(quotionRe, '$1').split(',');
+                    user.groups = _.map(user.groups, function (group) {
+                        return _.trim(group); // remove whitespaces on start or end
+                    });
+
+                    // All group objects are already loaded via the resolve statement from ui-router.
+                    var allGroups = Group.getAll();
+                    // in allGroupsNames ar all original group names and translated names if a
+                    // translation exists (e.g. for default group Delegates)
+                    var allGroupsNames = [];
+                    _.forEach(allGroups, function (group) {
+                        var groupTranslation = gettextCatalog.getString(group.name);
+                        if (group.name !== groupTranslation) {
+                            allGroupsNames.push(groupTranslation);
+                        }
+                        allGroupsNames.push(group.name);
+                    });
+                    user.groupsToCreate = _.difference(user.groups, allGroupsNames);
+
+                    // for template:
+                    user.groupsNotToCreate = _.difference(user.groups, user.groupsToCreate);
                 }
                 // comment
                 if (user.comment) {
@@ -1106,39 +1112,79 @@ angular.module('OpenSlidesApp.users.site', [
         // import from csv file
         $scope.import = function () {
             $scope.csvImporting = true;
-            var existingUsers = User.getAll();
-            angular.forEach($scope.users, function (user) {
-                if (!user.importerror) {
-                    // Do nothing on duplicateAction==duplicateActions[0] (keep original)
-                    if (user.duplicate && (user.duplicateAction == $scope.duplicateActions[1])) {
-                        // delete existing user
-                        var deletePromises = [];
-                        existingUsers.forEach(function(user_) {
-                            if (user_.first_name == user.first_name &&
-                                user_.last_name == user.last_name &&
-                                user_.structure_level == user.structure_level) {
-                                deletePromises.push(User.destroy(user_.id));
-                            }
+
+            // collect all needed groups and create non existing groups
+            var groupsToCreate = [];
+            _.forEach($scope.users, function (user) {
+                if (!user.importerror && user.groups.length) {
+                    _.forEach(user.groupsToCreate, function (group) { // Just append groups, that are not listed yet.
+                        if (_.indexOf(groupsToCreate, group) == -1) {
+                            groupsToCreate.push(group);
+                        }
+                    });
+                }
+            });
+            var createPromises = [];
+            $scope.groupsCreated = 0;
+            _.forEach(groupsToCreate, function (groupname) {
+                var group = {
+                    name: groupname,
+                    permissions: []
+                };
+                createPromises.push(Group.create(group).then( function (success) {
+                    $scope.groupsCreated++;
+                }));
+            });
+
+            $q.all(createPromises).then(function () {
+                // reload allGroups, now all new groups are created
+                var allGroups = Group.getAll();
+                var existingUsers = User.getAll();
+
+                _.forEach($scope.users, function (user) {
+                    if (!user.importerror) {
+                        // Assign all groups
+                        _.forEach(user.groups, function(csvGroup) {
+                            allGroups.forEach(function (allGroup) {
+                                // check with and without translation
+                                if (csvGroup === allGroup.name ||
+                                    csvGroup === gettextCatalog.getString(allGroup.name)) {
+                                    user.groups_id.push(allGroup.id);
+                                }
+                            });
                         });
-                        $q.all(deletePromises).then(function() {
+
+                        // Do nothing on duplicateAction==duplicateActions[0] (keep original)
+                        if (user.duplicate && (user.duplicateAction == $scope.duplicateActions[1])) {
+                            // delete existing user
+                            var deletePromises = [];
+                            existingUsers.forEach(function(user_) {
+                                if (user_.first_name == user.first_name &&
+                                    user_.last_name == user.last_name &&
+                                    user_.structure_level == user.structure_level) {
+                                    deletePromises.push(User.destroy(user_.id));
+                                }
+                            });
+                            $q.all(deletePromises).then(function() {
+                                User.create(user).then(
+                                    function(success) {
+                                        user.imported = true;
+                                    }
+                                );
+                            });
+                        } else if (!user.duplicate ||
+                                   (user.duplicateAction == $scope.duplicateActions[2])) {
+                            // create user
                             User.create(user).then(
                                 function(success) {
                                     user.imported = true;
                                 }
                             );
-                        });
-                    } else if (!user.duplicate ||
-                               (user.duplicateAction == $scope.duplicateActions[2])) {
-                        // create user
-                        User.create(user).then(
-                            function(success) {
-                                user.imported = true;
-                            }
-                        );
+                        }
                     }
-                }
+                });
+                $scope.csvimported = true;
             });
-            $scope.csvimported = true;
         };
         $scope.clear = function () {
             $scope.csv.result = null;
@@ -1146,20 +1192,7 @@ angular.module('OpenSlidesApp.users.site', [
         // download CSV example file
         $scope.downloadCSVExample = function () {
             var element = document.getElementById('downloadLink');
-            var csvRows = [
-                // column header line
-                ['title', 'first_name', 'last_name', 'structure_level', 'number', 'groups', 'comment', 'is_active', 'is_present', 'is_committee'],
-                // example entries
-                ['Dr.', 'Max', 'Mustermann', 'Berlin','1234567890', '"3,4"', 'xyz', '1', '1', ''],
-                ['', 'John', 'Doe', 'Washington','75/99/8-2', '3', 'abc', '1', '1', ''],
-                ['', 'Fred', 'Bloggs', 'London', '', '', '', '', '', ''],
-                ['', '', 'Executive Board', '', '', '5', '', '', '', '1'],
-
-            ];
-            var csvString = csvRows.join("%0A");
-            element.href = 'data:text/csv;charset=utf-8,' + csvString;
-            element.download = 'users-example.csv';
-            element.target = '_blank';
+            UserCsvExport.downloadExample(element);
         };
     }
 ])
