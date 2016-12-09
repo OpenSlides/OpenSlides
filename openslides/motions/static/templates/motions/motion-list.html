@@ -104,7 +104,7 @@
       <div class="col-xs-11 main-header">
         <span class="form-inline text-right pull-right">
           <!-- clear all filters -->
-          <span class="sort-spacer pointer" ng-click="filter.reset()"
+          <span class="sort-spacer pointer" ng-click="resetFilters()"
             ng-if="filter.areFiltersSet()" ng-disabled="isSelectMode"
             ng-class="{'disabled': isSelectMode}">
             <i class="fa fa-times-circle"></i>
@@ -124,9 +124,16 @@
                   {{ state.headername | translate }}
                 </a>
                 <a href ng-if="!state.workflowHeader"
-                  ng-click="filter.operateMultiselectFilter('state', state.id, isSelectMode)">
+                  ng-click="operateStateFilter(state.id, isSelectMode)">
                   <i class="fa fa-check" ng-if="filter.multiselectFilters.state.indexOf(state.id) > -1"></i>
                   {{ state.name | translate }}
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href ng-click="operateStateFilter(-1, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.category.indexOf(-1) > -1"></i>
+                  <translate>Done</translate>
                 </a>
               </li>
             </ul>
@@ -279,12 +286,18 @@
           <!-- state -->
           <span ng-repeat="state in states" class="pointer spacer-left-lg"
             ng-if="!state.workflowHeader && filter.multiselectFilters.state.indexOf(state.id) > -1"
-            ng-click="filter.operateMultiselectFilter('state', state.id, isSelectMode)"
+            ng-click="operateStateFilter(state.id, isSelectMode)"
             ng-class="{'disabled': isSelectMode}">
             <span class="nobr">
               <i class="fa fa-times-circle"></i>
               {{ state.name | translate }}
             </span>
+          </span>
+          <span ng-if="filter.multiselectFilters.state.indexOf(-1) > -1" class="pointer spacer-left-lg"
+            ng-click="operateStateFilter(-1, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
+            <i class="fa fa-times-circle"></i>
+            <translate>Done</translate>
           </span>
           <!-- category -->
           <span ng-repeat="category in categories" class="pointer spacer-left-lg"
@@ -354,7 +367,7 @@
       ng-class="{'projected': motion.isProjected().length}"
       ng-repeat="motion in motionsFiltered = (motions
         | osFilter: filter.filterString : filter.getObjectQueryString
-        | MultiselectFilter: filter.multiselectFilters.state : getItemId.state
+        | MultiselectFilter: stateFilter : getItemId.state
         | MultiselectFilter: filter.multiselectFilters.category : getItemId.category
         | MultiselectFilter: filter.multiselectFilters.motionBlock : getItemId.motionBlock
         | MultiselectFilter: filter.multiselectFilters.recommendation : getItemId.recommendation
