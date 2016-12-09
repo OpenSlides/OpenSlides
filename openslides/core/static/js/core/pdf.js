@@ -170,8 +170,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 });*/
 
                 var line1 = [
-                    Config.get('general_event_name').value,
-                    Config.get('general_event_description').value
+                    Config.translate(Config.get('general_event_name').value),
+                    Config.translate(Config.get('general_event_description').value)
                 ].filter(Boolean).join(' – ');
                 var line2 = [
                     Config.get('general_event_location').value,
@@ -312,10 +312,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
 ])
 
 .factory('PdfMakeBallotPaperProvider', [
-    'gettextCatalog',
-    'Config',
     'PDFLayout',
-    function(gettextCatalog, Config, PDFLayout) {
+    function(PDFLayout) {
         /**
          * Provides the global Document
          * @constructor

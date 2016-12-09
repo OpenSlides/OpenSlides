@@ -536,21 +536,21 @@ angular.module('OpenSlidesApp.users.site', [
         $scope.sort.column = $scope.config('users_sort_by');
         $scope.sortOptions = [
             {name: 'first_name',
-             display_name: 'Given name'},
+             display_name: gettext('Given name')},
             {name: 'last_name',
-             display_name: 'Surname'},
+             display_name: gettext('Surname')},
             {name: 'is_present',
-             display_name: 'Present'},
+             display_name: gettext('Present')},
             {name: 'is_active',
-             display_name: 'Active'},
+             display_name: gettext('Active')},
             {name: 'is_committee',
-             display_name: 'Committee'},
+             display_name: gettext('Committee')},
             {name: 'number',
-             display_name: 'Number'},
+             display_name: gettext('Number')},
             {name: 'structure_level',
-             display_name: 'Structure level'},
+             display_name: gettext('Structure level')},
             {name: 'comment',
-             display_name: 'Comment'},
+             display_name: gettext('Comment')},
         ];
 
         // pagination

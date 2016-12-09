@@ -112,14 +112,6 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
 
         var createInstance = function(userList, groups, Config) {
 
-            var getConfigValue = function(val) {
-                if (Config.get(val).value) {
-                    return Config.get(val).value;
-                } else {
-                    return "-";
-                }
-            };
-
             var creadeUserHeadLine = function(user) {
                 var titleLine = [];
                 titleLine.push({
@@ -149,7 +141,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                                     style: 'userDataTopic'
                                 },
                                 {
-                                    text: getConfigValue('users_pdf_wlan_ssid'),
+                                    text: Config.get('users_pdf_wlan_ssid').value || '-',
                                     style: 'userDataValue'
                                 },
                                 {
@@ -157,7 +149,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                                     style: 'userDataTopic'
                                 },
                                 {
-                                    text: getConfigValue('users_pdf_wlan_password'),
+                                    text: Config.get('users_pdf_wlan_password').value || '-',
                                     style: 'userDataValue'
                                 },
                                 {
@@ -165,7 +157,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                                     style: 'userDataTopic'
                                 },
                                 {
-                                    text: getConfigValue('users_pdf_wlan_encryption'),
+                                    text: Config.get('users_pdf_wlan_encryption').value || '-',
                                     style: 'userDataValue'
                                 },
                             ]
@@ -197,8 +189,8 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                                     style: 'userDataTopic'
                                 },
                                 {
-                                    text: getConfigValue('users_pdf_url'),
-                                    link: getConfigValue('users_pdf_url'),
+                                    text: Config.get('users_pdf_url').value  || '-',
+                                    link: Config.get('users_pdf_url').value,
                                     style: 'userDataValue'
                                 },
                             ]
@@ -213,11 +205,11 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
             var createWelcomeText = function() {
                 return [
                     {
-                        text:   getConfigValue('users_pdf_welcometitle'),
+                        text:   Config.translate(Config.get('users_pdf_welcometitle').value),
                         style: 'userDataHeading'
                     },
                     {
-                        text:   getConfigValue('users_pdf_welcometext'),
+                        text:   Config.translate(Config.get('users_pdf_welcometext').value),
                         style: 'userDataTopic'
                     }
                 ];

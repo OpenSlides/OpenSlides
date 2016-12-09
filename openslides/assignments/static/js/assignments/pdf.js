@@ -446,7 +446,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
         var createInstance = function(allAssignmnets) {
 
             var title = PDFLayout.createTitle(
-                    gettextCatalog.getString(Config.get('assignments_pdf_title').value)
+                    Config.translate(Config.get('assignments_pdf_title').value)
             );
 
             var createPreamble = function() {

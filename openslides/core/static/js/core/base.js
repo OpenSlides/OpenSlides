@@ -455,8 +455,9 @@ angular.module('OpenSlidesApp.core', [
 
 .factory('Config', [
     '$http',
+    'gettextCatalog',
     'DS',
-    function($http, DS) {
+    function($http, gettextCatalog, DS) {
         var configOptions;
         return DS.defineResource({
             name: 'core/config',
@@ -468,6 +469,9 @@ angular.module('OpenSlidesApp.core', [
                 }
                 return this.configOptions;
             },
+            translate: function (value) {
+                return gettextCatalog.getString(value);
+            }
         });
     }
 ])

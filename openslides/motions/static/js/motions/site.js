@@ -765,6 +765,8 @@ angular.module('OpenSlidesApp.motions.site', [
     '$scope',
     '$state',
     '$http',
+    'gettext',
+    'gettextCatalog',
     'ngDialog',
     'MotionForm',
     'Motion',
@@ -774,21 +776,21 @@ angular.module('OpenSlidesApp.motions.site', [
     'User',
     'Agenda',
     'MotionBlock',
+    'MotionCsvExport',
     'MotionDocxExport',
     'MotionContentProvider',
     'MotionCatalogContentProvider',
     'PdfMakeConverter',
     'PdfMakeDocumentProvider',
-    'gettextCatalog',
     'HTMLValidizer',
     'Projector',
     'ProjectionDefault',
-    'MotionCsvExport',
     'osTableFilter',
     'osTableSort',
-    function($scope, $state, $http, ngDialog, MotionForm, Motion, Category, Tag, Workflow, User, Agenda, MotionBlock,
-                MotionDocxExport, MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
-                gettextCatalog, HTMLValidizer, Projector, ProjectionDefault, MotionCsvExport, osTableFilter, osTableSort) {
+    function($scope, $state, $http, gettext, gettextCatalog, ngDialog, MotionForm, Motion,
+                Category, Tag, Workflow, User, Agenda, MotionBlock, MotionCsvExport, MotionDocxExport,
+                MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
+                HTMLValidizer, Projector, ProjectionDefault, osTableFilter, osTableSort) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         MotionBlock.bindAll({}, $scope, 'motionBlocks');
@@ -869,21 +871,21 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.sort.column = 'identifier';
         $scope.sortOptions = [
             {name: 'identifier',
-             display_name: 'Identifier'},
+             display_name: gettext('Identifier')},
             {name: 'getTitle()',
-             display_name: 'Title'},
+             display_name: gettext('Title')},
             {name: 'submitters',
-             display_name: 'Submitters'},
+             display_name: gettext('Submitters')},
             {name: 'category.name',
-             display_name: 'Category'},
+             display_name: gettext('Category')},
             {name: 'motionBlock.title',
-             display_name: 'Motion block'},
+             display_name: gettext('Motion block')},
             {name: 'state.name',
-             display_name: 'State'},
+             display_name: gettext('State')},
             {name: 'log_messages[log_messages.length-1].time',
-             display_name: 'Creation date'},
+             display_name: gettext('Creation date')},
             {name: 'log_messages[0].time',
-             display_name: 'Last modified'},
+             display_name: gettext('Last modified')},
         ];
 
         // update state
@@ -1973,6 +1975,9 @@ angular.module('OpenSlidesApp.motions.site', [
         // subgroup PDF
         gettext('Title for PDF and DOCX documents (all motions)');
         gettext('Preamble text for PDF and DOCX documents (all motions)');
+
+        // misc strings (used dynamically in templates by translate filter)
+        gettext('needed');
     }
 ]);
 
