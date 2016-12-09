@@ -298,6 +298,37 @@ class RetrieveMotion(TestCase):
         with self.assertNumQueries(16):
             self.client.get(reverse('motion-detail', args=[self.motion.pk]))
 
+    def test__guest_state_with_required_permission_to_see(self):
+        config['general_system_enable_anonymous'] = True
+        guest_client = APIClient()
+        state = self.motion.state
+        state.required_permission_to_see = 'permission_that_the_user_does_not_have_leeceiz9hi7iuta4ahY2'
+        state.save()
+        response = guest_client.get(reverse('motion-detail', args=[self.motion.pk]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_admin_state_with_required_permission_to_see(self):
+        state = self.motion.state
+        state.required_permission_to_see = 'permission_that_the_user_does_not_have_coo1Iewu8Eing2xahfoo'
+        state.save()
+        response = self.client.get(reverse('motion-detail', args=[self.motion.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_submitter_state_with_required_permission_to_see(self):
+        state = self.motion.state
+        state.required_permission_to_see = 'permission_that_the_user_does_not_have_eiW8af9caizoh1thaece'
+        state.save()
+        user = get_user_model().objects.create_user(
+            username='username_ohS2opheikaSa5theijo',
+            password='password_kau4eequaisheeBateef')
+        self.motion.submitters.add(user)
+        submitter_client = APIClient()
+        submitter_client.login(
+            username='username_ohS2opheikaSa5theijo',
+            password='password_kau4eequaisheeBateef')
+        response = submitter_client.get(reverse('motion-detail', args=[self.motion.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class UpdateMotion(TestCase):
     """

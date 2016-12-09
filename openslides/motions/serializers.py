@@ -267,6 +267,7 @@ class MotionSerializer(ModelSerializer):
     log_messages = MotionLogSerializer(many=True, read_only=True)
     polls = MotionPollSerializer(many=True, read_only=True)
     reason = CharField(allow_blank=True, required=False, write_only=True)
+    state_required_permission_to_see = SerializerMethodField()
     text = CharField(write_only=True)
     title = CharField(max_length=255, write_only=True)
     versions = MotionVersionSerializer(many=True, read_only=True)
@@ -294,6 +295,7 @@ class MotionSerializer(ModelSerializer):
             'supporters',
             'comments',
             'state',
+            'state_required_permission_to_see',
             'workflow_id',
             'recommendation',
             'tags',
@@ -366,3 +368,13 @@ class MotionSerializer(ModelSerializer):
                 attr.add(*validated_data[key])
 
         return motion
+
+    def get_state_required_permission_to_see(self, motion):
+        """
+        Returns the permission (as string) that is required for non
+        managers that are not submitters to see this motion in this state.
+
+        Hint: Most states have and empty string here so this restriction is
+        disabled.
+        """
+        return motion.state.required_permission_to_see

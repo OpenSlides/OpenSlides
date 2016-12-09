@@ -73,8 +73,6 @@ class ModelTest(TestCase):
         self.motion.state = State.objects.get(pk=6)
         self.assertEqual(self.motion.state.name, 'permitted')
         self.assertEqual(self.motion.state.get_action_word(), 'Permit')
-        self.assertFalse(self.motion.get_allowed_actions(self.test_user)['support'])
-        self.assertFalse(self.motion.get_allowed_actions(self.test_user)['unsupport'])
 
     def test_new_states_or_workflows(self):
         workflow_1 = Workflow.objects.create(name='W1')
