@@ -825,6 +825,24 @@ angular.module('OpenSlidesApp.motions.site', [
             });
         });
 
+        $scope.stateFilter = [];
+        var updateStateFilter = function () {
+            if (_.indexOf($scope.filter.multiselectFilters.state, -1) > -1) { // contains -1
+                $scope.stateFilter = _.filter($scope.filter.multiselectFilters.state, function (id) {
+                    return id >= 0;
+                }); // remove -1
+                _.forEach($scope.states, function (state) {
+                    if (!state.workflowHeader) {
+                        if (state.getNextStates().length === 0) { // done state
+                            $scope.stateFilter.push(state.id);
+                        }
+                    }
+                });
+            } else {
+                $scope.stateFilter = _.clone($scope.filter.multiselectFilters.state);
+            }
+        };
+
         // Filtering
         $scope.filter = osTableFilter.createInstance('MotionTableFilter');
 
@@ -837,6 +855,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 recommendation: [],
             };
         }
+        updateStateFilter();
         $scope.filter.propertyList = ['identifier', 'origin'];
         $scope.filter.propertyFunctionList = [
             function (motion) {return motion.getTitle();},
@@ -863,6 +882,14 @@ angular.module('OpenSlidesApp.motions.site', [
             motionBlock: function (motion) {return motion.motion_block_id;},
             tag: function (motion) {return motion.tags_id;},
             recommendation: function (motion) {return motion.recommendation_id;},
+        };
+        $scope.operateStateFilter = function (id, danger) {
+            $scope.filter.operateMultiselectFilter('state', id, danger);
+            updateStateFilter();
+        };
+        $scope.resetFilters = function () {
+            $scope.filter.reset();
+            updateStateFilter();
         };
         // Sorting
         $scope.sort = osTableSort.createInstance();
