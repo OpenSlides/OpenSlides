@@ -806,6 +806,25 @@ angular.module('OpenSlidesApp.motions.site', [
         });
         $scope.alert = {};
 
+        // collect all states and all recommendations of all workflows
+        $scope.states = [];
+        $scope.recommendations = [];
+        var workflows = Workflow.getAll();
+        _.forEach(workflows, function (workflow) {
+            var workflowHeader = {
+                headername: workflow.name,
+                workflowHeader: true,
+            };
+            $scope.states.push(workflowHeader);
+            $scope.recommendations.push(workflowHeader);
+            _.forEach(workflow.states, function (state) {
+                $scope.states.push(state);
+                if (state.recommendation_label) {
+                    $scope.recommendations.push(state);
+                }
+            });
+        });
+
         // Filtering
         $scope.filter = osTableFilter.createInstance('MotionTableFilter');
 
@@ -814,7 +833,8 @@ angular.module('OpenSlidesApp.motions.site', [
                 state: [],
                 category: [],
                 motionBlock: [],
-                tag: []
+                tag: [],
+                recommendation: [],
             };
         }
         $scope.filter.propertyList = ['identifier', 'origin'];
@@ -824,6 +844,7 @@ angular.module('OpenSlidesApp.motions.site', [
             function (motion) {return motion.getReason();},
             function (motion) {return motion.category ? motion.category.name : '';},
             function (motion) {return motion.motionBlock ? motion.motionBlock.name : '';},
+            function (motion) {return motion.recommendation ? motion.getRecommendationName() : '';},
         ];
         $scope.filter.propertyDict = {
             'submitters' : function (submitter) {
@@ -840,7 +861,8 @@ angular.module('OpenSlidesApp.motions.site', [
             state: function (motion) {return motion.state_id;},
             category: function (motion) {return motion.category_id;},
             motionBlock: function (motion) {return motion.motion_block_id;},
-            tag: function (motion) {return motion.tags_id;}
+            tag: function (motion) {return motion.tags_id;},
+            recommendation: function (motion) {return motion.recommendation_id;},
         };
         // Sorting
         $scope.sort = osTableSort.createInstance();
@@ -864,29 +886,21 @@ angular.module('OpenSlidesApp.motions.site', [
              display_name: 'Last modified'},
         ];
 
-        // collect all states of all workflows
-        // TODO: regard workflows only which are used by motions
-        $scope.states = [];
-        var workflows = Workflow.getAll();
-        angular.forEach(workflows, function (workflow) {
-            if (workflows.length > 1) {
-                var wf = {};
-                wf.name = workflow.name;
-                wf.workflowHeader = true;
-                $scope.states.push(wf);
-            }
-            angular.forEach(workflow.states, function (state) {
-                $scope.states.push(state);
-            });
-        });
-
         // update state
         $scope.updateState = function (motion, state_id) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {'state': state_id});
         };
         // reset state
-        $scope.reset_state = function (motion) {
+        $scope.resetState = function (motion) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {});
+        };
+        // update recommendation
+        $scope.updateRecommendation = function (motion, recommendation_id) {
+            $http.put('/rest/motions/motion/' + motion.id + '/set_recommendation/', {'recommendation': recommendation_id});
+        };
+        // reset recommendation
+        $scope.resetRecommendation = function (motion) {
+            $http.put('/rest/motions/motion/' + motion.id + '/set_recommendation/', {});
         };
 
         $scope.hasTag = function (motion, tag) {
@@ -1166,7 +1180,7 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.updateRecommendation = function (recommendation_id) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_recommendation/', {'recommendation': recommendation_id});
         };
-        // reset state
+        // reset recommendation
         $scope.resetRecommendation = function () {
             $http.put('/rest/motions/motion/' + motion.id + '/set_recommendation/', {});
         };

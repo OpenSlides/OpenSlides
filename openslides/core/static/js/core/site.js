@@ -1038,6 +1038,9 @@ angular.module('OpenSlidesApp.core.site', [
             countdown.editFlag = false;
             countdown.description = countdown.new_description;
             Countdown.save(countdown);
+            if (!countdown.running) {
+                countdown.reset();
+            }
         };
         $scope.addCountdown = function () {
             var default_time = parseInt($scope.config('projector_default_countdown'));

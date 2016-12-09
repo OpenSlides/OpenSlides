@@ -926,6 +926,10 @@ img {
     min-height: 1px;
 }
 
+.os-table .id-col-space {
+    width: calc(100% - 50px);
+}
+
 .os-table .header-row {
     border-top: 1px solid #ddd;
     background-color: #f5f5f5;

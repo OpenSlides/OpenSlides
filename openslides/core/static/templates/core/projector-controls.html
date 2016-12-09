@@ -31,19 +31,20 @@
         </style>
         <div class="projectorSelector">
           <div>
-            <div class="dropdown" ng-show="projectors.length > 1">
+            <div ng-show="projectors.length > 1" uib-dropdown>
               <button class="btn btn-default btn-sm dropdown-toggle" id="menuProjector" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="true">
                 {{ active_projector.name | translate }}
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu dropdown-entries" aria-labelledby="menuProjector">
-                <li ng-repeat="projector in projectors"
-                  ng-class="{'projected': projector === active_projector}"
-                  ng-click="changeProjector(projector)">
-                  <i ng-show="projector === active_projector" class="fa fa-check"></i>
-                  {{ projector.name | translate }}
-                  <i ng-show="projector.id == broadcast" class="fa fa-star-o spacer-left"></i>
+                <li ng-repeat="projector in projectors">
+                  <a href ng-class="{'projected': projector === active_projector}"
+                    ng-click="changeProjector(projector)">
+                    <i ng-show="projector === active_projector" class="fa fa-check"></i>
+                    {{ projector.name | translate }}
+                    <i ng-show="projector.id == broadcast" class="fa fa-star-o spacer-left"></i>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -82,8 +83,7 @@
           </div>
         </a>
         <!-- projector control buttons -->
-        <div os-perms="core.can_manage_projector">
-
+        <div os-perms="core.can_manage_projector" class="nobr">
           <!-- edit -->
           <a ng-click="editCurrentSlide(active_projector)"
               class="btn btn-default btn-sm"
@@ -198,14 +198,9 @@
                 <div class="input-group">
                   <input data-ng-model="countdown.default_time" min-sec-format
                     type="text" placeholder="mm:ss" class="form-control input-sm">
-                  <div class="input-group-addon pointer" uib-tooltip="{{ 'Reset countdown' | translate }}"
-                    ng-click="countdown.reset()">
-                    <i class="fa fa-undo"></i>
-                  </div>
                 </div>
               </div>
-              <button type="submit"
-                  title="{{ 'Save' | translate}}"
+              <button type="submit" title="{{ 'Save' | translate}}"
                   class="btn btn-sm btn-primary">
                 <i class="fa fa-check"></i>
               </button>
