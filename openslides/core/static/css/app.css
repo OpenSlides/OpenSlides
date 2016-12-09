@@ -191,6 +191,7 @@ img {
     display: block;
     color: #fff;
     padding: 22px 15px;
+    text-decoration: none;
 }
 
 #nav .navbar li a:hover {
