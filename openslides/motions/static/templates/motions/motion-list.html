@@ -121,7 +121,7 @@
             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownState">
               <li ng-repeat="state in states" ng-class="state.workflowHeader ? 'dropdown-header' : ''">
                 <a ng-if="state.workflowHeader">
-                  {{ state.name | translate }}
+                  {{ state.headername | translate }}
                 </a>
                 <a href ng-if="!state.workflowHeader"
                   ng-click="filter.operateMultiselectFilter('state', state.id, isSelectMode)">
@@ -175,6 +175,34 @@
                 <a href ng-click="filter.operateMultiselectFilter('motionBlock', -1, isSelectMode)">
                   <i class="fa fa-check" ng-if="filter.multiselectFilters.motionBlock.indexOf(-1) > -1"></i>
                   <translate>No motion block set</translate>
+                </a>
+              </li>
+            </ul>
+          </span>
+          <!-- recommendation filter -->
+          <span uib-dropdown ng-if="config('motions_recommendations_by') != ''">
+            <span class="pointer" id="dropdownRecommendation" uib-dropdown-toggle
+              ng-class="{'bold': filter.multiselectFilters.recommendation.length > 0, 'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
+              <translate>Recommendation</translate>
+              <span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownRecommentation">
+              <li ng-repeat="recommendation in recommendations" ng-class="recommendation.workflowHeader ? 'dropdown-header' : ''">
+                <a ng-if="recommendation.workflowHeader">
+                  {{ recommendation.headername | translate }}
+                </a>
+                <a href ng-if="!recommendation.workflowHeader"
+                  ng-click="filter.operateMultiselectFilter('recommendation', recommendation.id, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.recommendation.indexOf(recommendation.id) > -1"></i>
+                  {{ recommendation.recommendation_label | translate }}
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href ng-click="filter.operateMultiselectFilter('recommendation', -1, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.recommendation.indexOf(-1) > -1"></i>
+                  <translate>No recommendation set</translate>
                 </a>
               </li>
             </ul>
@@ -284,6 +312,16 @@
               {{ motionBlock.title }}
             </span>
           </span>
+          <!-- recommendation -->
+          <span ng-repeat="recommendation in recommendations" class="pointer spacer-left-lg"
+            ng-if="filter.multiselectFilters.recommendation.indexOf(recommendation.id) > -1"
+            ng-click="filter.operateMultiselectFilter('recommendation', recommendation.id, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
+            <span class="nobr">
+              <i class="fa fa-times-circle"></i>
+              {{ recommendation.recommendation_label | translate }}
+            </span>
+          </span>
           <span ng-if="filter.multiselectFilters.motionBlock.indexOf(-1) > -1" class="pointer spacer-left-lg"
             ng-click="filter.operateMultiselectFilter('motionBlock', -1, isSelectMode)"
             ng-class="{'disabled': isSelectMode}">
@@ -319,6 +357,7 @@
         | MultiselectFilter: filter.multiselectFilters.state : getItemId.state
         | MultiselectFilter: filter.multiselectFilters.category : getItemId.category
         | MultiselectFilter: filter.multiselectFilters.motionBlock : getItemId.motionBlock
+        | MultiselectFilter: filter.multiselectFilters.recommendation : getItemId.recommendation
         | MultiselectFilter: filter.multiselectFilters.tag : getItemId.tag
         | toArray
         | orderBy: sort.column : sort.reverse)">
@@ -340,14 +379,17 @@
             {{ motion.identifier }}
           </span>
         </div>
-        <div>
+        <div class="id-col-space">
           <!-- ID and title -->
           <div>
             <strong>
               <a class="title" ui-sref="motions.motion.detail({id: motion.id})">{{ motion.getTitle() }}</a>
             </strong>
             <i class="fa fa-paperclip" ng-if="motion.attachments_id.length > 0"></i>
-            <span style="padding: 5px;" ng-mouseover="motion.stateHover=true" ng-mouseleave="motion.stateHover=false">
+          </div>
+          <!-- state -->
+          <div>
+            <span ng-mouseover="motion.stateHover=true" ng-mouseleave="motion.stateHover=false">
               <span class="label" ng-class="'label-'+motion.state.css_class">
                 {{ motion.getStateName() }}
               </span>
@@ -359,9 +401,34 @@
                   </li>
                   <li class="divider" ng-if="motion.state.getNextStates().length"></li>
                   <li>
-                    <a href ng-if="motion.isAllowed('reset_state')" ng-click="reset_state(motion)">
+                    <a href ng-if="motion.isAllowed('reset_state')" ng-click="resetState(motion)">
                       <i class="fa fa-exclamation-triangle"></i>
                       <translate>Reset state</translate>
+                    </a>
+                  </li>
+                </ul>
+              </span>
+            </span>
+          </div>
+          <!-- recommendation -->
+          <div ng-if="motion.recommendation">
+            <span ng-mouseover="motion.recommendationHover=true" ng-mouseleave="motion.recommendationHover=false">
+              <span class="label" ng-class="'label-'+motion.recommendation.css_class" uib-tooltip="{{ config('motions_recommendations_by') }}">
+                {{ motion.getRecommendationName() }}
+              </span>
+              <span os-perms="motions.can_manage" ng-class="{'hiddenDiv': !motion.recommendationHover}" uib-dropdown>
+                <i class="fa fa-cog pointer" uib-dropdown-toggle id="recommendationDropdown{{ motion.id }}"></i>
+                <ul class="dropdown-menu" aria-labelledby="recommendationDropdown{{ motion.id }}">
+                  <li ng-repeat="recommendation in motion.state.getRecommendations()">
+                    <a href ng-click="updateRecommendation(motion, recommendation.id)">
+                      {{ recommendation.recommendation_label | translate }}
+                    </a>
+                  </li>
+                  <li class="divider" ng-if="motion.state.getRecommendations().length && motion.recommendation"></li>
+                  <li ng-if="motion.recommendation">
+                    <a href ng-click="resetRecommendation(motion)">
+                      <i class="fa fa-exclamation-triangle"></i>
+                      <translate>Reset recommendation</translate>
                     </a>
                   </li>
                 </ul>
