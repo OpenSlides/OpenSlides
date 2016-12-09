@@ -2,7 +2,7 @@
 
 'use strict';
 
-angular.module('OpenSlidesApp.motions.DOCX', [])
+angular.module('OpenSlidesApp.motions.docx', [])
 
 .factory('MotionDocxExport', [
     '$http',

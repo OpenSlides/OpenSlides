@@ -6,7 +6,6 @@ angular.module('OpenSlidesApp.motions', [
     'OpenSlidesApp.motions.motionBlock',
     'OpenSlidesApp.motions.lineNumbering',
     'OpenSlidesApp.motions.diff',
-    'OpenSlidesApp.motions.DOCX',
     'OpenSlidesApp.poll.majority',
     'OpenSlidesApp.users',
 ])

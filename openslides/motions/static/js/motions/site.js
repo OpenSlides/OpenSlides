@@ -7,7 +7,9 @@ angular.module('OpenSlidesApp.motions.site', [
     'OpenSlidesApp.motions.motionservices',
     'OpenSlidesApp.poll.majority',
     'OpenSlidesApp.core.pdf',
-    'OpenSlidesApp.motions.pdf'
+    'OpenSlidesApp.motions.docx',
+    'OpenSlidesApp.motions.pdf',
+    'OpenSlidesApp.motions.csv',
 ])
 
 .config([
@@ -712,33 +714,6 @@ angular.module('OpenSlidesApp.motions.site', [
                     }
                 }];
             }
-        };
-    }
-])
-
-.factory('MotionCsvExport', [
-    function () {
-        return function (element, motions) {
-            var csvRows = [
-                ['identifier', 'title', 'text', 'reason', 'submitter', 'category', 'origin'],
-            ];
-            _.forEach(motions, function (motion) {
-                var row = [];
-                row.push('"' + motion.identifier + '"');
-                row.push('"' + motion.getTitle() + '"');
-                row.push('"' + motion.getText() + '"');
-                row.push('"' + motion.getReason() + '"');
-                row.push('"' + motion.submitters[0].get_full_name() + '"');
-                var category = motion.category ? motion.category.name : '';
-                row.push('"' + category + '"');
-                row.push('"' + motion.origin + '"');
-                csvRows.push(row);
-            });
-
-            var csvString = csvRows.join("%0A");
-            element.href = 'data:text/csv;charset=utf-8,' + csvString;
-            element.download = 'motions-export.csv';
-            element.target = '_blank';
         };
     }
 ])

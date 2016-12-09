@@ -5,7 +5,8 @@
 angular.module('OpenSlidesApp.agenda.site', [
     'OpenSlidesApp.agenda',
     'OpenSlidesApp.core.pdf',
-    'OpenSlidesApp.agenda.pdf'
+    'OpenSlidesApp.agenda.pdf',
+    'OpenSlidesApp.agenda.csv',
 ])
 
 .config([
