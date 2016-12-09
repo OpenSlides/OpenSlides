@@ -91,12 +91,12 @@
             {{ motion.text | limitTo:80 }}{{ motion.text.length > 80 ? '...' : '' }}
           <td>{{ motion.reason | limitTo:80 }}{{ motion.reason.length > 80 ? '...' : '' }}
           <td ng-class="{ 'text-warning': motion.submitter_create }">
-            <span ng-if="motion.submitter_create" title="{{ motion.submitter_create | translate }}" class="pointer">
+            <span ng-if="motion.submitter_create" title="{{ motion.submitter_create | translate }}">
               <i class="fa fa-plus-circle"></i>
             </span>
             {{ motion.submitter }}
           <td ng-class="{ 'text-warning': motion.category_create }">
-            <span ng-if="motion.category_create" title="{{ motion.category_create | translate }}" class="pointer">
+            <span ng-if="motion.category_create" title="{{ motion.category_create | translate }}">
               <i class="fa fa-plus-circle"></i>
             </span>
             {{ motion.category }}
@@ -129,7 +129,7 @@
       <button ng-click="clear()" class="btn btn-default" translate>
         Clear preview
       </button>
-      <button ng-if="!csvImporting" ng-click="import()" class="btn btn-primary" translate>
+      <button ng-if="!csvImporting && (motions.length - motionsFailed.length) > 0" ng-click="import()" class="btn btn-primary" translate>
         Import {{ motions.length - motionsFailed.length }} motions
       </button>
     </div>

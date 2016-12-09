@@ -133,7 +133,7 @@
       <button ng-click="clear()" class="btn btn-default" translate>
         Clear preview
       </button>
-      <button ng-if="!csvImporting" ng-click="import()" class="btn btn-primary" translate>
+      <button ng-if="!csvImporting && (items.length - itemdFailed.length) > 0" ng-click="import()" class="btn btn-primary" translate>
         Import {{ items.length - itemsFailed.length }} topics
       </button>
     </div>

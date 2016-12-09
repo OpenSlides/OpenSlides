@@ -69,10 +69,6 @@
   <ul class="indentation">
       <li><translate>Required comma or semicolon separated values with these column header names in the first row</translate>:<br>
           <code>title, first_name, last_name, structure_level, number, groups, comment, is_active, is_present, is_committee</code>
-      <li><translate>Default groups</translate>:
-          <translate>Delegates</translate> <code>2</code>,
-          <translate>Staff</translate> <code>3</code>
-          <translate>Committees</translate> <code>4</code>
       <li translate>At least given name or surname have to be filled in. All
         other fields are optional and may be empty.
       <li translate>Only double quotes are accepted as text delimiter (no single quotes).
@@ -102,14 +98,15 @@
             <strong class="text-danger" ng-if="duplicates > 1">{{ duplicates }} <translate>duplicates</translate></strong>
 
               <div uib-dropdown>
-                <button type="button" class="btn btn-default btn-danger btn-sm" uib-dropdown-toggle>
+                <button id="GlobalAction" type="button" class="btn btn-default btn-danger btn-sm" uib-dropdown-toggle>
                   <translate>Set global action</translate>
                   <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu dropdown-entries">
-                    <li role="menuitem" ng-repeat="action in duplicateActions" class="pointer"
-                        ng-click="setGlobalAction(action)">
+                <ul class="dropdown-menu" aria-labelledby="GlobalAction">
+                  <li ng-repeat="action in duplicateActions">
+                    <a href ng-click="setGlobalAction(action)">
                       {{ action | translate }}
+                    </a>
                   </li>
                 </ul>
               </div>
@@ -146,7 +143,11 @@
           <td>
             {{ user.number }}
           <td>
-            <div ng-repeat="groupname in user.groupnames">
+            <div ng-repeat="groupname in user.groupsNotToCreate">
+              {{ groupname | translate }}
+            </div>
+            <div ng-repeat="groupname in user.groupsToCreate" class="text-warning">
+              <i class="fa fa-plus-circle"></i>
               {{ groupname | translate }}
             </div>
           <td style="max-width: 130px;">
@@ -164,16 +165,17 @@
               ng-click="user.is_committee = !user.is_committee"></i>
           <td ng-if="duplicates > 0">
               <div ng-if="user.duplicate" uib-tooltip="{{ user.duplicate_info }}" uib-dropdown>
-                <button type="button" class="btn btn-default btn-sm"
+                <button id="UserAction{{ $index }}" type="button" class="btn btn-default btn-sm"
                   uib-dropdown-toggle ng-class="user.duplicateAction == duplicateActions[0] ? 'btn-warning' : (user.duplicateAction == duplicateActions[1] ? 'btn-danger' : 'btn-success')">
                   {{ user.duplicateAction | translate }}
                   <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu dropdown-entries">
-                    <li role="menuitem" ng-repeat="action in duplicateActions" class="pointer"
-                      ng-click="user.duplicateAction = action; calcStats()">
-                      <i class="fa fa-check" ng-if="user.duplicateAction == action"></i>
-                      {{ action | translate }}
+                <ul class="dropdown-menu" aria-labelledby="UserAction{{ $index }}">
+                  <li ng-repeat="action in duplicateActions">
+                      <a href ng-click="user.duplicateAction = action; calcStats()">
+                        <i class="fa fa-check" ng-if="user.duplicateAction == action"></i>
+                        {{ action | translate }}
+                      </a>
                   </li>
                 </ul>
     </table>
@@ -206,13 +208,14 @@
       <i class="fa fa-check-circle fa-lg"></i>
       {{ usersImported.length }}
       <translate>participants were successfully imported.</translate>
+      (<translate>Groups created</translate>: {{ groupsCreated }})
     </div>
 
     <div class="spacer">
       <button ng-click="clear()" class="btn btn-default" translate>
         Clear preview
       </button>
-      <button ng-if="!csvImporting" ng-click="import()" class="btn btn-primary" translate>
+      <button ng-if="!csvImporting && usersWillBeImported > 0" ng-click="import()" class="btn btn-primary" translate>
         Import {{ usersWillBeImported }} participants
       </button>
     </div>
