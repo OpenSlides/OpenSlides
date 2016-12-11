@@ -4,7 +4,7 @@
   </div>
   <div class="modal-body loginForm">
     <div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + (alert.type || 'warning')" close="closeAlert($index)">
-      <span ng-bind-html="alert.msg"><span>
+      <span ng-bind-html="alert.msg | translate"><span>
     </div>
     <div class="input-group form-group">
       <div class="input-group-addon"><i class="fa fa-user"></i></div>
