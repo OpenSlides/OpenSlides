@@ -77,12 +77,58 @@
   </div>
 
   <div uib-collapse="!isSelectMode" class="row spacer">
-    <div class="col-sm-12 text-left">
+    <div class="col-sm-12 text-left form-inline" ng-show="isSelectMode" os-perms="motions.can_manage">
+      <!-- actions -->
+      <select ng-model="selectedAction" class="form-control">
+        <option value="" translate>--- Select action ---</option>
+        <option value="delete" translate>Delete</option>
+        <option value="setStatus" translate>Set status</option>
+        <option value="setCategory" ng-if="categories.length" translate>Set category</option>
+        <option value="setMotionBlock" ng-if="motionBlocks.length" translate>Set motion block</option>
+      </select>
+      <!-- state select -->
+      <select ng-show="selectedAction == 'setStatus'" ng-model="selectedState" class="form-control">
+        <option value="">--- <translate>Select state</translate> ---</option>
+        <option ng-repeat="state in states" ng-disabled="state.workflowHeader" value="{{ state.id }}">
+          {{ (state.workflowHeader ? state.headername : state.name) | translate }}
+        </option>
+      </select>
+      <!-- set state button -->
+      <a ng-show="selectedAction == 'setStatus' && selectedState"
+          ng-click="setStatusMultiple(selectedState)" class="btn btn-default">
+        <translate>Set status</translate>
+      </a>
+      <!-- category select -->
+      <select ng-show="selectedAction == 'setCategory'" ng-model="selectedCategory" class="form-control">
+        <option value="">--- <translate>Select category</translate> ---</option>
+        <option ng-repeat="category in categories" value="{{ category.id }}">
+          {{ category.name }}
+        </option>
+        <option value="no_category_selected" translate>No category</option>
+      </select>
+      <!-- set category button -->
+      <a ng-show="selectedAction == 'setCategory' && selectedCategory"
+          ng-click="setCategoryMultiple(selectedCategory)" class="btn btn-default">
+        <translate>Set category</translate>
+      </a>
+      <!-- motionBlock select -->
+      <select ng-show="selectedAction == 'setMotionBlock'" ng-model="selectedMotionBlock" class="form-control">
+        <option value="">--- <translate>Select motion block</translate> ---</option>
+        <option ng-repeat="motionBlock in motionBlocks" value="{{ motionBlock.id }}">
+          {{ motionBlock.title }}
+        </option>
+        <option value="no_motionBlock_selected" translate>No motion block</option>
+      </select>
+      <!-- set motion block button -->
+      <a ng-show="selectedAction == 'setMotionBlock' && selectedMotionBlock"
+         ng-click="setMotionBlockMultiple(selectedMotionBlock)" class="btn btn-default">
+        <translate>Set motion block</translate>
+      </a>
       <!-- delete button -->
-      <a ng-show="isSelectMode" os-perms="motions.can_manage"
+      <a ng-show="selectedAction == 'delete'"
         ng-bootbox-confirm="{{ 'Are you sure you want to delete all selected motions?' | translate }}"
         ng-bootbox-confirm-action="deleteMultiple()"
-        class="btn btn-primary">
+        class="btn btn-danger">
         <i class="fa fa-trash fa-lg"></i>
         <translate>Delete selected motions</translate>
       </a>
@@ -385,6 +431,7 @@
         <projector-button model="motion" default-projector-id="defaultProjectorId">
         </projector-button>
       </div>
+      <div class="no-projector-spacer" os-perms="!core.can_manage_projector"></div>
       <!-- main content column -->
       <div class="col-xs-6 content">
         <div class="id-col">
