@@ -42,7 +42,7 @@ class MotionManager(models.Manager):
         join and prefetch all related models.
         """
         return (self.get_queryset()
-                .select_related('active_version')
+                .select_related('active_version', 'state')
                 .prefetch_related(
                     'versions',
                     'agenda_items',
@@ -603,61 +603,6 @@ class Motion(RESTModelMixin, models.Model):
         Returns the id of the agenda item object related to this object.
         """
         return self.agenda_item.pk
-
-    def get_allowed_actions(self, person):
-        """
-        Return a dictonary with all allowed actions for a specific person.
-
-        The dictonary contains the following actions.
-
-        * see
-        * update / edit
-        * delete
-        * create_poll
-        * support
-        * unsupport
-        * change_state
-        * reset_state
-        * change_recommendation
-
-        NOTE: If you update this function please also update the
-        'isAllowed' function on client side in motions/site.js.
-        """
-        # TODO: Remove this method and implement these things in the views.
-        actions = {
-            'see': (person.has_perm('motions.can_see') and
-                    (not self.state.required_permission_to_see or
-                     person.has_perm(self.state.required_permission_to_see) or
-                     self.is_submitter(person))),
-
-            'update': (person.has_perm('motions.can_manage') or
-                       (self.is_submitter(person) and
-                        self.state.allow_submitter_edit)),
-
-            'delete': person.has_perm('motions.can_manage'),
-
-            'create_poll': (person.has_perm('motions.can_manage') and
-                            self.state.allow_create_poll),
-
-            'support': (self.state.allow_support and
-                        config['motions_min_supporters'] > 0 and
-                        not self.is_submitter(person) and
-                        not self.is_supporter(person)),
-
-            'unsupport': (self.state.allow_support and
-                          self.is_supporter(person)),
-
-            'change_state': person.has_perm('motions.can_manage'),
-
-            'reset_state': person.has_perm('motions.can_manage'),
-
-            'change_recommendation': person.has_perm('motions.can_manage'),
-
-        }
-
-        actions['edit'] = actions['update']
-
-        return actions
 
     def write_log(self, message_list, person=None, skip_autoupdate=False):
         """

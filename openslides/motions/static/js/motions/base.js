@@ -418,8 +418,8 @@ angular.module('OpenSlidesApp.motions', [
                      * - reset_state
                      * - change_recommendation
                      *
-                     *  NOTE: If you update this function please also update the
-                     *  'get_allowed_actions' function on server side in motions/models.py.
+                     *  NOTE: If you update this function please think about
+                     *        server permissions, see motions/views.py.
                      */
                     switch (action) {
                         case 'see':
@@ -435,7 +435,7 @@ angular.module('OpenSlidesApp.motions', [
                             return (
                                 operator.hasPerms('motions.can_manage') ||
                                 (
-                                    ($.inArray(operator.user, this.submitters) != -1) &&
+                                    (_.indexOf(this.submitters, operator.user) !== -1) &&
                                     this.state.allow_submitter_edit
                                 )
                             );
@@ -453,14 +453,11 @@ angular.module('OpenSlidesApp.motions', [
                                 operator.hasPerms('motions.can_support') &&
                                 this.state.allow_support &&
                                 Config.get('motions_min_supporters').value > 0 &&
-                                ($.inArray(operator.user, this.submitters) == -1) &&
-                                ($.inArray(operator.user, this.supporters) == -1)
+                                (_.indexOf(this.submitters, operator.user) === -1) &&
+                                (_.indexOf(this.supporters, operator.user) === -1)
                             );
                         case 'unsupport':
-                            return (
-                                this.state.allow_support &&
-                                ($.inArray(operator.user, this.supporters) != -1)
-                            );
+                            return this.state.allow_support && _.indexOf(this.supporters, operator.user) !== -1;
                         case 'change_state':
                             return operator.hasPerms('motions.can_manage');
                         case 'reset_state':

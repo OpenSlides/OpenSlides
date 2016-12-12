@@ -116,14 +116,16 @@ class MotionViewSet(ModelViewSet):
 
         Checks also whether the requesting user can update the motion. He
         needs at least the permissions 'motions.can_see' (see
-        self.check_view_permissions()). Also the instance method
-        get_allowed_actions() is evaluated.
+        self.check_view_permissions()). Also check manage permission or
+        submitter and state.
         """
         # Get motion.
         motion = self.get_object()
 
         # Check permissions.
-        if not motion.get_allowed_actions(request.user)['update']:
+        if (not request.user.has_perm('motions.can_manage') and
+            not (motion.is_submitter(request.user) and
+                 motion.state.allow_submitter_edit)):
             self.permission_denied(request)
 
         # Check permission to send only some data.
@@ -215,12 +217,14 @@ class MotionViewSet(ModelViewSet):
         """
         # Retrieve motion and allowed actions.
         motion = self.get_object()
-        allowed_actions = motion.get_allowed_actions(request.user)
 
         # Support or unsupport motion.
         if request.method == 'POST':
             # Support motion.
-            if not allowed_actions['support']:
+            if not (motion.state.allow_support and
+                    config['motions_min_supporters'] > 0 and
+                    not motion.is_submitter(request.user) and
+                    not motion.is_supporter(request.user)):
                 raise ValidationError({'detail': _('You can not support this motion.')})
             motion.supporters.add(request.user)
             motion.write_log([ugettext_noop('Motion supported')], request.user)
@@ -228,7 +232,7 @@ class MotionViewSet(ModelViewSet):
         else:
             # Unsupport motion.
             # request.method == 'DELETE'
-            if not allowed_actions['unsupport']:
+            if not motion.state.allow_support or not motion.is_supporter(request.user):
                 raise ValidationError({'detail': _('You can not unsupport this motion.')})
             motion.supporters.remove(request.user)
             motion.write_log([ugettext_noop('Motion unsupported')], request.user)
@@ -320,6 +324,8 @@ class MotionViewSet(ModelViewSet):
         View to create a poll. It is a POST request without any data.
         """
         motion = self.get_object()
+        if not motion.state.allow_create_poll:
+            raise ValidationError({'detail': 'You can not create a poll in this motion state.'})
         try:
             with transaction.atomic():
                 motion.create_poll()
