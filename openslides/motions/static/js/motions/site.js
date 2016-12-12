@@ -482,6 +482,9 @@ angular.module('OpenSlidesApp.motions.site', [
                     }
                 },
                 {
+                    template: '<p class="spacer-top-lg no-padding">' + Config.translate(Config.get('motions_preamble').value) + '</p>'
+                },
+                {
                     key: 'text',
                     type: 'editor',
                     templateOptions: {
@@ -1396,8 +1399,6 @@ angular.module('OpenSlidesApp.motions.site', [
         var isAmendment = $scope.$parent.motion && $scope.$parent.motion.id;
 
         // Set default values for create form
-        // ... set preamble config value as text
-        $scope.model.text = gettextCatalog.getString(Config.get('motions_preamble').value);
         // ... for amendments add parent_id
         if (isAmendment) {
             if (Config.get('motions_amendments_apply_text').value) {
@@ -1946,7 +1947,7 @@ angular.module('OpenSlidesApp.motions.site', [
         gettext('Serially numbered');
         gettext('Set it manually');
         gettext('Motion preamble');
-        gettext('The assembly may decide,');
+        gettext('The assembly may decide:');
         gettext('Default line numbering');
         /// Line numbering: Outside
         gettext('Outside');

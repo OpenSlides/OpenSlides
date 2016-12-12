@@ -1155,7 +1155,9 @@ img {
 .spacer-left-lg {
     margin-left: 10px;
 }
-
+.no-padding {
+    padding: 0px;
+}
 .lead-div {
     margin-bottom: 20px;
 }

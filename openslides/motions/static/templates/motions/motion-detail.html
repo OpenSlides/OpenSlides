@@ -343,6 +343,9 @@
     <ng-include src="'static/templates/motions/motion-detail/toolbar.html'"></ng-include>
 
     <div ng-class="{'col-sm-8': (lineNumberMode != 'outside'), 'col-sm-12': (lineNumberMode == 'outside')}">
+
+      <div><p>{{ config('motions_preamble') | translate }}</p></div>
+
       <div class="motion-text-holder">
 
         <!-- Original view -->
