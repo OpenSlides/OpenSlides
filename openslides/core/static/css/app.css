@@ -1018,6 +1018,10 @@ img {
     background-color: transparent;
 }
 
+.os-table .dropdown-hover-space {
+    padding: 5px 5px 5px 0;
+}
+
 /** Config **/
 .input-comments > div {
     margin-bottom: 5px

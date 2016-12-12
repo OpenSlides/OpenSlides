@@ -400,7 +400,8 @@
           </div>
           <!-- state -->
           <div>
-            <span ng-mouseover="motion.stateHover=true" ng-mouseleave="motion.stateHover=false">
+            <span ng-mouseover="motion.stateHover=true" ng-mouseleave="motion.stateHover=false"
+                class="dropdown-hover-space">
               <span class="label" ng-class="'label-'+motion.state.css_class">
                 {{ motion.getStateName() }}
               </span>
@@ -423,7 +424,8 @@
           </div>
           <!-- recommendation -->
           <div ng-if="motion.recommendation">
-            <span ng-mouseover="motion.recommendationHover=true" ng-mouseleave="motion.recommendationHover=false">
+            <span ng-mouseover="motion.recommendationHover=true" ng-mouseleave="motion.recommendationHover=false"
+                class="dropdown-hover-space">
               <span class="label" ng-class="'label-'+motion.recommendation.css_class" uib-tooltip="{{ config('motions_recommendations_by') }}">
                 {{ motion.getRecommendationName() }}
               </span>
