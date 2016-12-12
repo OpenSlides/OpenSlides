@@ -22,7 +22,7 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         var id = $scope.element.id;
-        var poll = $scope.element.poll;
+        $scope.showResult = $scope.element.poll;
 
         Assignment.bindOne(id, $scope, 'assignment');
         Assignment.getPhases().then(function(phases) {

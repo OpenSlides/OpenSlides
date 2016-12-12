@@ -80,7 +80,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                                 style: 'textItem'
                             },
                             {
-                                ol: userList,
+                                ul: userList,
                                 style: 'textItem'
                             }
                         ]
