@@ -49,7 +49,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='motions_preamble',
-        default_value='The assembly may decide,',
+        default_value='The assembly may decide:',
         label='Motion preamble',
         weight=320,
         group='Motions',

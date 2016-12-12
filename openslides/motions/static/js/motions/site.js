@@ -482,6 +482,9 @@ angular.module('OpenSlidesApp.motions.site', [
                     }
                 },
                 {
+                    template: '<p class="spacer-top-lg no-padding">' + Config.translate(Config.get('motions_preamble').value) + '</p>'
+                },
+                {
                     key: 'text',
                     type: 'editor',
                     templateOptions: {
@@ -1942,7 +1945,7 @@ angular.module('OpenSlidesApp.motions.site', [
         gettext('Serially numbered');
         gettext('Set it manually');
         gettext('Motion preamble');
-        gettext('The assembly may decide,');
+        gettext('The assembly may decide:');
         gettext('Default line numbering');
         /// Line numbering: Outside
         gettext('Outside');

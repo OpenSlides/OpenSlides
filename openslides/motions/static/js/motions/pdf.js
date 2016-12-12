@@ -252,7 +252,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         var motionPreamble = function () {
             return {
                 text: Config.translate(Config.get('motions_preamble').value),
-                style: 'textItem',
+                margin: [0, 10, 0, 0]
             };
         };
 
