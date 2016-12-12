@@ -37,6 +37,7 @@ Motions:
 - Added blocks for motions which can set as agenda item.
   Set states for multiple motions of a motion block by following
   the recommendations of each motion.
+- Used global config variable for preamble.
 
 Users:
 - Added field is_committee and new default group Committees.

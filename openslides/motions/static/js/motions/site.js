@@ -1396,8 +1396,6 @@ angular.module('OpenSlidesApp.motions.site', [
         var isAmendment = $scope.$parent.motion && $scope.$parent.motion.id;
 
         // Set default values for create form
-        // ... set preamble config value as text
-        $scope.model.text = gettextCatalog.getString(Config.get('motions_preamble').value);
         // ... for amendments add parent_id
         if (isAmendment) {
             if (Config.get('motions_amendments_apply_text').value) {

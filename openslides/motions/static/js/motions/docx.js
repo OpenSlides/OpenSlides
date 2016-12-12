@@ -11,7 +11,7 @@ angular.module('OpenSlidesApp.motions.docx', [])
     'gettextCatalog',
     'FileSaver',
     function ($http, $q, Config, gettextCatalog, FileSaver) {
-        
+
         var PAGEBREAK = '<w:p><w:r><w:br w:type="page" /></w:r></w:p>';
         var TAGS_NO_PARAM = ['b', 'strong', 'em', 'i'];
 
@@ -30,8 +30,8 @@ angular.module('OpenSlidesApp.motions.docx', [])
                 var d = today.getDate();
                 var m = today.getMonth()+1; //January is 0!
                 var y = today.getFullYear();
-                if (d<10) { d='0'+d; } 
-                if (m<10) { m='0'+m; } 
+                if (d<10) { d='0'+d; }
+                if (m<10) { m='0'+m; }
                 return d+'.'+m+'.'+y;
             }();
             data.pagebreak_main = motions.length === 0 ? '' : PAGEBREAK;
@@ -44,7 +44,7 @@ angular.module('OpenSlidesApp.motions.docx', [])
 
             return data;
         };
-        
+
         var getCategoriesData = function (categories) {
             return _.map(categories, function (category) {
                 return {
@@ -83,6 +83,7 @@ angular.module('OpenSlidesApp.motions.docx', [])
                         signature_translation: signature_translation,
                         status_translation: status_translation,
                         status: motion.getStateName(),
+                        preamble: gettextCatalog.getString(Config.get('motions_preamble').value),
                         text: html2docx(motion.getText()),
                         reason_translation: motion.getReason().length === 0 ? '' : reason_translation,
                         reason: html2docx(motion.getReason()),

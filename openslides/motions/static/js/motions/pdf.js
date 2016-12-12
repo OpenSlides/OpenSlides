@@ -248,6 +248,14 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             }];
         };
 
+        // motion preamble
+        var motionPreamble = function () {
+            return {
+                text: Config.translate(Config.get('motions_preamble').value),
+                style: 'textItem',
+            };
+        };
+
 
         // motion text (with line-numbers)
         var motionText = function() {
@@ -299,6 +307,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 subtitle,
                 metaTable(),
                 motionTitle(),
+                motionPreamble(),
                 motionText(),
             ];
             if (motionReason()) {
