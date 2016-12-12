@@ -161,7 +161,7 @@
           </span>
           <!-- boolean Filters -->
           <span ng-repeat="(name, booleanFilter) in filter.booleanFilters"
-            ng-if="!booleanFilter.needExtraPermission || operator.hasPerms('mediafiles.can_see_private')" uib-dropdown>
+            ng-if="!booleanFilter.needExtraPermission || operator.hasPerms('mediafiles.can_see_hidden')" uib-dropdown>
             <span class="pointer" id="dropdown{{ name }}" uib-dropdown-toggle
               ng-class="{'bold': booleanFilter.value !== undefined, 'disabled': isSelectMode}"
               ng-disabled="isSelectMode">
@@ -236,10 +236,10 @@
       ng-mouseleave="mediafile.hover=false"
       ng-class="{'projected': mediafile.isProjected().length}"
       ng-repeat="mediafile in mediafilesFiltered = (mediafiles
-      | privateFilter
+      | hiddenFilter
       | osFilter: filter.filterString : filter.getObjectQueryString
       | filter: {filetype: (filter.booleanFilters.isPdf.value ? 'application/pdf' : (filter.booleanFilters.isPdf.value === false ? '!application/pdf' : ''))}
-      | filter: {private: filter.booleanFilters.isPrivate.value}
+      | filter: {hidden: filter.booleanFilters.isHidden.value}
       | orderBy: sort.column : sort.reverse )">
 
       <!-- select column -->
@@ -279,8 +279,8 @@
       <!-- main content column -->
       <div class="col-xs-6 content">
         <div class="spacer-right"> <!-- horizontal block -->
-          <i ng-style="{'visibility': mediafile.private ? 'visible' : 'hidden'}" class="fa fa-lock fa-lg"
-              title="{{ 'Is private' | translate }}"></i>
+          <i ng-style="{'visibility': mediafile.hidden ? 'visible' : 'hidden'}" class="fa fa-lock fa-lg"
+              title="{{ 'Is hidden' | translate }}"></i>
         </div>
         <div>
           <div> <!-- vertical block -->
