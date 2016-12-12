@@ -361,7 +361,7 @@ angular.module('OpenSlidesApp.assignments.site', [
              display_name: gettext('Title')},
             {name: 'phase',
              display_name: gettext('Phase')},
-            {name: 'assignment.assignment_related_users.length',
+            {name: 'assignment_related_users.length',
              display_name: gettext('Number of candidates')},
         ];
         $scope.hasTag = function (assignment, tag) {

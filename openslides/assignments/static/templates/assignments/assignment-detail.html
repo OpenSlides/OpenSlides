@@ -82,7 +82,7 @@
 
   <div ng-if="assignment.phase != 2">
     <h3 translate>Candidates</h3>
-    <ol>
+    <ul>
       <li ng-repeat="related_user in assignment.assignment_related_users">
         <a ui-sref="users.user.detail({id: related_user.user_id})">{{ related_user.user.get_full_name() }}</a>
         <i ng-if="related_user.elected" class="fa fa-star" title="{{ 'is elected' | translate }}"></i>
@@ -90,7 +90,7 @@
             class="btn btn-default btn-xs">
           <i class="fa fa-times"></i>
         </button>
-    </ol>
+    </ul>
 
     <div class="form-group">
       <div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">

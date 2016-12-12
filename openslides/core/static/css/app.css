@@ -370,7 +370,7 @@ img {
     max-width: 100%;
     height: auto;
 }
-.col1 ol {
+.col1 ol, .col1 ul {
     margin-left: 15px;
 }
 .ballot-tabs ul {
@@ -436,10 +436,6 @@ img {
 /*** Line numbers ***/
 .motion-text .highlight {
     background-color: #ff0;
-}
-
-.motion-text li {
-    margin-left: 30px;
 }
 .motion-text ins {
     color: green;

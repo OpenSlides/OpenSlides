@@ -1405,6 +1405,8 @@ angular.module('OpenSlidesApp.motions.site', [
             }
             $scope.model.title = $scope.$parent.motion.getTitle();
             $scope.model.parent_id = $scope.$parent.motion.id;
+            $scope.model.category_id = $scope.$parent.motion.category_id;
+            $scope.model.motion_block_id = $scope.$parent.motion.motion_block_id;
             Motion.bindOne($scope.model.parent_id, $scope, 'parent');
         }
         // ... preselect default workflow

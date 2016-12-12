@@ -9,22 +9,22 @@
   </div>
 
   <!-- Description -->
-  <div ng-hide="element.poll" class="white-space-pre-line">
+  <div ng-if="!showResult && assignment.description !== ''" class="white-space-pre-line">
     {{ assignment.description }}
   </div>
 
   <!-- Candidates -->
-  <div ng-hide="element.poll">
+  <div ng-if="!showResult">
     <h3 translate>Candidates</h3>
-    <ol>
+    <ul>
       <li ng-repeat="related_user in assignment.assignment_related_users">
         {{ related_user.user.get_full_name() }}
         <i ng-if="related_user.elected" class="fa fa-star" title="{{ 'is elected' | translate }}"></i>
-    </ol>
+    </ul>
   </div>
 
   <!-- vote results -->
-  <div ng-show="element.poll" class="electionresults spacer" ng-repeat="poll in assignment.polls | filter: {id: element.poll}">
+  <div ng-show="showResult" class="electionresults spacer" ng-repeat="poll in assignment.polls | filter: {id: element.poll}">
     <table class="table table-bordered table-striped minimumTable">
     <tr>
       <th translate>Candidates
