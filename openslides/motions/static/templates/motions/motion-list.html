@@ -88,7 +88,7 @@
       </select>
       <!-- state select -->
       <select ng-show="selectedAction == 'setStatus'" ng-model="selectedState" class="form-control">
-        <option value="">--- <translate>Select state</translate> ---</option>
+        <option value="" translate>--- Select state ---</option>
         <option ng-repeat="state in states" ng-disabled="state.workflowHeader" value="{{ state.id }}">
           {{ (state.workflowHeader ? state.headername : state.name) | translate }}
         </option>
@@ -100,7 +100,7 @@
       </a>
       <!-- category select -->
       <select ng-show="selectedAction == 'setCategory'" ng-model="selectedCategory" class="form-control">
-        <option value="">--- <translate>Select category</translate> ---</option>
+        <option value="" translate>--- Select category ---</option>
         <option ng-repeat="category in categories" value="{{ category.id }}">
           {{ category.name }}
         </option>
@@ -113,7 +113,7 @@
       </a>
       <!-- motionBlock select -->
       <select ng-show="selectedAction == 'setMotionBlock'" ng-model="selectedMotionBlock" class="form-control">
-        <option value="">--- <translate>Select motion block</translate> ---</option>
+        <option value="" translate>--- Select motion block ---</option>
         <option ng-repeat="motionBlock in motionBlocks" value="{{ motionBlock.id }}">
           {{ motionBlock.title }}
         </option>
