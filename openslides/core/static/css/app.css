@@ -960,6 +960,11 @@ img {
     width: calc(100% - 50px);
 }
 
+.os-table .no-projector-spacer {
+    margin-right: 20px;
+    float: left;
+}
+
 .os-table .header-row {
     border-top: 1px solid #ddd;
     background-color: #f5f5f5;

@@ -947,6 +947,10 @@ angular.module('OpenSlidesApp.motions.site', [
             motion.reason = motion.getReason(-1);
             Motion.save(motion);
         };
+        // delete single motion
+        $scope.delete = function (motion) {
+            Motion.destroy(motion.id);
+        };
         $scope.toggleTag = function (motion, tag) {
             if ($scope.hasTag(motion, tag)) {
                 // remove
@@ -1038,18 +1042,40 @@ angular.module('OpenSlidesApp.motions.site', [
                 });
             }
         };
-        // delete selected motions
-        $scope.deleteMultiple = function () {
+        var selectModeAction = function (predicate) {
             angular.forEach($scope.motionsFiltered, function (motion) {
-                if (motion.selected)
-                    Motion.destroy(motion.id);
+                if (motion.selected) {
+                    predicate(motion);
+                }
             });
             $scope.isSelectMode = false;
             $scope.uncheckAll();
         };
-        // delete single motion
-        $scope.delete = function (motion) {
-            Motion.destroy(motion.id);
+        // delete selected motions
+        $scope.deleteMultiple = function () {
+            selectModeAction(function (motion) {
+                $scope.delete(motion);
+            });
+        };
+        // set status for selected motions
+        $scope.setStatusMultiple = function (stateId) {
+            selectModeAction(function (motion) {
+                $scope.updateState(motion, stateId);
+            });
+        };
+        // set category for selected motions
+        $scope.setCategoryMultiple = function (categoryId) {
+            selectModeAction(function (motion) {
+                motion.category_id = categoryId === 'no_category_selected' ? null : categoryId;
+                $scope.save(motion);
+            });
+        };
+        // set status for selected motions
+        $scope.setMotionBlockMultiple = function (motionBlockId) {
+            selectModeAction(function (motion) {
+                motion.motion_block_id = motionBlockId === 'no_motionBlock_selected' ? null : motionBlockId;
+                $scope.save(motion);
+            });
         };
     }
 ])
