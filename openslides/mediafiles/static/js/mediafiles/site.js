@@ -133,15 +133,15 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
         $scope.sort.column = 'title_or_filename';
         $scope.sortOptions = [
             {name: 'title_or_filename',
-             display_name: 'Title'},
-            {name: 'timestamp',
-             display_name: 'UploadTime'},
-            {name: 'uploader.get_short_name()',
-             display_name: 'Uploader'},
+             display_name: gettext('Title')},
             {name: 'mediafile.type',
-             display_name: 'Type'},
+             display_name: gettext('Type')},
             {name: 'filesize',
-             display_name: 'Filesize'},
+             display_name: gettext('File size')},
+            {name: 'timestamp',
+             display_name: gettext('Upload time')},
+            {name: 'uploader.get_short_name()',
+             display_name: gettext('Uploaded by')},
         ];
 
         // open new/edit dialog
