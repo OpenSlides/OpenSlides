@@ -6,23 +6,31 @@ from django.db import migrations, models
 
 
 def convert_duration(apps, schema_editor):
-    Item = apps.get_model('agenda', 'item')
+    """
+    Converts the values of the old duration CharField to new duration
+    IntegerField. It uses the temporary field for proper renaming the field
+    in the end.
+    """
+    Item = apps.get_model('agenda', 'Item')
     for item in Item.objects.all():
         duration = item.duration
         item.duration_tmp = None
         if is_int(duration):
-            # assuming that these are minutes
+            # Assuming that these are minutes.
             item.duration_tmp = int(duration)
         elif isinstance(duration, str):
+            # Assuming format (h)h:(m)m. If not, new value is None.
             split = duration.split(':')
-            # assuming format (h)h:(m)m
             if len(split) == 2 and is_int(split[0]) and is_int(split[1]):
-                # duration = hours * 60 + minutes
+                # Calculate new duration: hours * 60 + minutes.
                 item.duration_tmp = int(split[0]) * 60 + int(split[1])
         item.save(skip_autoupdate=True)
 
 
 def is_int(s):
+    """
+    Short helper for duration conversion.
+    """
     try:
         int(s)
     except (ValueError, TypeError):
@@ -43,7 +51,9 @@ class Migration(migrations.Migration):
             name='duration_tmp',
             field=models.IntegerField(blank=True, null=True),
         ),
-        migrations.RunPython(convert_duration),
+        migrations.RunPython(
+            convert_duration
+        ),
         migrations.RemoveField(
             model_name='item',
             name='duration',
