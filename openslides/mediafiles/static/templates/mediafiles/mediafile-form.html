@@ -21,12 +21,15 @@
     <input type="text" ng-model="mediafile.title" class="form-control" name="inputTitle">
   </div>
 
-  <!-- private -->
-  <div class="checkbox" os-perms="mediafiles.can_see_private">
-    <label for="inputPrivate">
-      <input type="checkbox" ng-model="mediafile.private" name="inputPrivate">
-      <translate>Private</translate>
+  <!-- hidden -->
+  <div class="checkbox" os-perms="mediafiles.can_see_hidden">
+    <label>
+      <input class="formly-field-chackbox" type="checkbox" ng-model="mediafile.hidden" name="inputHidden">
+      <translate>Hidden</translate>
     </label>
+    <p class="help-block" translate>
+      This does not protect the file but hides it for non authorized users.
+    </p>
   </div>
 
   <!-- uploader -->

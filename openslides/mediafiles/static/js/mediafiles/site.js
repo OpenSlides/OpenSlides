@@ -107,11 +107,11 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
 
         if (!$scope.filter.existsStorageEntry()) {
             $scope.filter.booleanFilters = {
-                isPrivate: {
+                isHidden: {
                     value: undefined,
-                    displayName: gettext('Private'),
-                    choiceYes: gettext('Is private'),
-                    choiceNo: gettext('Is not private'),
+                    displayName: gettext('Hidden'),
+                    choiceYes: gettext('Is hidden'),
+                    choiceNo: gettext('Is not hidden'),
                     needExtraPermission: true,
                 },
                 isPdf: {
@@ -403,7 +403,7 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
                 return Upload.upload({
                     url: '/rest/mediafiles/mediafile/',
                     method: 'POST',
-                    data: {mediafile: mediafile.newFile, title: mediafile.title, uploader_id: mediafile.uploader_id, private: mediafile.private}
+                    data: {mediafile: mediafile.newFile, title: mediafile.title, uploader_id: mediafile.uploader_id, hidden: mediafile.hidden}
                 });
 
             }
@@ -411,16 +411,16 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
     }
 ])
 
-.filter('privateFilter', [
+.filter('hiddenFilter', [
     '$filter',
     'operator',
     function ($filter, operator) {
         return function (array) {
-            if (operator.hasPerms('mediafiles.can_see_private')) {
+            if (operator.hasPerms('mediafiles.can_see_hidden')) {
                 return array;
             }
             return Array.prototype.filter.call(array, function (item) {
-                return !item.private;
+                return !item.hidden;
             });
         };
     }

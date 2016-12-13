@@ -24,7 +24,7 @@ class MediafileAccessPermissions(BaseAccessPermissions):
         Returns the restricted serialized data for the instance prepared
         for the user.
         """
-        if (not full_data['private'] or user.has_perm('mediafiles.can_see_private')):
+        if (not full_data['hidden'] or user.has_perm('mediafiles.can_see_hidden')):
             data = full_data
         else:
             data = None
