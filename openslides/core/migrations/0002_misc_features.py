@@ -46,6 +46,21 @@ def name_default_projector(apps, schema_editor):
     Projector.objects.filter(pk=1).update(name='Default projector')
 
 
+def remove_old_countdowns_messages(apps, schema_editor):
+    """
+    Remove old countdowns and messages created by 2.0 from projector elements which are unusable in 2.1.
+    """
+    Projector = apps.get_model('core', 'Projector')
+    projector = Projector.objects.get(pk=1)
+
+    projector_config = projector.config
+    for key, value in list(projector.config.items()):
+        if value.get('name') in ('core/countdown', 'core/message'):
+            del projector_config[key]
+    projector.config = projector_config
+    projector.save(skip_autoupdate=True)
+
+
 def add_projection_defaults(apps, schema_editor):
     """
     Adds projectiondefaults for messages and countdowns.
@@ -213,6 +228,9 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             name_default_projector
+        ),
+        migrations.RunPython(
+            remove_old_countdowns_messages
         ),
         migrations.RunPython(
             add_projection_defaults
