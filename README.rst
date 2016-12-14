@@ -184,7 +184,7 @@ OpenSlides uses the following projects or parts of them:
   * `angular-gettext <http://angular-gettext.rocketeer.be/>`_, License: MIT
   * `angular-loading-bar <https://chieffancypants.github.io/angular-loading-bar>`_, License: MIT
   * `angular-messages <http://angularjs.org>`_, License: MIT
-  * `pdfmake <https://github.com/pdfmake/pdfmake>`_, License: MIT
+  * `pdfmake <https://github.com/bpampuch/pdfmake>`_, License: MIT
   * `angular-pdf <http://github.com/sayanee/angularjs-pdf>`_, License: MIT
   * `angular-sanitize <http://angularjs.org>`_, License: MIT
   * `angular-scroll-glue <https://github.com/Luegg/angularjs-scroll-glue>`_, License: MIT
