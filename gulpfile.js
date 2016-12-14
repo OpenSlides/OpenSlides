@@ -97,7 +97,7 @@ gulp.task('css-libs', function () {
 // Catches all font files from all bower components.
 gulp.task('fonts-libs', function() {
     return gulp.src(mainBowerFiles({
-            filter: /\.woff$/
+            filter: /\.(woff)|(woff2)$/
         }))
         .pipe(gulp.dest(path.join(output_directory, 'fonts')));
 });
