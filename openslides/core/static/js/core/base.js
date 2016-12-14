@@ -125,12 +125,12 @@ angular.module('OpenSlidesApp.core', [
                 var current = gettextCatalog.getCurrentLanguage();
                 // Define here new languages...
                 var languages = [
-                    { code: 'en', name: gettext('English') },
-                    { code: 'de', name: gettext('German') },
-                    { code: 'fr', name: gettext('French') },
-                    { code: 'es', name: gettext('Spanish') },
-                    { code: 'pt', name: gettext('Portuguese') },
-                    { code: 'cs', name: gettext('Czech') },
+                    { code: 'en', name: 'English' },
+                    { code: 'de', name: 'Deutsch' },
+                    { code: 'fr', name: 'Français' },
+                    { code: 'es', name: 'Español' },
+                    { code: 'pt', name: 'Português' },
+                    { code: 'cs', name: 'Čeština'},
                 ];
                 angular.forEach(languages, function (language) {
                     if (language.code == current)
