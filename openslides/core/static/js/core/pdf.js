@@ -410,7 +410,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                          */
                         extractLineNumbers = function(element) {
                             var foundLineNumbers = [];
-                            if (element.nodeName == 'SPAN' && element.getAttribute('class').indexOf('os-line-number') > -1) {
+                            if (element.nodeName == 'SPAN' && element.getAttribute('class') && element.getAttribute('class').indexOf('os-line-number') > -1) {
                                 foundLineNumbers.push(element.getAttribute('data-line-number'));
                                 element.parentNode.removeChild(element);
                             } else {
