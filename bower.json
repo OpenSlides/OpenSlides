@@ -34,13 +34,13 @@
     "ng-file-upload": "~11.2.3",
     "ngstorage": "~0.3.11",
     "ngBootbox": "~0.1.3",
-    "pdfmake-dist": "~0.1.27",
+    "pdfmake": "bpampuch/pdfmake#3b44129d599424cd0e306fc5014ba3a129220c64",
     "roboto-fontface": "~0.6.0",
     "tinymce": "~4.4.3",
     "tinymce-i18n": "OpenSlides/tinymce-i18n#a186ad61e0aa30fdf657e88f405f966d790f0805"
   },
   "overrides": {
-    "pdfmake-dist": {
+    "pdfmake": {
       "main": [
           "build/pdfmake.min.js",
           "build/vfs_fonts.js"
