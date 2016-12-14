@@ -131,9 +131,6 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 var resultBody = [];
                 angular.forEach(assignment.polls, function(poll, pollIndex) {
                     if (poll.published) {
-                        var voteNrTotal = poll.votescast;
-                        var voteNrValid = poll.votesvalid;
-                        var voteNrInVal = poll.votesinvalid;
                         var pollTableBody = [];
 
                         resultBody.push({
@@ -172,8 +169,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                                 angular.forEach(votes, function(vote) {
                                     resultBlock.push(parseVoteValue(vote, true));
                                 });
-                                tableLine.push(
-                                    {
+                                tableLine.push({
                                         text: resultBlock,
                                         style: PDFLayout.flipTableRowStyle(pollTableBody.length)
                                     }
@@ -182,42 +178,40 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                             pollTableBody.push(tableLine);
                         });
 
-                        //it is technically possible to make a single push-statement
-                        //however, the flipTableRowStyle-function needs the current table size
-                        if (voteNrValid) {
+                        if (poll.votesvalid) {
                             pollTableBody.push([
                                 {
                                     text: gettextCatalog.getString("Valid ballots"),
                                     style: 'tableConclude'
                                 },
                                 {
-                                    text: "" + voteNrValid,
+                                    text: parseVoteValue(poll.getVote('votesvalid'), false),
                                     style: 'tableConclude'
                                 },
                             ]);
                         }
 
-                        if (voteNrInVal) {
+                        if (poll.votesinvalid) {
                             pollTableBody.push([
                                 {
                                     text: gettextCatalog.getString("Invalid ballots"),
                                     style: 'tableConclude'
                                 },
                                 {
-                                    text: "" + voteNrInVal,
+                                    text: parseVoteValue(poll.getVote('votesinvalid'), false),
                                     style: 'tableConclude'
                                 },
                             ]);
                         }
 
-                        if (voteNrTotal) {
+                        if (poll.votescast) {
                             pollTableBody.push([
                                 {
                                     text: gettextCatalog.getString("Casted ballots"),
                                     style: 'tableConclude'
                                 },
                                 {
-                                    text: "" + voteNrTotal,
+                                    text: parseVoteValue(poll.getVote('votescast'), false),
                                     style: 'tableConclude'
                                 },
                             ]);
