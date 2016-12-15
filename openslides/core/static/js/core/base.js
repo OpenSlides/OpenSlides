@@ -223,22 +223,40 @@ angular.module('OpenSlidesApp.core', [
             } catch(err) {
                 console.error(json);
             }
-            _.forEach(dataList, function(data) {
-                console.log("Received object: " + data.collection + ", " + data.id);
-                var instance = DS.get(data.collection, data.id);
-                if (data.action == 'changed') {
+
+            var dataListByCollection = _.groupBy(dataList, 'collection');
+            _.forEach(dataListByCollection, function(list, key) {
+                var changedElements = [];
+                var deletedElements = [];
+                var collectionString = key;
+                _.forEach(list, function(data) {
+                    // uncomment this line for debugging to log all autoupdates:
+                    // console.log("Received object: " + data.collection + ", " + data.id);
+
+                    // remove (=eject) object from local DS store
+                    var instance = DS.get(data.collection, data.id);
                     if (instance) {
-                        // The instance is in the local db
                         dsEject(data.collection, instance);
                     }
-                    DS.inject(data.collection, data.data);
-                } else if (data.action == 'deleted') {
-                    if (instance) {
-                        // The instance is in the local db
-                        dsEject(data.collection, instance);
+                    // check if object changed or deleted
+                    if (data.action === 'changed') {
+                        changedElements.push(data.data);
+                    } else if (data.action === 'deleted') {
+                        deletedElements.push(data.id);
+                    } else {
+                        console.error('Error: Undefined action for received object' +
+                            '(' + data.collection + ', ' + data.id + ')');
                     }
-                    DS.eject(data.collection, data.id);
+                });
+                // add (=inject) all given objects into local DS store
+                if (changedElements.length > 0) {
+                    DS.inject(collectionString, changedElements);
                 }
+                // delete (=eject) all given objects from local DS store
+                // (note: js-data does not provide 'bulk eject' as for DS.inject)
+                _.forEach(deletedElements, function(id) {
+                    DS.eject(collectionString, id);
+                });
             });
         });
     }
