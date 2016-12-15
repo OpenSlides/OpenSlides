@@ -2,13 +2,17 @@
 
 'use strict';
 
-angular.module('OpenSlidesApp.mediafiles', [])
+angular.module('OpenSlidesApp.mediafiles.resources', [
+    'gettext',
+    'js-data',
+    //TODO: Add deps for jsDataModel
+])
 
 .factory('Mediafile', [
     'DS',
-    'jsDataModel',
     'gettext',
-    function(DS, jsDataModel, gettext) {
+    'jsDataModel',
+    function (DS, gettext, jsDataModel) {
         var name = 'mediafiles/mediafile';
         return DS.defineResource({
             name: name,
@@ -81,6 +85,6 @@ angular.module('OpenSlidesApp.mediafiles', [])
     }
 ])
 
-.run(['Mediafile', function(Mediafile) {}]);
+.run(['Mediafile', function (Mediafile) {}]);
 
 }());

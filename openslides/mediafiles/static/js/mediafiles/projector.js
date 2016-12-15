@@ -2,11 +2,14 @@
 
 'use strict';
 
-angular.module('OpenSlidesApp.mediafiles.projector', ['OpenSlidesApp.mediafiles'])
+angular.module('OpenSlidesApp.mediafiles.projector', [
+    'OpenSlidesApp.mediafiles.resources',
+    //TODO: Add deps for slidesProvider
+])
 
 .config([
     'slidesProvider',
-    function(slidesProvider) {
+    function (slidesProvider) {
         slidesProvider.registerSlide('mediafiles/mediafile', {
             template: 'static/templates/mediafiles/slide_mediafile.html'
         });
@@ -16,7 +19,7 @@ angular.module('OpenSlidesApp.mediafiles.projector', ['OpenSlidesApp.mediafiles'
 .controller('SlideMediafileCtrl', [
     '$scope',
     'Mediafile',
-    function($scope, Mediafile) {
+    function ($scope, Mediafile) {
         // load mediafile object
         var mediafile = Mediafile.get($scope.element.id);
         $scope.mediafile = mediafile;
@@ -40,4 +43,4 @@ angular.module('OpenSlidesApp.mediafiles.projector', ['OpenSlidesApp.mediafiles'
     }
 ]);
 
-})();
+}());
