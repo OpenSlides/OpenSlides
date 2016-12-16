@@ -158,6 +158,17 @@ describe('pdf', function () {
                 "margin": [0,10,0,0]
             }));
             expect(JSON.stringify(pdfmake[2])).toBe(emptyline);
-        })
+        });
+
+        it('does not break with non-line-break SPANs', function () {
+            var inHtml = "<ol><li>Test line 1<span>empty span</span></li></ol>",
+                numberedHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+
+            var instance = PdfMakeConverter.createInstance();
+            var pdfmake = instance.convertHTML(numberedHtml, 'outside');
+
+            // the actual result is's the point here; only that it doesn't throw an exception
+            expect(JSON.stringify(pdfmake[0])).toBe(emptyline);
+        });
     });
 });
