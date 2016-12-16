@@ -24,6 +24,8 @@ Core:
 - Added support for multiple projectors.
 - Added an overlay for the current list of speakers.
 - Added button to clear the chatbox.
+- Switched editor back from TinyMCE to CKEditor which provides a
+  better copy/paste support from MS Word.
 
 Motions:
 - Added origin field.

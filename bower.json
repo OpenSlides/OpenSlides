@@ -55,30 +55,6 @@
         "fonts/Roboto-Condensed/Roboto-Condensed-Regular.woff",
         "fonts/Roboto-Condensed/Roboto-Condensed-Light.woff"
       ]
-    },
-    "ckeditor": {
-      "main": [
-              "ckeditor.js",
-              "skins/moono-lisa/*",
-              "lang/en.js",
-              "lang/de.js",
-              "lang/pt.js",
-              "lang/es.js",
-              "lang/fr.js",
-              "lang/cs.js",
-              "plugins/about/*",
-              "plugins/clipboard/*",
-              "plugins/dialog/*",
-              "plugins/find/*",
-              "plugins/image/*",
-              "plugins/justify/*",
-              "plugins/liststyle/*",
-              "plugins/magicline/*",
-              "plugins/pastefromword/*",
-              "plugins/showblocks/*",
-              "plugins/table/*",
-              "plugins/tabletools/*"
-      ]
     }
   },
   "resolutions": {

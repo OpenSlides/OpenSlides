@@ -548,18 +548,29 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+
+// Configs for CKEditor which has to set while startup of OpenSlides
+.config(
+    function() {
+        CKEDITOR.disableAutoInline = true;
+    }
+)
+
 // Options for CKEditor used in various create and edit views.
+// Required in core/base.js because MotionComment factory which used this
+// factory has to placed in motions/base.js.
 .factory('Editor', [
     'gettextCatalog',
-    function(gettextCatalog) {
+    function (gettextCatalog) {
         return {
             getOptions: function (images) {
                 return {
                     on: {
                         instanceReady: function() {
-                            // add a listener to ckeditor that parses the clipboard content and, after the regular filter,
-                            // additionally strips out all empty <p> paragraphs
-                            // TODO: check all kind of clipboard html content if "isEmpty" is a reliable property
+                            // This adds a listener to ckeditor to remove unwanted blank lines on import.
+                            // Clipboard content varies heavily in structure and html code, depending on the "sender".
+                            // Here it is first parsed into a pseudo-DOM (two lines taken from a ckeditor
+                            // paste example on the ckeditor site).
                             this.on('paste', function(evt) {
                                 if (evt.data.type == 'html') {
                                     var fragment = CKEDITOR.htmlParser.fragment.fromHtml(evt.data.dataValue);
@@ -567,31 +578,37 @@ angular.module('OpenSlidesApp.core', [
                                     // html content will now be in a dom-like structure inside 'fragment'.
                                     this.filter.applyTo(fragment);
                                     if (fragment.children) {
+                                        // If this fragment is DOM-like, it may contain nested properties
+                                        // (being html nodes). Traverse the children and check if it is a
+                                        // child only containing empty <br> or <p>.
+                                        // new_content_children will finally contain all nodes that are
+                                        // not empty.
                                         var new_content_children = [];
-                                        for (var i = 0; i < fragment.children.length; i++) {
+                                        _.forEach(fragment.children, function (child) {
                                             var empty = true;
-                                            if (fragment.children[i].children){
-                                                for (var j = 0; j < fragment.children[i].children.length; j++) {
-                                                    var child = fragment.children[i].children[j];
-                                                    if (child.name != 'p' && child.name != 'br') {
+                                            if (child.children){
+                                                _.forEach(child.children, function(grandchild) {
+                                                    if (grandchild.name != 'p' && grandchild.name != 'br') {
                                                         empty = false;
-                                                    } else if (child.isEmpty !== true) {
+                                                    } else if (grandchild.isEmpty !== true) {
                                                         empty = false;
                                                     }
-                                                }
+                                                });
                                                 if (empty === false) {
-                                                    new_content_children.push(fragment.children[i]);
+                                                    new_content_children.push(child);
                                                 }
                                             } else {
-                                                if (fragment.children[i].name != 'p' && fragment.children[i].name != 'br' &&
-                                                    fragment.children[i].isEmpty !== true){
-                                                    new_content_children.push(fragment.children[i]);
+                                                if (child.name != 'p' && child.name != 'br' &&
+                                                    child.isEmpty !== true){
+                                                    new_content_children.push(child);
                                                 }
                                             }
-                                        }
+                                        });
                                         fragment.children = new_content_children;
                                     }
                                     fragment.writeHtml(writer);
+                                    // Return the re-created fragment without the empty <p> and <br> into the
+                                    // editor import processing (same as at the begin of the function: by ckeditor)
                                     evt.data.dataValue = writer.getHtml();
                                 }
                             });

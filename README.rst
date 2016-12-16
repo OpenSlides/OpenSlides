@@ -196,7 +196,7 @@ OpenSlides uses the following projects or parts of them:
   * `bootstrap <http://getbootstrap.com>`_, License: MIT
   * `bootstrap-ui-datetime-picker <https://github.com/Gillardo/bootstrap-ui-datetime-picker>`_, License: MIT
   * `chosen <http://harvesthq.github.io/chosen/>`_, License: MIT
-  * `ckeditor <http://ckeditor.com>`_,  License: For licensing, see LICENSE.md or http://ckeditor.com/license.
+  * `ckeditor <http://ckeditor.com>`_,  License: GPL 2+, LGPL 2.1+ or MPL 1.1.
   * `font-awesome-bower <https://github.com/tdg5/font-awesome-bower>`_, License: MIT
   * `jquery <https://jquery.com>`_, License: MIT
   * `jquery.cookie <https://plugins.jquery.com/cookie>`_, License: MIT
@@ -211,8 +211,6 @@ OpenSlides uses the following projects or parts of them:
   * `open-sans-fontface <https://github.com/FontFaceKit/open-sans>`_, License: Apache License version 2.0
   * `pdfjs-dist <http://mozilla.github.io/pdf.js/>`_, License: Apache-2.0
   * `roboto-condensed <https://github.com/davidcunningham/roboto-condensed>`_, License: Apache 2.0
-  * `tinymce <http://www.tinymce.com>`_, License: LGPL-2.1
-  * `tinymce-i18n <https://github.com/OpenSlides/tinymce-i18n>`_, License: LGPL-2.1
 
 
 License and authors
