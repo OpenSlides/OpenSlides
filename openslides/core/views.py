@@ -1,7 +1,6 @@
 import base64
 import json
 import os
-import re
 import uuid
 from collections import OrderedDict
 from operator import attrgetter
@@ -11,7 +10,6 @@ from urllib.parse import unquote
 from django.apps import apps
 from django.conf import settings
 from django.contrib.staticfiles import finders
-from django.core.urlresolvers import get_resolver
 from django.db.models import F
 from django.http import Http404, HttpResponse
 from django.utils.timezone import now
@@ -784,24 +782,6 @@ class CountdownViewSet(ModelViewSet):
 
 
 # Special API views
-
-class UrlPatternsView(utils_views.APIView):
-    """
-    Returns a dictionary with all url patterns as json. The patterns kwargs
-    are transformed using a colon.
-    """
-    URL_KWARGS_REGEX = re.compile(r'%\((\w*)\)s')
-    http_method_names = ['get']
-
-    def get_context_data(self, **context):
-        result = {}
-        url_dict = get_resolver(None).reverse_dict
-        for pattern_name in filter(lambda key: isinstance(key, str), url_dict.keys()):
-            normalized_regex_bits, p_pattern, pattern_default_args = url_dict[pattern_name]
-            url, url_kwargs = normalized_regex_bits[0]
-            result[pattern_name] = self.URL_KWARGS_REGEX.sub(r':\1', url)
-        return result
-
 
 class ServerTime(utils_views.APIView):
     """
