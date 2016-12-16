@@ -119,30 +119,40 @@ gulp.task('ckeditor-defaults', function () {
 
 // CKEditor skins
 gulp.task('ckeditor-skins', function () {
-    return gulp.src([
-            path.join('bower_components', 'ckeditor', 'skins', 'moono-lisa', '**', '*'),
-        ],{ base: path.join('bower_components', 'ckeditor', 'skins') })
+    return gulp.src(
+            [
+                path.join('bower_components', 'ckeditor', 'skins', 'moono-lisa', '**', '*'),
+            ],
+            {
+                base: path.join('bower_components', 'ckeditor', 'skins')
+            }
+        )
         .pipe(gulp.dest(path.join(output_directory, 'ckeditor', 'skins')));
 });
 
 // CKEditor plugins
 gulp.task('ckeditor-plugins', function () {
-    return gulp.src([
-            path.join('bower_components', 'ckeditor', 'plugins', 'clipboard', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'colorbutton', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'dialog', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'find', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'image', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'justify', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'liststyle', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'magicline', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'pastefromword', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'panelbutton', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'showblocks', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'sourcedialog', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'table', '**', '*'),
-            path.join('bower_components', 'ckeditor', 'plugins', 'tabeltools', '**', '*'),
-        ],{ base: path.join('bower_components', 'ckeditor', 'plugins') })
+    return gulp.src(
+            [
+                path.join('bower_components', 'ckeditor', 'plugins', 'clipboard', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'colorbutton', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'dialog', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'find', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'image', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'justify', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'liststyle', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'magicline', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'pastefromword', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'panelbutton', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'showblocks', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'sourcedialog', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'table', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'tabeltools', '**', '*'),
+            ],
+            {
+                base: path.join('bower_components', 'ckeditor', 'plugins')
+            }
+        )
         .pipe(gulp.dest(path.join(output_directory, 'ckeditor', 'plugins')));
 });
 

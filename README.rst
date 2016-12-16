@@ -132,9 +132,9 @@ The configuration values that have to be altered are:
 Please see:
 
 * http://channels.readthedocs.io/en/latest/deploying.html
-* https://docs.djangoproject.com/en/1.9/topics/cache/
+* https://docs.djangoproject.com/en/1.10/topics/cache/
 * https://github.com/sebleier/django-redis-cache
-* https://docs.djangoproject.com/en/1.9/ref/settings/#databases
+* https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 You should use a webserver like Apache HTTP Server or nginx to serve the static
 and media files as proxy server in front of OpenSlides server. You also
@@ -147,29 +147,42 @@ Used software
 
 OpenSlides uses the following projects or parts of them:
 
-* `backports-abc <https://github.com/cython/backports_abc>`_,
-  License: Python Software Foundation License
+* `asgiref <https://github.com/django/asgiref/>`_, License: BSD
+
+* `Autobahn <http://autobahn.ws/python/>`_, License: MIT
+
+* `Constantly <https://github.com/twisted/constantly>`_, License: MIT
+
+* `daphne <https://github.com/django/daphne/>`_, License: BSD
 
 * `Django <https://www.djangoproject.com>`_, License: BSD
+
+* `Django Channels <https://github.com/django/channels>`_, License: BSD
+
+* `django-jsonfield <https://github.com/bradjasper/django-jsonfield>`_,
+  License: MIT
 
 * `Django REST framework <http://www.django-rest-framework.org>`_, License:
   BSD
 
-* `Django Channels <https://github.com/andrewgodwin/channels/>`_, License: MIT
-
-* `django-jsonfield <https://github.com/bradjasper/django-jsonfield/>`_,
-  License: MIT
+* `Incremental <https://github.com/hawkowl/incremental>`_, License: MIT
 
 * `PyPDF2 <http://mstamy2.github.io/PyPDF2/>`_, License: BSD
 
 * `roman <https://pypi.python.org/pypi/roman>`_, License: Python 2.1.1
 
-* `setuptools <https://pypi.python.org/pypi/setuptools>`_,
-  License: Python Software Foundation License
+* `setuptools <https://pypi.python.org/pypi/setuptools>`_, License: MIT
 
 * `Six <http://pythonhosted.org/six/>`_, License: MIT
 
+* `Twisted <https://twistedmatrix.com>`_, License: MIT
+
+* `txaio <https://github.com/crossbario/txaio>`_, License: MIT
+
 * `Whoosh <https://bitbucket.org/mchaput/whoosh/wiki/Home>`_, License: BSD
+
+* `zope.interface <https://github.com/zopefoundation/zope.interface>`,
+  License: ZPL 2.1
 
 * Several JavaScript packages (see ``bower.json``)
 

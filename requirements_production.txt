@@ -1,10 +1,10 @@
 # Requirements for OpenSlides in production in alphabetical order
-Django>=1.10.1,<1.11
-channels>=0.15,<1.0
+channels>=0.17,<1.0
+Django>=1.10.4,<1.11
 djangorestframework>=3.4,<3.5
-jsonfield>=0.9.19,<1.1
-PyPDF2>=1.25.0,<1.27
+jsonfield>=1.0,<1.1
+PyPDF2>=1.26,<1.27
 roman>=2.0,<2.1
-setuptools>=18.5,<28.0
-twisted>=16.2,<16.4
-Whoosh>=2.7.0,<2.8
+setuptools>=18.5,<33.0
+Twisted>=16.6,<16.7
+Whoosh>=2.7,<2.8
