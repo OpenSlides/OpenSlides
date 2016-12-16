@@ -25,8 +25,8 @@ setup(
     classifiers=[
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers
         # 'Development Status :: 3 - Alpha',
-        # 'Development Status :: 4 - Beta',
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 4 - Beta',
+        # 'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
         'License :: OSI Approved :: MIT License',
