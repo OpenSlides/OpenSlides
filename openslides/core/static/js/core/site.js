@@ -381,21 +381,6 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-// Helper to add ui.router states at runtime.
-// Needed for the django url_patterns.
-.provider('runtimeStates', [
-    '$stateProvider',
-    function($stateProvider) {
-        this.$get = function($q, $timeout, $state) {
-            return {
-                addState: function(name, state) {
-                    $stateProvider.state(name, state);
-                }
-            };
-        };
-    }
-])
-
 /* This factory handles the filtering of the OS-data-tables. It contains
  * all logic needed for the table header filtering. Things to configure:
  * - multiselectFilters: A dict associating the filter name to a list (empty per default). E.g.
@@ -556,25 +541,6 @@ angular.module('OpenSlidesApp.core.site', [
                 return getFilterString(item).toLowerCase().indexOf(string.toLowerCase()) > -1;
             });
         };
-    }
-])
-
-// Load the django url patterns
-.run([
-    'runtimeStates',
-    '$http',
-    function(runtimeStates, $http) {
-        $http.get('/core/url_patterns/').then(function(data) {
-            for (var pattern in data.data) {
-                runtimeStates.addState(pattern, {
-                    'url': data.data[pattern],
-                    data: {extern: true},
-                    onEnter: function($window) {
-                        $window.location.href = this.url;
-                    }
-                });
-            }
-        });
     }
 ])
 
