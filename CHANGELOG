@@ -18,41 +18,65 @@ Assignments:
 - Added majority calculation.
 
 Core:
-- Added support for big assemblies with lots of users.
+- Added support for multiple projectors.
+- Control the resolution of projectors.
+- Use pdfMake for clientside generation of PDFs.
+- Introduced new table design for list views with serveral filters and
+  csv export.
+- Use session cookies and store filter settings in sessionStorage.
+- A lot of autoupdate improvements for projector and site.
+- Use Roboto font in all templates.
 - Added HTML support for messages on the projector.
 - Moved custom slides to own app "topics". Renamed it to "Topic".
-- Added support for multiple projectors.
 - Added an overlay for the current list of speakers.
 - Added button to clear the chatbox.
 - Switched editor back from TinyMCE to CKEditor which provides a
   better copy/paste support from MS Word.
+- Added template hook system for plugins.
+- Prepare migrations for 2.1b1.
+- Many code clean up, improvements and bug fixes in client and
+  backend.
 
 Motions:
-- Added origin field.
+- Adjustable line numbering mode (outside, inside, none) for each
+  motion text.
+- Allow to add change recommendations for special motion text lines
+  (with diff mode).
 - Added button to sort and number all motions in a category.
-- Introduced pdfMake for clientside generation of PDFs.
-- Added configurable fields for comments.
 - Added recommendations for motions.
-- Changed label of former state "commited a bill" to "refered to committee".
 - Added options to calculate percentages on different bases.
-- Added majority calculation.
+- Added calculation for required majority.
 - Added blocks for motions which can set as agenda item.
   Set states for multiple motions of a motion block by following
   the recommendations of each motion.
 - Used global config variable for preamble.
+- Added configurable fields for comments.
+- Added new origin field.
+- Reimplemented amendments.
+- New pdf layout.
+- Added docx export with docxtemplater.
+- Changed label of former state "commited a bill" to "refered to committee".
+
+Elections:
+- Added calculation for required majority.
 
 Users:
-- Added field is_committee and new default group Committees.
-- Added field number.
 - Added new matrix-interface for managing groups and their permissions.
+- Improved password reset view for administrators.
+- Use unchanged initial password.
+- Added new field for participant number.
+- Added new field 'is_committee' and new default group 'Committees'.
+- Improved users csv import (use group names instead of id).
 
 Other:
 - Django 1.10 is now supported. Dropped support for Django 1.8 and 1.9.
 - Removed config cache to support multiple threads or processes.
 - Fixed bug, that the last change of a config value was not send via autoupdate.
 - Added template hooks for plugins (in item detail view and motion poll form).
+- Added support for big assemblies with lots of users.
 - Used Django Channels instead of Tornado. Refactoring of the autoupdate process.
 - Added new caching system with support for Redis.
+- Support https as websocket protocol (wss).
 
 
 Version 2.0 (2016-04-18)
