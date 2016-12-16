@@ -41,7 +41,7 @@
   "overrides": {
     "pdfmake": {
       "main": [
-          "build/pdfmake.min.js",
+          "build/pdfmake.js",
           "build/vfs_fonts.js"
       ]
     },
