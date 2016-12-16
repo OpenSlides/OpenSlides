@@ -34,7 +34,7 @@ angular.module('OpenSlidesApp.mediafiles.update', [
             // inject the changed mediafile (copy) object back into DS store
             Mediafile.inject(mediafile);
             // save change mediafile object on server
-            Mediafile.save(mediafile, { method: 'PATCH' }).then(
+            Mediafile.save(mediafile).then(
                 function (success) {
                     $scope.closeThisDialog();
                 },
