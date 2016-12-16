@@ -397,7 +397,7 @@ angular.module('OpenSlidesApp.motions.site', [
                             required: false
                         },
                         data: {
-                            tinymceOption: Editor.getOptions()
+                            ckeditorOptions: Editor.getOptions()
                         }
                     }
                 ];
@@ -492,7 +492,7 @@ angular.module('OpenSlidesApp.motions.site', [
                         required: true
                     },
                     data: {
-                        tinymceOption: Editor.getOptions(images)
+                        ckeditorOptions: Editor.getOptions(images)
                     }
                 },
                 {
@@ -502,7 +502,7 @@ angular.module('OpenSlidesApp.motions.site', [
                         label: gettextCatalog.getString('Reason'),
                     },
                     data: {
-                        tinymceOption: Editor.getOptions(images)
+                        ckeditorOptions: Editor.getOptions(images)
                     }
                 },
                 {

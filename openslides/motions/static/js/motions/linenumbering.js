@@ -82,7 +82,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             node.setAttribute('class', 'os-line-number line-number-' + lineNumber);
             node.setAttribute('data-line-number', lineNumber + '');
             node.setAttribute('contenteditable', 'false');
-            node.innerHTML = '&nbsp;'; // Prevent tinymce from stripping out empty span's
+            node.innerHTML = '&nbsp;'; // Prevent ckeditor from stripping out empty span's
             return node;
         };
 
@@ -302,6 +302,15 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
             for (i = 0; i < oldChildren.length; i++) {
                 if (oldChildren[i].nodeType == TEXT_NODE) {
+                    if (!oldChildren[i].nodeValue.match(/\S/)) {
+                        // White space nodes between block elements should be ignored
+                        var prevIsBlock = (i > 0 && !this._isInlineElement(oldChildren[i - 1]));
+                        var nextIsBlock = (i < oldChildren.length - 1 && !this._isInlineElement(oldChildren[i + 1]));
+                        if ((prevIsBlock && nextIsBlock) || (i === 0 && nextIsBlock) || (i === oldChildren.length - 1 && prevIsBlock)) {
+                            node.appendChild(oldChildren[i]);
+                            continue;
+                        }
+                    }
                     var ret = this._textNodeToLines(oldChildren[i], length, highlight);
                     for (var j = 0; j < ret.length; j++) {
                         node.appendChild(ret[j]);

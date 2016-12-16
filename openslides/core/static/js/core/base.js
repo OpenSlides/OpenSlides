@@ -548,33 +548,113 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-// Options for TinyMCE editor used in various create and edit views.
+
+// Configs for CKEditor which has to set while startup of OpenSlides
+.config(
+    function() {
+        CKEDITOR.disableAutoInline = true;
+    }
+)
+
+// Options for CKEditor used in various create and edit views.
 // Required in core/base.js because MotionComment factory which used this
 // factory has to placed in motions/base.js.
 .factory('Editor', [
     'gettextCatalog',
     function (gettextCatalog) {
         return {
-            getOptions: function (images, inlineMode) {
-                if (inlineMode === undefined) {
-                    inlineMode = false;
-                }
+            getOptions: function (images) {
                 return {
-                    language_url: '/static/tinymce/i18n/' + gettextCatalog.getCurrentLanguage() + '.js',
-                    theme_url: '/static/js/openslides-libs.js',
-                    skin_url: '/static/tinymce/skins/lightgray/',
-                    inline: inlineMode,
-                    browser_spellcheck: true,
-                    image_advtab: true,
-                    image_list: images,
-                    plugins: [
-                      'lists link autolink charmap preview searchreplace code fullscreen',
-                      'paste textcolor colorpicker image imagetools wordcount'
-                    ],
-                    menubar: '',
-                    toolbar: 'undo redo searchreplace | styleselect | bold italic underline strikethrough ' +
-                        'forecolor backcolor removeformat | bullist numlist | outdent indent | ' +
-                        'link image charmap table | code preview fullscreen'
+                    on: {
+                        instanceReady: function() {
+                            // This adds a listener to ckeditor to remove unwanted blank lines on import.
+                            // Clipboard content varies heavily in structure and html code, depending on the "sender".
+                            // Here it is first parsed into a pseudo-DOM (two lines taken from a ckeditor
+                            // paste example on the ckeditor site).
+                            this.on('paste', function(evt) {
+                                if (evt.data.type == 'html') {
+                                    var fragment = CKEDITOR.htmlParser.fragment.fromHtml(evt.data.dataValue);
+                                    var writer = new CKEDITOR.htmlParser.basicWriter();
+                                    // html content will now be in a dom-like structure inside 'fragment'.
+                                    this.filter.applyTo(fragment);
+                                    if (fragment.children) {
+                                        // If this fragment is DOM-like, it may contain nested properties
+                                        // (being html nodes). Traverse the children and check if it is a
+                                        // child only containing empty <br> or <p>.
+                                        // new_content_children will finally contain all nodes that are
+                                        // not empty.
+                                        var new_content_children = [];
+                                        _.forEach(fragment.children, function (child) {
+                                            var empty = true;
+                                            if (child.children){
+                                                _.forEach(child.children, function(grandchild) {
+                                                    if (grandchild.name != 'p' && grandchild.name != 'br') {
+                                                        empty = false;
+                                                    } else if (grandchild.isEmpty !== true) {
+                                                        empty = false;
+                                                    }
+                                                });
+                                                if (empty === false) {
+                                                    new_content_children.push(child);
+                                                }
+                                            } else {
+                                                if (child.name != 'p' && child.name != 'br' &&
+                                                    child.isEmpty !== true){
+                                                    new_content_children.push(child);
+                                                }
+                                            }
+                                        });
+                                        fragment.children = new_content_children;
+                                    }
+                                    fragment.writeHtml(writer);
+                                    // Return the re-created fragment without the empty <p> and <br> into the
+                                    // editor import processing (same as at the begin of the function: by ckeditor)
+                                    evt.data.dataValue = writer.getHtml();
+                                }
+                            });
+                        }
+                    },
+                    customConfig: '',
+                    disableNativeSpellChecker: false,
+                    language_list: [
+                        'fr:français',
+                        'es:español',
+                        'pt:português',
+                        'en:english',
+                        'de:deutsch',
+                        'cs:čeština'],
+                    language: gettextCatalog.getCurrentLanguage(),
+                    allowedContent:
+                        'h1 h2 h3 b i u strike sup sub strong em;' +
+                        'blockquote p pre table' +
+                        '(text-align-left,text-align-center,text-align-right,text-align-justify){text-align};' +
+                        'a[!href];' +
+                        'img[!src,alt]{width,height,float};' +
+                        'tr th td caption;' +
+                        'li; ol[start]{list-style-type};' +
+                        'ul{list-style};' +
+                        'span[data-line-number,contenteditable]{color,background-color}(os-line-number,line-number-*);' +
+                        'br(os-line-break);',
+
+                    // there seems to be an error in CKeditor that parses spaces in extraPlugins as part of the plugin name.
+                    extraPlugins: 'colorbutton,find,liststyle,sourcedialog,justify,showblocks',
+                    removePlugins: 'wsc,scayt,a11yhelp,filebrowser,sourcearea',
+                    removeButtons: 'Scayt,Anchor,Styles,HorizontalRule',
+                    toolbarGroups: [
+                        { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+                        { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
+                        { name: 'links', groups: [ 'links' ] },
+                        { name: 'insert', groups: [ 'insert' ] },
+                        { name: 'tools', groups: [ 'tools' ] },
+                        { name: 'document', groups: [ 'mode' ] },
+                        '/',
+                        { name: 'styles', groups: [ 'styles' ] },
+                        { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                        { name: 'colors', groups: [ 'colors' ] },
+                        { name: 'paragraph', groups: [ 'list', 'indent' ] },
+                        { name: 'align'},
+                        { name: 'paragraph', groups: [ 'blocks' ] }
+                    ]
                 };
             }
         };

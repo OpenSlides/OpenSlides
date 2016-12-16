@@ -546,7 +546,7 @@ angular.module('OpenSlidesApp.motions', [
                                 label: field.name,
                             },
                             data: {
-                                tinymceOption: Editor.getOptions()
+                                ckeditorOptions: Editor.getOptions()
                             },
                             hide: !operator.hasPerms("motions.can_see_and_manage_comments")
                         };

@@ -178,6 +178,7 @@ OpenSlides uses the following projects or parts of them:
   * `angular-bootstrap <http://angular-ui.github.io/bootstrap>`_, License: MIT
   * `angular-bootstrap-colorpicker <https://github.com/buberdds/angular-bootstrap-colorpicker>`_, License: MIT
   * `angular-chosen-localytics <http://github.com/leocaseiro/angular-chosen>`_, License: MIT
+  * `angular-ckeditor <https://github.com/lemonde/angular-ckeditor/>`_, License: MIT
   * `angular-csv-import <https://github.com/bahaaldine/angular-csv-import>`_, License: MIT
   * `angular-formly <http://formly-js.github.io/angular-formly/>`_, License: MIT
   * `angular-formly-templates-bootstrap <https://github.com/formly-js/angular-formly-templates-bootstrap>`_, License: MIT
@@ -189,13 +190,13 @@ OpenSlides uses the following projects or parts of them:
   * `angular-sanitize <http://angularjs.org>`_, License: MIT
   * `angular-scroll-glue <https://github.com/Luegg/angularjs-scroll-glue>`_, License: MIT
   * `angular-ui-router <http://angular-ui.github.io/ui-router/>`_, License: MIT
-  * `angular-ui-tinymce <http://angular-ui.github.com>`_, License: MIT
   * `angular-ui-tree <https://github.com/angular-ui-tree/angular-ui-tree>`_, License: MIT
   * `angular-xeditable <https://github.com/vitalets/angular-xeditable>`_, License: MIT
   * `api-check <https://github.com/kentcdodds/api-check>`_, License: MIT
   * `bootstrap <http://getbootstrap.com>`_, License: MIT
   * `bootstrap-ui-datetime-picker <https://github.com/Gillardo/bootstrap-ui-datetime-picker>`_, License: MIT
   * `chosen <http://harvesthq.github.io/chosen/>`_, License: MIT
+  * `ckeditor <http://ckeditor.com>`_,  License: GPL 2+, LGPL 2.1+ or MPL 1.1.
   * `font-awesome-bower <https://github.com/tdg5/font-awesome-bower>`_, License: MIT
   * `jquery <https://jquery.com>`_, License: MIT
   * `jquery.cookie <https://plugins.jquery.com/cookie>`_, License: MIT
@@ -210,8 +211,6 @@ OpenSlides uses the following projects or parts of them:
   * `open-sans-fontface <https://github.com/FontFaceKit/open-sans>`_, License: Apache License version 2.0
   * `pdfjs-dist <http://mozilla.github.io/pdf.js/>`_, License: Apache-2.0
   * `roboto-condensed <https://github.com/davidcunningham/roboto-condensed>`_, License: Apache 2.0
-  * `tinymce <http://www.tinymce.com>`_, License: LGPL-2.1
-  * `tinymce-i18n <https://github.com/OpenSlides/tinymce-i18n>`_, License: LGPL-2.1
 
 
 License and authors

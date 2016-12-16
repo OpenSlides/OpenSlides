@@ -108,37 +108,59 @@ gulp.task('angular-chosen-img', function () {
         .pipe(gulp.dest(path.join(output_directory, 'css')));
 });
 
-// Catches all skins files for TinyMCE editor.
-gulp.task('tinymce-skins', function () {
-    return gulp.src(path.join('bower_components', 'tinymce', 'skins', '**'))
-        .pipe(gulp.dest(path.join(output_directory, 'tinymce', 'skins')));
-});
-
-// Catches all required i18n files for TinyMCE editor.
-gulp.task('tinymce-i18n', function () {
+// CKEditor defaults
+gulp.task('ckeditor-defaults', function () {
     return gulp.src([
-            'bower_components/tinymce-i18n/langs/en_GB.js',
-            'bower_components/tinymce-i18n/langs/cs.js',
-            'bower_components/tinymce-i18n/langs/de.js',
-            'bower_components/tinymce-i18n/langs/es.js',
-            'bower_components/tinymce-i18n/langs/fr_FR.js',
-            'bower_components/tinymce-i18n/langs/pt_PT.js',
-            ])
-        .pipe(rename(function (path) {
-            if (path.basename === 'en_GB') {
-                path.basename = 'en';
-            } else if (path.basename === 'fr_FR') {
-                path.basename = 'fr';
-            } else if (path.basename === 'pt_PT') {
-                path.basename = 'pt';
-            }
-        }))
-        .pipe(gulpif(argv.production, uglify()))
-        .pipe(gulp.dest(path.join(output_directory, 'tinymce', 'i18n')));
+            path.join('bower_components', 'ckeditor', 'styles.js'),
+            path.join('bower_components', 'ckeditor', 'contents.css'),
+        ])
+        .pipe(gulp.dest(path.join(output_directory, 'ckeditor')));
 });
 
-// Combines all TinyMCE related tasks.
-gulp.task('tinymce', ['tinymce-skins', 'tinymce-i18n'], function () {});
+// CKEditor skins
+gulp.task('ckeditor-skins', function () {
+    return gulp.src([
+            path.join('bower_components', 'ckeditor', 'skins', 'moono-lisa', '**', '*'),
+        ],{ base: path.join('bower_components', 'ckeditor', 'skins') })
+        .pipe(gulp.dest(path.join(output_directory, 'ckeditor', 'skins')));
+});
+
+// CKEditor plugins
+gulp.task('ckeditor-plugins', function () {
+    return gulp.src([
+            path.join('bower_components', 'ckeditor', 'plugins', 'clipboard', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'colorbutton', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'dialog', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'find', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'image', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'justify', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'liststyle', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'magicline', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'pastefromword', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'panelbutton', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'showblocks', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'sourcedialog', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'table', '**', '*'),
+            path.join('bower_components', 'ckeditor', 'plugins', 'tabeltools', '**', '*'),
+        ],{ base: path.join('bower_components', 'ckeditor', 'plugins') })
+        .pipe(gulp.dest(path.join(output_directory, 'ckeditor', 'plugins')));
+});
+
+// CKEditor languages
+gulp.task('ckeditor-lang', function () {
+    return gulp.src([
+            path.join('bower_components', 'ckeditor', 'lang', 'en.js'),
+            path.join('bower_components', 'ckeditor', 'lang', 'de.js'),
+            path.join('bower_components', 'ckeditor', 'lang', 'pt.js'),
+            path.join('bower_components', 'ckeditor', 'lang', 'es.js'),
+            path.join('bower_components', 'ckeditor', 'lang', 'fr.js'),
+            path.join('bower_components', 'ckeditor', 'lang', 'cs.js'),
+        ])
+        .pipe(gulp.dest(path.join(output_directory, 'ckeditor', 'lang')));
+});
+
+// Combines all CKEditor related tasks.
+gulp.task('ckeditor', ['ckeditor-defaults', 'ckeditor-skins', 'ckeditor-plugins', 'ckeditor-lang'], function () {});
 
 // Compiles translation files (*.po) to *.json and saves them in the directory
 // openslides/static/i18n/.
@@ -151,7 +173,16 @@ gulp.task('translations', function () {
 });
 
 // Gulp default task. Runs all other tasks before.
-gulp.task('default', ['js', 'js-libs', 'templates', 'css-libs', 'fonts-libs', 'tinymce', 'angular-chosen-img', 'translations'], function () {});
+gulp.task('default', [
+        'js',
+        'js-libs',
+        'templates',
+        'css-libs',
+        'fonts-libs',
+        'ckeditor',
+        'angular-chosen-img',
+        'translations'
+    ], function () {});
 
 
 /**

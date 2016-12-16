@@ -446,7 +446,7 @@ angular.module('OpenSlidesApp.users.site', [
                         label: gettextCatalog.getString('About me'),
                     },
                     data: {
-                        tinymceOption: Editor.getOptions(images)
+                        ckeditorOptions: Editor.getOptions(images)
                     },
                     hideExpression: '!model.more'
                 }
@@ -801,7 +801,7 @@ angular.module('OpenSlidesApp.users.site', [
     'user',
     function($scope, $state, Editor, User, user) {
         $scope.user = user;  // autoupdate is not activated
-        $scope.tinymceOption = Editor.getOptions();
+        $scope.ckeditorOptions = Editor.getOptions();
         $scope.save = function (user) {
             User.save(user).then(
                 function(success) {
