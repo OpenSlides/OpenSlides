@@ -27,10 +27,10 @@
   font-style: normal;
 }
 
-body {
-    font-family: "Roboto", sans-serif;
+body,.ngdialog-content {
+    font-family: "Roboto", sans-serif !important;
 }
-strong, b, .os-table .title {
+strong, b, th, .os-table .title, .user_details label, .ngdialog label {
     font-family: "Roboto Medium";
     font-family: "Roboto Medium", sans-serif;
     font-weight: normal;
@@ -1258,7 +1258,6 @@ img {
     margin-bottom: 5px;
 }
 .user_details label {
-    font-weight: bold;
     margin: 10px 0 0 0;
     display: block;
 }
