@@ -1,4 +1,5 @@
 from ..utils.access_permissions import BaseAccessPermissions
+from ..utils.auth import has_perm
 
 
 class AssignmentAccessPermissions(BaseAccessPermissions):
@@ -9,7 +10,7 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        return user.has_perm('assignments.can_see')
+        return has_perm(user, 'assignments.can_see')
 
     def get_serializer_class(self, user=None):
         """
@@ -17,7 +18,7 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
         """
         from .serializers import AssignmentFullSerializer, AssignmentShortSerializer
 
-        if user is None or (user.has_perm('assignments.can_see') and user.has_perm('assignments.can_manage')):
+        if user is None or (has_perm(user, 'assignments.can_see') and has_perm(user, 'assignments.can_manage')):
             serializer_class = AssignmentFullSerializer
         else:
             serializer_class = AssignmentShortSerializer
@@ -29,9 +30,9 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
         for the user. Removes unpublished polls for non admins so that they
         only get a result like the AssignmentShortSerializer would give them.
         """
-        if user.has_perm('assignments.can_see') and user.has_perm('assignments.can_manage'):
+        if has_perm(user, 'assignments.can_see') and has_perm(user, 'assignments.can_manage'):
             data = full_data
-        elif user.has_perm('assignments.can_see'):
+        elif has_perm(user, 'assignments.can_see'):
             data = full_data.copy()
             data['polls'] = [poll for poll in data['polls'] if poll['published']]
         else:

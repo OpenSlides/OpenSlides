@@ -10,7 +10,7 @@ from openslides.core.models import Countdown
 from openslides.motions.models import Motion
 from openslides.topics.models import Topic
 from openslides.users.models import User
-from openslides.utils.test import TestCase
+from openslides.utils.test import TestCase, use_cache
 
 
 class RetrieveItem(TestCase):
@@ -64,36 +64,37 @@ class TestDBQueries(TestCase):
         Motion.objects.create(title='motion2')
         Assignment.objects.create(title='assignment', open_posts=5)
 
+    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 5 requests to get the session an the request user with its permissions,
+        * 4 requests to get the session an the request user with its permissions,
         * 2 requests to get the list of all agenda items,
         * 1 request to get all speakers,
         * 3 requests to get the assignments, motions and topics and
 
         * 2 requests for the motionsversions.
 
-        TODO: There could be less requests to get the session and the request user.
-        The last two request for the motionsversions are a bug.
+        TODO: The last two request for the motionsversions are a bug.
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(13):
+        with self.assertNumQueries(12):
             self.client.get(reverse('item-list'))
 
+    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
-        * 2 requests to get the permission for anonymous (config and permissions)
+        * 3 requests to get the permission for anonymous,
         * 2 requests to get the list of all agenda items,
         * 1 request to get all speakers,
         * 3 requests to get the assignments, motions and topics and
 
-        * 32 requests for the motionsversions.
+        * 2 requests for the motionsversions.
 
-        TODO: The last 32 requests are a bug.
+        TODO: The last two request for the motionsversions are a bug.
         """
-        with self.assertNumQueries(40):
+        with self.assertNumQueries(11):
             self.client.get(reverse('item-list'))
 
 

@@ -5,7 +5,7 @@ from rest_framework.test import APIClient
 from openslides.core.config import config
 from openslides.core.models import ChatMessage, Projector, Tag
 from openslides.users.models import User
-from openslides.utils.test import TestCase
+from openslides.utils.test import TestCase, use_cache
 
 
 class TestProjectorDBQueries(TestCase):
@@ -22,29 +22,27 @@ class TestProjectorDBQueries(TestCase):
         for index in range(10):
             Projector.objects.create(name="Projector{}".format(index))
 
+    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 5 requests to get the session an the request user with its permissions,
+        * 4 requests to get the session an the request user with its permissions,
         * 2 requests to get the list of all projectors,
         * 1 request to get the list of the projector defaults.
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(7):
             self.client.get(reverse('projector-list'))
 
+    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
-        * 2 requests to get the permission for anonymous (config and permissions)
+        * 3 requests to get the permission for anonymous,
         * 2 requests to get the list of all projectors,
         * 1 request to get the list of the projector defaults and
-
-        * 11 requests for permissions.
-
-        TODO: The last 11 requests are a bug.
         """
-        with self.assertNumQueries(16):
+        with self.assertNumQueries(6):
             self.client.get(reverse('projector-list'))
 
 
@@ -63,14 +61,15 @@ class TestCharmessageDBQueries(TestCase):
         for index in range(10):
             ChatMessage.objects.create(user=user)
 
+    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 5 requests to get the session an the request user with its permissions,
+        * 4 requests to get the session an the request user with its permissions,
         * 2 requests to get the list of all chatmessages,
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(7):
+        with self.assertNumQueries(6):
             self.client.get(reverse('chatmessage-list'))
 
 
@@ -88,6 +87,7 @@ class TestTagDBQueries(TestCase):
         for index in range(10):
             Tag.objects.create(name='tag{}'.format(index))
 
+    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
@@ -98,6 +98,7 @@ class TestTagDBQueries(TestCase):
         with self.assertNumQueries(4):
             self.client.get(reverse('tag-list'))
 
+    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
@@ -124,6 +125,7 @@ class TestConfigDBQueries(TestCase):
         self.client = APIClient()
         config['general_system_enable_anonymous'] = True
 
+    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
@@ -134,6 +136,7 @@ class TestConfigDBQueries(TestCase):
         with self.assertNumQueries(3):
             self.client.get(reverse('config-list'))
 
+    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:

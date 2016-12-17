@@ -1,20 +1,21 @@
 from random import choice
 
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import Group as DjangoGroup
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
-    Group,
+    GroupManager,
     Permission,
     PermissionsMixin,
 )
 from django.db import models
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 
 from openslides.utils.search import user_name_helper
 
 from ..utils.models import RESTModelMixin
-from .access_permissions import UserAccessPermissions
+from .access_permissions import GroupAccessPermissions, UserAccessPermissions
 
 
 class UserManager(BaseUserManager):
@@ -25,9 +26,16 @@ class UserManager(BaseUserManager):
     def get_full_queryset(self):
         """
         Returns the normal queryset with all users. In the background all
-        groups are prefetched from the database.
+        groups are prefetched from the database together with all permissions
+        and content types.
         """
-        return self.get_queryset().prefetch_related('groups')
+        return self.get_queryset().prefetch_related(Prefetch(
+            'groups',
+            queryset=Group.objects
+                          .select_related('group_ptr')
+                          .prefetch_related(Prefetch(
+                              'permissions',
+                              queryset=Permission.objects.select_related('content_type')))))
 
     def create_user(self, username, password, **kwargs):
         """
@@ -196,3 +204,30 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             user_name_helper(self),
             self.structure_level,
             self.about_me))
+
+
+class GroupManager(GroupManager):
+    """
+    Customized manager that supports our get_full_queryset method.
+    """
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all groups. In the background all
+        permissions with the content types are prefetched from the database.
+        """
+        return (self.get_queryset()
+                    .select_related('group_ptr')
+                    .prefetch_related(Prefetch(
+                        'permissions',
+                        queryset=Permission.objects.select_related('content_type'))))
+
+
+class Group(RESTModelMixin, DjangoGroup):
+    """
+    Extend the django group with support of our REST and caching system.
+    """
+    access_permissions = GroupAccessPermissions()
+    objects = GroupManager()
+
+    class Meta:
+        default_permissions = ()

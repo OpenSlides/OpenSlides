@@ -1,4 +1,3 @@
-import itertools
 import json
 from collections import Iterable
 
@@ -6,22 +5,12 @@ from asgiref.inmemory import ChannelLayer
 from channels import Channel, Group
 from channels.auth import channel_session_user, channel_session_user_from_http
 from django.db import transaction
-from django.utils import timezone
 
 from ..core.config import config
 from ..core.models import Projector
-from ..users.auth import AnonymousUser
-from ..users.models import User
+from .auth import AnonymousUser
+from .cache import websocket_user_cache
 from .collection import Collection, CollectionElement, CollectionElementList
-
-
-def get_logged_in_users():
-    """
-    Helper to get all logged in users.
-
-    Only works with the OpenSlides session backend.
-    """
-    return User.objects.exclude(session=None).filter(session__expire_date__gte=timezone.now()).distinct()
 
 
 @channel_session_user_from_http
@@ -31,7 +20,10 @@ def ws_add_site(message):
 
     The group with the name 'user-None' stands for all anonymous users.
     """
-    Group('user-{}'.format(message.user.id)).add(message.reply_channel)
+    Group('site').add(message.reply_channel)
+    message.channel_session['user_id'] = message.user.id
+    # Saves the reply channel to the user. Uses 0 for anonymous users.
+    websocket_user_cache.add(message.user.id or 0, message.reply_channel.name)
 
 
 @channel_session_user
@@ -39,7 +31,8 @@ def ws_disconnect_site(message):
     """
     This function is called, when a client on the site disconnects.
     """
-    Group('user-{}'.format(message.user.id)).discard(message.reply_channel)
+    Group('site').discard(message.reply_channel)
+    websocket_user_cache.remove(message.user.id or 0, message.reply_channel.name)
 
 
 @channel_session_user_from_http
@@ -104,12 +97,15 @@ def send_data(message):
     Informs all site users and projector clients about changed data.
     """
     collection_elements = CollectionElementList.from_channels_message(message)
-
-    # Loop over all logged in site users and the anonymous user and send changed data.
-    for user in itertools.chain(get_logged_in_users(), [AnonymousUser()]):
-        channel = Group('user-{}'.format(user.id))
+    for user_id, channel_names in websocket_user_cache.get_all().items():
+        if not user_id:
+            # Anonymous user
+            user = AnonymousUser()
+        else:
+            user = CollectionElement.from_values('users/user', user_id)
         output = collection_elements.as_autoupdate_for_user(user)
-        channel.send({'text': json.dumps(output)})
+        for channel_name in channel_names:
+            Channel(channel_name).send({'text': json.dumps(output)})
 
     # Check whether broadcast is active at the moment and set the local
     # projector queryset.

@@ -1,4 +1,5 @@
 from ..utils.access_permissions import BaseAccessPermissions
+from ..utils.auth import has_perm
 
 
 class TopicAccessPermissions(BaseAccessPermissions):
@@ -9,7 +10,7 @@ class TopicAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        return user.has_perm('agenda.can_see')
+        return has_perm(user, 'agenda.can_see')
 
     def get_serializer_class(self, user=None):
         """

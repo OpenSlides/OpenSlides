@@ -122,7 +122,7 @@ TODO: Configure postgresql
 
 2. Install python dependencies
 
-pip install django-redis asgi-redis psycopg2
+pip install django-redis asgi-redis django-redis-sessions psycopg2
 
 3. Change settings.py
 

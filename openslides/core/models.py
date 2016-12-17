@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib.sessions.models import Session as DjangoSession
 from django.db import models
 from django.utils.timezone import now
 from jsonfield import JSONField
@@ -340,22 +339,3 @@ class Countdown(RESTModelMixin, models.Model):
             self.running = False
             self.countdown_time = self.default_time
         self.save()
-
-
-class Session(DjangoSession):
-    """
-    Model like the Django db session, which saves the user as ForeignKey instead
-    of an encoded value.
-    """
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        null=True)
-
-    class Meta:
-        default_permissions = ()
-
-    @classmethod
-    def get_session_store_class(cls):
-        from .session_backend import SessionStore
-        return SessionStore

@@ -1,7 +1,11 @@
 from copy import deepcopy
 
+from django.contrib.auth import get_user_model
+
 from ..core.config import config
 from ..utils.access_permissions import BaseAccessPermissions
+from ..utils.auth import has_perm
+from ..utils.collection import CollectionElement
 
 
 class MotionAccessPermissions(BaseAccessPermissions):
@@ -12,7 +16,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        return user.has_perm('motions.can_see')
+        return has_perm(user, 'motions.can_see')
 
     def get_serializer_class(self, user=None):
         """
@@ -29,12 +33,25 @@ class MotionAccessPermissions(BaseAccessPermissions):
         the motion in this state. Removes non public comment fields for
         some unauthorized users.
         """
-        required_permission_to_see = full_data.get('state_required_permission_to_see')
+        if isinstance(user, get_user_model()):
+            # Converts a user object to a collection element.
+            # from_instance can not be used because the user serializer loads
+            # the group from the db. So each call to from_instance(user) consts
+            # one db query.
+            user = CollectionElement.from_values('users/user', user.id)
+
+        if isinstance(user, CollectionElement):
+            is_submitter = user.get_full_data()['id'] in full_data.get('submitters_id', [])
+        else:
+            # Anonymous users can not be submitters
+            is_submitter = False
+
+        required_permission_to_see = full_data['state_required_permission_to_see']
         if (not required_permission_to_see or
-                user.has_perm(required_permission_to_see) or
-                user.has_perm('motions.can_manage') or
-                user.pk in full_data.get('submitters_id', [])):
-            if user.has_perm('motions.can_see_and_manage_comments') or not full_data.get('comments'):
+                has_perm(user, required_permission_to_see) or
+                has_perm(user, 'motions.can_manage') or
+                is_submitter):
+            if has_perm(user, 'motions.can_see_and_manage_comments') or not full_data.get('comments'):
                 data = full_data
             else:
                 data = deepcopy(full_data)
@@ -74,7 +91,7 @@ class MotionChangeRecommendationAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        return user.has_perm('motions.can_see')
+        return has_perm(user, 'motions.can_see')
 
     def get_serializer_class(self, user=None):
         """
@@ -93,7 +110,7 @@ class CategoryAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        return user.has_perm('motions.can_see')
+        return has_perm(user, 'motions.can_see')
 
     def get_serializer_class(self, user=None):
         """
@@ -112,7 +129,7 @@ class MotionBlockAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        return user.has_perm('motions.can_see')
+        return has_perm(user, 'motions.can_see')
 
     def get_serializer_class(self, user=None):
         """
@@ -131,7 +148,7 @@ class WorkflowAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        return user.has_perm('motions.can_see')
+        return has_perm(user, 'motions.can_see')
 
     def get_serializer_class(self, user=None):
         """

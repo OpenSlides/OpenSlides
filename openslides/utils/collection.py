@@ -1,5 +1,7 @@
 from django.apps import apps
-from django.core.cache import cache, caches
+from django.core.cache import cache
+
+from .cache import get_redis_connection, use_redis_cache
 
 
 class CollectionElement:
@@ -37,6 +39,7 @@ class CollectionElement:
         self.full_data = full_data
         self.information = information or {}
         if instance is not None:
+            # Collection element is created via instance
             self.collection_string = instance.get_collection_string()
             from openslides.core.config import config
             if self.collection_string == config.get_collection_string():
@@ -45,6 +48,7 @@ class CollectionElement:
             else:
                 self.id = instance.pk
         elif collection_string is not None and id is not None:
+            # Collection element is created via values
             self.collection_string = collection_string
             self.id = id
         else:
@@ -511,19 +515,3 @@ def get_collection_id_from_cache_key(cache_key):
         # The id is no integer. This can happen on config elements
         pass
     return (collection_string, id)
-
-
-def use_redis_cache():
-    """
-    Returns True if Redis is used als caching backend.
-    """
-    try:
-        from django_redis.cache import RedisCache
-    except ImportError:
-        return False
-    return isinstance(caches['default'], RedisCache)
-
-
-def get_redis_connection():
-    from django_redis import get_redis_connection
-    return get_redis_connection("default")

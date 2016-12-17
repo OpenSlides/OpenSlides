@@ -14,7 +14,7 @@ from ..utils.rest_api import (
     status,
 )
 from ..utils.views import APIView
-from .access_permissions import UserAccessPermissions
+from .access_permissions import GroupAccessPermissions, UserAccessPermissions
 from .models import Group, User
 from .serializers import GroupSerializer
 
@@ -123,16 +123,19 @@ class GroupViewSet(ModelViewSet):
     partial_update, update and destroy.
     """
     metadata_class = GroupViewSetMetadata
-    queryset = Group.objects.prefetch_related('permissions', 'permissions__content_type')
+    queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    access_permissions = GroupAccessPermissions()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve'):
-            # Every authenticated user can see the metadata and list or
-            # retrieve groups. Anonymous users can do so if they are enabled.
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action == 'metadata':
+            # Every authenticated user can see the metadata.
+            # Anonymous users can do so if they are enabled.
             result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             # Users with all app permissions can edit groups.

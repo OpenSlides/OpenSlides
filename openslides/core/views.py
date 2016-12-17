@@ -571,7 +571,7 @@ class TagViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action == 'metadata':
-            # Every authenticated user can see the metadata and list tags.
+            # Every authenticated user can see the metadata.
             # Anonymous users can do so if they are enabled.
             result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
         elif self.action in ('create', 'update', 'destroy'):

@@ -1,4 +1,5 @@
 from ..utils.access_permissions import BaseAccessPermissions
+from ..utils.auth import has_perm
 
 
 class ItemAccessPermissions(BaseAccessPermissions):
@@ -9,7 +10,7 @@ class ItemAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        return user.has_perm('agenda.can_see')
+        return has_perm(user, 'agenda.can_see')
 
     def get_serializer_class(self, user=None):
         """
@@ -26,9 +27,9 @@ class ItemAccessPermissions(BaseAccessPermissions):
         Returns the restricted serialized data for the instance prepared
         for the user.
         """
-        if (user.has_perm('agenda.can_see') and
+        if (has_perm(user, 'agenda.can_see') and
             (not full_data['is_hidden'] or
-             user.has_perm('agenda.can_see_hidden_items'))):
+             has_perm(user, 'agenda.can_see_hidden_items'))):
             data = full_data
         else:
             data = None
