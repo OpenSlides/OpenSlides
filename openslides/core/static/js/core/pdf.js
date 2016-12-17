@@ -559,7 +559,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     currentParagraph = create("text");
                                     /* falls through */
                                 case "a":
-                                    parseChildren(alreadyConverted, element, currentParagraph, styles.concat(elementStyles[nodeName]), diff_mode);
+                                    currentParagraph = parseChildren(alreadyConverted, element, currentParagraph, styles.concat(elementStyles[nodeName]), diff_mode);
                                     alreadyConverted.push(currentParagraph);
                                     break;
                                 case "b":
@@ -569,7 +569,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "i":
                                 case "ins":
                                 case "del":
-                                    parseChildren(alreadyConverted, element, currentParagraph, styles.concat(elementStyles[nodeName]), diff_mode);
+                                    currentParagraph = parseChildren(alreadyConverted, element, currentParagraph, styles.concat(elementStyles[nodeName]), diff_mode);
                                     break;
                                 case "table":
                                     var t = create("table", {
@@ -581,7 +581,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     if (border)
                                         if (parseInt(border) == 1) isBorder = true;
                                     if (!isBorder) t.layout = 'noBorders';
-                                    parseChildren(t.table.body, element, currentParagraph, styles, diff_mode);
+                                    currentParagraph = parseChildren(t.table.body, element, currentParagraph, styles, diff_mode);
                                     var widths = element.getAttribute("widths");
                                     if (!widths) {
                                         if (t.table.body.length !== 0) {
@@ -596,11 +596,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     alreadyConverted.push(t);
                                     break;
                                 case "tbody":
-                                    parseChildren(alreadyConverted, element, currentParagraph, styles, diff_mode);
+                                    currentParagraph = parseChildren(alreadyConverted, element, currentParagraph, styles, diff_mode);
                                     break;
                                 case "tr":
                                     var row = [];
-                                    parseChildren(row, element, currentParagraph, styles, diff_mode);
+                                    currentParagraph = parseChildren(row, element, currentParagraph, styles, diff_mode);
                                     alreadyConverted.push(row);
                                     break;
                                 case "td":
@@ -613,7 +613,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     var cspan = element.getAttribute("colspan");
                                     if (cspan)
                                         st.colSpan = parseInt(cspan);
-                                    parseChildren(st.stack, element, currentParagraph, styles, diff_mode);
+                                    currentParagraph = parseChildren(st.stack, element, currentParagraph, styles, diff_mode);
                                     alreadyConverted.push(st);
                                     break;
                                 case "span":
@@ -628,7 +628,6 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                                     };
                                                 currentParagraph.text.push(lineNumberObjInline);
                                             }
-                                            parseChildren(alreadyConverted, element, currentParagraph, styles, diff_mode);
                                         } else if (lineNumberMode == "outside") {
                                             var lineNumberOutline;
                                             if (diff_mode == DIFF_MODE_INSERT) {
@@ -650,14 +649,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                             };
                                             currentParagraph = create("text");
                                             col.columns.push(currentParagraph);
-                                            parseChildren(col.columns[0], element, currentParagraph, styles, diff_mode);
                                             alreadyConverted.push(col);
                                         }
                                     }
                                     else {
-                                        var spanText = create("text", element.textContent.replace(/\n/g, ""));
-                                        ComputeStyle(spanText, styles);
-                                        currentParagraph.text.push(spanText);
+                                        currentParagraph = parseChildren(alreadyConverted, element, currentParagraph, styles, diff_mode);
                                     }
                                     break;
                                 case "br":
@@ -673,7 +669,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     var stackDiv = create("stack");
                                     stackDiv.stack.push(currentParagraph);
                                     ComputeStyle(stackDiv, styles);
-                                    parseChildren(stackDiv.stack, element, currentParagraph, [], diff_mode);
+                                    currentParagraph = parseChildren(stackDiv.stack, element, currentParagraph, [], diff_mode);
                                     alreadyConverted.push(stackDiv);
                                     break;
                                 case "p":
@@ -682,7 +678,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     var stackP = create("stack");
                                     stackP.stack.push(currentParagraph);
                                     ComputeStyle(stackP, styles);
-                                    parseChildren(stackP.stack, element, currentParagraph, [], diff_mode);
+                                    currentParagraph = parseChildren(stackP.stack, element, currentParagraph, [], diff_mode);
                                     alreadyConverted.push(stackP);
                                     break;
                                 case "img":
@@ -718,7 +714,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     var list = create(nodeName);
                                     if (lineNumberMode == "outside") {
                                         var lines = extractLineNumbers(element);
-                                        parseChildren(list[nodeName], element, currentParagraph, styles, diff_mode);
+                                        currentParagraph = parseChildren(list[nodeName], element, currentParagraph, styles, diff_mode);
                                         if (lines.length > 0) {
                                             var listCol = {
                                                     columns: [{
@@ -742,12 +738,13 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                             alreadyConverted.push(list);
                                         }
                                     } else {
-                                        parseChildren(list[nodeName], element, currentParagraph, styles, diff_mode);
+                                        currentParagraph = parseChildren(list[nodeName], element, currentParagraph, styles, diff_mode);
                                         alreadyConverted.push(list);
                                     }
                                     break;
                                 default:
                                     var defaultText = create("text", element.textContent.replace(/\n/g, ""));
+                                    ComputeStyle(defaultText, styles);
                                     if (!currentParagraph) {
                                         currentParagraph = {};
                                         currentParagraph.text = [];
