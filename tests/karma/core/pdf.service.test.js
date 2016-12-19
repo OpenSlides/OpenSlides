@@ -70,12 +70,6 @@ describe('pdf', function () {
                     "stack": [{
                         "text": [
                             {"text": "1", "color": "gray", "fontSize": 5},
-                            {"text": " "},
-                            {
-                                "text": null,
-                                "color": "gray",
-                                "fontSize": 5
-                            },
                             {"text": "Test"}
                         ], "margin": [0, 5]
                     }]
@@ -99,7 +93,7 @@ describe('pdf', function () {
                         "color": "gray",
                         "fontSize": 8,
                         "margin": [0, 2, 0, 0]
-                    }, {"text": [{"text": " "}, {"text": "Test "}]}]
+                    }, {"text": [{"text": "Test "}]}]
                 }, {"text": []}, {
                     "columns": [{
                         "width": 20,
@@ -107,7 +101,7 @@ describe('pdf', function () {
                         "color": "gray",
                         "fontSize": 8,
                         "margin": [0, 2, 0, 0]
-                    }, {"text": [{"text": " "}, {"text": "Test2 "}]}]
+                    }, {"text": [{"text": "Test2 "}]}]
                 }, {"text": []}, {
                     "columns": [{
                         "width": 20,
@@ -115,7 +109,7 @@ describe('pdf', function () {
                         "color": "gray",
                         "fontSize": 8,
                         "margin": [0, 2, 0, 0]
-                    }, {"text": [{"text": " "}, {"text": "Test3"}]}]
+                    }, {"text": [{"text": "Test3"}]}]
                 }]
             }));
             expect(JSON.stringify(pdfmake[2])).toBe(emptyline);
@@ -170,5 +164,153 @@ describe('pdf', function () {
             // the actual result is's the point here; only that it doesn't throw an exception
             expect(JSON.stringify(pdfmake[0])).toBe(emptyline);
         });
+
+        it('handles line breaks inside inline elements (outside)', function() {
+            var inHtml = '<p>tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <strong>At vero eos et accusam</strong> et justo duo dolores et ea rebum.</p>',
+                numberedHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+
+            var instance = PdfMakeConverter.createInstance();
+            var pdfmake = instance.convertHTML(numberedHtml, 'outside');
+            expect(JSON.stringify(pdfmake[1])).toBe(JSON.stringify(
+                {
+                    "stack": [
+                        {"text": [], "margin": [0, 5]},
+                        {
+                            "columns": [
+                                {
+                                    "width": 20,
+                                    "text": "1",
+                                    "color": "gray",
+                                    "fontSize": 8,
+                                    "margin": [0, 2, 0, 0]
+                                },
+                                {
+                                    "text": [
+                                        {"text": "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. "},
+                                        {"text": "At ", "bold": true}
+                                    ]
+                                }
+                            ]
+                        },
+                        {"text": []},
+                        {
+                            "columns": [
+                                {
+                                    "width": 20,
+                                    "text": "2",
+                                    "color": "gray",
+                                    "fontSize": 8,
+                                    "margin": [0, 2, 0, 0]
+                                },
+                                {
+                                    "text": [
+                                        {"text": "vero eos et accusam", "bold": true},
+                                        {"text": " et justo duo dolores et ea rebum."}
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ));
+        });
+
+        it('handles line breaks inside inline elements (inline)', function() {
+            var inHtml = '<p>tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <strong>At vero eos et accusam</strong> et justo duo dolores et ea rebum.</p>',
+                numberedHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+
+            var instance = PdfMakeConverter.createInstance();
+            var pdfmake = instance.convertHTML(numberedHtml, 'inline');
+            expect(JSON.stringify(pdfmake[1])).toBe(JSON.stringify(
+                {"stack": [
+                    {"text": [
+                        {"text": "1", "color": "gray", "fontSize": 5 },
+                        {"text": "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. "},
+                        {"text": "At ", "bold": true },
+                        {"text": "2", "color": "gray", "fontSize": 5},
+                        {"text": "vero eos et accusam", "bold": true },
+                        {"text": " et justo duo dolores et ea rebum."}
+                    ], "margin": [0, 5]
+                    }
+                ]}
+            ));
+        });
+
+        it('handles line breaks inside lists', function() {
+            var inHtml = '<ol><li>Lorem ipsum dolor sit<br>amet, <u>consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</u>, sed diam voluptua.</li></ol>',
+                numberedHtml = lineNumberingService.insertLineNumbers(inHtml, 80)
+
+            var instance = PdfMakeConverter.createInstance();
+            var pdfmake = instance.convertHTML(numberedHtml, 'outside');
+            expect(JSON.stringify(pdfmake[1])).toBe(JSON.stringify(
+                {
+                    "columns":[
+                        {
+                            "width": 20,
+                            "stack": [
+                                {"width": 20,"text": "1","color": "gray","fontSize": 8,"margin": [0, 2.35, 0, 0]},
+                                {"width": 20,"text": "2","color": "gray","fontSize": 8,"margin": [0, 2.35, 0, 0]},
+                                {"width": 20,"text": "3","color": "gray","fontSize": 8,"margin": [0, 2.35, 0, 0]}
+                            ]
+                        },
+                        {"ol": [
+                            {"stack": [
+                                {
+                                    "text": [
+                                        {"text": "Lorem ipsum dolor sit"}
+                                    ]
+                                },
+                                {
+                                    "text": [
+                                        {"text": "amet, "},
+                                        {"text": "consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ","decoration": "underline"}
+                                    ]
+                                },
+                                {
+                                    "text": [
+                                        {"text": "ut labore et dolore magna aliquyam erat","decoration": "underline"},
+                                        {"text": ", sed diam voluptua."}
+                                    ]
+                                }
+                            ]}
+                        ]}
+                    ],
+                    "margin":[0,10,0,0]
+                }
+            ));
+        });
+
+        it('handles styled SPANs within Ps', function() {
+            var inHtml = '<p><span style="font-weight: bold;">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</span></p>',
+                numberedHtml = lineNumberingService.insertLineNumbers(inHtml, 80)
+
+            var instance = PdfMakeConverter.createInstance();
+            var pdfmake = instance.convertHTML(numberedHtml, 'outside');
+            expect(JSON.stringify(pdfmake[1])).toBe(JSON.stringify(
+                {
+                    "stack": [
+                        {"text": [], "margin": [0, 5]},
+                        {
+                            "columns": [
+                                { "width": 20, "text": "1", "color": "gray", "fontSize": 8, "margin": [0, 2, 0, 0]},
+                                { "text": [
+                                    { "text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod ", "bold": true }
+                                ]}
+                            ]
+                        },
+                        {"text":[]},
+                        {
+                            "columns": [
+                                { "width": 20, "text": "2", "color": "gray", "fontSize": 8, "margin": [0, 2, 0, 0] },
+                                { "text": [
+                                    { "text": "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.", "bold": true }
+                                ]}
+                            ]
+                        }
+                    ]
+                }
+            ));
+        });
     });
 });
+
