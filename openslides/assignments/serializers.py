@@ -32,7 +32,8 @@ class AssignmentRelatedUserSerializer(ModelSerializer):
             'id',
             'user',
             'elected',
-            'assignment')  # js-data needs the assignment-id in the nested object to define relations.
+            'assignment',
+            'weight')  # js-data needs the assignment-id in the nested object to define relations.
 
 
 class AssignmentVoteSerializer(ModelSerializer):
@@ -53,7 +54,7 @@ class AssignmentOptionSerializer(ModelSerializer):
 
     class Meta:
         model = AssignmentOption
-        fields = ('id', 'candidate', 'is_elected', 'votes', 'poll')
+        fields = ('id', 'candidate', 'is_elected', 'votes', 'poll', 'weight')
 
     def get_is_elected(self, obj):
         """

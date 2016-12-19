@@ -3,6 +3,7 @@ from django.db import transaction
 from django.utils.translation import ugettext as _
 
 from openslides.core.config import config
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.rest_api import (
     GenericViewSet,
@@ -211,8 +212,11 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         with transaction.atomic():
             for speaker in valid_speakers:
                 speaker.weight = weight
-                speaker.save()
+                speaker.save(skip_autoupdate=True)
                 weight += 1
+
+        # send autoupdate
+        inform_changed_data(item)
 
         # Initiate response.
         return Response({'detail': _('List of speakers successfully sorted.')})
