@@ -12,20 +12,15 @@ Agenda:
 - Added button to remove all speakers from a list of speakers.
 - Added option to create or edit agenda items as subitems of others.
 
-Assignments:
-- Remove unused assignment config to publish winner election results only.
-- Added options to calculate percentages on different bases.
-- Added majority calculation.
-
 Core:
 - Added support for multiple projectors.
-- Control the resolution of projectors.
-- Use pdfMake for clientside generation of PDFs.
+- Added control for the resolution of the projectors.
+- Used pdfMake for clientside generation of PDFs.
 - Introduced new table design for list views with serveral filters and
-  csv export.
-- Use session cookies and store filter settings in sessionStorage.
-- A lot of autoupdate improvements for projector and site.
-- Use Roboto font in all templates.
+  CSV export.
+- Used session cookies and store filter settings in session storage.
+- Made a lot of autoupdate improvements for projector and site.
+- Used Roboto font in all templates.
 - Added HTML support for messages on the projector.
 - Moved custom slides to own app "topics". Renamed it to "Topic".
 - Added an overlay for the current list of speakers.
@@ -33,50 +28,53 @@ Core:
 - Switched editor back from TinyMCE to CKEditor which provides a
   better copy/paste support from MS Word.
 - Added template hook system for plugins.
-- Prepare migrations for 2.1b1.
-- Many code clean up, improvements and bug fixes in client and
+- Made a lot of code clean up, improvements and bug fixes in client and
   backend.
 
 Motions:
-- Adjustable line numbering mode (outside, inside, none) for each
+- Added adjustable line numbering mode (outside, inside, none) for each
   motion text.
-- Allow to add change recommendations for special motion text lines
+- Allowed to add change recommendations for special motion text lines
   (with diff mode).
 - Added button to sort and number all motions in a category.
 - Added recommendations for motions.
 - Added options to calculate percentages on different bases.
 - Added calculation for required majority.
-- Added blocks for motions which can set as agenda item.
-  Set states for multiple motions of a motion block by following
-  the recommendations of each motion.
+- Added blocks for motions which can be used in agenda. Set states for
+  multiple motions of a motion block by following the recommendation for
+  each motion.
 - Used global config variable for preamble.
 - Added configurable fields for comments.
 - Added new origin field.
 - Reimplemented amendments.
-- New pdf layout.
-- Added docx export with docxtemplater.
+- New PDF layout.
+- Added DOCX export with docxtemplater.
 - Changed label of former state "commited a bill" to "refered to committee".
 
 Elections:
+- Added options to calculate percentages on different bases.
 - Added calculation for required majority.
+- Candidates are now sortable.
+- Removed unused assignment config to publish winner election results only.
 
 Users:
 - Added new matrix-interface for managing groups and their permissions.
 - Improved password reset view for administrators.
-- Use unchanged initial password.
+- Changed field for initial password to an unchangeable field.
 - Added new field for participant number.
 - Added new field 'is_committee' and new default group 'Committees'.
-- Improved users csv import (use group names instead of id).
+- Improved users CSV import (use group names instead of id).
 
 Other:
 - Django 1.10 is now supported. Dropped support for Django 1.8 and 1.9.
 - Removed config cache to support multiple threads or processes.
 - Fixed bug, that the last change of a config value was not send via autoupdate.
-- Added template hooks for plugins (in item detail view and motion poll form).
 - Added support for big assemblies with lots of users.
-- Used Django Channels instead of Tornado. Refactoring of the autoupdate process.
+- Used Django Channels instead of Tornado. Refactoring of the autoupdate
+  process.
 - Added new caching system with support for Redis.
 - Support https as websocket protocol (wss).
+- Added migration path from 2.0.
 
 
 Version 2.0 (2016-04-18)
