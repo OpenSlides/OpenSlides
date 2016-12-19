@@ -1486,10 +1486,11 @@ angular.module('OpenSlidesApp.users.site', [
         // login
         $scope.login = function () {
             $scope.alerts = [];
-            $http.post(
-                '/users/login/',
-                {'username': $scope.username, 'password': $scope.password}
-            ).then(
+            var data = { 'username': $scope.username, 'password': $scope.password };
+            if (!navigator.cookieEnabled) {
+                data.cookies = false;
+            }
+            $http.post('/users/login/', data).then(
                 function (response) {
                     // Success: User logged in.
                     operator.setUser(response.data.user_id);

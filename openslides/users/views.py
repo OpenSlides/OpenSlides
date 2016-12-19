@@ -164,6 +164,9 @@ class UserLoginView(APIView):
     http_method_names = ['get', 'post']
 
     def post(self, *args, **kwargs):
+        # If the client tells that cookies are disabled, do not continue as guest (if enabled)
+        if not self.request.data.get('cookies', True):
+            raise ValidationError({'detail': _('Cookies have to be enabled to use OpenSlides.')})
         form = AuthenticationForm(self.request, data=self.request.data)
         if not form.is_valid():
             raise ValidationError({'detail': _('Username or password is not correct.')})
