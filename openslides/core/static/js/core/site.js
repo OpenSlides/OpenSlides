@@ -1473,6 +1473,8 @@ angular.module('OpenSlidesApp.core.site', [
                 '"static/img/logo-projector.png" in your OpenSlides data ' +
                 'path.');
         gettext('Projector');
+        gettext('Projector language');
+        gettext('Current browser language');
         gettext('Show title and description of event on projector');
         gettext('Background color of projector header and footer');
         gettext('Font color of projector header and footer');

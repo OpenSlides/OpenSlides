@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-controller="ProjectorContainerCtrl" lang="en" class="no-js">
+<html lang="{{ selectedLanguage }}" ng-controller="LanguageCtrl" class="no-js">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <base href="/">
@@ -13,7 +13,7 @@
 <script src="static/js/openslides.js"></script>
 <script src="static/js/openslides-templates.js"></script>
 
-<div class="pContainer">
+<div class="pContainer" ng-controller="ProjectorContainerCtrl">
   <div>
     <style>
       .pContainer #iframe {
