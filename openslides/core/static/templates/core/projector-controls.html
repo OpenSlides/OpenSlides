@@ -38,7 +38,7 @@
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu dropdown-entries" aria-labelledby="menuProjector">
-                <li ng-repeat="projector in projectors">
+                <li ng-repeat="projector in projectors | orderBy:'id'">
                   <a href ng-class="{'projected': projector === active_projector}"
                     ng-click="changeProjector(projector)">
                     <i ng-show="projector === active_projector" class="fa fa-check"></i>

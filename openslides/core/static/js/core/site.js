@@ -1021,6 +1021,7 @@ angular.module('OpenSlidesApp.core.site', [
     '$interval',
     '$state',
     '$q',
+    '$filter',
     'Config',
     'Projector',
     'CurrentListOfSpeakersItem',
@@ -1031,7 +1032,7 @@ angular.module('OpenSlidesApp.core.site', [
     'gettextCatalog',
     'ngDialog',
     'ProjectorMessageForm',
-    function($scope, $http, $interval, $state, $q, Config, Projector, CurrentListOfSpeakersItem,
+    function($scope, $http, $interval, $state, $q, $filter, Config, Projector, CurrentListOfSpeakersItem,
         ListOfSpeakersOverlay, ProjectionDefault, ProjectorMessage, Countdown, gettextCatalog,
         ngDialog, ProjectorMessageForm) {
         ProjectorMessage.bindAll({}, $scope, 'messages');
@@ -1072,7 +1073,7 @@ angular.module('OpenSlidesApp.core.site', [
         }, function () {
             $scope.projectors = Projector.getAll();
             if (!$scope.active_projector) {
-                $scope.changeProjector($scope.projectors[0]);
+                $scope.changeProjector($filter('orderBy')($scope.projectors, 'id')[0]);
             }
 
             $scope.messageDefaultProjectorId = ProjectionDefault.filter({name: 'messages'})[0].projector_id;

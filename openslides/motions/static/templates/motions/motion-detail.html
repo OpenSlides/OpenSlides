@@ -11,9 +11,42 @@
         <i class="fa fa-microphone fa-lg"></i>
         <translate>List of speakers</translate>
       </a>
-      <!-- project -->
-      <projector-button model="motion" default-projector-id="defaultProjectorId">
-      </projector-button>
+      <!-- project button -->
+      <div class="btn-group button" uib-dropdown
+           uib-tooltip="{{ 'Projector' | translate }} {{ motion.isProjected()[0] || '' }} ({{ projectionMode.label | translate }})"
+        tooltip-enable="motion.isProjected().length"
+        os-perms="core.can_manage_projector">
+        <button type="button" class="btn btn-default btn-sm"
+            title="{{ 'Project motion' | translate }}"
+            ng-click="motion.project(defaultProjectorId, projectionMode.mode)"
+            ng-class="{ 'btn-primary': motion.isProjected().length && inArray(motion.isProjected(), defaultProjectorId)}">
+          <i class="fa fa-video-camera"></i>
+        </button>
+        <button type="button" class="btn btn-default btn-sm slimDropDown" uib-dropdown-toggle
+            ng-if="projectors.length > 1 || change_recommendations.length"
+            ng-class="{ 'btn-primary': motion.isProjected().length && !inArray(motion.isProjected(), defaultProjectorId)}">
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="split-button"
+          ng-if="projectors.length > 1 || change_recommendations.length">
+          <li role="menuitem" ng-repeat="mode in projectionModes" ng-if="change_recommendations.length">
+            <a href="" ng-click="setProjectionMode(mode, $event);">
+              <i class="fa" ng-class="mode.mode == $parent.projectionMode.mode ? 'fa-check-square-o' : 'fa-square-o'"></i>
+              <span ng-if="mode.mode!='agreed'">{{ mode.label | translate }}</span>
+              <span ng-if="mode.mode=='agreed'"><translate translate-context="decision making">Resolution</translate></span
+            </a>
+          </li>
+          <li class="divider" ng-show="projectors.length > 1 && change_recommendations.length > 0"></li>
+          <li role="menuitem" ng-repeat="projector in projectors | orderBy:'id'" ng-show="projectors.length > 1">
+            <a href="" ng-click="motion.project(projector.id, projectionMode.mode)"
+              ng-class="{ 'projected': inArray(motion.isProjected(), projector.id) }">
+              <i class="fa fa-video-camera" ng-show="inArray(motion.isProjected(), projector.id) "></i>
+              {{ projector.name | translate }}
+              <span ng-if="projector.id === defaultProjectorId">(<translate>Default</translate>)</span>
+            </a>
+          </li>
+        </ul>
+      </div>
       <!-- edit -->
       <a ng-if="motion.isAllowed('update')" ng-click="openDialog(motion)"
           class="btn btn-default btn-sm"

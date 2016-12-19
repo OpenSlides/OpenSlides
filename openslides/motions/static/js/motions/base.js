@@ -191,6 +191,7 @@ angular.module('OpenSlidesApp.motions', [
 
 .factory('Motion', [
     'DS',
+    '$http',
     'MotionPoll',
     'MotionChangeRecommendation',
     'MotionComment',
@@ -201,8 +202,9 @@ angular.module('OpenSlidesApp.motions', [
     'Config',
     'lineNumberingService',
     'diffService',
-    function(DS, MotionPoll, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog, operator, Config,
-             lineNumberingService, diffService) {
+    'Projector',
+    function(DS, $http, MotionPoll, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog,
+        operator, Config, lineNumberingService, diffService, Projector) {
         var name = 'motions/motion';
         return DS.defineResource({
             name: name,
@@ -469,7 +471,43 @@ angular.module('OpenSlidesApp.motions', [
                         default:
                             return false;
                     }
-                }
+                },
+                // Overrides from jsDataModel factory
+                project: function (projectorId, mode) {
+                    // if this object is already projected on projectorId, delete this element from this projector
+                    var isProjectedIds = this.isProjected(mode);
+                    _.forEach(isProjectedIds, function (id) {
+                        $http.post('/rest/core/projector/' + id + '/clear_elements/');
+                    });
+                    mode = mode || 'original';
+                    // Show the element, if it was not projected before on the given projector
+                    if (_.indexOf(isProjectedIds, projectorId) === -1) {
+                        return $http.post(
+                            '/rest/core/projector/' + projectorId + '/prune_elements/',
+                            [{name: name,
+                              id: this.id,
+                              mode: mode}]
+                        );
+                    }
+                },
+                isProjected: function (mode) {
+                    var self = this;
+                    var predicate = function (element) {
+                        var value = element.name === name &&
+                            element.id === self.id;
+                        if (mode) {
+                            value = value && (element.mode === mode);
+                        }
+                        return value;
+                    };
+                    var projectorIds = [];
+                    _.forEach(Projector.getAll(), function (projector) {
+                        if (typeof _.findKey(projector.elements, predicate) === 'string') {
+                            projectorIds.push(projector.id);
+                        }
+                    });
+                    return projectorIds;
+                },
             },
             relations: {
                 belongsTo: {

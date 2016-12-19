@@ -1116,6 +1116,7 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.$watch(function () {
             return Projector.lastModified();
         }, function () {
+            $scope.projectors = Projector.getAll();
             $scope.defaultProjectorId = ProjectionDefault.filter({name: 'motions'})[0].projector_id;
         });
         $scope.$watch(function () {
@@ -1124,6 +1125,44 @@ angular.module('OpenSlidesApp.motions.site', [
             $scope.motion = Motion.get(motion.id);
             MotionComment.populateFields($scope.motion);
         });
+        $scope.projectionModes = [
+            {mode: 'original',
+            label: 'Original version'},
+            {mode: 'changed',
+            label: 'Changed version'},
+            {mode: 'diff',
+            label: 'Diff version'},
+            {mode: 'agreed',
+            label: 'Resolution'},
+        ];
+        var getProjectionMode = function () {
+            var projectedIds = motion.isProjected();
+            if (projectedIds.length) {
+                var element = _.find(Projector.get(projectedIds[0]).elements, function (element) {
+                    return element.name === 'motions/motion' && element.id === motion.id;
+                });
+                var modeName = element.mode || 'original', mode;
+                _.forEach($scope.projectionModes, function (_mode) {
+                    if (_mode.mode === modeName) {
+                        mode = _mode;
+                    }
+                });
+                return mode || $scope.projectionModes[0];
+            } else {
+                return $scope.projectionModes[0];
+            }
+        };
+        $scope.projectionMode = getProjectionMode();
+        $scope.setProjectionMode = function (mode, event) {
+            $scope.projectionMode = mode;
+
+            var projectedIds = motion.isProjected();
+            _.forEach(projectedIds, function (id) {
+                motion.project(id, mode.mode);
+            });
+
+            event.stopPropagation();
+        };
         $scope.commentsFields = Config.get('motions_comments').value;
         $scope.commentFieldForState = MotionComment.getFieldNameForFlag('forState');
         $scope.commentFieldForRecommendation = MotionComment.getFieldNameForFlag('forRecommendation');

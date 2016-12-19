@@ -44,7 +44,7 @@
             </a>
           </li>
           <li class="divider" ng-show="agendaHasSubitems && projectors.length > 1"></li>
-          <li role="menuitem" ng-repeat="projector in projectors" ng-show="projectors.length > 1">
+          <li role="menuitem" ng-repeat="projector in projectors | orderBy:'id'" ng-show="projectors.length > 1">
             <a href="" ng-click="projectAgenda(projectorId=projector.id, tree=mainListTree)"
               ng-class="{ 'projected': inArray(isAgendaProjected(mainListTree), projector.id) }">
               <i class="fa fa-video-camera" ng-show="inArray(isAgendaProjected(mainListTree), projector.id) "></i>
@@ -245,7 +245,7 @@
               </a>
             </li>
             <li class="divider" ng-show="item.hasSubitems(items)"></li>
-            <li role="menuitem" ng-repeat="projector in projectors">
+            <li role="menuitem" ng-repeat="projector in projectors | orderBy:'id'">
               <a href="" ng-click="item.project(projector.id, item.tree)"
                 ng-class="{ 'projected': inArray(item.isProjected(item.tree), projector.id) }">
                 <i class="fa fa-video-camera" ng-show="inArray(item.isProjected(item.tree), projector.id)"></i>

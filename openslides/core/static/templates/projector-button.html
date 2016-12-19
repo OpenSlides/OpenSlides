@@ -15,7 +15,7 @@
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu" ng-if="projectors.length > 1">
-    <li role="menuitem" ng-repeat="projector in projectors">
+    <li role="menuitem" ng-repeat="projector in projectors | orderBy:'id'">
       <a href="" ng-click="model.project(projector.id, arg)"
         ng-class="{ 'projected': inArray(model.isProjected(arg), projector.id) }">
         <i class="fa fa-video-camera" ng-show="inArray(model.isProjected(arg), projector.id)"></i>
