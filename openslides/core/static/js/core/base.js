@@ -852,48 +852,105 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+/* Two functions to convert between time duration in seconds <-> human readable time span.
+ * E.g. 90 sec <-> 1:30 (min), 3661 sec <-> 1:01:01 (h)
+ *
+ * secondsToHumanTime: Expects seconds and give [h*:]mm[:ss]. The minutes part is always given, the hours
+ *      and minutes could be controlled. The default are forced seconds and hours just if it is not 0.
+ *      - seconds ('enabled', 'auto', 'disabled'): Whether to show seconds (Default 'enabled')
+ *      - hours ('enabled', 'auto', 'disabled'): Whether to show hours (Default 'auto')
+ *
+ * humanTimeToSeconds: Expects [h*:]m*[:s*] with each part could have a variable length. The parsed time is
+ *      in seconds. Minutes have to be given and hours and seconds are optional. One have to set 'seconds' or
+ *      'hours' to true toparse these.
+ *
+ * params could be an object with the given settings, e.g. {ignoreHours: true}
+ */
+.factory('HumanTimeConverter', [
+    function () {
+        return {
+            secondsToHumanTime: function (seconds, params) {
+                if (!params) {
+                    params = {seconds: 'enabled', hours: 'auto'};
+                }
+                if (!params.seconds) {
+                    params.seconds = 'enabled';
+
+                }
+                if (!params.hours) {
+                    params.hours = 'auto';
+                }
+                var time;
+                // floor returns the largest integer of the absolut value of seconds
+                var total = Math.floor(Math.abs(seconds));
+                var h = Math.floor(total / 3600);
+                var m = Math.floor(total % 3600 / 60);
+                var s = Math.floor(total % 60);
+                // Add leading "0" for double digit values
+                time = ('0'+m).slice(-2); //minutes
+                if ((params.seconds == 'auto' && s > 0) || params.seconds == 'enabled') {
+                    s = ('0'+s).slice(-2);
+                    time =  time + ':' + s;
+                }
+                if ((params.hours == 'auto' && h > 0) || params.hours == 'enabled') {
+                    time = h + ':' + time;
+                }
+                if (seconds < 0) {
+                    time = '-'+time;
+                }
+                return time;
+            },
+            humanTimeToSeconds: function (data, params) {
+                if (!params) {
+                    params = {seconds: false, hours: false};
+                }
+                var minLength = 1;
+                if (params.seconds) {
+                    minLength++;
+                }
+                if (params.hours){
+                    minLength++;
+                }
+
+                var negative = data.charAt(0) == '-';
+                var time = data.split(':');
+                data = 0;
+                if (time.length >= minLength) {
+                    for (var i = 0; i < minLength; i++) {
+                        data = data*60 + (+time[i]);
+                    }
+                    if (!params.seconds) { // the last field was minutes (e.g. h:mm)
+                        data *= 60;
+                    }
+                    if (negative) {
+                        data = -data;
+                    }
+                }
+                return data;
+            },
+        };
+    }
+])
+
 /* Converts number of seconds into string "h:mm:ss" or "mm:ss" */
 .filter('osSecondsToTime', [
-    function () {
-        return function (totalseconds) {
-            var time;
-            // floor returns the largest integer of the absolut value of totalseconds
-            var total = Math.floor(Math.abs(totalseconds));
-            var h = Math.floor(total / 3600);
-            var mm = Math.floor(total % 3600 / 60);
-            var ss = Math.floor(total % 60);
-            var zero = "0";
-            // Add leading "0" for double digit values
-            mm = (zero+mm).slice(-2);
-            ss = (zero+ss).slice(-2);
-            if (h == "0")
-                time =  mm + ':' + ss;
-            else
-                time = h + ":" + mm + ":" + ss;
-            if (totalseconds < 0)
-                time = "-"+time;
-            return time;
+    'HumanTimeConverter',
+    function (HumanTimeConverter) {
+        return function (seconds) {
+            return HumanTimeConverter.secondsToHumanTime(seconds);
         };
     }
 ])
 
 /* Converts number of minutes into string "h:mm" or "hh:mm" */
 .filter('osMinutesToTime', [
-    function () {
-        return function (totalminutes) {
-            var time = '';
-            if (totalminutes) {
-                if (totalminutes < 0) {
-                    time = "-";
-                    totalminutes = -totalminutes;
-                }
-                var hh = Math.floor(totalminutes / 60);
-                var mm = Math.floor(totalminutes % 60);
-                // Add leading "0" for double digit values
-                mm = ("0" + mm).slice(-2);
-                time += hh + ":" + mm;
-            }
-            return time;
+    'HumanTimeConverter',
+    function (HumanTimeConverter) {
+        return function (minutes) {
+            return HumanTimeConverter.secondsToHumanTime(minutes*60,
+                { seconds: 'disabled',
+                    hours: 'enabled' }
+            );
         };
     }
 ])

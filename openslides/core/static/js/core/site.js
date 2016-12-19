@@ -1338,40 +1338,19 @@ angular.module('OpenSlidesApp.core.site', [
 
 // format time string for model ("s") and view format ("h:mm:ss" or "mm:ss")
 .directive('minSecFormat', [
-    function () {
+    'HumanTimeConverter',
+    function (HumanTimeConverter) {
         return {
             require: 'ngModel',
             link: function(scope, element, attrs, ngModelController) {
                 ngModelController.$parsers.push(function(data) {
                     //convert data from view format (mm:ss) to model format (s)
-                    var time = data.split(':');
-                    if (time.length > 1) {
-                        data = (+time[0]) * 60 + (+time[1]);
-                        if (data < 0) {
-                            data = "-"+data;
-                        }
-                    }
-                    return data;
+                    return HumanTimeConverter.humanTimeToSeconds(data, {seconds: true});
                 });
 
                 ngModelController.$formatters.push(function(data) {
                     //convert data from model format (s) to view format (mm:ss)
-                    var time;
-                    // floor returns the largest integer of the absolut value of totalseconds
-                    var total = Math.floor(Math.abs(data));
-                    var mm = Math.floor(total / 60);
-                    var ss = Math.floor(total % 60);
-                    var zero = "0";
-                    // Add leading "0" for double digit values
-                    if (mm.length < 2) {
-                        mm = (zero+mm).slice(-2);
-                    }
-                    ss = (zero+ss).slice(-2);
-                    time =  mm + ':' + ss;
-                    if (data < 0) {
-                        time = "-"+time;
-                    }
-                    return time;
+                    return HumanTimeConverter.secondsToHumanTime(data);
                 });
             }
         };
@@ -1380,38 +1359,22 @@ angular.module('OpenSlidesApp.core.site', [
 
 // format time string for model ("m") and view format ("h:mm" or "hh:mm")
 .directive('hourMinFormat', [
-    function () {
+    'HumanTimeConverter',
+    function (HumanTimeConverter) {
         return {
             require: 'ngModel',
             link: function(scope, element, attrs, ngModelController) {
                 ngModelController.$parsers.push(function(data) {
                     //convert data from view format (hh:mm) to model format (m)
-                    var time = data.split(':');
-                    if (time.length > 1 && !isNaN(time[0]) && !isNaN(time[1])) {
-                        data = (+time[0]) * 60 + (+time[1]);
-                        if (data < 0) {
-                            data = "-"+data;
-                        }
-                    }
-                    if (data === '') {
-                        data = 0;
-                    }
-                    return data;
+                    return HumanTimeConverter.humanTimeToSeconds(data, {hours: true})/60;
                 });
 
-                ngModelController.$formatters.push(function(totalminutes) {
+                ngModelController.$formatters.push(function(data) {
                     //convert data from model format (m) to view format (hh:mm)
-                    var time = "";
-                    if (totalminutes < 0) {
-                        time = "-";
-                        totalminutes = -totalminutes;
-                    }
-                    var hh = Math.floor(totalminutes / 60);
-                    var mm = Math.floor(totalminutes % 60);
-                    // Add leading "0" for double digit values
-                    mm = ("0"+mm).slice(-2);
-                    time += hh + ":" + mm;
-                    return time;
+                    return HumanTimeConverter.secondsToHumanTime(data*60,
+                        { seconds: 'disabled',
+                            hours: 'enabled' }
+                    );
                 });
             }
         };
