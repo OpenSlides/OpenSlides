@@ -1,8 +1,8 @@
 <!-- Original view -->
 <div ng-if="viewChangeRecommendations.mode == 'original' && version == motion.getVersion(-1).id">
-    <div id="view-original-inline-editor" ng-bind-html="motion.getTextWithLineBreaks(version, highlight) | trusted"
+    <div id="view-original-text-inline-editor" ng-bind-html="motion.getTextWithLineBreaks(version, highlight) | trusted"
       class="motion-text motion-text-original line-numbers-{{ lineNumberMode }}"
-      contenteditable= "{{ inlineEditing.isEditable }}">
+      contenteditable="{{ inlineEditing.isEditable }}">
     </div>
     <div class="motion-save-toolbar" ng-class="{ 'visible': (inlineEditing.changed && inlineEditing.active) }">
         <div class="changed-hint" translate>The text has been changed.</div>

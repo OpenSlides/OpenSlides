@@ -485,16 +485,5 @@
   </div>
 </div>
 
-<div class="details" ng-if="isAllowedToSeeCommentField()">
-  <h3 translate>Comments</h3>
-  <div ng-repeat="field in commentsFields">
-    <div ng-if="(field.public && !field.forState && !field.forRecommendation) ||
-        (operator.hasPerms('motions.can_see_and_manage_comments') && !field.forState && !field.forRecommendation)">
-      <h4>
-        {{ field.name }}
-        <span ng-if="!field.public" class="label label-warning" translate>internal</span>
-      </h4>
-      <div ng-bind-html="motion.comments[$index]"></div>
-    </div>
-  </div>
-</div>
+<!-- Comments section -->
+<ng-include src="'static/templates/motions/motion-detail/comments.html'"></ng-include>

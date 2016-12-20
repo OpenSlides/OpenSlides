@@ -59,125 +59,180 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
 .factory('MotionInlineEditing', [
     'Editor',
     'Motion',
-    'Config',
     '$timeout',
     'gettextCatalog',
-    function (Editor, Motion, Config, $timeout, gettextCatalog) {
-        var obj = {
-            active: false,
-            changed: false,
-            trivialChange: false,
-            originalHtml: null
-        };
-
-        var $scope, motion;
-
-        obj.init = function (_scope, _motion) {
-            $scope = _scope;
-            motion = _motion;
-            obj.ckeditorOptions = Editor.getOptions();
+    function (Editor, Motion, $timeout, gettextCatalog) {
+        var createInstance = function ($scope, motion, selector, versioning, getOriginalData, saveData) {
+            var obj = {
+                active: false,
+                changed: false,
+                isEditable: false,
+                trivialChange: false,
+                originalHtml: null,
+                ckeditorOptions: Editor.getOptions(),
+            };
             obj.ckeditorOptions.readOnly = true;
-            obj.isEditable = false;
-            obj.changed = false;
-        };
 
-        obj.setVersion = function (_motion, versionId) {
-            motion = _motion; // If this is not updated,
-            obj.originalHtml = motion.getTextWithLineBreaks(versionId);
-            obj.changed = false;
-            obj.editor.setReadOnly(true);
-            if (obj.editor) {
-                obj.editor.setData(obj.originalHtml);
-            }
-        };
+            obj.setVersion = function (_motion, versionId) {
+                motion = _motion; // If this is not updated,
+                obj.originalHtml = motion.getTextWithLineBreaks(versionId);
+                obj.changed = false;
+                obj.editor.setReadOnly(true);
+                if (obj.editor) {
+                    obj.editor.setData(obj.originalHtml);
+                }
+            };
 
-        obj.enable = function () {
-            if (motion.isAllowed('update')) {
-                obj.active = true;
-                obj.isEditable = true;
-                obj.ckeditorOptions.language = gettextCatalog.getCurrentLanguage();
-                obj.editor = CKEDITOR.inline('view-original-inline-editor', obj.ckeditorOptions);
-                obj.editor.on('change', function () {
-                    $timeout(function() {
-                        if (obj.editor.getData() != obj.originalHtml) {
-                            obj.changed = true;
-                        } else {
-                            obj.changed = false;
+            obj.enable = function () {
+                if (motion.isAllowed('update')) {
+                    obj.active = true;
+                    obj.isEditable = true;
+                    obj.ckeditorOptions.language = gettextCatalog.getCurrentLanguage();
+                    obj.editor = CKEDITOR.inline(selector, obj.ckeditorOptions);
+                    obj.editor.on('change', function () {
+                        $timeout(function() {
+                            if (obj.editor.getData() != obj.originalHtml) {
+                                obj.changed = true;
+                            } else {
+                                obj.changed = false;
+                            }
+                        });
+                    });
+                    obj.revert();
+                } else {
+                    obj.disable();
+                }
+            };
+
+            obj.disable = function () {
+                if (obj.editor) {
+                    obj.editor.setReadOnly(true);
+                    obj.editor.setData(obj.originalHtml, {
+                        callback: function() {
+                            obj.editor.destroy();
                         }
                     });
-                });
-                obj.revert();
-            } else {
-                obj.disable();
-            }
-        };
-
-        obj.disable = function () {
-            if (obj.editor) {
-                obj.editor.setReadOnly(true);
-                obj.editor.setData(obj.originalHtml, {
-                    callback: function() {
-                        obj.editor.destroy();
-                    }
-                });
-            }
-            $timeout(function() {
-                obj.active = false;
-                obj.changed = false;
-                obj.isEditable = false;
-            });
-        };
-
-        // sets editor content to the initial motion state
-        obj.revert = function() {
-            if (obj.editor) {
-                obj.originalHtml = motion.getTextWithLineBreaks($scope.version);
-                obj.editor.setData(
-                    motion.getTextWithLineBreaks($scope.version), {
-                    callback: function() {
-                        obj.originalHtml = obj.editor.getData();
-                        obj.editor.setReadOnly(false);
-                        $timeout(function() {
-                            obj.changed = false;
-                        });
-                        $timeout(function () {
-                            obj.editor.focus();
-                        }, 100);
-                    }
-                });
-            }
-        };
-
-        obj.save = function () {
-            if (!motion.isAllowed('update')) {
-                throw 'No permission to update motion';
-            }
-
-            motion.setTextStrippingLineBreaks(obj.editor.getData());
-            motion.disable_versioning = (obj.trivialChange && Config.get('motions_allow_disable_versioning').value);
-
-            Motion.inject(motion);
-            // save change motion object on server
-            Motion.save(motion, {method: 'PATCH'}).then(
-                function (success) {
-                    $scope.showVersion(motion.getVersion(-1));
-                    obj.revert();
-                },
-                function (error) {
-                    // save error: revert all changes by restore
-                    // (refresh) original motion object from server
-                    Motion.refresh(motion);
-                    obj.revert();
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
-            );
-        };
+                $timeout(function() {
+                    obj.active = false;
+                    obj.changed = false;
+                    obj.isEditable = false;
+                });
+            };
 
-        return obj;
+            // sets editor content to the initial motion state
+            obj.revert = function(originalData) {
+                if (obj.editor) {
+                    obj.originalHtml = getOriginalData(obj);
+                    obj.editor.setData(
+                        getOriginalData(obj), {
+                        callback: function() {
+                            obj.originalHtml = obj.editor.getData();
+                            obj.editor.setReadOnly(false);
+                            $timeout(function() {
+                                obj.changed = false;
+                            });
+                            $timeout(function () {
+                                obj.editor.focus();
+                            }, 100);
+                        }
+                    });
+                }
+            };
+
+            obj.save = function () {
+                if (!motion.isAllowed('update')) {
+                    throw 'No permission to update motion';
+                }
+
+                saveData(obj);
+
+                Motion.inject(motion);
+                // save change motion object on server
+                Motion.save(motion, {method: 'PATCH'}).then(
+                    function (success) {
+                        if (versioning) {
+                            $scope.showVersion(motion.getVersion(-1));
+                        }
+                        obj.revert();
+                    },
+                    function (error) {
+                        // save error: revert all changes by restore
+                        // (refresh) original motion object from server
+                        Motion.refresh(motion);
+                        obj.revert();
+                        var message = '';
+                        for (var e in error.data) {
+                            message += e + ': ' + error.data[e] + ' ';
+                        }
+                        $scope.alert = {type: 'danger', msg: message, show: true};
+                    }
+                );
+            };
+
+            return obj;
+        };
+        return {
+            createInstance: createInstance
+        };
+    }
+])
+
+.factory('MotionCommentsInlineEditing', [
+    'MotionInlineEditing',
+    function (MotionInlineEditing) {
+        var createInstances = function ($scope, motion) {
+            var commentsInlineEditing = {
+                editors: []
+            };
+            _.forEach($scope.commentsFields, function (field) {
+                var inlineEditing = MotionInlineEditing.createInstance($scope, motion,
+                    'view-original-comment-inline-editor-' + field.name, false,
+                    function (obj) {
+                        return motion['comment ' + field.name];
+                    },
+                    function (obj) {
+                        motion['comment ' + field.name] = obj.editor.getData();
+                    }
+                );
+                commentsInlineEditing.editors.push(inlineEditing);
+            });
+            commentsInlineEditing.saveToolbarVisible = function () {
+                return _.some(commentsInlineEditing.editors, function (instance) {
+                    return instance.changed && instance.active;
+                });
+            };
+            commentsInlineEditing.active = function () {
+                return _.some(commentsInlineEditing.editors, function (instance) {
+                    return instance.active;
+                });
+            };
+            commentsInlineEditing.save = function () {
+                _.forEach(commentsInlineEditing.editors, function (instance) {
+                    instance.save();
+                });
+            };
+            commentsInlineEditing.revert = function () {
+                _.forEach(commentsInlineEditing.editors, function (instance) {
+                    instance.revert();
+                });
+            };
+            commentsInlineEditing.enable = function () {
+                _.forEach(commentsInlineEditing.editors, function (instance) {
+                    instance.enable();
+                });
+            };
+            commentsInlineEditing.disable = function () {
+                _.forEach(commentsInlineEditing.editors, function (instance) {
+                    instance.disable();
+                });
+            };
+
+            return commentsInlineEditing;
+        };
+        return {
+            createInstances: createInstances,
+        };
     }
 ])
 

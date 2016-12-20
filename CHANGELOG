@@ -58,6 +58,7 @@ Motions:
 - Number of ballots printed can now be set in config.
 - Add new personal settings to remove all whitespaces from motion identifier.
 - Add new personal settings to allow amendments of amendments.
+- Added inline editing for comments.
 
 Elections:
 - Added options to calculate percentages on different bases.
