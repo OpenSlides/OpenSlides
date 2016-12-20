@@ -71,6 +71,9 @@
         <option value="addGroup" translate>Add group</option>
         <option value="removeGroup" translate>Remove group</option>
         <option value="generatePasswords" translate>Generate new passwords</option>
+        <option value="is_active" translate>Set/Unset is active</option>
+        <option value="is_present" translate>Set/Unset is present</option>
+        <option value="is_committee" translate>Set/Unset is a committee</option>
       </select>
       <!-- delete button -->
       <a ng-show="selectedAction == 'delete'"
@@ -103,6 +106,20 @@
         ng-click="generateNewPasswordsMultiple()">
         <i class="fa fa-magic"></i>
         <translate>Generate new passwords</translate>
+      </a>
+      <!-- set bool property button -->
+      <a ng-show="inArray(['is_active', 'is_present', 'is_committee'], selectedAction)"
+        ng-click="setBoolPropertyMultiple(selectedAction, true)" class="btn btn-default">
+        <span ng-if="selectedAction == 'is_active'" translate>Set active</span>
+        <span ng-if="selectedAction == 'is_present'" translate>Set present</span>
+        <span ng-if="selectedAction == 'is_committee'" translate>Set committee</span>
+      </a>
+      <!-- unset bool property button -->
+      <a ng-show="inArray(['is_active', 'is_present', 'is_committee'], selectedAction)"
+        ng-click="setBoolPropertyMultiple(selectedAction, false)" class="btn btn-default">
+        <span ng-if="selectedAction == 'is_active'" translate>Unset active</span>
+        <span ng-if="selectedAction == 'is_present'" translate>Unset present</span>
+        <span ng-if="selectedAction == 'is_committee'" translate>Unset committee</span>
       </a>
     </div>
   </div>
