@@ -516,8 +516,8 @@ angular.module('OpenSlidesApp.users.site', [
                 isCommittee: {
                     value: undefined,
                     displayName: gettext('Committee'),
-                    choiceYes: gettext('Is committee'),
-                    choiceNo: gettext('Is not committee'),
+                    choiceYes: gettext('Is a committee'),
+                    choiceNo: gettext('Is not a committee'),
                 },
 
             };
@@ -591,6 +591,10 @@ angular.module('OpenSlidesApp.users.site', [
                     $scope.alert = { type: 'danger', msg: message, show: true };
                 });
         };
+        // delete single user
+        $scope.delete = function (user) {
+            User.destroy(user.id);
+        };
         // *** select mode functions ***
         $scope.isSelectMode = false;
         // check all checkboxes
@@ -609,60 +613,60 @@ angular.module('OpenSlidesApp.users.site', [
                 });
             }
         };
-        // delete all selected users
-        $scope.deleteMultiple = function () {
-            angular.forEach($scope.users, function (user) {
+        var selectModeAction = function (predicate) {
+            angular.forEach($scope.usersFiltered, function (user) {
                 if (user.selected) {
-                    User.destroy(user.id);
+                    predicate(user);
                 }
             });
             $scope.isSelectMode = false;
             $scope.uncheckAll();
         };
-        // delete single user
-        $scope.delete = function (user) {
-            User.destroy(user.id);
+        // delete all selected users
+        $scope.deleteMultiple = function () {
+            selectModeAction(function (user) {
+                $scope.delete(user);
+            });
         };
         // add group for selected users
         $scope.addGroupMultiple = function (group) {
-            angular.forEach($scope.users, function (user) {
-                if (user.selected) {
+            if (group) {
+                selectModeAction(function (user) {
                     user.groups_id.push(group);
                     User.save(user);
-                }
-            });
-            $scope.isSelectMode = false;
-            $scope.uncheckAll();
+                });
+            }
         };
         // remove group for selected users
         $scope.removeGroupMultiple = function (group) {
-            angular.forEach($scope.users, function (user) {
-                if (user.selected) {
-                    var groupIndex = user.groups_id.indexOf(parseInt(group));
+            if (group) {
+                selectModeAction(function (user) {
+                    var groupIndex = _.indexOf(user.groups_id, parseInt(group));
                     if (groupIndex > -1) {
                         user.groups_id.splice(groupIndex, 1);
                         User.save(user);
                     }
-                }
-            });
-            $scope.isSelectMode = false;
-            $scope.uncheckAll();
+                });
+            }
         };
         // generate new passwords
         $scope.generateNewPasswordsMultiple = function () {
-            angular.forEach($scope.users, function (user) {
-                if (user.selected) {
-                    var newPassword = PasswordGenerator.generate();
-                    user.default_password = newPassword;
-                    User.save(user);
-                    $http.post(
-                        '/rest/users/user/' + user.id + '/reset_password/',
-                        {'password': newPassword}
-                    );
-                }
+            selectModeAction(function (user) {
+                var newPassword = PasswordGenerator.generate();
+                user.default_password = newPassword;
+                User.save(user);
+                $http.post(
+                    '/rest/users/user/' + user.id + '/reset_password/',
+                    {'password': newPassword}
+                );
             });
-            $scope.isSelectMode = false;
-            $scope.uncheckAll();
+        };
+        // set boolean properties (is_active, is_present, is_committee)
+        $scope.setBoolPropertyMultiple = function (property, value) {
+            selectModeAction(function (user) {
+                user[property] = value;
+                User.save(user);
+            });
         };
 
         // Export as PDF
