@@ -129,14 +129,14 @@ angular.module('OpenSlidesApp.users', [])
                         addition = [];
 
                     // addition: add number and structure level
-                    if (number) {
-                        addition.push(number);
-                    }
                     if (structure_level) {
                         addition.push(structure_level);
                     }
+                    if (number) {
+                        addition.push(number);
+                    }
                     if (addition.length > 0) {
-                        name += ' (' + addition.join(', ') + ')';
+                        name += ' (' + addition.join(' · ') + ')';
                     }
                     return name;
                 },
