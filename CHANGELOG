@@ -15,6 +15,7 @@ Agenda:
 Core:
 - Added support for multiple projectors.
 - Added control for the resolution of the projectors.
+- Set the projector language in the settings.
 - Used pdfMake for clientside generation of PDFs.
 - Introduced new table design for list views with serveral filters and
   CSV export.

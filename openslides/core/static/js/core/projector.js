@@ -56,6 +56,29 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     }
 ])
 
+.controller('LanguageCtrl', [
+    '$scope',
+    'Languages',
+    'Config',
+    'ProjectorID',
+    function ($scope, Languages, Config, ProjectorID) {
+        // for the dynamic title
+        $scope.projectorId = ProjectorID();
+
+        $scope.$watch(function () {
+            return Config.lastModified('projector_language');
+        }, function () {
+            var lang = Config.get('projector_language');
+            if (!lang || lang.value == 'browser') {
+                $scope.selectedLanguage = Languages.getBrowserLanguage();
+            } else {
+                $scope.selectedLanguage = lang.value;
+            }
+            Languages.setCurrentLanguage($scope.selectedLanguage);
+        });
+    }
+])
+
 // Projector Container Controller
 .controller('ProjectorContainerCtrl', [
     '$scope',
@@ -63,11 +86,8 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     'gettext',
     'loadGlobalData',
     'Projector',
-    'ProjectorID',
-    function($scope, $location, gettext, loadGlobalData, Projector, ProjectorID) {
+    function($scope, $location, gettext, loadGlobalData, Projector) {
         loadGlobalData();
-
-        $scope.projectorId = ProjectorID();
         $scope.error = '';
 
         // watch for changes in Projector
