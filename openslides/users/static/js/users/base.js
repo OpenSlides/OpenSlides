@@ -69,8 +69,9 @@ angular.module('OpenSlidesApp.users', [])
     'Group',
     'jsDataModel',
     'gettext',
+    'gettextCatalog',
     'Config',
-    function(DS, Group, jsDataModel, gettext, Config) {
+    function(DS, Group, jsDataModel, gettext, gettextCatalog, Config) {
         var name = 'users/user';
         return DS.defineResource({
             name: name,
@@ -133,7 +134,10 @@ angular.module('OpenSlidesApp.users', [])
                         addition.push(structure_level);
                     }
                     if (number) {
-                        addition.push(number);
+                        addition.push(
+                            /// abbreviation for number
+                            gettextCatalog.getString('No.') + ' ' + number
+                        );
                     }
                     if (addition.length > 0) {
                         name += ' (' + addition.join(' · ') + ')';
