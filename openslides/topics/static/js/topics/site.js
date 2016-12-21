@@ -271,7 +271,8 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
     'gettext',
     'Agenda',
     'Topic',
-    function($scope, gettext, Agenda, Topic) {
+    'HumanTimeConverter',
+    function($scope, gettext, Agenda, Topic, HumanTimeConverter) {
         // Big TODO: Change wording from "item" to "topic".
         // import from textarea
         $scope.importByLine = function () {
@@ -342,22 +343,13 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
                 }
                 // duration
                 if (item.duration) {
-                    var time = item.duration.replace(quotionRe, '$1').split(':'),
-                        len = time.length,
-                        data = '';
-                    if (len > 1 && !isNaN(time[len-2]) && !isNaN(time[len-1])) { // minutes and hours
-                        // e.g.: [sl:1000:]10:34 (the [] will not be parsed)
-                        data = (+time[len-2]) * 60 + (+time[len-1]);
-                    } else if (len == 1) { // just interpret minutes
-                        data = (+time[0]);
-                    } else {
-                        data = null;
-                    }
+                    var time = item.duration.replace(quotionRe, '$1');
+                    time = HumanTimeConverter.humanTimeToSeconds(time, {hours: true})/60;
 
-                    if (data < 0 || data === '') {
-                        data = null; // no negative duration
+                    if (time <= 0) { // null instead of 0 or negative duration
+                        time = null;
                     }
-                    item.duration = data;
+                    item.duration = time;
                 } else {
                     item.duration = null;
                 }
