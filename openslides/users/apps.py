@@ -13,6 +13,8 @@ class UsersAppConfig(AppConfig):
         from . import projector  # noqa
 
         # Import all required stuff.
+        from django.contrib.auth.signals import user_logged_in
+        from django.contrib.auth.models import update_last_login
         from ..core.config import config
         from ..core.signals import post_permission_creation
         from ..utils.rest_api import router
@@ -31,3 +33,6 @@ class UsersAppConfig(AppConfig):
         # Register viewsets.
         router.register(self.get_model('User').get_collection_string(), UserViewSet)
         router.register('users/group', GroupViewSet)
+
+        # Disconnect the update_last_login signal. We don't use it
+        user_logged_in.disconnect(update_last_login)
