@@ -21,15 +21,14 @@ angular.module('OpenSlidesApp.mediafiles.projector', [
     'Mediafile',
     function ($scope, Mediafile) {
         // load mediafile object
-        var mediafile = Mediafile.get($scope.element.id);
-        $scope.mediafile = mediafile;
+        Mediafile.bindOne($scope.element.id, $scope, 'mediafile');
 
         // Allow the elements to render properly
         setTimeout(function() {
             if ($scope.mediafile) {
                 if ($scope.mediafile.is_pdf) {
-                    $scope.pdfName = mediafile.title;
-                    $scope.pdfUrl = mediafile.mediafileUrl;
+                    $scope.pdfName = $scope.mediafile.title;
+                    $scope.pdfUrl = $scope.mediafile.mediafileUrl;
                 } else if ($scope.mediafile.is_video) {
                     var player = angular.element.find('#video-player')[0];
                     if ($scope.element.playing) {
