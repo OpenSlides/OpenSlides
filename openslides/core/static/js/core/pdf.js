@@ -102,13 +102,33 @@ angular.module('OpenSlidesApp.core.pdf', [])
         PDFLayout.getBallotLayoutLines = function() {
             return {
                 hLineWidth: function(i, node) {
-                    return (i === 0 || i === node.table.body.length) ? 0 : 0.5;
+                    if (i === 0){
+                        return 0;
+                    } else if (i === node.table.body.length) {
+                        if (node.rowsperpage && node.rowsperpage > i) {
+                            return 0.5;
+                        } else {
+                            return 0;
+                        }
+                    } else {
+                        return 0.5;
+                    }
                 },
                 vLineWidth: function(i, node) {
                     return (i === 0 || i === node.table.widths.length) ? 0 : 0.5;
                 },
                 hLineColor: function(i, node) {
-                    return (i === 0 || i === node.table.body.length) ? 'none' : 'gray';
+                    if (i === 0){
+                        return 'none';
+                    } else if (i === node.table.body.length) {
+                        if (node.rowsperpage && node.rowsperpage > i) {
+                            return 'gray';
+                        } else {
+                            return 'none';
+                        }
+                    } else {
+                        return 'gray';
+                    }
                 },
                 vLineColor: function(i, node) {
                     return (i === 0 || i === node.table.widths.length) ? 'none' : 'gray';

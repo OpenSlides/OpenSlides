@@ -52,12 +52,14 @@ Motions:
 - Added DOCX export with docxtemplater.
 - Changed label of former state "commited a bill" to "refered to committee".
 - New csv import layout and using Papa Parse for parsing the csv.
+- Number of ballots printed can now be set in config.
 
 Elections:
 - Added options to calculate percentages on different bases.
 - Added calculation for required majority.
 - Candidates are now sortable.
 - Removed unused assignment config to publish winner election results only.
+- Number of ballots printed can now be set in config.
 
 Users:
 - Added new matrix-interface for managing groups and their permissions.

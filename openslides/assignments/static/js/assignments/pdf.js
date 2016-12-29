@@ -268,8 +268,9 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
     '$filter',
     'gettextCatalog',
     'PDFLayout',
-    function($filter, gettextCatalog, PDFLayout) {
-
+    'Config',
+    'User',
+    function($filter, gettextCatalog, PDFLayout, Config, User) {
         var createInstance = function(scope, poll, pollNumber) {
 
             // page title
@@ -367,58 +368,104 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 };
             };
 
-            var createTableBody = function(numberOfRows, sheetend) {
+            var createTableBody = function(numberOfRows, sheetend, maxballots) {
+                var ballotstoprint = numberOfRows * 2;
+                if (Number.isInteger(maxballots) && maxballots > 0 && maxballots < ballotstoprint) {
+                    ballotstoprint = maxballots;
+                }
                 var tableBody = [];
-                for (var i = 0; i < numberOfRows; i++) {
+                while (ballotstoprint > 1){
                     tableBody.push([createSection(sheetend), createSection(sheetend)]);
+                    ballotstoprint -= 2;
+                }
+                if (ballotstoprint == 1) {
+                    tableBody.push([createSection(sheetend), '']);
                 }
                 return tableBody;
             };
 
             var createContentTable = function() {
-
-                var tableBody = [];
+                // first, determine how many ballots we need
+                var amount;
+                var amount_method = Config.get('assignments_pdf_ballot_papers_selection').value;
+                switch (amount_method) {
+                    case 'NUMBER_OF_ALL_PARTICIPANTS':
+                        amount = User.getAll().length;
+                        break;
+                    case 'NUMBER_OF_DELEGATES':
+                        //TODO: assumption that DELEGATES is always group id 2. This may not be true
+                        var group_id = 2;
+                        amount = User.filter({where: {'groups_id': {contains:group_id} }}).length;
+                        break;
+                    case 'CUSTOM_NUMBER':
+                        amount = Config.get('assignments_pdf_ballot_papers_number').value;
+                        break;
+                    default:
+                        // should not happen.
+                        amount = 0;
+                }
+                var tabledContent = [];
+                var rowsperpage;
                 var sheetend;
-
                 if (poll.pollmethod == 'votes') {
                     if (poll.options.length <= 4) {
                         sheetend = 105;
-                        tableBody = createTableBody(4, sheetend);
+                        rowsperpage = 4;
                     } else if (poll.options.length <= 8) {
                         sheetend = 140;
-                        tableBody = tableBody = createTableBody(3, sheetend);
+                        rowsperpage = 3;
                     } else if (poll.options.length <= 12) {
                         sheetend = 210;
-                        tableBody = tableBody = createTableBody(2, sheetend);
+                        rowsperpage = 2;
                     }
                     else { //works untill ~30 people
                         sheetend = 418;
-                        tableBody = createTableBody(1, sheetend);
+                        rowsperpage = 1;
                     }
                 } else {
                     if (poll.options.length <= 2) {
                         sheetend = 105;
-                        tableBody = createTableBody(4, sheetend);
+                        rowsperpage = 4;
                     } else if (poll.options.length <= 4) {
                         sheetend = 140;
-                        tableBody = createTableBody(3, sheetend);
+                        rowsperpage = 3;
                     } else if (poll.options.length <= 6) {
                         sheetend = 210;
-                        tableBody = createTableBody(2, sheetend);
+                        rowsperpage = 2;
                     } else {
                         sheetend = 418;
-                        tableBody = createTableBody(1, sheetend);
+                        rowsperpage = 1;
                     }
                 }
-
-                return [{
-                    table: {
-                        headerRows: 1,
-                        widths: ['50%', '50%'],
-                        body: tableBody
-                    },
-                    layout: PDFLayout.getBallotLayoutLines()
-                }];
+                var page_entries = rowsperpage * 2;
+                var fullpages = Math.floor(amount / page_entries);
+                for (var i=0; i < fullpages; i++) {
+                    tabledContent.push({
+                        table: {
+                            headerRows: 1,
+                            widths: ['50%', '50%'],
+                            body: createTableBody(rowsperpage, sheetend),
+                            pageBreak: 'after'
+                            },
+                            layout: PDFLayout.getBallotLayoutLines(),
+                            rowsperpage: rowsperpage
+                        });
+                }
+                // fill the last page only partially
+                var lastpage_ballots = amount - (fullpages * page_entries);
+                if (lastpage_ballots < page_entries && lastpage_ballots > 0){
+                    var partialpage = createTableBody(rowsperpage, sheetend, lastpage_ballots);
+                    tabledContent.push({
+                        table: {
+                            headerRows: 1,
+                            widths: ['50%', '50%'],
+                            body: partialpage
+                        },
+                        layout: PDFLayout.getBallotLayoutLines(),
+                        rowsperpage: rowsperpage
+                    });
+                }
+                return tabledContent;
             };
 
             var getContent = function() {
