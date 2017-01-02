@@ -1636,7 +1636,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // detect if csv file is loaded
         $scope.$watch('csv.result', function () {
             $scope.motions = [];
-            var quotionRe = /^"(.*)"$/;
+            var quotionRe = /^"([\s\S]*)"$/m;
             angular.forEach($scope.csv.result, function (motion) {
                 if (motion.identifier) {
                     motion.identifier = motion.identifier.replace(quotionRe, '$1');
