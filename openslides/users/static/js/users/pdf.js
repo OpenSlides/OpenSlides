@@ -128,6 +128,9 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
             };
 
             var createAccessDataContent = function(user) {
+                var wifiQrCode = "WIFI:S:" + Config.get('users_pdf_wlan_ssid').value +
+                    ";T:" + Config.get('users_pdf_wlan_encryption').value +
+                    ";P:" + Config.get('users_pdf_wlan_password').value + ";;";
                 var accessDataColumns = {
                     columns: [
                         {
@@ -159,6 +162,15 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                                 {
                                     text: Config.get('users_pdf_wlan_encryption').value || '-',
                                     style: 'userDataValue'
+                                },
+                                {
+                                    text: "\n"
+                                },
+                                {
+                                    qr: wifiQrCode
+                                },
+                                {
+                                    text: gettextCatalog.getString("scan QR code to connect to WLAN")
                                 },
                             ]
                         },
@@ -192,6 +204,15 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                                     text: Config.get('users_pdf_url').value  || '-',
                                     link: Config.get('users_pdf_url').value,
                                     style: 'userDataValue'
+                                },
+                                {
+                                    text: "\n"
+                                },
+                                {
+                                    qr: Config.get('users_pdf_url').value
+                                },
+                                {
+                                    text: gettextCatalog.getString("scan QR code to open the URL")
                                 },
                             ]
                         }
