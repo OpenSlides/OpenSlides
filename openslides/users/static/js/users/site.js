@@ -681,7 +681,8 @@ angular.module('OpenSlidesApp.users.site', [
             var userAccessDataListContentProvider = UserAccessDataListContentProvider.createInstance(
                 $scope.usersFiltered, $scope.groups, Config);
             var documentProvider = PdfMakeDocumentProvider.createInstance(userAccessDataListContentProvider);
-            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
+            var noFooter = true;
+            pdfMake.createPdf(documentProvider.getDocument(noFooter)).download(filename);
         };
         // Export as a csv file
         $scope.csvExport = function () {

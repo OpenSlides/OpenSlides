@@ -203,7 +203,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 };
             };
             // Generates the document(definition) for pdfMake
-            var getDocument = function() {
+            var getDocument = function(noFooter) {
                 var content = contentProvider.getContent();
                 return {
                     pageSize: 'A4',
@@ -213,7 +213,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                         fontSize: 10
                     },
                     header: header,
-                    footer: footer,
+                    footer: noFooter ? '' : footer,
                     content: content,
                     styles: {
                         title: {
@@ -296,6 +296,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                         },
                         bold: {
                             bold: true,
+                        },
+                        small: {
+                            fontSize: 8,
                         }
                     }
                 };
