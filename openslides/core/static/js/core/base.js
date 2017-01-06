@@ -778,6 +778,13 @@ angular.module('OpenSlidesApp.core', [
                     });
                     // if it was the same projector before, just delete it but not show again
                     if (_.indexOf(isProjectedIds, projectorId) == -1) {
+                        // Now check whether other messages are already projected and delete them
+                        var elements = Projector.get(projectorId).elements;
+                        _.forEach(elements, function (element, uuid) {
+                            if (element.name === name) {
+                                $http.post('/rest/core/projector/' + projectorId + '/deactivate_elements/', [uuid]);
+                            }
+                        });
                         return $http.post(
                             '/rest/core/projector/' + projectorId + '/activate_elements/',
                             [{name: name, id: self.id, stable: true}]

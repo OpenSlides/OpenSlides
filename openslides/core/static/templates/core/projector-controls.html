@@ -61,7 +61,7 @@
             </a>
           </div>
 
-          <div class="btn-group" ng-show="projectors.length > 1">
+          <div class="btn-group nobr" ng-show="projectors.length > 1">
             <button class="btn btn-sm" ng-class="broadcast == active_projector.id ? 'btn-primary' : 'btn-default'"
               ng-click="active_projector.toggleBroadcast()" ng-disabled="broadcast > 0 && broadcast != active_projector.id">
               <i class="fa" ng-class="broadcast == active_projector.id ? 'fa-star' : 'fa-star-o'"></i>
