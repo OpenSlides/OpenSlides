@@ -2,7 +2,7 @@
 
 'use strict';
 
-angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
+angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlidesApp.topics.csv'])
 
 .config([
     '$stateProvider',
@@ -272,7 +272,8 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
     'Agenda',
     'Topic',
     'HumanTimeConverter',
-    function($scope, gettext, Agenda, Topic, HumanTimeConverter) {
+    'TopicsCsvExample',
+    function($scope, gettext, Agenda, Topic, HumanTimeConverter, TopicsCsvExample) {
         // Big TODO: Change wording from "item" to "topic".
         // import from textarea
         $scope.importByLine = function () {
@@ -299,53 +300,36 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
         };
 
         // *** CSV import ***
-        // set initial data for csv import
+        $scope.csvConfig = {
+            accept: '.csv, .txt',
+            encodingOptions: ['UTF-8', 'ISO-8859-1'],
+            parseConfig: {
+                skipEmptyLines: true,
+            },
+        };
+        var FIELDS = ['title', 'text', 'duration', 'comment', 'is_hidden'];
         $scope.items = [];
-        $scope.separator = ',';
-        $scope.encoding = 'UTF-8';
-        $scope.encodingOptions = ['UTF-8', 'ISO-8859-1'];
-        $scope.accept = '.csv, .txt';
-        $scope.csv = {
-            content: null,
-            header: true,
-            headerVisible: false,
-            separator: $scope.separator,
-            separatorVisible: false,
-            encoding: $scope.encoding,
-            encodingVisible: false,
-            accept: $scope.accept,
-            result: null
-        };
-        // set csv file encoding
-        $scope.setEncoding = function () {
-            $scope.csv.encoding = $scope.encoding;
-        };
-        // set csv file encoding
-        $scope.setSeparator = function () {
-            $scope.csv.separator = $scope.separator;
-        };
-        // detect if csv file is loaded
-        $scope.$watch('csv.result', function () {
+        $scope.onCsvChange = function (csv) {
             $scope.items = [];
-            var quotionRe = /^"(.*)"$/;
-            angular.forEach($scope.csv.result, function (item, index) {
-                // title
-                if (item.title) {
-                    item.title = item.title.replace(quotionRe, '$1');
+
+            var items = [];
+            _.forEach(csv.data, function (row) {
+                if (row.length > 1) {
+                    var filledRow = _.zipObject(FIELDS, row);
+                    items.push(filledRow);
                 }
+            });
+
+            _.forEach(items, function (item, index) {
+                item.selected = true;
+
                 if (!item.title) {
                     item.importerror = true;
                     item.title_error = gettext('Error: Title is required.');
                 }
-                // text
-                if (item.text) {
-                    item.text = item.text.replace(quotionRe, '$1');
-                }
                 // duration
                 if (item.duration) {
-                    var time = item.duration.replace(quotionRe, '$1');
-                    time = HumanTimeConverter.humanTimeToSeconds(time, {hours: true})/60;
-
+                    var time = HumanTimeConverter.humanTimeToSeconds(item.duration, {hours: true})/60;
                     if (time <= 0) { // null instead of 0 or negative duration
                         time = null;
                     }
@@ -353,13 +337,8 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
                 } else {
                     item.duration = null;
                 }
-                // comment
-                if (item.comment) {
-                    item.comment = item.comment.replace(quotionRe, '$1');
-                }
                 // is_hidden
                 if (item.is_hidden) {
-                    item.is_hidden = item.is_hidden.replace(quotionRe, '$1');
                     if (item.is_hidden == '1') {
                         item.type = 2;
                     } else {
@@ -374,13 +353,27 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
                 item.weight = 1000 + index;
                 $scope.items.push(item);
             });
-        });
+            $scope.calcStats();
+        };
+
+        $scope.calcStats = function () {
+            $scope.itemsWillNotBeImported = 0;
+            $scope.itemsWillBeImported = 0;
+
+            $scope.items.forEach(function(item) {
+                if (item.selected && !item.importerror) {
+                    $scope.itemsWillBeImported++;
+                } else {
+                    $scope.itemsWillNotBeImported++;
+                }
+            });
+        };
 
         // import from csv file
         $scope.import = function () {
             $scope.csvImporting = true;
             angular.forEach($scope.items, function (item) {
-                if (!item.importerror) {
+                if (item.selected && !item.importerror) {
                     Topic.create(item).then(
                         function(success) {
                             item.imported = true;
@@ -399,24 +392,12 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics'])
             $scope.csvimported = true;
         };
         $scope.clear = function () {
-            $scope.csv.result = null;
+            $scope.items = null;
         };
         // download CSV example file
         $scope.downloadCSVExample = function () {
             var element = document.getElementById('downloadLink');
-            var csvRows = [
-                // column header line
-                ['title', 'text', 'duration', 'comment', 'is_hidden'],
-                // example entries
-                ['Demo 1', 'Demo text 1', '1:00', 'test comment', ''],
-                ['Break', '', '0:10', '', '1'],
-                ['Demo 2', 'Demo text 2', '1:30', '', '']
-
-            ];
-            var csvString = csvRows.join("%0A");
-            element.href = 'data:text/csv;charset=utf-8,' + csvString;
-            element.download = 'agenda-example.csv';
-            element.target = '_blank';
+            TopicsCsvExample.downloadExample(element);
         };
      }
 ]);
