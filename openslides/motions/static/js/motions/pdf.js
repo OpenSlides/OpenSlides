@@ -330,7 +330,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('PollContentProvider', [
     'PDFLayout',
-    function(PDFLayout) {
+    'Config',
+    'User',
+    function(PDFLayout, Config, User) {
     /**
     * Generates a content provider for polls
     * @constructor
@@ -367,21 +369,66 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         * @function
         * @param {string} id - if of poll
         */
-
         var getContent = function() {
-            return [{
-                table: {
-                    headerRows: 1,
-                    widths: ['*', '*'],
-                    body: [
-                        [createSection(), createSection()],
-                        [createSection(), createSection()],
-                        [createSection(), createSection()],
-                        [createSection(), createSection()]
-                    ],
-                },
-                layout: PDFLayout.getBallotLayoutLines()
-            }];
+            var content = [];
+            var amount;
+            var amount_method = Config.get('motions_pdf_ballot_papers_selection').value;
+            switch (amount_method) {
+                    case 'NUMBER_OF_ALL_PARTICIPANTS':
+                        amount = User.getAll().length;
+                        break;
+                    case 'NUMBER_OF_DELEGATES':
+                        //TODO: assumption that DELEGATES is always group id 2. This may not be true
+                        var group_id = 2;
+                        amount = User.filter({where: {'groups_id': {contains:group_id} }}).length;
+                        break;
+                    case 'CUSTOM_NUMBER':
+                        amount = Config.get('motions_pdf_ballot_papers_number').value;
+                        break;
+                    default:
+                        // should not happen.
+                        amount = 0;
+            }
+            var fullpages = Math.floor(amount / 8);
+
+            for (var i=0; i < fullpages; i++) {
+                content.push({
+                    table: {
+                        headerRows: 1,
+                        widths: ['*', '*'],
+                        body: [
+                            [createSection(), createSection()],
+                            [createSection(), createSection()],
+                            [createSection(), createSection()],
+                            [createSection(), createSection()]
+                        ],
+                        pageBreak: 'after'
+                    },
+                    layout: PDFLayout.getBallotLayoutLines(),
+                    rowsperpage: 4
+                });
+            }
+            amount = amount  - (fullpages * 8);
+            if (amount > 0) {
+                var partialpagebody = [];
+                while (amount > 1) {
+                    partialpagebody.push([createSection(), createSection()]);
+                    amount -=2;
+                }
+                if (amount == 1) {
+                    partialpagebody.push([createSection(), '']);
+                }
+                content.push({
+                    table: {
+                        headerRows: 1,
+                        widths: ['50%', '50%'],
+                        body: partialpagebody
+                    },
+                    layout: PDFLayout.getBallotLayoutLines(),
+                    rowsperpage: 4
+                });
+            }
+            return content;
         };
 
         return {
