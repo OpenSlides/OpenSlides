@@ -1249,6 +1249,10 @@ img {
     padding-right: 0 !important;
 }
 
+.scroll-x-container {
+    overflow-x: auto;
+}
+
 /* user details */
 .user_details fieldset {
     margin-bottom: 10px;
