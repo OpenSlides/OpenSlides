@@ -140,7 +140,7 @@ class WebclientJavaScriptView(utils_views.View):
                     js_files.extend(app_js_files)
 
         client_settings_keys = [
-            # Add new settings to personal settings.py, utils/settings.py.tpl and to this list. Remove this comment later.
+            'MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS'
         ]
         client_settings = {}
         for key in client_settings_keys:
@@ -184,7 +184,7 @@ class WebclientJavaScriptView(utils_views.View):
                 $.when.apply(this,deferres).done( function() {{
                     angular.bootstrap(document,['OpenSlidesApp.{realm}']);
                 }} );
-            """.format(realm=realm, angular_modules=angular_modules, settings=client_settings, js_files=js_files) +
+            """.format(realm=realm, angular_modules=angular_modules, settings=json.dumps(client_settings), js_files=js_files) +
             """
             }());
             """)
