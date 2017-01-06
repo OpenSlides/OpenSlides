@@ -222,6 +222,7 @@ OpenSlides uses the following projects or parts of them:
   * `ngStorage <https://github.com/gsklee/ngStorage>`_, License: MIT
   * `ngbootbox <https://github.com/eriktufvesson/ngBootbox>`_, License: MIT
   * `open-sans-fontface <https://github.com/FontFaceKit/open-sans>`_, License: Apache License version 2.0
+  * `Papa Parse <http://papaparse.com/>`_, License: MIT
   * `pdfjs-dist <http://mozilla.github.io/pdf.js/>`_, License: Apache-2.0
   * `roboto-condensed <https://github.com/davidcunningham/roboto-condensed>`_, License: Apache 2.0
 

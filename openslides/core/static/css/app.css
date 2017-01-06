@@ -1453,22 +1453,31 @@ img {
     margin-right: .2em;
 }
 
-/* for angular-csv-import form */
+/* for csv import form */
 .import {
     margin-left: 15px;
+    width: 35%;
 }
 
-.import .label {
-    color: #333 !important;
-    font-size: 100%;
+.import .file-select input {
+    display: none;
+}
+
+.import .file-select label {
     font-weight: normal;
-    width: 100px;
-    text-align: left;
-    display: inline-block;
+    cursor: pointer;
 }
 
-.import .label::after {
-    content: ': ';
+.import .clear-file {
+    color: #555;
+}
+
+.import .help-block {
+    padding-bottom: 0;
+}
+
+.import .help-block-big {
+    font-size: 100%;
 }
 
 /* voting results */

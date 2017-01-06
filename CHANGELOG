@@ -51,6 +51,7 @@ Motions:
 - New PDF layout.
 - Added DOCX export with docxtemplater.
 - Changed label of former state "commited a bill" to "refered to committee".
+- New csv import layout and using Papa Parse for parsing the csv.
 
 Elections:
 - Added options to calculate percentages on different bases.

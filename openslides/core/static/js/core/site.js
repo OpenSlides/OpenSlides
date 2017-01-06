@@ -661,6 +661,84 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+/* This directive provides a csv import template.
+ * Papa Parse is used to parse the csv file. Accepted attributes:
+ * * change:
+ *   Callback if file changes. The one parameter is csv passing the parsed file
+ * * config (optional):
+ *   - accept: String with extensions: default '.csv .txt'
+ *   - encodingOptions: List with encodings. Default ['UTF-8', 'ISO-8859-1']
+ *   - parseConfig: a dict passed to PapaParse
+ */
+.directive('csvImport', [
+    function () {
+        return {
+            restrict: 'E',
+            templateUrl: 'static/templates/csv-import.html',
+            scope: {
+                change: '&',
+                config: '=?',
+            },
+            controller: function ($scope, $element, $attrs, $location) {
+                // set config if it is not given
+                if (!$scope.config) {
+                    $scope.config = {};
+                }
+                if (!$scope.config.parseConfig) {
+                    $scope.config.parseConfig = {};
+                }
+
+                $scope.inputElement = angular.element($element[0].querySelector('#csvFileSelector'));
+
+                // set accept and encoding
+                $scope.accept = $scope.config.accept || '.csv';
+                $scope.encodingOptions = $scope.config.encodingOptions || ['UTF-8'];
+                $scope.encoding = $scope.encodingOptions[0];
+
+                $scope.parse = function () {
+                    var inputElement = $scope.inputElement[0];
+                    if (!inputElement.files.length) {
+                        $scope.change({csv: {data: {}}});
+                    } else {
+                        var parseConfig = _.defaults(_.clone($scope.config.parseConfig), {
+                            delimiter: $scope.delimiter,
+                            encoding: $scope.encoding,
+                            header: false, // we do not want to have dicts in result
+                            complete: function (csv) {
+                                csv.data = csv.data.splice(1); // do not interpret the header as data
+                                $scope.$apply(function () {
+                                    if (csv.meta.delimiter) {
+                                        $scope.autodelimiter = csv.meta.delimiter;
+                                    }
+                                    $scope.change({csv: csv});
+                                });
+                            },
+                            error: function () {
+                                $scope.$apply(function () {
+                                    $scope.change({csv: {data: {}}});
+                                });
+                            },
+                        });
+
+                        Papa.parse(inputElement.files[0], parseConfig);
+                    }
+                };
+
+                $scope.clearFile = function () {
+                    $scope.inputElement[0].value = '';
+                    $scope.selectedFile = undefined;
+                    $scope.parse();
+                };
+
+                $scope.inputElement.on('change', function () {
+                    $scope.selectedFile = _.last($scope.inputElement[0].value.split('\\'));
+                    $scope.parse();
+                });
+            },
+        };
+    }
+])
+
 .controller('MainMenuCtrl', [
     '$scope',
     'mainMenu',

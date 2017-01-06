@@ -1607,73 +1607,56 @@ angular.module('OpenSlidesApp.motions.site', [
     'Category',
     'Motion',
     'User',
-    function($scope, $q, gettext, Category, Motion, User) {
+    'gettextCatalog',
+    function($scope, $q, gettext, Category, Motion, User, gettextCatalog) {
         // set initial data for csv import
         $scope.motions = [];
-        $scope.separator = ',';
-        $scope.encoding = 'UTF-8';
-        $scope.encodingOptions = ['UTF-8', 'ISO-8859-1'];
-        $scope.accept = '.csv, .txt';
-        $scope.csv = {
-            content: null,
-            header: true,
-            headerVisible: false,
-            separator: $scope.separator,
-            separatorVisible: false,
-            encoding: $scope.encoding,
-            encodingVisible: false,
-            accept: $scope.accept,
-            result: null
+
+        // set csv 
+        $scope.csvConfig = {
+            accept: '.csv, .txt',
+            encodingOptions: ['UTF-8', 'ISO-8859-1'],
+            parseConfig: {
+                skipEmptyLines: true,
+            },
         };
-        // set csv file encoding
-        $scope.setEncoding = function () {
-            $scope.csv.encoding = $scope.encoding;
-        };
-        // set csv file encoding
-        $scope.setSeparator = function () {
-            $scope.csv.separator = $scope.separator;
-        };
-        // detect if csv file is loaded
-        $scope.$watch('csv.result', function () {
+
+        var FIELDS = ['identifier', 'title', 'text', 'reason', 'submitter', 'category', 'origin'];
+        $scope.motions = [];
+        $scope.onCsvChange = function (csv) {
             $scope.motions = [];
-            var quotionRe = /^"(.*)"$/;
-            angular.forEach($scope.csv.result, function (motion) {
-                if (motion.identifier) {
-                    motion.identifier = motion.identifier.replace(quotionRe, '$1');
-                    if (motion.identifier !== '') {
-                        // All motion objects are already loaded via the resolve statement from ui-router.
-                        var motions = Motion.getAll();
-                        if (_.find(motions, function (item) {
-                            return item.identifier == motion.identifier;
-                        })) {
-                            motion.importerror = true;
-                            motion.identifier_error = gettext('Error: Identifier already exists.');
-                        }
+            var motions = [];
+            _.forEach(csv.data, function (row) {
+                if (row.length >= 3) {
+                    var filledRow = _.zipObject(FIELDS, row);
+                    motions.push(filledRow);
+                }
+            });
+
+            _.forEach(motions, function (motion) {
+                // identifier
+                if (motion.identifier !== '') {
+                    // All motion objects are already loaded via the resolve statement from ui-router.
+                    var motions = Motion.getAll();
+                    if (_.find(motions, function (item) {
+                        return item.identifier === motion.identifier;
+                    })) {
+                        motion.importerror = true;
+                        motion.identifier_error = gettext('Error: Identifier already exists.');
                     }
                 }
                 // title
-                if (motion.title) {
-                    motion.title = motion.title.replace(quotionRe, '$1');
-                }
                 if (!motion.title) {
                     motion.importerror = true;
                     motion.title_error = gettext('Error: Title is required.');
                 }
                 // text
-                if (motion.text) {
-                    motion.text = motion.text.replace(quotionRe, '$1');
-                }
                 if (!motion.text) {
                     motion.importerror = true;
                     motion.text_error = gettext('Error: Text is required.');
                 }
-                // reason
-                if (motion.reason) {
-                    motion.reason = motion.reason.replace(quotionRe, '$1');
-                }
                 // submitter
                 if (motion.submitter) {
-                    motion.submitter = motion.submitter.replace(quotionRe, '$1');
                     if (motion.submitter !== '') {
                         // All user objects are already loaded via the resolve statement from ui-router.
                         var users = User.getAll();
@@ -1690,7 +1673,6 @@ angular.module('OpenSlidesApp.motions.site', [
                 }
                 // category
                 if (motion.category) {
-                    motion.category = motion.category.replace(quotionRe, '$1');
                     if (motion.category !== '') {
                         // All categore objects are already loaded via the resolve statement from ui-router.
                         var categories = Category.getAll();
@@ -1706,13 +1688,10 @@ angular.module('OpenSlidesApp.motions.site', [
                 if (motion.category && motion.category !== '' && !motion.category_id) {
                     motion.category_create = gettext('New category will be created.');
                 }
-                // origin
-                if (motion.origin) {
-                    motion.origin = motion.origin.replace(quotionRe, '$1');
-                }
+
                 $scope.motions.push(motion);
             });
-        });
+        };
 
         // Counter for creations
         $scope.usersCreated = 0;
@@ -1824,14 +1803,16 @@ angular.module('OpenSlidesApp.motions.site', [
             $scope.csvimported = true;
         };
         $scope.clear = function () {
-            $scope.csv.result = null;
+            $scope.motions = [];
         };
         // download CSV example file
         $scope.downloadCSVExample = function () {
+            var headerline = ['Identifier', 'Title', 'Text', 'Reason', 'Submitter', 'Category', 'Origin'];
+            headerline = _.map(headerline, function (entry) {
+                return gettextCatalog.getString(entry);
+            });
             var element = document.getElementById('downloadLink');
-            var csvRows = [
-                // column header line
-                ['identifier', 'title', 'text', 'reason', 'submitter', 'category', 'origin'],
+            var csvRows = [headerline,
                 // example entries
                 ['A1', 'Title 1', 'Text 1', 'Reason 1', 'Submitter A', 'Category A', 'Last Year Conference A'],
                 ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', ''                      ],
