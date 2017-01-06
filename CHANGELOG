@@ -53,6 +53,7 @@ Motions:
 - Changed label of former state "commited a bill" to "refered to committee".
 - New csv import layout and using Papa Parse for parsing the csv.
 - Number of ballots printed can now be set in config.
+- Add new personal settings to remove all whitespaces from motion identifier.
 
 Elections:
 - Added options to calculate percentages on different bases.

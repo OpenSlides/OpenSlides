@@ -336,6 +336,10 @@ class Motion(RESTModelMixin, models.Model):
             number += 1
             identifier = '%s%s' % (prefix, self.extend_identifier_number(number))
 
+        # remove all whitespaces from identifier if MOTION_IDENTIFIER_WITHOUT_BLANKS is set
+        if hasattr(settings, 'MOTION_IDENTIFIER_WITHOUT_BLANKS') and settings.MOTION_IDENTIFIER_WITHOUT_BLANKS:
+            identifier = identifier.replace(' ', '')
+
         self.identifier = identifier
         self.identifier_number = number
 

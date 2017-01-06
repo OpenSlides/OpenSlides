@@ -120,3 +120,4 @@ SEARCH_INDEX = os.path.join(OPENSLIDES_USER_DATA_PATH, 'search_index')
 # Customization of OpenSlides apps
 
 MOTION_IDENTIFIER_MIN_DIGITS = 1
+MOTION_IDENTIFIER_WITHOUT_BLANKS = False
