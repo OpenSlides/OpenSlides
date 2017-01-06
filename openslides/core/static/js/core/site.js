@@ -381,6 +381,43 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+.factory('ProjectorMessageForm', [
+    'Editor',
+    'gettextCatalog',
+    function (Editor, gettextCatalog) {
+        return {
+            getDialog: function (message) {
+                return {
+                    template: 'static/templates/core/projector-message-form.html',
+                    controller: 'ProjectorMessageEditCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: {
+                        projectorMessage: function () {
+                            return message;
+                        }
+                    },
+                };
+            },
+            getFormFields: function () {
+                return [
+                    {
+                        key: 'message',
+                        type: 'editor',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Message'),
+                        },
+                        data: {
+                            ckeditorOptions: Editor.getOptions()
+                        }
+                    },
+                ];
+            },
+        };
+    }
+])
+
 /* This factory handles the filtering of the OS-data-tables. It contains
  * all logic needed for the table header filtering. Things to configure:
  * - multiselectFilters: A dict associating the filter name to a list (empty per default). E.g.
@@ -992,8 +1029,11 @@ angular.module('OpenSlidesApp.core.site', [
     'ProjectorMessage',
     'Countdown',
     'gettextCatalog',
+    'ngDialog',
+    'ProjectorMessageForm',
     function($scope, $http, $interval, $state, $q, Config, Projector, CurrentListOfSpeakersItem,
-        ListOfSpeakersOverlay, ProjectionDefault, ProjectorMessage, Countdown, gettextCatalog) {
+        ListOfSpeakersOverlay, ProjectionDefault, ProjectorMessage, Countdown, gettextCatalog,
+        ngDialog, ProjectorMessageForm) {
         ProjectorMessage.bindAll({}, $scope, 'messages');
 
         var intervals = [];
@@ -1106,8 +1146,7 @@ angular.module('OpenSlidesApp.core.site', [
 
         // *** message functions ***
         $scope.editMessage = function (message) {
-            message.editFlag = false;
-            ProjectorMessage.save(message);
+            ngDialog.open(ProjectorMessageForm.getDialog(message));
         };
         $scope.addMessage = function () {
             var message = {message: ''};
@@ -1126,6 +1165,23 @@ angular.module('OpenSlidesApp.core.site', [
             CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference).then(function (success) {
                 $state.go('agenda.item.detail', {id: success.id});
             });
+        };
+    }
+])
+
+.controller('ProjectorMessageEditCtrl', [
+    '$scope',
+    'projectorMessage',
+    'ProjectorMessage',
+    'ProjectorMessageForm',
+    function ($scope, projectorMessage, ProjectorMessage, ProjectorMessageForm) {
+        $scope.formFields = ProjectorMessageForm.getFormFields();
+        $scope.model = angular.copy(projectorMessage);
+
+        $scope.save = function (message) {
+            ProjectorMessage.inject(message);
+            ProjectorMessage.save(message);
+            $scope.closeThisDialog();
         };
     }
 ])
