@@ -7,6 +7,7 @@ from .models import ConfigStore
 INPUT_TYPE_MAPPING = {
     'string': str,
     'text': str,
+    'markupText': str,
     'integer': int,
     'boolean': bool,
     'choice': str,

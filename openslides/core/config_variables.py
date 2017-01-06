@@ -60,7 +60,7 @@ def get_config_variables():
                       'free web based presentation and assembly system for '
                       'visualizing and controlling agenda, motions and '
                       'elections of an assembly.',
-        input_type='text',
+        input_type='markupText',
         label='Legal notice',
         weight=132,
         group='General',
@@ -79,7 +79,7 @@ def get_config_variables():
     yield ConfigVariable(
         name='general_event_welcome_text',
         default_value='[Space for your welcome text.]',
-        input_type='text',
+        input_type='markupText',
         label='Front page text',
         weight=136,
         group='General',
