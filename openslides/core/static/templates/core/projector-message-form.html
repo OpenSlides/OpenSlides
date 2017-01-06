@@ -1,0 +1,12 @@
+<h1 translate>Edit message</h1>
+
+<form name="messageForm" ng-submit="save(model)" novalidate>
+  <formly-form model="model" fields="formFields">
+    <button type="submit" ng-disabled="motionForm.$invalid" class="btn btn-primary" translate>
+      Save
+    </button>
+    <button type="button" ng-click="closeThisDialog()" class="btn btn-default" translate>
+      Cancel
+    </button>
+  </formly-form>
+</form>

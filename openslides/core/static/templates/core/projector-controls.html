@@ -239,7 +239,7 @@
               <i class="fa fa-times"></i>
             </button>
             <button type="button" class="close editicon"
-              ng-click="message.editFlag=true"
+              ng-click="editMessage(message)"
               title="{{ 'Edit message' | translate}}">
               <i class="fa fa-pencil"></i>
             </button>
@@ -249,18 +249,7 @@
               ng-class="{ 'projected': isProjected(message).length }">
             <projector-button model="message" default-projector-id="messageDefaultProjectorId"></projector-button>
             &nbsp;&nbsp;
-            <div class="innermessage" ng-bind-html="message.message"> </div>
-
-            <div class="panel-input">
-              <div ng-if="message.editFlag" class="input-group">
-                <input ng-model="message.message" type="text" class="form-control input-sm">
-                <a ng-click="editMessage(message)"
-                  title="{{ 'Save' | translate}}"
-                  class="btn btn-sm btn-primary input-group-addon">
-                  <i class="fa fa-check"></i>
-                </a>
-              </div>
-            </div>
+            <div class="innermessage" ng-bind-html="message.message | trusted"></div>
           </div>
         </div>
         <!-- Add message button -->
