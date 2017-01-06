@@ -128,75 +128,114 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
             };
 
             var createAccessDataContent = function(user) {
-                var accessDataColumns = {
-                    columns: [
+                // wlan access data
+                var columnWifi = [
+                    {
+                        text: gettextCatalog.getString("WLAN access data"),
+                        style: 'userDataHeading'
+                    },
+                    {
+                        text: gettextCatalog.getString("WLAN name (SSID)") + ":",
+                        style: 'userDataTopic'
+                    },
+                    {
+                        text: Config.get('users_pdf_wlan_ssid').value || '-',
+                        style: 'userDataValue'
+                    },
+                    {
+                        text: gettextCatalog.getString("WLAN password") + ":",
+                        style: 'userDataTopic'
+                    },
+                    {
+                        text: Config.get('users_pdf_wlan_password').value || '-',
+                        style: 'userDataValue'
+                    },
+                    {
+                        text: gettextCatalog.getString("WLAN encryption") + ":",
+                        style: 'userDataTopic'
+                    },
+                    {
+                        text: Config.get('users_pdf_wlan_encryption').value || '-',
+                        style: 'userDataValue'
+                    },
+                    {
+                        text: "\n"
+                    }
+                ];
+                // wifi qr code
+                if (Config.get('users_pdf_wlan_ssid').value && Config.get('users_pdf_wlan_encryption').value) {
+                    var wifiQrCode = "WIFI:S:" + Config.get('users_pdf_wlan_ssid').value +
+                        ";T:" + Config.get('users_pdf_wlan_encryption').value +
+                        ";P:" + Config.get('users_pdf_wlan_password').value + ";;";
+                    columnWifi.push(
                         {
-                            stack: [
-                                {
-                                    text: gettextCatalog.getString("WLAN access data"),
-                                    style: 'userDataHeading'
-                                },
-                                {
-                                    text: gettextCatalog.getString("WLAN name (SSID)") + ":",
-                                    style: 'userDataTopic'
-                                },
-                                {
-                                    text: Config.get('users_pdf_wlan_ssid').value || '-',
-                                    style: 'userDataValue'
-                                },
-                                {
-                                    text: gettextCatalog.getString("WLAN password") + ":",
-                                    style: 'userDataTopic'
-                                },
-                                {
-                                    text: Config.get('users_pdf_wlan_password').value || '-',
-                                    style: 'userDataValue'
-                                },
-                                {
-                                    text: gettextCatalog.getString("WLAN encryption") + ":",
-                                    style: 'userDataTopic'
-                                },
-                                {
-                                    text: Config.get('users_pdf_wlan_encryption').value || '-',
-                                    style: 'userDataValue'
-                                },
-                            ]
+                            qr: wifiQrCode,
+                            fit: 120,
+                            margin: [0, 0, 0, 8]
                         },
                         {
-                            stack: [
-                                {
-                                    text: gettextCatalog.getString("OpenSlides access data"),
-                                    style: 'userDataHeading'
-                                },
-                                {
-                                    text: gettextCatalog.getString("Username") + ":",
-                                    style: 'userDataTopic'
-                                },
-                                {
-                                    text: user.username,
-                                    style: 'userDataValue'
-                                },
-                                {
-                                    text: gettextCatalog.getString("Initial password") + ":",
-                                    style: 'userDataTopic'
-                                },
-                                {
-                                    text: user.default_password,
-                                    style: 'userDataValue'
-                                },
-                                {
-                                    text: "URL:",
-                                    style: 'userDataTopic'
-                                },
-                                {
-                                    text: Config.get('users_pdf_url').value  || '-',
-                                    link: Config.get('users_pdf_url').value,
-                                    style: 'userDataValue'
-                                },
-                            ]
+                            text: gettextCatalog.getString("Scan this QR code to connect to WLAN."),
+                            style: 'small'
                         }
+                    );
+                }
+
+                // openslides access data
+                var columnOpenSlides = [
+                    {
+                        text: gettextCatalog.getString("OpenSlides access data"),
+                        style: 'userDataHeading'
+                    },
+                    {
+                        text: gettextCatalog.getString("Username") + ":",
+                        style: 'userDataTopic'
+                    },
+                    {
+                        text: user.username,
+                        style: 'userDataValue'
+                    },
+                    {
+                        text: gettextCatalog.getString("Initial password") + ":",
+                        style: 'userDataTopic'
+                    },
+                    {
+                        text: user.default_password,
+                        style: 'userDataValue'
+                    },
+                    {
+                        text: "URL:",
+                        style: 'userDataTopic'
+                    },
+                    {
+                        text: Config.get('users_pdf_url').value  || '-',
+                        link: Config.get('users_pdf_url').value,
+                        style: 'userDataValue'
+                    },
+                    {
+                        text: "\n"
+                    }
+                ];
+                // url qr code
+                if (Config.get('users_pdf_url').value) {
+                    columnOpenSlides.push(
+                        {
+                            qr: Config.get('users_pdf_url').value,
+                            fit: 120,
+                            margin: [0, 0, 0, 8]
+                        },
+                        {
+                            text: gettextCatalog.getString("Scan this QR code to open URL."),
+                            style: 'small'
+                        }
+                    );
+                }
+
+                var accessDataColumns = {
+                    columns: [
+                        columnWifi,
+                        columnOpenSlides,
                     ],
-                    margin: [0,20]
+                    margin: [0, 20]
                 };
 
                 return accessDataColumns;
