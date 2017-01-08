@@ -72,6 +72,11 @@ Users:
 - Added more multiselect actions.
 - Added QR code in users access pdf.
 
+Mediafiles:
+- Allowed to project uploaded images (png, jpg, gif) and video files
+  (e.g. mp4, wmv, flv, quicktime, ogg).
+- Allowed to hide uploaded files in overview list for non authorized users.
+
 Other:
 - Django 1.10 is now supported. Dropped support for Django 1.8 and 1.9.
 - Removed config cache to support multiple threads or processes.
