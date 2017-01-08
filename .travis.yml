@@ -8,6 +8,7 @@ cache:
 python:
   - "3.4"
   - "3.5"
+  - "3.6"
 env:
   - TRAVIS_NODE_VERSION="4"
 before_install:
