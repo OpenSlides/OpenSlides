@@ -17,7 +17,7 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="menuListOfSpeakers">
-          <li ng-repeat="projector in projectors">
+          <li ng-repeat="projector in projectors | orderBy:'id'">
             <a href ng-click="setListOfSpeakers(projector)">
               <i class="fa fa-check" ng-if="projector.id == currentListOfSpeakers"></i>
               {{ projector.name | translate }}

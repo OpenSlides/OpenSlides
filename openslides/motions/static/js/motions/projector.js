@@ -21,12 +21,13 @@ angular.module('OpenSlidesApp.motions.projector', [
     '$rootScope',
     '$http',
     'Motion',
+    'MotionChangeRecommendation',
     'User',
     'Config',
     'Projector',
     '$timeout',
     'ProjectorID',
-    function($scope, $rootScope, $http, Motion, User, Config, Projector, $timeout, ProjectorID) {
+    function($scope, $rootScope, $http, Motion, MotionChangeRecommendation, User, Config, Projector, $timeout, ProjectorID) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
@@ -58,9 +59,11 @@ angular.module('OpenSlidesApp.motions.projector', [
             }
         };
 
+        $scope.mode = $scope.element.mode || 'original';
+
         Motion.bindOne(id, $scope, 'motion');
         User.bindAll({}, $scope, 'users');
-
+        MotionChangeRecommendation.bindAll({}, $scope, 'change_recommendations');
     }
 ]);
 

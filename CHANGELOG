@@ -38,6 +38,7 @@ Motions:
   motion text.
 - Allowed to add change recommendations for special motion text lines
   (with diff mode).
+- Added projection support for change recommendations.
 - Added button to sort and number all motions in a category.
 - Added recommendations for motions.
 - Added options to calculate percentages on different bases.

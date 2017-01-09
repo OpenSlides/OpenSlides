@@ -433,7 +433,14 @@ tr.elected td {
 .motion-text .highlight {
     background-color: #ff0;
 }
-
+.motion-text ins {
+    color: green;
+    text-decoration: underline;
+}
+.motion-text del {
+    color: red;
+    text-decoration: line-through;
+}
 .motion-text.line-numbers-outside {
     padding-left: 0;
     margin-left: 25px;
@@ -476,6 +483,122 @@ tr.elected td {
 }
 .motion-text.line-numbers-none .os-line-number {
     visibility: hidden;
+}
+
+/** Diff view */
+
+.change-recommendation-overview {
+    background-color: #eee;
+    border: solid 1px #ddd;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    margin-top: -15px;
+    padding-top: 5px;
+}
+.change-recommendation-overview {
+    margin-bottom: 50px;
+    padding: 10px;
+}
+.change-recommendation-overview h2 {
+    margin-top: 0;
+}
+.change-recommendation-overview ul {
+    list-style: none;
+    display: table;
+}
+.change-recommendation-overview li {
+    display: table-row;
+    cursor: pointer;
+}
+.change-recommendation-overview li:hover {
+    text-decoration: underline;
+}
+.change-recommendation-overview li > * {
+    display: table-cell;
+    padding: 4px;
+}
+.change-recommendation-overview .status {
+    color: gray;
+    font-style: italic;
+}
+.change-recommendation-overview .status > *:before {
+    content: '(';
+}
+.change-recommendation-overview .status > *:after {
+    content: ')';
+}
+.change-recommendation-overview .no-changes {
+    font-style: italic;
+    color: grey;
+}
+
+.diff-box {
+    background-color: #f9f9f9;
+    border: solid 1px #eee;
+    border-radius: 3px;
+    margin-bottom: 0;
+    margin-top: -25px;
+    padding-top: 0;
+    padding-right: 155px;
+}
+.motion-text-with-diffs .original-text {
+    min-height: 30px; // Spacer between .diff-box, in case .original-text is empty
+}
+.motion-text-with-diffs .original-text ul:last-child {
+    padding-bottom: 16px;
+}
+.motion-text-with-diffs.line-numbers-inline .diff-box, .motion-text-with-diffs.line-numbers-none .diff-box {
+    margin-right: -220px;
+}
+.diff-box:hover {
+    background-color: #f0f0f0;
+}
+.diff-box .action-row {
+    font-size: 0.8em;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    float: right;
+    width: 150px;
+    text-align: right;
+    margin-right: -150px;
+    opacity: 0.5;
+}
+.diff-box:hover .action-row {
+    opacity: 1;
+}
+.diff-box .action-row .btn-delete {
+    margin-left: 5px;
+    color: red;
+}
+.diff-box .action-row .btn-edit {
+    margin-left: 5px;
+}
+.diff-box .status-row {
+    font-style: italic;
+    color: gray;
+}
+.diff-box .status-row > *:after {
+    content: ':';
+}
+
+.motion-text-diff .delete {
+    color: red;
+    text-decoration: line-through;
+}
+.motion-text-diff .insert {
+    color: green;
+    text-decoration: underline;
+}
+.motion-text-diff p {
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.motion-text-diff.line-numbers-outside .insert .os-line-number {
+    display: none;
+}
+.motion-text-diff.line-numbers-inline .insert .os-line-number {
+    display: none;
 }
 
 /*** Video and Image projection ***/
