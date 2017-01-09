@@ -202,9 +202,10 @@ angular.module('OpenSlidesApp.motions', [
     'Config',
     'lineNumberingService',
     'diffService',
+    'OpenSlidesSettings',
     'Projector',
     function(DS, $http, MotionPoll, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog,
-        operator, Config, lineNumberingService, diffService, Projector) {
+        operator, Config, lineNumberingService, diffService, OpenSlidesSettings, Projector) {
         var name = 'motions/motion';
         return DS.defineResource({
             name: name,
@@ -406,6 +407,12 @@ angular.module('OpenSlidesApp.motions', [
                         ]
                     });
                 },
+                isAmendment: function () {
+                    return this.parent_id !== null;
+                },
+                hasAmendments: function () {
+                    return DS.filter('motions/motion', {parent_id: this.id}).length > 0;
+                },
                 isAllowed: function (action) {
                     /*
                      * Return true if the requested user is allowed to do the specific action.
@@ -468,6 +475,22 @@ angular.module('OpenSlidesApp.motions', [
                             return operator.hasPerms('motions.can_manage');
                         case 'can_manage':
                             return operator.hasPerms('motions.can_manage');
+                        case 'can_see_amendments':
+                            var result;
+                            if (operator.hasPerms('motions.can_create')) {
+                                result = Config.get('motions_amendments_enabled').value &&
+                                    (this.hasAmendments() || this.isAllowed('can_create_amendment'));
+                            } else if (operator.hasPerms('motions.can_see')) {
+                                result = Config.get('motions_amendments_enabled').value && this.hasAmendments();
+                            }
+                            return result;
+                        case 'can_create_amendment':
+                            return (
+                                operator.hasPerms('motions.can_create') &&
+                                Config.get('motions_amendments_enabled').value &&
+                                ( !this.isAmendment() ||
+                                  (this.isAmendment() && OpenSlidesSettings.MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS))
+                            );
                         default:
                             return false;
                     }

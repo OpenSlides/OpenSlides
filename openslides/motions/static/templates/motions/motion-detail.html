@@ -113,14 +113,15 @@
             </button>
           </div>
           <!-- Amendments -->
-          <div ng-if="config('motions_amendments_enabled')">
+
+          <div ng-if="motion.isAllowed('can_see_amendments')">
             <h3 translate>Amendments</h3>
             <div ng-repeat="amendment in amendments">
               <a ui-sref="motions.motion.detail({id: amendment.id})">
                 <translate>Motion</translate> {{ amendment.identifier || amendment.getTitle() }}
               </a>
             </div>
-            <button os-perms="motions.can_create" ng-click="newAmendment()" class="btn btn-default btn-sm">
+            <button ng-if="motion.isAllowed('can_create_amendment')" ng-click="newAmendment()" class="btn btn-default btn-sm">
               <i class="fa fa-plus"></i>
               <translate>New amendment</translate>
             </button>
