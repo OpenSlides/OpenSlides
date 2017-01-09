@@ -296,7 +296,7 @@
         <div style="width: 60%;" class="optional">
           <small>
             <div ng-style="{'visibility': (item.duration || item.hover) ? 'visible' : 'hidden'}">
-              <div class="popover-wrapper">
+              <div class="popover-wrapper" os-perms="agenda.can_manage">
                 <i class="fa fa-clock-o"></i>
                 <span editable-text="item.durationText" e-placeholder="hh:mm"
                   onshow="generateDurationText(item)" onaftersave="setDurationText(item)">
@@ -307,13 +307,23 @@
                   </span>
                 </span>
               </div>
+              <div os-perms="!agenda.can_manage">
+                <span ng-if="item.duration">
+                  <i class="fa fa-clock-o"></i> {{ item.duration | osMinutesToTime }}
+                </span>
+              </div>
             </div>
             <div ng-style="{'visibility': (item.comment || item.hover) ? 'visible' : 'hidden'}">
-              <div class="popover-wrapper">
+              <div class="popover-wrapper" os-perms="agenda.can_manage">
                 <i class="fa fa-info-circle"></i>
                 <span editable-text="item.comment" onaftersave="save(item)">
                   <span ng-if="!item.comment" translate>Set comment...</span>
-                  <span ng-if="item.comment">{{ item.comment}}</span>
+                  <span ng-if="item.comment">{{ item.comment }}</span>
+                </span>
+              </div>
+              <div os-perms="!agenda.can_manage">
+                <span ng-if="item.comment">
+                  <i class="fa fa-info-circle"></i> {{ item.comment }}
                 </span>
               </div>
             </div>
