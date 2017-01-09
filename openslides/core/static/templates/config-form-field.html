@@ -71,6 +71,14 @@
               id="{{ key }}" class="form-control">
     </textarea>
 
+    <!-- editor -->
+    <textarea ng-if="type == 'editor'"
+              id="{{ configOption.key }}"
+              ckeditor="ckeditorOptions"
+              ng-model="$parent.value" class="form-control"
+              ng-model-options="{debounce: 1000}">
+    </textarea>
+
     <!-- select -->
     <select ng-if="type == 'choice'"
             ng-model="$parent.value"

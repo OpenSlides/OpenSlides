@@ -31,7 +31,8 @@ Core:
 - Added template hook system for plugins.
 - Made a lot of code clean up, improvements and bug fixes in client and
   backend.
-- Use CKEditor for editing projector messages.
+- Use a separate dialog with CKEditor for editing projector messages.
+- Use CKEditor in settings for text markup.
 
 Motions:
 - Added adjustable line numbering mode (outside, inside, none) for each

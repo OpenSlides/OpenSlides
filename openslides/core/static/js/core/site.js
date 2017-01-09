@@ -635,6 +635,7 @@ angular.module('OpenSlidesApp.core.site', [
             return {
                 string: 'text',
                 text: 'textarea',
+                markupText: 'editor',
                 integer: 'number',
                 boolean: 'checkbox',
                 choice: 'choice',
@@ -878,10 +879,16 @@ angular.module('OpenSlidesApp.core.site', [
     'configOptions',
     'gettextCatalog',
     'DateTimePickerTranslation',
-    function($scope, MajorityMethodChoices, Config, configOptions, gettextCatalog, DateTimePickerTranslation) {
+    'Editor',
+    function($scope, MajorityMethodChoices, Config, configOptions, gettextCatalog, DateTimePickerTranslation, Editor) {
         Config.bindAll({}, $scope, 'configs');
         $scope.configGroups = configOptions.data.config_groups;
         $scope.dateTimePickerTranslatedButtons = DateTimePickerTranslation.getButtons();
+
+        $scope.ckeditorOptions = Editor.getOptions();
+        $scope.ckeditorOptions.on.change = function (event) {
+            $scope.save(event.editor.element.$.id, this.getData());
+        };
 
         // save changed config value
         $scope.save = function(key, value) {
