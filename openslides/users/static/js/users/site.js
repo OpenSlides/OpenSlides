@@ -963,6 +963,7 @@ angular.module('OpenSlidesApp.users.site', [
             $scope.duplicates = 0;
             var quotionRe = /^"(.*)"$/;
             angular.forEach($scope.csv.result, function (user) {
+                user.selected = true;
                 // title
                 if (user.title) {
                     user.title = user.title.replace(quotionRe, '$1');
@@ -1098,7 +1099,7 @@ angular.module('OpenSlidesApp.users.site', [
             $scope.usersWillBeImported = 0;
 
             $scope.users.forEach(function(user) {
-                if (user.importerror || (user.duplicate && user.duplicateAction == $scope.duplicateActions[0])) {
+                if (!user.selected || user.importerror || (user.duplicate && user.duplicateAction == $scope.duplicateActions[0])) {
                     $scope.usersWillNotBeImported++;
                 } else {
                     $scope.usersWillBeImported++;
@@ -1121,7 +1122,7 @@ angular.module('OpenSlidesApp.users.site', [
             // collect all needed groups and create non existing groups
             var groupsToCreate = [];
             _.forEach($scope.users, function (user) {
-                if (!user.importerror && user.groups.length) {
+                if (user.selected && !user.importerror && user.groups.length) {
                     _.forEach(user.groupsToCreate, function (group) { // Just append groups, that are not listed yet.
                         if (_.indexOf(groupsToCreate, group) == -1) {
                             groupsToCreate.push(group);
@@ -1147,7 +1148,7 @@ angular.module('OpenSlidesApp.users.site', [
                 var existingUsers = User.getAll();
 
                 _.forEach($scope.users, function (user) {
-                    if (!user.importerror) {
+                    if (user.selected && !user.importerror) {
                         // Assign all groups
                         _.forEach(user.groups, function(csvGroup) {
                             allGroups.forEach(function (allGroup) {
