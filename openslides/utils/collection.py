@@ -300,10 +300,10 @@ class Collection:
         cached_full_data_dict = cache.get_many(cache_keys)
 
         # Get all ids that are missing.
-        missing_ids = set()
-        for cache_key in cache_keys:
-            if cache_key not in cached_full_data_dict:
-                missing_ids.add(get_collection_id_from_cache_key(cache_key)[1])
+        missing_cache_keys = set(cache_keys).difference(cached_full_data_dict.keys())
+        missing_ids = set(
+            get_collection_id_from_cache_key(cache_key)[1]
+            for cache_key in missing_cache_keys)
 
         # Generate collection elements that where in the cache.
         for cache_key, cached_full_data in cached_full_data_dict.items():
