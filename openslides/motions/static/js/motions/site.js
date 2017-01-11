@@ -1100,12 +1100,13 @@ angular.module('OpenSlidesApp.motions.site', [
     'Config',
     'motion',
     'MotionInlineEditing',
+    'MotionCommentsInlineEditing',
     'Projector',
     'ProjectionDefault',
     function($scope, $http, operator, ngDialog, MotionForm,
              ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation, MotionPDFExport,
              Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motion, MotionInlineEditing,
-             Projector, ProjectionDefault) {
+             MotionCommentsInlineEditing, Projector, ProjectionDefault) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1345,8 +1346,17 @@ angular.module('OpenSlidesApp.motions.site', [
         };
 
         // Inline editing functions
-        $scope.inlineEditing = MotionInlineEditing;
-        $scope.inlineEditing.init($scope, motion);
+        $scope.inlineEditing = MotionInlineEditing.createInstance($scope, motion,
+            'view-original-text-inline-editor', true,
+            function (obj) {
+                return motion.getTextWithLineBreaks($scope.version);
+            },
+            function (obj) {
+                motion.setTextStrippingLineBreaks(obj.editor.getData());
+                motion.disable_versioning = (obj.trivialChange && Config.get('motions_allow_disable_versioning').value);
+            }
+        );
+        $scope.commentsInlineEditing = MotionCommentsInlineEditing.createInstances($scope, motion);
 
         // Change recommendation creation functions
         $scope.createChangeRecommendation = ChangeRecommmendationCreate;
