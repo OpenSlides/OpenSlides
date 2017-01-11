@@ -26,10 +26,16 @@ class Command(BaseCommand):
             'password',
             help='The password of the new user.'
         )
+        parser.add_argument(
+            'groups_id',
+            help='The group id of the new user.'
+        )
 
     def handle(self, *args, **options):
         user_data = {
             'first_name': options['first_name'],
             'last_name': options['last_name'],
         }
-        User.objects.create_user(options['username'], options['password'], **user_data)
+        user = User.objects.create_user(options['username'], options['password'], **user_data)
+        if options['groups_id'].isdigit():
+            user.groups.add(int(options['groups_id']))
