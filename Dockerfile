@@ -27,7 +27,7 @@ RUN rm -rf /var/lib/apt/lists/*
 # BUILD APP
 ADD . /app
 
-RUN node_modules/.bin/gulp
+RUN node_modules/.bin/gulp --production
 RUN rm -fr /tmp/node-v4.5.0-linux-x64/
 RUN rm -fr /app/bower_components
 RUN rm -fr /app/node_modules
