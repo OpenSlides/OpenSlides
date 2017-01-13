@@ -91,7 +91,6 @@
 
   <!-- Diff View -->
   <div ng-if="mode == 'diff'">
-    <ng-include src="'static/templates/motions/motion-detail/change-summary.html'"></ng-include>
     <!-- The actual diff view -->
     <div class="motion-text-with-diffs line-numbers-{{ config('motions_default_line_numbering') }}">
       <div ng-repeat="change in (changes = (change_recommendations | orderBy: 'line_from')) ">
