@@ -65,32 +65,49 @@ DATABASES = {
 }
 
 
-# Django Channels
-
-# Unless you have only a small assembly uncomment the following lines to
-# activate Redis as backend for Django Channels and Cache. You have to install
-# a Redis server and the python packages asgi_redis and django-redis.
-
-# https://channels.readthedocs.io/en/latest/backends.html#redis
-
-# CHANNEL_LAYERS['default']['BACKEND'] = 'asgi_redis.RedisChannelLayer'
+# Set use_redis to True to activate redis as cache-, asgi- and session backend.
+use_redis = False
 
 
-# Caching
+if use_redis:
 
-# Django uses a inmemory cache at default. This supports only one thread. If
-# you use more then one thread another caching backend is required. We recommand
-# django-redis: https://niwinz.github.io/django-redis/latest/#_user_guide
+    # Django Channels
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379/0",
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         }
-#     }
-# }
+    # Unless you have only a small assembly uncomment the following lines to
+    # activate Redis as backend for Django Channels and Cache. You have to install
+    # a Redis server and the python packages asgi_redis and django-redis.
+
+    # https://channels.readthedocs.io/en/latest/backends.html#redis
+
+    CHANNEL_LAYERS['default']['BACKEND'] = 'asgi_redis.RedisChannelLayer'
+
+
+    # Caching
+
+    # Django uses a inmemory cache at default. This supports only one thread. If
+    # you use more then one thread another caching backend is required. We recommand
+    # django-redis: https://niwinz.github.io/django-redis/latest/#_user_guide
+
+    CACHES = {
+       "default": {
+           "BACKEND": "django_redis.cache.RedisCache",
+           "LOCATION": "redis://127.0.0.1:6379/0",
+           "OPTIONS": {
+               "CLIENT_CLASS": "django_redis.client.DefaultClient",
+           }
+       }
+    }
+
+    # Session backend
+
+    # Per default django uses the database as session backend. This can be slow.
+    # One possibility is to use the cache session backend with redis as cache backend
+    # Another possibility is to use a native redis session backend. For example:
+    # https://github.com/martinrusev/django-redis-sessions
+
+    # SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+    SESSION_ENGINE = 'redis_sessions.session'
+
 
 
 # Internationalization

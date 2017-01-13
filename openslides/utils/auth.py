@@ -6,7 +6,7 @@ from django.contrib.auth.models import Permission
 from django.utils.functional import SimpleLazyObject
 from rest_framework.authentication import BaseAuthentication
 
-from ..core.config import config
+from .collection import CollectionElement
 
 
 # Registered users
@@ -48,33 +48,13 @@ class AnonymousUser(DjangoAnonymousUser):
     Class for anonymous user instances which have the permissions from the
     group 'Anonymous' (pk=1).
     """
-    def get_all_permissions(self, obj=None):
-        """
-        Returns the permissions a user is granted by his group membership(s).
-
-        Try to return the permissions for the 'Anonymous' group (pk=1).
-        """
-        perms = Permission.objects.filter(group__pk=1)
-        if perms is None:
-            return set()
-        # TODO: Test without order_by()
-        perms = perms.values_list('content_type__app_label', 'codename').order_by()
-        return set(['%s.%s' % (content_type, codename) for content_type, codename in perms])
 
     def has_perm(self, perm, obj=None):
         """
         Checks if the user has a specific permission.
         """
-        return (perm in self.get_all_permissions())
-
-    def has_module_perms(self, app_label):
-        """
-        Checks if the user has permissions on the module app_label.
-        """
-        for perm in self.get_all_permissions():
-            if perm[:perm.index('.')] == app_label:
-                return True
-        return False
+        default_group = CollectionElement.from_values('users/group', 1)
+        return perm in default_group.get_full_data()['permissions']
 
 
 class RESTFrameworkAnonymousAuthentication(BaseAuthentication):
@@ -86,6 +66,7 @@ class RESTFrameworkAnonymousAuthentication(BaseAuthentication):
     """
 
     def authenticate(self, request):
+        from ..core.config import config
         if config['general_system_enable_anonymous']:
             return (AnonymousUser(), None)
         return None
@@ -106,7 +87,7 @@ class AuthenticationMiddleware:
             "The authentication middleware requires session middleware "
             "to be installed. Edit your MIDDLEWARE_CLASSES setting to insert "
             "'django.contrib.sessions.middleware.SessionMiddleware' before "
-            "'openslides.users.auth.AuthenticationMiddleware'."
+            "'openslides.utils.auth.AuthenticationMiddleware'."
         )
         request.user = SimpleLazyObject(lambda: get_user(request))
 
@@ -118,6 +99,7 @@ def get_user(request):
     This is a mix of django.contrib.auth.get_user and
     django.contrib.auth.middleware.get_user which uses our anonymous user.
     """
+    from ..core.config import config
     try:
         return_user = request._cached_user
     except AttributeError:
@@ -127,3 +109,36 @@ def get_user(request):
             return_user = AnonymousUser()
         request._cached_user = return_user
     return return_user
+
+
+def has_perm(user, perm):
+    """
+    Checks that user has a specific permission.
+    """
+    if isinstance(user, AnonymousUser):
+        # Our anonymous user has a has_perm-method that works with the cache
+        # system. So we can use it here.
+        has_perm = user.has_perm(perm)
+    elif isinstance(user, DjangoAnonymousUser):
+        # The django anonymous user is only used when anonymous user is disabled
+        # So he never has permissions to see anything.
+        has_perm = False
+    else:
+        if isinstance(user, get_user_model()):
+            # Converts a user object to a collection element.
+            # from_instance can not be used because the user serializer loads
+            # the group from the db. So each call to from_instance(user) consts
+            # one db query.
+            user = CollectionElement.from_values('users/user', user.id)
+
+        # Get all groups of the user and then see, if one group has the required
+        # permission. If the user has no groups, then use group 1.
+        group_ids = user.get_full_data()['groups_id'] or [1]
+        for group_id in group_ids:
+            group = CollectionElement.from_values('users/group', group_id)
+            if perm in group.get_full_data()['permissions']:
+                has_perm = True
+                break
+        else:
+            has_perm = False
+    return has_perm

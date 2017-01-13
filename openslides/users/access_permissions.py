@@ -1,4 +1,5 @@
 from ..utils.access_permissions import BaseAccessPermissions
+from ..utils.auth import DjangoAnonymousUser, has_perm
 
 
 class UserAccessPermissions(BaseAccessPermissions):
@@ -9,7 +10,7 @@ class UserAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        return user.has_perm('users.can_see_name')
+        return has_perm(user, 'users.can_see_name')
 
     def get_serializer_class(self, user=None):
         """
@@ -33,9 +34,9 @@ class UserAccessPermissions(BaseAccessPermissions):
         FULL_DATA = 3
 
         # Check user permissions.
-        if user.has_perm('users.can_see_name'):
-            if user.has_perm('users.can_see_extra_data'):
-                if user.has_perm('users.can_manage'):
+        if has_perm(user, 'users.can_see_name'):
+            if has_perm(user, 'users.can_see_extra_data'):
+                if has_perm(user, 'users.can_manage'):
                     case = FULL_DATA
                 else:
                     case = MANY_DATA
@@ -77,3 +78,29 @@ class UserAccessPermissions(BaseAccessPermissions):
             if key in USERCANSEESERIALIZER_FIELDS:
                 data[key] = full_data[key]
         return data
+
+
+class GroupAccessPermissions(BaseAccessPermissions):
+    """
+    Access permissions container for Groups. Everyone can see them
+    """
+    def check_permissions(self, user):
+        """
+        Returns True if the user has read access model instances.
+        """
+        from ..core.config import config
+
+        # Every authenticated user can retrieve groups. Anonymous users can do
+        # so if they are enabled.
+        # Our AnonymousUser is a subclass of the DjangoAnonymousUser. Normaly, a
+        # DjangoAnonymousUser means, that AnonymousUser is disabled. But this is
+        # no garanty. send_data uses the AnonymousUser in any case.
+        return not isinstance(user, DjangoAnonymousUser) or config['general_system_enable_anonymous']
+
+    def get_serializer_class(self, user=None):
+        """
+        Returns serializer class.
+        """
+        from .serializers import GroupSerializer
+
+        return GroupSerializer

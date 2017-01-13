@@ -9,7 +9,7 @@ from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.motions.models import Category, Motion, MotionBlock, State
 from openslides.users.models import User
-from openslides.utils.test import TestCase
+from openslides.utils.test import TestCase, use_cache
 
 
 class TestMotionDBQueries(TestCase):
@@ -27,10 +27,11 @@ class TestMotionDBQueries(TestCase):
             Motion.objects.create(title='motion{}'.format(index))
         # TODO: Create some polls etc.
 
+    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 5 requests to get the session an the request user with its permissions,
+        * 4 requests to get the session an the request user with its permissions,
         * 2 requests to get the list of all motions,
         * 1 request to get the motion versions,
         * 1 request to get the agenda item,
@@ -38,16 +39,17 @@ class TestMotionDBQueries(TestCase):
         * 1 request to get the polls,
         * 1 request to get the attachments,
         * 1 request to get the tags,
-        * 2 requests to get the submitters and supporters
+        * 2 requests to get the submitters and supporters and
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(15):
+        with self.assertNumQueries(14):
             self.client.get(reverse('motion-list'))
 
+    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
-        * 2 requests to get the permission for anonymous (config and permissions)
+        * 3 requests to get the permission for anonymous,
         * 2 requests to get the list of all motions,
         * 1 request to get the motion versions,
         * 1 request to get the agenda item,
@@ -56,12 +58,8 @@ class TestMotionDBQueries(TestCase):
         * 1 request to get the attachments,
         * 1 request to get the tags,
         * 2 requests to get the submitters and supporters
-
-        * 10 requests for permissions.
-
-        TODO: The last 10 requests are a bug.
         """
-        with self.assertNumQueries(22):
+        with self.assertNumQueries(13):
             self.client.get(reverse('motion-list'))
 
 
@@ -79,27 +77,25 @@ class TestCategoryDBQueries(TestCase):
         for index in range(10):
             Category.objects.create(name='category{}'.format(index))
 
+    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 5 requests to get the session an the request user with its permissions and
+        * 4 requests to get the session an the request user with its permissions and
         * 2 requests to get the list of all categories.
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(7):
+        with self.assertNumQueries(6):
             self.client.get(reverse('category-list'))
 
+    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
-        * 2 requests to get the permission for anonymous (config and permissions)
+        * 3 requests to get the permission for anonymous (config and permissions)
         * 2 requests to get the list of all motions and
-
-        * 10 requests for permissions.
-
-        TODO: The last 10 requests are a bug.
         """
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(5):
             self.client.get(reverse('category-list'))
 
 
@@ -113,31 +109,29 @@ class TestWorkflowDBQueries(TestCase):
         config['general_system_enable_anonymous'] = True
         # There do not need to be more workflows
 
+    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 5 requests to get the session an the request user with its permissions,
+        * 4 requests to get the session an the request user with its permissions,
         * 2 requests to get the list of all workflows,
         * 1 request to get all states and
         * 1 request to get the next states of all states.
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(8):
             self.client.get(reverse('workflow-list'))
 
+    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
-        * 2 requests to get the permission for anonymous (config and permissions),
+        * 3 requests to get the permission for anonymous,
         * 2 requests to get the list of all workflows,
         * 1 request to get all states and
         * 1 request to get the next states of all states.
-
-        * 2 requests for permissions.
-
-        TODO: The last 2 requests are a bug.
         """
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(7):
             self.client.get(reverse('workflow-list'))
 
 
@@ -294,11 +288,12 @@ class RetrieveMotion(TestCase):
         self.motion.save()
         self.motion.create_poll()
 
+    @use_cache()
     def test_number_of_queries(self):
-        with self.assertNumQueries(16):
+        with self.assertNumQueries(18):
             self.client.get(reverse('motion-detail', args=[self.motion.pk]))
 
-    def test__guest_state_with_required_permission_to_see(self):
+    def test_guest_state_with_required_permission_to_see(self):
         config['general_system_enable_anonymous'] = True
         guest_client = APIClient()
         state = self.motion.state
@@ -323,9 +318,7 @@ class RetrieveMotion(TestCase):
             password='password_kau4eequaisheeBateef')
         self.motion.submitters.add(user)
         submitter_client = APIClient()
-        submitter_client.login(
-            username='username_ohS2opheikaSa5theijo',
-            password='password_kau4eequaisheeBateef')
+        submitter_client.force_login(user)
         response = submitter_client.get(reverse('motion-detail', args=[self.motion.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

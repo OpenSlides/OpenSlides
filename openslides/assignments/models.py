@@ -81,7 +81,8 @@ class AssignmentManager(models.Manager):
         return self.get_queryset().prefetch_related(
             'related_users',
             'agenda_items',
-            'polls')
+            'polls',
+            'tags')
 
 
 class Assignment(RESTModelMixin, models.Model):

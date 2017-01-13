@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Permission
 from django.db.models import Q
 
+from ..utils.autoupdate import inform_changed_data
 from .models import Group, User
 
 
@@ -143,3 +144,8 @@ def create_builtin_groups_and_admin(**kwargs):
 
     # Create or reset admin user
     User.objects.create_or_reset_admin_user()
+
+    # After each group was created, the permissions (many to many fields) where
+    # added to the group. So we have to update the cache by calling
+    # inform_changed_data().
+    inform_changed_data((group_default, group_delegates, group_staff, group_committee))

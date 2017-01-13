@@ -1,3 +1,7 @@
+from contextlib import ContextDecorator
+from unittest.mock import patch
+
+from django.core.cache import caches
 from django.test import TestCase as _TestCase
 from django.test.runner import DiscoverRunner
 
@@ -31,3 +35,22 @@ class TestCase(_TestCase):
     Could be used in the future. Use this this for the integration test suit.
     """
     pass
+
+
+class use_cache(ContextDecorator):
+    """
+    Contextmanager that changes the code to use the local memory cache.
+
+    Can also be used as decorator for a function.
+
+    The code inside the contextmananger starts with an empty cache.
+    """
+
+    def __enter__(self):
+        cache = caches['locmem']
+        cache.clear()
+        self.patch = patch('openslides.utils.collection.cache', cache)
+        self.patch.start()
+
+    def __exit__(self, *exc):
+        self.patch.stop()

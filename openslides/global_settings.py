@@ -94,10 +94,8 @@ STATICFILES_DIRS = [
 AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = [
-    'openslides.users.auth.CustomizedModelBackend',
+    'openslides.utils.auth.CustomizedModelBackend',
 ]
-
-SESSION_ENGINE = 'openslides.core.session_backend'
 
 SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
 
@@ -140,7 +138,7 @@ CACHES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
-        'openslides.users.auth.RESTFrameworkAnonymousAuthentication',
+        'openslides.utils.auth.RESTFrameworkAnonymousAuthentication',
     )
 }
 

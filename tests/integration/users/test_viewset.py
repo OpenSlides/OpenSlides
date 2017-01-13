@@ -5,7 +5,7 @@ from rest_framework.test import APIClient
 from openslides.core.config import config
 from openslides.users.models import Group, User
 from openslides.users.serializers import UserFullSerializer
-from openslides.utils.test import TestCase
+from openslides.utils.test import TestCase, use_cache
 
 
 class TestUserDBQueries(TestCase):
@@ -22,29 +22,27 @@ class TestUserDBQueries(TestCase):
         for index in range(10):
             User.objects.create(username='user{}'.format(index))
 
+    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 5 requests to get the session an the request user with its permissions,
-        * 2 requests to get the list of all assignments and
-        * 1 request to get all groups.
+        * 2 requests to get the session and the request user with its permissions,
+        * 2 requests to get the list of all users and
+        * 1 requests to get the list of all groups.
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(7):
             self.client.get(reverse('user-list'))
 
+    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
-        * 2 requests to get the permission for anonymous (config and permissions)
-        * 2 requests to get the list of all users,
-        * 1 request to get all groups and
-
-        * lots of permissions requests.
-
-        TODO: The last requests are a bug.
+        * 3 requests to get the permission for anonymous,
+        * 2 requests to get the list of all users and
+        * 2 request to get all groups (needed by the user serializer).
         """
-        with self.assertNumQueries(27):
+        with self.assertNumQueries(7):
             self.client.get(reverse('user-list'))
 
 
@@ -62,29 +60,36 @@ class TestGroupDBQueries(TestCase):
         for index in range(10):
             Group.objects.create(name='group{}'.format(index))
 
+    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 2 requests to get the session an the request user with its permissions,
-        * 1 request to get the list of all groups,
-        * 1 request to get the permissions and
-        * 1 request to get the content_object for the permissions.
+        * 4 requests to get the session an the request user with its permissions and
+        * 1 request to get the list of all groups.
+
+        The data of the groups where loaded when the admin was authenticated. So
+        only the list of all groups has be fetched from the db.
         """
         self.client.force_login(User.objects.get(pk=1))
         with self.assertNumQueries(5):
             self.client.get(reverse('group-list'))
 
+    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
         * 2 requests to find out if anonymous is enabled
-        * 1 request to get the list of all groups,
-        * 1 request to get the permissions and
-        * 1 request to get the content_object for the permissions.
+        * 3 request to get the list of all groups and
+
+        * 14 Requests to find out if anonymous is enabled.
 
         TODO: There should be only one request to find out if anonymous is enabled.
+        The reason for the last 14 requests is the base get_restricted_data()
+        method that is used by the group access_permissions. It calls check_permissions().
+        But this is important for the autoupdate-case and can only be fixt by
+        caching the config object.
         """
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(19):
             self.client.get(reverse('group-list'))
 
 

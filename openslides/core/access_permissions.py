@@ -1,4 +1,5 @@
 from ..utils.access_permissions import BaseAccessPermissions
+from ..utils.auth import DjangoAnonymousUser, has_perm
 
 
 class ProjectorAccessPermissions(BaseAccessPermissions):
@@ -9,7 +10,7 @@ class ProjectorAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        return user.has_perm('core.can_see_projector')
+        return has_perm(user, 'core.can_see_projector')
 
     def get_serializer_class(self, user=None):
         """
@@ -32,7 +33,7 @@ class TagAccessPermissions(BaseAccessPermissions):
 
         # Every authenticated user can retrieve tags. Anonymous users can do
         # so if they are enabled.
-        return user.is_authenticated() or config['general_system_enable_anonymous']
+        return not isinstance(user, DjangoAnonymousUser) or config['general_system_enable_anonymous']
 
     def get_serializer_class(self, user=None):
         """
@@ -53,7 +54,7 @@ class ChatMessageAccessPermissions(BaseAccessPermissions):
         """
         # Anonymous users can see the chat if the anonymous group has the
         # permission core.can_use_chat. But they can not use it. See views.py.
-        return user.has_perm('core.can_use_chat')
+        return has_perm(user, 'core.can_use_chat')
 
     def get_serializer_class(self, user=None):
         """
@@ -72,7 +73,7 @@ class ProjectorMessageAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        return user.has_perm('core.can_see_projector')
+        return has_perm(user, 'core.can_see_projector')
 
     def get_serializer_class(self, user=None):
         """
@@ -91,7 +92,7 @@ class CountdownAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        return user.has_perm('core.can_see_projector')
+        return has_perm(user, 'core.can_see_projector')
 
     def get_serializer_class(self, user=None):
         """
@@ -115,7 +116,7 @@ class ConfigAccessPermissions(BaseAccessPermissions):
 
         # Every authenticated user can see the metadata and list or retrieve
         # the config. Anonymous users can do so if they are enabled.
-        return user.is_authenticated() or config['general_system_enable_anonymous']
+        return not isinstance(user, DjangoAnonymousUser) or config['general_system_enable_anonymous']
 
     def get_full_data(self, instance):
         """
