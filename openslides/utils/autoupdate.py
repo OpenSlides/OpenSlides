@@ -24,6 +24,7 @@ def ws_add_site(message):
     message.channel_session['user_id'] = message.user.id
     # Saves the reply channel to the user. Uses 0 for anonymous users.
     websocket_user_cache.add(message.user.id or 0, message.reply_channel.name)
+    message.reply_channel.send({"accept": True})
 
 
 @channel_session_user
