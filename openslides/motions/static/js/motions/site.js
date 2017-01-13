@@ -1112,8 +1112,17 @@ angular.module('OpenSlidesApp.motions.site', [
         Tag.bindAll({}, $scope, 'tags');
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
-        MotionChangeRecommendation.bindAll({'where': {'motion_version_id': {'==': motion.active_version}}}, $scope, 'change_recommendations');
         Motion.loadRelations(motion, 'agenda_item');
+        $scope.$watch(function () {
+            return MotionChangeRecommendation.lastModified();
+        }, function () {
+            $scope.change_recommendations = MotionChangeRecommendation.filter({
+                'where': {'motion_version_id': {'==': motion.active_version}}
+            });
+            if ($scope.change_recommendations.length === 0) {
+                $scope.setProjectionMode($scope.projectionModes[0]);
+            }
+        });
         $scope.$watch(function () {
             return Projector.lastModified();
         }, function () {
@@ -1154,15 +1163,13 @@ angular.module('OpenSlidesApp.motions.site', [
             }
         };
         $scope.projectionMode = getProjectionMode();
-        $scope.setProjectionMode = function (mode, event) {
+        $scope.setProjectionMode = function (mode) {
             $scope.projectionMode = mode;
 
             var projectedIds = motion.isProjected();
             _.forEach(projectedIds, function (id) {
                 motion.project(id, mode.mode);
             });
-
-            event.stopPropagation();
         };
         $scope.commentsFields = Config.get('motions_comments').value;
         $scope.commentFieldForState = MotionComment.getFieldNameForFlag('forState');
