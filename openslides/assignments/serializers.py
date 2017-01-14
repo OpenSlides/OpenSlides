@@ -22,6 +22,15 @@ from .models import (
 )
 
 
+def posts_validator(data):
+    """
+    Validator for open posts. It checks that the values for the open posts are greater than 0.
+    """
+    if (data['open_posts'] and data['open_posts'] is not None and data['open_posts'] < 1):
+        raise ValidationError({'detail': _('Value for {} must be greater than 0').format('open_posts')})
+    return data
+
+
 class AssignmentRelatedUserSerializer(ModelSerializer):
     """
     Serializer for assignment.models.AssignmentRelatedUser objects.
@@ -198,6 +207,7 @@ class AssignmentFullSerializer(ModelSerializer):
             'polls',
             'agenda_item_id',
             'tags',)
+        validators = (posts_validator,)
 
 
 class AssignmentShortSerializer(AssignmentFullSerializer):
@@ -220,3 +230,4 @@ class AssignmentShortSerializer(AssignmentFullSerializer):
             'polls',
             'agenda_item_id',
             'tags',)
+        validators = (posts_validator,)

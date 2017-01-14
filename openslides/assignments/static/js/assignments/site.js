@@ -180,6 +180,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                     templateOptions: {
                         label: gettextCatalog.getString('Number of persons to be elected'),
                         type: 'number',
+                        min: 1,
                         required: true
                     }
                 },
