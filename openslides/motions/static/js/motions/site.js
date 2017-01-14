@@ -1486,7 +1486,9 @@ angular.module('OpenSlidesApp.motions.site', [
             Motion.bindOne($scope.model.parent_id, $scope, 'parent');
         }
         // ... preselect default workflow
-        $scope.model.workflow_id = Config.get('motions_workflow').value;
+        if (operator.hasPerms('motions.can_manage')) {
+            $scope.model.workflow_id = Config.get('motions_workflow').value;
+        }
         // get all form fields
         $scope.formFields = MotionForm.getFormFields(true);
 
@@ -1661,7 +1663,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // set initial data for csv import
         $scope.motions = [];
 
-        // set csv 
+        // set csv
         $scope.csvConfig = {
             accept: '.csv, .txt',
             encodingOptions: ['UTF-8', 'ISO-8859-1'],

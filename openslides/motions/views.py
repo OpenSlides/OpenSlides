@@ -83,13 +83,18 @@ class MotionViewSet(ModelViewSet):
         """
         Customized view endpoint to create a new motion.
         """
-        # Check permission to send submitter and supporter data.
-        if (not request.user.has_perm('motions.can_manage') and
-                (request.data.get('submitters_id') or request.data.get('supporters_id'))):
-            # Non-staff users are not allowed to send submitter or supporter data.
-            self.permission_denied(request)
-
-        # TODO: Should non staff users be allowed to set motions to blocks or send categories, ...? #2506
+        # Check permission to send some data.
+        if not request.user.has_perm('motions.can_manage'):
+            whitelist = (
+                'title',
+                'text',
+                'reason',
+                'comments',  # This is checked later.
+            )
+            for key in request.data.keys():
+                if key not in whitelist:
+                    # Non-staff users are allowed to send only some data.
+                    self.permission_denied(request)
 
         # Check permission to send comment data.
         if not request.user.has_perm('motions.can_see_and_manage_comments'):
