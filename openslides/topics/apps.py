@@ -18,3 +18,7 @@ class TopicsAppConfig(AppConfig):
 
         # Register viewsets.
         router.register(self.get_model('Topic').get_collection_string(), TopicViewSet)
+
+    def get_startup_elements(self):
+        from ..utils.collection import Collection
+        return [Collection(self.get_model('Topic').get_collection_string())]

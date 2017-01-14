@@ -18,3 +18,7 @@ class MediafilesAppConfig(AppConfig):
 
         # Register viewsets.
         router.register(self.get_model('Mediafile').get_collection_string(), MediafileViewSet)
+
+    def get_startup_elements(self):
+        from ..utils.collection import Collection
+        return [Collection(self.get_model('Mediafile').get_collection_string())]
