@@ -162,28 +162,6 @@ angular.module('OpenSlidesApp.users.site', [
     }
 ])
 
-.run([
-    'operator',
-    '$rootScope',
-    '$http',
-    '$state',
-    'Group',
-    function(operator, $rootScope, $http, $state, Group) {
-        // Put the operator into the root scope
-        $http.get('/users/whoami/').success(function(data) {
-            operator.setUser(data.user_id);
-            $rootScope.guest_enabled = data.guest_enabled;
-            if (data.user_id === null && !data.guest_enabled) {
-                // redirect to login dialog if use is not logged in
-                $state.go('login', {guest_enabled: data.guest_enabled});
-            }
-        });
-        $rootScope.operator = operator;
-        // Load all Groups. They are needed later
-        Group.findAll();
-    }
-])
-
 /*
  * Directive to check for permissions
  *
