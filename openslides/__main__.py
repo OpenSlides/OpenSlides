@@ -36,6 +36,9 @@ def main():
         setup_django_settings_module(local_installation=local_installation)
         execute_from_command_line(sys.argv)
     else:
+        # Check for unknown_args.
+        if unknown_args:
+            parser.error('Unknown arguments {}'.format(' '.join(unknown_args)))
         # Run a command that is defined here
         # These are commands that can not rely on an existing settings
         known_args.callback(known_args)
