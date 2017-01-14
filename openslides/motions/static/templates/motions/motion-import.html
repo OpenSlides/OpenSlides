@@ -34,72 +34,73 @@
 
   <div ng-if="motions.length">
     <h3 translate>Preview</h3>
-    <table class="table table-striped table-bordered table-condensed">
-      <thead>
-        <tr>
-          <th>
-          <th>#
-          <th translate>Identifier
-          <th translate>Title
-          <th translate>Text
-          <th translate>Reason
-          <th translate>Submitter
-          <th translate>Category
-          <th translate>Origin</th>
-      <tbody ng-repeat="motion in motions">
-        <tr>
-          <td class="minimum"
-              ng-class="{ 'text-danger': motion.importerror, 'text-success': motion.imported }">
-            <span ng-if="motion.importerror">
-              <i class="fa fa-exclamation-triangle fa-lg"></i>
-            </span>
-            <span ng-if="!motion.importerror && !motion.imported">
-              <i class="fa fa-check-circle-o fa-lg"></i>
-            </span>
-            <span ng-if="motion.imported">
-              <i class="fa fa-check-circle fa-lg"></i>
-            </span>
-          <td>
-            {{ $index + 1 }}
-          <td ng-class="{ 'text-danger': motion.identifier_error }">
-            <span ng-if="motion.identifier_error" title="{{ motion.identifier_error | translate }}">
-              <i class="fa fa-exclamation-triangle pointer"></i>
-            </span>
-            {{ motion.identifier }}
-          <td ng-class="{ 'text-danger': motion.title_error }">
-            <span ng-if="motion.title_error" title="{{ motion.title_error | translate }}">
-              <i class="fa fa-exclamation-triangle"></i>
-            </span>
-            {{ motion.title }}
-          <td ng-class="{ 'text-danger': motion.text_error }">
-            <span ng-if="motion.text_error" title="{{ motion.text_error | translate }}">
-              <i class="fa fa-exclamation-triangle"></i>
-            </span>
-            {{ motion.text | limitTo:80 }}{{ motion.text.length > 80 ? '...' : '' }}
-          <td>{{ motion.reason | limitTo:80 }}{{ motion.reason.length > 80 ? '...' : '' }}
-          <td ng-class="{ 'text-warning': motion.submitter_create }">
-            <span ng-if="motion.submitter_create" title="{{ motion.submitter_create | translate }}">
-              <i class="fa fa-plus-circle"></i>
-            </span>
-            {{ motion.submitter }}
-          <td ng-class="{ 'text-warning': motion.category_create }">
-            <span ng-if="motion.category_create" title="{{ motion.category_create | translate }}">
-              <i class="fa fa-plus-circle"></i>
-            </span>
-            {{ motion.category }}
-          <td>{{ motion.origin | limitTo:30 }}{{ motion.origin.length > 30 ? '...' : '' }}
-    </table>
+    <div class="scroll-x-container">
+      <table class="table table-striped table-bordered table-condensed">
+        <thead>
+          <tr>
+            <th>
+            <th>#
+            <th translate>Identifier
+            <th translate>Title
+            <th translate>Text
+            <th translate>Reason
+            <th translate>Submitter
+            <th translate>Category
+            <th translate>Origin</th>
+        <tbody ng-repeat="motion in motions">
+          <tr>
+            <td class="minimum"
+                ng-class="{ 'text-danger': motion.importerror, 'text-success': motion.imported }">
+              <span ng-if="motion.importerror">
+                <i class="fa fa-exclamation-triangle fa-lg"></i>
+              </span>
+              <span ng-if="!motion.importerror && !motion.imported" class="pointer">
+                <i class="fa fa-check-circle-o fa-lg" ng-if="motion.selected" ng-click="motion.selected=false; calcStats();"></i>
+                <i class="fa fa-circle-o fa-lg" ng-if="!motion.selected" ng-click="motion.selected=true; calcStats();"></i>
+              </span>
+              <span ng-if="motion.imported">
+                <i class="fa fa-check-circle fa-lg"></i>
+              </span>
+            <td>
+              {{ $index + 1 }}
+            <td ng-class="{ 'text-danger': motion.identifier_error }">
+              <span ng-if="motion.identifier_error" title="{{ motion.identifier_error | translate }}">
+                <i class="fa fa-exclamation-triangle pointer"></i>
+              </span>
+              {{ motion.identifier }}
+            <td ng-class="{ 'text-danger': motion.title_error }">
+              <span ng-if="motion.title_error" title="{{ motion.title_error | translate }}">
+                <i class="fa fa-exclamation-triangle"></i>
+              </span>
+              {{ motion.title }}
+            <td ng-class="{ 'text-danger': motion.text_error }">
+              <span ng-if="motion.text_error" title="{{ motion.text_error | translate }}">
+                <i class="fa fa-exclamation-triangle"></i>
+              </span>
+              {{ motion.text | limitTo:80 }}{{ motion.text.length > 80 ? '...' : '' }}
+            <td>{{ motion.reason | limitTo:80 }}{{ motion.reason.length > 80 ? '...' : '' }}
+            <td ng-class="{ 'text-warning': motion.submitter_create }">
+              <span ng-if="motion.submitter_create" title="{{ motion.submitter_create | translate }}">
+                <i class="fa fa-plus-circle"></i>
+              </span>
+              {{ motion.submitter }}
+            <td ng-class="{ 'text-warning': motion.category_create }">
+              <span ng-if="motion.category_create" title="{{ motion.category_create | translate }}">
+                <i class="fa fa-plus-circle"></i>
+              </span>
+              {{ motion.category }}
+            <td>{{ motion.origin | limitTo:30 }}{{ motion.origin.length > 30 ? '...' : '' }}
+      </table>
+    </div>
 
     <div class="text-danger">
-      <div ng-repeat="motion in motionsFailed = (motions | filter:{importerror:true})"></div>
       <i class="fa fa-exclamation-triangle"></i>
-      {{ motionsFailed.length }}
+      {{ motionsWillNotBeImported }}
       <translate>motions will be not imported.</translate>
     </div>
     <div>
-      <div ng-repeat="motion in motionsPassed = (motions | filter:{importerror:false})"></div>
       <i class="fa fa-check-circle-o fa-lg"></i>
-      {{ motions.length - motionsFailed.length }}
+      {{ motionsWillBeImported }}
       <translate>motions will be imported.</translate>
     </div>
     <div ng-repeat="motion in motionsImported = (motions | filter:{imported:true})"></div>
@@ -116,8 +117,8 @@
       <button ng-click="clear()" class="btn btn-default" translate>
         Clear preview
       </button>
-      <button ng-if="!csvImporting && (motions.length - motionsFailed.length) > 0" ng-click="import()" class="btn btn-primary" translate>
-        Import {{ motions.length - motionsFailed.length }} motions
+      <button ng-if="!csvImporting && motionsWillBeImported > 0" ng-click="import()" class="btn btn-primary" translate>
+        Import {{ motionsWillBeImported }} motions
       </button>
     </div>
     <div class="spacer">

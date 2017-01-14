@@ -1017,7 +1017,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // Export as a csv file
         $scope.csvExport = function () {
             var element = document.getElementById('downloadLinkCSV');
-            MotionCsvExport(element, $scope.motionsFiltered);
+            MotionCsvExport.export(element, $scope.motionsFiltered);
         };
         // Export as docx file
         $scope.docxExport = function () {
@@ -1665,8 +1665,8 @@ angular.module('OpenSlidesApp.motions.site', [
     'Category',
     'Motion',
     'User',
-    'gettextCatalog',
-    function($scope, $q, gettext, Category, Motion, User, gettextCatalog) {
+    'MotionCsvExport',
+    function($scope, $q, gettext, Category, Motion, User, MotionCsvExport) {
         // set initial data for csv import
         $scope.motions = [];
 
@@ -1692,6 +1692,7 @@ angular.module('OpenSlidesApp.motions.site', [
             });
 
             _.forEach(motions, function (motion) {
+                motion.selected = true;
                 // identifier
                 if (motion.identifier !== '') {
                     // All motion objects are already loaded via the resolve statement from ui-router.
@@ -1749,6 +1750,20 @@ angular.module('OpenSlidesApp.motions.site', [
 
                 $scope.motions.push(motion);
             });
+            $scope.calcStats();
+        };
+
+        $scope.calcStats = function () {
+            $scope.motionsWillNotBeImported = 0;
+            $scope.motionsWillBeImported = 0;
+
+            $scope.motions.forEach(function(motion) {
+                if (!motion.importerror && motion.selected) {
+                    $scope.motionsWillBeImported++;
+                } else {
+                    $scope.motionsWillNotBeImported++;
+                }
+            });
         };
 
         // Counter for creations
@@ -1767,7 +1782,7 @@ angular.module('OpenSlidesApp.motions.site', [
             var importedCategories = [];
             // collect users and categories
             angular.forEach($scope.motions, function (motion) {
-                if (!motion.importerror) {
+                if (motion.selected && !motion.importerror) {
                     // collect user if not exists
                     if (!motion.submitters_id && motion.submitter) {
                         var index = motion.submitter.indexOf(' ');
@@ -1822,7 +1837,7 @@ angular.module('OpenSlidesApp.motions.site', [
             // wait for users and categories to create
             $q.all(createPromises).then( function() {
                 angular.forEach($scope.motions, function (motion) {
-                    if (!motion.importerror) {
+                    if (motion.selected && !motion.importerror) {
                         // now, add user
                         if (!motion.submitters_id && motion.submitter) {
                             var index = motion.submitter.indexOf(' ');
@@ -1865,21 +1880,8 @@ angular.module('OpenSlidesApp.motions.site', [
         };
         // download CSV example file
         $scope.downloadCSVExample = function () {
-            var headerline = ['Identifier', 'Title', 'Text', 'Reason', 'Submitter', 'Category', 'Origin'];
-            headerline = _.map(headerline, function (entry) {
-                return gettextCatalog.getString(entry);
-            });
             var element = document.getElementById('downloadLink');
-            var csvRows = [headerline,
-                // example entries
-                ['A1', 'Title 1', 'Text 1', 'Reason 1', 'Submitter A', 'Category A', 'Last Year Conference A'],
-                ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', ''                      ],
-                [''  , 'Title 3', 'Text 3', ''        , ''           , ''          , ''                      ],
-            ];
-            var csvString = csvRows.join("%0A");
-            element.href = 'data:text/csv;charset=utf-8,' + csvString;
-            element.download = 'motions-example.csv';
-            element.target = '_blank';
+            MotionCsvExport.downloadExample(element);
         };
     }
 ])

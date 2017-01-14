@@ -36,6 +36,8 @@ Core:
 - Add a version of has_perm that can work with cached users.
 - Cache the group with there permissions.
 - Removed our db-session backend and added possibility to use any django session backend.
+- New csv import layout.
+- Replaced angular-csv-import through Papa Parse for csv parsing.
 
 Motions:
 - Added adjustable line numbering mode (outside, inside, none) for each
@@ -57,7 +59,6 @@ Motions:
 - New PDF layout.
 - Added DOCX export with docxtemplater.
 - Changed label of former state "commited a bill" to "refered to committee".
-- New csv import layout and using Papa Parse for parsing the csv.
 - Number of ballots printed can now be set in config.
 - Add new personal settings to remove all whitespaces from motion identifier.
 - Add new personal settings to allow amendments of amendments.

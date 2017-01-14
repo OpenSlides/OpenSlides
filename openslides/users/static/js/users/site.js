@@ -917,32 +917,6 @@ angular.module('OpenSlidesApp.users.site', [
             });
         };
 
-        // *** csv import ***
-        // set initial data for csv import
-        $scope.users = [];
-        $scope.separator = ',';
-        $scope.encoding = 'UTF-8';
-        $scope.encodingOptions = ['UTF-8', 'ISO-8859-1'];
-        $scope.accept = '.csv, .txt';
-        $scope.csv = {
-            content: null,
-            header: true,
-            headerVisible: false,
-            separator: $scope.separator,
-            separatorVisible: false,
-            encoding: $scope.encoding,
-            encodingVisible: false,
-            accept: $scope.accept,
-            result: null
-        };
-        // set csv file encoding
-        $scope.setEncoding = function () {
-            $scope.csv.encoding = $scope.encoding;
-        };
-        // set csv file encoding
-        $scope.setSeparator = function () {
-            $scope.csv.separator = $scope.separator;
-        };
         // pagination
         $scope.currentPage = 1;
         $scope.itemsPerPage = 100;
@@ -955,45 +929,46 @@ angular.module('OpenSlidesApp.users.site', [
             gettext('override new'),
             gettext('create duplicate')
         ];
-        // detect if csv file is loaded
-        $scope.$watch('csv.result', function () {
+
+        // *** csv import ***
+        $scope.csvConfig = {
+            accept: '.csv, .txt',
+            encodingOptions: ['UTF-8', 'ISO-8859-1'],
+            parseConfig: {
+                skipEmptyLines: true,
+            },
+        };
+
+        var FIELDS = ['title', 'first_name', 'last_name', 'structure_level', 'number',
+        'groups', 'comment', 'is_active', 'is_present', 'is_committee'];
+        $scope.users = [];
+        $scope.onCsvChange = function (csv) {
             // All user objects are already loaded via the resolve statement from ui-router.
             var users = User.getAll();
             $scope.users = [];
+
+            var csvUsers = [];
+            _.forEach(csv.data, function (row) {
+                if (row.length >= 2) {
+                    var filledRow = _.zipObject(FIELDS, row);
+                    csvUsers.push(filledRow);
+                }
+            });
             $scope.duplicates = 0;
-            var quotionRe = /^"(.*)"$/;
-            angular.forEach($scope.csv.result, function (user) {
+            _.forEach(csvUsers, function (user) {
                 user.selected = true;
-                // title
-                if (user.title) {
-                    user.title = user.title.replace(quotionRe, '$1');
-                }
-                // first name
-                if (user.first_name) {
-                    user.first_name = user.first_name.replace(quotionRe, '$1');
-                }
-                // last name
-                if (user.last_name) {
-                    user.last_name = user.last_name.replace(quotionRe, '$1');
-                }
                 if (!user.first_name && !user.last_name) {
                     user.importerror = true;
                     user.name_error = gettext('Error: Given name or surname is required.');
                 }
-                // structure level
-                if (user.structure_level) {
-                    user.structure_level = user.structure_level.replace(quotionRe, '$1');
-                }
                 // number
-                if (user.number) {
-                    user.number = user.number.replace(quotionRe, '$1');
-                } else {
+                if (!user.number) {
                     user.number = "";
                 }
                 // groups
                 user.groups_id = []; // will be overwritten if there are groups
                 if (user.groups) {
-                    user.groups = user.groups.replace(quotionRe, '$1').split(',');
+                    user.groups = user.groups.split(',');
                     user.groups = _.map(user.groups, function (group) {
                         return _.trim(group); // remove whitespaces on start or end
                     });
@@ -1015,43 +990,9 @@ angular.module('OpenSlidesApp.users.site', [
                     // for template:
                     user.groupsNotToCreate = _.difference(user.groups, user.groupsToCreate);
                 }
-                // comment
-                if (user.comment) {
-                    user.comment = user.comment.replace(quotionRe, '$1');
-                }
-                // is active
-                if (user.is_active) {
-                    user.is_active = user.is_active.replace(quotionRe, '$1');
-                    if (user.is_active == '1') {
-                        user.is_active = true;
-                    } else {
-                        user.is_active = false;
-                    }
-                } else {
-                    user.is_active = false;
-                }
-                // is present
-                if (user.is_present) {
-                    user.is_present = user.is_present.replace(quotionRe, '$1');
-                    if (user.is_present == '1') {
-                        user.is_present = true;
-                    } else {
-                        user.is_present = false;
-                    }
-                } else {
-                    user.is_present = false;
-                }
-                // is committee
-                if (user.is_committee) {
-                    user.is_committee = user.is_committee.replace(quotionRe, '$1');
-                    if (user.is_committee == '1') {
-                        user.is_committee = true;
-                    } else {
-                        user.is_committee = false;
-                    }
-                } else {
-                    user.is_committee = false;
-                }
+                user.is_active = (user.is_active !== undefined && user.is_active === '1');
+                user.is_present = (user.is_present !== undefined && user.is_present === '1');
+                user.is_committee = (user.is_committee !== undefined && user.is_committee === '1');
 
                 // Check for duplicates
                 user.duplicate = false;
@@ -1089,7 +1030,7 @@ angular.module('OpenSlidesApp.users.site', [
                 $scope.users.push(user);
             });
             $scope.calcStats();
-        });
+        };
 
         // Stats
         $scope.calcStats = function() {
@@ -1193,7 +1134,7 @@ angular.module('OpenSlidesApp.users.site', [
             });
         };
         $scope.clear = function () {
-            $scope.csv.result = null;
+            $scope.users = null;
         };
         // download CSV example file
         $scope.downloadCSVExample = function () {

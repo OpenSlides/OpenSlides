@@ -41,41 +41,31 @@
 
   <h2 translate>Import by CSV file</h2>
 
-  <div class="block row">
-    <div class="title">
-      <h3 translate>Select a CSV file
-    </div>
-    <div class="block right import">
-      <label class="label" for="inputSeparator" translate>Separator</label>
-      <input type="text" ng-model="separator" ng-change="setSeparator()" ng-init="separator=separator" id="inputSeparator">
-      <br>
-      <label class="label" for="selectEncoding" translate>Encoding</label>
-      <select ng-model="encoding" ng-options="enc as enc for enc in encodingOptions"
-          ng-selected="setEncoding()" ng-init="encoding=encoding" id="selectEncoding"></select>
-      <ng-csv-import
-          content="csv.content"
-          header="csv.header"
-          header-visible="csv.headerVisible"
-          separator="csv.separator"
-          separator-visible="csv.separatorVisible"
-          result="csv.result"
-          accept="csv.accept"
-          encoding="csv.encoding"
-          encoding-visible="csv.encodingVisible"></ng-csv-import>
-    </div>
-  </div>
+  <h3 translate>Select a CSV file</h3>
+  <csv-import change="onCsvChange(csv)" config="csvConfig"></csv-import>
 
   <h4 translate>Please note:</h4>
   <ul class="indentation">
       <li><translate>Required comma or semicolon separated values with these column header names in the first row</translate>:<br>
-          <code>title, first_name, last_name, structure_level, number, groups, comment, is_active, is_present, is_committee</code>
+        <code>
+          <translate>Title</translate>,
+          <translate>Given name</translate>,
+          <translate>Surname</translate>,
+          <translate>Structure level</translate>,
+          <translate>Participant number</translate>,
+          <translate>Groups</translate>,
+          <translate>Comment</translate>,
+          <translate>Is active</translate>,
+          <translate>Is present</translate>,
+          <translate>Is committee</translate>
+        </code>
       <li translate>At least given name or surname have to be filled in. All
         other fields are optional and may be empty.
       <li translate>Only double quotes are accepted as text delimiter (no single quotes).
       <li><a id="downloadLink" href="" ng-click="downloadCSVExample()" translate>Download CSV example file</a>
   </ul>
 
-  <div ng-show="csv.result">
+  <div ng-show="users.length"
     <h3 translate>Preview</h3>
     <div class="scroll-x-container">
       <table class="table table-striped table-bordered table-condensed">

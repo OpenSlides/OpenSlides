@@ -192,7 +192,6 @@ OpenSlides uses the following projects or parts of them:
   * `angular-bootstrap-colorpicker <https://github.com/buberdds/angular-bootstrap-colorpicker>`_, License: MIT
   * `angular-chosen-localytics <http://github.com/leocaseiro/angular-chosen>`_, License: MIT
   * `angular-ckeditor <https://github.com/lemonde/angular-ckeditor/>`_, License: MIT
-  * `angular-csv-import <https://github.com/bahaaldine/angular-csv-import>`_, License: MIT
   * `angular-formly <http://formly-js.github.io/angular-formly/>`_, License: MIT
   * `angular-formly-templates-bootstrap <https://github.com/formly-js/angular-formly-templates-bootstrap>`_, License: MIT
   * `angular-gettext <http://angular-gettext.rocketeer.be/>`_, License: MIT

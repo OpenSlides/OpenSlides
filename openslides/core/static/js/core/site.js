@@ -16,7 +16,6 @@ angular.module('OpenSlidesApp.core.site', [
     'ngDialog',
     'ngFileSaver',
     'ngMessages',
-    'ngCsvImport',
     'ngStorage',
     'ckeditor',
     'luegg.directives',

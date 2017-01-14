@@ -8,10 +8,17 @@ angular.module('OpenSlidesApp.users.csv', [])
     'Group',
     'gettextCatalog',
     function (Group, gettextCatalog) {
+        var makeHeaderline = function () {
+            var headerline = ['Title', 'Given name', 'Surname', 'Structure level', 'Participant number', 'Groups',
+                'Comment', 'Is active', 'Is present', 'Is a committee'];
+            return _.map(headerline, function (entry) {
+                return gettextCatalog.getString(entry);
+            });
+        };
         return {
             export: function (element, users) {
                 var csvRows = [
-                    ['title', 'first_name', 'last_name', 'structure_level', 'number', 'groups', 'comment', 'is_active', 'is_present', 'is_committee'],
+                    makeHeaderline()
                 ];
                 _.forEach(users, function (user) {
                     var row = [];
@@ -46,9 +53,8 @@ angular.module('OpenSlidesApp.users.csv', [])
                 if (groups.length >= 2) {
                     csvGroup = gettextCatalog.getString(groups[groups.length - 1].name); // take last group
                 }
-                var csvRows = [
-                    // column header line
-                    ['title', 'first_name', 'last_name', 'structure_level', 'number', 'groups', 'comment', 'is_active', 'is_present', 'is_committee'],
+
+                var csvRows = [makeHeaderline(),
                     // example entries
                     ['Dr.', 'Max', 'Mustermann', 'Berlin','1234567890', csvGroups, 'xyz', '1', '1', ''],
                     ['', 'John', 'Doe', 'Washington','75/99/8-2', csvGroup, 'abc', '1', '1', ''],
