@@ -352,6 +352,17 @@ class Collection:
             output.append(content)
         return output
 
+    def as_autoupdate_for_user(self, user):
+        """
+        Returns a list of dicts, that can be send though the websocket to a user.
+        """
+        output = []
+        for collection_element in self.element_generator():
+            content = collection_element.as_autoupdate_for_user(user)
+            if content is not None:
+                output.append(content)
+        return output
+
     def as_list_for_user(self, user):
         """
         Returns a list of dictonaries to send them to a user, for example over

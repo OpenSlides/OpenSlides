@@ -35,3 +35,7 @@ class AgendaAppConfig(AppConfig):
 
         # Register viewsets.
         router.register(self.get_model('Item').get_collection_string(), ItemViewSet)
+
+    def get_startup_elements(self):
+        from ..utils.collection import Collection
+        return [Collection(self.get_model('Item').get_collection_string())]
