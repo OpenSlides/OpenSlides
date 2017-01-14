@@ -14,10 +14,10 @@ class CoreAppConfig(AppConfig):
 
         # Import all required stuff.
         from django.db.models import signals
-        from openslides.core.config import config
-        from openslides.core.signals import post_permission_creation
-        from openslides.utils.rest_api import router
-        from openslides.utils.search import index_add_instance, index_del_instance
+        from .config import config
+        from .signals import post_permission_creation
+        from ..utils.rest_api import router
+        from ..utils.search import index_add_instance, index_del_instance
         from .config_variables import get_config_variables
         from .signals import delete_django_app_permissions
         from .views import (
@@ -55,3 +55,10 @@ class CoreAppConfig(AppConfig):
         signals.m2m_changed.connect(
             index_add_instance,
             dispatch_uid='m2m_index_add_instance')
+
+    def get_startup_elements(self):
+        from .config import config
+        from ..utils.collection import Collection
+        for model in ('Projector', 'ChatMessage', 'Tag', 'ProjectorMessage', 'Countdown'):
+            yield Collection(self.get_model(model).get_collection_string())
+        yield Collection(config.get_collection_string())

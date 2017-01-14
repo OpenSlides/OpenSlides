@@ -24,3 +24,7 @@ class AssignmentsAppConfig(AppConfig):
         # Register viewsets.
         router.register(self.get_model('Assignment').get_collection_string(), AssignmentViewSet)
         router.register('assignments/poll', AssignmentPollViewSet)
+
+    def get_startup_elements(self):
+        from ..utils.collection import Collection
+        return [Collection(self.get_model('Assignment').get_collection_string())]

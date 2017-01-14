@@ -95,6 +95,8 @@ Other:
 - Added new caching system with support for Redis.
 - Support https as websocket protocol (wss).
 - Added migration path from 2.0.
+- Add an api for apps to send data when the websocket connection is established.
+- Used this api for all models expect of users to send all data to the client.
 
 
 Version 2.0 (2016-04-18)

@@ -34,3 +34,8 @@ class MotionsAppConfig(AppConfig):
         router.register(self.get_model('MotionChangeRecommendation').get_collection_string(),
                         MotionChangeRecommendationViewSet)
         router.register('motions/motionpoll', MotionPollViewSet)
+
+    def get_startup_elements(self):
+        from ..utils.collection import Collection
+        for model in ('Category', 'Motion', 'MotionBlock', 'Workflow', 'MotionChangeRecommendation'):
+            yield Collection(self.get_model(model).get_collection_string())
