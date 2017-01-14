@@ -69,26 +69,25 @@ angular.module('OpenSlidesApp.core', [
         }
 
         var websocketPath;
-        if (REALM == 'site') {
+        if (REALM === 'site') {
           websocketPath = '/ws/site/';
-        } else if (REALM == 'projector') {
+        } else if (REALM === 'projector') {
           websocketPath = '/ws/projector/' + ProjectorID() + '/';
         } else {
           console.error('The constant REALM is not set properly.');
         }
 
-        var Autoupdate = {
-            messageReceivers: [],
-            onMessage: function (receiver) {
-                this.messageReceivers.push(receiver);
-            },
-            reconnect: function () {
-                if (socket) {
-                    socket.close();
-                }
+        var Autoupdate = {};
+        Autoupdate.messageReceivers = [];
+        Autoupdate.onMessage = function (receiver) {
+            Autoupdate.messageReceivers.push(receiver);
+        };
+        Autoupdate.reconnect = function () {
+            if (socket) {
+                socket.close();
             }
         };
-        var newConnect = function () {
+        Autoupdate.newConnect = function () {
             socket = new WebSocket(websocketProtocol + '//' + location.host + websocketPath);
             clearInterval(recInterval);
             socket.onopen = function () {
@@ -98,7 +97,7 @@ angular.module('OpenSlidesApp.core', [
                 $rootScope.connected = false;
                 socket = null;
                 recInterval = setInterval(function () {
-                    newConnect();
+                    Autoupdate.newConnect();
                 }, 1000);
             };
             socket.onmessage = function (event) {
@@ -107,8 +106,6 @@ angular.module('OpenSlidesApp.core', [
                 });
             };
         };
-
-        newConnect();
         return Autoupdate;
     }
 ])
@@ -300,37 +297,6 @@ angular.module('OpenSlidesApp.core', [
         };
     }
 ])
-
-.factory('loadGlobalData', [
-    'ChatMessage',
-    'Config',
-    'Projector',
-    'ProjectorMessage',
-    'Countdown',
-    function (ChatMessage, Config, Projector, ProjectorMessage, Countdown) {
-        return function () {
-            Config.findAll();
-
-            // Loads all projector data and the projectiondefaults
-            Projector.findAll();
-            ProjectorMessage.findAll();
-            Countdown.findAll();
-
-            // Loads all chat messages data and their user_ids
-            // TODO: add permission check if user has required chat permission
-            // error if include 'operator' here:
-            // "Circular dependency found: loadGlobalData <- operator <- loadGlobalData"
-            //if (operator.hasPerms("core.can_use_chat")) {
-                ChatMessage.findAll().then( function(chatmessages) {
-                    angular.forEach(chatmessages, function (chatmessage) {
-                        ChatMessage.loadRelations(chatmessage, 'user');
-                    });
-                });
-            //}
-        };
-    }
-])
-
 
 // Template hooks
 

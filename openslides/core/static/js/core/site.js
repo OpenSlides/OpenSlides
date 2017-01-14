@@ -80,7 +80,7 @@ angular.module('OpenSlidesApp.core.site', [
                     var that = this;
                     this.scope = scope;
                     this.updateMainMenu();
-                    operator.onOperatorChange(function () {that.updateMainMenu();});
+                    // TODO: operator.onOperatorChange(function () {that.updateMainMenu();});
                 },
                 updateMainMenu: function () {
                     this.scope.elements = this.getElements();
@@ -97,15 +97,6 @@ angular.module('OpenSlidesApp.core.site', [
                 }
             };
         }];
-    }
-])
-
-// Load the global data when the operator changes
-.run([
-    'loadGlobalData',
-    'operator',
-    function (loadGlobalData, operator) {
-        operator.onOperatorChange(loadGlobalData);
     }
 ])
 
@@ -613,14 +604,6 @@ angular.module('OpenSlidesApp.core.site', [
             noFormControl: false
           }
         });
-    }
-])
-
-// Load the global data on startup
-.run([
-    'loadGlobalData',
-    function(loadGlobalData) {
-        loadGlobalData();
     }
 ])
 
