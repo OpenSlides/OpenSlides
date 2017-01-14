@@ -155,7 +155,8 @@
             <translate>Filter</translate>
           </span>
           <!-- boolean Filters -->
-          <span ng-repeat="(name, booleanFilter) in filter.booleanFilters" uib-dropdown>
+          <span ng-repeat="(name, booleanFilter) in filter.booleanFilters"
+            ng-if="!booleanFilter.permission || operator.hasPerms(booleanFilter.permission)" uib-dropdown>
             <span class="pointer" id="dropdown{{ name }}" uib-dropdown-toggle
               ng-class="{'bold': booleanFilter.value !== undefined, 'disabled': isSelectMode}"
               ng-disabled="isSelectMode">
@@ -319,11 +320,6 @@
                 <span editable-text="item.comment" onaftersave="save(item)">
                   <span ng-if="!item.comment" translate>Set comment...</span>
                   <span ng-if="item.comment">{{ item.comment }}</span>
-                </span>
-              </div>
-              <div os-perms="!agenda.can_manage">
-                <span ng-if="item.comment">
-                  <i class="fa fa-info-circle"></i> {{ item.comment }}
                 </span>
               </div>
             </div>

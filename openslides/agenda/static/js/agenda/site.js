@@ -161,6 +161,7 @@ angular.module('OpenSlidesApp.agenda.site', [
                     displayName: gettext('Internal items'),
                     choiceYes: gettext('Internal items'),
                     choiceNo: gettext('No internal items'),
+                    permission: 'agenda.can_see_hidden_items',
                 },
             };
         }
