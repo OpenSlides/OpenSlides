@@ -21,18 +21,19 @@ angular.module('OpenSlidesApp.users', [])
             onOperatorChange: function (func) {
                 operatorChangeCallbacks.push(func);
             },
-            setUser: function(user_id) {
-                if (user_id) {
-                    User.find(user_id).then(function(user) {
-                        operator.user = user;
+            setUser: function(user_id, user_data) {
+                if (user_id && user_data) {
+                    operator.user = User.inject(user_data);
+                    //~ User.find(user_id).then(function(user) {
+                        //~ operator.user = user;
                         // TODO: load only the needed groups
                         Group.findAll().then(function() {
-                            operator.perms = user.getPerms();
+                            operator.perms = operator.user.getPerms();
                             _.forEach(operatorChangeCallbacks, function (callback) {
                                 callback();
                             });
                         });
-                    });
+                    //~ });
                 } else {
                     operator.user = null;
                     operator.perms = [];

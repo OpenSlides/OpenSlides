@@ -171,7 +171,7 @@ angular.module('OpenSlidesApp.users.site', [
     function(operator, $rootScope, $http, $state, Group) {
         // Put the operator into the root scope
         $http.get('/users/whoami/').success(function(data) {
-            operator.setUser(data.user_id);
+            operator.setUser(data.user_id, data.user);
             $rootScope.guest_enabled = data.guest_enabled;
             if (data.user_id === null && !data.guest_enabled) {
                 // redirect to login dialog if use is not logged in
