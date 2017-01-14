@@ -18,7 +18,7 @@ RUN su -c 'node_modules/.bin/bower --config.interactive=false install' openslide
 # INSTALL PYTHON DEPENDENCIES
 ADD requirements_production.txt /app/requirements_production.txt
 RUN pip install -r /app/requirements_production.txt
-RUN pip install daphne psycopg2 asgi_redis
+RUN pip install django-redis asgi-redis django-redis-sessions psycopg2
 
 ## Clean up
 RUN apt-get remove -y python3-pip wget
