@@ -14,6 +14,7 @@ from django.db.models import Prefetch, Q
 
 from openslides.utils.search import user_name_helper
 
+from ..utils.collection import CollectionElement
 from ..utils.models import RESTModelMixin
 from .access_permissions import GroupAccessPermissions, UserAccessPermissions
 
@@ -195,6 +196,16 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
 
         # Return result
         return name
+
+    def save(self, *args, **kwargs):
+        """
+        Overridden method to skip autoupdate if only last_login field was
+        updated as it is done during login.
+        """
+        if kwargs.get('update_fields') == ['last_login']:
+            kwargs['skip_autoupdate'] = True
+            CollectionElement.from_instance(self)
+        return super().save(*args, **kwargs)
 
     def get_search_index_string(self):
         """

@@ -73,7 +73,12 @@ class Index:
             pass
         path = self.get_index_path()
         if path != 'ram' and exists_in(path):
-            return open_dir(path)
+            # Quick fix to bypass errors when many clients login.
+            # TODO: Solve this hack.
+            try:
+                return open_dir(path)
+            except FileNotFoundError:
+                pass
         return self.create_index()
 
 
