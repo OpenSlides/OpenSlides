@@ -1206,6 +1206,7 @@ angular.module('OpenSlidesApp.users.site', [
 .controller('GroupListCtrl', [
     '$scope',
     '$http',
+    '$filter',
     'operator',
     'Group',
     'permissions',
@@ -1217,14 +1218,14 @@ angular.module('OpenSlidesApp.users.site', [
     'User',
     'ngDialog',
     'OpenSlidesPlugins',
-    function($scope, $http, operator, Group, permissions, gettext, Agenda, Assignment, Mediafile,
-        Motion, User, ngDialog, OpenSlidesPlugins) {
+    function($scope, $http, $filter, operator, Group, permissions, gettext, Agenda,
+        Assignment, Mediafile, Motion, User, ngDialog, OpenSlidesPlugins) {
         $scope.permissions = permissions;
 
         $scope.$watch(function() {
             return Group.lastModified();
         }, function() {
-            $scope.groups = Group.getAll();
+            $scope.groups = $filter('orderBy')(Group.getAll(), 'id');
 
             // find all groups with the 2 dangerous permissions
             var groups_danger = [];
