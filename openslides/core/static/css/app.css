@@ -1041,6 +1041,7 @@ img {
     width: 65%;
     padding-right: 5px;
     float: left;
+    margin-bottom: 10px;
 }
 
 .col2 .projectorSelector > div > div > button {
