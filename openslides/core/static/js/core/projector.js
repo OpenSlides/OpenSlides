@@ -145,11 +145,12 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 .controller('ProjectorCtrl', [
     '$scope',
     '$location',
+    '$timeout',
     'Projector',
     'slides',
     'Config',
     'ProjectorID',
-    function($scope, $location, Projector, slides, Config, ProjectorID) {
+    function($scope, $location, $timeout, Projector, slides, Config, ProjectorID) {
         var projectorId = ProjectorID();
 
         $scope.broadcast = 0;
@@ -165,6 +166,30 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             });
         };
 
+        // This function scrolls the projector smoothly. It scrolls is steps calling each
+        // step with a little timeout.
+        var STEPS = 5;
+        $scope.scroll = 0;
+        var setScroll = function (scroll) {
+            scroll = 80 * scroll;
+            if ($scope.scrollTimeout) {
+                $timeout.cancel($scope.scrollTimeout);
+            }
+            var oldScroll = $scope.scroll;
+            var diff = scroll - oldScroll;
+            var count = 0;
+            if (scroll !== oldScroll) {
+                var scrollFunction = function () {
+                    $scope.scroll += diff/STEPS;
+                    count++;
+                    if (count < STEPS) {
+                        $scope.scrollTimeout = $timeout(scrollFunction, 1);
+                    }
+                };
+                scrollFunction();
+            }
+        };
+
         $scope.$watch(function () {
             return Projector.lastModified(projectorId);
         }, function () {
@@ -174,14 +199,15 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                     setElements($scope.projector);
                     $scope.blank = $scope.projector.blank;
                 }
+                setScroll($scope.projector.scroll);
             } else {
                 // Blank projector on error
                 $scope.elements = [];
                 $scope.projector = {
-                    scroll: 0,
                     scale: 0,
                     blank: true
                 };
+                setScroll(0);
             }
         });
 

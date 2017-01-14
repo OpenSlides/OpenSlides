@@ -38,6 +38,7 @@ Core:
 - Removed our db-session backend and added possibility to use any django session backend.
 - New csv import layout.
 - Replaced angular-csv-import through Papa Parse for csv parsing.
+- Added smooth projector scroll.
 
 Motions:
 - Added adjustable line numbering mode (outside, inside, none) for each
