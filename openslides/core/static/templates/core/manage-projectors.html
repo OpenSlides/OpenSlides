@@ -1,6 +1,6 @@
 <div class="header">
   <div class="title">
-    <div class="submenu">
+    <div class="submenu" os-perms="core.can_manage_projector">
       <!-- New -->
       <button class="btn btn-primary" ng-bootbox-prompt="{{ 'Please enter a name for the new projector' | translate }}"
         ng-bootbox-prompt-action="createProjector(result)">
@@ -37,7 +37,7 @@
 </div>
 
 <div class="details">
-  <div class="projectorContainer">
+  <div class="projectorContainer" os-perms="core.can_manage_projector">
 
     <div ng-repeat="projector in projectors | orderBy: 'id'">
       <div>
@@ -130,7 +130,7 @@
         </div>
       </a>
       <!-- projector control buttons -->
-      <div os-perms="core.can_manage_projector" class="nobr">
+      <div class="nobr">
         <!-- edit -->
         <a ng-click="editCurrentSlide(projector)"
           ng-disabled="!projector.getStateForCurrentSlide()"
