@@ -127,7 +127,10 @@ MEDIA_URL = '/media/'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'openslides-cache'
+        'LOCATION': 'openslides-cache',
+        'OPTIONS': {
+            'MAX_ENTRIES': 10000
+        }
     }
 }
 
