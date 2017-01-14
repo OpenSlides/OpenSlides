@@ -42,6 +42,8 @@ class UserAccessPermissions(BaseAccessPermissions):
                     case = MANY_DATA
             else:
                 case = LITTLE_DATA
+        elif user.pk == full_data.get('id'):
+            case = LITTLE_DATA
         else:
             case = NO_DATA
 

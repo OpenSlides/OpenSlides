@@ -96,6 +96,7 @@ Other:
 - Added new caching system with support for Redis.
 - Support https as websocket protocol (wss).
 - Added migration path from 2.0.
+- Accelerated startup process (send all data to the client after login).
 
 
 Version 2.0 (2016-04-18)

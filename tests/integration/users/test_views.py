@@ -14,7 +14,7 @@ class TestWhoAmIView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             json.loads(response.content.decode()),
-            {'user_id': None, 'guest_enabled': False})
+            {'user_id': None, 'user': None, 'guest_enabled': False})
 
     def test_get_authenticated_user(self):
         self.client.login(username='admin', password='admin')
@@ -22,9 +22,8 @@ class TestWhoAmIView(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            json.loads(response.content.decode()),
-            {'user_id': 1, 'guest_enabled': False})
+        self.assertEqual(json.loads(response.content.decode()).get('user_id'), 1)
+        self.assertEqual(json.loads(response.content.decode()).get('guest_enabled'), False)
 
     def test_post(self):
         response = self.client.post(self.url)
@@ -79,9 +78,7 @@ class TestUserLoginView(TestCase):
             {'username': 'admin', 'password': 'admin'})
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            json.loads(response.content.decode()),
-            {'user_id': 1})
+        self.assertEqual(json.loads(response.content.decode()).get('user_id'), 1)
 
     def test_post_incorrect_data(self):
         response = self.client.post(

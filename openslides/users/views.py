@@ -5,6 +5,7 @@ from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 
 from ..core.config import config
+from ..utils.collection import CollectionElement
 from ..utils.rest_api import (
     ModelViewSet,
     Response,
@@ -208,6 +209,8 @@ class UserLoginView(APIView):
         else:
             # self.request.method == 'POST'
             context['user_id'] = self.user.pk
+            user_collection = CollectionElement.from_instance(self.user)
+            context['user'] = user_collection.as_dict_for_user(self.user)
         return super().get_context_data(**context)
 
 
@@ -234,10 +237,18 @@ class WhoAmIView(APIView):
         """
         Appends the user id to the context. Uses None for the anonymous
         user. Appends also a flag if guest users are enabled in the config.
+        Appends also the serialized user if available.
         """
+        user_id = self.request.user.pk
+        if user_id is not None:
+            user_collection = CollectionElement.from_instance(self.request.user)
+            user_data = user_collection.as_dict_for_user(self.request.user)
+        else:
+            user_data = None
         return super().get_context_data(
-            user_id=self.request.user.pk,
+            user_id=user_id,
             guest_enabled=config['general_system_enable_anonymous'],
+            user=user_data,
             **context)
 
 

@@ -4,66 +4,6 @@
 
 angular.module('OpenSlidesApp.users', [])
 
-.factory('operator', [
-    'User',
-    'Group',
-    'loadGlobalData',
-    'autoupdate',
-    'DS',
-    function (User, Group, loadGlobalData, autoupdate, DS) {
-        var operatorChangeCallbacks = [autoupdate.reconnect];
-        var operator = {
-            user: null,
-            perms: [],
-            isAuthenticated: function () {
-                return !!this.user;
-            },
-            onOperatorChange: function (func) {
-                operatorChangeCallbacks.push(func);
-            },
-            setUser: function(user_id) {
-                if (user_id) {
-                    User.find(user_id).then(function(user) {
-                        operator.user = user;
-                        // TODO: load only the needed groups
-                        Group.findAll().then(function() {
-                            operator.perms = user.getPerms();
-                            _.forEach(operatorChangeCallbacks, function (callback) {
-                                callback();
-                            });
-                        });
-                    });
-                } else {
-                    operator.user = null;
-                    operator.perms = [];
-                    DS.clear();
-                    _.forEach(operatorChangeCallbacks, function (callback) {
-                        callback();
-                    });
-                    Group.find(1).then(function(group) {
-                        operator.perms = group.permissions;
-                        _.forEach(operatorChangeCallbacks, function (callback) {
-                            callback();
-                        });
-                    });
-                }
-            },
-            // Returns true if the operator has at least one perm of the perms-list.
-            hasPerms: function(perms) {
-                if (typeof perms == 'string') {
-                    perms = perms.split(' ');
-                }
-                return _.intersection(perms, operator.perms).length > 0;
-            },
-            // Returns true if the operator is a member of group.
-            isInGroup: function(group) {
-                return _.indexOf(operator.user.groups_id, group.id) > -1;
-            },
-        };
-        return operator;
-    }
-])
-
 .factory('User', [
     'DS',
     'Group',

@@ -30,4 +30,9 @@ class UsersAppConfig(AppConfig):
 
         # Register viewsets.
         router.register(self.get_model('User').get_collection_string(), UserViewSet)
-        router.register('users/group', GroupViewSet)
+        router.register(self.get_model('Group').get_collection_string(), GroupViewSet)
+
+    def get_startup_elements(self):
+        from ..utils.collection import Collection
+        for model in ('User', 'Group'):
+            yield Collection(self.get_model(model).get_collection_string())

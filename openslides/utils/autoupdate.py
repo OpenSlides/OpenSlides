@@ -4,6 +4,7 @@ from collections import Iterable
 from asgiref.inmemory import ChannelLayer
 from channels import Channel, Group
 from channels.auth import channel_session_user, channel_session_user_from_http
+from django.apps import apps
 from django.db import transaction
 
 from ..core.config import config
@@ -19,12 +20,33 @@ def ws_add_site(message):
     Adds the websocket connection to a group specific to the connecting user.
 
     The group with the name 'user-None' stands for all anonymous users.
+
+    Send all "startup-data" through the connection.
     """
     Group('site').add(message.reply_channel)
     message.channel_session['user_id'] = message.user.id
     # Saves the reply channel to the user. Uses 0 for anonymous users.
     websocket_user_cache.add(message.user.id or 0, message.reply_channel.name)
-    message.reply_channel.send({"accept": True})
+
+    # Collect all elements that shoud be send to the client when the websocket
+    # connection is established
+    output = []
+    for app in apps.get_app_configs():
+        try:
+            # Get the method get_startup_elements() from an app.
+            # This method has to return an iterable of Collection objects.
+            get_startup_elements = app.get_startup_elements
+        except AttributeError:
+            # Skip apps that do not implement get_startup_elements
+            continue
+        for collection in get_startup_elements():
+            output.extend(collection.as_autoupdate_for_user(message.user))
+
+    # Send all data. If there is no data, then only accept the connection
+    if output:
+        message.reply_channel.send({'text': json.dumps(output)})
+    else:
+        message.reply_channel.send({'accept': True})
 
 
 @channel_session_user

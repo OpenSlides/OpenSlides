@@ -20,9 +20,15 @@
 
 <div id="wrapper" ng-cloak>
 
+<!-- please wait -->
+<div id="startup-overlay" ng-if="startupWaitingEnabled">
+  <div>
+    <h1><i class="fa fa-spinner fa-pulse"></i></h1>
+  </div>
+</div>
+
 <!-- Header -->
 <div id="header">
-  <div ng-hide="connected" class="unconnected"></div>
   <div class="containerOS">
     <!-- Logo -->
     <div class="title">
@@ -174,8 +180,7 @@
   <div class="containerOS">
     <div class="col1" ng-class="isProjectorSidebar ? 'min' : 'max'">
         <!-- dynamic views -->
-        <route-loading-indicator></route-loading-indicator>
-        <div ui-view ng-if="!isRouteLoading"></div>
+        <div ui-view></div>
         <!-- footer -->
         <div id="footer">
           &copy; Copyright by <a href="http://www.openslides.org" target="_blank">OpenSlides</a> |

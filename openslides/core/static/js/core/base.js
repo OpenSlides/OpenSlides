@@ -53,13 +53,12 @@ angular.module('OpenSlidesApp.core', [
 
 .factory('autoupdate', [
     'DS',
-    '$rootScope',
     'REALM',
     'ProjectorID',
-    function (DS, $rootScope, REALM, ProjectorID) {
+    '$q',
+    function (DS, REALM, ProjectorID, $q) {
         var socket = null;
         var recInterval = null;
-        $rootScope.connected = false;
 
         var websocketProtocol;
         if (location.protocol == 'https:') {
@@ -69,47 +68,80 @@ angular.module('OpenSlidesApp.core', [
         }
 
         var websocketPath;
-        if (REALM == 'site') {
+        if (REALM === 'site') {
           websocketPath = '/ws/site/';
-        } else if (REALM == 'projector') {
+        } else if (REALM === 'projector') {
           websocketPath = '/ws/projector/' + ProjectorID() + '/';
         } else {
           console.error('The constant REALM is not set properly.');
         }
 
-        var Autoupdate = {
-            messageReceivers: [],
-            onMessage: function (receiver) {
-                this.messageReceivers.push(receiver);
-            },
-            reconnect: function () {
-                if (socket) {
-                    socket.close();
-                }
+        var Autoupdate = {};
+        Autoupdate.messageReceivers = [];
+        // We use later a promise to defer the first message of the established ws connection.
+        Autoupdate.firstMessageDeferred = $q.defer();
+        Autoupdate.onMessage = function (receiver) {
+            Autoupdate.messageReceivers.push(receiver);
+        };
+        Autoupdate.reconnect = function () {
+            if (socket) {
+                socket.close();
             }
         };
-        var newConnect = function () {
+        Autoupdate.newConnect = function () {
             socket = new WebSocket(websocketProtocol + '//' + location.host + websocketPath);
             clearInterval(recInterval);
-            socket.onopen = function () {
-                $rootScope.connected = true;
-            };
             socket.onclose = function () {
-                $rootScope.connected = false;
                 socket = null;
                 recInterval = setInterval(function () {
-                    newConnect();
+                    Autoupdate.newConnect();
                 }, 1000);
             };
             socket.onmessage = function (event) {
                 _.forEach(Autoupdate.messageReceivers, function (receiver) {
                     receiver(event.data);
                 });
+                // The first message is done: resolve the promise.
+                // TODO: check whether the promise is already resolved.
+                Autoupdate.firstMessageDeferred.resolve();
             };
         };
-
-        newConnect();
         return Autoupdate;
+    }
+])
+
+.factory('operator', [
+    'User',
+    'Group',
+    function (User, Group) {
+        var operator = {
+            user: null,
+            perms: [],
+            isAuthenticated: function () {
+                return !!this.user;
+            },
+            setUser: function(user_id, user_data) {
+                if (user_id && user_data) {
+                    operator.user = User.inject(user_data);
+                    operator.perms = operator.user.getPerms();
+                } else {
+                    operator.user = null;
+                    operator.perms = Group.get(1).permissions;
+                }
+            },
+            // Returns true if the operator has at least one perm of the perms-list.
+            hasPerms: function(perms) {
+                if (typeof perms === 'string') {
+                    perms = perms.split(' ');
+                }
+                return _.intersection(perms, operator.perms).length > 0;
+            },
+            // Returns true if the operator is a member of group.
+            isInGroup: function(group) {
+                return _.indexOf(operator.user.groups_id, group.id) > -1;
+            },
+        };
+        return operator;
     }
 ])
 
@@ -230,7 +262,7 @@ angular.module('OpenSlidesApp.core', [
                 var deletedElements = [];
                 var collectionString = key;
                 _.forEach(list, function(data) {
-                    // uncomment this line for debugging to log all autoupdates:
+                    // Uncomment this line for debugging to log all autoupdates:
                     // console.log("Received object: " + data.collection + ", " + data.id);
 
                     // remove (=eject) object from local DS store
@@ -301,39 +333,7 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-.factory('loadGlobalData', [
-    'ChatMessage',
-    'Config',
-    'Projector',
-    'ProjectorMessage',
-    'Countdown',
-    function (ChatMessage, Config, Projector, ProjectorMessage, Countdown) {
-        return function () {
-            Config.findAll();
-
-            // Loads all projector data and the projectiondefaults
-            Projector.findAll();
-            ProjectorMessage.findAll();
-            Countdown.findAll();
-
-            // Loads all chat messages data and their user_ids
-            // TODO: add permission check if user has required chat permission
-            // error if include 'operator' here:
-            // "Circular dependency found: loadGlobalData <- operator <- loadGlobalData"
-            //if (operator.hasPerms("core.can_use_chat")) {
-                ChatMessage.findAll().then( function(chatmessages) {
-                    angular.forEach(chatmessages, function (chatmessage) {
-                        ChatMessage.loadRelations(chatmessage, 'user');
-                    });
-                });
-            //}
-        };
-    }
-])
-
-
 // Template hooks
-
 .factory('templateHooks', [
     function () {
         var hooks = {};

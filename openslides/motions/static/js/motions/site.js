@@ -285,14 +285,6 @@ angular.module('OpenSlidesApp.motions.site', [
     }
 ])
 
-// Load all MotionWorkflows at startup
-.run([
-    'Workflow',
-    function (Workflow) {
-        Workflow.findAll();
-    }
-])
-
 .factory('ChangeRecommendationForm', [
     'gettextCatalog',
     'Editor',
