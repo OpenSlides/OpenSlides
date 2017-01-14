@@ -661,7 +661,7 @@ angular.module('OpenSlidesApp.core.site', [
                     } else {
                         $scope.value = gettextCatalog.getString($scope.default_value);
                     }
-                    $scope.save(field.key, $scope.value);
+                    $scope.save(field, $scope.value);
                 };
             }
         };
@@ -843,26 +843,61 @@ angular.module('OpenSlidesApp.core.site', [
 // Config Controller
 .controller('ConfigCtrl', [
     '$scope',
+    '$timeout',
     'MajorityMethodChoices',
     'Config',
     'configOptions',
     'gettextCatalog',
     'DateTimePickerTranslation',
     'Editor',
-    function($scope, MajorityMethodChoices, Config, configOptions, gettextCatalog, DateTimePickerTranslation, Editor) {
+    function($scope, $timeout, MajorityMethodChoices, Config, configOptions,
+        gettextCatalog, DateTimePickerTranslation, Editor) {
         Config.bindAll({}, $scope, 'configs');
         $scope.configGroups = configOptions.data.config_groups;
         $scope.dateTimePickerTranslatedButtons = DateTimePickerTranslation.getButtons();
 
         $scope.ckeditorOptions = Editor.getOptions();
         $scope.ckeditorOptions.on.change = function (event) {
-            $scope.save(event.editor.element.$.id, this.getData());
+            // we could just retrieve the key, but we need the configOption object.
+            var configOption_key = event.editor.element.$.id;
+
+            // find configOption object
+            var subgroups = _.flatMap($scope.configGroups, function (group) {
+                return group.subgroups;
+            });
+            var items = _.flatMap(subgroups, function (subgroup) {
+                return subgroup.items;
+            });
+            var configOption = _.find(items, function (_item) {
+                return _item.key === configOption_key;
+            });
+
+            var editor = this;
+            // The $timeout executes the given function in an angular context. Because
+            // this is a standard JS event, all changes may not happen in the digist-cylce.
+            // By using $timeout angular calls $apply for us that we do not have to care
+            // about starting the digist-cycle.
+            $timeout(function () {
+                $scope.save(configOption, editor.getData());
+            }, 1);
         };
 
         // save changed config value
-        $scope.save = function(key, value) {
-            Config.get(key).value = value;
-            Config.save(key);
+        $scope.save = function(configOption, value) {
+            Config.get(configOption.key).value = value;
+            Config.save(configOption.key).then(function (success) {
+                configOption.success = true;
+                // fade out the success symbol after 2 seconds.
+                $timeout(function () {
+                    var element = $('#success-field-' + configOption.key);
+                    element.fadeOut(800, function () {
+                        configOption.success = void 0;
+                    });
+                }, 2000);
+            }, function (error) {
+                configOption.success = false;
+                configOption.errorMessage = error.data.detail;
+            });
         };
 
         // For comments input

@@ -1052,6 +1052,9 @@ img {
 .input-comments > div {
     margin-bottom: 5px
 }
+.config-checkbox {
+    padding: 6px 12px;
+}
 
 /** Pojector sidebar **/
 .col2 .projectorSelector {
