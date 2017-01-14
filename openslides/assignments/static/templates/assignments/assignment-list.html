@@ -208,19 +208,21 @@
         | MultiselectFilter: filter.multiselectFilters.tag : getItemId.tag
         | MultiselectFilter: filter.multiselectFilters.phase : getItemId.phase
         | orderBy: sort.column : sort.reverse)">
-      
+
       <!-- select column -->
       <div ng-show="isSelectMode" os-perms="assignments.can_manage" class="col-xs-1 centered">
         <i class="fa text-danger pointer" ng-click="assignment.selected=!assignment.selected"
         ng-class="assignment.selected ? 'fa-check-square-o' : 'fa-square-o'"></i>
       </div>
+
       <!-- projector column -->
       <div class="col-xs-1 centered projector" os-perms="core.can_manage_projector">
         <projector-button model="assignment", default-projector-id="defaultProjectorId">
         </projector-button>
       </div>
       <div class="no-projector-spacer" os-perms="!core.can_manage_projector"></div>
-      <!-- main contant column -->
+
+      <!-- main content column -->
       <div class="col-xs-6 content">
         <div class="title-col">
           <!-- title and phase -->
@@ -307,8 +309,7 @@
 
         <div style="width: 20%;" class="pull-right nobr optional centered">
           <span class="badge"
-            uib-tooltip="{{ assignment.assignment_related_users.length }} {{ 'Candidates' | translate }}
-            {{ (assignment.open_posts - assignment.assignment_related_users.length) > 0 ? '(' +  (assignment.open_posts - assignment.assignment_related_users.length) + ' ' + ('needed' | translate) + ')' : '' }}"
+            uib-tooltip="{{ assignment.assignment_related_users.length }} {{ 'Candidates' | translate }}"
             tooltip-class="nobr"
             ng-class="{'badge-info': assignment.assignment_related_users.length < assignment.open_posts}">
             {{ assignment.assignment_related_users.length }}
