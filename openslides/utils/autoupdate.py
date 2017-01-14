@@ -21,7 +21,7 @@ def ws_add_site(message):
 
     The group with the name 'user-None' stands for all anonymous users.
 
-    Send all "starup-data" through the connection.
+    Send all "startup-data" through the connection.
     """
     Group('site').add(message.reply_channel)
     message.channel_session['user_id'] = message.user.id
@@ -42,11 +42,11 @@ def ws_add_site(message):
         for collection in get_startup_elements():
             output.extend(collection.as_autoupdate_for_user(message.user))
 
-    # Send all data. If there is no data, then onyl accept the connection
+    # Send all data. If there is no data, then only accept the connection
     if output:
         message.reply_channel.send({'text': json.dumps(output)})
     else:
-        message.reply_channel.send({"accept": True})
+        message.reply_channel.send({'accept': True})
 
 
 @channel_session_user

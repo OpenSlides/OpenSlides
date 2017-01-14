@@ -40,31 +40,13 @@ angular.module('OpenSlidesApp.users.site', [
             abstract: true,
             template: "<ui-view/>",
         })
-        .state('users.user.list', {
-            resolve: {
-                users: function(User) {
-                    return User.findAll();
-                },
-                groups: function(Group) {
-                    return Group.findAll();
-                }
-            }
-        })
-        .state('users.user.create', {
-            resolve: {
-                groups: function(Group) {
-                    return Group.findAll();
-                }
-            }
-        })
+        .state('users.user.list', {})
+        .state('users.user.create', {})
         .state('users.user.detail', {
             resolve: {
-                user: function(User, $stateParams) {
-                    return User.find($stateParams.id);
-                },
-                groups: function(Group) {
-                    return Group.findAll();
-                }
+                userId: ['$stateParams', function($stateParams) {
+                    return $stateParams.id;
+                }]
             }
         })
         // Redirects to user detail view and opens user edit form dialog, uses edit url.
@@ -72,8 +54,8 @@ angular.module('OpenSlidesApp.users.site', [
         // (from users list controller use UserForm factory instead to open dialog in front of
         // current view without redirect)
         .state('users.user.detail.update', {
-            onEnter: ['$stateParams', '$state', 'ngDialog', 'User',
-                function($stateParams, $state, ngDialog, User) {
+            onEnter: ['$stateParams', '$state', 'ngDialog',
+                function($stateParams, $state, ngDialog) {
                     ngDialog.open({
                         template: 'static/templates/users/user-form.html',
                         controller: 'UserUpdateCtrl',
@@ -81,7 +63,7 @@ angular.module('OpenSlidesApp.users.site', [
                         closeByEscape: false,
                         closeByDocument: false,
                         resolve: {
-                            user: function() {return User.find($stateParams.id);}
+                            userId: function() {return $stateParams.id;}
                         }
                     });
                 }
@@ -106,22 +88,14 @@ angular.module('OpenSlidesApp.users.site', [
             controller: 'UserChangePasswordCtrl',
             templateUrl: 'static/templates/users/user-change-password.html',
             resolve: {
-                user: function(User, $stateParams) {
-                    return User.find($stateParams.id);
-                }
+                userId: ['$stateParams', function($stateParams) {
+                    return $stateParams.id;
+                }]
             }
         })
         .state('users.user.import', {
             url: '/import',
             controller: 'UserImportCtrl',
-            resolve: {
-                groups: function(Group) {
-                    return Group.findAll();
-                },
-                users: function(User) {
-                    return User.findAll();
-                }
-            }
         })
         // groups
         .state('users.group', {
@@ -134,9 +108,6 @@ angular.module('OpenSlidesApp.users.site', [
         })
         .state('users.group.list', {
             resolve: {
-                groups: function(Group) {
-                    return Group.findAll();
-                },
                 permissions: function(Group) {
                     return Group.getPermissions();
                 }
@@ -188,7 +159,7 @@ angular.module('OpenSlidesApp.users.site', [
                 }
                 $scope.$watch(
                     function (scope) {
-                        return scope.operator.hasPerms(perms);
+                        return scope.operator && scope.operator.hasPerms(perms);
                     },
                     function (value) {
                         if ($attr.osPerms[0] === '!') {
@@ -262,19 +233,15 @@ angular.module('OpenSlidesApp.users.site', [
         return {
             // ngDialog for user form
             getDialog: function (user) {
-                var resolve;
-                if (user) {
-                    resolve = {
-                        user: function(User) {return User.find(user.id);}
-                    };
-                }
                 return {
                     template: 'static/templates/users/user-form.html',
                     controller: (user) ? 'UserUpdateCtrl' : 'UserCreateCtrl',
                     className: 'ngdialog-theme-default wide-form',
                     closeByEscape: false,
                     closeByDocument: false,
-                    resolve: (resolve) ? resolve : null
+                    resolve: {
+                        userId: function () {return user ? user.id : void 0;},
+                    }
                 };
             },
             // angular-formly fields for user form
@@ -675,12 +642,12 @@ angular.module('OpenSlidesApp.users.site', [
     'ngDialog',
     'UserForm',
     'User',
-    'user',
+    'userId',
     'Group',
     'Projector',
     'ProjectionDefault',
-    function($scope, ngDialog, UserForm, User, user, Group, Projector, ProjectionDefault) {
-        User.bindOne(user.id, $scope, 'user');
+    function($scope, ngDialog, UserForm, User, userId, Group, Projector, ProjectionDefault) {
+        User.bindOne(userId, $scope, 'user');
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.$watch(function () {
             return Projector.lastModified();
@@ -738,13 +705,13 @@ angular.module('OpenSlidesApp.users.site', [
     'User',
     'UserForm',
     'Group',
-    'user',
-    function($scope, $state, $http, User, UserForm, Group, user) {
+    'userId',
+    function($scope, $state, $http, User, UserForm, Group, userId) {
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
         $scope.alert = {};
         // set initial values for form model by create deep copy of user object
         // so list/detail view is not updated while editing
-        $scope.model = angular.copy(user);
+        $scope.model = angular.copy(User.get(userId));
 
         // get all form fields
         $scope.formFields = UserForm.getFormFields();
@@ -803,11 +770,11 @@ angular.module('OpenSlidesApp.users.site', [
     '$state',
     '$http',
     'User',
-    'user',
+    'userId',
     'gettextCatalog',
     'PasswordGenerator',
-    function($scope, $state, $http, User, user, gettextCatalog, PasswordGenerator) {
-        User.bindOne(user.id, $scope, 'user');
+    function($scope, $state, $http, User, userId, gettextCatalog, PasswordGenerator) {
+        User.bindOne(userId, $scope, 'user');
         $scope.alert={};
         $scope.generatePassword = function () {
             $scope.new_password = PasswordGenerator.generate();
@@ -1210,7 +1177,7 @@ angular.module('OpenSlidesApp.users.site', [
             $scope.groups.forEach(function (group) {
                 if ((_.indexOf(group.permissions, 'users.can_see_name') > -1) &&
                     (_.indexOf(group.permissions, 'users.can_manage') > -1)){
-                    if (operator.isInGroup(group)){
+                    if (!operator.user || operator.isInGroup(group)){
                         groups_danger.push(group);
                     }
                 }
@@ -1342,19 +1309,15 @@ angular.module('OpenSlidesApp.users.site', [
         };
 
         $scope.openDialog = function (group) {
-            var resolve;
-            if (group) {
-                resolve = {
-                    group: function() {return Group.find(group.id);}
-                };
-            }
             ngDialog.open({
                 template: 'static/templates/users/group-edit.html',
                 controller: group ? 'GroupRenameCtrl' : 'GroupCreateCtrl',
                 className: 'ngdialog-theme-default wide-form',
                 closeByEscape: false,
                 closeByDocument: false,
-                resolve: (resolve) ? resolve : null
+                resolve: {
+                    group: function () {return group;},
+                }
             });
         };
     }
@@ -1439,10 +1402,15 @@ angular.module('OpenSlidesApp.users.site', [
     '$rootScope',
     '$scope',
     '$http',
+    '$state',
     '$stateParams',
+    '$q',
     'operator',
     'gettext',
-    function ($rootScope, $scope, $http, $stateParams, operator, gettext) {
+    'autoupdate',
+    'mainMenu',
+    'DS',
+    function ($rootScope, $scope, $http, $state, $stateParams, $q, operator, gettext, autoupdate, mainMenu, DS) {
         $scope.alerts = [];
 
         // get login info-text from server
@@ -1478,11 +1446,19 @@ angular.module('OpenSlidesApp.users.site', [
             $http.post('/users/login/', data).then(
                 function (response) {
                     // Success: User logged in.
-                    operator.setUser(response.data.user_id);
-                    $scope.closeThisDialog();
-                    setTimeout(function(){
-                        window.location.replace('/');
-                    }, 1000);
+                    // Clear store and reset deferred first message, if guests was enabled before.
+                    DS.clear();
+                    autoupdate.firstMessageDeferred = $q.defer();
+                    // The next lines are partly the same lines as in core/start.js
+                    autoupdate.newConnect();
+                    autoupdate.firstMessageDeferred.promise.then(function () {
+                        operator.setUser(response.data.user_id, response.data.user);
+                        $rootScope.operator = operator;
+                        mainMenu.updateMainMenu();
+                        $scope.closeThisDialog();
+                        $state.go('home');
+                        $rootScope.startupWaitingEnabled = false;
+                    });
                 },
                 function (response) {
                     // Error: Username or password is not correct.

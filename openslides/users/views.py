@@ -5,6 +5,7 @@ from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 
 from ..core.config import config
+from ..utils.collection import CollectionElement
 from ..utils.rest_api import (
     ModelViewSet,
     Response,
@@ -13,7 +14,6 @@ from ..utils.rest_api import (
     detail_route,
     status,
 )
-from ..utils.collection import CollectionElement
 from ..utils.views import APIView
 from .access_permissions import GroupAccessPermissions, UserAccessPermissions
 from .models import Group, User
@@ -209,6 +209,8 @@ class UserLoginView(APIView):
         else:
             # self.request.method == 'POST'
             context['user_id'] = self.user.pk
+            user_collection = CollectionElement.from_instance(self.user)
+            context['user'] = user_collection.as_dict_for_user(self.user)
         return super().get_context_data(**context)
 
 
@@ -238,7 +240,7 @@ class WhoAmIView(APIView):
         Appends also the serialized user if available.
         """
         user_id = self.request.user.pk
-        if self.request.user.pk is not None:
+        if user_id is not None:
             user_collection = CollectionElement.from_instance(self.request.user)
             user_data = user_collection.as_dict_for_user(self.request.user)
         else:

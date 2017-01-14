@@ -5,6 +5,7 @@
 // The core module for the OpenSlides site
 angular.module('OpenSlidesApp.core.site', [
     'OpenSlidesApp.core',
+    'OpenSlidesApp.core.start',
     'OpenSlidesApp.poll.majority',
     'ui.router',
     'angular-loading-bar',
@@ -77,10 +78,7 @@ angular.module('OpenSlidesApp.core.site', [
         this.$get = ['operator', function(operator) {
             return {
                 registerScope: function (scope) {
-                    var that = this;
                     this.scope = scope;
-                    this.updateMainMenu();
-                    // TODO: operator.onOperatorChange(function () {that.updateMainMenu();});
                 },
                 updateMainMenu: function () {
                     this.scope.elements = this.getElements();
@@ -655,28 +653,6 @@ angular.module('OpenSlidesApp.core.site', [
                     }
                     $scope.save(field.key, $scope.value);
                 };
-            }
-        };
-    }
-])
-
-.directive('routeLoadingIndicator', [
-    '$rootScope',
-    '$state',
-    'gettext',
-    function($rootScope, $state, gettext) {
-        gettext('Loading ...');
-        return {
-            restrict: 'E',
-            template: "<div class='header spacer-bottom' ng-if='isRouteLoading'><div class='title'><h1><translate>Loading ...</translate> <i class='fa fa-spinner fa-pulse'></i></h1></div></div>",
-            link: function(scope, elem, attrs) {
-                scope.isRouteLoading = false;
-                $rootScope.$on('$stateChangeStart', function() {
-                    scope.isRouteLoading = true;
-                });
-                $rootScope.$on('$stateChangeSuccess', function() {
-                    scope.isRouteLoading = false;
-                });
             }
         };
     }

@@ -53,13 +53,12 @@ angular.module('OpenSlidesApp.core', [
 
 .factory('autoupdate', [
     'DS',
-    '$rootScope',
     'REALM',
     'ProjectorID',
-    function (DS, $rootScope, REALM, ProjectorID) {
+    '$q',
+    function (DS, REALM, ProjectorID, $q) {
         var socket = null;
         var recInterval = null;
-        $rootScope.connected = false;
 
         var websocketProtocol;
         if (location.protocol == 'https:') {
@@ -79,6 +78,8 @@ angular.module('OpenSlidesApp.core', [
 
         var Autoupdate = {};
         Autoupdate.messageReceivers = [];
+        // We use later a promise to defer the first message of the established ws connection.
+        Autoupdate.firstMessageDeferred = $q.defer();
         Autoupdate.onMessage = function (receiver) {
             Autoupdate.messageReceivers.push(receiver);
         };
@@ -90,11 +91,7 @@ angular.module('OpenSlidesApp.core', [
         Autoupdate.newConnect = function () {
             socket = new WebSocket(websocketProtocol + '//' + location.host + websocketPath);
             clearInterval(recInterval);
-            socket.onopen = function () {
-                $rootScope.connected = true;
-            };
             socket.onclose = function () {
-                $rootScope.connected = false;
                 socket = null;
                 recInterval = setInterval(function () {
                     Autoupdate.newConnect();
@@ -104,9 +101,47 @@ angular.module('OpenSlidesApp.core', [
                 _.forEach(Autoupdate.messageReceivers, function (receiver) {
                     receiver(event.data);
                 });
+                // The first message is done: resolve the promise.
+                // TODO: check whether the promise is already resolved.
+                Autoupdate.firstMessageDeferred.resolve();
             };
         };
         return Autoupdate;
+    }
+])
+
+.factory('operator', [
+    'User',
+    'Group',
+    function (User, Group) {
+        var operator = {
+            user: null,
+            perms: [],
+            isAuthenticated: function () {
+                return !!this.user;
+            },
+            setUser: function(user_id, user_data) {
+                if (user_id && user_data) {
+                    operator.user = User.inject(user_data);
+                    operator.perms = operator.user.getPerms();
+                } else {
+                    operator.user = null;
+                    operator.perms = Group.get(1).permissions;
+                }
+            },
+            // Returns true if the operator has at least one perm of the perms-list.
+            hasPerms: function(perms) {
+                if (typeof perms === 'string') {
+                    perms = perms.split(' ');
+                }
+                return _.intersection(perms, operator.perms).length > 0;
+            },
+            // Returns true if the operator is a member of group.
+            isInGroup: function(group) {
+                return _.indexOf(operator.user.groups_id, group.id) > -1;
+            },
+        };
+        return operator;
     }
 ])
 
@@ -227,7 +262,7 @@ angular.module('OpenSlidesApp.core', [
                 var deletedElements = [];
                 var collectionString = key;
                 _.forEach(list, function(data) {
-                    // uncomment this line for debugging to log all autoupdates:
+                    // Uncomment this line for debugging to log all autoupdates:
                     // console.log("Received object: " + data.collection + ", " + data.id);
 
                     // remove (=eject) object from local DS store
@@ -299,7 +334,6 @@ angular.module('OpenSlidesApp.core', [
 ])
 
 // Template hooks
-
 .factory('templateHooks', [
     function () {
         var hooks = {};

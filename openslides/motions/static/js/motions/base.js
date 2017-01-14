@@ -198,14 +198,14 @@ angular.module('OpenSlidesApp.motions', [
     'jsDataModel',
     'gettext',
     'gettextCatalog',
-    'operator',
     'Config',
     'lineNumberingService',
     'diffService',
     'OpenSlidesSettings',
     'Projector',
+    'operator',
     function(DS, $http, MotionPoll, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog,
-        operator, Config, lineNumberingService, diffService, OpenSlidesSettings, Projector) {
+        Config, lineNumberingService, diffService, OpenSlidesSettings, Projector, operator) {
         var name = 'motions/motion';
         return DS.defineResource({
             name: name,

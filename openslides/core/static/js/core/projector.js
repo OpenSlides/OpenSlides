@@ -8,6 +8,13 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 // Can be used to find out if the projector or the side is used
 .constant('REALM', 'projector')
 
+.run([
+    'autoupdate',
+    function (autoupdate) {
+        autoupdate.newConnect();
+    }
+])
+
 // Provider to register slides in a .config() statement.
 .provider('slides', [
     function() {
@@ -84,10 +91,8 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     '$scope',
     '$location',
     'gettext',
-    'loadGlobalData',
     'Projector',
-    function($scope, $location, gettext, loadGlobalData, Projector) {
-        loadGlobalData();
+    function($scope, $location, gettext, Projector) {
         $scope.error = '';
 
         // watch for changes in Projector
