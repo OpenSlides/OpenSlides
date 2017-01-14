@@ -400,11 +400,15 @@
           </small>
         </div>
         <div style="width: 40%;" class="pull-right" os-perms="users.can_see_extra_data">
-          <div os-perms="users.can_manage">
-            <span class="pointer nobr" ng-click="user.is_present = !user.is_present; save(user);" ng-show="user.hover || user.is_present">
+          <div os-perms="users.can_manage" ng-show="user.hover || user.is_present">
+            <span class="pointer nobr" ng-click="user.is_present = !user.is_present; save(user);">
               <i class="fa" ng-class="user.is_present ? 'fa-check-square-o' : 'fa-square-o'"></i>
               <span class="spacer-left" translate>Present</span>
             </span>
+          </div>
+          <div os-perms="!users.can_manage" class="nobr" ng-show="user.is_present">
+            <i class="fa fa-check-square-o"></i>
+            <span class="spacer-left" translate>Present</span>
           </div>
         </div>
       </div>
