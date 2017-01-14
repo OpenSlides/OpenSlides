@@ -30,7 +30,7 @@
         <ul class="dropdown-menu" role="menu" aria-labelledby="split-button"
           ng-if="projectors.length > 1 || change_recommendations.length">
           <li role="menuitem" ng-repeat="mode in projectionModes" ng-if="change_recommendations.length">
-            <a href="" ng-click="setProjectionMode(mode, $event);">
+            <a href="" ng-click="setProjectionMode(mode); $event.stopPropagation();">
               <i class="fa" ng-class="mode.mode == $parent.projectionMode.mode ? 'fa-check-square-o' : 'fa-square-o'"></i>
               <span ng-if="mode.mode!='agreed'">{{ mode.label | translate }}</span>
               <span ng-if="mode.mode=='agreed'"><translate translate-context="decision making">Resolution</translate></span
