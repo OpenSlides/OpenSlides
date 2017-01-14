@@ -1,8 +1,6 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from rest_framework.exceptions import PermissionDenied
-
 from openslides.motions.views import MotionViewSet
 
 
@@ -23,12 +21,6 @@ class MotionViewSetCreate(TestCase):
         self.request.user.has_perm.return_value = True
         self.view_instance.create(self.request)
         self.mock_serializer.save.assert_called_with(request_user=self.request.user)
-
-    @patch('openslides.motions.views.config')
-    def test_user_without_can_create_perm(self, mock_config):
-        self.request.user.has_perm.return_value = False
-        with self.assertRaises(PermissionDenied):
-            self.view_instance.create(self.request)
 
 
 class MotionViewSetUpdate(TestCase):
