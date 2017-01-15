@@ -13,7 +13,7 @@ angular.module('OpenSlidesApp.core.start', [])
     'Group',
     'mainMenu',
     function($http, $rootScope, $state, autoupdate, operator, Group, mainMenu) {
-        $rootScope.startupWaitingEnabled = true;
+        $rootScope.openslidesBootstrapDone = false;
         $http.get('/users/whoami/').success(function(data) {
             $rootScope.guest_enabled = data.guest_enabled;
             if (data.user_id === null && !data.guest_enabled) {
@@ -25,7 +25,7 @@ angular.module('OpenSlidesApp.core.start', [])
                     operator.setUser(data.user_id, data.user);
                     $rootScope.operator = operator;
                     mainMenu.updateMainMenu();
-                    $rootScope.startupWaitingEnabled = false;
+                    $rootScope.openslidesBootstrapDone = true;
                 });
             }
         });

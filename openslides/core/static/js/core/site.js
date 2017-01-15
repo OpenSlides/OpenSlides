@@ -8,7 +8,6 @@ angular.module('OpenSlidesApp.core.site', [
     'OpenSlidesApp.core.start',
     'OpenSlidesApp.poll.majority',
     'ui.router',
-    'angular-loading-bar',
     'colorpicker.module',
     'formly',
     'formlyBootstrap',
