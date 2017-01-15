@@ -90,7 +90,7 @@ gulp.task('css-libs', function () {
             filter: /\.css$/
         }))
         .pipe(concat('openslides-libs.css'))
-        .pipe(gulpif(argv.production, cssnano({discardUnused: false})))
+        .pipe(gulpif(argv.production, cssnano({safe: true})))
         .pipe(gulp.dest(path.join(output_directory, 'css')));
 });
 
