@@ -22,6 +22,7 @@ var argv = require('yargs').argv,
     cssnano = require('gulp-cssnano'),
     gulpif = require('gulp-if'),
     gettext = require('gulp-angular-gettext'),
+    inject = require('gulp-inject-string'),
     jshint = require('gulp-jshint'),
     mainBowerFiles = require('main-bower-files'),
     path = require('path'),
@@ -61,6 +62,8 @@ gulp.task('js-libs', function () {
         .pipe(sourcemaps.init())
         .pipe(concat('openslides-libs.js'))
         .pipe(sourcemaps.write())
+        .pipe(inject.prepend("/* set basepath of CKEditor */\n" +
+                "window.CKEDITOR_BASEPATH = '/static/ckeditor/';\n\n"))
         .pipe(gulpif(argv.production, uglify()))
         .pipe(gulp.dest(path.join(output_directory, 'js')));
 });
