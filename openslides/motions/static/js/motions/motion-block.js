@@ -36,6 +36,7 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
                     'motions/motion': {
                         localField: 'motions',
                         foreignKey: 'motion_block_id',
+                        osProtectedRelation: true,
                     }
                 },
             }
