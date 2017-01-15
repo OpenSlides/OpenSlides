@@ -21,11 +21,10 @@
 <div id="wrapper" ng-cloak>
 
 <!-- please wait -->
-<div id="startup-overlay" ng-if="startupWaitingEnabled">
-  <div>
-    <h1><i class="fa fa-spinner fa-pulse"></i></h1>
-  </div>
+<div id="spinner-container" ng-if="openslidesBootstrap">
+  <div><i class="fa fa-spinner fa-pulse"></i></div>
 </div>
+<div id="startup-overlay" ng-if="openslidesBootstrap"></div>
 
 <!-- Header -->
 <div id="header">
@@ -180,7 +179,7 @@
   <div class="containerOS">
     <div class="col1" ng-class="isProjectorSidebar ? 'min' : 'max'">
         <!-- dynamic views -->
-        <div ui-view></div>
+        <div ui-view ng-if="!openslidesBootstrap"></div>
         <!-- footer -->
         <div id="footer">
           &copy; Copyright by <a href="http://www.openslides.org" target="_blank">OpenSlides</a> |

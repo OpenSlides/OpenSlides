@@ -195,7 +195,6 @@ OpenSlides uses the following projects or parts of them:
   * `angular-formly <http://formly-js.github.io/angular-formly/>`_, License: MIT
   * `angular-formly-templates-bootstrap <https://github.com/formly-js/angular-formly-templates-bootstrap>`_, License: MIT
   * `angular-gettext <http://angular-gettext.rocketeer.be/>`_, License: MIT
-  * `angular-loading-bar <https://chieffancypants.github.io/angular-loading-bar>`_, License: MIT
   * `angular-messages <http://angularjs.org>`_, License: MIT
   * `pdfmake <https://github.com/bpampuch/pdfmake>`_, License: MIT
   * `angular-pdf <http://github.com/sayanee/angularjs-pdf>`_, License: MIT
