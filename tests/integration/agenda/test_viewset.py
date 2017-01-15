@@ -42,6 +42,14 @@ class RetrieveItem(TestCase):
         response = self.client.get(reverse('item-detail', args=[self.item.pk]))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_normal_by_anonymous_cant_see_agenda_comments(self):
+        self.item.type = Item.AGENDA_ITEM
+        self.item.comment = 'comment_gbiejd67gkbmsogh8374jf$kd'
+        self.item.save()
+        response = self.client.get(reverse('item-detail', args=[self.item.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data.get('comment') is None)
+
 
 class TestDBQueries(TestCase):
     """
