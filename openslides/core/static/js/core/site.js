@@ -266,7 +266,7 @@ angular.module('OpenSlidesApp.core.site', [
                 },
             })
             .state('projector', {
-                url: '/projector/{id:int}',
+                url: '/projector/{id:int}/',
                 templateUrl: 'static/templates/projector-container.html',
                 data: {extern: true},
                 onEnter: function($window) {
@@ -274,7 +274,7 @@ angular.module('OpenSlidesApp.core.site', [
                 }
             })
             .state('real-projector', {
-                url: '/real-projector/{id:int}',
+                url: '/real-projector/{id:int}/',
                 templateUrl: 'static/templates/projector.html',
                 data: {extern: true},
                 onEnter: function($window) {
