@@ -230,7 +230,7 @@ angular.module('OpenSlidesApp.core', [
             var Resource = DS.definitions[collection];
             if (Resource.relationList) {
                 Resource.relationList.forEach(function (relationDef) {
-                    if (relationDef.foreignKey) {
+                    if (relationDef.foreignKey && !relationDef.osProtectedRelation) {
                         var query = {};
                         query[relationDef.foreignKey] = instance[Resource.idAttribute];
                         Resource.getResource(relationDef.relation).ejectAll(query);
