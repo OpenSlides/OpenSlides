@@ -1075,6 +1075,7 @@ angular.module('OpenSlidesApp.motions.site', [
 .controller('MotionDetailCtrl', [
     '$scope',
     '$http',
+    '$timeout',
     'operator',
     'ngDialog',
     'MotionForm',
@@ -1095,7 +1096,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'MotionCommentsInlineEditing',
     'Projector',
     'ProjectionDefault',
-    function($scope, $http, operator, ngDialog, MotionForm,
+    function($scope, $http, $timeout, operator, ngDialog, MotionForm,
              ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation, MotionPDFExport,
              Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motion, MotionInlineEditing,
              MotionCommentsInlineEditing, Projector, ProjectionDefault) {
@@ -1155,12 +1156,16 @@ angular.module('OpenSlidesApp.motions.site', [
             }
         };
         $scope.projectionMode = getProjectionMode();
+        // TODO: Fix this timeout; check what mode is projected.
         $scope.setProjectionMode = function (mode) {
             $scope.projectionMode = mode;
 
             var projectedIds = motion.isProjected();
             _.forEach(projectedIds, function (id) {
                 motion.project(id, mode.mode);
+                $timeout(function () {
+                    motion.project(id, mode.mode);
+                }, 100);
             });
         };
         $scope.commentsFields = Config.get('motions_comments').value;
