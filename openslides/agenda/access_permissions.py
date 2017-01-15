@@ -30,7 +30,14 @@ class ItemAccessPermissions(BaseAccessPermissions):
         if (has_perm(user, 'agenda.can_see') and
             (not full_data['is_hidden'] or
              has_perm(user, 'agenda.can_see_hidden_items'))):
-            data = full_data
+            if has_perm(user, 'agenda.can_manage'):
+                data = full_data
+            else:
+                # Strip out item comments for unprivileged users.
+                data = {}
+                for key in full_data.keys():
+                    if key != 'comment':
+                        data[key] = full_data[key]
         else:
             data = None
         return data

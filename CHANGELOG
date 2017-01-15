@@ -11,6 +11,7 @@ Version 2.1 (unreleased)
 Agenda:
 - Added button to remove all speakers from a list of speakers.
 - Added option to create or edit agenda items as subitems of others.
+- Fixed security issue: Comments were shown for unprivileged users.
 
 Core:
 - Added support for multiple projectors.
