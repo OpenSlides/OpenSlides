@@ -116,7 +116,10 @@ angular.module('OpenSlidesApp.users.site', [
         .state('login', {
             template: null,
             url: '/login',
-            params: { guest_enabled: false },
+            params: {
+                guest_enabled: false,
+                msg: null,
+            },
             onEnter: ['$state', '$stateParams', 'ngDialog', function($state, $stateParams, ngDialog) {
                 ngDialog.open({
                     template: 'static/templates/core/login-form.html',
@@ -1118,7 +1121,7 @@ angular.module('OpenSlidesApp.users.site', [
             $scope.groups.forEach(function (group) {
                 if ((_.indexOf(group.permissions, 'users.can_see_name') > -1) &&
                     (_.indexOf(group.permissions, 'users.can_manage') > -1)){
-                    if (!operator.user || operator.isInGroup(group)){
+                    if (operator.isInGroup(group)){
                         groups_danger.push(group);
                     }
                 }
@@ -1351,8 +1354,20 @@ angular.module('OpenSlidesApp.users.site', [
     'autoupdate',
     'mainMenu',
     'DS',
-    function ($rootScope, $scope, $http, $state, $stateParams, $q, operator, gettext, autoupdate, mainMenu, DS) {
+    'ngDialog',
+    function ($rootScope, $scope, $http, $state, $stateParams, $q, operator, gettext,
+        autoupdate, mainMenu, DS, ngDialog) {
         $scope.alerts = [];
+
+        if ($stateParams.msg) {
+            $scope.alerts.push({
+                type: 'danger',
+                msg: $stateParams.msg,
+            });
+        }
+
+        // check if guest login is allowed
+        $scope.guestAllowed = $rootScope.guest_enabled;
 
         // get login info-text from server
         $http.get('/users/login/').success(function(data) {
@@ -1375,10 +1390,9 @@ angular.module('OpenSlidesApp.users.site', [
         $scope.closeAlert = function(index) {
             $scope.alerts.splice(index, 1);
         };
-        // check if guest login is allowed
-        $scope.guestAllowed = $rootScope.guest_enabled;
         // login
         $scope.login = function () {
+            $scope.closeThisDialog();
             $scope.alerts = [];
             var data = { 'username': $scope.username, 'password': $scope.password };
             if (!navigator.cookieEnabled) {
@@ -1396,16 +1410,14 @@ angular.module('OpenSlidesApp.users.site', [
                         operator.setUser(response.data.user_id, response.data.user);
                         $rootScope.operator = operator;
                         mainMenu.updateMainMenu();
-                        $scope.closeThisDialog();
                         $state.go('home');
-                        $rootScope.startupWaitingEnabled = false;
+                        $rootScope.openslidesBootstrap = false;
                     });
                 },
-                function (response) {
+                function (error) {
                     // Error: Username or password is not correct.
-                    $scope.alerts.push({
-                        type: 'danger',
-                        msg: response.data.detail
+                    $state.transitionTo($state.current, {msg: error.data.detail}, { 
+                          reload: true, inherit: false, notify: true
                     });
                 }
             );
@@ -1413,6 +1425,7 @@ angular.module('OpenSlidesApp.users.site', [
         // guest login
         $scope.guestLogin = function () {
             $scope.closeThisDialog();
+            $state.go('home');
         };
     }
 ])
