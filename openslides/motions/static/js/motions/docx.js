@@ -23,24 +23,33 @@ angular.module('OpenSlidesApp.motions.docx', [])
 
         var getData = function (motions, categories) {
             var data = {};
-            data.title = Config.get('motions_export_title').value;
+            // header
+            var headerline1 = [
+                Config.translate(Config.get('general_event_name').value),
+                Config.translate(Config.get('general_event_description').value)
+            ].filter(Boolean).join(' – ');
+            var headerline2 = [
+                Config.get('general_event_location').value,
+                Config.get('general_event_date').value
+            ].filter(Boolean).join(', ');
+            data.header = [headerline1, headerline2].join('\n');
+
+            // motion catalog title/preamble
+            data.title = Config.translate(Config.get('motions_export_title').value);
             data.preamble = Config.get('motions_export_preamble').value;
-            data.date = function () {
-                var today = new Date();
-                var d = today.getDate();
-                var m = today.getMonth()+1; //January is 0!
-                var y = today.getFullYear();
-                if (d<10) { d='0'+d; }
-                if (m<10) { m='0'+m; }
-                return d+'.'+m+'.'+y;
-            }();
-            data.pagebreak_main = motions.length === 0 ? '' : PAGEBREAK;
+
+            // categories
+            data.has_categories = categories.length === 0 ? false : true;
             data.categories_translation = gettextCatalog.getString('Categories');
-            data.no_categories = gettextCatalog.getString('No categories available.');
-            data.no_motions = gettextCatalog.getString('No motions available.');
             data.categories = getCategoriesData(categories);
-            data.motions_list = getMotionShortData(motions);
+            data.no_categories = gettextCatalog.getString('No categories available.');
+            data.pagebreak_main = categories.length === 0 ? '' : PAGEBREAK;
+
+            // motions
+            data.tableofcontents_translation = gettextCatalog.getString('Table of contents');
             data.motions = getMotionFullData(motions);
+            data.motions_list = getMotionShortData(motions);
+            data.no_motions = gettextCatalog.getString('No motions available.');
 
             return data;
         };
@@ -55,10 +64,8 @@ angular.module('OpenSlidesApp.motions.docx', [])
         };
 
         var getMotionShortData = function (motions) {
-            var translation = gettextCatalog.getString('Motion');
             return _.map(motions, function (motion) {
                 return {
-                    motion_translation: translation,
                     identifier: motion.identifier,
                     title: motion.getTitle(),
                 };
@@ -67,20 +74,21 @@ angular.module('OpenSlidesApp.motions.docx', [])
 
         var getMotionFullData = function (motions) {
             var translation = gettextCatalog.getString('Motion'),
+                sequential_translation = gettextCatalog.getString('Sequential number'),
                 submitters_translation = gettextCatalog.getString('Submitters'),
-                signature_translation = gettextCatalog.getString('Signature'),
                 status_translation = gettextCatalog.getString('Status'),
                 reason_translation = gettextCatalog.getString('Reason'),
                 data = _.map(motions, function (motion) {
                     return {
                         motion_translation: translation,
+                        sequential_translation: sequential_translation,
+                        id: motion.id,
                         identifier: motion.identifier,
                         title: motion.getTitle(),
                         submitters_translation: submitters_translation,
                         submitters: _.map(motion.submitters, function (submitter) {
                                         return submitter.get_full_name();
                                     }).join(', '),
-                        signature_translation: signature_translation,
                         status_translation: status_translation,
                         status: motion.getStateName(),
                         preamble: gettextCatalog.getString(Config.get('motions_preamble').value),
