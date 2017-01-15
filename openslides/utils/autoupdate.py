@@ -9,7 +9,7 @@ from django.db import transaction
 
 from ..core.config import config
 from ..core.models import Projector
-from .auth import AnonymousUser
+from .auth import AnonymousUser, anonymous_is_enabled
 from .cache import websocket_user_cache
 from .collection import Collection, CollectionElement, CollectionElementList
 
@@ -40,7 +40,7 @@ def ws_add_site(message):
             # Skip apps that do not implement get_startup_elements
             continue
         for collection in get_startup_elements():
-            output.extend(collection.as_autoupdate_for_user(message.user))
+            output.extend(collection.as_autoupdate_for_user(message.user.id))
 
     # Send all data. If there is no data, then only accept the connection
     if output:
@@ -66,7 +66,7 @@ def ws_add_projector(message, projector_id):
     """
     user = message.user
     # user is the django anonymous user. We have our own.
-    if user.is_anonymous and config['general_system_enable_anonymous']:
+    if user.is_anonymous and anonymous_is_enabled():
         user = AnonymousUser()
 
     if not user.has_perm('core.can_see_projector'):

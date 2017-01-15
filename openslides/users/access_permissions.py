@@ -1,5 +1,5 @@
 from ..utils.access_permissions import BaseAccessPermissions
-from ..utils.auth import DjangoAnonymousUser, has_perm
+from ..utils.auth import DjangoAnonymousUser, anonymous_is_enabled, has_perm
 
 
 class UserAccessPermissions(BaseAccessPermissions):
@@ -90,14 +90,12 @@ class GroupAccessPermissions(BaseAccessPermissions):
         """
         Returns True if the user has read access model instances.
         """
-        from ..core.config import config
-
         # Every authenticated user can retrieve groups. Anonymous users can do
         # so if they are enabled.
         # Our AnonymousUser is a subclass of the DjangoAnonymousUser. Normaly, a
         # DjangoAnonymousUser means, that AnonymousUser is disabled. But this is
         # no garanty. send_data uses the AnonymousUser in any case.
-        return not isinstance(user, DjangoAnonymousUser) or config['general_system_enable_anonymous']
+        return not isinstance(user, DjangoAnonymousUser) or anonymous_is_enabled()
 
     def get_serializer_class(self, user=None):
         """

@@ -5,6 +5,7 @@ from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 
 from ..core.config import config
+from ..utils.auth import anonymous_is_enabled
 from ..utils.collection import CollectionElement
 from ..utils.rest_api import (
     ModelViewSet,
@@ -137,7 +138,7 @@ class GroupViewSet(ModelViewSet):
         elif self.action == 'metadata':
             # Every authenticated user can see the metadata.
             # Anonymous users can do so if they are enabled.
-            result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
+            result = self.request.user.is_authenticated() or anonymous_is_enabled()
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             # Users with all app permissions can edit groups.
             result = (self.request.user.has_perm('users.can_see_name') and
@@ -247,7 +248,7 @@ class WhoAmIView(APIView):
             user_data = None
         return super().get_context_data(
             user_id=user_id,
-            guest_enabled=config['general_system_enable_anonymous'],
+            guest_enabled=anonymous_is_enabled(),
             user=user_data,
             **context)
 

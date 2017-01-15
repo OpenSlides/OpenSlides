@@ -62,12 +62,11 @@ class RESTFrameworkAnonymousAuthentication(BaseAuthentication):
     Authentication class for the Django REST framework.
 
     Sets the user to the our AnonymousUser but only if
-    general_system_enable_anonymous is set to True in the config.
+    anonymous user is enabled in the config.
     """
 
     def authenticate(self, request):
-        from ..core.config import config
-        if config['general_system_enable_anonymous']:
+        if anonymous_is_enabled():
             return (AnonymousUser(), None)
         return None
 
@@ -99,13 +98,12 @@ def get_user(request):
     This is a mix of django.contrib.auth.get_user and
     django.contrib.auth.middleware.get_user which uses our anonymous user.
     """
-    from ..core.config import config
     try:
         return_user = request._cached_user
     except AttributeError:
         # Get the user. If it is a DjangoAnonymousUser, then use our AnonymousUser
         return_user = _get_user(request)
-        if config['general_system_enable_anonymous'] and isinstance(return_user, DjangoAnonymousUser):
+        if anonymous_is_enabled() and isinstance(return_user, DjangoAnonymousUser):
             return_user = AnonymousUser()
         request._cached_user = return_user
     return return_user
@@ -114,7 +112,18 @@ def get_user(request):
 def has_perm(user, perm):
     """
     Checks that user has a specific permission.
+
+    User can be an user object, an user id  None (for anonymous) or a
+    CollectionElement for a user.
     """
+    # First, convert a user id or None to an anonymous user or an CollectionElement
+    if user is None and anonymous_is_enabled():
+        user = AnonymousUser()
+    elif user is None:
+        user = DjangoAnonymousUser()
+    elif isinstance(user, int):
+        user = CollectionElement.from_values('users/user', user)
+
     if isinstance(user, AnonymousUser):
         # Our anonymous user has a has_perm-method that works with the cache
         # system. So we can use it here.
@@ -142,3 +151,8 @@ def has_perm(user, perm):
         else:
             has_perm = False
     return has_perm
+
+
+def anonymous_is_enabled():
+    from ..core.config import config
+    return config['general_system_enable_anonymous']

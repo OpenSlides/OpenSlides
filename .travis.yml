@@ -16,6 +16,7 @@ before_install:
 install:
   - pip install --upgrade setuptools
   - pip install --upgrade --requirement requirements.txt
+  - pip freeze
   - npm install
   - node_modules/.bin/gulp --production
 script:
