@@ -495,16 +495,25 @@ angular.module('OpenSlidesApp.motions', [
                             return false;
                     }
                 },
-                // Overrides from jsDataModel factory
+                /* Overrides from jsDataModel factory.
+                 * Also sets the projection mode if given; If not it projects in 'original' mode. */
                 project: function (projectorId, mode) {
                     // if this object is already projected on projectorId, delete this element from this projector
-                    var isProjectedIds = this.isProjected(mode);
-                    _.forEach(isProjectedIds, function (id) {
-                        $http.post('/rest/core/projector/' + id + '/clear_elements/');
+                    var isProjected = this.isProjectedWithMode();
+                    _.forEach(isProjected, function (mapping) {
+                        $http.post('/rest/core/projector/' + mapping.projectorId + '/clear_elements/');
+                    });
+                    // Was there a projector with the same id and mode as the given id and mode?
+                    // If not, project the motion.
+                    var wasProjectedBefore = _.some(isProjected, function (mapping) {
+                        var value = (mapping.projectorId === projectorId);
+                        if (mode) {
+                            value = value && (mapping.mode === mode);
+                        }
+                        return value;
                     });
                     mode = mode || 'original';
-                    // Show the element, if it was not projected before on the given projector
-                    if (_.indexOf(isProjectedIds, projectorId) === -1) {
+                    if (!wasProjectedBefore) {
                         return $http.post(
                             '/rest/core/projector/' + projectorId + '/prune_elements/',
                             [{name: name,
@@ -530,6 +539,23 @@ angular.module('OpenSlidesApp.motions', [
                         }
                     });
                     return projectorIds;
+                },
+                /* returns a list of mappings between projector id and mode:
+                 * [ {projectorId: 2, mode: 'original'}, ... ] */
+                isProjectedWithMode: function () {
+                    var self = this;
+                    var mapping = [];
+                    _.forEach(Projector.getAll(), function (projector) {
+                        _.forEach(projector.elements, function (element) {
+                            if (element.name === name && element.id === self.id) {
+                                mapping.push({
+                                    projectorId: projector.id,
+                                    mode: element.mode || 'original',
+                                });
+                            }
+                        });
+                    });
+                    return mapping;
                 },
             },
             relations: {
