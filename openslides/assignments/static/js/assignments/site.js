@@ -42,48 +42,20 @@ angular.module('OpenSlidesApp.assignments.site', [
             })
             .state('assignments.assignment.list', {
                 resolve: {
-                    assignments: function(Assignment) {
-                        return Assignment.findAll();
-                    },
-                    tags: function(Tag) {
-                        return Tag.findAll();
-                    },
-                    items: function(Agenda) {
-                        return Agenda.findAll().catch(
-                            function() {
-                                return null;
-                            }
-                        );
-                    },
-                    phases: function(Assignment) {
+                    phases: ['Assignment', function (Assignment) {
                         return Assignment.getPhases();
-                    }
+                    }],
                 }
             })
             .state('assignments.assignment.detail', {
                 controller: 'AssignmentDetailCtrl',
                 resolve: {
-                    assignment: function(Assignment, $stateParams) {
-                        return Assignment.find($stateParams.id).then(function(assignment) {
-                            return assignment;
-                        });
-                    },
-                    users: function(User) {
-                        return User.findAll();
-                    },
-                    tags: function(Tag) {
-                        return Tag.findAll();
-                    },
-                    items: function(Agenda) {
-                        return Agenda.findAll().catch(
-                            function() {
-                                return null;
-                            }
-                        );
-                    },
-                    phases: function(Assignment) {
+                    assignmentId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
+                    phases: ['Assignment', function (Assignment) {
                         return Assignment.getPhases();
-                    }
+                    }],
                 }
             })
             // redirects to assignment detail and opens assignment edit form dialog, uses edit url,
@@ -91,8 +63,8 @@ angular.module('OpenSlidesApp.assignments.site', [
             // (from assignment controller use AssignmentForm factory instead to open dialog in front
             // of current view without redirect)
             .state('assignments.assignment.detail.update', {
-                onEnter: ['$stateParams', '$state', 'ngDialog', 'Assignment',
-                    function($stateParams, $state, ngDialog, Assignment) {
+                onEnter: ['$stateParams', '$state', 'ngDialog',
+                    function($stateParams, $state, ngDialog) {
                         ngDialog.open({
                             template: 'static/templates/assignments/assignment-form.html',
                             controller: 'AssignmentUpdateCtrl',
@@ -100,16 +72,8 @@ angular.module('OpenSlidesApp.assignments.site', [
                             closeByEscape: false,
                             closeByDocument: false,
                             resolve: {
-                                assignment: function() {
-                                    return Assignment.find($stateParams.id).then(function(assignment) {
-                                        return Assignment.loadRelations(assignment, 'agenda_item');
-                                    });
-                                },
-                                items: function(Agenda) {
-                                    return Agenda.findAll().catch(
-                                        function() {
-                                            return null;
-                                        });
+                                assignmentId: function() {
+                                    return $stateParams.id;
                                 },
                             },
                             preCloseCallback: function() {
@@ -135,25 +99,15 @@ angular.module('OpenSlidesApp.assignments.site', [
         return {
             // ngDialog for assignment form
             getDialog: function (assignment) {
-                var resolve = {};
-                if (assignment) {
-                    resolve.assignment = function () {
-                        return assignment;
-                    };
-                    resolve.agenda_item = function () {
-                        return Assignment.loadRelations(assignment, 'agenda_item');
-                    };
-                }
-                resolve.items = function() {
-                    return Agenda.getAll();
-                };
                 return {
                     template: 'static/templates/assignments/assignment-form.html',
                     controller: (assignment) ? 'AssignmentUpdateCtrl' : 'AssignmentCreateCtrl',
                     className: 'ngdialog-theme-default wide-form',
                     closeByEscape: false,
                     closeByDocument: false,
-                    resolve: resolve
+                    resolve: {
+                        assignmentId: function () {return assignment ? assignment.id : void 0;}
+                    },
                 };
             },
             // angular-formly fields for assignment form
@@ -298,7 +252,6 @@ angular.module('OpenSlidesApp.assignments.site', [
     'Assignment',
     'Tag',
     'Agenda',
-    'phases',
     'Projector',
     'ProjectionDefault',
     'gettextCatalog',
@@ -309,9 +262,10 @@ angular.module('OpenSlidesApp.assignments.site', [
     'osTableFilter',
     'osTableSort',
     'gettext',
-    function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, phases, Projector, ProjectionDefault,
+    'phases',
+    function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, Projector, ProjectionDefault,
         gettextCatalog, AssignmentContentProvider, AssignmentCatalogContentProvider, PdfMakeDocumentProvider,
-        User, osTableFilter, osTableSort, gettext) {
+        User, osTableFilter, osTableSort, gettext, phases) {
         Assignment.bindAll({}, $scope, 'assignments');
         Tag.bindAll({}, $scope, 'tags');
         $scope.$watch(function () {
@@ -419,21 +373,19 @@ angular.module('OpenSlidesApp.assignments.site', [
         };
         // create the PDF List
         $scope.makePDF_assignmentList = function () {
-            User.findAll().then( function(users) {
-                var filename = gettextCatalog.getString("Elections") + ".pdf";
-                var assignmentContentProviderArray = [];
+            var filename = gettextCatalog.getString("Elections") + ".pdf";
+            var assignmentContentProviderArray = [];
 
-                //convert the filtered assignments to content providers
-                angular.forEach($scope.assignmentsFiltered, function(assignment) {
-                    assignmentContentProviderArray.push(AssignmentContentProvider.createInstance(assignment));
-                });
-
-                var assignmentCatalogContentProvider =
-                    AssignmentCatalogContentProvider.createInstance(assignmentContentProviderArray);
-                var documentProvider =
-                    PdfMakeDocumentProvider.createInstance(assignmentCatalogContentProvider);
-                pdfMake.createPdf(documentProvider.getDocument()).download(filename);
+            //convert the filtered assignments to content providers
+            angular.forEach($scope.assignmentsFiltered, function(assignment) {
+                assignmentContentProviderArray.push(AssignmentContentProvider.createInstance(assignment));
             });
+
+            var assignmentCatalogContentProvider =
+                AssignmentCatalogContentProvider.createInstance(assignmentContentProviderArray);
+            var documentProvider =
+                PdfMakeDocumentProvider.createInstance(assignmentCatalogContentProvider);
+            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
         };
     }
 ])
@@ -449,7 +401,7 @@ angular.module('OpenSlidesApp.assignments.site', [
     'operator',
     'Assignment',
     'User',
-    'assignment',
+    'assignmentId',
     'phases',
     'Projector',
     'ProjectionDefault',
@@ -459,8 +411,9 @@ angular.module('OpenSlidesApp.assignments.site', [
     'PdfMakeBallotPaperProvider',
     'gettextCatalog',
     function($scope, $http, $filter, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment,
-        User, assignment, phases, Projector, ProjectionDefault, AssignmentContentProvider, BallotContentProvider,
+        User, assignmentId, phases, Projector, ProjectionDefault, AssignmentContentProvider, BallotContentProvider,
         PdfMakeDocumentProvider, PdfMakeBallotPaperProvider, gettextCatalog) {
+        var assignment = Assignment.get(assignmentId);
         User.bindAll({}, $scope, 'users');
         Assignment.loadRelations(assignment, 'agenda_item');
         $scope.$watch(function () {
@@ -584,12 +537,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                 closeByEscape: false,
                 closeByDocument: false,
                 resolve: {
-                    assignmentpoll: function (AssignmentPoll) {
-                        return AssignmentPoll.find(poll.id);
-                    },
-                    ballot: function () {
-                        return ballot;
-                    }
+                    assignmentpollId: function () {return poll.id;}
                 }
             });
         };
@@ -703,8 +651,9 @@ angular.module('OpenSlidesApp.assignments.site', [
     'AssignmentForm',
     'Agenda',
     'AgendaUpdate',
-    'assignment',
-    function($scope, Assignment, AssignmentForm, Agenda, AgendaUpdate, assignment) {
+    'assignmentId',
+    function($scope, Assignment, AssignmentForm, Agenda, AgendaUpdate, assignmentId) {
+        var assignment = Assignment.get(assignmentId);
         $scope.alert = {};
         // set initial values for form model by create deep copy of assignment object
         // so list/detail view is not updated while editing
@@ -753,12 +702,13 @@ angular.module('OpenSlidesApp.assignments.site', [
     '$filter',
     'gettextCatalog',
     'AssignmentPoll',
-    'assignmentpoll',
+    'assignmentpollId',
     'ballot',
-    function($scope, $filter, gettextCatalog, AssignmentPoll, assignmentpoll, ballot) {
+    function($scope, $filter, gettextCatalog, AssignmentPoll, assignmentpollId, ballot) {
         // set initial values for form model by create deep copy of assignmentpoll object
         // so detail view is not updated while editing poll
-        $scope.model = angular.copy(assignmentpoll);
+        var assignmentpoll = angular.copy(AssignmentPoll.get(assignmentpollId));
+        $scope.model = assignmentpoll;
         $scope.ballot = ballot;
         $scope.formFields = [];
         $scope.alert = {};

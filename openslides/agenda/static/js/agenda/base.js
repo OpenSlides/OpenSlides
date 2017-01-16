@@ -23,21 +23,26 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
 
 .factory('AgendaUpdate',[
     'Agenda',
-    function(Agenda) {
+    'operator',
+    function(Agenda, operator) {
         return {
             saveChanges: function (item_id, changes) {
-                Agenda.find(item_id).then(function(item) {
-                    var something = false;
-                    _.each(changes, function(change) {
-                        if (change.value !== item[change.key]) {
-                            item[change.key] = change.value;
-                            something = true;
+                // change agenda item only if user has the permission to do that
+                if (operator.hasPerms('agenda.can_manage agenda.can_see_hidden_items')) {
+                    Agenda.find(item_id).then(function (item) {
+                        console.log(item);
+                        var something = false;
+                        _.each(changes, function(change) {
+                            if (change.value !== item[change.key]) {
+                                item[change.key] = change.value;
+                                something = true;
+                            }
+                        });
+                        if (something === true) {
+                            Agenda.save(item);
                         }
                     });
-                    if (something === true) {
-                        Agenda.save(item);
-                    }
-                });
+                }
             }
         };
     }

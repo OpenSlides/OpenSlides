@@ -43,82 +43,12 @@ angular.module('OpenSlidesApp.motions.site', [
                 abstract: true,
                 template: "<ui-view/>",
             })
-            .state('motions.motion.list', {
-                resolve: {
-                    motions: function(Motion) {
-                        return Motion.findAll().then(function(motions) {
-                            angular.forEach(motions, function(motion) {
-                                Motion.loadRelations(motion, 'agenda_item');
-                            });
-                        });
-                    },
-                    categories: function(Category) {
-                        return Category.findAll();
-                    },
-                    motionBlocks: function(MotionBlock) {
-                        return MotionBlock.findAll();
-                    },
-                    tags: function(Tag) {
-                        return Tag.findAll();
-                    },
-                    users: function(User) {
-                        return User.findAll().catch(
-                            function () {
-                                return null;
-                            });
-                    },
-                    workflows: function(Workflow) {
-                        return Workflow.findAll();
-                    },
-                    items: function(Agenda) {
-                        return Agenda.findAll().catch(
-                            function () {
-                                return null;
-                            });
-                    }
-                }
-            })
+            .state('motions.motion.list', {})
             .state('motions.motion.detail', {
                 resolve: {
-                    motion: function(Motion, $stateParams) {
-                        return Motion.find($stateParams.id);
-                    },
-                    motions: function(Motion) {
-                        return Motion.findAll();
-                    },
-                    categories: function(Category) {
-                        return Category.findAll();
-                    },
-                    motionBlocks: function(MotionBlock) {
-                        return MotionBlock.findAll();
-                    },
-                    users: function(User) {
-                        return User.findAll().catch(
-                            function () {
-                                return null;
-                            }
-                        );
-                    },
-                    items: function(Agenda) {
-                        return Agenda.findAll().catch(
-                            function () {
-                                return null;
-                            }
-                        );
-                    },
-                    mediafiles: function(Mediafile) {
-                        return Mediafile.findAll().catch(
-                            function () {
-                                return null;
-                            }
-                        );
-                    },
-                    tags: function(Tag) {
-                        return Tag.findAll();
-                    },
-                    change_recommendations: function(MotionChangeRecommendation, motion) {
-                        return MotionChangeRecommendation.findAll({'where': {'motion_version_id': {'==': motion.active_version}}});
-                    }
+                    motionId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
                 }
             })
             // redirects to motion detail and opens motion edit form dialog, uses edit url,
@@ -135,20 +65,9 @@ angular.module('OpenSlidesApp.motions.site', [
                             closeByEscape: false,
                             closeByDocument: false,
                             resolve: {
-                                motion: function() {
-                                    return Motion.find($stateParams.id).then(function(motion) {
-                                        return Motion.loadRelations(motion, 'agenda_item');
-                                    });
-                                },
-                                items: function(Agenda) {
-                                    return Agenda.findAll().catch(
-                                        function() {
-                                            return null;
-                                        }
-                                    );
-                                }
+                                motionId: function () {return $stateParams.id;},
                             },
-                            preCloseCallback: function() {
+                            preCloseCallback: function () {
                                 $state.go('motions.motion.detail', {motion: $stateParams.id});
                                 return true;
                             }
@@ -159,17 +78,6 @@ angular.module('OpenSlidesApp.motions.site', [
             .state('motions.motion.import', {
                 url: '/import',
                 controller: 'MotionImportCtrl',
-                resolve: {
-                    motions: function(Motion) {
-                        return Motion.findAll();
-                    },
-                    categories: function(Category) {
-                        return Category.findAll();
-                    },
-                    users: function(User) {
-                        return User.findAll();
-                    }
-                }
             })
             // categories
             .state('motions.category', {
@@ -180,19 +88,13 @@ angular.module('OpenSlidesApp.motions.site', [
                     title: gettext('Categories'),
                 },
             })
-            .state('motions.category.list', {
-                resolve: {
-                    categories: function(Category) {
-                        return Category.findAll();
-                    }
-                }
-            })
+            .state('motions.category.list', {})
             .state('motions.category.create', {})
             .state('motions.category.detail', {
                 resolve: {
-                    category: function(Category, $stateParams) {
-                        return Category.find($stateParams.id);
-                    }
+                    categoryId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }]
                 }
             })
             .state('motions.category.detail.update', {
@@ -202,16 +104,13 @@ angular.module('OpenSlidesApp.motions.site', [
             })
             .state('motions.category.sort', {
                 url: '/sort/{id}',
-                resolve: {
-                    category: function(Category, $stateParams) {
-                        return Category.find($stateParams.id);
-                    },
-                    motions: function(Motion) {
-                        return Motion.findAll();
-                    }
-                },
                 controller: 'CategorySortCtrl',
-                templateUrl: 'static/templates/motions/category-sort.html'
+                templateUrl: 'static/templates/motions/category-sort.html',
+                resolve: {
+                    categoryId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
+                },
             })
             // MotionBlock
             .state('motions.motionBlock', {
@@ -222,38 +121,12 @@ angular.module('OpenSlidesApp.motions.site', [
                     title: gettext('Motion blocks'),
                 },
             })
-            .state('motions.motionBlock.list', {
-               resolve: {
-                    motionBlocks: function (MotionBlock) {
-                        return MotionBlock.findAll();
-                    },
-                    motions: function(Motion) {
-                        return Motion.findAll();
-                    },
-                    items: function(Agenda) {
-                        return Agenda.findAll().catch(
-                            function () {
-                                return null;
-                            }
-                        );
-                    }
-                }
-            })
+            .state('motions.motionBlock.list', {})
             .state('motions.motionBlock.detail', {
                 resolve: {
-                    motionBlock: function(MotionBlock, $stateParams) {
-                        return MotionBlock.find($stateParams.id);
-                    },
-                    motions: function(Motion) {
-                        return Motion.findAll();
-                    },
-                    items: function(Agenda) {
-                        return Agenda.findAll().catch(
-                            function () {
-                                return null;
-                            }
-                        );
-                    }
+                    motionBlockId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
                 }
             })
             // redirects to motionBlock detail and opens motionBlock edit form dialog, uses edit url,
@@ -261,8 +134,8 @@ angular.module('OpenSlidesApp.motions.site', [
             // (from motionBlock controller use MotionBlockForm factory instead to open dialog in front
             // of current view without redirect)
             .state('motions.motionBlock.detail.update', {
-                onEnter: ['$stateParams', '$state', 'ngDialog', 'MotionBlock',
-                    function($stateParams, $state, ngDialog, MotionBlock) {
+                onEnter: ['$stateParams', '$state', 'ngDialog',
+                    function($stateParams, $state, ngDialog) {
                         ngDialog.open({
                             template: 'static/templates/motions/motion-block-form.html',
                             controller: 'MotionBlockUpdateCtrl',
@@ -270,8 +143,8 @@ angular.module('OpenSlidesApp.motions.site', [
                             closeByEscape: false,
                             closeByDocument: false,
                             resolve: {
-                                motionBlock: function () {
-                                    return MotionBlock.find($stateParams.id);
+                                motionBlockId: function () {
+                                    return $stateParams.id;
                                 }
                             },
                             preCloseCallback: function() {
@@ -417,28 +290,15 @@ angular.module('OpenSlidesApp.motions.site', [
         return {
             // ngDialog for motion form
             getDialog: function (motion) {
-                var resolve = {};
-                if (motion) {
-                    resolve = {
-                        motion: function() {
-                            MotionComment.populateFields(motion);
-                            return motion;
-                        },
-                        agenda_item: function(Motion) {
-                            return Motion.loadRelations(motion, 'agenda_item');
-                        }
-                    };
-                }
-                resolve.mediafiles = function (Mediafile) {
-                        return Mediafile.findAll();
-                };
                 return {
                     template: 'static/templates/motions/motion-form.html',
-                    controller: (motion) ? 'MotionUpdateCtrl' : 'MotionCreateCtrl',
+                    controller: motion ? 'MotionUpdateCtrl' : 'MotionCreateCtrl',
                     className: 'ngdialog-theme-default wide-form',
                     closeByEscape: false,
                     closeByDocument: false,
-                    resolve: (resolve) ? resolve : null
+                    resolve: {
+                        motionId: function () {return motion ? motion.id : void 0;},
+                    },
                 };
             },
             // angular-formly fields for motion form
@@ -1090,21 +950,21 @@ angular.module('OpenSlidesApp.motions.site', [
     'User',
     'Workflow',
     'Config',
-    'motion',
+    'motionId',
     'MotionInlineEditing',
     'MotionCommentsInlineEditing',
     'Projector',
     'ProjectionDefault',
     function($scope, $http, operator, ngDialog, MotionForm,
              ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation, MotionPDFExport,
-             Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motion, MotionInlineEditing,
+             Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motionId, MotionInlineEditing,
              MotionCommentsInlineEditing, Projector, ProjectionDefault) {
+        var motion = Motion.get(motionId);
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
-        Motion.loadRelations(motion, 'agenda_item');
         $scope.$watch(function () {
             return MotionChangeRecommendation.lastModified();
         }, function () {
@@ -1122,9 +982,9 @@ angular.module('OpenSlidesApp.motions.site', [
             $scope.defaultProjectorId = ProjectionDefault.filter({name: 'motions'})[0].projector_id;
         });
         $scope.$watch(function () {
-            return Motion.lastModified(motion.id);
+            return Motion.lastModified(motionId);
         }, function () {
-            $scope.motion = Motion.get(motion.id);
+            $scope.motion = Motion.get(motionId);
             MotionComment.populateFields($scope.motion);
         });
         $scope.projectionModes = [
@@ -1288,8 +1148,8 @@ angular.module('OpenSlidesApp.motions.site', [
                 closeByEscape: false,
                 closeByDocument: false,
                 resolve: {
-                    motionpoll: function (MotionPoll) {
-                        return MotionPoll.find(poll.id);
+                    motionpollId: function () {
+                        return poll.id;
                     },
                     voteNumber: function () {
                         return voteNumber;
@@ -1454,7 +1314,8 @@ angular.module('OpenSlidesApp.motions.site', [
     'Workflow',
     'Agenda',
     'AgendaUpdate',
-    function($scope, $state, gettext, gettextCatalog, operator, Motion, MotionForm, Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaUpdate) {
+    function($scope, $state, gettext, gettextCatalog, operator, Motion, MotionForm,
+        Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaUpdate) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1489,14 +1350,11 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.save = function (motion) {
             Motion.create(motion).then(
                 function(success) {
-                    // change agenda item only if user has the permission to do that
-                    if (operator.hasPerms('agenda.can_manage')) {
-                        // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
-                        // see openslides.agenda.models.Item.ITEM_TYPE.
-                        var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
-                                       {key: 'parent_id', value: motion.agenda_parent_item_id}];
-                        AgendaUpdate.saveChanges(success.agenda_item_id, changes);
-                    }
+                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
+                    // see openslides.agenda.models.Item.ITEM_TYPE.
+                    var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
+                                   {key: 'parent_id', value: motion.agenda_parent_item_id}];
+                    AgendaUpdate.saveChanges(success.agenda_item_id, changes);
                     if (isAmendment) {
                         $state.go('motions.motion.detail', {id: success.id});
                     }
@@ -1519,8 +1377,8 @@ angular.module('OpenSlidesApp.motions.site', [
     'Workflow',
     'Agenda',
     'AgendaUpdate',
-    'motion',
-    function($scope, Motion, Category, Config, Mediafile, MotionForm, Tag, User, Workflow, Agenda, AgendaUpdate, motion) {
+    'motionId',
+    function($scope, Motion, Category, Config, Mediafile, MotionForm, Tag, User, Workflow, Agenda, AgendaUpdate, motionId) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1530,6 +1388,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // set initial values for form model by create deep copy of motion object
         // so list/detail view is not updated while editing
+        var motion = Motion.get(motionId);
         $scope.model = angular.copy(motion);
         $scope.model.disable_versioning = false;
         $scope.model.more = false;
@@ -1581,14 +1440,12 @@ angular.module('OpenSlidesApp.motions.site', [
             // save change motion object on server
             Motion.save(motion, { method: 'PATCH' }).then(
                 function(success) {
-                    Agenda.find(success.agenda_item_id).then(function(item) {
-                        // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
-                        // see openslides.agenda.models.Item.ITEM_TYPE.
-                        var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
-                                       {key: 'parent_id', value: motion.agenda_parent_item_id}];
-                        AgendaUpdate.saveChanges(success.agenda_item_id,changes);
-                        $scope.closeThisDialog();
-                    });
+                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
+                    // see openslides.agenda.models.Item.ITEM_TYPE.
+                    var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
+                                   {key: 'parent_id', value: motion.agenda_parent_item_id}];
+                    AgendaUpdate.saveChanges(success.agenda_item_id,changes);
+                    $scope.closeThisDialog();
                 },
                 function (error) {
                     // save error: revert all changes by restore
@@ -1610,11 +1467,12 @@ angular.module('OpenSlidesApp.motions.site', [
     'gettextCatalog',
     'MotionPoll',
     'MotionPollForm',
-    'motionpoll',
+    'motionpollId',
     'voteNumber',
-    function($scope, gettextCatalog, MotionPoll, MotionPollForm, motionpoll, voteNumber) {
+    function($scope, gettextCatalog, MotionPoll, MotionPollForm, motionpollId, voteNumber) {
         // set initial values for form model by create deep copy of motionpoll object
         // so detail view is not updated while editing poll
+        var motionpoll = MotionPoll.get(motionpollId);
         $scope.model = angular.copy(motionpoll);
         $scope.voteNumber = voteNumber;
         $scope.formFields = MotionPollForm.getFormFields();
@@ -1900,9 +1758,9 @@ angular.module('OpenSlidesApp.motions.site', [
 .controller('CategoryDetailCtrl', [
     '$scope',
     'Category',
-    'category',
-    function($scope, Category, category) {
-        Category.bindOne(category.id, $scope, 'category');
+    'categoryId',
+    function($scope, Category, categoryId) {
+        Category.bindOne(categoryId, $scope, 'category');
     }
 ])
 
@@ -1926,9 +1784,9 @@ angular.module('OpenSlidesApp.motions.site', [
     '$scope',
     '$state',
     'Category',
-    'category',
-    function($scope, $state, Category, category) {
-        $scope.category = category;
+    'categoryId',
+    function($scope, $state, Category, categoryId) {
+        $scope.category = Category.get(categoryId);
         $scope.save = function (category) {
             Category.save(category).then(
                 function(success) {
@@ -1945,13 +1803,12 @@ angular.module('OpenSlidesApp.motions.site', [
     '$http',
     'MotionList',
     'Category',
-    'category',
+    'categoryId',
     'Motion',
-    'motions',
-    function($scope, $stateParams, $http, MotionList, Category, category, Motion, motions) {
-        Category.bindOne(category.id, $scope, 'category');
+    function($scope, $stateParams, $http, MotionList, Category, categoryId, Motion) {
+        Category.bindOne(categoryId, $scope, 'category');
         Motion.bindAll({}, $scope, 'motions');
-        $scope.filter = { category_id: category.id,
+        $scope.filter = { category_id: categoryId,
                           parent_id: null,
                           orderBy: 'identifier' };
 

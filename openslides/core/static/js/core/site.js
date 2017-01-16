@@ -336,22 +336,21 @@ angular.module('OpenSlidesApp.core.site', [
                     title: gettext('Tags'),
                 },
             })
-            .state('core.tag.list', {
-                resolve: {
-                    tags: function(Tag) {
-                        return Tag.findAll();
-                    }
-                }
-            })
+            .state('core.tag.list', {})
             .state('core.tag.create', {})
             .state('core.tag.detail', {
                 resolve: {
-                    tag: function(Tag, $stateParams) {
-                        return Tag.find($stateParams.id);
-                    }
+                    tagId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
                 }
             })
             .state('core.tag.detail.update', {
+                resolve: {
+                    tagId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
+                },
                 views: {
                     '@core.tag': {}
                 }
@@ -381,8 +380,8 @@ angular.module('OpenSlidesApp.core.site', [
                     closeByEscape: false,
                     closeByDocument: false,
                     resolve: {
-                        projectorMessage: function () {
-                            return message;
+                        projectorMessageId: function () {
+                            return message.id;
                         }
                     },
                 };
@@ -1136,12 +1135,12 @@ angular.module('OpenSlidesApp.core.site', [
 
 .controller('ProjectorMessageEditCtrl', [
     '$scope',
-    'projectorMessage',
+    'projectorMessageId',
     'ProjectorMessage',
     'ProjectorMessageForm',
-    function ($scope, projectorMessage, ProjectorMessage, ProjectorMessageForm) {
+    function ($scope, projectorMessageId, ProjectorMessage, ProjectorMessageForm) {
         $scope.formFields = ProjectorMessageForm.getFormFields();
-        $scope.model = angular.copy(projectorMessage);
+        $scope.model = angular.copy(ProjectorMessage.get(projectorMessageId));
 
         $scope.save = function (message) {
             ProjectorMessage.inject(message);
@@ -1336,9 +1335,9 @@ angular.module('OpenSlidesApp.core.site', [
 .controller('TagDetailCtrl', [
     '$scope',
     'Tag',
-    'tag',
-    function($scope, Tag, tag) {
-        Tag.bindOne(tag.id, $scope, 'tag');
+    'tagId',
+    function($scope, Tag, tagId) {
+        Tag.bindOne(tagId, $scope, 'tag');
     }
 ])
 
@@ -1362,9 +1361,9 @@ angular.module('OpenSlidesApp.core.site', [
     '$scope',
     '$state',
     'Tag',
-    'tag',
-    function($scope, $state, Tag, tag) {
-        $scope.tag = tag;
+    'tagId',
+    function($scope, $state, Tag, tagId) {
+        $scope.tag = Tag.get(tagId);
         $scope.save = function (tag) {
             Tag.save(tag).then(
                 function(success) {

@@ -751,9 +751,9 @@ angular.module('OpenSlidesApp.users.site', [
     '$state',
     'Editor',
     'User',
-    'user',
-    function($scope, $state, Editor, User, user) {
-        $scope.user = user;  // autoupdate is not activated
+    'userId',
+    function($scope, $state, Editor, User, userId) {
+        $scope.user = angular.copy(User.get(userId));
         $scope.ckeditorOptions = Editor.getOptions();
         $scope.save = function (user) {
             User.save(user).then(
@@ -805,10 +805,8 @@ angular.module('OpenSlidesApp.users.site', [
     '$scope',
     '$state',
     '$http',
-    'user',
-    function($scope, $state, $http, user) {
-        $scope.user = user;  // autoupdate is not activated
-        $scope.save = function (user) {
+    function($scope, $state, $http) {
+        $scope.save = function () {
             if ($scope.newPassword != $scope.newPassword2) {
                 $scope.newPassword = $scope.newPassword2 = '';
                 $scope.formError = 'Password confirmation does not match.';

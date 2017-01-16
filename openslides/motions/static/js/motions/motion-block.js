@@ -46,9 +46,7 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
 
 .run(['MotionBlock', function(MotionBlock) {}])
 
-
 // MotionBlock views (list view, create dialog, update dialog)
-
 .factory('MotionBlockForm', [
     '$http',
     'gettextCatalog',
@@ -65,9 +63,7 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
                     closeByEscape: false,
                     closeByDocument: false,
                     resolve: {
-                        motionBlock: function () {
-                            return motionBlock;
-                        }
+                        motionBlockId: function () {return motionBlock ? motionBlock.id : void 0;}
                     }
                 };
             },
@@ -133,11 +129,11 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
     'Motion',
     'MotionBlockForm',
     'MotionBlock',
-    'motionBlock',
+    'motionBlockId',
     'Projector',
     'ProjectionDefault',
-    function($scope, $http, ngDialog, Motion, MotionBlockForm, MotionBlock, motionBlock, Projector, ProjectionDefault) {
-        MotionBlock.bindOne(motionBlock.id, $scope, 'motionBlock');
+    function($scope, $http, ngDialog, Motion, MotionBlockForm, MotionBlock, motionBlockId, Projector, ProjectionDefault) {
+        MotionBlock.bindOne(motionBlockId, $scope, 'motionBlock');
         Motion.bindAll({}, $scope, 'motions');
         $scope.$watch(function () {
             return Projector.lastModified();
@@ -211,14 +207,15 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
     'MotionBlock',
     'MotionBlockForm',
     'AgendaUpdate',
-    'motionBlock',
-    function($scope, $state, MotionBlock, MotionBlockForm, AgendaUpdate, motionBlock) {
+    'motionBlockId',
+    function($scope, $state, MotionBlock, MotionBlockForm, AgendaUpdate, motionBlockId) {
         // TODO: Check #2486 and remove some agenda related code.
         //MotionBlock.loadRelations(motionBlock, 'agenda_item');
         $scope.alert = {};
 
         // Prepare form. Set initial values by creating a deep copy of
         // motionBlock object so list/detail view is not updated while editing.
+        var motionBlock = MotionBlock.get(motionBlockId);
         $scope.model = angular.copy(motionBlock);
 
         // Get all form fields.
