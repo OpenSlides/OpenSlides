@@ -505,7 +505,7 @@ angular.module('OpenSlidesApp.core', [
     'DS',
     function(DS) {
         return DS.defineResource({
-            name: 'core/chatmessage',
+            name: 'core/chat-message',
             relations: {
                 belongsTo: {
                     'users/user': {
@@ -689,7 +689,7 @@ angular.module('OpenSlidesApp.core', [
             onConflict: 'replace',
             relations: {
                 hasMany: {
-                    'core/projectiondefault': {
+                    'core/projection-default': {
                         localField: 'projectiondefaults',
                         foreignKey: 'projector_id',
                     }
@@ -713,7 +713,7 @@ angular.module('OpenSlidesApp.core', [
                             value.name != 'agenda/item-list' &&
                             value.name != 'core/clock' &&
                             value.name != 'core/countdown' &&
-                            value.name != 'core/message' &&
+                            value.name != 'core/projector-message' &&
                             value.name != 'agenda/current-list-of-speakers' ) {
                             return_dict = {
                                 'state': value.name.replace('/', '.')+'.detail.update',
@@ -741,7 +741,7 @@ angular.module('OpenSlidesApp.core', [
     'DS',
     function(DS) {
         return DS.defineResource({
-            name: 'core/projectiondefault',
+            name: 'core/projection-default',
             relations: {
                 belongsTo: {
                     'core/projector': {
@@ -762,7 +762,7 @@ angular.module('OpenSlidesApp.core', [
     '$http',
     'Projector',
     function(DS, jsDataModel, gettext, $http, Projector) {
-        var name = 'core/projectormessage';
+        var name = 'core/projector-message';
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
@@ -778,7 +778,7 @@ angular.module('OpenSlidesApp.core', [
                     var isProjectedIds = this.isProjected();
                     var self = this;
                     var predicate = function (element) {
-                        return element.name == name && element.id == self.id;
+                        return element.name === name && element.id === self.id;
                     };
                     _.forEach(isProjectedIds, function (id) {
                         var uuid = _.findKey(Projector.get(id).elements, predicate);

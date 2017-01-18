@@ -722,7 +722,7 @@ angular.module('OpenSlidesApp.motions', [
     'gettextCatalog',
     function (DS, Config, jsDataModel, diffService, lineNumberingService, gettextCatalog) {
         return DS.defineResource({
-            name: 'motions/motionchangerecommendation',
+            name: 'motions/motion-change-recommendation',
             useClass: jsDataModel,
             methods: {
                 saveStatus: function() {
