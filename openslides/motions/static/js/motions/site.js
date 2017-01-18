@@ -1075,7 +1075,6 @@ angular.module('OpenSlidesApp.motions.site', [
 .controller('MotionDetailCtrl', [
     '$scope',
     '$http',
-    '$timeout',
     'operator',
     'ngDialog',
     'MotionForm',
@@ -1096,7 +1095,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'MotionCommentsInlineEditing',
     'Projector',
     'ProjectionDefault',
-    function($scope, $http, $timeout, operator, ngDialog, MotionForm,
+    function($scope, $http, operator, ngDialog, MotionForm,
              ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation, MotionPDFExport,
              Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motion, MotionInlineEditing,
              MotionCommentsInlineEditing, Projector, ProjectionDefault) {
@@ -1138,35 +1137,25 @@ angular.module('OpenSlidesApp.motions.site', [
             {mode: 'agreed',
             label: 'Resolution'},
         ];
-        var getProjectionMode = function () {
-            var projectedIds = motion.isProjected();
-            if (projectedIds.length) {
-                var element = _.find(Projector.get(projectedIds[0]).elements, function (element) {
-                    return element.name === 'motions/motion' && element.id === motion.id;
-                });
-                var modeName = element.mode || 'original', mode;
-                _.forEach($scope.projectionModes, function (_mode) {
-                    if (_mode.mode === modeName) {
-                        mode = _mode;
-                    }
-                });
-                return mode || $scope.projectionModes[0];
-            } else {
-                return $scope.projectionModes[0];
-            }
-        };
-        $scope.projectionMode = getProjectionMode();
-        // TODO: Fix this timeout; check what mode is projected.
+        $scope.projectionMode = $scope.projectionModes[0];
+        if (motion.isProjected().length) {
+            var modeMapping = motion.isProjectedWithMode();
+            _.forEach($scope.projectionModes, function (mode) {
+                if (mode.mode === modeMapping[0].mode) {
+                    $scope.projectionMode = mode;
+                }
+            });
+        }
         $scope.setProjectionMode = function (mode) {
             $scope.projectionMode = mode;
-
-            var projectedIds = motion.isProjected();
-            _.forEach(projectedIds, function (id) {
-                motion.project(id, mode.mode);
-                $timeout(function () {
-                    motion.project(id, mode.mode);
-                }, 100);
-            });
+            var isProjected = motion.isProjectedWithMode();
+            if (isProjected.length) {
+                _.forEach(isProjected, function (mapping) {
+                    if (mapping.mode != mode.mode) { // change the mode if it is different
+                        motion.project(mapping.projectorId, mode.mode);
+                    }
+                });
+            }
         };
         $scope.commentsFields = Config.get('motions_comments').value;
         $scope.commentFieldForState = MotionComment.getFieldNameForFlag('forState');
