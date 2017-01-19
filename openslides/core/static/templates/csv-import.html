@@ -4,7 +4,8 @@
     <div class="form-control">
       <label for="csvFileSelector">
         <i class="fa fa-upload"></i>
-        {{ selectedFile || ('Select a file' | translate) }}
+        <span ng-if="selectedFile">{{ selectedFile }}</span>
+        <span ng-if="!selectedFile" translate>Select a file</span>
       </label>
       <a href class="pull-right clear-file" ng-if="selectedFile" ng-click="clearFile()">
         <i class="fa fa-times" title="{{ 'Deselect file' | translate }}"></i>
@@ -12,7 +13,8 @@
     </div>
     <input id="csvFileSelector" type="file" value="" accept="{{ accept }}">
     <p class="help-block">
-      <translate translate-context="special filetypes in a file open dialog">Accept</translate>: {{ accept }}
+      <translate translate-context="special filetypes in a file open dialog">Accepted file types</translate>:
+      {{ accept }}
     </p>
   </div>
 
@@ -24,7 +26,10 @@
   <div class="form-group">
     <label for="inputDelimiter" translate>Separator</label>
     <input type="text" class="form-control" ng-model="delimiter" ng-change="parse()" id="inputDelimiter">
-    <p class="help-block help-block-big" ng-if="autodelimiter"><translate>Autodetect</translate>:&nbsp;&nbsp;{{ autodelimiter }}</p>
+    <p class="help-block help-block-big" ng-if="autodelimiter">
+      <translate>Autodetection</translate>:
+      {{ autodelimiter }}
+    </p>
     <p class="help-block" ng-if="!autodelimiter" translate>Leave empty for autodetection of the separator.</p>
   </div>
 </form>

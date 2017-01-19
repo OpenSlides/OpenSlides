@@ -71,9 +71,9 @@
         <option value="addGroup" translate>Add group</option>
         <option value="removeGroup" translate>Remove group</option>
         <option value="generatePasswords" translate>Generate new passwords</option>
-        <option value="is_active" translate>Set/Unset is active</option>
-        <option value="is_present" translate>Set/Unset is present</option>
-        <option value="is_committee" translate>Set/Unset is a committee</option>
+        <option value="is_active" translate>Set/Unset 'is active'</option>
+        <option value="is_present" translate>Set/Unset 'is present'</option>
+        <option value="is_committee" translate>Set/Unset 'is a committee'</option>
       </select>
       <!-- delete button -->
       <a ng-show="selectedAction == 'delete'"
@@ -110,16 +110,16 @@
       <!-- set bool property button -->
       <a ng-show="inArray(['is_active', 'is_present', 'is_committee'], selectedAction)"
         ng-click="setBoolPropertyMultiple(selectedAction, true)" class="btn btn-default">
-        <span ng-if="selectedAction == 'is_active'" translate>Set active</span>
-        <span ng-if="selectedAction == 'is_present'" translate>Set present</span>
-        <span ng-if="selectedAction == 'is_committee'" translate>Set committee</span>
+        <span ng-if="selectedAction == 'is_active'" translate>Is active</span>
+        <span ng-if="selectedAction == 'is_present'" translate>Is present</span>
+        <span ng-if="selectedAction == 'is_committee'" translate>Is committee</span>
       </a>
       <!-- unset bool property button -->
       <a ng-show="inArray(['is_active', 'is_present', 'is_committee'], selectedAction)"
         ng-click="setBoolPropertyMultiple(selectedAction, false)" class="btn btn-default">
-        <span ng-if="selectedAction == 'is_active'" translate>Unset active</span>
-        <span ng-if="selectedAction == 'is_present'" translate>Unset present</span>
-        <span ng-if="selectedAction == 'is_committee'" translate>Unset committee</span>
+        <span ng-if="selectedAction == 'is_active'" translate>Is not active</span>
+        <span ng-if="selectedAction == 'is_present'" translate>Is not present</span>
+        <span ng-if="selectedAction == 'is_committee'" translate>Is not a committee</span>
       </a>
     </div>
   </div>
@@ -372,7 +372,8 @@
               <div class="popover-wrapper" uib-tooltip="{{ 'Structure level' | translate }}" tooltip-placement="top-left">
                 <i class="fa fa-flag"></i>
                 <span editable-text="user.structure_level" onaftersave="save(user)">
-                  {{ user.structure_level || ('Set structure level...' | translate)}}
+                  <span ng-if="!user.structure_level" translate>Set structure level ...</span>
+                  <span ng-if="user.structure_level">{{ user.structure_level }}</span>
                 </span>
               </div>
             </div>
@@ -387,7 +388,8 @@
               <div class="popover-wrapper" uib-tooltip="{{ 'Comment' | translate }}" tooltip-placement="top-left">
                 <i class="fa fa-info-circle"></i>
                 <span editable-text="user.comment" onaftersave="save(user)">
-                  {{ user.comment || ('Set comment...' | translate)}}
+                  <span ng-if="!user.comment" translate>Set comment ...</span>
+                  <span ng-if="user.comment">{{ user.comment }}</span>
                 </span>
               </div>
             </div>

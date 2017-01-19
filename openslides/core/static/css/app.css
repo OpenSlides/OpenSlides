@@ -417,11 +417,11 @@ img {
     left: 50%;
     height: 75px;
     width: 300px;
-    background: rgba(242, 222, 222, 0.9);
+    background: #d3d3d3;
     color: black;
     text-align: center;
     padding: 5px;
-    z-index: 10;
+    z-index: 10000;
     display: none;
     border: 1px solid #d3d3d3;
     margin-left: -150px;

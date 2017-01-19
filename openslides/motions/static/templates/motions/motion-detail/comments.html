@@ -31,12 +31,11 @@
       </div>
       <!-- save toolbar -->
       <div class="motion-save-toolbar" ng-class="{ 'visible': commentsInlineEditing.saveToolbarVisible() }">
-        <div class="changed-hint" ng-if="commentsFields.length > 1" translate>The comments have been changed.</div>
-        <div class="changed-hint" ng-if="commentsFields.length == 1" translate>The comment has been changed.</div>
+        <div class="changed-hint" translate>A comment has been changed.</div>
         <button type="button" ng-click="commentsInlineEditing.save()" class="btn btn-primary" translate>
             Save
         </button>
-        <button type="button" ng-click="commentsInlineEditing.revert()" class="btn btn-primary" translate>
+        <button type="button" ng-click="commentsInlineEditing.revert()" class="btn btn-default" translate>
             Revert
         </button>
       </div>
