@@ -127,15 +127,22 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                     self.permission_denied(request)
                 if type(speaker_ids) is int:
                     speaker_ids = [speaker_ids]
+                deleted_speaker_count = 0
                 for speaker_id in speaker_ids:
                     try:
                         speaker = Speaker.objects.get(pk=int(speaker_id))
                     except (ValueError, Speaker.DoesNotExist):
-                        raise ValidationError({'detail': _('Speaker does not exist.')})
-                    # Delete the speaker.
-                    speaker.delete()
-                    message = _('Speaker %s was successfully removed from the list of speakers.') % speaker
-
+                        pass
+                    else:
+                        speaker.delete()
+                        deleted_speaker_name = speaker
+                        deleted_speaker_count += 1
+                if deleted_speaker_count > 1:
+                    message = str(deleted_speaker_count) + ' ' + _('speakers have been removed from the list of speakers.')
+                elif deleted_speaker_count == 1:
+                    message = _('User %s has been removed from the list of speakers.') % deleted_speaker_name
+                else:
+                    message = _('No speakers have been removed from the list of speakers.')
         # Initiate response.
         return Response({'detail': message})
 

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -203,13 +204,17 @@ class ManageSpeaker(TestCase):
         response = self.client.delete(
             reverse('item-manage-speaker', args=[self.item.pk]),
             {'speaker': '1'})
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get('detail'),
+                         ugettext('No speakers have been removed from the list of speakers.'))
 
     def test_remove_someone_else_invalid_data(self):
         response = self.client.delete(
             reverse('item-manage-speaker', args=[self.item.pk]),
             {'speaker': 'invalid'})
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get('detail'),
+                         ugettext('No speakers have been removed from the list of speakers.'))
 
     def test_remove_someone_else_non_admin(self):
         admin = get_user_model().objects.get(username='admin')
