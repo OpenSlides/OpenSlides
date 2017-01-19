@@ -301,7 +301,7 @@
                 <i class="fa fa-clock-o"></i>
                 <span editable-text="item.durationText" e-placeholder="hh:mm"
                   onshow="generateDurationText(item)" onaftersave="setDurationText(item)">
-                  <span ng-if="!item.duration" translate>Set duration...</span>
+                  <span ng-if="!item.duration" translate>Set duration ...</span>
                   <span ng-if="item.duration">
                     {{ (item.duration | osMinutesToTime)}}
                     <translate translate-comment="'h' means time in hours">h</translate>
@@ -318,7 +318,7 @@
               <div class="popover-wrapper" os-perms="agenda.can_manage">
                 <i class="fa fa-info-circle"></i>
                 <span editable-text="item.comment" onaftersave="save(item)">
-                  <span ng-if="!item.comment" translate>Set comment...</span>
+                  <span ng-if="!item.comment" translate>Set comment ...</span>
                   <span ng-if="item.comment">{{ item.comment }}</span>
                 </span>
               </div>
