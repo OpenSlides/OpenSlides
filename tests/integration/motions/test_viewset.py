@@ -235,7 +235,7 @@ class CreateMotion(TestCase):
         config['motions_comments'] = [
             {'name': 'comment1', 'public': True},
             {'name': 'comment2', 'public': False}]
-        comments = ['comemnt1_sdpoiuffo3%7dwDwW&', 'comment2_iusd&D/TdskDWH&5DWas46WAd078']
+        comments = ['comemnt1_sdpoiuffo3%7dwDwW)', 'comment2_iusd_D/TdskDWH(5DWas46WAd078']
         response = self.client.post(
             reverse('motion-list'),
             {'title': 'title_test_sfdAaufd56HR7sd5FDq7av',

@@ -8,3 +8,4 @@ roman>=2.0,<2.1
 setuptools>=18.5,<33.0
 Twisted>=16.2,<16.4
 Whoosh>=2.7,<2.8
+bleach>=1.5.0,<1.6

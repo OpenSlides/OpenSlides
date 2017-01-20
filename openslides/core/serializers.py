@@ -1,4 +1,5 @@
 from openslides.utils.rest_api import Field, ModelSerializer, ValidationError
+from openslides.utils.validate import validate_html
 
 from .models import (
     ChatMessage,
@@ -77,6 +78,10 @@ class ProjectorMessageSerializer(ModelSerializer):
     class Meta:
         model = ProjectorMessage
         fields = ('id', 'message', )
+
+    def validate(self, data):
+        data['message'] = validate_html(data.get('message', ''))
+        return data
 
 
 class CountdownSerializer(ModelSerializer):
