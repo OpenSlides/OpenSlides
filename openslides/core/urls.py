@@ -11,10 +11,6 @@ urlpatterns = [
         views.VersionView.as_view(),
         name='core_version'),
 
-    url(r'^core/search_api/$',
-        views.SearchView.as_view(),
-        name='core_search'),
-
     url(r'^core/encode_media/$',
         views.MediaEncoder.as_view(),
         name="core_mediaencoding"),

@@ -137,7 +137,7 @@ def get_default_settings_context(user_data_path=None):
 
     The argument 'user_data_path' is a given path for user specific data or None.
     """
-    # Setup path for user specific data (SQLite3 database, media, search index, ...):
+    # Setup path for user specific data (SQLite3 database, media, ...):
     # Take it either from command line or get default path
     default_context = {}
     if user_data_path:

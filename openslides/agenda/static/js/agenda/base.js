@@ -87,6 +87,23 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 getAgendaTitle: function () {
                     return this.title;
                 },
+                // link name which is shown in search result
+                getSearchResultName: function () {
+                    return this.getAgendaTitle();
+                },
+                // return true if a specific relation matches for given searchquery
+                // (here: speakers)
+                hasSearchResult: function (results) {
+                    var item = this;
+                    // search for speakers (check if any user.id from already found users matches)
+                    return _.some(results, function(result) {
+                        if (result.getResourceName() === "users/user") {
+                            if (_.some(item.speakers, {'user_id': result.id})) {
+                                return true;
+                            }
+                        }
+                    });
+                },
                 getListViewTitle: function () {
                     var title;
                     try {

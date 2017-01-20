@@ -24,6 +24,19 @@ angular.module('OpenSlidesApp.agenda.site', [
 ])
 
 .config([
+    'SearchProvider',
+    'gettext',
+    function (SearchProvider, gettext) {
+        SearchProvider.register({
+            'verboseName': gettext('Agenda'),
+            'collectionName': 'agenda/item',
+            'urlDetailState': 'agenda.item.detail',
+            'weight': 200,
+        });
+    }
+])
+
+.config([
     '$stateProvider',
     'gettext',
     function($stateProvider, gettext) {

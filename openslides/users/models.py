@@ -12,8 +12,6 @@ from django.contrib.auth.models import (
 from django.db import models
 from django.db.models import Prefetch, Q
 
-from openslides.utils.search import user_name_helper
-
 from ..utils.collection import CollectionElement
 from ..utils.models import RESTModelMixin
 from .access_permissions import GroupAccessPermissions, UserAccessPermissions
@@ -206,15 +204,6 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             kwargs['skip_autoupdate'] = True
             CollectionElement.from_instance(self)
         return super().save(*args, **kwargs)
-
-    def get_search_index_string(self):
-        """
-        Returns a string that can be indexed for the search.
-        """
-        return " ".join((
-            user_name_helper(self),
-            self.structure_level,
-            self.about_me))
 
     def has_perm(self, perm):
         """

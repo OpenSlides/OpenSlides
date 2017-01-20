@@ -60,12 +60,6 @@ STATICFILES_DIRS.insert(0, os.path.join(OPENSLIDES_USER_DATA_PATH, 'static'))  #
 MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, '')
 
 
-# Whoosh search library
-# https://whoosh.readthedocs.io/en/latest/
-
-SEARCH_INDEX = 'ram'
-
-
 # Customization of OpenSlides apps
 
 MOTION_IDENTIFIER_MIN_DIGITS = 1

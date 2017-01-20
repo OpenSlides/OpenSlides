@@ -5,7 +5,6 @@ import uuid
 from collections import OrderedDict
 from operator import attrgetter
 from textwrap import dedent
-from urllib.parse import unquote
 
 from django.apps import apps
 from django.conf import settings
@@ -34,7 +33,6 @@ from ..utils.rest_api import (
     detail_route,
     list_route,
 )
-from ..utils.search import search
 from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,
@@ -812,25 +810,6 @@ class VersionView(utils_views.APIView):
                 'description': get_plugin_description(plugin),
                 'version': get_plugin_version(plugin)})
         return result
-
-
-class SearchView(utils_views.APIView):
-    """
-    Accepts a search string and returns a list of objects where each object
-    is a dictonary with the keywords collection and id.
-
-    This view expects a get argument 'q' with a search string.
-
-    See: https://pythonhosted.org/Whoosh/querylang.html for the format of the
-    search string.
-    """
-    http_method_names = ['get']
-
-    def get_context_data(self, **context):
-        query = self.request.GET.get('q', '')
-        return super().get_context_data(
-            elements=search(unquote(query)),
-            **context)
 
 
 class MediaEncoder(utils_views.APIView):

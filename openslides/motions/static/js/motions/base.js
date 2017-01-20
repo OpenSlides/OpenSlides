@@ -192,6 +192,7 @@ angular.module('OpenSlidesApp.motions', [
 .factory('Motion', [
     'DS',
     '$http',
+    '$filter',
     'MotionPoll',
     'MotionChangeRecommendation',
     'MotionComment',
@@ -204,7 +205,7 @@ angular.module('OpenSlidesApp.motions', [
     'OpenSlidesSettings',
     'Projector',
     'operator',
-    function(DS, $http, MotionPoll, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog,
+    function(DS, $http, $filter, MotionPoll, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog,
         Config, lineNumberingService, diffService, OpenSlidesSettings, Projector, operator) {
         var name = 'motions/motion';
         return DS.defineResource({
@@ -385,9 +386,25 @@ angular.module('OpenSlidesApp.motions', [
                 getSearchResultName: function () {
                     return this.getTitle();
                 },
-                // subtitle of search result
-                getSearchResultSubtitle: function () {
-                    return "Motion";
+                // return true if a specific relation matches for given searchquery
+                // e.g. submitter, supporters or category
+                hasSearchResult: function (results, searchquery) {
+                    var motion = this;
+                    // search for submitters and supporters (check if any user.id from already found users matches)
+                    var foundSomething = _.some(results, function(result) {
+                        if (result.getResourceName() === "users/user") {
+                            if (_.some(motion.submitters, {'id': result.id})) {
+                                return true;
+                            } else if (_.some(motion.supporters, { 'id': result.id })) {
+                                return true;
+                            }
+                        }
+                    });
+                    // search for category
+                    if (!foundSomething && motion.category && motion.category.name.match(new RegExp(searchquery, 'i'))) {
+                        foundSomething = true;
+                    }
+                    return foundSomething;
                 },
                 getChangeRecommendations: function (versionId, order) {
                     /*

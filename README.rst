@@ -179,8 +179,6 @@ OpenSlides uses the following projects or parts of them:
 
 * `txaio <https://github.com/crossbario/txaio>`_, License: MIT
 
-* `Whoosh <https://bitbucket.org/mchaput/whoosh/wiki/Home>`_, License: BSD
-
 * `zope.interface <https://github.com/zopefoundation/zope.interface>`,
   License: ZPL 2.1
 

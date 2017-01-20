@@ -36,9 +36,17 @@ angular.module('OpenSlidesApp.mediafiles.resources', [
                 getSearchResultName: function () {
                     return this.title;
                 },
-                // subtitle of search result
-                getSearchResultSubtitle: function () {
-                    return "File";
+                // return true if a specific relation matches for given searchquery
+                // (here: speakers)
+                hasSearchResult: function (results) {
+                    var mediafile = this;
+                    // search for speakers (check if any user.id from already found users matches)
+                    return _.some(results, function(result) {
+                        if ((result.getResourceName() === "users/user") &&
+                                (mediafile.uploader_id === result.id)) {
+                            return true;
+                        }
+                    });
                 },
             },
             computed: {
