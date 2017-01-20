@@ -7,7 +7,8 @@ angular.module('OpenSlidesApp.users.csv', [])
 .factory('UserCsvExport', [
     'Group',
     'gettextCatalog',
-    function (Group, gettextCatalog) {
+    'CsvDownload',
+    function (Group, gettextCatalog, CsvDownload) {
         var makeHeaderline = function () {
             var headerline = ['Title', 'Given name', 'Surname', 'Structure level', 'Participant number', 'Groups',
                 'Comment', 'Is active', 'Is present', 'Is a committee'];
@@ -21,24 +22,23 @@ angular.module('OpenSlidesApp.users.csv', [])
                     makeHeaderline()
                 ];
                 _.forEach(users, function (user) {
+                    var groups = _.map(user.groups_id, function (id) {
+                        return gettextCatalog.getString(Group.get(id).name);
+                    }).join(',');
                     var row = [];
                     row.push('"' + user.title + '"');
                     row.push('"' + user.first_name + '"');
                     row.push('"' + user.last_name + '"');
                     row.push('"' + user.structure_level + '"');
                     row.push('"' + user.number + '"');
-                    row.push('"' + user.groups_id.join(',') + '"');
+                    row.push('"' + groups + '"');
                     row.push('"' + user.comment + '"');
                     row.push(user.is_active ? '1' : '0');
                     row.push(user.is_present ? '1' : '0');
                     row.push(user.is_committee ? '1' : '0');
                     csvRows.push(row);
                 });
-
-                var csvString = csvRows.join("%0A");
-                element.href = 'data:text/csv;charset=utf-8,' + csvString;
-                element.download = 'users-export.csv';
-                element.target = '_blank';
+                CsvDownload(csvRows, element, 'users-export.csv');
             },
 
             downloadExample: function (element) {
@@ -62,10 +62,7 @@ angular.module('OpenSlidesApp.users.csv', [])
                     ['', '', 'Executive Board', '', '', '', '', '', '', '1'],
 
                 ];
-                var csvString = csvRows.join("%0A");
-                element.href = 'data:text/csv;charset=utf-8,' + csvString;
-                element.download = 'users-example.csv';
-                element.target = '_blank';
+                CsvDownload(csvRows, element, 'users-example.csv');
             }
         };
     }

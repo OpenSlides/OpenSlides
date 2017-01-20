@@ -6,7 +6,8 @@ angular.module('OpenSlidesApp.motions.csv', [])
 
 .factory('MotionCsvExport', [
     'gettextCatalog',
-    function (gettextCatalog) {
+    'CsvDownload',
+    function (gettextCatalog, CsvDownload) {
         var makeHeaderline = function () {
             var headerline = ['Identifier', 'Title', 'Text', 'Reason', 'Submitter', 'Category', 'Origin'];
             return _.map(headerline, function (entry) {
@@ -31,11 +32,7 @@ angular.module('OpenSlidesApp.motions.csv', [])
                     row.push('"' + motion.origin + '"');
                     csvRows.push(row);
                 });
-
-                var csvString = csvRows.join("%0A");
-                element.href = 'data:text/csv;charset=utf-8,' + csvString;
-                element.download = 'motions-export.csv';
-                element.target = '_blank';
+                CsvDownload(csvRows, element, 'motions-export.csv');
             },
             downloadExample: function (element) {
                 var csvRows = [makeHeaderline(),
@@ -44,10 +41,7 @@ angular.module('OpenSlidesApp.motions.csv', [])
                     ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', ''                      ],
                     [''  , 'Title 3', 'Text 3', ''        , ''           , ''          , ''                      ],
                 ];
-                var csvString = csvRows.join("%0A");
-                element.href = 'data:text/csv;charset=utf-8,' + csvString;
-                element.download = 'motions-example.csv';
-                element.target = '_blank';
+                CsvDownload(csvRows, element, 'motions-example.csv');
             },
         };
     }

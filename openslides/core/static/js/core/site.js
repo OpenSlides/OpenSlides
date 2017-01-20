@@ -6,6 +6,7 @@
 angular.module('OpenSlidesApp.core.site', [
     'OpenSlidesApp.core',
     'OpenSlidesApp.core.start',
+    'OpenSlidesApp.core.csv',
     'OpenSlidesApp.poll.majority',
     'ui.router',
     'colorpicker.module',
