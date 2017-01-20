@@ -25,12 +25,9 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
             })
             .state('topics.topic.detail', {
                 resolve: {
-                    topic: function(Topic, $stateParams) {
-                        return Topic.find($stateParams.id);
-                    },
-                    items: function(Agenda) {
-                        return Agenda.findAll();
-                    }
+                    topicId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
                 }
             })
             // redirects to topic detail and opens topic edit form dialog, uses edit url,
@@ -38,8 +35,8 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
             // (from topic controller use TopicForm factory instead to open dialog in front
             // of current view without redirect)
             .state('topics.topic.detail.update', {
-                onEnter: ['$stateParams', '$state', 'ngDialog', 'Topic',
-                    function($stateParams, $state, ngDialog, Topic) {
+                onEnter: ['$stateParams', '$state', 'ngDialog',
+                    function($stateParams, $state, ngDialog) {
                         ngDialog.open({
                             template: 'static/templates/topics/topic-form.html',
                             controller: 'TopicUpdateCtrl',
@@ -47,16 +44,9 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
                             closeByEscape: false,
                             closeByDocument: false,
                             resolve: {
-                                topic: function() {
-                                    return Topic.find($stateParams.id);
+                                topicId: function() {
+                                    return $stateParams.id;
                                 },
-                                items: function(Agenda) {
-                                    return Agenda.findAll().catch(
-                                        function() {
-                                            return null;
-                                        }
-                                    );
-                                }
                             },
                             preCloseCallback: function() {
                                 $state.go('topics.topic.detail', {topic: $stateParams.id});
@@ -82,22 +72,15 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
         return {
             // ngDialog for topic form
             getDialog: function (topic) {
-                var resolve = {};
-                if (topic) {
-                    resolve = {
-                        topic: function (Topic) {return Topic.find(topic.id);}
-                    };
-                }
-                resolve.mediafiles = function (Mediafile) {
-                    return Mediafile.findAll();
-                };
                 return {
                     template: 'static/templates/topics/topic-form.html',
                     controller: (topic) ? 'TopicUpdateCtrl' : 'TopicCreateCtrl',
                     className: 'ngdialog-theme-default wide-form',
                     closeByEscape: false,
                     closeByDocument: false,
-                    resolve: (resolve) ? resolve : null
+                    resolve: {
+                        topicId: function () {return topic ? topic.id: void 0;}
+                    },
                 };
             },
             getFormFields: function (isCreateForm) {
@@ -169,11 +152,11 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
     'ngDialog',
     'TopicForm',
     'Topic',
-    'topic',
+    'topicId',
     'Projector',
     'ProjectionDefault',
-    function($scope, ngDialog, TopicForm, Topic, topic, Projector, ProjectionDefault) {
-        Topic.bindOne(topic.id, $scope, 'topic');
+    function($scope, ngDialog, TopicForm, Topic, topicId, Projector, ProjectionDefault) {
+        Topic.bindOne(topicId, $scope, 'topic');
         $scope.$watch(function () {
             return Projector.lastModified();
         }, function () {
@@ -182,7 +165,6 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
                 $scope.defaultProjectorId = projectiondefault.projector_id;
             }
         });
-        Topic.loadRelations(topic, 'agenda_item');
         $scope.openDialog = function (topic) {
             ngDialog.open(TopicForm.getDialog(topic));
         };
@@ -224,9 +206,9 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
     'TopicForm',
     'Agenda',
     'AgendaUpdate',
-    'topic',
-    function($scope, $state, Topic, TopicForm, Agenda, AgendaUpdate, topic) {
-        Topic.loadRelations(topic, 'agenda_item');
+    'topicId',
+    function($scope, $state, Topic, TopicForm, Agenda, AgendaUpdate, topicId) {
+        var topic = Topic.get(topicId);
         $scope.alert = {};
         // set initial values for form model by create deep copy of topic object
         // so list/detail view is not updated while editing
@@ -273,7 +255,8 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
     'Topic',
     'HumanTimeConverter',
     'TopicsCsvExample',
-    function($scope, gettext, Agenda, Topic, HumanTimeConverter, TopicsCsvExample) {
+    'AgendaUpdate',
+    function($scope, gettext, Agenda, Topic, HumanTimeConverter, TopicsCsvExample, AgendaUpdate) {
         // Big TODO: Change wording from "item" to "topic".
         // import from textarea
         $scope.importByLine = function () {
@@ -285,13 +268,9 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
                     // TODO: create all items in bulk mode
                     Topic.create(item).then(
                         function(success) {
-                            // find related agenda item
-                            Agenda.find(success.agenda_item_id).then(function(item) {
-                                // import all items as type AGENDA_ITEM = 1
-                                item.type = 1;
-                                item.weight = 1000 + index;
-                                Agenda.save(item);
-                            });
+                            var changes = [{key: 'type', value: 1},
+                                           {key: 'weight', value: 1000 + index}];
+                            AgendaUpdate.saveChanges(success.agenda_item_id, changes);
                             $scope.importcounter++;
                         }
                     );
@@ -376,15 +355,12 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
                 if (item.selected && !item.importerror) {
                     Topic.create(item).then(
                         function(success) {
+                            var changes = [{key: 'duration', value: item.duration},
+                                           {key: 'comment', value: item.comment},
+                                           {key: 'type', value: item.type},
+                                           {key: 'weight', value: item.weight}];
+                            AgendaUpdate.saveChanges(success.agenda_item_id, changes);
                             item.imported = true;
-                            // find related agenda item
-                            Agenda.find(success.agenda_item_id).then(function(agendaItem) {
-                                agendaItem.duration = item.duration;
-                                agendaItem.comment = item.comment;
-                                agendaItem.type = item.type;
-                                agendaItem.weight = item.weight;
-                                Agenda.save(agendaItem);
-                            });
                         }
                     );
                 }

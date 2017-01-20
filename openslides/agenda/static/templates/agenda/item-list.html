@@ -8,11 +8,14 @@
         <translate>New</translate>
       </a>
       <!-- import -->
-      <a ui-sref="topics.topic.import" os-perms="agenda.can_manage"
+      <span os-perms="agenda.can_manage">
+        <a ui-sref="topics.topic.import"
+          os-perms="agenda.can_see_hidden_items"
           class="btn btn-default btn-sm">
-        <i class="fa fa-download fa-lg"></i>
-        <translate>Import</translate>
-      </a>
+          <i class="fa fa-download fa-lg"></i>
+          <translate>Import</translate>
+        </a>
+      </span>
       <!-- current list of speakers -->
       <a ui-sref="agenda.current-list-of-speakers" os-perms="users.can_see_name"
           class="btn btn-default btn-sm">

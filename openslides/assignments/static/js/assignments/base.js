@@ -316,6 +316,8 @@ angular.module('OpenSlidesApp.assignments', [])
             verboseName: gettext('Election'),
             verboseNamePlural: gettext('Elections'),
             phases: phases,
+            // TODO (Issue 2885): Do not query this from server. It should be included in the startup data.
+            // Remove than all 'phases' injections from resolvers.
             getPhases: function () {
                 if (!this.phases) {
                     this.phases = $http({ 'method': 'OPTIONS', 'url': '/rest/assignments/assignment/' })

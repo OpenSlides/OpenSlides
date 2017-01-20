@@ -40,58 +40,21 @@ angular.module('OpenSlidesApp.agenda.site', [
                 abstract: true,
                 template: "<ui-view/>",
             })
-            .state('agenda.item.list', {
-                resolve: {
-                    items: function(Agenda) {
-                        return Agenda.findAll();
-                    }
-                }
-            })
+            .state('agenda.item.list', {})
             .state('agenda.item.detail', {
                 resolve: {
-                    item: function(Agenda, $stateParams) {
-                        return Agenda.find($stateParams.id).catch(
-                            function () {
-                                return null;
-                            }
-                        );
-                    },
-                    users: function(User) {
-                        return User.findAll().catch(
-                            function () {
-                                return null;
-                            }
-                        );
-                    },
-                    tags: function(Tag) {
-                        return Tag.findAll();
-                    }
+                    itemId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
                 }
             })
             .state('agenda.item.sort', {
-                resolve: {
-                    items: function(Agenda) {
-                        return Agenda.findAll();
-                    }
-                },
                 url: '/sort',
                 controller: 'AgendaSortCtrl',
             })
             .state('agenda.current-list-of-speakers', {
                 url: '/speakers',
                 controller: 'ListOfSpeakersViewCtrl',
-                resolve: {
-                    users: function(User) {
-                        return User.findAll().catch(
-                            function () {
-                                return null;
-                            }
-                        );
-                    },
-                    items: function(Agenda) {
-                       return Agenda.findAll();
-                    }
-                },
                 data: {
                     title: gettext('Current list of speakers'),
                 },
@@ -421,10 +384,11 @@ angular.module('OpenSlidesApp.agenda.site', [
     'operator',
     'Agenda',
     'User',
-    'item',
+    'itemId',
     'Projector',
     'ProjectionDefault',
-    function ($scope, $filter, $http, $state, operator, Agenda, User, item, Projector, ProjectionDefault) {
+    function ($scope, $filter, $http, $state, operator, Agenda, User, itemId, Projector, ProjectionDefault) {
+        var item = Agenda.get(itemId);
         Agenda.bindOne(item.id, $scope, 'item');
         User.bindAll({}, $scope, 'users');
         $scope.$watch(function () {

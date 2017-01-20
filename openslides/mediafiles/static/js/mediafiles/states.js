@@ -39,20 +39,7 @@ angular.module('OpenSlidesApp.mediafiles.states', [
             abstract: true,
             template: "<ui-view/>",
         })
-        .state('mediafiles.mediafile.list', {
-            resolve: {
-                mediafiles: function (Mediafile) {
-                    return Mediafile.findAll();
-                },
-                users: function (User) {
-                    return User.findAll().catch(
-                        function () {
-                            return null;
-                        }
-                    );
-                },
-            }
-        });
+        .state('mediafiles.mediafile.list', {});
     }
 ]);
 
