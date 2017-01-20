@@ -140,17 +140,20 @@ class WebclientJavaScriptView(utils_views.View):
                 else:
                     js_files.extend(app_js_files)
 
-        client_settings_keys = [
-            'MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS'
-        ]
-        client_settings = {}
-        for key in client_settings_keys:
+        # angular constants
+        angular_constants = ''
+        for app in apps.get_app_configs():
             try:
-                client_settings[key] = getattr(settings, key)
+                # Each app can deliver values to angular when implementing this method.
+                # It should return a list with dicts containing the 'name' and 'value'.
+                get_angular_constants = app.get_angular_constants
             except AttributeError:
-                # Settings key does not exist. Do nothing. The client will
-                # treat this as undefined.
-                pass
+                # The app doesn't have this method. Continue to next app.
+                continue
+            for constant in get_angular_constants():
+                value = json.dumps(constant['value'])
+                name = constant['name']
+                angular_constants += ".constant('{}', {})".format(name, value)
 
         # Use JavaScript loadScript function from
         # http://balpha.de/2011/10/jquery-script-insertion-and-its-consequences-for-debugging/
@@ -178,14 +181,13 @@ class WebclientJavaScriptView(utils_views.View):
                 };
             """ +
             """
-                angular.module('OpenSlidesApp.{realm}', {angular_modules})
-                .constant('OpenSlidesSettings', {settings});
+                angular.module('OpenSlidesApp.{realm}', {angular_modules}){angular_constants};
                 var deferres = [];
                 {js_files}.forEach( function(js_file) {{ deferres.push(loadScript(js_file)); }} );
                 $.when.apply(this,deferres).done( function() {{
                     angular.bootstrap(document,['OpenSlidesApp.{realm}']);
                 }} );
-            """.format(realm=realm, angular_modules=angular_modules, settings=json.dumps(client_settings), js_files=js_files) +
+            """.format(realm=realm, angular_modules=angular_modules, angular_constants=angular_constants, js_files=js_files) +
             """
             }());
             """)
