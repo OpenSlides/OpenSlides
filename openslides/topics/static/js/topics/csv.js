@@ -6,7 +6,8 @@ angular.module('OpenSlidesApp.topics.csv', [])
 
 .factory('TopicsCsvExample', [
     'gettextCatalog',
-    function (gettextCatalog) {
+    'CsvDownload',
+    function (gettextCatalog, CsvDownload) {
         var makeHeaderline = function () {
             var headerline = ['Title', 'Text', 'Duration', 'Comment', 'Internal item'];
             return _.map(headerline, function (entry) {
@@ -22,11 +23,7 @@ angular.module('OpenSlidesApp.topics.csv', [])
                     ['Demo 2', 'Demo text 2', '1:30', '', '']
 
                 ];
-                var csvString = csvRows.join("%0A");
-                element.href = 'data:text/csv;charset=utf-8,' + csvString;
-                element.download = 'agenda-example.csv';
-                element.target = '_blank';
-
+                CsvDownload(csvRows, element, 'agenda-example.csv');
             },
         };
     }
