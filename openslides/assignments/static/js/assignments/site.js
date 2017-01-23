@@ -34,6 +34,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                 template: "<ui-view/>",
                 data: {
                     title: gettext('Elections'),
+                    basePerm: 'assignments.can_see',
                 },
             })
             .state('assignments.assignment', {

@@ -33,6 +33,7 @@ angular.module('OpenSlidesApp.mediafiles.states', [
             template: "<ui-view/>",
             data: {
                 title: gettext('Files'),
+                basePerm: 'mediafiles.can_see',
             },
         })
         .state('mediafiles.mediafile', {

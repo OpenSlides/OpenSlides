@@ -37,6 +37,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 template: "<ui-view/>",
                 data: {
                     title: gettext('Motions'),
+                    basePerm: 'motions.can_see',
                 },
             })
             .state('motions.motion', {

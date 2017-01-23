@@ -115,10 +115,18 @@ angular.module('OpenSlidesApp.core.site', [
 .run([
     '$rootScope',
     'gettextCatalog',
-    function ($rootScope, gettextCatalog) {
+    'operator',
+    function ($rootScope, gettextCatalog, operator) {
         $rootScope.activeAppTitle = '';
-        $rootScope.$on('$stateChangeSuccess', function(evt, toState) {
-            $rootScope.activeAppTitle = toState.data ? toState.data.title : '';
+        $rootScope.$on('$stateChangeSuccess', function(event, toState) {
+            if (toState.data) {
+                $rootScope.activeAppTitle = toState.data.title || '';
+                $rootScope.baseViewPermissionsGranted = toState.data.basePerm ?
+                    operator.hasPerms(toState.data.basePerm) : true;
+            } else {
+                $rootScope.activeAppTitle = '';
+                $rootScope.baseViewPermissionsGranted = true;
+            }
         });
     }
 ])
@@ -263,6 +271,7 @@ angular.module('OpenSlidesApp.core.site', [
                 templateUrl: 'static/templates/home.html',
                 data: {
                     title: gettext('Home'),
+                    basePerm: 'core.can_see_frontpage',
                 },
             })
             .state('projector', {
@@ -287,6 +296,7 @@ angular.module('OpenSlidesApp.core.site', [
                 controller: 'ManageProjectorsCtrl',
                 data: {
                     title: gettext('Manage projectors'),
+                    basePerm: 'core.can_manage_projector',
                 },
             })
             .state('core', {
@@ -315,6 +325,7 @@ angular.module('OpenSlidesApp.core.site', [
                 },
                 data: {
                     title: gettext('Settings'),
+                    basePerm: 'core.can_manage_config',
                 },
             })
 
@@ -335,6 +346,7 @@ angular.module('OpenSlidesApp.core.site', [
                 template: "<ui-view/>",
                 data: {
                     title: gettext('Tags'),
+                    basePerm: 'core.can_manage_tags',
                 },
             })
             .state('core.tag.list', {})

@@ -123,10 +123,8 @@ angular.module('OpenSlidesApp.core', [
             setUser: function(user_id, user_data) {
                 if (user_id && user_data) {
                     operator.user = User.inject(user_data);
-                    operator.perms = operator.user.getPerms();
                 } else {
                     operator.user = null;
-                    operator.perms = Group.get(1).permissions;
                 }
             },
             // Returns true if the operator has at least one perm of the perms-list.
@@ -135,6 +133,14 @@ angular.module('OpenSlidesApp.core', [
                     perms = perms.split(' ');
                 }
                 return _.intersection(perms, operator.perms).length > 0;
+            },
+            reloadPerms: function () {
+                if (operator.user) {
+                    operator.perms = operator.user.getPerms();
+                } else {
+                    var defaultGroup = Group.get(1);
+                    operator.perms = defaultGroup ? defaultGroup.permissions : [];
+                }
             },
             // Returns true if the operator is a member of group.
             isInGroup: function(group) {
