@@ -17,6 +17,7 @@ from django.utils.translation import ugettext as _
 
 from .. import __version__ as version
 from ..utils import views as utils_views
+from ..utils.auth import anonymous_is_enabled
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
 from ..utils.collection import Collection, CollectionElement
 from ..utils.plugins import (
@@ -573,7 +574,7 @@ class TagViewSet(ModelViewSet):
         elif self.action == 'metadata':
             # Every authenticated user can see the metadata.
             # Anonymous users can do so if they are enabled.
-            result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
+            result = self.request.user.is_authenticated() or anonymous_is_enabled()
         elif self.action in ('create', 'update', 'destroy'):
             result = self.request.user.has_perm('core.can_manage_tags')
         else:
@@ -630,7 +631,7 @@ class ConfigViewSet(ViewSet):
             # Every authenticated user can see the metadata and list or
             # retrieve the config. Anonymous users can do so if they are
             # enabled.
-            result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
+            result = self.request.user.is_authenticated() or anonymous_is_enabled()
         elif self.action == 'update':
             result = self.request.user.has_perm('core.can_manage_config')
         else:
