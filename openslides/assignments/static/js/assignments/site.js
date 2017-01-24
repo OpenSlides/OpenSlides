@@ -537,7 +537,8 @@ angular.module('OpenSlidesApp.assignments.site', [
                 closeByEscape: false,
                 closeByDocument: false,
                 resolve: {
-                    assignmentpollId: function () {return poll.id;}
+                    assignmentpollId: function () {return poll.id;},
+                    ballot: function () {return ballot;},
                 }
             });
         };
