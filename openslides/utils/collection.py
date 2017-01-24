@@ -117,6 +117,9 @@ class CollectionElement:
         """
         Returns a dict that can be sent through the autoupdate system for a site
         user.
+
+        The argument `user` can be anything, that is allowd as argument for
+        utils.auth.has_perm().
         """
         return self.as_autoupdate(
             'get_restricted_data',
@@ -133,6 +136,9 @@ class CollectionElement:
     def as_dict_for_user(self, user):
         """
         Returns a dict with the data for a user. Can be used for the rest api.
+
+        The argument `user` can be anything, that is allowd as argument for
+        utils.auth.has_perm().
         """
         return self.get_access_permissions().get_restricted_data(
             self.get_full_data(),
@@ -259,6 +265,9 @@ class CollectionElementList(list):
     def as_autoupdate_for_user(self, user):
         """
         Returns a list of dicts, that can be send though the websocket to a user.
+
+        The argument `user` can be anything, that is allowd as argument for
+        utils.auth.has_perm().
         """
         result = []
         for element in self:
@@ -355,6 +364,9 @@ class Collection:
     def as_autoupdate_for_user(self, user):
         """
         Returns a list of dicts, that can be send though the websocket to a user.
+
+        The argument `user` can be anything, that is allowd as argument for
+        utils.auth.has_perm().
         """
         output = []
         for collection_element in self.element_generator():
@@ -367,6 +379,9 @@ class Collection:
         """
         Returns a list of dictonaries to send them to a user, for example over
         the rest api.
+
+        The argument `user` can be anything, that is allowd as argument for
+        utils.auth.has_perm().
         """
         output = []
         for collection_element in self.element_generator():
