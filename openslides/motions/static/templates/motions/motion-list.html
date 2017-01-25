@@ -419,7 +419,8 @@
         | MultiselectFilter: filter.multiselectFilters.recommendation : getItemId.recommendation
         | MultiselectFilter: filter.multiselectFilters.tag : getItemId.tag
         | toArray
-        | orderBy: sort.column : sort.reverse)">
+        | orderBy: sort.column : sort.reverse)
+        | limitTo : itemsPerPage : limitBegin">
 
       <!-- select column -->
       <div ng-show="isSelectMode" os-perms="motions.can_manage" class="col-xs-1 centered">
@@ -658,6 +659,19 @@
         </div>
       </div>
     </div> <!-- data row -->
+
+    <ul uib-pagination
+        ng-show="motionsFiltered.length > itemsPerPage"
+        total-items="motionsFiltered.length"
+        items-per-page="itemsPerPage"
+        ng-model="currentPage"
+        ng-change="pageChanged()"
+        class="pagination-sm"
+        direction-links="false"
+        boundary-links="true"
+        first-text="&laquo;"
+        last-text="&raquo;">
+    </ul>
 
   </div> <!-- container -->
 </div> <!-- details -->

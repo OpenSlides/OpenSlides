@@ -771,6 +771,15 @@ angular.module('OpenSlidesApp.motions.site', [
              display_name: gettext('Last modified')},
         ];
 
+        // pagination
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 25;
+        $scope.limitBegin = 0;
+        $scope.pageChanged = function() {
+            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+        };
+
+
         // update state
         $scope.updateState = function (motion, state_id) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {'state': state_id});
@@ -1565,7 +1574,7 @@ angular.module('OpenSlidesApp.motions.site', [
                         // All user objects are already loaded via the resolve statement from ui-router.
                         var users = User.getAll();
                         angular.forEach(users, function (user) {
-                            if (user.short_name == motion.submitter) {
+                            if (user.short_name == motion.submitter.trim()) {
                                 motion.submitters_id = [user.id];
                                 motion.submitter = User.get(user.id).full_name;
                             }
