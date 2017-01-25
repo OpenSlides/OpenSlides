@@ -174,9 +174,9 @@
 <!-- Content -->
 <div id="content" ng-controller="ProjectorSidebarCtrl">
   <div class="containerOS">
-    <div class="col1" ng-class="isProjectorSidebar ? 'min' : 'max'">
+    <div class="col1" ng-class="(isProjectorSidebar && operator.hasPerms('core.can_see_projector')) ? 'min' : 'max'">
         <!-- dynamic views -->
-        <div ui-view ng-if="openslidesBootstrapDone"></div>
+        <div ui-view ng-if="openslidesBootstrapDone && baseViewPermissionsGranted"></div>
         <!-- footer -->
         <div id="footer">
           &copy; Copyright by <a href="http://www.openslides.org" target="_blank">OpenSlides</a> |
@@ -184,7 +184,7 @@
         </div><!--end footer-->
     </div>
     <div id="sidebar" class="col2" os-perms="core.can_see_projector"
-        ng-class="isProjectorSidebar ? 'max' : 'min'"
+        ng-class="(isProjectorSidebar && operator.hasPerms('core.can_see_projector')) ? 'max' : 'min'"
         ng-init="initSidebar()">
       <!-- sidebar maximized -->
       <div class="projector_full" ng-if="isProjectorSidebar">

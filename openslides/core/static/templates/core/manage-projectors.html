@@ -36,8 +36,8 @@
   </div>
 </div>
 
-<div class="details">
-  <div class="projectorContainer" os-perms="core.can_manage_projector">
+<div class="details" os-perms="core.can_manage_projector">
+  <div class="projectorContainer">
 
     <div ng-repeat="projector in projectors | orderBy: 'id'">
       <div>

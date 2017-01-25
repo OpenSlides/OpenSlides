@@ -34,6 +34,7 @@ angular.module('OpenSlidesApp.agenda.site', [
                 template: "<ui-view/>",
                 data: {
                     title: gettext('Agenda'),
+                    basePerm: 'agenda.can_see',
                 },
             })
             .state('agenda.item', {

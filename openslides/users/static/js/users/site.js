@@ -34,6 +34,7 @@ angular.module('OpenSlidesApp.users.site', [
             template: "<ui-view/>",
             data: {
                 title: gettext('Participants'),
+                basePerm: 'users.can_see_name',
             },
         })
         .state('users.user', {
