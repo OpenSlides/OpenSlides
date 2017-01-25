@@ -215,8 +215,8 @@
       ng-repeat="item in itemsFiltered = (items
         | osFilter: filter.filterString : filter.getObjectQueryString
         | filter: {closed: filter.booleanFilters.closed.value}
-        | filter: {is_hidden: filter.booleanFilters.is_hidden.value}
-        | limitTo : itemsPerPage : limitBegin)">
+        | filter: {is_hidden: filter.booleanFilters.is_hidden.value})
+        | limitTo : itemsPerPage : limitBegin">
 
       <!-- select column -->
       <div ng-show="isSelectMode" os-perms="agenda.can_manage" class="col-xs-1 centered">

@@ -21,7 +21,7 @@ angular.module('OpenSlidesApp.motions.csv', [])
                 ];
                 _.forEach(motions, function (motion) {
                     var row = [];
-                    row.push('"' + motion.identifier + '"');
+                    row.push('"' + motion.identifier !== null ? motion.identifier : '' + '"');
                     row.push('"' + motion.getTitle() + '"');
                     row.push('"' + motion.getText() + '"');
                     row.push('"' + motion.getReason() + '"');

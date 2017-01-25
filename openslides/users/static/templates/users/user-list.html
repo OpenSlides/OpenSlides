@@ -419,6 +419,7 @@
   </div><!-- end os-table -->
 
   <ul uib-pagination
+      ng-show="usersFiltered.length > itemsPerPage"
       total-items="usersFiltered.length"
       items-per-page="itemsPerPage"
       ng-model="currentPage"

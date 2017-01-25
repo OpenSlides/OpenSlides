@@ -140,7 +140,7 @@ angular.module('OpenSlidesApp.agenda.site', [
 
         // pagination
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 100;
+        $scope.itemsPerPage = 25;
         $scope.limitBegin = 0;
         $scope.pageChanged = function() {
             $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
