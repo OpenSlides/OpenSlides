@@ -54,7 +54,7 @@ angular.module('OpenSlidesApp.users', [])
                     if (title !== '') {
                         name = title + ' ' + name;
                     }
-                    return name;
+                    return name.trim();
                 },
                 /*
                  * Returns a long form of the name.
@@ -82,7 +82,7 @@ angular.module('OpenSlidesApp.users', [])
                     if (addition.length > 0) {
                         name += ' (' + addition.join(' · ') + ')';
                     }
-                    return name;
+                    return name.trim();
                 },
                 getPerms: function() {
                     var allPerms = [];
