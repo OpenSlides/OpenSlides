@@ -274,7 +274,7 @@ class MotionViewSet(ModelViewSet):
             motion.reset_state()
 
         # Save motion.
-        motion.save(update_fields=['state', 'identifier'])
+        motion.save(update_fields=['state', 'identifier', 'identifier_number'])
         message = _('The state of the motion was set to %s.') % motion.state.name
 
         # Write the log message and initiate response.
