@@ -216,6 +216,12 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             self.structure_level,
             self.about_me))
 
+    def has_perm(self, perm):
+        """
+        This method is closed. Do not use it but use openslides.utils.auth.has_perm.
+        """
+        raise RuntimeError('Do not use user.has_perm() but use openslides.utils.auth.has_perm')
+
 
 class GroupManager(GroupManager):
     """
