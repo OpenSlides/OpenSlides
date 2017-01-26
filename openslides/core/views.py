@@ -17,7 +17,7 @@ from django.utils.translation import ugettext as _
 
 from .. import __version__ as version
 from ..utils import views as utils_views
-from ..utils.auth import anonymous_is_enabled
+from ..utils.auth import anonymous_is_enabled, has_perm
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
 from ..utils.collection import Collection, CollectionElement
 from ..utils.plugins import (
@@ -213,15 +213,15 @@ class ProjectorViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action == 'metadata':
-            result = self.request.user.has_perm('core.can_see_projector')
+            result = has_perm(self.request.user, 'core.can_see_projector')
         elif self.action in (
             'create', 'update', 'partial_update', 'destroy',
             'activate_elements', 'prune_elements', 'update_elements', 'deactivate_elements', 'clear_elements',
             'control_view', 'set_resolution', 'set_scroll', 'control_blank', 'broadcast',
             'set_projectiondefault',
         ):
-            result = (self.request.user.has_perm('core.can_see_projector') and
-                      self.request.user.has_perm('core.can_manage_projector'))
+            result = (has_perm(self.request.user, 'core.can_see_projector') and
+                      has_perm(self.request.user, 'core.can_manage_projector'))
         else:
             result = False
         return result
@@ -576,7 +576,7 @@ class TagViewSet(ModelViewSet):
             # Anonymous users can do so if they are enabled.
             result = self.request.user.is_authenticated() or anonymous_is_enabled()
         elif self.action in ('create', 'update', 'destroy'):
-            result = self.request.user.has_perm('core.can_manage_tags')
+            result = has_perm(self.request.user, 'core.can_manage_tags')
         else:
             result = False
         return result
@@ -633,7 +633,7 @@ class ConfigViewSet(ViewSet):
             # enabled.
             result = self.request.user.is_authenticated() or anonymous_is_enabled()
         elif self.action == 'update':
-            result = self.request.user.has_perm('core.can_manage_config')
+            result = has_perm(self.request.user, 'core.can_manage_config')
         else:
             result = False
         return result
@@ -705,11 +705,11 @@ class ChatMessageViewSet(ModelViewSet):
             # group has the permission core.can_use_chat.
             result = (
                 self.request.user.is_authenticated() and
-                self.request.user.has_perm('core.can_use_chat'))
+                has_perm(self.request.user, 'core.can_use_chat'))
         elif self.action == 'clear':
             result = (
-                self.request.user.has_perm('core.can_use_chat') and
-                self.request.user.has_perm('core.can_manage_chat'))
+                has_perm(self.request.user, 'core.can_use_chat') and
+                has_perm(self.request.user, 'core.can_manage_chat'))
         else:
             result = False
         return result
@@ -754,7 +754,7 @@ class ProjectorMessageViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action in ('create', 'update', 'destroy'):
-            result = self.request.user.has_perm('core.can_manage_projector')
+            result = has_perm(self.request.user, 'core.can_manage_projector')
         else:
             result = False
         return result
@@ -776,7 +776,7 @@ class CountdownViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action in ('create', 'update', 'destroy'):
-            result = self.request.user.has_perm('core.can_manage_projector')
+            result = has_perm(self.request.user, 'core.can_manage_projector')
         else:
             result = False
         return result

@@ -102,6 +102,7 @@ Other:
 - Accelerated startup process (send all data to the client after login).
 - Added function utils.auth.anonymous_is_enabled which returns true, if it is.
 - Changed has_perm to support an user id or None (for anyonmous) as first argument.
+- Removed our AnonymousUser. Please make sure not to use user.has_perm() anymore.
 
 
 Version 2.0 (2016-04-18)

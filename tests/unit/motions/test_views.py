@@ -16,10 +16,14 @@ class MotionViewSetCreate(TestCase):
         self.view_instance.get_serializer = get_serializer_mock = MagicMock()
         get_serializer_mock.return_value = self.mock_serializer = MagicMock()
 
+    @patch('openslides.motions.views.has_perm')
     @patch('openslides.motions.views.config')
-    def test_simple_create(self, mock_config):
-        self.request.user.has_perm.return_value = True
+    def test_simple_create(self, mock_config, mock_has_perm):
+        self.request.user = 1
+        mock_has_perm.return_value = True
+
         self.view_instance.create(self.request)
+
         self.mock_serializer.save.assert_called_with(request_user=self.request.user)
 
 
@@ -36,11 +40,15 @@ class MotionViewSetUpdate(TestCase):
         self.view_instance.get_serializer = get_serializer_mock = MagicMock()
         get_serializer_mock.return_value = self.mock_serializer = MagicMock()
 
+    @patch('openslides.motions.views.has_perm')
     @patch('openslides.motions.views.config')
-    def test_simple_update(self, mock_config):
-        self.request.user.has_perm.return_value = True
+    def test_simple_update(self, mock_config, mock_has_perm):
+        self.request.user = 1
         self.request.data.get.return_value = versioning_mock = MagicMock()
+        mock_has_perm.return_value = True
+
         self.view_instance.update(self.request)
+
         self.mock_serializer.save.assert_called_with(disable_versioning=versioning_mock)
 
 

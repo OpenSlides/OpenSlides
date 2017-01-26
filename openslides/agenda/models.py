@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
@@ -14,7 +15,6 @@ from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.utils import to_roman
 
-from ..utils.auth import DjangoAnonymousUser
 from .access_permissions import ItemAccessPermissions
 
 
@@ -340,7 +340,7 @@ class SpeakerManager(models.Manager):
         if self.filter(user=user, item=item, begin_time=None).exists():
             raise OpenSlidesError(
                 _('{user} is already on the list of speakers.').format(user=user))
-        if isinstance(user, DjangoAnonymousUser):
+        if isinstance(user, AnonymousUser):
             raise OpenSlidesError(
                 _('An anonymous user can not be on lists of speakers.'))
         weight = (self.filter(item=item).aggregate(

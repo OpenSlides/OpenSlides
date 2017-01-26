@@ -16,6 +16,7 @@ from openslides.utils.rest_api import (
     list_route,
 )
 
+from ..utils.auth import has_perm
 from .access_permissions import ItemAccessPermissions
 from .models import Item, Speaker
 
@@ -39,16 +40,16 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action in ('metadata', 'manage_speaker', 'tree'):
-            result = self.request.user.has_perm('agenda.can_see')
+            result = has_perm(self.request.user, 'agenda.can_see')
             # For manage_speaker and tree requests the rest of the check is
             # done in the specific method. See below.
         elif self.action in ('partial_update', 'update'):
-            result = (self.request.user.has_perm('agenda.can_see') and
-                      self.request.user.has_perm('agenda.can_see_hidden_items') and
-                      self.request.user.has_perm('agenda.can_manage'))
+            result = (has_perm(self.request.user, 'agenda.can_see') and
+                      has_perm(self.request.user, 'agenda.can_see_hidden_items') and
+                      has_perm(self.request.user, 'agenda.can_manage'))
         elif self.action in ('speak', 'sort_speakers', 'numbering'):
-            result = (self.request.user.has_perm('agenda.can_see') and
-                      self.request.user.has_perm('agenda.can_manage'))
+            result = (has_perm(self.request.user, 'agenda.can_see') and
+                      has_perm(self.request.user, 'agenda.can_manage'))
         else:
             result = False
         return result
@@ -80,14 +81,14 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             # Check permissions and other conditions. Get user instance.
             if user_id is None:
                 # Add oneself
-                if not self.request.user.has_perm('agenda.can_be_speaker'):
+                if not has_perm(self.request.user, 'agenda.can_be_speaker'):
                     self.permission_denied(request)
                 if item.speaker_list_closed:
                     raise ValidationError({'detail': _('The list of speakers is closed.')})
                 user = self.request.user
             else:
                 # Add someone else.
-                if not self.request.user.has_perm('agenda.can_manage'):
+                if not has_perm(self.request.user, 'agenda.can_manage'):
                     self.permission_denied(request)
                 try:
                     user = get_user_model().objects.get(pk=int(user_id))
@@ -123,7 +124,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                     message = _('You are successfully removed from the list of speakers.')
             else:
                 # Remove someone else.
-                if not self.request.user.has_perm('agenda.can_manage'):
+                if not has_perm(self.request.user, 'agenda.can_manage'):
                     self.permission_denied(request)
                 if type(speaker_ids) is int:
                     speaker_ids = [speaker_ids]

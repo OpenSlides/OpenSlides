@@ -29,6 +29,7 @@ from rest_framework.viewsets import GenericViewSet as _GenericViewSet  # noqa
 from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
 from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
 
+from .auth import user_to_collection_user
 from .collection import Collection, CollectionElement
 
 router = DefaultRouter()
@@ -182,7 +183,8 @@ class ListModelMixin(_ListModelMixin):
             response = super().list(request, *args, **kwargs)
         else:
             collection = Collection(collection_string)
-            response = Response(collection.as_list_for_user(request.user))
+            user = user_to_collection_user(request.user)
+            response = Response(collection.as_list_for_user(user))
         return response
 
 
@@ -206,8 +208,9 @@ class RetrieveModelMixin(_RetrieveModelMixin):
             lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
             collection_element = CollectionElement.from_values(
                 collection_string, self.kwargs[lookup_url_kwarg])
+            user = user_to_collection_user(request.user)
             try:
-                content = collection_element.as_dict_for_user(request.user)
+                content = collection_element.as_dict_for_user(user)
             except collection_element.get_model().DoesNotExist:
                 raise Http404
             if content is None:

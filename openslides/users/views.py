@@ -5,7 +5,7 @@ from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 
 from ..core.config import config
-from ..utils.auth import anonymous_is_enabled
+from ..utils.auth import anonymous_is_enabled, has_perm
 from ..utils.collection import CollectionElement
 from ..utils.rest_api import (
     ModelViewSet,
@@ -40,11 +40,11 @@ class UserViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action in ('metadata', 'update', 'partial_update'):
-            result = self.request.user.has_perm('users.can_see_name')
+            result = has_perm(self.request.user, 'users.can_see_name')
         elif self.action in ('create', 'destroy', 'reset_password'):
-            result = (self.request.user.has_perm('users.can_see_name') and
-                      self.request.user.has_perm('users.can_see_extra_data') and
-                      self.request.user.has_perm('users.can_manage'))
+            result = (has_perm(self.request.user, 'users.can_see_name') and
+                      has_perm(self.request.user, 'users.can_see_extra_data') and
+                      has_perm(self.request.user, 'users.can_manage'))
         else:
             result = False
         return result
@@ -59,8 +59,8 @@ class UserViewSet(ModelViewSet):
         wants to update himself or is manager.
         """
         # Check manager perms
-        if (request.user.has_perm('users.can_see_extra_data') and
-                request.user.has_perm('users.can_manage')):
+        if (has_perm(request.user, 'users.can_see_extra_data') and
+                has_perm(request.user, 'users.can_manage')):
             if request.data.get('is_active') is False and self.get_object() == request.user:
                 # A user can not deactivate himself.
                 raise ValidationError({'detail': _('You can not deactivate yourself.')})
@@ -141,9 +141,9 @@ class GroupViewSet(ModelViewSet):
             result = self.request.user.is_authenticated() or anonymous_is_enabled()
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             # Users with all app permissions can edit groups.
-            result = (self.request.user.has_perm('users.can_see_name') and
-                      self.request.user.has_perm('users.can_see_extra_data') and
-                      self.request.user.has_perm('users.can_manage'))
+            result = (has_perm(self.request.user, 'users.can_see_name') and
+                      has_perm(self.request.user, 'users.can_see_extra_data') and
+                      has_perm(self.request.user, 'users.can_manage'))
         else:
             # Deny request in any other case.
             result = False

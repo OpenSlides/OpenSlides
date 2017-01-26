@@ -1,5 +1,7 @@
+from django.contrib.auth.models import AnonymousUser
+
 from ..utils.access_permissions import BaseAccessPermissions
-from ..utils.auth import DjangoAnonymousUser, anonymous_is_enabled, has_perm
+from ..utils.auth import anonymous_is_enabled, has_perm
 
 
 class UserAccessPermissions(BaseAccessPermissions):
@@ -42,7 +44,9 @@ class UserAccessPermissions(BaseAccessPermissions):
                     case = MANY_DATA
             else:
                 case = LITTLE_DATA
-        elif user.pk == full_data.get('id'):
+        elif user is not None and user.id == full_data.get('id'):
+            # An authenticated user without the permission to see users tries
+            # to see himself.
             case = LITTLE_DATA
         else:
             case = NO_DATA
@@ -92,10 +96,7 @@ class GroupAccessPermissions(BaseAccessPermissions):
         """
         # Every authenticated user can retrieve groups. Anonymous users can do
         # so if they are enabled.
-        # Our AnonymousUser is a subclass of the DjangoAnonymousUser. Normaly, a
-        # DjangoAnonymousUser means, that AnonymousUser is disabled. But this is
-        # no garanty. send_data uses the AnonymousUser in any case.
-        return not isinstance(user, DjangoAnonymousUser) or anonymous_is_enabled()
+        return not isinstance(user, AnonymousUser) or anonymous_is_enabled()
 
     def get_serializer_class(self, user=None):
         """

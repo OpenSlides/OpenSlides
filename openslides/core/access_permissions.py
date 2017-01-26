@@ -1,5 +1,7 @@
+from django.contrib.auth.models import AnonymousUser
+
 from ..utils.access_permissions import BaseAccessPermissions
-from ..utils.auth import DjangoAnonymousUser, anonymous_is_enabled, has_perm
+from ..utils.auth import anonymous_is_enabled, has_perm
 
 
 class ProjectorAccessPermissions(BaseAccessPermissions):
@@ -31,7 +33,7 @@ class TagAccessPermissions(BaseAccessPermissions):
         """
         # Every authenticated user can retrieve tags. Anonymous users can do
         # so if they are enabled.
-        return not isinstance(user, DjangoAnonymousUser) or anonymous_is_enabled()
+        return not isinstance(user, AnonymousUser) or anonymous_is_enabled()
 
     def get_serializer_class(self, user=None):
         """
@@ -112,7 +114,7 @@ class ConfigAccessPermissions(BaseAccessPermissions):
         """
         # Every authenticated user can see the metadata and list or retrieve
         # the config. Anonymous users can do so if they are enabled.
-        return not isinstance(user, DjangoAnonymousUser) or anonymous_is_enabled()
+        return not isinstance(user, AnonymousUser) or anonymous_is_enabled()
 
     def get_full_data(self, instance):
         """

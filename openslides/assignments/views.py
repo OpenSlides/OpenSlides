@@ -13,6 +13,7 @@ from openslides.utils.rest_api import (
     detail_route,
 )
 
+from ..utils.auth import has_perm
 from .access_permissions import AssignmentAccessPermissions
 from .models import Assignment, AssignmentPoll, AssignmentRelatedUser
 from .serializers import AssignmentAllPollSerializer
@@ -42,14 +43,14 @@ class AssignmentViewSet(ModelViewSet):
             result = True
         elif self.action in ('create', 'partial_update', 'update', 'destroy',
                              'mark_elected', 'create_poll', 'sort_related_users'):
-            result = (self.request.user.has_perm('assignments.can_see') and
-                      self.request.user.has_perm('assignments.can_manage'))
+            result = (has_perm(self.request.user, 'assignments.can_see') and
+                      has_perm(self.request.user, 'assignments.can_manage'))
         elif self.action == 'candidature_self':
-            result = (self.request.user.has_perm('assignments.can_see') and
-                      self.request.user.has_perm('assignments.can_nominate_self'))
+            result = (has_perm(self.request.user, 'assignments.can_see') and
+                      has_perm(self.request.user, 'assignments.can_nominate_self'))
         elif self.action == 'candidature_other':
-            result = (self.request.user.has_perm('assignments.can_see') and
-                      self.request.user.has_perm('assignments.can_nominate_other'))
+            result = (has_perm(self.request.user, 'assignments.can_see') and
+                      has_perm(self.request.user, 'assignments.can_nominate_other'))
         else:
             result = False
         return result
@@ -73,7 +74,7 @@ class AssignmentViewSet(ModelViewSet):
     def nominate_self(self, request, assignment):
         if assignment.phase == assignment.PHASE_FINISHED:
             raise ValidationError({'detail': _('You can not candidate to this election because it is finished.')})
-        if assignment.phase == assignment.PHASE_VOTING and not request.user.has_perm('assignments.can_manage'):
+        if assignment.phase == assignment.PHASE_VOTING and not has_perm(request.user, 'assignments.can_manage'):
             # To nominate self during voting you have to be a manager.
             self.permission_denied(request)
         # If the request.user is already a candidate he can nominate himself nevertheless.
@@ -84,7 +85,7 @@ class AssignmentViewSet(ModelViewSet):
         # Withdraw candidature.
         if assignment.phase == assignment.PHASE_FINISHED:
             raise ValidationError({'detail': _('You can not withdraw your candidature to this election because it is finished.')})
-        if assignment.phase == assignment.PHASE_VOTING and not request.user.has_perm('assignments.can_manage'):
+        if assignment.phase == assignment.PHASE_VOTING and not has_perm(request.user, 'assignments.can_manage'):
             # To withdraw self during voting you have to be a manager.
             self.permission_denied(request)
         if not assignment.is_candidate(request.user):
@@ -133,7 +134,7 @@ class AssignmentViewSet(ModelViewSet):
         if assignment.phase == assignment.PHASE_FINISHED:
             detail = _('You can not nominate someone to this election because it is finished.')
             raise ValidationError({'detail': detail})
-        if assignment.phase == assignment.PHASE_VOTING and not request.user.has_perm('assignments.can_manage'):
+        if assignment.phase == assignment.PHASE_VOTING and not has_perm(request.user, 'assignments.can_manage'):
             # To nominate another user during voting you have to be a manager.
             self.permission_denied(request)
         if assignment.is_candidate(user):
@@ -143,7 +144,7 @@ class AssignmentViewSet(ModelViewSet):
 
     def delete_other(self, request, user, assignment):
         # To delete candidature status you have to be a manager.
-        if not request.user.has_perm('assignments.can_manage'):
+        if not has_perm(request.user, 'assignments.can_manage'):
             self.permission_denied(request)
         if assignment.phase == assignment.PHASE_FINISHED:
             detail = _("You can not delete someone's candidature to this election because it is finished.")
@@ -243,5 +244,5 @@ class AssignmentPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet)
         """
         Returns True if the user has required permissions.
         """
-        return (self.request.user.has_perm('assignments.can_see') and
-                self.request.user.has_perm('assignments.can_manage'))
+        return (has_perm(self.request.user, 'assignments.can_see') and
+                has_perm(self.request.user, 'assignments.can_manage'))
