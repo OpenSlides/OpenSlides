@@ -11,7 +11,7 @@ from django.db import transaction
 
 from ..core.config import config
 from ..core.models import Projector
-from .auth import AnonymousUser, anonymous_is_enabled
+from .auth import has_perm, user_to_collection_user
 from .cache import websocket_user_cache
 from .collection import Collection, CollectionElement, CollectionElementList
 
@@ -67,7 +67,8 @@ def ws_add_site(message):
             # Skip apps that do not implement get_startup_elements
             continue
         for collection in get_startup_elements():
-            output.extend(collection.as_autoupdate_for_user(message.user.id))
+            user = user_to_collection_user(message.user.id)
+            output.extend(collection.as_autoupdate_for_user(user))
 
     # Send all data. If there is no data, then only accept the connection
     if output:
@@ -91,12 +92,9 @@ def ws_add_projector(message, projector_id):
     Adds the websocket connection to a group specific to the projector with the given id.
     Also sends all data that are shown on the projector.
     """
-    user = message.user
-    # user is the django anonymous user. We have our own.
-    if user.is_anonymous and anonymous_is_enabled():
-        user = AnonymousUser()
+    user = message.user.id
 
-    if not user.has_perm('core.can_see_projector'):
+    if not has_perm(user, 'core.can_see_projector'):
         send_or_wait(message.reply_channel.send, {'text': 'No permissions to see this projector.'})
     else:
         try:
@@ -150,7 +148,7 @@ def send_data(message):
     for user_id, channel_names in websocket_user_cache.get_all().items():
         if not user_id:
             # Anonymous user
-            user = AnonymousUser()
+            user = None
         else:
             user = CollectionElement.from_values('users/user', user_id)
         output = collection_elements.as_autoupdate_for_user(user)

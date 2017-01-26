@@ -102,14 +102,10 @@ class TestTagDBQueries(TestCase):
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
-        * 2 requests to get the permission for anonymous (config and permissions)
+        * 1 requests to see if anonyomus is enabled
         * 2 requests to get the list of all projectors,
-
-        * 10 requests for to config
-
-        The last 10 requests are a bug.
         """
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(3):
             self.client.get(reverse('tag-list'))
 
 
@@ -140,14 +136,10 @@ class TestConfigDBQueries(TestCase):
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
-        * 2 requests to get the permission for anonymous (config and permissions),
+        * 1 requests to see if anonymous is enabled
         * 1 to get all config value and
-
-        * 57 requests to find out if anonymous is enabled.
-
-        TODO: The last 57 requests are a bug.
         """
-        with self.assertNumQueries(63):
+        with self.assertNumQueries(2):
             self.client.get(reverse('config-list'))
 
 

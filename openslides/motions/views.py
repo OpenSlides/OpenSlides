@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_noop
 from rest_framework import status
 
 from ..core.config import config
+from ..utils.auth import has_perm
 from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
     DestroyModelMixin,
@@ -61,20 +62,20 @@ class MotionViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action in ('metadata', 'partial_update', 'update'):
-            result = self.request.user.has_perm('motions.can_see')
+            result = has_perm(self.request.user, 'motions.can_see')
             # For partial_update and update requests the rest of the check is
             # done in the update method. See below.
         elif self.action == 'create':
-            result = (self.request.user.has_perm('motions.can_see') and
-                      self.request.user.has_perm('motions.can_create') and
+            result = (has_perm(self.request.user, 'motions.can_see') and
+                      has_perm(self.request.user, 'motions.can_create') and
                       (not config['motions_stop_submitting'] or
-                       self.request.user.has_perm('motions.can_manage')))
+                       has_perm(self.request.user, 'motions.can_manage')))
         elif self.action in ('destroy', 'manage_version', 'set_state', 'set_recommendation', 'create_poll'):
-            result = (self.request.user.has_perm('motions.can_see') and
-                      self.request.user.has_perm('motions.can_manage'))
+            result = (has_perm(self.request.user, 'motions.can_see') and
+                      has_perm(self.request.user, 'motions.can_manage'))
         elif self.action == 'support':
-            result = (self.request.user.has_perm('motions.can_see') and
-                      self.request.user.has_perm('motions.can_support'))
+            result = (has_perm(self.request.user, 'motions.can_see') and
+                      has_perm(self.request.user, 'motions.can_support'))
         else:
             result = False
         return result
@@ -84,7 +85,7 @@ class MotionViewSet(ModelViewSet):
         Customized view endpoint to create a new motion.
         """
         # Check permission to send some data.
-        if not request.user.has_perm('motions.can_manage'):
+        if not has_perm(request.user, 'motions.can_manage'):
             whitelist = (
                 'title',
                 'text',
@@ -97,7 +98,7 @@ class MotionViewSet(ModelViewSet):
                     self.permission_denied(request)
 
         # Check permission to send comment data.
-        if not request.user.has_perm('motions.can_see_and_manage_comments'):
+        if not has_perm(request.user, 'motions.can_see_and_manage_comments'):
             try:
                 # Ignore comments data if user is not allowed to send comments.
                 del request.data['comments']
@@ -128,13 +129,13 @@ class MotionViewSet(ModelViewSet):
         motion = self.get_object()
 
         # Check permissions.
-        if (not request.user.has_perm('motions.can_manage') and
+        if (not has_perm(request.user, 'motions.can_manage') and
             not (motion.is_submitter(request.user) and
                  motion.state.allow_submitter_edit)):
             self.permission_denied(request)
 
         # Check permission to send only some data.
-        if not request.user.has_perm('motions.can_manage'):
+        if not has_perm(request.user, 'motions.can_manage'):
             whitelist = (
                 'title',
                 'text',
@@ -144,7 +145,7 @@ class MotionViewSet(ModelViewSet):
                 if key not in whitelist:
                     # Non-staff users are allowed to send only some data. Ignore other data.
                     del request.data[key]
-        if not request.user.has_perm('motions.can_see_and_manage_comments'):
+        if not has_perm(request.user, 'motions.can_see_and_manage_comments'):
             try:
                 del request.data['comments']
             except KeyError:
@@ -163,7 +164,7 @@ class MotionViewSet(ModelViewSet):
         # TODO: Log if a version was updated.
         updated_motion.write_log([ugettext_noop('Motion updated')], request.user)
         if (config['motions_remove_supporters'] and updated_motion.state.allow_support and
-                not request.user.has_perm('motions.can_manage')):
+                not has_perm(request.user, 'motions.can_manage')):
             updated_motion.supporters.clear()
             updated_motion.write_log([ugettext_noop('All supporters removed')], request.user)
         return Response(serializer.data)
@@ -352,8 +353,8 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
         """
         Returns True if the user has required permissions.
         """
-        return (self.request.user.has_perm('motions.can_see') and
-                self.request.user.has_perm('motions.can_manage'))
+        return (has_perm(self.request.user, 'motions.can_see') and
+                has_perm(self.request.user, 'motions.can_manage'))
 
 
 class MotionChangeRecommendationViewSet(ModelViewSet):
@@ -373,9 +374,9 @@ class MotionChangeRecommendationViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action == 'metadata':
-            result = self.request.user.has_perm('motions.can_see')
+            result = has_perm(self.request.user, 'motions.can_see')
         elif self.action in ('create', 'destroy', 'partial_update', 'update'):
-            result = self.request.user.has_perm('motions.can_manage')
+            result = has_perm(self.request.user, 'motions.can_manage')
         else:
             result = False
         return result
@@ -398,10 +399,10 @@ class CategoryViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action == 'metadata':
-            result = self.request.user.has_perm('motions.can_see')
+            result = has_perm(self.request.user, 'motions.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy', 'numbering'):
-            result = (self.request.user.has_perm('motions.can_see') and
-                      self.request.user.has_perm('motions.can_manage'))
+            result = (has_perm(self.request.user, 'motions.can_see') and
+                      has_perm(self.request.user, 'motions.can_manage'))
         else:
             result = False
         return result
@@ -511,10 +512,10 @@ class MotionBlockViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action == 'metadata':
-            result = self.request.user.has_perm('motions.can_see')
+            result = has_perm(self.request.user, 'motions.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy', 'follow_recommendations'):
-            result = (self.request.user.has_perm('motions.can_see') and
-                      self.request.user.has_perm('motions.can_manage'))
+            result = (has_perm(self.request.user, 'motions.can_see') and
+                      has_perm(self.request.user, 'motions.can_manage'))
         else:
             result = False
         return result
@@ -559,10 +560,10 @@ class WorkflowViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action == 'metadata':
-            result = self.request.user.has_perm('motions.can_see')
+            result = has_perm(self.request.user, 'motions.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
-            result = (self.request.user.has_perm('motions.can_see') and
-                      self.request.user.has_perm('motions.can_manage'))
+            result = (has_perm(self.request.user, 'motions.can_see') and
+                      has_perm(self.request.user, 'motions.can_manage'))
         else:
             result = False
         return result

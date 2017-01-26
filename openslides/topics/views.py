@@ -1,5 +1,6 @@
 from openslides.utils.rest_api import ModelViewSet
 
+from ..utils.auth import has_perm
 from .access_permissions import TopicAccessPermissions
 from .models import Topic
 
@@ -21,5 +22,5 @@ class TopicViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
         else:
-            result = self.request.user.has_perm('agenda.can_manage')
+            result = has_perm(self.request.user, 'agenda.can_manage')
         return result

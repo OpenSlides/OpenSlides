@@ -93,10 +93,6 @@ STATICFILES_DIRS = [
 
 AUTH_USER_MODEL = 'users.User'
 
-AUTHENTICATION_BACKENDS = [
-    'openslides.utils.auth.CustomizedModelBackend',
-]
-
 SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -132,17 +128,6 @@ CACHES = {
             'MAX_ENTRIES': 10000
         }
     }
-}
-
-
-# Django REST framework
-# http://www.django-rest-framework.org/api-guide/settings/
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'openslides.utils.auth.RESTFrameworkAnonymousAuthentication',
-    )
 }
 
 

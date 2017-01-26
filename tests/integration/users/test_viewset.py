@@ -78,18 +78,10 @@ class TestGroupDBQueries(TestCase):
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
-        * 2 requests to find out if anonymous is enabled
+        * 1 requests to find out if anonymous is enabled
         * 3 request to get the list of all groups and
-
-        * 14 Requests to find out if anonymous is enabled.
-
-        TODO: There should be only one request to find out if anonymous is enabled.
-        The reason for the last 14 requests is the base get_restricted_data()
-        method that is used by the group access_permissions. It calls check_permissions().
-        But this is important for the autoupdate-case and can only be fixt by
-        caching the config object.
         """
-        with self.assertNumQueries(19):
+        with self.assertNumQueries(4):
             self.client.get(reverse('group-list'))
 
 
