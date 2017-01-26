@@ -80,6 +80,7 @@ if use_redis:
     # https://channels.readthedocs.io/en/latest/backends.html#redis
 
     CHANNEL_LAYERS['default']['BACKEND'] = 'asgi_redis.RedisChannelLayer'
+    CHANNEL_LAYERS['default']['CONFIG']['prefix'] = 'asgi:'
 
 
     # Caching
@@ -94,7 +95,8 @@ if use_redis:
            "LOCATION": "redis://127.0.0.1:6379/0",
            "OPTIONS": {
                "CLIENT_CLASS": "django_redis.client.DefaultClient",
-           }
+           },
+           "KEY_PREFIX": "openslides-cache"
        }
     }
 
