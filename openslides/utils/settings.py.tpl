@@ -96,7 +96,7 @@ if use_redis:
            "OPTIONS": {
                "CLIENT_CLASS": "django_redis.client.DefaultClient",
            },
-           "KEY_PREFIX": "openslides-cache"
+           "KEY_PREFIX": "openslides-cache",
        }
     }
 
