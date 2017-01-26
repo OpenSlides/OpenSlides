@@ -304,16 +304,16 @@ class Motion(RESTModelMixin, models.Model):
         Sets the motion identifier automaticly according to the config value if
         it is not set yet.
         """
-        # The identifier is already set or should be set manually
+        # The identifier is already set or should be set manually.
         if config['motions_identifier'] == 'manually' or self.identifier:
             # Do not set an identifier.
             return
 
-        # The motion is an amendment
+        # The motion is an amendment.
         elif self.is_amendment():
             motions = self.parent.amendments.all()
 
-        # The motions should be counted per category
+        # The motions should be counted per category.
         elif config['motions_identifier'] == 'per_category':
             motions = Motion.objects.filter(category=self.category)
 
@@ -321,25 +321,35 @@ class Motion(RESTModelMixin, models.Model):
         else:
             motions = Motion.objects.all()
 
+        # Get biggest number.
         number = motions.aggregate(Max('identifier_number'))['identifier_number__max'] or 0
+
+        # If MOTION_IDENTIFIER_WITHOUT_BLANKS is set, don't use blanks when building identifier.
+        without_blank = hasattr(settings, 'MOTION_IDENTIFIER_WITHOUT_BLANKS') and settings.MOTION_IDENTIFIER_WITHOUT_BLANKS
+
+        # Build prefix.
         if self.is_amendment():
             parent_identifier = self.parent.identifier or ''
-            prefix = '%s %s ' % (parent_identifier, config['motions_amendments_prefix'])
+            if without_blank:
+                prefix = '%s%s' % (parent_identifier, config['motions_amendments_prefix'])
+            else:
+                prefix = '%s %s ' % (parent_identifier, config['motions_amendments_prefix'])
         elif self.category is None or not self.category.prefix:
             prefix = ''
         else:
-            prefix = '%s ' % self.category.prefix
+            if without_blank:
+                prefix = '%s' % self.category.prefix
+            else:
+                prefix = '%s ' % self.category.prefix
 
+        # Calculate new identifier.
         number += 1
         identifier = '%s%s' % (prefix, self.extend_identifier_number(number))
         while Motion.objects.filter(identifier=identifier).exists():
             number += 1
             identifier = '%s%s' % (prefix, self.extend_identifier_number(number))
 
-        # remove all whitespaces from identifier if MOTION_IDENTIFIER_WITHOUT_BLANKS is set
-        if hasattr(settings, 'MOTION_IDENTIFIER_WITHOUT_BLANKS') and settings.MOTION_IDENTIFIER_WITHOUT_BLANKS:
-            identifier = identifier.replace(' ', '')
-
+        # Set identifier and identifier_number.
         self.identifier = identifier
         self.identifier_number = number
 
