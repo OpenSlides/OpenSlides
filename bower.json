@@ -39,10 +39,7 @@
   },
   "overrides": {
     "pdfmake": {
-      "main": [
-          "build/pdfmake.js",
-          "build/vfs_fonts.js"
-      ]
+      "main": []
     },
     "pdfjs-dist": {
       "main": "build/pdf.combined.js"

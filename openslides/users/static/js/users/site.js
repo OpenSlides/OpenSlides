@@ -425,9 +425,10 @@ angular.module('OpenSlidesApp.users.site', [
     'osTableFilter',
     'osTableSort',
     'gettext',
+    'PdfCreate',
     function($scope, $state, $http, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
         UserListContentProvider, Config, UserAccessDataListContentProvider, PdfMakeDocumentProvider, gettextCatalog,
-        UserCsvExport, osTableFilter, osTableSort, gettext) {
+        UserCsvExport, osTableFilter, osTableSort, gettext, PdfCreate) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.$watch(function () {
@@ -623,7 +624,7 @@ angular.module('OpenSlidesApp.users.site', [
             var filename = gettextCatalog.getString("List of participants")+".pdf";
             var userListContentProvider = UserListContentProvider.createInstance($scope.usersFiltered, $scope.groups);
             var documentProvider = PdfMakeDocumentProvider.createInstance(userListContentProvider);
-            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
+            PdfCreate.download(documentProvider.getDocument(), filename);
         };
         $scope.pdfExportUserAccessDataList = function () {
             var filename = gettextCatalog.getString("List of access data")+".pdf";
@@ -631,7 +632,7 @@ angular.module('OpenSlidesApp.users.site', [
                 $scope.usersFiltered, $scope.groups, Config);
             var documentProvider = PdfMakeDocumentProvider.createInstance(userAccessDataListContentProvider);
             var noFooter = true;
-            pdfMake.createPdf(documentProvider.getDocument(noFooter)).download(filename);
+            PdfCreate.download(documentProvider.getDocument(noFooter), filename);
         };
         // Export as a csv file
         $scope.csvExport = function () {

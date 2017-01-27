@@ -15,8 +15,9 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
     'PollContentProvider',
     'gettextCatalog',
     '$http',
+    'PdfCreate',
     function (HTMLValidizer, Motion, User, PdfMakeConverter, PdfMakeDocumentProvider, PdfMakeBallotPaperProvider,
-            MotionContentProvider, PollContentProvider, gettextCatalog, $http) {
+            MotionContentProvider, PollContentProvider, gettextCatalog, $http, PdfCreate) {
         var obj = {};
 
         var $scope;
@@ -30,11 +31,11 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             });
 
             $http.post('/core/encode_media/', JSON.stringify(image_sources)).success(function(data) {
-                var converter = PdfMakeConverter.createInstance(data.images, pdfMake);
+                var converter = PdfMakeConverter.createInstance(data.images);
                 var motionContentProvider = MotionContentProvider.createInstance(converter, $scope.motion, $scope, User, $http);
                 var documentProvider = PdfMakeDocumentProvider.createInstance(motionContentProvider);
                 var filename = gettextCatalog.getString("Motion") + "-" + $scope.motion.identifier + ".pdf";
-                pdfMake.createPdf(documentProvider.getDocument()).download(filename);
+                PdfCreate.download(documentProvider.getDocument(), filename);
             });
         };
 
@@ -45,7 +46,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             var filename = gettextCatalog.getString("Motion") + "-" + id + "-" + gettextCatalog.getString("ballot-paper") + ".pdf";
             var pollContentProvider = PollContentProvider.createInstance(title, id, gettextCatalog);
             var documentProvider = PdfMakeBallotPaperProvider.createInstance(pollContentProvider);
-            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
+            PdfCreate.download(documentProvider.getDocument(), filename);
         };
 
         obj.init = function (_scope) {
