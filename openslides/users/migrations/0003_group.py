@@ -8,6 +8,19 @@ import openslides.users.models
 import openslides.utils.models
 
 
+def create_openslides_groups(apps, schema_editor):
+    """
+    Creates the users.models.Group objects for each existing
+    django.contrib.auth.models.Group object.
+    """
+    # We get the model from the versioned app registry;
+    # if we directly import it, it will be the wrong version.
+    DjangoGroup = apps.get_model('auth', 'Group')
+    Group = apps.get_model('users', 'Group')
+    for group in DjangoGroup.objects.all():
+        Group.objects.create(group_ptr_id=group.pk, name=group.name)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -34,5 +47,8 @@ class Migration(migrations.Migration):
             managers=[
                 ('objects', openslides.users.models.GroupManager()),
             ],
+        ),
+        migrations.RunPython(
+            create_openslides_groups,
         ),
     ]
