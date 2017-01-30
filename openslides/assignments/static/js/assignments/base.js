@@ -33,7 +33,8 @@ angular.module('OpenSlidesApp.assignments', [])
 
                     _.forEach(this.votes, function (vote) {
                         // Initial values for the vote
-                        var value = '',
+                        var order = '',
+                            value = '',
                             percentStr = '',
                             percentNumber;
 
@@ -52,6 +53,19 @@ angular.module('OpenSlidesApp.assignments', [])
                                     value = 0;  // Vote was not defined. Set value to 0.
                                 }
                         }
+                        switch (vote.value) {
+                            case "Yes":
+                                order = 1;
+                                break;
+                            case "No":
+                                order = 2;
+                                break;
+                            case "Abstain":
+                                order = 3;
+                                break;
+                            default:
+                                order = 0;
+                        }
 
                         // Special case where to skip percents
                         var skipPercents = config === 'YES_NO' && vote.value === 'Abstain';
@@ -61,13 +75,14 @@ angular.module('OpenSlidesApp.assignments', [])
                             percentStr = "(" + percentNumber + "%)";
                         }
                         votes.push({
+                            'order': order,
                             'label': gettextCatalog.getString(vote.value),
                             'value': value,
                             'percentStr': percentStr,
                             'percentNumber': percentNumber
                         });
                     });
-                    return votes;
+                    return _.sortBy(votes, 'order');
                 },
 
                 // Returns 0 or positive integer if quorum is reached or surpassed.
