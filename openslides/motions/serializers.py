@@ -12,6 +12,7 @@ from openslides.utils.rest_api import (
     SerializerMethodField,
     ValidationError,
 )
+from openslides.utils.validate import validate_html
 
 from .models import (
     Category,
@@ -257,6 +258,10 @@ class MotionChangeRecommendationSerializer(ModelSerializer):
             'text',
             'creation_time',)
 
+    def validate(self, data):
+        data['text'] = validate_html(data.get('text', ''))
+        return data
+
 
 class MotionSerializer(ModelSerializer):
     """
@@ -304,6 +309,15 @@ class MotionSerializer(ModelSerializer):
             'agenda_item_id',
             'log_messages',)
         read_only_fields = ('state', 'recommendation',)  # Some other fields are also read_only. See definitions above.
+
+    def validate(self, data):
+        data['text'] = validate_html(data.get('text', ''))
+        data['reason'] = validate_html(data.get('reason', ''))
+        validated_comments = []
+        for comment in data.get('comments', []):
+            validated_comments.append(validate_html(comment))
+        data['comments'] = validated_comments
+        return data
 
     @transaction.atomic
     def create(self, validated_data):
