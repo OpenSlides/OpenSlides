@@ -643,10 +643,11 @@ angular.module('OpenSlidesApp.motions.site', [
     'ProjectionDefault',
     'osTableFilter',
     'osTableSort',
+    'PdfCreate',
     function($scope, $state, $http, gettext, gettextCatalog, ngDialog, MotionForm, Motion,
                 Category, Tag, Workflow, User, Agenda, MotionBlock, MotionCsvExport, MotionDocxExport,
                 MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
-                HTMLValidizer, Projector, ProjectionDefault, osTableFilter, osTableSort) {
+                HTMLValidizer, Projector, ProjectionDefault, osTableFilter, osTableSort, PdfCreate) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         MotionBlock.bindAll({}, $scope, 'motionBlocks');
@@ -863,7 +864,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
             //post-request to convert the images. Async.
             $http.post('/core/encode_media/', JSON.stringify(image_sources)).success(function(data) {
-                var converter = PdfMakeConverter.createInstance(data.images, pdfMake);
+                var converter = PdfMakeConverter.createInstance(data.images);
                 var motionContentProviderArray = [];
 
                 //convert the filtered motions to motionContentProviders
@@ -872,7 +873,8 @@ angular.module('OpenSlidesApp.motions.site', [
                 });
                 var motionCatalogContentProvider = MotionCatalogContentProvider.createInstance(motionContentProviderArray, $scope, User, Category);
                 var documentProvider = PdfMakeDocumentProvider.createInstance(motionCatalogContentProvider);
-                pdfMake.createPdf(documentProvider.getDocument()).download(filename);
+
+                PdfCreate.download(documentProvider.getDocument(), filename);
             });
         };
 

@@ -15,22 +15,6 @@ angular.module('OpenSlidesApp.core.pdf', [])
             size: 8
         };
 
-        // Set and return default font family.
-        //
-        // To use custom ttf font files you have to replace the vfs_fonts.js file.
-        // See https://github.com/pdfmake/pdfmake/wiki/Custom-Fonts---client-side
-        PDFLayout.getFontName = function() {
-            pdfMake.fonts = {
-                Roboto: {
-                    normal: 'Roboto-Regular.ttf',
-                    bold: 'Roboto-Medium.ttf',
-                    italics: 'Roboto-Italic.ttf',
-                    bolditalics: 'Roboto-Italic.ttf'
-                }
-            };
-            return "Roboto";
-        };
-
         // page title
         PDFLayout.createTitle = function(title) {
             return {
@@ -229,7 +213,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     pageSize: 'A4',
                     pageMargins: [80, 90, 80, 60],
                     defaultStyle: {
-                        font: PDFLayout.getFontName(),
+                        font: 'PdfFont',
                         fontSize: 10
                     },
                     header: header,
@@ -353,7 +337,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     pageSize: 'A4',
                     pageMargins: [0, 0, 0, 0],
                     defaultStyle: {
-                        font: PDFLayout.getFontName(),
+                        font: 'PdfFont',
                         fontSize: 10
                     },
                     content: content,
@@ -387,9 +371,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
          * Converter component for HTML->JSON for pdfMake
          * @constructor
          * @param {object} images   - Key-Value structure representing image.src/BASE64 of images
-         * @param {object} pdfMake  - the converter component enhances pdfMake
          */
-        var createInstance = function(images, pdfMake) {
+        var createInstance = function(images) {
             var slice = Function.prototype.call.bind([].slice),
                 map = Function.prototype.call.bind([].map),
 
@@ -820,6 +803,82 @@ angular.module('OpenSlidesApp.core.pdf', [])
         return {
             createInstance: createInstance
         };
-}]);
+}])
+
+.factory('PdfCreate', [
+    '$timeout',
+    'FileSaver',
+    function ($timeout, FileSaver) {
+        var stateChangeCallbacks = [];
+        var b64toBlob = function(b64Data) {
+            var byteCharacters = atob(b64Data);
+            var byteNumbers = new Array(byteCharacters.length);
+            for (var i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            var byteArray = new Uint8Array(byteNumbers);
+            var blob = new Blob([byteArray]);
+            return blob;
+        };
+        var stateChange = function (state, filename, error) {
+            _.forEach(stateChangeCallbacks, function (cb) {
+                $timeout(function () {cb(state, filename, error);}, 1);
+            });
+        };
+        return {
+            download: function (pdfDocument, filename) {
+                stateChange('generating', filename);
+                var pdfWorker = new Worker('/static/js/workers/pdf-worker.js');
+
+                pdfWorker.addEventListener('message', function (event) {
+                    var blob = b64toBlob(event.data);
+                    stateChange('finished', filename);
+                    FileSaver.saveAs(blob, filename);
+                });
+                pdfWorker.addEventListener('error', function (event) {
+                    stateChange('error', filename, event.message);
+                });
+                pdfWorker.postMessage(JSON.stringify(pdfDocument));
+            },
+            registerStateChangeCallback: function (cb) {
+                if (cb && typeof cb === 'function') {
+                    stateChangeCallbacks.push(cb);
+                }
+            },
+        };
+    }
+])
+
+.directive('pdfGenerationStatus', [
+    '$timeout',
+    'PdfCreate',
+    function($timeout, PdfCreate) {
+        return {
+            restrict: 'E',
+            templateUrl: 'static/templates/pdf-status.html',
+            scope: {},
+            controller: function ($scope, $element, $attrs, $location) {
+                $scope.pdfs = {};
+
+                var createStateChange = function (state, filename, error) {
+                    $scope.pdfs[filename] = {
+                        state: state,
+                        errorMessage: error
+                    };
+                    if (state === 'finished') {
+                        $timeout(function () {
+                            $scope.close(filename);
+                        }, 3000);
+                    }
+                };
+                PdfCreate.registerStateChangeCallback(createStateChange);
+
+                $scope.close = function (filename) {
+                    delete $scope.pdfs[filename];
+                };
+            },
+        };
+    }
+]);
 
 }());

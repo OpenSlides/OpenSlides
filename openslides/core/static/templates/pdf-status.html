@@ -1,0 +1,24 @@
+<div id="pdf-status">
+  <div id="pdf-status-container">
+    <div ng-repeat="(filename, pdf) in pdfs" ng-class="pdf.state">
+
+      <span class="close fa fa-times fa-lg" ng-click="close(filename)"></span>
+      <span ng-if="pdf.state === 'generating'">
+        <i class="fa fa-spinner fa-pulse fa-lg spacer-right"></i>
+        <translate>Generating PDF file {{ filename }} ...</translate>
+      </span>
+
+      <span ng-if="pdf.state === 'finished'">
+        <i class="fa fa-check fa-lg spacer-right"></i>
+        <translate>PDF successfully generated.</translate>
+      </span>
+
+      <span ng-if="pdf.state === 'error'">
+        <i class="fa fa-exclamation-triangle fa-lg spacer-right"></i>
+        <translate>Error while generating PDF file</translate> {{ filename }}:
+        <span ng-if="pdf.errorMessage"><code>{{ pdf.errorMessage | translate }}</code></span>
+      </span>
+
+    </div>
+  </div>
+</div>

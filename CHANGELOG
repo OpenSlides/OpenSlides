@@ -18,6 +18,7 @@ Core:
 - Added control for the resolution of the projectors.
 - Set the projector language in the settings.
 - Used pdfMake for clientside generation of PDFs.
+  Run pdf creation in background (in a web worker thread).
 - Introduced new table design for list views with serveral filters and
   CSV export.
 - Used session cookies and store filter settings in session storage.

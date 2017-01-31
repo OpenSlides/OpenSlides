@@ -1133,6 +1133,39 @@ img {
     font-size: 90%;
 }
 
+/** Pdf creation status bar **/
+#pdf-status {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+}
+#pdf-status-container {
+    margin: 0 auto 0 auto;
+    padding: 0px 20px;
+    max-width: 1400px;
+}
+#pdf-status-container > div {
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+#pdf-status .generating {
+    color: #222;
+    background-color: #bed4de;
+    border-color: #46b8da;
+}
+#pdf-status .error {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+#pdf-status .finished {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
 
 /** General helper classes **/
 

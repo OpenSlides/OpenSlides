@@ -82,9 +82,10 @@ angular.module('OpenSlidesApp.agenda.site', [
     'gettext',
     'osTableFilter',
     'AgendaCsvExport',
+    'PdfCreate',
     function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, TopicForm, AgendaTree, Projector,
         ProjectionDefault, AgendaContentProvider, PdfMakeDocumentProvider, gettextCatalog, gettext, osTableFilter,
-        AgendaCsvExport) {
+        AgendaCsvExport, PdfCreate) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -266,7 +267,7 @@ angular.module('OpenSlidesApp.agenda.site', [
             var filename = gettextCatalog.getString('Agenda') + '.pdf';
             var agendaContentProvider = AgendaContentProvider.createInstance($scope.itemsFiltered);
             var documentProvider = PdfMakeDocumentProvider.createInstance(agendaContentProvider);
-            pdfMake.createPdf(documentProvider.getDocument()).download(filename);
+            PdfCreate.download(documentProvider.getDocument(), filename);
         };
         $scope.csvExport = function () {
             var element = document.getElementById('downloadLinkCSV');

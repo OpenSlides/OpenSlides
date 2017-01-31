@@ -41,10 +41,13 @@ var output_directory = path.join('openslides', 'static');
  * Default tasks to be run before start.
  */
 
-// Catches all JavaScript files from all core apps and concats them to one
+// Catches all JavaScript files (excluded worker files) from all core apps and concats them to one
 // file js/openslides.js. In production mode the file is uglified.
 gulp.task('js', function () {
-    return gulp.src(path.join('openslides', '*', 'static', 'js', '**', '*.js'))
+    return gulp.src([
+            path.join('openslides', '*', 'static', 'js', '**', '*.js'),
+            '!' + path.join('openslides', 'core', 'static', 'js', 'core', 'pdf-worker.js'),
+        ])
         .pipe(sourcemaps.init())
         .pipe(concat('openslides.js'))
         .pipe(sourcemaps.write())
@@ -66,6 +69,24 @@ gulp.task('js-libs', function () {
                 "window.CKEDITOR_BASEPATH = '/static/ckeditor/';\n\n"))
         .pipe(gulpif(argv.production, uglify()))
         .pipe(gulp.dest(path.join(output_directory, 'js')));
+});
+
+// Catches all pdfmake files for pdf worker.
+gulp.task('pdf-worker', function () {
+    return gulp.src([
+            path.join('openslides', 'core', 'static', 'js', 'core', 'pdf-worker.js'),
+        ])
+        .pipe(gulpif(argv.production, uglify()))
+        .pipe(gulp.dest(path.join(output_directory, 'js', 'workers')));
+});
+// pdfmake files
+gulp.task('pdf-worker-libs', function () {
+    return gulp.src([
+            path.join('bower_components', 'pdfmake', 'build', 'pdfmake.min.js'),
+            path.join('bower_components', 'pdfmake', 'build', 'vfs_fonts.js'),
+        ])
+        .pipe(concat('pdf-worker-libs.js'))
+        .pipe(gulp.dest(path.join(output_directory, 'js', 'workers')));
 });
 
 // Catches all template files from all core apps and concats them to one
@@ -191,6 +212,8 @@ gulp.task('translations', function () {
 gulp.task('default', [
         'js',
         'js-libs',
+        'pdf-worker',
+        'pdf-worker-libs',
         'templates',
         'css-libs',
         'fonts-libs',
