@@ -43,6 +43,7 @@ Core:
 - Added smooth projector scroll.
 - Added watching permissions in client and change the view immediately on changes.
 - Validate HTML strings from CKEditor against XSS attacks.
+- Added success/error symbol to config to show if saving was successful.
 
 Motions:
 - Added adjustable line numbering mode (outside, inside, none) for each

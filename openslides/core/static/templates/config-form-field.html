@@ -2,27 +2,34 @@
   <label>{{ label | translate }}</label>
 
   <div class="input-group">
-    <!-- text/number input, checkbox -->
-    <input ng-if="type == 'text' || type == 'number' || type == 'checkbox'"
+    <!-- text/number input -->
+    <input ng-if="type === 'text' || type === 'number'"
            ng-model="$parent.value"
            ng-model-options="{debounce: 1000}"
-           ng-change="save(configOption.key, $parent.value)"
+           ng-change="save(configOption, $parent.value)"
            ng-class="{ 'form-control': type != 'checkbox' }"
            id="{{ key }}"
            type="{{ type }}">
 
+    <!-- checkbox -->
+    <div ng-if="type === 'checkbox'" class="config-checkbox">
+      <i class="fa" id="{{ key }}"
+        ng-click="$parent.value = !$parent.value; save(configOption, $parent.value)"
+        ng-class="$parent.value ? 'fa-check-square-o' : 'fa-square-o'"></i>
+    </div>
+
     <!-- comments -->
-    <div class="input-comments" ng-if="type == 'comments'">
+    <div class="input-comments" ng-if="type === 'comments'">
       <div ng-repeat="entry in $parent.value" class="input-group">
         <input ng-model="entry.name"
                ng-model-options="{debounce: 1000}"
-               ng-change="save(configOption.key, $parent.value)"
+               ng-change="save(configOption, $parent.value)"
                class="form-control"
                id="{{ key }}"
                type="text">
         <span class="input-group-btn">
           <button type=button" class="btn btn-default"
-            ng-click="entry.public = !entry.public; save(configOption.key, $parent.value);">
+            ng-click="entry.public = !entry.public; save(configOption, $parent.value);">
             <i class="fa" ng-class="entry.public ? 'fa-unlock' : 'fa-lock'"></i>
             {{ (entry.public ? 'Public' : 'Private') | translate }}
           </button>
@@ -43,20 +50,20 @@
     </div>
 
     <!-- colorpicker -->
-    <input ng-if="type == 'colorpicker'"
+    <input ng-if="type === 'colorpicker'"
            colorpicker
            class="form-control"
            ng-model="$parent.value"
            ng-model-options="{debounce: 1000}"
-           ng-change="save(configOption.key, $parent.value)"
+           ng-change="save(configOption, $parent.value)"
            type="text">
 
     <!-- datetimepicker -->
-    <input ng-if="type == 'datetimepicker'"
+    <input ng-if="type === 'datetimepicker'"
            class="form-control"
            datetime-picker="dd.MM.yyyy HH:mm"
            ng-model="$parent.value"
-           ng-change="save(configOption.key, $parent.value)"
+           ng-change="save(configOption, $parent.value)"
            is-open="datetimeOpen[key]"
            ng-focus="datetimeOpen[key]=true;"
            save-as="'number'"
@@ -64,15 +71,15 @@
            default-time="10:00:00">
 
     <!-- textarea -->
-    <textarea ng-if="type == 'textarea'"
+    <textarea ng-if="type === 'textarea'"
               ng-model="$parent.value"
               ng-model-options="{debounce: 1000}"
-              ng-change="save(configOption.key, $parent.value)"
+              ng-change="save(configOption, $parent.value)"
               id="{{ key }}" class="form-control">
     </textarea>
 
     <!-- editor -->
-    <textarea ng-if="type == 'editor'"
+    <textarea ng-if="type === 'editor'"
               id="{{ configOption.key }}"
               ckeditor="ckeditorOptions"
               ng-model="$parent.value" class="form-control"
@@ -80,13 +87,21 @@
     </textarea>
 
     <!-- select -->
-    <select ng-if="type == 'choice'"
+    <select ng-if="type === 'choice'"
             ng-model="$parent.value"
             ng-model-options="{debounce: 500}"
-            ng-change="save(configOption.key, $parent.value)"
+            ng-change="save(configOption, $parent.value)"
             id="{{ key }}" class="form-control"
             ng-options="option.value as option.display_name | translate for option in choices">
     </select>
+
+    <span id="success-{{ key }}" class="input-group-addon" ng-if="configOption.success !== undefined">
+      <i class="fa fa-lg fa-check-circle text-success"
+        ng-if="configOption.success === true"></i>
+      <i class="fa fa-lg fa-exclamation-triangle text-danger"
+        ng-if="configOption.success === false"
+        uib-tooltip="{{ configOption.errorMessage | translate }}"></i>
+    </span>
 
     <span class="input-group-btn">
       <button ng-click="reset()" class="btn btn-default" title="{{ default_value | translate }}">
