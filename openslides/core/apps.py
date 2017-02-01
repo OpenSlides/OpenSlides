@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.conf import settings
 
 
 class CoreAppConfig(AppConfig):
@@ -62,3 +63,21 @@ class CoreAppConfig(AppConfig):
         for model in ('Projector', 'ChatMessage', 'Tag', 'ProjectorMessage', 'Countdown'):
             yield Collection(self.get_model(model).get_collection_string())
         yield Collection(config.get_collection_string())
+
+    def get_angular_constants(self):
+        # Client settings
+        client_settings_keys = [
+            'MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS'
+        ]
+        client_settings_dict = {}
+        for key in client_settings_keys:
+            try:
+                client_settings_dict[key] = getattr(settings, key)
+            except AttributeError:
+                # Settings key does not exist. Do nothing. The client will
+                # treat this as undefined.
+                pass
+        client_settings = {
+            'name': 'OpenSlidesSettings',
+            'value': client_settings_dict}
+        return [client_settings]

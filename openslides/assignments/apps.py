@@ -28,3 +28,15 @@ class AssignmentsAppConfig(AppConfig):
     def get_startup_elements(self):
         from ..utils.collection import Collection
         return [Collection(self.get_model('Assignment').get_collection_string())]
+
+    def get_angular_constants(self):
+        assignment = self.get_model('Assignment')
+        data = {
+            'name': 'AssignmentPhases',
+            'value': []}
+        for phase in assignment.PHASES:
+            data['value'].append({
+                'value': phase[0],
+                'display_name': phase[1],
+            })
+        return [data]
