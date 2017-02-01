@@ -581,9 +581,7 @@ angular.module('OpenSlidesApp.agenda.site', [
                 if (event.dest.nodesScope.item) {
                     parentID = event.dest.nodesScope.item.id;
                 }
-                angular.forEach(event.dest.nodesScope.$modelValue, function(item, index) {
-                    $http.patch('/rest/agenda/item/' + item.id + '/', {parent_id: parentID, weight: index});
-                });
+                $http.post('/rest/agenda/item/sort/', {nodes: event.dest.nodesScope.$modelValue, parent_id: parentID});
             }
         };
     }

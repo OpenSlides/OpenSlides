@@ -47,7 +47,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             result = (has_perm(self.request.user, 'agenda.can_see') and
                       has_perm(self.request.user, 'agenda.can_see_hidden_items') and
                       has_perm(self.request.user, 'agenda.can_manage'))
-        elif self.action in ('speak', 'sort_speakers', 'numbering'):
+        elif self.action in ('speak', 'sort_speakers', 'numbering', 'sort'):
             result = (has_perm(self.request.user, 'agenda.can_see') and
                       has_perm(self.request.user, 'agenda.can_manage'))
         else:
@@ -237,3 +237,21 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         """
         Item.objects.number_all(numeral_system=config['agenda_numeral_system'])
         return Response({'detail': _('The agenda has been numbered.')})
+
+    @list_route(methods=['post'])
+    def sort(self, request):
+        """
+        Sort agenda items.
+        """
+        nodes = request.data.get('nodes', [])
+        parent_id = request.data.get('parent_id')
+        items = []
+        with transaction.atomic():
+            for index, node in enumerate(nodes):
+                item = Item.objects.get(pk=node['id'])
+                item.parent_id = parent_id
+                item.weight = index
+                item.save(skip_autoupdate=True)
+                items.append(item)
+        inform_changed_data(items)
+        return Response({'detail': _('The agenda has been sorted.')})
