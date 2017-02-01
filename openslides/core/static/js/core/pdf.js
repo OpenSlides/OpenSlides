@@ -84,40 +84,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
 
         // crop marks for ballot papers
         PDFLayout.getBallotLayoutLines = function() {
-            return {
-                hLineWidth: function(i, node) {
-                    if (i === 0){
-                        return 0;
-                    } else if (i === node.table.body.length) {
-                        if (node.rowsperpage && node.rowsperpage > i) {
-                            return 0.5;
-                        } else {
-                            return 0;
-                        }
-                    } else {
-                        return 0.5;
-                    }
-                },
-                vLineWidth: function(i, node) {
-                    return (i === 0 || i === node.table.widths.length) ? 0 : 0.5;
-                },
-                hLineColor: function(i, node) {
-                    if (i === 0){
-                        return 'none';
-                    } else if (i === node.table.body.length) {
-                        if (node.rowsperpage && node.rowsperpage > i) {
-                            return 'gray';
-                        } else {
-                            return 'none';
-                        }
-                    } else {
-                        return 'gray';
-                    }
-                },
-                vLineColor: function(i, node) {
-                    return (i === 0 || i === node.table.widths.length) ? 'none' : 'gray';
-                },
-            };
+            return '{{ballot-placeholder-to-insert-functions-here}}';
         };
 
         return PDFLayout;
@@ -161,8 +128,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
          */
         var createInstance = function(contentProvider) {
             // PDF header
-            var header = function() {
-                var date = new Date();
+            var getHeader = function() {
                 var columns = [];
 
                 // add here your custom logo (which has to be added to a custom vfs_fonts.js)
@@ -196,14 +162,17 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 };
             };
 
+
             // PDF footer
-            var footer = function(currentPage, pageCount) {
+            // Used placeholder for currentPage and pageCount which
+            // are replaced by dynamic footer function in pdf-worker.js.
+            var getFooter = function() {
                 return {
                     alignment: 'center',
                     fontSize: 8,
                     color: '#555',
-                    text: gettextCatalog.getString('Page') + ' ' + currentPage.toString() +
-                        ' / ' + pageCount.toString()
+                    text: gettextCatalog.getString('Page') +
+                        ' {{currentPage}} / {{pageCount}}'
                 };
             };
             // Generates the document(definition) for pdfMake
@@ -211,13 +180,13 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 var content = contentProvider.getContent();
                 return {
                     pageSize: 'A4',
-                    pageMargins: [80, 90, 80, 60],
+                    pageMargins: [80, 90, 80, 100],
                     defaultStyle: {
                         font: 'PdfFont',
                         fontSize: 10
                     },
-                    header: header,
-                    footer: noFooter ? '' : footer,
+                    header: getHeader(),
+                    footerTpl: noFooter ? '' : getFooter(),
                     content: content,
                     styles: {
                         title: {
@@ -393,12 +362,12 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             "u": ["text-decoration:underline"],
                             "em": ["font-style:italic"],
                             "i": ["font-style:italic"],
-                            "h1": ["font-size:30"],
-                            "h2": ["font-size:28"],
-                            "h3": ["font-size:26"],
-                            "h4": ["font-size:24"],
-                            "h5": ["font-size:22"],
-                            "h6": ["font-size:20"],
+                            "h1": ["font-size:14", "font-weight:bold"],
+                            "h2": ["font-size:12", "font-weight:bold"],
+                            "h3": ["font-size:10", "font-weight:bold"],
+                            "h4": ["font-size:10", "font-style:italic"],
+                            "h5": ["font-size:10"],
+                            "h6": ["font-size:10"],
                             "a": ["color:blue", "text-decoration:underline"],
                             "del": ["color:red", "text-decoration:line-through"],
                             "ins": ["color:green", "text-decoration:underline"]
@@ -563,6 +532,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "h5":
                                 case "h6":
                                     currentParagraph = create("text");
+                                    currentParagraph.marginBottom = 4;
+                                    currentParagraph.marginTop = 10;
                                     /* falls through */
                                 case "a":
                                     currentParagraph = parseChildren(alreadyConverted, element, currentParagraph, styles.concat(elementStyles[nodeName]), diff_mode);
@@ -666,6 +637,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     //in case of inline-line-numbers and the os-line-break class ignore the break
                                     if (!(lineNumberMode == "inline" && element.getAttribute("class") == "os-line-break")) {
                                         currentParagraph = create("text");
+                                        currentParagraph.lineHeight = 1.25;
                                         alreadyConverted.push(currentParagraph);
                                     }
                                     break;
@@ -680,7 +652,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     break;
                                 case "p":
                                     currentParagraph = create("text");
-                                    currentParagraph.margin = [0,5];
+                                    currentParagraph.marginTop = 8;
+                                    currentParagraph.lineHeight = 1.25;
                                     var stackP = create("stack");
                                     stackP.stack.push(currentParagraph);
                                     ComputeStyle(stackP, styles);

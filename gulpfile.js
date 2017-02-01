@@ -228,9 +228,13 @@ gulp.task('default', [
  */
 
 // Watches changes in JavaScript and templates.
-gulp.task('watch', ['js', 'templates'], function () {
-    gulp.watch(path.join('openslides', '*', 'static', 'js', '**', '*.js'), ['js']);
+gulp.task('watch', ['js', 'templates', 'pdf-worker'], function () {
+    gulp.watch([
+        path.join('openslides', '*', 'static', 'js', '**', '*.js'),
+        '!' + path.join('openslides', 'core', 'static', 'js', 'core', 'pdf-worker.js')
+    ], ['js']);
     gulp.watch(path.join('openslides', '*', 'static', 'templates', '**', '*.html'), ['templates']);
+    gulp.watch(path.join('openslides', 'core', 'static', 'js', 'core', 'pdf-worker.js'), ['pdf-worker']);
 });
 
 // Extracts translatable strings using angular-gettext and saves them in file
