@@ -30,7 +30,6 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 // change agenda item only if user has the permission to do that
                 if (operator.hasPerms('agenda.can_manage agenda.can_see_hidden_items')) {
                     Agenda.find(item_id).then(function (item) {
-                        console.log(item);
                         var something = false;
                         _.each(changes, function(change) {
                             if (change.value !== item[change.key]) {
