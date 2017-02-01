@@ -147,7 +147,7 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
             ngDialog.open(MotionBlockForm.getDialog(motionBlock));
         };
         $scope.followRecommendations = function () {
-            $http.post('/rest/motions/motion-block/' + motionBlock.id + '/follow_recommendations/')
+            $http.post('/rest/motions/motion-block/' + motionBlockId + '/follow_recommendations/')
             .success(function(data) {
                 $scope.alert = { type: 'success', msg: data.detail, show: true };
             })
