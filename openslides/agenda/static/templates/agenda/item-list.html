@@ -85,7 +85,7 @@
       </button>
       <!-- pdf -->
       <div class="pull-right" uib-dropdown>
-        <button type="button" class="btn btn-default" id="dropdownExport" uib-dropdown-toggle>
+        <button type="button" class="btn btn-default btn-sm" id="dropdownExport" uib-dropdown-toggle>
           <i class="fa fa-upload"></i>
           <span ng-if="itemsFiltered.length == items.length" translate>
             Export all
@@ -99,7 +99,7 @@
           <!-- PDF export -->
           <li>
             <a href="" ng-click="pdfExport()">
-              <i class="fa fa-file-pdf-o fa-lg"></i>
+              <i class="fa fa-file-pdf-o"></i>
               PDF
             </a>
           </li>
@@ -107,7 +107,7 @@
           <li>
             <a href="" id="downloadLinkCSV"
               ng-click="csvExport()">
-              <i class="fa fa-file-text-o fa-lg"></i>
+              <i class="fa fa-file-text-o"></i>
               CSV
             </a>
           </li>
@@ -121,7 +121,7 @@
       <a ng-show="isSelectMode" os-perms="agenda.can_manage"
         ng-bootbox-confirm="{{ 'Are you sure you want to delete all selected agenda items?' | translate }}"
         ng-bootbox-confirm-action="deleteMultiple()"
-        class="btn btn-primary">
+        class="btn btn-default btn-sm">
         <i class="fa fa-trash fa-lg"></i>
         <translate>Delete selected items</translate>
       </a>

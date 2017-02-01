@@ -22,7 +22,7 @@
   <div class="row">
     <div class="col-sm-6">
       <!-- select mode -->
-      <button os-perms="users.can_manage" class="btn"
+      <button os-perms="users.can_manage" class="btn btn-sm"
           ng-class="$parent.isSelectMode ? 'btn-primary' : 'btn-default'"
           ng-click="$parent.isSelectMode = !$parent.isSelectMode; uncheckAll()">
         <i class="fa fa-check-square-o"></i>
@@ -31,7 +31,7 @@
     </div>
     <div class="col-sm-6">
       <div class="dropdown pull-right" uib-dropdown>
-        <button os-perms="users.can_manage" class="btn btn-default" uib-dropdown-toggle
+        <button os-perms="users.can_manage" class="btn btn-default btn-sm" uib-dropdown-toggle
             id="user-pdf-dropdown">
           <i class="fa fa-upload"></i>
           <span ng-if="usersFiltered.length == users.length" translate>
@@ -65,7 +65,7 @@
   <div uib-collapse="!isSelectMode" class="row spacer">
     <div os-perms="users.can_manage" ng-show="isSelectMode" class="col-sm-12 text-left form-inline">
       <!-- actions -->
-      <select ng-model="selectedAction" class="form-control">
+      <select ng-model="selectedAction" class="form-control input-sm">
         <option value="" translate>--- Select action ---</option>
         <option value="delete" translate>Delete</option>
         <option value="addGroup" translate>Add group</option>
@@ -79,44 +79,46 @@
       <a ng-show="selectedAction == 'delete'"
         ng-bootbox-confirm="{{ 'Are you sure you want to delete all selected users?' | translate }}"
         ng-bootbox-confirm-action="deleteMultiple()"
-        class="btn btn-default">
+        class="btn btn-default btn-sm">
         <i class="fa fa-trash fa-lg"></i>
         <translate>Delete selected participants</translate>
       </a>
       <!-- group select -->
       <select ng-show="selectedAction == 'addGroup' || selectedAction == 'removeGroup'"
-          ng-model="selectedGroup" class="form-control">
+          ng-model="selectedGroup" class="form-control input-sm">
         <option value="" translate>--- Select group ---</option>
         <option ng-repeat="group in groups" value="{{ group.id }}">{{ group.name | translate }}</option>
       </select>
       <!-- add group button -->
       <a ng-show="selectedAction == 'addGroup'"
-          ng-click="addGroupMultiple(selectedGroup)" class="btn btn-default">
-        <i class="fa fa-plus fa-lg"></i>
+          ng-click="addGroupMultiple(selectedGroup)" class="btn btn-default btn-sm">
+        <i class="fa fa-plus"></i>
         <translate>Add group</translate>
       </a>
       <!-- remove group button -->
       <a ng-show="selectedAction == 'removeGroup'"
-          ng-click="removeGroupMultiple(selectedGroup)" class="btn btn-default">
-        <i class="fa fa-minus fa-lg"></i>
+          ng-click="removeGroupMultiple(selectedGroup)" class="btn btn-default btn-sm">
+        <i class="fa fa-minus"></i>
         <translate>Remove group</translate>
       </a>
       <!-- generate new password button -->
-      <a ng-show="selectedAction == 'generatePasswords'" class="btn btn-default"
+      <a ng-show="selectedAction == 'generatePasswords'" class="btn btn-default btn-sm"
         ng-click="generateNewPasswordsMultiple()">
         <i class="fa fa-magic"></i>
         <translate>Generate new passwords</translate>
       </a>
       <!-- set bool property button -->
       <a ng-show="inArray(['is_active', 'is_present', 'is_committee'], selectedAction)"
-        ng-click="setBoolPropertyMultiple(selectedAction, true)" class="btn btn-default">
+        ng-click="setBoolPropertyMultiple(selectedAction, true)" class="btn btn-default btn-sm">
+        <i class="fa fa-check"></i>
         <span ng-if="selectedAction == 'is_active'" translate>Is active</span>
         <span ng-if="selectedAction == 'is_present'" translate>Is present</span>
         <span ng-if="selectedAction == 'is_committee'" translate>Is committee</span>
       </a>
       <!-- unset bool property button -->
       <a ng-show="inArray(['is_active', 'is_present', 'is_committee'], selectedAction)"
-        ng-click="setBoolPropertyMultiple(selectedAction, false)" class="btn btn-default">
+        ng-click="setBoolPropertyMultiple(selectedAction, false)" class="btn btn-default btn-sm">
+        <i class="fa fa-ban"></i>
         <span ng-if="selectedAction == 'is_active'" translate>Is not active</span>
         <span ng-if="selectedAction == 'is_present'" translate>Is not present</span>
         <span ng-if="selectedAction == 'is_committee'" translate>Is not a committee</span>

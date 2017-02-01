@@ -22,7 +22,7 @@
   </div>
 
   <div class="clearfix">
-    <button ng-click="importByLine()" class="btn btn-primary pull-left" translate>Import</button>
+    <button ng-click="importByLine()" class="btn btn-primary btn-sm pull-left" translate>Import</button>
     <div class="col-xs-5" ng-if="usernames">
       <progressbar animate="false" type="success" max="usernames.length" value="importcounter">
         <i>{{ importcounter }} / {{ usernames.length }} {{ "imported" | translate }}</i>
@@ -31,7 +31,7 @@
   </div>
   <div class="spacer">
     <a ng-if="importcounter > 0 && importcounter == usernames.length" ui-sref="users.user.list"
-        class="btn btn-default">
+        class="btn btn-default btn-sm">
       <i class="fa fa-angle-double-left fa-lg"></i>
       <translate>Back to users overview</translate>
     </a>
@@ -205,15 +205,15 @@
     </div>
 
     <div class="spacer">
-      <button ng-click="clear()" class="btn btn-default" translate>
+      <button ng-click="clear()" class="btn btn-default btn-sm" translate>
         Clear preview
       </button>
-      <button ng-if="!csvImporting && usersWillBeImported > 0" ng-click="import()" class="btn btn-primary" translate>
+      <button ng-if="!csvImporting && usersWillBeImported > 0" ng-click="import()" class="btn btn-primary btn-sm" translate>
         Import {{ usersWillBeImported }} participants
       </button>
     </div>
     <div class="spacer">
-      <a ng-if="csvimported" ui-sref="users.user.list" class="btn btn-default">
+      <a ng-if="csvimported" ui-sref="users.user.list" class="btn btn-default btn-sm">
         <i class="fa fa-angle-double-left fa-lg"></i>
         <translate>Back to users overview</translate>
       </a>

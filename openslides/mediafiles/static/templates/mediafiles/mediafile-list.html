@@ -116,7 +116,7 @@
     <div class="col-sm-6">
       <form class="form-inline">
         <!-- select mode -->
-        <button os-perms="mediafiles.can_manage" class="btn"
+        <button os-perms="mediafiles.can_manage" class="btn btn-sm"
             ng-class="$parent.isSelectMode ? 'btn-primary' : 'btn-default'"
             ng-click="$parent.isSelectMode = !$parent.isSelectMode; uncheckAll()">
           <i class="fa fa-check-square-o"></i>
@@ -131,7 +131,7 @@
       <!-- delete button -->
       <a ng-show="isSelectMode"
           os-perms="mediafiles.can_manage" ng-click="deleteMultiple()"
-          class="btn btn-primary">
+          class="btn btn-default btn-sm">
         <i class="fa fa-trash fa-lg"></i>
         <translate>Delete selected mediafiles</translate>
       </a>

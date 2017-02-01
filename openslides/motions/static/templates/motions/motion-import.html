@@ -114,15 +114,15 @@
     </div>
 
     <div class="spacer">
-      <button ng-click="clear()" class="btn btn-default" translate>
+      <button ng-click="clear()" class="btn btn-default btn-sm" translate>
         Clear preview
       </button>
-      <button ng-if="!csvImporting && motionsWillBeImported > 0" ng-click="import()" class="btn btn-primary" translate>
+      <button ng-if="!csvImporting && motionsWillBeImported > 0" ng-click="import()" class="btn btn-primary btn-sm" translate>
         Import {{ motionsWillBeImported }} motions
       </button>
     </div>
     <div class="spacer">
-      <a ng-if="csvimported" ui-sref="motions.motion.list" class="btn btn-default">
+      <a ng-if="csvimported" ui-sref="motions.motion.list" class="btn btn-default btn-sm">
         <i class="fa fa-angle-double-left fa-lg"></i>
         <translate>Back to motions overview</translate>
       </a>
