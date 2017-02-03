@@ -7,41 +7,59 @@
       </a>
       <!-- manage list of speakers -->
       <button os-perms="agenda.can_manage"
+        ng-disabled="!currentListOfSpeakersItem()"
         ng-click="goToListOfSpeakers()"
         class="btn btn-sm btn-default">
         <i class="fa fa-microphone"></i>
         <translate>Manage list</translate>
       </button>
-      <!-- project -->
-      <div os-perms="core.can_manage_projector" class="btn-group" uib-dropdown
-        uib-tooltip="{{ 'Projector' | translate }} {{ isCurrentLoSProjected()[0] || '' }}"
-        tooltip-enable="isCurrentLoSProjected().length">
+
+      <!-- Current list of speakers projector button -->
+      <div class="btn-group button" uib-dropdown
+        uib-tooltip="{{ 'Project the current list of speakers' | translate }}"
+        os-perms="core.can_manage_projector">
         <button type="button" class="btn btn-default btn-sm"
             title="{{ 'Project current list of speakers' | translate }}"
-            ng-click="projectCurrentLoS(defaultProjectorId)"
-            ng-class="{ 'btn-primary': isCurrentLoSProjected().length && inArray(isCurrentLoSProjected(), defaultProjectorId) }">
+            ng-click="currentListOfSpeakers.project(listOfSpeakersDefaultProjectorId, currentListOfSpeakersAsOverlay)"
+            ng-class="{ 'btn-primary': currentListOfSpeakers.isProjected().length && inArray(currentListOfSpeakers.isProjected(), listOfSpeakersDefaultProjectorId)}">
           <i class="fa fa-video-camera"></i>
           <translate>Current list of speakers</translate>
         </button>
-        <button type="button" class="btn btn-default btn-sm" uib-dropdown-toggle
-            ng-class="{ 'btn-primary': isCurrentLoSProjected().length && !inArray(isCurrentLoSProjected(), defaultProjectorId) }">
+        <button type="button" class="btn btn-default btn-sm"
+          ng-if="projectors.length > 1"
+          uib-dropdown-toggle
+          ng-class="{ 'btn-primary': currentListOfSpeakers.isProjected().length && !inArray(currentListOfSpeakers.isProjected(), listOfSpeakersDefaultProjectorId)}">
           <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="split-button">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="split-button" ng-if="projectors.length > 1">
+          <li role="menuitem">
+            <a href="" ng-click="setOverlay(false); $event.stopPropagation();">
+              <i class="fa" ng-class="currentListOfSpeakersAsOverlay ? 'fa-circle-o' : 'fa-check-circle-o'"></i>
+              <translate>Project as slide</translate>
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="" ng-click="setOverlay(true); $event.stopPropagation();">
+              <i class="fa" ng-class="currentListOfSpeakersAsOverlay ? 'fa-check-circle-o' : 'fa-circle-o'"></i>
+              <translate>Project as overlay</translate>
+            </a>
+          </li>
+          <li class="divider"></li>
           <li role="menuitem" ng-repeat="projector in projectors | orderBy:'id'">
-            <a href="" ng-click="projectCurrentLoS(projector.id)"
-              ng-class="{ 'projected': inArray(isCurrentLoSProjected(), projector.id) }">
-              <i class="fa fa-video-camera" ng-show="inArray(isCurrentLoSProjected(), projector.id) "></i>
+            <a href="" ng-click="currentListOfSpeakers.project(projector.id, currentListOfSpeakersAsOverlay)"
+              ng-class="{ 'projected': inArray(currentListOfSpeakers.isProjected(), projector.id) }">
+              <i class="fa fa-video-camera" ng-show="inArray(currentListOfSpeakers.isProjected(), projector.id)"></i>
               {{ projector.name | translate }}
-              <span ng-if="projector.id == defaultProjectorId">(<translate>Default</translate>)</span>
+              <span ng-if="projector.id == listOfSpeakersDefaultProjectorId">(<translate>Default</translate>)</span>
             </a>
           </li>
         </ul>
       </div>
     </div>
+
     <h1 translate>Current list of speakers</h1>
-    <h2> {{ AgendaItem.getTitle() }}
-      <span class="slimlabel label label-danger ng-scope" style="" ng-if="AgendaItem.speaker_list_closed" translate>
+    <h2> {{ agendaItem.getTitle() }}
+      <span class="slimlabel label label-danger ng-scope" style="" ng-if="agendaItem.speaker_list_closed" translate>
         Closed
       </span>
     </h2>
@@ -50,16 +68,16 @@
 
 <div class="details">
   <!-- Last speakers -->
-  <p ng-repeat="speaker in lastSpeakers = (AgendaItem.speakers | filter: {end_time: '!!', begin_time: '!!'}) |
+  <p ng-repeat="speaker in lastSpeakers = (agendaItem.speakers | filter: {end_time: '!!', begin_time: '!!'}) |
     limitTo: config('agenda_show_last_speakers') : (lastSpeakers.length - config('agenda_show_last_speakers'))" class="lastSpeakers">
     {{ speaker.user.get_full_name() }}
   <!-- Current speaker -->
-  <p ng-repeat="speaker in currentspeakers = (AgendaItem.speakers| filter: {end_time: null, begin_time: '!!'})"
+  <p ng-repeat="speaker in currentspeakers = (agendaItem.speakers| filter: {end_time: null, begin_time: '!!'})"
     class="currentSpeaker">
     <i class="fa fa-microphone fa-lg"></i> {{ speaker.user.get_full_name() }}
   <!-- Next speakers -->
   <ol class="nextSpeakers">
-    <li ng-repeat="speaker in AgendaItem.speakers | filter: {begin_time: null} | orderBy:'weight'">
+    <li ng-repeat="speaker in agendaItem.speakers | filter: {begin_time: null} | orderBy:'weight'">
    {{ speaker.user.get_full_name() }}
   </ol>
 </div>

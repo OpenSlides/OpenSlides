@@ -55,7 +55,7 @@ angular.module('OpenSlidesApp.agenda.site', [
             })
             .state('agenda.current-list-of-speakers', {
                 url: '/speakers',
-                controller: 'ListOfSpeakersViewCtrl',
+                controller: 'CurrentListOfSpeakersViewCtrl',
                 data: {
                     title: gettext('Current list of speakers'),
                 },
@@ -588,7 +588,7 @@ angular.module('OpenSlidesApp.agenda.site', [
     }
 ])
 
-.controller('ListOfSpeakersViewCtrl', [
+.controller('CurrentListOfSpeakersViewCtrl', [
     '$scope',
     '$state',
     '$http',
@@ -596,7 +596,9 @@ angular.module('OpenSlidesApp.agenda.site', [
     'ProjectionDefault',
     'Config',
     'CurrentListOfSpeakersItem',
-    function($scope, $state, $http, Projector, ProjectionDefault, Config, CurrentListOfSpeakersItem) {
+    'CurrentListOfSpeakersSlide',
+    function($scope, $state, $http, Projector, ProjectionDefault, Config, CurrentListOfSpeakersItem,
+        CurrentListOfSpeakersSlide) {
         // Watch for changes in the current list of speakers reference
         $scope.$watch(function () {
             return Config.lastModified('projector_currentListOfSpeakers_reference');
@@ -608,52 +610,44 @@ angular.module('OpenSlidesApp.agenda.site', [
             return Projector.lastModified();
         }, function() {
             $scope.projectors = Projector.getAll();
-            $scope.updateCurrentListOfSpeakers();
-            var projectiondefault = ProjectionDefault.filter({name: 'agenda_current_list_of_speakers'})[0];
-            if (projectiondefault) {
-                $scope.defaultProjectorId = projectiondefault.projector_id;
+            if ($scope.projectors.length === 1) {
+                $scope.currentListOfSpeakersAsOverlay = true;
             }
+            $scope.updateCurrentListOfSpeakers();
+            $scope.listOfSpeakersDefaultProjectorId = ProjectionDefault.filter({name: 'agenda_current_list_of_speakers'})[0].projector_id;
         });
         $scope.updateCurrentListOfSpeakers = function () {
-            var itemPromise = CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
-            if (itemPromise) {
-                itemPromise.then(function(item) {
-                    $scope.AgendaItem = item;
-                });
-            }
-        };
-        // Project current list of speakers
-        // same logic as in core/base.js
-        $scope.projectCurrentLoS = function (projectorId) {
-            var isCurrentLoSProjectedIds = $scope.isCurrentLoSProjected($scope.mainListTree);
-            _.forEach(isCurrentLoSProjectedIds, function (id) {
-                $http.post('/rest/core/projector/' + id + '/clear_elements/');
-            });
-            if (_.indexOf(isCurrentLoSProjectedIds, projectorId) == -1) {
-                $http.post('/rest/core/projector/' + projectorId + '/prune_elements/',
-                    [{name: 'agenda/current-list-of-speakers'}]);
-            }
-        };
-        // same logic as in core/base.js
-        $scope.isCurrentLoSProjected = function () {
-            // Returns the ids of all projectors with an element with the name
-            // 'agenda/current-list-of-speakers'. Elsewise returns an empty list.
-            var projectorIds = [];
-            $scope.projectors.forEach(function (projector) {
-                var key = _.findKey(projector.elements, function (element) {
-                    return element.name == 'agenda/current-list-of-speakers';
-                });
-                if (typeof key === 'string') {
-                    projectorIds.push(projector.id);
-                }
-            });
-            return projectorIds;
+            $scope.agendaItem = CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
         };
 
         // go to the list of speakers (management) of the currently
         // displayed projector slide
         $scope.goToListOfSpeakers = function() {
-            $state.go('agenda.item.detail', {id: $scope.AgendaItem.id});
+            if ($scope.agendaItem) {
+                $state.go('agenda.item.detail', {id: $scope.agendaItem.id});
+            }
+        };
+        $scope.currentListOfSpeakers = CurrentListOfSpeakersSlide;
+        // Set the current overlay status
+        if ($scope.currentListOfSpeakers.isProjected().length) {
+            var isProjected = $scope.currentListOfSpeakers.isProjectedWithOverlayStatus();
+            $scope.currentListOfSpeakersAsOverlay = isProjected[0].overlay;
+        } else {
+            $scope.currentListOfSpeakersAsOverlay = true;
+        }
+        $scope.currentListOfSpeakersItem = function () {
+            return CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
+        };
+        $scope.setOverlay = function (overlay) {
+            $scope.currentListOfSpeakersAsOverlay = overlay;
+            var isProjected = $scope.currentListOfSpeakers.isProjectedWithOverlayStatus();
+            if (isProjected.length) {
+                _.forEach(isProjected, function (mapping) {
+                    if (mapping.overlay != overlay) { // change the overlay if it is different
+                        $scope.currentListOfSpeakers.project(mapping.projectorId, overlay);
+                    }
+                });
+            }
         };
     }
 ])

@@ -1036,7 +1036,7 @@ angular.module('OpenSlidesApp.core.site', [
     'Config',
     'Projector',
     'CurrentListOfSpeakersItem',
-    'ListOfSpeakersOverlay',
+    'CurrentListOfSpeakersSlide',
     'ProjectionDefault',
     'ProjectorMessage',
     'Countdown',
@@ -1044,7 +1044,7 @@ angular.module('OpenSlidesApp.core.site', [
     'ngDialog',
     'ProjectorMessageForm',
     function($scope, $http, $interval, $state, $q, $filter, Config, Projector, CurrentListOfSpeakersItem,
-        ListOfSpeakersOverlay, ProjectionDefault, ProjectorMessage, Countdown, gettextCatalog,
+        CurrentListOfSpeakersSlide, ProjectionDefault, ProjectorMessage, Countdown, gettextCatalog,
         ngDialog, ProjectorMessageForm) {
         ProjectorMessage.bindAll({}, $scope, 'messages');
 
@@ -1078,7 +1078,6 @@ angular.module('OpenSlidesApp.core.site', [
             cancelIntervalTimers();
         });
 
-        $scope.listofspeakers = ListOfSpeakersOverlay;
         $scope.$watch(function () {
             return Projector.lastModified();
         }, function () {
@@ -1086,20 +1085,14 @@ angular.module('OpenSlidesApp.core.site', [
             if (!$scope.active_projector) {
                 $scope.changeProjector($filter('orderBy')($scope.projectors, 'id')[0]);
             }
+            if ($scope.projectors.length === 1) {
+                $scope.currentListOfSpeakersAsOverlay = true;
+            }
 
             $scope.messageDefaultProjectorId = ProjectionDefault.filter({name: 'messages'})[0].projector_id;
             $scope.countdownDefaultProjectorId = ProjectionDefault.filter({name: 'countdowns'})[0].projector_id;
-            $scope.getDefaultOverlayProjector();
+            $scope.listOfSpeakersDefaultProjectorId = ProjectionDefault.filter({name: 'agenda_current_list_of_speakers'})[0].projector_id;
         });
-        // gets the default projector where the current list of speakers overlay will be displayed
-        $scope.getDefaultOverlayProjector = function () {
-            var projectiondefault = ProjectionDefault.filter({name: 'agenda_current_list_of_speakers'})[0];
-            if (projectiondefault) {
-                $scope.listofSpeakersDefaultProjectorId = projectiondefault.projector_id;
-            } else {
-                $scope.listOfSpeakersDefaultProjectorId = 1;
-            }
-        };
         // watch for changes in projector_broadcast and currentListOfSpeakersReference
         var last_broadcast;
         $scope.$watch(function () {
@@ -1172,11 +1165,35 @@ angular.module('OpenSlidesApp.core.site', [
             ProjectorMessage.destroy(message.id);
         };
 
+        /* Current list of speakers */
+        $scope.currentListOfSpeakers = CurrentListOfSpeakersSlide;
+        // Set the current overlay status
+        if ($scope.currentListOfSpeakers.isProjected().length) {
+            var isProjected = $scope.currentListOfSpeakers.isProjectedWithOverlayStatus();
+            $scope.currentListOfSpeakersAsOverlay = isProjected[0].overlay;
+        } else {
+            $scope.currentListOfSpeakersAsOverlay = true;
+        }
         // go to the list of speakers(management) of the currently displayed list of speakers reference slide
         $scope.goToListOfSpeakers = function() {
-            CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference).then(function (success) {
-                $state.go('agenda.item.detail', {id: success.id});
-            });
+            var item = $scope.currentListOfSpeakersItem();
+            if (item) {
+                $state.go('agenda.item.detail', {id: item.id});
+            }
+        };
+        $scope.currentListOfSpeakersItem = function () {
+            return CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
+        };
+        $scope.setOverlay = function (overlay) {
+            $scope.currentListOfSpeakersAsOverlay = overlay;
+            var isProjected = $scope.currentListOfSpeakers.isProjectedWithOverlayStatus();
+            if (isProjected.length) {
+                _.forEach(isProjected, function (mapping) {
+                    if (mapping.overlay != overlay) { // change the overlay if it is different
+                        $scope.currentListOfSpeakers.project(mapping.projectorId, overlay);
+                    }
+                });
+            }
         };
     }
 ])

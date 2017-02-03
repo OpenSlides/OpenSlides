@@ -289,101 +289,73 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
     }
 ])
 
-// TODO: Remove all find() calls from the projector logic. It is also used on the site so this has to be
-// changed with the refactoring of the site autoupdate.
 .factory('CurrentListOfSpeakersItem', [
     'Projector',
-    'Assignment', // TODO: Remove this after refactoring of data loading on start.
-    'Topic', // TODO: Remove this after refactoring of data loading on start.
-    'Motion', // TODO: Remove this after refactoring of data loading on start.
-    'MotionBlock', // TODO: Remove this after refactoring of data loading on start.
     'Agenda',
-    function (Projector, Assignment, Topic, Motion, MotionBlock, Agenda) {
+    function (Projector, Agenda) {
         return {
             getItem: function (projectorId) {
-                var elementPromise;
-                return Projector.find(projectorId).then(function (projector) {
-                    // scan all elements
+                var projector = Projector.get(projectorId), item;
+                if (projector) {
                     _.forEach(projector.elements, function(element) {
-                        switch(element.name) {
-                            case 'motions/motion':
-                                elementPromise = Motion.find(element.id).then(function(motion) {
-                                    return Motion.loadRelations(motion, 'agenda_item').then(function() {
-                                        return motion.agenda_item;
-                                    });
-                                });
-                                break;
-                            case 'motions/motion-block':
-                                elementPromise = MotionBlock.find(element.id).then(function(motionBlock) {
-                                    return MotionBlock.loadRelations(motionBlock, 'agenda_item').then(function() {
-                                        return motionBlock.agenda_item;
-                                    });
-                                });
-                                break;
-                            case 'topics/topic':
-                                elementPromise = Topic.find(element.id).then(function(topic) {
-                                    return Topic.loadRelations(topic, 'agenda_item').then(function() {
-                                        return topic.agenda_item;
-                                    });
-                                });
-                                break;
-                            case 'assignments/assignment':
-                                elementPromise = Assignment.find(element.id).then(function(assignment) {
-                                    return Assignment.loadRelations(assignment, 'agenda_item').then(function() {
-                                        return assignment.agenda_item;
-                                    });
-                                });
-                                break;
-                            case 'agenda/list-of-speakers':
-                                elementPromise = Agenda.find(element.id).then(function(item) {
-                                    return item;
-                                });
+                        if (element.agenda_item_id) {
+                            item = Agenda.get(element.agenda_item_id);
                         }
                     });
-                    return elementPromise;
-                });
+                }
+                return item;
             }
         };
     }
 ])
 
-.factory('ListOfSpeakersOverlay', [
+.factory('CurrentListOfSpeakersSlide', [
     '$http',
     'Projector',
-    'gettextCatalog',
-    'gettext',
-    function($http, Projector, gettextCatalog, gettext) {
-        var name = 'agenda/current-list-of-speakers-overlay';
+    function($http, Projector) {
+        var name = 'agenda/current-list-of-speakers';
         return {
-            name: name,
-            verboseName: gettext('List of speakers overlay'),
             project: function (projectorId, overlay) {
-                var isProjectedId = this.isProjected(overlay);
-                if (isProjectedId.length > 0) {
-                    // Deactivate
-                    var projector = Projector.get(isProjectedId[0]);
-                    var uuid;
-                    _.forEach(projector.elements, function (element) {
-                        if (element.name == 'agenda/current-list-of-speakers-overlay') {
-                            uuid = element.uuid;
-                        }
-                    });
-                    $http.post('/rest/core/projector/' + isProjectedId + '/deactivate_elements/',
-                               [uuid]);
-                }
-                // Activate, if the projector_id is a new projector.
-                if (isProjectedId != projectorId) {
-                    return $http.post(
-                        '/rest/core/projector/' + projectorId + '/activate_elements/',
-                         [{name: 'agenda/current-list-of-speakers-overlay',stable: true}]);
+                var isProjected = this.isProjectedWithOverlayStatus();
+                _.forEach(isProjected, function (mapping) {
+                    $http.post('/rest/core/projector/' + mapping.projectorId + '/deactivate_elements/',
+                        [mapping.uuid]
+                    );
+                });
+
+                // The slide was projected, if the id matches. If the overlay is given, also
+                // the overlay is checked
+                var wasProjectedBefore = _.some(isProjected, function (mapping) {
+                    var value = (mapping.projectorId === projectorId);
+                    if (overlay !== undefined) {
+                        value = value && (mapping.overlay === overlay);
+                    }
+                    return value;
+                });
+                overlay = overlay || false; // set overlay if it wasn't defined
+
+                if (!wasProjectedBefore) {
+                    var activate = function () {
+                        return $http.post(
+                            '/rest/core/projector/' + projectorId + '/activate_elements/',
+                             [{name: name,
+                               stable: overlay, // if this is an overlay, it should not be
+                                                // removed by changing the main content
+                               overlay: overlay}]
+                        );
+                    };
+                    if (!overlay) {
+                        // clear all elements on this projector, because we are _not_ using the overlay.
+                        $http.post('/rest/core/projector/' + projectorId + '/clear_elements/').then(activate);
+                    } else {
+                        activate();
+                    }
                 }
             },
             isProjected: function () {
                 // Returns the ids of all projectors with an agenda-item element. Else return an empty list.
                 var predicate = function (element) {
-                    var value;
-                    value = element.name == 'agenda/current-list-of-speakers-overlay';
-                    return value;
+                    return element.name === name;
                 };
                 var isProjectedIds = [];
                 Projector.getAll().forEach(function (projector) {
@@ -392,7 +364,23 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                     }
                 });
                 return isProjectedIds;
-            }
+            },
+            // Returns a list of mappings between pojector id, overlay and uuid.
+            isProjectedWithOverlayStatus: function () {
+                var mapping = [];
+                _.forEach(Projector.getAll(), function (projector) {
+                    _.forEach(projector.elements, function (element, uuid) {
+                        if (element.name === name) {
+                            mapping.push({
+                                projectorId: projector.id,
+                                uuid: uuid,
+                                overlay: element.overlay || false,
+                            });
+                        }
+                    });
+                });
+                return mapping;
+            },
         };
     }
 ])

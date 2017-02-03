@@ -16,9 +16,6 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
         slidesProvider.registerSlide('agenda/current-list-of-speakers', {
             template: 'static/templates/agenda/slide-current-list-of-speakers.html',
         });
-        slidesProvider.registerSlide('agenda/current-list-of-speakers-overlay', {
-            template: 'static/templates/agenda/slide-current-list-of-speakers-overlay.html',
-        });
     }
 ])
 
@@ -27,12 +24,20 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
     'Agenda',
     'CurrentListOfSpeakersItem',
     'Config',
-    function ($scope, Agenda, CurrentListOfSpeakersItem, Config) {
+    'Projector',
+    function ($scope, Agenda, CurrentListOfSpeakersItem, Config, Projector) {
+        $scope.overlay = $scope.element.overlay;
         // Watch for changes in the current list of speakers reference
         $scope.$watch(function () {
             return Config.lastModified('projector_currentListOfSpeakers_reference');
         }, function () {
             $scope.currentListOfSpeakersReference = $scope.config('projector_currentListOfSpeakers_reference');
+            $scope.updateCurrentListOfSpeakers();
+        });
+        // Watch for changes in the referenced projector
+        $scope.$watch(function () {
+            return Projector.lastModified($scope.currentListOfSpeakersReference);
+        }, function () {
             $scope.updateCurrentListOfSpeakers();
         });
         // Watch for changes in the current item.
@@ -42,12 +47,7 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
             $scope.updateCurrentListOfSpeakers();
         });
         $scope.updateCurrentListOfSpeakers = function () {
-            var itemPromise = CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
-            if (itemPromise) {
-                itemPromise.then(function(item) {
-                    $scope.agendaItem = item;
-                });
-            }
+            $scope.agendaItem = CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
         };
     }
 ])
