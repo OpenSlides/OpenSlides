@@ -258,7 +258,7 @@ angular.module('OpenSlidesApp.assignments.site', [
     'AssignmentPhases',
     function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, Projector, ProjectionDefault,
         gettextCatalog, AssignmentContentProvider, AssignmentCatalogContentProvider, PdfMakeDocumentProvider,
-        User, osTableFilter, osTableSort, gettext, phases, PdfCreate, AssignmentPhases) {
+        User, osTableFilter, osTableSort, gettext, PdfCreate, AssignmentPhases) {
         Assignment.bindAll({}, $scope, 'assignments');
         Tag.bindAll({}, $scope, 'tags');
         $scope.$watch(function () {
@@ -405,7 +405,7 @@ angular.module('OpenSlidesApp.assignments.site', [
     'PdfCreate',
     'AssignmentPhases',
     function($scope, $http, $filter, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment,
-        User, assignmentId, phases, Projector, ProjectionDefault, AssignmentContentProvider, BallotContentProvider,
+        User, assignmentId, Projector, ProjectionDefault, AssignmentContentProvider, BallotContentProvider,
         PdfMakeDocumentProvider, PdfMakeBallotPaperProvider, gettextCatalog, PdfCreate, AssignmentPhases) {
         var assignment = Assignment.get(assignmentId);
         User.bindAll({}, $scope, 'users');
