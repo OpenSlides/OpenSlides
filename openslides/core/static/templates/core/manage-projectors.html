@@ -2,14 +2,14 @@
   <div class="title">
     <div class="submenu" os-perms="core.can_manage_projector">
       <!-- New -->
-      <button class="btn btn-primary" ng-bootbox-prompt="{{ 'Please enter a name for the new projector' | translate }}"
+      <button class="btn btn-primary btn-sm" ng-bootbox-prompt="{{ 'Please enter a name for the new projector' | translate }}"
         ng-bootbox-prompt-action="createProjector(result)">
         <i class="fa fa-plus"></i>
         <translate>New</translate>
       </button>
       <!-- Reference for current list of speakers -->
       <div class="btn-group" uib-dropdown>
-        <button class="btn btn-default" id="menuListofSpeakers" uib-dropdown-toggle
+        <button class="btn btn-default btn-sm" id="menuListofSpeakers" uib-dropdown-toggle
             uib-tooltip="{{ 'Select the projector to which the current list of speakers refers to.' | translate }}"
             aria-haspopup="true" aria-expanded="true">
           <i class="fa fa-microphone"></i>
@@ -26,7 +26,7 @@
         </ul>
       </div>
       <!-- Identity -->
-      <button class="btn" ng-click="identifyProjectors()" ng-class="identifyPromise ? 'btn-primary' : 'btn-default'"
+      <button class="btn btn-sm" ng-click="identifyProjectors()" ng-class="identifyPromise ? 'btn-primary' : 'btn-default'"
         uib-tooltip="{{ 'Display an identifier message on all projectors with the id and the name.' | translate }}">
         <i class="fa fa-binoculars"></i>
         <translate>Identify</translate>
@@ -186,7 +186,8 @@
           <button class="btn btn-sm" ng-class="broadcast == projector.id ? 'btn-primary' : 'btn-default'"
             ng-click="projector.toggleBroadcast(projector)"
             ng-disabled="broadcast > 0 && broadcast != projector.id"
-            uib-tooltip="{{ 'Broadcast the content of this projector to all other projectors.' | translate }}">
+            uib-tooltip="{{ 'Broadcast the content of this projector to all other projectors.' | translate }}"
+            tooltip-placement="bottom">
             <i class="fa" ng-class="broadcast == projector.id ? 'fa-star' : 'fa-star-o'"></i>
             <translate>Broadcast</translate>
           </button>

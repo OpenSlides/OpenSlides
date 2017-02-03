@@ -572,6 +572,7 @@ angular.module('OpenSlidesApp.agenda.site', [
         }, function () {
             $scope.items = AgendaTree.getTree(Agenda.getAll());
         });
+        $scope.showInternalItems = true;
 
         // save parent and weight of moved agenda item (and all items on same level)
         $scope.treeOptions = {

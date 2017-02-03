@@ -17,8 +17,8 @@
 <div class="details">
   <div class="row form-group">
     <div class="col-sm-12">
-      <!-- delete mode -->
-      <button os-perms="assignments.can_manage" class="btn"
+      <!-- select mode -->
+      <button os-perms="assignments.can_manage" class="btn btn-sm"
           ng-class="$parent.isSelectMode ? 'btn-primary' : 'btn-default'"
           ng-click="$parent.isSelectMode = !$parent.isSelectMode; uncheckAll()">
         <i class="fa fa-check-square-o"></i>
@@ -26,7 +26,7 @@
       </button>
       <!-- export dropdown -->
       <div class="dropdown pull-right" uib-dropdown>
-        <button type="button" class="btn btn-default" id="dropdownExport" uib-dropdown-toggle>
+        <button type="button" class="btn btn-default btn-sm" id="dropdownExport" uib-dropdown-toggle>
           <i class="fa fa-upload"></i>
           <span ng-if="assignmentsFiltered.length == assignments.length" translate>
             Export all
@@ -40,7 +40,7 @@
           <!-- PDF export -->
           <li>
             <a href="" ng-click="makePDF_assignmentList()">
-              <i class="fa fa-file-pdf-o fa-lg"></i>
+              <i class="fa fa-file-pdf-o"></i>
               <translate>PDF</translate>
             </a>
           </li>
@@ -64,7 +64,7 @@
       <a ng-show="isSelectMode" os-perms="assignments.can_manage"
         ng-bootbox-confirm="{{ 'Are you sure you want to delete all selected elections?' | translate }}"
         ng-bootbox-confirm-action="deleteMultiple()"
-        class="btn btn-primary">
+        class="btn btn-default btn-sm">
         <i class="fa fa-trash fa-lg"></i>
         <translate>Delete selected elections</translate>
       </a>

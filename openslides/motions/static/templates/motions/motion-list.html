@@ -30,7 +30,7 @@
   <div class="row">
     <div class="col-sm-12">
       <!-- select mode -->
-      <button os-perms="motions.can_manage" class="btn"
+      <button os-perms="motions.can_manage" class="btn btn-sm"
           ng-class="$parent.isSelectMode ? 'btn-primary' : 'btn-default'"
           ng-click="$parent.isSelectMode = !$parent.isSelectMode; uncheckAll()">
         <i class="fa fa-check-square-o"></i>
@@ -38,7 +38,7 @@
       </button>
       <!-- Export dropdown -->
       <div class="dropdown pull-right" uib-dropdown>
-        <button type="button" class="btn btn-default" id="dropdownExport" uib-dropdown-toggle>
+        <button type="button" class="btn btn-default btn-sm" id="dropdownExport" uib-dropdown-toggle>
           <i class="fa fa-upload"></i>
           <span ng-if="motionsFiltered.length == motions.length" translate>
             Export all
@@ -52,7 +52,7 @@
           <!-- PDF export -->
           <li>
             <a href="" ng-click="pdfExport()">
-              <i class="fa fa-file-pdf-o fa-lg"></i>
+              <i class="fa fa-file-pdf-o"></i>
               PDF
             </a>
           </li>
@@ -60,14 +60,14 @@
           <li>
             <a href="" id="downloadLinkCSV"
               ng-click="csvExport()">
-              <i class="fa fa-file-text-o fa-lg"></i>
+              <i class="fa fa-file-text-o"></i>
               CSV
             </a>
           </li>
           <!-- DOCX export -->
           <li>
             <a href="" ng-click="docxExport()">
-              <i class="fa fa-file-word-o fa-lg"></i>
+              <i class="fa fa-file-word-o"></i>
               DOCX
             </a>
           </li>
@@ -79,7 +79,7 @@
   <div uib-collapse="!isSelectMode" class="row spacer">
     <div class="col-sm-12 text-left form-inline" ng-show="isSelectMode" os-perms="motions.can_manage">
       <!-- actions -->
-      <select ng-model="selectedAction" class="form-control">
+      <select ng-model="selectedAction" class="form-control input-sm">
         <option value="" translate>--- Select action ---</option>
         <option value="delete" translate>Delete</option>
         <option value="setStatus" translate>Set status</option>
@@ -87,7 +87,7 @@
         <option value="setMotionBlock" ng-if="motionBlocks.length" translate>Set motion block</option>
       </select>
       <!-- state select -->
-      <select ng-show="selectedAction == 'setStatus'" ng-model="selectedState" class="form-control">
+      <select ng-show="selectedAction == 'setStatus'" ng-model="selectedState" class="form-control input-sm">
         <option value="" translate>--- Select state ---</option>
         <option ng-repeat="state in states" ng-disabled="state.workflowHeader" value="{{ state.id }}">
           {{ (state.workflowHeader ? state.headername : state.name) | translate }}
@@ -95,11 +95,11 @@
       </select>
       <!-- set state button -->
       <a ng-show="selectedAction == 'setStatus' && selectedState"
-          ng-click="setStatusMultiple(selectedState)" class="btn btn-default">
+          ng-click="setStatusMultiple(selectedState)" class="btn btn-default btn-sm">
         <translate>Set status</translate>
       </a>
       <!-- category select -->
-      <select ng-show="selectedAction == 'setCategory'" ng-model="selectedCategory" class="form-control">
+      <select ng-show="selectedAction == 'setCategory'" ng-model="selectedCategory" class="form-control input-sm">
         <option value="" translate>--- Select category ---</option>
         <option ng-repeat="category in categories" value="{{ category.id }}">
           {{ category.name }}
@@ -108,11 +108,11 @@
       </select>
       <!-- set category button -->
       <a ng-show="selectedAction == 'setCategory' && selectedCategory"
-          ng-click="setCategoryMultiple(selectedCategory)" class="btn btn-default">
+          ng-click="setCategoryMultiple(selectedCategory)" class="btn btn-default btn-sm">
         <translate>Set category</translate>
       </a>
       <!-- motionBlock select -->
-      <select ng-show="selectedAction == 'setMotionBlock'" ng-model="selectedMotionBlock" class="form-control">
+      <select ng-show="selectedAction == 'setMotionBlock'" ng-model="selectedMotionBlock" class="form-control input-sm">
         <option value="" translate>--- Select motion block ---</option>
         <option ng-repeat="motionBlock in motionBlocks" value="{{ motionBlock.id }}">
           {{ motionBlock.title }}
@@ -121,14 +121,14 @@
       </select>
       <!-- set motion block button -->
       <a ng-show="selectedAction == 'setMotionBlock' && selectedMotionBlock"
-         ng-click="setMotionBlockMultiple(selectedMotionBlock)" class="btn btn-default">
+         ng-click="setMotionBlockMultiple(selectedMotionBlock)" class="btn btn-default btn-sm">
         <translate>Set motion block</translate>
       </a>
       <!-- delete button -->
       <a ng-show="selectedAction == 'delete'"
         ng-bootbox-confirm="{{ 'Are you sure you want to delete all selected motions?' | translate }}"
         ng-bootbox-confirm-action="deleteMultiple()"
-        class="btn btn-danger">
+        class="btn btn-default btn-sm">
         <i class="fa fa-trash fa-lg"></i>
         <translate>Delete selected motions</translate>
       </a>

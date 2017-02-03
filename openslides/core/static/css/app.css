@@ -1128,6 +1128,15 @@ img {
     width: 120px;
 }
 
+/** Agenda sort view **/
+.agenda-sort .internal {
+    padding: 7px;
+    opacity: 0.6;
+}
+.agenda-sort .angular-ui-tree-node {
+    min-height: 0;
+}
+
 /** Footer **/
 #footer {
     float: left;
