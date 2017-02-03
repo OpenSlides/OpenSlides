@@ -2,7 +2,7 @@ import bleach
 
 allowed_tags = [
     'a', 'img',  # links and images
-    'p', 'span', 'blockquote',  # text layout
+    'br', 'p', 'span', 'blockquote',  # text layout
     'strike', 'strong', 'u', 'em', 'sup', 'sub', 'pre',  # text formatting
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',  # headings
     'ol', 'ul', 'li',  # lists

@@ -40,7 +40,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             metaTableBody.push([
                 {
                     text: gettextCatalog.getString('Submitters') + ':',
-                    style: ['bold', 'grey']
+                    style: ['bold', 'grey'],
                 },
                 {
                     text: submitters,
@@ -79,8 +79,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 metaTableBody.push([
                     {
                         text: gettextCatalog.getString('Category') + ':',
-                        style: ['bold', 'grey']
-                    },
+                        style: ['bold', 'grey'] },
                     {
                         text: motion.category.name,
                         style: 'grey'
@@ -216,26 +215,17 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             }
 
             // build table
+            // Used placeholder for 'layout' functions whiche are
+            // replaced by lineWitdh/lineColor function in pfd-worker.js.
+            // TODO: Remove placeholder and us static values for LineWidth and LineColor
+            // if pdfmake has fixed this.
             var metaTableJsonString = {
                 table: {
                     widths: ['30%','70%'],
                     body: metaTableBody,
                 },
                 margin: [0, 0, 0, 20],
-                layout: {
-                    hLineWidth: function(i, node) {
-                        return (i === 0 || i === node.table.body.length) ? 0 : 0.5;
-                    },
-                    vLineWidth: function(i, node) {
-                        return (i === 0 || i === node.table.widths.length) ? 0 : 0;
-                    },
-                    hLineColor: function(i, node) {
-                        return (i === 0 || i === node.table.body.length) ? '' : 'white';
-                    },
-                    vLineColor: function(i, node) {
-                        return (i === 0 || i === node.table.widths.length) ? '' : 'white';
-                    }
-                }
+                layout: '{{motion-placeholder-to-insert-functions-here}}'
             };
             return metaTableJsonString;
         };
