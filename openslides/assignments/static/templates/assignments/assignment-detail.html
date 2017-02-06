@@ -133,7 +133,13 @@
         index="$index" heading="{{ 'Ballot' | translate }} {{ assignment.polls.length - $index }}">
       <div ng-controller="AssignmentPollDetailCtrl">
         <!-- action buttons -->
-        <div class="pull-right">
+        <div class="pull-right" os-perms="assignments.can_manage">
+          <span class="spacer-right" editable-text="poll.description" onaftersave="saveDescriptionChange(poll)"
+            uib-tooltip="{{ 'Hint on the ballot paper.' | translate }}">
+            <span ng-if="!poll.description" translate>Set hint for ballot paper ...</span>
+            <span ng-if="poll.description">{{ poll.description }}</span>
+            <i class="fa fa-pencil"></i>
+          </span>
           <!-- delete -->
           <a class="btn btn-danger btn-xs"
               ng-bootbox-confirm="{{ 'Are you sure you want to delete this ballot?' | translate }}"
@@ -142,7 +148,7 @@
             <translate>Delete</translate>
           </a>
         </div>
-        <div os-perms="assignments.can_manage" class="spacer " role="group">
+        <div os-perms="assignments.can_manage" class="spacer" role="group">
           <!-- angular requires to open the link in new tab with "target='_blank'".
           Otherwise the pdf url can't be open in same window; angular redirects to "/". -->
           <!-- PDF -->

@@ -205,7 +205,8 @@ angular.module('OpenSlidesApp.assignments.site', [
     'MajorityMethodChoices',
     'Config',
     'AssignmentPollDetailCtrlCache',
-    function ($scope, MajorityMethodChoices, Config, AssignmentPollDetailCtrlCache) {
+    'AssignmentPoll',
+    function ($scope, MajorityMethodChoices, Config, AssignmentPollDetailCtrlCache, AssignmentPoll) {
         // Define choices.
         $scope.methodChoices = MajorityMethodChoices;
         // TODO: Get $scope.baseChoices from config_variables.py without copying them.
@@ -227,6 +228,10 @@ angular.module('OpenSlidesApp.assignments.site', [
             });
         };
         $scope.recalculateMajorities($scope.method);
+
+        $scope.saveDescriptionChange = function (poll) {
+            AssignmentPoll.save(poll);
+        };
 
         // Save current values to cache on destroy of this controller.
         $scope.$on('$destroy', function() {
@@ -813,15 +818,6 @@ angular.module('OpenSlidesApp.assignments.site', [
                     templateOptions: {
                         label: gettextCatalog.getString('Casted ballots'),
                         type: 'number'
-                    }
-                },
-                // TODO: update description in separat request
-                // (without vote result values)
-                {
-                    key: 'description',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Comment on the ballot paper')
                     }
                 }
         );
