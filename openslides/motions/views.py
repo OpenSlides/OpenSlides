@@ -1,6 +1,7 @@
 import base64
 import re
 
+from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.db import IntegrityError, transaction
 from django.http import Http404
@@ -426,9 +427,14 @@ class CategoryViewSet(ModelViewSet):
         number = 0
         instances = []
 
+        # If MOTION_IDENTIFIER_WITHOUT_BLANKS is set, don't use blanks when building identifier.
+        without_blank = hasattr(settings, 'MOTION_IDENTIFIER_WITHOUT_BLANKS') and settings.MOTION_IDENTIFIER_WITHOUT_BLANKS
+
         # Prepare ordered list of motions.
         if not category.prefix:
             prefix = ''
+        elif without_blank:
+            prefix = '%s' % category.prefix
         else:
             prefix = '%s ' % category.prefix
         motions = category.motion_set.all()
@@ -447,7 +453,10 @@ class CategoryViewSet(ModelViewSet):
                 for motion in motions:
                     if motion.is_amendment():
                         parent_identifier = motion.parent.identifier or ''
-                        prefix = '%s %s ' % (parent_identifier, config['motions_amendments_prefix'])
+                        if without_blank:
+                            prefix = '%s%s' % (parent_identifier, config['motions_amendments_prefix'])
+                        else:
+                            prefix = '%s %s ' % (parent_identifier, config['motions_amendments_prefix'])
                     number += 1
                     new_identifier = '%s%s' % (prefix, motion.extend_identifier_number(number))
                     motions_to_be_sorted.append({
