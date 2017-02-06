@@ -9,7 +9,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'PDFLayout',
     'Category',
     'Config',
-    function(gettextCatalog, PDFLayout, Category, Config) {
+    'Motion',
+    function(gettextCatalog, PDFLayout, Category, Config, Motion) {
     /**
      * Provides the content as JS objects for Motions in pdfMake context
      * @constructor
@@ -25,9 +26,16 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         );
 
         // subtitle
-        var subtitle = PDFLayout.createSubtitle(
-                gettextCatalog.getString('Sequential number') + ': ' +  motion.id
-        );
+        var subtitleLines = [];
+        if (motion.parent_id) {
+            var parentMotion = Motion.get(motion.parent_id);
+            subtitleLines.push(
+                gettextCatalog.getString('Amendment of motion') + ': ' +
+                (parentMotion.identifier ? parentMotion.identifier : parentMotion.getTitle())
+            );
+        }
+        subtitleLines.push(gettextCatalog.getString('Sequential number') + ': ' +  motion.id);
+        var subtitle = PDFLayout.createSubtitle(subtitleLines);
 
         // meta data table
         var metaTable = function() {
@@ -269,7 +277,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             if (motion.getReason($scope.version)) {
                 reason.push({
                     text:  gettextCatalog.getString('Reason'),
-                    style: 'heading3'
+                    style: 'heading3',
+                    marginTop: 25,
                 });
                 reason.push(converter.convertHTML(motion.getReason($scope.version), $scope.lineNumberMode));
             }

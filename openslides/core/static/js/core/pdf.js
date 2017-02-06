@@ -26,7 +26,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
         // page subtitle
         PDFLayout.createSubtitle = function(subtitle) {
             return {
-                text: subtitle,
+                text: subtitle.join('\n'),
                 style: "subtitle"
             };
         };
@@ -156,7 +156,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 return {
                     color: '#555',
                     fontSize: 9,
-                    margin: [80, 30, 80, 10], // [left, top, right, bottom]
+                    margin: [75, 30, 75, 10], // [left, top, right, bottom]
                     columns: columns,
                     columnGap: 10
                 };
@@ -168,11 +168,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
             // are replaced by dynamic footer function in pdf-worker.js.
             var getFooter = function() {
                 return {
-                    alignment: 'center',
-                    fontSize: 8,
+                    alignment: 'right',
+                    margin: [0, 15, 75, 0],
+                    fontSize: 9,
                     color: '#555',
-                    text: gettextCatalog.getString('Page') +
-                        ' {{currentPage}} / {{pageCount}}'
+                    text: '{{currentPage}} / {{pageCount}}'
                 };
             };
             // Generates the document(definition) for pdfMake
@@ -180,7 +180,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 var content = contentProvider.getContent();
                 return {
                     pageSize: 'A4',
-                    pageMargins: [80, 90, 80, 100],
+                    pageMargins: [75, 90, 75, 100],
                     defaultStyle: {
                         font: 'PdfFont',
                         fontSize: 10
@@ -625,6 +625,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                                     ]
                                             };
                                             currentParagraph = create("text");
+                                            currentParagraph.lineHeight = 1.25;
                                             col.columns.push(currentParagraph);
                                             alreadyConverted.push(col);
                                         }
