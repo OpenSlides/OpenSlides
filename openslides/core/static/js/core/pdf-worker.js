@@ -42,6 +42,7 @@ self.addEventListener('message', function(e) {
             return {
                 text: footerText,
                 alignment: data.footerTpl.alignment,
+                margin: data.footerTpl.margin,
                 fontSize: data.footerTpl.fontSize,
                 color: data.footerTpl.color
             };
