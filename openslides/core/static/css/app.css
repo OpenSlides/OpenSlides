@@ -975,6 +975,7 @@ img {
 .os-table .id-col {
     width: 50px;
     min-height: 1px;
+    word-wrap: break-word;
 }
 
 .os-table .id-col-space {
