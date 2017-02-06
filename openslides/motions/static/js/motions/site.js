@@ -1217,6 +1217,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 return motion.getTextWithLineBreaks($scope.version);
             },
             function (obj) {
+                motion.reason = motion.getReason(-1);
                 motion.setTextStrippingLineBreaks(obj.editor.getData());
                 motion.disable_versioning = (obj.trivialChange && Config.get('motions_allow_disable_versioning').value);
             }
