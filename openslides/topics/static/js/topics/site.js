@@ -372,8 +372,7 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
         };
         // download CSV example file
         $scope.downloadCSVExample = function () {
-            var element = document.getElementById('downloadLink');
-            TopicsCsvExample.downloadExample(element);
+            TopicsCsvExample.downloadExample();
         };
      }
 ]);

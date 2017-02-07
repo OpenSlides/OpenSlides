@@ -15,7 +15,7 @@ angular.module('OpenSlidesApp.motions.csv', [])
             });
         };
         return {
-            export: function (element, motions) {
+            export: function (motions) {
                 var csvRows = [
                     makeHeaderline()
                 ];
@@ -32,16 +32,16 @@ angular.module('OpenSlidesApp.motions.csv', [])
                     row.push('"' + motion.origin + '"');
                     csvRows.push(row);
                 });
-                CsvDownload(csvRows, element, 'motions-export.csv');
+                CsvDownload(csvRows, 'motions-export.csv');
             },
-            downloadExample: function (element) {
+            downloadExample: function () {
                 var csvRows = [makeHeaderline(),
                     // example entries
                     ['A1', 'Title 1', 'Text 1', 'Reason 1', 'Submitter A', 'Category A', 'Last Year Conference A'],
-                    ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', ''                      ],
-                    [''  , 'Title 3', 'Text 3', ''        , ''           , ''          , ''                      ],
+                    ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', ''],
+                    [''  , 'Title 3', 'Text 3', '', '', '', ''],
                 ];
-                CsvDownload(csvRows, element, 'motions-example.csv');
+                CsvDownload(csvRows, 'motions-example.csv');
             },
         };
     }

@@ -105,6 +105,16 @@ def get_config_variables():
         group='General',
         subgroup='System')
 
+    # CSV
+
+    yield ConfigVariable(
+        name='general_csv_separator',
+        default_value=',',
+        label='The separator used for the csv export and examples',
+        weight=144,
+        group='General',
+        subgroup='CSV')
+
     # Projector
 
     yield ConfigVariable(
