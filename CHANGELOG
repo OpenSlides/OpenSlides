@@ -76,6 +76,7 @@ Elections:
 - Candidates are now sortable.
 - Removed unused assignment config to publish winner election results only.
 - Number of ballots printed can now be set in config.
+- Added inline edit field for a specific hint on ballot papers.
 
 Users:
 - Added new matrix-interface for managing groups and their permissions.
