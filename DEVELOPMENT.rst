@@ -91,9 +91,8 @@ that the 32-bit installer is required even on a 64-bit Windows system. If
 you use the 64-bit installer, step d. of the instruction will fail unless
 you installed the package Reportlab manually.
 
-You also have to install Setuptools. Download and run (via double click)
-the last `install script ez_setup.py for Setuptools
-<https://pypi.python.org/pypi/setuptools/#installation-instructions>`_.
+You have to install MS Visual C++ 2015 build tools before you install the
+required python packages for OpenSlides (unfortunately Twisted 16.6.x needs it).
 
 To setup and activate the virtual environment in step c. use::
 
