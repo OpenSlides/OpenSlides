@@ -268,14 +268,55 @@
         <h4 translate>List of speakers</h4>
       </a>
       <div uib-collapse="!isSpeakerList" ng-cloak>
-        <projector-button model="listofspeakers" default-projector-id="listOfSpeakersDefaultProjectorId">
-        </projector-button>
-        <div class="btn-group" os-perms="agenda.can_manage">
-          <a ng-click="goToListOfSpeakers()" class="btn btn-default btn-sm"
-            title="{{ 'Manage current list of speakers' | translate}}">
-            <i class="fa fa-microphone"></i>
-          </a>
+
+        <!-- Current list of speakers projector button -->
+        <div class="btn-group button" uib-dropdown
+          uib-tooltip="{{ 'Project the current list of speakers' | translate }}"
+          os-perms="core.can_manage_projector">
+          <button type="button" class="btn btn-default btn-sm"
+              title="{{ 'Project current list of speakers' | translate }}"
+              ng-click="currentListOfSpeakers.project(listOfSpeakersDefaultProjectorId, currentListOfSpeakersAsOverlay)"
+              ng-class="{ 'btn-primary': currentListOfSpeakers.isProjected().length && inArray(currentListOfSpeakers.isProjected(), listOfSpeakersDefaultProjectorId)}">
+            <i class="fa fa-video-camera"></i>
+            <translate>Current list of speakers</translate>
+          </button>
+          <button type="button" class="btn btn-default btn-sm slimDropDown"
+            ng-if="projectors.length > 1"
+            uib-dropdown-toggle
+            ng-class="{ 'btn-primary': currentListOfSpeakers.isProjected().length && !inArray(currentListOfSpeakers.isProjected(), listOfSpeakersDefaultProjectorId)}">
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="split-button" ng-if="projectors.length > 1">
+            <li role="menuitem">
+              <a href="" ng-click="setOverlay(false); $event.stopPropagation();">
+                <i class="fa" ng-class="currentListOfSpeakersAsOverlay ? 'fa-circle-o' : 'fa-check-circle-o'"></i>
+                <translate>Project as slide</translate>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a href="" ng-click="setOverlay(true); $event.stopPropagation();">
+                <i class="fa" ng-class="currentListOfSpeakersAsOverlay ? 'fa-check-circle-o' : 'fa-circle-o'"></i>
+                <translate>Project as overlay</translate>
+              </a>
+            </li>
+            <li class="divider"></li>
+            <li role="menuitem" ng-repeat="projector in projectors | orderBy:'id'">
+              <a href="" ng-click="currentListOfSpeakers.project(projector.id, currentListOfSpeakersAsOverlay)"
+                ng-class="{ 'projected': inArray(currentListOfSpeakers.isProjected(), projector.id) }">
+                <i class="fa fa-video-camera" ng-show="inArray(currentListOfSpeakers.isProjected(), projector.id)"></i>
+                {{ projector.name | translate }}
+                <span ng-if="projector.id == listOfSpeakersDefaultProjectorId">(<translate>Default</translate>)</span>
+              </a>
+            </li>
+          </ul>
         </div>
+
+        <button os-perms="agenda.can_manage"
+          ng-disabled="!currentListOfSpeakersItem()"
+          ng-click="goToListOfSpeakers()" class="btn btn-default btn-sm"
+          uib-tooltip="{{ 'Manage the current list of speakers' | translate}}">
+          <i class="fa fa-microphone"></i>
+        </button>
       </div>
     </div>
   </div><!-- end div ProjectorControlCtrl -->

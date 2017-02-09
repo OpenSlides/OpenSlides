@@ -1,0 +1,33 @@
+<div class="content scrollcontent">
+  <div class="title">
+    <h1 translate>Current list of speakers</h1>
+    <h2> {{ agendaItem.getTitle() }}
+      <span class="slimlabel label label-danger ng-scope"
+        ng-if="agendaItem.speaker_list_closed" translate>Closed</span>
+    </h2>
+  </div>
+
+  <!-- Last speakers -->
+  <p ng-repeat="speaker in lastSpeakers = (agendaItem.speakers
+    | filter: {end_time: '!!', begin_time: '!!'})
+    | limitTo: config('agenda_show_last_speakers') : (lastSpeakers.length - config('agenda_show_last_speakers'))"
+    class="lastSpeakers">
+    {{ speaker.user.get_full_name() }}
+  </p>
+
+  <!-- Current speaker -->
+  <p ng-repeat="speaker in currentspeakers = (agendaItem.speakers
+    | filter: {end_time: null, begin_time: '!!'})"
+    class="currentSpeaker">
+    <i class="fa fa-microphone fa-lg"></i> {{ speaker.user.get_full_name() }}
+  </p>
+
+  <!-- Next speakers -->
+  <ol class="nextSpeakers">
+    <li ng-repeat="speaker in agendaItem.speakers
+      | filter: {begin_time: null}
+      | orderBy:'weight'">
+      {{ speaker.user.get_full_name() }}
+    </li>
+  </ol>
+</div>

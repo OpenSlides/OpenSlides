@@ -712,7 +712,8 @@ angular.module('OpenSlidesApp.core', [
                             value.name != 'agenda/item-list' &&
                             value.name != 'core/clock' &&
                             value.name != 'core/countdown' &&
-                            value.name != 'core/message' ) {
+                            value.name != 'core/message' &&
+                            value.name != 'agenda/current-list-of-speakers' ) {
                             return_dict = {
                                 'state': value.name.replace('/', '.')+'.detail.update',
                                 'param': {id: value.id}

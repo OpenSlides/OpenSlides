@@ -12,6 +12,8 @@ Agenda:
 - Added button to remove all speakers from a list of speakers.
 - Added option to create or edit agenda items as subitems of others.
 - Fixed security issue: Comments were shown for unprivileged users.
+- Added option to choose whether to show the current list of speakers slide
+  as a slide or an overlay.
 
 Core:
 - Added support for multiple projectors.

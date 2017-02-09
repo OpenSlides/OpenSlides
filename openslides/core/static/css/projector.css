@@ -230,9 +230,10 @@ h3 {
     position: absolute;
     background: #d3d3d3;
     border-radius: 7px;
-    border: 1px solid;
-    padding: 3px 7px 10px 19px;
+    border: 1px solid #999;
+    padding: 0px 7px 10px 19px;
     z-index: 99;
+    box-shadow: 3px 3px 10px 1px rgba(0,0,0,0.5);
 }
 ul, ol {
     margin: 0 0 10px 2em;

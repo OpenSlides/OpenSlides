@@ -73,13 +73,19 @@ class ListOfSpeakersSlide(ProjectorElement):
         return {'agenda_item_id': self.config_entry.get('id')}
 
 
-class CurrentListOfSpeakersMetaClass(ProjectorElement):
+class CurrentListOfSpeakersSlide(ProjectorElement):
     """
-    Main class for the list of speaker slides.
+    Slide for the current list of speakers.
+    """
+    name = 'agenda/current-list-of-speakers'
 
-    """
     def get_requirements(self, config_entry):
-        items = self.get_agenda_items(config['projector_currentListOfSpeakers_reference'])
+        # The query mechanism on client needs the referenced projector.
+        reference_projector = Projector.objects.get(
+            pk=config['projector_currentListOfSpeakers_reference'])
+        yield reference_projector
+
+        items = self.get_agenda_items(reference_projector)
         for item in items:
             yield item
             for speaker in item.speakers.filter(end_time=None):
@@ -90,8 +96,7 @@ class CurrentListOfSpeakersMetaClass(ProjectorElement):
                 # Yield last speakers
                 yield speaker.user
 
-    def get_agenda_items(self, projector_id):
-        projector = Projector.objects.get(pk=projector_id)
+    def get_agenda_items(self, projector):
         for element in projector.elements.values():
             agenda_item_id = element.get('agenda_item_id')
             if agenda_item_id is not None:
@@ -99,26 +104,23 @@ class CurrentListOfSpeakersMetaClass(ProjectorElement):
 
     def get_collection_elements_required_for_this(self, collection_element, config_entry):
         output = super().get_collection_elements_required_for_this(collection_element, config_entry)
-        # Full update if agenda_item changes because then we may have new
-        # candidates and therefor need new users.
-        items = self.get_agenda_items(config['projector_currentListOfSpeakers_reference'])
-        for item in items:
-            if collection_element == CollectionElement.from_values(item.get_collection_string(), item.pk):
-                output.extend(self.get_requirements_as_collection_elements(config_entry))
-                break
+        # Full update if agenda_item or referenced projector changes because
+        # then we may have new candidates and therefor need new users.
+        reference_projector = Projector.objects.get(
+            pk=config['projector_currentListOfSpeakers_reference'])
+        is_reference_projector = collection_element == CollectionElement.from_values(
+                reference_projector.get_collection_string(),
+                reference_projector.pk)
+        is_config = (
+            collection_element.collection_string == 'core/config' and
+            collection_element.information.get('changed_config') == 'projector_currentListOfSpeakers_reference')
+
+        if is_reference_projector or is_config:
+            output.extend(self.get_requirements_as_collection_elements(config_entry))
+        else:
+            items = self.get_agenda_items(reference_projector)
+            for item in items:
+                if collection_element == CollectionElement.from_values(item.get_collection_string(), item.pk):
+                    output.extend(self.get_requirements_as_collection_elements(config_entry))
+                    break
         return output
-
-
-class CurrentListOfSpeakersSlide(CurrentListOfSpeakersMetaClass):
-    """
-    Slide for the current list of speakers.
-    """
-    name = 'agenda/current-list-of-speakers'
-
-
-class CurrentListOfSpeakersOverlaySlide(CurrentListOfSpeakersMetaClass):
-    """
-    List of speakers overlay.
-    Subclass of ListOfSpeakers
-    """
-    name = 'agenda/current-list-of-speakers-overlay'
