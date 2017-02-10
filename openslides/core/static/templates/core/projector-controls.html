@@ -274,7 +274,6 @@
           uib-tooltip="{{ 'Project the current list of speakers' | translate }}"
           os-perms="core.can_manage_projector">
           <button type="button" class="btn btn-default btn-sm"
-              title="{{ 'Project current list of speakers' | translate }}"
               ng-click="currentListOfSpeakers.project(listOfSpeakersDefaultProjectorId, currentListOfSpeakersAsOverlay)"
               ng-class="{ 'btn-primary': currentListOfSpeakers.isProjected().length && inArray(currentListOfSpeakers.isProjected(), listOfSpeakersDefaultProjectorId)}">
             <i class="fa fa-video-camera"></i>
