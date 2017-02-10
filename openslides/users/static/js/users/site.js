@@ -22,6 +22,18 @@ angular.module('OpenSlidesApp.users.site', [
         });
     }
 ])
+.config([
+    'SearchProvider',
+    'gettext',
+    function (SearchProvider, gettext) {
+        SearchProvider.register({
+            'verboseName': gettext('Participants'),
+            'collectionName': 'users/user',
+            'urlDetailState': 'users.user.detail',
+            'weight': 500,
+        });
+    }
+])
 
 .config([
     '$stateProvider',

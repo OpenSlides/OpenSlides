@@ -97,6 +97,27 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+// Provider to register a searchable module/app.
+.provider('Search', [
+    function() {
+        var searchModules = [];
+
+        this.register = function(module) {
+            searchModules.push(module);
+        };
+
+        this.$get = [
+            function () {
+                return {
+                    getAll: function () {
+                        return searchModules;
+                    }
+                };
+            }
+        ];
+    }
+])
+
 .run([
     'editableOptions',
     'gettext',
@@ -952,76 +973,59 @@ angular.module('OpenSlidesApp.core.site', [
 // Search Controller
 .controller('SearchCtrl', [
     '$scope',
-    '$http',
+    '$filter',
     '$stateParams',
-    '$location',
-    '$sanitize',
+    'Search',
     'DS',
-    function ($scope, $http, $stateParams, $location, $sanitize, DS) {
-        $scope.fullword = false;
-        $scope.filterAgenda = true;
-        $scope.filterMotion = true;
-        $scope.filterAssignment = true;
-        $scope.filterUser = true;
-        $scope.filterMedia = true;
+    'Motion',
+    function ($scope, $filter, $stateParams, Search, DS, Motion) {
+        $scope.searchresults = [];
+        var searchModules = Search.getAll();
 
         // search function
         $scope.search = function() {
-            var query = _.escape($scope.query);
-            if (query !== '') {
-                var lastquery = query;
-                // attach asterisks if search is not for full words only
-                if (!$scope.fullword) {
-                    if (query.charAt(0) != '*'){
-                        query = "*" + query;
-                    }
-                    if (query.charAt(query.length - 1) != '*'){
-                        query = query + "*";
-                    }
-                }
-                $scope.query = lastquery;
-                $http.get('/core/search_api/?q=' + query).then(function(success) {
-                    $scope.results = [];
-                    var elements = success.data.elements;
-                    angular.forEach(elements, function(element) {
-                        DS.find(element.collection, element.id).then(function(data) {
-                            data.urlState = element.collection.replace('/','.')+'.detail';
-                            data.urlParam = {id: element.id};
-                            $scope.results.push(data);
-                        });
-                    });
+            $scope.results = [];
+            var foundObjects = [];
+            // search in rest properties of all defined searchModule
+            // (does not found any related objects, e.g. speakers of items)
+            _.forEach(searchModules, function(searchModule) {
+                var result = {};
+                result.verboseName = searchModule.verboseName;
+                result.collectionName = searchModule.collectionName;
+                result.urlDetailState = searchModule.urlDetailState;
+                result.weight = searchModule.weight;
+                result.checked = true;
+                result.elements = $filter('filter')(DS.getAll(searchModule.collectionName), $scope.searchquery);
+                $scope.results.push(result);
+                _.forEach(result.elements, function(element) {
+                    foundObjects.push(element);
                 });
-                $location.url('/search/?q=' + lastquery);
-            }
+            });
+            // search additionally in specific releations of all defined searchModules
+            _.forEach(searchModules, function(searchModule) {
+                _.forEach(DS.getAll(searchModule.collectionName), function(object) {
+                    if (_.isFunction(object.hasSearchResult)) {
+                        if (object.hasSearchResult(foundObjects, $scope.searchquery)) {
+                            // releation found, check if object is not yet in search results
+                            _.forEach($scope.results, function(result) {
+                                if ((object.getResourceName() === result.collectionName) &&
+                                        _.findIndex(result.elements, {'id': object.id}) === -1) {
+                                    result.elements.push(object);
+                                }
+                            });
+                        }
+                    } else {
+                        return false;
+                    }
+                });
+            });
         };
 
         //get search string from parameters submitted from outside the scope
         if ($stateParams.q) {
-            $scope.query = $stateParams.q;
+            $scope.searchquery = $stateParams.q;
             $scope.search();
         }
-
-        // returns element if part of the current search selection
-        $scope.filterresult = function() {
-            return function(result) {
-                if ($scope.filterUser && result.urlState == 'users.user.detail') {
-                    return result;
-                }
-                if ($scope.filterMotion && result.urlState == 'motions.motion.detail') {
-                    return result;
-                }
-                if ($scope.filterAgenda && result.urlState == 'topics.topic.detail') {
-                    return result;
-                }
-                if ($scope.filterAssignment && result.urlState == 'assignments.assignment.detail') {
-                    return result;
-                }
-                if ($scope.filterMedia && result.urlState== 'mediafiles.mediafile.detail') {
-                    return result;
-                }
-                return;
-            };
-        };
     }
 ])
 

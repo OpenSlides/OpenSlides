@@ -130,12 +130,6 @@ STATICFILES_DIRS = [os.path.join(OPENSLIDES_USER_DATA_PATH, 'static')] + STATICF
 MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, 'media', '')
 
 
-# Whoosh search library
-# https://whoosh.readthedocs.io/en/latest/
-
-SEARCH_INDEX = os.path.join(OPENSLIDES_USER_DATA_PATH, 'search_index')
-
-
 # Customization of OpenSlides apps
 
 MOTION_IDENTIFIER_MIN_DIGITS = 1

@@ -341,9 +341,18 @@ angular.module('OpenSlidesApp.assignments', [])
                 getSearchResultName: function () {
                     return this.getAgendaTitle();
                 },
-                // subtitle of search result
-                getSearchResultSubtitle: function () {
-                    return "Election";
+                // return true if a specific relation matches for given searchquery
+                // (here: related_users/candidates)
+                hasSearchResult: function (results) {
+                    var assignment = this;
+                    // search for related users (check if any user.id from already found users matches)
+                    return _.some(results, function(result) {
+                        if (result.getResourceName() === "users/user") {
+                            if (_.some(assignment.assignment_related_users, {'user_id': result.id})) {
+                                return true;
+                            }
+                        }
+                    });
                 },
                 // override project function of jsDataModel factory
                 project: function (projectorId, pollId) {

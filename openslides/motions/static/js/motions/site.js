@@ -27,6 +27,19 @@ angular.module('OpenSlidesApp.motions.site', [
 ])
 
 .config([
+    'SearchProvider',
+    'gettext',
+    function (SearchProvider, gettext) {
+        SearchProvider.register({
+            'verboseName': gettext('Motions'),
+            'collectionName': 'motions/motion',
+            'urlDetailState': 'motions.motion.detail',
+            'weight': 300,
+        });
+    }
+])
+
+.config([
     '$stateProvider',
     'gettext',
     function($stateProvider, gettext) {

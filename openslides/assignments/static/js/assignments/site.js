@@ -24,6 +24,19 @@ angular.module('OpenSlidesApp.assignments.site', [
 ])
 
 .config([
+    'SearchProvider',
+    'gettext',
+    function (SearchProvider, gettext) {
+        SearchProvider.register({
+            'verboseName': gettext('Elections'),
+            'collectionName': 'assignments/assignment',
+            'urlDetailState': 'assignments.assignment.detail',
+            'weight': 400,
+        });
+    }
+])
+
+.config([
     '$stateProvider',
     'gettext',
     function($stateProvider, gettext) {

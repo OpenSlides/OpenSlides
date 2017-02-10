@@ -14,11 +14,9 @@ class CoreAppConfig(AppConfig):
         from . import projector  # noqa
 
         # Import all required stuff.
-        from django.db.models import signals
         from .config import config
         from .signals import post_permission_creation
         from ..utils.rest_api import router
-        from ..utils.search import index_add_instance, index_del_instance
         from .config_variables import get_config_variables
         from .signals import delete_django_app_permissions
         from .views import (
@@ -45,17 +43,6 @@ class CoreAppConfig(AppConfig):
         router.register(self.get_model('ConfigStore').get_collection_string(), ConfigViewSet, 'config')
         router.register(self.get_model('ProjectorMessage').get_collection_string(), ProjectorMessageViewSet)
         router.register(self.get_model('Countdown').get_collection_string(), CountdownViewSet)
-
-        # Update the search when a model is saved or deleted
-        signals.post_save.connect(
-            index_add_instance,
-            dispatch_uid='index_add_instance')
-        signals.post_delete.connect(
-            index_del_instance,
-            dispatch_uid='index_del_instance')
-        signals.m2m_changed.connect(
-            index_add_instance,
-            dispatch_uid='m2m_index_add_instance')
 
     def get_startup_elements(self):
         from .config import config

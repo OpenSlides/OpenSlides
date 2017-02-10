@@ -23,6 +23,19 @@ angular.module('OpenSlidesApp.mediafiles.states', [
 ])
 
 .config([
+    'SearchProvider',
+    'gettext',
+    function (SearchProvider, gettext) {
+        SearchProvider.register({
+            'verboseName': gettext('Files'),
+            'collectionName': 'mediafiles/mediafile',
+            'urlDetailState': 'mediafiles.mediafile.detail',
+            'weight': 600,
+        });
+    }
+])
+
+.config([
     'gettext',
     '$stateProvider',
     function (gettext, $stateProvider) {
