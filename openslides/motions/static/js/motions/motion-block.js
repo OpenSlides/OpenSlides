@@ -143,7 +143,7 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
                 $scope.defaultProjectorId = projectiondefault.projector_id;
             }
         });
-        $scope.openDialog = function (topic) {
+        $scope.openDialog = function (motionBlock) {
             ngDialog.open(MotionBlockForm.getDialog(motionBlock));
         };
         $scope.followRecommendations = function () {

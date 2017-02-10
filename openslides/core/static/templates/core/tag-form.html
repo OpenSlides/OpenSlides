@@ -1,28 +1,17 @@
-<div class="header">
-  <div class="title">
-    <div class="submenu">
-      <a ui-sref="core.tag.list" class="btn btn-sm btn-default">
-        <i class="fa fa-angle-double-left fa-lg"></i>
-        <translate>Back to overview</translate>
-      </a>
-    </div>
-    <h1 ng-if="tag.id" translate>Edit tag</h1>
-    <h1 ng-if="!tag.id" translate>New tag</h1>
-  </div>
+<h1 ng-if="model.id" translate>Edit tag</h1>
+<h1 ng-if="!model.id" translate>New tag</h1>
+
+<div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" close="alert={}">
+  {{ alert.msg }}
 </div>
 
-<div class="details">
-<form name="tagForm">
-  <div class="form-group">
-    <label for="inputName" translate>Name</label>
-    <input type="text" ng-model="tag.name" class="form-control" name="inputName" required>
-  </div>
-
-  <button type="submit" ng-click="save(tag)" class="btn btn-primary" translate>
-    Save
-  </button>
-  <button ui-sref="core.tag.list" class="btn btn-default" translate>
-    Cancel
-  </button>
+<form name="userForm" ng-submit="save(model)">
+  <formly-form model="model" fields="formFields">
+    <button type="submit" ng-disabled="userForm.$invalid" class="btn btn-primary" translate>
+      Save
+    </button>
+    <button ng-click="closeThisDialog()" class="btn btn-default" translate>
+      Cancel
+    </button>
+  </formly-form>
 </form>
-</div>

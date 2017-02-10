@@ -1,7 +1,7 @@
 <h1 ng-if="model.id" translate>Edit motion block</h1>
 <h1 ng-if="!model.id" translate>New motion block</h1>
 
-<div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
+<div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" close="alert={}">
   {{ alert.msg }}
 </div>
 

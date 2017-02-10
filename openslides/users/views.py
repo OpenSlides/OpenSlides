@@ -1,5 +1,6 @@
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
@@ -39,8 +40,10 @@ class UserViewSet(ModelViewSet):
         """
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ('metadata', 'update', 'partial_update'):
+        elif self.action == 'metadata':
             result = has_perm(self.request.user, 'users.can_see_name')
+        elif self.action in ('update', 'partial_update'):
+            result = self.request.user.is_authenticated()
         elif self.action in ('create', 'destroy', 'reset_password'):
             result = (has_perm(self.request.user, 'users.can_see_name') and
                       has_perm(self.request.user, 'users.can_see_extra_data') and
@@ -264,6 +267,7 @@ class SetPasswordView(APIView):
         if user.check_password(request.data['old_password']):
             user.set_password(request.data['new_password'])
             user.save()
+            update_session_auth_hash(request, user)
         else:
             raise ValidationError({'detail': _('Old password does not match.')})
         return super().post(request, *args, **kwargs)
