@@ -46,6 +46,7 @@ Core:
 - Added watching permissions in client and change the view immediately on changes.
 - Validate HTML strings from CKEditor against XSS attacks.
 - Added success/error symbol to config to show if saving was successful.
+- Added UTF-8 byte order mark for every CSV export.
 
 Motions:
 - Added adjustable line numbering mode (outside, inside, none) for each

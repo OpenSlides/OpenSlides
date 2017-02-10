@@ -270,8 +270,7 @@ angular.module('OpenSlidesApp.agenda.site', [
             PdfCreate.download(documentProvider.getDocument(), filename);
         };
         $scope.csvExport = function () {
-            var element = document.getElementById('downloadLinkCSV');
-            AgendaCsvExport.export(element, $scope.itemsFiltered);
+            AgendaCsvExport.export($scope.itemsFiltered);
         };
 
         /** select mode functions **/

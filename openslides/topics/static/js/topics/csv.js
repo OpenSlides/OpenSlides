@@ -15,7 +15,7 @@ angular.module('OpenSlidesApp.topics.csv', [])
             });
         };
         return {
-            downloadExample: function (element) {
+            downloadExample: function () {
                 var csvRows = [makeHeaderline(),
                     // example entries
                     ['Demo 1', 'Demo text 1', '1:00', 'test comment', ''],
@@ -23,7 +23,7 @@ angular.module('OpenSlidesApp.topics.csv', [])
                     ['Demo 2', 'Demo text 2', '1:30', '', '']
 
                 ];
-                CsvDownload(csvRows, element, 'agenda-example.csv');
+                CsvDownload(csvRows, 'agenda-example.csv');
             },
         };
     }

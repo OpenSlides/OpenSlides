@@ -880,8 +880,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // Export as a csv file
         $scope.csvExport = function () {
-            var element = document.getElementById('downloadLinkCSV');
-            MotionCsvExport.export(element, $scope.motionsFiltered);
+            MotionCsvExport.export($scope.motionsFiltered);
         };
         // Export as docx file
         $scope.docxExport = function () {
@@ -1746,8 +1745,7 @@ angular.module('OpenSlidesApp.motions.site', [
         };
         // download CSV example file
         $scope.downloadCSVExample = function () {
-            var element = document.getElementById('downloadLink');
-            MotionCsvExport.downloadExample(element);
+            MotionCsvExport.downloadExample();
         };
     }
 ])

@@ -17,7 +17,7 @@ angular.module('OpenSlidesApp.users.csv', [])
             });
         };
         return {
-            export: function (element, users) {
+            export: function (users) {
                 var csvRows = [
                     makeHeaderline()
                 ];
@@ -38,10 +38,10 @@ angular.module('OpenSlidesApp.users.csv', [])
                     row.push(user.is_committee ? '1' : '0');
                     csvRows.push(row);
                 });
-                CsvDownload(csvRows, element, 'users-export.csv');
+                CsvDownload(csvRows, 'users-export.csv');
             },
 
-            downloadExample: function (element) {
+            downloadExample: function () {
                 // try to get an example with two groups and one with one group
                 var groups = Group.getAll();
                 var csvGroups = '';
@@ -62,7 +62,7 @@ angular.module('OpenSlidesApp.users.csv', [])
                     ['', '', 'Executive Board', '', '', '', '', '', '', '1'],
 
                 ];
-                CsvDownload(csvRows, element, 'users-example.csv');
+                CsvDownload(csvRows, 'users-example.csv');
             }
         };
     }

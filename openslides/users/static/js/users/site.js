@@ -636,8 +636,7 @@ angular.module('OpenSlidesApp.users.site', [
         };
         // Export as a csv file
         $scope.csvExport = function () {
-            var element = document.getElementById('downloadLinkCSV');
-            UserCsvExport.export(element, $scope.usersFiltered);
+            UserCsvExport.export($scope.usersFiltered);
         };
     }
 ])
@@ -1086,8 +1085,7 @@ angular.module('OpenSlidesApp.users.site', [
         };
         // download CSV example file
         $scope.downloadCSVExample = function () {
-            var element = document.getElementById('downloadLink');
-            UserCsvExport.downloadExample(element);
+            UserCsvExport.downloadExample();
         };
     }
 ])

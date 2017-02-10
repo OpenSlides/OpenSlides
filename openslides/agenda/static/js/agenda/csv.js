@@ -16,7 +16,7 @@ angular.module('OpenSlidesApp.agenda.csv', [])
             });
         };
         return {
-            export: function (element, agenda) {
+            export: function (agenda) {
                 var csvRows = [
                     makeHeaderline()
                 ];
@@ -32,7 +32,7 @@ angular.module('OpenSlidesApp.agenda.csv', [])
                     row.push('"' + (item.is_hidden ? '1' : '')  + '"');
                     csvRows.push(row);
                 });
-                CsvDownload(csvRows, element, 'agenda-export.csv');
+                CsvDownload(csvRows, 'agenda-export.csv');
             },
         };
     }
