@@ -16,8 +16,9 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
 .controller('SlideAssignmentCtrl', [
     '$scope',
     'Assignment',
+    'AssignmentPhases',
     'User',
-    function($scope, Assignment, User) {
+    function($scope, Assignment, AssignmentPhases, User) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
@@ -25,9 +26,7 @@ angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignment
         $scope.showResult = $scope.element.poll;
 
         Assignment.bindOne(id, $scope, 'assignment');
-        Assignment.getPhases().then(function(phases) {
-            $scope.phases = phases;
-        });
+        $scope.phases = AssignmentPhases;
         User.bindAll({}, $scope, 'users');
     }
 ]);

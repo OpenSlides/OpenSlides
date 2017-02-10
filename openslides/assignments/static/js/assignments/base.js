@@ -324,7 +324,6 @@ angular.module('OpenSlidesApp.assignments', [])
     'gettext',
     function ($http, DS, Projector, AssignmentRelatedUser, AssignmentPoll, jsDataModel, gettext) {
         var name = 'assignments/assignment';
-        var phases;
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
