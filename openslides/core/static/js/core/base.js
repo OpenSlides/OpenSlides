@@ -101,9 +101,10 @@ angular.module('OpenSlidesApp.core', [
                 _.forEach(Autoupdate.messageReceivers, function (receiver) {
                     receiver(event.data);
                 });
-                // The first message is done: resolve the promise.
-                // TODO: check whether the promise is already resolved.
-                Autoupdate.firstMessageDeferred.resolve();
+                // Check if the promise is not resolved yet.
+                if (Autoupdate.firstMessageDeferred.promise.$$state.status === 0) {
+                    Autoupdate.firstMessageDeferred.resolve();
+                }
             };
         };
         return Autoupdate;
