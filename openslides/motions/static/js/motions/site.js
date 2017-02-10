@@ -986,6 +986,9 @@ angular.module('OpenSlidesApp.motions.site', [
             if ($scope.change_recommendations.length === 0) {
                 $scope.setProjectionMode($scope.projectionModes[0]);
             }
+            if ($scope.change_recommendations.length > 0) {
+                $scope.inlineEditing.disable();
+            }
         });
         $scope.$watch(function () {
             return Projector.lastModified();
@@ -1570,6 +1573,12 @@ angular.module('OpenSlidesApp.motions.site', [
                 if (!motion.text) {
                     motion.importerror = true;
                     motion.text_error = gettext('Error: Text is required.');
+                } else if (!motion.text.startsWith('<p>')) {
+                    motion.text = '<p>' + motion.text + '</p>';
+                }
+                // Reason
+                if (motion.reason && !motion.reason.startsWith('<p>')) {
+                    motion.reason = '<p>' + motion.reason + '</p>';
                 }
                 // submitter
                 if (motion.submitter) {
