@@ -1,19 +1,22 @@
 #!/usr/bin/env python
 
 import os
+import subprocess
 import sys
 
-from django.core.management import execute_from_command_line
+import django
+from django.core.management import call_command, execute_from_command_line
 
 from openslides import __version__ as openslides_version
 from openslides.utils.main import (
     ExceptionArgumentParser,
     UnknownCommand,
     get_default_settings_path,
+    get_geiss_path,
     get_local_settings_path,
     is_local_installation,
+    open_browser,
     setup_django_settings_module,
-    start_browser,
     write_settings,
 )
 
@@ -177,29 +180,54 @@ def start(args):
     # Set the django setting module and run migrations
     # A manual given environment variable will be overwritten
     setup_django_settings_module(settings_path, local_installation=local_installation)
+    django.setup()
+    from django.conf import settings
 
-    execute_from_command_line(['manage.py', 'migrate'])
+    call_command('migrate')
 
-    # Open the browser
-    if not args.no_browser:
-        if args.host == '0.0.0.0':
-            # Windows does not support 0.0.0.0, so use 'localhost' instead
-            start_browser('http://localhost:%s' % args.port)
-        else:
-            start_browser('http://%s:%s' % (args.host, args.port))
+    use_geiss = True
+    if use_geiss:
+        # Make sure redis is used.
+        if settings.CHANNEL_LAYERS['default']['BACKEND'] != 'asgi_redis.RedisChannelLayer':
+            raise RuntimeError("You have to use the asgi redis backend in the settings to use Geiss.")
 
-    # Start the webserver
-    # Use flag --noreload to tell Django not to reload the server.
-    # Use flag --insecure to serve static files even if DEBUG is False.
-    # Use flag --nothreading to tell Django Channels to run in single thread mode.
-    execute_from_command_line([
-        'manage.py',
-        'runserver',
-        '{}:{}'.format(args.host, args.port),
-        '--noreload',
-        '--insecure',
-        '--nothreading',
-    ])
+        # Download Geiss and collect the static files.
+        call_command('getgeiss')
+        call_command('collectstatic', interactive=False)
+
+        # Open the browser
+        if not args.no_browser:
+            open_browser(args.host, args.port)
+
+        # Start Geiss in its own thread
+        subprocess.Popen([
+            get_geiss_path(),
+            '--host', args.host,
+            '--port', args.port,
+            '--static', '/static/:{}'.format(settings.STATIC_ROOT),
+            '--static', '/media/:{}'.format(settings.MEDIA_ROOT),
+        ])
+
+        # Start one worker in this thread. There can be only one worker as long
+        # as sqlite is used.
+        call_command('runworker')
+
+    else:
+        # Open the browser
+        if not args.no_browser:
+            open_browser(args.host, args.port)
+
+        # Start the webserver
+        # Use flag --noreload to tell Django not to reload the server.
+        # Use flag --insecure to serve static files even if DEBUG is False.
+        # Use flag --nothreading to tell Django Channels to run in single thread mode.
+        call_command(
+            'runserver',
+            '{}:{}'.format(args.host, args.port),
+            noreload=True,
+            insecure=True,
+            nothreading=True,
+        )
 
 
 def createsettings(args):
