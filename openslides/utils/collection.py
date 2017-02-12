@@ -60,10 +60,13 @@ class CollectionElement:
         if self.is_deleted():
             # Delete the element from the cache, if self.is_deleted() is True:
             self.delete_from_cache()
-        elif instance is not None:
-            # If this element is created via instance and the instance is not deleted
-            # then update the cache.
-            self.save_to_cache()
+        else:
+            # The call to get_full_data() has some sideeffects. When the object
+            # was created with from_instance() or the object is not in the cache
+            # then get_full_data() will save the object into the cache.
+            # This will also raise a DoesNotExist error, if the object does
+            # neither exist in the cache nor in the database.
+            self.get_full_data()
 
     def __eq__(self, collection_element):
         """
@@ -184,11 +187,14 @@ class CollectionElement:
         """
         Returns the full_data of this collection_element from with all other
         dics can be generated.
+
+        Raises a DoesNotExist error on the requested the coresponding model, if
+        the object does neither exist in the cache nor in the database.
         """
         # If the full_data is already loaded, return it
         # If there is a db_instance, use it to get the full_data
         # else: try to use the cache.
-        # If there is no value in the cach, get the content from the db and save
+        # If there is no value in the cache, get the content from the db and save
         # it to the cache.
         if self.full_data is None and self.instance is None:
             # Use the cache version if self.instance is not set.

@@ -27,11 +27,12 @@ class TestCollectionElementCache(TestCase):
         Tests that the data is retrieved from the database.
         """
         topic = Topic.objects.create(title='test topic')
-        collection_element = collection.CollectionElement.from_values('topics/topic', 1)
         caches['locmem'].clear()
 
         with self.assertNumQueries(3):
+            collection_element = collection.CollectionElement.from_values('topics/topic', 1)
             instance = collection_element.get_full_data()
+
         self.assertEqual(topic.title, instance['title'])
 
     def test_with_cache(self):
@@ -49,20 +50,32 @@ class TestCollectionElementCache(TestCase):
             instance = collection_element.get_full_data()
         self.assertEqual(topic.title, instance['title'])
 
-    def test_non_existing_instance(self):
-        collection_element = collection.CollectionElement.from_values('topics/topic', 1)
+    @patch('openslides.utils.collection.cache')
+    def test_save_to_cache_called_once(self, mock_cache):
+        """
+        Makes sure, that save_to_cache ins called (only) once, if CollectionElement
+        is created with "from_instance()".
+        """
+        topic = Topic.objects.create(title='test topic')
+        mock_cache.set.reset_mock()
+        collection.CollectionElement.from_instance(topic)
 
+        # cache.set() is called two times. Once for the object and once for the collection.
+        self.assertEqual(mock_cache.set.call_count, 2)
+
+    def test_fail_early(self):
+        """
+        Tests that a CollectionElement.from_values fails, if the object does
+        not exist.
+        """
         with self.assertRaises(Topic.DoesNotExist):
-            collection_element.get_full_data()
+            collection.CollectionElement.from_values('topics/topic', 999)
 
 
 class TestCollectionCache(TestCase):
     def test_clean_cache(self):
         """
         Tests that the instances are retrieved from the database.
-
-        Currently there are 10 queries needed. This can change in the future,
-        but it has to be more then zero.
         """
         Topic.objects.create(title='test topic1')
         Topic.objects.create(title='test topic2')
