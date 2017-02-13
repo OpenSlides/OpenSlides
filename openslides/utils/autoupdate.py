@@ -7,6 +7,7 @@ from channels import Channel, Group
 from channels.asgi import get_channel_layer
 from channels.auth import channel_session_user, channel_session_user_from_http
 from django.apps import apps
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 
 from ..core.config import config
@@ -150,7 +151,11 @@ def send_data(message):
             # Anonymous user
             user = None
         else:
-            user = CollectionElement.from_values('users/user', user_id)
+            try:
+                user = CollectionElement.from_values('users/user', user_id)
+            except ObjectDoesNotExist:
+                # The user does not exist. Skip him/her.
+                continue
         output = collection_elements.as_autoupdate_for_user(user)
         for channel_name in channel_names:
             send_or_wait(Channel(channel_name).send, {'text': json.dumps(output)})

@@ -64,7 +64,8 @@ class TestGetModelFromCollectionString(TestCase):
 
 class TestCollectionElement(TestCase):
     def test_from_values(self):
-        collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
+        with patch.object(collection.CollectionElement, 'get_full_data'):
+            collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
 
         self.assertEqual(collection_element.collection_string, 'testmodule/model')
         self.assertEqual(collection_element.id, 42)
@@ -84,7 +85,8 @@ class TestCollectionElement(TestCase):
         mock_collection().delete_id_from_cache.assert_called_with(42)
 
     def test_as_channel_message(self):
-        collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
+        with patch.object(collection.CollectionElement, 'get_full_data'):
+            collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
 
         self.assertEqual(
             collection_element.as_channels_message(),
@@ -113,7 +115,8 @@ class TestCollectionElement(TestCase):
         self.assertEqual(created_collection_element.information, {'some': 'information'})
 
     def test_as_autoupdate_for_user(self):
-        collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
+        with patch.object(collection.CollectionElement, 'get_full_data'):
+            collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
         fake_user = MagicMock()
         collection_element.get_access_permissions = MagicMock()
         collection_element.get_access_permissions().get_restricted_data.return_value = 'restricted_data'
@@ -128,7 +131,8 @@ class TestCollectionElement(TestCase):
         collection_element.get_full_data.assert_called_once_with()
 
     def test_as_autoupdate_for_user_no_permission(self):
-        collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
+        with patch.object(collection.CollectionElement, 'get_full_data'):
+            collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
         fake_user = MagicMock()
         collection_element.get_access_permissions = MagicMock()
         collection_element.get_access_permissions().get_restricted_data.return_value = None
@@ -171,7 +175,8 @@ class TestCollectionElement(TestCase):
              'value': 'config_value'})
 
     def test_get_instance(self):
-        collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
+        with patch.object(collection.CollectionElement, 'get_full_data'):
+            collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
         collection_element.get_model = MagicMock()
 
         collection_element.get_instance()
@@ -184,7 +189,8 @@ class TestCollectionElement(TestCase):
         Test that the cache and the self.get_instance() is not hit, when the
         instance is already loaded.
         """
-        collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
+        with patch.object(collection.CollectionElement, 'get_full_data'):
+            collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
         collection_element.full_data = 'my_full_data'
         collection_element.get_instance = MagicMock()
 
@@ -199,7 +205,8 @@ class TestCollectionElement(TestCase):
         Test that the value from the cache is used not get_instance is not
         called.
         """
-        collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
+        with patch.object(collection.CollectionElement, 'get_full_data'):
+            collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
         collection_element.get_instance = MagicMock()
         mock_cache.get.return_value = 'cache_value'
 
@@ -215,7 +222,8 @@ class TestCollectionElement(TestCase):
         """
         Test that the value from get_instance is used and saved to the cache
         """
-        collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
+        with patch.object(collection.CollectionElement, 'get_full_data'):
+            collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
         collection_element.get_instance = MagicMock()
         collection_element.get_access_permissions = MagicMock()
         collection_element.get_access_permissions().get_full_data.return_value = 'get_instance_value'
@@ -230,7 +238,8 @@ class TestCollectionElement(TestCase):
         mock_Collection.assert_called_once_with('testmodule/model')
         mock_Collection().add_id_to_cache.assert_called_once_with(42)
 
-    def test_equal(self):
+    @patch.object(collection.CollectionElement, 'get_full_data')
+    def test_equal(self, mock_get_full_data):
         self.assertEqual(
             collection.CollectionElement.from_values('testmodule/model', 1),
             collection.CollectionElement.from_values('testmodule/model', 1))
@@ -244,7 +253,8 @@ class TestCollectionElement(TestCase):
             collection.CollectionElement.from_values('testmodule/model', 1),
             collection.CollectionElement.from_values('testmodule/other_model', 1))
 
-    def test_config_cache_key(self):
+    @patch.object(collection.CollectionElement, 'get_full_data')
+    def test_config_cache_key(self, mock_get_full_data):
         """
         Test that collection elements for config values do always use the
         config key as cache key.
@@ -262,7 +272,8 @@ class TestCollectionElement(TestCase):
 
 
 class TestcollectionElementList(TestCase):
-    def test_channel_message(self):
+    @patch.object(collection.CollectionElement, 'get_full_data')
+    def test_channel_message(self, mock_get_full_data):
         """
         Test that a channel message from three collection elements can crate
         the same collection element list.
@@ -276,7 +287,8 @@ class TestcollectionElementList(TestCase):
             collection_elements,
             collection.CollectionElementList.from_channels_message(collection_elements.as_channels_message()))
 
-    def test_as_autoupdate_for_user(self):
+    @patch.object(collection.CollectionElement, 'get_full_data')
+    def test_as_autoupdate_for_user(self, mock_get_full_data):
         """
         Test that as_autoupdate_for_user is a list of as_autoupdate_for_user
         for each individual element in the list.
