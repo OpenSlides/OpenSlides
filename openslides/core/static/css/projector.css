@@ -537,8 +537,7 @@ tr.elected td {
     background-color: #f9f9f9;
     border: solid 1px #eee;
     border-radius: 3px;
-    margin-bottom: 0;
-    margin-top: -25px;
+    margin-bottom: 10px;
     padding-top: 0;
     padding-right: 155px;
 }
