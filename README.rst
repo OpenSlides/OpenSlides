@@ -47,6 +47,7 @@ virtual environment::
     $ cd OpenSlides
     $ python3 -m venv .virtualenv
     $ source .virtualenv/bin/activate
+    $ pip install -U setuptools
 
 
 c. Install OpenSlides

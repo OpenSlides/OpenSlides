@@ -261,6 +261,18 @@ def write_settings(settings_path=None, template=None, **context):
     return os.path.realpath(settings_path)
 
 
+def open_browser(host, port):
+    """
+    Launches the default web browser at the given host and port and opens
+    the webinterface. Uses start_browser internally.
+    """
+    if host == '0.0.0.0':
+        # Windows does not support 0.0.0.0, so use 'localhost' instead
+        start_browser('http://localhost:%s' % port)
+    else:
+        start_browser('http://%s:%s' % (host, port))
+
+
 def start_browser(browser_url):
     """
     Launches the default web browser at the given url and opens the
@@ -279,14 +291,6 @@ def start_browser(browser_url):
 
         thread = threading.Thread(target=function)
         thread.start()
-
-
-def open_browser(host, port):
-    if host == '0.0.0.0':
-        # Windows does not support 0.0.0.0, so use 'localhost' instead
-        start_browser('http://localhost:%s' % port)
-    else:
-        start_browser('http://%s:%s' % (host, port))
 
 
 def get_database_path_from_settings():
@@ -335,7 +339,7 @@ def is_local_installation():
 
 def get_geiss_path():
     """
-    Returns the path and file to the geis binary.
+    Returns the path and file to the Geiss binary.
     """
     from django.conf import settings
     download_path = getattr(settings, 'OPENSLIDES_USER_DATA_PATH', '')
@@ -345,6 +349,6 @@ def get_geiss_path():
 
 def is_windows():
     """
-    Returns True when the current system is windows. Returns False otherwise.
+    Returns True if the current system is Windows. Returns False otherwise.
     """
     return sys.platform == 'win32'

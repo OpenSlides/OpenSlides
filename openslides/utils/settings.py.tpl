@@ -123,6 +123,8 @@ TIME_ZONE = 'Europe/Berlin'
 
 STATICFILES_DIRS = [os.path.join(OPENSLIDES_USER_DATA_PATH, 'static')] + STATICFILES_DIRS
 
+STATIC_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, 'collected-static')
+
 
 # Files
 # https://docs.djangoproject.com/en/1.10/topics/files/

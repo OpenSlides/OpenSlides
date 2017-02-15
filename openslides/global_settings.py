@@ -81,8 +81,6 @@ LOCALE_PATHS = [
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(MODULE_DIR, '..', 'collected-static')
-
 STATICFILES_DIRS = [
     os.path.join(MODULE_DIR, 'static'),
 ]
@@ -134,6 +132,7 @@ CACHES = {
 
 # Django Channels
 # http://channels.readthedocs.io/en/latest/
+# https://github.com/ostcar/geiss
 
 CHANNEL_LAYERS = {
     'default': {
