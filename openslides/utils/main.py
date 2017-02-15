@@ -253,7 +253,10 @@ def write_settings(settings_path=None, template=None, **context):
         os.makedirs(settings_module)
     with open(settings_path, 'w') as settings_file:
         settings_file.write(content)
-    openslides_user_data_path = context['openslides_user_data_path'].strip("'")
+    if context['openslides_user_data_path'] == 'get_win32_portable_user_data_path()':
+        openslides_user_data_path = get_win32_portable_user_data_path()
+    else:
+        openslides_user_data_path = context['openslides_user_data_path'].strip("'")
     os.makedirs(os.path.join(openslides_user_data_path, 'static'), exist_ok=True)
     return os.path.realpath(settings_path)
 
