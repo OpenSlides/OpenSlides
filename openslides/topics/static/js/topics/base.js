@@ -21,6 +21,9 @@ angular.module('OpenSlidesApp.topics', [])
                 getAgendaTitle: function () {
                     return this.title;
                 },
+                getCSVExportText: function () {
+                    return this.text;
+                },
             },
             relations: {
                 belongsTo: {

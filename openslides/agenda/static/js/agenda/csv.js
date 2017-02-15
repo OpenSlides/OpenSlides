@@ -26,7 +26,7 @@ angular.module('OpenSlidesApp.agenda.csv', [])
                             { seconds: 'disabled',
                                 hours: 'enabled' }) : '';
                     row.push('"' + (item.title || '') + '"');
-                    row.push('"' + (item.text || '') + '"');
+                    row.push('"' + (item.getCSVExportText() || '') + '"');
                     row.push('"' + duration + '"');
                     row.push('"' + (item.comment || '') + '"');
                     row.push('"' + (item.is_hidden ? '1' : '')  + '"');

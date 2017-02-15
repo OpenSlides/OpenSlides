@@ -87,6 +87,16 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 getAgendaTitle: function () {
                     return this.title;
                 },
+                getCSVExportText: function () {
+                    var text;
+                    try {
+                        text =  this.getContentObject().getCSVExportText();
+                    } catch (e) {
+                        // when the content object is not in the DS store
+                        // or 'getCSVExportText' is not defined return nothing.
+                    }
+                    return text;
+                },
                 // link name which is shown in search result
                 getSearchResultName: function () {
                     return this.getAgendaTitle();
