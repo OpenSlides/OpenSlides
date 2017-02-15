@@ -47,23 +47,23 @@ class MotionAccessPermissions(BaseAccessPermissions):
             is_submitter = False
 
         required_permission_to_see = full_data['state_required_permission_to_see']
-        if (not required_permission_to_see or
-                has_perm(user, required_permission_to_see) or
-                has_perm(user, 'motions.can_manage') or
-                is_submitter):
-            if has_perm(user, 'motions.can_see_and_manage_comments') or not full_data.get('comments'):
-                data = full_data
-            else:
-                data = deepcopy(full_data)
-                for i, field in enumerate(config['motions_comments']):
-                    if not field.get('public'):
-                        try:
-                            data['comments'][i] = None
-                        except IndexError:
-                            # No data in range. Just do nothing.
-                            pass
-        else:
-            data = None
+        data = None
+        if has_perm(user, 'motions.can_see'):
+            if (not required_permission_to_see or
+                    has_perm(user, required_permission_to_see) or
+                    has_perm(user, 'motions.can_manage') or
+                    is_submitter):
+                if has_perm(user, 'motions.can_see_and_manage_comments') or not full_data.get('comments'):
+                    data = full_data
+                else:
+                    data = deepcopy(full_data)
+                    for i, field in enumerate(config['motions_comments']):
+                        if not field.get('public'):
+                            try:
+                                data['comments'][i] = None
+                            except IndexError:
+                                # No data in range. Just do nothing.
+                                pass
         return data
 
     def get_projector_data(self, full_data):
