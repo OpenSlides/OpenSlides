@@ -609,11 +609,11 @@ img {
     padding-top: 5px;
 }
 .change-recommendation-overview {
-    margin-bottom: 50px;
-    padding: 10px;
+    margin-bottom: 30px;
+    padding: 10px 15px 0 10px;
 }
-.change-recommendation-overview h2 {
-    margin-top: 0;
+.change-recommendation-overview h3 {
+    margin-top: 10px;
 }
 .change-recommendation-overview ul {
     list-style: none;
@@ -628,7 +628,7 @@ img {
 }
 .change-recommendation-overview li > * {
     display: table-cell;
-    padding: 4px;
+    padding: 1px;
 }
 .change-recommendation-overview .status {
     color: gray;

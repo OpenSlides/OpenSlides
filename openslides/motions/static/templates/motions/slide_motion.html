@@ -103,11 +103,11 @@
             ng-bind-html="change.getDiff(motion, null, line) | trusted">
           </div>
         </div>
-        <div class="motion-text original-text line-numbers-{{ config('motions_default_line_numbering') }}"
-          ng-bind-html="motion.getTextRemainderAfterLastChangeRecommendation(null, changes, line) | trusted">
-        </div>
-
       </div>
+      <div class="motion-text original-text line-numbers-{{ config('motions_default_line_numbering') }}"
+        ng-bind-html="motion.getTextRemainderAfterLastChangeRecommendation(null, changes, line) | trusted">
+      </div>
+
     </div>
   </div>
 

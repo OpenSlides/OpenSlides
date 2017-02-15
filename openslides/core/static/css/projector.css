@@ -534,12 +534,9 @@ tr.elected td {
 }
 
 .diff-box {
-    background-color: #f9f9f9;
-    border: solid 1px #eee;
-    border-radius: 3px;
-    margin-bottom: 10px;
+    margin-left: 25px;
     padding-top: 0;
-    padding-right: 155px;
+    margin-top: -10px;
 }
 .motion-text-with-diffs .original-text {
     min-height: 30px; // Spacer between .diff-box, in case .original-text is empty
@@ -553,34 +550,6 @@ tr.elected td {
 .diff-box:hover {
     background-color: #f0f0f0;
 }
-.diff-box .action-row {
-    font-size: 0.8em;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    float: right;
-    width: 150px;
-    text-align: right;
-    margin-right: -150px;
-    opacity: 0.5;
-}
-.diff-box:hover .action-row {
-    opacity: 1;
-}
-.diff-box .action-row .btn-delete {
-    margin-left: 5px;
-    color: red;
-}
-.diff-box .action-row .btn-edit {
-    margin-left: 5px;
-}
-.diff-box .status-row {
-    font-style: italic;
-    color: gray;
-}
-.diff-box .status-row > *:after {
-    content: ':';
-}
-
 .motion-text-diff .delete {
     color: red;
     text-decoration: line-through;
