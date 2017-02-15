@@ -22,7 +22,7 @@
     "angular-xeditable": "~0.5.0",
     "bootstrap-css-only": "~3.3.6",
     "bootstrap-ui-datetime-picker": "~2.4.0",
-    "ckeditor": "~4.6.1",
+    "ckeditor": "4.6.1",
     "docxtemplater": "~2.1.5",
     "font-awesome-bower": "~4.5.0",
     "jquery.cookie": "~1.4.1",
