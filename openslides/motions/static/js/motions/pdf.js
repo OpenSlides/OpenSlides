@@ -257,18 +257,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
         // motion text (with line-numbers)
         var motionText = function() {
-            if ($scope.lineNumberMode == "inline" || $scope.lineNumberMode == "outside") {
-                /* in order to distinguish between the line-number-types we need to pass the scope
-                * to the convertHTML function.
-                * We should avoid this, since this completly breaks compatibilty for every
-                * other project that might want to use this HTML to PDF parser.
-                * https://github.com/OpenSlides/OpenSlides/issues/2361
-                */
-                var text = motion.getTextByMode($scope.viewChangeRecommendations.mode, $scope.version);
-                return converter.convertHTML(text, $scope.lineNumberMode);
-            } else {
-                return converter.convertHTML(motion.getText($scope.version), $scope.lineNumberMode);
-            }
+            var motionTextContent = motion.getTextByMode($scope.viewChangeRecommendations.mode, $scope.version);
+            return converter.convertHTML(motionTextContent, $scope.lineNumberMode);
         };
 
         // motion reason heading
