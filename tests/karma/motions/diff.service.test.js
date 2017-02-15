@@ -351,5 +351,17 @@ describe('linenumbering', function () {
 
       expect(diff).toBe("<P class=\"p1 delete\">Test1 Test2</P><P class=\"p2 insert\">Test1 Test2</P>");
     });
+
+    it('handles inserted paragraphs', function () {
+      var before = "<P>liebliche Stimme, aber deine Stimme ist rauh; du bist der Wolf.' Da gieng der </P>",
+          after = "<p>liebliche Stimme, aber deine Stimme ist rauh; du bist der Wolf.'</p>\
+\
+<p>Der Wolf hatte danach richtig schlechte laune, trank eine Flasche Rum,</p>\
+\
+<p>machte eine Weltreise und kam danach wieder um die Ziegen zu fressen. Da ging der</p>";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe("<p>liebliche Stimme, aber deine Stimme ist rauh; du bist der <del>Wolf.' </del><ins>Wolf.'</ins></p><p><ins>Der Wolf hatte danach richtig schlechte laune, trank eine Flasche Rum,</ins></p><p><ins>machte eine Weltreise und kam danach wieder um die Ziegen zu fressen. </ins>Da gi<del>e</del>ng der</p>");
+    });
   });
 });

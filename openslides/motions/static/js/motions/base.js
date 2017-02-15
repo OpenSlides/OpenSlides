@@ -736,8 +736,7 @@ angular.module('OpenSlidesApp.motions', [
                         oldText = data.outerContextStart + data.innerContextStart +
                             data.html + data.innerContextEnd + data.outerContextEnd;
 
-                    var diff = diffService.diff(oldText, this.text, lineLength, this.line_from);
-                    return lineNumberingService.insertLineNumbers(diff, lineLength, highlight, null, this.line_from);
+                    return diffService.diff(oldText, this.text, lineLength, this.line_from);
                 },
                 getType: function(original_full_html) {
                     return this.type;
