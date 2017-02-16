@@ -1344,7 +1344,7 @@ angular.module('OpenSlidesApp.core.site', [
                 ProjectorMessage.create(message).then(function(message){
                     $scope.projectors.forEach(function (projector) {
                         $http.post('/rest/core/projector/' + projector.id + '/activate_elements/', [{
-                            name: 'core/projectormessage',
+                            name: 'core/projector-message',
                             stable: true,
                             id: message.id,
                             identify: true,
@@ -1358,7 +1358,7 @@ angular.module('OpenSlidesApp.core.site', [
         $scope.removeIdentifierMessages = function () {
             Projector.getAll().forEach(function (projector) {
                 _.forEach(projector.elements, function (element, uuid) {
-                    if (element.name == 'core/projectormessage' && element.id == $scope.identifierMessage.id) {
+                    if (element.name === 'core/projector-message' && element.id === $scope.identifierMessage.id) {
                         $http.post('/rest/core/projector/' + projector.id + '/deactivate_elements/', [uuid]);
                     }
                 });
@@ -1469,7 +1469,7 @@ angular.module('OpenSlidesApp.core.site', [
             angular.element('#messageSendButton').addClass('disabled');
             angular.element('#messageInput').attr('disabled', '');
             $http.post(
-                '/rest/core/chatmessage/',
+                '/rest/core/chat-message/',
                 {message: $scope.newMessage}
             )
             .success(function () {
@@ -1498,7 +1498,7 @@ angular.module('OpenSlidesApp.core.site', [
         });
 
         $scope.clearChatHistory = function () {
-            $http.post('/rest/core/chatmessage/clear/');
+            $http.post('/rest/core/chat-message/clear/');
         };
     }
 ])

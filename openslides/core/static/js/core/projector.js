@@ -57,7 +57,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             template: 'static/templates/core/slide_countdown.html',
         });
 
-        slidesProvider.registerSlide('core/projectormessage', {
+        slidesProvider.registerSlide('core/projector-message', {
             template: 'static/templates/core/slide_message.html',
         });
     }

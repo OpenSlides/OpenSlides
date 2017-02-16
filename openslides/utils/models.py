@@ -1,5 +1,7 @@
 from django.db import models
 
+from .utils import convert_camel_case_to_pseudo_snake_case
+
 
 class MinMaxIntegerField(models.IntegerField):
     """
@@ -46,7 +48,9 @@ class RESTModelMixin:
         None if this is not a so called root rest instance.
         """
         # TODO Check if this is a root rest element class and return None if not.
-        return '/'.join((cls._meta.app_label.lower(), cls._meta.object_name.lower()))
+        return '/'.join(
+            (convert_camel_case_to_pseudo_snake_case(cls._meta.app_label),
+             convert_camel_case_to_pseudo_snake_case(cls._meta.object_name)))
 
     def get_rest_pk(self):
         """

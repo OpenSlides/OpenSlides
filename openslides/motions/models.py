@@ -756,12 +756,6 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
         """Return a string, representing this object."""
         return "Recommendation for Version %s, line %s - %s" % (self.motion_version_id, self.line_from, self.line_to)
 
-    def get_root_rest_element(self):
-        """
-        Returns this instance, which is the root REST element.
-        """
-        return self
-
 
 class Category(RESTModelMixin, models.Model):
     """
@@ -839,11 +833,6 @@ class MotionBlock(RESTModelMixin, models.Model):
 
     def get_agenda_list_view_title(self):
         return self.title
-
-    @classmethod
-    def get_collection_string(cls):
-        # TODO: Fix generic method to support camelCase, #2480.
-        return 'motions/motion-block'
 
 
 class MotionLog(RESTModelMixin, models.Model):

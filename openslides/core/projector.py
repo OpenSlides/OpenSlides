@@ -34,7 +34,7 @@ class ProjectorMessageElement(ProjectorElement):
     """
     Short message on the projector. Rendered as overlay.
     """
-    name = 'core/projectormessage'
+    name = 'core/projector-message'
 
     def check_data(self):
         if not ProjectorMessage.objects.filter(pk=self.config_entry.get('id')).exists():
