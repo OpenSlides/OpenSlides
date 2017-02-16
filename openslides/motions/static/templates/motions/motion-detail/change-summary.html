@@ -1,11 +1,11 @@
 <!-- A summary of all changes -->
 <section class="change-recommendation-overview">
-    <h2>
-        <translate>Summary of change recommendations</translate>
-    </h2>
+    <strong>
+        <translate>Summary of change recommendations</translate>:
+    </strong>
     <ul ng-if="change_recommendations.length > 0">
-        <li ng-repeat="change in (changes = (change_recommendations | filter:{motion_version_id:version}:true | orderBy: 'line_from')) "
-            ng-click="viewChangeRecommendations.scrollToDiffBox(change.id)">
+        <li ng-repeat="change in (changes = (change_recommendations | filter:{motion_version_id:version}:true | orderBy: 'line_from')) ">
+          <a href='' ng-click="viewChangeRecommendations.scrollToDiffBox(change.id)">
             <span ng-if="change.line_from >= change.line_to - 1" class="line-number">
                 <translate>Line</translate> {{ change.line_from }}:
             </span>
@@ -20,6 +20,7 @@
             <span class="status">
                 <translate ng-if="change.rejected">Rejected</translate>
             </span>
+          </a>
         </li>
     </ul>
     <div ng-if="change_recommendations.length == 0" class="no-changes">

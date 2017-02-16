@@ -963,6 +963,17 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             if (this._diffDetectBrokenDiffHtml(diffUnnormalized)) {
                 diff = this._diffParagraphs(htmlOld, htmlNew, lineLength, firstLineNumber);
             } else {
+                diffUnnormalized = diffUnnormalized.replace(/<ins>.*?(\n.*?)*<\/ins>/gi, function (found) {
+                    found = found.replace(/<(div|p|li)[^>]*>/gi, function(match) { return match + '<ins>'; });
+                    found = found.replace(/<\/(div|p|li)[^>]*>/gi, function(match) { return '</ins>' + match; });
+                    return found;
+                });
+                diffUnnormalized = diffUnnormalized.replace(/<del>.*?(\n.*?)*<\/del>/gi, function (found) {
+                    found = found.replace(/<(div|p|li)[^>]*>/gi, function(match) { return match + '<del>'; });
+                    found = found.replace(/<\/(div|p|li)[^>]*>/gi, function(match) { return '</del>' + match; });
+                    return found;
+                });
+
                 var node = document.createElement('div');
                 node.innerHTML = diffUnnormalized;
                 diff = node.innerHTML;

@@ -378,6 +378,9 @@
 
     <div ng-class="{'col-sm-8': (lineNumberMode != 'outside'), 'col-sm-12': (lineNumberMode == 'outside')}">
 
+      <ng-include ng-if="viewChangeRecommendations.mode == 'diff'"
+          src="'static/templates/motions/motion-detail/change-summary.html'"></ng-include>
+
       <div><p>{{ config('motions_preamble') | translate }}</p></div>
 
       <div class="motion-text-holder">
