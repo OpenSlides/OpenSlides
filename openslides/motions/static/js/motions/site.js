@@ -103,19 +103,6 @@ angular.module('OpenSlidesApp.motions.site', [
                 },
             })
             .state('motions.category.list', {})
-            .state('motions.category.create', {})
-            .state('motions.category.detail', {
-                resolve: {
-                    categoryId: ['$stateParams', function($stateParams) {
-                        return $stateParams.id;
-                    }]
-                }
-            })
-            .state('motions.category.detail.update', {
-                views: {
-                    '@motions.category': {}
-                }
-            })
             .state('motions.category.sort', {
                 url: '/sort/{id}',
                 controller: 'CategorySortCtrl',
@@ -520,6 +507,45 @@ angular.module('OpenSlidesApp.motions.site', [
 
                 return formFields;
             }
+        };
+    }
+])
+
+.factory('CategoryForm', [
+    'gettextCatalog',
+    function (gettextCatalog) {
+        return {
+            getDialog: function (category) {
+                return {
+                    template: 'static/templates/motions/category-form.html',
+                    controller: category ? 'CategoryUpdateCtrl' : 'CategoryCreateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: {
+                        categoryId: function () {return category ? category.id : void 0;},
+                    },
+                };
+
+            },
+            getFormFields: function () {
+                return [
+                    {
+                        key: 'prefix',
+                        type: 'input',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Prefix')
+                        },
+                    },
+                    {
+                        key: 'name',
+                        type: 'input',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Name')
+                        },
+                    }
+                ];
+            },
         };
     }
 ])
@@ -1780,7 +1806,9 @@ angular.module('OpenSlidesApp.motions.site', [
 .controller('CategoryListCtrl', [
     '$scope',
     'Category',
-    function($scope, Category) {
+    'ngDialog',
+    'CategoryForm',
+    function($scope, Category, ngDialog, CategoryForm) {
         Category.bindAll({}, $scope, 'categories');
 
         // setup table sorting
@@ -1798,28 +1826,31 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.delete = function (category) {
             Category.destroy(category.id);
         };
-    }
-])
-
-.controller('CategoryDetailCtrl', [
-    '$scope',
-    'Category',
-    'categoryId',
-    function($scope, Category, categoryId) {
-        Category.bindOne(categoryId, $scope, 'category');
+        $scope.editOrCreate = function (category) {
+            ngDialog.open(CategoryForm.getDialog(category));
+        };
     }
 ])
 
 .controller('CategoryCreateCtrl', [
     '$scope',
-    '$state',
     'Category',
-    function($scope, $state, Category) {
-        $scope.category = {};
+    'CategoryForm',
+    function($scope, Category, CategoryForm) {
+        $scope.model = {};
+        $scope.alert = {};
+        $scope.formFields = CategoryForm.getFormFields();
         $scope.save = function (category) {
             Category.create(category).then(
                 function(success) {
-                    $state.go('motions.category.list');
+                    $scope.closeThisDialog();
+                },
+                function (error) {
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };
@@ -1828,15 +1859,28 @@ angular.module('OpenSlidesApp.motions.site', [
 
 .controller('CategoryUpdateCtrl', [
     '$scope',
-    '$state',
     'Category',
     'categoryId',
-    function($scope, $state, Category, categoryId) {
-        $scope.category = Category.get(categoryId);
+    'CategoryForm',
+    function($scope, Category, categoryId, CategoryForm) {
+        $scope.alert = {};
+        $scope.model = angular.copy(Category.get(categoryId));
+        $scope.formFields = CategoryForm.getFormFields();
         $scope.save = function (category) {
+            Category.inject(category);
             Category.save(category).then(
                 function(success) {
-                    $state.go('motions.category.list');
+                    $scope.closeThisDialog();
+                },
+                function (error) {
+                    // save error: revert all changes by restore
+                    // (refresh) original category object from server
+                    Category.refresh(category);
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };

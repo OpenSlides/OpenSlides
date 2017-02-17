@@ -271,7 +271,7 @@
         <div>
           <!-- ID and title -->
           <div>
-            <a class="title" ui-sref="{{ getUpdateStatePrefix(item) }}.detail({id: item.content_object.id})" ng-show="isAllowedToSeeOpenLink(item)">
+            <a class="title" ui-sref="{{ getDetailStatePrefix(item) }}.detail({id: item.content_object.id})" ng-show="isAllowedToSeeOpenLink(item)">
               {{ item.getListViewTitle() }}
             </a>
             <span class="title" ng-hide="isAllowedToSeeOpenLink(item)">
@@ -283,8 +283,7 @@
             <small>
               <a ui-sref="agenda.item.detail({id: item.id})" translate>List of speakers</a>
               <span os-perms="agenda.can_manage"> &middot;
-                <a ui-sref="{{ getUpdateStatePrefix(item) }}.detail.update({id: item.content_object.id})"
-                    translate>Edit</a> &middot;
+                <a href="" ng-click="edit(item)" translate>Edit</a> &middot;
                 <a href="" class="text-danger"
                   ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
                     <b>{{ item.getTitle() }}</b>"

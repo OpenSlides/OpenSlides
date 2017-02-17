@@ -81,6 +81,7 @@ angular.module('OpenSlidesApp.agenda.site', [
     '$filter',
     '$http',
     '$state',
+    '$injector',
     'DS',
     'operator',
     'ngDialog',
@@ -96,9 +97,9 @@ angular.module('OpenSlidesApp.agenda.site', [
     'osTableFilter',
     'AgendaCsvExport',
     'PdfCreate',
-    function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, TopicForm, AgendaTree, Projector,
-        ProjectionDefault, AgendaContentProvider, PdfMakeDocumentProvider, gettextCatalog, gettext, osTableFilter,
-        AgendaCsvExport, PdfCreate) {
+    function($scope, $filter, $http, $state, $injector, DS, operator, ngDialog, Agenda, TopicForm,
+        AgendaTree, Projector, ProjectionDefault, AgendaContentProvider, PdfMakeDocumentProvider,
+        gettextCatalog, gettext, osTableFilter, AgendaCsvExport, PdfCreate) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -268,12 +269,21 @@ angular.module('OpenSlidesApp.agenda.site', [
                     return false;
             }
         };
-        $scope.getUpdateStatePrefix = function (item) {
+        $scope.getDetailStatePrefix = function (item) {
             var prefix = item.content_object.collection.replace('/','.');
             // Hotfix for Issue 2566.
             // The changes could be reverted if Issue 2480 is closed.
             prefix = prefix.replace('motion-block', 'motionBlock');
             return prefix;
+        };
+        $scope.edit = function (item) {
+            var formName = item.content_object.collection.split('/')[1];
+            // Hotfix for Issue 2566.
+            // The changes could be reverted if Issue 2480 is closed.
+            formName = formName.replace('motion-block', 'motionBlock');
+            formName = formName.charAt(0).toUpperCase() + formName.slice(1) + 'Form';
+            var form = $injector.get(formName);
+            ngDialog.open(form.getDialog({id: item.content_object.id}));
         };
         // export
         $scope.pdfExport = function () {

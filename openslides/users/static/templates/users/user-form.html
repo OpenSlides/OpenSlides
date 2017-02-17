@@ -1,7 +1,7 @@
 <h1 ng-if="model.id" translate>Edit participant</h1>
 <h1 ng-if="!model.id" translate>New participant</h1>
 
-<div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
+<div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" close="alert={}">
   {{ alert.msg }}
 </div>
 

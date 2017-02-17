@@ -682,8 +682,9 @@ angular.module('OpenSlidesApp.core', [
 .factory('Projector', [
     'DS',
     '$http',
+    '$injector',
     'Config',
-    function(DS, $http, Config) {
+    function(DS, $http, $injector, Config) {
         return DS.defineResource({
             name: 'core/projector',
             onConflict: 'replace',
@@ -701,13 +702,13 @@ angular.module('OpenSlidesApp.core', [
                             {"action": action, "direction": direction}
                     );
                 },
-                getStateForCurrentSlide: function () {
+                getFormOrStateForCurrentSlide: function () {
                     var return_dict;
                     angular.forEach(this.elements, function(value, key) {
                         if (value.name == 'agenda/list-of-speakers') {
                             return_dict = {
-                                'state': 'agenda.item.detail',
-                                'param': {id: value.id}
+                                state: 'agenda.item.detail',
+                                id: value.id,
                             };
                         } else if (
                             value.name != 'agenda/item-list' &&
@@ -715,10 +716,15 @@ angular.module('OpenSlidesApp.core', [
                             value.name != 'core/countdown' &&
                             value.name != 'core/projector-message' &&
                             value.name != 'agenda/current-list-of-speakers' ) {
-                            return_dict = {
-                                'state': value.name.replace('/', '.')+'.detail.update',
-                                'param': {id: value.id}
-                            };
+                                var formName = value.name.split('/')[1];
+                                // Hotfix for Issue 2566.
+                                // The changes could be reverted if Issue 2480 is closed.
+                                formName = formName.replace('motion-block', 'motionBlock');
+                                formName = formName.charAt(0).toUpperCase() + formName.slice(1) + 'Form';
+                                return_dict = {
+                                    form: $injector.get(formName),
+                                    id: value.id
+                                };
                         }
                     });
                     return return_dict;

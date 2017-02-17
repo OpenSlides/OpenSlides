@@ -370,25 +370,7 @@ angular.module('OpenSlidesApp.core.site', [
                     basePerm: 'core.can_manage_tags',
                 },
             })
-            .state('core.tag.list', {})
-            .state('core.tag.create', {})
-            .state('core.tag.detail', {
-                resolve: {
-                    tagId: ['$stateParams', function($stateParams) {
-                        return $stateParams.id;
-                    }],
-                }
-            })
-            .state('core.tag.detail.update', {
-                resolve: {
-                    tagId: ['$stateParams', function($stateParams) {
-                        return $stateParams.id;
-                    }],
-                },
-                views: {
-                    '@core.tag': {}
-                }
-            });
+            .state('core.tag.list', {});
 
         $locationProvider.html5Mode(true);
     }
@@ -430,6 +412,38 @@ angular.module('OpenSlidesApp.core.site', [
                         },
                         data: {
                             ckeditorOptions: Editor.getOptions()
+                        }
+                    },
+                ];
+            },
+        };
+    }
+])
+
+.factory('TagForm', [
+    'gettextCatalog',
+    function (gettextCatalog) {
+        return {
+            getDialog: function (tag) {
+                return {
+                    template: 'static/templates/core/tag-form.html',
+                    controller: (tag) ? 'TagUpdateCtrl' : 'TagCreateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: {
+                        tagId: function () {return tag ? tag.id : void 0;},
+                    },
+                };
+            },
+            getFormFields: function() {
+                return [
+                    {
+                        key: 'name',
+                        type: 'input',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Name'),
+                            required: true
                         }
                     },
                 ];
@@ -614,6 +628,11 @@ angular.module('OpenSlidesApp.core.site', [
             name: 'editor',
             extends: 'textarea',
             templateUrl: 'static/templates/core/editor.html',
+        });
+        formlyConfig.setType({
+            name: 'password',
+            extends: 'input',
+            templateUrl: 'static/templates/core/password.html',
         });
         formlyConfig.setType({
             name: 'select-single',
@@ -1122,9 +1141,13 @@ angular.module('OpenSlidesApp.core.site', [
         };
 
         $scope.editCurrentSlide = function (projector) {
-            var state = projector.getStateForCurrentSlide();
-            if (state) {
-                $state.go(state.state, state.param);
+            var data = projector.getFormOrStateForCurrentSlide();
+            if (data) {
+                if (data.form) {
+                    ngDialog.open(data.form.getDialog({id: data.id}));
+                } else {
+                    $state.go(data.state, {id: data.id});
+                }
             }
         };
 
@@ -1227,13 +1250,14 @@ angular.module('OpenSlidesApp.core.site', [
 .controller('ManageProjectorsCtrl', [
     '$scope',
     '$http',
-    '$state',
     '$timeout',
     'Projector',
     'ProjectionDefault',
     'Config',
     'ProjectorMessage',
-    function ($scope, $http, $state, $timeout, Projector, ProjectionDefault, Config, ProjectorMessage) {
+    'ngDialog',
+    function ($scope, $http, $timeout, Projector, ProjectionDefault, Config,
+        ProjectorMessage, ngDialog) {
         ProjectionDefault.bindAll({}, $scope, 'projectiondefaults');
 
         // watch for changes in projector_broadcast
@@ -1316,9 +1340,13 @@ angular.module('OpenSlidesApp.core.site', [
             }
         };
         $scope.editCurrentSlide = function (projector) {
-            var state = projector.getStateForCurrentSlide();
-            if (state) {
-                $state.go(state.state, state.param);
+            var data = projector.getFormOrStateForCurrentSlide();
+            if (data) {
+                if (data.form) {
+                    ngDialog.open(data.form.getDialog({id: data.id}));
+                } else {
+                    $state.go(data.state, {id: data.id});
+                }
             }
         };
         $scope.editName = function (projector) {
@@ -1378,8 +1406,12 @@ angular.module('OpenSlidesApp.core.site', [
 .controller('TagListCtrl', [
     '$scope',
     'Tag',
-    function($scope, Tag) {
+    'ngDialog',
+    'TagForm',
+    'gettext',
+    function($scope, Tag, ngDialog, TagForm, gettext) {
         Tag.bindAll({}, $scope, 'tags');
+        $scope.alert = {};
 
         // setup table sorting
         $scope.sortColumn = 'name';
@@ -1391,40 +1423,48 @@ angular.module('OpenSlidesApp.core.site', [
             }
             $scope.sortColumn = column;
         };
-
-        // save changed tag
-        $scope.save = function (tag) {
-            Tag.save(tag);
-        };
         $scope.delete = function (tag) {
             Tag.destroy(tag.id).then(
                 function(success) {
-                    //TODO: success message
+                    $scope.alert = {
+                        type: 'success',
+                        msg: gettext('The delete was successful.'),
+                        show: true,
+                    };
+                }, function (error) {
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };
-    }
-])
-
-.controller('TagDetailCtrl', [
-    '$scope',
-    'Tag',
-    'tagId',
-    function($scope, Tag, tagId) {
-        Tag.bindOne(tagId, $scope, 'tag');
+        $scope.editOrCreate = function (tag) {
+            ngDialog.open(TagForm.getDialog(tag));
+        };
     }
 ])
 
 .controller('TagCreateCtrl', [
     '$scope',
-    '$state',
     'Tag',
-    function($scope, $state, Tag) {
-        $scope.tag = {};
+    'TagForm',
+    function($scope, Tag, TagForm) {
+        $scope.model = {};
+        $scope.alert = {};
+        $scope.formFields = TagForm.getFormFields();
         $scope.save = function (tag) {
             Tag.create(tag).then(
-                function(success) {
-                    $state.go('core.tag.list');
+                function (success) {
+                    $scope.closeThisDialog();
+                },
+                function (error) {
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };
@@ -1433,17 +1473,27 @@ angular.module('OpenSlidesApp.core.site', [
 
 .controller('TagUpdateCtrl', [
     '$scope',
-    '$state',
     'Tag',
     'tagId',
-    function($scope, $state, Tag, tagId) {
-        $scope.tag = Tag.get(tagId);
+    'TagForm',
+    function($scope, Tag, tagId, TagForm) {
+        $scope.model = angular.copy(Tag.get(tagId));
+        $scope.alert = {};
+        $scope.formFields = TagForm.getFormFields();
         $scope.save = function (tag) {
-            Tag.save(tag).then(
-                function(success) {
-                    $state.go('core.tag.list');
+            Tag.inject(tag);
+            Tag.save(tag).then(function(success) {
+                $scope.closeThisDialog();
+            }, function (error) {
+                // save error: revert all changes by restore
+                // the original object
+                Tag.refresh(tag);
+                var message = '';
+                for (var e in error.data) {
+                    message += e + ': ' + error.data[e] + ' ';
                 }
-            );
+                $scope.alert = {type: 'danger', msg: message, show: true};
+            });
         };
     }
 ])
@@ -1493,12 +1543,15 @@ angular.module('OpenSlidesApp.core.site', [
         // increment unread messages counter for each new message
         $scope.$watch('chatmessages', function (newVal, oldVal) {
             // add new message id if there is really a new message which is not yet tracked
-            if (oldVal.length > 0) {
+            if (oldVal.length > 0 && newVal.length > 0) {
                 if ((oldVal[oldVal.length-1].id != newVal[newVal.length-1].id) &&
                     ($.inArray(newVal[newVal.length-1].id, NewChatMessages) == -1)) {
                     NewChatMessages.push(newVal[newVal.length-1].id);
                     $scope.unreadMessages = NewChatMessages.length;
                 }
+            } else if (newVal.length === 0) {
+                NewChatMessages = [];
+                $scope.unreadMessages = 0;
             }
         });
 

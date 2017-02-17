@@ -86,7 +86,7 @@
         <div os-perms="core.can_manage_projector" class="nobr">
           <!-- edit -->
           <a ng-click="editCurrentSlide(active_projector)"
-            ng-disabled="!active_projector.getStateForCurrentSlide()"
+            ng-disabled="!active_projector.getFormOrStateForCurrentSlide()"
             class="btn btn-default btn-sm"
             title="{{ 'Edit current slide' | translate}}">
             <i class="fa fa-pencil"></i>

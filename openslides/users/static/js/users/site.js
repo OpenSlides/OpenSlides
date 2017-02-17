@@ -62,40 +62,6 @@ angular.module('OpenSlidesApp.users.site', [
                 }]
             }
         })
-        // Redirects to user detail view and opens user edit form dialog, uses edit url.
-        // Used by $state.go(..) from core/site.js only (for edit current slide button).
-        // (from users list controller use UserForm factory instead to open dialog in front of
-        // current view without redirect)
-        .state('users.user.detail.update', {
-            onEnter: ['$stateParams', '$state', 'ngDialog',
-                function($stateParams, $state, ngDialog) {
-                    ngDialog.open({
-                        template: 'static/templates/users/user-form.html',
-                        controller: 'UserUpdateCtrl',
-                        className: 'ngdialog-theme-default wide-form',
-                        closeByEscape: false,
-                        closeByDocument: false,
-                        resolve: {
-                            userId: function() {return $stateParams.id;}
-                        }
-                    });
-                }
-            ]
-        })
-        .state('users.user.detail.profile', {
-            views: {
-                '@users.user': {},
-            },
-            url: '/profile',
-            controller: 'UserProfileCtrl',
-        })
-        .state('users.user.detail.password', {
-            views: {
-                '@users.user': {},
-            },
-            url: '/password',
-            controller: 'UserPasswordCtrl',
-        })
         .state('users.user.change-password', {
             url: '/change-password/{id}',
             controller: 'UserChangePasswordCtrl',
@@ -411,6 +377,146 @@ angular.module('OpenSlidesApp.users.site', [
                     },
                     hideExpression: '!model.more'
                 }
+                ];
+            }
+        };
+    }
+])
+
+.factory('UserProfileForm', [
+    'gettextCatalog',
+    'Editor',
+    'Mediafile',
+    function (gettextCatalog, Editor, Mediafile) {
+        return {
+            // ngDialog for user form
+            getDialog: function (user) {
+                return {
+                    template: 'static/templates/users/profile-password-form.html',
+                    controller: 'UserProfileCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                };
+            },
+            // angular-formly fields for user form
+            getFormFields: function (hideOnCreateForm) {
+                var images = Mediafile.getAllImages();
+                return [
+                {
+                    key: 'username',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Username'),
+                        required: true
+                    },
+                },
+                {
+                    className: "row",
+                    fieldGroup: [
+                        {
+                            key: 'title',
+                            type: 'input',
+                            className: "col-xs-2 no-padding-left",
+                            templateOptions: {
+                                label: gettextCatalog.getString('Title')
+                            }
+                        },
+                        {
+                            key: 'first_name',
+                            type: 'input',
+                            className: "col-xs-5 no-padding",
+                            templateOptions: {
+                                label: gettextCatalog.getString('Given name')
+                            }
+                        },
+                        {
+                            key: 'last_name',
+                            type: 'input',
+                            className: "col-xs-5 no-padding-right",
+                            templateOptions: {
+                                label: gettextCatalog.getString('Surname')
+                            }
+                        }
+                    ]
+                },
+                {
+                    className: "row",
+                    fieldGroup: [
+                        {
+                            key: 'structure_level',
+                            type: 'input',
+                            className: "col-xs-9 no-padding-left",
+                            templateOptions: {
+                                label: gettextCatalog.getString('Structure level'),
+                            }
+                        },
+                        {   key: 'number',
+                            type: 'input',
+                            className: "col-xs-3 no-padding-left no-padding-right",
+                            templateOptions: {
+                                label:gettextCatalog.getString('Participant number')
+                            }
+                        }
+                    ]
+                },
+                {
+                    key: 'about_me',
+                    type: 'editor',
+                    templateOptions: {
+                        label: gettextCatalog.getString('About me'),
+                    },
+                    data: {
+                        ckeditorOptions: Editor.getOptions(images)
+                    },
+                }
+                ];
+            }
+        };
+    }
+])
+
+.factory('UserPasswordForm', [
+    'gettextCatalog',
+    function (gettextCatalog) {
+        return {
+            // ngDialog for user form
+            getDialog: function (user) {
+                return {
+                    template: 'static/templates/users/profile-password-form.html',
+                    controller: 'UserPasswordCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                };
+            },
+            // angular-formly fields for user form
+            getFormFields: function (hideOnCreateForm) {
+                return [
+                {
+                    key: 'oldPassword',
+                    type: 'password',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Old password'),
+                        required: true
+                    },
+                },
+                {
+                    key: 'newPassword',
+                    type: 'password',
+                    templateOptions: {
+                        label: gettextCatalog.getString('New password'),
+                        required: true
+                    },
+                },
+                {
+                    key: 'newPassword2',
+                    type: 'password',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Confirm new password'),
+                        required: true
+                    },
+                },
                 ];
             }
         };
@@ -761,20 +867,30 @@ angular.module('OpenSlidesApp.users.site', [
 
 .controller('UserProfileCtrl', [
     '$scope',
-    '$state',
     'Editor',
     'User',
-    'userId',
-    function($scope, $state, Editor, User, userId) {
-        $scope.user = angular.copy(User.get(userId));
-        $scope.ckeditorOptions = Editor.getOptions();
+    'operator',
+    'UserProfileForm',
+    'gettext',
+    function($scope, Editor, User, operator, UserProfileForm, gettext) {
+        $scope.model = angular.copy(operator.user);
+        $scope.title = gettext('Edit profile');
+        $scope.formFields = UserProfileForm.getFormFields();
         $scope.save = function (user) {
+            User.inject(user);
             User.save(user).then(
                 function(success) {
-                    $state.go('users.user.list');
+                    $scope.closeThisDialog();
                 },
                 function(error) {
-                    $scope.formError = error;
+                    // save error: revert all changes by restore
+                    // (refresh) original user object from server
+                    User.refresh(user);
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };
@@ -791,7 +907,7 @@ angular.module('OpenSlidesApp.users.site', [
     'PasswordGenerator',
     function($scope, $state, $http, User, userId, gettextCatalog, PasswordGenerator) {
         User.bindOne(userId, $scope, 'user');
-        $scope.alert={};
+        $scope.alert = {};
         $scope.generatePassword = function () {
             $scope.new_password = PasswordGenerator.generate();
         };
@@ -818,24 +934,38 @@ angular.module('OpenSlidesApp.users.site', [
     '$scope',
     '$state',
     '$http',
-    function($scope, $state, $http) {
-        $scope.save = function () {
-            if ($scope.newPassword != $scope.newPassword2) {
-                $scope.newPassword = $scope.newPassword2 = '';
-                $scope.formError = 'Password confirmation does not match.';
+    'gettext',
+    'UserPasswordForm',
+    function($scope, $state, $http, gettext, UserPasswordForm) {
+        $scope.title = 'Change password';
+        $scope.alert = {};
+        $scope.model = {};
+        $scope.formFields = UserPasswordForm.getFormFields();
+        $scope.save = function (data) {
+            if (data.newPassword != data.newPassword2) {
+                data.newPassword = data.newPassword2 = '';
+                $scope.alert = {
+                    type: 'danger',
+                    msg: gettext('Password confirmation does not match.'),
+                    show: true,
+                };
             } else {
                 $http.post(
                     '/users/setpassword/',
-                    {'old_password': $scope.oldPassword, 'new_password': $scope.newPassword}
+                    {'old_password': data.oldPassword, 'new_password': data.newPassword}
                 ).then(
-                    function (response) {
-                        // Success.
-                        $state.go('users.user.list');
+                    function (success) {
+                        $scope.closeThisDialog();
                     },
-                    function (response) {
+                    function (error) {
                         // Error, e. g. wrong old password.
-                        $scope.oldPassword = $scope.newPassword = $scope.newPassword2 = '';
-                        $scope.formError = response.data.detail;
+                        $scope.model = {};
+
+                        var message = '';
+                        for (var e in error.data) {
+                            message += e + ': ' + error.data[e] + ' ';
+                        }
+                        $scope.alert = {type: 'danger', msg: message, show: true};
                     }
                 );
             }
@@ -1342,12 +1472,20 @@ angular.module('OpenSlidesApp.users.site', [
     'User',
     'operator',
     'ngDialog',
-    function($scope, $http, DS, User, operator, ngDialog) {
+    'UserProfileForm',
+    'UserPasswordForm',
+    function($scope, $http, DS, User, operator, ngDialog, UserProfileForm, UserPasswordForm) {
         $scope.logout = function () {
             $http.post('/users/logout/').then(function (response) {
                 operator.setUser(null);
                 window.location.reload();
             });
+        };
+        $scope.editProfile = function () {
+            ngDialog.open(UserProfileForm.getDialog());
+        };
+        $scope.changePassword = function () {
+            ngDialog.open(UserPasswordForm.getDialog());
         };
     }
 ])

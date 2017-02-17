@@ -10,9 +10,9 @@ class UserAccessPermissions(BaseAccessPermissions):
     """
     def check_permissions(self, user):
         """
-        Returns True if the user has read access model instances.
+        Every user has read access for their model instnces.
         """
-        return has_perm(user, 'users.can_see_name')
+        return True
 
     def get_serializer_class(self, user=None):
         """

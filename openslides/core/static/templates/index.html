@@ -91,12 +91,13 @@
             </a>
             <ul class="dropdown-menu pull-right" uib-dropdown-menu aria-labelledby="user-settings-dropdown">
               <li>
-                <a ui-sref="users.user.detail.profile({ id: operator.user.id })">
+                <!--<a ui-sref="users.user.detail.profile({ id: operator.user.id })">-->
+                <a href="" ng-click="editProfile()">
                   <i class="fa fa-cog"></i>
                   <translate>Edit profile</translate>
                 </a>
               <li>
-                <a ui-sref="users.user.detail.password({ id: operator.user.id })">
+                <a href="" ng-click="changePassword()">
                   <i class="fa fa-key"></i>
                   <translate>Change password</translate>
                 </a>
