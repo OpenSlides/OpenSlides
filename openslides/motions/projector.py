@@ -1,7 +1,7 @@
 from ..core.exceptions import ProjectorException
 from ..utils.collection import CollectionElement
 from ..utils.projector import ProjectorElement
-from .models import Motion, MotionBlock, MotionChangeRecommendation
+from .models import Motion, MotionBlock, MotionChangeRecommendation, Workflow
 
 
 class MotionSlide(ProjectorElement):
@@ -71,6 +71,7 @@ class MotionBlockSlide(ProjectorElement):
             yield motion_block
             yield motion_block.agenda_item
             yield from motion_block.motion_set.all()
+            yield from Workflow.objects.all()
 
     def get_collection_elements_required_for_this(self, collection_element, config_entry):
         output = super().get_collection_elements_required_for_this(collection_element, config_entry)
