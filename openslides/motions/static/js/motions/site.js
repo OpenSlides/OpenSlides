@@ -640,11 +640,13 @@ angular.module('OpenSlidesApp.motions.site', [
     'MotionForm',
     'Motion',
     'Category',
+    'Config',
     'Tag',
     'Workflow',
     'User',
     'Agenda',
     'MotionBlock',
+    'MotionChangeRecommendation',
     'MotionCsvExport',
     'MotionDocxExport',
     'MotionContentProvider',
@@ -658,9 +660,10 @@ angular.module('OpenSlidesApp.motions.site', [
     'osTableSort',
     'PdfCreate',
     function($scope, $state, $http, gettext, gettextCatalog, ngDialog, MotionForm, Motion,
-                Category, Tag, Workflow, User, Agenda, MotionBlock, MotionCsvExport, MotionDocxExport,
-                MotionContentProvider, MotionCatalogContentProvider, PdfMakeConverter, PdfMakeDocumentProvider,
-                HTMLValidizer, Projector, ProjectionDefault, osTableFilter, osTableSort, PdfCreate) {
+                Category, Config, Tag, Workflow, User, Agenda, MotionBlock, MotionChangeRecommendation,
+                MotionCsvExport, MotionDocxExport, MotionContentProvider, MotionCatalogContentProvider,
+                PdfMakeConverter, PdfMakeDocumentProvider, HTMLValidizer, Projector, ProjectionDefault,
+                osTableFilter, osTableSort, PdfCreate) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         MotionBlock.bindAll({}, $scope, 'motionBlocks');
@@ -864,10 +867,17 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.pdfExport = function() {
             var filename = gettextCatalog.getString("Motions") + ".pdf";
             var image_sources = [];
+            $scope.viewChangeRecommendations = {};
+            $scope.viewChangeRecommendations.mode = Config.get('motions_recommendation_text_mode').value;
+            $scope.lineNumberMode = Config.get('motions_default_line_numbering').value;
 
             //save the arrays of the filtered motions to an array
             angular.forEach($scope.motionsFiltered, function (motion) {
-                var content = HTMLValidizer.validize(motion.getText($scope.version)) + HTMLValidizer.validize(motion.getReason($scope.version));
+                $scope.change_recommendations = MotionChangeRecommendation.filter({
+                    'where': {'motion_version_id': {'==': motion.active_version}}
+                });
+                var text = motion.getTextByMode($scope.viewChangeRecommendations.mode, null);
+                var content = HTMLValidizer.validize(text) + HTMLValidizer.validize(motion.getReason());
                 var map = Function.prototype.call.bind([].map);
                 var tmp_image_sources = map($(content).find("img"), function(element) {
                     return element.getAttribute("src");
@@ -1022,7 +1032,7 @@ angular.module('OpenSlidesApp.motions.site', [
             {mode: 'diff',
             label: 'Diff version'},
             {mode: 'agreed',
-            label: 'Resolution'},
+            label: 'Final version'},
         ];
         $scope.projectionMode = $scope.projectionModes[0];
         if (motion.isProjected().length) {
@@ -1245,7 +1255,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // Change recommendation viewing
         $scope.viewChangeRecommendations = ChangeRecommmendationView;
-        $scope.viewChangeRecommendations.init($scope, 'original');
+        $scope.viewChangeRecommendations.init($scope, Config.get('motions_recommendation_text_mode').value);
 
         // PDF creating functions
         $scope.pdfExport = MotionPDFExport;
@@ -1903,6 +1913,7 @@ angular.module('OpenSlidesApp.motions.site', [
         gettext('Stop submitting new motions by non-staff users');
         gettext('Allow to disable versioning');
         gettext('Name of recommender');
+        gettext('Default text version for change recommendations');
         gettext('Will be displayed as label before selected recommendation. Use an empty value to disable the recommendation system.');
 
         // subgroup Amendments
