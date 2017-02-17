@@ -13,8 +13,9 @@
   </form>
 
   <div class="searchfilter spacer-top">
-    <label ng-repeat="filter in results | orderBy: 'weight'" class="checkbox-inline">
-      <input type="checkbox" ng-model="filter.checked">
+    <label ng-repeat="filter in results | orderBy: 'weight'" class="checkbox-inline"
+      ng-click="filter.checked = !filter.checked">
+      <i class="fa" ng-class="filter.checked ? 'fa-check-square-o' : 'fa-square-o'"></i>
       {{ filter.verboseName | translate }}
     </label>
   </div>

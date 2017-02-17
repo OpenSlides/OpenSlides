@@ -611,27 +611,32 @@ angular.module('OpenSlidesApp.core.site', [
 
         // Configure custom types
         formlyConfig.setType({
-          name: 'editor',
-          extends: 'textarea',
-          templateUrl: 'static/templates/core/editor.html',
+            name: 'editor',
+            extends: 'textarea',
+            templateUrl: 'static/templates/core/editor.html',
         });
         formlyConfig.setType({
-          name: 'select-single',
-          extends: 'select',
-          templateUrl: 'static/templates/core/select-single.html'
+            name: 'select-single',
+            extends: 'select',
+            templateUrl: 'static/templates/core/select-single.html'
         });
         formlyConfig.setType({
-          name: 'select-multiple',
-          extends: 'select',
-          templateUrl: 'static/templates/core/select-multiple.html'
+            name: 'select-multiple',
+            extends: 'select',
+            templateUrl: 'static/templates/core/select-multiple.html'
         });
         formlyConfig.setType({
-          name: 'radio-buttons',
-          templateUrl: 'static/templates/core/radio-buttons.html',
-          wrapper: ['bootstrapHasError'],
-          defaultOptions: {
-            noFormControl: false
-          }
+            name: 'radio-buttons',
+            templateUrl: 'static/templates/core/radio-buttons.html',
+            wrapper: ['bootstrapHasError'],
+            defaultOptions: {
+                noFormControl: false
+            }
+        });
+        formlyConfig.setType({
+            name: 'file',
+            extends: 'input',
+            templateUrl: 'static/templates/core/file.html',
         });
     }
 ])

@@ -1,59 +1,24 @@
-<h1 ng-if="mediafile.id" translate>Edit file</h1>
-<h1 ng-if="!mediafile.id" translate>New file</h1>
+<h1 ng-if="model.id" translate>Edit file</h1>
+<h1 ng-if="!model.id" translate>New file</h1>
 
-<div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
+<div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" close="alert={}">
   {{ alert.msg }}
 </div>
 
-<form name="mediafileForm" ng-submit="save(mediafile)">
-  <!-- file -->
-  <div class="form-group">
-    <label for="inputTitle"><translate>File</translate>*</label>
-    <!-- create view: show file select field -->
-    <input ng-if="!mediafile.id" type="file" ngf-select ng-model="mediafile.newFile" required>
-    <!-- update view: show filename only -->
-    <div ng-if="mediafile.id">{{ mediafile.filename }}</div>
-  </div>
+<form name="mediafileForm" ng-submit="save(model)" novalidate>
+  <formly-form model="model" fields="formFields">
+    <i ng-if="model.file.$error.maxSize">File too large
+      {{ picFile.size / 1000000|number:1}}MB: max {{ mediafile.mediafile.$errorParam}}</i>
 
-  <!-- title -->
-  <div class="form-group">
-    <label for="inputTitle" translate>Title</label>
-    <input type="text" ng-model="mediafile.title" class="form-control" name="inputTitle">
-  </div>
+    <uib-progressbar ng-if="activeUpload" value="progress" animate="false">
+      <span class="nobr">{{ progress }}%</span>
+    </uib-progressbar>
 
-  <!-- hidden -->
-  <div class="checkbox" os-perms="mediafiles.can_see_hidden">
-    <label>
-      <input class="formly-field-chackbox" type="checkbox" ng-model="mediafile.hidden" name="inputHidden">
-      <translate>Hidden</translate>
-    </label>
-    <p class="help-block" translate>
-      This does not protect the file but hides it for non authorized users.
-    </p>
-  </div>
-
-  <!-- uploader -->
-  <div os-perms="mediafiles.can_manage" class="form-group">
-    <label for="inputTitle" translate>Uploaded by</label>
-    <select chosen
-        ng-model="mediafile.uploader_id"
-        ng-options="user.id as user.get_full_name() for user in users"
-        allow-single-deselect="true"
-        search-contains="true"
-        placeholder-text-single="'Select or search a participant ...' | translate"
-        no-results-text="'No results available ...' | translate"
-        class="form-control">
-      <option value=""></option>
-    <select>
-  </div>
-
-  <i ng-if="mediafile.file.$error.maxSize">File too large
-    {{ picFile.size / 1000000|number:1}}MB: max {{ mediafile.mediafile.$errorParam}}</i>
-
-  <button type="submit" ng-disabled="mediafileForm.$invalid" class="btn btn-primary" translate>
-    Save
-  </button>
-  <button type="button" ng-click="closeThisDialog()" class="btn btn-default" translate>
-    Cancel
-  </button>
+    <button type="submit" ng-disabled="mediafileForm.$invalid || activeUpload" class="btn btn-primary" translate>
+      Save
+    </button>
+    <button type="button" ng-click="close()" class="btn btn-default" translate>
+      Cancel
+    </button>
+  </formly-form>
 </form>
