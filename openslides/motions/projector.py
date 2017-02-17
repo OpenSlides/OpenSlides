@@ -74,10 +74,10 @@ class MotionBlockSlide(ProjectorElement):
 
     def get_collection_elements_required_for_this(self, collection_element, config_entry):
         output = super().get_collection_elements_required_for_this(collection_element, config_entry)
-        # Full update if a motion changes because then it may be appended to
+        # Send all changed motions to the projector, because it may be appended
         # or removed from the block.
         if collection_element.collection_string == Motion.get_collection_string():
-            output.extend(self.get_requirements_as_collection_elements(config_entry))
+            output.append(collection_element)
         return output
 
     def update_data(self):
