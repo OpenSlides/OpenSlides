@@ -19,6 +19,10 @@
       <translate ng-if="!showInternalItems">Show internal items</translate>
     </button>
 
+  <div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
+    {{ alert.msg }}
+  </div>
+
   <div ui-tree="treeOptions" id="tree-root">
     <ol ui-tree-nodes ng-model="items">
       <li ng-repeat="item in items" ui-tree-node ng-include="'nodes_renderer.html'">

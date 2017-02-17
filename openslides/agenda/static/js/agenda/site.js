@@ -585,6 +585,7 @@ angular.module('OpenSlidesApp.agenda.site', [
             $scope.items = AgendaTree.getTree(Agenda.getAll());
         });
         $scope.showInternalItems = true;
+        $scope.alert = {};
 
         // save parent and weight of moved agenda item (and all items on same level)
         $scope.treeOptions = {
@@ -594,7 +595,15 @@ angular.module('OpenSlidesApp.agenda.site', [
                 if (event.dest.nodesScope.item) {
                     parentID = event.dest.nodesScope.item.id;
                 }
-                $http.post('/rest/agenda/item/sort/', {nodes: event.dest.nodesScope.$modelValue, parent_id: parentID});
+                $http.post('/rest/agenda/item/sort/', {
+                    nodes: event.dest.nodesScope.$modelValue,
+                    parent_id: parentID}
+                ).then(
+                    function(success) {},
+                    function(error){
+                        $scope.alert = {type: 'danger', msg: error.data.detail, show: true};
+                    }
+                );
             }
         };
     }
