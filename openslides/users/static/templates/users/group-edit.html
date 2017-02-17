@@ -3,6 +3,8 @@
 <div uib-alert ng-show="alert.show" class="alert-danger" ng-click="alert={}" close="alert={}">
   {{ alert.msg }}
 </div>
+
+<form name="groupForm" ng-submit="save()">
 <label for="name_1">
   <span ng-if="group">
     <translate>Please enter a new name for {{ group.name }}:</translate>
@@ -16,7 +18,7 @@
     <input class="form-control" id="name_1" type="text" ng-model="new_name">
   </div>
   <div class="spacer-top-lg">
-    <button ng-click="save()" ng-disabled="new_name == ''" class="btn btn-primary" translate>
+    <button type="submit" ng-disabled="new_name == ''" class="btn btn-primary" translate>
       Save
     </button>
     <button ng-click="closeThisDialog()" class="btn btn-default" translate>
@@ -24,3 +26,4 @@
     </button>
   </div>
 </div>
+</form>
