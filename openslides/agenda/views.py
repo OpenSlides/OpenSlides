@@ -241,7 +241,8 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
     @list_route(methods=['post'])
     def sort(self, request):
         """
-        Sort agenda items.
+        Sort agenda items. Also checks parent field to prevent hierarchical
+        loops.
         """
         nodes = request.data.get('nodes', [])
         parent_id = request.data.get('parent_id')
@@ -253,5 +254,15 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                 item.weight = index
                 item.save(skip_autoupdate=True)
                 items.append(item)
+
+                # Now check consistency. TODO: Try to use less DB queries.
+                item = Item.objects.get(pk=node['id'])
+                ancestor = item.parent
+                while ancestor is not None:
+                    if ancestor == item:
+                        raise ValidationError({'detail': _(
+                            'There must not be a hierarchical loop. Please reload the page.')})
+                    ancestor = ancestor.parent
+
         inform_changed_data(items)
         return Response({'detail': _('The agenda has been sorted.')})
