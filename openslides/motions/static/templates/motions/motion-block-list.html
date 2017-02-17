@@ -25,10 +25,14 @@
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
+        <th os-perms="core.can_manage_projector" class="minimum">
         <th><translate>Name</translate>
         <th><translate>Motions</translate>
     <tbody>
       <tr ng-repeat="motionBlock in motionBlocks | filter: filter.search | orderBy: 'title'">
+        <td os-perms="core.can_manage_projector">
+          <projector-button model="motionBlock" default-projector-id="defaultProjectorId">
+          </projector-button>
         <td ng-mouseover="motionBlock.hover=true" ng-mouseleave="motionBlock.hover=false">
           <strong>
             <a ui-sref="motions.motionBlock.detail({id: motionBlock.id})">{{ motionBlock.title }}</a>

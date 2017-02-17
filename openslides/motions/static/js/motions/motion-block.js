@@ -106,7 +106,17 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
     'ngDialog',
     'MotionBlock',
     'MotionBlockForm',
-    function ($scope, ngDialog, MotionBlock, MotionBlockForm) {
+    'Projector',
+    'ProjectionDefault',
+    function ($scope, ngDialog, MotionBlock, MotionBlockForm, Projector, ProjectionDefault) {
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            var projectiondefault = ProjectionDefault.filter({name: 'motionBlocks'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId = projectiondefault.projector_id;
+            }
+        });
         // Two-way data binding for all MotionBlock instances.
         MotionBlock.bindAll({}, $scope, 'motionBlocks');
 
