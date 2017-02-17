@@ -12,15 +12,15 @@ angular.module('OpenSlidesApp.mediafiles.update', [
     'operator',
     'User',
     'Mediafile',
-    'mediafile',
-    function ($scope, operator, User, Mediafile, mediafile) {
-        User.bindAll({}, $scope, 'users');
+    'mediafileId',
+    'MediafileForm',
+    function ($scope, operator, User, Mediafile, mediafileId, MediafileForm) {
         $scope.alert = {};
-        $scope.users = User.getAll();
+        $scope.formFields = MediafileForm.getFormFields();
 
         // set initial values for form model by create deep copy of motion object
         // so list/detail view is not updated while editing
-        $scope.mediafile = angular.copy(mediafile);
+        $scope.model = angular.copy(Mediafile.get(mediafileId));
 
         // save mediafile
         $scope.save = function (mediafile) {

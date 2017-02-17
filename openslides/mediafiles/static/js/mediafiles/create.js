@@ -4,33 +4,44 @@
 
 angular.module('OpenSlidesApp.mediafiles.create', [
     'OpenSlidesApp.mediafiles.forms',
-    //TODO: Add deps for User
 ])
 
 .controller('MediafileCreateCtrl', [
     '$scope',
-    'User',
     'MediafileForm',
-    function ($scope, User, MediafileForm) {
-        User.bindAll({}, $scope, 'users');
-        $scope.mediafile = {};
+    function ($scope, MediafileForm) {
+        $scope.model = {};
         $scope.alert = {};
-        $scope.users = User.getAll();
+        $scope.formFields = MediafileForm.getFormFields(true);
 
         // upload and save mediafile
         $scope.save = function (mediafile) {
-            MediafileForm.uploadFile(mediafile).then(
-                function (success) {
-                    $scope.closeThisDialog();
-                },
-                function (error) {
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
+            if (typeof mediafile.getFile === 'function') {
+                $scope.activeUpload = MediafileForm.uploadFile(mediafile).then(
+                    function (success) {
+                        $scope.closeThisDialog();
+                    },
+                    function (error) {
+                        $scope.activeUpload = void 0;
+                        var message = '';
+                        for (var e in error.data) {
+                            message += e + ': ' + error.data[e] + ' ';
+                        }
+                        $scope.alert = {type: 'danger', msg: message, show: true};
+                    },
+                    function (progress) {
+                        $scope.progress = parseInt(100.0 * progress.loaded / progress.total);
                     }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
-                }
-            );
+                );
+            }
+        };
+        $scope.close = function () {
+            // TODO: abort() is not a function. But it is documented in the docs.
+            // See https://github.com/danialfarid/ng-file-upload/issues/1844
+            /*if ($scope.activeUpload) {
+                $scope.activeUpload.abort();
+            }*/
+            $scope.closeThisDialog();
         };
     }
 ]);
