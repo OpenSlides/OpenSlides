@@ -180,7 +180,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 var content = contentProvider.getContent();
                 return {
                     pageSize: 'A4',
-                    pageMargins: [75, 90, 75, 100],
+                    pageMargins: [75, 90, 75, 75],
                     defaultStyle: {
                         font: 'PdfFont',
                         fontSize: 10
@@ -645,6 +645,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "li":
                                 case "div":
                                     currentParagraph = create("text");
+                                    currentParagraph.lineHeight = 1.25;
                                     var stackDiv = create("stack");
                                     stackDiv.stack.push(currentParagraph);
                                     ComputeStyle(stackDiv, styles);
@@ -708,7 +709,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                                     text: line,
                                                     color: "gray",
                                                     fontSize: 8,
-                                                    margin: [0, 2.35, 0, 0]
+                                                    lineHeight: 1.25,
+                                                    margin: [0, 2.85, 0, 0]
                                                 });
                                             });
                                             listCol.columns.push(list);

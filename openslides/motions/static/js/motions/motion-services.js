@@ -34,7 +34,8 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                 var converter = PdfMakeConverter.createInstance(data.images);
                 var motionContentProvider = MotionContentProvider.createInstance(converter, $scope.motion, $scope, User, $http);
                 var documentProvider = PdfMakeDocumentProvider.createInstance(motionContentProvider);
-                var filename = gettextCatalog.getString("Motion") + "-" + $scope.motion.identifier + ".pdf";
+                var identifier = $scope.motion.identifier ? '-' + $scope.motion.identifier : '';
+                var filename = gettextCatalog.getString("Motion") + identifier + ".pdf";
                 PdfCreate.download(documentProvider.getDocument(), filename);
             });
         };

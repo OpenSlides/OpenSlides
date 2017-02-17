@@ -71,7 +71,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='motions_line_length',
-        default_value=80,
+        default_value=90,
         input_type='integer',
         label='Line length',
         help_text='The maximum number of characters per line. Relevant when line numbering is enabled. Min: 40',
