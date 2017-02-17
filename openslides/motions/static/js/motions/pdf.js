@@ -532,7 +532,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             }
         };
 
-        // returns the pure content of the motion, parseable by makepdf
+        // returns the pure content of the motion, parseable by pdfmake
         var getContent = function() {
             var motionContent = [];
             angular.forEach(allMotions, function(motion, key) {

@@ -108,6 +108,20 @@ def get_config_variables():
         subgroup='General',
         translatable=True)
 
+    yield ConfigVariable(
+        name='motions_recommendation_text_mode',
+        default_value='original',
+        input_type='choice',
+        label='Default text version for change recommendations',
+        choices=(
+            {'value': 'original', 'display_name': 'Original version'},
+            {'value': 'changed', 'display_name': 'Changed version'},
+            {'value': 'diff', 'display_name': 'Diff version'},
+            {'value': 'agreed', 'display_name': 'Final version'}),
+        weight=333,
+        group='Motions',
+        subgroup='General')
+
     # Amendments
     yield ConfigVariable(
         name='motions_amendments_enabled',
