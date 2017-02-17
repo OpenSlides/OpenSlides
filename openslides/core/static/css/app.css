@@ -557,7 +557,13 @@ img {
     display: none;
     max-width: 150px;
     left: -45px;
-    margin-top: -8px;
+    margin-top: -8px !important;
+}
+/* special hack for firefox only (see issue#2967) */
+@-moz-document url-prefix() {
+    .tt_change_recommendation_create_help {
+        margin-top: -20px !important;
+    }
 }
 .tt_change_recommendation_create_help.opened {
     display: inherit;
