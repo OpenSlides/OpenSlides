@@ -1655,8 +1655,8 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('Front page text');
         gettext('[Space for your welcome text.]');
         gettext('Allow access for anonymous guest users');
-        gettext('Show this text on the login page.');
-        gettext('The separator used for the csv export and examples.');
+        gettext('Show this text on the login page');
+        gettext('Separator used for all csv exports and examples');
         gettext('Show logo on projector');
         gettext('You can replace the logo. Just copy a file to ' +
                 '"static/img/logo-projector.png" in your OpenSlides data ' +

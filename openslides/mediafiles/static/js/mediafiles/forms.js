@@ -84,7 +84,7 @@ angular.module('OpenSlidesApp.mediafiles.forms', [
                         key: 'uploader_id',
                         type: 'select-single',
                         templateOptions: {
-                            label: gettextCatalog.getString('Uploader'),
+                            label: gettextCatalog.getString('Uploaded by'),
                             options: User.getAll(),
                             ngOptions: 'option.id as option.full_name for option in to.options',
                             placeholder: gettextCatalog.getString('Select or search a participant ...')
