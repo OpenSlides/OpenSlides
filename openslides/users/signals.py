@@ -66,7 +66,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['mediafiles.can_see'],
         permission_dict['motions.can_see'],
         permission_dict['users.can_see_name'], )
-    group_default = Group.objects.create(name='Default', pk=1)
+    group_default = Group.objects.create(name='Default')
     group_default.permissions.add(*base_permissions)
 
     # Delegates (pk 2)
@@ -85,7 +85,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['motions.can_create'],
         permission_dict['motions.can_support'],
         permission_dict['users.can_see_name'], )
-    group_delegates = Group.objects.create(name='Delegates', pk=2)
+    group_delegates = Group.objects.create(name='Delegates')
     group_delegates.permissions.add(*delegates_permissions)
 
     # Staff (pk 3)
@@ -116,7 +116,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['users.can_manage'],
         permission_dict['users.can_see_extra_data'],
         permission_dict['mediafiles.can_see_hidden'],)
-    group_staff = Group.objects.create(name='Staff', pk=3)
+    group_staff = Group.objects.create(name='Staff')
     group_staff.permissions.add(*staff_permissions)
 
     # Add users.can_see_name permission to staff
@@ -139,7 +139,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['motions.can_create'],
         permission_dict['motions.can_support'],
         permission_dict['users.can_see_name'], )
-    group_committee = Group.objects.create(name='Committees', pk=4)
+    group_committee = Group.objects.create(name='Committees')
     group_committee.permissions.add(*committees_permissions)
 
     # Create or reset admin user
