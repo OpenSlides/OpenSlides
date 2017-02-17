@@ -27,6 +27,66 @@ pdfMake.fonts = {
     }
 };
 
+// Function to replace layout placeholder
+//
+// Workaround for using table layout functions.
+// TODO: Needs improvement of pdfmake's web worker support.
+// Currently only functions are allowed for 'layout'.
+// But functions cannot be passed to workers (via JSON).
+var replacePlaceholder = function (content) {
+    for (var i = 0; i < content.length; i++) {
+        if (typeof content[i] === 'object') {
+
+            // motion meta table border lines
+            if (content[i].layout === "{{motion-placeholder-to-insert-functions-here}}") {
+                content[i].layout = {
+                    hLineWidth: function(i, node) {
+                        return (i === 0 || i === node.table.body.length) ? 0 : 0.5;
+                    },
+                    vLineWidth: function() {
+                        return 0;
+                    },
+                    hLineColor: function() {
+                        return 'white';
+                    }
+                };
+                return true;
+            }
+
+            // ballot paper crop marks
+            if (content[i].layout === "{{ballot-placeholder-to-insert-functions-here}}") {
+                content[i].layout = {
+                    hLineWidth: function(i, node) {
+                        if (i === 0){
+                            return 0;
+                        } else if (i === node.table.body.length) {
+                            if (node.rowsperpage && node.rowsperpage > i) {
+                                return 0.5;
+                            } else {
+                                return 0;
+                            }
+                        } else {
+                            return 0.5;
+                        }
+                    },
+                    vLineWidth: function(i, node) {
+                        return (i === 0 || i === node.table.widths.length) ? 0 : 0.5;
+                    },
+                    hLineColor: function() {
+                        return 'gray';
+                    },
+                    vLineColor: function() {
+                        return 'gray';
+                    }
+                };
+                return true;
+            }
+            replacePlaceholder(content[i]);
+        }
+    }
+};
+
+
 // Create PDF on message and return the base64 decoded document
 self.addEventListener('message', function(e) {
     var data = JSON.parse(e.data);
@@ -49,54 +109,8 @@ self.addEventListener('message', function(e) {
         };
     }
 
-    // Workaround for using table layout functions.
-    // TODO: Needs improvement of pdfmake's web worker support.
-    // Currently only functions are allowed for 'layout'.
-    // But functions cannot be passed to workers (via JSON).
-    //
-    // ballot paper crop marks
-    for (var i = 0; i < data.content.length; i++) {
-        if (data.content[i].layout === "{{ballot-placeholder-to-insert-functions-here}}") {
-            data.content[i].layout = {
-                hLineWidth: function(i, node) {
-                    if (i === 0){
-                        return 0;
-                    } else if (i === node.table.body.length) {
-                        if (node.rowsperpage && node.rowsperpage > i) {
-                            return 0.5;
-                        } else {
-                            return 0;
-                        }
-                    } else {
-                        return 0.5;
-                    }
-                },
-                vLineWidth: function(i, node) {
-                    return (i === 0 || i === node.table.widths.length) ? 0 : 0.5;
-                },
-                hLineColor: function() {
-                    return 'gray';
-                },
-                vLineColor: function() {
-                    return 'gray';
-                }
-            };
-        }
-        // motion meta table border lines
-        if (data.content[i].layout === "{{motion-placeholder-to-insert-functions-here}}") {
-            data.content[i].layout = {
-                hLineWidth: function(i, node) {
-                    return (i === 0 || i === node.table.body.length) ? 0 : 0.5;
-                },
-                vLineWidth: function() {
-                    return 0;
-                },
-                hLineColor: function() {
-                    return 'white';
-                }
-            };
-        }
-    }
+    replacePlaceholder(data.content);
+
     var pdf = pdfMake.createPdf(data);
     pdf.getBase64(function (base64) {
         self.postMessage(base64);
