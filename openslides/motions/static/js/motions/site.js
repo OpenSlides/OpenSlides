@@ -1006,7 +1006,10 @@ angular.module('OpenSlidesApp.motions.site', [
             return Projector.lastModified();
         }, function () {
             $scope.projectors = Projector.getAll();
-            $scope.defaultProjectorId = ProjectionDefault.filter({name: 'motions'})[0].projector_id;
+            var defaultProjectiondefault = ProjectionDefault.filter({name: 'motions'})[0];
+            if (defaultProjectiondefault) {
+                $scope.defaultProjectorId = defaultProjector.projector_id;
+            }
         });
         $scope.$watch(function () {
             return Motion.lastModified(motionId);
@@ -1447,7 +1450,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     $scope.formFields[i].hide = false;
                 }
             }
-            if ($scope.formFields[i].key == "showAsAgendaItem") {
+            if ($scope.formFields[i].key == "showAsAgendaItem" && motion.agenda_item) {
                 // get state from agenda item (hidden/internal or agenda item)
                 $scope.formFields[i].defaultValue = !motion.agenda_item.is_hidden;
             }
