@@ -100,7 +100,7 @@ def get_config_variables():
     yield ConfigVariable(
         name='general_login_info_text',
         default_value='',
-        label='Show this text on the login page.',
+        label='Show this text on the login page',
         weight=140,
         group='General',
         subgroup='System')
@@ -110,7 +110,7 @@ def get_config_variables():
     yield ConfigVariable(
         name='general_csv_separator',
         default_value=',',
-        label='The separator used for the csv export and examples',
+        label='Separator used for all csv exports and examples',
         weight=144,
         group='General',
         subgroup='CSV')
