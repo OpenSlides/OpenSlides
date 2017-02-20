@@ -1042,9 +1042,9 @@ angular.module('OpenSlidesApp.motions.site', [
             return Projector.lastModified();
         }, function () {
             $scope.projectors = Projector.getAll();
-            var defaultProjectiondefault = ProjectionDefault.filter({name: 'motions'})[0];
-            if (defaultProjectiondefault) {
-                $scope.defaultProjectorId = defaultProjector.projector_id;
+            var projectiondefault = ProjectionDefault.filter({name: 'motions'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId = projectiondefault.projector_id;
             }
         });
         $scope.$watch(function () {
