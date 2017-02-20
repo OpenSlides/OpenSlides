@@ -175,7 +175,10 @@
 <!-- Content -->
 <div id="content" ng-controller="ProjectorSidebarCtrl">
   <div class="containerOS">
-    <div class="col1" ng-class="(isProjectorSidebar && operator.hasPerms('core.can_see_projector')) ? 'min' : 'max'">
+    <div class="col1" ng-class="{
+        'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-min': !isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-none': !operator.hasPerms('core.can_see_projector') }">
         <!-- dynamic views -->
         <div ui-view ng-if="openslidesBootstrapDone && baseViewPermissionsGranted"></div>
         <!-- footer -->
@@ -184,8 +187,10 @@
           <a ui-sref="legalnotice" translate>Legal notice</a>
         </div><!--end footer-->
     </div>
-    <div id="sidebar" class="col2" os-perms="core.can_see_projector"
-        ng-class="(isProjectorSidebar && operator.hasPerms('core.can_see_projector')) ? 'max' : 'min'"
+    <div id="sidebar" class="col2" os-perms="core.can_see_projector" ng-class="{
+        'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-min': !isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-none': !operator.hasPerms('core.can_see_projector') }"
         ng-init="initSidebar()">
       <!-- sidebar maximized -->
       <div class="projector_full" ng-if="isProjectorSidebar">

@@ -309,12 +309,16 @@ img {
     float: left;
 }
 
-#content .col1.min { /*with maximized sidebar*/
+#content .col1.sidebar-max { /*with maximized sidebar*/
     width: calc(100% - 330px);
 }
 
-#content .col1.max { /*with minimized sidebar*/
+#content .col1.sidebar-min { /*with minimized sidebar*/
     width: calc(100% - 70px);
+}
+
+#content .col1.sidebar-none { /*without sidebar*/
+    width: 100%;
 }
 
 .col1 .header {
@@ -730,12 +734,15 @@ img {
     margin-bottom: 20px;
 }
 
-#content .col2.max {
+#content .col2.sidebar-max {
     width: 330px;
 }
 
-#content .col2.min {
+#content .col2.sidebar-min {
     width: 70px;
+}
+#content .col2.sidebar-none {
+    width: 0px;
 }
 
 #content .col2 h4 {
@@ -1717,16 +1724,18 @@ tr.selected td {
     #content .containerOS {
         padding: 0;
     }
-    #content .col2.max {
+    #content .col2 {
+        position: relative !important;
+        margin-top: -20px;
+    }
+    #content .col2.sidebar-max {
+        width: 296px;
+    }
+    #content .col2 .projector_full, #content .col2 .projector_min {
+        margin-left: 0;
+    }
+    #content .col1.sidebar-min, #content .col1.sidebar-max {
         width: 100%;
-        position: absolute !important;
-        left: 0;
-    }
-    #content .col1.min {
-        width: calc(100% - 70px);
-    }
-    .col2 .projector_full {
-        margin-left: 0px;
     }
     #groups-table .perm-head {
         width: 150px;
