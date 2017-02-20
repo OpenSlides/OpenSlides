@@ -91,6 +91,7 @@ Users:
 - Added new field for participant number.
 - Added new field 'is_committee' and new default group 'Committees'.
 - Improved users CSV import (use group names instead of id).
+- Allowed to import/export initial user password.
 - Added more multiselect actions.
 - Added QR code in users access pdf.
 

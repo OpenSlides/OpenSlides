@@ -5,13 +5,14 @@
 angular.module('OpenSlidesApp.users.csv', [])
 
 .factory('UserCsvExport', [
+    '$filter',
     'Group',
     'gettextCatalog',
     'CsvDownload',
-    function (Group, gettextCatalog, CsvDownload) {
+    function ($filter, Group, gettextCatalog, CsvDownload) {
         var makeHeaderline = function () {
             var headerline = ['Title', 'Given name', 'Surname', 'Structure level', 'Participant number', 'Groups',
-                'Comment', 'Is active', 'Is present', 'Is a committee'];
+                'Comment', 'Is active', 'Is present', 'Is a committee', 'Initial password'];
             return _.map(headerline, function (entry) {
                 return gettextCatalog.getString(entry);
             });
@@ -36,6 +37,7 @@ angular.module('OpenSlidesApp.users.csv', [])
                     row.push(user.is_active ? '1' : '0');
                     row.push(user.is_present ? '1' : '0');
                     row.push(user.is_committee ? '1' : '0');
+                    row.push('"' + user.default_password + '"');
                     csvRows.push(row);
                 });
                 CsvDownload(csvRows, 'users-export.csv');
@@ -43,7 +45,7 @@ angular.module('OpenSlidesApp.users.csv', [])
 
             downloadExample: function () {
                 // try to get an example with two groups and one with one group
-                var groups = Group.getAll();
+                var groups = $filter('orderBy')(Group.getAll(), 'id');
                 var csvGroups = '';
                 var csvGroup = '';
                 if (groups.length >= 3) { // do not pick groups[0], this is the default group
@@ -56,10 +58,10 @@ angular.module('OpenSlidesApp.users.csv', [])
 
                 var csvRows = [makeHeaderline(),
                     // example entries
-                    ['Dr.', 'Max', 'Mustermann', 'Berlin','1234567890', csvGroups, 'xyz', '1', '1', ''],
-                    ['', 'John', 'Doe', 'Washington','75/99/8-2', csvGroup, 'abc', '1', '1', ''],
-                    ['', 'Fred', 'Bloggs', 'London', '', '', '', '', '', ''],
-                    ['', '', 'Executive Board', '', '', '', '', '', '', '1'],
+                    ['Dr.', 'Max', 'Mustermann', 'Berlin','1234567890', csvGroups, 'xyz', '1', '1', '', ''],
+                    ['', 'John', 'Doe', 'Washington','75/99/8-2', csvGroup, 'abc', '1', '1', '', ''],
+                    ['', 'Fred', 'Bloggs', 'London', '', '', '', '', '', '', ''],
+                    ['', '', 'Executive Board', '', '', '', '', '', '', '1', ''],
 
                 ];
                 CsvDownload(csvRows, 'users-example.csv');
