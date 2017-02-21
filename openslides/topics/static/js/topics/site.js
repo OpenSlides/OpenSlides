@@ -17,9 +17,7 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
                     title: gettext('Topics'),
                 },
             })
-
             .state('topics.topic', {
-                url: '/topic',
                 abstract: true,
                 template: "<ui-view/>",
             })

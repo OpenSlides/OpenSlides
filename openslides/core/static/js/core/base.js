@@ -682,9 +682,9 @@ angular.module('OpenSlidesApp.core', [
 .factory('Projector', [
     'DS',
     '$http',
-    '$injector',
+    'EditForm',
     'Config',
-    function(DS, $http, $injector, Config) {
+    function(DS, $http, EditForm, Config) {
         return DS.defineResource({
             name: 'core/projector',
             onConflict: 'replace',
@@ -716,14 +716,9 @@ angular.module('OpenSlidesApp.core', [
                             value.name != 'core/countdown' &&
                             value.name != 'core/projector-message' &&
                             value.name != 'agenda/current-list-of-speakers' ) {
-                                var formName = value.name.split('/')[1];
-                                // Hotfix for Issue 2566.
-                                // The changes could be reverted if Issue 2480 is closed.
-                                formName = formName.replace('motion-block', 'motionBlock');
-                                formName = formName.charAt(0).toUpperCase() + formName.slice(1) + 'Form';
                                 return_dict = {
-                                    form: $injector.get(formName),
-                                    id: value.id
+                                    form: EditForm.fromCollectionString(value.name),
+                                    id: value.id,
                                 };
                         }
                     });
@@ -948,6 +943,34 @@ angular.module('OpenSlidesApp.core', [
                     }
                 }
                 return data;
+            },
+        };
+    }
+])
+
+/* Converts a snake-case string to camelCase. Example:
+ * 'motion-block-config' -> 'motionBlockConfig' */
+.factory('CamelCase', [
+    function () {
+        return function (str) {
+            return str.replace(/-([a-z])/g, function (match) {
+                return match[1].toUpperCase();
+            });
+        };
+    }
+])
+
+/* Return the specific EditForm for a given model. */
+.factory('EditForm', [
+    '$injector',
+    'CamelCase',
+    function ($injector, CamelCase) {
+        return {
+            fromCollectionString: function (collection) {
+                var modelName = CamelCase(collection).split('/')[1];
+                // Convert modelModel to ModelModelForm
+                var formName = modelName.charAt(0).toUpperCase() + modelName.slice(1) + 'Form';
+                return $injector.get(formName);
             },
         };
     }

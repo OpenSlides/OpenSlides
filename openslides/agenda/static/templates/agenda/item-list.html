@@ -271,7 +271,7 @@
         <div>
           <!-- ID and title -->
           <div>
-            <a class="title" ui-sref="{{ getDetailStatePrefix(item) }}.detail({id: item.content_object.id})" ng-show="isAllowedToSeeOpenLink(item)">
+            <a class="title" ui-sref="{{ item.getContentObjectDetailState() }}" ng-show="isAllowedToSeeOpenLink(item)">
               {{ item.getListViewTitle() }}
             </a>
             <span class="title" ng-hide="isAllowedToSeeOpenLink(item)">
