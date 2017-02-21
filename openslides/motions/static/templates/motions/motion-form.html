@@ -6,8 +6,13 @@
   {{ alert.msg }}
 </div>
 
-<form name="motionForm" ng-submit="save(model)" novalidate>
+<form name="motionForm" ng-submit="save(model, gotoDetailView)" novalidate>
   <formly-form model="model" fields="formFields">
+    <hr class="smallhr">
+    <div class="checkbox pointer" ng-click="$parent.$parent.gotoDetailView = !$parent.$parent.gotoDetailView">
+      <i class="fa" ng-class="$parent.$parent.gotoDetailView ? 'fa-check-square-o' : 'fa-square-o'"></i>
+      <translate>Open motion detail view after save.</translate>
+    </div>
     <button type="submit" ng-disabled="motionForm.$invalid" class="btn btn-primary" translate>
       Save
     </button>

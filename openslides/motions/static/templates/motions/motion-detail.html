@@ -132,10 +132,10 @@
           <h3 ng-if="!motion.isAllowed('change_state')" class="heading" translate>State</h3>
           <div ng-if="motion.isAllowed('change_state')" class="heading">
             <span uib-dropdown>
-              <a href id="state-dropdown" class="drop-down-name" uib-dropdown-toggle>
+              <span id="state-dropdown" class="drop-down-name pointer" uib-dropdown-toggle>
                 <translate>State</translate>
                 <i class="fa fa-cog"></i>
-              </a>
+              </span>
               <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="state-dropdown">
                 <li ng-repeat="state in motion.state.getNextStates()">
                   <a href ng-click="updateState(state.id)">{{ state.action_word | translate }}</a>
@@ -171,10 +171,10 @@
             </h3>
             <div ng-if="motion.isAllowed('change_recommendation')" class="heading">
               <span uib-dropdown>
-                <a href id="recommendation-dropdown" class="drop-down-name" uib-dropdown-toggle>
+                <span id="recommendation-dropdown" class="drop-down-name pointer" uib-dropdown-toggle>
                   {{ config('motions_recommendations_by') }}
                   <i class="fa fa-cog"></i>
-                </a>
+                </span>
                 <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="recommendation-dropdown">
                   <li ng-repeat="recommendation in motion.state.getRecommendations()">
                     <a href ng-click="updateRecommendation(recommendation.id)">
@@ -189,11 +189,11 @@
                 </ul>
               </span>
             </div>
-            <div class="label" ng-class="'label-'+motion.recommendation.css_class">
+            <div class="label" ng-if="motion.recommendation" ng-class="'label-'+motion.recommendation.css_class">
               {{ motion.getRecommendationName() }}
             </div>
             <div class="input-group spacer"
-                ng-show="motion.recommendation.show_recommendation_extension_field">
+                ng-if="motion.recommendation.show_recommendation_extension_field">
               <label class="sr-only" for="recommendationExtensionField">{{ commentFieldForRecommendation }}</label>
               <input type="text" ng-model="recommendationExtension"
                   id="recommendationExtensionField" class="form-control input-sm"
@@ -216,17 +216,65 @@
           </div>
 
           <!-- Category -->
-          <h3 ng-if="motion.category" translate>Category</h3>
+          <h3 class="heading" os-perms="!motions.can_manage" ng-show="motion.category" translate>Category</h3>
+          <div class="heading" os-perms="motions.can_manage" ng-show="categories.length > 0">
+            <span uib-dropdown>
+              <span id="category-dropdown" class="drop-down-name pointer" uib-dropdown-toggle>
+                <translate>Category</translate>
+                <i class="fa fa-cog"></i>
+              </span>
+              <ul class="dropdown-menu" aria-labelledby="category-dropdown">
+                <li ng-repeat="category in categories">
+                  <a href ng-click="toggleCategory(category)">
+                    <i class="fa fa-check" ng-if="category.id == motion.category.id"></i>
+                    {{ category.name }}
+                  </a>
+                </li>
+              </ul>
+            </span>
+          </div>
           {{ motion.category.name }}
 
           <!-- Motion block -->
-          <h3 ng-if="motion.motionBlock" translate>Motion block</h3>
+          <h3 class="heading" os-perms="!motions.can_manage" ng-show="motion.motionBlock" translate>Motion block</h3>
+          <div class="heading" os-perms="motions.can_manage" ng-show="motionBlocks.length > 0">
+            <span uib-dropdown>
+              <span id="motionBlock-dropdown" class="drop-down-name pointer" uib-dropdown-toggle>
+                <translate>Motion block</translate>
+                <i class="fa fa-cog"></i>
+              </span>
+              <ul class="dropdown-menu" aria-labelledby="motionBlock-dropdown">
+                <li ng-repeat="motionBlock in motionBlocks">
+                  <a href ng-click="toggleMotionBlock(motionBlock)">
+                    <i class="fa fa-check" ng-if="motionBlock.id == motion.motionBlock.id"></i>
+                    {{ motionBlock.title }}
+                  </a>
+                </li>
+              </ul>
+            </span>
+          </div>
           <a ui-sref="motions.motionBlock.detail({id: motion.motionBlock.id})"
               os-perms="motions.can_manage">{{ motion.motionBlock.title }}</a>
           <span os-perms="!motions.can_manage">{{ motion.motionBlock.title }}</span>
 
           <!-- Tags -->
-          <h3 ng-if="motion.tags.length > 0" translate>Tags</h3>
+          <h3 class="heading" os-perms="!motions.can_manage" ng-show="motion.tags.length" translate>Tags</h3>
+          <div class="heading" os-perms="motions.can_manage" ng-show="tags.length > 0">
+            <span uib-dropdown>
+              <span id="tag-dropdown" class="drop-down-name pointer" uib-dropdown-toggle>
+                <translate>Tags</translate>
+                <i class="fa fa-cog"></i>
+              </span>
+              <ul class="dropdown-menu" aria-labelledby="tag-dropdown">
+                <li ng-repeat="tag in tags">
+                  <a href ng-click="toggleTag(tag)">
+                    <i class="fa fa-check" ng-if="inArray(motion.tags_id, tag.id)"></i>
+                    {{ tag.name }}
+                  </a>
+                </li>
+              </ul>
+            </span>
+          </div>
           <span ng-repeat="tag in motion.tags">
             {{ tag.name }}{{$last ? '' : ', '}}
           </span>

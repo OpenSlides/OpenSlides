@@ -635,6 +635,11 @@ angular.module('OpenSlidesApp.core.site', [
             templateUrl: 'static/templates/core/password.html',
         });
         formlyConfig.setType({
+            name: 'checkbox',
+            templateUrl: 'static/templates/core/checkbox.html',
+            overwriteOk: true,
+        });
+        formlyConfig.setType({
             name: 'select-single',
             extends: 'select',
             templateUrl: 'static/templates/core/select-single.html'

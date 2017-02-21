@@ -384,9 +384,6 @@ img {
     opacity: 1;
     background-color: #eee;
 }
-.col1 .details .motion-toolbar .toolbar-left .goto-line-number {
-    max-width: 220px;
-}
 
 .col1 .details .inline-editing-activator {
     margin-right: 13px;
@@ -1642,6 +1639,10 @@ tr.selected td {
     background-color: #ff9999;
 }
 
+/** Angular formly **/
+.checkbox label {
+    padding-left: 0;
+}
 
 /** Colors **/
 

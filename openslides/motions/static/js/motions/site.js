@@ -995,6 +995,7 @@ angular.module('OpenSlidesApp.motions.site', [
 .controller('MotionDetailCtrl', [
     '$scope',
     '$http',
+    '$timeout',
     'operator',
     'ngDialog',
     'MotionForm',
@@ -1015,16 +1016,18 @@ angular.module('OpenSlidesApp.motions.site', [
     'MotionCommentsInlineEditing',
     'Projector',
     'ProjectionDefault',
-    function($scope, $http, operator, ngDialog, MotionForm,
+    'MotionBlock',
+    function($scope, $http, $timeout, operator, ngDialog, MotionForm,
              ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation, MotionPDFExport,
              Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motionId, MotionInlineEditing,
-             MotionCommentsInlineEditing, Projector, ProjectionDefault) {
+             MotionCommentsInlineEditing, Projector, ProjectionDefault, MotionBlock) {
         var motion = Motion.get(motionId);
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
+        MotionBlock.bindAll({}, $scope, 'motionBlocks');
         $scope.$watch(function () {
             return MotionChangeRecommendation.lastModified();
         }, function () {
@@ -1132,6 +1135,10 @@ angular.module('OpenSlidesApp.motions.site', [
                 $('html, body').animate({
                     'scrollTop': scrollTop - 50
                 }, 1000);
+                // remove the line highlight after 2 seconds.
+                $timeout(function () {
+                    $scope.highlight = 0;
+                }, 2000);
             }
             // set highlight and scroll on Projector
             setHighlightOnProjector($scope.linesForProjector ? line : 0);
@@ -1147,6 +1154,12 @@ angular.module('OpenSlidesApp.motions.site', [
                 $scope.inlineEditing.disable();
             }
             ngDialog.open(MotionForm.getDialog(motion));
+        };
+        $scope.save = function (motion) {
+            motion.title = motion.getTitle(-1);
+            motion.text = motion.getText(-1);
+            motion.reason = motion.getReason(-1);
+            Motion.save(motion);
         };
         // support
         $scope.support = function () {
@@ -1173,24 +1186,49 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.reset_state = function () {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {});
         };
+        // toggle functions for meta information
+        $scope.toggleCategory = function (category) {
+            if ($scope.motion.category_id == category.id) {
+                $scope.motion.category_id = null;
+            } else {
+                $scope.motion.category_id = category.id;
+            }
+            $scope.save($scope.motion);
+        };
+        $scope.toggleMotionBlock = function (block) {
+            if ($scope.motion.motion_block_id == block.id) {
+                $scope.motion.motion_block_id = null;
+            } else {
+                $scope.motion.motion_block_id = block.id;
+            }
+            $scope.save($scope.motion);
+
+        };
+        $scope.toggleTag = function (tag) {
+            if (_.indexOf($scope.motion.tags_id, tag.id) > -1) {
+                // remove
+                $scope.motion.tags_id = _.filter($scope.motion.tags_id,
+                    function (tag_id){
+                        return tag_id != tag.id;
+                    }
+                );
+            } else {
+                $scope.motion.tags_id.push(tag.id);
+            }
+            $scope.save($scope.motion);
+        };
         // save additional state field
         $scope.saveAdditionalStateField = function (stateExtension) {
             if (stateExtension) {
                 motion["comment " + $scope.commentFieldForState] = stateExtension;
-                motion.title = motion.getTitle(-1);
-                motion.text = motion.getText(-1);
-                motion.reason = motion.getReason(-1);
-                Motion.save(motion);
+                $scope.save(motion);
             }
         };
         // save additional recommendation field
         $scope.saveAdditionalRecommendationField = function (recommendationExtension) {
             if (recommendationExtension) {
                 motion["comment " + $scope.commentFieldForRecommendation] = recommendationExtension;
-                motion.title = motion.getTitle(-1);
-                motion.text = motion.getText(-1);
-                motion.reason = motion.getReason(-1);
-                Motion.save(motion);
+                $scope.save(motion);
             }
         };
         // update recommendation
@@ -1414,7 +1452,7 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.formFields = MotionForm.getFormFields(true);
 
         // save motion
-        $scope.save = function (motion) {
+        $scope.save = function (motion, gotoDetailView) {
             Motion.create(motion).then(
                 function(success) {
                     // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
@@ -1422,7 +1460,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
                                    {key: 'parent_id', value: motion.agenda_parent_item_id}];
                     AgendaUpdate.saveChanges(success.agenda_item_id, changes);
-                    if (isAmendment) {
+                    if (isAmendment || gotoDetailView) {
                         $state.go('motions.motion.detail', {id: success.id});
                     }
                     $scope.closeThisDialog();
@@ -1434,6 +1472,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
 .controller('MotionUpdateCtrl', [
     '$scope',
+    '$state',
     'Motion',
     'Category',
     'Config',
@@ -1445,7 +1484,8 @@ angular.module('OpenSlidesApp.motions.site', [
     'Agenda',
     'AgendaUpdate',
     'motionId',
-    function($scope, Motion, Category, Config, Mediafile, MotionForm, Tag, User, Workflow, Agenda, AgendaUpdate, motionId) {
+    function($scope, $state, Motion, Category, Config, Mediafile, MotionForm, Tag,
+        User, Workflow, Agenda, AgendaUpdate, motionId) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1501,7 +1541,7 @@ angular.module('OpenSlidesApp.motions.site', [
         }
 
         // save motion
-        $scope.save = function (motion) {
+        $scope.save = function (motion, gotoDetailView) {
             // inject the changed motion (copy) object back into DS store
             Motion.inject(motion);
             // save change motion object on server
@@ -1512,6 +1552,9 @@ angular.module('OpenSlidesApp.motions.site', [
                     var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
                                    {key: 'parent_id', value: motion.agenda_parent_item_id}];
                     AgendaUpdate.saveChanges(success.agenda_item_id,changes);
+                    if (gotoDetailView) {
+                        $state.go('motions.motion.detail', {id: success.id});
+                    }
                     $scope.closeThisDialog();
                 },
                 function (error) {
