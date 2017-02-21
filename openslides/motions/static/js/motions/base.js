@@ -192,7 +192,6 @@ angular.module('OpenSlidesApp.motions', [
 .factory('Motion', [
     'DS',
     '$http',
-    '$filter',
     'MotionPoll',
     'MotionChangeRecommendation',
     'MotionComment',
@@ -205,7 +204,7 @@ angular.module('OpenSlidesApp.motions', [
     'OpenSlidesSettings',
     'Projector',
     'operator',
-    function(DS, $http, $filter, MotionPoll, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog,
+    function(DS, $http, MotionPoll, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog,
         Config, lineNumberingService, diffService, OpenSlidesSettings, Projector, operator) {
         var name = 'motions/motion';
         return DS.defineResource({
