@@ -18,7 +18,10 @@ class CoreAppConfig(AppConfig):
         from .signals import post_permission_creation
         from ..utils.rest_api import router
         from .config_variables import get_config_variables
-        from .signals import delete_django_app_permissions
+        from .signals import (
+            delete_django_app_permissions,
+            get_permission_change_data,
+            permission_change)
         from .views import (
             ChatMessageViewSet,
             ConfigViewSet,
@@ -35,6 +38,9 @@ class CoreAppConfig(AppConfig):
         post_permission_creation.connect(
             delete_django_app_permissions,
             dispatch_uid='delete_django_app_permissions')
+        permission_change.connect(
+            get_permission_change_data,
+            dispatch_uid='core_get_permission_change_data')
 
         # Register viewsets.
         router.register(self.get_model('Projector').get_collection_string(), ProjectorViewSet)

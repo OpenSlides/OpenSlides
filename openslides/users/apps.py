@@ -14,10 +14,10 @@ class UsersAppConfig(AppConfig):
 
         # Import all required stuff.
         from ..core.config import config
-        from ..core.signals import post_permission_creation
+        from ..core.signals import post_permission_creation, permission_change
         from ..utils.rest_api import router
         from .config_variables import get_config_variables
-        from .signals import create_builtin_groups_and_admin
+        from .signals import create_builtin_groups_and_admin, get_permission_change_data
         from .views import GroupViewSet, UserViewSet
 
         # Define config variables
@@ -27,6 +27,9 @@ class UsersAppConfig(AppConfig):
         post_permission_creation.connect(
             create_builtin_groups_and_admin,
             dispatch_uid='create_builtin_groups_and_admin')
+        permission_change.connect(
+            get_permission_change_data,
+            dispatch_uid='user_get_permission_change_data')
 
         # Register viewsets.
         router.register(self.get_model('User').get_collection_string(), UserViewSet)

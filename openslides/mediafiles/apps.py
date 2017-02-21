@@ -13,8 +13,15 @@ class MediafilesAppConfig(AppConfig):
         from . import projector  # noqa
 
         # Import all required stuff.
+        from openslides.core.signals import permission_change
         from openslides.utils.rest_api import router
+        from .signals import get_permission_change_data
         from .views import MediafileViewSet
+
+        # Connect signals.
+        permission_change.connect(
+            get_permission_change_data,
+            dispatch_uid='mediafile_get_permission_change_data')
 
         # Register viewsets.
         router.register(self.get_model('Mediafile').get_collection_string(), MediafileViewSet)

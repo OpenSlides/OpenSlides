@@ -14,12 +14,19 @@ class AssignmentsAppConfig(AppConfig):
 
         # Import all required stuff.
         from openslides.core.config import config
+        from openslides.core.signals import permission_change
         from openslides.utils.rest_api import router
         from .config_variables import get_config_variables
+        from .signals import get_permission_change_data
         from .views import AssignmentViewSet, AssignmentPollViewSet
 
         # Define config variables
         config.update_config_variables(get_config_variables())
+
+        # Connect signals.
+        permission_change.connect(
+            get_permission_change_data,
+            dispatch_uid='assignment_get_permission_change_data')
 
         # Register viewsets.
         router.register(self.get_model('Assignment').get_collection_string(), AssignmentViewSet)

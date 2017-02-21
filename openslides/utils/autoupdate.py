@@ -152,7 +152,7 @@ def send_data(message):
             user = None
         else:
             try:
-                user = CollectionElement.from_values('users/user', user_id)
+                user = user_to_collection_user(user_id)
             except ObjectDoesNotExist:
                 # The user does not exist. Skip him/her.
                 continue
@@ -185,6 +185,21 @@ def send_data(message):
                 send_or_wait(
                     Group('projector-{}'.format(projector.pk)).send,
                     {'text': json.dumps(output)})
+
+
+def send_collections_to_users(collections, users_ids):
+    for user_id, channel_names in websocket_user_cache.get_all().items():
+        if user_id in users_ids:
+            try:
+                user = user_to_collection_user(user_id)
+            except ObjectDoesNotExist:
+                # The user does not exist. Skip him/her.
+                continue
+            output = []
+            for collection in collections:
+                output.extend(collection.as_autoupdate_for_user(user))
+            for channel_name in channel_names:
+                send_or_wait(Channel(channel_name).send, {'text': json.dumps(output)})
 
 
 def inform_changed_data(instances, information=None):
