@@ -1029,7 +1029,7 @@ angular.module('OpenSlidesApp.users.site', [
         };
 
         var FIELDS = ['title', 'first_name', 'last_name', 'structure_level', 'number',
-        'groups', 'comment', 'is_active', 'is_present', 'is_committee'];
+        'groups', 'comment', 'is_active', 'is_present', 'is_committee', 'default_password'];
         $scope.users = [];
         $scope.onCsvChange = function (csv) {
             // All user objects are already loaded via the resolve statement from ui-router.
