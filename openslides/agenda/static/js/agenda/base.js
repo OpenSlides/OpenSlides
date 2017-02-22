@@ -55,7 +55,9 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
     'Projector',
     'gettextCatalog',
     'gettext',
-    function($http, DS, Speaker, jsDataModel, Projector, gettextCatalog, gettext) {
+    'CamelCase',
+    'EditForm',
+    function($http, DS, Speaker, jsDataModel, Projector, gettextCatalog, gettext, CamelCase, EditForm) {
         var name = 'agenda/item';
         return DS.defineResource({
             name: name,
@@ -67,6 +69,13 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 },
                 getContentObject: function () {
                     return DS.get(this.content_object.collection, this.content_object.id);
+                },
+                getContentObjectDetailState: function () {
+                    return CamelCase(this.content_object.collection).replace('/', '.') +
+                        '.detail({id: ' + this.content_object.id + '})';
+                },
+                getContentObjectForm: function () {
+                    return EditForm.fromCollectionString(this.content_object.collection);
                 },
                 getContentResource: function () {
                     return DS.definitions[this.content_object.collection];
