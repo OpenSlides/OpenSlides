@@ -138,7 +138,10 @@
               </span>
               <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="state-dropdown">
                 <li ng-repeat="state in motion.state.getNextStates()">
-                  <a href ng-click="updateState(state.id)">{{ state.action_word | translate }}</a>
+                  <a href ng-click="updateState(state.id)">
+                    {{ state.action_word | translate }}
+                    <span ng-if="state.show_state_extension_field">...</span>
+                  </a>
                 <li class="divider" ng-if="motion.state.getNextStates().length && motion.isAllowed('reset_state')">
                 <li ng-if="motion.isAllowed('reset_state')">
                   <a href ng-click="reset_state()">
@@ -179,6 +182,7 @@
                   <li ng-repeat="recommendation in motion.state.getRecommendations()">
                     <a href ng-click="updateRecommendation(recommendation.id)">
                       {{ recommendation.recommendation_label | translate }}
+                      <span ng-if="recommendation.show_recommendation_extension_field">...</span>
                     </a>
                   <li class="divider" ng-if="motion.state.getRecommendations().length && motion.recommendation">
                   <li ng-if="motion.recommendation">
