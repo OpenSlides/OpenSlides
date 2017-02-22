@@ -48,28 +48,23 @@
         </div>
 
         <!-- go to line number -->
-        <div class="goto-line-number">
-            <form class="input-group" ng-if="lineNumberMode != 'none'" ng-submit="scrollToAndHighlight(gotoLinenumber)">
-                <input type="number" class="form-control input-sm" ng-model="gotoLinenumber"
-                       placeholder="{{ 'Line' | translate }}"/>
-                <div class="input-group-btn">
-                    <button type="button" class="btn btn-sm btn-default btn-slim" ng-show="gotoLinenumber"
-                            ng-click="gotoLinenumber = ''; scrollToAndHighlight(0);">
-                        <i class="fa fa-times text-danger"></i>
-                    </button>
-                    <button type="submit" class="btn btn-sm btn-default">
-                        <i class="fa fa-share"></i>
-                        <translate>go</translate>
-                    </button>
-                    <button type="button" class="btn btn-sm btn-default" os-perms="core.can_manage_projector"
-                            ng-show="lineNumberMode != 'none' && motion.isProjected().length"
-                            ng-click="toggleLinesForProjector()"
-                            uib-tooltip="{{ 'Show highlighted line also on projector.' | translate }}">
-                        <i class="fa" ng-class="linesForProjector ? 'fa-check-square-o' : 'fa-square-o'"></i>&nbsp;
-                        <i class="fa fa-video-camera"></i>
-                    </button>
-                </div>
-            </form>
+        <div class="popover-wrapper">
+            <span editable-text="gotoLinenumber" e-form="lineNumberForm"
+              onaftersave="scrollToAndHighlight(gotoLinenumber)">
+            </span>
+            <div class="btn-group" ng-if="lineNumberMode != 'none'">
+                <button type="button" class="btn btn-sm btn-default" ng-click="lineNumberForm.$show()">
+                    <i class="fa fa-share"></i>
+                    <translate>go</translate>
+                </button>
+                <button type="button" class="btn btn-sm btn-default" os-perms="core.can_manage_projector"
+                        ng-if="lineNumberMode != 'none' && motion.isProjected().length"
+                        ng-click="toggleLinesForProjector()"
+                        uib-tooltip="{{ 'Show highlighted line also on projector.' | translate }}">
+                    <i class="fa" ng-class="linesForProjector ? 'fa-check-square-o' : 'fa-square-o'"></i>&nbsp;
+                    <i class="fa fa-video-camera"></i>
+                </button>
+            </div>
         </div>
     </div>
 </div>

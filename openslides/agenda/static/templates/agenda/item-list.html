@@ -78,7 +78,7 @@
         <translate>Sort ...</translate>
       </a>
       <!-- auto numbering button -->
-      <button os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+      <button os-perms="agenda.can_manage" class="btn btn-default btn-sm"
         ng-click="autoNumbering()">
         <i class="fa fa-sort-numeric-asc"></i>
         <translate>Numbering</translate>
@@ -322,6 +322,15 @@
                 <span editable-text="item.comment" onaftersave="save(item)">
                   <span ng-if="!item.comment" translate>Set comment ...</span>
                   <span ng-if="item.comment">{{ item.comment }}</span>
+                </span>
+              </div>
+            </div>
+            <div ng-style="{'visibility': ((item.type == 1) && item.hover) ? 'visible' : 'hidden'}" os-perms="agenda.can_manage">
+              <div class="popover-wrapper" os-perms="agenda.can_manage">
+                <i class="fa fa-info-circle"></i>
+                <span editable-text="item.item_number" onaftersave="save(item)">
+                  <span ng-if="!item.item_number" translate>Set item number ...</span>
+                  <span ng-if="item.item_number"><em translate>Change item number ...</em></span>
                 </span>
               </div>
             </div>

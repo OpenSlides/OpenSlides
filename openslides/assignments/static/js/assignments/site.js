@@ -632,18 +632,19 @@ angular.module('OpenSlidesApp.assignments.site', [
 
 .controller('AssignmentCreateCtrl', [
     '$scope',
+    '$state',
     'Assignment',
     'AssignmentForm',
     'Agenda',
     'AgendaUpdate',
-    function($scope, Assignment, AssignmentForm, Agenda, AgendaUpdate) {
+    function($scope, $state, Assignment, AssignmentForm, Agenda, AgendaUpdate) {
         $scope.model = {};
         // set default value for open posts form field
         $scope.model.open_posts = 1;
         // get all form fields
         $scope.formFields = AssignmentForm.getFormFields(true);
         // save assignment
-        $scope.save = function(assignment) {
+        $scope.save = function(assignment, gotoDetailView) {
             Assignment.create(assignment).then(
                 function(success) {
                     // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
@@ -651,6 +652,9 @@ angular.module('OpenSlidesApp.assignments.site', [
                     var changes = [{key: 'type', value: (assignment.showAsAgendaItem ? 1 : 2)},
                                    {key: 'parent_id', value: assignment.agenda_parent_item_id}];
                     AgendaUpdate.saveChanges(success.agenda_item_id,changes);
+                    if (gotoDetailView) {
+                        $state.go('assignments.assignment.detail', {id: success.id});
+                    }
                     $scope.closeThisDialog();
                 }
             );
@@ -660,12 +664,13 @@ angular.module('OpenSlidesApp.assignments.site', [
 
 .controller('AssignmentUpdateCtrl', [
     '$scope',
+    '$state',
     'Assignment',
     'AssignmentForm',
     'Agenda',
     'AgendaUpdate',
     'assignmentId',
-    function($scope, Assignment, AssignmentForm, Agenda, AgendaUpdate, assignmentId) {
+    function($scope, $state, Assignment, AssignmentForm, Agenda, AgendaUpdate, assignmentId) {
         var assignment = Assignment.get(assignmentId);
         $scope.alert = {};
         // set initial values for form model by create deep copy of assignment object
@@ -684,7 +689,7 @@ angular.module('OpenSlidesApp.assignments.site', [
         }
 
         // save assignment
-        $scope.save = function (assignment) {
+        $scope.save = function (assignment, gotoDetailView) {
             // inject the changed assignment (copy) object back into DS store
             Assignment.inject(assignment);
             // save change assignment object on server
@@ -693,6 +698,9 @@ angular.module('OpenSlidesApp.assignments.site', [
                     var changes = [{key: 'type', value: (assignment.showAsAgendaItem ? 1 : 2)},
                                    {key: 'parent_id', value: assignment.agenda_parent_item_id}];
                     AgendaUpdate.saveChanges(success.agenda_item_id,changes);
+                    if (gotoDetailView) {
+                        $state.go('assignments.assignment.detail', {id: success.id});
+                    }
                     $scope.closeThisDialog();
                 },
                 function (error) {

@@ -5,8 +5,13 @@
   {{ alert.msg }}
 </div>
 
-<form name="assignmentForm" ng-submit="save(model)">
+<form name="assignmentForm" ng-submit="save(model, gotoDetailView)">
   <formly-form model="model" fields="formFields">
+    <hr class="smallhr">
+    <div class="checkbox pointer" ng-click="$parent.$parent.gotoDetailView = !$parent.$parent.gotoDetailView">
+      <i class="fa" ng-class="$parent.$parent.gotoDetailView ? 'fa-check-square-o' : 'fa-square-o'"></i>
+      <translate>Open election detail view after save.</translate>
+    </div>
     <button type="submit" ng-disabled="assignmentForm.$invalid" class="btn btn-primary" translate>
       Save
     </button>
