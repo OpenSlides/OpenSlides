@@ -3,6 +3,14 @@
     <strong>
         <translate>Summary of change recommendations</translate>:
     </strong>
+
+    <button class="btn btn-sm btn-default pull-right"
+        uib-tooltip="{{ 'Note: You have to reject all change recommendations if the plenum does not follow the recommendation.' | translate }}"
+        ng-click="viewChangeRecommendations.rejectAll(motion)">
+      <i class="fa fa-thumbs-down"></i>
+      <translate>Reject all change recommendations</translate>
+    </button>
+
     <ul ng-if="change_recommendations.length > 0">
         <li ng-repeat="change in (changes = (change_recommendations | filter:{motion_version_id:version}:true | orderBy: 'line_from')) ">
           <a href='' ng-click="viewChangeRecommendations.scrollToDiffBox(change.id)">
@@ -23,6 +31,7 @@
           </a>
         </li>
     </ul>
+
     <div ng-if="change_recommendations.length == 0" class="no-changes">
         <translate>No change recommendations yet</translate>
     </div>

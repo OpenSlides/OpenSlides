@@ -467,6 +467,16 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             MotionChangeRecommendation.destroy(changeId);
         };
 
+        obj.rejectAll = function (motion) {
+            var changeRecommendations = MotionChangeRecommendation.filter({
+                'where': {'motion_version_id': {'==': motion.active_version}}
+            });
+            _.forEach(changeRecommendations, function(change) {
+                change.rejected = true;
+                change.saveStatus();
+            });
+        };
+
         obj.repositionOriginalAnnotations = function () {
             var $changeRecommendationList = $('.change-recommendation-list'),
                 $lineNumberReference = $('.motion-text-original');
