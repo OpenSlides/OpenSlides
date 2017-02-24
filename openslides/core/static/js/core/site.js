@@ -185,6 +185,16 @@ angular.module('OpenSlidesApp.core.site', [
 ])
 
 .config([
+    '$httpProvider',
+    function($httpProvider) {
+        // Combine the django csrf system with the angular csrf system
+        $httpProvider.defaults.xsrfCookieName = 'OpenSlidesCsrfToken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+    }
+])
+
+
+.config([
     '$stateProvider',
     '$urlMatcherFactoryProvider',
     function($stateProvider, $urlMatcherFactoryProvider) {

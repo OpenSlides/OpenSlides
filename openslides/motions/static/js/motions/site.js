@@ -1102,22 +1102,6 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.amendments = Motion.filter({parent_id: motion.id});
 
         $scope.highlight = 0;
-        $scope.linesForProjector = false;
-        // Set 0 for disable highlighting on projector
-        var setHighlightOnProjector = function (line) {
-            _.forEach(Projector.getAll(), function (projector) {
-                var elements = _.map(projector.elements, function(element) { return element; });
-                elements.forEach(function (element) {
-                    if (element.name == 'motions/motion' && element.id == motion.id) {
-                        var data = {};
-                        data[element.uuid] = {
-                            highlightAndScroll: line,
-                        };
-                        $http.post('/rest/core/projector/' + projector.id + '/update_elements/', data);
-                    }
-                });
-            });
-        };
         $scope.scrollToAndHighlight = function (line) {
             $scope.highlight = line;
 
@@ -1140,12 +1124,6 @@ angular.module('OpenSlidesApp.motions.site', [
                     $scope.highlight = 0;
                 }, 2000);
             }
-            // set highlight and scroll on Projector
-            setHighlightOnProjector($scope.linesForProjector ? line : 0);
-        };
-        $scope.toggleLinesForProjector = function () {
-            $scope.linesForProjector = !$scope.linesForProjector;
-            setHighlightOnProjector($scope.linesForProjector ? $scope.highlight : 0);
         };
 
         // open edit dialog
