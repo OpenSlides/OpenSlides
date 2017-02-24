@@ -61,16 +61,23 @@ class UserViewSet(ModelViewSet):
         self.check_view_permissions()). Also it is evaluated whether he
         wants to update himself or is manager.
         """
-        # Check manager perms
-        if (has_perm(request.user, 'users.can_see_extra_data') and
+        # Check permissions.
+        if (has_perm(self.request.user, 'users.can_see_name') and
+                has_perm(request.user, 'users.can_see_extra_data') and
                 has_perm(request.user, 'users.can_manage')):
+            # The user has all permissions so he may update every user.
             if request.data.get('is_active') is False and self.get_object() == request.user:
-                # A user can not deactivate himself.
+                # But a user can not deactivate himself.
                 raise ValidationError({'detail': _('You can not deactivate yourself.')})
         else:
-            # Check permissions only to update yourself.
+            # The user does not have all permissions so he may only update himself.
             if str(request.user.pk) != self.kwargs['pk']:
                 self.permission_denied(request)
+            # Remove fields that the user is not allowed to change.
+            # The list() is required because we want to use del inside the loop.
+            for key in list(request.data.keys()):
+                if key not in ('username', 'about_me'):
+                    del request.data[key]
         response = super().update(request, *args, **kwargs)
         return response
 

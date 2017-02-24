@@ -41,6 +41,7 @@ class UserFullSerializer(ModelSerializer):
     """
     groups = IdPrimaryKeyRelatedField(
         many=True,
+        required=False,
         queryset=Group.objects.exclude(pk=1),
         help_text=ugettext_lazy('The groups this user belongs to. A user will '
                                 'get all permissions granted to each of '
