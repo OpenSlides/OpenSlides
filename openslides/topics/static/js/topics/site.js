@@ -122,7 +122,8 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
                     templateOptions: {
                         label: gettextCatalog.getString('Show as agenda item'),
                         description: gettextCatalog.getString('If deactivated it appears as internal item on agenda.')
-                    }
+                    },
+                    hide: !operator.hasPerms('agenda.can_manage')
                 });
 
                 // parent item
