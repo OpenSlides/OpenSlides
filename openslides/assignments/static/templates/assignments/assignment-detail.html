@@ -122,8 +122,7 @@
   </div>
 
   <h3 translate>Election result</h3>
-  <button os-perms="assignments.can_manage" ng-show="assignment.polls.length == 0"
-      ng-click="createBallot()" class="btn btn-default btn-sm">
+  <button os-perms="assignments.can_manage" ng-click="createBallot()" class="btn btn-default btn-sm">
     <i class="fa fa-bar-chart fa-lg"></i>
     <translate>New ballot</translate>
   </button>
@@ -268,13 +267,8 @@
         </div>
       </div>
     </uib-tab>
-
-    <!-- new ballot tab -->
-    <uib-tab select="createBallot()" index="assignment.polls.length">
-      <uib-tab-heading>
-        <i class="fa fa-plus"></i>
-        <translate>New ballot</translate>
-      </uib-tab-heading>
-    </uib-tab>
   </uib-tabset>
+
+  <!-- Workaround to prevent page scrolling up after autoupdate. -->
+  <div style="height: 700px"><div>
 </div>
