@@ -412,55 +412,6 @@ angular.module('OpenSlidesApp.users.site', [
                     },
                 },
                 {
-                    className: "row",
-                    fieldGroup: [
-                        {
-                            key: 'title',
-                            type: 'input',
-                            className: "col-xs-2 no-padding-left",
-                            templateOptions: {
-                                label: gettextCatalog.getString('Title')
-                            }
-                        },
-                        {
-                            key: 'first_name',
-                            type: 'input',
-                            className: "col-xs-5 no-padding",
-                            templateOptions: {
-                                label: gettextCatalog.getString('Given name')
-                            }
-                        },
-                        {
-                            key: 'last_name',
-                            type: 'input',
-                            className: "col-xs-5 no-padding-right",
-                            templateOptions: {
-                                label: gettextCatalog.getString('Surname')
-                            }
-                        }
-                    ]
-                },
-                {
-                    className: "row",
-                    fieldGroup: [
-                        {
-                            key: 'structure_level',
-                            type: 'input',
-                            className: "col-xs-9 no-padding-left",
-                            templateOptions: {
-                                label: gettextCatalog.getString('Structure level'),
-                            }
-                        },
-                        {   key: 'number',
-                            type: 'input',
-                            className: "col-xs-3 no-padding-left no-padding-right",
-                            templateOptions: {
-                                label:gettextCatalog.getString('Participant number')
-                            }
-                        }
-                    ]
-                },
-                {
                     key: 'about_me',
                     type: 'editor',
                     templateOptions: {
@@ -485,7 +436,7 @@ angular.module('OpenSlidesApp.users.site', [
                 return {
                     template: 'static/templates/users/profile-password-form.html',
                     controller: 'UserPasswordCtrl',
-                    className: 'ngdialog-theme-default wide-form',
+                    className: 'ngdialog-theme-default',
                     closeByEscape: false,
                     closeByDocument: false,
                 };

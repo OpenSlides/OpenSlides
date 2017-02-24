@@ -207,6 +207,31 @@ class UserUpdate(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_update_yourself_non_manager(self):
+        """
+        Tests that an user can update himself even if he is not a manager.
+        """
+        user = User.objects.create_user(
+            username='non-admin zeiyeGhaoXoh4awe3xai',
+            password='non-admin chah1hoshohN5Oh7zouj')
+        client = APIClient()
+        client.login(
+            username='non-admin zeiyeGhaoXoh4awe3xai',
+            password='non-admin chah1hoshohN5Oh7zouj')
+
+        response = client.put(
+            reverse('user-detail', args=[user.pk]),
+            {'username': 'New username IeWeipee5mahpi4quupo',
+             'last_name': 'New name fae1Bu1Eyeis9eRox4xu',
+             'about_me': 'New profile text Faemahphi3Hilokangei'})
+
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(pk=user.pk)
+        self.assertEqual(user.username, 'New username IeWeipee5mahpi4quupo')
+        self.assertEqual(user.about_me, 'New profile text Faemahphi3Hilokangei')
+        # The user is not allowed to change some other fields (like last_name).
+        self.assertNotEqual(user.last_name, 'New name fae1Bu1Eyeis9eRox4xu')
+
 
 class UserDelete(TestCase):
     """
