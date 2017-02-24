@@ -85,14 +85,32 @@ class MotionViewSet(ModelViewSet):
         """
         Customized view endpoint to create a new motion.
         """
+        # Check if parent motion exists
+        parent_motion = None
+        if 'parent_id' in request.data:
+            try:
+                parent_motion = Motion.objects.get(pk=request.data['parent_id'])
+            except Motion.DoesNotExist:
+                raise ValidationError({'detail': _('The parent motion does not exist.')})
+
         # Check permission to send some data.
         if not has_perm(request.user, 'motions.can_manage'):
-            whitelist = (
+            whitelist = [
                 'title',
                 'text',
                 'reason',
                 'comments',  # This is checked later.
-            )
+            ]
+            if parent_motion:  # For creating amendments.
+                whitelist.extend([
+                    'parent_id',
+                    'category_id',      # This will be set to the matching
+                    'motion_block_id',  # values from parent_motion.
+                ])
+                request.data['category_id'] = (
+                    parent_motion.category.id if parent_motion.category else None)
+                request.data['motion_block_id'] = (
+                    parent_motion.motion_block.id if parent_motion.motion_block else None)
             for key in request.data.keys():
                 if key not in whitelist:
                     # Non-staff users are allowed to send only some data.
