@@ -356,6 +356,7 @@ class MotionViewSet(ModelViewSet):
                 motion.create_poll()
         except WorkflowError as e:
             raise ValidationError({'detail': e})
+        motion.write_log([ugettext_noop('Vote created')], request.user)
         return Response({'detail': _('Vote created successfully.')})
 
 
@@ -374,6 +375,24 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
         """
         return (has_perm(self.request.user, 'motions.can_see') and
                 has_perm(self.request.user, 'motions.can_manage'))
+
+    def update(self, *args, **kwargs):
+        """
+        Customized view endpoint to update a motion poll.
+        """
+        result = super().update(*args, **kwargs)
+        poll = self.get_object()
+        poll.motion.write_log([ugettext_noop('Vote updated')], self.request.user)
+        return result
+
+    def destroy(self, *args, **kwargs):
+        """
+        Customized view endpoint to delete a motion poll.
+        """
+        result = super().destroy(*args, **kwargs)
+        poll = self.get_object()
+        poll.motion.write_log([ugettext_noop('Vote deleted')], self.request.user)
+        return result
 
 
 class MotionChangeRecommendationViewSet(ModelViewSet):

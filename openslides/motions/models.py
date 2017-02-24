@@ -3,7 +3,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models import Max
-from django.utils import formats
+from django.utils import formats, timezone
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 from jsonfield import JSONField
@@ -866,7 +866,8 @@ class MotionLog(RESTModelMixin, models.Model):
         """
         Return a string, representing the log message.
         """
-        time = formats.date_format(self.time, 'DATETIME_FORMAT')
+        localtime = timezone.localtime(self.time)
+        time = formats.date_format(localtime, 'DATETIME_FORMAT')
         time_and_messages = '%s ' % time + ''.join(map(_, self.message_list))
         if self.person is not None:
             return _('%(time_and_messages)s by %(person)s') % {'time_and_messages': time_and_messages,
