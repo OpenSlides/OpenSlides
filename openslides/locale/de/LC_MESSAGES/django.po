@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-17 22:36+0100\n"
-"PO-Revision-Date: 2017-02-17 21:52+0000\n"
+"POT-Creation-Date: 2017-02-24 16:10+0100\n"
+"PO-Revision-Date: 2017-02-24 15:18+0000\n"
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/openslides/openslides/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -318,7 +318,7 @@ msgstr "Antrag"
 msgid "new"
 msgstr "Neu"
 
-#: motions/models.py:872
+#: motions/models.py:873
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr "%(time_and_messages)s durch %(person)s"
@@ -348,7 +348,7 @@ msgstr "nicht entschieden"
 msgid "published"
 msgstr "veröffentlicht"
 
-#: motions/signals.py:47 motions/views.py:198
+#: motions/signals.py:47 motions/views.py:216
 msgid "permitted"
 msgstr "zugelassen"
 
@@ -376,116 +376,132 @@ msgstr "Benötigt Review"
 msgid "rejected (not authorized)"
 msgstr "Verworfen (nicht zulässig)"
 
-#: motions/views.py:116
+#: motions/views.py:94
+msgid "The parent motion does not exist."
+msgstr "Der Eltern-Antrag existiert nicht."
+
+#: motions/views.py:134
 msgid "Motion created"
 msgstr "Antrag erstellt"
 
-#: motions/views.py:166
+#: motions/views.py:184
 msgid "Motion updated"
 msgstr "Antrag aktualisiert"
 
-#: motions/views.py:170
+#: motions/views.py:188
 msgid "All supporters removed"
 msgstr "Alle Unterstützer entfernt"
 
-#: motions/views.py:196 motions/views.py:208
+#: motions/views.py:214 motions/views.py:226
 msgid "Version"
 msgstr "Version"
 
-#: motions/views.py:200
+#: motions/views.py:218
 #, python-format
 msgid "Version %d permitted successfully."
 msgstr "Version %d erfolgreich zugelassen"
 
-#: motions/views.py:205
+#: motions/views.py:223
 msgid "You can not delete the active version of a motion."
 msgstr "Sie dürfen die aktive Version eines Antrags nicht löschen."
 
-#: motions/views.py:210
+#: motions/views.py:228
 msgid "deleted"
 msgstr "Gelöscht"
 
-#: motions/views.py:212
+#: motions/views.py:230
 #, python-format
 msgid "Version %d deleted successfully."
 msgstr "Version %d erfolgreich gelöscht."
 
-#: motions/views.py:235
+#: motions/views.py:253
 msgid "You can not support this motion."
 msgstr "Sie dürfen diesen Antrag nicht unterstützen."
 
-#: motions/views.py:237
+#: motions/views.py:255
 msgid "Motion supported"
 msgstr "Antrag unterstützt"
 
-#: motions/views.py:238
+#: motions/views.py:256
 msgid "You have supported this motion successfully."
 msgstr "Sie haben den Antrag erfolgreich unterstützt."
 
-#: motions/views.py:243
+#: motions/views.py:261
 msgid "You can not unsupport this motion."
 msgstr "Sie dürfen diesem Antrag Ihre Unterstützung nicht entziehen."
 
-#: motions/views.py:245
+#: motions/views.py:263
 msgid "Motion unsupported"
 msgstr "Unterstützung zurückgezogen"
 
-#: motions/views.py:246
+#: motions/views.py:264
 msgid "You have unsupported this motion successfully."
 msgstr "Sie haben dem Antrag erfolgreich Ihre Unterstützung entzogen."
 
-#: motions/views.py:269
+#: motions/views.py:287
 msgid "Invalid data. State must be an integer."
 msgstr "Ungültige Daten. Status muss eine Ganzzahl sein."
 
-#: motions/views.py:272
+#: motions/views.py:290
 #, python-format
 msgid "You can not set the state to %(state_id)d."
 msgstr "Sie dürfen den Antragsstatus nicht auf %(state_id)d setzen."
 
-#: motions/views.py:280
+#: motions/views.py:298
 #, python-format
 msgid "The state of the motion was set to %s."
 msgstr "Der Status des Antrags wurde auf %s gesetzt."
 
-#: motions/views.py:284 motions/views.py:547
+#: motions/views.py:302 motions/views.py:584
 msgid "State set to"
 msgstr "Status gesetzt auf"
 
-#: motions/views.py:306
+#: motions/views.py:324
 msgid "Invalid data. Recommendation must be an integer."
 msgstr "Ungültige Daten. Empfehlung muss ein Integer sein."
 
-#: motions/views.py:310
+#: motions/views.py:328
 #, python-brace-format
 msgid "You can not set the recommendation to {recommendation_state_id}."
 msgstr "Sie können die Empfehlung nicht auf {recommendation_state_id} setzen."
 
-#: motions/views.py:320
+#: motions/views.py:338
 #, python-format
 msgid "The recommendation of the motion was set to %s."
 msgstr "Die Empfehlung des Antrags wurde auf %s gesetzt."
 
-#: motions/views.py:324
+#: motions/views.py:342
 msgid "Recommendation set to"
 msgstr "Empfehlung gesetzt auf"
 
-#: motions/views.py:341
+#: motions/views.py:359
+msgid "Vote created"
+msgstr "Abstimmung erstellt"
+
+#: motions/views.py:360
 msgid "Vote created successfully."
 msgstr "Abstimmung erfolgreich angelegt."
 
-#: motions/views.py:496
+#: motions/views.py:385
+msgid "Vote updated"
+msgstr "Abstimmung aktualisiert"
+
+#: motions/views.py:394
+msgid "Vote deleted"
+msgstr "Abstimmung gelöscht"
+
+#: motions/views.py:533
 msgid ""
 "Error: At least one identifier of this category does already exist in "
 "another category."
 msgstr "Fehler: Mindestens ein Bezeichner von diesem Sachgebiet existiert bereits in einem anderen Sachgebiet."
 
-#: motions/views.py:501
+#: motions/views.py:538
 #, python-brace-format
 msgid "All motions in category {category} numbered successfully."
 msgstr "Alle Anträge im Sachgebiet {category} wurden erfolgreich nummeriert."
 
-#: motions/views.py:552
+#: motions/views.py:589
 msgid "Followed recommendations successfully."
 msgstr "Empfehlungen erfolgreich gefolgt."
 
@@ -501,57 +517,57 @@ msgstr "nicht erfasst"
 msgid "Value for {} must not be less than -2"
 msgstr "Wert für {} darf nicht kleiner -2 sein."
 
-#: users/serializers.py:45
+#: users/serializers.py:46
 msgid ""
 "The groups this user belongs to. A user will get all permissions granted to "
 "each of his/her groups."
 msgstr "Die Gruppen zu denen dieser Benutzer gehört. Ein Benutzer erhält alle Berechtigungen, die diesen Gruppen zugeordnet sind."
 
-#: users/serializers.py:59
+#: users/serializers.py:60
 msgid "Username, given name and surname can not all be empty."
 msgstr "Benutzername, Vorname und Nachname dürfen nicht alle leer sein."
 
-#: users/serializers.py:94
+#: users/serializers.py:95
 #, python-brace-format
 msgid "Incorrect value \"{value}\". Expected app_label.codename string."
 msgstr "Ungültiger Wert \"{value}\". Erwartete Zeichenkette app_label.codename."
 
-#: users/serializers.py:95
+#: users/serializers.py:96
 #, python-brace-format
 msgid "Invalid permission \"{value}\". Object does not exist."
 msgstr "Ungültige Berechtigung \"{value}\". Objekt existiert nicht."
 
-#: users/views.py:69
+#: users/views.py:71
 msgid "You can not deactivate yourself."
 msgstr "Sie dürfen sich nicht selbst deaktivieren."
 
-#: users/views.py:85
+#: users/views.py:92
 msgid "You can not delete yourself."
 msgstr "Sie dürfen sich nicht selbst löschen."
 
-#: users/views.py:98
+#: users/views.py:105
 msgid "Password successfully reset."
 msgstr "Passwort wurde erfolgreich zurückgesetzt."
 
-#: users/views.py:177
+#: users/views.py:184
 msgid "Cookies have to be enabled to use OpenSlides."
 msgstr "Cookies müssen aktiviert sein, um OpenSlides verwenden zu können."
 
-#: users/views.py:180
+#: users/views.py:187
 msgid "Username or password is not correct."
 msgstr "Benutzername oder Passwort war nicht korrekt."
 
-#: users/views.py:206
+#: users/views.py:213
 #, python-brace-format
 msgid ""
 "Installation was successfully. Use {username} and {password} for first "
 "login. Important: Please change your password!"
 msgstr "Die Installation war erfolgreich. Verwenden Sie {username} und {password} für den ersten Login. Wichtig: Bitte ändern Sie Ihr Passwort!"
 
-#: users/views.py:229
+#: users/views.py:236
 msgid "You are not authenticated."
 msgstr "Sie sind nicht authentifiziert."
 
-#: users/views.py:272
+#: users/views.py:279
 msgid "Old password does not match."
 msgstr "Das alte Passwort stimmt nicht überein."
