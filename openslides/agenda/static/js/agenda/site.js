@@ -389,22 +389,30 @@ angular.module('OpenSlidesApp.agenda.site', [
 .controller('ItemDetailCtrl', [
     '$scope',
     '$filter',
-    '$http',
-    '$state',
-    'operator',
     'Agenda',
-    'User',
     'itemId',
     'Projector',
     'ProjectionDefault',
-    function ($scope, $filter, $http, $state, operator, Agenda, User, itemId, Projector, ProjectionDefault) {
-        var item = Agenda.get(itemId);
-        Agenda.bindOne(item.id, $scope, 'item');
-        User.bindAll({}, $scope, 'users');
+    function ($scope, $filter, Agenda, itemId, Projector, ProjectionDefault) {
+        $scope.alert = {};
+
+        $scope.$watch(function () {
+            return Agenda.lastModified(itemId);
+        }, function () {
+            $scope.item = Agenda.get(itemId);
+            // all speakers
+            $scope.speakers = $filter('orderBy')($scope.item.speakers, 'weight');
+            // next speakers
+            $scope.nextSpeakers = $filter('filter')($scope.speakers, {'begin_time': null});
+            // current speaker
+            $scope.currentSpeaker = $filter('filter')($scope.speakers, {'begin_time': '!!', 'end_time': null});
+            // last speakers
+            $scope.lastSpeakers = $filter('filter')($scope.speakers, {'end_time': '!!'});
+        });
         $scope.$watch(function () {
             return Projector.lastModified();
         }, function () {
-            var item_app_name = item.content_object.collection.split('/')[0];
+            var item_app_name = $scope.item.content_object.collection.split('/')[0];
             var projectiondefaultItem = ProjectionDefault.filter({name: item_app_name})[0];
             if (projectiondefaultItem) {
                 $scope.defaultProjectorItemId = projectiondefaultItem.projector_id;
@@ -414,40 +422,35 @@ angular.module('OpenSlidesApp.agenda.site', [
                 $scope.defaultProjectorListOfSpeakersId = projectiondefaultListOfSpeakers.projector_id;
             }
         });
+    }
+])
 
-        $scope.$watch(function () {
-            return Agenda.lastModified();
-        }, function () {
-            // all speakers
-            $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
-            // next speakers
-            $scope.nextSpeakers = $filter('filter')($scope.speakers, {'begin_time': null});
-            // current speaker
-            $scope.currentSpeaker = $filter('filter')($scope.speakers, {'begin_time': '!!', 'end_time': null});
-            // last speakers
-            $scope.lastSpeakers = $filter('filter')($scope.speakers, {'end_time': '!!'});
-        });
+/* This is the controller for the list of speakers partial management template.
+ * The parent controller needs to provide a $scope.item, $scope.speakers, $scope.nextSpeakers,
+ * $scope.currentSpeakers, $scope.lastSpeakers. See (as example) ItemDetailCtrl. */
+.controller('ListOfSpeakersManagementCtrl', [
+    '$scope',
+    '$http',
+    '$filter',
+    'Agenda',
+    'User',
+    'operator',
+    function ($scope, $http, $filter, Agenda, User, operator) {
+        User.bindAll({}, $scope, 'users');
         $scope.speakerSelectBox = {};
-        $scope.alert = {};
-
-        $scope.$watch(function () {
-            return Agenda.lastModified();
-        }, function () {
-            $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
-        });
 
         // close/open list of speakers of current item
         $scope.closeList = function (listClosed) {
-            item.speaker_list_closed = listClosed;
-            Agenda.save(item);
+            $scope.item.speaker_list_closed = listClosed;
+            Agenda.save($scope.item);
         };
 
         // add user to list of speakers
         $scope.addSpeaker = function (userId) {
-            $http.post('/rest/agenda/item/' + item.id + '/manage_speaker/', {'user': userId})
+            $http.post('/rest/agenda/item/' + $scope.item.id + '/manage_speaker/', {'user': userId})
             .success(function (data){
                 $scope.alert.show = false;
-                $scope.speakers = item.speakers;
+                $scope.speakers = $scope.item.speakers;
                 $scope.speakerSelectBox = {};
             })
             .error(function (data){
@@ -459,37 +462,37 @@ angular.module('OpenSlidesApp.agenda.site', [
         // delete speaker(!) from list of speakers
         $scope.removeSpeaker = function (speakerId) {
             $http.delete(
-                '/rest/agenda/item/' + item.id + '/manage_speaker/',
+                '/rest/agenda/item/' + $scope.item.id + '/manage_speaker/',
                 {headers: {'Content-Type': 'application/json'},
                  data: JSON.stringify({speaker: speakerId})}
             )
             .success(function(data){
-                $scope.speakers = item.speakers;
+                $scope.speakers = $scope.item.speakers;
             })
             .error(function(data){
                 $scope.alert = { type: 'danger', msg: data.detail, show: true };
             });
-            $scope.speakers = item.speakers;
+            $scope.speakers = $scope.item.speakers;
         };
 
         //delete all speakers from list of speakers
         $scope.removeAllSpeakers = function () {
             var speakersOnList = [];
-            angular.forEach(item.speakers, function (speaker) {
+            angular.forEach($scope.item.speakers, function (speaker) {
                 speakersOnList.push(speaker.id);
             });
             $http.delete(
-                '/rest/agenda/item/' + item.id + '/manage_speaker/',
+                '/rest/agenda/item/' + $scope.item.id + '/manage_speaker/',
                 {headers: {'Content-Type': 'application/json'},
                  data: JSON.stringify({speaker: speakersOnList})}
             )
             .success(function(data){
-                $scope.speakers = item.speakers;
+                $scope.speakers = $scope.item.speakers;
             })
             .error(function(data){
                 $scope.alert = { type: 'danger', msg: data.detail, show: true };
             });
-            $scope.speakers = item.speakers;
+            $scope.speakers = $scope.item.speakers;
         };
 
         // Return true if the requested user is allowed to do a specific action
@@ -502,7 +505,7 @@ angular.module('OpenSlidesApp.agenda.site', [
             switch (action) {
                 case 'add':
                     return (operator.hasPerms('agenda.can_be_speaker') &&
-                            !item.speaker_list_closed &&
+                            !$scope.item.speaker_list_closed &&
                             $.inArray(operator.user.id, nextUsers) == -1);
                 case 'remove':
                     if (operator.user) {
@@ -525,7 +528,7 @@ angular.module('OpenSlidesApp.agenda.site', [
 
         // begin speech of selected/next speaker
         $scope.beginSpeech = function (speakerId) {
-            $http.put('/rest/agenda/item/' + item.id + '/speak/', {'speaker': speakerId})
+            $http.put('/rest/agenda/item/' + $scope.item.id + '/speak/', {'speaker': speakerId})
             .success(function(data){
                 $scope.alert.show = false;
             })
@@ -537,7 +540,7 @@ angular.module('OpenSlidesApp.agenda.site', [
         // end speech of current speaker
         $scope.endSpeech = function () {
             $http.delete(
-                '/rest/agenda/item/' + item.id + '/speak/',
+                '/rest/agenda/item/' + $scope.item.id + '/speak/',
                 {headers: {'Content-Type': 'application/json'}, data: {}}
             )
             .error(function(data){
@@ -560,7 +563,7 @@ angular.module('OpenSlidesApp.agenda.site', [
                 angular.forEach(nextSpeakers, function (speaker) {
                     sortedSpeakers.push(speaker.id);
                 });
-                $http.post('/rest/agenda/item/' + item.id + '/sort_speakers/',
+                $http.post('/rest/agenda/item/' + $scope.item.id + '/sort_speakers/',
                     {speakers: sortedSpeakers}
                 );
             }
@@ -607,44 +610,64 @@ angular.module('OpenSlidesApp.agenda.site', [
 
 .controller('CurrentListOfSpeakersViewCtrl', [
     '$scope',
-    '$state',
     '$http',
+    '$filter',
     'Projector',
     'ProjectionDefault',
+    'Agenda',
     'Config',
     'CurrentListOfSpeakersItem',
     'CurrentListOfSpeakersSlide',
-    function($scope, $state, $http, Projector, ProjectionDefault, Config, CurrentListOfSpeakersItem,
-        CurrentListOfSpeakersSlide) {
+    function($scope, $http, $filter, Projector, ProjectionDefault, Agenda, Config,
+        CurrentListOfSpeakersItem, CurrentListOfSpeakersSlide) {
+        $scope.alert = {};
+        $scope.currentListOfSpeakers = CurrentListOfSpeakersSlide;
+
         // Watch for changes in the current list of speakers reference
         $scope.$watch(function () {
             return Config.lastModified('projector_currentListOfSpeakers_reference');
         }, function () {
             $scope.currentListOfSpeakersReference = $scope.config('projector_currentListOfSpeakers_reference');
-            $scope.updateCurrentListOfSpeakers();
+            $scope.updateCurrentListOfSpeakersItem();
         });
-        $scope.$watch(function() {
+        $scope.$watch(function () {
             return Projector.lastModified();
         }, function() {
             $scope.projectors = Projector.getAll();
+            // If there is just one projector we provide just the overlay.
             if ($scope.projectors.length === 1) {
                 $scope.currentListOfSpeakersAsOverlay = true;
             }
-            $scope.updateCurrentListOfSpeakers();
+            $scope.updateCurrentListOfSpeakersItem();
+
             $scope.listOfSpeakersDefaultProjectorId = ProjectionDefault.filter({name: 'agenda_current_list_of_speakers'})[0].projector_id;
         });
-        $scope.updateCurrentListOfSpeakers = function () {
-            $scope.agendaItem = CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
-        };
 
-        // go to the list of speakers (management) of the currently
-        // displayed projector slide
-        $scope.goToListOfSpeakers = function() {
-            if ($scope.agendaItem) {
-                $state.go('agenda.item.detail', {id: $scope.agendaItem.id});
+        $scope.$watch(function () {
+            return $scope.item ? Agenda.lastModified($scope.item.id) : void 0;
+        }, function () {
+            $scope.updateCurrentListOfSpeakersItem();
+        });
+
+        $scope.updateCurrentListOfSpeakersItem = function () {
+            $scope.item = CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
+            if ($scope.item) {
+                // all speakers
+                $scope.speakers = $filter('orderBy')($scope.item.speakers, 'weight');
+                // next speakers
+                $scope.nextSpeakers = $filter('filter')($scope.speakers, {'begin_time': null});
+                // current speaker
+                $scope.currentSpeaker = $filter('filter')($scope.speakers, {'begin_time': '!!', 'end_time': null});
+                // last speakers
+                $scope.lastSpeakers = $filter('filter')($scope.speakers, {'end_time': '!!'});
+            } else {
+                $scope.speakers = void 0;
+                $scope.nextSpeakers = void 0;
+                $scope.currentSpeaker = void 0;
+                $scope.lastSpeakers = void 0;
             }
         };
-        $scope.currentListOfSpeakers = CurrentListOfSpeakersSlide;
+
         // Set the current overlay status
         if ($scope.currentListOfSpeakers.isProjected().length) {
             var isProjected = $scope.currentListOfSpeakers.isProjectedWithOverlayStatus();
@@ -652,9 +675,6 @@ angular.module('OpenSlidesApp.agenda.site', [
         } else {
             $scope.currentListOfSpeakersAsOverlay = true;
         }
-        $scope.currentListOfSpeakersItem = function () {
-            return CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
-        };
         $scope.setOverlay = function (overlay) {
             $scope.currentListOfSpeakersAsOverlay = overlay;
             var isProjected = $scope.currentListOfSpeakers.isProjectedWithOverlayStatus();

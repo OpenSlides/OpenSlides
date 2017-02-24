@@ -14,6 +14,7 @@ Agenda:
 - Fixed security issue: Comments were shown for unprivileged users.
 - Added option to choose whether to show the current list of speakers slide
   as a slide or an overlay.
+- Manage speakers on the current list of speakers view.
 
 Core:
 - Added support for multiple projectors.
@@ -28,7 +29,6 @@ Core:
 - Used Roboto font in all templates.
 - Added HTML support for messages on the projector.
 - Moved custom slides to own app "topics". Renamed it to "Topic".
-- Added an overlay for the current list of speakers.
 - Added button to clear the chatbox.
 - Switched editor back from TinyMCE to CKEditor which provides a
   better copy/paste support from MS Word.
