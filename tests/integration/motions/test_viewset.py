@@ -264,8 +264,8 @@ class CreateMotion(TestCase):
         Test to create a motion by a delegate, non staff user.
         """
         self.admin = get_user_model().objects.get(username='admin')
-        self.admin.groups.add(3)
-        self.admin.groups.remove(4)
+        self.admin.groups.add(2)
+        self.admin.groups.remove(3)
 
         response = self.client.post(
             reverse('motion-list'),
@@ -273,6 +273,71 @@ class CreateMotion(TestCase):
              'text': 'test_text_eHohS8ohr5ahshoah8Oh'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_amendment_motion(self):
+        """
+        Test to create a motion with a parent motion as staff user.
+        """
+        parent_motion = self.create_parent_motion()
+        response = self.client.post(
+            reverse('motion-list'),
+            {'title': 'test_title_doe93Jsjd2sW20dkSl20',
+             'text': 'test_text_feS20SksD8D25skmwD25',
+             'parent_id': parent_motion.id})
+        created_motion = Motion.objects.get(pk=int(response.data['id']))
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(created_motion.parent, parent_motion)
+
+    def test_amendment_motion_parent_not_exist(self):
+        """
+        Test to create an amendment motion with a non existing parent.
+        """
+        response = self.client.post(
+            reverse('motion-list'),
+            {'title': 'test_title_gEjdkW93Wj23KS2s8dSe',
+             'text': 'test_text_lfwLIC&AjfsaoijOEusa',
+             'parent_id': 100})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'detail': 'The parent motion does not exist.'})
+
+    def test_amendment_motion_non_admin(self):
+        """
+        Test to create an amendment motion by a delegate. The parents
+        category should be also set on the new motion.
+        """
+        parent_motion = self.create_parent_motion()
+        category = Category.objects.create(
+            name='test_category_name_Dslk3Fj8s8Ps36S3Kskw',
+            prefix='TEST_PREFIX_L23skfmlq3kslamslS39')
+        parent_motion.category = category
+        parent_motion.save()
+
+        self.admin = get_user_model().objects.get(username='admin')
+        self.admin.groups.add(2)
+        self.admin.groups.remove(3)
+
+        response = self.client.post(
+            reverse('motion-list'),
+            {'title': 'test_title_fk3a0slalms47KSewnWG',
+             'text': 'test_text_al3FMwSCNM31WOmw9ezx',
+             'parent_id': parent_motion.id})
+        created_motion = Motion.objects.get(pk=int(response.data['id']))
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(created_motion.parent, parent_motion)
+        self.assertEqual(created_motion.category, category)
+
+    def create_parent_motion(self):
+        """
+        Returns a new created motion used for testing amendments.
+        """
+        response = self.client.post(
+            reverse('motion-list'),
+            {'title': 'test_title_3leoeo2qac7830c92j9s',
+             'text': 'test_text_9dm3ks9gDuW20Al38L9w'})
+        return Motion.objects.get(pk=int(response.data['id']))
 
 
 class RetrieveMotion(TestCase):

@@ -1428,6 +1428,7 @@ angular.module('OpenSlidesApp.motions.site', [
         Workflow.bindAll({}, $scope, 'workflows');
 
         $scope.model = {};
+        $scope.alert = {};
 
         // Check whether this is a new amendment.
         var isAmendment = $scope.$parent.motion && $scope.$parent.motion.id;
@@ -1464,6 +1465,13 @@ angular.module('OpenSlidesApp.motions.site', [
                         $state.go('motions.motion.detail', {id: success.id});
                     }
                     $scope.closeThisDialog();
+                },
+                function (error) {
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = {type: 'danger', msg: message, show: true};
                 }
             );
         };
