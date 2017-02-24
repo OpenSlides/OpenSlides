@@ -157,7 +157,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                         label: gettextCatalog.getString('Show as agenda item'),
                         description: gettextCatalog.getString('If deactivated the election appears as internal item on agenda.')
                     },
-                    hide: !operator.hasPerms('assignments.can_manage')
+                    hide: !(operator.hasPerms('assignments.can_manage') && operator.hasPerms('agenda.can_manage'))
                 }];
 
                 // parent item

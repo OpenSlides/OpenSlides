@@ -374,7 +374,7 @@ angular.module('OpenSlidesApp.motions.site', [
                         label: gettextCatalog.getString('Show as agenda item'),
                         description: gettextCatalog.getString('If deactivated the motion appears as internal item on agenda.')
                     },
-                    hide: !operator.hasPerms('motions.can_manage')
+                    hide: !(operator.hasPerms('motions.can_manage') && operator.hasPerms('agenda.can_manage'))
                 }];
 
                 // parent item
