@@ -5,15 +5,6 @@
         <i class="fa fa-angle-double-left fa-lg"></i>
         <translate>Back to overview</translate>
       </a>
-      <!-- manage list of speakers -->
-      <button os-perms="agenda.can_manage"
-        ng-disabled="!currentListOfSpeakersItem()"
-        ng-click="goToListOfSpeakers()"
-        class="btn btn-sm btn-default">
-        <i class="fa fa-microphone"></i>
-        <translate>Manage list</translate>
-      </button>
-
       <!-- Current list of speakers projector button -->
       <div class="btn-group button" uib-dropdown
         uib-tooltip="{{ 'Project the current list of speakers' | translate }}"
@@ -58,26 +49,12 @@
     </div>
 
     <h1 translate>Current list of speakers</h1>
-    <h2> {{ agendaItem.getTitle() }}
-      <span class="slimlabel label label-danger ng-scope" style="" ng-if="agendaItem.speaker_list_closed" translate>
+    <h2> {{ item.getTitle() }}
+      <span class="slimlabel label label-danger ng-scope" style="" ng-if="item.speaker_list_closed" translate>
         Closed
       </span>
     </h2>
   </div>
 </div>
 
-<div class="details">
-  <!-- Last speakers -->
-  <p ng-repeat="speaker in lastSpeakers = (agendaItem.speakers | filter: {end_time: '!!', begin_time: '!!'}) |
-    limitTo: config('agenda_show_last_speakers') : (lastSpeakers.length - config('agenda_show_last_speakers'))" class="lastSpeakers">
-    {{ speaker.user.get_full_name() }}
-  <!-- Current speaker -->
-  <p ng-repeat="speaker in currentspeakers = (agendaItem.speakers| filter: {end_time: null, begin_time: '!!'})"
-    class="currentSpeaker">
-    <i class="fa fa-microphone fa-lg"></i> {{ speaker.user.get_full_name() }}
-  <!-- Next speakers -->
-  <ol class="nextSpeakers">
-    <li ng-repeat="speaker in agendaItem.speakers | filter: {begin_time: null} | orderBy:'weight'">
-   {{ speaker.user.get_full_name() }}
-  </ol>
-</div>
+<ng-include src="'static/templates/agenda/list-of-speakers-partial-management.html'"></ng-include>
