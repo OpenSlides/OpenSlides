@@ -52,19 +52,12 @@
             <span editable-text="gotoLinenumber" e-form="lineNumberForm"
               onaftersave="scrollToAndHighlight(gotoLinenumber)">
             </span>
-            <div class="btn-group" ng-if="lineNumberMode != 'none'">
-                <button type="button" class="btn btn-sm btn-default" ng-click="lineNumberForm.$show()">
-                    <i class="fa fa-share"></i>
-                    <translate>go</translate>
-                </button>
-                <button type="button" class="btn btn-sm btn-default" os-perms="core.can_manage_projector"
-                        ng-if="lineNumberMode != 'none' && motion.isProjected().length"
-                        ng-click="toggleLinesForProjector()"
-                        uib-tooltip="{{ 'Show highlighted line also on projector.' | translate }}">
-                    <i class="fa" ng-class="linesForProjector ? 'fa-check-square-o' : 'fa-square-o'"></i>&nbsp;
-                    <i class="fa fa-video-camera"></i>
-                </button>
-            </div>
+            <button type="button" class="btn btn-sm btn-default"
+                ng-click="lineNumberForm.$show()"
+                ng-if="lineNumberMode != 'none'">
+                <i class="fa fa-share"></i>
+                <translate>go</translate>
+            </button>
         </div>
     </div>
 </div>
