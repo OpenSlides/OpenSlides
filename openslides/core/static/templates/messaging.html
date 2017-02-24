@@ -1,0 +1,10 @@
+<div id="messaging">
+  <div id="messaging-container">
+    <div ng-repeat="(id, message) in messages" ng-class="message.type">
+
+      <span class="close fa fa-times fa-lg" ng-click="close(id)" ng-if="!message.args.noClose"></span>
+      <span ng-bind-html="message.text | trusted"></span>
+
+    </div>
+  </div>
+</div>

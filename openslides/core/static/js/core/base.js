@@ -47,7 +47,8 @@ angular.module('OpenSlidesApp.core', [
     'REALM',
     'ProjectorID',
     '$q',
-    function (DS, REALM, ProjectorID, $q) {
+    'ErrorMessage',
+    function (DS, REALM, ProjectorID, $q, ErrorMessage) {
         var socket = null;
         var recInterval = null;
 
@@ -82,11 +83,12 @@ angular.module('OpenSlidesApp.core', [
         Autoupdate.newConnect = function () {
             socket = new WebSocket(websocketProtocol + '//' + location.host + websocketPath);
             clearInterval(recInterval);
-            socket.onclose = function () {
+            socket.onclose = function (event) {
                 socket = null;
                 recInterval = setInterval(function () {
                     Autoupdate.newConnect();
                 }, 1000);
+                ErrorMessage.setConnectionError();
             };
             socket.onmessage = function (event) {
                 _.forEach(Autoupdate.messageReceivers, function (receiver) {
@@ -96,6 +98,7 @@ angular.module('OpenSlidesApp.core', [
                 if (Autoupdate.firstMessageDeferred.promise.$$state.status === 0) {
                     Autoupdate.firstMessageDeferred.resolve();
                 }
+                ErrorMessage.clearConnectionError();
             };
         };
         return Autoupdate;
@@ -457,6 +460,108 @@ angular.module('OpenSlidesApp.core', [
             return isProjectedIds;
         };
         return BaseModel;
+    }
+])
+
+.factory('ErrorMessage', [
+    '$timeout',
+    'gettextCatalog',
+    'Messaging',
+    function ($timeout, gettextCatalog, Messaging) {
+        return {
+            forAlert: function (error) {
+                var message = gettextCatalog.getString('Error') + ': ';
+
+                if (!error.data) {
+                    message += gettextCatalog.getString("The server didn't respond.");
+                } else if (error.data.detail) {
+                    message += error.data.detail;
+                } else {
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                }
+                return { type: 'danger', msg: message, show: true };
+            },
+            setConnectionError: function () {
+                $timeout(function () {
+                    Messaging.createOrEditMessage(
+                        'connectionLostMessage',
+                        gettextCatalog.getString('Connection lost. You are not connected to the server anymore.'),
+                        'error',
+                        {noClose: true});
+                }, 1);
+            },
+            clearConnectionError: function () {
+                $timeout(function () {
+                    Messaging.deleteMessage('connectionLostMessage');
+                }, 1);
+            },
+        };
+    }
+])
+
+/* Messaging factory. The text is html-binded into the document, so you can
+ * provide also html markup for the messages. There are 4 types: 'info',
+ * 'success', 'warning', 'error'. The timeout is for autodeleting the message.
+ * Args that could be provided:
+ * - timeout: Milliseconds until autoclose the message
+ * - noClose: Whether to show the close button*/
+.factory('Messaging', [
+    '$timeout',
+    function($timeout) {
+        var callbackList = [],
+            messages = {},
+            idCounter = 0;
+
+        var onChange = function () {
+            _.forEach(callbackList, function (callback) {
+                callback();
+            });
+        };
+
+        return {
+            addMessage: function (text, type, args) {
+                var id = idCounter++;
+                return this.createOrEditMessage(id, text, type, args);
+            },
+            createOrEditMessage: function (id, text, type, args) {
+                if (!args) {
+                    args = {};
+                }
+                if (messages[id] && messages[id].timeout) {
+                    $timeout.cancel(messages[id].timeout);
+                }
+                messages[id] = {
+                    text: text,
+                    type: type,
+                    id: id,
+                    args: args,
+                };
+                if (typeof args.timeout === 'number' && args.timeout > 0) {
+                    var self = this;
+                    messages[id].timeout = $timeout(function () {
+                        self.deleteMessage(id);
+                    }, args.timeout);
+                }
+                onChange();
+                return id;
+            },
+            deleteMessage: function (id) {
+                delete messages[id];
+                onChange();
+            },
+            getMessages: function () {
+                return messages;
+            },
+            registerMessageChangeCallback: function (fn) {
+                if (typeof fn === 'function') {
+                    callbackList.push(fn);
+                } else {
+                    throw 'fn has to be a function';
+                }
+            },
+        };
     }
 ])
 

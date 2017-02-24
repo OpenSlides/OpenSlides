@@ -178,7 +178,8 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
     'TopicForm',
     'Agenda',
     'AgendaUpdate',
-    function($scope, $state, Topic, TopicForm, Agenda, AgendaUpdate) {
+    'ErrorMessage',
+    function($scope, $state, Topic, TopicForm, Agenda, AgendaUpdate, ErrorMessage) {
         $scope.topic = {};
         $scope.model = {};
         $scope.model.showAsAgendaItem = true;
@@ -193,8 +194,11 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
                     var changes = [{key: 'type', value: (topic.showAsAgendaItem ? 1 : 2)},
                                    {key: 'parent_id', value: topic.agenda_parent_item_id}];
                     AgendaUpdate.saveChanges(success.agenda_item_id,changes);
-                });
-            $scope.closeThisDialog();
+                    $scope.closeThisDialog();
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
+                }
+            );
         };
     }
 ])
@@ -207,7 +211,8 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
     'Agenda',
     'AgendaUpdate',
     'topicId',
-    function($scope, $state, Topic, TopicForm, Agenda, AgendaUpdate, topicId) {
+    'ErrorMessage',
+    function($scope, $state, Topic, TopicForm, Agenda, AgendaUpdate, topicId, ErrorMessage) {
         var topic = Topic.get(topicId);
         $scope.alert = {};
         // set initial values for form model by create deep copy of topic object
@@ -237,11 +242,7 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
                     // save error: revert all changes by restore
                     // (refresh) original topic object from server
                     Topic.refresh(topic);
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };

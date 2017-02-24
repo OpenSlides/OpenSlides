@@ -784,8 +784,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
 .factory('PdfCreate', [
     '$timeout',
     'FileSaver',
-    function ($timeout, FileSaver) {
-        var stateChangeCallbacks = [];
+    'Messaging',
+    function ($timeout, FileSaver, Messaging) {
+        var filenameMessageMap = {};
         var b64toBlob = function(b64Data) {
             var byteCharacters = atob(b64Data);
             var byteNumbers = new Array(byteCharacters.length);
@@ -797,61 +798,42 @@ angular.module('OpenSlidesApp.core.pdf', [])
             return blob;
         };
         var stateChange = function (state, filename, error) {
-            _.forEach(stateChangeCallbacks, function (cb) {
-                $timeout(function () {cb(state, filename, error);}, 1);
-            });
+            var text, timeout;
+            switch (state) {
+                case 'info':
+                    text = '<i class="fa fa-spinner fa-pulse fa-lg spacer-right"></i>' +
+                        '<translate>Generating PDF file ' + filename + ' ...</translate>';
+                    break;
+                case 'success':
+                    text = '<i class="fa fa-check fa-lg spacer-right"></i>' +
+                        '<translate>PDF successfully generated.</translate>';
+                    timeout = 3000;
+                    break;
+                case 'error':
+                    text = '<i class="fa fa-exclamation-triangle fa-lg spacer-right"></i>' +
+                        '<translate>Error while generating PDF file</translate> ' + filename + ':' +
+                        '<span ng-if="pdf.errorMessage"><code>{{ pdf.errorMessage | translate }}</code></span>' ;
+                    break;
+            }
+            $timeout(function () {
+                filenameMessageMap[filename] = Messaging.createOrEditMessage(
+                    filenameMessageMap[filename], text, state, {timeout: timeout});
+            }, 1);
         };
         return {
             download: function (pdfDocument, filename) {
-                stateChange('generating', filename);
+                stateChange('info', filename);
                 var pdfWorker = new Worker('/static/js/workers/pdf-worker.js');
 
                 pdfWorker.addEventListener('message', function (event) {
                     var blob = b64toBlob(event.data);
-                    stateChange('finished', filename);
+                    stateChange('success', filename);
                     FileSaver.saveAs(blob, filename);
                 });
                 pdfWorker.addEventListener('error', function (event) {
                     stateChange('error', filename, event.message);
                 });
                 pdfWorker.postMessage(JSON.stringify(pdfDocument));
-            },
-            registerStateChangeCallback: function (cb) {
-                if (cb && typeof cb === 'function') {
-                    stateChangeCallbacks.push(cb);
-                }
-            },
-        };
-    }
-])
-
-.directive('pdfGenerationStatus', [
-    '$timeout',
-    'PdfCreate',
-    function($timeout, PdfCreate) {
-        return {
-            restrict: 'E',
-            templateUrl: 'static/templates/pdf-status.html',
-            scope: {},
-            controller: function ($scope, $element, $attrs, $location) {
-                $scope.pdfs = {};
-
-                var createStateChange = function (state, filename, error) {
-                    $scope.pdfs[filename] = {
-                        state: state,
-                        errorMessage: error
-                    };
-                    if (state === 'finished') {
-                        $timeout(function () {
-                            $scope.close(filename);
-                        }, 3000);
-                    }
-                };
-                PdfCreate.registerStateChangeCallback(createStateChange);
-
-                $scope.close = function (filename) {
-                    delete $scope.pdfs[filename];
-                };
             },
         };
     }

@@ -96,9 +96,10 @@ angular.module('OpenSlidesApp.agenda.site', [
     'osTableFilter',
     'AgendaCsvExport',
     'PdfCreate',
+    'ErrorMessage',
     function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, TopicForm,
         AgendaTree, Projector, ProjectionDefault, AgendaContentProvider, PdfMakeDocumentProvider,
-        gettextCatalog, gettext, osTableFilter, AgendaCsvExport, PdfCreate) {
+        gettextCatalog, gettext, osTableFilter, AgendaCsvExport, PdfCreate, ErrorMessage) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -232,15 +233,11 @@ angular.module('OpenSlidesApp.agenda.site', [
         // save changed item
         $scope.save = function (item) {
             Agenda.save(item).then(
-                function(success) {
+                function (success) {
                     $scope.alert.show = false;
                 },
-                function(error){
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = { type: 'danger', msg: message, show: true };
+                function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
                 });
         };
         // delete related item
@@ -393,7 +390,8 @@ angular.module('OpenSlidesApp.agenda.site', [
     'itemId',
     'Projector',
     'ProjectionDefault',
-    function ($scope, $filter, Agenda, itemId, Projector, ProjectionDefault) {
+    'ErrorMessage',
+    function ($scope, $filter, Agenda, itemId, Projector, ProjectionDefault, ErrorMessage) {
         $scope.alert = {};
 
         $scope.$watch(function () {
@@ -447,16 +445,16 @@ angular.module('OpenSlidesApp.agenda.site', [
 
         // add user to list of speakers
         $scope.addSpeaker = function (userId) {
-            $http.post('/rest/agenda/item/' + $scope.item.id + '/manage_speaker/', {'user': userId})
-            .success(function (data){
-                $scope.alert.show = false;
-                $scope.speakers = $scope.item.speakers;
-                $scope.speakerSelectBox = {};
-            })
-            .error(function (data){
-                $scope.alert = {type: 'danger', msg: data.detail, show: true};
-                $scope.speakerSelectBox = {};
-            });
+            $http.post('/rest/agenda/item/' + $scope.item.id + '/manage_speaker/', {'user': userId}).then(
+                function (success) {
+                    $scope.alert.show = false;
+                    $scope.speakers = $scope.item.speakers;
+                    $scope.speakerSelectBox = {};
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
+                    $scope.speakerSelectBox = {};
+                }
+            );
         };
 
         // delete speaker(!) from list of speakers
@@ -466,11 +464,10 @@ angular.module('OpenSlidesApp.agenda.site', [
                 {headers: {'Content-Type': 'application/json'},
                  data: JSON.stringify({speaker: speakerId})}
             )
-            .success(function(data){
+            .then(function (success) {
                 $scope.speakers = $scope.item.speakers;
-            })
-            .error(function(data){
-                $scope.alert = { type: 'danger', msg: data.detail, show: true };
+            }, function (error) {
+                $scope.alert = ErrorMessage.forAlert(error);
             });
             $scope.speakers = $scope.item.speakers;
         };
@@ -486,11 +483,10 @@ angular.module('OpenSlidesApp.agenda.site', [
                 {headers: {'Content-Type': 'application/json'},
                  data: JSON.stringify({speaker: speakersOnList})}
             )
-            .success(function(data){
+            .then(function (success) {
                 $scope.speakers = $scope.item.speakers;
-            })
-            .error(function(data){
-                $scope.alert = { type: 'danger', msg: data.detail, show: true };
+            }, function (error) {
+                $scope.alert = ErrorMessage.forAlert(error);
             });
             $scope.speakers = $scope.item.speakers;
         };
@@ -529,11 +525,10 @@ angular.module('OpenSlidesApp.agenda.site', [
         // begin speech of selected/next speaker
         $scope.beginSpeech = function (speakerId) {
             $http.put('/rest/agenda/item/' + $scope.item.id + '/speak/', {'speaker': speakerId})
-            .success(function(data){
+            .then(function (success) {
                 $scope.alert.show = false;
-            })
-            .error(function(data){
-                $scope.alert = { type: 'danger', msg: data.detail, show: true };
+            }, function (error) {
+                $scope.alert = ErrorMessage.forAlert(error);
             });
         };
 
@@ -542,10 +537,12 @@ angular.module('OpenSlidesApp.agenda.site', [
             $http.delete(
                 '/rest/agenda/item/' + $scope.item.id + '/speak/',
                 {headers: {'Content-Type': 'application/json'}, data: {}}
-            )
-            .error(function(data){
-                $scope.alert = { type: 'danger', msg: data.detail, show: true };
-            });
+            ).then(
+                function (success) {},
+                function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
+                }
+            );
         };
         // gets speech duration of selected speaker in seconds
         $scope.getDuration = function (speaker) {
@@ -576,7 +573,8 @@ angular.module('OpenSlidesApp.agenda.site', [
     '$http',
     'Agenda',
     'AgendaTree',
-    function($scope, $http, Agenda, AgendaTree) {
+    'ErrorMessage',
+    function($scope, $http, Agenda, AgendaTree, ErrorMessage) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -600,7 +598,7 @@ angular.module('OpenSlidesApp.agenda.site', [
                 ).then(
                     function(success) {},
                     function(error){
-                        $scope.alert = {type: 'danger', msg: error.data.detail, show: true};
+                        $scope.alert = ErrorMessage.forAlert(error);
                     }
                 );
             }

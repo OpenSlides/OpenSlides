@@ -603,11 +603,7 @@ angular.module('OpenSlidesApp.users.site', [
                     $scope.alert.show = false;
                 },
                 function(error){
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = { type: 'danger', msg: message, show: true };
+                    $scope.alert = ErrorMessage.forAlert(error);
                 });
         };
         // delete single user
@@ -744,7 +740,8 @@ angular.module('OpenSlidesApp.users.site', [
     'User',
     'UserForm',
     'Group',
-    function($scope, $state, User, UserForm, Group) {
+    'ErrorMessage',
+    function($scope, $state, User, UserForm, Group, ErrorMessage) {
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
         $scope.alert = {};
         // get all form fields
@@ -756,15 +753,11 @@ angular.module('OpenSlidesApp.users.site', [
                 user.groups_id = [];
             }
             User.create(user).then(
-                function(success) {
+                function (success) {
                     $scope.closeThisDialog();
                 },
                 function (error) {
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -779,7 +772,8 @@ angular.module('OpenSlidesApp.users.site', [
     'UserForm',
     'Group',
     'userId',
-    function($scope, $state, $http, User, UserForm, Group, userId) {
+    'ErrorMessage',
+    function($scope, $state, $http, User, UserForm, Group, userId, ErrorMessage) {
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
         $scope.alert = {};
         // set initial values for form model by create deep copy of user object
@@ -805,11 +799,7 @@ angular.module('OpenSlidesApp.users.site', [
                     // save error: revert all changes by restore
                     // (refresh) original user object from server
                     User.refresh(user);
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -823,7 +813,8 @@ angular.module('OpenSlidesApp.users.site', [
     'operator',
     'UserProfileForm',
     'gettext',
-    function($scope, Editor, User, operator, UserProfileForm, gettext) {
+    'ErrorMessage',
+    function($scope, Editor, User, operator, UserProfileForm, gettext, ErrorMessage) {
         $scope.model = angular.copy(operator.user);
         $scope.title = gettext('Edit profile');
         $scope.formFields = UserProfileForm.getFormFields();
@@ -837,11 +828,7 @@ angular.module('OpenSlidesApp.users.site', [
                     // save error: revert all changes by restore
                     // (refresh) original user object from server
                     User.refresh(user);
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -856,7 +843,8 @@ angular.module('OpenSlidesApp.users.site', [
     'userId',
     'gettextCatalog',
     'PasswordGenerator',
-    function($scope, $state, $http, User, userId, gettextCatalog, PasswordGenerator) {
+    'ErrorMessage',
+    function($scope, $state, $http, User, userId, gettextCatalog, PasswordGenerator, ErrorMessage) {
         User.bindOne(userId, $scope, 'user');
         $scope.alert = {};
         $scope.generatePassword = function () {
@@ -873,7 +861,7 @@ angular.module('OpenSlidesApp.users.site', [
                         $scope.new_password = '';
                     },
                     function (error) {
-                        $scope.alert = {type: 'danger', msg: error.data.detail, show: true};
+                        $scope.alert = ErrorMessage.forAlert(error);
                     }
                 );
             }
@@ -887,7 +875,8 @@ angular.module('OpenSlidesApp.users.site', [
     '$http',
     'gettext',
     'UserPasswordForm',
-    function($scope, $state, $http, gettext, UserPasswordForm) {
+    'ErrorMessage',
+    function($scope, $state, $http, gettext, UserPasswordForm, ErrorMessage) {
         $scope.title = 'Change password';
         $scope.alert = {};
         $scope.model = {};
@@ -911,12 +900,7 @@ angular.module('OpenSlidesApp.users.site', [
                     function (error) {
                         // Error, e. g. wrong old password.
                         $scope.model = {};
-
-                        var message = '';
-                        for (var e in error.data) {
-                            message += e + ': ' + error.data[e] + ' ';
-                        }
-                        $scope.alert = {type: 'danger', msg: message, show: true};
+                        $scope.alert = ErrorMessage.forAlert(error);
                     }
                 );
             }
@@ -1362,7 +1346,8 @@ angular.module('OpenSlidesApp.users.site', [
     '$scope',
     'Group',
     'group',
-    function($scope, Group, group) {
+    'ErrorMessage',
+    function($scope, Group, group, ErrorMessage) {
         $scope.group = group;
         $scope.new_name = group.name;
 
@@ -1375,12 +1360,8 @@ angular.module('OpenSlidesApp.users.site', [
                     $scope.closeThisDialog();
                 },
                 function (error) {
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = { msg: message, show: true };
-                    $scope.group.name = old_name;
+                   $scope.alert = ErrorMessage.forAlert(error);
+                   $scope.group.name = old_name;
                 }
             );
         };
@@ -1390,7 +1371,8 @@ angular.module('OpenSlidesApp.users.site', [
 .controller('GroupCreateCtrl', [
     '$scope',
     'Group',
-    function($scope, Group) {
+    'ErrorMessage',
+    function($scope, Group, ErrorMessage) {
         $scope.new_name = '';
         $scope.alert = {};
 
@@ -1405,11 +1387,7 @@ angular.module('OpenSlidesApp.users.site', [
                     $scope.closeThisDialog();
                 },
                 function (error) {
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = { msg: message, show: true };
+                   $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -1469,11 +1447,11 @@ angular.module('OpenSlidesApp.users.site', [
         $scope.guestAllowed = $rootScope.guest_enabled;
 
         // get login info-text from server
-        $http.get('/users/login/').success(function(data) {
-            if(data.info_text) {
+        $http.get('/users/login/').then(function (success) {
+            if(success.data.info_text) {
                 $scope.alerts.push({
                     type: 'success',
-                    msg: data.info_text
+                    msg: success.data.info_text
                 });
             }
         });

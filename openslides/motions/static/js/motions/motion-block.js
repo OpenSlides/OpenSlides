@@ -144,7 +144,8 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
     'motionBlockId',
     'Projector',
     'ProjectionDefault',
-    function($scope, $http, ngDialog, Motion, MotionBlockForm, MotionBlock, motionBlockId, Projector, ProjectionDefault) {
+    'ErrorMessage',
+    function($scope, $http, ngDialog, Motion, MotionBlockForm, MotionBlock, motionBlockId, Projector, ProjectionDefault, ErrorMessage) {
         MotionBlock.bindOne(motionBlockId, $scope, 'motionBlock');
         Motion.bindAll({}, $scope, 'motions');
         $scope.$watch(function () {
@@ -159,12 +160,11 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
             ngDialog.open(MotionBlockForm.getDialog(motionBlock));
         };
         $scope.followRecommendations = function () {
-            $http.post('/rest/motions/motion-block/' + motionBlockId + '/follow_recommendations/')
-            .success(function(data) {
-                $scope.alert = { type: 'success', msg: data.detail, show: true };
-            })
-            .error(function(data) {
-                $scope.alert = { type: 'danger', msg: data.detail, show: true };
+            $http.post('/rest/motions/motion-block/' + motionBlockId + '/follow_recommendations/').then(
+                function (success) {
+                $scope.alert = { type: 'success', msg: success.data.detail, show: true };
+            }, function (error) {
+                $scope.alert = ErrorMessage.forAlert(error);
             });
         };
         $scope.delete = function (motion) {

@@ -14,7 +14,8 @@ angular.module('OpenSlidesApp.mediafiles.update', [
     'Mediafile',
     'mediafileId',
     'MediafileForm',
-    function ($scope, operator, User, Mediafile, mediafileId, MediafileForm) {
+    'ErrorMessage',
+    function ($scope, operator, User, Mediafile, mediafileId, MediafileForm, ErrorMessage) {
         $scope.alert = {};
         $scope.formFields = MediafileForm.getFormFields();
 
@@ -40,11 +41,7 @@ angular.module('OpenSlidesApp.mediafiles.update', [
                 },
                 function (error) {
                     Mediafile.refresh(mediafile);
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
