@@ -164,7 +164,7 @@
               <translate>State</translate>
               <span class="caret"></span>
             </span>
-            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownState">
+            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownState">
               <li ng-repeat="state in states" ng-class="state.workflowHeader ? 'dropdown-header' : ''">
                 <a ng-if="state.workflowHeader">
                   {{ state.headername | translate }}
@@ -180,6 +180,34 @@
                 <a href ng-click="operateStateFilter(-1, isSelectMode)">
                   <i class="fa fa-check" ng-if="filter.multiselectFilters.category.indexOf(-1) > -1"></i>
                   <translate>Done</translate>
+                </a>
+              </li>
+            </ul>
+          </span>
+          <!-- recommendation filter -->
+          <span uib-dropdown ng-if="config('motions_recommendations_by') != ''">
+            <span class="pointer" id="dropdownRecommendation" uib-dropdown-toggle
+              ng-class="{'bold': filter.multiselectFilters.recommendation.length > 0, 'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
+              <translate>Recommendation</translate>
+              <span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownRecommentation">
+              <li ng-repeat="recommendation in recommendations" ng-class="recommendation.workflowHeader ? 'dropdown-header' : ''">
+                <a ng-if="recommendation.workflowHeader">
+                  {{ recommendation.headername | translate }}
+                </a>
+                <a href ng-if="!recommendation.workflowHeader"
+                  ng-click="filter.operateMultiselectFilter('recommendation', recommendation.id, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.recommendation.indexOf(recommendation.id) > -1"></i>
+                  {{ recommendation.recommendation_label | translate }}
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href ng-click="filter.operateMultiselectFilter('recommendation', -1, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.recommendation.indexOf(-1) > -1"></i>
+                  <translate>No recommendation set</translate>
                 </a>
               </li>
             </ul>
@@ -228,34 +256,6 @@
                 <a href ng-click="filter.operateMultiselectFilter('motionBlock', -1, isSelectMode)">
                   <i class="fa fa-check" ng-if="filter.multiselectFilters.motionBlock.indexOf(-1) > -1"></i>
                   <translate>No motion block set</translate>
-                </a>
-              </li>
-            </ul>
-          </span>
-          <!-- recommendation filter -->
-          <span uib-dropdown ng-if="config('motions_recommendations_by') != ''">
-            <span class="pointer" id="dropdownRecommendation" uib-dropdown-toggle
-              ng-class="{'bold': filter.multiselectFilters.recommendation.length > 0, 'disabled': isSelectMode}"
-              ng-disabled="isSelectMode">
-              <translate>Recommendation</translate>
-              <span class="caret"></span>
-            </span>
-            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownRecommentation">
-              <li ng-repeat="recommendation in recommendations" ng-class="recommendation.workflowHeader ? 'dropdown-header' : ''">
-                <a ng-if="recommendation.workflowHeader">
-                  {{ recommendation.headername | translate }}
-                </a>
-                <a href ng-if="!recommendation.workflowHeader"
-                  ng-click="filter.operateMultiselectFilter('recommendation', recommendation.id, isSelectMode)">
-                  <i class="fa fa-check" ng-if="filter.multiselectFilters.recommendation.indexOf(recommendation.id) > -1"></i>
-                  {{ recommendation.recommendation_label | translate }}
-                </a>
-              </li>
-              <li class="divider"></li>
-              <li>
-                <a href ng-click="filter.operateMultiselectFilter('recommendation', -1, isSelectMode)">
-                  <i class="fa fa-check" ng-if="filter.multiselectFilters.recommendation.indexOf(-1) > -1"></i>
-                  <translate>No recommendation set</translate>
                 </a>
               </li>
             </ul>

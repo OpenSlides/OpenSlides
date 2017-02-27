@@ -49,10 +49,11 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
 // MotionBlock views (list view, create dialog, update dialog)
 .factory('MotionBlockForm', [
     '$http',
+    'operator',
     'gettextCatalog',
     'Agenda',
     'AgendaTree',
-    function ($http, gettextCatalog, Agenda, AgendaTree) {
+    function ($http, operator, gettextCatalog, Agenda, AgendaTree) {
         return {
             // Get ngDialog configuration.
             getDialog: function (motionBlock) {
