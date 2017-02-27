@@ -12,6 +12,7 @@ from rest_framework import status
 from ..core.config import config
 from ..utils.auth import has_perm
 from ..utils.autoupdate import inform_changed_data
+from ..utils.collection import CollectionElement
 from ..utils.rest_api import (
     DestroyModelMixin,
     GenericViewSet,
@@ -85,13 +86,16 @@ class MotionViewSet(ModelViewSet):
         """
         Customized view endpoint to create a new motion.
         """
-        # Check if parent motion exists
-        parent_motion = None
-        if 'parent_id' in request.data:
+        # Check if parent motion exists.
+        if request.data.get('parent_id') is not None:
             try:
-                parent_motion = Motion.objects.get(pk=request.data['parent_id'])
+                parent_motion = CollectionElement.from_values(
+                    Motion.get_collection_string(),
+                    request.data['parent_id'])
             except Motion.DoesNotExist:
                 raise ValidationError({'detail': _('The parent motion does not exist.')})
+        else:
+            parent_motion = None
 
         # Check permission to send some data.
         if not has_perm(request.user, 'motions.can_manage'):
@@ -101,16 +105,15 @@ class MotionViewSet(ModelViewSet):
                 'reason',
                 'comments',  # This is checked later.
             ]
-            if parent_motion:  # For creating amendments.
+            if parent_motion is not None:
+                # For creating amendments.
                 whitelist.extend([
                     'parent_id',
                     'category_id',      # This will be set to the matching
                     'motion_block_id',  # values from parent_motion.
                 ])
-                request.data['category_id'] = (
-                    parent_motion.category.id if parent_motion.category else None)
-                request.data['motion_block_id'] = (
-                    parent_motion.motion_block.id if parent_motion.motion_block else None)
+                request.data['category_id'] = parent_motion.get_full_data().get('category_id')
+                request.data['motion_block_id'] = parent_motion.get_full_data().get('motion_block_id')
             for key in request.data.keys():
                 if key not in whitelist:
                     # Non-staff users are allowed to send only some data.
@@ -155,14 +158,17 @@ class MotionViewSet(ModelViewSet):
 
         # Check permission to send only some data.
         if not has_perm(request.user, 'motions.can_manage'):
+            # Remove fields that the user is not allowed to change.
+            # The list() is required because we want to use del inside the loop.
+            keys = list(request.data.keys())
             whitelist = (
                 'title',
                 'text',
-                'reason',)
-            keys = list(request.data.keys())
+                'reason',
+                'comments',  # This is checked later.
+            )
             for key in keys:
                 if key not in whitelist:
-                    # Non-staff users are allowed to send only some data. Ignore other data.
                     del request.data[key]
         if not has_perm(request.user, 'motions.can_see_and_manage_comments'):
             try:
@@ -364,7 +370,7 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
     """
     API endpoint for motion polls.
 
-    There are the following views: update and destroy.
+    There are the following views: update, partial_update and destroy.
     """
     queryset = MotionPoll.objects.all()
     serializer_class = MotionPollSerializer
@@ -414,7 +420,8 @@ class MotionChangeRecommendationViewSet(ModelViewSet):
         elif self.action == 'metadata':
             result = has_perm(self.request.user, 'motions.can_see')
         elif self.action in ('create', 'destroy', 'partial_update', 'update'):
-            result = has_perm(self.request.user, 'motions.can_manage')
+            result = (has_perm(self.request.user, 'motions.can_see') and
+                      has_perm(self.request.user, 'motions.can_manage'))
         else:
             result = False
         return result
@@ -614,6 +621,8 @@ class WorkflowViewSet(ModelViewSet):
             result = False
         return result
 
+
+# Special API views
 
 class MotionDocxTemplateView(APIView):
     """

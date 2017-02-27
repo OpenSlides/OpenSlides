@@ -10,6 +10,7 @@ class MotionViewSetCreate(TestCase):
     """
     def setUp(self):
         self.request = MagicMock()
+        self.request.data.get.return_value = None
         self.view_instance = MotionViewSet()
         self.view_instance.request = self.request
         self.view_instance.format_kwarg = MagicMock()
