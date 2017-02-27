@@ -62,11 +62,12 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
 
 .factory('TopicForm', [
     'gettextCatalog',
+    'operator',
     'Editor',
     'Mediafile',
     'Agenda',
     'AgendaTree',
-    function (gettextCatalog, Editor, Mediafile, Agenda, AgendaTree) {
+    function (gettextCatalog, operator, Editor, Mediafile, Agenda, AgendaTree) {
         return {
             // ngDialog for topic form
             getDialog: function (topic) {
