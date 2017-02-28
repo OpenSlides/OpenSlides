@@ -110,7 +110,7 @@ a. Running Angular.js test cases
     $ node_modules/.bin/karma start tests/karma/karma.conf.js
 
 
-Installation Openslides in big mode
+Installation OpenSlides in big mode
 ===================================
 
 1. Install PostgreSQL und redis:
