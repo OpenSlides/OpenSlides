@@ -278,11 +278,16 @@ angular.module('OpenSlidesApp.motions', [
                         html = lineNumberingService.insertLineNumbers(this.getVersion(versionId).text, lineLength);
 
                     var data = diffService.extractRangeByLineNumbers(html, maxLine, null);
-                    html = data.outerContextStart + data.innerContextStart +
-                        data.html +
-                        data.innerContextEnd + data.outerContextEnd;
-                    html = lineNumberingService.insertLineNumbers(html, lineLength, highlight, null, maxLine);
 
+                    if (data.html !== '') {
+                        html = data.outerContextStart + data.innerContextStart +
+                            data.html +
+                            data.innerContextEnd + data.outerContextEnd;
+                        html = lineNumberingService.insertLineNumbers(html, lineLength, highlight, null, maxLine);
+                    } else {
+                        // Prevents empty lines at the end of the motion
+                        html = '';
+                    }
                     return html;
                 },
                 _getTextWithChangeRecommendations: function (versionId, highlight, statusCompareCb) {
