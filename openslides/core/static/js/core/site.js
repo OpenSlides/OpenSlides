@@ -806,6 +806,30 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+.directive('messaging', [
+    '$timeout',
+    'Messaging',
+    function ($timeout, Messaging) {
+        return {
+            restrict: 'E',
+            templateUrl: 'static/templates/messaging.html',
+            scope: {},
+            controller: function ($scope, $element, $attrs, $location) {
+                $scope.messages = {};
+
+                var update = function () {
+                    $scope.messages = Messaging.getMessages();
+                };
+                Messaging.registerMessageChangeCallback(update);
+
+                $scope.close = function (id) {
+                    Messaging.deleteMessage(id);
+                };
+            },
+        };
+    }
+])
+
 .controller('MainMenuCtrl', [
     '$scope',
     'mainMenu',
@@ -893,9 +917,9 @@ angular.module('OpenSlidesApp.core.site', [
     '$scope',
     '$http',
     function ($scope, $http) {
-        $http.get('/core/version/').success(function(data) {
-            $scope.core_version = data.openslides_version;
-            $scope.plugins = data.plugins;
+        $http.get('/core/version/').then(function (success) {
+            $scope.core_version = success.data.openslides_version;
+            $scope.plugins = success.data.plugins;
         });
     }
 ])
@@ -1424,7 +1448,8 @@ angular.module('OpenSlidesApp.core.site', [
     'ngDialog',
     'TagForm',
     'gettext',
-    function($scope, Tag, ngDialog, TagForm, gettext) {
+    'ErrorMessage',
+    function($scope, Tag, ngDialog, TagForm, gettext, ErrorMessage) {
         Tag.bindAll({}, $scope, 'tags');
         $scope.alert = {};
 
@@ -1447,11 +1472,7 @@ angular.module('OpenSlidesApp.core.site', [
                         show: true,
                     };
                 }, function (error) {
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -1465,7 +1486,8 @@ angular.module('OpenSlidesApp.core.site', [
     '$scope',
     'Tag',
     'TagForm',
-    function($scope, Tag, TagForm) {
+    'ErrorMessage',
+    function($scope, Tag, TagForm, ErrorMessage) {
         $scope.model = {};
         $scope.alert = {};
         $scope.formFields = TagForm.getFormFields();
@@ -1475,11 +1497,7 @@ angular.module('OpenSlidesApp.core.site', [
                     $scope.closeThisDialog();
                 },
                 function (error) {
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -1491,7 +1509,8 @@ angular.module('OpenSlidesApp.core.site', [
     'Tag',
     'tagId',
     'TagForm',
-    function($scope, Tag, tagId, TagForm) {
+    'ErrorMessage',
+    function($scope, Tag, tagId, TagForm, ErrorMessage) {
         $scope.model = angular.copy(Tag.get(tagId));
         $scope.alert = {};
         $scope.formFields = TagForm.getFormFields();
@@ -1503,11 +1522,7 @@ angular.module('OpenSlidesApp.core.site', [
                 // save error: revert all changes by restore
                 // the original object
                 Tag.refresh(tag);
-                var message = '';
-                for (var e in error.data) {
-                    message += e + ': ' + error.data[e] + ' ';
-                }
-                $scope.alert = {type: 'danger', msg: message, show: true};
+                $scope.alert = ErrorMessage.forAlert(error);
             });
         };
     }
@@ -1541,16 +1556,14 @@ angular.module('OpenSlidesApp.core.site', [
             $http.post(
                 '/rest/core/chat-message/',
                 {message: $scope.newMessage}
-            )
-            .success(function () {
+            ).then(function (success) {
                 $scope.newMessage = '';
                 angular.element('#messageSendButton').removeClass('disabled');
                 angular.element('#messageInput').removeAttr('disabled');
                 $timeout(function () {
                     angular.element('#messageInput').focus();
                 }, 0);
-            })
-            .error(function () {
+            }, function (error) {
                 angular.element('#messageSendButton').removeClass('disabled');
                 angular.element('#messageInput').removeAttr('disabled');
             });

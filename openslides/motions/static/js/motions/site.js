@@ -912,8 +912,8 @@ angular.module('OpenSlidesApp.motions.site', [
             });
 
             //post-request to convert the images. Async.
-            $http.post('/core/encode_media/', JSON.stringify(image_sources)).success(function(data) {
-                var converter = PdfMakeConverter.createInstance(data.images);
+            $http.post('/core/encode_media/', JSON.stringify(image_sources)).then(function (success) {
+                var converter = PdfMakeConverter.createInstance(success.data.images);
                 var motionContentProviderArray = [];
 
                 //convert the filtered motions to motionContentProviders
@@ -1313,7 +1313,8 @@ angular.module('OpenSlidesApp.motions.site', [
     'MotionChangeRecommendation',
     'ChangeRecommendationForm',
     'change',
-    function ($scope, MotionChangeRecommendation, ChangeRecommendationForm, change) {
+    'ErrorMessage',
+    function ($scope, MotionChangeRecommendation, ChangeRecommendationForm, change, ErrorMessage) {
         $scope.alert = {};
         $scope.model = angular.copy(change);
 
@@ -1330,11 +1331,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 },
                 function (error) {
                     MotionChangeRecommendation.refresh(change);
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -1397,8 +1394,9 @@ angular.module('OpenSlidesApp.motions.site', [
     'Workflow',
     'Agenda',
     'AgendaUpdate',
+    'ErrorMessage',
     function($scope, $state, gettext, gettextCatalog, operator, Motion, MotionForm,
-        Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaUpdate) {
+        Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaUpdate, ErrorMessage) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1445,11 +1443,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     $scope.closeThisDialog();
                 },
                 function (error) {
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -1470,8 +1464,9 @@ angular.module('OpenSlidesApp.motions.site', [
     'Agenda',
     'AgendaUpdate',
     'motionId',
+    'ErrorMessage',
     function($scope, $state, Motion, Category, Config, Mediafile, MotionForm, Tag,
-        User, Workflow, Agenda, AgendaUpdate, motionId) {
+        User, Workflow, Agenda, AgendaUpdate, motionId, ErrorMessage) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1547,11 +1542,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     // save error: revert all changes by restore
                     // (refresh) original motion object from server
                     Motion.refresh(motion);
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -1565,7 +1556,9 @@ angular.module('OpenSlidesApp.motions.site', [
     'MotionPollForm',
     'motionpollId',
     'voteNumber',
-    function($scope, gettextCatalog, MotionPoll, MotionPollForm, motionpollId, voteNumber) {
+    'ErrorMessage',
+    function($scope, gettextCatalog, MotionPoll, MotionPollForm, motionpollId,
+        voteNumber, ErrorMessage) {
         // set initial values for form model by create deep copy of motionpoll object
         // so detail view is not updated while editing poll
         var motionpoll = MotionPoll.get(motionpollId);
@@ -1586,13 +1579,8 @@ angular.module('OpenSlidesApp.motions.site', [
             .then(function(success) {
                 $scope.alert.show = false;
                 $scope.closeThisDialog();
-            })
-            .catch(function(error) {
-                var message = '';
-                for (var e in error.data) {
-                    message += e + ': ' + error.data[e] + ' ';
-                }
-                $scope.alert = { type: 'danger', msg: message, show: true };
+            }, function(error) {
+                $scope.alert = ErrorMessage.forAlert(error);
             });
         };
     }
@@ -1865,7 +1853,8 @@ angular.module('OpenSlidesApp.motions.site', [
     '$scope',
     'Category',
     'CategoryForm',
-    function($scope, Category, CategoryForm) {
+    'ErrorMessage',
+    function($scope, Category, CategoryForm, ErrorMessage) {
         $scope.model = {};
         $scope.alert = {};
         $scope.formFields = CategoryForm.getFormFields();
@@ -1875,11 +1864,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     $scope.closeThisDialog();
                 },
                 function (error) {
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -1891,7 +1876,8 @@ angular.module('OpenSlidesApp.motions.site', [
     'Category',
     'categoryId',
     'CategoryForm',
-    function($scope, Category, categoryId, CategoryForm) {
+    'ErrorMessage',
+    function($scope, Category, categoryId, CategoryForm, ErrorMessage) {
         $scope.alert = {};
         $scope.model = angular.copy(Category.get(categoryId));
         $scope.formFields = CategoryForm.getFormFields();
@@ -1905,11 +1891,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     // save error: revert all changes by restore
                     // (refresh) original category object from server
                     Category.refresh(category);
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -1924,7 +1906,8 @@ angular.module('OpenSlidesApp.motions.site', [
     'Category',
     'categoryId',
     'Motion',
-    function($scope, $stateParams, $http, MotionList, Category, categoryId, Motion) {
+    'ErrorMessage',
+    function($scope, $stateParams, $http, MotionList, Category, categoryId, Motion, ErrorMessage) {
         Category.bindOne(categoryId, $scope, 'category');
         Motion.bindAll({}, $scope, 'motions');
         $scope.filter = { category_id: categoryId,
@@ -1951,12 +1934,11 @@ angular.module('OpenSlidesApp.motions.site', [
 
             // renumber them
             $http.post('/rest/motions/category/' + $scope.category.id + '/numbering/',
-                {'motions': sorted_motions} )
-            .success(function(data) {
-                $scope.alert = { type: 'success', msg: data.detail, show: true };
-            })
-            .error(function(data) {
-                $scope.alert = { type: 'danger', msg: data.detail, show: true };
+                {'motions': sorted_motions} ).then(
+            function (success) {
+                $scope.alert = { type: 'success', msg: success.data.detail, show: true };
+            }, function (error) {
+                $scope.alert = ErrorMessage.forAlert(error);
             });
         };
     }

@@ -9,7 +9,8 @@ angular.module('OpenSlidesApp.mediafiles.create', [
 .controller('MediafileCreateCtrl', [
     '$scope',
     'MediafileForm',
-    function ($scope, MediafileForm) {
+    'ErrorMessage',
+    function ($scope, MediafileForm, ErrorMessage) {
         $scope.model = {};
         $scope.alert = {};
         $scope.formFields = MediafileForm.getFormFields(true);
@@ -23,11 +24,7 @@ angular.module('OpenSlidesApp.mediafiles.create', [
                     },
                     function (error) {
                         $scope.activeUpload = void 0;
-                        var message = '';
-                        for (var e in error.data) {
-                            message += e + ': ' + error.data[e] + ' ';
-                        }
-                        $scope.alert = {type: 'danger', msg: message, show: true};
+                        $scope.alert = ErrorMessage.forAlert(error);
                     },
                     function (progress) {
                         $scope.progress = parseInt(100.0 * progress.loaded / progress.total);

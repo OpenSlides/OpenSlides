@@ -422,9 +422,11 @@ angular.module('OpenSlidesApp.assignments.site', [
     'gettextCatalog',
     'PdfCreate',
     'AssignmentPhases',
+    'ErrorMessage',
     function($scope, $http, $filter, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment,
         User, assignmentId, Projector, ProjectionDefault, AssignmentContentProvider, BallotContentProvider,
-        PdfMakeDocumentProvider, PdfMakeBallotPaperProvider, gettextCatalog, PdfCreate, AssignmentPhases) {
+        PdfMakeDocumentProvider, PdfMakeBallotPaperProvider, gettextCatalog, PdfCreate, AssignmentPhases,
+        ErrorMessage) {
         var assignment = Assignment.get(assignmentId);
         User.bindAll({}, $scope, 'users');
         Assignment.loadRelations(assignment, 'agenda_item');
@@ -455,12 +457,11 @@ angular.module('OpenSlidesApp.assignments.site', [
         // add (nominate) candidate
         $scope.addCandidate = function (userId) {
             $http.post('/rest/assignments/assignment/' + assignment.id + '/candidature_other/', {'user': userId})
-                .success(function(data){
+                .then(function (success){
                     $scope.alert.show = false;
                     $scope.candidateSelectBox = {};
-                })
-                .error(function(data){
-                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
+                }, function (error){
+                    $scope.alert = ErrorMessage.forAlert(error);
                     $scope.candidateSelectBox = {};
                 });
         };
@@ -469,29 +470,31 @@ angular.module('OpenSlidesApp.assignments.site', [
             $http.delete('/rest/assignments/assignment/' + assignment.id + '/candidature_other/',
                     {headers: {'Content-Type': 'application/json'},
                      data: JSON.stringify({user: userId})})
-                .error(function(data){
-                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
-                });
+                .then(function (success) {},
+                    function (error) {
+                        $scope.alert = ErrorMessage.forAlert(error);
+                    }
+                );
         };
         // add me (nominate self as candidate)
         $scope.addMe = function () {
-            $http.post('/rest/assignments/assignment/' + assignment.id + '/candidature_self/', {})
-                .success(function(data){
+            $http.post('/rest/assignments/assignment/' + assignment.id + '/candidature_self/', {}).then(
+                function (success) {
                     $scope.alert.show = false;
-                })
-                .error(function(data){
-                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
-                });
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
+                }
+            );
         };
         // remove me (withdraw own candidature)
         $scope.removeMe = function () {
-            $http.delete('/rest/assignments/assignment/' + assignment.id + '/candidature_self/')
-                .success(function(data){
+            $http.delete('/rest/assignments/assignment/' + assignment.id + '/candidature_self/').then(
+                function (success) {
                     $scope.alert.show = false;
-                })
-                .error(function(data){
-                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
-                });
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
+                }
+            );
         };
         // check if current user is already a candidate (elected==false)
         $scope.isCandidate = function () {
@@ -525,15 +528,14 @@ angular.module('OpenSlidesApp.assignments.site', [
         // create new ballot
         $scope.createBallot = function () {
             $scope.activeTab = 0;
-            $http.post('/rest/assignments/assignment/' + assignment.id + '/create_poll/')
-                .success(function(data){
+            $http.post('/rest/assignments/assignment/' + assignment.id + '/create_poll/').then(
+                function (success) {
                     $scope.alert.show = false;
                     if (assignment.phase === 0) {
                         $scope.updatePhase(1);
                     }
-                })
-                .error(function(data){
-                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
                 });
         };
         // delete ballot
@@ -560,15 +562,10 @@ angular.module('OpenSlidesApp.assignments.site', [
                     assignment_id: assignment.id,
                     published: !poll.published,
             })
-            .then(function(success) {
+            .then(function (success) {
                 $scope.alert.show = false;
-            })
-            .catch(function(error) {
-                var message = '';
-                for (var e in error.data) {
-                    message += e + ': ' + error.data[e] + ' ';
-                }
-                $scope.alert = { type: 'danger', msg: message, show: true };
+            }, function (error) {
+                $scope.alert = ErrorMessage.forAlert(error);
             });
         };
 
@@ -637,7 +634,8 @@ angular.module('OpenSlidesApp.assignments.site', [
     'AssignmentForm',
     'Agenda',
     'AgendaUpdate',
-    function($scope, $state, Assignment, AssignmentForm, Agenda, AgendaUpdate) {
+    'ErrorMessage',
+    function($scope, $state, Assignment, AssignmentForm, Agenda, AgendaUpdate, ErrorMessage) {
         $scope.model = {};
         // set default value for open posts form field
         $scope.model.open_posts = 1;
@@ -646,7 +644,7 @@ angular.module('OpenSlidesApp.assignments.site', [
         // save assignment
         $scope.save = function(assignment, gotoDetailView) {
             Assignment.create(assignment).then(
-                function(success) {
+                function (success) {
                     // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
                     // see openslides.agenda.models.Item.ITEM_TYPE.
                     var changes = [{key: 'type', value: (assignment.showAsAgendaItem ? 1 : 2)},
@@ -656,6 +654,9 @@ angular.module('OpenSlidesApp.assignments.site', [
                         $state.go('assignments.assignment.detail', {id: success.id});
                     }
                     $scope.closeThisDialog();
+                },
+                function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -670,7 +671,8 @@ angular.module('OpenSlidesApp.assignments.site', [
     'Agenda',
     'AgendaUpdate',
     'assignmentId',
-    function($scope, $state, Assignment, AssignmentForm, Agenda, AgendaUpdate, assignmentId) {
+    'ErrorMessage',
+    function($scope, $state, Assignment, AssignmentForm, Agenda, AgendaUpdate, assignmentId, ErrorMessage) {
         var assignment = Assignment.get(assignmentId);
         $scope.alert = {};
         // set initial values for form model by create deep copy of assignment object
@@ -707,11 +709,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                     // save error: revert all changes by restore
                     // (refresh) original assignment object from server
                     Assignment.refresh(assignment);
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -725,7 +723,8 @@ angular.module('OpenSlidesApp.assignments.site', [
     'AssignmentPoll',
     'assignmentpollId',
     'ballot',
-    function($scope, $filter, gettextCatalog, AssignmentPoll, assignmentpollId, ballot) {
+    'ErrorMessage',
+    function($scope, $filter, gettextCatalog, AssignmentPoll, assignmentpollId, ballot, ErrorMessage) {
         // set initial values for form model by create deep copy of assignmentpoll object
         // so detail view is not updated while editing poll
         var assignmentpoll = angular.copy(AssignmentPoll.get(assignmentpollId));
@@ -879,13 +878,8 @@ angular.module('OpenSlidesApp.assignments.site', [
             .then(function(success) {
                 $scope.alert.show = false;
                 $scope.closeThisDialog();
-            })
-            .catch(function(error) {
-                var message = '';
-                for (var e in error.data) {
-                    message += e + ': ' + error.data[e] + ' ';
-                }
-                $scope.alert = { type: 'danger', msg: message, show: true };
+            }, function (error) {
+                $scope.alert = ErrorMessage.forAlert(error);
             });
         };
     }

@@ -14,15 +14,15 @@ angular.module('OpenSlidesApp.core.start', [])
     'mainMenu',
     function($http, $rootScope, $state, autoupdate, operator, Group, mainMenu) {
         $rootScope.openslidesBootstrapDone = false;
-        $http.get('/users/whoami/').success(function(data) {
-            $rootScope.guest_enabled = data.guest_enabled;
-            if (data.user_id === null && !data.guest_enabled) {
+        $http.get('/users/whoami/').then(function (success) {
+            $rootScope.guest_enabled = success.data.guest_enabled;
+            if (success.data.user_id === null && !success.data.guest_enabled) {
                 // Redirect to login dialog if user is not logged in.
-                $state.go('login', {guest_enabled: data.guest_enabled});
+                $state.go('login', {guest_enabled: success.data.guest_enabled});
             } else {
                 autoupdate.newConnect();
                 autoupdate.firstMessageDeferred.promise.then(function () {
-                    operator.setUser(data.user_id, data.user);
+                    operator.setUser(success.data.user_id, success.data.user);
                     $rootScope.operator = operator;
                     mainMenu.updateMainMenu();
                     $rootScope.openslidesBootstrapDone = true;
