@@ -477,7 +477,7 @@
       <!-- reason -->
       <div ng-if="motion.getReason(version) != ''">
         <h3 translate>Reason</h3>
-        <div ng-bind-html="motion.getReason() | trusted"></div>
+        <div ng-bind-html="motion.getReason(version) | trusted"></div>
       </div>
 
       <!-- attachments -->

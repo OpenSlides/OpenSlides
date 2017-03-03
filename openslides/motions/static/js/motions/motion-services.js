@@ -31,7 +31,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             });
 
             $http.post('/core/encode_media/', JSON.stringify(image_sources)).then(function (success) {
-                var converter = PdfMakeConverter.createInstance(sucess.data.images);
+                var converter = PdfMakeConverter.createInstance(success.data.images);
                 var motionContentProvider = MotionContentProvider.createInstance(converter, $scope.motion, $scope, User, $http);
                 var documentProvider = PdfMakeDocumentProvider.createInstance(motionContentProvider);
                 var identifier = $scope.motion.identifier ? '-' + $scope.motion.identifier : '';
@@ -148,6 +148,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                 }
 
                 saveData(obj);
+                obj.disable();
 
                 Motion.inject(motion);
                 // save change motion object on server

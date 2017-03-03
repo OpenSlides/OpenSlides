@@ -1,5 +1,5 @@
 <!-- Original view -->
-<div ng-if="viewChangeRecommendations.mode == 'original' && version == motion.getVersion(-1).id">
+<div ng-if="viewChangeRecommendations.mode == 'original'">
     <div id="view-original-text-inline-editor" ng-bind-html="motion.getTextWithLineBreaks(version, highlight) | trusted"
       class="motion-text motion-text-original line-numbers-{{ lineNumberMode }}"
       contenteditable="{{ inlineEditing.isEditable }}">
