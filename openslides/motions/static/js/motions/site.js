@@ -1324,7 +1324,7 @@ angular.module('OpenSlidesApp.motions.site', [
             // inject the changed change recommendation (copy) object back into DS store
             MotionChangeRecommendation.inject(change);
             // save changed change recommendation object on server
-            MotionChangeRecommendation.save(change, { method: 'PATCH' }).then(
+            MotionChangeRecommendation.save(change).then(
                 function(success) {
                     $scope.closeThisDialog();
                 },
@@ -1531,7 +1531,7 @@ angular.module('OpenSlidesApp.motions.site', [
             // inject the changed motion (copy) object back into DS store
             Motion.inject(motion);
             // save change motion object on server
-            Motion.save(motion, { method: 'PATCH' }).then(
+            Motion.save(motion).then(
                 function(success) {
                     // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
                     // see openslides.agenda.models.Item.ITEM_TYPE.

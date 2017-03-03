@@ -199,9 +199,7 @@ class ProjectorViewSet(ModelViewSet):
     """
     API endpoint for the projector slide info.
 
-    There are the following views: metadata, list, retrieve,
-    activate_elements, prune_elements, update_elements,
-    deactivate_elements, clear_elements and control_view.
+    There are the following views: See strings in check_view_permissions().
     """
     access_permissions = ProjectorAccessPermissions()
     queryset = Projector.objects.all()
@@ -575,7 +573,7 @@ class TagViewSet(ModelViewSet):
             # Every authenticated user can see the metadata.
             # Anonymous users can do so if they are enabled.
             result = self.request.user.is_authenticated() or anonymous_is_enabled()
-        elif self.action in ('create', 'update', 'destroy'):
+        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             result = has_perm(self.request.user, 'core.can_manage_tags')
         else:
             result = False
@@ -616,7 +614,8 @@ class ConfigViewSet(ViewSet):
     """
     API endpoint for the config.
 
-    There are the following views: metadata, list, retrieve and update.
+    There are the following views: metadata, list, retrieve, update and
+    partial_update.
     """
     access_permissions = ConfigAccessPermissions()
     metadata_class = ConfigMetadata
@@ -632,7 +631,7 @@ class ConfigViewSet(ViewSet):
             # retrieve the config. Anonymous users can do so if they are
             # enabled.
             result = self.request.user.is_authenticated() or anonymous_is_enabled()
-        elif self.action == 'update':
+        elif self.action in ('partial_update', 'update'):
             result = has_perm(self.request.user, 'core.can_manage_config')
         else:
             result = False
@@ -742,7 +741,8 @@ class ProjectorMessageViewSet(ModelViewSet):
     """
     API endpoint for messages.
 
-    There are the following views: list, retrieve, create, update and destroy.
+    There are the following views: list, retrieve, create, update,
+    partial_update and destroy.
     """
     access_permissions = ProjectorMessageAccessPermissions()
     queryset = ProjectorMessage.objects.all()
@@ -753,7 +753,7 @@ class ProjectorMessageViewSet(ModelViewSet):
         """
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ('create', 'update', 'destroy'):
+        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             result = has_perm(self.request.user, 'core.can_manage_projector')
         else:
             result = False
@@ -764,7 +764,8 @@ class CountdownViewSet(ModelViewSet):
     """
     API endpoint for Countdown.
 
-    There are the following views: list, retrieve, create, update and destroy.
+    There are the following views: list, retrieve, create, update,
+    partial_update and destroy.
     """
     access_permissions = CountdownAccessPermissions()
     queryset = Countdown.objects.all()
@@ -775,7 +776,7 @@ class CountdownViewSet(ModelViewSet):
         """
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ('create', 'update', 'destroy'):
+        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             result = has_perm(self.request.user, 'core.can_manage_projector')
         else:
             result = False

@@ -235,7 +235,7 @@ class AssignmentPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet)
     """
     API endpoint for assignment polls.
 
-    There are the following views: update and destroy.
+    There are the following views: update, partial_update and destroy.
     """
     queryset = AssignmentPoll.objects.all()
     serializer_class = AssignmentAllPollSerializer
