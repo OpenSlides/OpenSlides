@@ -1263,7 +1263,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     {headers: {'Content-Type': 'application/json'},
                      data: JSON.stringify({version_number: version.version_number})})
                 .then(function(success) {
-                    $scope.showVersion(motion.active_version);
+                    $scope.showVersion({id: motion.active_version});
                 });
         };
         // check if user is allowed to see at least one comment field
