@@ -104,7 +104,13 @@ angular.module('OpenSlidesApp.agenda.site', [
         $scope.$watch(function () {
             return Agenda.lastModified();
         }, function () {
-            $scope.items = AgendaTree.getFlatTree(Agenda.getAll());
+            // Filter out items that doesn't have the list_item_title. This happens, if the
+            // item is a hidden item but provides the list of speakers, but should not be
+            // visible in the list view.
+            var allowedItems = _.filter(Agenda.getAll(), function (item) {
+                return item.list_view_title;
+            });
+            $scope.items = AgendaTree.getFlatTree(allowedItems);
             var subitems = $filter('filter')($scope.items, {'parent_id': ''});
             if (subitems.length) {
                 $scope.agendaHasSubitems = true;

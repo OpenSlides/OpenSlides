@@ -41,7 +41,25 @@ class RetrieveItem(TestCase):
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
         group.permissions.remove(permission)
         response = self.client.get(reverse('item-detail', args=[self.item.pk]))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(sorted(response.data.keys()), sorted((
+            'id',
+            'title',
+            'speakers',
+            'speaker_list_closed',
+            'content_object',)))
+        forbidden_keys = (
+            'item_number',
+            'list_view_title',
+            'comment',
+            'closed',
+            'type',
+            'is_hidden',
+            'duration',
+            'weight',
+            'parent',)
+        for key in forbidden_keys:
+            self.assertFalse(key in response.data.keys())
 
     def test_normal_by_anonymous_cant_see_agenda_comments(self):
         self.item.type = Item.AGENDA_ITEM

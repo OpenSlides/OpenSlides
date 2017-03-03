@@ -15,6 +15,7 @@ Agenda:
 - Added option to choose whether to show the current list of speakers slide
   as a slide or an overlay.
 - Manage speakers on the current list of speakers view.
+- List of speakers for hidden items is always visible.
 
 Core:
 - Added support for multiple projectors.
