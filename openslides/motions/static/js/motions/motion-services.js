@@ -79,8 +79,8 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                 motion = _motion; // If this is not updated,
                 obj.originalHtml = motion.getTextWithLineBreaks(versionId);
                 obj.changed = false;
-                obj.editor.setReadOnly(true);
                 if (obj.editor) {
+                    obj.editor.setReadOnly(true);
                     obj.editor.setData(obj.originalHtml);
                 }
             };

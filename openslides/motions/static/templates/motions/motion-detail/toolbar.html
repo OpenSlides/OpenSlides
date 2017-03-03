@@ -54,7 +54,9 @@
             </span>
             <button type="button" class="btn btn-sm btn-default"
                 ng-click="lineNumberForm.$show()"
-                ng-if="lineNumberMode != 'none'">
+                ng-if="lineNumberMode != 'none'"
+                uib-tooltip="{{ 'Jump to a given line' | translate }}"
+                tooltip-class="nobr">
                 <i class="fa fa-share"></i>
                 <translate>go</translate>
             </button>

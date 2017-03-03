@@ -1331,6 +1331,10 @@ img {
 .scroll-x-container {
     overflow-x: auto;
 }
+.import-preview p {
+    margin: 0;
+    padding: 0;
+}
 
 /* user details */
 .user_details fieldset {

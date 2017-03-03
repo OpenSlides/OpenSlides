@@ -77,8 +77,11 @@
               <span ng-if="motion.text_error" title="{{ motion.text_error | translate }}">
                 <i class="fa fa-exclamation-triangle"></i>
               </span>
-              {{ motion.text | limitTo:80 }}{{ motion.text.length > 80 ? '...' : '' }}
-            <td>{{ motion.reason | limitTo:80 }}{{ motion.reason.length > 80 ? '...' : '' }}
+              <span class="import-preview" ng-bind-html="motion.text | limitTo:90 | trusted"></span>
+              {{ motion.text.length > 90 ? '...' : '' }}
+            <td>
+              <span class="import-preview" ng-bind-html="motion.reason | limitTo:90 | trusted"></span>
+              {{ motion.reason.length > 90 ? '...' : '' }}
             <td ng-class="{ 'text-warning': motion.submitter_create }">
               <span ng-if="motion.submitter_create" title="{{ motion.submitter_create | translate }}">
                 <i class="fa fa-plus-circle"></i>
