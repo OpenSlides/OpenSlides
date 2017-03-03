@@ -250,6 +250,13 @@ describe('linenumbering', function () {
       expect(outHtml).toBe('<p>' + noMarkup(1) + 'et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata ' + brMarkup(2) + 'sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur<ins>dsfsdf23</ins></p>');
       expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
     });
+
+    it('inserts the line number before the INS, if INS is the first element of the paragraph', function() {
+        var inHtml = "<p><ins>lauthals </ins>'liebe Kinder, ich will hinaus in den Wald, seid auf der Hut vor dem Wolf!' Und noch etwas mehr Text bis zur nächsten Zeile</p>";
+        var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+        expect(outHtml).toBe("<p>" + noMarkup(1) + "<ins>lauthals </ins>'liebe Kinder, ich will hinaus in den Wald, seid auf der Hut vor dem Wolf!' Und " + brMarkup(2) + "noch etwas mehr Text bis zur nächsten Zeile</p>");
+        expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
+    });
   });
 
   describe('behavior regarding ckeditor', function() {

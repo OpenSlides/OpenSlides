@@ -836,8 +836,9 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
                 for (i = 0; i < out.n.length; i++) {
                     if (out.n[i].text === undefined) {
-                        //this._outputcharcode('ins', out.n[i]);
-                        str += '<ins>' + out.n[i] + "</ins>";
+                        if (out.n[i] !== "") {
+                            str += '<ins>' + out.n[i] + "</ins>";
+                        }
                     } else {
                         var pre = "";
 
@@ -973,6 +974,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                     found = found.replace(/<\/(div|p|li)[^>]*>/gi, function(match) { return '</del>' + match; });
                     return found;
                 });
+                diffUnnormalized = diffUnnormalized.replace(/^<del><p>(.*)<\/p><\/del>$/gi, function(match, inner) { return "<p>" + inner + "</p>"; });
 
                 var node = document.createElement('div');
                 node.innerHTML = diffUnnormalized;

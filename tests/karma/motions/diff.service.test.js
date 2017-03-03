@@ -363,5 +363,12 @@ describe('linenumbering', function () {
 
       expect(diff).toBe("<p>liebliche Stimme, aber deine Stimme ist rauh; du bist der <del>Wolf.' </del><ins>Wolf.'</ins></p><p><ins>Der Wolf hatte danach richtig schlechte laune, trank eine Flasche Rum,</ins></p><p><ins>machte eine Weltreise und kam danach wieder um die Ziegen zu fressen. </ins>Da gi<del>e</del>ng der</p>");
     });
+
+    it('handles completely deleted paragraphs', function () {
+        var before = "<P>Ihr könnt ohne Sorge fortgehen.'Da meckerte die Alte und machte sich getrost auf den Weg.</P>",
+            after = "";
+        var diff = diffService.diff(before, after);
+        expect(diff).toBe("<p><del>Ihr könnt ohne Sorge fortgehen.'Da meckerte die Alte und machte sich getrost auf den Weg.</del></p>");
+    });
   });
 });
