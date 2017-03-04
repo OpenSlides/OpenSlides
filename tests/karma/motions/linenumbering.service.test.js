@@ -133,6 +133,13 @@ describe('linenumbering', function () {
       expect(outHtml).toBe(noMarkup(1) + '1234 <del>1234</del> ' + brMarkup(2) + '1234 1234');
       expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
     });
+
+    it('handles STRIKE-tags', function () {
+      var inHtml = '<p>et accusam et justo duo dolores et ea <span style="color: #ff0000;"><strike>rebum </strike></span><span style="color: #006400;">Inserted Text</span>. Stet clita kasd gubergren,</p>';
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+      expect(outHtml).toBe('<p>' + noMarkup(1) + 'et accusam et justo duo dolores et ea <span style="color: #ff0000;"><strike>rebum </strike></span><span style="color: #006400;">Inserted Text</span>. Stet clita kasd ' + brMarkup(2) + 'gubergren,</p>');
+      expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
+    });
   });
 
 
