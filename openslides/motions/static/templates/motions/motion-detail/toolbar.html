@@ -49,13 +49,16 @@
 
         <!-- go to line number -->
         <div class="popover-wrapper">
-            <span editable-text="gotoLinenumber" e-form="lineNumberForm"
+            <span editable-number="gotoLinenumber" e-min="1" e-form="lineNumberForm"
+              e-placeholder="{{ 'Line' | translate }}"
+              e-formclass="small-form"
               onaftersave="scrollToAndHighlight(gotoLinenumber)">
             </span>
             <button type="button" class="btn btn-sm btn-default"
                 ng-click="lineNumberForm.$show()"
                 ng-if="lineNumberMode != 'none'"
-                uib-tooltip="{{ 'Jump to a given line' | translate }}"
+                uib-tooltip="{{ 'Jump to a given line number' | translate }}"
+                tooltip-placement="bottom"
                 tooltip-class="nobr">
                 <i class="fa fa-share"></i>
                 <translate>go</translate>
