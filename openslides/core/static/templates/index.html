@@ -175,18 +175,8 @@
 <!-- Content -->
 <div id="content" ng-controller="ProjectorSidebarCtrl">
   <div class="containerOS">
-    <div class="col1" ng-class="{
-        'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
-        'sidebar-min': !isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
-        'sidebar-none': !operator.hasPerms('core.can_see_projector') }">
-        <!-- dynamic views -->
-        <div ui-view ng-if="openslidesBootstrapDone && baseViewPermissionsGranted"></div>
-        <!-- footer -->
-        <div id="footer">
-          &copy; Copyright by <a href="http://www.openslides.org" target="_blank">OpenSlides</a> |
-          <a ui-sref="legalnotice" translate>Legal notice</a>
-        </div><!--end footer-->
-    </div>
+
+    <!-- col2 -->
     <div id="sidebar" class="col2" os-perms="core.can_see_projector" ng-class="{
         'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
         'sidebar-min': !isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
@@ -213,7 +203,53 @@
           </a>
         </div>
       </div>
-    </div><!--end col2-->
+    </div>
+
+    <!-- col2 sidebar-xs (for small devices)-->
+    <div id="sidebar-xs" class="col2" os-perms="core.can_see_projector" ng-class="{
+        'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-min': !isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-none': !operator.hasPerms('core.can_see_projector') }">
+      <!-- sidebar maximized -->
+      <div class="projector_full" ng-if="isProjectorSidebar">
+        <div class="title" ng-click="showProjectorSidebar(false)">
+          <div class="name">
+            <i class="fa fa-video-camera"></i>
+            <translate>Projector</translate>
+          </div>
+          <div class="icon">
+            <i class="fa fa-angle-up"></i>
+          </div>
+        </div>
+        <div ng-include src="'static/templates/core/projector-controls.html'"></div>
+      </div>
+      <!-- sidebar minimized -->
+      <div class="projector_full" ng-if="!isProjectorSidebar">
+        <div class="title" ng-click="showProjectorSidebar(true)">
+          <div class="name">
+            <i class="fa fa-video-camera"></i>
+            <translate>Projector</translate>
+          </div>
+          <div class="icon">
+            <i class="fa fa-angle-down"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- col1 -->
+    <div class="col1" ng-class="{
+        'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-min': !isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-none': !operator.hasPerms('core.can_see_projector') }">
+        <!-- dynamic views -->
+        <div ui-view ng-if="openslidesBootstrapDone && baseViewPermissionsGranted"></div>
+        <!-- footer -->
+        <div id="footer">
+          &copy; Copyright by <a href="http://www.openslides.org" target="_blank">OpenSlides</a> |
+          <a ui-sref="legalnotice" translate>Legal notice</a>
+        </div><!--end footer-->
+    </div>
 
   </div><!--end content-container-->
 </div><!--end content-->
