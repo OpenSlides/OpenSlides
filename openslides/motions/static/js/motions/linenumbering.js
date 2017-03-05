@@ -39,7 +39,8 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
         this._isInlineElement = function (node) {
             var inlineElements = [
-                'SPAN', 'A', 'EM', 'S', 'B', 'I', 'STRONG', 'U', 'BIG', 'SMALL', 'SUB', 'SUP', 'TT', 'INS', 'DEL'
+                'SPAN', 'A', 'EM', 'S', 'B', 'I', 'STRONG', 'U', 'BIG', 'SMALL', 'SUB', 'SUP', 'TT', 'INS', 'DEL',
+                'STRIKE'
             ];
             return (inlineElements.indexOf(node.nodeName) > -1);
         };
