@@ -944,10 +944,11 @@ img {
 
 .iframeoverlay {
     width: 256px;
-    margin: 0 auto;
+    position: absolute;
+    top: 0px;
+    left: 0px;
     display: block;
     z-index: 1;
-    background-color: #f5f5f5;
 }
 
 /** Motion **/

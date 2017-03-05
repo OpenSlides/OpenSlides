@@ -439,7 +439,8 @@ angular.module('OpenSlidesApp.agenda.site', [
     'Agenda',
     'User',
     'operator',
-    function ($scope, $http, $filter, Agenda, User, operator) {
+    'ErrorMessage',
+    function ($scope, $http, $filter, Agenda, User, operator, ErrorMessage) {
         User.bindAll({}, $scope, 'users');
         $scope.speakerSelectBox = {};
 
