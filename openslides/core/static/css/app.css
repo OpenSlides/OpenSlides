@@ -209,13 +209,13 @@ img {
 
 #nav .navbar {
     width: 100%;
-    float: left;
     border: none;
     margin: 0;
 }
 
 #nav .navbar-toggle {
     padding: 5px 0;
+    z-index: 2;
 }
 
 #nav .navbar-toggle i {
@@ -310,7 +310,7 @@ img {
 }
 
 #content .col1.sidebar-max { /*with maximized sidebar*/
-    width: calc(100% - 330px);
+    width: calc(100% - 325px);
 }
 
 #content .col1.sidebar-min { /*with minimized sidebar*/
@@ -723,16 +723,22 @@ img {
 
 /** Projector sidebar column **/
 
-#content .col2 {
+#content .col2 { /*TODO*/
     float: right;
     position: relative;
     display: inline-flex;
     z-index: 3;
     margin-bottom: 20px;
+    top: 0px;
+    right: 0px;
+}
+
+#sidebar-xs {
+    display: none !important;
 }
 
 #content .col2.sidebar-max {
-    width: 330px;
+    width: 325px;
 }
 
 #content .col2.sidebar-min {
@@ -787,7 +793,6 @@ img {
     opacity: 1;
 }
 
-
 .col2 .projector_min .icon a {
     color: #fff;
     display: block;
@@ -798,7 +803,7 @@ img {
     width: auto;
 }
 
- .col2 .projector_full .title {
+.col2 .projector_full .title {
     width: 100%;
     color: #fff;
     height: 50px;
@@ -939,11 +944,10 @@ img {
 
 .iframeoverlay {
     width: 256px;
-    position: absolute;
-    top: 0px;
-    left: 0px;
+    margin: 0 auto;
     display: block;
     z-index: 1;
+    background-color: #f5f5f5;
 }
 
 /** Motion **/
@@ -1709,6 +1713,13 @@ tr.selected td {
 
     /* show replacement elements, if any */
     #groups-table .optional-show { display: block !important; }
+
+    /* hide searchbar input */
+    #nav .searchbar input { display: none !important; }
+    #nav .searchbar .btn {
+        border-top-left-radius: 4px !important;
+        border-bottom-left-radius: 4px !important;
+    }
 }
 
 
@@ -1723,9 +1734,9 @@ tr.selected td {
 
     .user i { font-size: 16px;  padding: 3px; }
 
-    #nav .navbar { box-shadow: none; }
+    #nav .navbar { box-shadow: none; padding-right: 60px !important; }
     #nav .navbar ul li a { padding: 10px 15px; }
-    #nav .searchbar { margin: 15px 0; }
+    #nav .searchbar { margin: 15px -53px 0 0 !important; }
 
     #chatbox { width: 100%; top: 40px; }
 
@@ -1744,16 +1755,20 @@ tr.selected td {
         padding: 0;
     }
     #content .col2 {
-        position: relative !important;
-        margin-top: -20px;
+        width: 100%;
     }
-    #content .col2.sidebar-max {
-        width: 296px;
+    #content .col2.sidebar-max, #content .col2.sidebar-min,
+    #content .col1.sidebar-min, #content .col1.sidebar-max  {
+        width: 100%;
     }
-    #content .col2 .projector_full, #content .col2 .projector_min {
-        margin-left: 0;
+    #sidebar {
+        display: none !important;
     }
-    #content .col1.sidebar-min, #content .col1.sidebar-max {
+    #sidebar-xs {
+        display: block !important;
+    }
+    #sidebar-xs .projector_full {
+        margin-left: 0 !important;
         width: 100%;
     }
     #groups-table .perm-head {
