@@ -26,9 +26,8 @@
   <div ui-tree="treeOptions" data-max-depth="1" data-empty-placeholder-enabled="false">
     <ol ui-tree-nodes ng-model="items">
       <li ui-tree-node ng-repeat="item in items">
-        <div ui-tree-handle bg-color="#FF0000">
-            {{ item.item.identifier }}: {{ item.item.getTitle() }}
-        </div>
+        <i ui-tree-handle="" class="fa fa-arrows-v"></i>
+        <a ui-sref="motions.motion.detail({id: item.item.id})">{{ item.item.identifier }}: {{ item.item.getTitle() }}
     </ol>
   </div>
 </div>
