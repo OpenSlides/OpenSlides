@@ -374,7 +374,14 @@ describe('linenumbering', function () {
         var before = "<P>Ihr könnt ohne Sorge fortgehen.'Da meckerte die Alte und machte sich getrost auf den Weg.</P>",
             after = "";
         var diff = diffService.diff(before, after);
-        expect(diff).toBe("<p><del>Ihr könnt ohne Sorge fortgehen.'Da meckerte die Alte und machte sich getrost auf den Weg.</del></p>");
+        expect(diff).toBe("<P class=\"delete\">Ihr könnt ohne Sorge fortgehen.'Da meckerte die Alte und machte sich getrost auf den Weg.</P>");
+    });
+
+    it('does not perform inline diff if there are too many changes', function () {
+        var before = "<P>Dann kam er zurück, klopfte an die Hausthür und rief 'macht auf, ihr lieben Kinder, eure Mutter ist da und hat jedem von Euch etwas mitgebarcht.' Aber der Wolf hatte seine schwarze Pfote in das Fenster gelegt, das sahen die Kinder und riefen</P>",
+            after = "<p>(hier: Missbrauch von bewusstseinsverändernde Mittel - daher Zensiert)</p>";
+        var diff = diffService.diff(before, after);
+        expect(diff).toBe('<P class="delete">Dann kam er zurück, klopfte an die Hausthür und rief \'macht auf, ihr lieben Kinder, eure Mutter ist da und hat jedem von Euch etwas mitgebarcht.\' Aber der Wolf hatte seine schwarze Pfote in das Fenster gelegt, das sahen die Kinder und riefen</P><P class="insert">(hier: Missbrauch von bewusstseinsverändernde Mittel - daher Zensiert)</P>');
     });
   });
 });
