@@ -98,10 +98,8 @@
         <div class="motion-text original-text line-numbers-{{ config('motions_default_line_numbering') }}"
           ng-bind-html="motion.getTextBetweenChangeRecommendations(null, changes[$index - 1], change, line) | trusted">
         </div>
-        <div class="diff-box diff-box-{{ change.id }} clearfix">
-          <div class="motion-text motion-text-diff line-numbers-{{ lineNumberMode }}"
-            ng-bind-html="change.getDiff(motion, null, line) | trusted">
-          </div>
+        <div class="diff-box diff-box-{{ change.id }} clearfix motion-text motion-text-diff line-numbers-{{ config('motions_default_line_numbering') }}">
+          <div ng-bind-html="change.getDiff(motion, null, line) | trusted"></div>
         </div>
       </div>
       <div class="motion-text original-text line-numbers-{{ config('motions_default_line_numbering') }}"
