@@ -60,6 +60,7 @@ LANGUAGES = (
     ('es', 'Español'),
     ('pt', 'Português'),
     ('cs', 'Český'),
+    ('ru', 'русский'),
 )
 
 TIME_ZONE = 'UTC'

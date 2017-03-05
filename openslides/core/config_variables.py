@@ -129,7 +129,8 @@ def get_config_variables():
             {'value': 'fr', 'display_name': 'Français'},
             {'value': 'es', 'display_name': 'Español'},
             {'value': 'pt', 'display_name': 'Português'},
-            {'value': 'cs', 'display_name': 'Čeština'}),
+            {'value': 'cs', 'display_name': 'Čeština'},
+            {'value': 'ru', 'display_name': 'русский'}),
         weight=148,
         group='Projector')
 

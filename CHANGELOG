@@ -115,6 +115,7 @@ Other:
 - Added function utils.auth.anonymous_is_enabled which returns true, if it is.
 - Changed has_perm to support an user id or None (for anyonmous) as first argument.
 - Removed our AnonymousUser. Make sure not to use user.has_perm() anymore.
+- Added Russia translation (Thanks to Andreas Engler).
 
 
 Version 2.0 (2016-04-18)

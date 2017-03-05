@@ -191,6 +191,7 @@ gulp.task('ckeditor-lang', function () {
             path.join('bower_components', 'ckeditor', 'lang', 'es.js'),
             path.join('bower_components', 'ckeditor', 'lang', 'fr.js'),
             path.join('bower_components', 'ckeditor', 'lang', 'cs.js'),
+            path.join('bower_components', 'ckeditor', 'lang', 'ru.js'),
         ])
         .pipe(gulp.dest(path.join(output_directory, 'ckeditor', 'lang')));
 });
