@@ -1526,6 +1526,16 @@ img {
     display: inline !important;
 }
 
+.popover-wrapper .small-form input{
+    width: 100px;
+    height: 30px;
+}
+.popover-wrapper .small-form button{
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
 @keyframes fade-out {
     0% { opacity: 1; background: none; }
     100% { opacity: 0; background: none; }
