@@ -188,6 +188,12 @@ describe('linenumbering', function () {
       expect(diff.outerContextStart).toBe('<OL start="3">');
       expect(diff.outerContextEnd).toBe('</OL>');
     });
+
+    it('escapes text resembling HTML-Tags', function () {
+        var inHtml = '<h2>' + noMarkup(1) + 'Looks like a &lt;p&gt; tag &lt;/p&gt;</h2><p>' + noMarkup(2) + 'Another line</p>';
+        var diff = diffService.extractRangeByLineNumbers(inHtml, 1, 2, true);
+        expect(diff.html).toBe('<H2>Looks like a &lt;p&gt; tag &lt;/p&gt;</H2>');
+    });
   });
 
   describe('merging two sections', function () {

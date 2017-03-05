@@ -172,7 +172,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
         this._serializeDom = function(node, stripLineNumbers) {
             if (node.nodeType == TEXT_NODE) {
-                return node.nodeValue;
+                return node.nodeValue.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             }
             if (stripLineNumbers && (
                 lineNumberingService._isOsLineNumberNode(node) || lineNumberingService._isOsLineBreakNode(node))) {
@@ -193,7 +193,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             var html = this._serializeTag(node);
             for (var i = 0; i < node.childNodes.length; i++) {
                 if (node.childNodes[i].nodeType == TEXT_NODE) {
-                    html += node.childNodes[i].nodeValue;
+                    html += node.childNodes[i].nodeValue.replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 } else if (!stripLineNumbers || (!lineNumberingService._isOsLineNumberNode(node.childNodes[i]) && !lineNumberingService._isOsLineBreakNode(node.childNodes[i]))) {
                     html += this._serializeDom(node.childNodes[i], stripLineNumbers);
                 }
