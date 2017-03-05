@@ -126,10 +126,9 @@
     <i class="fa fa-bar-chart fa-lg"></i>
     <translate>New ballot</translate>
   </button>
-
   <uib-tabset ng-if="assignment.polls.length > 0" class="spacer ballot-tabs" active="activeTab">
-    <uib-tab ng-repeat="poll in assignment.polls | orderBy:'-id'"
-        index="$index" heading="{{ 'Ballot' | translate }} {{ assignment.polls.length - $index }}">
+    <uib-tab ng-repeat="poll in assignment.polls | orderBy:'id'"
+        index="$index" heading="{{ 'Ballot' | translate }} {{ $index + 1 }}">
       <div ng-controller="AssignmentPollDetailCtrl">
         <!-- action buttons -->
         <div class="pull-right" os-perms="assignments.can_manage">

@@ -272,7 +272,7 @@ class Assignment(RESTModelMixin, models.Model):
             description=self.poll_description_default,
             pollmethod=pollmethod)
         options = []
-        related_users = AssignmentRelatedUser.objects.filter(assignment__id=self.id)
+        related_users = AssignmentRelatedUser.objects.filter(assignment__id=self.id).exclude(elected=True)
         for related_user in related_users:
             options.append({
                 'candidate': related_user.user,

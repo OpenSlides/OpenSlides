@@ -405,6 +405,7 @@ angular.module('OpenSlidesApp.assignments.site', [
     '$scope',
     '$http',
     '$filter',
+    '$timeout',
     'filterFilter',
     'gettext',
     'ngDialog',
@@ -423,7 +424,7 @@ angular.module('OpenSlidesApp.assignments.site', [
     'PdfCreate',
     'AssignmentPhases',
     'ErrorMessage',
-    function($scope, $http, $filter, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment,
+    function($scope, $http, $filter, $timeout, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment,
         User, assignmentId, Projector, ProjectionDefault, AssignmentContentProvider, BallotContentProvider,
         PdfMakeDocumentProvider, PdfMakeBallotPaperProvider, gettextCatalog, PdfCreate, AssignmentPhases,
         ErrorMessage) {
@@ -448,7 +449,7 @@ angular.module('OpenSlidesApp.assignments.site', [
         $scope.candidateSelectBox = {};
         $scope.phases = AssignmentPhases;
         $scope.alert = {};
-        $scope.activeTab = 0;
+        $scope.activeTab = assignment.polls.length - 1;
 
         // open edit dialog
         $scope.openDialog = function (assignment) {
@@ -527,20 +528,30 @@ angular.module('OpenSlidesApp.assignments.site', [
         };
         // create new ballot
         $scope.createBallot = function () {
-            $scope.activeTab = 0;
             $http.post('/rest/assignments/assignment/' + assignment.id + '/create_poll/').then(
                 function (success) {
                     $scope.alert.show = false;
                     if (assignment.phase === 0) {
                         $scope.updatePhase(1);
                     }
+                    // set 'activeTab' to recently added (last) ballot tab
+                    // TODO: $timeout is required, see
+                    // https://github.com/angular-ui/bootstrap/issues/5656
+                    $timeout(function() {
+                        $scope.activeTab = assignment.polls.length - 1;
+                    }, 0);
                 }, function (error) {
                     $scope.alert = ErrorMessage.forAlert(error);
-                });
+                }
+            );
         };
         // delete ballot
         $scope.deleteBallot = function (poll) {
-            poll.DSDestroy();
+            poll.DSDestroy().then(
+                function (success) {
+                    $scope.activeTab = assignment.polls.length - 1;
+                }
+            );
         };
         // edit poll dialog
         $scope.editPollDialog = function (poll, ballot) {
@@ -582,16 +593,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                     }
                 );
             } else {
-                $http.post('/rest/assignments/assignment/' + assignment.id + '/mark_elected/', {'user': user})
-                    .then(function(success) {
-                        var elected = filterFilter(assignment.assignment_related_users,{elected: true});
-                        // Set phase to 'finished' if there are enough (= number of open posts) elected users.
-                        // Note: The array 'elected' does NOT contains the candidate who is just marked as elected.
-                        // So add 1 to length to get the real number of all elected users.
-                        if (elected.length + 1 == assignment.open_posts ) {
-                            $scope.updatePhase(2);
-                        }
-                    });
+                $http.post('/rest/assignments/assignment/' + assignment.id + '/mark_elected/', {'user': user});
             }
 
         };
