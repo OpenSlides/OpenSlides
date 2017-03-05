@@ -13,9 +13,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-18 11:11+0100\n"
-"PO-Revision-Date: 2017-01-05 19:32+0000\n"
-"Last-Translator: fri\n"
+"POT-Creation-Date: 2017-02-24 16:10+0100\n"
+"PO-Revision-Date: 2017-02-24 15:16+0000\n"
+"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: Czech (http://www.transifex.com/openslides/openslides/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,249 +40,277 @@ msgstr "{user} je již na seznamu řečníků."
 msgid "An anonymous user can not be on lists of speakers."
 msgstr "Anonymní uživatel nemůže být v seznamu řečníků."
 
-#: agenda/views.py:85
+#: agenda/views.py:87
 msgid "The list of speakers is closed."
 msgstr "Seznam řečníků je uzavřen."
 
-#: agenda/views.py:94
+#: agenda/views.py:96
 msgid "User does not exist."
 msgstr "Uživatel neexistuje."
 
-#: agenda/views.py:102
+#: agenda/views.py:104
 #, python-format
 msgid "User %s was successfully added to the list of speakers."
 msgstr "Uživatel %s byl úspěšně přidán do seznamu řečníků."
 
-#: agenda/views.py:119
+#: agenda/views.py:121
 msgid "You are not on the list of speakers."
 msgstr "Nejste na seznamu řečníků."
 
-#: agenda/views.py:122
+#: agenda/views.py:124
 msgid "You are successfully removed from the list of speakers."
 msgstr "Jste úspěšně odstraněn ze seznamu řečníků."
 
-#: agenda/views.py:133 agenda/views.py:162
-msgid "Speaker does not exist."
-msgstr "Řečník neexistuje."
+#: agenda/views.py:142
+msgid "speakers have been removed from the list of speakers."
+msgstr ""
 
-#: agenda/views.py:136
+#: agenda/views.py:144
 #, python-format
-msgid "Speaker %s was successfully removed from the list of speakers."
-msgstr "Uživatel %s byl úspěšně odstraněn ze seznamu řečníků."
+msgid "User %s has been removed from the list of speakers."
+msgstr ""
 
-#: agenda/views.py:157
+#: agenda/views.py:146
+msgid "No speakers have been removed from the list of speakers."
+msgstr ""
+
+#: agenda/views.py:166
 msgid "The list of speakers is empty."
 msgstr "Seznam řečníků je prázdný."
 
-#: agenda/views.py:164
+#: agenda/views.py:171
+msgid "Speaker does not exist."
+msgstr "Řečník neexistuje."
+
+#: agenda/views.py:173
 msgid "User is now speaking."
 msgstr "Uživatel nyní mluví."
 
-#: agenda/views.py:175
+#: agenda/views.py:184
 #, python-format
 msgid "There is no one speaking at the moment according to %(item)s."
 msgstr "Nyní nemluví žádný řečník podle %(item)s."
 
-#: agenda/views.py:177
+#: agenda/views.py:186
 msgid "The speech is finished now."
 msgstr "Řeč je nyní skončena."
 
-#: agenda/views.py:196 agenda/views.py:208
+#: agenda/views.py:205 agenda/views.py:217 assignments/views.py:216
 msgid "Invalid data."
 msgstr "Neplatná data."
 
-#: agenda/views.py:218
+#: agenda/views.py:230
 msgid "List of speakers successfully sorted."
 msgstr "Seznam řečníků úspěšně roztříděn."
 
-#: agenda/views.py:227
+#: agenda/views.py:239
 msgid "The agenda has been numbered."
 msgstr "Pořad jednání byl očíslován."
 
-#: assignments/models.py:146
+#: agenda/views.py:264
+msgid "There must not be a hierarchical loop. Please reload the page."
+msgstr ""
+
+#: agenda/views.py:268
+msgid "The agenda has been sorted."
+msgstr ""
+
+#: assignments/models.py:163
 msgid "Election"
 msgstr "Volba"
 
-#: assignments/serializers.py:138
+#: assignments/serializers.py:30
+msgid "Value for {} must be greater than 0"
+msgstr ""
+
+#: assignments/serializers.py:148
 #, python-format
 msgid "You have to submit data for %d candidates."
 msgstr "Musíte předat data pro %d uchazečů."
 
-#: assignments/serializers.py:142 motions/serializers.py:214
+#: assignments/serializers.py:152 motions/serializers.py:215
 #, python-format
 msgid "You have to submit data for %d vote values."
 msgstr "Musíte předat data pro %d voleb."
 
-#: assignments/serializers.py:146 motions/serializers.py:218
+#: assignments/serializers.py:156 motions/serializers.py:219
 #, python-format
 msgid "Vote value %s is invalid."
 msgstr "Hodnota pro volby %s je neplatná."
 
-#: assignments/views.py:64
+#: assignments/views.py:66
 msgid "You are already elected."
 msgstr "Již jste zvolen."
 
-#: assignments/views.py:74
+#: assignments/views.py:76
 msgid "You can not candidate to this election because it is finished."
 msgstr "Nemůžete se ucházet o zvolení v těchto volbách, protože tyto jsou již skončeny."
 
-#: assignments/views.py:80
+#: assignments/views.py:82
 msgid "You were nominated successfully."
 msgstr "Byl jste úspěšně navržen."
 
-#: assignments/views.py:85
+#: assignments/views.py:87
 msgid ""
 "You can not withdraw your candidature to this election because it is "
 "finished."
 msgstr "Nemůžete stáhnout své uchazečství o zvolení v těchto volbách, protože tyto jsou již skončeny."
 
-#: assignments/views.py:90
+#: assignments/views.py:92
 msgid "You are not a candidate of this election."
 msgstr "Nejste uchazeč/uchazečka pro tyto volby."
 
-#: assignments/views.py:92
+#: assignments/views.py:94
 msgid "You have withdrawn your candidature successfully."
 msgstr "Stáhl jste své uchazečství úspěšně."
 
-#: assignments/views.py:101
+#: assignments/views.py:103
 #, python-format
 msgid "Invalid data. Expected dictionary, got %s."
 msgstr "Neplatná data. Očekáván slovník, obdrženo %s."
 
-#: assignments/views.py:107
+#: assignments/views.py:109
 msgid "Invalid data. Expected something like {\"user\": <id>}."
 msgstr "Neplatná data. Očekáváno něco jako {\"user\": <id>}."
 
-#: assignments/views.py:111
+#: assignments/views.py:113
 #, python-format
 msgid "Invalid data. User %d does not exist."
 msgstr "Neplatná data. Uživatel %d neexistuje."
 
-#: assignments/views.py:131
+#: assignments/views.py:133
 #, python-format
 msgid "User %s is already elected."
 msgstr "Uživatel %s je již zvolen."
 
-#: assignments/views.py:133
+#: assignments/views.py:135
 msgid "You can not nominate someone to this election because it is finished."
 msgstr "Nemůžete někoho jmenovat do těchto voleb, protože tyto jsou již skončeny."
 
-#: assignments/views.py:139
+#: assignments/views.py:141
 #, python-format
 msgid "User %s is already nominated."
 msgstr "Uživatel %s je již jmenován."
 
-#: assignments/views.py:141
+#: assignments/views.py:143
 #, python-format
 msgid "User %s was nominated successfully."
 msgstr "Uchazeč %s byl úspěšně jmenován."
 
-#: assignments/views.py:148
+#: assignments/views.py:150
 msgid ""
 "You can not delete someone's candidature to this election because it is "
 "finished."
 msgstr "Nemůžete smazat něčí uchazečství o zvolení v těchto volbách, protože tyto jsou již skončeny."
 
-#: assignments/views.py:151
+#: assignments/views.py:153
 #, python-format
 msgid "User %s has no status in this election."
 msgstr "Uživatel %s v těchto volbách nemá žádné postavení."
 
-#: assignments/views.py:153
+#: assignments/views.py:155
 #, python-format
 msgid "Candidate %s was withdrawn successfully."
 msgstr "Uchazeč %s byl úspěšně stažen."
 
-#: assignments/views.py:165
+#: assignments/views.py:167
 #, python-format
 msgid "User %s is not a candidate of this election."
 msgstr "Uživatel %s není uchazečem v těchto volbách."
 
-#: assignments/views.py:167
+#: assignments/views.py:169
 #, python-format
 msgid "User %s was successfully elected."
 msgstr "Uživatel %s byl úspěšně zvolen."
 
-#: assignments/views.py:171
+#: assignments/views.py:173
 #, python-format
 msgid "User %s is not an elected candidate of this election."
 msgstr "Uživatel %s není zvoleným uchazečem v těchto volbách."
 
-#: assignments/views.py:174
+#: assignments/views.py:176
 #, python-format
 msgid "User %s was successfully unelected."
 msgstr "Postavení uživatele/uživatelky %s jako zvoleného/zvolené byl úspěšně zrušeno."
 
-#: assignments/views.py:184
+#: assignments/views.py:186
 msgid "Can not create ballot because there are no candidates."
 msgstr "Nelze vyvolat hlasování, protože nejsou uchazeči."
 
-#: assignments/views.py:187
+#: assignments/views.py:189
 msgid "Ballot created successfully."
 msgstr "Hlasování bylo úspěšně vyvoláno."
 
-#: core/config.py:40 core/config.py:67
+#: assignments/views.py:204
+msgid "users has to be a list of IDs."
+msgstr ""
+
+#: assignments/views.py:231
+msgid "Assignment related users successfully sorted."
+msgstr ""
+
+#: core/config.py:41 core/config.py:68
 msgid "The config variable {} was not found."
 msgstr "Proměnná nastavení {} nebyla nalezena."
 
-#: core/config.py:76
+#: core/config.py:77
 #, python-format
 msgid "Wrong datatype. Expected %(expected_type)s, got %(got_type)s."
 msgstr "Nesprávný typ dat. Očekáváno %(expected_type)s, obdrženo %(got_type)s."
 
-#: core/config.py:86
+#: core/config.py:87
 msgid "Invalid input. Choice does not match."
 msgstr "Neplatný vstup. Výběr neodpovídá."
 
-#: core/config.py:95
+#: core/config.py:96
 msgid "motions_comments has to be a list."
 msgstr "motions_comments musí být seznam."
 
-#: core/config.py:98
+#: core/config.py:99
 msgid "Each element in motions_comments has to be a dict."
 msgstr "Každý prvek v motions_comments musí být dict."
 
-#: core/config.py:100
+#: core/config.py:101
 msgid "A name and a public property have to be given."
 msgstr "Název a vlastnost public musí být zadány."
 
-#: core/config.py:102
+#: core/config.py:103
 msgid "name has to be string."
 msgstr "Název musí být řetězec."
 
-#: core/config.py:104
+#: core/config.py:105
 msgid "public property has to be bool."
 msgstr "Vlastnost public musí být booleánská hodnota."
 
-#: core/config.py:129
+#: core/config.py:130
 msgid "Too many values for config variable {} found."
 msgstr "Nalezeno příliš mnoho hodnot pro proměnnou nastavení {}."
 
-#: core/config.py:199
+#: core/config.py:200
 msgid "Invalid value for config attribute input_type."
 msgstr "Neplatná hodnota pro vlastnost nastavení input_type."
 
-#: core/config.py:201
+#: core/config.py:202
 msgid ""
 "Either config attribute 'choices' must not be None or 'input_type' must not "
 "be 'choice'."
 msgstr "Buď nesmí být vlastnost nastavení 'choices' žádná nebo 'input_type' nesmí být 'choice'."
 
-#: core/config.py:204
+#: core/config.py:205
 msgid ""
 "Either config attribute 'choices' must be None or 'input_type' must be "
 "'choice'."
 msgstr "Buď musí být vlastnost nastavení 'choices' žádná nebo 'input_type' musí být 'choice'."
 
-#: core/config.py:214
+#: core/config.py:215
 msgid "General"
 msgstr "Obecné"
 
-#: core/views.py:709
+#: core/views.py:738
 msgid "All chat messages deleted successfully."
 msgstr "Úspěšně smazány všechny zprávy rozhovoru."
 
-#: mediafiles/models.py:65
+#: mediafiles/models.py:63
 msgid "unknown"
 msgstr "neznámý"
 
@@ -290,16 +318,16 @@ msgstr "neznámý"
 msgid "Motion"
 msgstr "Návrh"
 
-#: motions/models.py:718
+#: motions/models.py:686
 msgid "new"
 msgstr "Nový"
 
-#: motions/models.py:912
+#: motions/models.py:873
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr "%(time_and_messages)s od %(person)s"
 
-#: motions/serializers.py:34
+#: motions/serializers.py:35
 #, python-format
 msgid "Workflow %(pk)d does not exist."
 msgstr "Průběh práce %(pk)d neexistuje."
@@ -324,7 +352,7 @@ msgstr "nerozhodnuto"
 msgid "published"
 msgstr "zveřejněno"
 
-#: motions/signals.py:47 motions/views.py:189
+#: motions/signals.py:47 motions/views.py:216
 msgid "permitted"
 msgstr "schváleno"
 
@@ -352,116 +380,132 @@ msgstr "potřeba posouzení"
 msgid "rejected (not authorized)"
 msgstr "odmítnuto (není schváleno)"
 
-#: motions/views.py:109
+#: motions/views.py:94
+msgid "The parent motion does not exist."
+msgstr ""
+
+#: motions/views.py:134
 msgid "Motion created"
 msgstr "Návrh vytvořen"
 
-#: motions/views.py:157
+#: motions/views.py:184
 msgid "Motion updated"
 msgstr "Návrh aktualizován"
 
-#: motions/views.py:161
+#: motions/views.py:188
 msgid "All supporters removed"
 msgstr "Všichni podporovatelé odstraněni"
 
-#: motions/views.py:187 motions/views.py:199
+#: motions/views.py:214 motions/views.py:226
 msgid "Version"
 msgstr "Verze"
 
-#: motions/views.py:191
+#: motions/views.py:218
 #, python-format
 msgid "Version %d permitted successfully."
 msgstr "Verze %d úspěšně schválena."
 
-#: motions/views.py:196
+#: motions/views.py:223
 msgid "You can not delete the active version of a motion."
 msgstr "Nelze smazat platnou verzi návrhu."
 
-#: motions/views.py:201
+#: motions/views.py:228
 msgid "deleted"
 msgstr "smazáno"
 
-#: motions/views.py:203
+#: motions/views.py:230
 #, python-format
 msgid "Version %d deleted successfully."
 msgstr "Verze %d úspěšně smazána."
 
-#: motions/views.py:224
+#: motions/views.py:253
 msgid "You can not support this motion."
 msgstr "Nesmíte podporovat tento návrh."
 
-#: motions/views.py:226
+#: motions/views.py:255
 msgid "Motion supported"
 msgstr "Návrh podporován"
 
-#: motions/views.py:227
+#: motions/views.py:256
 msgid "You have supported this motion successfully."
 msgstr "Podporoval jste úspěšně tento návrh."
 
-#: motions/views.py:232
+#: motions/views.py:261
 msgid "You can not unsupport this motion."
 msgstr "Nesmíte odepřít svou podporu pro tento návrh."
 
-#: motions/views.py:234
+#: motions/views.py:263
 msgid "Motion unsupported"
 msgstr "Podpora pro návrh stažena"
 
-#: motions/views.py:235
+#: motions/views.py:264
 msgid "You have unsupported this motion successfully."
 msgstr "Svou podporu pro návrh jste úspěšně stáhl."
 
-#: motions/views.py:258
+#: motions/views.py:287
 msgid "Invalid data. State must be an integer."
 msgstr "Neplatná data. Stav musí být celé číslo."
 
-#: motions/views.py:261
+#: motions/views.py:290
 #, python-format
 msgid "You can not set the state to %(state_id)d."
 msgstr "Nelze nastavit stav na %(state_id)d."
 
-#: motions/views.py:269
+#: motions/views.py:298
 #, python-format
 msgid "The state of the motion was set to %s."
 msgstr "Stav návrhu byl nastaven na %s."
 
-#: motions/views.py:273 motions/views.py:490
+#: motions/views.py:302 motions/views.py:584
 msgid "State set to"
 msgstr "Stav nastaven na"
 
-#: motions/views.py:295
+#: motions/views.py:324
 msgid "Invalid data. Recommendation must be an integer."
 msgstr "Neplatná data. Doporučení musí být celé číslo."
 
-#: motions/views.py:299
+#: motions/views.py:328
 #, python-brace-format
 msgid "You can not set the recommendation to {recommendation_state_id}."
 msgstr "Doporučení nelze nastavit na {recommendation_state_id}."
 
-#: motions/views.py:309
+#: motions/views.py:338
 #, python-format
 msgid "The recommendation of the motion was set to %s."
 msgstr "Doporučení návrhu bylo nastaveno na %s."
 
-#: motions/views.py:313
+#: motions/views.py:342
 msgid "Recommendation set to"
 msgstr "Doporučení nastaveno na"
 
-#: motions/views.py:328
+#: motions/views.py:359
+msgid "Vote created"
+msgstr ""
+
+#: motions/views.py:360
 msgid "Vote created successfully."
 msgstr "Hlasování bylo úspěšně vytvořeno."
 
-#: motions/views.py:440
+#: motions/views.py:385
+msgid "Vote updated"
+msgstr ""
+
+#: motions/views.py:394
+msgid "Vote deleted"
+msgstr ""
+
+#: motions/views.py:533
 msgid ""
 "Error: At least one identifier of this category does already exist in "
 "another category."
 msgstr "Chyba: Alespoň jeden dentifikátor (označení dat) tohoto oboru činnosti již je v jiném oboru činnosti."
 
-#: motions/views.py:444
+#: motions/views.py:538
 #, python-brace-format
 msgid "All motions in category {category} numbered successfully."
 msgstr "Všechny návrhy v oboru činnosti {category} úspěšně očíslovány."
 
-#: motions/views.py:495
+#: motions/views.py:589
 msgid "Followed recommendations successfully."
 msgstr "Doporučení sledována úspěšně."
 
@@ -477,53 +521,57 @@ msgstr "nedokumentováno"
 msgid "Value for {} must not be less than -2"
 msgstr "Hodnota pro {} nesmí být menší než -2"
 
-#: users/serializers.py:44
+#: users/serializers.py:46
 msgid ""
 "The groups this user belongs to. A user will get all permissions granted to "
 "each of his/her groups."
 msgstr "Skupina, k níž tento uživatel patří. Uživatel dostane oprávnění udělená každému v jeho/její skupině."
 
-#: users/serializers.py:58
-msgid "Username, first name and last name can not all be empty."
-msgstr "Uživatelské jméno, křestní jméno a příjmení nesmí být prázdné."
+#: users/serializers.py:60
+msgid "Username, given name and surname can not all be empty."
+msgstr ""
 
-#: users/serializers.py:90
+#: users/serializers.py:95
 #, python-brace-format
 msgid "Incorrect value \"{value}\". Expected app_label.codename string."
 msgstr "Nesprávná hodnota \"{value}\". Očekáván řetězec app_label.codename."
 
-#: users/serializers.py:91
+#: users/serializers.py:96
 #, python-brace-format
 msgid "Invalid permission \"{value}\". Object does not exist."
 msgstr "Neplatné oprávnění \"{value}\". Předmět neexistuje."
 
-#: users/views.py:64
+#: users/views.py:71
 msgid "You can not deactivate yourself."
 msgstr "Nemůžete vypnout sami sebe."
 
-#: users/views.py:80
+#: users/views.py:92
 msgid "You can not delete yourself."
 msgstr "Nemůžete smazat sami sebe."
 
-#: users/views.py:93
+#: users/views.py:105
 msgid "Password successfully reset."
 msgstr "Heslo bylo úspěšně nastaveno znovu."
 
-#: users/views.py:169
+#: users/views.py:184
+msgid "Cookies have to be enabled to use OpenSlides."
+msgstr ""
+
+#: users/views.py:187
 msgid "Username or password is not correct."
 msgstr "Uživatelské jméno nebo heslo není správné."
 
-#: users/views.py:195
+#: users/views.py:213
 #, python-brace-format
 msgid ""
 "Installation was successfully. Use {username} and {password} for first "
 "login. Important: Please change your password!"
 msgstr "Instalace proběhla úspěšně. Použijte {username} a {password} při prvním přihlášení. Důležité: Změňte, prosím, své heslo!"
 
-#: users/views.py:216
+#: users/views.py:236
 msgid "You are not authenticated."
 msgstr "Nejste ověřen."
 
-#: users/views.py:250
+#: users/views.py:279
 msgid "Old password does not match."
 msgstr "Staré heslo se neshoduje."

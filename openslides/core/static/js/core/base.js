@@ -164,6 +164,7 @@ angular.module('OpenSlidesApp.core', [
                     { code: 'es', name: 'Español' },
                     { code: 'pt', name: 'Português' },
                     { code: 'cs', name: 'Čeština'},
+                    { code: 'ru', name: 'русский'},
                 ];
                 angular.forEach(languages, function (language) {
                     if (language.code == current)
