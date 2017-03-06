@@ -261,6 +261,18 @@ def write_settings(settings_path=None, template=None, **context):
     return os.path.realpath(settings_path)
 
 
+def open_browser(host, port):
+    """
+    Launches the default web browser at the given host and port and opens
+    the webinterface. Uses start_browser internally.
+    """
+    if host == '0.0.0.0':
+        # Windows does not support 0.0.0.0, so use 'localhost' instead
+        start_browser('http://localhost:%s' % port)
+    else:
+        start_browser('http://%s:%s' % (host, port))
+
+
 def start_browser(browser_url):
     """
     Launches the default web browser at the given url and opens the
@@ -323,3 +335,20 @@ def is_local_installation():
     This is the case if manage.py is used, or when the --local-installation flag is set.
     """
     return True if '--local-installation' in sys.argv or 'manage.py' in sys.argv[0] else False
+
+
+def get_geiss_path():
+    """
+    Returns the path and file to the Geiss binary.
+    """
+    from django.conf import settings
+    download_path = getattr(settings, 'OPENSLIDES_USER_DATA_PATH', '')
+    bin_name = 'geiss.exe' if is_windows() else 'geiss'
+    return os.path.join(download_path, bin_name)
+
+
+def is_windows():
+    """
+    Returns True if the current system is Windows. Returns False otherwise.
+    """
+    return sys.platform == 'win32'
