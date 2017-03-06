@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
+from ..utils.collection import Collection
+
 
 class AgendaAppConfig(AppConfig):
     name = 'openslides.agenda'
@@ -37,5 +39,8 @@ class AgendaAppConfig(AppConfig):
         router.register(self.get_model('Item').get_collection_string(), ItemViewSet)
 
     def get_startup_elements(self):
-        from ..utils.collection import Collection
-        return [Collection(self.get_model('Item').get_collection_string())]
+        """
+        Yields all collections required on startup i. e. opening the websocket
+        connection.
+        """
+        yield Collection(self.get_model('Item').get_collection_string())

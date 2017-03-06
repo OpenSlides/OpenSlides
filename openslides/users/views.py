@@ -8,8 +8,8 @@ from django.utils.translation import ugettext as _
 from ..core.config import config
 from ..core.signals import permission_change
 from ..utils.auth import anonymous_is_enabled, has_perm
-from ..utils.autoupdate import send_collections_to_users, inform_changed_data
-from ..utils.collection import CollectionElement
+from ..utils.autoupdate import inform_data_collection_element_list
+from ..utils.collection import CollectionElement, CollectionElementList
 from ..utils.rest_api import (
     ModelViewSet,
     Response,
@@ -161,6 +161,51 @@ class GroupViewSet(ModelViewSet):
             result = False
         return result
 
+    def update(self, request, *args, **kwargs):
+        """
+        Customized endpoint to update a group. Send the signal
+        'permission_change' if group permissions change.
+        """
+        group = self.get_object()
+
+        # Collect old and new (given) permissions to get the difference.
+        old_permissions = list(group.permissions.all())  # Force evaluation so the perms don't change anymore.
+        permission_names = request.data['permissions']
+        if isinstance(permission_names, str):
+            permission_names = [permission_names]
+        given_permissions = [
+            PermissionRelatedField(read_only=True).to_internal_value(data=perm) for perm in permission_names]
+
+        # Run super to update the group.
+        response = super().update(request, *args, **kwargs)
+
+        # Check status code and send 'permission_change' signal.
+        if response.status_code == 200:
+
+            def diff(full, part):
+                """
+                This helper function calculates the difference of two lists:
+                The result is a list of all elements of 'full' that are
+                not in 'part'.
+                """
+                part = set(part)
+                return [item for item in full if item not in part]
+
+            new_permissions = diff(given_permissions, old_permissions)
+
+            # Some permissions are added.
+            if len(new_permissions) > 0:
+                collection_elements = CollectionElementList()
+                signal_results = permission_change.send(None, permissions=new_permissions, action='added')
+                for receiver, signal_collections in signal_results:
+                    for collection in signal_collections:
+                        collection_elements.extend(collection.element_generator())
+                inform_data_collection_element_list(collection_elements)
+
+            # TODO: Some permissions are deleted.
+
+        return response
+
     def destroy(self, request, *args, **kwargs):
         """
         Protects builtin groups 'Default' (pk=1) from being deleted.
@@ -170,42 +215,6 @@ class GroupViewSet(ModelViewSet):
             self.permission_denied(request)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def update(self, request, *args, **kwargs):
-        # Collect old and new permissions to get the difference.
-        permission_names = request.data['permissions']
-        if isinstance(permission_names, str):
-            permission_names = [permission_names]
-
-        permissionSerializer = PermissionRelatedField(read_only=True)
-        given_permissions = [
-            permissionSerializer.to_internal_value(data=perm) for perm in permission_names]
-        group = Group.objects.get(pk=int(kwargs['pk']))
-        old_permissions = list(group.permissions.all())  # Force evaluation so the perms doesn't change.
-
-        response = super().update(request, *args, **kwargs)
-
-        def diff(first, second):
-            """
-            This helper function calculates the difference of two lists: first-second.
-            """
-            second = set(second)
-            return [item for item in first if item not in second]
-
-        if response.status_code == 200:
-            new_permissions = diff(given_permissions, old_permissions)
-
-            # some permissions are added
-            if(len(new_permissions) > 0):
-                signal_results = permission_change.send(None, action='added', permissions=new_permissions)
-                collections_to_send = []
-                for (receiver, signal_collections) in signal_results:
-                    if signal_collections:
-                        collections_to_send.extend(signal_collections)
-                #send_collections_to_users(collections_to_send, [user.id for user in group.user_set.all()])
-                # inform_changed_data(what?)
-
-        return response
 
 
 # Special API views

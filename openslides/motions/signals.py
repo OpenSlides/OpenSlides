@@ -105,13 +105,12 @@ def create_builtin_workflows(sender, **kwargs):
     workflow_2.save()
 
 
-def get_permission_change_data(sender, permissions=None, **kwargs):
+def get_permission_change_data(sender, permissions, **kwargs):
     """
-    Returns all necessary collections if a 'can_see' permission changes.
+    Yields all necessary collections if 'motions.can_see' permission changes.
     """
-    motion_app = apps.get_app_config(app_label='motions')
+    motions_app = apps.get_app_config(app_label='motions')
     for permission in permissions:
-        # There could be only one 'motion.can_see' and then we want to return data.
-        if permission.content_type.app_label == motion_app.label and permission.codename == 'can_see':
-            return motion_app.get_startup_elements()
-    return None
+        # There could be only one 'motions.can_see' and then we want to return data.
+        if permission.content_type.app_label == motions_app.label and permission.codename == 'can_see':
+            yield from motions_app.get_startup_elements()

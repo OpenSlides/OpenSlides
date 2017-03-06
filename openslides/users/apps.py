@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
+from ..utils.collection import Collection
+
 
 class UsersAppConfig(AppConfig):
     name = 'openslides.users'
@@ -29,13 +31,16 @@ class UsersAppConfig(AppConfig):
             dispatch_uid='create_builtin_groups_and_admin')
         permission_change.connect(
             get_permission_change_data,
-            dispatch_uid='user_get_permission_change_data')
+            dispatch_uid='users_get_permission_change_data')
 
         # Register viewsets.
         router.register(self.get_model('User').get_collection_string(), UserViewSet)
         router.register(self.get_model('Group').get_collection_string(), GroupViewSet)
 
     def get_startup_elements(self):
-        from ..utils.collection import Collection
+        """
+        Yields all collections required on startup i. e. opening the websocket
+        connection.
+        """
         for model in ('User', 'Group'):
             yield Collection(self.get_model(model).get_collection_string())

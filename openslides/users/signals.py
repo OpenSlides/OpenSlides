@@ -8,14 +8,13 @@ from .models import Group, User
 
 def get_permission_change_data(sender, permissions=None, **kwargs):
     """
-    Returns all necessary collections if a 'can_see' permission changes.
+    Yields all necessary collections if 'users.can_see' permission changes.
     """
-    user_app = apps.get_app_config(app_label='users')
+    users_app = apps.get_app_config(app_label='users')
     for permission in permissions:
         # There could be only one 'users.can_see' and then we want to return data.
-        if permission.content_type.app_label == user_app.label and permission.codename == 'can_see':
-            return user_app.get_startup_elements()
-    return None
+        if permission.content_type.app_label == users_app.label and permission.codename == 'can_see':
+            yield from users_app.get_startup_elements()
 
 
 def create_builtin_groups_and_admin(**kwargs):

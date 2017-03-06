@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
+from ..utils.collection import Collection
+
 
 class TopicsAppConfig(AppConfig):
     name = 'openslides.topics'
@@ -20,5 +22,8 @@ class TopicsAppConfig(AppConfig):
         router.register(self.get_model('Topic').get_collection_string(), TopicViewSet)
 
     def get_startup_elements(self):
-        from ..utils.collection import Collection
-        return [Collection(self.get_model('Topic').get_collection_string())]
+        """
+        Yields all collections required on startup i. e. opening the websocket
+        connection.
+        """
+        yield Collection(self.get_model('Topic').get_collection_string())

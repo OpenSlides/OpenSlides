@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
+from ..utils.collection import Collection
+
 
 class MediafilesAppConfig(AppConfig):
     name = 'openslides.mediafiles'
@@ -21,11 +23,14 @@ class MediafilesAppConfig(AppConfig):
         # Connect signals.
         permission_change.connect(
             get_permission_change_data,
-            dispatch_uid='mediafile_get_permission_change_data')
+            dispatch_uid='mediafiles_get_permission_change_data')
 
         # Register viewsets.
         router.register(self.get_model('Mediafile').get_collection_string(), MediafileViewSet)
 
     def get_startup_elements(self):
-        from ..utils.collection import Collection
-        return [Collection(self.get_model('Mediafile').get_collection_string())]
+        """
+        Yields all collections required on startup i. e. opening the websocket
+        connection.
+        """
+        yield Collection(self.get_model('Mediafile').get_collection_string())

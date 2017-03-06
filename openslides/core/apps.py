@@ -1,6 +1,8 @@
 from django.apps import AppConfig
 from django.conf import settings
 
+from ..utils.collection import Collection
+
 
 class CoreAppConfig(AppConfig):
     name = 'openslides.core'
@@ -51,8 +53,11 @@ class CoreAppConfig(AppConfig):
         router.register(self.get_model('Countdown').get_collection_string(), CountdownViewSet)
 
     def get_startup_elements(self):
+        """
+        Yields all collections required on startup i. e. opening the websocket
+        connection.
+        """
         from .config import config
-        from ..utils.collection import Collection
         for model in ('Projector', 'ChatMessage', 'Tag', 'ProjectorMessage', 'Countdown'):
             yield Collection(self.get_model(model).get_collection_string())
         yield Collection(config.get_collection_string())

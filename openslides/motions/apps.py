@@ -1,6 +1,8 @@
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 
+from ..utils.collection import Collection
+
 
 class MotionsAppConfig(AppConfig):
     name = 'openslides.motions'
@@ -28,7 +30,7 @@ class MotionsAppConfig(AppConfig):
         post_migrate.connect(create_builtin_workflows, dispatch_uid='motion_create_builtin_workflows')
         permission_change.connect(
             get_permission_change_data,
-            dispatch_uid='motion_get_permission_change_data')
+            dispatch_uid='motions_get_permission_change_data')
 
         # Register viewsets.
         router.register(self.get_model('Category').get_collection_string(), CategoryViewSet)
@@ -40,6 +42,9 @@ class MotionsAppConfig(AppConfig):
         router.register('motions/motionpoll', MotionPollViewSet)
 
     def get_startup_elements(self):
-        from ..utils.collection import Collection
+        """
+        Yields all collections required on startup i. e. opening the websocket
+        connection.
+        """
         for model in ('Category', 'Motion', 'MotionBlock', 'Workflow', 'MotionChangeRecommendation'):
             yield Collection(self.get_model(model).get_collection_string())

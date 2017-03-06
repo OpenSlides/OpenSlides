@@ -87,6 +87,7 @@ Elections:
 
 Users:
 - Added new matrix-interface for managing groups and their permissions.
+- Added autoupdate on permission change (permission added).
 - Improved password reset view for administrators.
 - Changed field for initial password to an unchangeable field.
 - Added new field for participant number.

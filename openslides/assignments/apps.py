@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
+from ..utils.collection import Collection
+
 
 class AssignmentsAppConfig(AppConfig):
     name = 'openslides.assignments'
@@ -26,15 +28,18 @@ class AssignmentsAppConfig(AppConfig):
         # Connect signals.
         permission_change.connect(
             get_permission_change_data,
-            dispatch_uid='assignment_get_permission_change_data')
+            dispatch_uid='assignments_get_permission_change_data')
 
         # Register viewsets.
         router.register(self.get_model('Assignment').get_collection_string(), AssignmentViewSet)
         router.register('assignments/poll', AssignmentPollViewSet)
 
     def get_startup_elements(self):
-        from ..utils.collection import Collection
-        return [Collection(self.get_model('Assignment').get_collection_string())]
+        """
+        Yields all collections required on startup i. e. opening the websocket
+        connection.
+        """
+        yield Collection(self.get_model('Assignment').get_collection_string())
 
     def get_angular_constants(self):
         assignment = self.get_model('Assignment')
