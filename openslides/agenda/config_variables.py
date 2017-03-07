@@ -1,16 +1,6 @@
-from datetime import datetime
-
-from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import MaxLengthValidator, MinValueValidator
 
 from openslides.core.config import ConfigVariable
-
-
-def validate_start_time(value):
-    try:
-        datetime.strptime(value, '%d.%m.%Y %H:%M')
-    except ValueError:
-        raise DjangoValidationError('Invalid input.')
 
 
 def get_config_variables():
@@ -41,16 +31,15 @@ def get_config_variables():
         group='Agenda',
         subgroup='General')
 
-    # TODO: Use an input type with generic datetime support.
     yield ConfigVariable(
         name='agenda_start_event_date_time',
-        default_value='',
+        default_value=None,
+        input_type='datetimepicker',
         label='Begin of event',
         help_text='Input format: DD.MM.YYYY HH:MM',
         weight=220,
         group='Agenda',
-        subgroup='General',
-        validators=(validate_start_time,))
+        subgroup='General')
 
     # List of speakers
 

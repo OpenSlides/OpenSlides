@@ -1,0 +1,37 @@
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a ui-sref="agenda.item.list" class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to overview</translate>
+      </a>
+      <!-- List of speakers -->
+      <a ui-sref="agenda.item.detail({id: topic.agenda_item_id})" class="btn btn-sm btn-default">
+        <i class="fa fa-microphone fa-lg"></i>
+        <translate>List of speakers</translate>
+      </a>
+      <!-- project -->
+      <projector-button model="topic" default-projector-id="defaultProjectorId">
+      </projector-button>
+      <!-- edit -->
+      <a os-perms="agenda.can_manage" ng-click="openDialog(topic)"
+          class="btn btn-default btn-sm"
+          title="{{ 'Edit' | translate}}">
+        <i class="fa fa-pencil"></i>
+      </a>
+    </div>
+    <h1>{{ topic.agenda_item.getTitle() }}</h1>
+    <h2 translate>Topic</h2>
+  </div>
+</div>
+
+<div class="details">
+  <div ng-bind-html="topic.text | trusted"></div>
+  <h3 ng-if="topic.attachments.length > 0" translate>Attachments</h3>
+  <ul>
+    <li ng-repeat="attachment in topic.attachments">
+      <a href="{{ attachment.mediafileUrl }}" target="_blank">
+        {{ attachment.title_or_filename }}
+      </a>
+  </ul>
+</div>

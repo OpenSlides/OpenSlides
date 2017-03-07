@@ -1,0 +1,19 @@
+<div ng-controller="SlideMotionBlockCtrl" class="content scrollcontent">
+  <!-- Title -->
+  <div id="title">
+    <h1>{{ motionBlock.agenda_item.getTitle() }}</h1>
+    <h2 translate>Motion block</h2>
+  </div>
+
+  <!-- motion list -->
+  <div style="display: flex; flex-wrap: wrap;">
+    <div ng-repeat="motion in motionBlock.motions" style="width: 33%;">
+      {{ motion.identifier }}
+      <small>
+        <span class="label" ng-class="'label-'+motion.recommendation.css_class">
+              {{ motion.getRecommendationName() }}
+        </span>
+      </small>
+    </div>
+  </div>
+</div>

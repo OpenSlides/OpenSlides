@@ -1,0 +1,134 @@
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a ui-sref="agenda.item.list" class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to overview</translate>
+      </a>
+    </div>
+    <h1 translate>Import topics</h1>
+  </div>
+</div>
+
+<div class="details">
+<h2 translate>Import by copy/paste</h2>
+<p translate>Copy and paste your topic titles in this textbox. Keep each item in a single line.</p>
+
+<div class="row">
+  <div class="form-group col-sm-6">
+    <textarea ng-model="itemlist" rows="5" class="form-control" ng-list="/\n/"></textarea>
+  </div>
+</div>
+
+<div class="clearfix">
+  <button ng-click="importByLine()" class="btn btn-primary btn-sm pull-left" translate>Import</button>
+  <div class="col-xs-5" ng-if="titleItems">
+    <progressbar animate="false" type="success" max="titleItems.length" value="importcounter">
+      <i>{{ importcounter }} / {{ titleItems.length }} {{ "imported" | translate }}</i>
+    </progressbar>
+  </div>
+</div>
+<div class="spacer">
+  <a ng-if="importcounter > 0 && importcounter == titleItems.length" ui-sref="agenda.item.list"
+      class="btn btn-default btn-sm">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to agenda</translate>
+  </a>
+</div>
+
+<hr>
+
+<h2 translate>Import by CSV file</h2>
+
+  <h3 translate>Select a CSV file</h3>
+  <csv-import change="onCsvChange(csv)" config="csvConfig"></csv-import>
+
+  <h4 translate>Please note:</h4>
+  <ul class="indentation">
+      <li><translate>Required comma or semicolon separated values with these column header names in the first row</translate>:<br>
+          <code>
+            <translate>Title</translate>,
+            <translate>Text</translate>,
+            <translate>Duration</translate>,
+            <translate>Comment</translate>,
+            <translate>Internal item</translate>
+          </code>
+      <li translate>Title is required. All other fields are optional and may be empty.
+      <li translate>Only double quotes are accepted as text delimiter (no single quotes).
+      <li><a id="downloadLink" href="" ng-click="downloadCSVExample()" translate>Download CSV example file</a>
+  </ul>
+
+  <div ng-if="items.length">
+    <h3 translate>Preview</h3>
+    <div class="scroll-x-container">
+      <table ng-if="!csvImporting" class="table table-striped table-bordered table-condensed">
+        <thead>
+          <tr>
+            <th>
+            <th>#
+            <th translate>Title
+            <th translate>Text
+            <th translate>Duration
+            <th translate>Comment
+            <th translate>Internal item</th>
+        <tbody ng-repeat="item in items">
+          <tr>
+            <td class="minimum"
+                ng-class="{ 'text-danger': item.importerror, 'text-success': item.imported }">
+              <span ng-if="item.importerror">
+                <i class="fa fa-exclamation-triangle fa-lg"></i>
+              </span>
+              <span ng-if="!item.importerror && !item.imported" class="pointer">
+                <i class="fa fa-check-circle-o fa-lg" ng-if="item.selected" ng-click="item.selected=false; calcStats();"></i>
+                <i class="fa fa-circle-o fa-lg" ng-if="!item.selected" ng-click="item.selected=true; calcStats();"></i>
+              </span>
+              <span ng-if="item.imported">
+                <i class="fa fa-check-circle fa-lg"></i>
+              </span>
+            <td class="minimum">{{ $index + 1 }}
+            <td ng-class="{ 'text-danger': item.title_error }">
+              <span ng-if="item.title_error" title="{{ item.title_error | translate }}">
+                <i class="fa fa-exclamation-triangle"></i>
+              </span>
+              {{ item.title }}
+            <td>{{ item.text | limitTo:80 }}{{ item.text.length > 80 ? '...' : '' }}
+            <td>{{ item.duration | osMinutesToTime }}
+            <td>{{ item.comment }}
+            <td>{{ item.is_hidden }}
+      </table>
+    </div>
+
+    <div class="text-danger">
+      <i class="fa fa-exclamation-triangle"></i>
+      {{ itemsWillNMotBeImported }}
+      <translate>topics will be not imported.</translate>
+    </div>
+    <div>
+      <i class="fa fa-check-circle-o fa-lg"></i>
+      {{ itemsWillBeImported }}
+      <translate>topics will be imported.</translate>
+    </div>
+    <div ng-repeat="item in itemsImported = (items | filter:{imported:true})"></div>
+    <div ng-if="itemsImported.length > 0" class="text-success">
+      <hr class="smallhr">
+      <i class="fa fa-check-circle fa-lg"></i>
+      {{ itemsImported.length }}
+      <translate>topics were successfully imported.</translate>
+    </div>
+
+    <div class="spacer">
+      <button ng-click="clear()" class="btn btn-default btn-sm" translate>
+        Clear preview
+      </button>
+      <button ng-if="!csvImporting && itemsWillBeImported > 0" ng-click="import()" class="btn btn-primary btn-sm" translate>
+        Import {{ itemsWillBeImported }} topics
+      </button>
+    </div>
+    <div class="spacer">
+      <a ng-if="csvimported" ui-sref="agenda.item.list" class="btn btn-default btn-sm">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to agenda</translate>
+      </a>
+    </div>
+  </div>
+</div>

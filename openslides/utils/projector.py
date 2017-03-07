@@ -1,5 +1,6 @@
 from django.dispatch import Signal
 
+from .collection import CollectionElement
 from .dispatch import SignalConnectMetaClass
 
 
@@ -68,36 +69,36 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
 
     def get_requirements(self, config_entry):
         """
-        Returns an iterable of ProjectorRequirement instances to setup
-        which views should be accessable for projector clients if the
-        projector element is active. The config_entry has to be given.
+        Returns an iterable of instances that are required for this projector
+        element. The config_entry has to be given.
         """
         return ()
 
-
-class ProjectorRequirement:
-    """
-    Container for required views. Such a view is defined by its class, its
-    action and its kwargs which come from the URL path.
-    """
-    def __init__(self, view_class, view_action, **kwargs):
-        self.view_class = view_class
-        self.view_action = view_action
-        self.kwargs = kwargs
-
-    def is_currently_required(self, view_instance):
+    def get_requirements_as_collection_elements(self, config_entry):
         """
-        Returns True if the view_instance matches the initiated data of this
-        requirement.
+        Returns an iterable of collection elements that are required for this
+        projector element. The config_entry has to be given.
         """
-        if not type(view_instance) == self.view_class:
-            result = False
-        elif not view_instance.action == self.view_action:
-            result = False
+        return (CollectionElement.from_instance(instance) for instance in self.get_requirements(config_entry))
+
+    def get_collection_elements_required_for_this(self, collection_element, config_entry):
+        """
+        Returns a list of CollectionElements that have to be sent to every
+        projector that shows this projector element according to the given
+        collection_element.
+
+        Default: Returns only the collection_element if it belongs to the
+        requirements but return all requirements if the projector changes.
+        """
+        requirements_as_collection_elements = list(self.get_requirements_as_collection_elements(config_entry))
+        for requirement in requirements_as_collection_elements:
+            if collection_element == requirement:
+                output = [collection_element]
+                break
         else:
-            result = True
-            for key in view_instance.kwargs:
-                if not self.kwargs[key] == view_instance.kwargs[key]:
-                    result = False
-                    break
-        return result
+            if collection_element.information.get('this_projector'):
+                output = [collection_element]
+                output.extend(requirements_as_collection_elements)
+            else:
+                output = []
+        return output

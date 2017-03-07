@@ -4,7 +4,85 @@ from rest_framework.test import APIClient
 
 from openslides.core.config import config
 from openslides.users.models import Group, User
-from openslides.utils.test import TestCase
+from openslides.users.serializers import UserFullSerializer
+from openslides.utils.test import TestCase, use_cache
+
+
+class TestUserDBQueries(TestCase):
+    """
+    Tests that receiving elements only need the required db queries.
+
+    Therefore in setup some objects are created and received with different
+    user accounts.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        config['general_system_enable_anonymous'] = True
+        for index in range(10):
+            User.objects.create(username='user{}'.format(index))
+
+    @use_cache()
+    def test_admin(self):
+        """
+        Tests that only the following db queries are done:
+        * 2 requests to get the session and the request user with its permissions,
+        * 2 requests to get the list of all users and
+        * 1 requests to get the list of all groups.
+        """
+        self.client.force_login(User.objects.get(pk=1))
+        with self.assertNumQueries(7):
+            self.client.get(reverse('user-list'))
+
+    @use_cache()
+    def test_anonymous(self):
+        """
+        Tests that only the following db queries are done:
+        * 3 requests to get the permission for anonymous,
+        * 2 requests to get the list of all users and
+        * 2 request to get all groups (needed by the user serializer).
+        """
+        with self.assertNumQueries(7):
+            self.client.get(reverse('user-list'))
+
+
+class TestGroupDBQueries(TestCase):
+    """
+    Tests that receiving elements only need the required db queries.
+
+    Therefore in setup some objects are created and received with different
+    user accounts.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        config['general_system_enable_anonymous'] = True
+        for index in range(10):
+            Group.objects.create(name='group{}'.format(index))
+
+    @use_cache()
+    def test_admin(self):
+        """
+        Tests that only the following db queries are done:
+        * 4 requests to get the session an the request user with its permissions and
+        * 1 request to get the list of all groups.
+
+        The data of the groups where loaded when the admin was authenticated. So
+        only the list of all groups has be fetched from the db.
+        """
+        self.client.force_login(User.objects.get(pk=1))
+        with self.assertNumQueries(5):
+            self.client.get(reverse('group-list'))
+
+    @use_cache()
+    def test_anonymous(self):
+        """
+        Tests that only the following db queries are done:
+        * 1 requests to find out if anonymous is enabled
+        * 3 request to get the list of all groups and
+        """
+        with self.assertNumQueries(4):
+            self.client.get(reverse('group-list'))
 
 
 class UserGetTest(TestCase):
@@ -44,7 +122,7 @@ class UserCreate(TestCase):
     def test_creation_with_group(self):
         self.client.login(username='admin', password='admin')
         # These are the builtin groups 'Delegates' and 'Staff'. The pks are valid.
-        group_pks = (3, 4,)
+        group_pks = (2, 3,)
 
         self.client.post(
             reverse('user-list'),
@@ -55,19 +133,19 @@ class UserCreate(TestCase):
         self.assertTrue(user.groups.filter(pk=group_pks[0]).exists())
         self.assertTrue(user.groups.filter(pk=group_pks[1]).exists())
 
-    def test_creation_with_anonymous_or_registered_group(self):
+    def test_creation_with_default_group(self):
         self.client.login(username='admin', password='admin')
-        # These are the builtin groups 'Anonymous' and 'Registered'.
-        # The pks are valid. But these groups can not be added to users.
-        group_pks = (1, 2,)
+        # This is the builtin groups 'default'.
+        # The pk is valid. But this group can not be added to users.
+        group_pk = (1,)
 
         response = self.client.post(
             reverse('user-list'),
             {'last_name': 'Test name aedah1iequoof0Ashed4',
-             'groups_id': group_pks})
+             'groups_id': group_pk})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'groups_id': ["Invalid pk \"%d\" - object does not exist." % group_pks[0]]})
+        self.assertEqual(response.data, {'groups_id': ["Invalid pk \"%d\" - object does not exist." % group_pk]})
 
 
 class UserUpdate(TestCase):
@@ -129,6 +207,31 @@ class UserUpdate(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_update_yourself_non_manager(self):
+        """
+        Tests that an user can update himself even if he is not a manager.
+        """
+        user = User.objects.create_user(
+            username='non-admin zeiyeGhaoXoh4awe3xai',
+            password='non-admin chah1hoshohN5Oh7zouj')
+        client = APIClient()
+        client.login(
+            username='non-admin zeiyeGhaoXoh4awe3xai',
+            password='non-admin chah1hoshohN5Oh7zouj')
+
+        response = client.put(
+            reverse('user-detail', args=[user.pk]),
+            {'username': 'New username IeWeipee5mahpi4quupo',
+             'last_name': 'New name fae1Bu1Eyeis9eRox4xu',
+             'about_me': 'New profile text Faemahphi3Hilokangei'})
+
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(pk=user.pk)
+        self.assertEqual(user.username, 'New username IeWeipee5mahpi4quupo')
+        self.assertEqual(user.about_me, 'New profile text Faemahphi3Hilokangei')
+        # The user is not allowed to change some other fields (like last_name).
+        self.assertNotEqual(user.last_name, 'New name fae1Bu1Eyeis9eRox4xu')
+
 
 class UserDelete(TestCase):
     """
@@ -172,17 +275,38 @@ class UserResetPassword(TestCase):
         self.assertTrue(User.objects.get(pk=user.pk).check_password(
             'new_password_Yuuh8OoQueePahngohy3_new'))
 
-    def test_reset_to_default(self):
+    """
+    Tests whether a random password is set as default and actual password
+    if no default password is provided.
+    """
+    def test_set_random_initial_password(self):
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
-        user = User.objects.create(username='Test name ooMoa4ou4mohn2eo1ree')
-        user.default_password = 'new_password_Yuuh8OoQueePahngohy3'
+
+        serializer = UserFullSerializer()
+        user = serializer.create({'username': 'Test name 9gt043qwvnj2d0cr'})
         user.save()
-        response = admin_client.post(
-            reverse('user-reset-password', args=[user.pk]), {})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(User.objects.get(pk=user.pk).check_password(
-            'new_password_Yuuh8OoQueePahngohy3'))
+
+        default_password = User.objects.get(pk=user.pk).default_password
+        self.assertIsNotNone(default_password)
+        self.assertEqual(len(default_password), 8)
+        self.assertTrue(User.objects.get(pk=user.pk).check_password(default_password))
+
+
+class GroupMetadata(TestCase):
+    def test_options_request_as_anonymous_user_activated(self):
+        config['general_system_enable_anonymous'] = True
+
+        response = self.client.options('/rest/users/group/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['name'], 'Group List')
+        perm_list = response.data['actions']['POST']['permissions']['choices']
+        self.assertEqual(type(perm_list), list)
+        for item in perm_list:
+            self.assertEqual(type(item), dict)
+            self.assertTrue(item.get('display_name') is not None)
+            self.assertTrue(item.get('value') is not None)
 
 
 class GroupReceive(TestCase):
@@ -211,8 +335,8 @@ class GroupReceive(TestCase):
         user = User(username='test')
         user.set_password('test')
         user.save()
-        registered_group = Group.objects.get(pk=2)
-        registered_group.permissions.all().delete()
+        default_group = Group.objects.get(pk=1)
+        default_group.permissions.all().delete()
         self.client.login(username='test', password='test')
 
         response = self.client.get('/rest/users/group/')
@@ -277,7 +401,7 @@ class GroupUpdate(TestCase):
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
         # This is the builtin group 'Delegates'. The pk is valid.
-        group_pk = 3
+        group_pk = 2
         # This contains one valid permission of the users app.
         permissions = ('users.can_see_name',)
 
@@ -295,7 +419,7 @@ class GroupUpdate(TestCase):
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
         # This is the builtin group 'Delegates'. The pk is valid.
-        group_pk = 3
+        group_pk = 2
         # This contains one valid permission of the users app.
         permissions = ('users.can_see_name',)
 
@@ -305,6 +429,53 @@ class GroupUpdate(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, {'name': ['This field is required.']})
+
+    def test_update_via_put_with_new_permissions(self):
+        admin_client = APIClient()
+        admin_client.login(username='admin', password='admin')
+        group = Group.objects.create(name='group_name_inooThe3dii4mahWeeSe')
+        # This contains all permissions.
+        permissions = [
+            'agenda.can_be_speaker',
+            'agenda.can_manage',
+            'agenda.can_see',
+            'agenda.can_see_hidden_items',
+            'assignments.can_manage',
+            'assignments.can_nominate_other',
+            'assignments.can_nominate_self',
+            'assignments.can_see',
+            'core.can_manage_config',
+            'core.can_manage_projector',
+            'core.can_manage_tags',
+            'core.can_manage_chat',
+            'core.can_see_frontpage',
+            'core.can_see_projector',
+            'core.can_use_chat',
+            'mediafiles.can_manage',
+            'mediafiles.can_see',
+            'mediafiles.can_see_hidden',
+            'mediafiles.can_upload',
+            'motions.can_create',
+            'motions.can_manage',
+            'motions.can_see',
+            'motions.can_see_and_manage_comments',
+            'motions.can_support',
+            'users.can_manage',
+            'users.can_see_extra_data',
+            'users.can_see_name',
+        ]
+
+        response = admin_client.put(
+            reverse('group-detail', args=[group.pk]),
+            {'name': 'new_group_name_Chie6duwaepoo8aech7r',
+             'permissions': permissions},
+            format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        group = Group.objects.get(pk=group.pk)
+        for permission in permissions:
+            app_label, codename = permission.split('.')
+            self.assertTrue(group.permissions.get(content_type__app_label=app_label, codename=codename))
 
 
 class GroupDelete(TestCase):
@@ -324,9 +495,8 @@ class GroupDelete(TestCase):
     def test_delete_builtin_groups(self):
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
-        # The pks of builtin groups 'Anonymous' and 'Registered'
-        group_pks = (1, 2,)
+        # The pk of builtin group 'Default'
+        group_pk = 1
 
-        for group_pk in group_pks:
-            response = admin_client.delete(reverse('group-detail', args=[group_pk]))
-            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        response = admin_client.delete(reverse('group-detail', args=[group_pk]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

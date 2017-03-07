@@ -1,0 +1,29 @@
+<h1 ng-if="group" translate>Edit name</h1>
+<h1 ng-if="!group" translate>Create new group</h1>
+<div uib-alert ng-show="alert.show" class="alert-danger" ng-click="alert={}" close="alert={}">
+  {{ alert.msg }}
+</div>
+
+<form name="groupForm" ng-submit="save()">
+<label for="name_1">
+  <span ng-if="group">
+    <translate>Please enter a new name for {{ group.name }}:</translate>
+  </span>
+  <span ng-if="!group" translate>
+    Please enter a name for the new group:
+  </span>
+</label>
+<div>
+  <div>
+    <input class="form-control" id="name_1" type="text" ng-model="new_name">
+  </div>
+  <div class="spacer-top-lg">
+    <button type="submit" ng-disabled="new_name == ''" class="btn btn-primary" translate>
+      Save
+    </button>
+    <button ng-click="closeThisDialog()" class="btn btn-default" translate>
+      Cancel
+    </button>
+  </div>
+</div>
+</form>

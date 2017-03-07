@@ -1,14 +1,10 @@
-from html import escape
-
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy
-from reportlab.platypus import Paragraph
 
 from openslides.core.config import config
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
-from openslides.utils.pdf import stylesheet
 from openslides.utils.rest_api import (
     GenericViewSet,
     ListModelMixin,
@@ -19,8 +15,8 @@ from openslides.utils.rest_api import (
     detail_route,
     list_route,
 )
-from openslides.utils.views import PDFView
 
+from ..utils.auth import has_perm
 from .access_permissions import ItemAccessPermissions
 from .models import Item, Speaker
 
@@ -41,48 +37,31 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
-            result = self.get_access_permissions().can_retrieve(self.request.user)
-        elif self.action in ('metadata', 'list', 'manage_speaker', 'tree'):
-            result = self.request.user.has_perm('agenda.can_see')
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action in ('metadata', 'manage_speaker', 'tree'):
+            result = has_perm(self.request.user, 'agenda.can_see')
             # For manage_speaker and tree requests the rest of the check is
             # done in the specific method. See below.
         elif self.action in ('partial_update', 'update'):
-            result = (self.request.user.has_perm('agenda.can_see') and
-                      self.request.user.has_perm('agenda.can_see_hidden_items') and
-                      self.request.user.has_perm('agenda.can_manage'))
-        elif self.action in ('speak', 'sort_speakers', 'numbering'):
-            result = (self.request.user.has_perm('agenda.can_see') and
-                      self.request.user.has_perm('agenda.can_manage'))
+            result = (has_perm(self.request.user, 'agenda.can_see') and
+                      has_perm(self.request.user, 'agenda.can_see_hidden_items') and
+                      has_perm(self.request.user, 'agenda.can_manage'))
+        elif self.action in ('speak', 'sort_speakers', 'numbering', 'sort'):
+            result = (has_perm(self.request.user, 'agenda.can_see') and
+                      has_perm(self.request.user, 'agenda.can_manage'))
         else:
             result = False
         return result
-
-    def check_object_permissions(self, request, obj):
-        """
-        Checks if the requesting user has permission to see also an
-        organizational item if it is one.
-        """
-        if obj.is_hidden() and not request.user.has_perm('agenda.can_see_hidden_items'):
-            self.permission_denied(request)
-
-    def get_queryset(self):
-        """
-        Filters organizational items if the user has no permission to see them.
-        """
-        queryset = super().get_queryset()
-        if not self.request.user.has_perm('agenda.can_see_hidden_items'):
-            pk_list = [item.pk for item in Item.objects.get_only_agenda_items()]
-            queryset = queryset.filter(pk__in=pk_list)
-        return queryset
 
     @detail_route(methods=['POST', 'DELETE'])
     def manage_speaker(self, request, pk=None):
         """
         Special view endpoint to add users to the list of speakers or remove
         them. Send POST {'user': <user_id>} to add a new speaker. Omit
-        data to add yourself. Send DELETE {'speaker': <speaker_id>} to remove
-        someone from the list of speakers. Omit data to remove yourself.
+        data to add yourself. Send DELETE {'speaker': <speaker_id>} or
+        DELETE {'speaker': [<speaker_id>, <speaker_id>, ...]} to remove one or
+        more speakers from the list of speakers. Omit data to remove yourself.
 
         Checks also whether the requesting user can do this. He needs at
         least the permissions 'agenda.can_see' (see
@@ -102,14 +81,14 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             # Check permissions and other conditions. Get user instance.
             if user_id is None:
                 # Add oneself
-                if not self.request.user.has_perm('agenda.can_be_speaker'):
+                if not has_perm(self.request.user, 'agenda.can_be_speaker'):
                     self.permission_denied(request)
                 if item.speaker_list_closed:
                     raise ValidationError({'detail': _('The list of speakers is closed.')})
                 user = self.request.user
             else:
                 # Add someone else.
-                if not self.request.user.has_perm('agenda.can_manage'):
+                if not has_perm(self.request.user, 'agenda.can_manage'):
                     self.permission_denied(request)
                 try:
                     user = get_user_model().objects.get(pk=int(user_id))
@@ -126,11 +105,10 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
 
         else:
             # request.method == 'DELETE'
-            # Retrieve speaker_id
-            speaker_id = request.data.get('speaker')
+            speaker_ids = request.data.get('speaker')
 
             # Check permissions and other conditions. Get speaker instance.
-            if speaker_id is None:
+            if speaker_ids is None:
                 # Remove oneself
                 queryset = Speaker.objects.filter(
                     item=item, user=self.request.user).exclude(weight=None)
@@ -141,19 +119,31 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                     speaker = queryset.get()
                 except Speaker.DoesNotExist:
                     raise ValidationError({'detail': _('You are not on the list of speakers.')})
+                else:
+                    speaker.delete()
+                    message = _('You are successfully removed from the list of speakers.')
             else:
                 # Remove someone else.
-                if not self.request.user.has_perm('agenda.can_manage'):
+                if not has_perm(self.request.user, 'agenda.can_manage'):
                     self.permission_denied(request)
-                try:
-                    speaker = Speaker.objects.get(pk=int(speaker_id))
-                except (ValueError, Speaker.DoesNotExist):
-                    raise ValidationError({'detail': _('Speaker does not exist.')})
-
-            # Delete the speaker.
-            speaker.delete()
-            message = _('Speaker %s was successfully removed from the list of speakers.') % speaker
-
+                if type(speaker_ids) is int:
+                    speaker_ids = [speaker_ids]
+                deleted_speaker_count = 0
+                for speaker_id in speaker_ids:
+                    try:
+                        speaker = Speaker.objects.get(pk=int(speaker_id))
+                    except (ValueError, Speaker.DoesNotExist):
+                        pass
+                    else:
+                        speaker.delete()
+                        deleted_speaker_name = speaker
+                        deleted_speaker_count += 1
+                if deleted_speaker_count > 1:
+                    message = str(deleted_speaker_count) + ' ' + _('speakers have been removed from the list of speakers.')
+                elif deleted_speaker_count == 1:
+                    message = _('User %s has been removed from the list of speakers.') % deleted_speaker_name
+                else:
+                    message = _('No speakers have been removed from the list of speakers.')
         # Initiate response.
         return Response({'detail': message})
 
@@ -230,36 +220,14 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         with transaction.atomic():
             for speaker in valid_speakers:
                 speaker.weight = weight
-                speaker.save()
+                speaker.save(skip_autoupdate=True)
                 weight += 1
+
+        # send autoupdate
+        inform_changed_data(item)
 
         # Initiate response.
         return Response({'detail': _('List of speakers successfully sorted.')})
-
-    @list_route(methods=['get', 'put'])
-    def tree(self, request):
-        """
-        Returns or sets the agenda tree.
-        """
-        if request.method == 'PUT':
-            if not (request.user.has_perm('agenda.can_manage') and
-                    request.user.has_perm('agenda.can_see_hidden_items')):
-                self.permission_denied(request)
-            try:
-                tree = request.data['tree']
-            except KeyError as error:
-                response = Response({'detail': 'Agenda tree is missing.'}, status=400)
-            else:
-                try:
-                    Item.objects.set_tree(tree)
-                except ValueError as error:
-                    response = Response({'detail': str(error)}, status=400)
-                else:
-                    response = Response({'detail': 'Agenda tree successfully updated.'})
-        else:
-            # request.method == 'GET'
-            response = Response(Item.objects.get_tree())
-        return response
 
     @list_route(methods=['post'])
     def numbering(self, request):
@@ -270,37 +238,31 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         Item.objects.number_all(numeral_system=config['agenda_numeral_system'])
         return Response({'detail': _('The agenda has been numbered.')})
 
+    @list_route(methods=['post'])
+    def sort(self, request):
+        """
+        Sort agenda items. Also checks parent field to prevent hierarchical
+        loops.
+        """
+        nodes = request.data.get('nodes', [])
+        parent_id = request.data.get('parent_id')
+        items = []
+        with transaction.atomic():
+            for index, node in enumerate(nodes):
+                item = Item.objects.get(pk=node['id'])
+                item.parent_id = parent_id
+                item.weight = index
+                item.save(skip_autoupdate=True)
+                items.append(item)
 
-# Views to generate PDFs
+                # Now check consistency. TODO: Try to use less DB queries.
+                item = Item.objects.get(pk=node['id'])
+                ancestor = item.parent
+                while ancestor is not None:
+                    if ancestor == item:
+                        raise ValidationError({'detail': _(
+                            'There must not be a hierarchical loop. Please reload the page.')})
+                    ancestor = ancestor.parent
 
-class AgendaPDF(PDFView):
-    """
-    Create a full agenda-PDF.
-    """
-    required_permission = 'agenda.can_see'
-    filename = ugettext_lazy('Agenda')
-    document_title = ugettext_lazy('Agenda')
-
-    def append_to_pdf(self, story):
-        tree = Item.objects.get_tree(only_agenda_items=True, include_content=True)
-
-        def walk_tree(tree, ancestors=0):
-            """
-            Generator that yields a two-element-tuple. The first element is an
-            agenda-item and the second a number for steps to the root element.
-            """
-            for element in tree:
-                yield element['item'], ancestors
-                yield from walk_tree(element['children'], ancestors + 1)
-
-        for item, ancestors in walk_tree(tree):
-            item_number = "{} ".format(item.item_number) if item.item_number else ''
-            if ancestors:
-                space = "&nbsp;" * 6 * ancestors
-                story.append(Paragraph(
-                    "%s%s%s" % (space, item_number, escape(item.title)),
-                    stylesheet['Subitem']))
-            else:
-                story.append(Paragraph(
-                    "%s%s" % (item_number, escape(item.title)),
-                    stylesheet['Item']))
+        inform_changed_data(items)
+        return Response({'detail': _('The agenda has been sorted.')})

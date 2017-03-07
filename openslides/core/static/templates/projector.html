@@ -1,57 +1,74 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="{{ selectedLanguage }}" ng-controller="LanguageCtrl" class="no-js">
 <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <base href="/">
 <title>OpenSlides &ndash; Projector</title>
 <link rel="stylesheet" href="static/css/openslides-libs.css">
 <link rel="stylesheet" href="static/css/projector.css">
 <link rel="icon" href="/static/img/favicon.png">
 <script src="static/js/openslides-libs.js"></script>
+<script src="static/js/openslides.js"></script>
+<script src="static/js/openslides-templates.js"></script>
 
-<style type="text/css">
-  #header, #footer {
-    background-color: {{ config('projector_header_backgroundcolor') }};
-  }
-  #header, #footer, #currentTime {
-    color: {{ config('projector_header_fontcolor') }};
-  }
-  h1 {
-    color: {{ config('projector_h1_fontcolor') }};
-  }
-</style>
-
-
-<div id="header">
-  <img ng-if="config('projector_enable_logo')" id="logo" src="/static/img/logo-projector.png" alt="OpenSlides" />
-  <div ng-if="config('projector_enable_title')" id="eventdata">
-    <div class="title" ng-class="{ 'titleonly': !config('general_event_description') }"
-        ng-bind-html="config('general_event_name')"></div>
-    <div ng-if="config('general_event_description')" class="description"
-        ng-bind-html="config('general_event_description')"></div>
-  </div>
-</div>
-
-<div ng-controller="ProjectorCtrl">
+<div id="projectorContainer" ng-controller="ProjectorCtrl">
   <style type="text/css">
-    .scrollcontent {
-      margin-top: {{scroll}}em !important;
-      font-size: {{scale}}%;
+    #header, #footer {
+      background-color: {{ config('projector_header_backgroundcolor') }};
+    }
+    #header, #footer, #currentTime {
+      color: {{ config('projector_header_fontcolor') }};
+    }
+    #header, #footer, .contentContainer {
+      visibility: {{ blank ? 'hidden' : 'visible' }};
+    }
+    #projectorContainer {
+      background-color: {{ blank ? config('projector_blank_color') : '#fff' }};
+      height: {{ blank ? '100%' : 'auto' }};
+    }
+    h1 {
+      color: {{ config('projector_h1_fontcolor') }};
     }
   </style>
-  <div ng-repeat="element in elements | orderBy:'index'">
+
+
+  <div id="header">
+    <img ng-if="config('projector_enable_logo')" id="logo" src="/static/img/logo-projector.png" alt="OpenSlides" />
+    <div ng-if="config('projector_enable_title')" id="eventdata">
+      <div class="title" ng-class="{ 'titleonly': !config('general_event_description') }"
+          ng-bind-html="config('general_event_name')"></div>
+      <div ng-if="config('general_event_description')" class="description"
+          ng-bind-html="config('general_event_description')"></div>
+    </div>
+  </div>
+
+  <style type="text/css">
+    .scrollcontent {
+      margin-top: {{ scroll }}px !important;
+      font-size: {{ 100 + 20 * projector.scale }}%;
+    }
+    .mediascrollcontent {
+      margin-top: {{scroll/2}}em !important;
+      -webkit-transform: scale({{scale/100}});
+      -ms-transform: scale({{scale/100}});
+      transform: scale({{scale/100}});
+    }
+  </style>
+  <div class="contentContainer" ng-repeat="element in elements | orderBy:'index'">
     <div ng-include="element.template"></div>
+  </div>
+
+  <div id="footer">
+    <span ng-if="config('general_event_date')">
+      {{ config('general_event_date') }}
+    </span>
+    <span ng-if="config('general_event_date') && config('general_event_location')">
+      |
+    </span>
+    <span ng-if="config('general_event_location')">
+      {{ config('general_event_location') }}
+    </span>
   </div>
 </div>
 
-<div id="footer">
-  <span ng-if="config('general_event_date')">
-    {{ config('general_event_date') }}
-  </span>
-  <span ng-if="config('general_event_date') && config('general_event_location')">
-    |
-  </span>
-  <span ng-if="config('general_event_location')">
-    {{ config('general_event_location') }}
-  </span>
-</div>
-<script src="/angular_js/projector/"></script>
+<script src="/webclient/projector/"></script>

@@ -1,11 +1,9 @@
 <div ng-controller="SlideCountdownCtrl">
-  <div ng-if="visible">
-    <div class="countdown well pull-right"
-        ng-class="{
-          'negative': seconds <= 0,
-          'warning': seconds <= config('agenda_countdown_warning_time') && seconds > 0 }">
-      {{ seconds | osSecondsToTime}}
-      <div class="description">{{ description }}</div>
-    </div>
+  <div class="countdown well pull-right"
+      ng-class="{
+        'negative': countdown.seconds <= 0,
+        'warning': countdown.seconds <= config('agenda_countdown_warning_time') && countdown.seconds > 0 }">
+    {{ countdown.seconds | osSecondsToTime}}
+    <div class="description">{{ countdown.description }}</div>
   </div>
 </div>

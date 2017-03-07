@@ -137,7 +137,7 @@ def get_default_settings_context(user_data_path=None):
 
     The argument 'user_data_path' is a given path for user specific data or None.
     """
-    # Setup path for user specific data (SQLite3 database, media, search index, ...):
+    # Setup path for user specific data (SQLite3 database, media, ...):
     # Take it either from command line or get default path
     default_context = {}
     if user_data_path:
@@ -253,7 +253,24 @@ def write_settings(settings_path=None, template=None, **context):
         os.makedirs(settings_module)
     with open(settings_path, 'w') as settings_file:
         settings_file.write(content)
+    if context['openslides_user_data_path'] == 'get_win32_portable_user_data_path()':
+        openslides_user_data_path = get_win32_portable_user_data_path()
+    else:
+        openslides_user_data_path = context['openslides_user_data_path'].strip("'")
+    os.makedirs(os.path.join(openslides_user_data_path, 'static'), exist_ok=True)
     return os.path.realpath(settings_path)
+
+
+def open_browser(host, port):
+    """
+    Launches the default web browser at the given host and port and opens
+    the webinterface. Uses start_browser internally.
+    """
+    if host == '0.0.0.0':
+        # Windows does not support 0.0.0.0, so use 'localhost' instead
+        start_browser('http://localhost:%s' % port)
+    else:
+        start_browser('http://%s:%s' % (host, port))
 
 
 def start_browser(browser_url):
@@ -261,15 +278,19 @@ def start_browser(browser_url):
     Launches the default web browser at the given url and opens the
     webinterface.
     """
-    browser = webbrowser.get()
+    try:
+        browser = webbrowser.get()
+    except webbrowser.Error:
+        print('Could not locate runnable browser: Skipping start')
+    else:
 
-    def function():
-        # TODO: Use a nonblocking sleep event here. Tornado has such features.
-        time.sleep(1)
-        browser.open(browser_url)
+        def function():
+            # TODO: Use a nonblocking sleep event here. Tornado has such features.
+            time.sleep(1)
+            browser.open(browser_url)
 
-    thread = threading.Thread(target=function)
-    thread.start()
+        thread = threading.Thread(target=function)
+        thread.start()
 
 
 def get_database_path_from_settings():
@@ -314,3 +335,20 @@ def is_local_installation():
     This is the case if manage.py is used, or when the --local-installation flag is set.
     """
     return True if '--local-installation' in sys.argv or 'manage.py' in sys.argv[0] else False
+
+
+def get_geiss_path():
+    """
+    Returns the path and file to the Geiss binary.
+    """
+    from django.conf import settings
+    download_path = getattr(settings, 'OPENSLIDES_USER_DATA_PATH', '')
+    bin_name = 'geiss.exe' if is_windows() else 'geiss'
+    return os.path.join(download_path, bin_name)
+
+
+def is_windows():
+    """
+    Returns True if the current system is Windows. Returns False otherwise.
+    """
+    return sys.platform == 'win32'

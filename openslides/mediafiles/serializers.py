@@ -3,6 +3,7 @@ import mimetypes
 from django.conf import settings
 from django.db import models as dbmodels
 from PyPDF2 import PdfFileReader
+from PyPDF2.utils import PdfReadError
 
 from ..utils.rest_api import FileField, ModelSerializer, SerializerMethodField
 from .models import Mediafile
@@ -29,6 +30,10 @@ class AngularCompatibleFileField(FileField):
             except FileNotFoundError:
                 # File was deleted from server. Set 'pages' to 0.
                 result['pages'] = 0
+            except PdfReadError:
+                # File could be encrypted but not be detected by PyPDF.
+                result['pages'] = 0
+                result['encrypted'] = True
         return result
 
 
@@ -58,6 +63,7 @@ class MediafileSerializer(ModelSerializer):
             'media_url_prefix',
             'uploader',
             'filesize',
+            'hidden',
             'timestamp',)
 
     def get_filesize(self, mediafile):

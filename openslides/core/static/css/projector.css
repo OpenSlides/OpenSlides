@@ -1,14 +1,95 @@
 /*
- * OpenSlides default projector styles
+ * Font definitions for OpenSlides projector
+ */
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  src: url('../fonts/Roboto-Condensed-Regular.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+    font-family: 'Roboto Condensed Light';
+    src: url('../fonts/Roboto-Condensed-Light.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url('../fonts/Roboto-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+}
+h1, h2, h3, h4, h5, h6, .countdown, .message {
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: normal;
+}
+#header, #currentTime, #footer {
+    font-family: 'Roboto Condensed Light';
+}
+
+/*
+ * Template styles for OpenSlides projector
  *
  */
 
-body{
+html, body {
+    height: 100%;
+}
+
+body {
     font-size: 20px !important;
     line-height: 24px !important;
     overflow: hidden;
-    font-family: "Open Sans",Helvetica,Arial,sans-serif;
     color: #222;
+}
+
+/*** ProjectorContainer ***/
+.pContainer {
+    background-color: #222;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: table;
+}
+
+.pContainer > div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.pContainer #iframe {
+    -moz-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    transform-origin: 0 0 0;
+}
+
+.pContainer #iframewrapper, .pContainer .error {
+    position: relative;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pContainer #iframeoverlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: block;
+    z-index: 1;
+}
+
+.pContainer .error > p {
+    color: #f00;
+    font-size: 150%;
+    text-align: center;
 }
 
 /*** HEADER ***/
@@ -16,7 +97,6 @@ body{
     box-shadow: 0 0 7px rgba(0,0,0,0.6);
     height: 70px;
     margin-bottom: 20px;
-    font-family: 'Roboto Condensed Light';
 }
 #logo {
     position: relative;
@@ -46,7 +126,6 @@ body{
     opacity: 0.8;
 }
 #currentTime {
-    font-family: 'Roboto Condensed Light';
     border: 0 solid #000000;
     font-size: 24px;
     position: absolute;
@@ -56,7 +135,6 @@ body{
     padding-left: 30px;
 }
 #footer {
-    font-family: 'Roboto Condensed Light';
     position: fixed;
     bottom: 0;
     height: 35px;
@@ -81,6 +159,10 @@ body{
     z-index: -1;
     line-height: 1.3em;
 }
+.content img {
+    max-width: 65%;
+    height: auto;
+}
 .scrollcontent {
     transition-property: margin, font-size;
     transition-duration: 1s;
@@ -97,11 +179,6 @@ body{
 .fullscreen canvas {
     margin: auto;
     display: block !important;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-family: "Roboto Condensed",Helvetica,Arial,sans-serif;
-    font-weight: normal;
 }
 
 h1 {
@@ -143,6 +220,20 @@ h3 {
 #sidebox h3 {
     margin-top: 10px;
     margin-bottom: 0px;
+}
+#speakerbox {
+    width: 40%;
+    float: right;
+    margin: 20px;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    background: #d3d3d3;
+    border-radius: 7px;
+    border: 1px solid #999;
+    padding: 0px 7px 10px 19px;
+    z-index: 99;
+    box-shadow: 3px 3px 10px 1px rgba(0,0,0,0.5);
 }
 ul, ol {
     margin: 0 0 10px 2em;
@@ -195,8 +286,7 @@ hr {
     font-weight: bold;
     text-align: right;
     border-radius: 7px 7px 7px 7px;
-    z-index: 200;
-    font-family: "Roboto Condensed",Helvetica,Arial,sans-serif;
+    z-index: 320;
 }
 .countdown .description {
     font-weight: normal;
@@ -222,7 +312,6 @@ hr {
     z-index: 300;
 }
 .message {
-    font-family: "Roboto Condensed",Helvetica,Arial,sans-serif;
     font-weight: normal;
     position: fixed;
     top: 35%;
@@ -234,7 +323,11 @@ hr {
     font-size: 2.75em;
     padding: 0.2em 0;
     line-height: normal !important;
-    z-index: 301;
+    z-index: 350;
+}
+.identify {
+    background-color: #D9F8C4;
+    z-index: 400;
 }
 
 /*** PDF presentation ***/
@@ -334,4 +427,174 @@ tr.elected td {
 }
 .nextSpeakers li {
     line-height: 150%;
+}
+
+
+/*** Line numbers ***/
+.motion-text .highlight {
+    background-color: #ff0;
+}
+.motion-text ins {
+    color: green;
+    text-decoration: underline;
+}
+.motion-text del {
+    color: red;
+    text-decoration: line-through;
+}
+.motion-text.line-numbers-outside {
+    padding-left: 0;
+    margin-left: 25px;
+    position: relative;
+}
+
+.motion-text.line-numbers-outside .os-line-number {
+    display: inline-block;
+}
+.motion-text.line-numbers-outside .os-line-number:after {
+    content: attr(data-line-number);
+    position: absolute;
+    left: -25px;
+    vertical-align: top;
+    color: gray;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+.motion-text.line-numbers-inline .os-line-break {
+    display: none;
+}
+.motion-text.line-numbers-inline .os-line-number {
+    display: inline-block;
+}
+.motion-text.line-numbers-inline .os-line-number:after {
+    display: inline-block;
+    content: attr(data-line-number);
+    vertical-align: top;
+    font-size: 0.75em;
+    font-weight: normal;
+    color: gray;
+    margin-top: -5px;
+    margin-left: 0;
+}
+
+
+.motion-text.line-numbers-none .os-line-break {
+    display: none;
+}
+.motion-text.line-numbers-none .os-line-number {
+    visibility: hidden;
+}
+
+/** Diff view */
+
+.change-recommendation-overview {
+    background-color: #eee;
+    border: solid 1px #ddd;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    margin-top: -15px;
+    padding-top: 5px;
+}
+.change-recommendation-overview {
+    margin-bottom: 50px;
+    padding: 10px;
+}
+.change-recommendation-overview h2 {
+    margin-top: 0;
+}
+.change-recommendation-overview ul {
+    list-style: none;
+    display: table;
+}
+.change-recommendation-overview li {
+    display: table-row;
+    cursor: pointer;
+}
+.change-recommendation-overview li:hover {
+    text-decoration: underline;
+}
+.change-recommendation-overview li > * {
+    display: table-cell;
+    padding: 4px;
+}
+.change-recommendation-overview .status {
+    color: gray;
+    font-style: italic;
+}
+.change-recommendation-overview .status > *:before {
+    content: '(';
+}
+.change-recommendation-overview .status > *:after {
+    content: ')';
+}
+.change-recommendation-overview .no-changes {
+    font-style: italic;
+    color: grey;
+}
+
+.diff-box {
+    margin-left: 25px;
+    padding-top: 0;
+    margin-top: -10px;
+}
+.motion-text-with-diffs .original-text {
+    min-height: 30px; // Spacer between .diff-box, in case .original-text is empty
+}
+.motion-text-with-diffs .original-text ul:last-child {
+    padding-bottom: 16px;
+}
+.motion-text-with-diffs.line-numbers-inline .diff-box, .motion-text-with-diffs.line-numbers-none .diff-box {
+    margin-right: -220px;
+}
+.diff-box:hover {
+    background-color: #f0f0f0;
+}
+.motion-text-diff .delete {
+    color: red;
+    text-decoration: line-through;
+}
+.motion-text-diff .insert {
+    color: green;
+    text-decoration: underline;
+}
+.motion-text-diff p {
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.motion-text-diff.line-numbers-outside .insert .os-line-number {
+    display: none;
+}
+.motion-text-diff.line-numbers-inline .insert .os-line-number {
+    display: none;
+}
+
+/*** Video and Image projection ***/
+img.projector-image {
+    width: 100%;
+}
+
+div.projector-image {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+.video-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-container > * {
+    flex: 1 1 auto;
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
 }

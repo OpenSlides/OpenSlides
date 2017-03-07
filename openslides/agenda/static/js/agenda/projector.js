@@ -13,6 +13,42 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
         slidesProvider.registerSlide('agenda/item-list', {
             template: 'static/templates/agenda/slide-item-list.html',
         });
+        slidesProvider.registerSlide('agenda/current-list-of-speakers', {
+            template: 'static/templates/agenda/slide-current-list-of-speakers.html',
+        });
+    }
+])
+
+.controller('SlideCurrentListOfSpeakersCtrl', [
+    '$scope',
+    'Agenda',
+    'CurrentListOfSpeakersItem',
+    'Config',
+    'Projector',
+    function ($scope, Agenda, CurrentListOfSpeakersItem, Config, Projector) {
+        $scope.overlay = $scope.element.overlay;
+        // Watch for changes in the current list of speakers reference
+        $scope.$watch(function () {
+            return Config.lastModified('projector_currentListOfSpeakers_reference');
+        }, function () {
+            $scope.currentListOfSpeakersReference = $scope.config('projector_currentListOfSpeakers_reference');
+            $scope.updateCurrentListOfSpeakers();
+        });
+        // Watch for changes in the referenced projector
+        $scope.$watch(function () {
+            return Projector.lastModified($scope.currentListOfSpeakersReference);
+        }, function () {
+            $scope.updateCurrentListOfSpeakers();
+        });
+        // Watch for changes in the current item.
+        $scope.$watch(function () {
+            return Agenda.lastModified();
+        }, function () {
+            $scope.updateCurrentListOfSpeakers();
+        });
+        $scope.updateCurrentListOfSpeakers = function () {
+            $scope.agendaItem = CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
+        };
     }
 ])
 
@@ -20,13 +56,11 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
     '$scope',
     'Agenda',
     'User',
-    function($scope, Agenda, User) {
+    function ($scope, Agenda, User) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
         var id = $scope.element.id;
-        Agenda.find(id);
-        User.findAll();
         Agenda.bindOne(id, $scope, 'item');
     }
 ])
@@ -37,11 +71,11 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
     '$filter',
     'Agenda',
     'AgendaTree',
-    function($scope, $http, $filter, Agenda, AgendaTree) {
+    function ($scope, $http, $filter, Agenda, AgendaTree) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
-        Agenda.findAll();
+
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();

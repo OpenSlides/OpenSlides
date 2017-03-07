@@ -1,15 +1,13 @@
 from collections import OrderedDict
 
+from django.http import Http404
 from rest_framework import status  # noqa
 from rest_framework.decorators import detail_route, list_route  # noqa
 from rest_framework.metadata import SimpleMetadata  # noqa
-from rest_framework.mixins import (  # noqa
-    DestroyModelMixin,
-    ListModelMixin,
-    RetrieveModelMixin,
-    UpdateModelMixin,
-)
-from rest_framework.response import Response  # noqa
+from rest_framework.mixins import ListModelMixin as _ListModelMixin
+from rest_framework.mixins import RetrieveModelMixin as _RetrieveModelMixin
+from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin  # noqa
+from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.serializers import ModelSerializer as _ModelSerializer
 from rest_framework.serializers import (  # noqa
@@ -29,9 +27,10 @@ from rest_framework.serializers import (  # noqa
 )
 from rest_framework.viewsets import GenericViewSet as _GenericViewSet  # noqa
 from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
-from rest_framework.viewsets import \
-    ReadOnlyModelViewSet as _ReadOnlyModelViewSet  # noqa
 from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
+
+from .auth import user_to_collection_user
+from .collection import Collection, CollectionElement
 
 router = DefaultRouter()
 
@@ -95,9 +94,9 @@ class PermissionMixin:
     """
     Mixin for subclasses of APIView like GenericViewSet and ModelViewSet.
 
-    The methods check_view_permissions or check_projector_requirements are
-    evaluated. If both return False self.permission_denied() is called.
-    Django REST Framework's permission system is disabled.
+    The method check_view_permissions is evaluated. If it returns False
+    self.permission_denied() is called. Django REST Framework's permission
+    system is disabled.
 
     Also connects container to handle access permissions for model and
     viewset.
@@ -106,12 +105,12 @@ class PermissionMixin:
 
     def get_permissions(self):
         """
-        Overridden method to check view and projector permissions. Returns an
-        empty iterable so Django REST framework won't do any other
-        permission checks by evaluating Django REST framework style permission
-        classes  and the request passes.
+        Overridden method to check view permissions. Returns an empty
+        iterable so Django REST framework won't do any other permission
+        checks by evaluating Django REST framework style permission classes
+        and the request passes.
         """
-        if not self.check_view_permissions() and not self.check_projector_requirements():
+        if not self.check_view_permissions():
             self.permission_denied(self.request)
         return ()
 
@@ -120,24 +119,10 @@ class PermissionMixin:
         Override this and return True if the requesting user should be able to
         get access to your view.
 
-        Use access permissions container for retrieve requests.
+        Don't forget to use access permissions container for list and retrieve
+        requests.
         """
         return False
-
-    def check_projector_requirements(self):
-        """
-        Helper method which returns True if the current request (on this
-        view instance) is required for at least one active projector element.
-        """
-        from openslides.core.models import Projector
-
-        result = False
-        if self.request.user.has_perm('core.can_see_projector'):
-            for requirement in Projector.get_all_requirements():
-                if requirement.is_currently_required(view_instance=self):
-                    result = True
-                    break
-        return result
 
     def get_access_permissions(self):
         """
@@ -180,15 +165,65 @@ class ModelSerializer(_ModelSerializer):
         return fields
 
 
+class ListModelMixin(_ListModelMixin):
+    """
+    Mixin to add the caching system to list requests.
+
+    It is not allowed to use the method get_queryset() in derivated classes.
+    The attribute queryset has to be used in the following form:
+
+    queryset = Model.objects.all()
+    """
+    def list(self, request, *args, **kwargs):
+        model = self.get_queryset().model
+        try:
+            collection_string = model.get_collection_string()
+        except AttributeError:
+            # The corresponding queryset does not support caching.
+            response = super().list(request, *args, **kwargs)
+        else:
+            collection = Collection(collection_string)
+            user = user_to_collection_user(request.user)
+            response = Response(collection.as_list_for_user(user))
+        return response
+
+
+class RetrieveModelMixin(_RetrieveModelMixin):
+    """
+    Mixin to add the caching system to retrieve requests.
+
+    It is not allowed to use the method get_queryset() in derivated classes.
+    The attribute queryset has to be used in the following form:
+
+    queryset = Model.objects.all()
+    """
+    def retrieve(self, request, *args, **kwargs):
+        model = self.get_queryset().model
+        try:
+            collection_string = model.get_collection_string()
+        except AttributeError:
+            # The corresponding queryset does not support caching.
+            response = super().retrieve(request, *args, **kwargs)
+        else:
+            lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+            collection_element = CollectionElement.from_values(
+                collection_string, self.kwargs[lookup_url_kwarg])
+            user = user_to_collection_user(request.user)
+            try:
+                content = collection_element.as_dict_for_user(user)
+            except collection_element.get_model().DoesNotExist:
+                raise Http404
+            if content is None:
+                self.permission_denied(request)
+            response = Response(content)
+        return response
+
+
 class GenericViewSet(PermissionMixin, _GenericViewSet):
     pass
 
 
-class ModelViewSet(PermissionMixin, _ModelViewSet):
-    pass
-
-
-class ReadOnlyModelViewSet(PermissionMixin, _ReadOnlyModelViewSet):
+class ModelViewSet(PermissionMixin, ListModelMixin, RetrieveModelMixin, _ModelViewSet):
     pass
 
 

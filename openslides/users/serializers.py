@@ -3,6 +3,7 @@ from django.contrib.auth.models import Permission
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
+from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
     IdPrimaryKeyRelatedField,
     ModelSerializer,
@@ -11,67 +12,52 @@ from ..utils.rest_api import (
 )
 from .models import Group, User
 
-USERSHORTSERIALIZER_FIELDS = (
-            'id',
-            'username',
-            'title',
-            'first_name',
-            'last_name',
-            'structure_level',
-            'about_me',
-            'groups',
-        )
+USERCANSEESERIALIZER_FIELDS = (
+    'id',
+    'username',
+    'title',
+    'first_name',
+    'last_name',
+    'structure_level',
+    'number',
+    'about_me',
+    'groups',
+    'is_present',
+    'is_committee',
+)
 
 
-class UserShortSerializer(ModelSerializer):
-    """
-    Serializer for users.models.User objects.
-
-    Serializes only name fields and about me field.
-    """
-    class Meta:
-        model = User
-        fields = USERSHORTSERIALIZER_FIELDS
+USERCANSEEEXTRASERIALIZER_FIELDS = USERCANSEESERIALIZER_FIELDS + (
+    'comment',
+    'is_active',
+)
 
 
 class UserFullSerializer(ModelSerializer):
     """
     Serializer for users.models.User objects.
 
-    Serializes all relevant fields.
+    Serializes all relevant fields for manager.
     """
     groups = IdPrimaryKeyRelatedField(
         many=True,
-        queryset=Group.objects.exclude(pk__in=(1, 2)),
+        required=False,
+        queryset=Group.objects.exclude(pk=1),
         help_text=ugettext_lazy('The groups this user belongs to. A user will '
                                 'get all permissions granted to each of '
                                 'his/her groups.'))
 
     class Meta:
         model = User
-        fields = (
-            'id',
-            'is_present',
-            'username',
-            'title',
-            'first_name',
-            'last_name',
-            'structure_level',
-            'about_me',
-            'comment',
-            'groups',
-            'default_password',
-            'is_active',
-        )
+        fields = USERCANSEEEXTRASERIALIZER_FIELDS + ('default_password',)
 
     def validate(self, data):
         """
-        Checks that first_name or last_name is given.
-
-        Generates the username if it is empty.
+        Checks that first_name or last_name is given. Generates the
+        username if it is empty.
         """
         if not (data.get('username') or data.get('first_name') or data.get('last_name')):
-            raise ValidationError({'detail': _('Username, first name and last name can not all be empty.')})
+            raise ValidationError({'detail': _('Username, given name and surname can not all be empty.')})
 
         # Generate username. But only if it is not set and the serializer is not
         # called in a PATCH context (partial_update).
@@ -88,15 +74,17 @@ class UserFullSerializer(ModelSerializer):
 
     def create(self, validated_data):
         """
-        Creates the user. Sets the default password. Adds the new user to the
-        registered group.
+        Creates the user. Sets the default password.
         """
         # Prepare setup password.
         if not validated_data.get('default_password'):
             validated_data['default_password'] = User.objects.generate_password()
         validated_data['password'] = make_password(validated_data['default_password'], '', 'md5')
         # Perform creation in the database and return new user.
-        return super().create(validated_data)
+        user = super().create(validated_data)
+        # TODO: This autoupdate call is redundant (required by issue #2727). See #2736.
+        inform_changed_data(user)
+        return user
 
 
 class PermissionRelatedField(RelatedField):
@@ -145,3 +133,11 @@ class GroupSerializer(ModelSerializer):
             'name',
             'permissions',
         )
+
+    def update(self, *args, **kwargs):
+        """
+        Customized update method. We just refresh the instance from the
+        database because of an unknown bug in Django REST framework.
+        """
+        instance = super().update(*args, **kwargs)
+        return Group.objects.get(pk=instance.pk)

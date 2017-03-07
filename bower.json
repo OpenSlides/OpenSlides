@@ -1,51 +1,61 @@
 {
-  "name": "OpenSlides",
+  "name": "openslides",
   "private": true,
   "dependencies": {
-    "jquery": "~2.2.3",
-    "angular": "~1.4.10",
-    "angular-animate": "~1.4.10",
-    "angular-bootstrap": "~0.14.3",
-    "angular-bootstrap-colorpicker": "~3.0.24",
-    "angular-chosen-localytics": "~1.4.0",
-    "angular-csv-import": "~0.0.29",
-    "angular-formly": "~7.3.9",
+    "jquery": "~3.1.0",
+    "angular": "~1.5.8",
+    "angular-animate": "~1.5.8",
+    "angular-bootstrap": "~2.1.3",
+    "angular-bootstrap-colorpicker": "~3.0.25",
+    "angular-chosen-localytics": "~1.5.0",
+    "angular-ckeditor": "~1.0.3",
+    "angular-file-saver": "~1.1.2",
+    "angular-formly": "~8.4.0",
     "angular-formly-templates-bootstrap": "~6.2.0",
-    "angular-gettext": "~2.2.0",
-    "angular-loading-bar": "~0.8.0",
-    "angular-messages": "~1.4.10",
+    "angular-gettext": "~2.3.7",
+    "angular-messages": "~1.5.8",
     "angular-pdf": "~1.3.0",
-    "angular-sanitize": "~1.4.10",
-    "angular-scroll-glue": "~2.0.6",
-    "angular-ui-router": "~0.2.17",
-    "angular-ui-tinymce": "0.0.14",
-    "angular-ui-tree": "~2.5.0",
+    "angular-sanitize": "~1.5.8",
+    "angular-scroll-glue": "~2.0.7",
+    "angular-ui-router": "~0.3.1",
+    "angular-ui-tree": "~2.22.0",
+    "angular-xeditable": "~0.5.0",
     "bootstrap-css-only": "~3.3.6",
+    "bootstrap-ui-datetime-picker": "~2.4.0",
+    "ckeditor": "4.6.1",
+    "docxtemplater": "~2.1.5",
     "font-awesome-bower": "~4.5.0",
     "jquery.cookie": "~1.4.1",
-    "js-data": "~2.8.2",
-    "js-data-angular": "~3.1.0",
-    "lodash": "~3.10.0",
-    "ng-dialog": "~0.5.6",
+    "js-data": "~2.9.0",
+    "js-data-angular": "~3.2.1",
+    "lodash": "~4.16.0",
+    "ng-dialog": "~0.6.4",
     "ng-file-upload": "~11.2.3",
+    "ngstorage": "~0.3.11",
     "ngBootbox": "~0.1.3",
-    "open-sans-fontface": "https://github.com/OpenSlides/open-sans.git#1.4.2.post1",
-    "roboto-condensed": "~0.3.0",
-    "tinymce-i18n": "OpenSlides/tinymce-i18n#a186ad61e0aa30fdf657e88f405f966d790f0805"
+    "papaparse": "~4.1.2",
+    "pdfmake": "0.1.25",
+    "roboto-fontface": "~0.6.0"
   },
   "overrides": {
+    "pdfmake": {
+      "main": []
+    },
     "pdfjs-dist": {
       "main": "build/pdf.combined.js"
     },
-    "tinymce-dist": {
+    "roboto-fontface": {
       "main": [
-          "tinymce.js",
-          "themes/modern/theme.js",
-          "plugins/*/plugin.js"
+        "fonts/Roboto/Roboto-Regular.woff",
+        "fonts/Roboto/Roboto-Medium.woff",
+        "fonts/Roboto-Condensed/Roboto-Condensed-Regular.woff",
+        "fonts/Roboto-Condensed/Roboto-Condensed-Light.woff"
       ]
     }
   },
   "resolutions": {
-    "angular": ">=1.4.10 <1.5"
+    "angular": ">=1.5 <1.6",
+    "jquery": ">=3.1 <3.2",
+    "angular-bootstrap": "~2.1.3"
   }
 }

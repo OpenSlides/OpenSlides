@@ -1,4 +1,4 @@
 <div ng-controller="SlideMessageCtrl">
-  <div ng-if="visible" class="message_background"></div>
-  <div ng-if="visible" class="message well">{{ message }}</div>
+  <div class="message_background"></div>
+  <div class="message well" ng-class="{'identify': element.identify}" ng-bind-html="(element.identify ? identifyMessage : message.message) | trusted"></div>
 </div>

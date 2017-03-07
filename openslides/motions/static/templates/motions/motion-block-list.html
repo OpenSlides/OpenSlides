@@ -1,0 +1,52 @@
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to overview</translate>
+      </a>
+      <a ng-click="openFormDialog()" os-perms="motions.can_manage" class="btn btn-primary btn-sm">
+        <i class="fa fa-plus fa-lg"></i>
+        <translate>New</translate>
+      </a>
+    </div>
+    <h1 translate>Motion blocks</h1>
+  </div>
+</div>
+
+<div class="details">
+  <div class="row form-group">
+    <div class="col-sm-4 pull-right">
+      <input type="text" ng-model="filter.search" class="form-control"
+          placeholder="{{ 'Filter' | translate }}">
+    </div>
+  </div>
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        <th os-perms="core.can_manage_projector" class="minimum">
+        <th><translate>Name</translate>
+        <th><translate>Motions</translate>
+    <tbody>
+      <tr ng-repeat="motionBlock in motionBlocks | filter: filter.search | orderBy: 'title'">
+        <td os-perms="core.can_manage_projector">
+          <projector-button model="motionBlock" default-projector-id="defaultProjectorId">
+          </projector-button>
+        <td ng-mouseover="motionBlock.hover=true" ng-mouseleave="motionBlock.hover=false">
+          <strong>
+            <a ui-sref="motions.motionBlock.detail({id: motionBlock.id})">{{ motionBlock.title }}</a>
+          </strong>
+          <div os-perms="motions.can_manage"  class="hoverActions" ng-class="{'hiddenDiv': !motionBlock.hover}">
+            <!-- edit -->
+            <a href="" ng-click="openFormDialog(motionBlock)" translate>Edit</a> |
+            <!-- delete -->
+            <a href="" class="text-danger"
+              ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
+                <b>{{ motionBlock.name }}</b>"
+              ng-bootbox-confirm-action="delete(motionBlock)" translate>Delete</a>
+          </div>
+        <td>
+          {{ motionBlock.motions.length }}
+  </table>
+</div>

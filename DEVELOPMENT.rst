@@ -74,6 +74,10 @@ avoid opening new browser windows::
 
     $ python manage.py runserver
 
+Use gulp watch in a second command-line interface::
+
+    $ node_modules/.bin/gulp watch
+
 
 2. Installation on Windows
 --------------------------
@@ -87,12 +91,48 @@ that the 32-bit installer is required even on a 64-bit Windows system. If
 you use the 64-bit installer, step d. of the instruction will fail unless
 you installed the package Reportlab manually.
 
-You also have to install Setuptools. Download and run (via double click)
-the last `install script ez_setup.py for Setuptools
-<https://pypi.python.org/pypi/setuptools/#installation-instructions>`_.
+You have to install MS Visual C++ 2015 build tools before you install the
+required python packages for OpenSlides (unfortunately Twisted 16.6.x needs it).
 
 To setup and activate the virtual environment in step c. use::
 
     > .virtualenv\Scripts\activate.bat
 
 All other commands are the same as for GNU/Linux and Mac OS X.
+
+
+3. Running the test cases
+-------------------------
+
+a. Running Angular.js test cases
+''''''''''''''''''''''''''''''''
+
+    $ node_modules/.bin/karma start tests/karma/karma.conf.js
+
+
+Installation OpenSlides in big mode
+===================================
+
+1. Install PostgreSQL und redis:
+
+apt-get install postgresql redis-server libpg-dev
+
+TODO: Configure postgresql
+
+2. Install python dependencies
+
+pip install django-redis asgi-redis django-redis-sessions psycopg2
+
+3. Change settings.py
+
+(See comments in the settings)
+
+The relevant settings are: DATABASES, CHANNEL_LAYERS, CACHES
+
+4. Start one or more workers:
+
+python manage.py runworker
+
+5. Start daphne. Set the DJANGO_SETTINGS_MODULE and the PYTHONPATH
+
+DJANGO_SETTINGS_MODULE=settings PYTHONPATH=personal_data/var/ daphne openslides.asgi:channel_layer

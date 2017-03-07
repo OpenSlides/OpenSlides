@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="{{ selectedLanguage }}" ng-controller="LanguageCtrl" class="no-js">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<base href="/">
+<title ng-if="projectorId===undefined">OpenSlides &ndash; Projector</title> <!-- avoid {{ ... }} in title while angular is not loaded -->
+<title ng-if="projectorId!==undefined">OpenSlides &ndash; {{ 'Projector' | translate }} {{ projectorId }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<link rel="stylesheet" href="static/css/openslides-libs.css">
+<link rel="stylesheet" href="static/css/projector.css">
+<link rel="icon" href="/static/img/favicon.png">
+<script src="static/js/openslides-libs.js"></script>
+<script src="static/js/openslides.js"></script>
+<script src="static/js/openslides-templates.js"></script>
+
+<div class="pContainer" ng-controller="ProjectorContainerCtrl">
+  <div>
+    <style>
+      .pContainer #iframe {
+          width: {{ projectorWidth }}px;
+          height: {{ projectorHeight }}px;
+          -moz-transform: scale({{ scale }});
+          -webkit-transform: scale({{ scale }});
+          -o-transform: scale({{ scale }});
+          transform: scale({{ scale }});
+          /* IE8+ - must be on one line, unfortunately */
+          -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11={{ scale }}, M12=0, M21=0, M22={{ scale }}, SizingMethod='auto expand')";
+      }
+
+      .pContainer #iframewrapper {
+          width: {{ iframeWidth }}px;
+          height: {{ iframeHeight }}px;
+      }
+
+      .pContainer #iframeoverlay {
+        width: {{ iframeWidth }}px;
+        height: {{ iframeHeight }}px;
+      }
+    </style>
+
+    <div id="iframewrapper" ng-hide="error">
+      <iframe id="iframe" ng-src="{{ '/real-projector/' + projectorId + '/'}}" frameborder="0"></iframe>
+      <div id="iframeoverlay"></div>
+    </div>
+
+    <div class="error" ng-show="error">
+      <p>{{ error | translate }}</p>
+    </div>
+  </div>
+</div>
+
+<script src="/webclient/projector/"></script>

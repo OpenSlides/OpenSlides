@@ -3,7 +3,6 @@ import locale
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy
 
 from openslides.utils.models import MinMaxIntegerField
 
@@ -67,12 +66,6 @@ class BaseVote(models.Model):
         return print_value(self.weight, percent_base)
 
 
-PERCENT_BASE_CHOICES = (
-    {'value': 'WITHOUT_INVALID', 'display_name': ugettext_lazy('Only all valid votes')},
-    {'value': 'WITH_INVALID', 'display_name': ugettext_lazy('All votes cast (including invalid votes)')},
-    {'value': 'DISABLED', 'display_name': ugettext_lazy('Disabled (no percents)')})
-
-
 class CollectDefaultVotesMixin(models.Model):
     """
     Mixin for a poll to collect the default vote values for valid votes,
@@ -93,39 +86,9 @@ class CollectDefaultVotesMixin(models.Model):
 
     def get_percent_base_choice(self):
         """
-        Returns one of the three strings in PERCENT_BASE_CHOICES.
+        Returns one of the strings of the percent base.
         """
         raise NotImplementedError('You have to provide a get_percent_base_choice() method.')
-
-    def print_votesvalid(self):
-        if self.get_percent_base_choice() == 'DISABLED':
-            value = print_value(self.votesvalid, None)
-        else:
-            value = print_value(self.votesvalid, self.get_percent_base())
-        return value
-
-    def print_votesinvalid(self):
-        if self.get_percent_base_choice() == 'WITH_INVALID':
-            value = print_value(self.votesinvalid, self.get_percent_base())
-        else:
-            value = print_value(self.votesinvalid, None)
-        return value
-
-    def print_votescast(self):
-        if self.get_percent_base_choice() == 'WITH_INVALID':
-            value = print_value(self.votescast, self.get_percent_base())
-        else:
-            value = print_value(self.votescast, None)
-        return value
-
-    def get_percent_base(self):
-        if self.get_percent_base_choice() == "WITHOUT_INVALID" and self.votesvalid and self.votesvalid > 0:
-            base = 100 / float(self.votesvalid)
-        elif self.get_percent_base_choice() == "WITH_INVALID" and self.votescast and self.votescast > 0:
-            base = 100 / float(self.votescast)
-        else:
-            base = None
-        return base
 
 
 class PublishPollMixin(models.Model):
@@ -200,7 +163,7 @@ class BasePoll(models.Model):
         """
         return self.get_vote_class().objects.filter(option__poll__id=self.id)
 
-    def set_vote_objects_with_values(self, option, data):
+    def set_vote_objects_with_values(self, option, data, skip_autoupdate=False):
         """
         Creates or updates the vote objects for the poll.
         """
@@ -210,7 +173,7 @@ class BasePoll(models.Model):
             except ObjectDoesNotExist:
                 vote = self.get_vote_class()(option=option, value=value)
             vote.weight = data[value]
-            vote.save()
+            vote.save(skip_autoupdate=skip_autoupdate)
 
     def get_vote_objects_with_values(self, option_id):
         """

@@ -19,13 +19,4 @@ urlpatterns = [
     url(r'^setpassword/$',
         views.SetPasswordView.as_view(),
         name='user_setpassword'),
-
-    # PDF
-    url(r'^print/$',
-        views.UsersListPDF.as_view(),
-        name='user_listpdf'),
-
-    url(r'^passwords/print/$',
-        views.UsersPasswordsPDF.as_view(),
-        name='user_passwordspdf'),
 ]

@@ -22,6 +22,15 @@ from .models import (
 )
 
 
+def posts_validator(data):
+    """
+    Validator for open posts. It checks that the values for the open posts are greater than 0.
+    """
+    if (data['open_posts'] and data['open_posts'] is not None and data['open_posts'] < 1):
+        raise ValidationError({'detail': _('Value for {} must be greater than 0').format('open_posts')})
+    return data
+
+
 class AssignmentRelatedUserSerializer(ModelSerializer):
     """
     Serializer for assignment.models.AssignmentRelatedUser objects.
@@ -32,7 +41,8 @@ class AssignmentRelatedUserSerializer(ModelSerializer):
             'id',
             'user',
             'elected',
-            'assignment')  # js-data needs the assignment-id in the nested object to define relations.
+            'assignment',
+            'weight')  # js-data needs the assignment-id in the nested object to define relations.
 
 
 class AssignmentVoteSerializer(ModelSerializer):
@@ -53,7 +63,7 @@ class AssignmentOptionSerializer(ModelSerializer):
 
     class Meta:
         model = AssignmentOption
-        fields = ('id', 'candidate', 'is_elected', 'votes', 'poll')
+        fields = ('id', 'candidate', 'is_elected', 'votes', 'poll', 'weight')
 
     def get_is_elected(self, obj):
         """
@@ -96,8 +106,7 @@ class AssignmentAllPollSerializer(ModelSerializer):
         model = AssignmentPoll
         fields = (
             'id',
-            'yesnoabstain',
-            'yesno',
+            'pollmethod',
             'description',
             'published',
             'options',
@@ -107,7 +116,7 @@ class AssignmentAllPollSerializer(ModelSerializer):
             'votes',
             'has_votes',
             'assignment')  # js-data needs the assignment-id in the nested object to define relations.
-        read_only_fields = ('yesnoabstain',)
+        read_only_fields = ('pollmethod',)
         validators = (default_votes_validator,)
 
     def get_has_votes(self, obj):
@@ -122,12 +131,12 @@ class AssignmentAllPollSerializer(ModelSerializer):
         Customized update method for polls. To update votes use the write
         only field 'votes'.
 
-        Example data for a 'yesnoabstain'=true poll with two candidates:
+        Example data for a 'pollmethod'='yna' poll with two candidates:
 
             "votes": [{"Yes": 10, "No": 4, "Abstain": -2},
                       {"Yes": -1, "No": 0, "Abstain": -2}]
 
-        Example data for a 'yesnoabstain'=false poll with two candidates:
+        Example data for a 'pollmethod' ='yn' poll with two candidates:
             "votes": [{"Votes": 10}, {"Votes": 0}]
         """
         # Update votes.
@@ -145,7 +154,7 @@ class AssignmentAllPollSerializer(ModelSerializer):
                     if vote_value not in instance.get_vote_values():
                         raise ValidationError({
                             'detail': _('Vote value %s is invalid.') % vote_value})
-                instance.set_vote_objects_with_values(option, votes[index])
+                instance.set_vote_objects_with_values(option, votes[index], skip_autoupdate=True)
 
         # Update remaining writeable fields.
         instance.description = validated_data.get('description', instance.description)
@@ -168,8 +177,7 @@ class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
         model = AssignmentPoll
         fields = (
             'id',
-            'yesnoabstain',
-            'yesno',
+            'pollmethod',
             'description',
             'published',
             'options',
@@ -199,6 +207,7 @@ class AssignmentFullSerializer(ModelSerializer):
             'polls',
             'agenda_item_id',
             'tags',)
+        validators = (posts_validator,)
 
 
 class AssignmentShortSerializer(AssignmentFullSerializer):
@@ -221,3 +230,4 @@ class AssignmentShortSerializer(AssignmentFullSerializer):
             'polls',
             'agenda_item_id',
             'tags',)
+        validators = (posts_validator,)

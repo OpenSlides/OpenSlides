@@ -1,0 +1,60 @@
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a ui-sref="agenda.item.list" class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to overview</translate>
+      </a>
+      <!-- Current list of speakers projector button -->
+      <div class="btn-group button" uib-dropdown
+        uib-tooltip="{{ 'Project the current list of speakers' | translate }}"
+        os-perms="core.can_manage_projector">
+        <button type="button" class="btn btn-default btn-sm"
+            title="{{ 'Project current list of speakers' | translate }}"
+            ng-click="currentListOfSpeakers.project(listOfSpeakersDefaultProjectorId, currentListOfSpeakersAsOverlay)"
+            ng-class="{ 'btn-primary': currentListOfSpeakers.isProjected().length && inArray(currentListOfSpeakers.isProjected(), listOfSpeakersDefaultProjectorId)}">
+          <i class="fa fa-video-camera"></i>
+          <translate>Current list of speakers</translate>
+        </button>
+        <button type="button" class="btn btn-default btn-sm"
+          ng-if="projectors.length > 1"
+          uib-dropdown-toggle
+          ng-class="{ 'btn-primary': currentListOfSpeakers.isProjected().length && !inArray(currentListOfSpeakers.isProjected(), listOfSpeakersDefaultProjectorId)}">
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="split-button" ng-if="projectors.length > 1">
+          <li role="menuitem">
+            <a href="" ng-click="setOverlay(false); $event.stopPropagation();">
+              <i class="fa" ng-class="currentListOfSpeakersAsOverlay ? 'fa-circle-o' : 'fa-check-circle-o'"></i>
+              <translate>Project as slide</translate>
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="" ng-click="setOverlay(true); $event.stopPropagation();">
+              <i class="fa" ng-class="currentListOfSpeakersAsOverlay ? 'fa-check-circle-o' : 'fa-circle-o'"></i>
+              <translate>Project as overlay</translate>
+            </a>
+          </li>
+          <li class="divider"></li>
+          <li role="menuitem" ng-repeat="projector in projectors | orderBy:'id'">
+            <a href="" ng-click="currentListOfSpeakers.project(projector.id, currentListOfSpeakersAsOverlay)"
+              ng-class="{ 'projected': inArray(currentListOfSpeakers.isProjected(), projector.id) }">
+              <i class="fa fa-video-camera" ng-show="inArray(currentListOfSpeakers.isProjected(), projector.id)"></i>
+              {{ projector.name | translate }}
+              <span ng-if="projector.id == listOfSpeakersDefaultProjectorId">(<translate>Default</translate>)</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <h1 translate>Current list of speakers</h1>
+    <h2> {{ item.getTitle() }}
+      <span class="slimlabel label label-danger ng-scope" style="" ng-if="item.speaker_list_closed" translate>
+        Closed
+      </span>
+    </h2>
+  </div>
+</div>
+
+<ng-include src="'static/templates/agenda/list-of-speakers-partial-management.html'"></ng-include>

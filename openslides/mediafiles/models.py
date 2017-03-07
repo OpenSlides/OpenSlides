@@ -2,8 +2,6 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext as _
 
-from openslides.utils.search import user_name_helper
-
 from ..utils.models import RESTModelMixin
 from .access_permissions import MediafileAccessPermissions
 
@@ -30,6 +28,9 @@ class Mediafile(RESTModelMixin, models.Model):
         blank=True)
     """A user – the uploader of a file."""
 
+    hidden = models.BooleanField(default=False)
+    """Whether or not this mediafile should be marked as hidden"""
+
     timestamp = models.DateTimeField(auto_now_add=True)
     """A DateTimeField to save the upload date and time."""
 
@@ -41,6 +42,7 @@ class Mediafile(RESTModelMixin, models.Model):
         default_permissions = ()
         permissions = (
             ('can_see', 'Can see the list of files'),
+            ('can_see_hidden', 'Can see hidden files'),
             ('can_upload', 'Can upload files'),
             ('can_manage', 'Can manage files'))
 
@@ -69,11 +71,3 @@ class Mediafile(RESTModelMixin, models.Model):
                 kB = size / 1024
                 size_string = '%d kB' % kB
         return size_string
-
-    def get_search_index_string(self):
-        """
-        Returns a string that can be indexed for the search.
-        """
-        return " ".join((
-            self.title,
-            user_name_helper(self.uploader)))

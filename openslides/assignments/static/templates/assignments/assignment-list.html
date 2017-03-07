@@ -9,10 +9,6 @@
         <i class="fa fa-tags fa-lg"></i>
         <translate>Tags</translate>
       </a>
-      <a ui-sref="assignments_pdf" target="_blank" class="btn btn-default btn-sm">
-        <i class="fa fa-file-pdf-o fa-lg"></i>
-        <translate>PDF</translate>
-      </a>
     </div>
     <h1 translate>Elections</h1>
   </div>
@@ -20,31 +16,35 @@
 
 <div class="details">
   <div class="row form-group">
-    <div class="col-sm-6">
-      <form class="form-inline">
-        <!-- delete mode -->
-        <button os-perms="assignments.can_manage" class="btn"
-            ng-class="$parent.isDeleteMode ? 'btn-primary' : 'btn-default'"
-            ng-click="$parent.isDeleteMode = !$parent.isDeleteMode; uncheckAll()">
-          <i class="fa fa-check-square-o"></i>
-          <translate>Select ...</translate>
+    <div class="col-sm-12">
+      <!-- select mode -->
+      <button os-perms="assignments.can_manage" class="btn btn-sm"
+          ng-class="$parent.isSelectMode ? 'btn-primary' : 'btn-default'"
+          ng-click="$parent.isSelectMode = !$parent.isSelectMode; uncheckAll()">
+        <i class="fa fa-check-square-o"></i>
+        <translate>Select ...</translate>
+      </button>
+      <!-- export dropdown -->
+      <div class="dropdown pull-right" uib-dropdown>
+        <button type="button" class="btn btn-default btn-sm" id="dropdownExport" uib-dropdown-toggle>
+          <i class="fa fa-upload"></i>
+          <span ng-if="assignmentsFiltered.length == assignments.length" translate>
+            Export all
+          </span>
+          <span ng-if="assignmentsFiltered.length != assignments.length" translate>
+            Export filtered
+          </span>
+          <span class="caret"></span>
         </button>
-      </form>
-    </div>
-    <div class="col-sm-6">
-      <div class="form-inline text-right">
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-addon"><i class="fa fa-search"></i></div>
-            <input type="text" ng-model="filter.search" class="form-control"
-               placeholder="{{ 'Search' | translate}}">
-          </div>
-        </div>
-        <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen"
-            ng-class="isFilterOpen ? 'btn-primary' : 'btn-default'">
-          <i class="fa fa-filter"></i>
-          <translate>Filter ...</translate>
-        </button>
+        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownExport">
+          <!-- PDF export -->
+          <li>
+            <a href="" ng-click="makePDF_assignmentList()">
+              <i class="fa fa-file-pdf-o"></i>
+              <translate>PDF</translate>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -54,16 +54,17 @@
       <!-- phase filter -->
       <select ng-model="phaseFilter" class="form-control" id="phaseFilter">
         <option value="" translate>--- Select phase ---</option>
-        <option ng-repeat="phase in phases" value="{{ phase.value }}">{{ phase.display_name }}</option>
+        <option ng-repeat="phase in phases" value="{{ phase.value }}">{{ phase.display_name | translate }}</option>
       </select>
     </div>
   </div>
-  <div uib-collapse="!isDeleteMode" class="row spacer">
+  <div uib-collapse="!isSelectMode" class="row spacer">
     <div class="col-sm-12 text-left">
       <!-- delete button -->
-      <a ng-show="isDeleteMode"
-          os-perms="assignments.can_manage" ng-click="deleteMultiple()"
-          class="btn btn-primary">
+      <a ng-show="isSelectMode" os-perms="assignments.can_manage"
+        ng-bootbox-confirm="{{ 'Are you sure you want to delete all selected elections?' | translate }}"
+        ng-bootbox-confirm-action="deleteMultiple()"
+        class="btn btn-default btn-sm btn-danger">
         <i class="fa fa-trash fa-lg"></i>
         <translate>Delete selected elections</translate>
       </a>
@@ -75,126 +76,250 @@
     {{ assignments.length }} {{ "elections" | translate }}<span ng-if="(assignments|filter:{selected:true}).length > 0">,
     {{(assignments|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
   </div>
-  <table class="table table-striped table-bordered table-hover">
-    <thead>
-      <tr>
-        <!-- projector column -->
-        <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="minimum">
 
-        <!-- delete selection column -->
-        <th ng-show="isDeleteMode" os-perms="assignments.can_manage" class="minimum deleteColumn">
-          <input type="checkbox" ng-model="$parent.selectedAll" ng-change="checkAll()">
+  <div class="os-table container-fluid">
+    <div class="row header-row">
+      <div class="col-xs-1 centered" ng-show="isSelectMode">
+        <i class="fa text-danger pointer" ng-class=" selectedAll ? 'fa-check-square-o' : 'fa-square-o'"
+          ng-click="checkAll()"></i>
+      </div>
+      <div class="col-xs-11 main-header">
+        <span class="form-inline text-right pull-right">
+          <!-- clear all filters -->
+          <span class="sort-spacer pointer" ng-click="filter.reset()"
+            ng-if="filter.areFiltersSet()" ng-disabled="isSelectMode"
+            ng-class="{'disabled': isSelectMode}">
+            <i class="fa fa-times-circle"></i>
+            <translate>Filter</translate>
+          </span>
+          <!-- Tag filter -->
+          <span uib-dropdown ng-if="tags.length > 0">
+            <span class="pointer" id="dropdownTag" uib-dropdown-toggle
+              ng-class="{'bold': filter.multiselectFilters.tag.length > 0, 'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
+              <translate>Tag</translate>
+              <span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu dropdown-menu-right"
+              aria-labelledby="dropdownTag">
+              <li ng-repeat="tag in tags">
+                <a href ng-click="filter.operateMultiselectFilter('tag', tag.id, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.MultiselectFilters.tag.indexOf(tag.id) > -1"></i>
+                  {{ tag.name }}
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href ng-click="filter.operateMultiselectFilter('tag', -1, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.tag.indexOf(-1) > -1"></i>
+                  <translate>No tag set</translate>
+                </a>
+              </li>
+            </ul>
+          </span>
+          <!-- Phase filter -->
+          <span uib-dropdown>
+            <span class="pointer" id="dropdownPhase" uib-dropdown-toggle
+              ng-class="{'bold': filter.multiselectFilters.phase.length > 0, 'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
+              <translate>Phase</translate>
+              <span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu dropdown-menu-right"
+              aria-labelledby="dropdownPhase">
+              <li ng-repeat="phase in phases">
+                <a href ng-click="filter.operateMultiselectFilter('phase', phase.value, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.phase.indexOf(phase.value) > -1"></i>
+                  {{ phase.display_name | translate }}
+                </a>
+              </li>
+            </ul>
+          </span>
+          <!-- dropdown sort -->
+          <span uib-dropdown>
+            <span class="pointer" id="dropdownSort" uib-dropdown-toggle
+              ng-class="{'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
+              <translate>Sort</translate>
+              <span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownSort">
+              <!-- all sortOptions -->
+              <li ng-repeat="option in sortOptions">
+                <a ng-click="sort.toggle(option.name)">
+                {{ option.display_name | translate }}
+                <span class="spacer-right pull-right"></span>
+                  <i class="pull-right fa"
+                    ng-style="{'visibility': sort.column === option.name ? 'visible' : 'hidden'}"
+                    ng-class="sort.reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+                  </i>
+                </a>
+              </li>
+            </ul>
+          </span>
+          <!-- search field -->
+          <span class="form-group">
+            <span class="input-group">
+              <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              <input type="text" ng-model="filter.filterString" class="form-control"
+                 placeholder="{{ 'Search' | translate}}" ng-disable="isSelectMode"
+                 ng-change="filter.save()">
+            </span>
+          </span>
 
-        <!-- agenda item column -->
-        <th ng-click="toggleSort('agenda_item.item_number')" class="sortable">
-          <translate translate-comment="short form of agenda item">Item</translate>
-          <i class="pull-right fa" ng-show="sortColumn === 'agenda_item.item_number' && header.sortable != false"
-              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-          </i>
+        </span>
+          <!-- show all selected multiselectoptions -->
+          <span ng-repeat="tag in tags" class="pointer spacer-left-lg"
+            ng-if="filter.multiselectFilters.tag.indexOf(tag.id) > -1"
+            ng-click="filter.operateMultiselectFilter('tag', tag.id, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
+            <span class="nobr">
+              <i class="fa fa-times-circle"></i>
+              {{ tag.name }}
+            </span>
+          </span>
+          <span ng-if="filter.multiselectFilters.tag.indexOf(-1) > -1" class="pointer spacer-left-lg"
+            ng-click="filter.operateMultiselectFilter('tag', -1, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
+            <i class="fa fa-times-circle"></i>
+            <translate>No tag set</translate>
+          </span>
+          <span ng-repeat="phase in phases" class="pointer spacer-left-lg"
+            ng-if="filter.multiselectFilters.phase.indexOf(phase.value) > -1"
+            ng-click="filter.operateMultiselectFilter('phase', phase.value, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
+            <span class="nobr">
+              <i class="fa fa-times-circle"></i>
+              {{ phase.display_name | translate }}
+            </span>
+          </span>
+        <span>
+        </span>
 
-        <!-- title column -->
-        <th ng-click="toggleSort('title')" class="sortable">
-          <translate>Title</translate>
-          <i class="pull-right fa" ng-show="sortColumn === 'title' && header.sortable != false"
-              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-          </i>
+      </div>
+    </div>
 
-        <!-- candicates / posts column -->
-        <th ng-click="toggleSort('open_posts')" class="sortable optional">
-          <translate>Candidates</translate> &middot; <translate>Posts</translate>
-          <i class="pull-right fa" ng-show="sortColumn === 'open_posts' && header.sortable != false"
-              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-          </i>
+    <!-- main table -->
+    <div class="row data-row" ng-mouseover="assignment.hover=true"
+      ng-mouseleave="assignment.hover=false"
+      ng-class="{'projected': assignment.isProjected().length}"
+      ng-repeat="assignment in assignmentsFiltered = (assignments
+        | osFilter: filter.filterString : filter.getObjectQueryString
+        | MultiselectFilter: filter.multiselectFilters.tag : getItemId.tag
+        | MultiselectFilter: filter.multiselectFilters.phase : getItemId.phase
+        | orderBy: sort.column : sort.reverse)">
 
-        <!-- phase column -->
-        <th ng-click="toggleSort('phase')" class="sortable optional">
-          <translate>Phase</translate>
-          <i class="pull-right fa" ng-show="sortColumn === 'phase' && header.sortable != false"
-              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-          </i>
-    <tbody>
-      <tr ng-repeat="assignment in assignmentsFiltered = (assignments | osFilter: filter.search : getFilterString |
-          filter: {phase: phaseFilter} | orderBy: sortColumn:reverse)"
-          class="animate-item"
-          ng-class="{ 'activeline': assignment.isProjected(), 'selected': assignment.selected }">
+      <!-- select column -->
+      <div ng-show="isSelectMode" os-perms="assignments.can_manage" class="col-xs-1 centered">
+        <i class="fa text-danger pointer" ng-click="assignment.selected=!assignment.selected"
+        ng-class="assignment.selected ? 'fa-check-square-o' : 'fa-square-o'"></i>
+      </div>
 
-        <!-- projector -->
-        <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
-          <a class="btn btn-default btn-sm"
-              ng-class="{ 'btn-primary': assignment.isProjected() }"
-              ng-click="assignment.project()"
-              title="{{ 'Project election' | translate }}">
-            <i class="fa fa-video-camera"></i>
-          </a>
+      <!-- projector column -->
+      <div class="col-xs-1 centered projector" os-perms="core.can_manage_projector">
+        <projector-button model="assignment", default-projector-id="defaultProjectorId">
+        </projector-button>
+      </div>
+      <div class="no-projector-spacer" os-perms="!core.can_manage_projector"></div>
 
-        <!-- delete selection -->
-        <td ng-show="isDeleteMode" os-perms="assignments.can_manage" class="deleteColumn">
-          <input type="checkbox" ng-model="assignment.selected">
-
-        <!-- agenda item number -->
-        <td ng-if="!assignment.quickEdit">
-          {{ assignment.agenda_item.item_number }}
-
-        <!-- title -->
-        <td ng-if="!assignment.quickEdit" ng-mouseover="assignment.hover=true" ng-mouseleave="assignment.hover=false">
-          <strong><a ui-sref="assignments.assignment.detail({id: assignment.id})">{{ assignment.title }}</a></strong>
-          <div os-perms="assignments.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !assignment.hover}">
-            <a href="" ng-click="openDialog(assignment)" translate>Edit</a> |
-            <a href="" ng-click="assignment.quickEdit=true" translate>QuickEdit</a> |
-            <a href="" class="text-danger"
+      <!-- main content column -->
+      <div class="col-xs-6 content">
+        <div class="title-col">
+          <!-- title and phase -->
+          <div>
+            <a class="title" ui-sref="assignments.assignment.detail({id: assignment.id})">
+              {{ assignment.title }}
+            </a>
+            <span style="padding: 5px;" ng-mouseover="assignment.phaseHover=true" ng-mouseleave="assignment.phaseHover=false">
+              <span class="label" ng-class="{'label-primary': assignment.phase == 0,
+                                             'label-warning': assignment.phase == 1,
+                                             'label-success': assignment.phase == 2 }">
+                {{ phases[assignment.phase].display_name | translate }}
+              </span>
+              <span os-perms="assignments.can_manage" ng-class="{'hiddenDiv': !assignment.phaseHover}" uib-dropdown>
+                <i class="fa fa-cog pointer" uib-dropdown-toggle id="phaseDropdown{{ assignment.id }}"></i>
+                <ul uib-dropdown-menu aria-labelledby="phaseDropdown{{ assignment.id }}"
+                  class="dropdown-menu">
+                  <li ng-repeat="phase in phases">
+                    <a href>
+                      <i class="fa fa-check" ng-if="assignment.phase == phase.value"></i>
+                      <span class="pointer" ng-click="updatePhase(assignment, phase.value)">{{ phase.display_name | translate }}</a>
+                    </a>
+                  </li>
+                </ul>
+              </span>
+            </span>
+          </div>
+          <!-- hover menu -->
+          <div os-perms="assignments.can_manage" ng-class="{'hiddenDiv': !assignment.hover}">
+            <small>
+              <a href="" ng-click="openDialog(assignment)" translate>Edit</a> &middot;
+              <a href="" class="text-danger"
                 ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
                 <b>{{ assignment.title }}</b>"
                 ng-bootbox-confirm-action="delete(assignment)" translate>Delete</a>
+            </small>
           </div>
+        </div>
+      </div>
 
-        <!-- candidates / posts -->
-        <td ng-if="!assignment.quickEdit" class="optional">
-          <span class="badge">{{ assignment.assignment_related_users.length }}</span>
-          /
-          <span class="badge">{{ assignment.open_posts }}</span>
+      <!-- additional content column -->
+      <div class="col-xs-4 content" ng-style="{'width': isSelectMode ? 'calc(50% - 120px)' : 'calc(50% - 70px)'}">
+        <div style="width: 60%;" class="optional">
+          <small>
+            <!-- Tag dropdown for manage user -->
+            <div os-perms="assignments.can_manage" ng-show="tags.length > 0"
+                ng-mouseover="assignment.tagHover=true"
+                ng-mouseleave="assignment.tagHover=false">
+              <span uib-dropdown>
+                <span id="dropdownTags{{ assignment.id }}" class="pointer"
+                  uib-dropdown-toggle uib-tooltip="{{ 'Add a tag' | translate }}"
+                  tooltip-class="nobr">
+                  <span ng-if="assignment.tags.length == 0" ng-show="assignment.hover">
+                    <i class="fa fa-tags"></i>
+                    <i class="fa fa-plus"></i>
+                  </span>
+                  <span ng-if="assignment.tags.length > 0">
+                    <i class="fa fa-tags"></i>
+                    <span ng-repeat="tag in assignment.tags">
+                      {{ tag.name }}<span ng-if="!$last">,</span>
+                    </span>
+                    <i class="fa fa-cog fa-lg spacer-left" ng-show="assignment.tagHover"></i>
+                  </span>
+                </span>
+                <ul class="dropdown-menu" aria-labelledby="dropdownTags{{ assignment.id }}">
+                  <li ng-repeat="tag in tags">
+                    <a href ng-click="toggleTag(assignment, tag)">
+                      <i class="fa fa-check" ng-if="hasTag(assignment, tag)"></i>
+                      {{ tag.name }}
+                    </a>
+                  </li>
+                </ul>
+              </span>
+            </div>
+            <!-- Tag string for normal user -->
+            <div os-perms="!assignments.can_manage" ng-show="assignment.tags.length > 0">
+              <i class="fa fa-tags spacer-right"></i>
+              <span ng-repeat="tag in assignment.tags">
+                {{ tag.name }}<span ng-if="!$last">,</span>
+              </span>
+            </div>
+          </small>
+        </div>
 
-        <!-- phase -->
-        <td ng-if="!assignment.quickEdit" class="optional">
-          <span class="label" ng-class="{'label-primary': assignment.phase == 0,
-                                         'label-warning': assignment.phase == 1,
-                                         'label-success': assignment.phase == 2 }">
-            {{ phases[assignment.phase].display_name }}
+        <div style="width: 20%;" class="pull-right nobr optional centered">
+          <span class="badge"
+            uib-tooltip="{{ assignment.assignment_related_users.length }} {{ 'Candidates' | translate }}"
+            tooltip-class="nobr"
+            ng-class="{'badge-info': assignment.assignment_related_users.length < assignment.open_posts}">
+            {{ assignment.assignment_related_users.length }}
           </span>
+        </div>
+        <div style="width: 20%;" class="pull-right nobr">
+          <div class="centered">{{ assignment.agenda_item.getItemNumberWithAncestors() }}</div>
+        </div>
+      </div>
+    </div> <!-- main table -->
+  </div> <!-- end container -->
 
-        <!-- quickEdit columns -->
-        <td ng-if="assignment.quickEdit" colspan="4">
-          <h4>{{ assignment.title }} <span class="text-muted">&ndash; Quick Edit</span></h4>
-            <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-              {{ alert.msg }}
-            </uib-alert>
-            <div class="row">
-              <div class="col-xs-6">
-                <label for="inputTitle" translate>Title</label>
-                <input type="text" ng-model="assignment.title" class="form-control input-sm" id="inputTitle">
-              </div>
-              <div class="col-xs-6">
-                <label for="inputPosts" translate>Number of members to be elected</label>
-                <input type="number" ng-model="assignment.open_posts" class="form-control input-sm" id="inputPosts">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-6">
-                <label for="selectPhase" translate>Phase</label>
-                <select ng-options="phase.value as phase.display_name for phase in phases"
-                    ng-model="assignment.phase" class="form-control" id="selectPhase">
-                </select>
-              </div>
-              <div class="col-xs-6"></div>
-            </div>
-            <div class="spacer">
-              <button ng-click="cancelQuickEdit(assignment)" class="btn btn-default pull-left" translate>
-                Cancel
-              </button> &nbsp;
-              <button ng-click="save(assignment)" class="btn btn-primary" translate>
-                Update
-              </button>
-              <a href="" ng-click="openDialog(assignment)"
-                  class="pull-right" translate>Edit election ...</a>
-            </div>
-  </table>
 </div>

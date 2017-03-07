@@ -1,10 +1,10 @@
 from collections import OrderedDict
 
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
 from openslides.core.config import config
@@ -16,9 +16,9 @@ from openslides.poll.models import (
     CollectDefaultVotesMixin,
     PublishPollMixin,
 )
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
-from openslides.utils.search import user_name_helper
 
 from .access_permissions import AssignmentAccessPermissions
 
@@ -27,14 +27,31 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
     """
     Many to Many table between an assignment and user.
     """
+
     assignment = models.ForeignKey(
         'Assignment',
         on_delete=models.CASCADE,
         related_name='assignment_related_users')
+    """
+    ForeinKey to the assignment.
+    """
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE)
+    """
+    ForeinKey to the user who is related to the assignment.
+    """
+
     elected = models.BooleanField(default=False)
+    """
+    Saves the election state of each user
+    """
+
+    weight = models.IntegerField(default=0)
+    """
+    The sort order of the candidates.
+    """
 
     class Meta:
         default_permissions = ()
@@ -50,20 +67,39 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
         return self.assignment
 
 
+class AssignmentManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all assignments. In the background
+        all related users (candidates), the related agenda item and all
+        polls are prefetched from the database.
+        """
+        return self.get_queryset().prefetch_related(
+            'related_users',
+            'agenda_items',
+            'polls',
+            'tags')
+
+
 class Assignment(RESTModelMixin, models.Model):
     """
     Model for assignments.
     """
     access_permissions = AssignmentAccessPermissions()
 
+    objects = AssignmentManager()
+
     PHASE_SEARCH = 0
     PHASE_VOTING = 1
     PHASE_FINISHED = 2
 
     PHASES = (
-        (PHASE_SEARCH, ugettext_lazy('Searching for candidates')),
-        (PHASE_VOTING, ugettext_lazy('Voting')),
-        (PHASE_FINISHED, ugettext_lazy('Finished')),
+        (PHASE_SEARCH, 'Searching for candidates'),
+        (PHASE_VOTING, 'Voting'),
+        (PHASE_FINISHED, 'Finished'),
     )
 
     title = models.CharField(
@@ -110,6 +146,10 @@ class Assignment(RESTModelMixin, models.Model):
     """
     Tags for the assignment.
     """
+
+    # In theory there could be one then more agenda_item. But we support only
+    # one. See the property agenda_item.
+    agenda_items = GenericRelation(Item, related_name='assignments')
 
     class Meta:
         default_permissions = ()
@@ -170,9 +210,14 @@ class Assignment(RESTModelMixin, models.Model):
         """
         Adds the user as candidate.
         """
+        weight = self.assignment_related_users.aggregate(
+            models.Max('weight'))['weight__max'] or 0
+        defaults = {
+            'elected': False,
+            'weight': weight + 1}
         related_user, __ = self.assignment_related_users.update_or_create(
             user=user,
-            defaults={'elected': False})
+            defaults=defaults)
 
     def set_elected(self, user):
         """
@@ -187,6 +232,7 @@ class Assignment(RESTModelMixin, models.Model):
         Delete the connection from the assignment to the user.
         """
         self.assignment_related_users.filter(user=user).delete()
+        inform_changed_data(self)
 
     def set_phase(self, phase):
         """
@@ -208,30 +254,30 @@ class Assignment(RESTModelMixin, models.Model):
 
         # Find out the method of the election
         if config['assignments_poll_vote_values'] == 'votes':
-            yesnoabstain = False
-            yesno = False
+            pollmethod = 'votes'
         elif config['assignments_poll_vote_values'] == 'yesnoabstain':
-            yesnoabstain = True
-            yesno = False
+            pollmethod = 'yna'
         elif config['assignments_poll_vote_values'] == 'yesno':
-            yesnoabstain = False
-            yesno = True
+            pollmethod = 'yn'
         else:
             # config['assignments_poll_vote_values'] == 'auto'
             # candidates <= available posts -> yes/no/abstain
             if len(candidates) <= (self.open_posts - self.elected.count()):
-                yesno = False
-                yesnoabstain = True
+                pollmethod = 'yna'
             else:
-                yesno = False
-                yesnoabstain = False
+                pollmethod = 'votes'
 
         # Create the poll with the candidates.
         poll = self.polls.create(
             description=self.poll_description_default,
-            yesnoabstain=yesnoabstain,
-            yesno=yesno)
-        poll.set_options({'candidate': user} for user in candidates)
+            pollmethod=pollmethod)
+        options = []
+        related_users = AssignmentRelatedUser.objects.filter(assignment__id=self.id).exclude(elected=True)
+        for related_user in related_users:
+            options.append({
+                'candidate': related_user.user,
+                'weight': related_user.weight})
+        poll.set_options(options)
 
         # Add all candidates to list of speakers of related agenda item
         # TODO: Try to do this in a bulk create
@@ -296,8 +342,9 @@ class Assignment(RESTModelMixin, models.Model):
         """
         Returns the related agenda item.
         """
-        content_type = ContentType.objects.get_for_model(self)
-        return Item.objects.get(object_id=self.pk, content_type=content_type)
+        # We support only one agenda item so just return the first element of
+        # the queryset.
+        return self.agenda_items.all()[0]
 
     @property
     def agenda_item_id(self):
@@ -305,16 +352,6 @@ class Assignment(RESTModelMixin, models.Model):
         Returns the id of the agenda item object related to this object.
         """
         return self.agenda_item.pk
-
-    def get_search_index_string(self):
-        """
-        Returns a string that can be indexed for the search.
-        """
-        return " ".join((
-            self.title,
-            self.description,
-            user_name_helper(self.related_users.all()),
-            " ".join(tag.name for tag in self.tags.all())))
 
 
 class AssignmentVote(RESTModelMixin, BaseVote):
@@ -341,6 +378,8 @@ class AssignmentOption(RESTModelMixin, BaseOption):
     candidate = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE)
+    weight = models.IntegerField(default=0)
+
     vote_class = AssignmentVote
 
     class Meta:
@@ -364,8 +403,9 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
         Assignment,
         on_delete=models.CASCADE,
         related_name='polls')
-    yesnoabstain = models.BooleanField(default=False)
-    yesno = models.BooleanField(default=False)
+    pollmethod = models.CharField(
+        max_length=5,
+        default='yna')
     description = models.CharField(
         max_length=79,
         blank=True)
@@ -377,9 +417,9 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
         return self.assignment
 
     def get_vote_values(self):
-        if self.yesnoabstain:
+        if self.pollmethod == 'yna':
             return ['Yes', 'No', 'Abstain']
-        elif self.yesno:
+        elif self.pollmethod == 'yn':
             return ['Yes', 'No']
         else:
             return ['Votes']

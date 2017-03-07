@@ -2,7 +2,12 @@
 
 'use strict';
 
-angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
+angular.module('OpenSlidesApp.assignments.site', [
+    'OpenSlidesApp.assignments',
+    'OpenSlidesApp.core.pdf',
+    'OpenSlidesApp.assignments.pdf',
+    'OpenSlidesApp.poll.majority'
+])
 
 .config([
     'mainMenuProvider',
@@ -19,49 +24,43 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 ])
 
 .config([
+    'SearchProvider',
+    'gettext',
+    function (SearchProvider, gettext) {
+        SearchProvider.register({
+            'verboseName': gettext('Elections'),
+            'collectionName': 'assignments/assignment',
+            'urlDetailState': 'assignments.assignment.detail',
+            'weight': 400,
+        });
+    }
+])
+
+.config([
     '$stateProvider',
-    function($stateProvider) {
+    'gettext',
+    function($stateProvider, gettext) {
         $stateProvider
             .state('assignments', {
                 url: '/assignments',
                 abstract: true,
                 template: "<ui-view/>",
+                data: {
+                    title: gettext('Elections'),
+                    basePerm: 'assignments.can_see',
+                },
             })
             .state('assignments.assignment', {
                 abstract: true,
                 template: "<ui-view/>",
             })
-            .state('assignments.assignment.list', {
-                resolve: {
-                    assignments: function(Assignment) {
-                        return Assignment.findAll();
-                    },
-                    items: function(Agenda) {
-                        return Agenda.findAll().catch(
-                            function () {
-                                return null;
-                            }
-                        );
-                    },
-                    phases: function(Assignment) {
-                        return Assignment.getPhases();
-                    }
-                }
-            })
+            .state('assignments.assignment.list', {})
             .state('assignments.assignment.detail', {
                 controller: 'AssignmentDetailCtrl',
                 resolve: {
-                    assignment: function(Assignment, $stateParams) {
-                        return Assignment.find($stateParams.id).then(function(assignment) {
-                            return Assignment.loadRelations(assignment, 'agenda_item');
-                        });
-                    },
-                    users: function(User) {
-                        return User.findAll();
-                    },
-                    phases: function(Assignment) {
-                        return Assignment.getPhases();
-                    }
+                    assignmentId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
                 }
             })
             // redirects to assignment detail and opens assignment edit form dialog, uses edit url,
@@ -69,8 +68,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             // (from assignment controller use AssignmentForm factory instead to open dialog in front
             // of current view without redirect)
             .state('assignments.assignment.detail.update', {
-                onEnter: ['$stateParams', '$state', 'ngDialog', 'Assignment',
-                    function($stateParams, $state, ngDialog, Assignment) {
+                onEnter: ['$stateParams', '$state', 'ngDialog',
+                    function($stateParams, $state, ngDialog) {
                         ngDialog.open({
                             template: 'static/templates/assignments/assignment-form.html',
                             controller: 'AssignmentUpdateCtrl',
@@ -78,10 +77,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                             closeByEscape: false,
                             closeByDocument: false,
                             resolve: {
-                                assignment: function() {
-                                    return Assignment.find($stateParams.id).then(function(assignment) {
-                                        return Assignment.loadRelations(assignment, 'agenda_item');
-                                    });
+                                assignmentId: function() {
+                                    return $stateParams.id;
                                 },
                             },
                             preCloseCallback: function() {
@@ -99,33 +96,28 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 .factory('AssignmentForm', [
     'gettextCatalog',
     'operator',
-    function (gettextCatalog, operator) {
+    'Tag',
+    'Assignment',
+    'Agenda',
+    'AgendaTree',
+    function (gettextCatalog, operator, Tag, Assignment, Agenda, AgendaTree) {
         return {
             // ngDialog for assignment form
             getDialog: function (assignment) {
-                var resolve;
-                if (assignment) {
-                    resolve = {
-                        assignment: function() {
-                            return assignment;
-                        },
-                        agenda_item: function(Assignment) {
-                            return Assignment.loadRelations(assignment, 'agenda_item');
-                        }
-                    };
-                }
                 return {
                     template: 'static/templates/assignments/assignment-form.html',
                     controller: (assignment) ? 'AssignmentUpdateCtrl' : 'AssignmentCreateCtrl',
                     className: 'ngdialog-theme-default wide-form',
                     closeByEscape: false,
                     closeByDocument: false,
-                    resolve: (resolve) ? resolve : null
+                    resolve: {
+                        assignmentId: function () {return assignment ? assignment.id : void 0;}
+                    },
                 };
             },
             // angular-formly fields for assignment form
-            getFormFields: function () {
-                return [
+            getFormFields: function (isCreateForm) {
+                var formFields = [
                 {
                     key: 'title',
                     type: 'input',
@@ -145,8 +137,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'open_posts',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Number of posts to be elected'),
+                        label: gettextCatalog.getString('Number of persons to be elected'),
                         type: 'number',
+                        min: 1,
                         required: true
                     }
                 },
@@ -164,10 +157,101 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         label: gettextCatalog.getString('Show as agenda item'),
                         description: gettextCatalog.getString('If deactivated the election appears as internal item on agenda.')
                     },
-                    hide: !operator.hasPerms('assignments.can_manage')
+                    hide: !(operator.hasPerms('assignments.can_manage') && operator.hasPerms('agenda.can_manage'))
                 }];
+
+                // parent item
+                if (isCreateForm) {
+                    formFields.push({
+                        key: 'agenda_parent_item_id',
+                        type: 'select-single',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Parent item'),
+                            options: AgendaTree.getFlatTree(Agenda.getAll()),
+                            ngOptions: 'item.id as item.getListViewTitle() for item in to.options | notself : model.agenda_item_id',
+                            placeholder: gettextCatalog.getString('Select a parent item ...')
+                        },
+                        hide: !operator.hasPerms('agenda.can_manage')
+                    });
+                }
+                // more (with tags field)
+                if (Tag.getAll().length > 0) {
+                    formFields.push(
+                        {
+                            key: 'more',
+                            type: 'checkbox',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Show extended fields')
+                            },
+                            hide: !operator.hasPerms('assignments.can_manage')
+                        },
+                        {
+                            template: '<hr class="smallhr">',
+                            hideExpression: '!model.more'
+                        },
+                        {
+                            key: 'tags_id',
+                            type: 'select-multiple',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Tags'),
+                                options: Tag.getAll(),
+                                ngOptions: 'option.id as option.name for option in to.options',
+                                placeholder: gettextCatalog.getString('Select or search a tag ...')
+                            },
+                            hideExpression: '!model.more'
+                        }
+                    );
+                }
+
+                return formFields;
             }
         };
+    }
+])
+
+// Cache for AssignmentPollDetailCtrl so that users choices are keeped during user actions (e. g. save poll form).
+.value('AssignmentPollDetailCtrlCache', {})
+
+// Child controller of AssignmentDetailCtrl for each single poll.
+.controller('AssignmentPollDetailCtrl', [
+    '$scope',
+    'MajorityMethodChoices',
+    'Config',
+    'AssignmentPollDetailCtrlCache',
+    'AssignmentPoll',
+    function ($scope, MajorityMethodChoices, Config, AssignmentPollDetailCtrlCache, AssignmentPoll) {
+        // Define choices.
+        $scope.methodChoices = MajorityMethodChoices;
+        // TODO: Get $scope.baseChoices from config_variables.py without copying them.
+
+        // Setup empty cache with default values.
+        if (typeof AssignmentPollDetailCtrlCache[$scope.poll.id] === 'undefined') {
+            AssignmentPollDetailCtrlCache[$scope.poll.id] = {
+                method: $scope.config('assignments_poll_default_majority_method'),
+            };
+        }
+
+        // Fetch users choices from cache.
+        $scope.method = AssignmentPollDetailCtrlCache[$scope.poll.id].method;
+
+        $scope.recalculateMajorities = function (method) {
+            $scope.method = method;
+            _.forEach($scope.poll.options, function (option) {
+                option.majorityReached = option.isReached(method);
+            });
+        };
+        $scope.recalculateMajorities($scope.method);
+
+        $scope.saveDescriptionChange = function (poll) {
+            AssignmentPoll.save(poll);
+        };
+
+        // Save current values to cache on destroy of this controller.
+        $scope.$on('$destroy', function() {
+            AssignmentPollDetailCtrlCache[$scope.poll.id] = {
+                method: $scope.method,
+            };
+        });
     }
 ])
 
@@ -176,70 +260,109 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'ngDialog',
     'AssignmentForm',
     'Assignment',
-    'phases',
-    function($scope, ngDialog, AssignmentForm, Assignment, phases) {
+    'Tag',
+    'Agenda',
+    'Projector',
+    'ProjectionDefault',
+    'gettextCatalog',
+    'AssignmentContentProvider',
+    'AssignmentCatalogContentProvider',
+    'PdfMakeDocumentProvider',
+    'User',
+    'osTableFilter',
+    'osTableSort',
+    'gettext',
+    'PdfCreate',
+    'AssignmentPhases',
+    function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, Projector, ProjectionDefault,
+        gettextCatalog, AssignmentContentProvider, AssignmentCatalogContentProvider, PdfMakeDocumentProvider,
+        User, osTableFilter, osTableSort, gettext, PdfCreate, AssignmentPhases) {
         Assignment.bindAll({}, $scope, 'assignments');
-        $scope.phases = phases;
+        Tag.bindAll({}, $scope, 'tags');
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            var projectiondefault = ProjectionDefault.filter({name: 'assignments'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId = projectiondefault.projector_id;
+            }
+        });
+        $scope.phases = AssignmentPhases;
         $scope.alert = {};
 
-        // setup table sorting
-        $scope.sortColumn = 'title';
-        $scope.filterPresent = '';
-        $scope.reverse = false;
-        // function to sort by clicked column
-        $scope.toggleSort = function (column) {
-            if ( $scope.sortColumn === column ) {
-                $scope.reverse = !$scope.reverse;
-            }
-            $scope.sortColumn = column;
-        };
-        // define custom search filter string
-        $scope.getFilterString = function (assignment) {
-            return [
-                assignment.title,
-                assignment.description,
-                $scope.phases[assignment.phase].display_name,
-                _.map(assignment.assignment_related_users,
-                        function (candidate) {return candidate.user.get_short_name();}).join(" "),
-            ].join(" ");
-        };
+        // Filtering
+        $scope.filter = osTableFilter.createInstance('AssignmentTableFilter');
 
+        if (!$scope.filter.existsStorageEntry()) {
+            $scope.filter.multiselectFilters = {
+                tag: [],
+                phase: [],
+            };
+        }
+        $scope.filter.propertyList = ['title', 'description'];
+        $scope.filter.propertyFunctionList = [
+            function (assignment) {
+                return gettextCatalog.getString($scope.phases[assignment.phase].display_name);
+            },
+        ];
+        $scope.filter.propertyDict = {
+            'assignment_related_users': function (candidate) {
+                return candidate.user.get_short_name();
+            },
+            'tags': function (tag) {
+                return tag.name;
+            },
+        };
+        $scope.getItemId = {
+            tag: function (assignment) {return assignment.tags_id;},
+            phase: function (assignment) {return assignment.phase;},
+        };
+        // Sorting
+        $scope.sort = osTableSort.createInstance();
+        $scope.sort.column = 'title';
+        $scope.sortOptions = [
+            {name: 'agenda_item.getItemNumberWithAncestors()',
+             display_name: gettext('Item')},
+            {name: 'title',
+             display_name: gettext('Title')},
+            {name: 'phase',
+             display_name: gettext('Phase')},
+            {name: 'assignment_related_users.length',
+             display_name: gettext('Number of candidates')},
+        ];
+        $scope.hasTag = function (assignment, tag) {
+            return _.indexOf(assignment.tags_id, tag.id) > -1;
+        };
+        $scope.toggleTag = function (assignment, tag) {
+            if ($scope.hasTag(assignment, tag)) {
+                assignment.tags_id = _.filter(assignment.tags_id, function (tag_id){
+                    return tag_id != tag.id;
+                });
+            } else {
+                assignment.tags_id.push(tag.id);
+            }
+            Assignment.save(assignment);
+        };
+        // update phase
+        $scope.updatePhase = function (assignment, phase_id) {
+            assignment.phase = phase_id;
+            Assignment.save(assignment);
+        };
         // open new/edit dialog
         $scope.openDialog = function (assignment) {
             ngDialog.open(AssignmentForm.getDialog(assignment));
         };
-        // cancel QuickEdit mode
-        $scope.cancelQuickEdit = function (assignment) {
-            // revert all changes by restore (refresh) original assignment object from server
-            Assignment.refresh(assignment);
-            assignment.quickEdit = false;
-        };
-        // save changed assignment
-        $scope.save = function (assignment) {
-            Assignment.save(assignment).then(
-                function(success) {
-                    assignment.quickEdit = false;
-                    $scope.alert.show = false;
-                },
-                function(error){
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = { type: 'danger', msg: message, show: true };
-                });
-        };
-        // *** delete mode functions ***
-        $scope.isDeleteMode = false;
+        // *** select mode functions ***
+        $scope.isSelectMode = false;
         // check all checkboxes
         $scope.checkAll = function () {
             angular.forEach($scope.assignments, function (assignment) {
                 assignment.selected = $scope.selectedAll;
             });
         };
-        // uncheck all checkboxes if isDeleteMode is closed
+        // uncheck all checkboxes if isSelectMode is closed
         $scope.uncheckAll = function () {
-            if (!$scope.isDeleteMode) {
+            if (!$scope.isSelectMode) {
                 $scope.selectedAll = false;
                 angular.forEach($scope.assignments, function (assignment) {
                     assignment.selected = false;
@@ -252,12 +375,28 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 if (assignment.selected)
                     Assignment.destroy(assignment.id);
             });
-            $scope.isDeleteMode = false;
+            $scope.isSelectMode = false;
             $scope.uncheckAll();
         };
         // delete single assignment
         $scope.delete = function (assignment) {
             Assignment.destroy(assignment.id);
+        };
+        // create the PDF List
+        $scope.makePDF_assignmentList = function () {
+            var filename = gettextCatalog.getString("Elections") + ".pdf";
+            var assignmentContentProviderArray = [];
+
+            //convert the filtered assignments to content providers
+            angular.forEach($scope.assignmentsFiltered, function(assignment) {
+                assignmentContentProviderArray.push(AssignmentContentProvider.createInstance(assignment));
+            });
+
+            var assignmentCatalogContentProvider =
+                AssignmentCatalogContentProvider.createInstance(assignmentContentProviderArray);
+            var documentProvider =
+                PdfMakeDocumentProvider.createInstance(assignmentCatalogContentProvider);
+            PdfCreate.download(documentProvider.getDocument(), filename);
         };
     }
 ])
@@ -265,6 +404,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 .controller('AssignmentDetailCtrl', [
     '$scope',
     '$http',
+    '$filter',
+    '$timeout',
     'filterFilter',
     'gettext',
     'ngDialog',
@@ -272,15 +413,43 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'operator',
     'Assignment',
     'User',
-    'assignment',
-    'phases',
-    function($scope, $http, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment, User, assignment, phases) {
+    'assignmentId',
+    'Projector',
+    'ProjectionDefault',
+    'AssignmentContentProvider',
+    'BallotContentProvider',
+    'PdfMakeDocumentProvider',
+    'PdfMakeBallotPaperProvider',
+    'gettextCatalog',
+    'PdfCreate',
+    'AssignmentPhases',
+    'ErrorMessage',
+    function($scope, $http, $filter, $timeout, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment,
+        User, assignmentId, Projector, ProjectionDefault, AssignmentContentProvider, BallotContentProvider,
+        PdfMakeDocumentProvider, PdfMakeBallotPaperProvider, gettextCatalog, PdfCreate, AssignmentPhases,
+        ErrorMessage) {
+        var assignment = Assignment.get(assignmentId);
         User.bindAll({}, $scope, 'users');
-        Assignment.bindOne(assignment.id, $scope, 'assignment');
         Assignment.loadRelations(assignment, 'agenda_item');
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            var projectiondefault = ProjectionDefault.filter({name: 'assignments'})[0];
+            if (projectiondefault) {
+                $scope.defaultProjectorId = projectiondefault.projector_id;
+            }
+        });
+        $scope.$watch(function () {
+            return Assignment.lastModified(assignment.id);
+        }, function () {
+            // setup sorting of candidates
+            $scope.relatedUsersSorted = $filter('orderBy')(assignment.assignment_related_users, 'weight');
+            $scope.assignment = Assignment.get(assignment.id);
+        });
         $scope.candidateSelectBox = {};
-        $scope.phases = phases;
+        $scope.phases = AssignmentPhases;
         $scope.alert = {};
+        $scope.activeTab = assignment.polls.length - 1;
 
         // open edit dialog
         $scope.openDialog = function (assignment) {
@@ -289,12 +458,11 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         // add (nominate) candidate
         $scope.addCandidate = function (userId) {
             $http.post('/rest/assignments/assignment/' + assignment.id + '/candidature_other/', {'user': userId})
-                .success(function(data){
+                .then(function (success){
                     $scope.alert.show = false;
                     $scope.candidateSelectBox = {};
-                })
-                .error(function(data){
-                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
+                }, function (error){
+                    $scope.alert = ErrorMessage.forAlert(error);
                     $scope.candidateSelectBox = {};
                 });
         };
@@ -303,29 +471,31 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             $http.delete('/rest/assignments/assignment/' + assignment.id + '/candidature_other/',
                     {headers: {'Content-Type': 'application/json'},
                      data: JSON.stringify({user: userId})})
-                .error(function(data){
-                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
-                });
+                .then(function (success) {},
+                    function (error) {
+                        $scope.alert = ErrorMessage.forAlert(error);
+                    }
+                );
         };
         // add me (nominate self as candidate)
         $scope.addMe = function () {
-            $http.post('/rest/assignments/assignment/' + assignment.id + '/candidature_self/', {})
-                .success(function(data){
+            $http.post('/rest/assignments/assignment/' + assignment.id + '/candidature_self/', {}).then(
+                function (success) {
                     $scope.alert.show = false;
-                })
-                .error(function(data){
-                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
-                });
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
+                }
+            );
         };
         // remove me (withdraw own candidature)
         $scope.removeMe = function () {
-            $http.delete('/rest/assignments/assignment/' + assignment.id + '/candidature_self/')
-                .success(function(data){
+            $http.delete('/rest/assignments/assignment/' + assignment.id + '/candidature_self/').then(
+                function (success) {
                     $scope.alert.show = false;
-                })
-                .error(function(data){
-                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
-                });
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
+                }
+            );
         };
         // check if current user is already a candidate (elected==false)
         $scope.isCandidate = function () {
@@ -339,6 +509,18 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             else
                 return false;
         };
+        // Sort all candidates
+        $scope.treeOptions = {
+            dropped: function () {
+                var sortedCandidates = [];
+                _.forEach($scope.relatedUsersSorted, function (user) {
+                    sortedCandidates.push(user.id);
+                });
+                $http.post('/rest/assignments/assignment/' + $scope.assignment.id + '/sort_related_users/',
+                    {related_users: sortedCandidates}
+                );
+            }
+        };
         // update phase
         $scope.updatePhase = function (phase_id) {
             assignment.phase = phase_id;
@@ -346,20 +528,30 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         };
         // create new ballot
         $scope.createBallot = function () {
-            $http.post('/rest/assignments/assignment/' + assignment.id + '/create_poll/')
-                .success(function(data){
+            $http.post('/rest/assignments/assignment/' + assignment.id + '/create_poll/').then(
+                function (success) {
                     $scope.alert.show = false;
                     if (assignment.phase === 0) {
                         $scope.updatePhase(1);
                     }
-                })
-                .error(function(data){
-                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
-                });
+                    // set 'activeTab' to recently added (last) ballot tab
+                    // TODO: $timeout is required, see
+                    // https://github.com/angular-ui/bootstrap/issues/5656
+                    $timeout(function() {
+                        $scope.activeTab = assignment.polls.length - 1;
+                    }, 0);
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
+                }
+            );
         };
         // delete ballot
         $scope.deleteBallot = function (poll) {
-            poll.DSDestroy();
+            poll.DSDestroy().then(
+                function (success) {
+                    $scope.activeTab = assignment.polls.length - 1;
+                }
+            );
         };
         // edit poll dialog
         $scope.editPollDialog = function (poll, ballot) {
@@ -370,32 +562,24 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 closeByEscape: false,
                 closeByDocument: false,
                 resolve: {
-                    assignmentpoll: function (AssignmentPoll) {
-                        return AssignmentPoll.find(poll.id);
-                    },
-                    ballot: function () {
-                        return ballot;
-                    }
+                    assignmentpollId: function () {return poll.id;},
+                    ballot: function () {return ballot;},
                 }
             });
         };
         // publish ballot
-        $scope.publishBallot = function (poll, isPublished) {
+        $scope.togglePublishBallot = function (poll) {
             poll.DSUpdate({
                     assignment_id: assignment.id,
-                    published: isPublished,
+                    published: !poll.published,
             })
-            .then(function(success) {
+            .then(function (success) {
                 $scope.alert.show = false;
-            })
-            .catch(function(error) {
-                var message = '';
-                for (var e in error.data) {
-                    message += e + ': ' + error.data[e] + ' ';
-                }
-                $scope.alert = { type: 'danger', msg: message, show: true };
+            }, function (error) {
+                $scope.alert = ErrorMessage.forAlert(error);
             });
         };
+
         // mark candidate as (not) elected
         $scope.markElected = function (user, reverse) {
             if (reverse) {
@@ -409,18 +593,33 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     }
                 );
             } else {
-                $http.post('/rest/assignments/assignment/' + assignment.id + '/mark_elected/', {'user': user})
-                    .then(function(success) {
-                        var elected = filterFilter(assignment.assignment_related_users,{elected: true});
-                        // Set phase to 'finished' if there are enough (= number of open posts) elected users.
-                        // Note: The array 'elected' does NOT contains the candidate who is just marked as elected.
-                        // So add 1 to length to get the real number of all elected users.
-                        if (elected.length + 1 == assignment.open_posts ) {
-                            $scope.updatePhase(2);
-                        }
-                    });
+                $http.post('/rest/assignments/assignment/' + assignment.id + '/mark_elected/', {'user': user});
             }
 
+        };
+
+        //creates the document as pdf
+        $scope.makePDF_singleAssignment = function() {
+            var filename = gettextCatalog.getString("Election") + "_" + $scope.assignment.title + ".pdf";
+            var assignmentContentProvider = AssignmentContentProvider.createInstance(assignment);
+            var documentProvider = PdfMakeDocumentProvider.createInstance(assignmentContentProvider);
+            PdfCreate.download(documentProvider.getDocument(), filename);
+        };
+
+        //creates the ballotpaper as pdf
+        $scope.makePDF_assignmentpoll = function(pollID) {
+            var thePoll;
+            var pollNumber;
+            angular.forEach(assignment.polls, function(poll, pollIndex) {
+                if (poll.id == pollID) {
+                    thePoll = poll;
+                    pollNumber = pollIndex+1;
+                }
+            });
+            var filename = gettextCatalog.getString("Ballot") + "_" + pollNumber + "_" + $scope.assignment.title + ".pdf";
+            var ballotContentProvider = BallotContentProvider.createInstance($scope, thePoll, pollNumber);
+            var documentProvider = PdfMakeBallotPaperProvider.createInstance(ballotContentProvider);
+            PdfCreate.download(documentProvider.getDocument(), filename);
         };
 
         // Just mark some vote value strings for translation.
@@ -432,31 +631,34 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
 .controller('AssignmentCreateCtrl', [
     '$scope',
+    '$state',
     'Assignment',
     'AssignmentForm',
     'Agenda',
-    function($scope, Assignment, AssignmentForm, Agenda) {
+    'AgendaUpdate',
+    'ErrorMessage',
+    function($scope, $state, Assignment, AssignmentForm, Agenda, AgendaUpdate, ErrorMessage) {
         $scope.model = {};
         // set default value for open posts form field
         $scope.model.open_posts = 1;
         // get all form fields
-        $scope.formFields = AssignmentForm.getFormFields();
-
+        $scope.formFields = AssignmentForm.getFormFields(true);
         // save assignment
-        $scope.save = function(assignment) {
+        $scope.save = function(assignment, gotoDetailView) {
             Assignment.create(assignment).then(
-                function(success) {
-                    // find related agenda item
-                    Agenda.find(success.agenda_item_id).then(function(item) {
-                        // check form element and set item type (AGENDA_ITEM = 1, HIDDEN_ITEM = 2)
-                        var type = assignment.showAsAgendaItem ? 1 : 2;
-                        // save only if agenda item type is modified
-                        if (item.type != type) {
-                            item.type = type;
-                            Agenda.save(item);
-                        }
-                    });
+                function (success) {
+                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
+                    // see openslides.agenda.models.Item.ITEM_TYPE.
+                    var changes = [{key: 'type', value: (assignment.showAsAgendaItem ? 1 : 2)},
+                                   {key: 'parent_id', value: assignment.agenda_parent_item_id}];
+                    AgendaUpdate.saveChanges(success.agenda_item_id,changes);
+                    if (gotoDetailView) {
+                        $state.go('assignments.assignment.detail', {id: success.id});
+                    }
                     $scope.closeThisDialog();
+                },
+                function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -465,37 +667,43 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
 .controller('AssignmentUpdateCtrl', [
     '$scope',
+    '$state',
     'Assignment',
     'AssignmentForm',
     'Agenda',
-    'assignment',
-    function($scope, Assignment, AssignmentForm, Agenda, assignment) {
+    'AgendaUpdate',
+    'assignmentId',
+    'ErrorMessage',
+    function($scope, $state, Assignment, AssignmentForm, Agenda, AgendaUpdate, assignmentId, ErrorMessage) {
+        var assignment = Assignment.get(assignmentId);
         $scope.alert = {};
         // set initial values for form model by create deep copy of assignment object
         // so list/detail view is not updated while editing
         $scope.model = angular.copy(assignment);
         // get all form fields
         $scope.formFields = AssignmentForm.getFormFields();
+        var agenda_item = Agenda.get(assignment.agenda_item_id);
         for (var i = 0; i < $scope.formFields.length; i++) {
             if ($scope.formFields[i].key == "showAsAgendaItem") {
                 // get state from agenda item (hidden/internal or agenda item)
                 $scope.formFields[i].defaultValue = !assignment.agenda_item.is_hidden;
+            } else if($scope.formFields[i].key == 'agenda_parent_item_id') {
+                $scope.formFields[i].defaultValue = agenda_item.parent_id;
             }
         }
 
         // save assignment
-        $scope.save = function (assignment) {
+        $scope.save = function (assignment, gotoDetailView) {
             // inject the changed assignment (copy) object back into DS store
             Assignment.inject(assignment);
             // save change assignment object on server
             Assignment.save(assignment).then(
                 function(success) {
-                    // check form element and set item type (AGENDA_ITEM = 1, HIDDEN_ITEM = 2)
-                    var type = assignment.showAsAgendaItem ? 1 : 2;
-                    // save only if agenda item type is modified
-                    if (assignment.agenda_item.type != type) {
-                        assignment.agenda_item.type = type;
-                        Agenda.save(assignment.agenda_item);
+                    var changes = [{key: 'type', value: (assignment.showAsAgendaItem ? 1 : 2)},
+                                   {key: 'parent_id', value: assignment.agenda_parent_item_id}];
+                    AgendaUpdate.saveChanges(success.agenda_item_id,changes);
+                    if (gotoDetailView) {
+                        $state.go('assignments.assignment.detail', {id: success.id});
                     }
                     $scope.closeThisDialog();
                 },
@@ -503,11 +711,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     // save error: revert all changes by restore
                     // (refresh) original assignment object from server
                     Assignment.refresh(assignment);
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -516,23 +720,27 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
 .controller('AssignmentPollUpdateCtrl', [
     '$scope',
+    '$filter',
     'gettextCatalog',
     'AssignmentPoll',
-    'assignmentpoll',
+    'assignmentpollId',
     'ballot',
-    function($scope, gettextCatalog, AssignmentPoll, assignmentpoll, ballot) {
+    'ErrorMessage',
+    function($scope, $filter, gettextCatalog, AssignmentPoll, assignmentpollId, ballot, ErrorMessage) {
         // set initial values for form model by create deep copy of assignmentpoll object
         // so detail view is not updated while editing poll
-        $scope.model = angular.copy(assignmentpoll);
+        var assignmentpoll = angular.copy(AssignmentPoll.get(assignmentpollId));
+        $scope.model = assignmentpoll;
         $scope.ballot = ballot;
         $scope.formFields = [];
         $scope.alert = {};
 
         // add dynamic form fields
-        assignmentpoll.options.forEach(function(option) {
+        var options = $filter('orderBy')(assignmentpoll.options, 'weight');
+        options.forEach(function(option) {
             var defaultValue;
-            if (assignmentpoll.yesnoabstain || assignmentpoll.yesno) {
-                if (assignmentpoll.yesnoabstain) {
+            if (assignmentpoll.pollmethod == 'yna' || assignmentpoll.pollmethod == 'yn') {
+                if (assignmentpoll.pollmethod == 'yna') {
                     defaultValue = {
                         'yes': '',
                         'no': '',
@@ -545,11 +753,11 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         'no': ''
                     };
                 }
-                    
+
                 if (option.votes.length) {
                     defaultValue.yes = option.votes[0].weight;
                     defaultValue.no = option.votes[1].weight;
-                    if (assignmentpoll.yesnoabstain){
+                    if (assignmentpoll.pollmethod == 'yna'){
                         defaultValue.abstain = option.votes[2].weight;
                     }
                 }
@@ -578,7 +786,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         },
                         defaultValue: defaultValue.no
                     });
-                if (assignmentpoll.yesnoabstain){
+                if (assignmentpoll.pollmethod == 'yna'){
                     $scope.formFields.push(
                     {
                         key:'abstain_' + option.candidate_id,
@@ -614,7 +822,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'votesvalid',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Votes valid'),
+                        label: gettextCatalog.getString('Valid ballots'),
                         type: 'number'
                     }
                 },
@@ -622,7 +830,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'votesinvalid',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Votes invalid'),
+                        label: gettextCatalog.getString('Invalid ballots'),
                         type: 'number'
                     }
                 },
@@ -630,17 +838,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'votescast',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Votes cast'),
+                        label: gettextCatalog.getString('Casted ballots'),
                         type: 'number'
-                    }
-                },
-                // TODO: update description in separat request
-                // (without vote result values)
-                {
-                    key: 'description',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Comment on the ballot paper')
                     }
                 }
         );
@@ -648,7 +847,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         // save assignmentpoll
         $scope.save = function (poll) {
             var votes = [];
-            if (assignmentpoll.yesnoabstain) {
+            if (assignmentpoll.pollmethod == 'yna') {
                 assignmentpoll.options.forEach(function(option) {
                     votes.push({
                         "Yes": poll['yes_' + option.candidate_id],
@@ -656,7 +855,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         "Abstain": poll['abstain_' + option.candidate_id]
                     });
                 });
-            } else if (assignmentpoll.yesno) {
+            } else if (assignmentpoll.pollmethod == 'yn') {
                     assignmentpoll.options.forEach(function(option) {
                         votes.push({
                             "Yes": poll['yes_' + option.candidate_id],
@@ -681,13 +880,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             .then(function(success) {
                 $scope.alert.show = false;
                 $scope.closeThisDialog();
-            })
-            .catch(function(error) {
-                var message = '';
-                for (var e in error.data) {
-                    message += e + ': ' + error.data[e] + ' ';
-                }
-                $scope.alert = { type: 'danger', msg: message, show: true };
+            }, function (error) {
+                $scope.alert = ErrorMessage.forAlert(error);
             });
         };
     }
@@ -704,16 +898,33 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         gettext('Always Yes/No per candidate');
         gettext('Elections');
         gettext('Ballot and ballot papers');
-        gettext('The 100 % base of an election result consists of');
+        gettext('The 100-%-base of an election result consists of');
+        gettext('For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base ' +
+                'depends on the election method: If there is only one option per candidate, ' +
+                'the sum of all votes of all candidates is 100 %. Otherwise for each ' +
+                'candidate the sum of all votes is 100 %.');
+        gettext('Yes/No/Abstain per candidate');
+        gettext('Yes/No per candidate');
+        gettext('All valid ballots');
+        gettext('All casted ballots');
+        gettext('Disabled (no percents)');
         gettext('Number of ballot papers (selection)');
         gettext('Number of all delegates');
         gettext('Number of all participants');
         gettext('Use the following custom number');
         gettext('Custom number of ballot papers');
-        gettext('Publish election result for elected candidates only (' +
-                'projector view)');
+        gettext('Required majority');
+        gettext('Default method to check whether a candidate has reached the required majority.');
+        gettext('Simple majority');
+        gettext('Two-thirds majority');
+        gettext('Three-quarters majority');
+        gettext('Disabled');
         gettext('Title for PDF document (all elections)');
         gettext('Preamble text for PDF document (all elections)');
+        //other translations
+        gettext('Searching for candidates');
+        gettext('Voting');
+        gettext('Finished');
     }
 ]);
 

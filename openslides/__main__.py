@@ -1,19 +1,22 @@
 #!/usr/bin/env python
 
 import os
+import subprocess
 import sys
 
-from django.core.management import execute_from_command_line
+import django
+from django.core.management import call_command, execute_from_command_line
 
 from openslides import __version__ as openslides_version
 from openslides.utils.main import (
     ExceptionArgumentParser,
     UnknownCommand,
     get_default_settings_path,
+    get_geiss_path,
     get_local_settings_path,
     is_local_installation,
+    open_browser,
     setup_django_settings_module,
-    start_browser,
     write_settings,
 )
 
@@ -36,6 +39,9 @@ def main():
         setup_django_settings_module(local_installation=local_installation)
         execute_from_command_line(sys.argv)
     else:
+        # Check for unknown_args.
+        if unknown_args:
+            parser.error('Unknown arguments {}'.format(' '.join(unknown_args)))
         # Run a command that is defined here
         # These are commands that can not rely on an existing settings
         known_args.callback(known_args)
@@ -45,7 +51,9 @@ def get_parser():
     """
     Parses all command line arguments.
     """
-    if len(sys.argv) == 1 and not is_local_installation():
+    if len(sys.argv) == 1:
+        # Use start subcommand if called by openslides console script without
+        # any other arguments.
         sys.argv.append('start')
 
     # Init parser
@@ -55,7 +63,7 @@ def get_parser():
             If it is called without any argument, this will be treated as
             if it is called with the 'start' subcommand. That means
             OpenSlides will setup default settings and database, start the
-            tornado webserver, launch the default web browser and open the
+            webserver, launch the default web browser and open the
             webinterface.
             """
     epilog = """
@@ -86,13 +94,14 @@ def get_parser():
 
     # Subcommand start
     start_help = (
-        'Setup settings and database, start tornado webserver, launch the '
+        'Setup settings and database, start webserver, launch the '
         'default web browser and open the webinterface. The environment '
         'variable DJANGO_SETTINGS_MODULE is ignored.')
     subcommand_start = subparsers.add_parser(
         'start',
         description=start_help,
         help=start_help)
+    subcommand_start.set_defaults(callback=start)
     subcommand_start.add_argument(
         '--no-browser',
         action='store_true',
@@ -112,11 +121,14 @@ def get_parser():
         action='store',
         default=None,
         help='The used settings file. The file is created, if it does not exist.')
-    subcommand_start.set_defaults(callback=start)
     subcommand_start.add_argument(
         '--local-installation',
         action='store_true',
         help='Store settings and user files in a local directory.')
+    subcommand_start.add_argument(
+        '--use-geiss',
+        action='store_true',
+        help='Use Geiss instead of Daphne as ASGI protocol server.')
 
     # Subcommand createsettings
     createsettings_help = 'Creates the settings file.'
@@ -172,26 +184,62 @@ def start(args):
     # Set the django setting module and run migrations
     # A manual given environment variable will be overwritten
     setup_django_settings_module(settings_path, local_installation=local_installation)
+    django.setup()
+    from django.conf import settings
 
-    execute_from_command_line(['manage.py', 'migrate'])
+    # Migrate database
+    call_command('migrate')
 
-    # Open the browser
-    if not args.no_browser:
-        if args.host == '0.0.0.0':
-            # Windows does not support 0.0.0.0, so use 'localhost' instead
-            start_browser('http://localhost:%s' % args.port)
-        else:
-            start_browser('http://%s:%s' % (args.host, args.port))
+    if args.use_geiss:
+        # Make sure Redis is used.
+        if settings.CHANNEL_LAYERS['default']['BACKEND'] != 'asgi_redis.RedisChannelLayer':
+            raise RuntimeError("You have to use the ASGI Redis backend in the settings to use Geiss.")
 
-    # Start the webserver
-    # Tell django not to reload. OpenSlides uses the reload method from tornado
-    # Use insecure to serve static files, even when DEBUG is False.
-    execute_from_command_line([
-        'manage.py',
-        'runserver',
-        '{}:{}'.format(args.host, args.port),
-        '--noreload',
-        '--insecure'])
+        # Download Geiss and collect the static files.
+        call_command('getgeiss')
+        call_command('collectstatic', interactive=False)
+
+        # Open the browser
+        if not args.no_browser:
+            open_browser(args.host, args.port)
+
+        # Start Geiss in its own thread
+        subprocess.Popen([
+            get_geiss_path(),
+            '--host', args.host,
+            '--port', args.port,
+            '--static', '/static/:{}'.format(settings.STATIC_ROOT),
+            '--static', '/media/:{}'.format(settings.MEDIA_ROOT),
+        ])
+
+        # Start one worker in this thread. There can be only one worker as
+        # long as SQLite3 is used.
+        call_command('runworker')
+
+    else:
+        # Open the browser
+        if not args.no_browser:
+            open_browser(args.host, args.port)
+
+        # Start Daphne and one worker
+        #
+        # Use flag --noreload to tell Django not to reload the server.
+        # Therefor we have to set the keyword noreload to False because Django
+        # parses this directly to the use_reloader keyword.
+        #
+        # Use flag --insecure to serve static files even if DEBUG is False.
+        #
+        # Use flag --nothreading to tell Django Channels to run in single
+        # thread mode with one worker only. Therefor we have to set the keyword
+        # nothreading to False because Django parses this directly to
+        # use_threading keyword.
+        call_command(
+            'runserver',
+            '{}:{}'.format(args.host, args.port),
+            noreload=False,  # Means True, see above.
+            insecure=True,
+            nothreading=False,  # Means True, see above.
+        )
 
 
 def createsettings(args):

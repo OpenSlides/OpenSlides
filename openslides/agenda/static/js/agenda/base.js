@@ -21,6 +21,32 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
     }
 ])
 
+.factory('AgendaUpdate',[
+    'Agenda',
+    'operator',
+    function(Agenda, operator) {
+        return {
+            saveChanges: function (item_id, changes) {
+                // change agenda item only if user has the permission to do that
+                if (operator.hasPerms('agenda.can_manage agenda.can_see_hidden_items')) {
+                    Agenda.find(item_id).then(function (item) {
+                        var something = false;
+                        _.each(changes, function(change) {
+                            if (change.value !== item[change.key]) {
+                                item[change.key] = change.value;
+                                something = true;
+                            }
+                        });
+                        if (something === true) {
+                            Agenda.save(item);
+                        }
+                    });
+                }
+            }
+        };
+    }
+])
+
 .factory('Agenda', [
     '$http',
     'DS',
@@ -28,17 +54,28 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
     'jsDataModel',
     'Projector',
     'gettextCatalog',
-    function($http, DS, Speaker, jsDataModel, Projector, gettextCatalog) {
+    'gettext',
+    'CamelCase',
+    'EditForm',
+    function($http, DS, Speaker, jsDataModel, Projector, gettextCatalog, gettext, CamelCase, EditForm) {
         var name = 'agenda/item';
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
+            verboseName: gettext('Agenda'),
             methods: {
                 getResourceName: function () {
                     return name;
                 },
                 getContentObject: function () {
                     return DS.get(this.content_object.collection, this.content_object.id);
+                },
+                getContentObjectDetailState: function () {
+                    return CamelCase(this.content_object.collection).replace('/', '.') +
+                        '.detail({id: ' + this.content_object.id + '})';
+                },
+                getContentObjectForm: function () {
+                    return EditForm.fromCollectionString(this.content_object.collection);
                 },
                 getContentResource: function () {
                     return DS.definitions[this.content_object.collection];
@@ -59,6 +96,33 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 getAgendaTitle: function () {
                     return this.title;
                 },
+                getCSVExportText: function () {
+                    var text;
+                    try {
+                        text =  this.getContentObject().getCSVExportText();
+                    } catch (e) {
+                        // when the content object is not in the DS store
+                        // or 'getCSVExportText' is not defined return nothing.
+                    }
+                    return text;
+                },
+                // link name which is shown in search result
+                getSearchResultName: function () {
+                    return this.getAgendaTitle();
+                },
+                // return true if a specific relation matches for given searchquery
+                // (here: speakers)
+                hasSearchResult: function (results) {
+                    var item = this;
+                    // search for speakers (check if any user.id from already found users matches)
+                    return _.some(results, function(result) {
+                        if (result.getResourceName() === "users/user") {
+                            if (_.some(item.speakers, {'user_id': result.id})) {
+                                return true;
+                            }
+                        }
+                    });
+                },
                 getListViewTitle: function () {
                     var title;
                     try {
@@ -72,62 +136,97 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                     }
                     return title;
                 },
+                getItemNumberWithAncestors: function (agendaId) {
+                    if (!agendaId) {
+                        agendaId = this.id;
+                    }
+                    var agendaItem = DS.get(name, agendaId);
+                    if (!agendaItem) {
+                        return '';
+                    } else if (agendaItem.item_number) {
+                        return agendaItem.item_number;
+                    } else if (agendaItem.parent_id) {
+                        return this.getItemNumberWithAncestors(agendaItem.parent_id);
+                    } else {
+                        return '';
+                    }
+                },
                 // override project function of jsDataModel factory
-                project: function() {
-                    return $http.post(
-                        '/rest/core/projector/1/prune_elements/',
-                        [{name: this.content_object.collection, id: this.content_object.id}]
-                    );
+                project: function (projectorId, tree) {
+                    var isProjectedIds = this.isProjected(tree);
+                    _.forEach(isProjectedIds, function (id) {
+                        $http.post('/rest/core/projector/' + id + '/clear_elements/');
+                    });
+                    // Activate, if the projector_id is a new projector.
+                    if (_.indexOf(isProjectedIds, projectorId) == -1) {
+                        var name = tree ? 'agenda/item-list' : this.content_object.collection;
+                        var id = tree ? this.id : this.content_object.id;
+                        return $http.post(
+                            '/rest/core/projector/' + projectorId + '/prune_elements/',
+                            [{name: name, tree: tree, id: id}]
+                        );
+                    }
                 },
                 // override isProjected function of jsDataModel factory
-                isProjected: function (list) {
-                    // Returns true if there is a projector element with the same
-                    // name and the same id.
-                    var projector = Projector.get(1);
-                    var isProjected;
-                    if (typeof projector !== 'undefined') {
-                        var self = this;
-                        var predicate = function (element) {
-                            var value;
-                            if (typeof list === 'undefined') {
-                                // Releated item detail slide
-                                value = element.name == self.content_object.collection &&
-                                    typeof element.id !== 'undefined' &&
-                                    element.id == self.content_object.id;
-                            } else {
-                                // Item list slide for sub tree
-                                value = element.name == 'agenda/item-list' &&
-                                    typeof element.id !== 'undefined' &&
-                                    element.id == self.id;
-                            }
-                            return value;
-                        };
-                        isProjected = typeof _.findKey(projector.elements, predicate) === 'string';
-                    } else {
-                        isProjected = false;
+                isProjected: function (tree) {
+                    // Returns all ids of all projectors with an agenda-item element. Otherwise an empty list.
+                    if (typeof tree === 'undefined') {
+                        tree = false;
                     }
-                    return isProjected;
+                    var self = this;
+                    var predicate = function (element) {
+                        var value;
+                        if (tree) {
+                            // Item tree slide for sub tree
+                            value = element.name == 'agenda/item-list' &&
+                                typeof element.id !== 'undefined' &&
+                                element.id == self.id;
+                        } else {
+                            // Releated item detail slide
+                            value = element.name == self.content_object.collection &&
+                                typeof element.id !== 'undefined' &&
+                                element.id == self.content_object.id;
+                        }
+                        return value;
+                    };
+                    var isProjectedIds = [];
+                    Projector.getAll().forEach(function (projector) {
+                        if (typeof _.findKey(projector.elements, predicate) === 'string') {
+                            isProjectedIds.push(projector.id);
+                        }
+                    });
+                    return isProjectedIds;
                 },
                 // project list of speakers
-                projectListOfSpeakers: function() {
-                    return $http.post(
-                        '/rest/core/projector/1/prune_elements/',
-                        [{name: 'agenda/list-of-speakers', id: this.id}]
-                    );
+                projectListOfSpeakers: function(projectorId) {
+                    var isProjectedIds = this.isListOfSpeakersProjected();
+                    _.forEach(isProjectedIds, function (id) {
+                        $http.post('/rest/core/projector/' + id + '/clear_elements/');
+                    });
+                    if (_.indexOf(isProjectedIds, projectorId) == -1) {
+                        return $http.post(
+                            '/rest/core/projector/' + projectorId + '/prune_elements/',
+                            [{name: 'agenda/list-of-speakers', id: this.id}]
+                        );
+                    }
                 },
                 // check if list of speakers is projected
                 isListOfSpeakersProjected: function () {
-                    // Returns true if there is a projector element with the
-                    // name 'agenda/list-of-speakers' and the same id.
-                    var projector = Projector.get(1);
-                    if (typeof projector === 'undefined') return false;
+                    // Returns all ids of all projectors with an element with the
+                    // name 'agenda/list-of-speakers' and the same id. Else returns an empty list.
                     var self = this;
                     var predicate = function (element) {
                         return element.name == 'agenda/list-of-speakers' &&
                                typeof element.id !== 'undefined' &&
                                element.id == self.id;
                     };
-                    return typeof _.findKey(projector.elements, predicate) === 'string';
+                    var isProjecteds = [];
+                    Projector.getAll().forEach(function (projector) {
+                        if (typeof _.findKey(projector.elements, predicate) === 'string') {
+                            isProjecteds.push(projector.id);
+                        }
+                    });
+                    return isProjecteds;
                 },
                 hasSubitems: function(items) {
                     var self = this;
@@ -225,6 +324,104 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
         };
     }
 ])
+
+.factory('CurrentListOfSpeakersItem', [
+    'Projector',
+    'Agenda',
+    function (Projector, Agenda) {
+        return {
+            getItem: function (projectorId) {
+                var projector = Projector.get(projectorId), item;
+                if (projector) {
+                    _.forEach(projector.elements, function(element) {
+                        if (element.agenda_item_id) {
+                            item = Agenda.get(element.agenda_item_id);
+                        }
+                    });
+                }
+                return item;
+            }
+        };
+    }
+])
+
+.factory('CurrentListOfSpeakersSlide', [
+    '$http',
+    'Projector',
+    function($http, Projector) {
+        var name = 'agenda/current-list-of-speakers';
+        return {
+            project: function (projectorId, overlay) {
+                var isProjected = this.isProjectedWithOverlayStatus();
+                _.forEach(isProjected, function (mapping) {
+                    $http.post('/rest/core/projector/' + mapping.projectorId + '/deactivate_elements/',
+                        [mapping.uuid]
+                    );
+                });
+
+                // The slide was projected, if the id matches. If the overlay is given, also
+                // the overlay is checked
+                var wasProjectedBefore = _.some(isProjected, function (mapping) {
+                    var value = (mapping.projectorId === projectorId);
+                    if (overlay !== undefined) {
+                        value = value && (mapping.overlay === overlay);
+                    }
+                    return value;
+                });
+                overlay = overlay || false; // set overlay if it wasn't defined
+
+                if (!wasProjectedBefore) {
+                    var activate = function () {
+                        return $http.post(
+                            '/rest/core/projector/' + projectorId + '/activate_elements/',
+                             [{name: name,
+                               stable: overlay, // if this is an overlay, it should not be
+                                                // removed by changing the main content
+                               overlay: overlay}]
+                        );
+                    };
+                    if (!overlay) {
+                        // clear all elements on this projector, because we are _not_ using the overlay.
+                        $http.post('/rest/core/projector/' + projectorId + '/clear_elements/').then(activate);
+                    } else {
+                        activate();
+                    }
+                }
+            },
+            isProjected: function () {
+                // Returns the ids of all projectors with an agenda-item element. Else return an empty list.
+                var predicate = function (element) {
+                    return element.name === name;
+                };
+                var isProjectedIds = [];
+                Projector.getAll().forEach(function (projector) {
+                    if (typeof _.findKey(projector.elements, predicate) === 'string') {
+                        isProjectedIds.push(projector.id);
+                    }
+                });
+                return isProjectedIds;
+            },
+            // Returns a list of mappings between pojector id, overlay and uuid.
+            isProjectedWithOverlayStatus: function () {
+                var mapping = [];
+                _.forEach(Projector.getAll(), function (projector) {
+                    _.forEach(projector.elements, function (element, uuid) {
+                        if (element.name === name) {
+                            mapping.push({
+                                projectorId: projector.id,
+                                uuid: uuid,
+                                overlay: element.overlay || false,
+                            });
+                        }
+                    });
+                });
+                return mapping;
+            },
+        };
+    }
+])
+
+
 
 // Make sure that the Agenda resource is loaded.
 .run(['Agenda', function(Agenda) {}]);

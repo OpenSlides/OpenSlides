@@ -28,13 +28,7 @@ a. Check requirements
 '''''''''''''''''''''
 
 Make sure that you have installed `Python (>= 3.4)
-<https://www.python.org/>`_ on your system. You also need the Python
-development headers, the Independent JPEG Group's JPEG runtime library
-(dependency package) and the compression library (development).
-
-\E. g. for Ubuntu run::
-
-    $ sudo apt-get install python3-dev libjpeg-dev zlib1g-dev
+<https://www.python.org/>`_ on your system.
 
 
 b. Setup a virtual Python environment (optional)
@@ -53,6 +47,7 @@ virtual environment::
     $ cd OpenSlides
     $ python3 -m venv .virtualenv
     $ source .virtualenv/bin/activate
+    $ pip install -U setuptools
 
 
 c. Install OpenSlides
@@ -89,7 +84,7 @@ on port 8000. That means that the server will be available to everyone on your
 local network (at least for commonly used network configurations).
 
 If you use a virtual environment (see step b.), do not forget to activate
-the environment before restart after you have closed the terminal::
+the environment before restart after you closed the terminal::
 
     $ source .virtualenv/bin/activate
 
@@ -101,7 +96,7 @@ You can store settings, database and other personal files in a local
 subdirectory and use these files e. g. if you want to run multiple
 instances of OpenSlides::
 
-    $ openslides --local-installation
+    $ openslides start --local-installation
 
 
 2. Installation on Windows
@@ -124,25 +119,26 @@ If you want to contribute to OpenSlides, have a look at `OpenSlides website
 Installation for big assemblies
 ===============================
 
-The installation steps described above install OpenSlides in a way, that does
-not support hundreds of concurrent clients. To install OpenSlides in for big
-assemblies, some config variables have to be changed in the OpenSlides settings
-usualy called settings.py.
+The installation steps described above install OpenSlides in a way that does
+NOT support hundreds of concurrent clients. To install OpenSlides for big
+assemblies some config variables have to be changed in the OpenSlides settings
+file (usually called settings.py).
 
-The configuration values, that have to be altered are:
+The configuration values that have to be altered are:
 
 * CACHES
 * CHANNEL_LAYERS
 * DATABASES
 
 Please see:
+
 * http://channels.readthedocs.io/en/latest/deploying.html
-* https://docs.djangoproject.com/en/1.9/topics/cache/
+* https://docs.djangoproject.com/en/1.10/topics/cache/
 * https://github.com/sebleier/django-redis-cache
-* https://docs.djangoproject.com/en/1.9/ref/settings/#databases
+* https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 You should use a webserver like Apache HTTP Server or nginx to serve the static
-and media files and as proxy server in front of OpenSlides server. You also
+and media files as proxy server in front of your OpenSlides server. You also
 should use a database like PostgreSQL and Redis as channels backend and cache
 backend.
 
@@ -152,39 +148,40 @@ Used software
 
 OpenSlides uses the following projects or parts of them:
 
-* `backports-abc <https://github.com/cython/backports_abc>`_,
-  License: Python Software Foundation License
+* `asgiref <https://github.com/django/asgiref/>`_, License: BSD
 
-* `Beautiful Soup <http://www.crummy.com/software/BeautifulSoup/>`_,
-  License: MIT
+* `Autobahn <http://autobahn.ws/python/>`_, License: MIT
+
+* `Constantly <https://github.com/twisted/constantly>`_, License: MIT
+
+* `daphne <https://github.com/django/daphne/>`_, License: BSD
 
 * `Django <https://www.djangoproject.com>`_, License: BSD
+
+* `Django Channels <https://github.com/django/channels>`_, License: BSD
+
+* `django-jsonfield <https://github.com/bradjasper/django-jsonfield>`_,
+  License: MIT
 
 * `Django REST framework <http://www.django-rest-framework.org>`_, License:
   BSD
 
-* `html5lib <https://github.com/html5lib/html5lib-python>`_, License: MIT
-
-* `Django Channels <https://github.com/andrewgodwin/channels/>`_, License: MIT
-
-* `django-jsonfield <https://github.com/bradjasper/django-jsonfield/>`_,
-  License: MIT
-
-* `natsort <https://pypi.python.org/pypi/natsort>`_, License: MIT
+* `Incremental <https://github.com/hawkowl/incremental>`_, License: MIT
 
 * `PyPDF2 <http://mstamy2.github.io/PyPDF2/>`_, License: BSD
 
-* `ReportLab <http://www.reportlab.com/opensource/>`_,
-  License: BSD
-
 * `roman <https://pypi.python.org/pypi/roman>`_, License: Python 2.1.1
 
-* `setuptools <https://pypi.python.org/pypi/setuptools>`_,
-  License: Python Software Foundation License
+* `setuptools <https://pypi.python.org/pypi/setuptools>`_, License: MIT
 
 * `Six <http://pythonhosted.org/six/>`_, License: MIT
 
-* `Whoosh <https://bitbucket.org/mchaput/whoosh/wiki/Home>`_, License: BSD
+* `Twisted <https://twistedmatrix.com>`_, License: MIT
+
+* `txaio <https://github.com/crossbario/txaio>`_, License: MIT
+
+* `zope.interface <https://github.com/zopefoundation/zope.interface>`,
+  License: ZPL 2.1
 
 * Several JavaScript packages (see ``bower.json``)
 
@@ -193,21 +190,23 @@ OpenSlides uses the following projects or parts of them:
   * `angular-bootstrap <http://angular-ui.github.io/bootstrap>`_, License: MIT
   * `angular-bootstrap-colorpicker <https://github.com/buberdds/angular-bootstrap-colorpicker>`_, License: MIT
   * `angular-chosen-localytics <http://github.com/leocaseiro/angular-chosen>`_, License: MIT
-  * `angular-csv-import-tmp <https://github.com/cybadave/angular-csv-import>`_, License: MIT
+  * `angular-ckeditor <https://github.com/lemonde/angular-ckeditor/>`_, License: MIT
   * `angular-formly <http://formly-js.github.io/angular-formly/>`_, License: MIT
-  * `angular-formly-templates-bootstrap <http://formly-js.github.io/angular-formly-templates-bootstrap/>`_, License: MIT
+  * `angular-formly-templates-bootstrap <https://github.com/formly-js/angular-formly-templates-bootstrap>`_, License: MIT
   * `angular-gettext <http://angular-gettext.rocketeer.be/>`_, License: MIT
-  * `angular-loading-bar <https://chieffancypants.github.io/angular-loading-bar>`_, License: MIT
   * `angular-messages <http://angularjs.org>`_, License: MIT
+  * `pdfmake <https://github.com/bpampuch/pdfmake>`_, License: MIT
   * `angular-pdf <http://github.com/sayanee/angularjs-pdf>`_, License: MIT
   * `angular-sanitize <http://angularjs.org>`_, License: MIT
   * `angular-scroll-glue <https://github.com/Luegg/angularjs-scroll-glue>`_, License: MIT
   * `angular-ui-router <http://angular-ui.github.io/ui-router/>`_, License: MIT
-  * `angular-ui-tinymce <http://angular-ui.github.com>`_, License: MIT
   * `angular-ui-tree <https://github.com/angular-ui-tree/angular-ui-tree>`_, License: MIT
+  * `angular-xeditable <https://github.com/vitalets/angular-xeditable>`_, License: MIT
   * `api-check <https://github.com/kentcdodds/api-check>`_, License: MIT
   * `bootstrap <http://getbootstrap.com>`_, License: MIT
+  * `bootstrap-ui-datetime-picker <https://github.com/Gillardo/bootstrap-ui-datetime-picker>`_, License: MIT
   * `chosen <http://harvesthq.github.io/chosen/>`_, License: MIT
+  * `ckeditor <http://ckeditor.com>`_,  License: GPL 2+, LGPL 2.1+ or MPL 1.1.
   * `font-awesome-bower <https://github.com/tdg5/font-awesome-bower>`_, License: MIT
   * `jquery <https://jquery.com>`_, License: MIT
   * `jquery.cookie <https://plugins.jquery.com/cookie>`_, License: MIT
@@ -217,12 +216,12 @@ OpenSlides uses the following projects or parts of them:
   * `lodash <https://lodash.com/>`_, License: MIT
   * `ng-dialog <https://github.com/likeastore/ngDialog>`_, License: MIT
   * `ng-file-upload <https://github.com/danialfarid/ng-file-upload>`_, License: MIT
+  * `ngStorage <https://github.com/gsklee/ngStorage>`_, License: MIT
   * `ngbootbox <https://github.com/eriktufvesson/ngBootbox>`_, License: MIT
   * `open-sans-fontface <https://github.com/FontFaceKit/open-sans>`_, License: Apache License version 2.0
+  * `Papa Parse <http://papaparse.com/>`_, License: MIT
   * `pdfjs-dist <http://mozilla.github.io/pdf.js/>`_, License: Apache-2.0
   * `roboto-condensed <https://github.com/davidcunningham/roboto-condensed>`_, License: Apache 2.0
-  * `tinymce <http://www.tinymce.com>`_, License: LGPL-2.1
-  * `tinymce-i18n <https://github.com/OpenSlides/tinymce-i18n>`_, License: LGPL-2.1
 
 
 License and authors

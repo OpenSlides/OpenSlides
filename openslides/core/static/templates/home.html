@@ -1,9 +1,9 @@
 <div os-perms="core.can_see_frontpage" class="header">
   <div class="title">
-    <h1>{{ config('general_event_welcome_title') }}</h1>
+    <h1>{{ config('general_event_welcome_title') | translate }}</h1>
   </div>
 </div>
 
 <div os-perms="core.can_see_frontpage" class="details"
-    ng-bind-html="config('general_event_welcome_text')">
+    ng-bind-html="config('general_event_welcome_text') | translate">
 </div>

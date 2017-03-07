@@ -73,8 +73,6 @@ class ModelTest(TestCase):
         self.motion.state = State.objects.get(pk=6)
         self.assertEqual(self.motion.state.name, 'permitted')
         self.assertEqual(self.motion.state.get_action_word(), 'Permit')
-        self.assertFalse(self.motion.get_allowed_actions(self.test_user)['support'])
-        self.assertFalse(self.motion.get_allowed_actions(self.test_user)['unsupport'])
 
     def test_new_states_or_workflows(self):
         workflow_1 = Workflow.objects.create(name='W1')
@@ -171,7 +169,7 @@ class ModelTest(TestCase):
 
         motion.set_identifier()
 
-        self.assertEqual(motion.identifier, 'Parent identifier A 1')
+        self.assertEqual(motion.identifier, 'Parent identifier - 1')
 
     def test_set_identifier_second_amendment(self):
         """
@@ -186,7 +184,7 @@ class ModelTest(TestCase):
 
         motion.set_identifier()
 
-        self.assertEqual(motion.identifier, 'Parent identifier A 2')
+        self.assertEqual(motion.identifier, 'Parent identifier - 2')
 
 
 class ConfigTest(TestCase):

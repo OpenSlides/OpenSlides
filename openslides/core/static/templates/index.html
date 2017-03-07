@@ -3,19 +3,28 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <base href="/">
-<title>OpenSlides</title>
+<title ng-if="!activeAppTitle">OpenSlides</title> <!-- avoid {{ ... }} in title while angular is not loaded -->
+<title ng-if="activeAppTitle">OpenSlides &ndash; {{ activeAppTitle | translate }}</title>
 <meta name="description" content="">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <link rel="stylesheet" href="static/css/openslides-libs.css">
 <link rel="stylesheet" href="static/css/app.css">
 <link rel="icon" href="/static/img/favicon.png">
+
 <script src="static/js/openslides-libs.js"></script>
+<script src="static/js/openslides.js"></script>
+<script src="static/js/openslides-templates.js"></script>
 
 <div id="wrapper" ng-cloak>
 
+<!-- please wait -->
+<div id="spinner-container" ng-if="!openslidesBootstrapDone">
+  <div><i class="fa fa-spinner fa-pulse"></i></div>
+</div>
+<div id="startup-overlay" ng-if="!openslidesBootstrapDone"></div>
+
 <!-- Header -->
 <div id="header">
-  <div ng-hide="connected" class="unconnected"></div>
   <div class="containerOS">
     <!-- Logo -->
     <div class="title">
@@ -61,6 +70,12 @@
                       <button type="submit" class="btn btn-default" id="messageSendButton">
                         <i class="fa fa-comment"></i>
                       </button>
+                      <button os-perms="core.can_manage_chat" type="button"
+                        class="btn btn-default btn-danger" id="clearchatHistory"
+                        ng-bootbox-confirm="{{ 'Are you sure to delete the chat history?' | translate }}"
+                        ng-bootbox-confirm-action="clearChatHistory()">
+                        <i class="fa fa-trash"></i>
+                      </button>
                     </span>
                   </div>
                 </form>
@@ -70,18 +85,19 @@
 
           <!-- user settings / logout button -->
           <span uib-dropdown>
-            <a href class="headerlink" uib-dropdown-toggle>
+            <a href class="headerlink" uib-dropdown-toggle id="user-settings-dropdown">
               <i class="fa fa-user"></i>
               <span class="hide-sm">{{ operator.user.get_short_name() }}</span>
             </a>
-            <ul class="uib-dropdown-menu pull-right" role="menu" aria-labelledby="simple-dropdown">
+            <ul class="dropdown-menu pull-right" uib-dropdown-menu aria-labelledby="user-settings-dropdown">
               <li>
-                <a ui-sref="users.user.detail.profile({ id: operator.user.id })">
+                <!--<a ui-sref="users.user.detail.profile({ id: operator.user.id })">-->
+                <a href="" ng-click="editProfile()">
                   <i class="fa fa-cog"></i>
                   <translate>Edit profile</translate>
                 </a>
               <li>
-                <a ui-sref="users.user.detail.password({ id: operator.user.id })">
+                <a href="" ng-click="changePassword()">
                   <i class="fa fa-key"></i>
                   <translate>Change password</translate>
                 </a>
@@ -104,12 +120,12 @@
       </div>
 
       <!-- language switcher -->
-      <span uib-dropdown>
-        | <a href class="headerlink" uib-dropdown-toggle>
+      <span uib-dropdown> |
+        <a href="" class="headerlink" uib-dropdown-toggle id="language-dropdown">
           <i class="fa fa-flag"></i>
           <span class="hide-sm">{{ selectedLanguage[0].name | translate }}</span>
         </a>
-        <ul class="uib-dropdown-menu pull-right" role="menu" aria-labelledby="simple-dropdown">
+        <ul class="dropdown-menu pull-right" uib-dropdown-menu aria-labelledby="language-dropdown">
           <li ng-repeat="language in languages">
             <a href="" ng-click="switchLanguage(language.code)">
               <i ng-if="language.selected" class="fa fa-check"></i>
@@ -139,9 +155,9 @@
       </ul>
       <!-- Search bar -->
       <div class="searchbar pull-right" ng-controller="SearchBarCtrl">
-        <form ng-submit="search(query); closeMenu()">
+        <form ng-submit="search(); closeMenu()">
           <div class="input-group">
-            <input ng-model="query" class="form-control" type="text" placeholder="{{ 'Search' | translate}}">
+            <input ng-model="querybar" class="form-control" type="text" placeholder="{{ 'Search' | translate}}">
             <span class="input-group-btn">
               <button type="submit" class="btn btn-default">
                 <i class="fa fa-search"></i>
@@ -159,18 +175,13 @@
 <!-- Content -->
 <div id="content" ng-controller="ProjectorSidebarCtrl">
   <div class="containerOS">
-    <div class="col1" ng-class="isProjectorSidebar ? 'min' : 'max'">
-        <!-- dynamic views -->
-        <route-loading-indicator></route-loading-indicator>
-        <div ui-view ng-if="!isRouteLoading"></div>
-        <!-- footer -->
-        <div id="footer">
-          &copy; Copyright by <a href="http://www.openslides.org" target="_blank">OpenSlides</a> |
-          <a ui-sref="legalnotice" translate>Legal notice</a>
-        </div><!--end footer-->
-    </div>
-    <div class="col2" os-perms="core.can_see_projector"
-        ng-class="isProjectorSidebar ? 'max' : 'min'">
+
+    <!-- col2 -->
+    <div id="sidebar" class="col2" os-perms="core.can_see_projector" ng-class="{
+        'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-min': !isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-none': !operator.hasPerms('core.can_see_projector') }"
+        ng-init="initSidebar()">
       <!-- sidebar maximized -->
       <div class="projector_full" ng-if="isProjectorSidebar">
         <div class="title" ng-click="showProjectorSidebar(false)">
@@ -192,12 +203,59 @@
           </a>
         </div>
       </div>
-    </div><!--end col2-->
+    </div>
+
+    <!-- col2 sidebar-xs (for small devices)-->
+    <div id="sidebar-xs" class="col2" os-perms="core.can_see_projector" ng-class="{
+        'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-min': !isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-none': !operator.hasPerms('core.can_see_projector') }">
+      <!-- sidebar maximized -->
+      <div class="projector_full" ng-if="isProjectorSidebar">
+        <div class="title" ng-click="showProjectorSidebar(false)">
+          <div class="name">
+            <i class="fa fa-video-camera"></i>
+            <translate>Projector</translate>
+          </div>
+          <div class="icon">
+            <i class="fa fa-angle-up"></i>
+          </div>
+        </div>
+        <div ng-include src="'static/templates/core/projector-controls.html'"></div>
+      </div>
+      <!-- sidebar minimized -->
+      <div class="projector_full" ng-if="!isProjectorSidebar">
+        <div class="title" ng-click="showProjectorSidebar(true)">
+          <div class="name">
+            <i class="fa fa-video-camera"></i>
+            <translate>Projector</translate>
+          </div>
+          <div class="icon">
+            <i class="fa fa-angle-down"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- col1 -->
+    <div class="col1" ng-class="{
+        'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-min': !isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-none': !operator.hasPerms('core.can_see_projector') }">
+        <!-- dynamic views -->
+        <div ui-view ng-if="openslidesBootstrapDone && baseViewPermissionsGranted"></div>
+        <!-- footer -->
+        <div id="footer">
+          &copy; Copyright by <a href="http://www.openslides.org" target="_blank">OpenSlides</a> |
+          <a ui-sref="legalnotice" translate>Legal notice</a>
+        </div><!--end footer-->
+    </div>
 
   </div><!--end content-container-->
 </div><!--end content-->
 
+<messaging></messaging>
+
 </div><!--end wrapper-->
 
-
-<script src="/angular_js/site/"></script>
+<script src="/webclient/site/"></script>

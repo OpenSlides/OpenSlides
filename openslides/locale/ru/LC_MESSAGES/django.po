@@ -1,0 +1,572 @@
+# Language file of OpenSlides used by Transifex:
+# https://www.transifex.com/openslides/openslides/
+# Copyright (C) 2011–2015 by OpenSlides team, see AUTHORS.
+# This file is distributed under the same license as the OpenSlides package.
+# Translators:
+# Andreas Engler <engel.a@web.de>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenSlides\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-02-24 16:10+0100\n"
+"PO-Revision-Date: 2017-02-24 15:16+0000\n"
+"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
+"Language-Team: Russian (http://www.transifex.com/openslides/openslides/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: agenda/models.py:204
+msgid "Agenda item"
+msgstr "Пункт плана"
+
+#: agenda/models.py:205
+msgid "Hidden item"
+msgstr "Скрытый элемент"
+
+#: agenda/models.py:342
+#, python-brace-format
+msgid "{user} is already on the list of speakers."
+msgstr "{user} уже в списке спикеров."
+
+#: agenda/models.py:345
+msgid "An anonymous user can not be on lists of speakers."
+msgstr "Анонимный пользователь не может быть в списке спикеров."
+
+#: agenda/views.py:87
+msgid "The list of speakers is closed."
+msgstr "Список спикеров закрыт."
+
+#: agenda/views.py:96
+msgid "User does not exist."
+msgstr "Пользователь не существует."
+
+#: agenda/views.py:104
+#, python-format
+msgid "User %s was successfully added to the list of speakers."
+msgstr "Пользователь %s был успешно добавлен в список спикеров."
+
+#: agenda/views.py:121
+msgid "You are not on the list of speakers."
+msgstr "Вас нет в списке спикеров."
+
+#: agenda/views.py:124
+msgid "You are successfully removed from the list of speakers."
+msgstr "Вы успешно удалены из списка спикеров."
+
+#: agenda/views.py:142
+msgid "speakers have been removed from the list of speakers."
+msgstr "Спикеры  удалены из списка спикеров."
+
+#: agenda/views.py:144
+#, python-format
+msgid "User %s has been removed from the list of speakers."
+msgstr "Пользователь %s удален из списка спикеров."
+
+#: agenda/views.py:146
+msgid "No speakers have been removed from the list of speakers."
+msgstr "Никакие спикеры не были удалены из списка спикеров."
+
+#: agenda/views.py:166
+msgid "The list of speakers is empty."
+msgstr "Список спикеров пуст."
+
+#: agenda/views.py:171
+msgid "Speaker does not exist."
+msgstr "Спикер не существует."
+
+#: agenda/views.py:173
+msgid "User is now speaking."
+msgstr "Пользователь сейчас говорит."
+
+#: agenda/views.py:184
+#, python-format
+msgid "There is no one speaking at the moment according to %(item)s."
+msgstr "В данный момент нет спикера, согласованного с %(item)s."
+
+#: agenda/views.py:186
+msgid "The speech is finished now."
+msgstr "Речь закончена."
+
+#: agenda/views.py:205 agenda/views.py:217 assignments/views.py:216
+msgid "Invalid data."
+msgstr "Неверные данные."
+
+#: agenda/views.py:230
+msgid "List of speakers successfully sorted."
+msgstr "Список ораторов успешно отсортирован."
+
+#: agenda/views.py:239
+msgid "The agenda has been numbered."
+msgstr "План был пронумерован."
+
+#: agenda/views.py:264
+msgid "There must not be a hierarchical loop. Please reload the page."
+msgstr "Там не должно быть иерархического цикла. Перезагрузите пожалуйста страницу."
+
+#: agenda/views.py:268
+msgid "The agenda has been sorted."
+msgstr "Повестка дня отсортирована."
+
+#: assignments/models.py:163
+msgid "Election"
+msgstr "Выборы"
+
+#: assignments/serializers.py:30
+msgid "Value for {} must be greater than 0"
+msgstr "Значение {} должно быть больше 0"
+
+#: assignments/serializers.py:148
+#, python-format
+msgid "You have to submit data for %d candidates."
+msgstr "Вы должны предоставить данные для %d кандидатов."
+
+#: assignments/serializers.py:152 motions/serializers.py:215
+#, python-format
+msgid "You have to submit data for %d vote values."
+msgstr "Вы должны представить данные для %d значения голосования."
+
+#: assignments/serializers.py:156 motions/serializers.py:219
+#, python-format
+msgid "Vote value %s is invalid."
+msgstr " Количество голосов %s является недопустимым."
+
+#: assignments/views.py:66
+msgid "You are already elected."
+msgstr "Вы уже избраны."
+
+#: assignments/views.py:76
+msgid "You can not candidate to this election because it is finished."
+msgstr "Вы не можете быть кандидатом на этих выборах, потому что они уже закончены."
+
+#: assignments/views.py:82
+msgid "You were nominated successfully."
+msgstr "Вы были успешно выдвинуты."
+
+#: assignments/views.py:87
+msgid ""
+"You can not withdraw your candidature to this election because it is "
+"finished."
+msgstr "Вы не можете снять свою кандидатуру на этих выборах, потому что они уже закончены."
+
+#: assignments/views.py:92
+msgid "You are not a candidate of this election."
+msgstr "Вы не являетесь кандидатом этих выборов."
+
+#: assignments/views.py:94
+msgid "You have withdrawn your candidature successfully."
+msgstr "Вы успешно отозвали свою кандидатуру."
+
+#: assignments/views.py:103
+#, python-format
+msgid "Invalid data. Expected dictionary, got %s."
+msgstr "Неверные данные. Ожидаемый словарь, получил %s."
+
+#: assignments/views.py:109
+msgid "Invalid data. Expected something like {\"user\": <id>}."
+msgstr "Неверные данные. Ожидаемое что-то вроде {\"user\": <id>}."
+
+#: assignments/views.py:113
+#, python-format
+msgid "Invalid data. User %d does not exist."
+msgstr "Неверные данные. Пользователь %d не существует."
+
+#: assignments/views.py:133
+#, python-format
+msgid "User %s is already elected."
+msgstr "Пользователь %s уже избран."
+
+#: assignments/views.py:135
+msgid "You can not nominate someone to this election because it is finished."
+msgstr "Вы не можете выдвинуть кого-то на эти выборы, потому что они уже закончены."
+
+#: assignments/views.py:141
+#, python-format
+msgid "User %s is already nominated."
+msgstr "Пользователь %s уже выдвинут."
+
+#: assignments/views.py:143
+#, python-format
+msgid "User %s was nominated successfully."
+msgstr "Пользователь %s был успешно выдвинут."
+
+#: assignments/views.py:150
+msgid ""
+"You can not delete someone's candidature to this election because it is "
+"finished."
+msgstr "Вы не можете удалять чью-то кандидатуру на этих выборах, потому что они уже закончены."
+
+#: assignments/views.py:153
+#, python-format
+msgid "User %s has no status in this election."
+msgstr "Пользователь %s не имеет статуса в этих выборах."
+
+#: assignments/views.py:155
+#, python-format
+msgid "Candidate %s was withdrawn successfully."
+msgstr "Кандидат %s был успешно снят."
+
+#: assignments/views.py:167
+#, python-format
+msgid "User %s is not a candidate of this election."
+msgstr "Пользователь %s не является кандидатом на этих выборах."
+
+#: assignments/views.py:169
+#, python-format
+msgid "User %s was successfully elected."
+msgstr "Пользователь %s был успешно избран."
+
+#: assignments/views.py:173
+#, python-format
+msgid "User %s is not an elected candidate of this election."
+msgstr "Пользователь %s не был избран на этих выборах."
+
+#: assignments/views.py:176
+#, python-format
+msgid "User %s was successfully unelected."
+msgstr "Пользователь %s не был успешно избран."
+
+#: assignments/views.py:186
+msgid "Can not create ballot because there are no candidates."
+msgstr "Невозможно создать избирательный бюллетень, потому что нет кандидатов."
+
+#: assignments/views.py:189
+msgid "Ballot created successfully."
+msgstr "Избирательный бюллетень успешно создан."
+
+#: assignments/views.py:204
+msgid "users has to be a list of IDs."
+msgstr "Пользователям должен быть список идентификаторов."
+
+#: assignments/views.py:231
+msgid "Assignment related users successfully sorted."
+msgstr "Связанные присваивания пользователям успешно отсортированы."
+
+#: core/config.py:41 core/config.py:68
+msgid "The config variable {} was not found."
+msgstr "Переменная конфигурации {} не была найдена."
+
+#: core/config.py:77
+#, python-format
+msgid "Wrong datatype. Expected %(expected_type)s, got %(got_type)s."
+msgstr "Неправильный тип данных. Ожидаемое  %(expected_type)s, получили %(got_type)s."
+
+#: core/config.py:87
+msgid "Invalid input. Choice does not match."
+msgstr "Неправильный ввод. Выбор не соответствует."
+
+#: core/config.py:96
+msgid "motions_comments has to be a list."
+msgstr "motions_comments должен быть списком."
+
+#: core/config.py:99
+msgid "Each element in motions_comments has to be a dict."
+msgstr "Каждый элемент в motions_comments должен быть ДИКТ."
+
+#: core/config.py:101
+msgid "A name and a public property have to be given."
+msgstr "Имя и публичное свойство должны быть заполнены."
+
+#: core/config.py:103
+msgid "name has to be string."
+msgstr "имя должно быть строкой."
+
+#: core/config.py:105
+msgid "public property has to be bool."
+msgstr "Публичное свойство должна быть BOOL."
+
+#: core/config.py:130
+msgid "Too many values for config variable {} found."
+msgstr "Слишком много значений для переменной конфигурации {} найдено."
+
+#: core/config.py:200
+msgid "Invalid value for config attribute input_type."
+msgstr "Недопустимое значение атрибута конфигурации input_type."
+
+#: core/config.py:202
+msgid ""
+"Either config attribute 'choices' must not be None or 'input_type' must not "
+"be 'choice'."
+msgstr "Либо конфигурационный атрибут 'choices' не должен быть None или 'input_type' не должно быть  'choice'."
+
+#: core/config.py:205
+msgid ""
+"Either config attribute 'choices' must be None or 'input_type' must be "
+"'choice'."
+msgstr "Либо конфигурационный атрибут 'choices' должен быть None или 'input_type' должно быть  'choice'."
+
+#: core/config.py:215
+msgid "General"
+msgstr "Генеральный"
+
+#: core/views.py:738
+msgid "All chat messages deleted successfully."
+msgstr "Все сообщения чата успешно удалены."
+
+#: mediafiles/models.py:63
+msgid "unknown"
+msgstr "неизвестный"
+
+#: motions/models.py:187
+msgid "Motion"
+msgstr "Заявление"
+
+#: motions/models.py:686
+msgid "new"
+msgstr "Новый"
+
+#: motions/models.py:873
+#, python-format
+msgid "%(time_and_messages)s by %(person)s"
+msgstr "%(time_and_messages)s от %(person)s"
+
+#: motions/serializers.py:35
+#, python-format
+msgid "Workflow %(pk)d does not exist."
+msgstr "Процесс %(pk)d не существует."
+
+#: motions/signals.py:17
+msgid "submitted"
+msgstr "Отправлено"
+
+#: motions/signals.py:22 motions/signals.py:55
+msgid "accepted"
+msgstr "принято"
+
+#: motions/signals.py:27 motions/signals.py:61
+msgid "rejected"
+msgstr "отвергнуто"
+
+#: motions/signals.py:32
+msgid "not decided"
+msgstr "не решено"
+
+#: motions/signals.py:42
+msgid "published"
+msgstr "опубликовано"
+
+#: motions/signals.py:47 motions/views.py:216
+msgid "permitted"
+msgstr "разрешено"
+
+#: motions/signals.py:67
+msgid "withdrawed"
+msgstr "отозваны"
+
+#: motions/signals.py:72
+msgid "adjourned"
+msgstr "отложено"
+
+#: motions/signals.py:78
+msgid "not concerned"
+msgstr "не касается"
+
+#: motions/signals.py:84
+msgid "refered to committee"
+msgstr "отнесено к комитету"
+
+#: motions/signals.py:90
+msgid "needs review"
+msgstr "требует пересмотра"
+
+#: motions/signals.py:95
+msgid "rejected (not authorized)"
+msgstr "отклонено (не авторизован)"
+
+#: motions/views.py:94
+msgid "The parent motion does not exist."
+msgstr ""
+
+#: motions/views.py:134
+msgid "Motion created"
+msgstr "Заявление создано"
+
+#: motions/views.py:184
+msgid "Motion updated"
+msgstr "Заявление обновлено"
+
+#: motions/views.py:188
+msgid "All supporters removed"
+msgstr "Все сторонники удалены"
+
+#: motions/views.py:214 motions/views.py:226
+msgid "Version"
+msgstr "Версия"
+
+#: motions/views.py:218
+#, python-format
+msgid "Version %d permitted successfully."
+msgstr "Версия %d успешно стартовала."
+
+#: motions/views.py:223
+msgid "You can not delete the active version of a motion."
+msgstr "Вы не можете удалить активную версию заявления."
+
+#: motions/views.py:228
+msgid "deleted"
+msgstr "удалено "
+
+#: motions/views.py:230
+#, python-format
+msgid "Version %d deleted successfully."
+msgstr "Версия %d успешно удалена."
+
+#: motions/views.py:253
+msgid "You can not support this motion."
+msgstr "Вы не можете поддерживать это заявление."
+
+#: motions/views.py:255
+msgid "Motion supported"
+msgstr "Заявление поддерживается"
+
+#: motions/views.py:256
+msgid "You have supported this motion successfully."
+msgstr "Вы успешно поддержали это заявление."
+
+#: motions/views.py:261
+msgid "You can not unsupport this motion."
+msgstr "Вы не можете поддерживать это заявление."
+
+#: motions/views.py:263
+msgid "Motion unsupported"
+msgstr "Заявление без поддержки"
+
+#: motions/views.py:264
+msgid "You have unsupported this motion successfully."
+msgstr "Вы не успешно поддерживаете это заявление."
+
+#: motions/views.py:287
+msgid "Invalid data. State must be an integer."
+msgstr "Неверные данные. Состояние должно быть целым числом."
+
+#: motions/views.py:290
+#, python-format
+msgid "You can not set the state to %(state_id)d."
+msgstr "Вы не можете установить состояние на %(state_id)d."
+
+#: motions/views.py:298
+#, python-format
+msgid "The state of the motion was set to %s."
+msgstr "Состояние заявления было установлено в %s."
+
+#: motions/views.py:302 motions/views.py:584
+msgid "State set to"
+msgstr "Состояние установлено на"
+
+#: motions/views.py:324
+msgid "Invalid data. Recommendation must be an integer."
+msgstr "Неверные данные. Рекомендация должна быть целом числом."
+
+#: motions/views.py:328
+#, python-brace-format
+msgid "You can not set the recommendation to {recommendation_state_id}."
+msgstr "Вы не можете установить рекомендацию {recommendation_state_id}."
+
+#: motions/views.py:338
+#, python-format
+msgid "The recommendation of the motion was set to %s."
+msgstr "Рекомендация заявления была установлена на %s."
+
+#: motions/views.py:342
+msgid "Recommendation set to"
+msgstr "Рекомендацию установить на"
+
+#: motions/views.py:359
+msgid "Vote created"
+msgstr ""
+
+#: motions/views.py:360
+msgid "Vote created successfully."
+msgstr "Голосование успешно создано."
+
+#: motions/views.py:385
+msgid "Vote updated"
+msgstr ""
+
+#: motions/views.py:394
+msgid "Vote deleted"
+msgstr ""
+
+#: motions/views.py:533
+msgid ""
+"Error: At least one identifier of this category does already exist in "
+"another category."
+msgstr "Ошибка: По крайней мере один идентификатор этой категории уже существует в другой категории."
+
+#: motions/views.py:538
+#, python-brace-format
+msgid "All motions in category {category} numbered successfully."
+msgstr "Все заявления в категории {category} успешно пронумерованы."
+
+#: motions/views.py:589
+msgid "Followed recommendations successfully."
+msgstr "Следующие рекомендации успешно."
+
+#: poll/models.py:225
+msgid "majority"
+msgstr "большинство"
+
+#: poll/models.py:227 poll/models.py:229
+msgid "undocumented"
+msgstr "недокументированный"
+
+#: poll/serializers.py:16
+msgid "Value for {} must not be less than -2"
+msgstr "Значение для {} не должно быть меньше, чем -2"
+
+#: users/serializers.py:46
+msgid ""
+"The groups this user belongs to. A user will get all permissions granted to "
+"each of his/her groups."
+msgstr "Группы, к которым принадлежит данный пользователь. Пользователь получит все права, предоставленные каждому из его / ее группы."
+
+#: users/serializers.py:60
+msgid "Username, given name and surname can not all be empty."
+msgstr "Имя пользователя, имя и фамилия не могут быть пустыми."
+
+#: users/serializers.py:95
+#, python-brace-format
+msgid "Incorrect value \"{value}\". Expected app_label.codename string."
+msgstr "Неверное значение \"{value}\". Ожидаемая app_label.codename строка."
+
+#: users/serializers.py:96
+#, python-brace-format
+msgid "Invalid permission \"{value}\". Object does not exist."
+msgstr "Неверное разрешение \"{value}\". Объект не существует."
+
+#: users/views.py:71
+msgid "You can not deactivate yourself."
+msgstr "Вы не можете отключить себя."
+
+#: users/views.py:92
+msgid "You can not delete yourself."
+msgstr "Вы не можете удалить себя."
+
+#: users/views.py:105
+msgid "Password successfully reset."
+msgstr "Пароль успешно сброшен."
+
+#: users/views.py:184
+msgid "Cookies have to be enabled to use OpenSlides."
+msgstr "Куки должны быть включены для пользования OpenSlides."
+
+#: users/views.py:187
+msgid "Username or password is not correct."
+msgstr "Имя пользователя или пароль не является правильным."
+
+#: users/views.py:213
+#, python-brace-format
+msgid ""
+"Installation was successfully. Use {username} and {password} for first "
+"login. Important: Please change your password!"
+msgstr "Установка была успешна. Используйте {username} и {password} для первого входа в систему. Важно: Пожалуйста, измените пароль!"
+
+#: users/views.py:236
+msgid "You are not authenticated."
+msgstr "Вы не авторизованы."
+
+#: users/views.py:279
+msgid "Old password does not match."
+msgstr "Старый пароль не совпадает."

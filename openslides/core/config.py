@@ -7,10 +7,15 @@ from .models import ConfigStore
 INPUT_TYPE_MAPPING = {
     'string': str,
     'text': str,
+    'markupText': str,
     'integer': int,
     'boolean': bool,
     'choice': str,
-    'colorpicker': str}
+    'comments': list,
+    'colorpicker': str,
+    'datetimepicker': int,
+    'majorityMethod': str,
+}
 
 
 class ConfigHandler:
@@ -86,8 +91,26 @@ class ConfigHandler:
             except DjangoValidationError as e:
                 raise ConfigError(e.messages[0])
 
+        if config_variable.input_type == 'comments':
+            if not isinstance(value, list):
+                raise ConfigError(_('motions_comments has to be a list.'))
+            for comment in value:
+                if not isinstance(comment, dict):
+                    raise ConfigError(_('Each element in motions_comments has to be a dict.'))
+                if comment.get('name') is None or comment.get('public') is None:
+                    raise ConfigError(_('A name and a public property have to be given.'))
+                if not isinstance(comment['name'], str):
+                    raise ConfigError(_('name has to be string.'))
+                if not isinstance(comment['public'], bool):
+                    raise ConfigError(_('public property has to be bool.'))
+
         # Save the new value to the database.
-        ConfigStore.objects.update_or_create(key=key, defaults={'value': value})
+        try:
+            db_value = ConfigStore.objects.get(key=key)
+        except ConfigStore.DoesNotExist:
+            db_value = ConfigStore(key=key)
+        db_value.value = value
+        db_value.save(information={'changed_config': key})
 
         # Call on_change callback.
         if config_variable.on_change:
@@ -128,6 +151,13 @@ class ConfigHandler:
         for config_variable in self.config_variables.values():
             if config_variable.translatable:
                 yield config_variable.name
+
+    def get_collection_string(self):
+        """
+        Returns the collection_string from the CollectionStore.
+        """
+        return ConfigStore.get_collection_string()
+
 
 config = ConfigHandler()
 """

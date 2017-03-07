@@ -1,7 +1,6 @@
 from django.core.validators import MinValueValidator
 
 from openslides.core.config import ConfigVariable
-from openslides.poll.models import PERCENT_BASE_CHOICES
 
 from .models import Workflow
 
@@ -23,6 +22,7 @@ def get_config_variables():
     papers' and 'PDF'. The generator has to be evaluated during app loading
     (see apps.py).
     """
+
     # General
     yield ConfigVariable(
         name='motions_workflow',
@@ -49,12 +49,36 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='motions_preamble',
-        default_value='The assembly may decide,',
+        default_value='The assembly may decide:',
         label='Motion preamble',
         weight=320,
         group='Motions',
         subgroup='General',
         translatable=True)
+
+    yield ConfigVariable(
+        name='motions_default_line_numbering',
+        default_value='none',
+        input_type='choice',
+        label='Default line numbering',
+        choices=(
+            {'value': 'outside', 'display_name': 'Outside'},
+            {'value': 'inline', 'display_name': 'Inline'},
+            {'value': 'none', 'display_name': 'Disabled'}),
+        weight=322,
+        group='Motions',
+        subgroup='General')
+
+    yield ConfigVariable(
+        name='motions_line_length',
+        default_value=90,
+        input_type='integer',
+        label='Line length',
+        help_text='The maximum number of characters per line. Relevant when line numbering is enabled. Min: 40',
+        weight=323,
+        group='Motions',
+        subgroup='General',
+        validators=(MinValueValidator(40),))
 
     yield ConfigVariable(
         name='motions_stop_submitting',
@@ -74,24 +98,55 @@ def get_config_variables():
         group='Motions',
         subgroup='General')
 
+    yield ConfigVariable(
+        name='motions_recommendations_by',
+        default_value='',
+        label='Name of recommender',
+        help_text='Will be displayed as label before selected recommendation. Use an empty value to disable the recommendation system.',
+        weight=332,
+        group='Motions',
+        subgroup='General',
+        translatable=True)
+
+    yield ConfigVariable(
+        name='motions_recommendation_text_mode',
+        default_value='original',
+        input_type='choice',
+        label='Default text version for change recommendations',
+        choices=(
+            {'value': 'original', 'display_name': 'Original version'},
+            {'value': 'changed', 'display_name': 'Changed version'},
+            {'value': 'diff', 'display_name': 'Diff version'},
+            {'value': 'agreed', 'display_name': 'Final version'}),
+        weight=333,
+        group='Motions',
+        subgroup='General')
+
     # Amendments
-    # Amendments currently not implemented. (TODO: Implement it like in OpenSlides 1.7.)
     yield ConfigVariable(
         name='motions_amendments_enabled',
         default_value=False,
         input_type='boolean',
         label='Activate amendments',
-        hidden=True,
         weight=335,
         group='Motions',
         subgroup='Amendments')
 
     yield ConfigVariable(
         name='motions_amendments_prefix',
-        default_value='A',
+        default_value='-',
         label='Prefix for the identifier for amendments',
-        hidden=True,
         weight=340,
+        group='Motions',
+        subgroup='Amendments')
+
+    yield ConfigVariable(
+        name='motions_amendments_apply_text',
+        default_value=False,
+        input_type='boolean',
+        label='Apply text for new amendments',
+        help_text='The title of the motion is always applied.',
+        weight=342,
         group='Motions',
         subgroup='Amendments')
 
@@ -117,15 +172,43 @@ def get_config_variables():
         group='Motions',
         subgroup='Supporters')
 
+    # Comments
+
+    yield ConfigVariable(
+        name='motions_comments',
+        default_value=[],
+        input_type='comments',
+        label='Comment fields for motions',
+        weight=353,
+        group='Motions',
+        subgroup='Comments')
+
     # Voting and ballot papers
 
     yield ConfigVariable(
         name='motions_poll_100_percent_base',
-        default_value='WITHOUT_INVALID',
+        default_value='YES_NO_ABSTAIN',
         input_type='choice',
         label='The 100 % base of a voting result consists of',
-        choices=PERCENT_BASE_CHOICES,
+        choices=(
+            {'value': 'YES_NO_ABSTAIN', 'display_name': 'Yes/No/Abstain'},
+            {'value': 'YES_NO', 'display_name': 'Yes/No'},
+            {'value': 'VALID', 'display_name': 'All valid ballots'},
+            {'value': 'CAST', 'display_name': 'All casted ballots'},
+            {'value': 'DISABLED', 'display_name': 'Disabled (no percents)'}
+            ),
         weight=355,
+        group='Motions',
+        subgroup='Voting and ballot papers')
+
+    # TODO: Add server side validation of the choices.
+    yield ConfigVariable(
+        name='motions_poll_default_majority_method',
+        default_value='simple_majority',
+        input_type='majorityMethod',
+        label='Required majority',
+        help_text='Default method to check whether a motion has reached the required majority.',
+        weight=357,
         group='Motions',
         subgroup='Voting and ballot papers')
 
@@ -152,30 +235,21 @@ def get_config_variables():
         subgroup='Voting and ballot papers',
         validators=(MinValueValidator(1),))
 
-    # PDF
+    # PDF and DOCX export
 
     yield ConfigVariable(
-        name='motions_pdf_title',
+        name='motions_export_title',
         default_value='Motions',
-        label='Title for PDF document (all motions)',
+        label='Title for PDF and DOCX documents (all motions)',
         weight=370,
         group='Motions',
-        subgroup='PDF',
+        subgroup='Export',
         translatable=True)
 
     yield ConfigVariable(
-        name='motions_pdf_preamble',
+        name='motions_export_preamble',
         default_value='',
-        label='Preamble text for PDF document (all motions)',
+        label='Preamble text for PDF and DOCX documents (all motions)',
         weight=375,
         group='Motions',
-        subgroup='PDF')
-
-    yield ConfigVariable(
-        name='motions_pdf_paragraph_numbering',
-        default_value=False,
-        input_type='boolean',
-        label='Show paragraph numbering (only in PDF)',
-        weight=380,
-        group='Motions',
-        subgroup='PDF')
+        subgroup='Export')

@@ -5,7 +5,7 @@
 </div>
 
 <div class="details">
-  <div ng-bind-html="config('general_event_legal_notice')"></div>
+  <div ng-bind-html="config('general_event_legal_notice') | translate"></div>
   <hr>
   <p>OpenSlides {{ core_version }}
   <div ng-show="plugins.length">

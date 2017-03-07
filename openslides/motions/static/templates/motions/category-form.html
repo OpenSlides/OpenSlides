@@ -1,32 +1,17 @@
-<div class="header">
-  <div class="title">
-    <div class="submenu">
-      <a ui-sref="motions.category.list" class="btn btn-sm btn-default">
-        <i class="fa fa-angle-double-left fa-lg"></i>
-        <translate>Back to overview</translate>
-      </a>
-    </div>
-    <h1 ng-if="category.id" translate>Edit category</h1>
-    <h1 ng-if="!category.id" translate>New category</h1>
-  </div>
+<h1 ng-if="model.id" translate>Edit category</h1>
+<h1 ng-if="!model.id" translate>New category</h1>
+
+<div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" close="alert={}">
+  {{ alert.msg }}
 </div>
 
-<div class="details">
-  <form name="groupForm">
-    <div class="form-group">
-      <label for="inputPrefix" translate>Prefix</label>
-      <input type="text" ng-model="category.prefix" class="form-control" name="inputPrefix">
-    </div>
-    <div class="form-group">
-      <label for="inputName" translate>Name</label>
-      <input type="text" ng-model="category.name" class="form-control" name="inputName" ng-required="true">
-    </div>
-
-    <button type="submit" ng-click="save(category)" class="btn btn-primary" translate>
+<form name="categoryForm" ng-submit="save(model)">
+  <formly-form model="model" fields="formFields">
+    <button type="submit" ng-disabled="categoryForm.$invalid" class="btn btn-primary" translate>
       Save
     </button>
-    <button ui-sref="motions.category.list" class="btn btn-default" translate>
+    <button ng-click="closeThisDialog()" class="btn btn-default" translate>
       Cancel
     </button>
-  </form>
-</div>
+  </formly-form>
+</form>

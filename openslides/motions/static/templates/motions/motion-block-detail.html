@@ -1,0 +1,75 @@
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a ui-sref="motions.motionBlock.list" class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to overview</translate>
+      </a>
+      <!-- List of speakers -->
+      <a ui-sref="agenda.item.detail({id: motionBlock.agenda_item_id})" class="btn btn-sm btn-default">
+        <i class="fa fa-microphone fa-lg"></i>
+        <translate>List of speakers</translate>
+      </a>
+      <!-- project -->
+      <projector-button model="motionBlock" default-projector-id="defaultProjectorId">
+      </projector-button>
+      <!-- edit -->
+      <a ng-click="openDialog(motionBlock)"
+          class="btn btn-default btn-sm"
+          title="{{ 'Edit' | translate}}">
+        <i class="fa fa-pencil"></i>
+      </a>
+    </div>
+    <h1>{{ motionBlock.agenda_item.getTitle() }}</h1>
+    <h2 translate>Motion block</h2>
+  </div>
+</div>
+
+<div class="details">
+  <a os-perms="motions.can_manage" class="btn btn-default btn btn-sm"
+      ng-bootbox-confirm="{{ 'Are you sure you want to override the state of all motions of this motion block?' | translate }}"
+      ng-bootbox-confirm-action="followRecommendations()">
+    <i class="fa fa-magic fa-lg"></i>
+    <translate>Follow recommendations for all motions</translate>
+  </a>
+
+  <div class="row spacer form-group">
+    <div class="col-sm-4 pull-right">
+      <input type="text" ng-model="filter.search" class="form-control"
+          placeholder="{{ 'Filter' | translate }}">
+    </div>
+    <div class="col-sm-4 italic">
+      {{ motionsFiltered.length }} /
+      {{ motionBlock.motions.length }} {{ "motions" | translate }}
+    </div>
+  </div>
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        <th><translate>Motion</translate>
+        <th><translate>State</translate>
+        <th><translate>Recommendation</translate>
+    <tbody>
+      <tr ng-repeat="motion in motionsFiltered = (motionBlock.motions | filter: filter.search | orderBy: 'identifier')">
+        <td ng-mouseover="motion.hover=true" ng-mouseleave="motion.hover=false">
+          <strong>
+            <a ui-sref="motions.motion.detail({id: motion.id})">{{ motion.identifier }} {{ motion.getTitle() }}</a>
+          </strong>
+          <div os-perms="motions.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !motion.hover}">
+            <!-- delete -->
+            <a href="" class="text-danger"
+              ng-bootbox-confirm="{{ 'Are you sure you want to remove this motion from motion block?' | translate }}<br>
+                <b>{{ motion.getTitle() }}</b>"
+              ng-bootbox-confirm-action="delete(motion)" translate>Remove from motion block</a>
+          </div>
+        <td>
+          <div class="label" ng-class="'label-'+motion.state.css_class">
+            {{ motion.getStateName() }}
+          </div>
+        <td>
+          <div class="label" ng-class="'label-'+motion.recommendation.css_class">
+            {{ motion.getRecommendationName() }}
+          </div>
+  </table>
+</div>

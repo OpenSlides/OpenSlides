@@ -1,12 +1,14 @@
 import json
 
+from django.apps import apps
 from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides import __version__ as version
 from openslides.core.config import ConfigVariable, config
-from openslides.core.models import CustomSlide, Projector
+from openslides.core.models import Projector
+from openslides.topics.models import Topic
 from openslides.utils.rest_api import ValidationError
 from openslides.utils.test import TestCase
 
@@ -17,24 +19,21 @@ class ProjectorAPI(TestCase):
     """
     def test_slide_on_default_projector(self):
         self.client.login(username='admin', password='admin')
-        customslide = CustomSlide.objects.create(title='title_que1olaish5Wei7que6i', text='text_aishah8Eh7eQuie5ooji')
+        topic = Topic.objects.create(title='title_que1olaish5Wei7que6i', text='text_aishah8Eh7eQuie5ooji')
         default_projector = Projector.objects.get(pk=1)
         default_projector.config = {
-            'aae4a07b26534cfb9af4232f361dce73': {'name': 'core/customslide', 'id': customslide.id}}
+            'aae4a07b26534cfb9af4232f361dce73': {'name': 'topics/topic', 'id': topic.id}}
         default_projector.save()
 
         response = self.client.get(reverse('projector-detail', args=['1']))
-
+        content = json.loads(response.content.decode())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(json.loads(response.content.decode()), {
-            'id': 1,
-            'elements': {
-                'aae4a07b26534cfb9af4232f361dce73':
-                    {'id': customslide.id,
-                     'uuid': 'aae4a07b26534cfb9af4232f361dce73',
-                     'name': 'core/customslide'}},
-            'scale': 0,
-            'scroll': 0})
+        self.assertEqual(content['elements'], {
+            'aae4a07b26534cfb9af4232f361dce73':
+                {'id': topic.id,
+                 'uuid': 'aae4a07b26534cfb9af4232f361dce73',
+                 'name': 'topics/topic',
+                 'agenda_item_id': topic.agenda_item_id}})
 
     def test_invalid_slide_on_default_projector(self):
         self.client.login(username='admin', password='admin')
@@ -44,9 +43,11 @@ class ProjectorAPI(TestCase):
         default_projector.save()
 
         response = self.client.get(reverse('projector-detail', args=['1']))
+        content = json.loads(response.content.decode())
+        del content['projectiondefaults']
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(json.loads(response.content.decode()), {
+        self.assertEqual(content, {
             'id': 1,
             'elements': {
                 'fc6ef43b624043068c8e6e7a86c5a1b0':
@@ -54,7 +55,11 @@ class ProjectorAPI(TestCase):
                      'uuid': 'fc6ef43b624043068c8e6e7a86c5a1b0',
                      'error': 'Projector element does not exist.'}},
             'scale': 0,
-            'scroll': 0})
+            'scroll': 0,
+            'name': 'Default projector',
+            'blank': False,
+            'width': 1024,
+            'height': 768})
 
 
 class VersionView(TestCase):
@@ -70,6 +75,29 @@ class VersionView(TestCase):
                 {'verbose_name': 'OpenSlides Test Plugin',
                  'description': 'This is a test plugin for OpenSlides.',
                  'version': 'unknown'}]})
+
+
+class WebclientJavaScriptView(TestCase):
+    """
+    Tests the generation of the JavaScript startup code.
+    """
+    def test_angular_constants(self):
+        self.client.login(username='admin', password='admin')
+        response = self.client.get(reverse('core_webclient_javascript', args=['site']))
+        content = response.content.decode()
+        constants = self.get_angular_constants_from_apps()
+        for constant in constants:
+            self.assertTrue(json.dumps(constant['value']) in content)
+
+    def get_angular_constants_from_apps(self):
+        constants = []
+        for app in apps.get_app_configs():
+            try:
+                get_angular_constants = app.get_angular_constants
+            except AttributeError:
+                continue
+            constants.extend(get_angular_constants())
+        return constants
 
 
 class ConfigViewSet(TestCase):

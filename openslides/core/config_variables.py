@@ -1,4 +1,5 @@
 from django.core.validators import MaxLengthValidator
+
 from openslides.core.config import ConfigVariable
 
 
@@ -17,7 +18,7 @@ def get_config_variables():
         weight=110,
         group='General',
         subgroup='Event',
-        validators=(MaxLengthValidator(50),))
+        validators=(MaxLengthValidator(100),))
 
     yield ConfigVariable(
         name='general_event_description',
@@ -59,7 +60,7 @@ def get_config_variables():
                       'free web based presentation and assembly system for '
                       'visualizing and controlling agenda, motions and '
                       'elections of an assembly.',
-        input_type='text',
+        input_type='markupText',
         label='Legal notice',
         weight=132,
         group='General',
@@ -78,7 +79,7 @@ def get_config_variables():
     yield ConfigVariable(
         name='general_event_welcome_text',
         default_value='[Space for your welcome text.]',
-        input_type='text',
+        input_type='markupText',
         label='Front page text',
         weight=136,
         group='General',
@@ -99,12 +100,39 @@ def get_config_variables():
     yield ConfigVariable(
         name='general_login_info_text',
         default_value='',
-        label='Show this text on the login page.',
+        label='Show this text on the login page',
         weight=140,
         group='General',
         subgroup='System')
 
+    # CSV
+
+    yield ConfigVariable(
+        name='general_csv_separator',
+        default_value=',',
+        label='Separator used for all csv exports and examples',
+        weight=144,
+        group='General',
+        subgroup='CSV')
+
     # Projector
+
+    yield ConfigVariable(
+        name='projector_language',
+        default_value='browser',
+        input_type='choice',
+        label='Projector language',
+        choices=(
+            {'value': 'browser', 'display_name': 'Current browser language'},
+            {'value': 'en', 'display_name': 'English'},
+            {'value': 'de', 'display_name': 'Deutsch'},
+            {'value': 'fr', 'display_name': 'Français'},
+            {'value': 'es', 'display_name': 'Español'},
+            {'value': 'pt', 'display_name': 'Português'},
+            {'value': 'cs', 'display_name': 'Čeština'},
+            {'value': 'ru', 'display_name': 'русский'}),
+        weight=148,
+        group='Projector')
 
     yield ConfigVariable(
         name='projector_enable_logo',
@@ -151,6 +179,33 @@ def get_config_variables():
     yield ConfigVariable(
         name='projector_default_countdown',
         default_value=60,
-        label='Default countdown',
+        input_type='integer',
+        label='Predefined seconds of new countdowns',
         weight=185,
         group='Projector')
+
+    yield ConfigVariable(
+        name='projector_blank_color',
+        default_value='#FFFFFF',
+        input_type='colorpicker',
+        label='Color for blanked projector',
+        weight=190,
+        group='Projector')
+
+    yield ConfigVariable(
+        name='projector_broadcast',
+        default_value=0,
+        input_type='integer',
+        label='Projector which is broadcasted',
+        weight=200,
+        group='Projector',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='projector_currentListOfSpeakers_reference',
+        default_value=1,
+        input_type='integer',
+        label='Projector reference for list of speakers',
+        weight=201,
+        group='Projector',
+        hidden=True)

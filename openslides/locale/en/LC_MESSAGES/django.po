@@ -5,417 +5,317 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-20 21:03+0200\n"
+"POT-Creation-Date: 2017-02-24 16:10+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: agenda/models.py:196
+#: agenda/models.py:204
 msgid "Agenda item"
 msgstr ""
 
-#: agenda/models.py:197
+#: agenda/models.py:205
 msgid "Hidden item"
 msgstr ""
 
-#: agenda/models.py:348
+#: agenda/models.py:342
 #, python-brace-format
 msgid "{user} is already on the list of speakers."
 msgstr ""
 
-#: agenda/models.py:351
+#: agenda/models.py:345
 msgid "An anonymous user can not be on lists of speakers."
 msgstr ""
 
-#: agenda/views.py:108
+#: agenda/views.py:87
 msgid "The list of speakers is closed."
 msgstr ""
 
-#: agenda/views.py:117
+#: agenda/views.py:96
 msgid "User does not exist."
 msgstr ""
 
-#: agenda/views.py:125
+#: agenda/views.py:104
 #, python-format
 msgid "User %s was successfully added to the list of speakers."
 msgstr ""
 
-#: agenda/views.py:143
+#: agenda/views.py:121
 msgid "You are not on the list of speakers."
 msgstr ""
 
-#: agenda/views.py:151 agenda/views.py:181
-msgid "Speaker does not exist."
+#: agenda/views.py:124
+msgid "You are successfully removed from the list of speakers."
 msgstr ""
 
-#: agenda/views.py:155
+#: agenda/views.py:142
+msgid "speakers have been removed from the list of speakers."
+msgstr ""
+
+#: agenda/views.py:144
 #, python-format
-msgid "Speaker %s was successfully removed from the list of speakers."
+msgid "User %s has been removed from the list of speakers."
 msgstr ""
 
-#: agenda/views.py:176
+#: agenda/views.py:146
+msgid "No speakers have been removed from the list of speakers."
+msgstr ""
+
+#: agenda/views.py:166
 msgid "The list of speakers is empty."
 msgstr ""
 
-#: agenda/views.py:183
+#: agenda/views.py:171
+msgid "Speaker does not exist."
+msgstr ""
+
+#: agenda/views.py:173
 msgid "User is now speaking."
 msgstr ""
 
-#: agenda/views.py:194
+#: agenda/views.py:184
 #, python-format
 msgid "There is no one speaking at the moment according to %(item)s."
 msgstr ""
 
-#: agenda/views.py:196
+#: agenda/views.py:186
 msgid "The speech is finished now."
 msgstr ""
 
-#: agenda/views.py:215 agenda/views.py:227
+#: agenda/views.py:205 agenda/views.py:217 assignments/views.py:216
 msgid "Invalid data."
 msgstr ""
 
-#: agenda/views.py:237
+#: agenda/views.py:230
 msgid "List of speakers successfully sorted."
 msgstr ""
 
-#: agenda/views.py:271
+#: agenda/views.py:239
 msgid "The agenda has been numbered."
 msgstr ""
 
-#: agenda/views.py:281 agenda/views.py:282
-msgid "Agenda"
+#: agenda/views.py:264
+msgid "There must not be a hierarchical loop. Please reload the page."
 msgstr ""
 
-#: assignments/models.py:64
-msgid "Searching for candidates"
+#: agenda/views.py:268
+msgid "The agenda has been sorted."
 msgstr ""
 
-#: assignments/models.py:65
-msgid "Voting"
-msgstr ""
-
-#: assignments/models.py:66
-msgid "Finished"
-msgstr ""
-
-#: assignments/models.py:123 assignments/views.py:234 assignments/views.py:430
-#: assignments/views.py:447
+#: assignments/models.py:163
 msgid "Election"
 msgstr ""
 
-#: assignments/serializers.py:139
+#: assignments/serializers.py:30
+msgid "Value for {} must be greater than 0"
+msgstr ""
+
+#: assignments/serializers.py:148
 #, python-format
 msgid "You have to submit data for %d candidates."
 msgstr ""
 
-#: assignments/serializers.py:143 motions/serializers.py:177
+#: assignments/serializers.py:152 motions/serializers.py:215
 #, python-format
 msgid "You have to submit data for %d vote values."
 msgstr ""
 
-#: assignments/serializers.py:147 motions/serializers.py:181
+#: assignments/serializers.py:156 motions/serializers.py:219
 #, python-format
 msgid "Vote value %s is invalid."
 msgstr ""
 
-#: assignments/views.py:81
+#: assignments/views.py:66
 msgid "You are already elected."
 msgstr ""
 
-#: assignments/views.py:91
+#: assignments/views.py:76
 msgid "You can not candidate to this election because it is finished."
 msgstr ""
 
-#: assignments/views.py:97
+#: assignments/views.py:82
 msgid "You were nominated successfully."
 msgstr ""
 
-#: assignments/views.py:102
+#: assignments/views.py:87
 msgid ""
 "You can not withdraw your candidature to this election because it is "
 "finished."
 msgstr ""
 
-#: assignments/views.py:107
+#: assignments/views.py:92
 msgid "You are not a candidate of this election."
 msgstr ""
 
-#: assignments/views.py:109
+#: assignments/views.py:94
 msgid "You have withdrawn your candidature successfully."
 msgstr ""
 
-#: assignments/views.py:118
+#: assignments/views.py:103
 #, python-format
 msgid "Invalid data. Expected dictionary, got %s."
 msgstr ""
 
-#: assignments/views.py:124
+#: assignments/views.py:109
 msgid "Invalid data. Expected something like {\"user\": <id>}."
 msgstr ""
 
-#: assignments/views.py:128
+#: assignments/views.py:113
 #, python-format
 msgid "Invalid data. User %d does not exist."
 msgstr ""
 
-#: assignments/views.py:148
+#: assignments/views.py:133
 #, python-format
 msgid "User %s is already elected."
 msgstr ""
 
-#: assignments/views.py:150
+#: assignments/views.py:135
 msgid "You can not nominate someone to this election because it is finished."
 msgstr ""
 
-#: assignments/views.py:156
+#: assignments/views.py:141
 #, python-format
 msgid "User %s is already nominated."
 msgstr ""
 
-#: assignments/views.py:158
+#: assignments/views.py:143
 #, python-format
 msgid "User %s was nominated successfully."
 msgstr ""
 
-#: assignments/views.py:165
+#: assignments/views.py:150
 msgid ""
 "You can not delete someone's candidature to this election because it is "
 "finished."
 msgstr ""
 
-#: assignments/views.py:168
+#: assignments/views.py:153
 #, python-format
 msgid "User %s has no status in this election."
 msgstr ""
 
-#: assignments/views.py:170
+#: assignments/views.py:155
 #, python-format
 msgid "Candidate %s was withdrawn successfully."
 msgstr ""
 
-#: assignments/views.py:182
+#: assignments/views.py:167
 #, python-format
 msgid "User %s is not a candidate of this election."
 msgstr ""
 
-#: assignments/views.py:184
+#: assignments/views.py:169
 #, python-format
 msgid "User %s was successfully elected."
 msgstr ""
 
-#: assignments/views.py:188
+#: assignments/views.py:173
 #, python-format
 msgid "User %s is not an elected candidate of this election."
 msgstr ""
 
-#: assignments/views.py:191
+#: assignments/views.py:176
 #, python-format
 msgid "User %s was successfully unelected."
 msgstr ""
 
-#: assignments/views.py:201
+#: assignments/views.py:186
 msgid "Can not create ballot because there are no candidates."
 msgstr ""
 
-#: assignments/views.py:204
+#: assignments/views.py:189
 msgid "Ballot created successfully."
 msgstr ""
 
-#: assignments/views.py:237
-msgid "Elections"
+#: assignments/views.py:204
+msgid "users has to be a list of IDs."
 msgstr ""
 
-#: assignments/views.py:258
-msgid "No elections available."
+#: assignments/views.py:231
+msgid "Assignment related users successfully sorted."
 msgstr ""
 
-#: assignments/views.py:277
-#, python-format
-msgid "Election: %s"
-msgstr ""
-
-#: assignments/views.py:286
-msgid "Number of members to be elected"
-msgstr ""
-
-#: assignments/views.py:293 assignments/views.py:321
-msgid "Candidates"
-msgstr ""
-
-#: assignments/views.py:317
-msgid "Election result"
-msgstr ""
-
-#: assignments/views.py:323
-msgid "ballot"
-msgstr ""
-
-#: assignments/views.py:342
-#, python-format
-msgid ""
-"Y: %(YES)s\n"
-"N: %(NO)s\n"
-"A: %(ABSTAIN)s"
-msgstr ""
-
-#: assignments/views.py:347
-#, python-format
-msgid ""
-"Y: %(YES)s\n"
-"N: %(NO)s"
-msgstr ""
-
-#: assignments/views.py:357 motions/pdf.py:115
-msgid "Valid votes"
-msgstr ""
-
-#: assignments/views.py:368 motions/pdf.py:117
-msgid "Invalid votes"
-msgstr ""
-
-#: assignments/views.py:379 motions/pdf.py:119
-msgid "Votes cast"
-msgstr ""
-
-#: assignments/views.py:401
-msgid "elected"
-msgstr ""
-
-#: assignments/views.py:454
-#, python-format
-msgid "%d. ballot"
-msgstr ""
-
-#: assignments/views.py:456
-#, python-format
-msgid "%d candidate"
-msgid_plural "%d candidates"
-msgstr[0] ""
-msgstr[1] ""
-
-#: assignments/views.py:458
-#, python-format
-msgid "%d available post"
-msgid_plural "%d available posts"
-msgstr[0] ""
-msgstr[1] ""
-
-#: assignments/views.py:511 assignments/views.py:523 motions/pdf.py:125
-#: motions/pdf.py:348
-msgid "Yes"
-msgstr ""
-
-#: assignments/views.py:512 assignments/views.py:524 motions/pdf.py:125
-#: motions/pdf.py:350
-msgid "No"
-msgstr ""
-
-#: assignments/views.py:513 motions/pdf.py:125 motions/pdf.py:352
-msgid "Abstain"
-msgstr ""
-
-#: core/config.py:36 core/config.py:63
+#: core/config.py:41 core/config.py:68
 msgid "The config variable {} was not found."
 msgstr ""
 
-#: core/config.py:72
+#: core/config.py:77
 #, python-format
 msgid "Wrong datatype. Expected %(expected_type)s, got %(got_type)s."
 msgstr ""
 
-#: core/config.py:82
+#: core/config.py:87
 msgid "Invalid input. Choice does not match."
 msgstr ""
 
-#: core/config.py:107
+#: core/config.py:96
+msgid "motions_comments has to be a list."
+msgstr ""
+
+#: core/config.py:99
+msgid "Each element in motions_comments has to be a dict."
+msgstr ""
+
+#: core/config.py:101
+msgid "A name and a public property have to be given."
+msgstr ""
+
+#: core/config.py:103
+msgid "name has to be string."
+msgstr ""
+
+#: core/config.py:105
+msgid "public property has to be bool."
+msgstr ""
+
+#: core/config.py:130
 msgid "Too many values for config variable {} found."
 msgstr ""
 
-#: core/config.py:170
+#: core/config.py:200
 msgid "Invalid value for config attribute input_type."
 msgstr ""
 
-#: core/config.py:172
+#: core/config.py:202
 msgid ""
 "Either config attribute 'choices' must not be None or 'input_type' must not "
 "be 'choice'."
 msgstr ""
 
-#: core/config.py:175
+#: core/config.py:205
 msgid ""
 "Either config attribute 'choices' must be None or 'input_type' must be "
 "'choice'."
 msgstr ""
 
-#: core/config.py:185
+#: core/config.py:215
 msgid "General"
 msgstr ""
 
-#: mediafiles/models.py:61
+#: core/views.py:738
+msgid "All chat messages deleted successfully."
+msgstr ""
+
+#: mediafiles/models.py:63
 msgid "unknown"
 msgstr ""
 
-#: motions/models.py:125 motions/pdf.py:38 motions/pdf.py:337
-#: motions/views.py:349 motions/views.py:409
+#: motions/models.py:187
 msgid "Motion"
 msgstr ""
 
-#: motions/models.py:617
+#: motions/models.py:686
 msgid "new"
 msgstr ""
 
-#: motions/models.py:689
+#: motions/models.py:873
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr ""
 
-#: motions/pdf.py:45
-msgid "Submitter"
-msgstr ""
-
-#: motions/pdf.py:59
-msgid "Signature"
-msgstr ""
-
-#: motions/pdf.py:70
-msgid "Supporters"
-msgstr ""
-
-#: motions/pdf.py:81
-msgid "State"
-msgstr ""
-
-#: motions/pdf.py:91 motions/views.py:158 motions/views.py:170
-msgid "Version"
-msgstr ""
-
-#: motions/pdf.py:107
-msgid "Vote result"
-msgstr ""
-
-#: motions/pdf.py:121 motions/views.py:349
-msgid "Vote"
-msgstr ""
-
-#: motions/pdf.py:148
-msgid "Reason"
-msgstr ""
-
-#: motions/pdf.py:324
-msgid "Categories"
-msgstr ""
-
-#: motions/pdf.py:331
-msgid "No motions available."
-msgstr ""
-
-#: motions/pdf.py:344
-#, python-format
-msgid "Motion No. %s"
-msgstr ""
-
-#: motions/serializers.py:31
+#: motions/serializers.py:35
 #, python-format
 msgid "Workflow %(pk)d does not exist."
 msgstr ""
@@ -424,208 +324,189 @@ msgstr ""
 msgid "submitted"
 msgstr ""
 
-#: motions/signals.py:22 motions/signals.py:51
+#: motions/signals.py:22 motions/signals.py:55
 msgid "accepted"
 msgstr ""
 
-#: motions/signals.py:26 motions/signals.py:56
+#: motions/signals.py:27 motions/signals.py:61
 msgid "rejected"
 msgstr ""
 
-#: motions/signals.py:30
+#: motions/signals.py:32
 msgid "not decided"
 msgstr ""
 
-#: motions/signals.py:39
+#: motions/signals.py:42
 msgid "published"
 msgstr ""
 
-#: motions/signals.py:44 motions/views.py:160
+#: motions/signals.py:47 motions/views.py:216
 msgid "permitted"
 msgstr ""
 
-#: motions/signals.py:61
+#: motions/signals.py:67
 msgid "withdrawed"
 msgstr ""
 
-#: motions/signals.py:66
+#: motions/signals.py:72
 msgid "adjourned"
 msgstr ""
 
-#: motions/signals.py:71
+#: motions/signals.py:78
 msgid "not concerned"
 msgstr ""
 
-#: motions/signals.py:76
-msgid "commited a bill"
+#: motions/signals.py:84
+msgid "refered to committee"
 msgstr ""
 
-#: motions/signals.py:81
+#: motions/signals.py:90
 msgid "needs review"
 msgstr ""
 
-#: motions/signals.py:86
+#: motions/signals.py:95
 msgid "rejected (not authorized)"
 msgstr ""
 
-#: motions/views.py:86
+#: motions/views.py:94
+msgid "The parent motion does not exist."
+msgstr ""
+
+#: motions/views.py:134
 msgid "Motion created"
 msgstr ""
 
-#: motions/views.py:128
+#: motions/views.py:184
 msgid "Motion updated"
 msgstr ""
 
-#: motions/views.py:132
+#: motions/views.py:188
 msgid "All supporters removed"
 msgstr ""
 
-#: motions/views.py:162
+#: motions/views.py:214 motions/views.py:226
+msgid "Version"
+msgstr ""
+
+#: motions/views.py:218
 #, python-format
 msgid "Version %d permitted successfully."
 msgstr ""
 
-#: motions/views.py:167
+#: motions/views.py:223
 msgid "You can not delete the active version of a motion."
 msgstr ""
 
-#: motions/views.py:172
+#: motions/views.py:228
 msgid "deleted"
 msgstr ""
 
-#: motions/views.py:174
+#: motions/views.py:230
 #, python-format
 msgid "Version %d deleted successfully."
 msgstr ""
 
-#: motions/views.py:195
+#: motions/views.py:253
 msgid "You can not support this motion."
 msgstr ""
 
-#: motions/views.py:197
+#: motions/views.py:255
 msgid "Motion supported"
 msgstr ""
 
-#: motions/views.py:198
+#: motions/views.py:256
 msgid "You have supported this motion successfully."
 msgstr ""
 
-#: motions/views.py:203
+#: motions/views.py:261
 msgid "You can not unsupport this motion."
 msgstr ""
 
-#: motions/views.py:205
+#: motions/views.py:263
 msgid "Motion unsupported"
 msgstr ""
 
-#: motions/views.py:206
+#: motions/views.py:264
 msgid "You have unsupported this motion successfully."
 msgstr ""
 
-#: motions/views.py:229
+#: motions/views.py:287
 msgid "Invalid data. State must be an integer."
 msgstr ""
 
-#: motions/views.py:232
+#: motions/views.py:290
 #, python-format
 msgid "You can not set the state to %(state_id)d."
 msgstr ""
 
-#: motions/views.py:240
+#: motions/views.py:298
 #, python-format
 msgid "The state of the motion was set to %s."
 msgstr ""
 
-#: motions/views.py:244
+#: motions/views.py:302 motions/views.py:584
 msgid "State set to"
 msgstr ""
 
-#: motions/views.py:259
+#: motions/views.py:324
+msgid "Invalid data. Recommendation must be an integer."
+msgstr ""
+
+#: motions/views.py:328
+#, python-brace-format
+msgid "You can not set the recommendation to {recommendation_state_id}."
+msgstr ""
+
+#: motions/views.py:338
+#, python-format
+msgid "The recommendation of the motion was set to %s."
+msgstr ""
+
+#: motions/views.py:342
+msgid "Recommendation set to"
+msgstr ""
+
+#: motions/views.py:359
+msgid "Vote created"
+msgstr ""
+
+#: motions/views.py:360
 msgid "Vote created successfully."
 msgstr ""
 
-#: motions/views.py:402
-msgid "Motions"
+#: motions/views.py:385
+msgid "Vote updated"
 msgstr ""
 
-#: poll/models.py:71
-msgid "Only all valid votes"
+#: motions/views.py:394
+msgid "Vote deleted"
 msgstr ""
 
-#: poll/models.py:72
-msgid "All votes cast (including invalid votes)"
+#: motions/views.py:533
+msgid ""
+"Error: At least one identifier of this category does already exist in "
+"another category."
 msgstr ""
 
-#: poll/models.py:73
-msgid "Disabled (no percents)"
+#: motions/views.py:538
+#, python-brace-format
+msgid "All motions in category {category} numbered successfully."
 msgstr ""
 
-#: poll/models.py:262
+#: motions/views.py:589
+msgid "Followed recommendations successfully."
+msgstr ""
+
+#: poll/models.py:225
 msgid "majority"
 msgstr ""
 
-#: poll/models.py:264 poll/models.py:266
+#: poll/models.py:227 poll/models.py:229
 msgid "undocumented"
 msgstr ""
 
 #: poll/serializers.py:16
 msgid "Value for {} must not be less than -2"
-msgstr ""
-
-#: users/pdf.py:26
-msgid "Title"
-msgstr ""
-
-#: users/pdf.py:26
-msgid "Last Name"
-msgstr ""
-
-#: users/pdf.py:26
-msgid "First Name"
-msgstr ""
-
-#: users/pdf.py:27
-msgid "Structure level"
-msgstr ""
-
-#: users/pdf.py:27
-msgid "Group"
-msgstr ""
-
-#: users/pdf.py:95
-msgid "WLAN access data"
-msgstr ""
-
-#: users/pdf.py:97
-msgid "WLAN name (SSID)"
-msgstr ""
-
-#: users/pdf.py:101
-msgid "WLAN password"
-msgstr ""
-
-#: users/pdf.py:105
-msgid "WLAN encryption"
-msgstr ""
-
-#: users/pdf.py:112
-msgid "OpenSlides access data"
-msgstr ""
-
-#: users/pdf.py:114
-msgid "Username"
-msgstr ""
-
-#: users/pdf.py:118
-msgid "Password"
-msgstr ""
-
-#: users/pdf.py:131
-msgid "Scan this QRCode to connect WLAN."
-msgstr ""
-
-#: users/pdf.py:136
-msgid "Scan this QRCode to open URL."
 msgstr ""
 
 #: users/serializers.py:46
@@ -634,73 +515,51 @@ msgid ""
 "each of his/her groups."
 msgstr ""
 
-#: users/serializers.py:74
-msgid "Username, first name and last name can not all be empty."
+#: users/serializers.py:60
+msgid "Username, given name and surname can not all be empty."
 msgstr ""
 
-#: users/serializers.py:107
+#: users/serializers.py:95
 #, python-brace-format
 msgid "Incorrect value \"{value}\". Expected app_label.codename string."
 msgstr ""
 
-#: users/serializers.py:108
+#: users/serializers.py:96
 #, python-brace-format
 msgid "Invalid permission \"{value}\". Object does not exist."
 msgstr ""
 
-#: users/views.py:114
+#: users/views.py:71
 msgid "You can not deactivate yourself."
 msgstr ""
 
-#: users/views.py:153
+#: users/views.py:92
 msgid "You can not delete yourself."
 msgstr ""
 
-#: users/views.py:167
+#: users/views.py:105
 msgid "Password successfully reset."
 msgstr ""
 
-#: users/views.py:237
+#: users/views.py:184
+msgid "Cookies have to be enabled to use OpenSlides."
+msgstr ""
+
+#: users/views.py:187
 msgid "Username or password is not correct."
 msgstr ""
 
-#: users/views.py:263
+#: users/views.py:213
 #, python-brace-format
 msgid ""
 "Installation was successfully. Use {username} and {password} for first "
 "login. Important: Please change your password!"
 msgstr ""
 
-#: users/views.py:284
+#: users/views.py:236
 msgid "You are not authenticated."
 msgstr ""
 
-#: users/views.py:318
+#: users/views.py:279
 msgid "Old password does not match."
-msgstr ""
-
-#: users/views.py:329
-msgid "user-list"
-msgstr ""
-
-#: users/views.py:330
-msgid "List of users"
-msgstr ""
-
-#: users/views.py:344
-msgid "user-access-data"
-msgstr ""
-
-#: utils/pdf.py:252
-#, python-format
-msgid "As of: %s"
-msgstr ""
-
-#: utils/pdf.py:263 utils/pdf.py:272
-#, python-format
-msgid "Page %s"
-msgstr ""
-
-#: utils/views.py:59
-msgid "undefined-filename"
 msgstr ""

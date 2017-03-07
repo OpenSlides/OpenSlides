@@ -10,14 +10,16 @@ def get_config_variables():
     """
     # Sorting
     yield ConfigVariable(
-        name='users_sort_users_by_first_name',
-        default_value=False,
-        input_type='boolean',
-        label='Sort users by first name',
-        help_text='Disable for sorting by last name',
+        name='users_sort_by',
+        default_value='first_name',
+        input_type='choice',
+        label='Sort name of participants by',
+        choices=(
+            {'value': 'first_name', 'display_name': 'Given name'},
+            {'value': 'last_name', 'display_name': 'Surname'}),
         weight=510,
         group='Participants',
-        subgroup='Sorting')
+        subgroup='General')
 
     # PDF
 

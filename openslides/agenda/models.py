@@ -1,16 +1,16 @@
 from collections import defaultdict
-from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
 from openslides.core.config import config
-from openslides.core.projector import Countdown
+from openslides.core.models import Countdown
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.utils import to_roman
@@ -23,6 +23,14 @@ class ItemManager(models.Manager):
     Customized model manager with special methods for agenda tree and
     numbering.
     """
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all items. In the background all
+        speakers and related items (topics, motions, assignments) are
+        prefetched from the database.
+        """
+        return self.get_queryset().prefetch_related('speakers', 'content_object')
+
     def get_only_agenda_items(self):
         """
         Generator, which yields only agenda items. Skips hidden items.
@@ -220,7 +228,7 @@ class Item(RESTModelMixin, models.Model):
     See Item.ITEM_TYPE for more information.
     """
 
-    duration = models.CharField(null=True, blank=True, max_length=5)
+    duration = models.IntegerField(null=True, blank=True)
     """
     The intended duration for the topic.
     """
@@ -275,20 +283,6 @@ class Item(RESTModelMixin, models.Model):
 
     def __str__(self):
         return self.title
-
-    def delete(self, with_children=False):
-        """
-        Delete the Item.
-
-        If with_children is True, all children of the item will be deleted as
-        well. If with_children is False, all children will be children of the
-        parent of the item.
-        """
-        if not with_children:
-            for child in self.children.all():
-                child.parent = self.parent
-                child.save()
-        super().delete()
 
     @property
     def title(self):
@@ -415,20 +409,29 @@ class Speaker(RESTModelMixin, models.Model):
         else:
             current_speaker.end_speech()
         self.weight = None
-        self.begin_time = datetime.now()
+        self.begin_time = timezone.now()
         self.save()
         if config['agenda_couple_countdown_and_speakers']:
-            Countdown.control(action='reset')
-            Countdown.control(action='start')
+            countdown, created = Countdown.objects.get_or_create(pk=1, defaults={
+                'default_time': config['projector_default_countdown'],
+                'countdown_time': config['projector_default_countdown']})
+            if not created:
+                countdown.control(action='reset')
+            countdown.control(action='start')
 
     def end_speech(self):
         """
         The speech is finished. Set the time to now.
         """
-        self.end_time = datetime.now()
+        self.end_time = timezone.now()
         self.save()
         if config['agenda_couple_countdown_and_speakers']:
-            Countdown.control(action='stop')
+            try:
+                countdown = Countdown.objects.get(pk=1)
+            except Countdown.DoesNotExist:
+                pass  # Do not create a new countdown on stop action
+            else:
+                countdown.control(action='stop')
 
     def get_root_rest_element(self):
         """

@@ -6,12 +6,8 @@
         <translate>Back to overview</translate>
       </a>
       <!-- project -->
-      <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-          ng-class="{ 'btn-primary': user.isProjected() }"
-          ng-click="user.project()"
-          title="{{ 'Project user' | translate }}">
-        <i class="fa fa-video-camera"></i>
-      </a>
+      <projector-button model="user" default-projector-id="defaultProjectorId">
+      </projector-button>
       <!-- edit -->
       <a os-perms="users.can_manage" ng-click="openDialog(user)"
           class="btn btn-default btn-sm"
@@ -34,6 +30,8 @@
         <div ng-repeat="group in user.groups_id">
           {{ (groups | filter: {id: group})[0].name | translate }}
         </div>
+      <label translate>Participant number</label>
+        {{ user.number }}
       <label translate>About me</label>
         <div ng-bind-html="user.about_me"></div>
     </fieldset>

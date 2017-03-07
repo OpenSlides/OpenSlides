@@ -1,0 +1,8 @@
+<div ng-controller="SlideCurrentListOfSpeakersCtrl">
+
+  <ng-include src="'static/templates/agenda/partial-slide-current-list-of-speakers.html'"
+    ng-if="!overlay"></ng-include>
+  <ng-include src="'static/templates/agenda/partial-slide-current-list-of-speakers-overlay.html'"
+    ng-if="overlay"></ng-include>
+
+</div>

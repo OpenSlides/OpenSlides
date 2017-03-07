@@ -5,18 +5,63 @@
 // The core module for the OpenSlides site
 angular.module('OpenSlidesApp.core.site', [
     'OpenSlidesApp.core',
+    'OpenSlidesApp.core.start',
+    'OpenSlidesApp.core.csv',
+    'OpenSlidesApp.poll.majority',
     'ui.router',
-    'angular-loading-bar',
     'colorpicker.module',
     'formly',
     'formlyBootstrap',
     'localytics.directives',
     'ngBootbox',
     'ngDialog',
+    'ngFileSaver',
     'ngMessages',
-    'ngCsvImport',
-    'ui.tinymce',
+    'ngStorage',
+    'ckeditor',
     'luegg.directives',
+    'xeditable',
+])
+
+// Can be used to find out if the projector or the side is used
+.constant('REALM', 'site')
+
+.factory('DateTimePickerTranslation', [
+    'gettextCatalog',
+    function (gettextCatalog) {
+        return {
+            getButtons: function () {
+                return {
+                    show: true,
+                    now: {
+                        show: true,
+                        text: gettextCatalog.getString('now')
+                    },
+                    today: {
+                        show: true,
+                        text: gettextCatalog.getString('today')
+                    },
+                    clear: {
+                        show: true,
+                        text: gettextCatalog.getString('clear')
+                    },
+                    date: {
+                        show: true,
+                        text: gettextCatalog.getString('date')
+                    },
+                    time: {
+                        show: true,
+                        text: gettextCatalog.getString('time')
+                    },
+                    close: {
+                        show: true,
+                        text: gettextCatalog.getString('close')
+                    }
+                };
+            }
+        };
+    }
+
 ])
 
 // Provider to register entries for the main menu.
@@ -32,10 +77,7 @@ angular.module('OpenSlidesApp.core.site', [
         this.$get = ['operator', function(operator) {
             return {
                 registerScope: function (scope) {
-                    var that = this;
                     this.scope = scope;
-                    this.updateMainMenu();
-                    operator.onOperatorChange(function () {that.updateMainMenu();});
                 },
                 updateMainMenu: function () {
                     this.scope.elements = this.getElements();
@@ -55,12 +97,58 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-// Load the global data when the operator changes
+// Provider to register a searchable module/app.
+.provider('Search', [
+    function() {
+        var searchModules = [];
+
+        this.register = function(module) {
+            searchModules.push(module);
+        };
+
+        this.$get = [
+            function () {
+                return {
+                    getAll: function () {
+                        return searchModules;
+                    }
+                };
+            }
+        ];
+    }
+])
+
 .run([
-    'loadGlobalData',
+    'editableOptions',
+    'gettext',
+    function (editableOptions, gettext) {
+        editableOptions.theme = 'bs3';
+        editableOptions.cancelButtonAriaLabel = gettext('Cancel');
+        editableOptions.cancelButtonTitle = gettext('Cancel');
+        editableOptions.clearButtonAriaLabel = gettext('Clear');
+        editableOptions.clearButtonTitle = gettext('Clear');
+        editableOptions.submitButtonAriaLabel = gettext('Submit');
+        editableOptions.submitButtonTitle = gettext('Submit');
+    }
+])
+
+// Set up the activeAppTitle for the title from the webpage
+.run([
+    '$rootScope',
+    'gettextCatalog',
     'operator',
-    function(loadGlobalData, operator) {
-        operator.onOperatorChange(loadGlobalData);
+    function ($rootScope, gettextCatalog, operator) {
+        $rootScope.activeAppTitle = '';
+        $rootScope.$on('$stateChangeSuccess', function(event, toState) {
+            if (toState.data) {
+                $rootScope.activeAppTitle = toState.data.title || '';
+                $rootScope.baseViewPermissionsGranted = toState.data.basePerm ?
+                    operator.hasPerms(toState.data.basePerm) : true;
+            } else {
+                $rootScope.activeAppTitle = '';
+                $rootScope.baseViewPermissionsGranted = true;
+            }
+        });
     }
 ])
 
@@ -100,10 +188,11 @@ angular.module('OpenSlidesApp.core.site', [
     '$httpProvider',
     function($httpProvider) {
         // Combine the django csrf system with the angular csrf system
-        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfCookieName = 'OpenSlidesCsrfToken';
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     }
 ])
+
 
 .config([
     '$stateProvider',
@@ -122,10 +211,8 @@ angular.module('OpenSlidesApp.core.site', [
             }
 
             angular.forEach(views, function(config, name) {
-
-                // Sets default values for templateUrl
-                var patterns = state.name.split('.'),
-                    templateUrl,
+                // Sets additional default values for templateUrl
+                var templateUrl,
                     controller,
                     defaultControllers = {
                         create: 'CreateCtrl',
@@ -134,22 +221,43 @@ angular.module('OpenSlidesApp.core.site', [
                         detail: 'DetailCtrl',
                     };
 
-                // templateUrl
-                if (_.last(patterns).match(/(create|update)/)) {
-                    // When state_patterns is in the form "app.module.create" or
-                    // "app.module.update", use the form template.
-                    templateUrl = 'static/templates/' + patterns[0] + '/' + patterns[1] + '-form.html';
-                } else {
-                    // Replaces the first point through a slash (the app name)
-                    var appName = state.name.replace('.', '/');
-                    // Replaces any folowing points though a -
-                    templateUrl = 'static/templates/' + appName.replace(/\./g, '-') + '.html';
+                // Split up state name
+                // example: "motions.motion.detail.update" -> ['motions', 'motion', 'detail', 'update']
+                var patterns = state.name.split('.');
+
+                // set app and module name from state
+                // - appName: patterns[0] (e.g. "motions")
+                // - moduleNames: patterns without first element (e.g. ["motion", "detail", "update"])
+                var appName = '';
+                var moduleName = '';
+                var moduleNames = [];
+                if (patterns.length > 0) {
+                    appName = patterns[0];
+                    moduleNames = patterns.slice(1);
                 }
+                if (moduleNames.length > 0) {
+                    // convert from camcelcase to dash notation
+                    // example: ["motionBlock", "detail"] -> ["motion-block", "detail"]
+                    for (var i = 0; i < moduleNames.length; i++) {
+                        moduleNames[i] =  moduleNames[i].replace(/([a-z\d])([A-Z])/g, '$1-$2').toLowerCase();
+                    }
+
+                    // use special templateUrl for create and update view
+                    // example: ["motion", "detail", "update"] -> "motion-form"
+                    if (_.last(moduleNames).match(/(create|update)/)) {
+                        moduleName = '/' + moduleNames[0] + '-form';
+                    } else {
+                        // convert modelNames array to url string
+                        // example: ["motion-block", "detail"] -> "motion-block-detail"
+                        moduleName = '/' + moduleNames.join('-');
+                    }
+                }
+                templateUrl = 'static/templates/' + appName + moduleName + '.html';
                 config.templateUrl = state.templateUrl || templateUrl;
 
                 // controller
                 if (patterns.length >= 3) {
-                    controller = _.capitalize(patterns[1]) + defaultControllers[_.last(patterns)];
+                    controller = _.upperFirst(patterns[1]) + defaultControllers[_.last(patterns)];
                     config.controller = state.controller || controller;
                 }
                 result[name] = config;
@@ -185,19 +293,42 @@ angular.module('OpenSlidesApp.core.site', [
 .config([
     '$stateProvider',
     '$locationProvider',
-    function($stateProvider, $locationProvider) {
+    'gettext',
+    function($stateProvider, $locationProvider, gettext) {
         // Core urls
         $stateProvider
             .state('home', {
                 url: '/',
-                templateUrl: 'static/templates/home.html'
+                templateUrl: 'static/templates/home.html',
+                data: {
+                    title: gettext('Home'),
+                    basePerm: 'core.can_see_frontpage',
+                },
             })
             .state('projector', {
-                url: '/projector',
+                url: '/projector/{id:int}/',
+                templateUrl: 'static/templates/projector-container.html',
                 data: {extern: true},
                 onEnter: function($window) {
                     $window.location.href = this.url;
                 }
+            })
+            .state('real-projector', {
+                url: '/real-projector/{id:int}/',
+                templateUrl: 'static/templates/projector.html',
+                data: {extern: true},
+                onEnter: function($window) {
+                    $window.location.href = this.url;
+                }
+            })
+            .state('manage-projectors', {
+                url: '/manage-projectors',
+                templateUrl: 'static/templates/core/manage-projectors.html',
+                controller: 'ManageProjectorsCtrl',
+                data: {
+                    title: gettext('Manage projectors'),
+                    basePerm: 'core.can_manage_projector',
+                },
             })
             .state('core', {
                 url: '/core',
@@ -209,6 +340,9 @@ angular.module('OpenSlidesApp.core.site', [
             .state('legalnotice', {
                 url: '/legalnotice',
                 controller: 'LegalNoticeCtrl',
+                data: {
+                    title: gettext('Legal notice'),
+                },
             })
 
             //config
@@ -219,7 +353,11 @@ angular.module('OpenSlidesApp.core.site', [
                     configOptions: function(Config) {
                         return Config.getConfigOptions();
                     }
-                }
+                },
+                data: {
+                    title: gettext('Settings'),
+                    basePerm: 'core.can_manage_config',
+                },
             })
 
             // search
@@ -227,104 +365,263 @@ angular.module('OpenSlidesApp.core.site', [
                 url: '/search?q',
                 controller: 'SearchCtrl',
                 templateUrl: 'static/templates/search.html',
+                data: {
+                    title: gettext('Search'),
+                },
             })
 
-            // customslide
-            .state('core.customslide', {
-                url: '/customslide',
-                abstract: true,
-                template: "<ui-view/>",
-            })
-            .state('core.customslide.detail', {
-                resolve: {
-                    customslide: function(Customslide, $stateParams) {
-                        return Customslide.find($stateParams.id);
-                    }
-                }
-            })
-            // redirects to customslide detail and opens customslide edit form dialog, uses edit url,
-            // used by ui-sref links from agenda only
-            // (from customslide controller use CustomSlideForm factory instead to open dialog in front
-            // of current view without redirect)
-            .state('core.customslide.detail.update', {
-                onEnter: ['$stateParams', '$state', 'ngDialog', 'Customslide',
-                    function($stateParams, $state, ngDialog, Customslide) {
-                        ngDialog.open({
-                            template: 'static/templates/core/customslide-form.html',
-                            controller: 'CustomslideUpdateCtrl',
-                            className: 'ngdialog-theme-default wide-form',
-                            resolve: {
-                                customslide: function() {return Customslide.find($stateParams.id);}
-                            },
-                            preCloseCallback: function() {
-                                $state.go('core.customslide.detail', {customslide: $stateParams.id});
-                                return true;
-                            }
-                        });
-                }]
-            })
             // tag
             .state('core.tag', {
                 url: '/tag',
                 abstract: true,
                 template: "<ui-view/>",
+                data: {
+                    title: gettext('Tags'),
+                    basePerm: 'core.can_manage_tags',
+                },
             })
-            .state('core.tag.list', {
-                resolve: {
-                    tags: function(Tag) {
-                        return Tag.findAll();
-                    }
-                }
-            })
-            .state('core.tag.create', {})
-            .state('core.tag.detail', {
-                resolve: {
-                    tag: function(Tag, $stateParams) {
-                        return Tag.find($stateParams.id);
-                    }
-                }
-            })
-            .state('core.tag.detail.update', {
-                views: {
-                    '@core.tag': {}
-                }
-            });
+            .state('core.tag.list', {});
 
         $locationProvider.html5Mode(true);
     }
 ])
 
-// Helper to add ui.router states at runtime.
-// Needed for the django url_patterns.
-.provider('runtimeStates', [
-    '$stateProvider',
-    function($stateProvider) {
-        this.$get = function($q, $timeout, $state) {
-            return {
-                addState: function(name, state) {
-                    $stateProvider.state(name, state);
-                }
-            };
+.config([
+    '$sessionStorageProvider',
+    function ($sessionStorageProvider) {
+        $sessionStorageProvider.setKeyPrefix('OpenSlides');
+    }
+])
+
+.factory('ProjectorMessageForm', [
+    'Editor',
+    'gettextCatalog',
+    function (Editor, gettextCatalog) {
+        return {
+            getDialog: function (message) {
+                return {
+                    template: 'static/templates/core/projector-message-form.html',
+                    controller: 'ProjectorMessageEditCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: {
+                        projectorMessageId: function () {
+                            return message.id;
+                        }
+                    },
+                };
+            },
+            getFormFields: function () {
+                return [
+                    {
+                        key: 'message',
+                        type: 'editor',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Message'),
+                        },
+                        data: {
+                            ckeditorOptions: Editor.getOptions()
+                        }
+                    },
+                ];
+            },
         };
     }
 ])
 
-// Load the django url patterns
-.run([
-    'runtimeStates',
-    '$http',
-    function(runtimeStates, $http) {
-        $http.get('/core/url_patterns/').then(function(data) {
-            for (var pattern in data.data) {
-                runtimeStates.addState(pattern, {
-                    'url': data.data[pattern],
-                    data: {extern: true},
-                    onEnter: function($window) {
-                        $window.location.href = this.url;
-                    }
-                });
+.factory('TagForm', [
+    'gettextCatalog',
+    function (gettextCatalog) {
+        return {
+            getDialog: function (tag) {
+                return {
+                    template: 'static/templates/core/tag-form.html',
+                    controller: (tag) ? 'TagUpdateCtrl' : 'TagCreateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: {
+                        tagId: function () {return tag ? tag.id : void 0;},
+                    },
+                };
+            },
+            getFormFields: function() {
+                return [
+                    {
+                        key: 'name',
+                        type: 'input',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Name'),
+                            required: true
+                        }
+                    },
+                ];
+            },
+        };
+    }
+])
+
+/* This factory handles the filtering of the OS-data-tables. It contains
+ * all logic needed for the table header filtering. Things to configure:
+ * - multiselectFilters: A dict associating the filter name to a list (empty per default). E.g.
+ *       { tag: [],
+ *         category: [], }
+ * - booleanFilters: A dict containing a dict for every filter. The value property is a must.
+ *   For displaying properties like displayName, choiceYes and choiceNo could be usefull. E.g.
+ *      { isPresent: {
+ *          value: undefined,
+ *          displayName: gettext('Is present'), } }
+ * - propertyList, propertyFunctionList, propertyDict: See function getObjectQueryString
+ */
+.factory('osTableFilter', [
+    '$sessionStorage',
+    function ($sessionStorage) {
+        var createInstance = function (tableName) {
+            var self = {
+                multiselectFilters: {},
+                booleanFilters: {},
+                filterString: '',
+            };
+            var existsStorageEntry = function () {
+                return $sessionStorage[tableName];
+            };
+            var storage = existsStorageEntry();
+            if (storage) {
+                self = storage;
             }
-        });
+
+            self.existsStorageEntry = existsStorageEntry;
+            self.save = function () {
+                $sessionStorage[tableName] = self;
+            };
+            self.areFiltersSet = function () {
+                var areFiltersSet = _.find(self.multiselectFilters, function (filterList) {
+                    return filterList.length > 0;
+                });
+                areFiltersSet = areFiltersSet || _.find(self.booleanFilters, function (filterDict) {
+                    return filterDict.value !== undefined;
+                });
+                areFiltersSet = areFiltersSet || (self.filterString !== '');
+                return areFiltersSet !== false;
+            };
+            self.reset = function () {
+                _.forEach(self.multiselectFilters, function (filterList, filter) {
+                    self.multiselectFilters[filter] = [];
+                });
+                _.forEach(self.booleanFilters, function (filterDict, filter) {
+                    self.booleanFilters[filter].value = undefined;
+                });
+                self.filterString = '';
+                self.save();
+            };
+            self.operateMultiselectFilter = function (filter, id, danger) {
+                if (!danger) {
+                    if (_.indexOf(self.multiselectFilters[filter], id) > -1) {
+                        // remove id
+                        self.multiselectFilters[filter].splice(_.indexOf(self.multiselectFilters[filter], id), 1);
+                    } else {
+                        // add id
+                        self.multiselectFilters[filter].push(id);
+                    }
+                    self.save();
+                }
+            };
+            /* Three things are could be given to create the query string:
+             * - propertyList: Just a list of object's properties like ['title', 'name']
+             * - propertyFunktionList: A list of functions returning a property (e.g. [function(motion) {return motion.getTitle();}] for retrieving the motions title)
+             * - propertyDict: A dict association properties that are lists to functions on how to handle them.
+             *   E.g.: {'tags': function (tag) {return tag.name;}, }
+             *         The list of tags will be mapped with this function to a list of strings (tag names).
+             */
+            self.getObjectQueryString = function (obj) {
+                var stringList = [];
+                _.forEach(self.propertyList, function (property) {
+                    stringList.push(obj[property]);
+                });
+                _.forEach(self.propertyFunctionList, function (fn) {
+                    stringList.push(fn(obj));
+                });
+                _.forEach(self.propertyDict, function (idFunction, property) {
+                    stringList.push(_.map(obj[property], idFunction).join(' '));
+                });
+                return stringList.join(' ');
+            };
+            return self;
+        };
+
+        return {
+            createInstance: createInstance
+        };
+    }
+])
+
+/* This factory takes care of the sorting of OS-data-tables. Things to configure:
+ * - column: the default column which is the list sorted by (e.g.
+ *   instance.column='title')
+ */
+.factory('osTableSort', [
+    function () {
+        var createInstance = function () {
+            var self = {
+                column: '',
+                reverse: false,
+            };
+            self.toggle = function (column) {
+                if (self.column === column) {
+                    self.reverse = !self.reverse;
+                }
+                self.column = column;
+            };
+            return self;
+        };
+
+        return {
+            createInstance: createInstance
+        };
+    }
+])
+
+/*
+ * This filter filters all items in an array. If the filterArray is empty, the
+ * array is passed. The filterArray contains numbers of the multiselect, e. g. [1, 3, 4].
+ * Then, all items in the array are passed, if the item_id (get with id_function) matches
+ * one of the ids in filterArray. id_function could also return a list of ids. Example:
+ * Item 1 has two tags with ids [1, 4]. filterArray == [3, 4] --> match
+ *
+ * If -1 is in the array items without an id will not be filtered. This is for implementing
+ * a filter option like: "All items without a category"
+ */
+.filter('MultiselectFilter', [
+    function () {
+        return function (array, filterArray, idFunction) {
+            if (filterArray.length === 0) {
+                return array;
+            }
+            var itemsWithoutProperty = _.indexOf(filterArray, -1) > -1;
+            return Array.prototype.filter.call(array, function (item) {
+                var id = idFunction(item);
+                if (typeof id === 'number') {
+                    id = [id];
+                } else if (id === null || !id.length) {
+                    return itemsWithoutProperty;
+                }
+                return _.intersection(id, filterArray).length > 0;
+            });
+        };
+    }
+])
+
+.filter('osFilter', [
+    function () {
+        return function (array, string, getFilterString) {
+            if (!string) {
+                return array;
+            }
+            return Array.prototype.filter.call(array, function (item) {
+                return getFilterString(item).toLowerCase().indexOf(string.toLowerCase()) > -1;
+            });
+        };
     }
 ])
 
@@ -338,49 +635,43 @@ angular.module('OpenSlidesApp.core.site', [
 
         // Configure custom types
         formlyConfig.setType({
-          name: 'editor',
-          extends: 'textarea',
-          templateUrl: 'static/templates/core/editor.html',
+            name: 'editor',
+            extends: 'textarea',
+            templateUrl: 'static/templates/core/editor.html',
         });
         formlyConfig.setType({
-          name: 'select-single',
-          extends: 'select',
-          templateUrl: 'static/templates/core/select-single.html'
+            name: 'password',
+            extends: 'input',
+            templateUrl: 'static/templates/core/password.html',
         });
         formlyConfig.setType({
-          name: 'select-multiple',
-          extends: 'select',
-          templateUrl: 'static/templates/core/select-multiple.html'
+            name: 'checkbox',
+            templateUrl: 'static/templates/core/checkbox.html',
+            overwriteOk: true,
         });
-    }
-])
-
-// Options for TinyMCE editor used in various create and edit views.
-.factory('Editor', [
-    'gettextCatalog',
-    function (gettextCatalog) {
-        return {
-            getOptions: function (images) {
-                return {
-                    language_url: '/static/tinymce/i18n/' + gettextCatalog.getCurrentLanguage() + '.js',
-                    theme_url: '/static/js/openslides-libs.js',
-                    skin_url: '/static/tinymce/skins/lightgray/',
-                    inline: false,
-                    statusbar: false,
-                    browser_spellcheck: true,
-                    image_advtab: true,
-                    image_list: images,
-                    plugins: [
-                      'lists link autolink charmap preview searchreplace code fullscreen',
-                      'paste textcolor colorpicker image imagetools'
-                    ],
-                    menubar: '',
-                    toolbar: 'undo redo searchreplace | styleselect | bold italic underline strikethrough ' +
-                        'forecolor backcolor removeformat | bullist numlist | outdent indent | ' +
-                        'link image charmap table | code preview fullscreen'
-                };
+        formlyConfig.setType({
+            name: 'select-single',
+            extends: 'select',
+            templateUrl: 'static/templates/core/select-single.html'
+        });
+        formlyConfig.setType({
+            name: 'select-multiple',
+            extends: 'select',
+            templateUrl: 'static/templates/core/select-multiple.html'
+        });
+        formlyConfig.setType({
+            name: 'radio-buttons',
+            templateUrl: 'static/templates/core/radio-buttons.html',
+            wrapper: ['bootstrapHasError'],
+            defaultOptions: {
+                noFormControl: false
             }
-        };
+        });
+        formlyConfig.setType({
+            name: 'file',
+            extends: 'input',
+            templateUrl: 'static/templates/core/file.html',
+        });
     }
 ])
 
@@ -389,61 +680,152 @@ angular.module('OpenSlidesApp.core.site', [
 .directive('osFormField', [
     '$parse',
     'Config',
-    function($parse, Config) {
-        function getHtmlType(type) {
+    'gettextCatalog',
+    function($parse, Config, gettextCatalog) {
+        var getHtmlType = function (type) {
             return {
                 string: 'text',
                 text: 'textarea',
+                markupText: 'editor',
                 integer: 'number',
                 boolean: 'checkbox',
                 choice: 'choice',
+                comments: 'comments',
                 colorpicker: 'colorpicker',
+                datetimepicker: 'datetimepicker',
+                majorityMethod: 'choice',
             }[type];
-        }
+        };
 
         return {
             restrict: 'E',
             scope: true,
-            templateUrl: '/static/templates/config-form-field.html',
+            templateUrl: 'static/templates/config-form-field.html',
             link: function ($scope, iElement, iAttrs, controller, transcludeFn) {
                 var field = $parse(iAttrs.field)($scope);
                 var config = Config.get(field.key);
                 $scope.type = getHtmlType(field.input_type);
                 if ($scope.type == 'choice') {
                     $scope.choices = field.choices;
+                    $scope.value = config.value;
+                } else {
+                    $scope.value = gettextCatalog.getString(config.value);
                 }
                 $scope.label = field.label;
                 $scope.key = 'field-' + field.key;
-                $scope.value = config.value;
                 $scope.help_text = field.help_text;
                 $scope.default_value = field.default_value;
                 $scope.reset = function () {
-                    $scope.value = $scope.default_value;
-                    $scope.save(field.key, $scope.value);
+                    if ($scope.type == 'choice') {
+                        $scope.value = $scope.default_value;
+                    } else {
+                        $scope.value = gettextCatalog.getString($scope.default_value);
+                    }
+                    $scope.save(field, $scope.value);
                 };
             }
         };
     }
 ])
 
-.directive('routeLoadingIndicator', [
-    '$rootScope',
-    '$state',
-    'gettext',
-    function($rootScope, $state, gettext) {
-        gettext('Loading ...');
+/* This directive provides a csv import template.
+ * Papa Parse is used to parse the csv file. Accepted attributes:
+ * * change:
+ *   Callback if file changes. The one parameter is csv passing the parsed file
+ * * config (optional):
+ *   - accept: String with extensions: default '.csv .txt'
+ *   - encodingOptions: List with encodings. Default ['UTF-8', 'ISO-8859-1']
+ *   - parseConfig: a dict passed to PapaParse
+ */
+.directive('csvImport', [
+    function () {
         return {
             restrict: 'E',
-            template: "<div class='header spacer-bottom' ng-if='isRouteLoading'><div class='title'><h1><translate>Loading ...</translate> <i class='fa fa-spinner fa-pulse'></i></h1></div></div>",
-            link: function(scope, elem, attrs) {
-                scope.isRouteLoading = false;
-                $rootScope.$on('$stateChangeStart', function() {
-                    scope.isRouteLoading = true;
+            templateUrl: 'static/templates/csv-import.html',
+            scope: {
+                change: '&',
+                config: '=?',
+            },
+            controller: function ($scope, $element, $attrs, $location) {
+                // set config if it is not given
+                if (!$scope.config) {
+                    $scope.config = {};
+                }
+                if (!$scope.config.parseConfig) {
+                    $scope.config.parseConfig = {};
+                }
+
+                $scope.inputElement = angular.element($element[0].querySelector('#csvFileSelector'));
+
+                // set accept and encoding
+                $scope.accept = $scope.config.accept || '.csv';
+                $scope.encodingOptions = $scope.config.encodingOptions || ['UTF-8'];
+                $scope.encoding = $scope.encodingOptions[0];
+
+                $scope.parse = function () {
+                    var inputElement = $scope.inputElement[0];
+                    if (!inputElement.files.length) {
+                        $scope.change({csv: {data: {}}});
+                    } else {
+                        var parseConfig = _.defaults(_.clone($scope.config.parseConfig), {
+                            delimiter: $scope.delimiter,
+                            encoding: $scope.encoding,
+                            header: false, // we do not want to have dicts in result
+                            complete: function (csv) {
+                                csv.data = csv.data.splice(1); // do not interpret the header as data
+                                $scope.$apply(function () {
+                                    if (csv.meta.delimiter) {
+                                        $scope.autodelimiter = csv.meta.delimiter;
+                                    }
+                                    $scope.change({csv: csv});
+                                });
+                            },
+                            error: function () {
+                                $scope.$apply(function () {
+                                    $scope.change({csv: {data: {}}});
+                                });
+                            },
+                        });
+
+                        Papa.parse(inputElement.files[0], parseConfig);
+                    }
+                };
+
+                $scope.clearFile = function () {
+                    $scope.inputElement[0].value = '';
+                    $scope.selectedFile = undefined;
+                    $scope.parse();
+                };
+
+                $scope.inputElement.on('change', function () {
+                    $scope.selectedFile = _.last($scope.inputElement[0].value.split('\\'));
+                    $scope.parse();
                 });
-                $rootScope.$on('$stateChangeSuccess', function() {
-                    scope.isRouteLoading = false;
-                });
-            }
+            },
+        };
+    }
+])
+
+.directive('messaging', [
+    '$timeout',
+    'Messaging',
+    function ($timeout, Messaging) {
+        return {
+            restrict: 'E',
+            templateUrl: 'static/templates/messaging.html',
+            scope: {},
+            controller: function ($scope, $element, $attrs, $location) {
+                $scope.messages = {};
+
+                var update = function () {
+                    $scope.messages = Messaging.getMessages();
+                };
+                Messaging.registerMessageChangeCallback(update);
+
+                $scope.close = function (id) {
+                    Messaging.deleteMessage(id);
+                };
+            },
         };
     }
 ])
@@ -479,11 +861,54 @@ angular.module('OpenSlidesApp.core.site', [
 // Projector Sidebar Controller
 .controller('ProjectorSidebarCtrl', [
     '$scope',
-    function ($scope) {
+    '$document',
+    '$window',
+    function ($scope, $document, $window) {
         $scope.isProjectorSidebar = false;
         $scope.showProjectorSidebar = function (show) {
             $scope.isProjectorSidebar = show;
         };
+
+        // Sidebar scroll
+        var marginTop = 20, // margin-top from #content
+            marginBottom = 30, // 30px + 20px sidebar margin-bottom = 50px from footer
+            sidebar;
+
+        var sidebarScroll = function () {
+            var sidebarHeight = sidebar.height(),
+                sidebarOffset = sidebar.offset().top,
+                sidebarMinOffset = $('#header').height() + $('#nav').height() + marginTop,
+                documentHeight = $document.height(),
+                windowHeight = $window.innerHeight,
+                scrollTop = $window.pageYOffset;
+
+            // First, check if there is a need to scroll: scroll if the sidebar is smaller then the content
+            if (sidebarHeight < $('.col1').height()) {
+                if ((scrollTop + marginTop + sidebarHeight) > (documentHeight - marginBottom)) {
+                    // Stick to the bottom
+                    var bottom = marginBottom + scrollTop + windowHeight - documentHeight;
+                    sidebar.css({'position': 'fixed', 'top': '', 'right': '30px', 'bottom': bottom});
+                } else if ((scrollTop + marginTop) > sidebarMinOffset) {
+                    // scroll with the user
+                    sidebar.css({'position': 'fixed', 'top': marginTop, 'right': '30px', 'bottom': ''});
+                } else {
+                    // Stick to the top
+                    sidebar.css({'position': 'relative', 'top': 0, 'right': 0, 'bottom': ''});
+                }
+            } else {
+                // Stick to the top, if the sidebar is larger then the content
+                sidebar.css({'position': 'relative', 'top': 0, 'right': 0, 'bottom': ''});
+            }
+        };
+
+        $scope.initSidebar = function () {
+            sidebar = $('#sidebar');
+            $scope.$watch(function () {
+                return sidebar.height();
+            }, sidebarScroll);
+            angular.element($window).bind('scroll', sidebarScroll);
+        };
+
     }
 ])
 
@@ -492,9 +917,9 @@ angular.module('OpenSlidesApp.core.site', [
     '$scope',
     '$http',
     function ($scope, $http) {
-        $http.get('/core/version/').success(function(data) {
-            $scope.core_version = data.openslides_version;
-            $scope.plugins = data.plugins;
+        $http.get('/core/version/').then(function (success) {
+            $scope.core_version = success.data.openslides_version;
+            $scope.plugins = success.data.plugins;
         });
     }
 ])
@@ -502,17 +927,95 @@ angular.module('OpenSlidesApp.core.site', [
 // Config Controller
 .controller('ConfigCtrl', [
     '$scope',
+    '$timeout',
+    'MajorityMethodChoices',
     'Config',
     'configOptions',
-    function($scope, Config, configOptions) {
+    'gettextCatalog',
+    'DateTimePickerTranslation',
+    'Editor',
+    function($scope, $timeout, MajorityMethodChoices, Config, configOptions,
+        gettextCatalog, DateTimePickerTranslation, Editor) {
         Config.bindAll({}, $scope, 'configs');
         $scope.configGroups = configOptions.data.config_groups;
+        $scope.dateTimePickerTranslatedButtons = DateTimePickerTranslation.getButtons();
+
+        $scope.ckeditorOptions = Editor.getOptions();
+        $scope.ckeditorOptions.on.change = function (event) {
+            // we could just retrieve the key, but we need the configOption object.
+            var configOption_key = event.editor.element.$.id;
+
+            // find configOption object
+            var subgroups = _.flatMap($scope.configGroups, function (group) {
+                return group.subgroups;
+            });
+            var items = _.flatMap(subgroups, function (subgroup) {
+                return subgroup.items;
+            });
+            var configOption = _.find(items, function (_item) {
+                return _item.key === configOption_key;
+            });
+
+            var editor = this;
+            // The $timeout executes the given function in an angular context. Because
+            // this is a standard JS event, all changes may not happen in the digist-cylce.
+            // By using $timeout angular calls $apply for us that we do not have to care
+            // about starting the digist-cycle.
+            $timeout(function () {
+                $scope.save(configOption, editor.getData());
+            }, 1);
+        };
 
         // save changed config value
-        $scope.save = function(key, value) {
-            Config.get(key).value = value;
-            Config.save(key);
+        $scope.save = function(configOption, value) {
+            Config.get(configOption.key).value = value;
+            Config.save(configOption.key).then(function (success) {
+                configOption.success = true;
+                // fade out the success symbol after 2 seconds.
+                $timeout(function () {
+                    var element = $('#success-field-' + configOption.key);
+                    element.fadeOut(800, function () {
+                        configOption.success = void 0;
+                    });
+                }, 2000);
+            }, function (error) {
+                configOption.success = false;
+                configOption.errorMessage = error.data.detail;
+            });
         };
+
+        // For comments input
+        $scope.addComment = function (key, parent) {
+            parent.value.push({
+                name: gettextCatalog.getString('New'),
+                public: false,
+            });
+            $scope.save(key, parent.value);
+        };
+        $scope.removeComment = function (key, parent, index) {
+            parent.value.splice(index, 1);
+            $scope.save(key, parent.value);
+        };
+
+        // For majority method
+        angular.forEach(
+            _.filter($scope.configGroups, function (configGroup) {
+                return configGroup.name === 'Motions' || configGroup.name === 'Elections';
+            }),
+            function (configGroup) {
+                var configItem;
+                _.forEach(configGroup.subgroups, function (subgroup) {
+                    configItem = _.find(subgroup.items, ['input_type', 'majorityMethod']);
+                    if (configItem !== undefined) {
+                        // Break the forEach loop if we found something.
+                        return false;
+                    }
+                });
+                if (configItem !== undefined) {
+                    configItem.choices = MajorityMethodChoices;
+                }
+            }
+        );
     }
 ])
 
@@ -520,111 +1023,72 @@ angular.module('OpenSlidesApp.core.site', [
 .controller('SearchBarCtrl', [
     '$scope',
     '$state',
-    function ($scope, $state) {
-        $scope.search = function(query) {
-            $scope.query = '';
+    '$sanitize',
+    function ($scope, $state, $sanitize) {
+        $scope.search = function() {
+            var query = _.escape($scope.querybar);
+            $scope.querybar = '';
             $state.go('search', {q: query});
         };
     }
 ])
+
 // Search Controller
 .controller('SearchCtrl', [
     '$scope',
-    '$http',
+    '$filter',
     '$stateParams',
+    'Search',
     'DS',
-    function ($scope, $http, $stateParams, DS) {
+    'Motion',
+    function ($scope, $filter, $stateParams, Search, DS, Motion) {
+        $scope.searchresults = [];
+        var searchModules = Search.getAll();
+
         // search function
-        $scope.search = function(query) {
-            $http.get('/core/search_api/?q=' + query).then(function(success) {
-                var elements = success.data.elements;
-                $scope.results = [];
-                angular.forEach(elements, function(element) {
-                    DS.find(element.collection, element.id).then(function(data) {
-                        data.urlState = element.collection.replace('/','.')+'.detail';
-                        data.urlParam = {id: element.id};
-                        $scope.results.push(data);
-                    });
+        $scope.search = function() {
+            $scope.results = [];
+            var foundObjects = [];
+            // search in rest properties of all defined searchModule
+            // (does not found any related objects, e.g. speakers of items)
+            _.forEach(searchModules, function(searchModule) {
+                var result = {};
+                result.verboseName = searchModule.verboseName;
+                result.collectionName = searchModule.collectionName;
+                result.urlDetailState = searchModule.urlDetailState;
+                result.weight = searchModule.weight;
+                result.checked = true;
+                result.elements = $filter('filter')(DS.getAll(searchModule.collectionName), $scope.searchquery);
+                $scope.results.push(result);
+                _.forEach(result.elements, function(element) {
+                    foundObjects.push(element);
+                });
+            });
+            // search additionally in specific releations of all defined searchModules
+            _.forEach(searchModules, function(searchModule) {
+                _.forEach(DS.getAll(searchModule.collectionName), function(object) {
+                    if (_.isFunction(object.hasSearchResult)) {
+                        if (object.hasSearchResult(foundObjects, $scope.searchquery)) {
+                            // releation found, check if object is not yet in search results
+                            _.forEach($scope.results, function(result) {
+                                if ((object.getResourceName() === result.collectionName) &&
+                                        _.findIndex(result.elements, {'id': object.id}) === -1) {
+                                    result.elements.push(object);
+                                }
+                            });
+                        }
+                    } else {
+                        return false;
+                    }
                 });
             });
         };
 
-        // run search with get parameter from url
+        //get search string from parameters submitted from outside the scope
         if ($stateParams.q) {
-            $scope.search($stateParams.q);
-            $scope.query = $stateParams.q;
+            $scope.searchquery = $stateParams.q;
+            $scope.search();
         }
-    }
-])
-
-
-// Provide generic customslide form fields for create and update view
-.factory('CustomslideForm', [
-    'gettextCatalog',
-    'Editor',
-    'Mediafile',
-    function (gettextCatalog, Editor, Mediafile) {
-        return {
-            // ngDialog for customslide form
-            getDialog: function (customslide) {
-                var resolve = {};
-                if (customslide) {
-                    resolve = {
-                        customslide: function(Customslide) {return Customslide.find(customslide.id);}
-                    };
-                }
-                resolve.mediafiles = function(Mediafile) {return Mediafile.findAll();};
-                return {
-                    template: 'static/templates/core/customslide-form.html',
-                    controller: (customslide) ? 'CustomslideUpdateCtrl' : 'CustomslideCreateCtrl',
-                    className: 'ngdialog-theme-default wide-form',
-                    closeByEscape: false,
-                    closeByDocument: false,
-                    resolve: (resolve) ? resolve : null
-                };
-            },
-            getFormFields: function () {
-                var images = Mediafile.getAllImages();
-                return [
-                {
-                    key: 'title',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Title'),
-                        required: true
-                    }
-                },
-                {
-                    key: 'text',
-                    type: 'editor',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Text')
-                    },
-                    data: {
-                        tinymceOption: Editor.getOptions(images)
-                    }
-                },
-                {
-                    key: 'attachments_id',
-                    type: 'select-multiple',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Attachment'),
-                        options: Mediafile.getAll(),
-                        ngOptions: 'option.id as option.title_or_filename for option in to.options',
-                        placeholder: gettextCatalog.getString('Select or search an attachment ...')
-                    }
-                },
-                {
-                    key: 'showAsAgendaItem',
-                    type: 'checkbox',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Show as agenda item'),
-                        description: gettextCatalog.getString('If deactivated it appears as internal item on agenda.')
-                    }
-                },
-                ];
-            }
-        };
     }
 ])
 
@@ -634,296 +1098,345 @@ angular.module('OpenSlidesApp.core.site', [
     '$http',
     '$interval',
     '$state',
+    '$q',
+    '$filter',
     'Config',
     'Projector',
-    function($scope, $http, $interval, $state, Config, Projector) {
-         // bind projector elements to the scope, update after projector changed
+    'CurrentListOfSpeakersItem',
+    'CurrentListOfSpeakersSlide',
+    'ProjectionDefault',
+    'ProjectorMessage',
+    'Countdown',
+    'gettextCatalog',
+    'ngDialog',
+    'ProjectorMessageForm',
+    function($scope, $http, $interval, $state, $q, $filter, Config, Projector, CurrentListOfSpeakersItem,
+        CurrentListOfSpeakersSlide, ProjectionDefault, ProjectorMessage, Countdown, gettextCatalog,
+        ngDialog, ProjectorMessageForm) {
+        ProjectorMessage.bindAll({}, $scope, 'messages');
+
+        var intervals = [];
+        var calculateCountdownTime = function (countdown) {
+            countdown.seconds = Math.floor( countdown.countdown_time - Date.now() / 1000 + $scope.serverOffset );
+        };
+        var cancelIntervalTimers = function () {
+            intervals.forEach(function (interval) {
+                $interval.cancel(interval);
+            });
+        };
         $scope.$watch(function () {
-            return Projector.lastModified(1);
+            return Countdown.lastModified();
         }, function () {
+            $scope.countdowns = Countdown.getAll();
+
             // stop ALL interval timer
-            for (var i=0; i<$scope.countdowns.length; i++) {
-                if ( $scope.countdowns[i].interval ) {
-                    $interval.cancel($scope.countdowns[i].interval);
+            cancelIntervalTimers();
+            $scope.countdowns.forEach(function (countdown) {
+                if (countdown.running) {
+                    calculateCountdownTime(countdown);
+                    intervals.push($interval(function () { calculateCountdownTime(countdown); }, 1000));
+                } else {
+                    countdown.seconds = countdown.countdown_time;
                 }
-            }
-            // rebuild all variables after projector update
-            $scope.rebuildAllElements();
+            });
         });
         $scope.$on('$destroy', function() {
             // Cancel all intervals if the controller is destroyed
-            for (var i=0; i<$scope.countdowns.length; i++) {
-                if ( $scope.countdowns[i].interval ) {
-                    $interval.cancel($scope.countdowns[i].interval);
-                }
+            cancelIntervalTimers();
+        });
+
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            $scope.projectors = Projector.getAll();
+            if (!$scope.active_projector) {
+                $scope.changeProjector($filter('orderBy')($scope.projectors, 'id')[0]);
+            }
+            if ($scope.projectors.length === 1) {
+                $scope.currentListOfSpeakersAsOverlay = true;
             }
 
+            $scope.messageDefaultProjectorId = ProjectionDefault.filter({name: 'messages'})[0].projector_id;
+            $scope.countdownDefaultProjectorId = ProjectionDefault.filter({name: 'countdowns'})[0].projector_id;
+            $scope.listOfSpeakersDefaultProjectorId = ProjectionDefault.filter({name: 'agenda_current_list_of_speakers'})[0].projector_id;
         });
+        // watch for changes in projector_broadcast and currentListOfSpeakersReference
+        var last_broadcast;
+        $scope.$watch(function () {
+            return Config.lastModified();
+        }, function () {
+            var broadcast = Config.get('projector_broadcast').value;
+            if (!last_broadcast || last_broadcast != broadcast) {
+                last_broadcast = broadcast;
+                $scope.broadcast = broadcast;
+            }
+            $scope.currentListOfSpeakersReference = $scope.config('projector_currentListOfSpeakers_reference');
+        });
+
+        $scope.changeProjector = function (projector) {
+            $scope.active_projector = projector;
+            $scope.scale = 256.0 / projector.width;
+            $scope.iframeHeight = $scope.scale * projector.height;
+        };
+
+        $scope.editCurrentSlide = function (projector) {
+            var data = projector.getFormOrStateForCurrentSlide();
+            if (data) {
+                if (data.form) {
+                    ngDialog.open(data.form.getDialog({id: data.id}));
+                } else {
+                    $state.go(data.state, {id: data.id});
+                }
+            }
+        };
 
         // *** countdown functions ***
         $scope.calculateCountdownTime = function (countdown) {
             countdown.seconds = Math.floor( countdown.countdown_time - Date.now() / 1000 + $scope.serverOffset );
         };
-        $scope.rebuildAllElements = function () {
-            $scope.countdowns = [];
-            $scope.messages = [];
-            // iterate via all projector elements and catch all countdowns and messages
-            $.each(Projector.get(1).elements, function(key, value) {
-                if (value.name == 'core/countdown') {
-                    $scope.countdowns.push(value);
-                    if (value.status == "running") {
-                        // calculate remaining seconds directly because interval starts with 1 second delay
-                        $scope.calculateCountdownTime(value);
-                        // start interval timer (every second)
-                        value.interval = $interval( function() { $scope.calculateCountdownTime(value); }, 1000);
-                    } else {
-                        value.seconds = value.countdown_time;
-                    }
-                }
-                if (value.name == 'core/message') {
-                    $scope.messages.push(value);
-                }
-            });
-            $scope.scrollLevel = Projector.get(1).scroll;
-            $scope.scaleLevel = Projector.get(1).scale;
+        $scope.editCountdown = function (countdown) {
+            countdown.editFlag = false;
+            countdown.description = countdown.new_description;
+            Countdown.save(countdown);
+            if (!countdown.running) {
+                countdown.reset();
+            }
         };
-
-        // get initial values for $scope.countdowns, $scope.messages, $scope.scrollLevel
-        // and $scope.scaleLevel (after page reload)
-        $scope.rebuildAllElements();
-
         $scope.addCountdown = function () {
-            var defaultvalue = parseInt(Config.get('projector_default_countdown').value);
-            $http.post('/rest/core/projector/1/activate_elements/', [{
-                    name: 'core/countdown',
-                    status: 'stop',
-                    visible: false,
-                    index: $scope.countdowns.length,
-                    countdown_time: defaultvalue,
-                    default: defaultvalue,
-                    stable: true
-            }]);
+            var default_time = parseInt($scope.config('projector_default_countdown'));
+            var countdown = {
+                description: '',
+                default_time: default_time,
+                countdown_time: default_time,
+                running: false,
+            };
+            Countdown.create(countdown);
         };
         $scope.removeCountdown = function (countdown) {
-            var data = {};
-            var delta = 0;
-            // rebuild index for all countdowns after the selected (deleted) countdown
-            for (var i=0; i<$scope.countdowns.length; i++) {
-                if ( $scope.countdowns[i].uuid == countdown.uuid ) {
-                    delta = 1;
-                } else if (delta > 0) {
-                        data[$scope.countdowns[i].uuid] = { "index": i - delta };
-                }
-            }
-            $http.post('/rest/core/projector/1/deactivate_elements/', [countdown.uuid]);
-            if (Object.keys(data).length > 0) {
-                $http.post('/rest/core/projector/1/update_elements/', data);
-            }
-        };
-        $scope.showCountdown = function (countdown) {
-            var data = {};
-            data[countdown.uuid] = { "visible": !countdown.visible };
-            $http.post('/rest/core/projector/1/update_elements/', data);
-        };
-        $scope.editCountdown = function (countdown) {
-            var data = {};
-            data[countdown.uuid] = {
-                "description": countdown.description,
-                "default": parseInt(countdown.default)
-            };
-            if (countdown.status == "stop") {
-                data[countdown.uuid].countdown_time = parseInt(countdown.default);
-            }
-            $http.post('/rest/core/projector/1/update_elements/', data);
-        };
-        $scope.startCountdown = function (countdown) {
-            var data = {};
-            // calculate end point of countdown (in seconds!)
-            var endTimestamp = Date.now() / 1000 - $scope.serverOffset + countdown.countdown_time;
-            data[countdown.uuid] = {
-                "status": "running",
-                "countdown_time": endTimestamp
-            };
-            $http.post('/rest/core/projector/1/update_elements/', data);
-        };
-        $scope.stopCountdown = function (countdown) {
-            var data = {};
-            // calculate rest duration of countdown (in seconds!)
-            var newDuration = Math.floor( countdown.countdown_time - Date.now() / 1000 + $scope.serverOffset );
-            data[countdown.uuid] = {
-                "status": "stop",
-                "countdown_time": newDuration
-            };
-            $http.post('/rest/core/projector/1/update_elements/', data);
-        };
-        $scope.resetCountdown = function (countdown) {
-            var data = {};
-            data[countdown.uuid] = {
-                "status": "stop",
-                "countdown_time": countdown.default,
-            };
-            $http.post('/rest/core/projector/1/update_elements/', data);
+            var isProjectedIds = countdown.isProjected();
+            _.forEach(isProjectedIds, function(id) {
+                countdown.project(id);
+            });
+            Countdown.destroy(countdown.id);
         };
 
         // *** message functions ***
+        $scope.editMessage = function (message) {
+            ngDialog.open(ProjectorMessageForm.getDialog(message));
+        };
         $scope.addMessage = function () {
-            $http.post('/rest/core/projector/1/activate_elements/', [{
-                    name: 'core/message',
-                    visible: false,
-                    index: $scope.messages.length,
-                    message: '',
-                    stable: true
-            }]);
+            var message = {message: ''};
+            ProjectorMessage.create(message);
         };
         $scope.removeMessage = function (message) {
-            $http.post('/rest/core/projector/1/deactivate_elements/', [message.uuid]);
-        };
-        $scope.showMessage = function (message) {
-            var data = {};
-            // if current message is activated, deactivate all other messages
-            if ( !message.visible ) {
-                for (var i=0; i<$scope.messages.length; i++) {
-                    if ( $scope.messages[i].uuid == message.uuid ) {
-                        data[$scope.messages[i].uuid] = { "visible": true };
-                    } else {
-                        data[$scope.messages[i].uuid] = { "visible": false };
-                    }
-                }
-            } else {
-                data[message.uuid] = { "visible": false };
-            }
-            $http.post('/rest/core/projector/1/update_elements/', data);
-        };
-        $scope.editMessage = function (message) {
-            var data = {};
-            data[message.uuid] = {
-                "message": message.message,
-            };
-            $http.post('/rest/core/projector/1/update_elements/', data);
-            message.editMessageFlag = false;
+            var isProjectedIds = message.isProjected();
+            _.forEach(isProjectedIds, function(id) {
+                message.project(id);
+            });
+            ProjectorMessage.destroy(message.id);
         };
 
-        // *** projector controls ***
-        $scope.scrollLevel = Projector.get(1).scroll;
-        $scope.scaleLevel = Projector.get(1).scale;
-        $scope.controlProjector = function (action, direction) {
-            $http.post('/rest/core/projector/1/control_view/', {"action": action, "direction": direction});
+        /* Current list of speakers */
+        $scope.currentListOfSpeakers = CurrentListOfSpeakersSlide;
+        // Set the current overlay status
+        if ($scope.currentListOfSpeakers.isProjected().length) {
+            var isProjected = $scope.currentListOfSpeakers.isProjectedWithOverlayStatus();
+            $scope.currentListOfSpeakersAsOverlay = isProjected[0].overlay;
+        } else {
+            $scope.currentListOfSpeakersAsOverlay = true;
+        }
+        // go to the list of speakers(management) of the currently displayed list of speakers reference slide
+        $scope.goToListOfSpeakers = function() {
+            var item = $scope.currentListOfSpeakersItem();
+            if (item) {
+                $state.go('agenda.item.detail', {id: item.id});
+            }
         };
-        $scope.editCurrentSlide = function () {
-            $.each(Projector.get(1).elements, function(key, value) {
-                if (value.name == 'agenda/list-of-speakers') {
-                    $state.go('agenda.item.detail', {id: value.id});
-                } else if (
-                    value.name != 'agenda/item-list' &&
-                    value.name != 'core/clock' &&
-                    value.name != 'core/countdown' &&
-                    value.name != 'core/message' ) {
-                    $state.go(value.name.replace('/', '.')+'.detail.update', {id: value.id});
+        $scope.currentListOfSpeakersItem = function () {
+            return CurrentListOfSpeakersItem.getItem($scope.currentListOfSpeakersReference);
+        };
+        $scope.setOverlay = function (overlay) {
+            $scope.currentListOfSpeakersAsOverlay = overlay;
+            var isProjected = $scope.currentListOfSpeakers.isProjectedWithOverlayStatus();
+            if (isProjected.length) {
+                _.forEach(isProjected, function (mapping) {
+                    if (mapping.overlay != overlay) { // change the overlay if it is different
+                        $scope.currentListOfSpeakers.project(mapping.projectorId, overlay);
+                    }
+                });
+            }
+        };
+    }
+])
+
+.controller('ProjectorMessageEditCtrl', [
+    '$scope',
+    'projectorMessageId',
+    'ProjectorMessage',
+    'ProjectorMessageForm',
+    function ($scope, projectorMessageId, ProjectorMessage, ProjectorMessageForm) {
+        $scope.formFields = ProjectorMessageForm.getFormFields();
+        $scope.model = angular.copy(ProjectorMessage.get(projectorMessageId));
+
+        $scope.save = function (message) {
+            ProjectorMessage.inject(message);
+            ProjectorMessage.save(message);
+            $scope.closeThisDialog();
+        };
+    }
+])
+
+.controller('ManageProjectorsCtrl', [
+    '$scope',
+    '$http',
+    '$timeout',
+    'Projector',
+    'ProjectionDefault',
+    'Config',
+    'ProjectorMessage',
+    'ngDialog',
+    function ($scope, $http, $timeout, Projector, ProjectionDefault, Config,
+        ProjectorMessage, ngDialog) {
+        ProjectionDefault.bindAll({}, $scope, 'projectiondefaults');
+
+        // watch for changes in projector_broadcast
+        // and projector_currentListOfSpeakers_reference
+        var last_broadcast, last_clos;
+        $scope.$watch(function () {
+            return Config.lastModified();
+        }, function () {
+            var broadcast = $scope.config('projector_broadcast'),
+            currentListOfSpeakers = $scope.config('projector_currentListOfSpeakers_reference');
+            if (!last_broadcast || last_broadcast != broadcast) {
+                last_broadcast = broadcast;
+                $scope.broadcast = broadcast;
+            }
+            if (!last_clos || last_clos != currentListOfSpeakers) {
+                last_clos = currentListOfSpeakers;
+                $scope.currentListOfSpeakers = currentListOfSpeakers;
+            }
+        });
+
+        // watch for changes in Projector, and recalc scale and iframeHeight
+        var first_watch = true;
+        $scope.resolutions = [];
+        $scope.edit = [];
+        $scope.$watch(function () {
+            return Projector.lastModified();
+        }, function () {
+            $scope.projectors = Projector.getAll();
+            $scope.projectors.forEach(function (projector) {
+                projector.iframeScale = 256.0 / projector.width;
+                projector.iframeHeight = projector.iframeScale * projector.height;
+                if (first_watch) {
+                    $scope.resolutions[projector.id] = {
+                        width: projector.width,
+                        height: projector.height
+                    };
+                    $scope.edit[projector.id] = false;
                 }
             });
-        };
-    }
-])
-
-// Customslide Controllers
-.controller('CustomslideDetailCtrl', [
-    '$scope',
-    'ngDialog',
-    'CustomslideForm',
-    'Customslide',
-    'customslide',
-    function($scope, ngDialog, CustomslideForm, Customslide, customslide) {
-        Customslide.bindOne(customslide.id, $scope, 'customslide');
-        Customslide.loadRelations(customslide, 'agenda_item');
-
-        // open edit dialog
-        $scope.openDialog = function (customslide) {
-            ngDialog.open(CustomslideForm.getDialog(customslide));
-        };
-    }
-])
-
-.controller('CustomslideCreateCtrl', [
-    '$scope',
-    '$state',
-    'Customslide',
-    'CustomslideForm',
-    'Agenda',
-    function($scope, $state, Customslide, CustomslideForm, Agenda) {
-        $scope.customslide = {};
-        $scope.model = {};
-        $scope.model.showAsAgendaItem = true;
-        // get all form fields
-        $scope.formFields = CustomslideForm.getFormFields();
-
-        // save form
-        $scope.save = function (customslide) {
-            Customslide.create(customslide).then(
-                function(success) {
-                    // find related agenda item
-                    Agenda.find(success.agenda_item_id).then(function(item) {
-                        // check form element and set item type (AGENDA_ITEM = 1, HIDDEN_ITEM = 2)
-                        var type = customslide.showAsAgendaItem ? 1 : 2;
-                        // save only if agenda item type is modified
-                        if (item.type != type) {
-                            item.type = type;
-                            Agenda.save(item);
-                        }
-                    });
-                    $scope.closeThisDialog();
-                }
-            );
-        };
-    }
-])
-
-.controller('CustomslideUpdateCtrl', [
-    '$scope',
-    '$state',
-    'Customslide',
-    'CustomslideForm',
-    'Agenda',
-    'customslide',
-    function($scope, $state, Customslide, CustomslideForm, Agenda, customslide) {
-        $scope.alert = {};
-        // set initial values for form model by create deep copy of customslide object
-        // so list/detail view is not updated while editing
-        $scope.model = angular.copy(customslide);
-        // get all form fields
-        $scope.formFields = CustomslideForm.getFormFields();
-        for (var i = 0; i < $scope.formFields.length; i++) {
-            if ($scope.formFields[i].key == "showAsAgendaItem") {
-                // get state from agenda item (hidden/internal or agenda item)
-                $scope.formFields[i].defaultValue = !customslide.agenda_item.is_hidden;
+            if ($scope.projectors.length) {
+                first_watch = false;
             }
-        }
+        });
 
-        // save form
-        $scope.save = function (customslide) {
-            // inject the changed customslide (copy) object back into DS store
-            Customslide.inject(customslide);
-            // save change customslide object on server
-            Customslide.save(customslide).then(
-                function(success) {
-                    // save agenda specific stuff
-                    var type = customslide.showAsAgendaItem ? 1 : 2;
-                    if (customslide.agenda_item.type != type) {
-                        customslide.agenda_item.type = type;
-                        Agenda.save(customslide.agenda_item);
-                    }
-                    $scope.closeThisDialog();
-                },
-                function (error) {
-                    // save error: revert all changes by restore
-                    // (refresh) original customslide object from server
-                    Customslide.refresh(customslide);
-                    var message = '';
-                    for (var e in error.data) {
-                        message += e + ': ' + error.data[e] + ' ';
-                    }
-                    $scope.alert = {type: 'danger', msg: message, show: true};
+        // Set list of speakers reference
+        $scope.setListOfSpeakers = function (projector) {
+            Config.get('projector_currentListOfSpeakers_reference').value = projector.id;
+            Config.save('projector_currentListOfSpeakers_reference');
+        };
+
+        // Projector functions
+        $scope.setProjectionDefault = function (projector, projectiondefault) {
+            if (projectiondefault.projector_id !== projector.id) {
+                $http.post('/rest/core/projector/' + projector.id + '/set_projectiondefault/', projectiondefault.id);
+            }
+        };
+        $scope.createProjector = function (name) {
+            var projector = {
+                name: name,
+                config: {},
+                scale: 0,
+                scroll: 0,
+                blank: false,
+                projectiondefaults: [],
+            };
+            Projector.create(projector).then(function (projector) {
+                $http.post('/rest/core/projector/' + projector.id + '/activate_elements/', [{
+                    name: 'core/clock',
+                    stable: true
+                }]);
+                $scope.resolutions[projector.id] = {
+                    width: projector.width,
+                    height: projector.height
+                };
+            });
+        };
+        $scope.deleteProjector = function (projector) {
+            if (projector.id != 1) {
+                Projector.destroy(projector.id);
+            }
+        };
+        $scope.editCurrentSlide = function (projector) {
+            var data = projector.getFormOrStateForCurrentSlide();
+            if (data) {
+                if (data.form) {
+                    ngDialog.open(data.form.getDialog({id: data.id}));
+                } else {
+                    $state.go(data.state, {id: data.id});
                 }
-            );
+            }
+        };
+        $scope.editName = function (projector) {
+            projector.config = projector.elements;
+            Projector.save(projector);
+        };
+        $scope.changeResolution = function (projectorId) {
+            $http.post(
+                '/rest/core/projector/' + projectorId + '/set_resolution/',
+                $scope.resolutions[projectorId]
+            ).then(function (success) {
+                $scope.resolutions[projectorId].error = null;
+            }, function (error) {
+                $scope.resolutions[projectorId].error = error.data.detail;
+            });
+        };
+
+        // Identify projectors
+        $scope.identifyProjectors = function () {
+            if ($scope.identifyPromise) {
+                $timeout.cancel($scope.identifyPromise);
+                $scope.removeIdentifierMessages();
+            } else {
+                // Create new Message
+                var message = {
+                    message: '',
+                };
+                ProjectorMessage.create(message).then(function(message){
+                    $scope.projectors.forEach(function (projector) {
+                        $http.post('/rest/core/projector/' + projector.id + '/activate_elements/', [{
+                            name: 'core/projector-message',
+                            stable: true,
+                            id: message.id,
+                            identify: true,
+                        }]);
+                    });
+                    $scope.identifierMessage = message;
+                });
+                $scope.identifyPromise = $timeout($scope.removeIdentifierMessages, 3000);
+            }
+        };
+        $scope.removeIdentifierMessages = function () {
+            Projector.getAll().forEach(function (projector) {
+                _.forEach(projector.elements, function (element, uuid) {
+                    if (element.name === 'core/projector-message' && element.id === $scope.identifierMessage.id) {
+                        $http.post('/rest/core/projector/' + projector.id + '/deactivate_elements/', [uuid]);
+                    }
+                });
+            });
+            ProjectorMessage.destroy($scope.identifierMessage.id);
+            $scope.identifyPromise = null;
         };
     }
 ])
@@ -932,8 +1445,13 @@ angular.module('OpenSlidesApp.core.site', [
 .controller('TagListCtrl', [
     '$scope',
     'Tag',
-    function($scope, Tag) {
+    'ngDialog',
+    'TagForm',
+    'gettext',
+    'ErrorMessage',
+    function($scope, Tag, ngDialog, TagForm, gettext, ErrorMessage) {
         Tag.bindAll({}, $scope, 'tags');
+        $scope.alert = {};
 
         // setup table sorting
         $scope.sortColumn = 'name';
@@ -945,40 +1463,41 @@ angular.module('OpenSlidesApp.core.site', [
             }
             $scope.sortColumn = column;
         };
-
-        // save changed tag
-        $scope.save = function (tag) {
-            Tag.save(tag);
-        };
         $scope.delete = function (tag) {
             Tag.destroy(tag.id).then(
                 function(success) {
-                    //TODO: success message
+                    $scope.alert = {
+                        type: 'success',
+                        msg: gettext('The delete was successful.'),
+                        show: true,
+                    };
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
-    }
-])
-
-.controller('TagDetailCtrl', [
-    '$scope',
-    'Tag',
-    'tag',
-    function($scope, Tag, tag) {
-        Tag.bindOne(tag.id, $scope, 'tag');
+        $scope.editOrCreate = function (tag) {
+            ngDialog.open(TagForm.getDialog(tag));
+        };
     }
 ])
 
 .controller('TagCreateCtrl', [
     '$scope',
-    '$state',
     'Tag',
-    function($scope, $state, Tag) {
-        $scope.tag = {};
+    'TagForm',
+    'ErrorMessage',
+    function($scope, Tag, TagForm, ErrorMessage) {
+        $scope.model = {};
+        $scope.alert = {};
+        $scope.formFields = TagForm.getFormFields();
         $scope.save = function (tag) {
             Tag.create(tag).then(
-                function(success) {
-                    $state.go('core.tag.list');
+                function (success) {
+                    $scope.closeThisDialog();
+                },
+                function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
                 }
             );
         };
@@ -987,17 +1506,24 @@ angular.module('OpenSlidesApp.core.site', [
 
 .controller('TagUpdateCtrl', [
     '$scope',
-    '$state',
     'Tag',
-    'tag',
-    function($scope, $state, Tag, tag) {
-        $scope.tag = tag;
+    'tagId',
+    'TagForm',
+    'ErrorMessage',
+    function($scope, Tag, tagId, TagForm, ErrorMessage) {
+        $scope.model = angular.copy(Tag.get(tagId));
+        $scope.alert = {};
+        $scope.formFields = TagForm.getFormFields();
         $scope.save = function (tag) {
-            Tag.save(tag).then(
-                function(success) {
-                    $state.go('core.tag.list');
-                }
-            );
+            Tag.inject(tag);
+            Tag.save(tag).then(function(success) {
+                $scope.closeThisDialog();
+            }, function (error) {
+                // save error: revert all changes by restore
+                // the original object
+                Tag.refresh(tag);
+                $scope.alert = ErrorMessage.forAlert(error);
+            });
         };
     }
 ])
@@ -1028,18 +1554,16 @@ angular.module('OpenSlidesApp.core.site', [
             angular.element('#messageSendButton').addClass('disabled');
             angular.element('#messageInput').attr('disabled', '');
             $http.post(
-                '/rest/core/chatmessage/',
+                '/rest/core/chat-message/',
                 {message: $scope.newMessage}
-            )
-            .success(function () {
+            ).then(function (success) {
                 $scope.newMessage = '';
                 angular.element('#messageSendButton').removeClass('disabled');
                 angular.element('#messageInput').removeAttr('disabled');
                 $timeout(function () {
                     angular.element('#messageInput').focus();
                 }, 0);
-            })
-            .error(function () {
+            }, function (error) {
                 angular.element('#messageSendButton').removeClass('disabled');
                 angular.element('#messageInput').removeAttr('disabled');
             });
@@ -1047,53 +1571,63 @@ angular.module('OpenSlidesApp.core.site', [
         // increment unread messages counter for each new message
         $scope.$watch('chatmessages', function (newVal, oldVal) {
             // add new message id if there is really a new message which is not yet tracked
-            if (oldVal.length > 0) {
+            if (oldVal.length > 0 && newVal.length > 0) {
                 if ((oldVal[oldVal.length-1].id != newVal[newVal.length-1].id) &&
                     ($.inArray(newVal[newVal.length-1].id, NewChatMessages) == -1)) {
                     NewChatMessages.push(newVal[newVal.length-1].id);
                     $scope.unreadMessages = NewChatMessages.length;
                 }
+            } else if (newVal.length === 0) {
+                NewChatMessages = [];
+                $scope.unreadMessages = 0;
             }
         });
+
+        $scope.clearChatHistory = function () {
+            $http.post('/rest/core/chat-message/clear/');
+        };
     }
 ])
 
 // format time string for model ("s") and view format ("h:mm:ss" or "mm:ss")
 .directive('minSecFormat', [
-    function () {
+    'HumanTimeConverter',
+    function (HumanTimeConverter) {
         return {
             require: 'ngModel',
             link: function(scope, element, attrs, ngModelController) {
                 ngModelController.$parsers.push(function(data) {
                     //convert data from view format (mm:ss) to model format (s)
-                    var time = data.split(':');
-                    if (time.length > 1) {
-                        data = (+time[0]) * 60 + (+time[1]);
-                        if (data < 0) {
-                            data = "-"+data;
-                        }
-                    }
-                    return data;
+                    return HumanTimeConverter.humanTimeToSeconds(data, {seconds: true});
                 });
 
                 ngModelController.$formatters.push(function(data) {
                     //convert data from model format (s) to view format (mm:ss)
-                    var time;
-                    // floor returns the largest integer of the absolut value of totalseconds
-                    var total = Math.floor(Math.abs(data));
-                    var mm = Math.floor(total / 60);
-                    var ss = Math.floor(total % 60);
-                    var zero = "0";
-                    // Add leading "0" for double digit values
-                    if (mm.length < 2) {
-                        mm = (zero+mm).slice(-2);
-                    }
-                    ss = (zero+ss).slice(-2);
-                    time =  mm + ':' + ss;
-                    if (data < 0) {
-                        time = "-"+time;
-                    }
-                    return time;
+                    return HumanTimeConverter.secondsToHumanTime(data);
+                });
+            }
+        };
+    }
+])
+
+// format time string for model ("m") and view format ("h:mm" or "hh:mm")
+.directive('hourMinFormat', [
+    'HumanTimeConverter',
+    function (HumanTimeConverter) {
+        return {
+            require: 'ngModel',
+            link: function(scope, element, attrs, ngModelController) {
+                ngModelController.$parsers.push(function(data) {
+                    //convert data from view format (hh:mm) to model format (m)
+                    return HumanTimeConverter.humanTimeToSeconds(data, {hours: true})/60;
+                });
+
+                ngModelController.$formatters.push(function(data) {
+                    //convert data from model format (m) to view format (hh:mm)
+                    return HumanTimeConverter.secondsToHumanTime(data*60,
+                        { seconds: 'disabled',
+                            hours: 'enabled' }
+                    );
                 });
             }
         };
@@ -1112,6 +1646,20 @@ angular.module('OpenSlidesApp.core.site', [
         };
     }
 ])
+
+.filter('toArray', function(){
+    /*
+     * Transforms an object to an array. Items of the array are the values of
+     * the object elements.
+     */
+    return function(obj) {
+        var result = [];
+        angular.forEach(obj, function(val, key) {
+            result.push(val);
+        });
+        return result;
+    };
+})
 
 //Mark all core config strings for translation in Javascript
 .config([
@@ -1135,17 +1683,25 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('Front page text');
         gettext('[Space for your welcome text.]');
         gettext('Allow access for anonymous guest users');
-        gettext('Show this text on the login page.');
+        gettext('Show this text on the login page');
+        gettext('Separator used for all csv exports and examples');
         gettext('Show logo on projector');
         gettext('You can replace the logo. Just copy a file to ' +
                 '"static/img/logo-projector.png" in your OpenSlides data ' +
                 'path.');
         gettext('Projector');
+        gettext('Projector language');
+        gettext('Current browser language');
         gettext('Show title and description of event on projector');
         gettext('Background color of projector header and footer');
         gettext('Font color of projector header and footer');
         gettext('Font color of projector headline');
-        gettext('Default countdown');
+        gettext('Predefined seconds of new countdowns');
+        gettext('Color for blanked projector');
+        gettext('List of speakers overlay');
+
+        // Mark the string 'Default projector' here, because it does not appear in the templates.
+        gettext('Default projector');
     }
 ]);
 

@@ -3,34 +3,69 @@
     <div class="submenu">
       <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
         <i class="fa fa-angle-double-left fa-lg"></i>
-        <translate>All motions</translate>
-      </a>
-      <a ui-sref="motions_single_pdf({pk: motion.id})" target="_blank" class="btn btn-default btn-sm">
-        <i class="fa fa-file-pdf-o fa-lg"></i>
-        <translate>PDF</translate>
+        <translate>Back to overview</translate>
       </a>
       <!-- List of speakers -->
-      <a ui-sref="agenda.item.detail({id: motion.agenda_item_id})" class="btn btn-sm btn-default">
+      <a ui-sref="agenda.item.detail({id: motion.agenda_item_id})"
+          os-perms="agenda.can_see" class="btn btn-sm btn-default">
         <i class="fa fa-microphone fa-lg"></i>
         <translate>List of speakers</translate>
       </a>
-      <!-- project -->
-      <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-          ng-class="{ 'btn-primary': motion.isProjected() }"
-          ng-click="motion.project()"
-          title="{{ 'Project motion' | translate }}">
-        <i class="fa fa-video-camera"></i>
-      </a>
+      <!-- project button -->
+      <div class="btn-group button" uib-dropdown
+           uib-tooltip="{{ 'Projector' | translate }} {{ motion.isProjected()[0] || '' }} ({{ projectionMode.label | translate }})"
+        tooltip-enable="motion.isProjected().length"
+        os-perms="core.can_manage_projector">
+        <button type="button" class="btn btn-default btn-sm"
+            title="{{ 'Project motion' | translate }}"
+            ng-click="motion.project(defaultProjectorId, projectionMode.mode)"
+            ng-class="{ 'btn-primary': motion.isProjected().length && inArray(motion.isProjected(), defaultProjectorId)}">
+          <i class="fa fa-video-camera"></i>
+        </button>
+        <button type="button" class="btn btn-default btn-sm slimDropDown" uib-dropdown-toggle
+            ng-if="projectors.length > 1 || change_recommendations.length"
+            ng-class="{ 'btn-primary': motion.isProjected().length && !inArray(motion.isProjected(), defaultProjectorId)}">
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="split-button"
+          ng-if="projectors.length > 1 || change_recommendations.length">
+          <li role="menuitem" ng-repeat="mode in projectionModes" ng-if="change_recommendations.length">
+            <a href="" ng-click="setProjectionMode(mode); $event.stopPropagation();">
+              <i class="fa" ng-class="mode.mode == $parent.projectionMode.mode ? 'fa-check-square-o' : 'fa-square-o'"></i>
+              <span ng-if="mode.mode!='agreed'">{{ mode.label | translate }}</span>
+              <span ng-if="mode.mode=='agreed'"><translate translate-context="resolution">Final version</translate></span>
+            </a>
+          </li>
+          <li class="divider" ng-show="projectors.length > 1 && change_recommendations.length > 0"></li>
+          <li role="menuitem" ng-repeat="projector in projectors | orderBy:'id'" ng-show="projectors.length > 1">
+            <a href="" ng-click="motion.project(projector.id, projectionMode.mode)"
+              ng-class="{ 'projected': inArray(motion.isProjected(), projector.id) }">
+              <i class="fa fa-video-camera" ng-show="inArray(motion.isProjected(), projector.id) "></i>
+              {{ projector.name | translate }}
+              <span ng-if="projector.id === defaultProjectorId">(<translate>Default</translate>)</span>
+            </a>
+          </li>
+        </ul>
+      </div>
       <!-- edit -->
       <a ng-if="motion.isAllowed('update')" ng-click="openDialog(motion)"
           class="btn btn-default btn-sm"
           title="{{ 'Edit' | translate}}">
         <i class="fa fa-pencil"></i>
       </a>
+      <!-- pdf -->
+      <a ng-click="pdfExport.createMotion()" class="btn btn-default btn-sm">
+        <i class="fa fa-file-pdf-o fa-lg"></i>
+        <translate>PDF</translate>
+      </a>
     </div>
     <h1>{{ motion.agenda_item.getTitle() || motion.getTitle() }}</h1>
     <h2>
         <translate>Motion</translate> {{ motion.identifier }}
+        <span ng-if="parent">
+          (<translate>Amendment of motion</translate>
+          <a ui-sref="motions.motion.detail({id: parent.id})">{{ parent.identifier || parent.getTitle() }}</a>)
+        </span>
         <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion(version).version_number }}</span>
         <span ng-if="motion.active_version != version" class="label label-warning">
           <i class="fa fa-exclamation-triangle"></i>
@@ -40,7 +75,7 @@
   </div>
 </div>
 
-<div class="meta">
+<div class="meta motion-detail">
   <div class="title" ng-click="isMeta = !isMeta">
     <div class="name">
       <i class="fa fa-info-circle"></i>
@@ -56,7 +91,7 @@
           <!-- submitters -->
           <h3 translate>Submitters</h3>
           <div ng-repeat="submitter in motion.submitters">
-            {{ submitter.get_full_name() }}<br>
+            {{ submitter.get_full_name() }}
           </div>
 
           <!-- supporters -->
@@ -77,32 +112,39 @@
               <translate>Unsupport motion</translate>
             </button>
           </div>
+          <!-- Amendments -->
+
+          <div ng-if="motion.isAllowed('can_see_amendments')">
+            <h3 translate>Amendments</h3>
+            <div ng-repeat="amendment in amendments">
+              <a ui-sref="motions.motion.detail({id: amendment.id})">
+                <translate>Motion</translate> {{ amendment.identifier || amendment.getTitle() }}
+              </a>
+            </div>
+            <button ng-if="motion.isAllowed('can_create_amendment')" ng-click="newAmendment()" class="btn btn-default btn-sm">
+              <i class="fa fa-plus"></i>
+              <translate>New amendment</translate>
+            </button>
+          </div>
       </div>
       <div class="col-md-4">
-          <!-- Category -->
-          <h3 ng-if="motion.category" translate>Category</h3>
-          {{ motion.category.name }}
-
-          <!-- Tags -->
-          <h3 ng-if="motion.tags.length > 0" translate>Tags</h3>
-          <span ng-repeat="tag in motion.tags">
-            {{ tag.name }}{{$last ? '' : ', '}}
-          </span>
-
           <!-- State -->
           <h3 ng-if="!motion.isAllowed('change_state')" class="heading" translate>State</h3>
           <div ng-if="motion.isAllowed('change_state')" class="heading">
             <span uib-dropdown>
-              <a href id="state-dropdown" class="drop-down-name" uib-dropdown-toggle>
+              <span id="state-dropdown" class="drop-down-name pointer" uib-dropdown-toggle>
                 <translate>State</translate>
                 <i class="fa fa-cog"></i>
-              </a>
-              <ul uib-dropdown-menu aria-labelledby="state-dropdown">
+              </span>
+              <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="state-dropdown">
                 <li ng-repeat="state in motion.state.getNextStates()">
-                  <a href ng-click="updateState(state.id)">{{ state.action_word | translate }}</a>
-                <li class="divider" ng-if="motion.state.getNextStates().length">
-                <li>
-                  <a href ng-if="motion.isAllowed('reset_state')" ng-click="reset_state()">
+                  <a href ng-click="updateState(state.id)">
+                    {{ state.action_word | translate }}
+                    <span ng-if="state.show_state_extension_field">...</span>
+                  </a>
+                <li class="divider" ng-if="motion.state.getNextStates().length && motion.isAllowed('reset_state')">
+                <li ng-if="motion.isAllowed('reset_state')">
+                  <a href ng-click="reset_state()">
                     <i class="fa fa-exclamation-triangle"></i>
                     <translate>Reset state</translate>
                   </a>
@@ -110,20 +152,155 @@
             </span>
           </div>
           <div class="label" ng-class="'label-'+motion.state.css_class">
-            {{ motion.state.name | translate }}
+            {{ motion.getStateName() }}
           </div>
+          <div os-perms="motions.can_manage" class="input-group spacer"
+              ng-show="motion.state.show_state_extension_field">
+            <label class="sr-only" for="stateExtensionField">{{ commentFieldForState }}</label>
+            <input type="text" ng-model="stateExtension"
+                id="stateNameExtensionField" class="form-control input-sm"
+                placeholder="{{ commentFieldForState }}">
+            <span class="input-group-btn">
+              <button ng-click="saveAdditionalStateField(stateExtension)" class="btn btn-default btn-sm">
+                <i class="fa fa-check"></i>
+              </button>
+            </span>
+          </div>
+
+          <!-- Recommendation -->
+          <div ng-if="config('motions_recommendations_by') != ''">
+            <h3 ng-if="!motion.isAllowed('change_recommendation')" class="heading">
+              {{ config('motions_recommendations_by') }}
+            </h3>
+            <div ng-if="motion.isAllowed('change_recommendation')" class="heading">
+              <span uib-dropdown>
+                <span id="recommendation-dropdown" class="drop-down-name pointer" uib-dropdown-toggle>
+                  {{ config('motions_recommendations_by') }}
+                  <i class="fa fa-cog"></i>
+                </span>
+                <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="recommendation-dropdown">
+                  <li ng-repeat="recommendation in motion.state.getRecommendations()">
+                    <a href ng-click="updateRecommendation(recommendation.id)">
+                      {{ recommendation.recommendation_label | translate }}
+                      <span ng-if="recommendation.show_recommendation_extension_field">...</span>
+                    </a>
+                  <li class="divider" ng-if="motion.state.getRecommendations().length && motion.recommendation">
+                  <li ng-if="motion.recommendation">
+                    <a href ng-click="resetRecommendation()">
+                      <i class="fa fa-exclamation-triangle"></i>
+                      <translate>Reset recommendation</translate>
+                    </a>
+                </ul>
+              </span>
+            </div>
+            <div class="label" ng-if="motion.recommendation" ng-class="'label-'+motion.recommendation.css_class">
+              {{ motion.getRecommendationName() }}
+            </div>
+            <div class="input-group spacer"
+                ng-if="motion.recommendation.show_recommendation_extension_field">
+              <label class="sr-only" for="recommendationExtensionField">{{ commentFieldForRecommendation }}</label>
+              <input type="text" ng-model="recommendationExtension"
+                  id="recommendationExtensionField" class="form-control input-sm"
+                  placeholder="{{ commentFieldForRecommendation }}">
+              <span class="input-group-btn">
+                <button ng-click="saveAdditionalRecommendationField(recommendationExtension)" class="btn btn-default btn-sm">
+                  <i class="fa fa-check"></i>
+                </button>
+              </span>
+            </div>
+            <button
+                ng-if="motion.recommendation &&
+                       motion.isAllowed('change_state') &&
+                       motion.state.next_states_id.indexOf(motion.recommendation.id) !== -1"
+                ng-click="updateState(motion.recommendation.id)"
+                class="btn btn-default btn-sm">
+              <i class="fa fa-magic"></i>
+              <translate>Follow recommendation</translate>
+            </button>
+          </div>
+
+          <!-- Category -->
+          <h3 class="heading" os-perms="!motions.can_manage" ng-show="motion.category" translate>Category</h3>
+          <div class="heading" os-perms="motions.can_manage" ng-show="categories.length > 0">
+            <span uib-dropdown>
+              <span id="category-dropdown" class="drop-down-name pointer" uib-dropdown-toggle>
+                <translate>Category</translate>
+                <i class="fa fa-cog"></i>
+              </span>
+              <ul class="dropdown-menu" aria-labelledby="category-dropdown">
+                <li ng-repeat="category in categories">
+                  <a href ng-click="toggleCategory(category)">
+                    <i class="fa fa-check" ng-if="category.id == motion.category.id"></i>
+                    {{ category.name }}
+                  </a>
+                </li>
+              </ul>
+            </span>
+          </div>
+          {{ motion.category.name }}
+
+          <!-- Motion block -->
+          <h3 class="heading" os-perms="!motions.can_manage" ng-show="motion.motionBlock" translate>Motion block</h3>
+          <div class="heading" os-perms="motions.can_manage" ng-show="motionBlocks.length > 0">
+            <span uib-dropdown>
+              <span id="motionBlock-dropdown" class="drop-down-name pointer" uib-dropdown-toggle>
+                <translate>Motion block</translate>
+                <i class="fa fa-cog"></i>
+              </span>
+              <ul class="dropdown-menu" aria-labelledby="motionBlock-dropdown">
+                <li ng-repeat="motionBlock in motionBlocks">
+                  <a href ng-click="toggleMotionBlock(motionBlock)">
+                    <i class="fa fa-check" ng-if="motionBlock.id == motion.motionBlock.id"></i>
+                    {{ motionBlock.title }}
+                  </a>
+                </li>
+              </ul>
+            </span>
+          </div>
+          <a ui-sref="motions.motionBlock.detail({id: motion.motionBlock.id})"
+              os-perms="motions.can_manage">{{ motion.motionBlock.title }}</a>
+          <span os-perms="!motions.can_manage">{{ motion.motionBlock.title }}</span>
+
+          <!-- Tags -->
+          <h3 class="heading" os-perms="!motions.can_manage" ng-show="motion.tags.length" translate>Tags</h3>
+          <div class="heading" os-perms="motions.can_manage" ng-show="tags.length > 0">
+            <span uib-dropdown>
+              <span id="tag-dropdown" class="drop-down-name pointer" uib-dropdown-toggle>
+                <translate>Tags</translate>
+                <i class="fa fa-cog"></i>
+              </span>
+              <ul class="dropdown-menu" aria-labelledby="tag-dropdown">
+                <li ng-repeat="tag in tags">
+                  <a href ng-click="toggleTag(tag)">
+                    <i class="fa fa-check" ng-if="inArray(motion.tags_id, tag.id)"></i>
+                    {{ tag.name }}
+                  </a>
+                </li>
+              </ul>
+            </span>
+          </div>
+          <span ng-repeat="tag in motion.tags">
+            {{ tag.name }}{{$last ? '' : ', '}}
+          </span>
+
+          <!-- Origin -->
+          <h3 ng-if="motion.origin" translate>Origin</h3>
+          {{ motion.origin }}
+
       </div>
       <div class="col-md-4">
           <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
-          <ol class="slimlist">
-            <li ng-repeat="poll in motion.polls" class="spacer"
+          <ol>
+            <li ng-controller="MotionPollDetailCtrl" ng-repeat="poll in motion.polls" class="spacer"
                 ng-if="poll.has_votes || operator.hasPerms('motions.can_manage')">
               <strong translate-comment='ballot of a motion' translate>Vote</strong>
+
               <!-- Edit poll -->
               <button os-perms="motions.can_manage" ng-click="openPollDialog(poll, $index+1)"
                   class="btn btn-default btn-xs" title="{{ 'Edit' | translate }}">
                 <i class="fa fa-pencil"></i>
               </button>
+
               <!-- Delete poll -->
               <button os-perms="motions.can_manage" class="btn btn-default btn-xs"
                   ng-bootbox-confirm="{{ 'Are you sure you want to delete this poll?' | translate }}"
@@ -131,12 +308,15 @@
                   title="{{ 'Delete' | translate }}">
                 <i class="fa fa-times"></i>
               </button>
-              <!-- print poll PDF -->
-              <a ui-sref="motionpoll_pdf({poll_pk: poll.id})" target="_blank"
-                  class="btn btn-default btn-xs"
+
+              <!-- Print poll PDF -->
+              <a os-perms="motions.can_manage" ng-click="pdfExport.createPoll()" class="btn btn-default btn-xs"
                   title="{{ 'Print ballot paper' | translate }}">
                 <i class="fa fa-file-pdf-o"></i>
               </a>
+
+              <!-- Template hook for motion poll buttons -->
+              <template-hook hook-name="motionPollSmallButtons"></template-hook>
 
               <!-- Poll results -->
               <div ng-show="poll.has_votes" class="pollresults">
@@ -145,7 +325,7 @@
                   <tr>
                     <td class="icon">
                       <i class="fa fa-thumbs-up fa-2x"></i>
-                    <td ng-init="voteYes = poll.getVote(poll.yes)">
+                    <td ng-init="voteYes = poll.getVote(poll.yes, 'yes')">
                       <span class="result_label"><translate>Yes</translate>:</span>
                       <span class="result_value">
                         {{ voteYes.value }} {{ voteYes.percentStr }}
@@ -157,7 +337,7 @@
                   <tr>
                     <td class="icon">
                       <i class="fa fa-thumbs-down fa-2x"></i>
-                    <td ng-init="voteNo = poll.getVote(poll.no)">
+                    <td ng-init="voteNo = poll.getVote(poll.no, 'no')">
                       <span class="result_label"><translate>No</translate>:</span>
                       <span class="result_value" >
                         {{ voteNo.value }} {{ voteNo.percentStr }}
@@ -169,7 +349,7 @@
                   <tr>
                     <td class="icon">
                       <strong style="font-size: 26px">&empty;</strong>
-                    <td ng-init="voteAbstain = poll.getVote(poll.abstain)">
+                    <td ng-init="voteAbstain = poll.getVote(poll.abstain, 'abstain')">
                       <span class="result_label"><translate>Abstain</translate>:</span>
                       <span class="result_value">
                         {{ voteAbstain.value }} {{ voteAbstain.percentStr }}
@@ -178,40 +358,61 @@
                         <uib-progressbar value="voteAbstain.percentNumber" type="warning"></uib-progressbar>
                       </div>
                   <!-- valid votes -->
-                  <tr>
+                  <tr ng-if="poll.votesvalid !== null">
                     <td class="icon">
                       <i class="fa fa-check fa-lg"></i>
-                    <td ng-init="votesValid = poll.getVote(poll.votesvalid)">
-                      <span class="result_label"><translate>Valid votes</translate>:</span>
+                    <td ng-init="votesValid = poll.getVote(poll.votesvalid, 'votesvalid')">
+                      <span class="result_label"><translate>Valid ballots</translate>:</span>
                       <span class="result_value">
                         {{ votesValid.value }} {{ votesValid.percentStr }}
                       </span>
                   <!-- invalid votes -->
-                  <tr>
+                  <tr ng-if="poll.votesinvalid !== null">
                     <td class="icon">
                       <i class="fa fa-ban fa-lg"></i>
-                    <td ng-init="votesInvalid = poll.getVote(poll.votesinvalid)">
-                      <span class="result_label"><translate>Invalid votes</translate>:</span>
+                    <td ng-init="votesInvalid = poll.getVote(poll.votesinvalid, 'votesinvalid')">
+                      <span class="result_label"><translate>Invalid ballots</translate>:</span>
                       <span class="result_value">
-                        {{ votesInvalid.value }}
-                        <span ng-if="config('motions_poll_100_percent_base') == 'WITH_INVALID'">
-                          {{ votesInvalid.percentStr }}
-                        </span>
+                        {{ votesInvalid.value }} {{ votesInvalid.percentStr }}
                       </span>
                   <!-- votes cast -->
-                  <tr class="total">
+                  <tr class="total" ng-if="poll.votescast !== null">
                     <td class="icon">
                       <strong style="font-size: 16px">&sum;</strong>
-                    <td ng-init="votesCast = poll.getVote(poll.votescast)">
-                      <span class="result_label"><translate>Votes cast</translate>:</span>
+                    <td ng-init="votesCast = poll.getVote(poll.votescast, 'votescast')">
+                      <span class="result_label"><translate>Casted ballots</translate>:</span>
                       <span class="result_value">
-                        {{ votesCast.value }}
-                        <span ng-if="config('motions_poll_100_percent_base') == 'WITH_INVALID'">
-                          {{ votesCast.percentStr }}
-                        </span>
+                        {{ votesCast.value }} {{ votesCast.percentStr }}
                       </span>
+
+                  <!-- majority calculation -->
+                  <tr>
+                    <td>
+                    <td>
+                      <div os-perms="motions.can_manage"
+                           ng-hide="hideMajorityCalculation()"
+                           ng-cloak>
+                        <div class="input-group">
+                          <span><translate>Required majority</translate>: </span>
+                          <select ng-model="$parent.method"
+                                  ng-options="option.value as option.display_name | translate for option in methodChoices">
+                        </div>
+                      </div>
+                  <tr>
+                    <td>
+                    <td>
+                      <div os-perms="motions.can_manage">
+                        <span class="text-success" ng-if="isReached() >= 0" translate>
+                          Quorum ({{ voteYes.value - isReached() }}) reached.
+                        </span>
+                        <span class="text-danger" ng-if="isReached() < 0" translate>
+                          Quorum ({{ voteYes.value - isReached() }}) not reached.
+                       </span>
+                      </div>
+
                 </table>
           </ol>
+
           <button ng-if="motion.isAllowed('create_poll')" ng-click="create_poll()" class="btn btn-default btn-sm">
             <i class="fa fa-bar-chart fa-lg"></i>
             <translate>New vote</translate>
@@ -223,14 +424,60 @@
 
 <div class="details">
   <div class="row">
-    <div class="col-sm-8">
-      <h3 translate>Text</h3>
-      <div ng-bind-html="motion.getText(version) | trusted"></div>
+
+    <!-- Motion toolbar -->
+    <ng-include src="'static/templates/motions/motion-detail/toolbar.html'"></ng-include>
+
+    <div ng-class="{'col-sm-8': (lineNumberMode != 'outside'), 'col-sm-12': (lineNumberMode == 'outside')}">
+
+      <ng-include ng-if="viewChangeRecommendations.mode == 'diff'"
+          src="'static/templates/motions/motion-detail/change-summary.html'"></ng-include>
+
+      <div><p>{{ config('motions_preamble') | translate }}</p></div>
+
+      <div class="motion-text-holder">
+
+        <!-- Original view -->
+        <ng-include src="'static/templates/motions/motion-detail/view-original.html'"></ng-include>
+
+        <!-- Diff View -->
+        <ng-include src="'static/templates/motions/motion-detail/view-diff.html'"></ng-include>
+
+        <!-- Changed View -->
+        <div ng-if="viewChangeRecommendations.mode == 'changed'">
+          <div ng-bind-html="motion.getTextByMode('changed', version, highlight) | trusted"
+               class="motion-text motion-text-changed line-numbers-{{ lineNumberMode }}"></div>
+
+          <div style="text-align: right;" ng-if="motion.state.versioning && (change_recommendations | filter:{motion_version_id:version}:true).length > 0">
+            <button class="btn btn-default"
+                    ng-bootbox-confirm="{{ 'Do you want to create a new version of this motion based on this changes?' | translate }}"
+                    ng-bootbox-confirm-action="viewChangeRecommendations.newVersionIncludingChanges(motion, version, true)">
+              <i class="fa fa-file-text"></i>
+              <translate>New version on these changes</translate>
+            </button>
+          </div>
+        </div>
+
+        <!-- Agreed View -->
+        <div ng-if="viewChangeRecommendations.mode == 'agreed'">
+          <div ng-bind-html="motion.getTextByMode('agreed', version, highlight) | trusted"
+               class="motion-text motion-text-changed line-numbers-{{ lineNumberMode }}"></div>
+
+          <div style="text-align: right;" ng-if="motion.state.versioning && (change_recommendations | filter:{motion_version_id:version}:true).length > 0">
+            <button class="btn btn-default"
+                    ng-bootbox-confirm="{{ 'Do you want to create a new version of this motion based on this changes?' | translate }}"
+                    ng-bootbox-confirm-action="viewChangeRecommendations.newVersionIncludingChanges(motion, version, false)">
+              <i class="fa fa-file-text"></i>
+              <translate>New version on these changes</translate>
+            </button>
+          </div>
+        </div>
+      </div>
 
       <!-- reason -->
       <div ng-if="motion.getReason(version) != ''">
         <h3 translate>Reason</h3>
-        <div ng-bind-html="motion.getReason() | trusted"></div>
+        <div ng-bind-html="motion.getReason(version) | trusted"></div>
       </div>
 
       <!-- attachments -->
@@ -248,7 +495,7 @@
               <span ng-if="$parent.version == version.id">
                 <strong><translate>Version</translate> {{ version.version_number }}</strong>
               </span>
-              <a ng-if="$parent.version != version.id" ng-click="showVersion(version)">
+              <a href="" ng-if="$parent.version != version.id" ng-click="showVersion(version)">
                 <translate>Version</translate> {{ version.version_number }}
               </a>
               <!-- active version -->
@@ -274,17 +521,24 @@
       </div>
 
       <!-- log -->
-      <button type="button" class="btn btn-default spacer" ng-click="isCollapsed = !isCollapsed" translate>
-        Show history
-      </button>
-      <div uib-collapse="isCollapsed">
-        <div class="well well-sm">
-          <ul class="list-unstyled">
-            <li ng-repeat="message in motion.log_messages">
-              <small>{{ message.message }}</small>
+      <div os-perms="motions.can_manage">
+        <button type="button" class="btn btn-sm btn-default spacer" ng-click="isCollapsed = !isCollapsed" translate>
+          Show history
+        </button>
+        <div uib-collapse="isCollapsed">
+          <div class="well well-sm">
+            <ul class="list-unstyled">
+              <li ng-repeat="message in motion.log_messages">
+                <small>{{ message.message }}</small>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
 
   </div>
 </div>
+
+<!-- Comments section -->
+<ng-include src="'static/templates/motions/motion-detail/comments.html'"></ng-include>

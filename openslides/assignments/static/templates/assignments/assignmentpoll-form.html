@@ -1,8 +1,8 @@
 <h1><translate>Ballot</translate> {{ ballot }}</h1>
 
-<uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+<div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
   {{ alert.msg }}
-</uib-alert>
+</div>
 
 <p>
   <translate>Special values</translate>:
@@ -11,6 +11,7 @@
 
 <form name="assignmentPollForm" ng-submit="save(model)">
   <formly-form model="model" fields="formFields">
+    <template-hook hook-name="assignmentPollFormButtons"></template-hook>
     <button type="submit" ng-disabled="assignmentPollForm.$invalid" class="btn btn-primary" translate>
       Save
     </button>

@@ -4,7 +4,61 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.assignments.models import Assignment
-from openslides.utils.test import TestCase
+from openslides.core.config import config
+from openslides.users.models import User
+from openslides.utils.test import TestCase, use_cache
+
+
+class TestDBQueries(TestCase):
+    """
+    Tests that receiving elements only need the required db queries.
+
+    Therefore in setup some assignments are created and received with different
+    user accounts.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        config['general_system_enable_anonymous'] = True
+        for index in range(10):
+            Assignment.objects.create(title='motion{}'.format(index), open_posts=1)
+
+    @use_cache()
+    def test_admin(self):
+        """
+        Tests that only the following db queries are done:
+        * 4 requests to get the session an the request user with its permissions,
+        * 2 requests to get the list of all assignments,
+        * 1 request to get all related users,
+        * 1 request to get the agenda item,
+        * 1 request to get the polls,
+        * 1 request to get the tags and
+
+        * 10 request to fetch each related user again.
+
+        TODO: The last request are a bug.
+        """
+        self.client.force_login(User.objects.get(pk=1))
+        with self.assertNumQueries(20):
+            self.client.get(reverse('assignment-list'))
+
+    @use_cache()
+    def test_anonymous(self):
+        """
+        Tests that only the following db queries are done:
+        * 3 requests to get the permission for anonymous,
+        * 2 requests to get the list of all assignments,
+        * 1 request to get all related users,
+        * 1 request to get the agenda item,
+        * 1 request to get the polls,
+        * 1 request to get the tags and
+
+        * 10 request to fetch each related user again.
+
+        TODO: The last 10 requests are an bug.
+        """
+        with self.assertNumQueries(19):
+            self.client.get(reverse('assignment-list'))
 
 
 class CanidatureSelf(TestCase):

@@ -1,66 +1,93 @@
-from openslides.core.exceptions import ProjectorException
-from openslides.core.views import TagViewSet
-from openslides.utils.projector import ProjectorElement, ProjectorRequirement
-
-from .models import Motion
-from .views import CategoryViewSet, MotionViewSet, WorkflowViewSet
+from ..core.exceptions import ProjectorException
+from ..utils.collection import CollectionElement
+from ..utils.projector import ProjectorElement
+from .models import Motion, MotionBlock, MotionChangeRecommendation, Workflow
 
 
 class MotionSlide(ProjectorElement):
     """
     Slide definitions for Motion model.
-
-    Set 'id' to get a detail slide. Omit it to get a list slide.
     """
     name = 'motions/motion'
 
     def check_data(self):
-        pk = self.config_entry.get('id')
-        if pk is not None:
-            # Detail slide.
-            if not Motion.objects.filter(pk=pk).exists():
-                raise ProjectorException('Motion does not exist.')
+        if not Motion.objects.filter(pk=self.config_entry.get('id')).exists():
+            raise ProjectorException('Motion does not exist.')
 
     def get_requirements(self, config_entry):
-        pk = config_entry.get('id')
-        if pk is None:
-            # List slide. Related objects like users and tags are not unlocked.
-            yield ProjectorRequirement(
-                view_class=MotionViewSet,
-                view_action='list')
+        try:
+            motion = Motion.objects.get(pk=config_entry.get('id'))
+        except Motion.DoesNotExist:
+            # Motion does not exist. Just do nothing.
+            pass
         else:
-            # Detail slide.
-            try:
-                motion = Motion.objects.get(pk=pk)
-            except Motion.DoesNotExist:
-                # Motion does not exist. Just do nothing.
-                pass
-            else:
-                yield ProjectorRequirement(
-                    view_class=MotionViewSet,
-                    view_action='retrieve',
-                    pk=str(motion.pk))
-                if motion.category:
-                    yield ProjectorRequirement(
-                        view_class=CategoryViewSet,
-                        view_action='retrieve',
-                        pk=str(motion.category.pk))
-                yield ProjectorRequirement(
-                    view_class=WorkflowViewSet,
-                    view_action='retrieve',
-                    pk=str(motion.workflow))
-                for submitter in motion.submitters.all():
-                    yield ProjectorRequirement(
-                        view_class=submitter.get_view_class(),
-                        view_action='retrieve',
-                        pk=str(submitter.pk))
-                for supporter in motion.supporters.all():
-                    yield ProjectorRequirement(
-                        view_class=supporter.get_view_class(),
-                        view_action='retrieve',
-                        pk=str(supporter.pk))
-                for tag in motion.tags.all():
-                    yield ProjectorRequirement(
-                        view_class=TagViewSet,
-                        view_action='retrieve',
-                        pk=str(tag.pk))
+            yield motion
+            yield motion.agenda_item
+            yield motion.state.workflow
+            yield from motion.submitters.all()
+            yield from motion.supporters.all()
+            yield from MotionChangeRecommendation.objects.filter(motion_version=motion.get_active_version().id)
+
+    def get_collection_elements_required_for_this(self, collection_element, config_entry):
+        output = super().get_collection_elements_required_for_this(collection_element, config_entry)
+        # Full update if motion changes because then we may have new
+        # submitters or supporters and therefor need new users.
+        #
+        # Add some logic here if we support live changing of workflows later.
+        #
+        if collection_element == CollectionElement.from_values(Motion.get_collection_string(), config_entry.get('id')):
+            output.extend(self.get_requirements_as_collection_elements(config_entry))
+        return output
+
+    def update_data(self):
+        data = None
+        try:
+            motion = Motion.objects.get(pk=self.config_entry.get('id'))
+        except Motion.DoesNotExist:
+            # Motion does not exist, so just do nothing.
+            pass
+        else:
+            data = {'agenda_item_id': motion.agenda_item_id}
+        return data
+
+
+class MotionBlockSlide(ProjectorElement):
+    """
+    Slide definitions for a block of motions (MotionBlock model).
+    """
+    name = 'motions/motion-block'
+
+    def check_data(self):
+        if not MotionBlock.objects.filter(pk=self.config_entry.get('id')).exists():
+            raise ProjectorException('MotionBlock does not exist.')
+
+    def get_requirements(self, config_entry):
+        try:
+            motion_block = MotionBlock.objects.get(pk=config_entry.get('id'))
+        except MotionBlock.DoesNotExist:
+            # MotionBlock does not exist. Just do nothing.
+            pass
+        else:
+            yield motion_block
+            yield motion_block.agenda_item
+            yield from motion_block.motion_set.all()
+            yield from Workflow.objects.all()
+
+    def get_collection_elements_required_for_this(self, collection_element, config_entry):
+        output = super().get_collection_elements_required_for_this(collection_element, config_entry)
+        # Send all changed motions to the projector, because it may be appended
+        # or removed from the block.
+        if collection_element.collection_string == Motion.get_collection_string():
+            output.append(collection_element)
+        return output
+
+    def update_data(self):
+        data = None
+        try:
+            motion_block = MotionBlock.objects.get(pk=self.config_entry.get('id'))
+        except MotionBlock.DoesNotExist:
+            # MotionBlock does not exist, so just do nothing.
+            pass
+        else:
+            data = {'agenda_item_id': motion_block.agenda_item_id}
+        return data

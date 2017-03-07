@@ -8,13 +8,116 @@ Version 2.1 (unreleased)
 ========================
 [https://github.com/OpenSlides/OpenSlides/milestones/2.1]
 
+Agenda:
+- Added button to remove all speakers from a list of speakers.
+- Added option to create or edit agenda items as subitems of others.
+- Fixed security issue: Comments were shown for unprivileged users.
+- Added option to choose whether to show the current list of speakers slide
+  as a slide or an overlay.
+- Manage speakers on the current list of speakers view.
+- List of speakers for hidden items is always visible.
+
 Core:
-- Used Django Channels instead of Tornado.
-- Added support for big assemblies with lots of users.
+- Added support for multiple projectors.
+- Added control for the resolution of the projectors.
+- Set the projector language in the settings.
+- Used pdfMake for clientside generation of PDFs.
+  Run pdf creation in background (in a web worker thread).
+- Introduced new table design for list views with serveral filters and
+  CSV export.
+- Used session cookies and store filter settings in session storage.
+- Made a lot of autoupdate improvements for projector and site.
+- Used Roboto font in all templates.
+- Added HTML support for messages on the projector.
+- Moved custom slides to own app "topics". Renamed it to "Topic".
+- Added button to clear the chatbox.
+- Switched editor back from TinyMCE to CKEditor which provides a
+  better copy/paste support from MS Word.
+- Added template hook system for plugins.
+- Made a lot of code clean up, improvements and bug fixes in client and
+  backend.
+- Use a separate dialog with CKEditor for editing projector messages.
+- Use CKEditor in settings for text markup.
+- Add a version of has_perm that can work with cached users.
+- Cache the group with there permissions.
+- Removed our db-session backend and added possibility to use any django session backend.
+- New csv import layout.
+- Replaced angular-csv-import through Papa Parse for csv parsing.
+- Added smooth projector scroll.
+- Added watching permissions in client and change the view immediately on changes.
+- Validate HTML strings from CKEditor against XSS attacks.
+- Added success/error symbol to config to show if saving was successful.
+- Added UTF-8 byte order mark for every CSV export.
+- Moved full-text search to client-side (removed the server-side search engine Whoosh).
+- Better dialog handling. Show dialog just in forground without changing the state url.
+  Added new dialog for profile, change password, tag and category update view.
+
+Motions:
+- Added adjustable line numbering mode (outside, inside, none) for each
+  motion text.
+- Allowed to add change recommendations for special motion text lines
+  (with diff mode).
+- Added projection support for change recommendations.
+- Added button to sort and number all motions in a category.
+- Added recommendations for motions.
+- Added options to calculate percentages on different bases.
+- Added calculation for required majority.
+- Added blocks for motions which can be used in agenda. Set states for
+  multiple motions of a motion block by following the recommendation for
+  each motion.
+- Used global config variable for preamble.
+- Added configurable fields for comments.
+- Added new origin field.
+- Reimplemented amendments.
+- New PDF layout.
+- Added DOCX export with docxtemplater.
+- Changed label of former state "commited a bill" to "refered to committee".
+- Number of ballots printed can now be set in config.
+- Add new personal settings to remove all whitespaces from motion identifier.
+- Add new personal settings to allow amendments of amendments.
+- Added inline editing for comments.
+
+Elections:
+- Added options to calculate percentages on different bases.
+- Added calculation for required majority.
+- Candidates are now sortable.
+- Removed unused assignment config to publish winner election results only.
+- Number of ballots printed can now be set in config.
+- Added inline edit field for a specific hint on ballot papers.
+
+Users:
+- Added new matrix-interface for managing groups and their permissions.
+- Added autoupdate on permission change (permission added).
+- Improved password reset view for administrators.
+- Changed field for initial password to an unchangeable field.
+- Added new field for participant number.
+- Added new field 'is_committee' and new default group 'Committees'.
+- Improved users CSV import (use group names instead of id).
+- Allowed to import/export initial user password.
+- Added more multiselect actions.
+- Added QR code in users access pdf.
+
+Mediafiles:
+- Allowed to project uploaded images (png, jpg, gif) and video files
+  (e.g. mp4, wmv, flv, quicktime, ogg).
+- Allowed to hide uploaded files in overview list for non authorized users.
 
 Other:
+- Django 1.10 is now supported. Dropped support for Django 1.8 and 1.9.
 - Removed config cache to support multiple threads or processes.
 - Fixed bug, that the last change of a config value was not send via autoupdate.
+- Added support for big assemblies with lots of users.
+- Used Django Channels instead of Tornado. Refactoring of the autoupdate
+  process. Added retry with timeout in case of ChannelFull exception.
+- Added new caching system with support for Redis.
+- Support https as websocket protocol (wss).
+- Added migration path from 2.0.
+- Accelerated startup process (send all data to the client after login).
+- Added function utils.auth.anonymous_is_enabled which returns true, if it is.
+- Changed has_perm to support an user id or None (for anyonmous) as first argument.
+- Removed our AnonymousUser. Make sure not to use user.has_perm() anymore.
+- Add the command getgeiss to download the latest version of Geiss.
+- Added Russian translation (Thanks to Andreas Engler).
 
 
 Version 2.0 (2016-04-18)

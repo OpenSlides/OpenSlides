@@ -1,9 +1,9 @@
 <h1 ng-if="model.id" translate>Edit participant</h1>
 <h1 ng-if="!model.id" translate>New participant</h1>
 
-<uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+<div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" close="alert={}">
   {{ alert.msg }}
-</uib-alert>
+</div>
 
 <form name="userForm" ng-submit="save(model)">
   <formly-form model="model" fields="formFields">

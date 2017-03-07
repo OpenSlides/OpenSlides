@@ -5,25 +5,42 @@
         <i class="fa fa-angle-double-left fa-lg"></i>
         <translate>Agenda</translate>
       </a>
-      <a href="" ng-click="open(item)" class="btn btn-sm btn-default">
+      <a ui-sref="{{ item.content_object.collection.replace('/','.') }}.detail({id: item.content_object.id})" class="btn btn-sm btn-default">
         <i class="fa fa-angle-double-left fa-lg"></i>
         {{ item.getContentResource().verboseName | translate }}
       </a>
       <!-- project list of speakers -->
-      <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-          ng-class="{ 'btn-primary': item.isListOfSpeakersProjected() }"
-          ng-click="item.projectListOfSpeakers()">
-        <i class="fa fa-video-camera"></i>
-        <translate>List of speakers</translate>
-      </a>
+      <span class="btn-group" style="min-width:54px;" uib-dropdown
+        uib-tooltip="{{ 'Projector' | translate }} {{ item.isListOfSpeakersProjected()[0] || '' }}"
+        tooltip-enable="item.isListofSpeakersProjected().length"
+        os-perms="core.can_manage_projector">
+        <button type="button" class="btn btn-default btn-sm"
+          ng-click="item.projectListOfSpeakers(defaultProjectorListOfSpeakersId)"
+          ng-class="{ 'btn-primary': inArray(item.isListOfSpeakersProjected(), defaultProjectorListOfSpeakersId)  }">
+          <i class="fa fa-video-camera"></i>
+          <translate>List of speakers</translate>
+        </button>
+        <button type="button" class="btn btn-default btn-sm slimDropDown"
+          ng-class="{ 'btn-primary': (item.isListOfSpeakersProjected().length && !inArray(item.isListOfSpeakersProjected(), defaultProjectorListOfSpeakersId) ) }"
+          ng-if="projectors.length > 1"
+          uib-dropdown-toggle>
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" ng-if="projectors.length > 1">
+          <li role="menuitem" ng-repeat="projector in projectors | orderBy:'id'">
+            <a href="" ng-click="item.projectListOfSpeakers(projector.id)"
+              ng-class="{ 'projected': inArray(item.isListOfSpeakersProjected(), projector.id) }">
+              <i class="fa fa-video-camera" ng-show="inArray(item.isListOfSpeakersProjected(), projector.id) "></i>
+              {{ projector.name | translate }}
+              <span ng-if="defaultProjectorListOfSpeakersId == projector.id">(<translate>Default</translate>)</span>
+            </a>
+          </li>
+        </ul>
+      </span> 
       <!-- project -->
-      <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-          ng-class="{ 'btn-primary': item.isProjected() }"
-          ng-click="item.project()"
-          title="{{ 'Project item' | translate }}">
-        <i class="fa fa-video-camera"></i>
-        {{ item.getContentResource().verboseName | translate }}
-      </a>
+      <projector-button model="item" default-projector-id="defaultProjectorItemId"
+        content="{{ item.getContentResource().verboseName | translate }}">
+      </projector-button>
     </div>
     <h1>{{ item.getTitle() }}</h1>
     <h2>
@@ -34,121 +51,4 @@
   </div>
 </div>
 
-<div ng-if="item" class="details listOfSpeakers">
-  <div class="pull-right">
-    <span os-perms="agenda.can_manage">
-      <button ng-if="item.speaker_list_closed" ng-click="closeList(false)"
-          class="btn btn-sm btn-default">
-        <i class="fa fa-toggle-off"></i>
-        <translate>Closed</translate>
-      </button>
-      <button ng-if="!item.speaker_list_closed" ng-click="closeList(true)"
-          class="btn btn-sm btn-default">
-        <i class="fa fa-toggle-on"></i>
-        <translate>Open</translate>
-      </button>
-    </span>
-  </div>
-
-  <!-- Start/Stop controls -->
-  <div os-perms="agenda.can_manage">
-    <button ng-click="beginSpeech()"
-        class="btn btn-sm btn-primary">
-      <i class="fa fa-microphone"></i>
-      <translate>Begin next speech</translate>
-    </button>
-    <button ng-click="endSpeech()"
-        class="btn btn-sm btn-default">
-      <i class="fa fa-microphone-slash"></i>
-      <translate>End current speech</translate>
-    </button>
-  </div>
-
-  <!-- Last speakers -->
-  <div class="spacer">
-    <h3 translate>Last speakers</h3>
-    <button ng-click="showOldSpeakers = !showOldSpeakers"
-        class="btn btn-sm btn-default">
-      <translate ng-if="!showOldSpeakers">Show</translate>
-      <translate ng-if="showOldSpeakers">Hide</translate>
-    </button>
-    <div uib-collapse="!showOldSpeakers">
-      <ol class="indentation-lg">
-        <li ng-repeat="speaker in item.speakers | filter: {end_time: '!!'}">
-          {{ speaker.user.get_full_name() }}
-          <small class="grey">
-            {{ getDuration(speaker) | osSecondsToTime }} <translate>minutes</translate>
-            (<translate>Start time</translate>:
-            {{ speaker.begin_time | date:'yyyy-MM-dd HH:mm:ss' }})
-          </small>
-          <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"
-              class="btn btn-default btn-xs" title="{{ 'Remove' | translate }}">
-            <i class="fa fa-times"></i>
-          </button>
-      </ol>
-    </div>
-  </div>
-
-  <!-- Current speaker -->
-  <h3 translate class="">Current speaker</h3>
-  <strong class="indentation" ng-repeat="speaker in item.speakers |
-      filter: {end_time: null, begin_time: '!!'}">
-    {{ speaker.user.get_full_name() }}
-    <button os-perms="agenda.can_manage" ng-click="endSpeech()"
-        class="btn btn-default btn-sm" title="{{ 'End speech' | translate }}">
-      <i class="fa fa-microphone-slash"></i> <translate>Stop</translate>
-    </button>
-    <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"
-        class="btn btn-default btn-sm" title="{{ 'Remove' | translate }}">
-      <i class="fa fa-times"></i>
-    </button>
-  </strong>
-
-  <!-- Next speakers -->
-  <h3 translate>Next speakers</h3>
-  <div ng-show="speakers.length > 0">
-    <div ui-tree="treeOptions">
-      <ol ui-tree-nodes="" ng-model="speakers">
-        <li ng-repeat="speaker in speakers | filter: {begin_time: null}" ui-tree-node>
-          <i os-perms="agenda.can_manage" ui-tree-handle="" class="fa fa-arrows-v"></i>
-          {{ $index + 1 }}.
-          {{ speaker.user.get_full_name() }}
-          <button os-perms="agenda.can_manage" ng-click="beginSpeech(speaker.id)"
-              class="btn btn-default btn-sm" title="{{ 'Begin speech' | translate }}">
-            <i class="fa fa-microphone"></i> <translate>Start</translate>
-          </button>
-          <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"
-              class="btn btn-default btn-sm" title="{{ 'Remove' | translate }}">
-            <i class="fa fa-times"></i>
-          </button>
-      </ol>
-    </div>
-  </div>
-
-  <!-- Select speakers form -->
-  <div class="form-group spacer">
-    <uib-alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-      {{ alert.msg }}
-    </uib-alert>
-    <div os-perms="agenda.can_manage">
-      <select chosen
-          ng-model="speakerSelectBox.selected"
-          ng-change="addSpeaker(speakerSelectBox.selected)"
-          ng-options="user.id as user.get_full_name() for user in users"
-          search-contains="true"
-          placeholder-text-single="'Select or search a participant ...' | translate"
-          no-results-text="'No results available ...' | translate"
-          class="form-control">
-      <select>
-    </div>
-    <p class="spacer">
-      <button ng-if="isAllowed('add')" ng-click="addSpeaker()" class="btn btn-default">
-        <i class="fa fa-plus"></i>
-        <translate>Add me</translate>
-      </button>
-      <button ng-if="isAllowed('remove')" ng-click="removeSpeaker()" class="btn btn-default">
-        <i class="fa fa-minus"></i>
-        <translate>Remove me</translate>
-      </button>
-  </div>
-</div>
+<ng-include src="'static/templates/agenda/list-of-speakers-partial-management.html'"></ng-include>

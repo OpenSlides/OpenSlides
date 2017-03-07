@@ -1,0 +1,44 @@
+<div class="details" ng-if="isAllowedToSeeCommentField()">
+  <div class="row">
+    <!-- inline editing toolbar -->
+    <div class="motion-toolbar">
+      <div class="pull-right inline-editing-activator" ng-if="motion.isAllowed('update')">
+        <button ng-if="!commentsInlineEditing.active()" ng-click="commentsInlineEditing.enable()"
+          class="btn btn-sm btn-default">
+          <i class="fa fa-pencil-square-o"></i>
+          <translate>Inline editing</translate>
+        </button>
+        <button ng-if="commentsInlineEditing.active()" ng-click="commentsInlineEditing.disable()"
+          class="btn btn-sm btn-default">
+          <i class="fa fa-times-circle"></i>
+          <translate>Inline editing</translate>
+        </button>
+      </div>
+      <h3 class="toolbar-left" translate>Comments</h3>
+    </div>
+    <!-- comment fields -->
+    <div class="col-sm-12">
+      <div ng-repeat="field in commentsFields">
+        <div ng-if="(field.public && !field.forState && !field.forRecommendation) ||
+            (operator.hasPerms('motions.can_see_and_manage_comments') && !field.forState && !field.forRecommendation)">
+          <h4>
+            {{ field.name }}
+            <span ng-if="!field.public" class="label label-warning" translate>internal</span>
+          </h4>
+          <div id="view-original-comment-inline-editor-{{ field.name }}" style="min-height: 14px;"
+            ng-bind-html="motion.comments[$index] | trusted" contenteditable="{{ commentsInlineEditing.editors[$index].isEditable }}"></div>
+        </div>
+      </div>
+      <!-- save toolbar -->
+      <div class="motion-save-toolbar" ng-class="{ 'visible': commentsInlineEditing.saveToolbarVisible() }">
+        <div class="changed-hint" translate>A comment has been changed.</div>
+        <button type="button" ng-click="commentsInlineEditing.save()" class="btn btn-primary" translate>
+            Save
+        </button>
+        <button type="button" ng-click="commentsInlineEditing.revert()" class="btn btn-default" translate>
+            Revert
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

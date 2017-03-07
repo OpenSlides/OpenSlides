@@ -2,16 +2,56 @@ import os
 
 from openslides.utils.plugins import collect_plugins
 
-SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+MODULE_DIR = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
 
-AUTH_USER_MODEL = 'users.User'
 
-AUTHENTICATION_BACKENDS = ('openslides.users.auth.CustomizedModelBackend',)
+# Application definition
 
-# Uses a db session backend, that saves the user_id directly in the db
-SESSION_ENGINE = 'openslides.core.session_backend'
+INSTALLED_APPS = [
+    'openslides.core',
+    'openslides.users',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'channels',
+    'openslides.agenda',
+    'openslides.topics',
+    'openslides.motions',
+    'openslides.assignments',
+    'openslides.mediafiles',
+]
 
-SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
+INSTALLED_PLUGINS = collect_plugins()  # Adds all automaticly collected plugins
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+ROOT_URLCONF = 'openslides.urls'
+
+ALLOWED_HOSTS = ['*']
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+    },
+]
+
+
+# Internationalization
+# https://docs.djangoproject.com/en/1.10/topics/i18n/
+
+LANGUAGE_CODE = 'en'
 
 LANGUAGES = (
     ('en', 'English'),
@@ -20,100 +60,86 @@ LANGUAGES = (
     ('es', 'Español'),
     ('pt', 'Português'),
     ('cs', 'Český'),
+    ('ru', 'русский'),
 )
 
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
+TIME_ZONE = 'UTC'
+
 USE_I18N = True
 
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale
 USE_L10N = True
 
-LOCALE_PATHS = (
-    os.path.join(SITE_ROOT, 'locale'),
-)
+USE_TZ = True
 
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash if there is a path component (optional in other cases).
-# Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/media/'
+LOCALE_PATHS = [
+    os.path.join(MODULE_DIR, 'locale'),
+]
 
-# Absolute path to the directory that holds static media from ``collectstatic``
-# Example: "/home/media/static.lawrence.com/"
-STATIC_ROOT = os.path.join(SITE_ROOT, '../collected-site-static')
 
-# URL that handles the media served from STATIC_ROOT. Make sure to use a
-# trailing slash if there is a path component (optional in other cases).
-# Examples: "http://static.lawrence.com", "http://example.com/static/"
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.10/howto/static-files/
+
 STATIC_URL = '/static/'
 
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-)
-
 STATICFILES_DIRS = [
-    os.path.join(SITE_ROOT, 'static')]
+    os.path.join(MODULE_DIR, 'static'),
+]
 
-MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'openslides.users.auth.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-)
 
-ROOT_URLCONF = 'openslides.urls'
+# Sessions and user authentication
+# https://docs.djangoproject.com/en/1.10/topics/http/sessions/
+# https://docs.djangoproject.com/en/1.10/topics/auth/
 
-INSTALLED_APPS = (
-    'openslides.core',
-    'openslides.users',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.humanize',
-    'rest_framework',
-    'channels',
-    'openslides.poll',  # TODO: try to remove this line
-    'openslides.agenda',
-    'openslides.motions',
-    'openslides.assignments',
-    'openslides.mediafiles',
-)
+AUTH_USER_MODEL = 'users.User'
 
+SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+CSRF_COOKIE_NAME = 'OpenSlidesCsrfToken'
+
+CSRF_COOKIE_AGE = None
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',  # MD5 is only used for initial passwords.
+]
+
+
+# Files
+# https://docs.djangoproject.com/en/1.10/topics/files/
+
+MEDIA_URL = '/media/'
+
+
+# Cache
+# https://docs.djangoproject.com/en/1.10/topics/cache/
 
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'openslidecache'
+        'LOCATION': 'openslides-cache',
+        'OPTIONS': {
+            'MAX_ENTRIES': 10000
+        }
     }
 }
 
-# Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['*']
 
-# Adds all automaticly collected plugins
-INSTALLED_PLUGINS = collect_plugins()
+# Django Channels
+# http://channels.readthedocs.io/en/latest/
+# https://github.com/ostcar/geiss
 
-TEST_RUNNER = 'openslides.utils.test.OpenSlidesDiscoverRunner'
-
-# Config for the REST Framework
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'openslides.users.auth.RESTFrameworkAnonymousAuthentication',
-    )
-}
-
-# Config for channels
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'asgiref.inmemory.ChannelLayer',
         'ROUTING': 'openslides.routing.channel_routing',
+        'CONFIG': {
+            'capacity': 1000,
+        },
     },
 }

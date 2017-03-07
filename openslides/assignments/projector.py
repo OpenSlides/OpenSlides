@@ -1,63 +1,67 @@
-from openslides.core.exceptions import ProjectorException
-from openslides.core.views import TagViewSet
-from openslides.utils.projector import ProjectorElement, ProjectorRequirement
-
+from ..core.exceptions import ProjectorException
+from ..utils.collection import CollectionElement
+from ..utils.projector import ProjectorElement
 from .models import Assignment, AssignmentPoll
-from .views import AssignmentViewSet
 
 
 class AssignmentSlide(ProjectorElement):
     """
     Slide definitions for Assignment model.
 
-    Set 'id' to get a detail slide. Omit it to get a list slide.
+    You can send a poll id to get a poll slide.
     """
     name = 'assignments/assignment'
 
     def check_data(self):
-        pk = self.config_entry.get('id')
-        if pk is not None:
-            # Detail slide.
-            if not Assignment.objects.filter(pk=pk).exists():
-                raise ProjectorException('Election does not exist.')
-            poll_id = self.config_entry.get('poll')
-            if poll_id is not None:
-                # Poll slide.
-                if not AssignmentPoll.objects.filter(pk=poll_id).exists():
-                    raise ProjectorException('Poll does not exist.')
+        if not Assignment.objects.filter(pk=self.config_entry.get('id')).exists():
+            raise ProjectorException('Election does not exist.')
+        poll_id = self.config_entry.get('poll')
+        if poll_id:
+            # Poll slide.
+            try:
+                poll = AssignmentPoll.objects.get(pk=poll_id)
+            except AssignmentPoll.DoesNotExist:
+                raise ProjectorException('Poll does not exist.')
+            if poll.assignment_id != self.config_entry.get('id'):
+                raise ProjectorException('Assignment id and poll do not belong together.')
 
     def get_requirements(self, config_entry):
-        pk = config_entry.get('id')
-        if pk is None:
-            # List slide. Related objects like users and tags are not unlocked.
-            yield ProjectorRequirement(
-                view_class=AssignmentViewSet,
-                view_action='list')
+        try:
+            assignment = Assignment.objects.get(pk=config_entry.get('id'))
+        except Assignment.DoesNotExist:
+            # Assignment does not exist. Just do nothing.
+            pass
         else:
-            # Detail slide.
-            try:
-                assignment = Assignment.objects.get(pk=pk)
-            except Assignment.DoesNotExist:
-                # Assignment does not exist. Just do nothing.
-                pass
-            else:
-                yield ProjectorRequirement(
-                    view_class=AssignmentViewSet,
-                    view_action='retrieve',
-                    pk=str(assignment.pk))
+            yield assignment
+            yield assignment.agenda_item
+            if not config_entry.get('poll'):
+                # Assignment detail slide. Yield user instances of current
+                # candidates (i. e. future poll participants) and elected
+                # persons (i. e. former poll participants).
                 for user in assignment.related_users.all():
-                    yield ProjectorRequirement(
-                        view_class=user.get_view_class(),
-                        view_action='retrieve',
-                        pk=str(user.pk))
+                    yield user
+            else:
+                # Assignment poll slide. Yield user instances of the
+                # participants of all polls.
                 for poll in assignment.polls.all().prefetch_related('options'):
                     for option in poll.options.all():
-                        yield ProjectorRequirement(
-                            view_class=option.candidate.get_view_class(),
-                            view_action='retrieve',
-                            pk=str(option.candidate_id))
-                for tag in assignment.tags.all():
-                    yield ProjectorRequirement(
-                        view_class=TagViewSet,
-                        view_action='retrieve',
-                        pk=str(tag.pk))
+                        yield option.candidate
+
+    def get_collection_elements_required_for_this(self, collection_element, config_entry):
+        output = super().get_collection_elements_required_for_this(collection_element, config_entry)
+        # Full update if assignment changes because then we may have new
+        # candidates and therefor need new users.
+        if collection_element == CollectionElement.from_values(Assignment.get_collection_string(), config_entry.get('id')):
+            output.extend(self.get_requirements_as_collection_elements(config_entry))
+        return output
+
+    def update_data(self):
+        data = None
+        try:
+            assignment = Assignment.objects.get(pk=self.config_entry.get('id'))
+        except Assignment.DoesNotExist:
+            # Assignment does not exist, so just do nothing.
+            pass
+        else:
+            data = {'agenda_item_id': assignment.agenda_item_id}
+        return data

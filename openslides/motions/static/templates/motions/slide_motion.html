@@ -3,7 +3,13 @@
   <div id="sidebox">
     <!-- State -->
     <h3 translate>State</h3>
-    {{ motion.state.name | translate }}
+    {{ motion.getStateName() }}
+
+    <!-- Recommendation -->
+    <div ng-if="motion.getRecommendationName() != ''">
+      <h3>{{ config('motions_recommendations_by') }}</h3>
+      {{ motion.getRecommendationName() }}
+    </div>
 
     <!-- Submitters -->
     <h3 ng-if="motion.submitters.length > 0" translate>Submitters</h3>
@@ -12,7 +18,7 @@
     </div>
 
     <!-- Poll results -->
-    <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
+    <h3 ng-if="motion.polls.length > 0 && motion.polls[0].has_votes" translate>Voting result</h3>
       <div ng-repeat="poll in motion.polls | orderBy:'-id'" class="spacer">
         <div ng-show="poll.has_votes" class="pollresults">
           <strong ng-if="motion.polls.length > 1">
@@ -23,7 +29,7 @@
             <tr>
               <td class="icon">
                 <i class="fa fa-thumbs-up fa-2x"></i>
-              <td ng-init="voteYes = poll.getVote(poll.yes)">
+              <td ng-init="voteYes = poll.getVote(poll.yes, 'yes')">
                 <span class="result_label"><translate>Yes</translate>:</span>
                 <span class="result_value">
                   {{ voteYes.value }} {{ voteYes.percentStr }}
@@ -35,7 +41,7 @@
             <tr>
               <td class="icon">
                 <i class="fa fa-thumbs-down fa-2x"></i>
-              <td ng-init="voteNo = poll.getVote(poll.no)">
+              <td ng-init="voteNo = poll.getVote(poll.no, 'no')">
                 <span class="result_label"><translate>No</translate>:</span>
                 <span class="result_value" >
                   {{ voteNo.value }} {{ voteNo.percentStr }}
@@ -47,7 +53,7 @@
             <tr>
               <td class="icon">
                 <strong style="font-size: 26px">&empty;</strong>
-              <td ng-init="voteAbstain = poll.getVote(poll.abstain)">
+              <td ng-init="voteAbstain = poll.getVote(poll.abstain, 'abstain')">
                 <span class="result_label"><translate>Abstain</translate>:</span>
                 <span class="result_value">
                   {{ voteAbstain.value }} {{ voteAbstain.percentStr }}
@@ -69,8 +75,51 @@
     </h2>
   </div>
 
+  <!-- Preamble -->
+  <div><p>{{ config('motions_preamble') | translate }}</p></div><br>
+
   <!-- Text -->
-  <div ng-bind-html="motion.getText() | trusted"></div>
+  <!-- <div ng-bind-html="motion.getTextWithLineBreaks(null, line, scroll) | trusted"
+    class="motion-text line-numbers-{{ config('motions_default_line_numbering') }}"></div> -->
+
+  <!-- Original view -->
+  <div ng-if="mode == 'original'">
+    <div id="view-original-inline-editor" ng-bind-html="motion.getTextWithLineBreaks(null, line, scroll) | trusted"
+      class="motion-text motion-text-original line-numbers-{{ config('motions_default_line_numbering') }}"
+      contenteditable="false"></div>
+  </div>
+
+  <!-- Diff View -->
+  <div ng-if="mode == 'diff'">
+    <!-- The actual diff view -->
+    <div class="motion-text-with-diffs line-numbers-{{ config('motions_default_line_numbering') }}">
+      <div ng-repeat="change in (changes = (change_recommendations | orderBy: 'line_from')) ">
+
+        <div class="motion-text original-text line-numbers-{{ config('motions_default_line_numbering') }}"
+          ng-bind-html="motion.getTextBetweenChangeRecommendations(null, changes[$index - 1], change, line) | trusted">
+        </div>
+        <div class="diff-box diff-box-{{ change.id }} clearfix motion-text motion-text-diff line-numbers-{{ config('motions_default_line_numbering') }}">
+          <div ng-bind-html="change.getDiff(motion, null, line) | trusted"></div>
+        </div>
+      </div>
+      <div class="motion-text original-text line-numbers-{{ config('motions_default_line_numbering') }}"
+        ng-bind-html="motion.getTextRemainderAfterLastChangeRecommendation(null, changes, line) | trusted">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Changed View -->
+  <div ng-if="mode == 'changed'">
+    <div ng-bind-html="motion.getTextByMode('changed', null, line) | trusted"
+      class="motion-text motion-text-changed line-numbers-{{ config('motions_default_line_numbering') }}"></div>
+  </div>
+
+  <!-- Agreed View -->
+  <div ng-if="mode == 'agreed'">
+    <div ng-bind-html="motion.getTextByMode('agreed', null, line) | trusted"
+      class="motion-text motion-text-changed line-numbers-{{ config('motions_default_line_numbering') }}"></div>
+  </div>
 
   <!-- Reason -->
   <h3 ng-if="motion.getReason()" translate>Reason</h3>

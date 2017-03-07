@@ -4,71 +4,20 @@
 
 angular.module('OpenSlidesApp.users', [])
 
-.factory('operator', [
-    'User',
-    'Group',
-    'loadGlobalData',
-    'autoupdate',
-    'DS',
-    function (User, Group, loadGlobalData, autoupdate, DS) {
-        var operatorChangeCallbacks = [autoupdate.reconnect];
-        var operator = {
-            user: null,
-            perms: [],
-            isAuthenticated: function () {
-                return !!this.user;
-            },
-            onOperatorChange: function (func) {
-                operatorChangeCallbacks.push(func);
-            },
-            setUser: function(user_id) {
-                if (user_id) {
-                    User.find(user_id).then(function(user) {
-                        operator.user = user;
-                        // TODO: load only the needed groups
-                        Group.findAll().then(function() {
-                            operator.perms = user.getPerms();
-                            _.forEach(operatorChangeCallbacks, function (callback) {
-                                callback();
-                            });
-                        });
-                    });
-                } else {
-                    operator.user = null;
-                    operator.perms = [];
-                    DS.clear();
-                    _.forEach(operatorChangeCallbacks, function (callback) {
-                        callback();
-                    });
-                    Group.find(1).then(function(group) {
-                        operator.perms = group.permissions;
-                        _.forEach(operatorChangeCallbacks, function (callback) {
-                            callback();
-                        });
-                    });
-                }
-            },
-            // Returns true if the operator has at least one perm of the perms-list.
-            hasPerms: function(perms) {
-                if (typeof perms == 'string') {
-                    perms = perms.split(' ');
-                }
-                return _.intersection(perms, operator.perms).length > 0;
-            },
-        };
-        return operator;
-    }
-])
-
 .factory('User', [
     'DS',
     'Group',
     'jsDataModel',
-    function(DS, Group, jsDataModel) {
+    'gettext',
+    'gettextCatalog',
+    'Config',
+    function(DS, Group, jsDataModel, gettext, gettextCatalog, Config) {
         var name = 'users/user';
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
+            verboseName: gettext('Participants'),
+            verboseNamePlural: gettext('Participants'),
             computed: {
                 full_name: function () {
                     return this.get_full_name();
@@ -81,43 +30,59 @@ angular.module('OpenSlidesApp.users', [])
                 getResourceName: function () {
                     return name;
                 },
+                /*
+                 * Returns a short form of the name.
+                 *
+                 * Example:
+                 * - Dr. Max Mustermann
+                 * - Professor Dr. Enders, Christoph
+                 */
                 get_short_name: function() {
-                    // should be the same as in the python user model.
                     var title = _.trim(this.title),
                         firstName = _.trim(this.first_name),
                         lastName = _.trim(this.last_name),
                         name = '';
-
-                    if (title) {
-                        name = title + ' ';
-                    }
-                    if (firstName && lastName) {
-                        name += [firstName, lastName].join(' ');
+                    if (Config.get('users_sort_by') && Config.get('users_sort_by').value == 'last_name') {
+                        if (lastName && firstName) {
+                            name += [lastName, firstName].join(', ');
+                        } else {
+                            name += lastName || firstName;
+                        }
                     } else {
-                        name += firstName || lastName || this.username;
+                        name += [firstName, lastName].join(' ');
                     }
-                    return name;
+                    if (title !== '') {
+                        name = title + ' ' + name;
+                    }
+                    return name.trim();
                 },
+                /*
+                 * Returns a long form of the name.
+                 *
+                 * Example:
+                 * - Dr. Max Mustermann (Villingen)
+                 * - Professor Dr. Enders, Christoph (Leipzig)
+                 */
                 get_full_name: function() {
-                    // should be the same as in the python user model.
-                    var title = _.trim(this.title),
-                        firstName = _.trim(this.first_name),
-                        lastName = _.trim(this.last_name),
+                    var name = this.get_short_name(),
                         structure_level = _.trim(this.structure_level),
-                        name = '';
+                        number = _.trim(this.number),
+                        addition = [];
 
-                    if (title) {
-                        name = title + ' ';
-                    }
-                    if (firstName && lastName) {
-                        name += [firstName, lastName].join(' ');
-                    } else {
-                        name += firstName || lastName || this.username;
-                    }
+                    // addition: add number and structure level
                     if (structure_level) {
-                        name += " (" + structure_level + ")";
+                        addition.push(structure_level);
                     }
-                    return name;
+                    if (number) {
+                        addition.push(
+                            /// abbreviation for number
+                            gettextCatalog.getString('No.') + ' ' + number
+                        );
+                    }
+                    if (addition.length > 0) {
+                        name += ' (' + addition.join(' · ') + ')';
+                    }
+                    return name.trim();
                 },
                 getPerms: function() {
                     var allPerms = [];
@@ -125,8 +90,9 @@ angular.module('OpenSlidesApp.users', [])
                     if (this.groups_id) {
                         allGroups = this.groups_id.slice(0);
                     }
-                    // Add registered group
-                    allGroups.push(2);
+                    if (allGroups.length === 0) {
+                        allGroups.push(1); // add default group
+                    }
                     _.forEach(allGroups, function(groupId) {
                         var group = Group.get(groupId);
                         if (group) {
@@ -166,6 +132,8 @@ angular.module('OpenSlidesApp.users', [])
         return DS.defineResource({
             name: 'users/group',
             permissions: permissions,
+            // TODO (Issue 2862): Do not query the permissions from server. They should be included
+            // in the startup data. Then remove 'permission' injection from group list controller.
             getPermissions: function() {
                 if (!this.permissions) {
                     this.permissions = $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' })
@@ -191,10 +159,10 @@ angular.module('OpenSlidesApp.users', [])
     'gettext',
     function (gettext) {
         // default group names (from users/signals.py)
-        gettext('Guests');
-        gettext('Registered users');
+        gettext('Default');
         gettext('Delegates');
         gettext('Staff');
+        gettext('Committees');
     }
 ]);
 

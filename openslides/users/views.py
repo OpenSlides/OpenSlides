@@ -1,10 +1,15 @@
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy
 
 from ..core.config import config
+from ..core.signals import permission_change
+from ..utils.auth import anonymous_is_enabled, has_perm
+from ..utils.autoupdate import inform_data_collection_element_list
+from ..utils.collection import CollectionElement, CollectionElementList
 from ..utils.rest_api import (
     ModelViewSet,
     Response,
@@ -13,11 +18,10 @@ from ..utils.rest_api import (
     detail_route,
     status,
 )
-from ..utils.views import APIView, PDFView
-from .access_permissions import UserAccessPermissions
+from ..utils.views import APIView
+from .access_permissions import GroupAccessPermissions, UserAccessPermissions
 from .models import Group, User
-from .pdf import users_passwords_to_pdf, users_to_pdf
-from .serializers import GroupSerializer, UserFullSerializer
+from .serializers import GroupSerializer, PermissionRelatedField
 
 
 # Viewsets for the REST API
@@ -36,66 +40,19 @@ class UserViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action == 'retrieve':
-            result = self.get_access_permissions().can_retrieve(self.request.user)
-        elif self.action in ('metadata', 'list', 'update', 'partial_update'):
-            result = self.request.user.has_perm('users.can_see_name')
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action == 'metadata':
+            result = has_perm(self.request.user, 'users.can_see_name')
+        elif self.action in ('update', 'partial_update'):
+            result = self.request.user.is_authenticated()
         elif self.action in ('create', 'destroy', 'reset_password'):
-            result = (self.request.user.has_perm('users.can_see_name') and
-                      self.request.user.has_perm('users.can_see_extra_data') and
-                      self.request.user.has_perm('users.can_manage'))
+            result = (has_perm(self.request.user, 'users.can_see_name') and
+                      has_perm(self.request.user, 'users.can_see_extra_data') and
+                      has_perm(self.request.user, 'users.can_manage'))
         else:
             result = False
         return result
-
-    def get_serializer_class(self):
-        """
-        Returns different serializer classes with respect to action.
-        """
-        if self.action in ('create', 'partial_update', 'update'):
-            # Return the UserFullSerializer for edit requests.
-            serializer_class = UserFullSerializer
-        else:
-            serializer_class = super().get_serializer_class()
-        return serializer_class
-
-    def list(self, request, *args, **kwargs):
-        """
-        Customized view endpoint to list all user.
-
-        Hides the default_password for non admins.
-        """
-        response = super().list(request, *args, **kwargs)
-        self.extract_default_password(response)
-        return response
-
-    def retrieve(self, request, *args, **kwargs):
-        """
-        Customized view endpoint to retrieve a user.
-
-        Hides the default_password for non admins.
-        """
-        response = super().retrieve(request, *args, **kwargs)
-        self.extract_default_password(response)
-        return response
-
-    def extract_default_password(self, response):
-        """
-        Checks if a user is not a manager. If yes, the default password is
-        extracted from the response.
-        """
-        if not self.request.user.has_perm('users.can_manage'):
-            if isinstance(response.data, dict):
-                try:
-                    del response.data['default_password']
-                except KeyError:
-                    pass
-            elif isinstance(response.data, list):
-                for user in response.data:
-                    try:
-                        del user['default_password']
-                    except KeyError:
-                        pass
 
     def update(self, request, *args, **kwargs):
         """
@@ -106,40 +63,24 @@ class UserViewSet(ModelViewSet):
         self.check_view_permissions()). Also it is evaluated whether he
         wants to update himself or is manager.
         """
-        # Check manager perms
-        if (request.user.has_perm('users.can_see_extra_data') and
-                request.user.has_perm('users.can_manage')):
+        # Check permissions.
+        if (has_perm(self.request.user, 'users.can_see_name') and
+                has_perm(request.user, 'users.can_see_extra_data') and
+                has_perm(request.user, 'users.can_manage')):
+            # The user has all permissions so he may update every user.
             if request.data.get('is_active') is False and self.get_object() == request.user:
-                # A user can not deactivate himself.
+                # But a user can not deactivate himself.
                 raise ValidationError({'detail': _('You can not deactivate yourself.')})
-            response = super().update(request, *args, **kwargs)
         else:
-            # Get user.
-            user = self.get_object()
-            # Check permissions only to update yourself.
-            if request.user != user:
+            # The user does not have all permissions so he may only update himself.
+            if str(request.user.pk) != self.kwargs['pk']:
                 self.permission_denied(request)
-            # Check permission to send only some data.
-            whitelist = (
-                'username',
-                'title',
-                'first_name',
-                'last_name',
-                'structure_level',
-                'about_me',)
-            keys = list(request.data.keys())
-            for key in keys:
-                if key not in whitelist:
-                    # Non-staff users are allowed to send only some data. Ignore other data.
+            # Remove fields that the user is not allowed to change.
+            # The list() is required because we want to use del inside the loop.
+            for key in list(request.data.keys()):
+                if key not in ('username', 'about_me'):
                     del request.data[key]
-            # Validate data and update user.
-            serializer = self.get_serializer(
-                user,
-                data=request.data,
-                partial=kwargs.get('partial', False))
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            response = Response(serializer.data)
+        response = super().update(request, *args, **kwargs)
         return response
 
     def destroy(self, request, *args, **kwargs):
@@ -160,11 +101,12 @@ class UserViewSet(ModelViewSet):
         View to reset the password using the requested password.
         """
         user = self.get_object()
-        if request.data.get('password'):
-            user.default_password = request.data['password']
-        user.set_password(user.default_password)
-        user.save()
-        return Response({'detail': _('Password successfully reset.')})
+        if isinstance(request.data.get('password'), str):
+            user.set_password(request.data.get('password'))
+            user.save()
+            return Response({'detail': _('Password successfully reset.')})
+        else:
+            raise ValidationError({'detail': 'Password has to be a string.'})
 
 
 class GroupViewSetMetadata(SimpleMetadata):
@@ -177,8 +119,13 @@ class GroupViewSetMetadata(SimpleMetadata):
         """
         field_info = super().get_field_info(field)
         if field.field_name == 'permissions':
-            for choice in field_info['choices']:
-                choice['display_name'] = choice['display_name'].split(' | ')[2]
+            field_info['choices'] = [
+                {
+                    'value': choice_value,
+                    'display_name': force_text(choice_name, strings_only=True).split(' | ')[2]
+                }
+                for choice_value, choice_name in field.choices.items()
+            ]
         return field_info
 
 
@@ -192,32 +139,79 @@ class GroupViewSet(ModelViewSet):
     metadata_class = GroupViewSetMetadata
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    access_permissions = GroupAccessPermissions()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve'):
-            # Every authenticated user can see the metadata and list or
-            # retrieve groups. Anonymous users can do so if they are enabled.
-            result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action == 'metadata':
+            # Every authenticated user can see the metadata.
+            # Anonymous users can do so if they are enabled.
+            result = self.request.user.is_authenticated() or anonymous_is_enabled()
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             # Users with all app permissions can edit groups.
-            result = (self.request.user.has_perm('users.can_see_name') and
-                      self.request.user.has_perm('users.can_see_extra_data') and
-                      self.request.user.has_perm('users.can_manage'))
+            result = (has_perm(self.request.user, 'users.can_see_name') and
+                      has_perm(self.request.user, 'users.can_see_extra_data') and
+                      has_perm(self.request.user, 'users.can_manage'))
         else:
             # Deny request in any other case.
             result = False
         return result
 
+    def update(self, request, *args, **kwargs):
+        """
+        Customized endpoint to update a group. Send the signal
+        'permission_change' if group permissions change.
+        """
+        group = self.get_object()
+
+        # Collect old and new (given) permissions to get the difference.
+        old_permissions = list(group.permissions.all())  # Force evaluation so the perms don't change anymore.
+        permission_names = request.data['permissions']
+        if isinstance(permission_names, str):
+            permission_names = [permission_names]
+        given_permissions = [
+            PermissionRelatedField(read_only=True).to_internal_value(data=perm) for perm in permission_names]
+
+        # Run super to update the group.
+        response = super().update(request, *args, **kwargs)
+
+        # Check status code and send 'permission_change' signal.
+        if response.status_code == 200:
+
+            def diff(full, part):
+                """
+                This helper function calculates the difference of two lists:
+                The result is a list of all elements of 'full' that are
+                not in 'part'.
+                """
+                part = set(part)
+                return [item for item in full if item not in part]
+
+            new_permissions = diff(given_permissions, old_permissions)
+
+            # Some permissions are added.
+            if len(new_permissions) > 0:
+                collection_elements = CollectionElementList()
+                signal_results = permission_change.send(None, permissions=new_permissions, action='added')
+                for receiver, signal_collections in signal_results:
+                    for collection in signal_collections:
+                        collection_elements.extend(collection.element_generator())
+                inform_data_collection_element_list(collection_elements)
+
+            # TODO: Some permissions are deleted.
+
+        return response
+
     def destroy(self, request, *args, **kwargs):
         """
-        Protects builtin groups 'Anonymous' (pk=1) and 'Registered' (pk=2)
-        from being deleted.
+        Protects builtin groups 'Default' (pk=1) from being deleted.
         """
         instance = self.get_object()
-        if instance.pk in (1, 2):
+        if instance.pk == 1:
             self.permission_denied(request)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -232,6 +226,9 @@ class UserLoginView(APIView):
     http_method_names = ['get', 'post']
 
     def post(self, *args, **kwargs):
+        # If the client tells that cookies are disabled, do not continue as guest (if enabled)
+        if not self.request.data.get('cookies', True):
+            raise ValidationError({'detail': _('Cookies have to be enabled to use OpenSlides.')})
         form = AuthenticationForm(self.request, data=self.request.data)
         if not form.is_valid():
             raise ValidationError({'detail': _('Username or password is not correct.')})
@@ -270,6 +267,8 @@ class UserLoginView(APIView):
         else:
             # self.request.method == 'POST'
             context['user_id'] = self.user.pk
+            user_collection = CollectionElement.from_instance(self.user)
+            context['user'] = user_collection.as_dict_for_user(self.user)
         return super().get_context_data(**context)
 
 
@@ -296,10 +295,18 @@ class WhoAmIView(APIView):
         """
         Appends the user id to the context. Uses None for the anonymous
         user. Appends also a flag if guest users are enabled in the config.
+        Appends also the serialized user if available.
         """
+        user_id = self.request.user.pk
+        if user_id is not None:
+            user_collection = CollectionElement.from_instance(self.request.user)
+            user_data = user_collection.as_dict_for_user(self.request.user)
+        else:
+            user_data = None
         return super().get_context_data(
-            user_id=self.request.user.pk,
-            guest_enabled=config['general_system_enable_anonymous'],
+            user_id=user_id,
+            guest_enabled=anonymous_is_enabled(),
+            user=user_data,
             **context)
 
 
@@ -314,41 +321,7 @@ class SetPasswordView(APIView):
         if user.check_password(request.data['old_password']):
             user.set_password(request.data['new_password'])
             user.save()
+            update_session_auth_hash(request, user)
         else:
             raise ValidationError({'detail': _('Old password does not match.')})
         return super().post(request, *args, **kwargs)
-
-
-# Views to generate PDFs
-
-class UsersListPDF(PDFView):
-    """
-    Generate a list of all users as PDF.
-    """
-    required_permission = 'users.can_see_extra_data'
-    filename = ugettext_lazy('user-list')
-    document_title = ugettext_lazy('List of users')
-
-    def append_to_pdf(self, pdf):
-        """
-        Append PDF objects.
-        """
-        users_to_pdf(pdf)
-
-
-class UsersPasswordsPDF(PDFView):
-    """
-    Generate the access data welcome paper for all users as PDF.
-    """
-    required_permission = 'users.can_manage'
-    filename = ugettext_lazy('user-access-data')
-    top_space = 0
-
-    def build_document(self, pdf_document, story):
-        pdf_document.build(story)
-
-    def append_to_pdf(self, pdf):
-        """
-        Append PDF objects.
-        """
-        users_passwords_to_pdf(pdf)
