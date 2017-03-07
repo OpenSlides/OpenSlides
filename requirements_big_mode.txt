@@ -1,0 +1,8 @@
+# Requirements for OpenSlides in production
+-r requirements_production.txt
+
+# Requirements for Redis and PostgreSQL support
+asgi-redis>=1.0.0,<1.1
+django-redis>=4.7.0,<4.8
+django-redis-sessions>=0.5.6,<0.6
+psycopg2>=2.6.2,<2.7
