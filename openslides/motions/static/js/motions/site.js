@@ -1289,7 +1289,8 @@ angular.module('OpenSlidesApp.motions.site', [
             function (obj) {
                 motion.reason = motion.getReason(-1);
                 motion.setTextStrippingLineBreaks(obj.editor.getData());
-                motion.disable_versioning = (obj.trivialChange && Config.get('motions_allow_disable_versioning').value);
+                motion.disable_versioning = (obj.trivialChange &&
+                    Config.get('motions_allow_disable_versioning').value);
             }
         );
         $scope.commentsInlineEditing = MotionCommentsInlineEditing.createInstances($scope, motion);

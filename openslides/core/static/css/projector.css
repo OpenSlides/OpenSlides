@@ -581,6 +581,7 @@ div.projector-image {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 50% 50%;
+    background-color: #fff;
 }
 
 .video-container {

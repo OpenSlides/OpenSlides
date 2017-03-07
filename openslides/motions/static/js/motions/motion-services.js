@@ -86,24 +86,20 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             };
 
             obj.enable = function () {
-                if (motion.isAllowed('update')) {
-                    obj.active = true;
-                    obj.isEditable = true;
-                    obj.ckeditorOptions.language = gettextCatalog.getCurrentLanguage();
-                    obj.editor = CKEDITOR.inline(selector, obj.ckeditorOptions);
-                    obj.editor.on('change', function () {
-                        $timeout(function() {
-                            if (obj.editor.getData() != obj.originalHtml) {
-                                obj.changed = true;
-                            } else {
-                                obj.changed = false;
-                            }
-                        });
+                obj.active = true;
+                obj.isEditable = true;
+                obj.ckeditorOptions.language = gettextCatalog.getCurrentLanguage();
+                obj.editor = CKEDITOR.inline(selector, obj.ckeditorOptions);
+                obj.editor.on('change', function () {
+                    $timeout(function() {
+                        if (obj.editor.getData() != obj.originalHtml) {
+                            obj.changed = true;
+                        } else {
+                            obj.changed = false;
+                        }
                     });
-                    obj.revert();
-                } else {
-                    obj.disable();
-                }
+                });
+                obj.revert();
             };
 
             obj.disable = function () {
@@ -143,10 +139,6 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             };
 
             obj.save = function () {
-                if (!motion.isAllowed('update')) {
-                    throw 'No permission to update motion';
-                }
-
                 saveData(obj);
                 obj.disable();
 
@@ -195,6 +187,9 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                         return motion['comment ' + field.name];
                     },
                     function (obj) {
+                        motion.title = motion.getTitle(-1);
+                        motion.text = motion.getText(-1);
+                        motion.reason = motion.getReason(-1);
                         motion['comment ' + field.name] = obj.editor.getData();
                     }
                 );
