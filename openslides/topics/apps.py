@@ -15,8 +15,15 @@ class TopicsAppConfig(AppConfig):
         from . import projector  # noqa
 
         # Import all required stuff.
+        from openslides.core.signals import permission_change
         from ..utils.rest_api import router
+        from .signals import get_permission_change_data
         from .views import TopicViewSet
+
+        # Connect signals.
+        permission_change.connect(
+            get_permission_change_data,
+            dispatch_uid='topics_get_permission_change_data')
 
         # Register viewsets.
         router.register(self.get_model('Topic').get_collection_string(), TopicViewSet)
