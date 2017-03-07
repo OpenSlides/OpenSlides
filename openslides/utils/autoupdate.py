@@ -146,13 +146,15 @@ def send_data(message):
     Informs all site users and projector clients about changed data.
     """
     collection_elements = CollectionElementList.from_channels_message(message)
+
+    # Send data to site users.
     for user_id, channel_names in websocket_user_cache.get_all().items():
         if not user_id:
             # Anonymous user
             user = None
         else:
             try:
-                user = CollectionElement.from_values('users/user', user_id)
+                user = user_to_collection_user(user_id)
             except ObjectDoesNotExist:
                 # The user does not exist. Skip him/her.
                 continue
@@ -246,6 +248,18 @@ def inform_deleted_data(*args, information=None):
             id=args[index + 1],
             deleted=True,
             information=information))
+    # If currently there is an open database transaction, then the
+    # send_autoupdate function is only called, when the transaction is
+    # commited. If there is currently no transaction, then the function
+    # is called immediately.
+    transaction.on_commit(lambda: send_autoupdate(collection_elements))
+
+
+def inform_data_collection_element_list(collection_elements, information=None):
+    """
+    Informs the autoupdate system about some collection elements. This is
+    used just to send some data to all users.
+    """
     # If currently there is an open database transaction, then the
     # send_autoupdate function is only called, when the transaction is
     # commited. If there is currently no transaction, then the function

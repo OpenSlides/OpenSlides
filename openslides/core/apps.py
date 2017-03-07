@@ -1,6 +1,8 @@
 from django.apps import AppConfig
 from django.conf import settings
 
+from ..utils.collection import Collection
+
 
 class CoreAppConfig(AppConfig):
     name = 'openslides.core'
@@ -18,7 +20,10 @@ class CoreAppConfig(AppConfig):
         from .signals import post_permission_creation
         from ..utils.rest_api import router
         from .config_variables import get_config_variables
-        from .signals import delete_django_app_permissions
+        from .signals import (
+            delete_django_app_permissions,
+            get_permission_change_data,
+            permission_change)
         from .views import (
             ChatMessageViewSet,
             ConfigViewSet,
@@ -35,6 +40,9 @@ class CoreAppConfig(AppConfig):
         post_permission_creation.connect(
             delete_django_app_permissions,
             dispatch_uid='delete_django_app_permissions')
+        permission_change.connect(
+            get_permission_change_data,
+            dispatch_uid='core_get_permission_change_data')
 
         # Register viewsets.
         router.register(self.get_model('Projector').get_collection_string(), ProjectorViewSet)
@@ -45,8 +53,11 @@ class CoreAppConfig(AppConfig):
         router.register(self.get_model('Countdown').get_collection_string(), CountdownViewSet)
 
     def get_startup_elements(self):
+        """
+        Yields all collections required on startup i. e. opening the websocket
+        connection.
+        """
         from .config import config
-        from ..utils.collection import Collection
         for model in ('Projector', 'ChatMessage', 'Tag', 'ProjectorMessage', 'Countdown'):
             yield Collection(self.get_model(model).get_collection_string())
         yield Collection(config.get_collection_string())

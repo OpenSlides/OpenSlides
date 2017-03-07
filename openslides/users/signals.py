@@ -1,8 +1,20 @@
+from django.apps import apps
 from django.contrib.auth.models import Permission
 from django.db.models import Q
 
 from ..utils.autoupdate import inform_changed_data
 from .models import Group, User
+
+
+def get_permission_change_data(sender, permissions=None, **kwargs):
+    """
+    Yields all necessary collections if 'users.can_see_name' permission changes.
+    """
+    users_app = apps.get_app_config(app_label='users')
+    for permission in permissions:
+        # There could be only one 'users.can_see_name' and then we want to return data.
+        if permission.content_type.app_label == users_app.label and permission.codename == 'can_see_name':
+            yield from users_app.get_startup_elements()
 
 
 def create_builtin_groups_and_admin(**kwargs):

@@ -430,6 +430,53 @@ class GroupUpdate(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, {'name': ['This field is required.']})
 
+    def test_update_via_put_with_new_permissions(self):
+        admin_client = APIClient()
+        admin_client.login(username='admin', password='admin')
+        group = Group.objects.create(name='group_name_inooThe3dii4mahWeeSe')
+        # This contains all permissions.
+        permissions = [
+            'agenda.can_be_speaker',
+            'agenda.can_manage',
+            'agenda.can_see',
+            'agenda.can_see_hidden_items',
+            'assignments.can_manage',
+            'assignments.can_nominate_other',
+            'assignments.can_nominate_self',
+            'assignments.can_see',
+            'core.can_manage_config',
+            'core.can_manage_projector',
+            'core.can_manage_tags',
+            'core.can_manage_chat',
+            'core.can_see_frontpage',
+            'core.can_see_projector',
+            'core.can_use_chat',
+            'mediafiles.can_manage',
+            'mediafiles.can_see',
+            'mediafiles.can_see_hidden',
+            'mediafiles.can_upload',
+            'motions.can_create',
+            'motions.can_manage',
+            'motions.can_see',
+            'motions.can_see_and_manage_comments',
+            'motions.can_support',
+            'users.can_manage',
+            'users.can_see_extra_data',
+            'users.can_see_name',
+        ]
+
+        response = admin_client.put(
+            reverse('group-detail', args=[group.pk]),
+            {'name': 'new_group_name_Chie6duwaepoo8aech7r',
+             'permissions': permissions},
+            format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        group = Group.objects.get(pk=group.pk)
+        for permission in permissions:
+            app_label, codename = permission.split('.')
+            self.assertTrue(group.permissions.get(content_type__app_label=app_label, codename=codename))
+
 
 class GroupDelete(TestCase):
     """

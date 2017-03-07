@@ -6,8 +6,10 @@ from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 
 from ..core.config import config
+from ..core.signals import permission_change
 from ..utils.auth import anonymous_is_enabled, has_perm
-from ..utils.collection import CollectionElement
+from ..utils.autoupdate import inform_data_collection_element_list
+from ..utils.collection import CollectionElement, CollectionElementList
 from ..utils.rest_api import (
     ModelViewSet,
     Response,
@@ -19,7 +21,7 @@ from ..utils.rest_api import (
 from ..utils.views import APIView
 from .access_permissions import GroupAccessPermissions, UserAccessPermissions
 from .models import Group, User
-from .serializers import GroupSerializer
+from .serializers import GroupSerializer, PermissionRelatedField
 
 
 # Viewsets for the REST API
@@ -158,6 +160,51 @@ class GroupViewSet(ModelViewSet):
             # Deny request in any other case.
             result = False
         return result
+
+    def update(self, request, *args, **kwargs):
+        """
+        Customized endpoint to update a group. Send the signal
+        'permission_change' if group permissions change.
+        """
+        group = self.get_object()
+
+        # Collect old and new (given) permissions to get the difference.
+        old_permissions = list(group.permissions.all())  # Force evaluation so the perms don't change anymore.
+        permission_names = request.data['permissions']
+        if isinstance(permission_names, str):
+            permission_names = [permission_names]
+        given_permissions = [
+            PermissionRelatedField(read_only=True).to_internal_value(data=perm) for perm in permission_names]
+
+        # Run super to update the group.
+        response = super().update(request, *args, **kwargs)
+
+        # Check status code and send 'permission_change' signal.
+        if response.status_code == 200:
+
+            def diff(full, part):
+                """
+                This helper function calculates the difference of two lists:
+                The result is a list of all elements of 'full' that are
+                not in 'part'.
+                """
+                part = set(part)
+                return [item for item in full if item not in part]
+
+            new_permissions = diff(given_permissions, old_permissions)
+
+            # Some permissions are added.
+            if len(new_permissions) > 0:
+                collection_elements = CollectionElementList()
+                signal_results = permission_change.send(None, permissions=new_permissions, action='added')
+                for receiver, signal_collections in signal_results:
+                    for collection in signal_collections:
+                        collection_elements.extend(collection.element_generator())
+                inform_data_collection_element_list(collection_elements)
+
+            # TODO: Some permissions are deleted.
+
+        return response
 
     def destroy(self, request, *args, **kwargs):
         """

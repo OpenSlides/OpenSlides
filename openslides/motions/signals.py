@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.utils.translation import ugettext_noop
 
 from .models import State, Workflow
@@ -102,3 +103,14 @@ def create_builtin_workflows(sender, **kwargs):
     state_2_2.next_states.add(state_2_3, state_2_4, state_2_5, state_2_6, state_2_7, state_2_8, state_2_9)
     workflow_2.first_state = state_2_1
     workflow_2.save()
+
+
+def get_permission_change_data(sender, permissions, **kwargs):
+    """
+    Yields all necessary collections if 'motions.can_see' permission changes.
+    """
+    motions_app = apps.get_app_config(app_label='motions')
+    for permission in permissions:
+        # There could be only one 'motions.can_see' and then we want to return data.
+        if permission.content_type.app_label == motions_app.label and permission.codename == 'can_see':
+            yield from motions_app.get_startup_elements()
