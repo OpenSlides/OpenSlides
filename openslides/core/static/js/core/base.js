@@ -808,6 +808,7 @@ angular.module('OpenSlidesApp.core', [
                                 id: value.id,
                             };
                         } else if (
+                            value.name != 'voting/prompt' &&
                             value.name != 'agenda/item-list' &&
                             value.name != 'core/clock' &&
                             value.name != 'core/countdown' &&
