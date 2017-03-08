@@ -347,7 +347,7 @@ describe('linenumbering', function () {
           after = "Some additional text to circumvent the threshold Test1 Test6 Test7 Test8 Test9";
       var diff = diffService.diff(before, after);
 
-      expect(diff).toBe('Some additional text to circumvent the threshold Test1 <del>Test2 Test3 Test4 Test5 </del><ins>Test6 Test7 Test8 </ins>Test9');
+      expect(diff).toBe('Some additional text to circumvent the threshold Test1 <del>Test2 Test3 Test4 Test5</del><ins>Test6 Test7 Test8</ins> Test9');
     });
 
     it('detects insertions and deletions in a word (1)', function () {
@@ -415,6 +415,22 @@ describe('linenumbering', function () {
             after = "<p>(hier: Missbrauch von bewusstseinsverändernde Mittel - daher Zensiert)</p>";
         var diff = diffService.diff(before, after);
         expect(diff).toBe('<P class="delete">Dann kam er zurück, klopfte an die Hausthür und rief \'macht auf, ihr lieben Kinder, eure Mutter ist da und hat jedem von Euch etwas mitgebarcht.\' Aber der Wolf hatte seine schwarze Pfote in das Fenster gelegt, das sahen die Kinder und riefen</P><P class="insert">(hier: Missbrauch von bewusstseinsverändernde Mittel - daher Zensiert)</P>');
+    });
+
+    it('does not repeat the last word (1)', function () {
+      var before = "<P>sem. Nulla consequat massa quis enim. </P>",
+          after = "<p>sem. Nulla consequat massa quis enim. TEST<br>\nTEST</p>";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('<p>sem. Nulla consequat massa quis enim.<ins> TEST<br>' + "\n" + "TEST</ins></p>");
+    });
+
+    it('does not repeat the last word (2)', function () {
+      var before = "<P>...so frißt er Euch alle mit Haut und Haar.</P>",
+          after = "<p>...so frißt er Euch alle mit Haut und Haar und Augen und Därme und alles.</p>";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe("<p>...so frißt er Euch alle mit Haut und Haar<ins> und Augen und Därme und alles</ins>.</p>");
     });
   });
 });

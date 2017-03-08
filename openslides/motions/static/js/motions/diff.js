@@ -760,17 +760,17 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         };
 
         this._tokenizeHtml = function (str) {
-            var splitArrayEntries = function (arr, by, prepend) {
+            var splitArrayEntriesEmbedSeparator = function (arr, by, prepend) {
                 var newArr = [];
                 for (var i = 0; i < arr.length; i++) {
-                    if (arr[i][0] == '<' && (by == " " || by == "\n")) {
+                    if (arr[i][0] === '<' && (by === " " || by === "\n")) {
                         // Don't split HTML tags
                         newArr.push(arr[i]);
                         continue;
                     }
 
                     var parts = arr[i].split(by);
-                    if (parts.length == 1) {
+                    if (parts.length === 1) {
                         newArr.push(arr[i]);
                     } else {
                         var j;
@@ -793,10 +793,29 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 }
                 return newArr;
             };
-            var arr = splitArrayEntries([str], '<', true);
-            arr = splitArrayEntries(arr, '>', false);
-            arr = splitArrayEntries(arr, " ", false);
-            arr = splitArrayEntries(arr, "\n", false);
+            var splitArrayEntriesSplitSeparator = function (arr, by) {
+                var newArr = [];
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i][0] === '<') {
+                        newArr.push(arr[i]);
+                        continue;
+                    }
+                    var parts = arr[i].split(by);
+                    for (var j = 0; j < parts.length; j++) {
+                        if (j > 0) {
+                            newArr.push(by);
+                        }
+                        newArr.push(parts[j]);
+                    }
+                }
+                return newArr;
+            };
+            var arr = splitArrayEntriesEmbedSeparator([str], '<', true);
+            arr = splitArrayEntriesEmbedSeparator(arr, '>', false);
+            arr = splitArrayEntriesSplitSeparator(arr, " ");
+            arr = splitArrayEntriesSplitSeparator(arr, ".");
+            arr = splitArrayEntriesEmbedSeparator(arr, "\n", false);
+
             return arr;
         };
 
