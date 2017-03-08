@@ -390,6 +390,19 @@ describe('linenumbering', function () {
       expect(diff).toBe(expected);
     });
 
+    it('handles inserted paragraphs (2)', function () {
+      // Specifically, Noch</p> should not be enclosed by <ins>...</ins>, as <ins>Noch </p></ins> would be seriously broken
+      var before = "<P>rief sie alle sieben herbei und sprach 'liebe Kinder, ich will hinaus in den Wald, seid </P>",
+          after = "<p>rief sie alle sieben herbei und sprach 'liebe Kinder, ich will hinaus in den Wald, seid Noch</p>" +
+              "<p>Test 123</p>",
+          expected = "<P class=\"delete\">rief sie alle sieben herbei und sprach 'liebe Kinder, ich will hinaus in den Wald, seid </P>" +
+              "<P class=\"insert\">rief sie alle sieben herbei und sprach 'liebe Kinder, ich will hinaus in den Wald, seid Noch</P>" +
+              "<P class=\"insert\">Test 123</P>";
+
+      var diff = diffService.diff(before, after);
+      expect(diff).toBe(expected);
+    });
+
     it('handles completely deleted paragraphs', function () {
         var before = "<P>Ihr könnt ohne Sorge fortgehen.'Da meckerte die Alte und machte sich getrost auf den Weg.</P>",
             after = "";

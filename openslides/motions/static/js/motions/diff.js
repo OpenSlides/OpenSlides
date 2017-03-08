@@ -890,6 +890,22 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 return true;
             }
 
+            // If other HTML tags are contained within INS/DEL (e.g. "<ins>Test</p></ins>"), let's better be cautious
+            // The "!!(found=...)"-construction is only used to make jshint happy :)
+            var findDel = /<del>(.*?)<\/del>/gi,
+                findIns = /<ins>(.*?)<\/ins>/gi,
+                found;
+            while (!!(found = findDel.exec(html))) {
+                if (found[1].match(/<[^>]*>/)) {
+                    return true;
+                }
+            }
+            while (!!(found = findIns.exec(html))) {
+                if (found[1].match(/<[^>]*>/)) {
+                    return true;
+                }
+            }
+
             // If too much of the text is changed, it's better to separate the old from new new version,
             // otherwise the result looks strange
             if (this._calcChangeRatio(html) > 0.66) {
@@ -1010,7 +1026,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
                 return out;
             });
-            
+
             var diff;
             if (this._diffDetectBrokenDiffHtml(diffUnnormalized)) {
                 diff = this._diffParagraphs(htmlOld, htmlNew, lineLength, firstLineNumber);
