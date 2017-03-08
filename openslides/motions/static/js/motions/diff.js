@@ -901,7 +901,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         };
 
         this._diffParagraphs = function(oldText, newText, lineLength, firstLineNumber) {
-            var oldTextWithBreaks, newTextWithBreaks;
+            var oldTextWithBreaks, newTextWithBreaks, currChild;
 
             if (lineLength !== undefined) {
                 oldTextWithBreaks = lineNumberingService.insertLineNumbersNode(oldText, lineLength, null, firstLineNumber);
@@ -914,10 +914,26 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             }
 
             for (var i = 0; i < oldTextWithBreaks.childNodes.length; i++) {
-                this.addCSSClass(oldTextWithBreaks.childNodes[i], 'delete');
+                currChild = oldTextWithBreaks.childNodes[i];
+                if (currChild.nodeType === TEXT_NODE) {
+                    var wrapDel = document.createElement('del');
+                    oldTextWithBreaks.insertBefore(wrapDel, currChild);
+                    oldTextWithBreaks.removeChild(currChild);
+                    wrapDel.appendChild(currChild);
+                } else {
+                    this.addCSSClass(currChild, 'delete');
+                }
             }
             for (i = 0; i < newTextWithBreaks.childNodes.length; i++) {
-                this.addCSSClass(newTextWithBreaks.childNodes[i], 'insert');
+                currChild = newTextWithBreaks.childNodes[i];
+                if (currChild.nodeType === TEXT_NODE) {
+                    var wrapIns = document.createElement('ins');
+                    newTextWithBreaks.insertBefore(wrapIns, currChild);
+                    newTextWithBreaks.removeChild(currChild);
+                    wrapIns.appendChild(currChild);
+                } else {
+                    this.addCSSClass(currChild, 'insert');
+                }
             }
 
             var mergedFragment = document.createDocumentFragment(),

@@ -326,12 +326,28 @@ describe('linenumbering', function () {
       expect(diff).toBe('The <strong>brown</strong> spotted fox <del>jum</del><ins>lea</ins>ped over the rolling log.');
     });
 
-    it('merges multiple inserts and deletes', function () {
+    it('too many changes result in separate paragraphs', function () {
+      var before = "<p>Test1 Test2 Test3 Test4 Test5 Test9</p>",
+          after = "<p>Test1 Test6 Test7 Test8 Test9</p>";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('<P class="delete">Test1 Test2 Test3 Test4 Test5 Test9</P><P class="insert">Test1 Test6 Test7 Test8 Test9</P>');
+    });
+
+    it('too many changes result in separate paragraphs - special case with un-wrapped text', function () {
       var before = "Test1 Test2 Test3 Test4 Test5 Test9",
           after = "Test1 Test6 Test7 Test8 Test9";
       var diff = diffService.diff(before, after);
 
-      expect(diff).toBe('Test1 <del>Test2 Test3 Test4 Test5 </del><ins>Test6 Test7 Test8 </ins>Test9');
+      expect(diff).toBe('<DEL>Test1 Test2 Test3 Test4 Test5 Test9</DEL><INS>Test1 Test6 Test7 Test8 Test9</INS>');
+    });
+
+    it('merges multiple inserts and deletes', function () {
+      var before = "Some additional text to circumvent the threshold Test1 Test2 Test3 Test4 Test5 Test9",
+          after = "Some additional text to circumvent the threshold Test1 Test6 Test7 Test8 Test9";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('Some additional text to circumvent the threshold Test1 <del>Test2 Test3 Test4 Test5 </del><ins>Test6 Test7 Test8 </ins>Test9');
     });
 
     it('detects insertions and deletions in a word (1)', function () {
@@ -362,12 +378,16 @@ describe('linenumbering', function () {
       var before = "<P>liebliche Stimme, aber deine Stimme ist rauh; du bist der Wolf.' Da gieng der </P>",
           after = "<p>liebliche Stimme, aber deine Stimme ist rauh; du bist der Wolf.'</p>\
 \
-<p>Der Wolf hatte danach richtig schlechte laune, trank eine Flasche Rum,</p>\
+<p>Der Wolf hatte danach richtig schlechte laune, trank eine Flasche Rum,</p>\
 \
-<p>machte eine Weltreise und kam danach wieder um die Ziegen zu fressen. Da ging der</p>";
-      var diff = diffService.diff(before, after);
+<p>machte eine Weltreise und kam danach wieder um die Ziegen zu fressen. Da ging der</p>",
+      expected = "<P class=\"delete\">liebliche Stimme, aber deine Stimme ist rauh; du bist der Wolf.' Da gieng der </P>" +
+          "<P class=\"insert\">liebliche Stimme, aber deine Stimme ist rauh; du bist der Wolf.'</P>" +
+          "<P class=\"insert\">Der Wolf hatte danach richtig schlechte laune, trank eine Flasche Rum,</P>" +
+          "<P class=\"insert\">machte eine Weltreise und kam danach wieder um die Ziegen zu fressen. Da ging der</P>";
 
-      expect(diff).toBe("<p>liebliche Stimme, aber deine Stimme ist rauh; du bist der <del>Wolf.' </del><ins>Wolf.'</ins></p><p><ins>Der Wolf hatte danach richtig schlechte laune, trank eine Flasche Rum,</ins></p><p><ins>machte eine Weltreise und kam danach wieder um die Ziegen zu fressen. </ins>Da gi<del>e</del>ng der</p>");
+      var diff = diffService.diff(before, after);
+      expect(diff).toBe(expected);
     });
 
     it('handles completely deleted paragraphs', function () {
