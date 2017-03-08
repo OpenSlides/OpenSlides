@@ -23,7 +23,7 @@
     {{ alert.msg }}
   </div>
 
-  <div ui-tree="treeOptions" id="tree-root">
+  <div ui-tree="treeOptions" id="tree-root" data-empty-placeholder-enabled="false">
     <ol ui-tree-nodes ng-model="items">
       <li ng-repeat="item in items" ui-tree-node ng-include="'nodes_renderer.html'">
     </ol>
