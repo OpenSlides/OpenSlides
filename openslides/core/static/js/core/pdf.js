@@ -116,10 +116,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
 
 
 .factory('PdfMakeDocumentProvider', [
-    'gettextCatalog',
     'Config',
     'PDFLayout',
-    function(gettextCatalog, Config, PDFLayout) {
+    function(Config, PDFLayout) {
         /**
          * Provides the global document
          * @constructor
@@ -783,9 +782,10 @@ angular.module('OpenSlidesApp.core.pdf', [])
 
 .factory('PdfCreate', [
     '$timeout',
+    'gettextCatalog',
     'FileSaver',
     'Messaging',
-    function ($timeout, FileSaver, Messaging) {
+    function ($timeout, gettextCatalog, FileSaver, Messaging) {
         var filenameMessageMap = {};
         var b64toBlob = function(b64Data) {
             var byteCharacters = atob(b64Data);
@@ -802,17 +802,17 @@ angular.module('OpenSlidesApp.core.pdf', [])
             switch (state) {
                 case 'info':
                     text = '<i class="fa fa-spinner fa-pulse fa-lg spacer-right"></i>' +
-                        '<translate>Generating PDF file ' + filename + ' ...</translate>';
+                        gettextCatalog.getString('Generating PDF file') + ' (' + filename + ') ...';
                     break;
                 case 'success':
                     text = '<i class="fa fa-check fa-lg spacer-right"></i>' +
-                        '<translate>PDF successfully generated.</translate>';
+                        gettextCatalog.getString('PDF successfully generated.');
                     timeout = 3000;
                     break;
                 case 'error':
                     text = '<i class="fa fa-exclamation-triangle fa-lg spacer-right"></i>' +
-                        '<translate>Error while generating PDF file</translate> ' + filename + ':' +
-                        '<span ng-if="pdf.errorMessage"><code>{{ pdf.errorMessage | translate }}</code></span>' ;
+                        gettextCatalog.getString('Error while generating PDF file') +
+                        ' (' + filename + '): <code>' + error + '</code>';
                     break;
             }
             $timeout(function () {

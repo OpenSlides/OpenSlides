@@ -475,7 +475,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                             {
                                 text: identifier,
                                 style: 'tableofcontent',
-                                width: 30
+                                width: 70
                             },
                             {
                                 text: motion.getTitle(),
@@ -495,21 +495,21 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
         // function to create the table of catergories (if any)
         var createTOCategories = function() {
-            if (Category.getAll().length > 0) {
+            if (Category.getAll().length > 1) {
                 var heading = {
                     text: gettextCatalog.getString("Categories"),
                     style: "heading2"
                 };
 
                 var toc = [];
-                angular.forEach(Category.getAll(), function(cat) {
+                angular.forEach(Category.filter({orderBy: 'prefix'}) , function(cat) {
                     toc.push(
                         {
                             columns: [
                                 {
                                     text: cat.prefix,
                                     style: 'tableofcontent',
-                                    width: 30
+                                    width: 50
                                 },
                                 {
                                     text: cat.name,
