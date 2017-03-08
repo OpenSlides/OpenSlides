@@ -760,17 +760,17 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         };
 
         this._tokenizeHtml = function (str) {
-            var splitArrayEntries = function (arr, by, prepend) {
+            var splitArrayEntriesEmbedSeparator = function (arr, by, prepend) {
                 var newArr = [];
                 for (var i = 0; i < arr.length; i++) {
-                    if (arr[i][0] == '<' && (by == " " || by == "\n")) {
+                    if (arr[i][0] === '<' && (by === " " || by === "\n")) {
                         // Don't split HTML tags
                         newArr.push(arr[i]);
                         continue;
                     }
 
                     var parts = arr[i].split(by);
-                    if (parts.length == 1) {
+                    if (parts.length === 1) {
                         newArr.push(arr[i]);
                     } else {
                         var j;
@@ -793,10 +793,29 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 }
                 return newArr;
             };
-            var arr = splitArrayEntries([str], '<', true);
-            arr = splitArrayEntries(arr, '>', false);
-            arr = splitArrayEntries(arr, " ", false);
-            arr = splitArrayEntries(arr, "\n", false);
+            var splitArrayEntriesSplitSeparator = function (arr, by) {
+                var newArr = [];
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i][0] === '<') {
+                        newArr.push(arr[i]);
+                        continue;
+                    }
+                    var parts = arr[i].split(by);
+                    for (var j = 0; j < parts.length; j++) {
+                        if (j > 0) {
+                            newArr.push(by);
+                        }
+                        newArr.push(parts[j]);
+                    }
+                }
+                return newArr;
+            };
+            var arr = splitArrayEntriesEmbedSeparator([str], '<', true);
+            arr = splitArrayEntriesEmbedSeparator(arr, '>', false);
+            arr = splitArrayEntriesSplitSeparator(arr, " ");
+            arr = splitArrayEntriesSplitSeparator(arr, ".");
+            arr = splitArrayEntriesEmbedSeparator(arr, "\n", false);
+
             return arr;
         };
 
@@ -890,6 +909,22 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 return true;
             }
 
+            // If other HTML tags are contained within INS/DEL (e.g. "<ins>Test</p></ins>"), let's better be cautious
+            // The "!!(found=...)"-construction is only used to make jshint happy :)
+            var findDel = /<del>(.*?)<\/del>/gi,
+                findIns = /<ins>(.*?)<\/ins>/gi,
+                found;
+            while (!!(found = findDel.exec(html))) {
+                if (found[1].match(/<[^>]*>/)) {
+                    return true;
+                }
+            }
+            while (!!(found = findIns.exec(html))) {
+                if (found[1].match(/<[^>]*>/)) {
+                    return true;
+                }
+            }
+
             // If too much of the text is changed, it's better to separate the old from new new version,
             // otherwise the result looks strange
             if (this._calcChangeRatio(html) > 0.66) {
@@ -901,7 +936,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         };
 
         this._diffParagraphs = function(oldText, newText, lineLength, firstLineNumber) {
-            var oldTextWithBreaks, newTextWithBreaks;
+            var oldTextWithBreaks, newTextWithBreaks, currChild;
 
             if (lineLength !== undefined) {
                 oldTextWithBreaks = lineNumberingService.insertLineNumbersNode(oldText, lineLength, null, firstLineNumber);
@@ -914,10 +949,26 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             }
 
             for (var i = 0; i < oldTextWithBreaks.childNodes.length; i++) {
-                this.addCSSClass(oldTextWithBreaks.childNodes[i], 'delete');
+                currChild = oldTextWithBreaks.childNodes[i];
+                if (currChild.nodeType === TEXT_NODE) {
+                    var wrapDel = document.createElement('del');
+                    oldTextWithBreaks.insertBefore(wrapDel, currChild);
+                    oldTextWithBreaks.removeChild(currChild);
+                    wrapDel.appendChild(currChild);
+                } else {
+                    this.addCSSClass(currChild, 'delete');
+                }
             }
             for (i = 0; i < newTextWithBreaks.childNodes.length; i++) {
-                this.addCSSClass(newTextWithBreaks.childNodes[i], 'insert');
+                currChild = newTextWithBreaks.childNodes[i];
+                if (currChild.nodeType === TEXT_NODE) {
+                    var wrapIns = document.createElement('ins');
+                    newTextWithBreaks.insertBefore(wrapIns, currChild);
+                    newTextWithBreaks.removeChild(currChild);
+                    wrapIns.appendChild(currChild);
+                } else {
+                    this.addCSSClass(currChild, 'insert');
+                }
             }
 
             var mergedFragment = document.createDocumentFragment(),
@@ -994,7 +1045,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
                 return out;
             });
-            
+
             var diff;
             if (this._diffDetectBrokenDiffHtml(diffUnnormalized)) {
                 diff = this._diffParagraphs(htmlOld, htmlNew, lineLength, firstLineNumber);

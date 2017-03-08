@@ -241,6 +241,13 @@ describe('linenumbering', function () {
       expect(outHtml).toBe('<p>' + noMarkup(1) + '<span>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie ' + brMarkup(2) + '<strong>consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan ' + brMarkup(3) + 'et iusto odio</strong>.</span></p>');
       expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
     });
+
+    it('does not fail in a weird case', function () {
+      var inHtml = "<ins>seid Noch</ins><p></p><p><ins>Test 123</ins></p>";
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+      expect(outHtml).toBe(noMarkup(1) + '<ins>seid Noch</ins><p></p><p>' + noMarkup(2) + '<ins>Test 123</ins></p>');
+      expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
+    });
   });
 
   describe('line numbering in regard to the inline diff', function() {

@@ -343,6 +343,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
             this._currentInlineOffset = 0;
             this._prependLineNumberToFirstText = true;
+            this._ignoreNextRegularLineNumber = false;
 
             return node;
         };
@@ -353,8 +354,11 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             }
             if (this._isIgnoredByLineNumbering(node)) {
                 if (this._currentInlineOffset === 0) {
-                    node.insertBefore(this._createLineNumber(), node.firstChild);
-                    this._ignoreNextRegularLineNumber = true;
+                    var lineNumberNode = this._createLineNumber();
+                    if (lineNumberNode) {
+                        node.insertBefore(lineNumberNode, node.firstChild);
+                        this._ignoreNextRegularLineNumber = true;
+                    }
                 }
                 return node;
             } else if (this._isInlineElement(node)) {
