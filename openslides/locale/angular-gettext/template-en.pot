@@ -41,7 +41,7 @@ msgstr ""
 msgid "--- Set phase ---"
 msgstr ""
 
-#: core/static/js/core/site.js:1670
+#: core/static/js/core/site.js:1676
 msgid "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based presentation and assembly system for visualizing and controlling agenda, motions and elections of an assembly."
 msgstr ""
 
@@ -143,7 +143,7 @@ msgstr ""
 #: agenda/static/js/agenda/site.js:279
 #: agenda/static/js/agenda/site.js:31
 #: agenda/static/js/agenda/site.js:49
-#: agenda/static/js/agenda/site.js:702
+#: agenda/static/js/agenda/site.js:703
 #: agenda/static/templates/agenda/item-detail.html:6
 #: agenda/static/templates/agenda/item-list.html:35
 #: agenda/static/templates/agenda/item-list.html:61
@@ -165,7 +165,7 @@ msgstr ""
 msgid "All your changes are saved immediately. Changes you make are only effective once you (or the users concerned) reload the page."
 msgstr ""
 
-#: core/static/js/core/site.js:1685
+#: core/static/js/core/site.js:1691
 msgid "Allow access for anonymous guest users"
 msgstr ""
 
@@ -199,7 +199,7 @@ msgstr ""
 msgid "Apply text for new amendments"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:705
+#: agenda/static/js/agenda/site.js:706
 msgid "Arabic"
 msgstr ""
 
@@ -328,7 +328,7 @@ msgstr ""
 msgid "Back to users overview"
 msgstr ""
 
-#: core/static/js/core/site.js:1696
+#: core/static/js/core/site.js:1702
 msgid "Background color of projector header and footer"
 msgstr ""
 
@@ -348,7 +348,7 @@ msgstr ""
 msgid "Begin next speech"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:707
+#: agenda/static/js/agenda/site.js:708
 msgid "Begin of event"
 msgstr ""
 
@@ -504,7 +504,7 @@ msgstr ""
 #: motions/static/templates/motions/change-recommendation-form.html:13
 #: motions/static/templates/motions/motion-block-form.html:13
 #: motions/static/templates/motions/motion-form.html:19
-#: motions/static/templates/motions/motionpoll-form.html:18
+#: motions/static/templates/motions/motion-poll-form.html:18
 #: topics/static/templates/topics/topic-form.html:13
 #: users/static/templates/users/group-edit.html:24
 #: users/static/templates/users/profile-password-form.html:12
@@ -613,7 +613,7 @@ msgstr ""
 msgid "Closed items"
 msgstr ""
 
-#: core/static/js/core/site.js:1700
+#: core/static/js/core/site.js:1706
 msgid "Color for blanked projector"
 msgstr ""
 
@@ -655,7 +655,7 @@ msgstr ""
 msgid "Confirm new password"
 msgstr ""
 
-#: core/static/js/core/base.js:490
+#: core/static/js/core/base.js:491
 msgid "Connection lost. You are not connected to the server anymore."
 msgstr ""
 
@@ -673,16 +673,16 @@ msgstr ""
 msgid "Copy and paste your topic titles in this textbox. Keep each item in a single line."
 msgstr ""
 
-#: core/static/js/core/base.js:917
+#: core/static/js/core/base.js:919
 msgid "Countdown"
 msgstr ""
 
-#: core/static/js/core/base.js:918
+#: core/static/js/core/base.js:920
 #: core/static/templates/core/projector-controls.html:142
 msgid "Countdowns"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:713
+#: agenda/static/js/agenda/site.js:714
 msgid "Couple countdown with the list of speakers"
 msgstr ""
 
@@ -694,7 +694,7 @@ msgstr ""
 msgid "Creation date"
 msgstr ""
 
-#: core/static/js/core/site.js:1694
+#: core/static/js/core/site.js:1700
 msgid "Current browser language"
 msgstr ""
 
@@ -740,7 +740,7 @@ msgstr ""
 msgid "Default method to check whether a motion has reached the required majority."
 msgstr ""
 
-#: core/static/js/core/site.js:1704
+#: core/static/js/core/site.js:1710
 msgid "Default projector"
 msgstr ""
 
@@ -1007,7 +1007,7 @@ msgstr ""
 msgid "End speech"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:712
+#: agenda/static/js/agenda/site.js:713
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 
@@ -1015,7 +1015,7 @@ msgstr ""
 msgid "Enter votes"
 msgstr ""
 
-#: core/static/js/core/base.js:473
+#: core/static/js/core/base.js:474
 msgid "Error"
 msgstr ""
 
@@ -1044,23 +1044,23 @@ msgstr ""
 msgid "Estimated end:"
 msgstr ""
 
-#: core/static/js/core/site.js:1675
+#: core/static/js/core/site.js:1681
 msgid "Event"
 msgstr ""
 
-#: core/static/js/core/site.js:1677
+#: core/static/js/core/site.js:1683
 msgid "Event date"
 msgstr ""
 
-#: core/static/js/core/site.js:1678
+#: core/static/js/core/site.js:1684
 msgid "Event location"
 msgstr ""
 
-#: core/static/js/core/site.js:1669
+#: core/static/js/core/site.js:1675
 msgid "Event name"
 msgstr ""
 
-#: core/static/js/core/site.js:1679
+#: core/static/js/core/site.js:1685
 msgid "Event organizer"
 msgstr ""
 
@@ -1129,11 +1129,11 @@ msgstr ""
 msgid "Follow recommendations for all motions"
 msgstr ""
 
-#: core/static/js/core/site.js:1697
+#: core/static/js/core/site.js:1703
 msgid "Font color of projector header and footer"
 msgstr ""
 
-#: core/static/js/core/site.js:1698
+#: core/static/js/core/site.js:1704
 msgid "Font color of projector headline"
 msgstr ""
 
@@ -1145,15 +1145,15 @@ msgstr ""
 msgid "From Line"
 msgstr ""
 
-#: core/static/js/core/site.js:1683
+#: core/static/js/core/site.js:1689
 msgid "Front page text"
 msgstr ""
 
-#: core/static/js/core/site.js:1681
+#: core/static/js/core/site.js:1687
 msgid "Front page title"
 msgstr ""
 
-#: core/static/js/core/site.js:1674
+#: core/static/js/core/site.js:1680
 #: motions/static/js/motions/site.js:1954
 #: users/static/js/users/site.js:1235
 #: users/static/js/users/site.js:1550
@@ -1328,7 +1328,7 @@ msgstr ""
 msgid "Inline editing"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:708
+#: agenda/static/js/agenda/site.js:709
 msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr ""
 
@@ -1364,7 +1364,7 @@ msgstr ""
 msgid "Invalid ballots"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:703
+#: agenda/static/js/agenda/site.js:704
 msgid "Invalid input."
 msgstr ""
 
@@ -1463,7 +1463,7 @@ msgstr ""
 msgid "Leave empty for autodetection of the separator."
 msgstr ""
 
-#: core/static/js/core/site.js:1680
+#: core/static/js/core/site.js:1686
 #: core/static/js/core/site.js:344
 #: index.html:250
 #: legalnotice.html:3
@@ -1497,7 +1497,7 @@ msgstr ""
 msgid "List of participants"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:710
+#: agenda/static/js/agenda/site.js:711
 #: agenda/static/templates/agenda/item-detail.html:21
 #: agenda/static/templates/agenda/item-detail.html:47
 #: agenda/static/templates/agenda/item-list.html:284
@@ -1511,7 +1511,7 @@ msgstr ""
 msgid "List of speakers"
 msgstr ""
 
-#: core/static/js/core/site.js:1701
+#: core/static/js/core/site.js:1707
 msgid "List of speakers overlay"
 msgstr ""
 
@@ -1541,13 +1541,13 @@ msgstr ""
 msgid "Manage the current list of speakers"
 msgstr ""
 
-#: core/static/js/core/base.js:866
+#: core/static/js/core/base.js:868
 #: core/static/js/core/site.js:421
 #: core/static/templates/core/projector-controls.html:235
 msgid "Message"
 msgstr ""
 
-#: core/static/js/core/base.js:867
+#: core/static/js/core/base.js:869
 #: core/static/templates/core/projector-controls.html:229
 msgid "Messages"
 msgstr ""
@@ -1623,7 +1623,7 @@ msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:8
 #: assignments/static/templates/assignments/assignment-list.html:6
-#: core/static/js/core/site.js:990
+#: core/static/js/core/site.js:996
 #: core/static/templates/core/manage-projectors.html:8
 #: core/static/templates/core/tag-list.html:10
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:6
@@ -1849,7 +1849,7 @@ msgstr ""
 msgid "Number of candidates"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:709
+#: agenda/static/js/agenda/site.js:710
 msgid "Number of last speakers to be shown on the projector"
 msgstr ""
 
@@ -1868,11 +1868,11 @@ msgstr ""
 msgid "Numbering"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:700
+#: agenda/static/js/agenda/site.js:701
 msgid "Numbering prefix for agenda items"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:704
+#: agenda/static/js/agenda/site.js:705
 msgid "Numeral system for agenda items"
 msgstr ""
 
@@ -2043,7 +2043,7 @@ msgstr ""
 msgid "Preamble text for PDF document (all elections)"
 msgstr ""
 
-#: core/static/js/core/site.js:1699
+#: core/static/js/core/site.js:1705
 msgid "Predefined seconds of new countdowns"
 msgstr ""
 
@@ -2063,7 +2063,7 @@ msgstr ""
 msgid "Present"
 msgstr ""
 
-#: core/static/js/core/site.js:1668
+#: core/static/js/core/site.js:1674
 msgid "Presentation and assembly system"
 msgstr ""
 
@@ -2133,7 +2133,7 @@ msgstr ""
 #: agenda/static/templates/agenda/item-list.html:229
 #: agenda/static/templates/agenda/item-list.html:27
 #: core/static/js/core/projector.js:327
-#: core/static/js/core/site.js:1692
+#: core/static/js/core/site.js:1698
 #: index.html:190
 #: index.html:218
 #: index.html:231
@@ -2145,7 +2145,7 @@ msgstr ""
 msgid "Projector"
 msgstr ""
 
-#: core/static/js/core/site.js:1693
+#: core/static/js/core/site.js:1699
 msgid "Projector language"
 msgstr ""
 
@@ -2330,7 +2330,7 @@ msgstr ""
 msgid "Revert"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:706
+#: agenda/static/js/agenda/site.js:707
 msgid "Roman"
 msgstr ""
 
@@ -2351,7 +2351,7 @@ msgstr ""
 #: motions/static/templates/motions/motion-detail/comments.html:35
 #: motions/static/templates/motions/motion-detail/view-original.html:9
 #: motions/static/templates/motions/motion-form.html:16
-#: motions/static/templates/motions/motionpoll-form.html:15
+#: motions/static/templates/motions/motion-poll-form.html:15
 #: topics/static/templates/topics/topic-form.html:10
 #: users/static/templates/users/group-edit.html:21
 #: users/static/templates/users/profile-password-form.html:9
@@ -2469,7 +2469,7 @@ msgstr ""
 msgid "Separator"
 msgstr ""
 
-#: core/static/js/core/site.js:1687
+#: core/static/js/core/site.js:1693
 msgid "Separator used for all csv exports and examples"
 msgstr ""
 
@@ -2552,7 +2552,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: core/static/js/core/site.js:1676
+#: core/static/js/core/site.js:1682
 msgid "Short description of event"
 msgstr ""
 
@@ -2577,19 +2577,19 @@ msgstr ""
 msgid "Show internal items"
 msgstr ""
 
-#: core/static/js/core/site.js:1688
+#: core/static/js/core/site.js:1694
 msgid "Show logo on projector"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:711
+#: agenda/static/js/agenda/site.js:712
 msgid "Show orange countdown in the last x seconds of speaking time"
 msgstr ""
 
-#: core/static/js/core/site.js:1686
+#: core/static/js/core/site.js:1692
 msgid "Show this text on the login page"
 msgstr ""
 
-#: core/static/js/core/site.js:1695
+#: core/static/js/core/site.js:1701
 msgid "Show title and description of event on projector"
 msgstr ""
 
@@ -2628,7 +2628,7 @@ msgid "Sort name of participants by"
 msgstr ""
 
 #: assignments/static/templates/assignments/assignmentpoll-form.html:8
-#: motions/static/templates/motions/motionpoll-form.html:8
+#: motions/static/templates/motions/motion-poll-form.html:8
 msgid "Special values"
 msgstr ""
 
@@ -2783,7 +2783,7 @@ msgstr ""
 msgid "The assembly may decide:"
 msgstr ""
 
-#: core/static/js/core/site.js:1471
+#: core/static/js/core/site.js:1477
 msgid "The delete was successful."
 msgstr ""
 
@@ -2795,7 +2795,7 @@ msgstr ""
 msgid "The maximum number of characters per line. Relevant when line numbering is enabled. Min: 40"
 msgstr ""
 
-#: core/static/js/core/base.js:476
+#: core/static/js/core/base.js:477
 msgid "The server didn't respond."
 msgstr ""
 
@@ -2819,7 +2819,7 @@ msgstr ""
 msgid "This is the last active version."
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:701
+#: agenda/static/js/agenda/site.js:702
 msgid "This prefix will be set if you run the automatic agenda numbering."
 msgstr ""
 
@@ -2968,7 +2968,7 @@ msgstr ""
 #. ballot of a motion
 #: motions/static/js/motions/pdf.js:107
 #: motions/static/templates/motions/motion-detail.html:296
-#: motions/static/templates/motions/motionpoll-form.html:1
+#: motions/static/templates/motions/motion-poll-form.html:1
 #: motions/static/templates/motions/slide_motion.html:25
 msgid "Vote"
 msgstr ""
@@ -3028,7 +3028,7 @@ msgstr ""
 msgid "Waiting for results ..."
 msgstr ""
 
-#: core/static/js/core/site.js:1682
+#: core/static/js/core/site.js:1688
 #: users/static/js/users/site.js:1556
 msgid "Welcome to OpenSlides"
 msgstr ""
@@ -3082,7 +3082,7 @@ msgstr ""
 msgid "You are not allowed to lock yourself out of the configuration!"
 msgstr ""
 
-#: core/static/js/core/site.js:1689
+#: core/static/js/core/site.js:1695
 msgid "You can replace the logo. Just copy a file to \"static/img/logo-projector.png\" in your OpenSlides data path."
 msgstr ""
 
@@ -3102,7 +3102,7 @@ msgstr ""
 msgid "Zoom out"
 msgstr ""
 
-#: agenda/static/js/agenda/site.js:714
+#: agenda/static/js/agenda/site.js:715
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
 msgstr ""
 
@@ -3110,7 +3110,7 @@ msgstr ""
 msgid "[Place for your welcome and help text.]"
 msgstr ""
 
-#: core/static/js/core/site.js:1684
+#: core/static/js/core/site.js:1690
 msgid "[Space for your welcome text.]"
 msgstr ""
 
@@ -3214,7 +3214,7 @@ msgstr ""
 #: assignments/static/js/assignments/base.js:44
 #: assignments/static/templates/assignments/assignmentpoll-form.html:9
 #: motions/static/js/motions/base.js:142
-#: motions/static/templates/motions/motionpoll-form.html:9
+#: motions/static/templates/motions/motion-poll-form.html:9
 msgid "majority"
 msgstr ""
 
@@ -3358,7 +3358,7 @@ msgstr ""
 #: assignments/static/js/assignments/base.js:47
 #: assignments/static/templates/assignments/assignmentpoll-form.html:10
 #: motions/static/js/motions/base.js:145
-#: motions/static/templates/motions/motionpoll-form.html:10
+#: motions/static/templates/motions/motion-poll-form.html:10
 msgid "undocumented"
 msgstr ""
 
