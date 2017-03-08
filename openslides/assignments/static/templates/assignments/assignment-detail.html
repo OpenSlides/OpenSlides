@@ -82,7 +82,8 @@
 
   <div ng-if="assignment.phase != 2">
     <h3 translate>Candidates</h3>
-    <div ui-tree="treeOptions" ng-if="assignment.assignment_related_users.length">
+    <div ui-tree="treeOptions" ng-if="assignment.assignment_related_users.length"
+        data-empty-placeholder-enabled="false">
       <ol ui-tree-nodes="" ng-model="relatedUsersSorted">
         <li ui-tree-node ng-repeat="related_user in assignment.assignment_related_users | orderBy:'weight'">
           <i ui-tree-handle="" class="fa fa-arrows-v spacer-right" os-perms="assignments.can_manage"></i>
