@@ -65,7 +65,7 @@ class ListOfSpeakersSlide(ProjectorElement):
         output = super().get_collection_elements_required_for_this(collection_element, config_entry)
         # Full update if item changes because then we may have new
         # candidates and therefor need new users.
-        if collection_element == CollectionElement.from_values(Item.get_collection_string(), config_entry.get('id')):
+        if collection_element.collection_string == Item.get_collection_string() and collection_element.id == config_entry.get('id'):
             output.extend(self.get_requirements_as_collection_elements(config_entry))
         return output
 
