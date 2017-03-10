@@ -4,7 +4,7 @@
         <translate>Summary of change recommendations</translate>:
     </strong>
 
-    <button class="btn btn-sm btn-default pull-right"
+    <button os-perms="motions.can_manage" class="btn btn-sm btn-default pull-right"
         uib-tooltip="{{ 'Note: You have to reject all change recommendations if the plenum does not follow the recommendation.' | translate }}"
         ng-click="viewChangeRecommendations.rejectAll(motion)">
       <i class="fa fa-thumbs-down"></i>
