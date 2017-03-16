@@ -232,7 +232,9 @@
                     <span ng-if="poll.pollmethod == 'yna' || poll.pollmethod == 'yn'">{{ vote.label }}:</span>
                     {{ vote.value }} {{ vote.percentStr }}
                     <div ng-if="vote.percentNumber >= 0">
-                      <uib-progressbar value="vote.percentNumber" type="success"></uib-progressbar>
+                      <uib-progressbar ng-if="$index == 0" value="vote.percentNumber" type="success"></uib-progressbar>
+                      <uib-progressbar ng-if="$index == 1" value="vote.percentNumber" type="danger"></uib-progressbar>
+                      <uib-progressbar ng-if="$index == 2" value="vote.percentNumber" type="warning"></uib-progressbar>
                     </div>
                   </div>
                 </div>
