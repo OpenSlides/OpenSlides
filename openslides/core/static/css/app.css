@@ -558,6 +558,7 @@ img {
     max-width: 150px;
     left: -45px;
     margin-top: -8px !important;
+    z-index: 10000;
 }
 /* special hack for firefox only (see issue#2967) */
 @-moz-document url-prefix() {
@@ -722,14 +723,12 @@ img {
 
 /** Projector sidebar column **/
 
-#content .col2 { /*TODO*/
+#content .col2 {
     float: right;
     position: relative;
     display: inline-flex;
     z-index: 3;
     margin-bottom: 20px;
-    top: 0px;
-    right: 0px;
 }
 
 #sidebar-xs {

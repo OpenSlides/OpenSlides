@@ -176,35 +176,6 @@
 <div id="content" ng-controller="ProjectorSidebarCtrl">
   <div class="containerOS">
 
-    <!-- col2 -->
-    <div id="sidebar" class="col2" os-perms="core.can_see_projector" ng-class="{
-        'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
-        'sidebar-min': !isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
-        'sidebar-none': !operator.hasPerms('core.can_see_projector') }"
-        ng-init="initSidebar()">
-      <!-- sidebar maximized -->
-      <div class="projector_full" ng-if="isProjectorSidebar">
-        <div class="title" ng-click="showProjectorSidebar(false)">
-          <div class="name">
-            <i class="fa fa-video-camera"></i>
-            <translate>Projector</translate>
-          </div>
-          <div class="icon">
-            <i class="fa fa-angle-right"></i>
-          </div>
-        </div>
-        <div ng-include src="'static/templates/core/projector-controls.html'"></div>
-      </div>
-      <!-- sidebar minimized -->
-      <div class="projector_min" ng-if="!isProjectorSidebar">
-        <div class="icon">
-          <a href="" ng-click="showProjectorSidebar(true)">
-            <i class="fa fa-video-camera"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-
     <!-- col2 sidebar-xs (for small devices)-->
     <div id="sidebar-xs" class="col2" os-perms="core.can_see_projector" ng-class="{
         'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
@@ -250,6 +221,36 @@
           <a ui-sref="legalnotice" translate>Legal notice</a>
         </div><!--end footer-->
     </div>
+
+    <!-- col2 normal sidebar -->
+    <div id="sidebar" class="col2" os-perms="core.can_see_projector" ng-class="{
+        'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-min': !isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
+        'sidebar-none': !operator.hasPerms('core.can_see_projector') }"
+        ng-init="initSidebar()">
+      <!-- sidebar maximized -->
+      <div class="projector_full" ng-if="isProjectorSidebar">
+        <div class="title" ng-click="showProjectorSidebar(false)">
+          <div class="name">
+            <i class="fa fa-video-camera"></i>
+            <translate>Projector</translate>
+          </div>
+          <div class="icon">
+            <i class="fa fa-angle-right"></i>
+          </div>
+        </div>
+        <div ng-include src="'static/templates/core/projector-controls.html'"></div>
+      </div>
+      <!-- sidebar minimized -->
+      <div class="projector_min" ng-if="!isProjectorSidebar">
+        <div class="icon">
+          <a href="" ng-click="showProjectorSidebar(true)">
+            <i class="fa fa-video-camera"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
 
   </div><!--end content-container-->
 </div><!--end content-->
