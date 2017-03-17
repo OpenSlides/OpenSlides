@@ -154,7 +154,7 @@ body {
 .content {
     position: absolute;
     left: 50px;
-    top: 150px;
+    top: 100px;
     right: 50px;
     z-index: -1;
     line-height: 1.3em;

@@ -79,12 +79,9 @@
   <div><p>{{ config('motions_preamble') | translate }}</p></div><br>
 
   <!-- Text -->
-  <!-- <div ng-bind-html="motion.getTextWithLineBreaks(null, line, scroll) | trusted"
-    class="motion-text line-numbers-{{ config('motions_default_line_numbering') }}"></div> -->
-
   <!-- Original view -->
   <div ng-if="mode == 'original'">
-    <div id="view-original-inline-editor" ng-bind-html="motion.getTextWithLineBreaks(null, line, scroll) | trusted"
+    <div id="view-original-inline-editor" ng-bind-html="motion.getTextWithLineBreaks(null, line) | trusted"
       class="motion-text motion-text-original line-numbers-{{ config('motions_default_line_numbering') }}"
       contenteditable="false"></div>
   </div>
