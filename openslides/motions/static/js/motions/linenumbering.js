@@ -71,6 +71,32 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             return isLineNumber;
         };
 
+        this._getLineNumberNode = function(fragment, lineNumber) {
+            return fragment.querySelector('.os-line-number.line-number-' + lineNumber);
+        };
+
+        this._htmlToFragment = function(html) {
+            var fragment = document.createDocumentFragment(),
+                div = document.createElement('DIV');
+            div.innerHTML = html;
+            while (div.childElementCount) {
+                var child = div.childNodes[0];
+                div.removeChild(child);
+                fragment.appendChild(child);
+            }
+            return fragment;
+        };
+
+        this._fragmentToHtml = function(fragment) {
+            var div = document.createElement('DIV');
+            while (fragment.firstChild) {
+                var child = fragment.firstChild;
+                fragment.removeChild(child);
+                div.appendChild(child);
+            }
+            return div.innerHTML;
+        };
+
         this._createLineBreak = function () {
             var br = document.createElement('br');
             br.setAttribute('class', 'os-line-break');
@@ -413,6 +439,15 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             return this._insertLineNumbersToNode(root, lineLength, highlight);
         };
 
+        /**
+         *
+         * @param {string} html
+         * @param {number} lineLength
+         * @param {string} highlight - optional
+         * @param {function} callback
+         * @param {number} firstLine
+         * @returns {string}
+         */
         this.insertLineNumbers = function (html, lineLength, highlight, callback, firstLine) {
             var newHtml, newRoot;
 
@@ -438,11 +473,80 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             return newHtml;
         };
 
+        /**
+         * @param {string} html
+         * @returns {string}
+         */
         this.stripLineNumbers = function (html) {
             var root = document.createElement('div');
             root.innerHTML = html;
             this._stripLineNumbers(root);
             return root.innerHTML;
+        };
+
+        /**
+         * Traverses up the DOM tree until it finds a node with a nextSibling, then returns that sibling
+         *
+         * @param node
+         * @private
+         */
+        this._findNextAuntNode = function(node) {
+            if (node.nextSibling) {
+                return node.nextSibling;
+            } else if (node.parentNode) {
+                return this._findNextAuntNode(node.parentNode);
+            } else {
+                return null;
+            }
+        };
+
+        this._highlightUntilNextLine = function(lineNumberNode) {
+            var currentNode = lineNumberNode,
+                foundNextLineNumber = false;
+
+            do {
+                var wasHighlighted = false;
+                if (currentNode.nodeType === TEXT_NODE) {
+                    var node = document.createElement('span');
+                    node.setAttribute('class', 'highlight');
+                    node.innerHTML = currentNode.nodeValue;
+                    currentNode.parentNode.insertBefore(node, currentNode);
+                    currentNode.parentNode.removeChild(currentNode);
+                    currentNode = node;
+                    wasHighlighted = true;
+                } else {
+                    wasHighlighted = false;
+                }
+
+                if (currentNode.childNodes.length > 0 && !this._isOsLineNumberNode(currentNode) && !wasHighlighted) {
+                    currentNode = currentNode.childNodes[0];
+                } else if (currentNode.nextSibling) {
+                    currentNode = currentNode.nextSibling;
+                } else {
+                    currentNode = this._findNextAuntNode(currentNode);
+                }
+
+                if (this._isOsLineNumberNode(currentNode)) {
+                    foundNextLineNumber = true;
+                }
+            } while (!foundNextLineNumber && currentNode !== null);
+        };
+
+        /**
+         * @param {string} html
+         * @param {number} lineNumber
+         * @return {string}
+         */
+        this.highlightLine = function (html, lineNumber) {
+            var fragment = this._htmlToFragment(html),
+                lineNumberNode = this._getLineNumberNode(fragment, lineNumber);
+
+            if (lineNumberNode) {
+                this._highlightUntilNextLine(lineNumberNode);
+                html = this._fragmentToHtml(fragment);
+            }
+
+            return html;
         };
     }
 ]);

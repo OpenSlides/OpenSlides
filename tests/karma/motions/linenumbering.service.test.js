@@ -286,4 +286,42 @@ describe('linenumbering', function () {
       expect(outHtml).toBe("<ul>\n\n<li>" + noMarkup(1) + "Point 1</li>\n\n</ul>");
     });
   });
+
+  describe('line highlighting', function() {
+    it('highlights a simple line', function () {
+        var inHtml = lineNumberingService.insertLineNumbers("<span>Lorem ipsum dolorsit amet</span>", 5);
+        var highlighted = lineNumberingService.highlightLine(inHtml, 2);
+        expect(highlighted).toBe(noMarkup(1) + '<span>Lorem ' + brMarkup(2) + '<span class="highlight">ipsum </span>' + brMarkup(3) + 'dolor' + brMarkup(4) + 'sit ' + brMarkup(5) + 'amet</span>');
+    });
+
+    it('highlights a simple line with formattings', function () {
+        var inHtml = lineNumberingService.insertLineNumbers("<span>Lorem ipsum <strong>dolorsit amet Lorem</strong><em> ipsum dolorsit amet</em> Lorem ipsum dolorsit amet</span>", 20);
+        expect(inHtml).toBe(noMarkup(1) + '<span>Lorem ipsum <strong>dolorsit ' +
+            brMarkup(2) + 'amet Lorem</strong><em> ipsum ' +
+            brMarkup(3) + 'dolorsit amet</em> Lorem ' + brMarkup(4) + 'ipsum dolorsit amet</span>');
+
+        var highlighted = lineNumberingService.highlightLine(inHtml, 2);
+        expect(highlighted).toBe(noMarkup(1) + '<span>Lorem ipsum <strong>dolorsit ' +
+            brMarkup(2) + '<span class="highlight">amet Lorem</span></strong><em><span class="highlight"> ipsum </span>' +
+            brMarkup(3) + 'dolorsit amet</em> Lorem ' + brMarkup(4) + 'ipsum dolorsit amet</span>');
+    });
+
+    it('highlights the last line', function () {
+        var inHtml = lineNumberingService.insertLineNumbers("<span>Lorem ipsum dolorsit amet</span>", 5);
+        var highlighted = lineNumberingService.highlightLine(inHtml, 5);
+        expect(highlighted).toBe(noMarkup(1) + '<span>Lorem ' + brMarkup(2) + 'ipsum ' + brMarkup(3) + 'dolor' + brMarkup(4) + 'sit ' + brMarkup(5) + '<span class="highlight">amet</span></span>');
+    });
+
+    it('highlights the first line', function () {
+        var inHtml = lineNumberingService.insertLineNumbers("<span>Lorem ipsum dolorsit amet</span>", 5);
+        var highlighted = lineNumberingService.highlightLine(inHtml, 1);
+        expect(highlighted).toBe(noMarkup(1) + '<span><span class="highlight">Lorem </span>' + brMarkup(2) + 'ipsum ' + brMarkup(3) + 'dolor' + brMarkup(4) + 'sit ' + brMarkup(5) + 'amet</span>');
+    });
+
+    it('does not change the string if the line number is not found', function () {
+        var inHtml = lineNumberingService.insertLineNumbers("<span>Lorem ipsum dolorsit amet</span>", 5);
+        var highlighted = lineNumberingService.highlightLine(inHtml, 8);
+        expect(highlighted).toBe(noMarkup(1) + '<span>Lorem ' + brMarkup(2) + 'ipsum ' + brMarkup(3) + 'dolor' + brMarkup(4) + 'sit ' + brMarkup(5) + 'amet</span>');
+    });
+  });
 });

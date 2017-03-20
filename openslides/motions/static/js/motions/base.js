@@ -331,7 +331,7 @@ angular.module('OpenSlidesApp.motions', [
                             text = '';
                             for (var i = 0; i < changes.length; i++) {
                                 text += this.getTextBetweenChangeRecommendations(versionId, (i === 0 ? null : changes[i - 1]), changes[i], highlight);
-                                text += changes[i].getDiff(this, versionId);
+                                text += changes[i].getDiff(this, versionId, highlight);
                             }
                             text += this.getTextRemainderAfterLastChangeRecommendation(versionId, changes);
                             break;
@@ -740,7 +740,13 @@ angular.module('OpenSlidesApp.motions', [
                         oldText = data.outerContextStart + data.innerContextStart +
                             data.html + data.innerContextEnd + data.outerContextEnd;
 
-                    return diffService.diff(oldText, this.text, lineLength, this.line_from);
+                    var diff = diffService.diff(oldText, this.text, lineLength, this.line_from);
+
+                    if (highlight > 0) {
+                        diff = lineNumberingService.highlightLine(diff, highlight);
+                    }
+
+                    return diff;
                 },
                 getType: function(original_full_html) {
                     return this.type;
