@@ -887,17 +887,17 @@ angular.module('OpenSlidesApp.core.site', [
                 if ((scrollTop + marginTop + sidebarHeight) > (documentHeight - marginBottom)) {
                     // Stick to the bottom
                     var bottom = marginBottom + scrollTop + windowHeight - documentHeight;
-                    sidebar.css({'position': 'fixed', 'top': '', 'right': '30px', 'bottom': bottom});
+                    sidebar.css({'position': 'fixed', 'top': '', 'bottom': bottom});
                 } else if ((scrollTop + marginTop) > sidebarMinOffset) {
                     // scroll with the user
-                    sidebar.css({'position': 'fixed', 'top': marginTop, 'right': '30px', 'bottom': ''});
+                    sidebar.css({'position': 'fixed', 'top': marginTop, 'bottom': ''});
                 } else {
                     // Stick to the top
-                    sidebar.css({'position': 'relative', 'top': 0, 'right': 0, 'bottom': ''});
+                    sidebar.css({'position': 'relative', 'top': 0, 'bottom': ''});
                 }
             } else {
                 // Stick to the top, if the sidebar is larger then the content
-                sidebar.css({'position': 'relative', 'top': 0, 'right': 0, 'bottom': ''});
+                sidebar.css({'position': 'relative', 'top': 0, 'bottom': ''});
             }
         };
 
