@@ -756,7 +756,8 @@ angular.module('OpenSlidesApp.motions', [
                         oldText = data.outerContextStart + data.innerContextStart +
                             data.html + data.innerContextEnd + data.outerContextEnd;
 
-                    var diff = diffService.diff(oldText, this.text, lineLength, this.line_from);
+                    oldText = lineNumberingService.insertLineNumbers(oldText, lineLength, null, null, this.line_from);
+                    var diff = diffService.diff(oldText, this.text);
 
                     if (highlight > 0) {
                         diff = lineNumberingService.highlightLine(diff, highlight);

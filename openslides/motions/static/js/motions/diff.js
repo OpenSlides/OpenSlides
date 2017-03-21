@@ -816,15 +816,14 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             arr = splitArrayEntriesSplitSeparator(arr, ".");
             arr = splitArrayEntriesEmbedSeparator(arr, "\n", false);
 
-            return arr;
-        };
-
-        this._outputcharcode = function (pre, str) {
-            var arr = [];
-            for (var i = 0; i < str.length; i++) {
-                arr.push(str.charCodeAt(i));
+            var arrWithoutEmptes = [];
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i] !== '') {
+                    arrWithoutEmptes.push(arr[i]);
+                }
             }
-            console.log(str, pre, arr);
+
+            return arrWithoutEmptes;
         };
 
         /**
@@ -842,13 +841,11 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
             if (out.n.length === 0) {
                 for (i = 0; i < out.o.length; i++) {
-                    //this._outputcharcode('del', out.o[i]);
                     str += '<del>' + out.o[i] + "</del>";
                 }
             } else {
                 if (out.n[0].text === undefined) {
                     for (var k = 0; k < out.o.length && out.o[k].text === undefined; k++) {
-                        //this._outputcharcode('del', out.o[k]);
                         str += '<del>' + out.o[k] + "</del>";
                     }
                 }
@@ -862,7 +859,6 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                         var pre = "";
 
                         for (var j = out.n[i].row + 1; j < out.o.length && out.o[j].text === undefined; j++) {
-                            //this._outputcharcode('del', out.o[j]);
                             pre += '<del>' + out.o[j] + "</del>";
                         }
                         str += out.n[i].text + pre;
@@ -1005,9 +1001,32 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 return cached;
             }
 
-            var str = this._diffString(htmlOld, htmlNew),
+            // This fixes a really strange artefact with the diff that occures under the following conditions:
+            // - The first tag of the two texts is identical, e.g. <p>
+            // - A change happens in the next tag, e.g. inserted text
+            // - The first tag occures a second time in the text, e.g. another <p>
+            // In this condition, the first tag is deleted first and inserted afterwards again
+            // Test case: "does not break when an insertion followes a beginning tag occuring twice"
+            // The work around inserts to tags at the beginning and removes them afterwards again,
+            // to make sure this situation does not happen (and uses invisible pseudo-tags in case something goes wrong)
+            var workaroundPrepend = "<DUMMY><PREPEND>";
+
+            var str = this._diffString(workaroundPrepend + htmlOld, workaroundPrepend + htmlNew),
                 diffUnnormalized = str.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/ {2,}/g, ' ')
                 .replace(/<\/ins><ins>/gi, '').replace(/<\/del><del>/gi, '');
+
+            diffUnnormalized = diffUnnormalized.replace(
+                /<ins>(\s*)(<p( [^>]*)?>[\s\S]*?<\/p>)(\s*)<\/ins>/gim,
+                function(match, whiteBefore, inner, tagInner, whiteAfter) {
+                    return whiteBefore +
+                        inner
+                        .replace(/<p( [^>]*)?>/gi, function(match) {
+                            return match + "<ins>";
+                        })
+                        .replace(/<\/p>/gi, "</ins></p>") +
+                        whiteAfter;
+                }
+            );
 
             diffUnnormalized = diffUnnormalized.replace(/<del>([a-z0-9,_-]* ?)<\/del><ins>([a-z0-9,_-]* ?)<\/ins>/gi, function (found, oldText, newText) {
                 var foundDiff = false, commonStart = '', commonEnd = '',
@@ -1045,6 +1064,17 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
                 return out;
             });
+
+            diffUnnormalized = diffUnnormalized.replace(
+                /<del>((<BR CLASS="OS-LINE-BREAK">)?<span[^>]+OS-LINE-NUMBER.+?)<\/del>/gi,
+                function(found,tag) {
+                    return tag.toLowerCase().replace(/> <\/span/gi, ">&nbsp;</span");
+                }
+            );
+
+            if (diffUnnormalized.substr(0, workaroundPrepend.length) === workaroundPrepend) {
+                diffUnnormalized = diffUnnormalized.substring(workaroundPrepend.length);
+            }
 
             var diff;
             if (this._diffDetectBrokenDiffHtml(diffUnnormalized)) {
