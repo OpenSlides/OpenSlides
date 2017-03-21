@@ -531,14 +531,36 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "h4":
                                 case "h5":
                                 case "h6":
-                                    currentParagraph = create("text");
-                                    currentParagraph.marginBottom = 4;
-                                    currentParagraph.marginTop = 10;
-                                    /* falls through */
-                                case "a":
-                                    currentParagraph = parseChildren(alreadyConverted, element, currentParagraph, styles.concat(elementStyles[nodeName]), diff_mode);
-                                    alreadyConverted.push(currentParagraph);
+                                    // Special case quick fix to handle the dirty HTML format*/
+                                    // see following issue: https://github.com/OpenSlides/OpenSlides/issues/3025
+                                    if (lineNumberMode === "outside") {
+                                        var HeaderOutsideLineNumber = {
+                                            width: 20,
+                                            text: element.childNodes[0].getAttribute("data-line-number"),
+                                            color: "gray",
+                                            fontSize: 8,
+                                            margin: [0, 2, 0, 0]
+                                        };
+                                        var HeaderOutsideLineNumberText = {
+                                            text: element.childNodes[1].textContent,
+                                        };
+                                        ComputeStyle(HeaderOutsideLineNumberText, elementStyles[nodeName]);
+                                        var HeaderOutsideLineNumberColumns = {
+                                            columns: [
+                                                HeaderOutsideLineNumber,
+                                                HeaderOutsideLineNumberText
+                                            ]
+                                        };
+                                        alreadyConverted.push(HeaderOutsideLineNumberColumns);
+                                    } else {
+                                        currentParagraph = create("text");
+                                        currentParagraph.marginBottom = 4;
+                                        currentParagraph.marginTop = 10;
+                                        currentParagraph = parseChildren(alreadyConverted, element, currentParagraph, styles.concat(elementStyles[nodeName]), diff_mode);
+                                        alreadyConverted.push(currentParagraph);
+                                    }
                                     break;
+                                case "a":
                                 case "b":
                                 case "strong":
                                 case "u":
