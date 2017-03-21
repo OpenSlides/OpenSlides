@@ -446,7 +446,11 @@ angular.module('OpenSlidesApp.motions', [
                      * - unsupport
                      * - change_state
                      * - reset_state
+                     * - change_comments
                      * - change_recommendation
+                     * - can_manage
+                     * - can_see_amendments
+                     * - can_create_amendments
                      *
                      *  NOTE: If you update this function please think about
                      *        server permissions, see motions/views.py.
@@ -469,8 +473,6 @@ angular.module('OpenSlidesApp.motions', [
                                     this.state.allow_submitter_edit
                                 )
                             );
-                        case 'quickedit':
-                            return operator.hasPerms('motions.can_manage');
                         case 'delete':
                             return operator.hasPerms('motions.can_manage');
                         case 'create_poll':
@@ -492,6 +494,8 @@ angular.module('OpenSlidesApp.motions', [
                             return operator.hasPerms('motions.can_manage');
                         case 'reset_state':
                             return operator.hasPerms('motions.can_manage');
+                        case 'change_comments':
+                            return operator.hasPerms('motions.can_see_and_manage_comments');
                         case 'change_recommendation':
                             return operator.hasPerms('motions.can_manage');
                         case 'can_manage':

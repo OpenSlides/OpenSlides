@@ -152,8 +152,8 @@ class MotionViewSet(ModelViewSet):
 
         # Check permissions.
         if (not has_perm(request.user, 'motions.can_manage') and
-            not (motion.is_submitter(request.user) and
-                 motion.state.allow_submitter_edit)):
+                not (motion.is_submitter(request.user) and motion.state.allow_submitter_edit) and
+                not has_perm(request.user, 'motions.can_see_and_manage_comments')):
             self.permission_denied(request)
 
         # Check permission to send only some data.
@@ -161,12 +161,16 @@ class MotionViewSet(ModelViewSet):
             # Remove fields that the user is not allowed to change.
             # The list() is required because we want to use del inside the loop.
             keys = list(request.data.keys())
-            whitelist = (
-                'title',
-                'text',
-                'reason',
+            whitelist = [
                 'comments',  # This is checked later.
-            )
+            ]
+            # Add title, text and reason to the whitelist only, if the user is the submitter.
+            if motion.is_submitter(request.user) and motion.state.allow_submitter_edit:
+                whitelist.extend((
+                    'title',
+                    'text',
+                    'reason',
+                ))
             for key in keys:
                 if key not in whitelist:
                     del request.data[key]
