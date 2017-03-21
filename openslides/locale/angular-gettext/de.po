@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
-"PO-Revision-Date: 2017-03-21 13:07+0000\n"
+"PO-Revision-Date: 2017-03-21 13:52+0000\n"
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/openslides/openslides/language/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2454,7 +2454,7 @@ msgstr "Feldtrenner"
 
 #: core/static/js/core/site.js:1687
 msgid "Separator used for all csv exports and examples"
-msgstr "Feldtrenner für alle CSV-Exports und -Beispiele."
+msgstr "Feldtrenner für alle CSV-Exporte und -Beispiele"
 
 #: motions/static/js/motions/docx.js:77 motions/static/js/motions/pdf.js:37
 msgid "Sequential number"
