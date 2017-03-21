@@ -1224,7 +1224,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // open poll update dialog
         $scope.openPollDialog = function (poll, voteNumber) {
             ngDialog.open({
-                template: 'static/templates/motions/motionpoll-form.html',
+                template: 'static/templates/motions/motion-poll-form.html',
                 controller: 'MotionPollUpdateCtrl',
                 className: 'ngdialog-theme-default',
                 closeByEscape: false,

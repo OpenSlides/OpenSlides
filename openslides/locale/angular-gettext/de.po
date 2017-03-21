@@ -159,12 +159,12 @@ msgstr "Tagesordnung"
 #: assignments/static/js/assignments/site.js:909
 #: motions/static/js/motions/site.js:2003
 msgid "All casted ballots"
-msgstr "Alle abgegebenen Stimmzettel"
+msgstr "Alle abgegebenen Stimmen"
 
 #: assignments/static/js/assignments/site.js:908
 #: motions/static/js/motions/site.js:2002
 msgid "All valid ballots"
-msgstr "Alle gültigen Stimmzettel"
+msgstr "Alle gültigen Stimmen"
 
 #: users/static/templates/users/group-list.html:19
 msgid ""
@@ -538,7 +538,7 @@ msgstr "Kandidaten/innen"
 #: motions/static/js/motions/site.js:607
 #: motions/static/templates/motions/motion-detail.html:383
 msgid "Casted ballots"
-msgstr "Abgegebene Stimmzettel"
+msgstr "Abgegebene Stimmen"
 
 #: motions/static/js/motions/docx.js:43 motions/static/js/motions/pdf.js:500
 #: motions/static/js/motions/site.js:102
@@ -1370,7 +1370,7 @@ msgstr "Interne Einträge"
 #: motions/static/js/motions/site.js:599
 #: motions/static/templates/motions/motion-detail.html:374
 msgid "Invalid ballots"
-msgstr "Ungültige Stimmzettel"
+msgstr "Ungültige Stimmen"
 
 #: agenda/static/js/agenda/site.js:703
 msgid "Invalid input."
@@ -2743,7 +2743,7 @@ msgstr "Text in Zeile %from%"
 
 #: motions/static/js/motions/site.js:1999
 msgid "The 100 % base of a voting result consists of"
-msgstr "Die 100%-Basis eines Abstimmungsergebnisses besteht aus"
+msgstr "Die 100%-Basis eines Abstimmergebnisses besteht aus"
 
 #: assignments/static/js/assignments/site.js:901
 msgid "The 100-%-base of an election result consists of"
@@ -2918,7 +2918,7 @@ msgstr "Benutzer ohne einer speziell zugewiesenen Gruppe bekommen die Rechte von
 #: motions/static/js/motions/site.js:591
 #: motions/static/templates/motions/motion-detail.html:365
 msgid "Valid ballots"
-msgstr "Gültige Stimmzettel"
+msgstr "Gültige Stimmen"
 
 #: motions/static/js/motions/pdf.js:129
 msgid "Valid votes"
@@ -2963,7 +2963,7 @@ msgstr "Abstimmung und Stimmzettel"
 #: motions/static/templates/motions/motion-detail.html:292
 #: motions/static/templates/motions/slide_motion.html:21
 msgid "Voting result"
-msgstr "Abstimmungsergebnis"
+msgstr "Abstimmergebnis"
 
 #: users/static/js/users/site.js:1568
 msgid "WEP"
