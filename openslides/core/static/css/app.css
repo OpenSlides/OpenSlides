@@ -657,12 +657,15 @@ img {
     border: solid 1px #eee;
     border-radius: 3px;
     margin-bottom: 0;
-    margin-top: -25px;
+    margin-top: -24px;
     padding-top: 0;
     padding-right: 155px;
 }
+.diff-box-transparent {
+    margin-top: -24px;
+}
 .motion-text-with-diffs .original-text {
-    min-height: 30px; // Spacer between .diff-box, in case .original-text is empty
+    min-height: 30px; /* Spacer between .diff-box, in case .original-text is empty */
 }
 .motion-text-with-diffs .original-text ul:last-child {
     padding-bottom: 16px;

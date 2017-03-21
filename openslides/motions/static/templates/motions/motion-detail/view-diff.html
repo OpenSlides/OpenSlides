@@ -6,7 +6,8 @@
             <div class="motion-text original-text line-numbers-{{ lineNumberMode }}"
                  ng-bind-html="motion.getTextBetweenChangeRecommendations(version, changes[$index - 1], change, highlight) | trusted"></div>
 
-            <div class="diff-box diff-box-{{ change.id }} clearfix">
+            <div ng-class="motion.isAllowed('can_manage') ? 'diff-box' : 'diff-box-transparent'"
+                class="diff-box-{{ change.id }} clearfix">
                 <div class="action-row" ng-if="motion.isAllowed('can_manage')">
                     <div class="btn-group" data-toggle="buttons">
                         <label class="btn btn-sm btn-default" ng-class="{active: !change.rejected}"
