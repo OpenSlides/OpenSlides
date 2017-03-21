@@ -561,9 +561,6 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     }
                                     break;
                                 case "a":
-                                    currentParagraph = parseChildren(alreadyConverted, element, currentParagraph, styles.concat(elementStyles[nodeName]), diff_mode);
-                                    alreadyConverted.push(currentParagraph);
-                                    break;
                                 case "b":
                                 case "strong":
                                 case "u":
