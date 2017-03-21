@@ -2918,7 +2918,7 @@ msgstr "Benutzer ohne einer speziell zugewiesenen Gruppe bekommen die Rechte von
 #: motions/static/js/motions/site.js:591
 #: motions/static/templates/motions/motion-detail.html:365
 msgid "Valid ballots"
-msgstr "Gültige Stimmmen"
+msgstr "Gültige Stimmen"
 
 #: motions/static/js/motions/pdf.js:129
 msgid "Valid votes"

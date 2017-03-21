@@ -39,7 +39,6 @@ class MotionsAppConfig(AppConfig):
         router.register(self.get_model('Workflow').get_collection_string(), WorkflowViewSet)
         router.register(self.get_model('MotionChangeRecommendation').get_collection_string(),
                         MotionChangeRecommendationViewSet)
-        #router.register('motions/motion-poll', MotionPollViewSet)
         router.register(self.get_model('MotionPoll').get_collection_string(), MotionPollViewSet)
 
     def get_startup_elements(self):
