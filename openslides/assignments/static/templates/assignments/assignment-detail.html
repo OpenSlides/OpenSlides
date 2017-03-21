@@ -15,7 +15,7 @@
       <projector-button model="assignment", default-projector-id="defaultProjectorId">
       </projector-button>
       <!-- edit -->
-      <a os-perms="assignments.can_manage" ng-click="openDialog(assignment)"
+      <a os-perms="assignments.can_manage" ng-click="openDialog()"
           class="btn btn-default btn-sm"
           title="{{ 'Edit' | translate}}">
         <i class="fa fa-pencil"></i>
@@ -127,7 +127,7 @@
     <i class="fa fa-bar-chart fa-lg"></i>
     <translate>New ballot</translate>
   </button>
-  <uib-tabset ng-if="assignment.polls.length > 0" class="spacer ballot-tabs" active="activeTab">
+  <uib-tabset ng-if="assignment.polls.length > 0" class="spacer ballot-tabs" active="$parent.activeTab">
     <uib-tab ng-repeat="poll in assignment.polls | orderBy:'id'"
         index="$index" heading="{{ 'Ballot' | translate }} {{ $index + 1 }}">
       <div ng-controller="AssignmentPollDetailCtrl">
