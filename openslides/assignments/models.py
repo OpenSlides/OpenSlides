@@ -283,11 +283,12 @@ class Assignment(RESTModelMixin, models.Model):
         # TODO: Try to do this in a bulk create
         for candidate in self.candidates:
             try:
-                Speaker.objects.add(candidate, self.agenda_item)
+                Speaker.objects.add(candidate, self.agenda_item, skip_autoupdate=True)
             except OpenSlidesError:
                 # The Speaker is already on the list. Do nothing.
                 # TODO: Find a smart way not to catch the error concerning AnonymousUser.
                 pass
+        inform_changed_data(self.agenda_item)
 
         return poll
 

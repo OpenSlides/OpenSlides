@@ -331,7 +331,7 @@ class SpeakerManager(models.Manager):
     """
     Manager for Speaker model. Provides a customized add method.
     """
-    def add(self, user, item):
+    def add(self, user, item, skip_autoupdate=False):
         """
         Customized manager method to prevent anonymous users to be on the
         list of speakers and that someone is twice on one list (off coming
@@ -345,7 +345,9 @@ class SpeakerManager(models.Manager):
                 _('An anonymous user can not be on lists of speakers.'))
         weight = (self.filter(item=item).aggregate(
             models.Max('weight'))['weight__max'] or 0)
-        return self.create(item=item, user=user, weight=weight + 1)
+        speaker = self.model(item=item, user=user, weight=weight + 1)
+        speaker.save(force_insert=True, skip_autoupdate=skip_autoupdate)
+        return speaker
 
 
 class Speaker(RESTModelMixin, models.Model):
