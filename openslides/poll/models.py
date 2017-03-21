@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext as _
 
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.models import MinMaxIntegerField
 
 
@@ -131,7 +132,8 @@ class BasePoll(models.Model):
         for option_data in options_data:
             option = self.get_option_class()(**option_data)
             option.poll = self
-            option.save()
+            option.save(skip_autoupdate=True)
+        inform_changed_data(self.get_assignment())
 
     def get_options(self):
         """
