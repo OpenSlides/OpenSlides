@@ -33,7 +33,7 @@
       <label translate>Participant number</label>
         {{ user.number }}
       <label translate>About me</label>
-        <div ng-bind-html="user.about_me"></div>
+        <div ng-bind-html="user.about_me | trusted"></div>
     </fieldset>
 
     <fieldset os-perms="users.can_manage">
