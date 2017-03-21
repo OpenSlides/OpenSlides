@@ -57,7 +57,7 @@
             </a>
           </li>
           <!-- CSV export -->
-          <li>
+          <li os-perms="motions.can_manage">
             <a href="" id="downloadLinkCSV"
               ng-click="csvExport()">
               <i class="fa fa-file-text-o"></i>
@@ -65,7 +65,7 @@
             </a>
           </li>
           <!-- DOCX export -->
-          <li>
+          <li os-perms="motions.can_manage">
             <a href="" ng-click="docxExport()">
               <i class="fa fa-file-word-o"></i>
               DOCX
