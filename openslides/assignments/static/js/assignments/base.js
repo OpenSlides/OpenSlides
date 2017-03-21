@@ -26,7 +26,7 @@ angular.module('OpenSlidesApp.assignments', [])
                         config = Config.get('assignments_poll_100_percent_base').value;
 
                     var base = this.poll.getPercentBase(config);
-                    if (typeof base === 'object') {
+                    if (typeof base === 'object' && base !== null) {
                         // this.poll.pollmethod === 'yna'
                         base = base[this.id];
                     }
@@ -96,7 +96,7 @@ angular.module('OpenSlidesApp.assignments', [])
                     var isReached;
                     var config = Config.get('assignments_poll_100_percent_base').value;
                     var base = this.poll.getPercentBase(config);
-                    if (typeof base === 'object') {
+                    if (typeof base === 'object' && base !== null) {
                         // this.poll.pollmethod === 'yna'
                         base = base[this.id];
                     }
