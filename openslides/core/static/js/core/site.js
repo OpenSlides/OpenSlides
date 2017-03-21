@@ -13,7 +13,6 @@ angular.module('OpenSlidesApp.core.site', [
     'formly',
     'formlyBootstrap',
     'localytics.directives',
-    'ngBootbox',
     'ngDialog',
     'ngFileSaver',
     'ngMessages',

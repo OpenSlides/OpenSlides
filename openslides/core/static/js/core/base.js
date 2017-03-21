@@ -7,6 +7,7 @@ angular.module('OpenSlidesApp.core', [
     'js-data',
     'gettext',
     'ngAnimate',
+    'ngBootbox',
     'ngSanitize',  // TODO: only use this in functions that need it.
     'ui.bootstrap',
     'ui.bootstrap.datetimepicker',
@@ -151,7 +152,8 @@ angular.module('OpenSlidesApp.core', [
     'gettext',
     'gettextCatalog',
     'OpenSlidesPlugins',
-    function (gettext, gettextCatalog, OpenSlidesPlugins) {
+    '$ngBootbox',
+    function (gettext, gettextCatalog, OpenSlidesPlugins, $ngBootbox) {
         return {
             // get all available languages
             getLanguages: function () {
@@ -194,8 +196,17 @@ angular.module('OpenSlidesApp.core', [
                     if (language.code == lang) {
                         language.selected = true;
                         gettextCatalog.setCurrentLanguage(lang);
+                        // Plugins
                         if (lang != 'en') {
-                            gettextCatalog.loadRemote("static/i18n/" + lang + ".json");
+                            gettextCatalog.loadRemote("static/i18n/" + lang + ".json").then(function (success) {
+                                // translate ng-bootbox directives when the translations are available.
+                                $ngBootbox.addLocale(lang, {
+                                    OK: gettextCatalog.getString('OK'),
+                                    CANCEL: gettextCatalog.getString('Cancel'),
+                                    CONFIRM: gettextCatalog.getString('OK'), // Yes, 'OK' is the original string.
+                                });
+                                $ngBootbox.setLocale(lang);
+                            });
                             // load language files from plugins
                             angular.forEach(plugins, function (plugin) {
                                 if (plugin.languages.indexOf(lang) != -1) {
