@@ -482,4 +482,18 @@ describe('linenumbering', function () {
       );
     });
   });
+
+  describe('addCSSClassToFirstTag function', function () {
+    it('works with plain tags', function () {
+        var strIn = "<ol start='2'><li>",
+            inserted = diffService.addCSSClassToFirstTag(strIn, "newClass");
+        expect(inserted).toBe("<ol start='2' class=\"newClass\"><li>")
+    });
+
+    it('works with tags already having classes', function () {
+        var strIn = "<ol start='2' class='my-old-class'><li>",
+            inserted = diffService.addCSSClassToFirstTag(strIn, "newClass");
+        expect(inserted).toBe("<ol start='2' class=\"my-old-class newClass\"><li>")
+    });
+  })
 });
