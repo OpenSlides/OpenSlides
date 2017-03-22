@@ -499,6 +499,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                         ParseElement = function(alreadyConverted, element, currentParagraph, styles, diff_mode) {
                             styles = styles || [];
                             if (element.getAttribute) {
+                                styles = [];
                                 var nodeStyle = element.getAttribute("style");
                                 if (nodeStyle) {
                                     nodeStyle.split(";").forEach(function(nodeStyle) {
