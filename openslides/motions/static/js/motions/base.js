@@ -408,6 +408,18 @@ angular.module('OpenSlidesApp.motions', [
                     if (!foundSomething && motion.category && motion.category.name.match(new RegExp(searchquery, 'i'))) {
                         foundSomething = true;
                     }
+
+                    // search for change recommendation
+                    if (!foundSomething) {
+                        var recommendations = MotionChangeRecommendation.filter({
+                            where: {motion_version_id: this.active_version}
+                        });
+                        foundSomething = _.some(recommendations, function(recommendation) {
+                            if (recommendation.text.match(new RegExp(searchquery, 'i'))) {
+                                return true;
+                            }
+                        });
+                    }
                     return foundSomething;
                 },
                 getChangeRecommendations: function (versionId, order) {
