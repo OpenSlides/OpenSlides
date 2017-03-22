@@ -179,7 +179,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 if ($scope.viewChangeRecommendations.mode == "diff") {
                     var columnLineNumbers = [];
                     var columnChangeType = [];
-                    angular.forEach($scope.change_recommendations, function(change) {
+                    angular.forEach(_.orderBy($scope.change_recommendations, ['line_from']), function(change) {
                         // line numbers column
                         var line;
                         if (change.line_from >= change.line_to - 1) {
