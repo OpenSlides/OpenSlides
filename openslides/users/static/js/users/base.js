@@ -51,6 +51,9 @@ angular.module('OpenSlidesApp.users', [])
                     } else {
                         name += [firstName, lastName].join(' ');
                     }
+                    if (name.trim() === '') {
+                        name = this.username;
+                    }
                     if (title !== '') {
                         name = title + ' ' + name;
                     }
