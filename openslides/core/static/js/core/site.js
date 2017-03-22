@@ -771,6 +771,12 @@ angular.module('OpenSlidesApp.core.site', [
                             encoding: $scope.encoding,
                             header: false, // we do not want to have dicts in result
                             complete: function (csv) {
+                                if (csv.data.length) {
+                                    csv.meta.fields = csv.data[0];
+                                }
+                                else {
+                                    csv.meta.fields = [];
+                                }
                                 csv.data = csv.data.splice(1); // do not interpret the header as data
                                 $scope.$apply(function () {
                                     if (csv.meta.delimiter) {

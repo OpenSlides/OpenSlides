@@ -588,7 +588,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     key: 'votesvalid',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Valid ballots'),
+                        label: gettextCatalog.getString('Valid votes'),
                         type: 'number'
                     }
                 },
@@ -596,7 +596,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     key: 'votesinvalid',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Invalid ballots'),
+                        label: gettextCatalog.getString('Invalid votes'),
                         type: 'number'
                     }
                 },
@@ -604,7 +604,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     key: 'votescast',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Casted ballots'),
+                        label: gettextCatalog.getString('Votes cast'),
                         type: 'number'
                     }
                 }];
@@ -1224,7 +1224,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // open poll update dialog
         $scope.openPollDialog = function (poll, voteNumber) {
             ngDialog.open({
-                template: 'static/templates/motions/motionpoll-form.html',
+                template: 'static/templates/motions/motion-poll-form.html',
                 controller: 'MotionPollUpdateCtrl',
                 className: 'ngdialog-theme-default',
                 closeByEscape: false,

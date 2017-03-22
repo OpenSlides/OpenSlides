@@ -69,7 +69,7 @@ angular.module('OpenSlidesApp.motions', [
     'MajorityMethods',
     function (DS, gettextCatalog, Config, MajorityMethods) {
         return DS.defineResource({
-            name: 'motions/motionpoll',
+            name: 'motions/motion-poll',
             relations: {
                 belongsTo: {
                     'motions/motion': {
@@ -629,7 +629,7 @@ angular.module('OpenSlidesApp.motions', [
                             localKeys: 'supporters_id',
                         }
                     ],
-                    'motions/motionpoll': {
+                    'motions/motion-poll': {
                         localField: 'polls',
                         foreignKey: 'motion_id',
                     }
