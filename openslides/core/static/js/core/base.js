@@ -819,11 +819,15 @@ angular.module('OpenSlidesApp.core', [
                                 id: value.id,
                             };
                         } else if (
-                            value.name != 'agenda/item-list' &&
-                            value.name != 'core/clock' &&
-                            value.name != 'core/countdown' &&
-                            value.name != 'core/projector-message' &&
-                            value.name != 'agenda/current-list-of-speakers' ) {
+                            // TODO:
+                            // Find generic solution for whitelist in getFormOrStateForCurrentSlide
+                            // see https://github.com/OpenSlides/OpenSlides/issues/3130
+                            value.name === 'topics/topic' ||
+                            value.name === 'motions/motion' ||
+                            value.name === 'motions/motion-block' ||
+                            value.name === 'assignments/assignment' ||
+                            value.name === 'mediafiles/mediafile' ||
+                            value.name === 'users/user') {
                                 return_dict = {
                                     form: EditForm.fromCollectionString(value.name),
                                     id: value.id,

@@ -399,8 +399,8 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
         """
         Customized view endpoint to delete a motion poll.
         """
-        result = super().destroy(*args, **kwargs)
         poll = self.get_object()
+        result = super().destroy(*args, **kwargs)
         poll.motion.write_log([ugettext_noop('Vote deleted')], self.request.user)
         return result
 
