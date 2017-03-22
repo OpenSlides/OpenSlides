@@ -676,6 +676,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     alreadyConverted.push(stackDiv);
                                     break;
                                 case "p":
+                                    var pObjectToPush; //determine what to push later
                                     currentParagraph = create("text");
                                     currentParagraph.marginTop = 8;
                                     currentParagraph.lineHeight = 1.25;
@@ -683,7 +684,28 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     stackP.stack.push(currentParagraph);
                                     ComputeStyle(stackP, styles);
                                     currentParagraph = parseChildren(stackP.stack, element, currentParagraph, [], diff_mode);
-                                    alreadyConverted.push(stackP);
+                                    pObjectToPush = stackP; //usually we want to push stackP
+                                    if (lineNumberMode === "outside") {
+                                        if (element.childNodes.length > 0) { //if we hit = 0, the code would fail
+                                            var pChildTagName = element.childNodes[0].tagName;
+                                            if (pChildTagName === "INS" || pChildTagName === undefined) { //the desired case
+                                                var pLineNumberPlaceholder = {
+                                                    width: 20,
+                                                    text: "",
+                                                    fontSize: 8,
+                                                    margin: [0, 2, 0, 0]
+                                                };
+                                                var pLineNumberPlaceholderCol = {
+                                                    columns: [
+                                                        pLineNumberPlaceholder,
+                                                        stackP
+                                                    ]
+                                                };
+                                                pObjectToPush = pLineNumberPlaceholderCol; //overwrite the object to push
+                                            }
+                                        }
+                                    }
+                                    alreadyConverted.push(pObjectToPush);
                                     break;
                                 case "img":
                                     // TODO: need a proper way to calculate the space
