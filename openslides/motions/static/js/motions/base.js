@@ -260,8 +260,9 @@ angular.module('OpenSlidesApp.motions', [
 
                     var data = diffService.extractRangeByLineNumbers(html, line_from, line_to);
 
-                    html = data.outerContextStart + data.innerContextStart + data.html +
-                        data.innerContextEnd + data.outerContextEnd;
+                    // Add "merge-before"-css-class if the first line begins in the middle of a paragraph. Used for PDF.
+                    html = diffService.addCSSClassToFirstTag(data.outerContextStart + data.innerContextStart, "merge-before") +
+                        data.html + data.innerContextEnd + data.outerContextEnd;
                     html = lineNumberingService.insertLineNumbers(html, lineLength, highlight, null, line_from);
 
                     return html;
@@ -280,9 +281,9 @@ angular.module('OpenSlidesApp.motions', [
                     var data = diffService.extractRangeByLineNumbers(html, maxLine, null);
 
                     if (data.html !== '') {
-                        html = data.outerContextStart + data.innerContextStart +
-                            data.html +
-                            data.innerContextEnd + data.outerContextEnd;
+                        // Add "merge-before"-css-class if the first line begins in the middle of a paragraph. Used for PDF.
+                        html = diffService.addCSSClassToFirstTag(data.outerContextStart + data.innerContextStart, "merge-before") +
+                            data.html + data.innerContextEnd + data.outerContextEnd;
                         html = lineNumberingService.insertLineNumbers(html, lineLength, highlight, null, maxLine);
                     } else {
                         // Prevents empty lines at the end of the motion
@@ -761,6 +762,12 @@ angular.module('OpenSlidesApp.motions', [
 
                     if (highlight > 0) {
                         diff = lineNumberingService.highlightLine(diff, highlight);
+                    }
+
+                    var origBeginning = data.outerContextStart + data.innerContextStart;
+                    if (diff.toLowerCase().indexOf(origBeginning.toLowerCase()) === 0) {
+                        // Add "merge-before"-css-class if the first line begins in the middle of a paragraph. Used for PDF.
+                        diff = diffService.addCSSClassToFirstTag(origBeginning, "merge-before") + diff.substring(origBeginning.length);
                     }
 
                     return diff;

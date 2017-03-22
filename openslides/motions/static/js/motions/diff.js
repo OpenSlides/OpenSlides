@@ -983,6 +983,18 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             return this._serializeDom(mergedFragment);
         };
 
+        this.addCSSClassToFirstTag = function (html, className) {
+            return html.replace(/<[a-z][^>]*>/i, function (match) {
+                if (match.match(/class=["'][a-z0-9 _-]*["']/i)) {
+                    return match.replace(/class=["']([a-z0-9 _-]*)["']/i, function (match2, previousClasses) {
+                        return "class=\"" + previousClasses + " " + className + "\"";
+                    });
+                } else {
+                    return match.substring(0, match.length - 1) + " class=\"" + className + "\">";
+                }
+            });
+        };
+
         /**
          * This function calculates the diff between two strings and tries to fix problems with the resulting HTML.
          * If lineLength and firstLineNumber is given, line numbers will be returned es well

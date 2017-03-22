@@ -498,6 +498,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                          */
                         ParseElement = function(alreadyConverted, element, currentParagraph, styles, diff_mode) {
                             styles = styles || [];
+                            var classes = [];
                             if (element.getAttribute) {
                                 styles = [];
                                 var nodeStyle = element.getAttribute("style");
@@ -509,7 +510,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 }
                                 var nodeClass = element.getAttribute("class");
                                 if (nodeClass) {
-                                    nodeClass.split(" ").forEach(function(nodeClass) {
+                                    classes = nodeClass.toLowerCase().split(" ");
+                                    classes.forEach(function(nodeClass) {
                                         if (typeof(classStyles[nodeClass]) != 'undefined') {
                                             classStyles[nodeClass].forEach(function(style) {
                                                 styles.push(style);
@@ -679,7 +681,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "p":
                                     var pObjectToPush; //determine what to push later
                                     currentParagraph = create("text");
-                                    currentParagraph.marginTop = 8;
+                                    if (classes.indexOf("merge-before") > -1) {
+                                        currentParagraph.marginTop = 0;
+                                    } else {
+                                        currentParagraph.marginTop = 8;
+                                    }
                                     currentParagraph.lineHeight = 1.25;
                                     var stackP = create("stack");
                                     stackP.stack.push(currentParagraph);
