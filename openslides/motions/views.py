@@ -22,6 +22,7 @@ from ..utils.rest_api import (
     ValidationError,
     detail_route,
 )
+from ..utils.transaction import LockedAtomicTransaction
 from ..utils.views import APIView
 from .access_permissions import (
     CategoryAccessPermissions,
@@ -284,33 +285,34 @@ class MotionViewSet(ModelViewSet):
         Send PUT {'state': <state_id>} to set and just PUT {} to reset the
         state. Only managers can use this view.
         """
-        # Retrieve motion and state.
-        motion = self.get_object()
-        state = request.data.get('state')
+        with LockedAtomicTransaction(Motion):
+            # Retrieve motion and state.
+            motion = self.get_object()
+            state = request.data.get('state')
 
-        # Set or reset state.
-        if state is not None:
-            # Check data and set state.
-            try:
-                state_id = int(state)
-            except ValueError:
-                raise ValidationError({'detail': _('Invalid data. State must be an integer.')})
-            if state_id not in [item.id for item in motion.state.next_states.all()]:
-                raise ValidationError(
-                    {'detail': _('You can not set the state to %(state_id)d.') % {'state_id': state_id}})
-            motion.set_state(state_id)
-        else:
-            # Reset state.
-            motion.reset_state()
+            # Set or reset state.
+            if state is not None:
+                # Check data and set state.
+                try:
+                    state_id = int(state)
+                except ValueError:
+                    raise ValidationError({'detail': _('Invalid data. State must be an integer.')})
+                if state_id not in [item.id for item in motion.state.next_states.all()]:
+                    raise ValidationError(
+                        {'detail': _('You can not set the state to %(state_id)d.') % {'state_id': state_id}})
+                motion.set_state(state_id)
+            else:
+                # Reset state.
+                motion.reset_state()
 
-        # Save motion.
-        motion.save(update_fields=['state', 'identifier', 'identifier_number'])
-        message = _('The state of the motion was set to %s.') % motion.state.name
+            # Save motion.
+            motion.save(update_fields=['state', 'identifier', 'identifier_number'])
+            message = _('The state of the motion was set to %s.') % motion.state.name
 
-        # Write the log message and initiate response.
-        motion.write_log(
-            message_list=[ugettext_noop('State set to'), ' ', motion.state.name],
-            person=request.user)
+            # Write the log message and initiate response.
+            motion.write_log(
+                message_list=[ugettext_noop('State set to'), ' ', motion.state.name],
+                person=request.user)
         return Response({'detail': message})
 
     @detail_route(methods=['put'])
