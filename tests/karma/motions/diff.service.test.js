@@ -11,8 +11,9 @@ describe('linenumbering', function () {
         return '<span class="os-line-number line-number-' + no + '" data-line-number="' + no + '" contenteditable="false">&nbsp;</span>';
       };
 
-  beforeEach(inject(function (_diffService_) {
+  beforeEach(inject(function (_diffService_, _lineNumberingService_) {
     diffService = _diffService_;
+    lineNumberingService = _lineNumberingService_;
 
     baseHtml1 = '<p>' +
           noMarkup(1) + 'Line 1 ' + brMarkup(2) + 'Line 2 ' +
@@ -431,6 +432,54 @@ describe('linenumbering', function () {
       var diff = diffService.diff(before, after);
 
       expect(diff).toBe("<p>...so frißt er Euch alle mit Haut und Haar<ins> und Augen und Därme und alles</ins>.</p>");
+    });
+
+    it('does not break when an insertion followes a beginning tag occuring twice', function () {
+      var before = "<P>...so frißt er Euch alle mit Haut und Haar.</P>\n<p>Test</p>",
+          after = "<p>Einfügung 1 ...so frißt er Euch alle mit Haut und Haar und Augen und Därme und alles.</p>\n<p>Test</p>";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe("<p><ins>Einfügung 1 </ins>...so frißt er Euch alle mit Haut und Haar<ins> und Augen und Därme und alles</ins>.</p>\n<p>Test</p>");
+    });
+  });
+
+  describe('ignoring line numbers', function () {
+    it('works despite line numbers, part 1', function () {
+      var before = "<P>...so frißt er Euch alle mit Haut und Haar.</P>",
+          after = "<p>...so frißt er Euch alle mit Haut und Haar und Augen und Därme und alles.</p>";
+      before = lineNumberingService.insertLineNumbers(before, 15, null, null, 2);
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe("<p>" + noMarkup(2) + "...so frißt er " + brMarkup(3) + "Euch alle mit " + brMarkup(4) + "Haut und Haar<ins> und Augen und Därme und alles</ins>.</p>");
+    });
+
+    it('works with an inserted paragraph', function () {
+      var before = "<P>their grammar, their pronunciation and their most common words. Everyone realizes why a </P>",
+          after = "<P>their grammar, their pronunciation and their most common words. Everyone realizes why a</P>\n" +
+              "<P>NEW PARAGRAPH 2.</P>";
+
+      before = lineNumberingService.insertLineNumbers(before, 80, null, null, 2);
+      var diff = diffService.diff(before, after);
+      expect(diff).toBe("<p>" + noMarkup(2) + "their grammar, their pronunciation and their most common words. Everyone " + brMarkup(3) + "realizes why a</p>\n" +
+          "<p><ins>NEW PARAGRAPH 2.</ins></p>");
+    });
+
+    it('works with two inserted paragraphs', function () {
+      // Hint: If the last paragraph is a P again, the Diff still fails and falls back to paragraph-based diff
+      // This leaves room for future improvements
+      var before = "<P>their grammar, their pronunciation and their most common words. Everyone realizes why a </P>\n<div>Go on</div>",
+          after = "<P>their grammar, their pronunciation and their most common words. Everyone realizes why a</P>\n" +
+              "<P>NEW PARAGRAPH 1.</P>\n" +
+              "<P>NEW PARAGRAPH 2.</P>\n" +
+              "<div>Go on</div>";
+
+      before = lineNumberingService.insertLineNumbers(before, 80, null, null, 2);
+      var diff = diffService.diff(before, after);
+      expect(diff).toBe("<p>" + noMarkup(2) + "their grammar, their pronunciation and their most common words. Everyone " + brMarkup(3) + "realizes why a</p>\n" +
+          "<p><ins>NEW PARAGRAPH 1.</ins></p>\n" +
+          "<p><ins>NEW PARAGRAPH 2.</ins></p>\n" +
+          "<div>" + noMarkup(4) + "Go on</div>"
+      );
     });
   });
 });
