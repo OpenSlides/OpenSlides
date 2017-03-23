@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ImproperlyConfigured
-from django.db import models
+from django.db import IntegrityError, models, transaction
 from django.db.models import Max
 from django.utils import formats, timezone
 from django.utils.translation import ugettext as _
@@ -226,8 +226,21 @@ class Motion(RESTModelMixin, models.Model):
         if not self.identifier and isinstance(self.identifier, str):
             self.identifier = None
 
-        # Always skip autoupdate. Maybe we run it later in this method.
-        super(Motion, self).save(skip_autoupdate=True, *args, **kwargs)
+        # Try to save the motion until it succeeds with a correct identifier.
+        while True:
+            try:
+                # Always skip autoupdate. Maybe we run it later in this method.
+                with transaction.atomic():
+                    super(Motion, self).save(skip_autoupdate=True, *args, **kwargs)
+            except IntegrityError:
+                # Identifier is already used. Calculate a new one and try again.
+                self.identifier_number, self.identifier = self.increment_identifier_number(
+                    self.identifier_number,
+                    self._identifier_prefix,
+                )
+            else:
+                # Save was successful. End loop.
+                break
 
         if 'update_fields' in kwargs:
             # Do not save the version data if only some motion fields are updated.
@@ -340,17 +353,26 @@ class Motion(RESTModelMixin, models.Model):
                 prefix = '%s' % self.category.prefix
             else:
                 prefix = '%s ' % self.category.prefix
+        self._identifier_prefix = prefix
 
         # Calculate new identifier.
+        number, identifier = self.increment_identifier_number(number, prefix)
+
+        # Set identifier and identifier_number.
+        self.identifier = identifier
+        self.identifier_number = number
+
+    def increment_identifier_number(self, number, prefix):
+        """
+        Helper method. It increments the number until a free identifier
+        number is found. Returns new number and identifier.
+        """
         number += 1
         identifier = '%s%s' % (prefix, self.extend_identifier_number(number))
         while Motion.objects.filter(identifier=identifier).exists():
             number += 1
             identifier = '%s%s' % (prefix, self.extend_identifier_number(number))
-
-        # Set identifier and identifier_number.
-        self.identifier = identifier
-        self.identifier_number = number
+        return number, identifier
 
     def extend_identifier_number(self, number):
         """
