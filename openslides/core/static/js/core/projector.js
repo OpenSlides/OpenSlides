@@ -171,7 +171,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         var STEPS = 5;
         $scope.scroll = 0;
         var setScroll = function (scroll) {
-            scroll = 250 * scroll;
+            scroll = -250 * scroll;
             if ($scope.scrollTimeout) {
                 $timeout.cancel($scope.scrollTimeout);
             }
