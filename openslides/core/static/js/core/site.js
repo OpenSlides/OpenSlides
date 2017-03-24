@@ -1155,8 +1155,9 @@ angular.module('OpenSlidesApp.core.site', [
         }, function () {
             $scope.projectors = Projector.getAll();
             if (!$scope.active_projector) {
-                $scope.changeProjector($filter('orderBy')($scope.projectors, 'id')[0]);
+                $scope.active_projector = $filter('orderBy')($scope.projectors, 'id')[0];
             }
+            $scope.setIframeSize($scope.active_projector);
             if ($scope.projectors.length === 1) {
                 $scope.currentListOfSpeakersAsOverlay = true;
             }
@@ -1180,6 +1181,9 @@ angular.module('OpenSlidesApp.core.site', [
 
         $scope.changeProjector = function (projector) {
             $scope.active_projector = projector;
+            $scope.setIframeSize(projector);
+        };
+        $scope.setIframeSize = function (projector) {
             $scope.scale = 256.0 / projector.width;
             $scope.iframeHeight = $scope.scale * projector.height;
         };
