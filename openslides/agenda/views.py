@@ -135,9 +135,13 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                     except (ValueError, Speaker.DoesNotExist):
                         pass
                     else:
-                        speaker.delete()
+                        speaker.delete(skip_autoupdate=True)
                         deleted_speaker_name = speaker
                         deleted_speaker_count += 1
+                # send autoupdate if speakers are deleted
+                if deleted_speaker_count > 0:
+                    inform_changed_data(item)
+
                 if deleted_speaker_count > 1:
                     message = str(deleted_speaker_count) + ' ' + _('speakers have been removed from the list of speakers.')
                 elif deleted_speaker_count == 1:

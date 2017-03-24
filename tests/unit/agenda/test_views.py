@@ -52,9 +52,10 @@ class ItemViewSetManageSpeaker(TestCase):
         mock_queryset = mock_speaker.objects.filter.return_value.exclude.return_value
         mock_queryset.get.return_value.delete.assert_called_with()
 
+    @patch('openslides.agenda.views.inform_changed_data')
     @patch('openslides.agenda.views.has_perm')
     @patch('openslides.agenda.views.Speaker')
-    def test_remove_someone_else(self, mock_speaker, mock_has_perm):
+    def test_remove_someone_else(self, mock_speaker, mock_has_perm, mock_inform_changed_data):
         self.request.method = 'DELETE'
         self.request.user = 1
         self.request.data = {'speaker': '1'}
@@ -63,7 +64,8 @@ class ItemViewSetManageSpeaker(TestCase):
         self.view_instance.manage_speaker(self.request)
 
         mock_speaker.objects.get.assert_called_with(pk=1)
-        mock_speaker.objects.get.return_value.delete.assert_called_with()
+        mock_speaker.objects.get.return_value.delete.assert_called_with(skip_autoupdate=True)
+        mock_inform_changed_data.assert_called_with(self.mock_item)
 
 
 class ItemViewSetSpeak(TestCase):
