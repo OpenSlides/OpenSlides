@@ -164,13 +164,14 @@ class MotionViewSet(ModelViewSet):
             whitelist = [
                 'comments',  # This is checked later.
             ]
+            # TODO: Fix issue #3140 and revert the changes done here (PR #3141).
             # Add title, text and reason to the whitelist only, if the user is the submitter.
-            if motion.is_submitter(request.user) and motion.state.allow_submitter_edit:
-                whitelist.extend((
-                    'title',
-                    'text',
-                    'reason',
-                ))
+            # if motion.is_submitter(request.user) and motion.state.allow_submitter_edit:
+            whitelist.extend((
+                'title',
+                'text',
+                'reason',
+            ))
             for key in keys:
                 if key not in whitelist:
                     del request.data[key]
