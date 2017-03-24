@@ -1045,7 +1045,10 @@ angular.module('OpenSlidesApp.core', [
                 data = 0;
                 if (time.length >= minLength) {
                     for (var i = 0; i < minLength; i++) {
-                        data = data*60 + (+time[i]);
+                        data = data*60;
+                        if (!isNaN(+time[i])) {
+                            data += (+time[i]);
+                        }
                     }
                     if (!params.seconds) { // the last field was minutes (e.g. h:mm)
                         data *= 60;
