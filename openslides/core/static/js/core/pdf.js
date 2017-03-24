@@ -694,8 +694,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     pObjectToPush = stackP; //usually we want to push stackP
                                     if (lineNumberMode === "outside") {
                                         if (element.childNodes.length > 0) { //if we hit = 0, the code would fail
-                                            var pChildTagName = element.childNodes[0].tagName;
-                                            if (pChildTagName === "INS" || pChildTagName === undefined) { //the desired case
+                                            // add empty line number column for inline diff or pragraph diff mode
+                                            if (element.childNodes[0].tagName === "INS" ||
+                                                element.getAttribute("class") === "insert") {
                                                 var pLineNumberPlaceholder = {
                                                     width: 20,
                                                     text: "",
