@@ -277,7 +277,8 @@ class Assignment(RESTModelMixin, models.Model):
             options.append({
                 'candidate': related_user.user,
                 'weight': related_user.weight})
-        poll.set_options(options)
+        poll.set_options(options, skip_autoupdate=True)
+        inform_changed_data(self)
 
         # Add all candidates to list of speakers of related agenda item
         # TODO: Try to do this in a bulk create
