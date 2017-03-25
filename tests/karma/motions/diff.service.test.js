@@ -441,6 +441,20 @@ describe('linenumbering', function () {
 
       expect(diff).toBe("<p><ins>Einfügung 1 </ins>...so frißt er Euch alle mit Haut und Haar<ins> und Augen und Därme und alles</ins>.</p>\n<p>Test</p>");
     });
+
+    it('does not lose formattings when multiple lines are deleted', function () {
+      var before = '<p>' +
+              noMarkup(13) + 'diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd ' +
+              brMarkup(14) + 'gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>',
+          after= '<p>Test</p>';
+      var diff = diffService.diff(before, after).toLowerCase(),
+          expected = '<p class="delete">' +
+          noMarkup(13).replace(/&nbsp;/, "\u00A0") + 'diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd ' +
+          brMarkup(14).replace(/&nbsp;/, "\u00A0") + 'gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>' +
+          '<p class="insert">Test</p>';
+
+      expect(diff).toBe(expected.toLowerCase());
+    });
   });
 
   describe('ignoring line numbers', function () {

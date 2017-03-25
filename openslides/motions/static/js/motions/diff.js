@@ -1078,7 +1078,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             });
 
             diffUnnormalized = diffUnnormalized.replace(
-                /<del>((<BR CLASS="OS-LINE-BREAK">)?<span[^>]+OS-LINE-NUMBER.+?)<\/del>/gi,
+                /<del>((<BR CLASS="OS-LINE-BREAK">)?<span[^>]+OS-LINE-NUMBER[^>]+?>\s*<\/span>)<\/del>/gi,
                 function(found,tag) {
                     return tag.toLowerCase().replace(/> <\/span/gi, ">&nbsp;</span");
                 }
