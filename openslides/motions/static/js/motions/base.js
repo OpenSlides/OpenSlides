@@ -760,6 +760,11 @@ angular.module('OpenSlidesApp.motions', [
                     oldText = lineNumberingService.insertLineNumbers(oldText, lineLength, null, null, this.line_from);
                     var diff = diffService.diff(oldText, this.text);
 
+                    // If an insertion makes the line longer than the line length limit, we need two line breaking runs:
+                    // - First, for the official line numbers, ignoring insertions (that's been done some lines before)
+                    // - Second, another one to prevent the displayed including insertions to exceed the page width
+                    diff = lineNumberingService.insertLineBreaksWithoutNumbers(diff, lineLength, true);
+
                     if (highlight > 0) {
                         diff = lineNumberingService.highlightLine(diff, highlight);
                     }
