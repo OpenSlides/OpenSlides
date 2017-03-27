@@ -18,7 +18,7 @@ class UserManagerTest(TestCase):
 
         user_manager.model.assert_called_once_with(username='test_username', test_kwarg='test_kwarg')
         user.set_password.assert_called_once_with('test_password')
-        user.save.assert_called_once_with(using='my_test_db')
+        user.save.assert_called_once_with(using='my_test_db', skip_autoupdate=False)
         self.assertEqual(
             return_user,
             user,

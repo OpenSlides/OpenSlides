@@ -36,13 +36,13 @@ class UserManager(BaseUserManager):
                               'permissions',
                               queryset=Permission.objects.select_related('content_type')))))
 
-    def create_user(self, username, password, **kwargs):
+    def create_user(self, username, password, skip_autoupdate=False, **kwargs):
         """
         Creates a new user only with a password and a username.
         """
         user = self.model(username=username, **kwargs)
         user.set_password(password)
-        user.save(using=self._db)
+        user.save(skip_autoupdate=skip_autoupdate, using=self._db)
         return user
 
     def create_or_reset_admin_user(self):
