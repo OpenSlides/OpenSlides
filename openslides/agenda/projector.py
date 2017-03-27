@@ -81,20 +81,26 @@ class CurrentListOfSpeakersSlide(ProjectorElement):
 
     def get_requirements(self, config_entry):
         # The query mechanism on client needs the referenced projector.
-        reference_projector = Projector.objects.get(
-            pk=config['projector_currentListOfSpeakers_reference'])
-        yield reference_projector
+        try:
+            reference_projector = Projector.objects.get(
+                pk=config['projector_currentListOfSpeakers_reference'])
+        except Projector.DoesNotExist:
+            # Reference projector was deleted so this projector element is empty.
+            # Skip yielding more requirements (items and speakers).
+            pass
+        else:
+            yield reference_projector
 
-        items = self.get_agenda_items(reference_projector)
-        for item in items:
-            yield item
-            for speaker in item.speakers.filter(end_time=None):
-                yield speaker.user
-            query = (item.speakers.exclude(end_time=None)
-                     .order_by('-end_time')[:config['agenda_show_last_speakers']])
-            for speaker in query:
-                # Yield last speakers
-                yield speaker.user
+            items = self.get_agenda_items(reference_projector)
+            for item in items:
+                yield item
+                for speaker in item.speakers.filter(end_time=None):
+                    yield speaker.user
+                query = (item.speakers.exclude(end_time=None)
+                         .order_by('-end_time')[:config['agenda_show_last_speakers']])
+                for speaker in query:
+                    # Yield last speakers
+                    yield speaker.user
 
     def get_agenda_items(self, projector):
         for element in projector.elements.values():
@@ -106,21 +112,27 @@ class CurrentListOfSpeakersSlide(ProjectorElement):
         output = super().get_collection_elements_required_for_this(collection_element, config_entry)
         # Full update if agenda_item or referenced projector changes because
         # then we may have new candidates and therefor need new users.
-        reference_projector = Projector.objects.get(
-            pk=config['projector_currentListOfSpeakers_reference'])
-        is_reference_projector = collection_element == CollectionElement.from_values(
-                reference_projector.get_collection_string(),
-                reference_projector.pk)
-        is_config = (
-            collection_element.collection_string == 'core/config' and
-            collection_element.information.get('changed_config') == 'projector_currentListOfSpeakers_reference')
-
-        if is_reference_projector or is_config:
-            output.extend(self.get_requirements_as_collection_elements(config_entry))
+        try:
+            reference_projector = Projector.objects.get(
+                pk=config['projector_currentListOfSpeakers_reference'])
+        except Projector.DoesNotExist:
+            # Reference projector was deleted so this projector element is empty.
+            # Skip appending more stuff to output.
+            pass
         else:
-            items = self.get_agenda_items(reference_projector)
-            for item in items:
-                if collection_element == CollectionElement.from_values(item.get_collection_string(), item.pk):
-                    output.extend(self.get_requirements_as_collection_elements(config_entry))
-                    break
+            is_reference_projector = collection_element == CollectionElement.from_values(
+                    reference_projector.get_collection_string(),
+                    reference_projector.pk)
+            is_config = (
+                collection_element.collection_string == 'core/config' and
+                collection_element.information.get('changed_config') == 'projector_currentListOfSpeakers_reference')
+
+            if is_reference_projector or is_config:
+                output.extend(self.get_requirements_as_collection_elements(config_entry))
+            else:
+                items = self.get_agenda_items(reference_projector)
+                for item in items:
+                    if collection_element == CollectionElement.from_values(item.get_collection_string(), item.pk):
+                        output.extend(self.get_requirements_as_collection_elements(config_entry))
+                        break
         return output
