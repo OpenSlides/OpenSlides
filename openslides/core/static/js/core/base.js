@@ -752,8 +752,8 @@ angular.module('OpenSlidesApp.core', [
                         'br(os-line-break);',
 
                     // there seems to be an error in CKeditor that parses spaces in extraPlugins as part of the plugin name.
-                    extraPlugins: 'colorbutton,find,liststyle,sourcedialog,justify,showblocks',
-                    removePlugins: 'wsc,scayt,a11yhelp,filebrowser,sourcearea',
+                    extraPlugins: 'colorbutton,find,sourcedialog,justify,showblocks',
+                    removePlugins: 'wsc,scayt,a11yhelp,filebrowser,sourcearea,liststyle,tabletools,contextmenu',
                     removeButtons: 'Scayt,Anchor,Styles,HorizontalRule',
                     toolbarGroups: [
                         { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
