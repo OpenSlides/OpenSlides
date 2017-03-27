@@ -662,7 +662,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     break;
                                 case "br":
                                     //in case of inline-line-numbers and the os-line-break class ignore the break
-                                    if (!(lineNumberMode == "inline" && element.getAttribute("class") == "os-line-break")) {
+                                    if ((lineNumberMode == "inline" && element.getAttribute("class") == "os-line-break") ||
+                                        (lineNumberMode == "outside" && element.getAttribute("class") == "os-line-break" && element.parentNode.tagName == "INS") ||
+                                        (lineNumberMode == "outside" && element.getAttribute("class") == "os-line-break" && element.parentNode.getAttribute("class") == "merge-before")) {
+                                        break;
+                                    } else {
                                         currentParagraph = create("text");
                                         currentParagraph.lineHeight = 1.25;
                                         alreadyConverted.push(currentParagraph);
