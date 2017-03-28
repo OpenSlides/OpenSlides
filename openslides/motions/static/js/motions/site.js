@@ -844,13 +844,8 @@ angular.module('OpenSlidesApp.motions.site', [
             return _.indexOf(motion.tags_id, tag.id) > -1;
         };
 
-        // Use this methon instead of Motion.save(), because otherwise
-        // you have to provide always a title and a text
         $scope.save = function (motion) {
-            motion.title = motion.getTitle(-1);
-            motion.text = motion.getText(-1);
-            motion.reason = motion.getReason(-1);
-            Motion.save(motion);
+            Motion.save(motion, {method: 'PATCH'});
         };
         // delete single motion
         $scope.delete = function (motion) {
@@ -1134,10 +1129,7 @@ angular.module('OpenSlidesApp.motions.site', [
             ngDialog.open(MotionForm.getDialog(motion));
         };
         $scope.save = function (motion) {
-            motion.title = motion.getTitle(-1);
-            motion.text = motion.getText(-1);
-            motion.reason = motion.getReason(-1);
-            Motion.save(motion);
+            Motion.save(motion, {method: 'PATCH'});
         };
         // support
         $scope.support = function () {

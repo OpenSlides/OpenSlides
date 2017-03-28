@@ -187,9 +187,6 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                         return motion['comment ' + field.name];
                     },
                     function (obj) {
-                        motion.title = motion.getTitle(-1);
-                        motion.text = motion.getText(-1);
-                        motion.reason = motion.getReason(-1);
                         motion['comment ' + field.name] = obj.editor.getData();
                     }
                 );
