@@ -34,7 +34,7 @@
     "ngstorage": "~0.3.11",
     "ngBootbox": "~0.1.3",
     "papaparse": "~4.1.2",
-    "pdfmake": "0.1.25",
+    "pdfmake": "0.1.27",
     "roboto-fontface": "~0.6.0"
   },
   "overrides": {
