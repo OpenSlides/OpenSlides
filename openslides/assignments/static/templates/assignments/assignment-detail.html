@@ -80,7 +80,7 @@
     <div class="white-space-pre-line">{{ assignment.description }}</div>
   </div>
 
-  <div ng-if="assignment.phase != 2">
+  <div ng-if="assignment.phase !== 2">
     <h3 translate>Candidates</h3>
     <div ui-tree="treeOptions" ng-if="assignment.assignment_related_users.length"
         data-empty-placeholder-enabled="false">
@@ -123,7 +123,7 @@
   </div>
 
   <h3 translate>Election result</h3>
-  <button os-perms="assignments.can_manage" ng-show="assignment.phase != 2" ng-click="createBallot()"
+  <button os-perms="assignments.can_manage" ng-show="assignment.phase !== 2" ng-click="createBallot()"
       class="btn btn-default btn-sm">
     <i class="fa fa-bar-chart fa-lg"></i>
     <translate>New ballot</translate>
@@ -133,7 +133,7 @@
         index="$index" heading="{{ 'Ballot' | translate }} {{ $index + 1 }}">
       <div ng-controller="AssignmentPollDetailCtrl">
         <!-- action buttons -->
-        <div class="pull-right" os-perms="assignments.can_manage">
+        <div class="pull-right" os-perms="assignments.can_manage" ng-show="assignment.phase !== 2">
           <span class="spacer-right" editable-text="poll.description" onaftersave="saveDescriptionChange(poll)"
             uib-tooltip="{{ 'Hint on the ballot paper.' | translate }}">
             <span ng-if="!poll.description" translate>Set hint for ballot paper ...</span>
@@ -157,7 +157,8 @@
             <translate>Print ballot paper</translate>
           </a>
           <!-- Edit -->
-          <button ng-click="editPollDialog(poll, $index+1)"
+          <button ng-click="assignment.phase !== 2 && editPollDialog(poll, $index+1)"
+              ng-class="{ 'disabled': assignment.phase === 2 }"
               class="btn btn-default btn-sm">
             <i class="fa fa-pencil"></i>
             <translate>Enter votes</translate>
