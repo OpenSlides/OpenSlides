@@ -20,37 +20,51 @@ Agenda:
 Core:
 - Added support for multiple projectors.
 - Added control for the resolution of the projectors.
+- Added smooth projector scroll.
 - Set the projector language in the settings.
-- Used pdfMake for clientside generation of PDFs.
-  Run pdf creation in background (in a web worker thread).
-- Introduced new table design for list views with serveral filters and
-  CSV export.
-- Used session cookies and store filter settings in session storage.
+- Added migration path from OpenSlides 2.0.
+- Added support for big assemblies with lots of users.
+- Django 1.10 is now supported. Dropped support for Django 1.8 and 1.9.
+- Used Django Channels instead of Tornado. Refactoring of the autoupdate
+  process. Added retry with timeout in case of ChannelFull exception.
 - Made a lot of autoupdate improvements for projector and site.
+- Added new caching system with support for Redis.
+- Support https as websocket protocol (wss).
+- Accelerated startup process (send all data to the client after login).
+- Add the command getgeiss to download the latest version of Geiss.
+- Add a version of has_perm that can work with cached users.
+- Removed our AnonymousUser. Make sure not to use user.has_perm() anymore.
+- Added function utils.auth.anonymous_is_enabled which returns true, if it is.
+- Changed has_perm to support an user id or None (for anyonmous) as first argument.
+- Cache the group with there permissions.
+- Added watching permissions in client and change the view immediately on changes.
+- Used session cookies and store filter settings in session storage.
+- Removed our db-session backend and added possibility to use any django session backend.
+- Added template hook system for plugins.
 - Used Roboto font in all templates.
 - Added HTML support for messages on the projector.
 - Moved custom slides to own app "topics". Renamed it to "Topic".
 - Added button to clear the chatbox.
-- Switched editor back from TinyMCE to CKEditor which provides a
-  better copy/paste support from MS Word.
-- Added template hook system for plugins.
-- Made a lot of code clean up, improvements and bug fixes in client and
-  backend.
-- Use a separate dialog with CKEditor for editing projector messages.
-- Use CKEditor in settings for text markup.
-- Add a version of has_perm that can work with cached users.
-- Cache the group with there permissions.
-- Removed our db-session backend and added possibility to use any django session backend.
-- New csv import layout.
-- Replaced angular-csv-import through Papa Parse for csv parsing.
-- Added smooth projector scroll.
-- Added watching permissions in client and change the view immediately on changes.
-- Validate HTML strings from CKEditor against XSS attacks.
-- Added success/error symbol to config to show if saving was successful.
-- Added UTF-8 byte order mark for every CSV export.
-- Moved full-text search to client-side (removed the server-side search engine Whoosh).
 - Better dialog handling. Show dialog just in forground without changing the state url.
   Added new dialog for profile, change password, tag and category update view.
+- Switched editor back from TinyMCE to CKEditor which provides a
+  better copy/paste support from MS Word.
+- Validate HTML strings from CKEditor against XSS attacks.
+- Use a separate dialog with CKEditor for editing projector messages.
+- Use CKEditor in settings for text markup.
+- Used pdfMake for clientside generation of PDFs.
+  Run pdf creation in background (in a web worker thread).
+- Introduced new table design for list views with serveral filters and
+  CSV export.
+- New CSV import layout.
+- Replaced angular-csv-import by Papa Parse for CSV parsing.
+- Added UTF-8 byte order mark for every CSV export.
+- Removed config cache to support multiple threads or processes.
+- Added success/error symbol to config to show if saving was successful.
+- Fixed bug, that the last change of a config value was not send via autoupdate.
+- Moved full-text search to client-side (removed the server-side search engine Whoosh).
+- Made a lot of code clean up, improvements and bug fixes in client and
+  backend.
 
 Motions:
 - Added adjustable line numbering mode (outside, inside, none) for each
@@ -99,25 +113,13 @@ Users:
 
 Mediafiles:
 - Allowed to project uploaded images (png, jpg, gif) and video files
-  (e.g. mp4, wmv, flv, quicktime, ogg).
+  (e. g. mp4, wmv, flv, quicktime, ogg).
 - Allowed to hide uploaded files in overview list for non authorized users.
+- Enabled removing of files from filesystem on model instance delete.
 
 Other:
-- Django 1.10 is now supported. Dropped support for Django 1.8 and 1.9.
-- Removed config cache to support multiple threads or processes.
-- Fixed bug, that the last change of a config value was not send via autoupdate.
-- Added support for big assemblies with lots of users.
-- Used Django Channels instead of Tornado. Refactoring of the autoupdate
-  process. Added retry with timeout in case of ChannelFull exception.
-- Added new caching system with support for Redis.
-- Support https as websocket protocol (wss).
-- Added migration path from 2.0.
-- Accelerated startup process (send all data to the client after login).
-- Added function utils.auth.anonymous_is_enabled which returns true, if it is.
-- Changed has_perm to support an user id or None (for anyonmous) as first argument.
-- Removed our AnonymousUser. Make sure not to use user.has_perm() anymore.
-- Add the command getgeiss to download the latest version of Geiss.
 - Added Russian translation (Thanks to Andreas Engler).
+- Added command to create example data.
 
 
 Version 2.0 (2016-04-18)
