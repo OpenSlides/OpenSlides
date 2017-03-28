@@ -51,3 +51,18 @@ class MediafileViewSet(ModelViewSet):
         if not self.request.data.get('mediafile'):
             raise ValidationError({'detail': 'You forgot to provide a file.'})
         return super().create(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Customized view endpoint to delete uploaded files.
+
+        Does also delete the file from filesystem.
+        """
+        # To avoid Django calling save() and triggering autoupdate we do not
+        # use the builtin method mediafile.mediafile.delete() but call
+        # mediafile.mediafile.storage.delete(...) directly. This may have
+        # unattended side effects so be careful especially when accessing files
+        # on server via Django methods (file, open(), save(), ...).
+        mediafile = self.get_object()
+        mediafile.mediafile.storage.delete(mediafile.mediafile.name)
+        return super().destroy(request, *args, **kwargs)
