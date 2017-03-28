@@ -80,7 +80,8 @@ class ProjectorMessageSerializer(ModelSerializer):
         fields = ('id', 'message', )
 
     def validate(self, data):
-        data['message'] = validate_html(data.get('message', ''))
+        if 'message' in data:
+            data['message'] = validate_html(data['message'])
         return data
 
 

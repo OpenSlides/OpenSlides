@@ -259,7 +259,8 @@ class MotionChangeRecommendationSerializer(ModelSerializer):
             'creation_time',)
 
     def validate(self, data):
-        data['text'] = validate_html(data.get('text', ''))
+        if 'text' in data:
+            data['text'] = validate_html(data['text'])
         return data
 
 
@@ -311,8 +312,10 @@ class MotionSerializer(ModelSerializer):
         read_only_fields = ('state', 'recommendation',)  # Some other fields are also read_only. See definitions above.
 
     def validate(self, data):
-        data['text'] = validate_html(data.get('text', ''))
-        data['reason'] = validate_html(data.get('reason', ''))
+        if 'text'in data:
+            data['text'] = validate_html(data['text'])
+        if 'reason' in data:
+            data['reason'] = validate_html(data['reason'])
         validated_comments = []
         for comment in data.get('comments', []):
             validated_comments.append(validate_html(comment))
