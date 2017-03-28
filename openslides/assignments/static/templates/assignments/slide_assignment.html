@@ -48,12 +48,12 @@
           <div ng-init="votes = option.getVotes()">
             <div ng-show="poll.pollmethod == 'yna' || poll.pollmethod == 'yn'">
               <span ng-show="poll.pollmethod == 'yna'">
-                {{ votes[0].label }}: {{ votes[0].value }} ·
-                {{ votes[1].label }}: {{ votes[1].value }} ·
-                {{ votes[2].label }}: {{ votes[2].value }} </span>
+                {{ votes[0].label | translate }}: {{ votes[0].value }} ·
+                {{ votes[1].label | translate }}: {{ votes[1].value }} ·
+                {{ votes[2].label | translate }}: {{ votes[2].value }} </span>
               <span ng-show="poll.pollmethod == 'yn'">
-                {{ votes[0].label }}: {{ votes[0].value }} ·
-                {{ votes[1].label }}: {{ votes[1].value }}</span>
+                {{ votes[0].label | translate }}: {{ votes[0].value }} ·
+                {{ votes[1].label | translate }}: {{ votes[1].value }}</span>
               <uib-progress ng-if="votes[0].percentNumber>=0">
                 <uib-bar value="votes[0].percentNumber" type="success">
                   <span ng-hide="votes[0].percentNumber < 5">{{votes[0].percentNumber}} %</span>
