@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -8,7 +9,6 @@ from rest_framework.test import APIClient
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.motions.models import Category, Motion, MotionBlock, State
-from openslides.users.models import User
 from openslides.utils.test import TestCase, use_cache
 
 
@@ -41,7 +41,7 @@ class TestMotionDBQueries(TestCase):
         * 1 request to get the tags,
         * 2 requests to get the submitters and supporters and
         """
-        self.client.force_login(User.objects.get(pk=1))
+        self.client.force_login(get_user_model().objects.get(pk=1))
         with self.assertNumQueries(14):
             self.client.get(reverse('motion-list'))
 
@@ -84,7 +84,7 @@ class TestCategoryDBQueries(TestCase):
         * 4 requests to get the session an the request user with its permissions and
         * 2 requests to get the list of all categories.
         """
-        self.client.force_login(User.objects.get(pk=1))
+        self.client.force_login(get_user_model().objects.get(pk=1))
         with self.assertNumQueries(6):
             self.client.get(reverse('category-list'))
 
@@ -118,7 +118,7 @@ class TestWorkflowDBQueries(TestCase):
         * 1 request to get all states and
         * 1 request to get the next states of all states.
         """
-        self.client.force_login(User.objects.get(pk=1))
+        self.client.force_login(get_user_model().objects.get(pk=1))
         with self.assertNumQueries(8):
             self.client.get(reverse('workflow-list'))
 
@@ -273,6 +273,32 @@ class CreateMotion(TestCase):
              'text': 'test_text_eHohS8ohr5ahshoah8Oh'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_non_admin_with_comment_data(self):
+        """
+        Test to create a motion by a non staff user that has permission to
+        manage motion comments and sends some additional fields.
+        """
+        self.admin = get_user_model().objects.get(username='admin')
+        self.admin.groups.add(2)
+        self.admin.groups.remove(3)
+        group_delegate = self.admin.groups.get()
+        group_delegate.permissions.add(Permission.objects.get(
+            content_type__app_label='motions',
+            codename='can_see_and_manage_comments',
+        ))
+
+        response = self.client.post(
+            reverse('motion-list'),
+            {'title': 'test_title_peiJozae0luew9EeL8bo',
+             'text': 'test_text_eHohS8ohr5ahshoah8Oh',
+             'comments': ['comment_for_field_one__xiek1Euhae9xah2wuuraaaa'],
+             'comment_field_one': 'comment_for_field_one__xiek1Euhae9xah2wuuraaaa'},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Motion.objects.get().comments, ['comment_for_field_one__xiek1Euhae9xah2wuuraaaa'])
 
     def test_amendment_motion(self):
         """
