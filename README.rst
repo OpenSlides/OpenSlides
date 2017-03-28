@@ -28,7 +28,9 @@ a. Check requirements
 '''''''''''''''''''''
 
 Make sure that you have installed `Python (>= 3.4)
-<https://www.python.org/>`_ on your system.
+<https://www.python.org/>`_ on your system. You also need build-essential
+packages (``build-essential``) and header files and a static library for
+Python (``python3-dev``).
 
 
 b. Setup a virtual Python environment (optional)
@@ -120,6 +122,11 @@ If you want to contribute to OpenSlides, have a look at `OpenSlides website
 `instruction to install the development version
 <https://github.com/OpenSlides/OpenSlides/blob/master/DEVELOPMENT.rst>`_.
 
+In OpenSlides repository you find a ``Dockerfile`` but this is not for
+production use. See our `Multi instance backend for OpenSlides
+<https://github.com/OpenSlides/openslides-multiinstance-backend>`_ for more
+information.
+
 
 Installation for big assemblies
 ===============================
@@ -157,40 +164,7 @@ Used software
 
 OpenSlides uses the following projects or parts of them:
 
-* `asgiref <https://github.com/django/asgiref/>`_, License: BSD
-
-* `Autobahn <http://autobahn.ws/python/>`_, License: MIT
-
-* `Constantly <https://github.com/twisted/constantly>`_, License: MIT
-
-* `daphne <https://github.com/django/daphne/>`_, License: BSD
-
-* `Django <https://www.djangoproject.com>`_, License: BSD
-
-* `Django Channels <https://github.com/django/channels>`_, License: BSD
-
-* `django-jsonfield <https://github.com/bradjasper/django-jsonfield>`_,
-  License: MIT
-
-* `Django REST framework <http://www.django-rest-framework.org>`_, License:
-  BSD
-
-* `Incremental <https://github.com/hawkowl/incremental>`_, License: MIT
-
-* `PyPDF2 <http://mstamy2.github.io/PyPDF2/>`_, License: BSD
-
-* `roman <https://pypi.python.org/pypi/roman>`_, License: Python 2.1.1
-
-* `setuptools <https://pypi.python.org/pypi/setuptools>`_, License: MIT
-
-* `Six <http://pythonhosted.org/six/>`_, License: MIT
-
-* `Twisted <https://twistedmatrix.com>`_, License: MIT
-
-* `txaio <https://github.com/crossbario/txaio>`_, License: MIT
-
-* `zope.interface <https://github.com/zopefoundation/zope.interface>`,
-  License: ZPL 2.1
+* Several Python packages (see ``requirements_production.txt``).
 
 * Several JavaScript packages (see ``bower.json``)
 

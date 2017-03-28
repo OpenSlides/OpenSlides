@@ -18,11 +18,11 @@ a. Check requirements
 Make sure that you have installed `Python (>= 3.4) <https://www.python.org/>`_,
 `Node.js (>=4.x) <https://nodejs.org/>`_, `npm - Node Package Manager (>=3.x)
 <https://npmjs.org/>`_ and `Git <http://git-scm.com/>`_ on your system. You also
-need header files and a static library for Python.
+need build-essential packages and header files and a static library for Python.
 
 For Ubuntu 16.04 e. g. run::
 
-    $ sudo apt-get install git nodejs nodejs-legacy npm python3-dev
+    $ sudo apt-get install git nodejs nodejs-legacy npm build-essential python3-dev
 
 
 b. Get OpenSlides source code
