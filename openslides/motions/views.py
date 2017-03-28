@@ -99,6 +99,9 @@ class MotionViewSet(ModelViewSet):
 
         # Check permission to send some data.
         if not has_perm(request.user, 'motions.can_manage'):
+            # Remove fields that the user is not allowed to send.
+            # The list() is required because we want to use del inside the loop.
+            keys = list(request.data.keys())
             whitelist = [
                 'title',
                 'text',
@@ -114,10 +117,9 @@ class MotionViewSet(ModelViewSet):
                 ])
                 request.data['category_id'] = parent_motion.get_full_data().get('category_id')
                 request.data['motion_block_id'] = parent_motion.get_full_data().get('motion_block_id')
-            for key in request.data.keys():
+            for key in keys:
                 if key not in whitelist:
-                    # Non-staff users are allowed to send only some data.
-                    self.permission_denied(request)
+                    del request.data[key]
 
         # Check permission to send comment data.
         if not has_perm(request.user, 'motions.can_see_and_manage_comments'):
