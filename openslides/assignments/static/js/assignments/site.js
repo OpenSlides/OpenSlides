@@ -742,27 +742,11 @@ angular.module('OpenSlidesApp.assignments.site', [
         options.forEach(function(option) {
             var defaultValue;
             if (assignmentpoll.pollmethod == 'yna' || assignmentpoll.pollmethod == 'yn') {
-                if (assignmentpoll.pollmethod == 'yna') {
-                    defaultValue = {
-                        'yes': '',
-                        'no': '',
-                        'abstain': ''
-                    };
-                }
-                else {
-                    defaultValue = {
-                        'yes': '',
-                        'no': ''
-                    };
-                }
+                defaultValue = {};
+                _.forEach(option.votes, function (vote) {
+                    defaultValue[vote.value.toLowerCase()] = vote.weight;
+                });
 
-                if (option.votes.length) {
-                    defaultValue.yes = option.votes[0].weight;
-                    defaultValue.no = option.votes[1].weight;
-                    if (assignmentpoll.pollmethod == 'yna'){
-                        defaultValue.abstain = option.votes[2].weight;
-                    }
-                }
                 $scope.formFields.push(
                     {
                         noFormControl: true,
@@ -787,7 +771,8 @@ angular.module('OpenSlidesApp.assignments.site', [
                             required: true
                         },
                         defaultValue: defaultValue.no
-                    });
+                    }
+                );
                 if (assignmentpoll.pollmethod == 'yna'){
                     $scope.formFields.push(
                     {
@@ -801,7 +786,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                         defaultValue: defaultValue.abstain
                     });
                 }
-            } else {
+            } else { // votes method
                 if (option.votes.length) {
                     defaultValue = option.votes[0].weight;
                 }
