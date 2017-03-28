@@ -3,6 +3,7 @@ include CHANGELOG
 include LICENSE
 include README.rst
 include requirements_production.txt
+include requirements_big_mode.txt
 include bower.json
 recursive-include openslides *.*
 exclude openslides/__pycache__/*
