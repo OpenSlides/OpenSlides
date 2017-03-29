@@ -3,14 +3,14 @@
 # Copyright (C) 2011–2015 by OpenSlides team, see AUTHORS.
 # This file is distributed under the same license as the OpenSlides package.
 # Translators:
-# Marco A.G.Pinto <marcoagpinto@mail.telepac.pt>, 2016
+# Marco A.G.Pinto <marcoagpinto@mail.telepac.pt>, 2016-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-24 16:10+0100\n"
-"PO-Revision-Date: 2017-02-24 15:16+0000\n"
-"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
+"PO-Revision-Date: 2017-03-07 13:04+0000\n"
+"Last-Translator: Marco A.G.Pinto <marcoagpinto@mail.telepac.pt>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/openslides/openslides/language/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -58,16 +58,16 @@ msgstr "Foste removido com sucesso da lista de oradores."
 
 #: agenda/views.py:142
 msgid "speakers have been removed from the list of speakers."
-msgstr ""
+msgstr "oradores foram removidos da lista de oradores."
 
 #: agenda/views.py:144
 #, python-format
 msgid "User %s has been removed from the list of speakers."
-msgstr ""
+msgstr "Utilizador %s foi removido da lista de oradores."
 
 #: agenda/views.py:146
 msgid "No speakers have been removed from the list of speakers."
-msgstr ""
+msgstr "Nenhuns oradores foram removidos da lista de oradores."
 
 #: agenda/views.py:166
 msgid "The list of speakers is empty."
@@ -104,11 +104,11 @@ msgstr "A agenda foi numerada."
 
 #: agenda/views.py:264
 msgid "There must not be a hierarchical loop. Please reload the page."
-msgstr ""
+msgstr "Não deve haver um loop hierárquico. Por favor recarrega a página."
 
 #: agenda/views.py:268
 msgid "The agenda has been sorted."
-msgstr ""
+msgstr "A agenda foi ordenada."
 
 #: assignments/models.py:163
 msgid "Election"
@@ -116,7 +116,7 @@ msgstr "Eleição"
 
 #: assignments/serializers.py:30
 msgid "Value for {} must be greater than 0"
-msgstr ""
+msgstr "O valor para {} deve ser maior que 0"
 
 #: assignments/serializers.py:148
 #, python-format
@@ -238,11 +238,11 @@ msgstr "Votação criada com sucesso."
 
 #: assignments/views.py:204
 msgid "users has to be a list of IDs."
-msgstr ""
+msgstr "utilizadores tem que ser uma lista de IDs."
 
 #: assignments/views.py:231
 msgid "Assignment related users successfully sorted."
-msgstr ""
+msgstr "Os utilizadores relacionados com a tarefa foram ordenados com sucesso."
 
 #: core/config.py:41 core/config.py:68
 msgid "The config variable {} was not found."
@@ -377,7 +377,7 @@ msgstr "rejeitado (não autorizado)"
 
 #: motions/views.py:94
 msgid "The parent motion does not exist."
-msgstr ""
+msgstr "A moção pai não existe."
 
 #: motions/views.py:134
 msgid "Motion created"
@@ -475,7 +475,7 @@ msgstr "Recomendação definida para"
 
 #: motions/views.py:359
 msgid "Vote created"
-msgstr ""
+msgstr "Voto criado"
 
 #: motions/views.py:360
 msgid "Vote created successfully."
@@ -483,11 +483,11 @@ msgstr "Voto criado com sucesso."
 
 #: motions/views.py:385
 msgid "Vote updated"
-msgstr ""
+msgstr "Voto actualizado"
 
 #: motions/views.py:394
 msgid "Vote deleted"
-msgstr ""
+msgstr "Voto excluído"
 
 #: motions/views.py:533
 msgid ""
@@ -524,7 +524,7 @@ msgstr "Os grupos a que este utilizador pertence. Um utilizador terá todas as p
 
 #: users/serializers.py:60
 msgid "Username, given name and surname can not all be empty."
-msgstr ""
+msgstr "Username, primeiro nome e apelido não podem estar todos vazios."
 
 #: users/serializers.py:95
 #, python-brace-format
@@ -550,7 +550,7 @@ msgstr "Senha redefinida com sucesso."
 
 #: users/views.py:184
 msgid "Cookies have to be enabled to use OpenSlides."
-msgstr ""
+msgstr "Os cookies têm de estar activados para usar o OpenSlides."
 
 #: users/views.py:187
 msgid "Username or password is not correct."
