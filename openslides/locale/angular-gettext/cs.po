@@ -2,7 +2,7 @@
 # Translators:
 # emanuel <emanuel@intevation.de>, 2013
 # emanuelschuetze <emanuelschuetze@gmail.com>, 2013
-# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2013
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2013,2017
 # fri, 2013
 # Norman Jäckel <transifex16062013@normanjaeckel.de>, 2013-2014
 # Oskar Hahn <mail@oshahn.de>, 2012
@@ -10,19 +10,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
-"PO-Revision-Date: 2017-03-05 20:36+0000\n"
-"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
+"PO-Revision-Date: 2017-03-28 15:46+0000\n"
+"Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/openslides/openslides/language/cs/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: motions/static/js/motions/base.js:751
+#: motions/static/js/motions/base.js:773
 msgid "%TYPE% from line %FROM% to %TO%"
 msgstr "%TYPE% od řádku %FROM% po %TO%"
 
-#: motions/static/js/motions/base.js:753
+#: motions/static/js/motions/base.js:775
 msgid "%TYPE% in line %FROM%"
 msgstr "%TYPE% v řádku %FROM%"
 
@@ -55,7 +55,7 @@ msgstr "--- Vybrat stav ---"
 msgid "--- Set phase ---"
 msgstr "--- Nastavit fázi ---"
 
-#: core/static/js/core/site.js:1670
+#: core/static/js/core/site.js:1669
 msgid ""
 "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based "
 "presentation and assembly system for visualizing and controlling agenda, "
@@ -72,8 +72,8 @@ msgid "About me"
 msgstr "O mě"
 
 #: assignments/static/js/assignments/pdf.js:314
-#: assignments/static/js/assignments/site.js:628
-#: assignments/static/js/assignments/site.js:795
+#: assignments/static/js/assignments/site.js:630
+#: assignments/static/js/assignments/site.js:797
 #: motions/static/js/motions/pdf.js:123 motions/static/js/motions/pdf.js:350
 #: motions/static/js/motions/site.js:582
 #: motions/static/templates/motions/motion-detail.html:353
@@ -81,11 +81,11 @@ msgstr "O mě"
 msgid "Abstain"
 msgstr "Zdržení se"
 
-#: motions/static/js/motions/base.js:792 motions/static/js/motions/base.js:807
+#: motions/static/js/motions/base.js:814 motions/static/js/motions/base.js:829
 msgid "Accept"
 msgstr "Přijmout"
 
-#: motions/static/js/motions/base.js:793 motions/static/js/motions/base.js:808
+#: motions/static/js/motions/base.js:815 motions/static/js/motions/base.js:830
 msgid "Acceptance"
 msgstr "Souhlas"
 
@@ -94,7 +94,7 @@ msgctxt "special filetypes in a file open dialog"
 msgid "Accepted file types"
 msgstr "Přijaté souborové typy"
 
-#: motions/static/js/motions/site.js:1979
+#: motions/static/js/motions/site.js:1980
 msgid "Activate amendments"
 msgstr "Zapnout pozměňovací návrhy"
 
@@ -117,7 +117,7 @@ msgid "Add group"
 msgstr "Přidat skupinu"
 
 #: agenda/static/templates/agenda/list-of-speakers-partial-management.html:122
-#: assignments/static/templates/assignments/assignment-detail.html:115
+#: assignments/static/templates/assignments/assignment-detail.html:116
 msgid "Add me"
 msgstr "Přidat mě"
 
@@ -137,11 +137,11 @@ msgstr "Přidat nové odpočítávání"
 msgid "Add new message"
 msgstr "Přidat nové oznámení"
 
-#: motions/static/js/motions/base.js:815
+#: motions/static/js/motions/base.js:837
 msgid "Adjourn"
 msgstr "Odložit"
 
-#: motions/static/js/motions/base.js:816
+#: motions/static/js/motions/base.js:838
 msgid "Adjournment"
 msgstr "Odložení"
 
@@ -152,7 +152,7 @@ msgstr "Administrativní data"
 #: agenda/static/js/agenda/base.js:65 agenda/static/js/agenda/pdf.js:15
 #: agenda/static/js/agenda/site.js:19 agenda/static/js/agenda/site.js:279
 #: agenda/static/js/agenda/site.js:31 agenda/static/js/agenda/site.js:49
-#: agenda/static/js/agenda/site.js:702
+#: agenda/static/js/agenda/site.js:703
 #: agenda/static/templates/agenda/item-detail.html:6
 #: agenda/static/templates/agenda/item-list.html:35
 #: agenda/static/templates/agenda/item-list.html:61
@@ -160,13 +160,13 @@ msgstr "Administrativní data"
 msgid "Agenda"
 msgstr "Pořad jednání"
 
-#: assignments/static/js/assignments/site.js:909
-#: motions/static/js/motions/site.js:2003
+#: assignments/static/js/assignments/site.js:911
+#: motions/static/js/motions/site.js:2004
 msgid "All casted ballots"
 msgstr "Všechny odevzdané hlasovací lístky"
 
-#: assignments/static/js/assignments/site.js:908
-#: motions/static/js/motions/site.js:2002
+#: assignments/static/js/assignments/site.js:910
+#: motions/static/js/motions/site.js:2003
 msgid "All valid ballots"
 msgstr "Všechn platné hlasovací lístky"
 
@@ -176,23 +176,23 @@ msgid ""
 "once you (or the users concerned) reload the page."
 msgstr "Všechny změny jsou uloženy okamžitě. Provedené změny jsou účinné teprve tehdy, když vy (nebo zúčastnění uživatelé) znovu nahrajete stránku."
 
-#: core/static/js/core/site.js:1685
+#: core/static/js/core/site.js:1684
 msgid "Allow access for anonymous guest users"
 msgstr "Povolit přístup anonymním hostům-uživatelům"
 
-#: motions/static/js/motions/site.js:1972
+#: motions/static/js/motions/site.js:1973
 msgid "Allow to disable versioning"
 msgstr "Povolit vypnutí tvorby nových verzí"
 
-#: assignments/static/js/assignments/site.js:897
+#: assignments/static/js/assignments/site.js:899
 msgid "Always Yes-No-Abstain per candidate"
 msgstr "Ano, Ne, Zdržení se pro uchazeče"
 
-#: assignments/static/js/assignments/site.js:898
+#: assignments/static/js/assignments/site.js:900
 msgid "Always Yes/No per candidate"
 msgstr "Ano, Ne pro uchazeče"
 
-#: assignments/static/js/assignments/site.js:896
+#: assignments/static/js/assignments/site.js:898
 msgid "Always one option per candidate"
 msgstr "Jeden hlas pro uchazeče"
 
@@ -201,16 +201,16 @@ msgstr "Jeden hlas pro uchazeče"
 msgid "Amendment of motion"
 msgstr "Pozměňovací návrh k návrhu"
 
-#: motions/static/js/motions/site.js:1978
+#: motions/static/js/motions/site.js:1979
 #: motions/static/templates/motions/motion-detail.html:118
 msgid "Amendments"
 msgstr "Pozměňovací návrhy"
 
-#: motions/static/js/motions/site.js:1981
+#: motions/static/js/motions/site.js:1982
 msgid "Apply text for new amendments"
 msgstr "Použít text pro nové pozměňovací návrhy"
 
-#: agenda/static/js/agenda/site.js:705
+#: agenda/static/js/agenda/site.js:706
 msgid "Arabic"
 msgstr "Arabský"
 
@@ -234,11 +234,11 @@ msgstr "Opravdu mají být smazány všechny vybrané návrhy?"
 msgid "Are you sure you want to delete all selected users?"
 msgstr "Opravdu mají být smazáni všichni vybraní uživatelé?"
 
-#: assignments/static/templates/assignments/assignment-detail.html:143
+#: assignments/static/templates/assignments/assignment-detail.html:145
 msgid "Are you sure you want to delete this ballot?"
 msgstr "Opravdu má být smazáno toto hlasování?"
 
-#: motions/static/templates/motions/motion-detail/view-diff.html:27
+#: motions/static/templates/motions/motion-detail/view-diff.html:28
 #: motions/static/templates/motions/motion-detail/view-original.html:34
 msgid "Are you sure you want to delete this change recommendation?"
 msgstr "Opravdu má být smazáno toto doporučení změny?"
@@ -300,7 +300,7 @@ msgstr "Přílohy"
 msgid "Autodetection"
 msgstr "Automatické rozpoznání"
 
-#: assignments/static/js/assignments/site.js:895
+#: assignments/static/js/assignments/site.js:897
 msgid "Automatic assign of method"
 msgstr "Automatické určení způsobu"
 
@@ -340,19 +340,19 @@ msgstr "Zpět do přehledu"
 msgid "Back to users overview"
 msgstr "Zpět na přehled uživatelů"
 
-#: core/static/js/core/site.js:1696
+#: core/static/js/core/site.js:1695
 msgid "Background color of projector header and footer"
 msgstr "Barva pozadí záhlaví a zápatí promítacího přístroje"
 
 #: assignments/static/js/assignments/pdf.js:139
 #: assignments/static/js/assignments/pdf.js:288
-#: assignments/static/js/assignments/site.js:619
-#: assignments/static/templates/assignments/assignment-detail.html:131
+#: assignments/static/js/assignments/site.js:621
+#: assignments/static/templates/assignments/assignment-detail.html:133
 #: assignments/static/templates/assignments/assignmentpoll-form.html:1
 msgid "Ballot"
 msgstr "Hlasování"
 
-#: assignments/static/js/assignments/site.js:900
+#: assignments/static/js/assignments/site.js:902
 msgid "Ballot and ballot papers"
 msgstr "Volba a hlasovací lístky"
 
@@ -360,7 +360,7 @@ msgstr "Volba a hlasovací lístky"
 msgid "Begin next speech"
 msgstr "Začít další projev"
 
-#: agenda/static/js/agenda/site.js:707
+#: agenda/static/js/agenda/site.js:708
 msgid "Begin of event"
 msgstr "Začátek události"
 
@@ -506,7 +506,8 @@ msgstr "Smí použít rozhovor"
 
 #: assignments/static/templates/assignments/assignment-form.html:18
 #: assignments/static/templates/assignments/assignmentpoll-form.html:18
-#: core/static/js/core/site.js:126 core/static/js/core/site.js:127
+#: core/static/js/core/base.js:205 core/static/js/core/site.js:125
+#: core/static/js/core/site.js:126
 #: core/static/templates/core/projector-controls.html:209
 #: core/static/templates/core/projector-message-form.html:8
 #: core/static/templates/core/tag-form.html:13
@@ -526,8 +527,8 @@ msgstr "Zrušit"
 
 #: assignments/static/js/assignments/pdf.js:147
 #: assignments/static/js/assignments/pdf.js:65
-#: assignments/static/templates/assignments/assignment-detail.html:183
-#: assignments/static/templates/assignments/assignment-detail.html:208
+#: assignments/static/templates/assignments/assignment-detail.html:185
+#: assignments/static/templates/assignments/assignment-detail.html:210
 #: assignments/static/templates/assignments/assignment-detail.html:84
 #: assignments/static/templates/assignments/assignment-list.html:312
 #: assignments/static/templates/assignments/slide_assignment.html:18
@@ -536,15 +537,15 @@ msgid "Candidates"
 msgstr "Uchazeči"
 
 #: assignments/static/js/assignments/pdf.js:212
-#: assignments/static/js/assignments/site.js:841
-#: assignments/static/templates/assignments/assignment-detail.html:261
+#: assignments/static/js/assignments/site.js:843
+#: assignments/static/templates/assignments/assignment-detail.html:265
 #: assignments/static/templates/assignments/slide_assignment.html:92
 #: motions/static/js/motions/site.js:607
 #: motions/static/templates/motions/motion-detail.html:383
 msgid "Casted ballots"
 msgstr "Odevzdané hlasovací lístky"
 
-#: motions/static/js/motions/docx.js:43 motions/static/js/motions/pdf.js:500
+#: motions/static/js/motions/docx.js:43 motions/static/js/motions/pdf.js:508
 #: motions/static/js/motions/site.js:102
 #: motions/static/templates/motions/category-list.html:13
 #: motions/static/templates/motions/motion-list.html:10
@@ -568,7 +569,7 @@ msgstr "Obor činnosti"
 
 #: agenda/static/templates/agenda/item-list.html:333
 msgid "Change item number ..."
-msgstr ""
+msgstr "Změnit číslo bodu..."
 
 #: index.html:102 users/static/templates/users/user-change-password.html:43
 #: users/static/templates/users/user-list.html:320
@@ -579,13 +580,13 @@ msgstr "Změnit heslo"
 msgid "Change password for {{ user.get_short_name() }}"
 msgstr "Změnit heslo pro {{ user.get_short_name() }}"
 
-#: motions/static/templates/motions/motion-detail/toolbar.html:103
-#: motions/static/templates/motions/motion-detail/toolbar.html:139
+#: motions/static/templates/motions/motion-detail/toolbar.html:102
+#: motions/static/templates/motions/motion-detail/toolbar.html:138
 msgid "Change recommendations"
 msgstr "Změnit doporučení"
 
-#: motions/static/templates/motions/motion-detail/toolbar.html:118
-#: motions/static/templates/motions/motion-detail/toolbar.html:151
+#: motions/static/templates/motions/motion-detail/toolbar.html:117
+#: motions/static/templates/motions/motion-detail/toolbar.html:150
 msgid "Changed version"
 msgstr "Změněná verze"
 
@@ -593,11 +594,11 @@ msgstr "Změněná verze"
 msgid "Chat"
 msgstr "Rozhovor"
 
-#: motions/static/js/motions/site.js:1987
+#: motions/static/js/motions/site.js:1988
 msgid "Choose 0 to disable the supporting system."
 msgstr "Zadejte 0 pro vypnutí podpůrného systému."
 
-#: core/static/js/core/site.js:128 core/static/js/core/site.js:129
+#: core/static/js/core/site.js:127 core/static/js/core/site.js:128
 msgid "Clear"
 msgstr "Smazat"
 
@@ -617,9 +618,9 @@ msgstr "Zavřeno"
 
 #: agenda/static/js/agenda/site.js:140 agenda/static/js/agenda/site.js:141
 msgid "Closed items"
-msgstr "Vyřízené položky"
+msgstr "Vyřízené body"
 
-#: core/static/js/core/site.js:1700
+#: core/static/js/core/site.js:1699
 msgid "Color for blanked projector"
 msgstr "Barva ztlumeného promítacího přístroje"
 
@@ -634,11 +635,11 @@ msgstr "Barva ztlumeného promítacího přístroje"
 msgid "Comment"
 msgstr "Poznámka"
 
-#: motions/static/js/motions/site.js:1993
+#: motions/static/js/motions/site.js:1994
 msgid "Comment fields for motions"
 msgstr "Poznámková pole pro návrhy"
 
-#: motions/static/js/motions/site.js:1992
+#: motions/static/js/motions/site.js:1993
 #: motions/static/templates/motions/motion-detail/comments.html:17
 msgid "Comments"
 msgstr "Poznámky"
@@ -647,11 +648,11 @@ msgstr "Poznámky"
 msgid "Committee"
 msgstr "Výbor"
 
-#: users/static/js/users/base.js:165
+#: users/static/js/users/base.js:168
 msgid "Committees"
 msgstr "Výbory"
 
-#: motions/static/js/motions/base.js:801
+#: motions/static/js/motions/base.js:823
 msgid "Complex Workflow"
 msgstr "Složitý pracovní postup"
 
@@ -659,9 +660,9 @@ msgstr "Složitý pracovní postup"
 msgid "Confirm new password"
 msgstr "Potvrdit nové heslo"
 
-#: core/static/js/core/base.js:490
+#: core/static/js/core/base.js:502
 msgid "Connection lost. You are not connected to the server anymore."
-msgstr ""
+msgstr "Spojení ztraceno. Už nejste připojen k serveru."
 
 #: core/static/templates/core/login-form.html:23
 msgid "Continue as guest"
@@ -679,16 +680,16 @@ msgid ""
 " line."
 msgstr "Kopírujte a vložte názvy bodů námětů do tohoto textového pole.\nPro každý bod je určen jeden řádek."
 
-#: core/static/js/core/base.js:917
+#: core/static/js/core/base.js:929
 msgid "Countdown"
 msgstr "Odpočítávání"
 
-#: core/static/js/core/base.js:918
+#: core/static/js/core/base.js:930
 #: core/static/templates/core/projector-controls.html:142
 msgid "Countdowns"
 msgstr "Odpočítávání"
 
-#: agenda/static/js/agenda/site.js:713
+#: agenda/static/js/agenda/site.js:714
 msgid "Couple countdown with the list of speakers"
 msgstr "Sdružit odpočítávání se seznamem řečníků"
 
@@ -700,7 +701,7 @@ msgstr "Vytvořit novou skupinu"
 msgid "Creation date"
 msgstr "Doba vytvoření"
 
-#: core/static/js/core/site.js:1694
+#: core/static/js/core/site.js:1693
 msgid "Current browser language"
 msgstr "Nynější jazyk prohlížeče"
 
@@ -713,8 +714,8 @@ msgstr "Nynější jazyk prohlížeče"
 msgid "Current list of speakers"
 msgstr "Nynější seznam řečníků"
 
-#: assignments/static/js/assignments/site.js:915
-#: motions/static/js/motions/site.js:2015
+#: assignments/static/js/assignments/site.js:917
+#: motions/static/js/motions/site.js:2016
 msgid "Custom number of ballot papers"
 msgstr "Uživatelsky stanovený počet hlasovacích lístků"
 
@@ -725,7 +726,7 @@ msgstr "Uživatelsky stanovený počet hlasovacích lístků"
 #: core/static/templates/core/projector-controls.html:307
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:273
 #: motions/static/templates/motions/motion-detail.html:45
-#: projector-button.html:23 users/static/js/users/base.js:162
+#: projector-button.html:23 users/static/js/users/base.js:165
 msgid "Default"
 msgstr "Výchozí"
 
@@ -733,35 +734,35 @@ msgstr "Výchozí"
 msgid "Default comment on the ballot paper"
 msgstr "Výchozí poznámka na hlasovacím lístku"
 
-#: motions/static/js/motions/site.js:1962
+#: motions/static/js/motions/site.js:1963
 msgid "Default line numbering"
 msgstr "Výchozí číslování řádků"
 
-#: assignments/static/js/assignments/site.js:917
+#: assignments/static/js/assignments/site.js:919
 msgid ""
 "Default method to check whether a candidate has reached the required "
 "majority."
 msgstr "Výchozí postup pro přezkoušení, zda uchazeč dosáhl požadovanou většinu."
 
-#: motions/static/js/motions/site.js:2006
+#: motions/static/js/motions/site.js:2007
 msgid ""
 "Default method to check whether a motion has reached the required majority."
 msgstr "Výchozí postup pro přezkoušení, zda návrh dosáhl požadovanou většinu."
 
-#: core/static/js/core/site.js:1704
+#: core/static/js/core/site.js:1703
 msgid "Default projector"
 msgstr "Výchozí promítací přístroj"
 
-#: motions/static/js/motions/site.js:1974
+#: motions/static/js/motions/site.js:1975
 msgid "Default text version for change recommendations"
-msgstr ""
+msgstr "Výchozí verze textu pro doporučení změn"
 
-#: users/static/js/users/base.js:163
+#: users/static/js/users/base.js:166
 msgid "Delegates"
 msgstr "Zástupci"
 
 #: agenda/static/templates/agenda/item-list.html:287
-#: assignments/static/templates/assignments/assignment-detail.html:146
+#: assignments/static/templates/assignments/assignment-detail.html:148
 #: assignments/static/templates/assignments/assignment-list.html:257
 #: core/static/templates/core/manage-projectors.html:72
 #: core/static/templates/core/tag-list.html:45
@@ -770,7 +771,7 @@ msgstr "Zástupci"
 #: motions/static/templates/motions/motion-block-list.html:44
 #: motions/static/templates/motions/motion-detail.html:308
 #: motions/static/templates/motions/motion-detail.html:516
-#: motions/static/templates/motions/motion-detail/view-diff.html:29
+#: motions/static/templates/motions/motion-detail/view-diff.html:30
 #: motions/static/templates/motions/motion-detail/view-original.html:36
 #: motions/static/templates/motions/motion-list.html:516
 #: motions/static/templates/motions/motion-list.html:84
@@ -785,7 +786,7 @@ msgstr "Smazat vybrané volby"
 
 #: agenda/static/templates/agenda/item-list.html:126
 msgid "Delete selected items"
-msgstr "Smazat vybrané položky"
+msgstr "Smazat vybrané body"
 
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:136
 msgid "Delete selected mediafiles"
@@ -799,7 +800,7 @@ msgstr "Smazat vybrané návrhy"
 msgid "Delete selected participants"
 msgstr "Smazat vybrané účastníky"
 
-#: motions/static/js/motions/base.js:760 motions/static/js/motions/pdf.js:199
+#: motions/static/js/motions/base.js:782 motions/static/js/motions/pdf.js:199
 #: motions/static/js/motions/site.js:249
 #: motions/static/templates/motions/motion-detail/change-summary.html:26
 msgid "Deletion"
@@ -830,18 +831,18 @@ msgid ""
 "instead of deleting the account."
 msgstr "Určuje, zda se má s tímto uživatelem zacházet jako s činným. Zrušte vybrání namísto smazání účtu."
 
-#: motions/static/templates/motions/motion-detail/toolbar.html:124
-#: motions/static/templates/motions/motion-detail/toolbar.html:156
+#: motions/static/templates/motions/motion-detail/toolbar.html:123
+#: motions/static/templates/motions/motion-detail/toolbar.html:155
 msgid "Diff version"
 msgstr "Znázornění změn"
 
-#: assignments/static/js/assignments/site.js:921
-#: motions/static/js/motions/site.js:2010
+#: assignments/static/js/assignments/site.js:923
+#: motions/static/js/motions/site.js:2011
 msgid "Disabled"
 msgstr "Vypnuto"
 
-#: assignments/static/js/assignments/site.js:910
-#: motions/static/js/motions/site.js:2004
+#: assignments/static/js/assignments/site.js:912
+#: motions/static/js/motions/site.js:2005
 msgid "Disabled (no percents)"
 msgstr "Vypnuto (žádná procenta)"
 
@@ -850,11 +851,11 @@ msgid ""
 "Display an identifier message on all projectors with the id and the name."
 msgstr "Zobrazit oznámení o identifikaci na všech promítacích přístrojích se jménem a ID."
 
-#: motions/static/js/motions/base.js:818
+#: motions/static/js/motions/base.js:840
 msgid "Do not concern"
 msgstr "Nezaobírat se"
 
-#: motions/static/js/motions/base.js:798
+#: motions/static/js/motions/base.js:820
 msgid "Do not decide"
 msgstr "Nerozhodovat"
 
@@ -870,8 +871,6 @@ msgstr "Nevytvářet novou verzi."
 
 #: agenda/static/templates/agenda/item-list.html:347
 #: agenda/static/templates/agenda/item-list.html:352
-#: motions/static/templates/motions/motion-list.html:182
-#: motions/static/templates/motions/motion-list.html:346
 msgid "Done"
 msgstr "Hotovo"
 
@@ -909,7 +908,7 @@ msgstr "Doba trvání"
 #: motions/static/templates/motions/motion-block-list.html:42
 #: motions/static/templates/motions/motion-detail.html:300
 #: motions/static/templates/motions/motion-detail.html:53
-#: motions/static/templates/motions/motion-detail/view-diff.html:34
+#: motions/static/templates/motions/motion-detail/view-diff.html:35
 #: motions/static/templates/motions/motion-list.html:513
 #: topics/static/templates/topics/topic-detail.html:19
 #: users/static/templates/users/user-detail.html:14
@@ -982,18 +981,18 @@ msgid ""
 msgstr "Upravení textu není už možné, jakmile jsou předložena doporučení změn."
 
 #: assignments/static/js/assignments/base.js:330
-#: assignments/static/js/assignments/site.js:603
+#: assignments/static/js/assignments/site.js:605
 #: assignments/static/templates/assignments/assignment-detail.html:31
 #: assignments/static/templates/assignments/slide_assignment.html:7
 msgid "Election"
 msgstr "Volba"
 
-#: assignments/static/js/assignments/site.js:894
-#: assignments/static/templates/assignments/assignment-detail.html:190
+#: assignments/static/js/assignments/site.js:896
+#: assignments/static/templates/assignments/assignment-detail.html:192
 msgid "Election method"
 msgstr "Způsob volby"
 
-#: assignments/static/templates/assignments/assignment-detail.html:124
+#: assignments/static/templates/assignments/assignment-detail.html:125
 msgid "Election result"
 msgstr "Výsledek volby"
 
@@ -1002,7 +1001,7 @@ msgstr "Výsledek volby"
 #: assignments/static/js/assignments/site.js:31
 #: assignments/static/js/assignments/site.js:387
 #: assignments/static/js/assignments/site.js:49
-#: assignments/static/js/assignments/site.js:899
+#: assignments/static/js/assignments/site.js:901
 #: assignments/static/templates/assignments/assignment-list.html:13
 msgid "Elections"
 msgstr "Volby"
@@ -1023,35 +1022,35 @@ msgstr "Ukončit nynější projev"
 msgid "End speech"
 msgstr "Ukončit projev"
 
-#: agenda/static/js/agenda/site.js:712
+#: agenda/static/js/agenda/site.js:713
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr "Zadejte dobu trvání v sekundách. Zvolte 0 pro vypnutí upozorňující barvy."
 
-#: assignments/static/templates/assignments/assignment-detail.html:161
+#: assignments/static/templates/assignments/assignment-detail.html:163
 msgid "Enter votes"
 msgstr "Zadat hlasy"
 
-#: core/static/js/core/base.js:473
+#: core/static/js/core/base.js:485
 msgid "Error"
-msgstr ""
+msgstr "Chyba"
 
-#: pdf-status.html:18
+#: core/static/js/core/pdf.js:838
 msgid "Error while generating PDF file"
-msgstr ""
+msgstr "Chyba při vytváření souboru PDF"
 
 #: users/static/js/users/site.js:986
 msgid "Error: Given name or surname is required."
 msgstr "Chyba: Je požadováno křestní jméno nebo příjmení."
 
-#: motions/static/js/motions/site.js:1632
+#: motions/static/js/motions/site.js:1633
 msgid "Error: Identifier already exists."
 msgstr "Chyba: Identifikátor již existuje."
 
-#: motions/static/js/motions/site.js:1643
+#: motions/static/js/motions/site.js:1644
 msgid "Error: Text is required."
 msgstr "Chyba: Je požadován text."
 
-#: motions/static/js/motions/site.js:1638 topics/static/js/topics/site.js:308
+#: motions/static/js/motions/site.js:1639 topics/static/js/topics/site.js:308
 msgid "Error: Title is required."
 msgstr "Chyba: Je požadován název."
 
@@ -1059,23 +1058,23 @@ msgstr "Chyba: Je požadován název."
 msgid "Estimated end:"
 msgstr "Odhadovaný konec:"
 
-#: core/static/js/core/site.js:1675
+#: core/static/js/core/site.js:1674
 msgid "Event"
 msgstr "Událost"
 
-#: core/static/js/core/site.js:1677
+#: core/static/js/core/site.js:1676
 msgid "Event date"
 msgstr "Časový úsek události"
 
-#: core/static/js/core/site.js:1678
+#: core/static/js/core/site.js:1677
 msgid "Event location"
 msgstr "Místo události"
 
-#: core/static/js/core/site.js:1669
+#: core/static/js/core/site.js:1668
 msgid "Event name"
 msgstr "Název události"
 
-#: core/static/js/core/site.js:1679
+#: core/static/js/core/site.js:1678
 msgid "Event organizer"
 msgstr "Pořadatel události"
 
@@ -1122,17 +1121,17 @@ msgstr "Soubory"
 msgid "Filter"
 msgstr "Filtr"
 
-#: motions/static/templates/motions/motion-detail/toolbar.html:131
-#: motions/static/templates/motions/motion-detail/toolbar.html:161
+#: motions/static/templates/motions/motion-detail/toolbar.html:130
+#: motions/static/templates/motions/motion-detail/toolbar.html:160
 msgid "Final version"
-msgstr ""
+msgstr "Konečná verze"
 
 #: motions/static/templates/motions/motion-detail.html:36
 msgctxt "resolution"
 msgid "Final version"
-msgstr ""
+msgstr "Konečná verze"
 
-#: assignments/static/js/assignments/site.js:927
+#: assignments/static/js/assignments/site.js:929
 msgid "Finished"
 msgstr "Dokončeno"
 
@@ -1144,15 +1143,15 @@ msgstr "Sledovat doporučení"
 msgid "Follow recommendations for all motions"
 msgstr "Sledovat doporučení pro všechny návrhy"
 
-#: core/static/js/core/site.js:1697
+#: core/static/js/core/site.js:1696
 msgid "Font color of projector header and footer"
 msgstr "Barva písma záhlaví a zápatí promítacího přístroje"
 
-#: core/static/js/core/site.js:1698
+#: core/static/js/core/site.js:1697
 msgid "Font color of projector headline"
 msgstr "Barva písma nadpisu promítacího přístroje"
 
-#: assignments/static/js/assignments/site.js:902
+#: assignments/static/js/assignments/site.js:904
 msgid ""
 "For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base "
 "depends on the election method: If there is only one option per candidate, "
@@ -1164,15 +1163,15 @@ msgstr "Při Ano/Ne/Zdržení se na uchazeče a Ano/Ne na uchazeče 100 % zákla
 msgid "From Line"
 msgstr "Od řádku"
 
-#: core/static/js/core/site.js:1683
+#: core/static/js/core/site.js:1682
 msgid "Front page text"
 msgstr "Text na první straně"
 
-#: core/static/js/core/site.js:1681
+#: core/static/js/core/site.js:1680
 msgid "Front page title"
 msgstr "Název první strany"
 
-#: core/static/js/core/site.js:1674 motions/static/js/motions/site.js:1954
+#: core/static/js/core/site.js:1673 motions/static/js/motions/site.js:1955
 #: users/static/js/users/site.js:1235 users/static/js/users/site.js:1550
 msgid "General"
 msgstr "Obecné"
@@ -1187,9 +1186,9 @@ msgstr "Vytvořit"
 msgid "Generate new passwords"
 msgstr "Vytvořit nové heslo"
 
-#: pdf-status.html:8
-msgid "Generating PDF file {{ filename }} ..."
-msgstr ""
+#: core/static/js/core/pdf.js:829
+msgid "Generating PDF file"
+msgstr "Vytváří se soubor PDF"
 
 #: users/static/js/users/site.js:1553 users/static/js/users/site.js:249
 #: users/static/js/users/site.js:558
@@ -1230,17 +1229,17 @@ msgstr "Skrýt"
 
 #: agenda/static/templates/agenda/item-sort.html:18
 msgid "Hide internal items"
-msgstr ""
+msgstr "Skrýt vnitřní body"
 
-#: assignments/static/templates/assignments/assignment-detail.html:136
+#: assignments/static/templates/assignments/assignment-detail.html:138
 msgid "Hint on the ballot paper."
-msgstr ""
+msgstr "Rada na hlasovacím lístku."
 
-#: core/static/js/core/site.js:162 core/static/js/core/site.js:304
+#: core/static/js/core/site.js:161 core/static/js/core/site.js:303
 msgid "Home"
 msgstr "Domovská stránka"
 
-#: motions/static/js/motions/site.js:1956
+#: motions/static/js/motions/site.js:1957
 #: motions/static/js/motions/site.js:213 motions/static/js/motions/site.js:314
 #: motions/static/js/motions/site.js:800
 #: motions/static/templates/motions/motion-import.html:22
@@ -1330,7 +1329,7 @@ msgid "Initial password can not be changed."
 msgstr "Počáteční heslo nesmí být změněno."
 
 #. Line numbering: Inline
-#: motions/static/js/motions/site.js:1966
+#: motions/static/js/motions/site.js:1967
 msgid "Inline"
 msgstr "Uvnitř"
 
@@ -1342,11 +1341,11 @@ msgstr "Uvnitř"
 msgid "Inline editing"
 msgstr "Úpravy uvnitř"
 
-#: agenda/static/js/agenda/site.js:708
+#: agenda/static/js/agenda/site.js:709
 msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr "Zadávací formát: DD.MM.RRRR HH:MM"
 
-#: motions/static/js/motions/base.js:757 motions/static/js/motions/pdf.js:197
+#: motions/static/js/motions/base.js:779 motions/static/js/motions/pdf.js:197
 #: motions/static/js/motions/site.js:248
 #: motions/static/templates/motions/motion-detail/change-summary.html:25
 msgid "Insertion"
@@ -1368,15 +1367,15 @@ msgid "Internal items"
 msgstr "Vnitřní body"
 
 #: assignments/static/js/assignments/pdf.js:199
-#: assignments/static/js/assignments/site.js:833
-#: assignments/static/templates/assignments/assignment-detail.html:255
+#: assignments/static/js/assignments/site.js:835
+#: assignments/static/templates/assignments/assignment-detail.html:259
 #: assignments/static/templates/assignments/slide_assignment.html:87
 #: motions/static/js/motions/site.js:599
 #: motions/static/templates/motions/motion-detail.html:374
 msgid "Invalid ballots"
 msgstr "Neplatné hlasovací lístky"
 
-#: agenda/static/js/agenda/site.js:703
+#: agenda/static/js/agenda/site.js:704
 msgid "Invalid input."
 msgstr "Neplatné zadání."
 
@@ -1453,11 +1452,11 @@ msgstr "Je přítomná"
 #: assignments/static/js/assignments/site.js:325
 #: motions/static/templates/motions/motion-list.html:299
 msgid "Item"
-msgstr "Položka"
+msgstr "Bod"
 
 #: motions/static/templates/motions/motion-detail/toolbar.html:85
 msgid "Jump to a given line number"
-msgstr ""
+msgstr "Skočit na zadané číslo řádku"
 
 #: motions/static/js/motions/site.js:814
 #: motions/static/templates/motions/motion-detail.html:519
@@ -1472,8 +1471,8 @@ msgstr "Poslední řečník"
 msgid "Leave empty for autodetection of the separator."
 msgstr "Ponechat prázdné pro automatické rozpoznání oddělovače."
 
-#: core/static/js/core/site.js:1680 core/static/js/core/site.js:344
-#: index.html:250 legalnotice.html:3
+#: core/static/js/core/site.js:1679 core/static/js/core/site.js:343
+#: index.html:221 legalnotice.html:3
 msgid "Legal notice"
 msgstr "Soudní oznámení"
 
@@ -1484,7 +1483,7 @@ msgstr "Soudní oznámení"
 msgid "Line"
 msgstr "Řádek"
 
-#: motions/static/js/motions/site.js:1969
+#: motions/static/js/motions/site.js:1970
 msgid "Line length"
 msgstr "Délka řádku"
 
@@ -1503,7 +1502,7 @@ msgstr "Seznam přístupových dat"
 msgid "List of participants"
 msgstr "Seznam účastníků"
 
-#: agenda/static/js/agenda/site.js:710
+#: agenda/static/js/agenda/site.js:711
 #: agenda/static/templates/agenda/item-detail.html:21
 #: agenda/static/templates/agenda/item-detail.html:47
 #: agenda/static/templates/agenda/item-list.html:284
@@ -1517,7 +1516,7 @@ msgstr "Seznam účastníků"
 msgid "List of speakers"
 msgstr "Seznam řečníků"
 
-#: core/static/js/core/site.js:1701
+#: core/static/js/core/site.js:1700
 msgid "List of speakers overlay"
 msgstr "Přidání seznamu řečníků"
 
@@ -1537,21 +1536,21 @@ msgstr "Odhlásit se"
 msgid "Manage"
 msgstr "Spravovat"
 
-#: core/static/js/core/site.js:329
+#: core/static/js/core/site.js:328
 #: core/static/templates/core/manage-projectors.html:35
 msgid "Manage projectors"
 msgstr "Spravovat promítací přístroje"
 
 #: core/static/templates/core/projector-controls.html:316
 msgid "Manage the current list of speakers"
-msgstr ""
+msgstr "Spravovat nynější seznam řečníků"
 
-#: core/static/js/core/base.js:866 core/static/js/core/site.js:421
+#: core/static/js/core/base.js:878 core/static/js/core/site.js:420
 #: core/static/templates/core/projector-controls.html:235
 msgid "Message"
 msgstr "Oznámení"
 
-#: core/static/js/core/base.js:867
+#: core/static/js/core/base.js:879
 #: core/static/templates/core/projector-controls.html:229
 msgid "Messages"
 msgstr "Oznámení"
@@ -1589,12 +1588,12 @@ msgstr "Návrhový blok"
 msgid "Motion blocks"
 msgstr "Návrhové bloky"
 
-#: motions/static/js/motions/site.js:1960
+#: motions/static/js/motions/site.js:1961
 msgid "Motion preamble"
 msgstr "Úvod návrhu"
 
 #: motions/static/js/motions/base.js:214
-#: motions/static/js/motions/site.js:1951 motions/static/js/motions/site.js:22
+#: motions/static/js/motions/site.js:1952 motions/static/js/motions/site.js:22
 #: motions/static/js/motions/site.js:34 motions/static/js/motions/site.js:52
 #: motions/static/js/motions/site.js:894
 #: motions/static/templates/motions/motion-block-list.html:30
@@ -1602,7 +1601,7 @@ msgstr "Úvod návrhu"
 msgid "Motions"
 msgstr "Návrhy"
 
-#: core/static/js/core/site.js:455
+#: core/static/js/core/site.js:454
 #: core/static/templates/core/manage-projectors.html:77
 #: core/static/templates/core/tag-list.html:34
 #: motions/static/js/motions/site.js:544
@@ -1612,17 +1611,17 @@ msgstr "Návrhy"
 msgid "Name"
 msgstr "Název"
 
-#: motions/static/js/motions/site.js:1973
+#: motions/static/js/motions/site.js:1974
 msgid "Name of recommender"
 msgstr "Jméno dárce doporučení"
 
-#: motions/static/js/motions/base.js:824
+#: motions/static/js/motions/base.js:846
 msgid "Needs review"
 msgstr "Potřebuje posoudit"
 
 #: agenda/static/templates/agenda/item-list.html:8
 #: assignments/static/templates/assignments/assignment-list.html:6
-#: core/static/js/core/site.js:990
+#: core/static/js/core/site.js:989
 #: core/static/templates/core/manage-projectors.html:8
 #: core/static/templates/core/tag-list.html:10
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:6
@@ -1642,7 +1641,7 @@ msgstr "Nový pozměňovací návrh"
 msgid "New amendment of motion"
 msgstr "Nový pozměňovací návrh k návrhu"
 
-#: assignments/static/templates/assignments/assignment-detail.html:127
+#: assignments/static/templates/assignments/assignment-detail.html:129
 msgid "New ballot"
 msgstr "Nové hlasování"
 
@@ -1650,7 +1649,7 @@ msgstr "Nové hlasování"
 msgid "New category"
 msgstr "Nový obor činnosti"
 
-#: motions/static/js/motions/site.js:1682
+#: motions/static/js/motions/site.js:1683
 msgid "New category will be created."
 msgstr "Bude vytvořen nový obor činnosti."
 
@@ -1678,7 +1677,7 @@ msgstr "Nový návrhový blok"
 msgid "New participant"
 msgstr "Nový účastník"
 
-#: motions/static/js/motions/site.js:1665
+#: motions/static/js/motions/site.js:1666
 msgid "New participant will be created."
 msgstr "Bude vytvořen nový účastník."
 
@@ -1709,8 +1708,8 @@ msgid "Next page"
 msgstr "Další strana"
 
 #: assignments/static/js/assignments/pdf.js:305
-#: assignments/static/js/assignments/site.js:627
-#: assignments/static/js/assignments/site.js:783
+#: assignments/static/js/assignments/site.js:629
+#: assignments/static/js/assignments/site.js:785
 #: motions/static/js/motions/pdf.js:118 motions/static/js/motions/pdf.js:349
 #: motions/static/js/motions/site.js:573
 #: motions/static/templates/motions/motion-detail.html:341
@@ -1735,11 +1734,11 @@ msgstr "Nestanoven žádný obor činnosti"
 msgid "No change recommendations yet"
 msgstr "Dosud žádná doporučení změn"
 
-#: motions/static/js/motions/base.js:819
+#: motions/static/js/motions/base.js:841
 msgid "No concernment"
 msgstr "Neprobíráno"
 
-#: motions/static/js/motions/base.js:799
+#: motions/static/js/motions/base.js:821
 msgid "No decision"
 msgstr "Žádné rozhodnutí"
 
@@ -1754,7 +1753,7 @@ msgstr "Nestanovena žádná skupina"
 
 #: agenda/static/js/agenda/site.js:148
 msgid "No internal items"
-msgstr "Žádné vnitřní zápisy"
+msgstr "Žádné vnitřní body"
 
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:107
 msgid "No media file projected."
@@ -1778,7 +1777,7 @@ msgid "No recommendation set"
 msgstr "Nestanoveno žádné doporučení"
 
 #: agenda/static/templates/agenda/list-of-speakers-partial-management.html:109
-#: assignments/static/templates/assignments/assignment-detail.html:104
+#: assignments/static/templates/assignments/assignment-detail.html:105
 #: core/static/templates/core/select-multiple.html:2
 #: core/static/templates/core/select-single.html:2
 msgid "No results available ..."
@@ -1796,18 +1795,18 @@ msgid "No tag set"
 msgstr "Nenastaveno žádné klíčové slovo"
 
 #. abbreviation for number
-#: users/static/js/users/base.js:79
+#: users/static/js/users/base.js:82
 #: users/static/templates/users/user-list.html:311
 #: users/static/templates/users/user-list.html:315
 msgid "No."
 msgstr "Č."
 
 #. Line numbering: None
-#: motions/static/js/motions/site.js:1968
+#: motions/static/js/motions/site.js:1969
 msgid "None"
 msgstr "Žádné"
 
-#: motions/static/templates/motions/motion-detail/view-diff.html:13
+#: motions/static/templates/motions/motion-detail/view-diff.html:14
 msgid "Not rejected"
 msgstr "Neodmítnuto"
 
@@ -1815,7 +1814,7 @@ msgstr "Neodmítnuto"
 msgid ""
 "Note: You have to reject all change recommendations if the plenum does not "
 "follow the recommendation."
-msgstr ""
+msgstr "Poznámka: Musíte odmítnout všechna doporučení změn, pokud plenární zasedání nesleduje doporučení."
 
 #: motions/static/templates/motions/motion-detail/view-original.html:45
 msgid "Now choose the last line to be changed"
@@ -1825,22 +1824,22 @@ msgstr "Nyní klepněte na poslední řádek k změnění"
 msgid "Number"
 msgstr "Číslo"
 
-#: motions/static/js/motions/site.js:1986
+#: motions/static/js/motions/site.js:1987
 msgid "Number of (minimum) required supporters for a motion"
 msgstr "Nejnižší počet podporovatelů potřebných pro návrh"
 
-#: assignments/static/js/assignments/site.js:912
-#: motions/static/js/motions/site.js:2012
+#: assignments/static/js/assignments/site.js:914
+#: motions/static/js/motions/site.js:2013
 msgid "Number of all delegates"
 msgstr "Počet všech zástupců"
 
-#: assignments/static/js/assignments/site.js:913
-#: motions/static/js/motions/site.js:2013
+#: assignments/static/js/assignments/site.js:915
+#: motions/static/js/motions/site.js:2014
 msgid "Number of all participants"
 msgstr "Počet všech účastníků"
 
-#: assignments/static/js/assignments/site.js:911
-#: motions/static/js/motions/site.js:2011
+#: assignments/static/js/assignments/site.js:913
+#: motions/static/js/motions/site.js:2012
 msgid "Number of ballot papers (selection)"
 msgstr "Počet hlasovacích lístků (předběžná volba)"
 
@@ -1848,7 +1847,7 @@ msgstr "Počet hlasovacích lístků (předběžná volba)"
 msgid "Number of candidates"
 msgstr "Počet uchazečů"
 
-#: agenda/static/js/agenda/site.js:709
+#: agenda/static/js/agenda/site.js:710
 msgid "Number of last speakers to be shown on the projector"
 msgstr "Počet posledních na promítacím přístroji zobrazených  řečníků"
 
@@ -1858,7 +1857,7 @@ msgstr "Počet posledních na promítacím přístroji zobrazených  řečníků
 msgid "Number of persons to be elected"
 msgstr "Počet osob ke zvolení"
 
-#: motions/static/js/motions/site.js:1957
+#: motions/static/js/motions/site.js:1958
 msgid "Numbered per category"
 msgstr "Číslovat na základě oborů činnosti"
 
@@ -1867,19 +1866,23 @@ msgstr "Číslovat na základě oborů činnosti"
 msgid "Numbering"
 msgstr "Číslování"
 
-#: agenda/static/js/agenda/site.js:700
+#: agenda/static/js/agenda/site.js:701
 msgid "Numbering prefix for agenda items"
-msgstr "Předpona pro číslování položek pořadu jednání"
+msgstr "Předpona pro číslování bodů pořadu jednání"
 
-#: agenda/static/js/agenda/site.js:704
+#: agenda/static/js/agenda/site.js:705
 msgid "Numeral system for agenda items"
-msgstr "Číselný systém pro položky pořadu jednání"
+msgstr "Číselný systém pro body pořadu jednání"
+
+#: core/static/js/core/base.js:204 core/static/js/core/base.js:206
+msgid "OK"
+msgstr "Ok"
 
 #: users/static/js/users/site.js:451
 msgid "Old password"
 msgstr "Staré heslo"
 
-#: assignments/static/templates/assignments/assignment-detail.html:191
+#: assignments/static/templates/assignments/assignment-detail.html:193
 msgid "One vote per candidate"
 msgstr "Jeden hlas pro uchazeče"
 
@@ -1903,15 +1906,15 @@ msgstr "Otevřít"
 
 #: assignments/static/templates/assignments/assignment-form.html:13
 msgid "Open election detail view after save."
-msgstr ""
+msgstr "Otevřít pohled na podrobnosti voleb po uložení."
 
 #: agenda/static/js/agenda/site.js:142
 msgid "Open items"
-msgstr "Otevřené zápisy"
+msgstr "Otevřené body"
 
 #: motions/static/templates/motions/motion-form.html:14
 msgid "Open motion detail view after save."
-msgstr ""
+msgstr "Otevřít pohled na podrobnosti návrhu po uložení."
 
 #: users/static/js/users/pdf.js:186
 msgid "OpenSlides access data"
@@ -1925,13 +1928,13 @@ msgstr "Přístupová data k OpenSlides"
 msgid "Origin"
 msgstr "Původ"
 
-#: motions/static/templates/motions/motion-detail/toolbar.html:110
-#: motions/static/templates/motions/motion-detail/toolbar.html:146
+#: motions/static/templates/motions/motion-detail/toolbar.html:109
+#: motions/static/templates/motions/motion-detail/toolbar.html:145
 msgid "Original version"
 msgstr "Původní verze"
 
 #. Line numbering: Outside
-#: motions/static/js/motions/site.js:1964
+#: motions/static/js/motions/site.js:1965
 msgid "Outside"
 msgstr "Vně"
 
@@ -1942,9 +1945,9 @@ msgstr "Vně"
 msgid "PDF"
 msgstr "PDF"
 
-#: pdf-status.html:13
+#: core/static/js/core/pdf.js:833
 msgid "PDF successfully generated."
-msgstr ""
+msgstr "PDF úspěšně vytvořeno."
 
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:44
 msgid "Page"
@@ -1954,7 +1957,7 @@ msgstr "Strana"
 #: motions/static/js/motions/motion-block.js:94
 #: motions/static/js/motions/site.js:386 topics/static/js/topics/site.js:136
 msgid "Parent item"
-msgstr "Rodičovská položka"
+msgstr "Rodičovský bod"
 
 #: users/static/templates/users/user-detail.html:19
 msgid "Participant"
@@ -1980,13 +1983,13 @@ msgstr "Heslo"
 
 #: users/static/js/users/site.js:889
 msgid "Password confirmation does not match."
-msgstr ""
+msgstr "Potvrzení hesla se neshoduje."
 
 #: core/static/templates/core/projector-controls.html:181
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: motions/static/js/motions/base.js:805
+#: motions/static/js/motions/base.js:827
 msgid "Permission"
 msgstr "Oprávnění"
 
@@ -1994,7 +1997,7 @@ msgstr "Oprávnění"
 msgid "Permissions"
 msgstr "Oprávnění"
 
-#: motions/static/js/motions/base.js:804
+#: motions/static/js/motions/base.js:826
 msgid "Permit"
 msgstr "Schválit"
 
@@ -2030,15 +2033,15 @@ msgstr "Zadejte, prosím, nové jméno pro {{ group.name }}:"
 msgid "Please note:"
 msgstr "Vezměte, prosím, na vědomí"
 
-#: motions/static/js/motions/site.js:2019
+#: motions/static/js/motions/site.js:2020
 msgid "Preamble text for PDF and DOCX documents (all motions)"
 msgstr "Text úvodu dokumentů PDF a DOCX (všechny návrhy)"
 
-#: assignments/static/js/assignments/site.js:923
+#: assignments/static/js/assignments/site.js:925
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Text úvodu dokumentu PDF (všechny volby)"
 
-#: core/static/js/core/site.js:1699
+#: core/static/js/core/site.js:1698
 msgid "Predefined seconds of new countdowns"
 msgstr "Předem stanovené sekundy pro nová odpočítávání"
 
@@ -2047,7 +2050,7 @@ msgstr "Předem stanovené sekundy pro nová odpočítávání"
 msgid "Prefix"
 msgstr "Předpona"
 
-#: motions/static/js/motions/site.js:1980
+#: motions/static/js/motions/site.js:1981
 msgid "Prefix for the identifier for amendments"
 msgstr "Předpona identifikátoru pro pozměňovací návrhy"
 
@@ -2057,7 +2060,7 @@ msgstr "Předpona identifikátoru pro pozměňovací návrhy"
 msgid "Present"
 msgstr "Přítomen"
 
-#: core/static/js/core/site.js:1668
+#: core/static/js/core/site.js:1667
 msgid "Presentation and assembly system"
 msgstr "Předváděcí a schůzovací systém"
 
@@ -2075,16 +2078,16 @@ msgstr "Náhled"
 msgid "Previous page"
 msgstr "Předchozí strana"
 
-#: assignments/static/templates/assignments/assignment-detail.html:155
+#: assignments/static/templates/assignments/assignment-detail.html:157
 #: motions/static/templates/motions/motion-detail.html:314
 msgid "Print ballot paper"
 msgstr "Tisk hlasovacích lístků"
 
-#: motions/static/js/motions/site.js:1995
+#: motions/static/js/motions/site.js:1996
 msgid "Private"
 msgstr "Soukromý"
 
-#: assignments/static/templates/assignments/assignment-detail.html:172
+#: assignments/static/templates/assignments/assignment-detail.html:174
 msgid "Project"
 msgstr "Promítat"
 
@@ -2095,12 +2098,12 @@ msgstr "Promítnout pořad jednání"
 #: agenda/static/templates/agenda/current-list-of-speakers.html:35
 #: core/static/templates/core/projector-controls.html:298
 msgid "Project as overlay"
-msgstr ""
+msgstr "Promítnout jako překrytí"
 
 #: agenda/static/templates/agenda/current-list-of-speakers.html:29
 #: core/static/templates/core/projector-controls.html:292
 msgid "Project as slide"
-msgstr ""
+msgstr "Promítnout jako snímek"
 
 #: agenda/static/templates/agenda/current-list-of-speakers.html:13
 msgid "Project current list of speakers"
@@ -2108,7 +2111,7 @@ msgstr "Promítnout nynější seznam řečníků"
 
 #: agenda/static/templates/agenda/item-list.html:232
 msgid "Project item"
-msgstr "Promítnout položku"
+msgstr "Promítnout bod"
 
 #: motions/static/templates/motions/motion-detail.html:20
 msgid "Project motion"
@@ -2117,7 +2120,7 @@ msgstr "Promítnout návrh"
 #: agenda/static/templates/agenda/current-list-of-speakers.html:10
 #: core/static/templates/core/projector-controls.html:274
 msgid "Project the current list of speakers"
-msgstr ""
+msgstr "Promítnout nynější seznam řečníků"
 
 #: core/static/templates/core/manage-projectors.html:55
 msgid "Projection defaults"
@@ -2126,8 +2129,8 @@ msgstr "Výchozí pro promítání"
 #: agenda/static/templates/agenda/item-detail.html:14
 #: agenda/static/templates/agenda/item-list.html:229
 #: agenda/static/templates/agenda/item-list.html:27
-#: core/static/js/core/projector.js:327 core/static/js/core/site.js:1692
-#: index.html:190 index.html:218 index.html:231
+#: core/static/js/core/projector.js:327 core/static/js/core/site.js:1691
+#: index.html:189 index.html:202 index.html:236
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:254
 #: motions/static/templates/motions/motion-detail.html:16
 #: projector-button.html:2 projector-container.html:7
@@ -2135,28 +2138,28 @@ msgstr "Výchozí pro promítání"
 msgid "Projector"
 msgstr "Promítací přístroj"
 
-#: core/static/js/core/site.js:1693
+#: core/static/js/core/site.js:1692
 msgid "Projector language"
 msgstr "Jazyk promítacího přístroje"
 
-#: motions/static/js/motions/site.js:1994
+#: motions/static/js/motions/site.js:1995
 msgid "Public"
 msgstr "Veřejný"
 
-#: assignments/static/templates/assignments/assignment-detail.html:168
+#: assignments/static/templates/assignments/assignment-detail.html:170
 msgid "Publish"
 msgstr "Zveřejnit"
 
-#: assignments/static/templates/assignments/assignment-detail.html:210
+#: assignments/static/templates/assignments/assignment-detail.html:212
 msgid "Quorum"
 msgstr "Usnášeníschopný počet"
 
-#: assignments/static/templates/assignments/assignment-detail.html:242
+#: assignments/static/templates/assignments/assignment-detail.html:246
 msgid ""
 "Quorum ({{ option.getVoteYes() - option.majorityReached }}) not reached."
 msgstr "Usnášeníschopného počtu (kvorum) ({{ option.getVoteYes() - option.majorityReached }}) nedosaženo."
 
-#: assignments/static/templates/assignments/assignment-detail.html:239
+#: assignments/static/templates/assignments/assignment-detail.html:243
 msgid "Quorum ({{ option.getVoteYes() - option.majorityReached }}) reached."
 msgstr "Usnášeníschopného počtu (kvorum) ({{ option.getVoteYes() - option.majorityReached }}) dosaženo."
 
@@ -2173,7 +2176,7 @@ msgstr "Usnášeníschopného počtu (kvorum) ({{ voteYes.value - isReached() }}
 #: motions/static/templates/motions/motion-detail.html:479
 #: motions/static/templates/motions/motion-import.html:25
 #: motions/static/templates/motions/motion-import.html:46
-#: motions/static/templates/motions/slide_motion.html:125
+#: motions/static/templates/motions/slide_motion.html:122
 msgid "Reason"
 msgstr "Zdůvodnění"
 
@@ -2182,7 +2185,7 @@ msgstr "Zdůvodnění"
 msgid "Recommendation"
 msgstr "Doporučení"
 
-#: motions/static/js/motions/base.js:821
+#: motions/static/js/motions/base.js:843
 msgid "Refer to committee"
 msgstr "Předat do výboru"
 
@@ -2190,33 +2193,33 @@ msgstr "Předat do výboru"
 msgid "Reference for current list of speakers"
 msgstr "Odkaz pro nynější seznam řečníků"
 
-#: motions/static/js/motions/base.js:822
+#: motions/static/js/motions/base.js:844
 msgid "Referral to committee"
 msgstr "Předání do výboru"
 
-#: motions/static/js/motions/base.js:795 motions/static/js/motions/base.js:810
+#: motions/static/js/motions/base.js:817 motions/static/js/motions/base.js:832
 msgid "Reject"
 msgstr "Odmítnout"
 
-#: motions/static/js/motions/base.js:826
+#: motions/static/js/motions/base.js:848
 msgid "Reject (not authorized)"
 msgstr "Odmítnout (není schváleno)"
 
 #: motions/static/templates/motions/motion-detail/change-summary.html:11
 msgid "Reject all change recommendations"
-msgstr ""
+msgstr "Odmítnout všechna doporučení změn"
 
 #: motions/static/templates/motions/motion-detail/change-summary.html:29
-#: motions/static/templates/motions/motion-detail/view-diff.html:19
-#: motions/static/templates/motions/motion-detail/view-diff.html:39
+#: motions/static/templates/motions/motion-detail/view-diff.html:20
+#: motions/static/templates/motions/motion-detail/view-diff.html:40
 msgid "Rejected"
 msgstr "Odmítnuto"
 
-#: motions/static/js/motions/base.js:796 motions/static/js/motions/base.js:811
+#: motions/static/js/motions/base.js:818 motions/static/js/motions/base.js:833
 msgid "Rejection"
 msgstr "Odmítnutí"
 
-#: motions/static/js/motions/base.js:827
+#: motions/static/js/motions/base.js:849
 msgid "Rejection (not authorized)"
 msgstr "Odmítnutí (není schváleno)"
 
@@ -2231,7 +2234,7 @@ msgstr "Odstranit"
 msgid "Remove all speakers"
 msgstr "Odstranit všechny řečníky"
 
-#: motions/static/js/motions/site.js:1988
+#: motions/static/js/motions/site.js:1989
 msgid ""
 "Remove all supporters of a motion if a submitter edits his motion in early "
 "state"
@@ -2251,7 +2254,7 @@ msgid "Remove group"
 msgstr "Odstranit skupinu"
 
 #: agenda/static/templates/agenda/list-of-speakers-partial-management.html:126
-#: assignments/static/templates/assignments/assignment-detail.html:119
+#: assignments/static/templates/assignments/assignment-detail.html:120
 msgid "Remove me"
 msgstr "Odstranit mě"
 
@@ -2259,7 +2262,7 @@ msgstr "Odstranit mě"
 msgid "Remove message"
 msgstr "Odstranit oznámení"
 
-#: motions/static/js/motions/base.js:763 motions/static/js/motions/pdf.js:195
+#: motions/static/js/motions/base.js:785 motions/static/js/motions/pdf.js:195
 #: motions/static/js/motions/site.js:247
 #: motions/static/templates/motions/motion-detail/change-summary.html:24
 msgid "Replacement"
@@ -2273,9 +2276,9 @@ msgid ""
 "in the first row"
 msgstr "Požadovány hodnoty oddělené čárkou nebo středníkem s těmito názvy sloupců v prvním řádku"
 
-#: assignments/static/js/assignments/site.js:916
-#: assignments/static/templates/assignments/assignment-detail.html:199
-#: motions/static/js/motions/site.js:2005
+#: assignments/static/js/assignments/site.js:918
+#: assignments/static/templates/assignments/assignment-detail.html:201
+#: motions/static/js/motions/site.js:2006
 #: motions/static/templates/motions/motion-detail.html:396
 msgid "Required majority"
 msgstr "Požadovaná většina"
@@ -2321,7 +2324,7 @@ msgstr "Usnesení"
 msgid "Revert"
 msgstr "Vrátit"
 
-#: agenda/static/js/agenda/site.js:706
+#: agenda/static/js/agenda/site.js:707
 msgid "Roman"
 msgstr "Římský"
 
@@ -2370,7 +2373,7 @@ msgstr "Posunout nahoru"
 
 #: agenda/static/templates/agenda/item-list.html:189
 #: assignments/static/templates/assignments/assignment-list.html:165
-#: core/static/js/core/site.js:369 index.html:160
+#: core/static/js/core/site.js:368 index.html:160
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:212
 #: motions/static/templates/motions/motion-list.html:325 search.html:11
 #: users/static/templates/users/user-list.html:242
@@ -2381,7 +2384,7 @@ msgstr "Hledání"
 msgid "Search results"
 msgstr "Výsledky hledání"
 
-#: assignments/static/js/assignments/site.js:925
+#: assignments/static/js/assignments/site.js:927
 msgid "Searching for candidates"
 msgstr "Hledání uchazečů"
 
@@ -2407,7 +2410,7 @@ msgstr "Vybrat soubor"
 #: motions/static/js/motions/motion-block.js:97
 #: motions/static/js/motions/site.js:389 topics/static/js/topics/site.js:139
 msgid "Select a parent item ..."
-msgstr "Vybrat rodičovský prvek..."
+msgstr "Vybrat rodičovský bod..."
 
 #: motions/static/js/motions/site.js:436
 msgid "Select or search a category ..."
@@ -2422,7 +2425,7 @@ msgid "Select or search a motion block ..."
 msgstr "Vybrat nebo hledat návrhový blok..."
 
 #: agenda/static/templates/agenda/list-of-speakers-partial-management.html:109
-#: assignments/static/templates/assignments/assignment-detail.html:104
+#: assignments/static/templates/assignments/assignment-detail.html:105
 #: mediafiles/static/js/mediafiles/forms.js:90
 msgid "Select or search a participant ..."
 msgstr "Vybrat nebo hledat účastníka..."
@@ -2456,15 +2459,15 @@ msgstr "Vybrat promítací přístroj, na nějž odkazuje nynější seznam ře�
 msgid "Separator"
 msgstr "Oddělovač"
 
-#: core/static/js/core/site.js:1687
+#: core/static/js/core/site.js:1686
 msgid "Separator used for all csv exports and examples"
-msgstr ""
+msgstr "Oddělovač použitý pro všechna vyvedení do CSV a příklady"
 
 #: motions/static/js/motions/docx.js:77 motions/static/js/motions/pdf.js:37
 msgid "Sequential number"
 msgstr "Pořadové číslo"
 
-#: motions/static/js/motions/site.js:1958
+#: motions/static/js/motions/site.js:1959
 msgid "Serially numbered"
 msgstr "Průběžné číslování"
 
@@ -2494,17 +2497,17 @@ msgstr "Nastavit dobu trvání..."
 msgid "Set global action"
 msgstr "Nastavit celkovou činnost"
 
-#: assignments/static/templates/assignments/assignment-detail.html:137
+#: assignments/static/templates/assignments/assignment-detail.html:139
 msgid "Set hint for ballot paper ..."
-msgstr ""
+msgstr "Poslat radu na hlasovacím lístku..."
 
-#: motions/static/js/motions/site.js:1959
+#: motions/static/js/motions/site.js:1960
 msgid "Set it manually"
 msgstr "Nastavit ručně"
 
 #: agenda/static/templates/agenda/item-list.html:332
 msgid "Set item number ..."
-msgstr ""
+msgstr "Nastavit číslo bodu..."
 
 #: motions/static/templates/motions/motion-list.html:125
 #: motions/static/templates/motions/motion-list.html:87
@@ -2532,12 +2535,12 @@ msgstr "Nastavit/Zrušit nastavení Je činný"
 msgid "Set/Unset 'is present'"
 msgstr "Nastavit/Zrušit nastavení Je přítomen"
 
-#: config.html:3 core/static/js/core/site.js:170
-#: core/static/js/core/site.js:358
+#: config.html:3 core/static/js/core/site.js:169
+#: core/static/js/core/site.js:357
 msgid "Settings"
 msgstr "Nastavení"
 
-#: core/static/js/core/site.js:1676
+#: core/static/js/core/site.js:1675
 msgid "Short description of event"
 msgstr "Krátký popis události"
 
@@ -2558,30 +2561,30 @@ msgstr "Ukázat historii"
 
 #: agenda/static/templates/agenda/item-sort.html:19
 msgid "Show internal items"
-msgstr ""
+msgstr "Ukázat vnitřní body..."
 
-#: core/static/js/core/site.js:1688
+#: core/static/js/core/site.js:1687
 msgid "Show logo on projector"
 msgstr "Ukázat značku na promítacím přístrojí"
 
-#: agenda/static/js/agenda/site.js:711
+#: agenda/static/js/agenda/site.js:712
 msgid "Show orange countdown in the last x seconds of speaking time"
 msgstr "Ukázat odpočítávání v posledních x sekundách času mluvení v oranžové barvě"
 
-#: core/static/js/core/site.js:1686
+#: core/static/js/core/site.js:1685
 msgid "Show this text on the login page"
-msgstr ""
+msgstr "Ukázat tento text na přihlašovací stránce"
 
-#: core/static/js/core/site.js:1695
+#: core/static/js/core/site.js:1694
 msgid "Show title and description of event on projector"
 msgstr "Ukázat název a popis události na promítacím přístroji"
 
-#: motions/static/js/motions/base.js:789
+#: motions/static/js/motions/base.js:811
 msgid "Simple Workflow"
 msgstr "Jednoduchý pracovní postup"
 
-#: assignments/static/js/assignments/site.js:918
-#: motions/static/js/motions/site.js:2007
+#: assignments/static/js/assignments/site.js:920
+#: motions/static/js/motions/site.js:2008
 msgid "Simple majority"
 msgstr "Jednoduchá většina"
 
@@ -2615,7 +2618,7 @@ msgstr "Třídit jména účastníků podle"
 msgid "Special values"
 msgstr "Zvláštní hodnoty"
 
-#: users/static/js/users/base.js:164
+#: users/static/js/users/base.js:167
 msgid "Staff"
 msgstr "Zaměstnanci"
 
@@ -2650,7 +2653,7 @@ msgstr "Stav"
 msgid "Stop"
 msgstr "Zastavit"
 
-#: motions/static/js/motions/site.js:1971
+#: motions/static/js/motions/site.js:1972
 msgid "Stop submitting new motions by non-staff users"
 msgstr "Zastavit podávání nových návrhů uživateli bez práv správce"
 
@@ -2664,7 +2667,7 @@ msgstr "Zastavit podávání nových návrhů uživateli bez práv správce"
 msgid "Structure level"
 msgstr "Úroveň rozčlenění"
 
-#: core/static/js/core/site.js:130 core/static/js/core/site.js:131
+#: core/static/js/core/site.js:129 core/static/js/core/site.js:130
 msgid "Submit"
 msgstr "Podat"
 
@@ -2689,7 +2692,7 @@ msgstr "Shrnutí doporučení změn"
 msgid "Support motion"
 msgstr "Podpořit návrh"
 
-#: motions/static/js/motions/site.js:1985
+#: motions/static/js/motions/site.js:1986
 #: motions/static/js/motions/site.js:484
 #: motions/static/templates/motions/motion-detail.html:99
 #: motions/static/templates/motions/motion-list.html:648
@@ -2720,7 +2723,7 @@ msgstr "Klíčové slovo"
 #: assignments/static/js/assignments/site.js:196
 #: assignments/static/templates/assignments/assignment-detail.html:53
 #: assignments/static/templates/assignments/assignment-list.html:10
-#: core/static/js/core/site.js:379 core/static/templates/core/tag-list.html:13
+#: core/static/js/core/site.js:378 core/static/templates/core/tag-list.html:13
 #: motions/static/js/motions/site.js:470
 #: motions/static/templates/motions/motion-detail.html:265
 #: motions/static/templates/motions/motion-detail.html:269
@@ -2745,41 +2748,41 @@ msgstr "Text od řádku %from% po %to%"
 msgid "Text in line %from%"
 msgstr "Text v řádku %from%"
 
-#: motions/static/js/motions/site.js:1999
+#: motions/static/js/motions/site.js:2000
 msgid "The 100 % base of a voting result consists of"
 msgstr "100 % základ výsledku hlasování se skládá z"
 
-#: assignments/static/js/assignments/site.js:901
+#: assignments/static/js/assignments/site.js:903
 msgid "The 100-%-base of an election result consists of"
 msgstr "100 % základ volebního výsledku se skládá z"
 
-#: motions/static/js/motions/site.js:1961
+#: motions/static/js/motions/site.js:1962
 msgid "The assembly may decide:"
 msgstr "Shromáždění se může usnést:"
 
-#: core/static/js/core/site.js:1471
+#: core/static/js/core/site.js:1470
 msgid "The delete was successful."
-msgstr ""
+msgstr "Smazání bylo úspěšné."
 
 #: agenda/static/templates/agenda/list-of-speakers-partial-management.html:38
 msgid "The list of speakers is empty."
 msgstr "Seznam řečníků je prázdný."
 
-#: motions/static/js/motions/site.js:1970
+#: motions/static/js/motions/site.js:1971
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
 "enabled. Min: 40"
 msgstr "Největší počet znaků na řádek. Má význam, když je zapnuto číslování řádků. Nejméně: 40"
 
-#: core/static/js/core/base.js:476
+#: core/static/js/core/base.js:488
 msgid "The server didn't respond."
-msgstr ""
+msgstr "Server neodpověděl."
 
 #: motions/static/templates/motions/motion-detail/view-original.html:8
 msgid "The text has been changed."
 msgstr "Text byl změněn."
 
-#: motions/static/js/motions/site.js:1982
+#: motions/static/js/motions/site.js:1983
 msgid "The title of the motion is always applied."
 msgstr "Název návrhu je vždy převzat."
 
@@ -2795,7 +2798,7 @@ msgstr "Tato volba nechrání před přístupem, nýbrž soubor skryje toliko ne
 msgid "This is the last active version."
 msgstr "Toto je poslední platná verze."
 
-#: agenda/static/js/agenda/site.js:701
+#: agenda/static/js/agenda/site.js:702
 msgid "This prefix will be set if you run the automatic agenda numbering."
 msgstr "Tato předpona bude nastavena k provádění automatického číslování bodů pořadu jednání."
 
@@ -2803,8 +2806,8 @@ msgstr "Tato předpona bude nastavena k provádění automatického číslován�
 msgid "This version is not permitted."
 msgstr "Tato verze není povolena."
 
-#: assignments/static/js/assignments/site.js:920
-#: motions/static/js/motions/site.js:2009
+#: assignments/static/js/assignments/site.js:922
+#: motions/static/js/motions/site.js:2010
 msgid "Three-quarters majority"
 msgstr "Tříčtvrtinová většina"
 
@@ -2825,11 +2828,11 @@ msgstr "Tříčtvrtinová většina"
 msgid "Title"
 msgstr "Název"
 
-#: motions/static/js/motions/site.js:2018
+#: motions/static/js/motions/site.js:2019
 msgid "Title for PDF and DOCX documents (all motions)"
 msgstr "Název dokumentů PDF a DOCX (všechny návrhy)"
 
-#: assignments/static/js/assignments/site.js:922
+#: assignments/static/js/assignments/site.js:924
 msgid "Title for PDF document (all elections)"
 msgstr "Název dokumentu PDF (všechny volby)"
 
@@ -2864,8 +2867,8 @@ msgstr "Náměty"
 msgid "Trivial change"
 msgstr "Jednoduchá změna"
 
-#: assignments/static/js/assignments/site.js:919
-#: motions/static/js/motions/site.js:2008
+#: assignments/static/js/assignments/site.js:921
+#: motions/static/js/motions/site.js:2009
 msgid "Two-thirds majority"
 msgstr "Dvoutřetinová většina"
 
@@ -2886,8 +2889,8 @@ msgstr "Doba nahrávání"
 msgid "Uploaded by"
 msgstr "Nahráno"
 
-#: assignments/static/js/assignments/site.js:914
-#: motions/static/js/motions/site.js:2014
+#: assignments/static/js/assignments/site.js:916
+#: motions/static/js/motions/site.js:2015
 msgid "Use the following custom number"
 msgstr "Použít následující uživatelsky stanovený počet"
 
@@ -2916,8 +2919,8 @@ msgid "Users without any assigned group gain the permissions from this group."
 msgstr "Uživatelé bez zvláštní přiřazené skupiny dostanou oprávnění této skupiny."
 
 #: assignments/static/js/assignments/pdf.js:186
-#: assignments/static/js/assignments/site.js:825
-#: assignments/static/templates/assignments/assignment-detail.html:249
+#: assignments/static/js/assignments/site.js:827
+#: assignments/static/templates/assignments/assignment-detail.html:253
 #: assignments/static/templates/assignments/slide_assignment.html:82
 #: motions/static/js/motions/site.js:591
 #: motions/static/templates/motions/motion-detail.html:365
@@ -2946,7 +2949,7 @@ msgid "Vote"
 msgstr "Hlasování"
 
 #: assignments/static/js/assignments/pdf.js:151
-#: assignments/static/templates/assignments/assignment-detail.html:209
+#: assignments/static/templates/assignments/assignment-detail.html:211
 #: assignments/static/templates/assignments/slide_assignment.html:36
 msgid "Votes"
 msgstr "Hlasy"
@@ -2955,11 +2958,11 @@ msgstr "Hlasy"
 msgid "Votes cast"
 msgstr "Odevzdané hlasy"
 
-#: assignments/static/js/assignments/site.js:926
+#: assignments/static/js/assignments/site.js:928
 msgid "Voting"
 msgstr "Hlasování"
 
-#: motions/static/js/motions/site.js:1998
+#: motions/static/js/motions/site.js:1999
 msgid "Voting and ballot papers"
 msgstr "Hlasování a hlasovací lístky"
 
@@ -2997,17 +3000,17 @@ msgstr "WPA/WPA2"
 msgid "Waiting for results ..."
 msgstr "Čeká se na výsledky..."
 
-#: core/static/js/core/site.js:1682 users/static/js/users/site.js:1556
+#: core/static/js/core/site.js:1681 users/static/js/users/site.js:1556
 msgid "Welcome to OpenSlides"
 msgstr "Vítejte v OpenSlides"
 
-#: motions/static/js/motions/site.js:1975
+#: motions/static/js/motions/site.js:1976
 msgid ""
 "Will be displayed as label before selected recommendation. Use an empty "
 "value to disable the recommendation system."
 msgstr "Bude zobrazeno jako popis před vybraným doporučením. Použijte prázdné zadání pro vypnutí doporučovací soustavy"
 
-#: motions/static/js/motions/base.js:813
+#: motions/static/js/motions/base.js:835
 msgid "Withdraw"
 msgstr "Stáhnout"
 
@@ -3015,13 +3018,13 @@ msgstr "Stáhnout"
 msgid "Workflow"
 msgstr "Pracovní postup"
 
-#: motions/static/js/motions/site.js:1955
+#: motions/static/js/motions/site.js:1956
 msgid "Workflow of new motions"
 msgstr "Průběh práce na nových návrzích"
 
 #: assignments/static/js/assignments/pdf.js:299
-#: assignments/static/js/assignments/site.js:626
-#: assignments/static/js/assignments/site.js:773
+#: assignments/static/js/assignments/site.js:628
+#: assignments/static/js/assignments/site.js:775
 #: motions/static/js/motions/pdf.js:113 motions/static/js/motions/pdf.js:348
 #: motions/static/js/motions/site.js:564
 #: motions/static/templates/motions/motion-detail.html:329
@@ -3029,21 +3032,21 @@ msgstr "Průběh práce na nových návrzích"
 msgid "Yes"
 msgstr "Ano"
 
-#: motions/static/js/motions/site.js:2001
+#: motions/static/js/motions/site.js:2002
 msgid "Yes/No"
 msgstr "Ano/Ne"
 
-#: assignments/static/js/assignments/site.js:907
-#: assignments/static/templates/assignments/assignment-detail.html:193
+#: assignments/static/js/assignments/site.js:909
+#: assignments/static/templates/assignments/assignment-detail.html:195
 msgid "Yes/No per candidate"
 msgstr "Ano/Ne pro uchazeče"
 
-#: motions/static/js/motions/site.js:2000
+#: motions/static/js/motions/site.js:2001
 msgid "Yes/No/Abstain"
 msgstr "Ano/Ne/Zdržení se"
 
-#: assignments/static/js/assignments/site.js:906
-#: assignments/static/templates/assignments/assignment-detail.html:192
+#: assignments/static/js/assignments/site.js:908
+#: assignments/static/templates/assignments/assignment-detail.html:194
 msgid "Yes/No/Abstain per candidate"
 msgstr "Ano/Ne/Zdržení se pro uchazeče"
 
@@ -3051,7 +3054,7 @@ msgstr "Ano/Ne/Zdržení se pro uchazeče"
 msgid "You are not allowed to lock yourself out of the configuration!"
 msgstr "Nejste oprávněn sám sebe zamknout z nastavení!"
 
-#: core/static/js/core/site.js:1689
+#: core/static/js/core/site.js:1688
 msgid ""
 "You can replace the logo. Just copy a file to \"static/img/logo-"
 "projector.png\" in your OpenSlides data path."
@@ -3073,7 +3076,7 @@ msgstr "Přiblížit"
 msgid "Zoom out"
 msgstr "Oddálit"
 
-#: agenda/static/js/agenda/site.js:714
+#: agenda/static/js/agenda/site.js:715
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
 msgstr "[Začít řeč] spustí odpočítávání, [Ukončit řeč] zastaví odpočítávání."
 
@@ -3081,15 +3084,15 @@ msgstr "[Začít řeč] spustí odpočítávání, [Ukončit řeč] zastaví odp
 msgid "[Place for your welcome and help text.]"
 msgstr "[Místo pro váš uvítací a nápomocný text.]"
 
-#: core/static/js/core/site.js:1684
+#: core/static/js/core/site.js:1683
 msgid "[Space for your welcome text.]"
 msgstr "[Místo pro váš uvítací text.]"
 
-#: motions/static/js/motions/base.js:791 motions/static/js/motions/base.js:806
+#: motions/static/js/motions/base.js:813 motions/static/js/motions/base.js:828
 msgid "accepted"
 msgstr "přijato"
 
-#: motions/static/js/motions/base.js:814
+#: motions/static/js/motions/base.js:836
 msgid "adjourned"
 msgstr "odloženo"
 
@@ -3105,11 +3108,11 @@ msgstr "Hlasovací lístek"
 msgid "by"
 msgstr "od"
 
-#: core/static/js/core/site.js:46
+#: core/static/js/core/site.js:45
 msgid "clear"
 msgstr "smazat"
 
-#: core/static/js/core/site.js:58
+#: core/static/js/core/site.js:57
 msgid "close"
 msgstr "zavřít"
 
@@ -3117,9 +3120,14 @@ msgstr "zavřít"
 msgid "create duplicate"
 msgstr "vytvořit kopii"
 
-#: core/static/js/core/site.js:50
+#: core/static/js/core/site.js:49
 msgid "date"
 msgstr "datum"
+
+#: motions/static/templates/motions/motion-list.html:182
+#: motions/static/templates/motions/motion-list.html:346
+msgid "done"
+msgstr "hotovo"
 
 #: users/static/templates/users/user-import.html:90
 msgid "duplicate"
@@ -3137,7 +3145,7 @@ msgstr "Volby"
 msgid "files"
 msgstr "Soubory"
 
-#: motions/static/templates/motions/motion-detail/toolbar.html:89
+#: motions/static/templates/motions/motion-detail/toolbar.html:88
 msgid "go"
 msgstr "jít na"
 
@@ -3161,14 +3169,14 @@ msgid "internal"
 msgstr "vnitřní"
 
 #: assignments/static/js/assignments/pdf.js:238
-#: assignments/static/templates/assignments/assignment-detail.html:219
-#: assignments/static/templates/assignments/assignment-detail.html:92
+#: assignments/static/templates/assignments/assignment-detail.html:221
+#: assignments/static/templates/assignments/assignment-detail.html:93
 #: assignments/static/templates/assignments/slide_assignment.html:22
 #: assignments/static/templates/assignments/slide_assignment.html:43
 msgid "is elected"
 msgstr "je zvolen"
 
-#: assignments/static/templates/assignments/assignment-detail.html:222
+#: assignments/static/templates/assignments/assignment-detail.html:224
 msgid "is not elected"
 msgstr "není zvolen"
 
@@ -3209,11 +3217,11 @@ msgstr "návrhů bude zavedeno."
 msgid "motions will be not imported."
 msgstr "návrhů nebude zavedeno."
 
-#: motions/static/js/motions/site.js:2022
+#: motions/static/js/motions/site.js:2023
 msgid "needed"
 msgstr "potřebné"
 
-#: motions/static/js/motions/base.js:823
+#: motions/static/js/motions/base.js:845
 msgid "needs review"
 msgstr "potřeba posouzení"
 
@@ -3222,15 +3230,15 @@ msgstr "potřeba posouzení"
 msgid "none"
 msgstr "žádné"
 
-#: motions/static/js/motions/base.js:817
+#: motions/static/js/motions/base.js:839
 msgid "not concerned"
 msgstr "neprobíráno"
 
-#: motions/static/js/motions/base.js:797
+#: motions/static/js/motions/base.js:819
 msgid "not decided"
 msgstr "nerozhodnuto"
 
-#: core/static/js/core/site.js:38
+#: core/static/js/core/site.js:37
 msgid "now"
 msgstr "nyní"
 
@@ -3263,29 +3271,29 @@ msgstr "Účastníci budou zavedeni."
 msgid "participants will be not imported."
 msgstr "Účastníci nebudou zavedeni."
 
-#: motions/static/js/motions/base.js:803
+#: motions/static/js/motions/base.js:825
 msgid "permitted"
 msgstr "schváleno"
 
-#: motions/static/js/motions/base.js:802
+#: motions/static/js/motions/base.js:824
 msgid "published"
 msgstr "zveřejněno"
 
-#: motions/static/js/motions/base.js:820
+#: motions/static/js/motions/base.js:842
 msgid "refered to committee"
 msgstr "předáno do výboru"
 
-#: motions/static/js/motions/base.js:794 motions/static/js/motions/base.js:809
+#: motions/static/js/motions/base.js:816 motions/static/js/motions/base.js:831
 msgid "rejected"
 msgstr "odmítnuto"
 
-#: motions/static/js/motions/base.js:825
+#: motions/static/js/motions/base.js:847
 msgid "rejected (not authorized)"
 msgstr "odmítnuto (není schváleno)"
 
 #: search.html:28
 msgid "results"
-msgstr ""
+msgstr "výsledky"
 
 #: agenda/static/templates/agenda/item-list.html:134
 #: assignments/static/templates/assignments/assignment-list.html:77
@@ -3299,15 +3307,15 @@ msgstr "vybráno"
 msgid "speakers"
 msgstr "řečníků"
 
-#: motions/static/js/motions/base.js:790
+#: motions/static/js/motions/base.js:812
 msgid "submitted"
 msgstr "podáno"
 
-#: core/static/js/core/site.js:54
+#: core/static/js/core/site.js:53
 msgid "time"
 msgstr "čas"
 
-#: core/static/js/core/site.js:42
+#: core/static/js/core/site.js:41
 msgid "today"
 msgstr "dnes"
 
@@ -3331,6 +3339,6 @@ msgstr "námětů nebude zavedeno."
 msgid "undocumented"
 msgstr "nedokumentováno"
 
-#: motions/static/js/motions/base.js:812
+#: motions/static/js/motions/base.js:834
 msgid "withdrawed"
 msgstr "staženo"

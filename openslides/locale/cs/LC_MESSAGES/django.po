@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-24 16:10+0100\n"
-"PO-Revision-Date: 2017-02-24 15:16+0000\n"
-"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
+"PO-Revision-Date: 2017-03-28 15:51+0000\n"
+"Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/openslides/openslides/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -63,16 +63,16 @@ msgstr "Jste úspěšně odstraněn ze seznamu řečníků."
 
 #: agenda/views.py:142
 msgid "speakers have been removed from the list of speakers."
-msgstr ""
+msgstr "Řečníci byly úspěšně odstraněni ze seznamu řečníků."
 
 #: agenda/views.py:144
 #, python-format
 msgid "User %s has been removed from the list of speakers."
-msgstr ""
+msgstr "Uživatel %s byl odstraněn ze seznamu řečníků."
 
 #: agenda/views.py:146
 msgid "No speakers have been removed from the list of speakers."
-msgstr ""
+msgstr "Ze seznamu řečníků nebyli odstraněni žádní řečníci "
 
 #: agenda/views.py:166
 msgid "The list of speakers is empty."
@@ -109,11 +109,11 @@ msgstr "Pořad jednání byl očíslován."
 
 #: agenda/views.py:264
 msgid "There must not be a hierarchical loop. Please reload the page."
-msgstr ""
+msgstr "Nesmí být hierarchická smyčka. Nahrajte, prosím, stránku znovu."
 
 #: agenda/views.py:268
 msgid "The agenda has been sorted."
-msgstr ""
+msgstr "Pořad jednání byl roztříděn."
 
 #: assignments/models.py:163
 msgid "Election"
@@ -121,7 +121,7 @@ msgstr "Volba"
 
 #: assignments/serializers.py:30
 msgid "Value for {} must be greater than 0"
-msgstr ""
+msgstr "Hodnota pro {} nesmí být větší než 0"
 
 #: assignments/serializers.py:148
 #, python-format
@@ -243,11 +243,11 @@ msgstr "Hlasování bylo úspěšně vyvoláno."
 
 #: assignments/views.py:204
 msgid "users has to be a list of IDs."
-msgstr ""
+msgstr "uživatelé musí být seznam ID."
 
 #: assignments/views.py:231
 msgid "Assignment related users successfully sorted."
-msgstr ""
+msgstr "Uživatelé spojení s úkolem úspěšně roztříděni."
 
 #: core/config.py:41 core/config.py:68
 msgid "The config variable {} was not found."
@@ -382,7 +382,7 @@ msgstr "odmítnuto (není schváleno)"
 
 #: motions/views.py:94
 msgid "The parent motion does not exist."
-msgstr ""
+msgstr "Rodičovský návrh neexistuje."
 
 #: motions/views.py:134
 msgid "Motion created"
@@ -480,7 +480,7 @@ msgstr "Doporučení nastaveno na"
 
 #: motions/views.py:359
 msgid "Vote created"
-msgstr ""
+msgstr "Hlasování vytvořeno"
 
 #: motions/views.py:360
 msgid "Vote created successfully."
@@ -488,11 +488,11 @@ msgstr "Hlasování bylo úspěšně vytvořeno."
 
 #: motions/views.py:385
 msgid "Vote updated"
-msgstr ""
+msgstr "Hlasování aktualizováno"
 
 #: motions/views.py:394
 msgid "Vote deleted"
-msgstr ""
+msgstr "Hlasování smazáno"
 
 #: motions/views.py:533
 msgid ""
@@ -529,7 +529,7 @@ msgstr "Skupina, k níž tento uživatel patří. Uživatel dostane oprávnění
 
 #: users/serializers.py:60
 msgid "Username, given name and surname can not all be empty."
-msgstr ""
+msgstr "Uživatelské jméno, křestní jméno a příjmení nesmí být prázdné."
 
 #: users/serializers.py:95
 #, python-brace-format
@@ -555,7 +555,7 @@ msgstr "Heslo bylo úspěšně nastaveno znovu."
 
 #: users/views.py:184
 msgid "Cookies have to be enabled to use OpenSlides."
-msgstr ""
+msgstr "Pro používání OpenSlides musíte povolit koláčky."
 
 #: users/views.py:187
 msgid "Username or password is not correct."
