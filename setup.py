@@ -25,14 +25,15 @@ setup(
     classifiers=[
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers
         # 'Development Status :: 3 - Alpha',
-        'Development Status :: 4 - Beta',
-        # 'Development Status :: 5 - Production/Stable',
+        # 'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5', ],
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6', ],
     packages=find_packages(exclude=['tests', 'tests.*']),
     include_package_data=True,
     install_requires=install_requires,
