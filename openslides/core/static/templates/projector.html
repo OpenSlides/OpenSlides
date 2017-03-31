@@ -33,7 +33,8 @@
 
 
   <div id="header">
-    <img ng-if="config('projector_enable_logo')" id="logo" src="/static/img/logo-projector.png" alt="OpenSlides" />
+    <img ng-if="config('projector_enable_logo')" id="logo" alt="OpenSlides"
+      ng-src="{{ getLogo('logo_projector_main') || '/static/img/logo-projector.png' }}"/>
     <div ng-if="config('projector_enable_title')" id="eventdata">
       <div class="title" ng-class="{ 'titleonly': !config('general_event_description') }"
           ng-bind-html="config('general_event_name')"></div>

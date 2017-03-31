@@ -282,6 +282,8 @@
         <div class="spacer-right"> <!-- horizontal block -->
           <i ng-style="{'visibility': mediafile.hidden ? 'visible' : 'hidden'}" class="fa fa-lock fa-lg"
               title="{{ 'Is hidden' | translate }}"></i>
+          <i ng-style="{'visibility': mediafile.isUsedAsLogo() ? 'visible' : 'hidden'}" class="fa fa-picture-o fa-lg spacer-left"
+              title="{{ 'Is used as a logo' | translate }}" os-perms="core.can_manage_logos"></i>
         </div>
         <div>
           <div> <!-- vertical block -->
@@ -312,7 +314,41 @@
             <div><i class="fa fa-upload"></i> {{ mediafile.timestamp | date:'yyyy-MM-dd HH:mm:ss' }}</div>
           </small>
         </div>
-        <div style="width: 40%;" class="pull-right optional"></div>
+        <div style="width: 40%;" class="pull-right optional">
+          <!-- Logo placeholder dropdown for manage user -->
+          <div os-perms="core.can_manage_logos"
+              ng-mouseover="mediafile.logoHover=true"
+              ng-mouseleave="mediafile.logoHover=false"
+              ng-show="mediafile.canBeUsedAsLogo()">
+            <span uib-dropdown>
+              <span id="dropdownLogo{{ mediafile.id }}" class="pointer nobr"
+                uib-dropdown-toggle uib-tooltip="{{ 'Manage logos' | translate }}"
+                tooltip-class="nobr">
+                <span ng-if="!mediafile.isUsedAsLogo()" ng-show="mediafile.hover">
+                  <i class="fa fa-picture-o"></i>
+                  <i class="fa fa-plus"></i>
+                </span>
+                <span ng-if="mediafile.isUsedAsLogo()">
+                  <i class="fa fa-picture-o spacer-right"></i>
+                  <span ng-repeat="logo in mediafile.getLogos()">
+                    <small>
+                      {{ logo.display_name }}<span ng-if="!$last">,</span>
+                    </small>
+                  </span>
+                  <i class="fa fa-cog fa-lg spacer-left" ng-show="mediafile.logoHover"></i>
+                </span>
+              </span>
+              <ul class="dropdown-menu" aria-labelledby="dropdownLogos{{ mediafile.id }}">
+                <li ng-repeat="logo in logos">
+                  <a href ng-click="toggleLogo(mediafile, logo)">
+                    <i class="fa fa-check" ng-if="hasLogo(mediafile, logo)"></i>
+                    {{ logo.display_name }}
+                  </a>
+                </li>
+              </ul>
+            </span>
+          </div>
+        </div>
       </div>
 
     </div><!-- end data row -->

@@ -150,7 +150,8 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     'slides',
     'Config',
     'ProjectorID',
-    function($scope, $location, $timeout, Projector, slides, Config, ProjectorID) {
+    'Logos',
+    function($scope, $location, $timeout, Projector, slides, Config, ProjectorID, Logos) {
         var projectorId = ProjectorID();
 
         $scope.broadcast = 0;
@@ -242,6 +243,11 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                 }
             }
         });
+
+        $scope.getLogo = function (key) {
+            var logo = Logos.getFromKey(key);
+            return logo ? logo.path : void 0;
+        };
 
         $scope.$on('$destroy', function() {
             if ($scope.broadcastDeregister) {

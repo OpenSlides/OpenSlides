@@ -209,3 +209,21 @@ def get_config_variables():
         weight=201,
         group='Projector',
         hidden=True)
+
+    # Logos.
+    yield ConfigVariable(
+        name='logos_available',
+        default_value=['logo_projector_main'],
+        weight=300,
+        group='Logo',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='logo_projector_main',
+        default_value={
+            'display_name': 'Main projector logo',
+            'path': ''},
+        input_type='logo',
+        weight=301,
+        group='Logo',
+        hidden=True)

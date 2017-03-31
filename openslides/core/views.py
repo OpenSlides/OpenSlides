@@ -632,7 +632,13 @@ class ConfigViewSet(ViewSet):
             # enabled.
             result = self.request.user.is_authenticated() or anonymous_is_enabled()
         elif self.action in ('partial_update', 'update'):
-            result = has_perm(self.request.user, 'core.can_manage_config')
+            # The user needs 'core.can_manage_logos' for all config values
+            # starting with 'logo'. For all other config values th euser needs
+            # the default permissions 'core.can_manage_config'.
+            if self.kwargs['pk'].startswith('logo'):
+                result = has_perm(self.request.user, 'core.can_manage_logos')
+            else:
+                result = has_perm(self.request.user, 'core.can_manage_config')
         else:
             result = False
         return result

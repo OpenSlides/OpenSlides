@@ -580,6 +580,49 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+.factory('Logos', [
+    'Config',
+    'gettext',
+    function (Config, gettext) {
+        return {
+            getKeys: function () {
+                return Config.get('logos_available').value;
+            },
+            getAll: function () {
+                var self = this;
+                return _.map(this.getKeys(), function (key) {
+                    return self.getFromKey(key);
+                });
+            },
+            getFromKey: function (key) {
+                var config = Config.get(key).value;
+                config.key = key;
+                return config;
+            },
+            isMediafileUsedAsLogo: function (mediafile) {
+                return _.find(this.getAll(), function (logoPlaceholder) {
+                    return logoPlaceholder.path === mediafile.mediafileUrl;
+                });
+            },
+            canMediafileBeUsedAsLogo: function (mediafile) {
+                return mediafile.is_image;
+            },
+            setMediafile: function (key, mediafile) {
+                var config = Config.get(key);
+                if (!mediafile || mediafile.canBeUsedAsLogo()) {
+                    config.value.path = mediafile ? mediafile.mediafileUrl : '';
+                    Config.save(key);
+                }
+            },
+            getLogosForMediafile: function (mediafile) {
+                return _.filter(this.getAll(), function (logoPlaceholder) {
+                    return logoPlaceholder.path === mediafile.mediafileUrl;
+                });
+            },
+        };
+    }
+])
+
 .factory('Tag', [
     'DS',
     function(DS) {
