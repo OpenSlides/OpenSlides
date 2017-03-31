@@ -859,10 +859,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
 
 .factory('PdfCreate', [
     '$timeout',
+    '$q',
     'gettextCatalog',
     'FileSaver',
     'Messaging',
-    function ($timeout, gettextCatalog, FileSaver, Messaging) {
+    function ($timeout, $q, gettextCatalog, FileSaver, Messaging) {
         var filenameMessageMap = {};
         var b64toBlob = function(b64Data) {
             var byteCharacters = atob(b64Data);
@@ -898,19 +899,28 @@ angular.module('OpenSlidesApp.core.pdf', [])
             }, 1);
         };
         return {
+            getBase64FromDocument: function (pdfDocument) {
+                return $q(function (resolve, reject) {
+                    var pdfWorker = new Worker('/static/js/workers/pdf-worker.js');
+                    pdfWorker.addEventListener('message', function (event) {
+                        resolve(event.data);
+                    });
+                    pdfWorker.addEventListener('error', function (event) {
+                        reject(event);
+                    });
+                    pdfWorker.postMessage(JSON.stringify(pdfDocument));
+                });
+            },
             download: function (pdfDocument, filename) {
                 stateChange('info', filename);
-                var pdfWorker = new Worker('/static/js/workers/pdf-worker.js');
 
-                pdfWorker.addEventListener('message', function (event) {
-                    var blob = b64toBlob(event.data);
+                this.getBase64FromDocument(pdfDocument).then(function (data) {
+                    var blob = b64toBlob(data);
                     stateChange('success', filename);
                     FileSaver.saveAs(blob, filename);
+                }, function (error) {
+                    stateChange('error', filename, error.message);
                 });
-                pdfWorker.addEventListener('error', function (event) {
-                    stateChange('error', filename, event.message);
-                });
-                pdfWorker.postMessage(JSON.stringify(pdfDocument));
             },
         };
     }

@@ -733,8 +733,22 @@ angular.module('OpenSlidesApp.motions.site', [
                                 ],
                             },
                             hideExpression: "model.format !== 'pdf'",
-                            });
+                        });
                     }
+                }
+                if (!singleMotion) {
+                    fields.push({
+                        key: 'pdfFormat',
+                        type: 'select-radio',
+                        templateOptions: {
+                            label: gettextCatalog.getString('PDF format'),
+                            options: [
+                                {name: gettextCatalog.getString('One PDF'), value: 'pdf'},
+                                {name: gettextCatalog.getString('Multiple PDFs in a zip arcive'), value: 'zip'},
+                            ],
+                        },
+                        hideExpression: "model.format !== 'pdf'",
+                    });
                 }
                 return fields;
             },
@@ -761,6 +775,7 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.params = params || {};
         _.defaults($scope.params, {
             format: 'pdf',
+            pdfFormat: 'pdf',
             changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
             lineNumberMode: Config.get('motions_default_line_numbering').value,
             includeReason: true,
@@ -772,7 +787,11 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.export = function () {
             switch ($scope.params.format) {
                 case 'pdf':
-                    MotionPdfExport.export(motions, $scope.params, singleMotion);
+                    if ($scope.params.pdfFormat === 'pdf') {
+                        MotionPdfExport.export(motions, $scope.params, singleMotion);
+                    } else {
+                        MotionPdfExport.exportZip(motions, $scope.params);
+                    }
                     break;
                 case 'csv':
                     MotionCsvExport.export(motions, $scope.params);
