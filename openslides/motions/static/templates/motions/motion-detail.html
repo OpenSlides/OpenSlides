@@ -54,7 +54,7 @@
         <i class="fa fa-pencil"></i>
       </a>
       <!-- pdf -->
-      <a ng-click="pdfExport.createMotion()" class="btn btn-default btn-sm">
+      <a ng-click="pdfExport()" class="btn btn-default btn-sm">
         <i class="fa fa-file-pdf-o fa-lg"></i>
         <translate>PDF</translate>
       </a>
@@ -310,7 +310,7 @@
               </button>
 
               <!-- Print poll PDF -->
-              <a os-perms="motions.can_manage" ng-click="pdfExport.createPoll()" class="btn btn-default btn-xs"
+              <a os-perms="motions.can_manage" ng-click="createPollPdf()" class="btn btn-default btn-xs"
                   title="{{ 'Print ballot paper' | translate }}">
                 <i class="fa fa-file-pdf-o"></i>
               </a>

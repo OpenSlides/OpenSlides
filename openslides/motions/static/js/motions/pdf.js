@@ -5,24 +5,26 @@
 angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('MotionContentProvider', [
+    'operator',
     'gettextCatalog',
     'PDFLayout',
     'Category',
     'Config',
     'Motion',
-    function(gettextCatalog, PDFLayout, Category, Config, Motion) {
+    function(operator, gettextCatalog, PDFLayout, Category, Config, Motion) {
     /**
      * Provides the content as JS objects for Motions in pdfMake context
      * @constructor
      */
 
-    var createInstance = function(converter, motion, $scope) {
+    var createInstance = function(converter, motion, motionVersion, changeRecommendationMode,
+        changeRecommendations, lineNumberMode, includeReason, includeComments) {
 
         // title
         var identifier = motion.identifier ? ' ' + motion.identifier : '';
         var title = PDFLayout.createTitle(
                 gettextCatalog.getString('Motion') + identifier + ': ' +
-                motion.getTitle($scope.version)
+                motion.getTitle(motionVersion)
         );
 
         // subtitle
@@ -175,51 +177,49 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             }
 
             // summary of change recommendations (for motion diff version only)
-            if ($scope.viewChangeRecommendations) {
-                if ($scope.viewChangeRecommendations.mode == "diff") {
-                    var columnLineNumbers = [];
-                    var columnChangeType = [];
-                    angular.forEach(_.orderBy($scope.change_recommendations, ['line_from']), function(change) {
-                        // line numbers column
-                        var line;
-                        if (change.line_from >= change.line_to - 1) {
-                            line = change.line_from;
-                        } else {
-                            line = change.line_from + ' - ' + (change.line_to - 1);
-                        }
-                        columnLineNumbers.push(
-                            gettextCatalog.getString('Line') + ' ' + line + ': '
-                        );
-                        // change type column
-                        if (change.getType(motion.getVersion($scope.version).text) === 0) {
-                            columnChangeType.push(gettextCatalog.getString("Replacement"));
-                        } else if (change.getType(motion.getVersion($scope.version).text) === 1) {
-                            columnChangeType.push(gettextCatalog.getString("Insertion"));
-                        } else if (change.getType(motion.getVersion($scope.version).text) === 2) {
-                            columnChangeType.push(gettextCatalog.getString("Deletion"));
-                        }
-                    });
-                    metaTableBody.push([
-                        {
-                            text: gettextCatalog.getString('Summary of change recommendations'),
-                            style: ['bold', 'grey']
-                        },
-                        {
-                            columns: [
-                                {
-                                    text: columnLineNumbers.join('\n'),
-                                    width: 'auto'
-                                },
-                                {
-                                    text: columnChangeType.join('\n'),
-                                    width: 'auto'
-                                }
-                            ],
-                            columnGap: 7,
-                            style: 'grey'
-                        }
-                    ]);
-                }
+            if (changeRecommendationMode == "diff") {
+                var columnLineNumbers = [];
+                var columnChangeType = [];
+                angular.forEach(_.orderBy(changeRecommendations, ['line_from']), function(change) {
+                    // line numbers column
+                    var line;
+                    if (change.line_from >= change.line_to - 1) {
+                        line = change.line_from;
+                    } else {
+                        line = change.line_from + ' - ' + (change.line_to - 1);
+                    }
+                    columnLineNumbers.push(
+                        gettextCatalog.getString('Line') + ' ' + line + ': '
+                    );
+                    // change type column
+                    if (change.getType(motion.getVersion(motionVersion).text) === 0) {
+                        columnChangeType.push(gettextCatalog.getString("Replacement"));
+                    } else if (change.getType(motion.getVersion(motionVersion).text) === 1) {
+                        columnChangeType.push(gettextCatalog.getString("Insertion"));
+                    } else if (change.getType(motion.getVersion(motionVersion).text) === 2) {
+                        columnChangeType.push(gettextCatalog.getString("Deletion"));
+                    }
+                });
+                metaTableBody.push([
+                    {
+                        text: gettextCatalog.getString('Summary of change recommendations'),
+                        style: ['bold', 'grey']
+                    },
+                    {
+                        columns: [
+                            {
+                                text: columnLineNumbers.join('\n'),
+                                width: 'auto'
+                            },
+                            {
+                                text: columnChangeType.join('\n'),
+                                width: 'auto'
+                            }
+                        ],
+                        columnGap: 7,
+                        style: 'grey'
+                    }
+                ]);
             }
 
             // build table
@@ -241,7 +241,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         // motion title
         var motionTitle = function() {
             return [{
-                text: motion.getTitle($scope.version),
+                text: motion.getTitle(motionVersion),
                 style: 'heading3'
             }];
         };
@@ -257,28 +257,56 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
         // motion text (with line-numbers)
         var motionText = function() {
-            var motionTextContent = motion.getTextByMode($scope.viewChangeRecommendations.mode, $scope.version);
-            return converter.convertHTML(motionTextContent, $scope.lineNumberMode);
+            var motionTextContent = motion.getTextByMode(changeRecommendationMode, motionVersion);
+            return converter.convertHTML(motionTextContent, lineNumberMode);
         };
 
         // motion reason heading
         var motionReason = function() {
-            var reason = [];
-            if (motion.getReason($scope.version)) {
-                reason.push({
-                    text:  gettextCatalog.getString('Reason'),
-                    style: 'heading3',
-                    marginTop: 25,
-                });
-                reason.push(converter.convertHTML(motion.getReason($scope.version), $scope.lineNumberMode));
+            if (includeReason) {
+                var reason = [];
+                if (motion.getReason(motionVersion)) {
+                    reason.push({
+                        text:  gettextCatalog.getString('Reason'),
+                        style: 'heading3',
+                        marginTop: 25,
+                    });
+                    reason.push(converter.convertHTML(motion.getReason(motionVersion), lineNumberMode));
+                }
+                return reason;
             }
-            return reason;
         };
 
+        // motion comments handling
+        var motionComments = function () {
+            if (includeComments) {
+                var fields = Config.get('motions_comments').value;
+                var canSeeComment = function (index) {
+                    return fields[index].public || operator.hasPerms('motions.can_manage');
+                };
+                var comments = [];
+                for (var i = 0; i < fields.length; i++) {
+                    if (motion.comments[i] && canSeeComment(i)) {
+                        var title = gettextCatalog.getString('Comment') + ' ' + fields[i].name;
+                        console.log(fields[i]);
+                        if (!fields[i].public) {
+                            title += ' (' + gettextCatalog.getString('private') + ')';
+                        }
+                        comments.push({
+                            text: title,
+                            style: 'heading3',
+                            marginTop: 25,
+                        });
+                        comments.push(converter.convertHTML(motion.comments[i]));
+                    }
+                }
+                return comments;
+            }
+        };
 
         // getters
         var getTitle = function() {
-            return motion.getTitle($scope.version);
+            return motion.getTitle(motionVersion);
         };
 
         var getIdentifier = function() {
@@ -299,8 +327,13 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 motionPreamble(),
                 motionText(),
             ];
-            if (motionReason()) {
-                content.push(motionReason());
+            var reason = motionReason();
+            if (reason) {
+                content.push(reason);
+            }
+            var comments = motionComments();
+            if (comments) {
+                content.push(comments);
             }
             return content;
         };
@@ -319,17 +352,17 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('PollContentProvider', [
     'PDFLayout',
+    'gettextCatalog',
     'Config',
     'User',
-    function(PDFLayout, Config, User) {
+    function(PDFLayout, gettextCatalog, Config, User) {
     /**
     * Generates a content provider for polls
     * @constructor
     * @param {string} title - title of poll
     * @param {string} id - if of poll
-    * @param {object} gettextCatalog - for translation
     */
-    var createInstance = function(title, id, gettextCatalog) {
+    var createInstance = function(title, id) {
 
         /**
         * Returns a single section on the ballot paper
@@ -440,9 +473,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     * Constructor
     * @function
     * @param {object} allMotions - A sorted array of all motions to parse
-    * @param {object} $scope - Current $scope
     */
-    var createInstance = function(allMotions, $scope) {
+    var createInstance = function(allMotions) {
 
         var title = PDFLayout.createTitle(
                 Config.translate(Config.get('motions_export_title').value)
@@ -566,6 +598,101 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     return {
         createInstance: createInstance
     };
-}]);
+}])
+
+.factory('MotionPdfExport', [
+    '$http',
+    'Config',
+    'gettextCatalog',
+    'MotionChangeRecommendation',
+    'HTMLValidizer',
+    'PdfMakeConverter',
+    'MotionContentProvider',
+    'MotionCatalogContentProvider',
+    'PdfMakeDocumentProvider',
+    'PollContentProvider',
+    'PdfMakeBallotPaperProvider',
+    'PdfCreate',
+    function ($http, Config, gettextCatalog, MotionChangeRecommendation, HTMLValidizer, PdfMakeConverter,
+        MotionContentProvider, MotionCatalogContentProvider, PdfMakeDocumentProvider, PollContentProvider,
+        PdfMakeBallotPaperProvider, PdfCreate) {
+        return {
+            export: function (motions, params, singleMotion) {
+                if (!params) {
+                    params = {};
+                }
+                _.defaults(params, {
+                    filename: gettextCatalog.getString('motions') + '.pdf',
+                    changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
+                    lineNumberMode: Config.get('motions_default_line_numbering').value,
+                    includeReason: true,
+                    includeComments: false,
+                });
+                var image_sources = [];
+
+                if (singleMotion) {
+                    _.defaults(params, {
+                        version: motions.active_version,
+                    });
+                    motions = [motions];
+                }
+
+                //save the arrays of all motions to an array
+                angular.forEach(motions, function (motion) {
+                    if (singleMotion) {
+                        motion.changeRecommendations = MotionChangeRecommendation.filter({
+                            'where': {'motion_version_id': {'==': motion.active_version}}
+                        });
+                    } else {
+                        motion.changeRecommendations = MotionChangeRecommendation.filter({
+                            'where': {'motion_version_id': {'==': params.version}}
+                        });
+                    }
+                    var text = motion.getTextByMode(params.changeRecommendationMode, null);
+                    var content = HTMLValidizer.validize(text) + HTMLValidizer.validize(motion.getReason());
+                    var map = Function.prototype.call.bind([].map);
+                    var tmp_image_sources = map($(content).find('img'), function(element) {
+                        return element.getAttribute('src');
+                    });
+                    image_sources = image_sources.concat(tmp_image_sources);
+                });
+
+                //post-request to convert the images. Async.
+                $http.post('/core/encode_media/', JSON.stringify(image_sources)).then(function (success) {
+                    var converter = PdfMakeConverter.createInstance(success.data.images);
+                    var motionContentProviderArray = [];
+
+                    //convert all motions to motionContentProviders
+                    angular.forEach(motions, function (motion) {
+                        var version = (singleMotion ? params.version : motion.active_version);
+                        motionContentProviderArray.push(MotionContentProvider.createInstance(
+                            converter, motion, version, params.changeRecommendationMode,
+                            motion.changeRecommendations, params.lineNumberMode,
+                            params.includeReason, params.includeComments
+                        ));
+                    });
+                    
+                    var documentProvider;
+                    if (singleMotion) {
+                        documentProvider = PdfMakeDocumentProvider.createInstance(motionContentProviderArray[0]);
+                    } else {
+                        var motionCatalogContentProvider = MotionCatalogContentProvider.createInstance(motionContentProviderArray);
+                        documentProvider = PdfMakeDocumentProvider.createInstance(motionCatalogContentProvider);
+                    }
+
+                    PdfCreate.download(documentProvider.getDocument(), params.filename);
+                });
+            },
+            createPollPdf: function (motion, version) {
+                var id = motion.identifier.replace(' ', '');
+                var title = motion.getTitle(version);
+                var filename = gettextCatalog.getString('Motion') + '-' + id + '-' + gettextCatalog.getString('ballot-paper') + '.pdf';
+                var pollContentProvider = PollContentProvider.createInstance(title, id);
+                var documentProvider = PdfMakeBallotPaperProvider.createInstance(pollContentProvider);
+                PdfCreate.download(documentProvider.getDocument(), filename);
+            },
+        };
+    }
+]);
 
 }());

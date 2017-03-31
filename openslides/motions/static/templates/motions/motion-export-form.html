@@ -1,0 +1,14 @@
+<h1 translate ng-if="!singleMotion && motions.length !== 1">Export motions</h1>
+<h1 translate ng-if="!singleMotion && motions.length === 1">Export motion</h1>
+<h1 ng-if="singleMotion"><translate>Export motion</translate> "{{ motions.getTitle() }}"</h1>
+
+<form name="motionPdfExportForm" ng-submit="export(params)">
+  <formly-form model="params" fields="formFields">
+    <button type="submit" ng-disabled="motionPdfExportForm.$invalid" class="btn btn-primary" translate>
+      Export as {{ params.format.toUpperCase() | translate }}
+    </button>
+    <button ng-click="closeThisDialog()" class="btn btn-default" translate>
+      Cancel
+    </button>
+  </formly-form>
+</form>

@@ -1346,6 +1346,10 @@ img {
     padding: 0;
 }
 
+.btn-group > label > input[type=radio] {
+    display: none;
+}
+
 /* user details */
 .user_details fieldset {
     margin-bottom: 10px;
