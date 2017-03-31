@@ -7,6 +7,9 @@ https://openslides.org/
 Version 2.1.1 (unreleased)
 ==========================
 
+Agenda:
+ - Fixed issue #3173 that the agenda item text cannot be changed.
+
 
 Version 2.1 (2017-03-29)
 ========================

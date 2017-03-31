@@ -14,5 +14,5 @@ class TopicSerializer(ModelSerializer):
 
     def validate(self, data):
         if 'text' in data:
-            data['text'] = validate_html(['text'])
+            data['text'] = validate_html(data['text'])
         return data
