@@ -76,11 +76,6 @@ angular.module('OpenSlidesApp.core', [
         Autoupdate.onMessage = function (receiver) {
             Autoupdate.messageReceivers.push(receiver);
         };
-        Autoupdate.reconnect = function () {
-            if (socket) {
-                socket.close();
-            }
-        };
         Autoupdate.newConnect = function () {
             socket = new WebSocket(websocketProtocol + '//' + location.host + websocketPath);
             clearInterval(recInterval);
@@ -89,7 +84,9 @@ angular.module('OpenSlidesApp.core', [
                 recInterval = setInterval(function () {
                     Autoupdate.newConnect();
                 }, 1000);
-                ErrorMessage.setConnectionError();
+                if (event.code !== 1000) { // 1000 is a normal close, like the close on logout
+                    ErrorMessage.setConnectionError();
+                }
             };
             socket.onmessage = function (event) {
                 _.forEach(Autoupdate.messageReceivers, function (receiver) {
@@ -101,6 +98,12 @@ angular.module('OpenSlidesApp.core', [
                 }
                 ErrorMessage.clearConnectionError();
             };
+        };
+        Autoupdate.closeConnection = function () {
+            if (socket) {
+                socket.close();
+            }
+            Autoupdate.firstMessageDeferred = $q.defer();
         };
         return Autoupdate;
     }

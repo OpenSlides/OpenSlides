@@ -4,31 +4,55 @@
 
 angular.module('OpenSlidesApp.core.start', [])
 
-.run([
+.factory('OpenSlides', [
     '$http',
     '$rootScope',
     '$state',
+    'DS',
     'autoupdate',
     'operator',
     'Group',
     'mainMenu',
-    function($http, $rootScope, $state, autoupdate, operator, Group, mainMenu) {
-        $rootScope.openslidesBootstrapDone = false;
-        $http.get('/users/whoami/').then(function (success) {
-            $rootScope.guest_enabled = success.data.guest_enabled;
-            if (success.data.user_id === null && !success.data.guest_enabled) {
-                // Redirect to login dialog if user is not logged in.
-                $state.go('login', {guest_enabled: success.data.guest_enabled});
-            } else {
-                autoupdate.newConnect();
-                autoupdate.firstMessageDeferred.promise.then(function () {
-                    operator.setUser(success.data.user_id, success.data.user);
-                    $rootScope.operator = operator;
-                    mainMenu.updateMainMenu();
-                    $rootScope.openslidesBootstrapDone = true;
+    function($http, $rootScope, $state, DS, autoupdate, operator, Group, mainMenu) {
+        return {
+            bootup: function () {
+                $rootScope.openslidesBootstrapDone = false;
+                $http.get('/users/whoami/').then(function (success) {
+                    $rootScope.guest_enabled = success.data.guest_enabled;
+                    if (success.data.user_id === null && !success.data.guest_enabled) {
+                        // Redirect to login dialog if user is not logged in.
+                        $state.go('login', {guest_enabled: success.data.guest_enabled});
+                    } else {
+                        autoupdate.newConnect();
+                        autoupdate.firstMessageDeferred.promise.then(function () {
+                            operator.setUser(success.data.user_id, success.data.user);
+                            $rootScope.operator = operator;
+                            mainMenu.updateMainMenu();
+                            $rootScope.openslidesBootstrapDone = true;
+                        });
+                    }
                 });
-            }
-        });
+            },
+            shutdown: function () {
+                // Close connection, clear the store and show the OS overlay.
+                autoupdate.closeConnection();
+                DS.clear();
+                operator.setUser(null);
+                $rootScope.openslidesBootstrapDone = false;
+                $rootScope.operator = operator;
+            },
+            reboot: function () {
+                this.shutdown();
+                this.bootup();
+            },
+        };
+    }
+])
+
+.run([
+    'OpenSlides',
+    function (OpenSlides) {
+        OpenSlides.bootup();
     }
 ])
 
