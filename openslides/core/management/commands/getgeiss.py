@@ -1,3 +1,4 @@
+import distutils
 import json
 import os
 import stat
@@ -15,17 +16,18 @@ class Command(BaseCommand):
     """
     help = 'Get the latest Geiss release from GitHub.'
 
+    FIRST_NOT_SUPPORTED_VERSION = '1.0.0'
+
     def handle(self, *args, **options):
         geiss_github_name = self.get_geiss_github_name()
         download_file = get_geiss_path()
 
         if os.path.isfile(download_file):
             # Geiss does probably exist. Do nothing.
-            # TODO: Add an update flag, that downloads geiss anyway.
+            # TODO: Add an update flag, that Geiss is downloaded anyway.
             return
 
-        response = urlopen(self.get_geiss_url()).read()
-        release = json.loads(response.decode())
+        release = self.get_release()
         download_url = None
         for asset in release['assets']:
             if asset['name'] == geiss_github_name:
@@ -40,18 +42,32 @@ class Command(BaseCommand):
         st = os.stat(download_file)
         os.chmod(download_file, st.st_mode | stat.S_IEXEC)
 
-        self.stdout.write(self.style.SUCCESS('Geiss successfully downloaded.'))
+        self.stdout.write(self.style.SUCCESS('Geiss {} successfully downloaded.'.format(release['tag_name'])))
+
+    def get_release(self):
+        """
+        Returns API data for the latest supported Geiss release.
+        """
+        response = urlopen(self.get_geiss_url()).read()
+        releases = json.loads(response.decode())
+        for release in releases:
+            version = distutils.version.StrictVersion(release['tag_name'])
+            if version < self.FIRST_NOT_SUPPORTED_VERSION:
+                break
+        else:
+            raise CommandError('Could not find Geiss release.')
+        return release
 
     def get_geiss_url(self):
         """
         Returns the URL to the API which gives the information which Geiss
         binary has to be downloaded.
 
-        Currently this is a static GitHub URL to the repository where geiss
+        Currently this is a static GitHub URL to the repository where Geiss
         is hosted at the moment.
         """
         # TODO: Use a settings variable or a command line flag in the future.
-        return 'https://api.github.com/repos/ostcar/geiss/releases/latest'
+        return 'https://api.github.com/repos/ostcar/geiss/releases'
 
     def get_geiss_github_name(self):
         """
