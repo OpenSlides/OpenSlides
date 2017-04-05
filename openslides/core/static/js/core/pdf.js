@@ -87,6 +87,25 @@ angular.module('OpenSlidesApp.core.pdf', [])
             return '{{ballot-placeholder-to-insert-functions-here}}';
         };
 
+        // returns a promise for converting an image in data URL format
+        PDFLayout.imageURLtoBase64 = function(url) {
+            var promise = new Promise(function(resolve) {
+                var img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.onload = function() {
+                    var canvas = document.createElement("canvas");
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0);
+                    var dataURL = canvas.toDataURL("image/png");
+                    resolve(dataURL);
+                };
+                img.src = url;
+            });
+            return promise;
+        };
+
         return PDFLayout;
     }
 ])

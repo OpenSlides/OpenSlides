@@ -1,6 +1,4 @@
-import base64
 import json
-import os
 import uuid
 from collections import OrderedDict
 from operator import attrgetter
@@ -811,57 +809,3 @@ class VersionView(utils_views.APIView):
                 'description': get_plugin_description(plugin),
                 'version': get_plugin_version(plugin)})
         return result
-
-
-class MediaEncoder(utils_views.APIView):
-    """
-    MediaEncoder is a class based view to prepare encoded media for pdfMake
-    """
-    http_method_names = ['post']
-
-    def post(self, request, *args, **kwargs):
-        """
-        Encode_image is used in the context of PDF-Generation
-        Takes an array of IMG.src - Paths
-        Retrieves the according images
-        Encodes the images to BASE64
-        Puts it into a key-value structure
-
-        {
-            "images": {
-                "media/file/ubuntu.png":"$ENCODED_IMAGE"
-            }
-        }
-
-        :param request:
-        :return: Response of the resulting dictionary
-
-        Calling e.g.
-        $.ajax({ type: "POST", url: "/motions/encode_images/",
-                data: JSON.stringify(["$FILEPATH"]),
-                success: function(data){ console.log(data); },
-                dataType: 'application/json' });
-        """
-        body_unicode = request.body.decode('utf-8')
-        file_paths = json.loads(body_unicode)
-        images = {file_path: self.encode_image_from(file_path) for file_path in file_paths}
-        return Response({
-            "images": images
-        })
-
-    def encode_image_from(self, file_path):
-        """
-        Returns the BASE64 encoded version of an image-file for a given path
-        :param file_path:
-        :return:
-        """
-        path = os.path.join(settings.MEDIA_ROOT, 'file', os.path.basename(file_path))
-        try:
-            with open(path, "rb") as file:
-                string_representation = "data:image/{};base64,{}".format(os.path.splitext(file_path)[1][1:],
-                                                                         base64.b64encode(file.read()).decode())
-        except Exception:
-            # If any error occurs ignore it and return an empty string
-            return ""
-        else:
-            return string_representation
