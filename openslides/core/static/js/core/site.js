@@ -994,16 +994,16 @@ angular.module('OpenSlidesApp.core.site', [
         };
 
         // For comments input
-        $scope.addComment = function (key, parent) {
+        $scope.addComment = function (configOption, parent) {
             parent.value.push({
                 name: gettextCatalog.getString('New'),
                 public: false,
             });
-            $scope.save(key, parent.value);
+            $scope.save(configOption, parent.value);
         };
-        $scope.removeComment = function (key, parent, index) {
+        $scope.removeComment = function (configOption, parent, index) {
             parent.value.splice(index, 1);
-            $scope.save(key, parent.value);
+            $scope.save(configOption, parent.value);
         };
 
         // For majority method
