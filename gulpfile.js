@@ -12,10 +12,6 @@
  * for production mode.
  */
 
-// TODO: Remove the next line when support for Node 0.10.x is dropped.
-// See https://github.com/postcss/postcss#nodejs-010-and-the-promise-api
-require('es6-promise').polyfill();
-
 var argv = require('yargs').argv,
     gulp = require('gulp'),
     concat = require('gulp-concat'),
@@ -26,7 +22,6 @@ var argv = require('yargs').argv,
     jshint = require('gulp-jshint'),
     mainBowerFiles = require('main-bower-files'),
     path = require('path'),
-    rename = require('gulp-rename'),
     sourcemaps = require('gulp-sourcemaps'),
     templateCache = require('gulp-angular-templatecache'),
     through = require('through2'),
