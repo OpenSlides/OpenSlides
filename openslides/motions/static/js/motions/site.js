@@ -613,6 +613,179 @@ angular.module('OpenSlidesApp.motions.site', [
     }
 ])
 
+.factory('MotionExportForm', [
+    'operator',
+    'gettextCatalog',
+    'Config',
+    function (operator, gettextCatalog, Config) {
+        return {
+            getDialog: function (motions, params, singleMotion) {
+                return {
+                    template: 'static/templates/motions/motion-export-form.html',
+                    controller: 'MotionExportCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: {
+                        motions: function () {return motions;},
+                        params: function () {return params;},
+                        singleMotion: function () {return singleMotion;},
+                    },
+                };
+            },
+            getFormFields: function (singleMotion, formatChangeCallback) {
+                var fields = [];
+                var commentsAvailable = Config.get('motions_comments').value.length !== 0;
+                if (!singleMotion) {
+                    fields = [
+                        {
+                            key: 'format',
+                            type: 'select-radio',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Format'),
+                                options: [
+                                    {name: gettextCatalog.getString('PDF'), value: 'pdf'},
+                                    {name: gettextCatalog.getString('CSV'), value: 'csv'},
+                                    {name: gettextCatalog.getString('DOCX'), value: 'docx'},
+                                ],
+                                change: formatChangeCallback,
+                            },
+                        }
+                    ];
+                }
+                if (operator.hasPerms('motions.can_manage')) {
+                    fields.push.apply(fields, [
+                        {
+                            key: 'lineNumberMode',
+                            type: 'select-radio',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Line numbering'),
+                                options: [
+                                    {name: gettextCatalog.getString('None'), value: 'none'},
+                                    {name: gettextCatalog.getString('inline'), value: 'inline'},
+                                    {name: gettextCatalog.getString('outside'), value: 'outside'},
+                                ],
+                            },
+                            hideExpression: "model.format !== 'pdf'",
+                        },
+                        {
+                            key: 'lineNumberMode',
+                            type: 'select-radio',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Line numbering'),
+                                options: [
+                                    {name: gettextCatalog.getString('None'), value: 'none'},
+                                    {name: gettextCatalog.getString('inline'), value: 'inline', disabled: true},
+                                    {name: gettextCatalog.getString('outside'), value: 'outside', disabled: true},
+                                ],
+                            },
+                            hideExpression: "model.format === 'pdf'",
+                        },
+                        {
+                            key: 'changeRecommendationMode',
+                            type: 'select-radio',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Change recommendations'),
+                                options: [
+                                    {name: gettextCatalog.getString('Original version'), value: 'original'},
+                                    {name: gettextCatalog.getString('Changed version'), value: 'changed'},
+                                    {name: gettextCatalog.getString('Diff version'), value: 'diff'},
+                                    {name: gettextCatalog.getString('Final version'), value: 'agreed'},
+                                ],
+                            },
+                            hideExpression: "model.format !== 'pdf'",
+                        },
+                        {
+                            key: 'changeRecommendationMode',
+                            type: 'select-radio',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Change recommendations'),
+                                options: [
+                                    {name: gettextCatalog.getString('Original version'), value: 'original'},
+                                    {name: gettextCatalog.getString('Changed version'), value: 'changed'},
+                                    {name: gettextCatalog.getString('Diff version'), value: 'diff', disabled: true},
+                                    {name: gettextCatalog.getString('Final version'), value: 'agreed'},
+                                ],
+                            },
+                            hideExpression: "model.format === 'pdf'",
+                        },
+                        {
+                            key: 'includeReason',
+                            type: 'select-radio',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Reason'),
+                                options: [
+                                    {name: gettextCatalog.getString('Yes'), value: true},
+                                    {name: gettextCatalog.getString('No'), value: false},
+                                ],
+                            },
+                        },
+                    ]);
+                    if (commentsAvailable) {
+                        fields.push({
+                            key: 'includeComments',
+                            type: 'select-radio',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Kommentare'),
+                                options: [
+                                    {name: gettextCatalog.getString('Yes'), value: true},
+                                    {name: gettextCatalog.getString('No'), value: false},
+                                ],
+                            },
+                            hideExpression: "model.format !== 'pdf'",
+                            });
+                    }
+                }
+                return fields;
+            },
+        };
+    }
+])
+
+.controller('MotionExportCtrl', [
+    '$scope',
+    'Config',
+    'MotionExportForm',
+    'MotionPdfExport',
+    'MotionCsvExport',
+    'MotionDocxExport',
+    'motions',
+    'params',
+    'singleMotion',
+    function ($scope, Config, MotionExportForm, MotionPdfExport, MotionCsvExport,
+            MotionDocxExport, motions, params, singleMotion) {
+        $scope.formFields = MotionExportForm.getFormFields(singleMotion, function () {
+            $scope.params.changeRecommendationMode = 'original';
+            $scope.params.lineNumberMode = 'none';
+        });
+        $scope.params = params || {};
+        _.defaults($scope.params, {
+            format: 'pdf',
+            changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
+            lineNumberMode: Config.get('motions_default_line_numbering').value,
+            includeReason: true,
+            includeComments: false,
+        });
+        $scope.motions = motions;
+        $scope.singleMotion = singleMotion;
+
+        $scope.export = function () {
+            switch ($scope.params.format) {
+                case 'pdf':
+                    MotionPdfExport.export(motions, $scope.params, singleMotion);
+                    break;
+                case 'csv':
+                    MotionCsvExport.export(motions, $scope.params);
+                    break;
+                case 'docx':
+                    MotionDocxExport.export(motions, $scope.params);
+                    break;
+            }
+            $scope.closeThisDialog();
+        };
+    }
+])
+
 // Cache for MotionPollDetailCtrl so that users choices are keeped during user actions (e. g. save poll form).
 .value('MotionPollDetailCtrlCache', {})
 
@@ -672,24 +845,15 @@ angular.module('OpenSlidesApp.motions.site', [
     'User',
     'Agenda',
     'MotionBlock',
-    'MotionChangeRecommendation',
-    'MotionCsvExport',
-    'MotionDocxExport',
-    'MotionContentProvider',
-    'MotionCatalogContentProvider',
-    'PdfMakeConverter',
-    'PdfMakeDocumentProvider',
-    'HTMLValidizer',
     'Projector',
     'ProjectionDefault',
     'osTableFilter',
     'osTableSort',
-    'PdfCreate',
+    'MotionExportForm',
+    'MotionPdfExport',
     function($scope, $state, $http, gettext, gettextCatalog, ngDialog, MotionForm, Motion,
-                Category, Config, Tag, Workflow, User, Agenda, MotionBlock, MotionChangeRecommendation,
-                MotionCsvExport, MotionDocxExport, MotionContentProvider, MotionCatalogContentProvider,
-                PdfMakeConverter, PdfMakeDocumentProvider, HTMLValidizer, Projector, ProjectionDefault,
-                osTableFilter, osTableSort, PdfCreate) {
+                Category, Config, Tag, Workflow, User, Agenda, MotionBlock, Projector,
+                ProjectionDefault, osTableFilter, osTableSort, MotionExportForm, MotionPdfExport) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         MotionBlock.bindAll({}, $scope, 'motionBlocks');
@@ -883,52 +1047,12 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.openDialog = function (motion) {
             ngDialog.open(MotionForm.getDialog(motion));
         };
-
-        // Export as a pdf file
-        $scope.pdfExport = function() {
-            var filename = gettextCatalog.getString("Motions") + ".pdf";
-            var image_sources = [];
-            $scope.viewChangeRecommendations = {};
-            $scope.viewChangeRecommendations.mode = Config.get('motions_recommendation_text_mode').value;
-            $scope.lineNumberMode = Config.get('motions_default_line_numbering').value;
-
-            //save the arrays of the filtered motions to an array
-            angular.forEach($scope.motionsFiltered, function (motion) {
-                $scope.change_recommendations = MotionChangeRecommendation.filter({
-                    'where': {'motion_version_id': {'==': motion.active_version}}
-                });
-                var text = motion.getTextByMode($scope.viewChangeRecommendations.mode, null);
-                var content = HTMLValidizer.validize(text) + HTMLValidizer.validize(motion.getReason());
-                var map = Function.prototype.call.bind([].map);
-                var tmp_image_sources = map($(content).find("img"), function(element) {
-                    return element.getAttribute("src");
-                });
-                image_sources = image_sources.concat(tmp_image_sources);
-            });
-
-            //post-request to convert the images. Async.
-            $http.post('/core/encode_media/', JSON.stringify(image_sources)).then(function (success) {
-                var converter = PdfMakeConverter.createInstance(success.data.images);
-                var motionContentProviderArray = [];
-
-                //convert the filtered motions to motionContentProviders
-                angular.forEach($scope.motionsFiltered, function (motion) {
-                    motionContentProviderArray.push(MotionContentProvider.createInstance(converter, motion, $scope, User, $http));
-                });
-                var motionCatalogContentProvider = MotionCatalogContentProvider.createInstance(motionContentProviderArray, $scope, User, Category);
-                var documentProvider = PdfMakeDocumentProvider.createInstance(motionCatalogContentProvider);
-
-                PdfCreate.download(documentProvider.getDocument(), filename);
-            });
+        // Export dialog
+        $scope.openExportDialog = function () {
+            ngDialog.open(MotionExportForm.getDialog($scope.motionsFiltered));
         };
-
-        // Export as a csv file
-        $scope.csvExport = function () {
-            MotionCsvExport.export($scope.motionsFiltered);
-        };
-        // Export as docx file
-        $scope.docxExport = function () {
-            MotionDocxExport.export($scope.motionsFiltered, $scope.categories);
+        $scope.pdfExport = function () {
+            MotionPdfExport.export($scope.motionsFiltered);
         };
 
         // *** select mode functions ***
@@ -993,11 +1117,11 @@ angular.module('OpenSlidesApp.motions.site', [
     '$timeout',
     'operator',
     'ngDialog',
+    'gettextCatalog',
     'MotionForm',
     'ChangeRecommmendationCreate',
     'ChangeRecommmendationView',
     'MotionChangeRecommendation',
-    'MotionPDFExport',
     'Motion',
     'MotionComment',
     'Category',
@@ -1012,10 +1136,11 @@ angular.module('OpenSlidesApp.motions.site', [
     'Projector',
     'ProjectionDefault',
     'MotionBlock',
-    function($scope, $http, $timeout, operator, ngDialog, MotionForm,
-             ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation, MotionPDFExport,
+    'MotionPdfExport',
+    function($scope, $http, $timeout, operator, ngDialog, gettextCatalog, MotionForm,
+             ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation,
              Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motionId, MotionInlineEditing,
-             MotionCommentsInlineEditing, Projector, ProjectionDefault, MotionBlock) {
+             MotionCommentsInlineEditing, Projector, ProjectionDefault, MotionBlock, MotionPdfExport) {
         var motion = Motion.get(motionId);
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1296,8 +1421,19 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.viewChangeRecommendations.init($scope, Config.get('motions_recommendation_text_mode').value);
 
         // PDF creating functions
-        $scope.pdfExport = MotionPDFExport;
-        $scope.pdfExport.init($scope);
+        $scope.pdfExport = function () {
+            var identifier = $scope.motion.identifier ? '-' + $scope.motion.identifier : '';
+            var params = {
+                filename: gettextCatalog.getString('Motion') + identifier + '.pdf',
+                version: $scope.version,
+                changeRecommendationMode: $scope.viewChangeRecommendations.mode,
+                lineNumberMode: $scope.lineNumberMode,
+            };
+            MotionPdfExport.export(motion, params, true);
+        };
+        $scope.createPollPdf = function () {
+            MotionPdfExport.createPollPdf($scope.motion, $scope.version);
+        };
     }
 ])
 

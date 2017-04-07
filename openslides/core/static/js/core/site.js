@@ -649,6 +649,10 @@ angular.module('OpenSlidesApp.core.site', [
             overwriteOk: true,
         });
         formlyConfig.setType({
+            name: 'select-radio',
+            templateUrl: 'static/templates/core/select-radio.html',
+        });
+        formlyConfig.setType({
             name: 'select-single',
             extends: 'select',
             templateUrl: 'static/templates/core/select-single.html'

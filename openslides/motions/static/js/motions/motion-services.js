@@ -4,60 +4,6 @@
 
 angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions', 'OpenSlidesApp.motions.lineNumbering'])
 
-.factory('MotionPDFExport', [
-    'HTMLValidizer',
-    'Motion',
-    'User',
-    'PdfMakeConverter',
-    'PdfMakeDocumentProvider',
-    'PdfMakeBallotPaperProvider',
-    'MotionContentProvider',
-    'PollContentProvider',
-    'gettextCatalog',
-    '$http',
-    'PdfCreate',
-    function (HTMLValidizer, Motion, User, PdfMakeConverter, PdfMakeDocumentProvider, PdfMakeBallotPaperProvider,
-            MotionContentProvider, PollContentProvider, gettextCatalog, $http, PdfCreate) {
-        var obj = {};
-
-        var $scope;
-
-        obj.createMotion = function() {
-            var text = $scope.motion.getTextByMode($scope.viewChangeRecommendations.mode, $scope.version);
-            var content = HTMLValidizer.validize(text) + HTMLValidizer.validize($scope.motion.getReason($scope.version));
-            var map = Function.prototype.call.bind([].map);
-            var image_sources = map($(content).find("img"), function(element) {
-                return element.getAttribute("src");
-            });
-
-            $http.post('/core/encode_media/', JSON.stringify(image_sources)).then(function (success) {
-                var converter = PdfMakeConverter.createInstance(success.data.images);
-                var motionContentProvider = MotionContentProvider.createInstance(converter, $scope.motion, $scope, User, $http);
-                var documentProvider = PdfMakeDocumentProvider.createInstance(motionContentProvider);
-                var identifier = $scope.motion.identifier ? '-' + $scope.motion.identifier : '';
-                var filename = gettextCatalog.getString("Motion") + identifier + ".pdf";
-                PdfCreate.download(documentProvider.getDocument(), filename);
-            });
-        };
-
-        //make PDF for polls
-        obj.createPoll = function() {
-            var id = $scope.motion.identifier.replace(" ", "");
-            var title = $scope.motion.getTitle($scope.version);
-            var filename = gettextCatalog.getString("Motion") + "-" + id + "-" + gettextCatalog.getString("ballot-paper") + ".pdf";
-            var pollContentProvider = PollContentProvider.createInstance(title, id, gettextCatalog);
-            var documentProvider = PdfMakeBallotPaperProvider.createInstance(pollContentProvider);
-            PdfCreate.download(documentProvider.getDocument(), filename);
-        };
-
-        obj.init = function (_scope) {
-            $scope = _scope;
-        };
-
-        return obj;
-    }
-])
-
 .factory('MotionInlineEditing', [
     'Editor',
     'Motion',

@@ -8,9 +8,11 @@ angular.module('OpenSlidesApp.motions.docx', [])
     '$http',
     '$q',
     'Config',
+    'Category',
     'gettextCatalog',
     'FileSaver',
-    function ($http, $q, Config, gettextCatalog, FileSaver) {
+    'lineNumberingService',
+    function ($http, $q, Config, Category, gettextCatalog, FileSaver, lineNumberingService) {
 
         var PAGEBREAK = '<w:p><w:r><w:br w:type="page" /></w:r></w:p>';
         var TAGS_NO_PARAM = ['b', 'strong', 'em', 'i'];
@@ -19,10 +21,9 @@ angular.module('OpenSlidesApp.motions.docx', [])
         var relationships;
         var contentTypes;
 
-        // $scope.motionsFiltered, $scope.categories
-
-        var getData = function (motions, categories) {
+        var getData = function (motions, params) {
             var data = {};
+            var categories = Category.getAll();
             // header
             var headerline1 = [
                 Config.translate(Config.get('general_event_name').value),
@@ -47,7 +48,7 @@ angular.module('OpenSlidesApp.motions.docx', [])
 
             // motions
             data.tableofcontents_translation = gettextCatalog.getString('Table of contents');
-            data.motions = getMotionFullData(motions);
+            data.motions = getMotionFullData(motions, params);
             data.motions_list = getMotionShortData(motions);
             data.no_motions = gettextCatalog.getString('No motions available.');
 
@@ -72,13 +73,18 @@ angular.module('OpenSlidesApp.motions.docx', [])
             });
         };
 
-        var getMotionFullData = function (motions) {
+        var getMotionFullData = function (motions, params) {
             var translation = gettextCatalog.getString('Motion'),
                 sequential_translation = gettextCatalog.getString('Sequential number'),
                 submitters_translation = gettextCatalog.getString('Submitters'),
                 status_translation = gettextCatalog.getString('Status'),
                 reason_translation = gettextCatalog.getString('Reason'),
                 data = _.map(motions, function (motion) {
+                    // TODO: Add a parameter 'noLineBreaks' to 'getTextByMode'. Currently linenumbers are
+                    // removed directy after inserting --> not necessary. (See issue #3183)
+                    var text = motion.getTextByMode(params.changeRecommendationMode);
+                    text = lineNumberingService.stripLineNumbers(text);
+                    var reason = params.includeReason ? motion.getReason() : '';
                     return {
                         motion_translation: translation,
                         sequential_translation: sequential_translation,
@@ -92,9 +98,9 @@ angular.module('OpenSlidesApp.motions.docx', [])
                         status_translation: status_translation,
                         status: motion.getStateName(),
                         preamble: gettextCatalog.getString(Config.get('motions_preamble').value),
-                        text: html2docx(motion.getText()),
-                        reason_translation: motion.getReason().length === 0 ? '' : reason_translation,
-                        reason: html2docx(motion.getReason()),
+                        text: html2docx(text),
+                        reason_translation: reason.length === 0 ? '' : reason_translation,
+                        reason: html2docx(reason),
                         pagebreak: PAGEBREAK,
                     };
                 });
@@ -353,7 +359,19 @@ angular.module('OpenSlidesApp.motions.docx', [])
         };
 
         return {
-            export: function (motions, categories) {
+            export: function (motions, params) {
+                if (!params) {
+                    params = {};
+                }
+                _.defaults(params, {
+                    filename: 'motions-export.docx',
+                    changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
+                    includeReason: true,
+                });
+                if (!_.includes(['original', 'changed', 'agreed'], params.changeRecommendationMode)) {
+                    params.changeRecommendationMode = 'original';
+                }
+
                 images = [];
                 relationships = [];
                 contentTypes = [];
@@ -361,7 +379,7 @@ angular.module('OpenSlidesApp.motions.docx', [])
                     var content = window.atob(success.data);
                     var doc = new Docxgen(content);
 
-                    doc.setData(getData(motions, categories));
+                    doc.setData(getData(motions, params));
                     doc.render();
                     var zip = doc.getZip();
 
@@ -384,7 +402,7 @@ angular.module('OpenSlidesApp.motions.docx', [])
                     // wait for all images to be resolved
                     $q.all(imgPromises).then(function () {
                         var out = zip.generate({type: 'blob'});
-                        FileSaver.saveAs(out, 'motions-export.docx');
+                        FileSaver.saveAs(out, params.filename);
                     });
                 });
             },

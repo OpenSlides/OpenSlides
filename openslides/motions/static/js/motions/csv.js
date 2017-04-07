@@ -6,8 +6,10 @@ angular.module('OpenSlidesApp.motions.csv', [])
 
 .factory('MotionCsvExport', [
     'gettextCatalog',
+    'Config',
     'CsvDownload',
-    function (gettextCatalog, CsvDownload) {
+    'lineNumberingService',
+    function (gettextCatalog, Config, CsvDownload, lineNumberingService) {
         var makeHeaderline = function () {
             var headerline = ['Identifier', 'Title', 'Text', 'Reason', 'Submitter', 'Category', 'Origin'];
             return _.map(headerline, function (entry) {
@@ -15,16 +17,36 @@ angular.module('OpenSlidesApp.motions.csv', [])
             });
         };
         return {
-            export: function (motions) {
+            export: function (motions, params) {
+                if (!params) {
+                    params = {};
+                }
+                _.defaults(params, {
+                    filename: 'motions-export.csv',
+                    changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
+                    includeReason: true,
+                });
+                if (!_.includes(['original', 'changed', 'agreed'], params.changeRecommendationMode)) {
+                    params.changeRecommendationMode = 'original';
+                }
+
                 var csvRows = [
                     makeHeaderline()
                 ];
                 _.forEach(motions, function (motion) {
+                    // TODO: Add a parameter 'noLineBreaks' to 'getTextByMode'. Currently linenumbers are
+                    // removed directy after inserting --> not necessary. (See issue 3183)
+                    var text = motion.getTextByMode(params.changeRecommendationMode);
+                    text = lineNumberingService.stripLineNumbers(text);
                     var row = [];
                     row.push('"' + motion.identifier !== null ? motion.identifier : '' + '"');
                     row.push('"' + motion.getTitle() + '"');
-                    row.push('"' + motion.getText() + '"');
-                    row.push('"' + motion.getReason() + '"');
+                    row.push('"' + text + '"');
+                    if (params.includeReason) {
+                        row.push('"' + motion.getReason() + '"');
+                    } else {
+                        row.push('""');
+                    }
                     var submitter = motion.submitters[0] ? motion.submitters[0].get_full_name() : '';
                     row.push('"' + submitter + '"');
                     var category = motion.category ? motion.category.name : '';

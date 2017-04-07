@@ -36,43 +36,27 @@
         <i class="fa fa-check-square-o"></i>
         <translate>Select ...</translate>
       </button>
-      <!-- Export dropdown -->
-      <div class="dropdown pull-right" uib-dropdown>
-        <button type="button" class="btn btn-default btn-sm" id="dropdownExport" uib-dropdown-toggle>
-          <i class="fa fa-upload"></i>
-          <span ng-if="motionsFiltered.length == motions.length" translate>
-            Export all
-          </span>
-          <span ng-if="motionsFiltered.length != motions.length" translate>
-            Export filtered
-          </span>
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownExport">
-          <!-- PDF export -->
-          <li>
-            <a href="" ng-click="pdfExport()">
-              <i class="fa fa-file-pdf-o"></i>
-              PDF
-            </a>
-          </li>
-          <!-- CSV export -->
-          <li os-perms="motions.can_manage">
-            <a href="" id="downloadLinkCSV"
-              ng-click="csvExport()">
-              <i class="fa fa-file-text-o"></i>
-              CSV
-            </a>
-          </li>
-          <!-- DOCX export -->
-          <li os-perms="motions.can_manage">
-            <a href="" ng-click="docxExport()">
-              <i class="fa fa-file-word-o"></i>
-              DOCX
-            </a>
-          </li>
-        </ul>
-      </div>
+      <!-- Export button -->
+      <button type="button" class="btn btn-default btn-sm pull-right"
+        os-perms="motions.can_manage" ng-click="openExportDialog()">
+        <i class="fa fa-upload"></i>
+        <span ng-if="motionsFiltered.length === motions.length" translate>
+          Export all
+        </span>
+        <span ng-if="motionsFiltered.length !== motions.length" translate>
+          Export filtered
+        </span>
+      </button>
+      <button type="button" class="btn btn-default btn-sm pull-right"
+        os-perms="!motions.can_manage" ng-click="pdfExport()">
+        <i class="fa fa-file-pdf-o"></i>
+        <span ng-if="motionsFiltered.length === motions.length" translate>
+          Export all
+        </span>
+        <span ng-if="motionsFiltered.length !== motions.length" translate>
+          Export filtered
+        </span>
+      </button>
     </div>
   </div>
 
