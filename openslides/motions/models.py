@@ -50,7 +50,8 @@ class MotionManager(models.Manager):
                     'attachments',
                     'tags',
                     'submitters',
-                    'supporters'))
+                    'supporters',
+                    'personal_notes'))
 
 
 class Motion(RESTModelMixin, models.Model):
@@ -169,6 +170,8 @@ class Motion(RESTModelMixin, models.Model):
     """
     Configurable fields for comments. Contains a list of strings.
     """
+
+    personal_notes = GenericRelation(settings.AUTH_PERSONAL_NOTE_MODEL, related_name='motions')
 
     # In theory there could be one then more agenda_item. But we support only
     # one. See the property agenda_item.
@@ -638,6 +641,14 @@ class Motion(RESTModelMixin, models.Model):
         Returns the id of the agenda item object related to this object.
         """
         return self.agenda_item.pk
+
+    def set_personal_note(self, user, note=None, star=None, skip_autoupdate=False):
+        """
+        Saves or overrides a personal note to this motion for a given user.
+        """
+        user.set_personal_note(self, note, star)
+        if not skip_autoupdate:
+            inform_changed_data(self)
 
     def write_log(self, message_list, person=None, skip_autoupdate=False):
         """

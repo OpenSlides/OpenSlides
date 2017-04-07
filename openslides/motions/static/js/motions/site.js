@@ -1420,6 +1420,18 @@ angular.module('OpenSlidesApp.motions.site', [
             return Boolean(isAllowed);
         };
 
+        // personal note
+        $scope.toggleStar = function () {
+            if ($scope.motion.personalNote) {
+                $scope.motion.personalNote.star = !$scope.motion.personalNote.star;
+            } else {
+                $scope.motion.personalNote = {star: true};
+            }
+            $http.put('/rest/motions/motion/' + $scope.motion.id + '/set_personal_note/',
+                $scope.motion.personalNote
+            );
+        };
+
         // Inline editing functions
         $scope.inlineEditing = MotionInlineEditing.createInstance($scope, motion,
             'view-original-text-inline-editor', true,

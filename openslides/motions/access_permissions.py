@@ -64,6 +64,14 @@ class MotionAccessPermissions(BaseAccessPermissions):
                             except IndexError:
                                 # No data in range. Just do nothing.
                                 pass
+                # Now filter personal notes.
+                data = data.copy()
+                data['personal_notes'] = []
+                if user is not None:
+                    for personal_note in full_data.get('personal_notes', []):
+                        if personal_note.get('user_id') == user.id:
+                            data['personal_notes'].append(personal_note)
+                            break
         return data
 
     def get_projector_data(self, full_data):
