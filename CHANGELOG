@@ -10,6 +10,10 @@ Version 2.2 (unreleased)
 Motions:
 - New export dialog.
 
+Core:
+- No reload on logoff. OpenSlides is now a full single page application.
+
+
 Version 2.1.1 (2017-04-05)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/milestones/2.1.1]
