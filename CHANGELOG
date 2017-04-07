@@ -9,6 +9,8 @@ Version 2.2 (unreleased)
 
 Motions:
 - New export dialog.
+- Fixed issue when creating/deleting motion comment fields in the settings.
+
 
 Core:
 - No reload on logoff. OpenSlides is now a full single page application.
