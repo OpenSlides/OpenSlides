@@ -1,5 +1,9 @@
 from django.apps import apps
 
+from ..utils.auth import has_perm
+from ..utils.collection import Collection
+from .models import Assignment
+
 
 def get_permission_change_data(sender, permissions=None, **kwargs):
     """
@@ -10,3 +14,32 @@ def get_permission_change_data(sender, permissions=None, **kwargs):
         # There could be only one 'assignment.can_see' and then we want to return data.
         if permission.content_type.app_label == assignments_app.label and permission.codename == 'can_see':
             yield from assignments_app.get_startup_elements()
+
+
+def is_user_data_required(sender, request_user, user_data, **kwargs):
+    """
+    Returns True if request user can see assignments and user_data is required
+    to be displayed as candidates (including poll options).
+    """
+    result = False
+    if has_perm(request_user, 'assignments.can_see'):
+        for assignment_collection_element in Collection(Assignment.get_collection_string()).element_generator():
+            full_data = assignment_collection_element.get_full_data()
+            for related_user in full_data['assignment_related_users']:
+                if user_data['id'] == related_user['user_id']:
+                    result = True
+                    break
+            else:
+                for poll in full_data['polls']:
+                    for option in poll['options']:
+                        if user_data['id'] == option['candidate_id']:
+                            result = True
+                            break
+                    else:
+                        continue
+                    break
+                else:
+                    continue
+                break
+            break
+    return result

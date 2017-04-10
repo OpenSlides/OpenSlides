@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AnonymousUser
 
+from ..core.signals import user_data_required
 from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import anonymous_is_enabled, has_perm
 
@@ -49,7 +50,18 @@ class UserAccessPermissions(BaseAccessPermissions):
             # to see himself.
             case = LITTLE_DATA
         else:
-            case = NO_DATA
+            # Now check if the user to be sent out is required by any app e. g.
+            # as motion submitter or assignment candidate.
+            receiver_responses = user_data_required.send(
+                sender=self.__class__,
+                request_user=user,
+                user_data=full_data)
+            for receiver, response in receiver_responses:
+                if response:
+                    case = LITTLE_DATA
+                    break
+            else:
+                case = NO_DATA
 
         # Setup data.
         if case == FULL_DATA:

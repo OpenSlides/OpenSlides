@@ -17,10 +17,10 @@ class MotionsAppConfig(AppConfig):
 
         # Import all required stuff.
         from openslides.core.config import config
-        from openslides.core.signals import permission_change
+        from openslides.core.signals import permission_change, user_data_required
         from openslides.utils.rest_api import router
         from .config_variables import get_config_variables
-        from .signals import create_builtin_workflows, get_permission_change_data
+        from .signals import create_builtin_workflows, get_permission_change_data, is_user_data_required
         from .views import CategoryViewSet, MotionViewSet, MotionBlockViewSet, MotionPollViewSet, MotionChangeRecommendationViewSet, WorkflowViewSet
 
         # Define config variables
@@ -31,6 +31,9 @@ class MotionsAppConfig(AppConfig):
         permission_change.connect(
             get_permission_change_data,
             dispatch_uid='motions_get_permission_change_data')
+        user_data_required.connect(
+            is_user_data_required,
+            dispatch_uid='motions_is_user_data_required')
 
         # Register viewsets.
         router.register(self.get_model('Category').get_collection_string(), CategoryViewSet)

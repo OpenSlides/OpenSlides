@@ -413,6 +413,27 @@ class RetrieveMotion(TestCase):
         response = submitter_client.get(reverse('motion-detail', args=[self.motion.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_user_without_can_see_user_permission_to_see_motion_and_submitter_data(self):
+        self.motion.submitters.add(get_user_model().objects.get(username='admin'))
+        group = get_user_model().groups.field.related_model.objects.get(pk=1)  # Group with pk 1 is for anonymous and default users.
+        permission_string = 'users.can_see_name'
+        app_label, codename = permission_string.split('.')
+        permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
+        group.permissions.remove(permission)
+        config['general_system_enable_anonymous'] = True
+        guest_client = APIClient()
+
+        response_1 = guest_client.get(reverse('motion-detail', args=[self.motion.pk]))
+        self.assertEqual(response_1.status_code, status.HTTP_200_OK)
+        response_2 = guest_client.get(reverse('user-detail', args=[response_1.data['submitters_id'][0]]))
+        self.assertEqual(response_2.status_code, status.HTTP_200_OK)
+
+        extra_user = get_user_model().objects.create_user(
+            username='username_wequePhieFoom0hai3wa',
+            password='password_ooth7taechai5Oocieya')
+        response_3 = guest_client.get(reverse('user-detail', args=[extra_user.pk]))
+        self.assertEqual(response_3.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class UpdateMotion(TestCase):
     """

@@ -1,8 +1,9 @@
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 
-from openslides.utils.autoupdate import inform_changed_data
-
+from ..utils.auth import has_perm
+from ..utils.autoupdate import inform_changed_data
+from ..utils.collection import Collection
 from .models import Item
 
 
@@ -51,3 +52,22 @@ def get_permission_change_data(sender, permissions, **kwargs):
                 and permission.codename in ('can_see', 'can_see_hidden_items')):
             yield from agenda_app.get_startup_elements()
             break
+
+
+def is_user_data_required(sender, request_user, user_data, **kwargs):
+    """
+    Returns True if request user can see the agenda and user_data is required
+    to be displayed as speaker.
+    """
+    result = False
+    if has_perm(request_user, 'agenda.can_see'):
+        for item_collection_element in Collection(Item.get_collection_string()).element_generator():
+            full_data = item_collection_element.get_full_data()
+            for speaker in full_data['speakers']:
+                if user_data['id'] == speaker['user_id']:
+                    result = True
+                    break
+            else:
+                continue
+            break
+    return result
