@@ -14,6 +14,7 @@ Motions:
 - New export dialog [#3185].
 - Fixed issue when creating/deleting motion comment fields in the
   settings [#3187].
+- Fixed empty motion comment field in motion update form [#3194].
 
 Core:
 - No reload on logoff. OpenSlides is now a full single page

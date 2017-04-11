@@ -838,6 +838,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'ngDialog',
     'MotionForm',
     'Motion',
+    'MotionComment',
     'Category',
     'Config',
     'Tag',
@@ -851,7 +852,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'osTableSort',
     'MotionExportForm',
     'MotionPdfExport',
-    function($scope, $state, $http, gettext, gettextCatalog, ngDialog, MotionForm, Motion,
+    function($scope, $state, $http, gettext, gettextCatalog, ngDialog, MotionForm, Motion, MotionComment,
                 Category, Config, Tag, Workflow, User, Agenda, MotionBlock, Projector,
                 ProjectionDefault, osTableFilter, osTableSort, MotionExportForm, MotionPdfExport) {
         Motion.bindAll({}, $scope, 'motions');
@@ -1045,6 +1046,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // open new/edit dialog
         $scope.openDialog = function (motion) {
+            MotionComment.populateFields(motion);
             ngDialog.open(MotionForm.getDialog(motion));
         };
         // Export dialog
