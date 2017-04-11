@@ -7,13 +7,17 @@ https://openslides.org/
 Version 2.2 (unreleased)
 ==========================
 
-Motions:
-- New export dialog.
-- Fixed issue when creating/deleting motion comment fields in the settings.
+Agenda:
+- Fixed wrong sorting of last speakers [#3193].
 
+Motions:
+- New export dialog [#3185].
+- Fixed issue when creating/deleting motion comment fields in the
+  settings [#3187].
 
 Core:
-- No reload on logoff. OpenSlides is now a full single page application.
+- No reload on logoff. OpenSlides is now a full single page
+  application [#3172].
 
 
 Version 2.1.1 (2017-04-05)

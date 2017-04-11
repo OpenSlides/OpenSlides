@@ -412,6 +412,7 @@ angular.module('OpenSlidesApp.agenda.site', [
             $scope.currentSpeaker = $filter('filter')($scope.speakers, {'begin_time': '!!', 'end_time': null});
             // last speakers
             $scope.lastSpeakers = $filter('filter')($scope.speakers, {'end_time': '!!'});
+            $scope.lastSpeakers = $filter('orderBy')($scope.lastSpeakers, 'begin_time');
         });
         $scope.$watch(function () {
             return Projector.lastModified();
@@ -665,6 +666,7 @@ angular.module('OpenSlidesApp.agenda.site', [
                 $scope.currentSpeaker = $filter('filter')($scope.speakers, {'begin_time': '!!', 'end_time': null});
                 // last speakers
                 $scope.lastSpeakers = $filter('filter')($scope.speakers, {'end_time': '!!'});
+                $scope.lastSpeakers = $filter('orderBy')($scope.lastSpeakers, 'begin_time');
             } else {
                 $scope.speakers = void 0;
                 $scope.nextSpeakers = void 0;
