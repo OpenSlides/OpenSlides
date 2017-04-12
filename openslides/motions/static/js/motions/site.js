@@ -1046,7 +1046,9 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // open new/edit dialog
         $scope.openDialog = function (motion) {
-            MotionComment.populateFields(motion);
+            if (motion) {
+                MotionComment.populateFields(motion);
+            }
             ngDialog.open(MotionForm.getDialog(motion));
         };
         // Export dialog
