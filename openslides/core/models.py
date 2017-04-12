@@ -257,7 +257,8 @@ class ConfigStore(RESTModelMixin, models.Model):
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_manage_config', 'Can manage configuration'),)
+            ('can_manage_config', 'Can manage configuration'),
+            ('can_manage_logos', 'Can manage logos'))
 
     @classmethod
     def get_collection_string(cls):

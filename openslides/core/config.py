@@ -15,6 +15,7 @@ INPUT_TYPE_MAPPING = {
     'colorpicker': str,
     'datetimepicker': int,
     'majorityMethod': str,
+    'logo': dict,
 }
 
 
@@ -103,6 +104,19 @@ class ConfigHandler:
                     raise ConfigError(_('name has to be string.'))
                 if not isinstance(comment['public'], bool):
                     raise ConfigError(_('public property has to be bool.'))
+
+        if config_variable.input_type == 'logo':
+            if not isinstance(value, dict):
+                raise ConfigError(_('logo has to be a dict.'))
+            whitelist = (
+                'path',
+                'display_name',
+            )
+            for required_entry in whitelist:
+                if required_entry not in value:
+                    raise ConfigError(_('{} has to be given.'.format(required_entry)))
+                if not isinstance(value[required_entry], str):
+                    raise ConfigError(_('{} has to be a string.'.format(required_entry)))
 
         # Save the new value to the database.
         try:

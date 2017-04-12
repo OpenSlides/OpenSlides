@@ -22,8 +22,9 @@ angular.module('OpenSlidesApp.mediafiles.list', [
     'User',
     'Mediafile',
     'MediafileForm',
+    'Logos',
     function ($http, $scope, gettext, ngDialog, osTableFilter, osTableSort,
-              ProjectionDefault, Projector, User, Mediafile, MediafileForm) {
+              ProjectionDefault, Projector, User, Mediafile, MediafileForm, Logos) {
         Mediafile.bindAll({}, $scope, 'mediafiles');
         User.bindAll({}, $scope, 'users');
         $scope.$watch(function() {
@@ -249,6 +250,22 @@ angular.module('OpenSlidesApp.mediafiles.list', [
                 mediafile,
                 {playing: !mediafile.playing}
             );
+        };
+
+        /** Logos **/
+        $scope.logos = Logos.getAll();
+        $scope.toggleLogo = function (mediafile, logo) {
+            if (!$scope.hasLogo(mediafile, logo)) {
+                Logos.setMediafile(logo.key, mediafile);
+            } else {
+                Logos.setMediafile(logo.key);
+            }
+        };
+        $scope.hasLogo = function (mediafile, logo) {
+            var allUrls = _.map(mediafile.getLogos(), function (logo) {
+               return logo.path;
+            });
+            return _.includes(allUrls, logo.path);
         };
     }
 ])

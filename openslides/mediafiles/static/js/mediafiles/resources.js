@@ -12,7 +12,8 @@ angular.module('OpenSlidesApp.mediafiles.resources', [
     'DS',
     'gettext',
     'jsDataModel',
-    function (DS, gettext, jsDataModel) {
+    'Logos',
+    function (DS, gettext, jsDataModel, Logos) {
         var name = 'mediafiles/mediafile';
         return DS.defineResource({
             name: name,
@@ -47,6 +48,15 @@ angular.module('OpenSlidesApp.mediafiles.resources', [
                             return true;
                         }
                     });
+                },
+                isUsedAsLogo: function () {
+                    return Logos.isMediafileUsedAsLogo(this);
+                },
+                canBeUsedAsLogo: function () {
+                    return Logos.canMediafileBeUsedAsLogo(this);
+                },
+                getLogos: function () {
+                    return Logos.getLogosForMediafile(this);
                 },
             },
             computed: {
