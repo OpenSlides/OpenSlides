@@ -23,7 +23,9 @@ class CoreAppConfig(AppConfig):
         from .signals import (
             delete_django_app_permissions,
             get_permission_change_data,
-            permission_change)
+            is_user_data_required,
+            permission_change,
+            user_data_required)
         from .views import (
             ChatMessageViewSet,
             ConfigViewSet,
@@ -43,6 +45,9 @@ class CoreAppConfig(AppConfig):
         permission_change.connect(
             get_permission_change_data,
             dispatch_uid='core_get_permission_change_data')
+        user_data_required.connect(
+            is_user_data_required,
+            dispatch_uid='core_is_user_data_required')
 
         # Register viewsets.
         router.register(self.get_model('Projector').get_collection_string(), ProjectorViewSet)

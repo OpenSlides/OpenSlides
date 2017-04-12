@@ -1,7 +1,9 @@
 from django.apps import apps
 from django.utils.translation import ugettext_noop
 
-from .models import State, Workflow
+from ..utils.auth import has_perm
+from ..utils.collection import Collection
+from .models import Motion, State, Workflow
 
 
 def create_builtin_workflows(sender, **kwargs):
@@ -114,3 +116,18 @@ def get_permission_change_data(sender, permissions, **kwargs):
         # There could be only one 'motions.can_see' and then we want to return data.
         if permission.content_type.app_label == motions_app.label and permission.codename == 'can_see':
             yield from motions_app.get_startup_elements()
+
+
+def is_user_data_required(sender, request_user, user_data, **kwargs):
+    """
+    Returns True if request user can see motions and user_data is required
+    to be displayed as motion submitter or supporter.
+    """
+    result = False
+    if has_perm(request_user, 'motions.can_see'):
+        for motion_collection_element in Collection(Motion.get_collection_string()).element_generator():
+            full_data = motion_collection_element.get_full_data()
+            if user_data['id'] in full_data['submitters_id'] or user_data['id'] in full_data['supporters_id']:
+                result = True
+                break
+    return result

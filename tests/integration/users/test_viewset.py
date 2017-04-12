@@ -103,6 +103,19 @@ class UserGetTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+    def test_get_with_user_without_permissions(self):
+        group = Group.objects.get(pk=1)
+        permission_string = 'users.can_see_name'
+        app_label, codename = permission_string.split('.')
+        permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
+        group.permissions.remove(permission)
+        config['general_system_enable_anonymous'] = True
+        guest_client = APIClient()
+
+        response = guest_client.get('/rest/users/user/1/')
+
+        self.assertEqual(response.status_code, 403)
+
 
 class UserCreate(TestCase):
     """

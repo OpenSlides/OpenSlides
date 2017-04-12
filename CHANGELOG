@@ -20,6 +20,12 @@ Core:
 - No reload on logoff. OpenSlides is now a full single page
   application [#3172].
 
+Users:
+- User without permission to see users can now see agenda item speakers,
+  motion submitters and supporters, assignment candidates, mediafile
+  uploader and chat message users if they have the respective
+  permissions [#3191].
+
 
 Version 2.1.1 (2017-04-05)
 ==========================
