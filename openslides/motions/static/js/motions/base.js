@@ -291,7 +291,7 @@ angular.module('OpenSlidesApp.motions', [
                     }
                     return html;
                 },
-                _getTextWithChangeRecommendations: function (versionId, highlight, statusCompareCb) {
+                _getTextWithChangeRecommendations: function (versionId, highlight, lineBreaks, statusCompareCb) {
                     var lineLength = Config.get('motions_line_length').value,
                         html = this.getVersion(versionId).text,
                         changes = this.getChangeRecommendations(versionId, 'DESC');
@@ -299,33 +299,45 @@ angular.module('OpenSlidesApp.motions', [
                     for (var i = 0; i < changes.length; i++) {
                         var change = changes[i];
                         if (typeof statusCompareCb === 'undefined' || statusCompareCb(change.rejected)) {
-                            html = lineNumberingService.insertLineNumbers(html, lineLength);
+                            html = lineNumberingService.insertLineNumbers(html, lineLength, null, null, 1);
                             html = diffService.replaceLines(html, change.text, change.line_from, change.line_to);
                         }
                     }
 
-                    return lineNumberingService.insertLineNumbers(html, lineLength, highlight);
+                    if (lineBreaks) {
+                        html = lineNumberingService.insertLineNumbers(html, lineLength, highlight, null, 1);
+                    }
+
+                    return html;
                 },
-                getTextWithAllChangeRecommendations: function (versionId, highlight) {
-                    return this._getTextWithChangeRecommendations(versionId, highlight, function() {
+                getTextWithAllChangeRecommendations: function (versionId, highlight, lineBreaks) {
+                    return this._getTextWithChangeRecommendations(versionId, highlight, lineBreaks, function() {
                         return true;
                     });
                 },
-                getTextWithoutRejectedChangeRecommendations: function (versionId, highlight) {
-                    return this._getTextWithChangeRecommendations(versionId, highlight, function(rejected) {
+                getTextWithoutRejectedChangeRecommendations: function (versionId, highlight, lineBreaks) {
+                    return this._getTextWithChangeRecommendations(versionId, highlight, lineBreaks, function(rejected) {
                         return !rejected;
                     });
                 },
-                getTextByMode: function(mode, versionId, highlight) {
+                getTextByMode: function(mode, versionId, highlight, lineBreaks) {
                     /*
                      * @param mode ['original', 'diff', 'changed', 'agreed']
                      * @param versionId [if undefined, active_version will be used]
                      * @param highlight [the line number to highlight]
+                     * @param lineBreaks [if line numbers / breaks should be included in the result]
                      */
+
+                    lineBreaks = (lineBreaks === undefined ? true : lineBreaks);
+
                     var text;
                     switch (mode) {
                         case 'original':
-                            text = this.getTextWithLineBreaks(versionId, highlight);
+                            if (lineBreaks) {
+                                text = this.getTextWithLineBreaks(versionId, highlight);
+                            } else {
+                                text = this.getVersion(versionId).text;
+                            }
                             break;
                         case 'diff':
                             var changes = this.getChangeRecommendations(versionId, 'ASC');
@@ -335,12 +347,16 @@ angular.module('OpenSlidesApp.motions', [
                                 text += changes[i].getDiff(this, versionId, highlight);
                             }
                             text += this.getTextRemainderAfterLastChangeRecommendation(versionId, changes);
+
+                            if (!lineBreaks) {
+                                text = lineNumberingService.stripLineNumbers(text);
+                            }
                             break;
                         case 'changed':
-                            text = this.getTextWithAllChangeRecommendations(versionId, highlight);
+                            text = this.getTextWithAllChangeRecommendations(versionId, highlight, lineBreaks);
                             break;
                         case 'agreed':
-                            text = this.getTextWithoutRejectedChangeRecommendations(versionId, highlight);
+                            text = this.getTextWithoutRejectedChangeRecommendations(versionId, highlight, lineBreaks);
                             break;
                     }
                     return text;

@@ -34,10 +34,7 @@ angular.module('OpenSlidesApp.motions.csv', [])
                     makeHeaderline()
                 ];
                 _.forEach(motions, function (motion) {
-                    // TODO: Add a parameter 'noLineBreaks' to 'getTextByMode'. Currently linenumbers are
-                    // removed directy after inserting --> not necessary. (See issue 3183)
-                    var text = motion.getTextByMode(params.changeRecommendationMode);
-                    text = lineNumberingService.stripLineNumbers(text);
+                    var text = motion.getTextByMode(params.changeRecommendationMode, null, null, false);
                     var row = [];
                     row.push('"' + motion.identifier !== null ? motion.identifier : '' + '"');
                     row.push('"' + motion.getTitle() + '"');
