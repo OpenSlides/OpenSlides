@@ -290,7 +290,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         var title = gettextCatalog.getString('Comment') + ' ' + fields[i].name;
                         console.log(fields[i]);
                         if (!fields[i].public) {
-                            title += ' (' + gettextCatalog.getString('private') + ')';
+                            title += ' (' + gettextCatalog.getString('internal') + ')';
                         }
                         comments.push({
                             text: title,

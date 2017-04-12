@@ -1528,6 +1528,7 @@ angular.module('OpenSlidesApp.users.site', [
         gettext('Can manage configuration');
         gettext('Can use the chat');
         gettext('Can manage the chat');
+        gettext('Can manage logos');
         // mediafiles
         gettext('Can see the list of files');
         gettext('Can upload files');
