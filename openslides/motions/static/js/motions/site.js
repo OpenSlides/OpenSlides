@@ -644,9 +644,9 @@ angular.module('OpenSlidesApp.motions.site', [
                             templateOptions: {
                                 label: gettextCatalog.getString('Format'),
                                 options: [
-                                    {name: gettextCatalog.getString('PDF'), value: 'pdf'},
-                                    {name: gettextCatalog.getString('CSV'), value: 'csv'},
-                                    {name: gettextCatalog.getString('DOCX'), value: 'docx'},
+                                    {name: 'PDF', value: 'pdf'},
+                                    {name: 'CSV', value: 'csv'},
+                                    {name: 'DOCX', value: 'docx'},
                                 ],
                                 change: formatChangeCallback,
                             },
@@ -726,7 +726,7 @@ angular.module('OpenSlidesApp.motions.site', [
                             key: 'includeComments',
                             type: 'select-radio',
                             templateOptions: {
-                                label: gettextCatalog.getString('Kommentare'),
+                                label: gettextCatalog.getString('Comments'),
                                 options: [
                                     {name: gettextCatalog.getString('Yes'), value: true},
                                     {name: gettextCatalog.getString('No'), value: false},
