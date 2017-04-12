@@ -11,10 +11,6 @@ urlpatterns = [
         views.VersionView.as_view(),
         name='core_version'),
 
-    url(r'^core/encode_media/$',
-        views.MediaEncoder.as_view(),
-        name="core_mediaencoding"),
-
     url(r'^webclient/(?P<realm>site|projector)/$',
         views.WebclientJavaScriptView.as_view(),
         name='core_webclient_javascript'),

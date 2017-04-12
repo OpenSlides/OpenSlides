@@ -613,9 +613,11 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'PollContentProvider',
     'PdfMakeBallotPaperProvider',
     'PdfCreate',
+    'PDFLayout',
+    '$q',
     function ($http, Config, gettextCatalog, MotionChangeRecommendation, HTMLValidizer, PdfMakeConverter,
         MotionContentProvider, MotionCatalogContentProvider, PdfMakeDocumentProvider, PollContentProvider,
-        PdfMakeBallotPaperProvider, PdfCreate) {
+        PdfMakeBallotPaperProvider, PdfCreate, PDFLayout, $q) {
         return {
             export: function (motions, params, singleMotion) {
                 if (!params) {
@@ -657,9 +659,22 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     image_sources = image_sources.concat(tmp_image_sources);
                 });
 
-                //post-request to convert the images. Async.
-                $http.post('/core/encode_media/', JSON.stringify(image_sources)).then(function (success) {
-                    var converter = PdfMakeConverter.createInstance(success.data.images);
+                var image_map = {};
+                _.forEach(image_sources, function (image_source) {
+                    image_map[image_source] = PDFLayout.imageURLtoBase64(image_source);
+                });
+
+                var image_promises = Object.keys(image_map).map(function( key ) {
+                    return image_map[key];
+                });
+
+                //resolv promises to get base64
+                $q.all(image_promises).then(function(base64Str) {
+                    Object.keys(image_map).map(function(key, i) {
+                        image_map[key] = base64Str[i];
+                    });
+
+                    var converter = PdfMakeConverter.createInstance(image_map);
                     var motionContentProviderArray = [];
 
                     //convert all motions to motionContentProviders
@@ -671,7 +686,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                             params.includeReason, params.includeComments
                         ));
                     });
-                    
+
                     var documentProvider;
                     if (singleMotion) {
                         documentProvider = PdfMakeDocumentProvider.createInstance(motionContentProviderArray[0]);

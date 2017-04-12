@@ -15,6 +15,8 @@ Motions:
 - Fixed issue when creating/deleting motion comment fields in the
   settings [#3187].
 - Fixed empty motion comment field in motion update form [#3194].
+- Removed server side image to base64 transformation and
+  added local transformation [#2705]
 
 Core:
 - No reload on logoff. OpenSlides is now a full single page
