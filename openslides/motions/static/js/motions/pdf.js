@@ -288,7 +288,6 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 for (var i = 0; i < fields.length; i++) {
                     if (motion.comments[i] && canSeeComment(i)) {
                         var title = gettextCatalog.getString('Comment') + ' ' + fields[i].name;
-                        console.log(fields[i]);
                         if (!fields[i].public) {
                             title += ' (' + gettextCatalog.getString('internal') + ')';
                         }
@@ -602,6 +601,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('MotionPdfExport', [
     '$http',
+    '$q',
     'Config',
     'gettextCatalog',
     'MotionChangeRecommendation',
@@ -614,15 +614,14 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'PdfMakeBallotPaperProvider',
     'PdfCreate',
     'PDFLayout',
-    '$q',
-    function ($http, Config, gettextCatalog, MotionChangeRecommendation, HTMLValidizer, PdfMakeConverter,
+    'Messaging',
+    'FileSaver',
+    function ($http, $q, Config, gettextCatalog, MotionChangeRecommendation, HTMLValidizer, PdfMakeConverter,
         MotionContentProvider, MotionCatalogContentProvider, PdfMakeDocumentProvider, PollContentProvider,
-        PdfMakeBallotPaperProvider, PdfCreate, PDFLayout, $q) {
+        PdfMakeBallotPaperProvider, PdfCreate, PDFLayout, Messaging, FileSaver) {
         return {
-            export: function (motions, params, singleMotion) {
-                if (!params) {
-                    params = {};
-                }
+            getDocumentProvider: function (motions, params, singleMotion) {
+                params = _.clone(params || {}); // Clone this to avoid sideeffects.
                 _.defaults(params, {
                     filename: gettextCatalog.getString('motions') + '.pdf',
                     changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
@@ -643,11 +642,11 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 angular.forEach(motions, function (motion) {
                     if (singleMotion) {
                         motion.changeRecommendations = MotionChangeRecommendation.filter({
-                            'where': {'motion_version_id': {'==': motion.active_version}}
+                            'where': {'motion_version_id': {'==': params.version}}
                         });
                     } else {
                         motion.changeRecommendations = MotionChangeRecommendation.filter({
-                            'where': {'motion_version_id': {'==': params.version}}
+                            'where': {'motion_version_id': {'==': motion.active_version}}
                         });
                     }
                     var text = motion.getTextByMode(params.changeRecommendationMode, null);
@@ -659,43 +658,93 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     image_sources = image_sources.concat(tmp_image_sources);
                 });
 
-                var image_map = {};
-                _.forEach(image_sources, function (image_source) {
-                    image_map[image_source] = PDFLayout.imageURLtoBase64(image_source);
+                var imageMap = {};
+                var imagePromises = _.map(image_sources, function (image_source) {
+                    return PDFLayout.imageURLtoBase64(image_source).then(function (base64Str) {
+                        imageMap[image_source] = base64Str;
+                    });
                 });
 
-                var image_promises = Object.keys(image_map).map(function( key ) {
-                    return image_map[key];
+                return $q(function (resolve) {
+                    //resolve promises to get base64
+                    $q.all(imagePromises).then(function(base64Str) {
+                        var converter = PdfMakeConverter.createInstance(imageMap);
+                        var motionContentProviderArray = [];
+
+                        //convert all motions to motionContentProviders
+                        angular.forEach(motions, function (motion) {
+                            var version = (singleMotion ? params.version : motion.active_version);
+                            motionContentProviderArray.push(MotionContentProvider.createInstance(
+                                converter, motion, version, params.changeRecommendationMode,
+                                motion.changeRecommendations, params.lineNumberMode,
+                                params.includeReason, params.includeComments
+                            ));
+                        });
+
+                        var documentProvider;
+                        if (singleMotion) {
+                            documentProvider = PdfMakeDocumentProvider.createInstance(motionContentProviderArray[0]);
+                        } else {
+                            var motionCatalogContentProvider = MotionCatalogContentProvider.createInstance(motionContentProviderArray);
+                            documentProvider = PdfMakeDocumentProvider.createInstance(motionCatalogContentProvider);
+                        }
+
+                        resolve(documentProvider);
+                    });
                 });
-
-                //resolv promises to get base64
-                $q.all(image_promises).then(function(base64Str) {
-                    Object.keys(image_map).map(function(key, i) {
-                        image_map[key] = base64Str[i];
-                    });
-
-                    var converter = PdfMakeConverter.createInstance(image_map);
-                    var motionContentProviderArray = [];
-
-                    //convert all motions to motionContentProviders
-                    angular.forEach(motions, function (motion) {
-                        var version = (singleMotion ? params.version : motion.active_version);
-                        motionContentProviderArray.push(MotionContentProvider.createInstance(
-                            converter, motion, version, params.changeRecommendationMode,
-                            motion.changeRecommendations, params.lineNumberMode,
-                            params.includeReason, params.includeComments
-                        ));
-                    });
-
-                    var documentProvider;
-                    if (singleMotion) {
-                        documentProvider = PdfMakeDocumentProvider.createInstance(motionContentProviderArray[0]);
-                    } else {
-                        var motionCatalogContentProvider = MotionCatalogContentProvider.createInstance(motionContentProviderArray);
-                        documentProvider = PdfMakeDocumentProvider.createInstance(motionCatalogContentProvider);
+            },
+            export: function (motions, params, singleMotion) {
+                _.defaults(params, {
+                    filename: gettextCatalog.getString('motions') + '.pdf',
+                });
+                this.getDocumentProvider(motions, params, singleMotion).then(
+                    function (documentProvider) {
+                        PdfCreate.download(documentProvider.getDocument(), params.filename);
                     }
+                );
+            },
+            exportZip: function (motions, params) {
+                var messageId = Messaging.addMessage('<i class="fa fa-spinner fa-pulse fa-lg spacer-right"></i>' +
+                    gettextCatalog.getString('Generating PDFs and ZIP archive') + ' ...', 'info');
+                var zipFilename = params.filename || gettextCatalog.getString('motions') + '.zip';
+                params.filename = void 0; // clear this, so we do not override the default filenames for each pdf.
 
-                    PdfCreate.download(documentProvider.getDocument(), params.filename);
+                var self = this;
+                var pdfs = {};
+                var pdfPromises = _.map(motions, function (motion) {
+                    var identifier = motion.identifier ? '-' + motion.identifier : '';
+                    var filename = gettextCatalog.getString('Motion') + identifier + '.pdf';
+
+                    return $q(function (resolve, reject) {
+                        // get documentProvider for every motion.
+                        self.getDocumentProvider(motion, params, true).then(function (documentProvider) {
+                            var doc = documentProvider.getDocument();
+
+                            PdfCreate.getBase64FromDocument(doc).then(function (data) {
+                                pdfs[filename] = data;
+                                resolve();
+                            }, function (error) {
+                                reject(error);
+                            });
+                        });
+                    });
+                });
+
+                // Wait for all documents to be generated. Then put them into a zip and download it.
+                $q.all(pdfPromises).then(function () {
+                    var zip = new JSZip();
+                    _.forEach(pdfs, function (data, filename) {
+                        zip.file(filename, data, {base64: true});
+                    });
+                    Messaging.createOrEditMessage(messageId, '<i class="fa fa-check fa-lg spacer-right"></i>' +
+                        gettextCatalog.getString('ZIP successfully generated.'), 'success', {timeout: 3000});
+                    zip.generateAsync({type: 'blob'}).then(function (content) {
+                        FileSaver.saveAs(content, zipFilename);
+                    });
+                }, function (error) {
+                    Messaging.createOrEditMessage(messageId, '<i class="fa fa-exclamation-triangle fa-lg ' +
+                        'spacer-right"></i>' + gettextCatalog.getString('Error while generating ZIP file') +
+                        ': <code>' + error + '</code>', 'error');
                 });
             },
             createPollPdf: function (motion, version) {
