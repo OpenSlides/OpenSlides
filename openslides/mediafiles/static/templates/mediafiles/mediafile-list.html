@@ -278,7 +278,7 @@
       </div>
       <div class="no-projector-spacer" os-perms="!core.can_manage_projector"></div>
       <!-- main content column -->
-      <div class="col-xs-6 content">
+      <div class="col-xs-5 content">
         <div class="spacer-right"> <!-- horizontal block -->
           <i ng-style="{'visibility': mediafile.hidden ? 'visible' : 'hidden'}" class="fa fa-lock fa-lg"
               title="{{ 'Is hidden' | translate }}"></i>
@@ -321,22 +321,28 @@
               ng-mouseleave="mediafile.logoHover=false"
               ng-show="mediafile.canBeUsedAsLogo()">
             <span uib-dropdown>
-              <span id="dropdownLogo{{ mediafile.id }}" class="pointer nobr"
-                uib-dropdown-toggle uib-tooltip="{{ 'Manage logos' | translate }}"
-                tooltip-class="nobr">
-                <span ng-if="!mediafile.isUsedAsLogo()" ng-show="mediafile.hover">
-                  <i class="fa fa-picture-o"></i>
-                  <i class="fa fa-plus"></i>
-                </span>
-                <span ng-if="mediafile.isUsedAsLogo()">
-                  <i class="fa fa-picture-o spacer-right"></i>
-                  <span ng-repeat="logo in mediafile.getLogos()">
-                    <small>
-                      {{ logo.display_name }}<span ng-if="!$last">,</span>
-                    </small>
+              <span id="dropdownLogo{{ mediafile.id }}" class="pointer nobr" uib-dropdown-toggle>
+                <span uib-tooltip="{{ 'Manage logos' | translate }}" tooltip-class="nobr">
+                  <span ng-if="!mediafile.isUsedAsLogo()" ng-show="mediafile.hover">
+                    <i class="fa fa-picture-o"></i>
+                    <i class="fa fa-plus"></i>
                   </span>
-                  <i class="fa fa-cog fa-lg spacer-left" ng-show="mediafile.logoHover"></i>
+                  <span ng-if="mediafile.isUsedAsLogo()">
+                    <span ng-repeat="logo in mediafile.getLogos()">
+                      <i class="fa fa-picture-o spacer-right"
+                         ng-style="{'visibility': $first ? 'visible' : 'hidden'}"></i>
+                      <small>
+                        {{ logo.display_name }}<span ng-if="!$last">,</br></span>
+                      </small>
+                    </span>
+                  </span>
                 </span>
+                <span ng-if="hasProjectorHeaderLogo(mediafile) && mediafile.logoHover"
+                    uib-tooltip="{{ 'The projector header should have a default size of 1024x70px.
+                    Adapt the image width if you change the projector resolution.' | trusted | translate }}">
+                  <i class="fa fa-info-circle"></i>
+                </span>
+                <i class="fa fa-cog fa-lg spacer-left" ng-show="mediafile.logoHover"></i>
               </span>
               <ul class="dropdown-menu" aria-labelledby="dropdownLogos{{ mediafile.id }}">
                 <li ng-repeat="logo in logos">

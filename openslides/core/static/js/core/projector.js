@@ -158,9 +158,12 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 
         var setElements = function (projector) {
             $scope.elements = [];
-            _.forEach(slides.getElements(projector), function(element) {
+            _.forEach(slides.getElements(projector), function (element) {
                 if (!element.error) {
-                    $scope.elements.push(element);
+                    // Exclude the clock if it should be disabled.
+                    if (Config.get('projector_enable_clock').value || element.name !== 'core/clock') {
+                        $scope.elements.push(element);
+                    }
                 } else {
                     console.error("Error for slide " + element.name + ": " + element.error);
                 }
@@ -244,10 +247,11 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             }
         });
 
-        $scope.getLogo = function (key) {
-            var logo = Logos.getFromKey(key);
-            return logo ? logo.path : void 0;
-        };
+        $scope.$watch(function () {
+            return Config.lastModified('projector_enable_clock');
+        }, function () {
+            setElements($scope.projector);
+        });
 
         $scope.$on('$destroy', function() {
             if ($scope.broadcastDeregister) {

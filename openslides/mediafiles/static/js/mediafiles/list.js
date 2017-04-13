@@ -267,6 +267,11 @@ angular.module('OpenSlidesApp.mediafiles.list', [
             });
             return _.includes(allUrls, logo.path);
         };
+        $scope.hasProjectorHeaderLogo = function (mediafile) {
+            return _.some(mediafile.getLogos(), function (logo) {
+                return logo.key === 'logo_projector_header';
+            });
+        };
     }
 ])
 
