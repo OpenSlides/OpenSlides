@@ -29,6 +29,8 @@ Users:
   motion submitters and supporters, assignment candidates, mediafile
   uploader and chat message users if they have the respective
   permissions [#3191].
+- Added support for password validation using Django or custom validators
+  e. g. for minimum password length [#3200].
 
 
 Version 2.1.1 (2017-04-05)

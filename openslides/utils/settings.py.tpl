@@ -68,9 +68,7 @@ DATABASES = {
 # Set use_redis to True to activate redis as cache-, asgi- and session backend.
 use_redis = False
 
-
 if use_redis:
-
     # Django Channels
 
     # Unless you have only a small assembly uncomment the following lines to
@@ -111,7 +109,6 @@ if use_redis:
     SESSION_ENGINE = 'redis_sessions.session'
 
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
@@ -130,6 +127,11 @@ STATIC_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, 'collected-static')
 # https://docs.djangoproject.com/en/1.10/topics/files/
 
 MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, 'media', '')
+
+
+# Password validation
+# https://docs.djangoproject.com/en/1.10/topics/auth/passwords/#module-django.contrib.auth.password_validation
+# AUTH_PASSWORD_VALIDATORS = []
 
 
 # Customization of OpenSlides apps
