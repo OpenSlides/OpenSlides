@@ -57,6 +57,9 @@ class StateSerializer(ModelSerializer):
     """
     Serializer for motion.models.State objects.
     """
+    name = SerializerMethodField()
+    action_word = SerializerMethodField()
+
     class Meta:
         model = State
         fields = (
@@ -76,6 +79,12 @@ class StateSerializer(ModelSerializer):
             'show_recommendation_extension_field',
             'next_states',
             'workflow')
+
+    def get_name(self, obj):
+        return _(obj.name)
+
+    def get_action_word(self, obj):
+        return _(obj.action_word)
 
 
 class WorkflowSerializer(ModelSerializer):
