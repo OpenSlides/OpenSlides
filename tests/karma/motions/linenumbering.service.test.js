@@ -389,4 +389,13 @@ describe('linenumbering', function () {
         expect(highlighted).toBe(noMarkup(1) + '<span>Lorem ' + brMarkup(2) + 'ipsum ' + brMarkup(3) + 'dolor' + brMarkup(4) + 'sit ' + brMarkup(5) + 'amet</span>');
     });
   });
+
+  describe('caching', function() {
+    it('caches based on line length', function () {
+      var inHtml = '<p>' +longstr(100) + '</p>';
+      var outHtml80 = lineNumberingService.insertLineNumbers(inHtml, 80);
+      var outHtml70 = lineNumberingService.insertLineNumbers(inHtml, 70);
+      expect(outHtml70).not.toBe(outHtml80);
+    });
+  });
 });
