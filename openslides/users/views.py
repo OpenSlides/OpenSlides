@@ -2,6 +2,8 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 
@@ -102,6 +104,10 @@ class UserViewSet(ModelViewSet):
         """
         user = self.get_object()
         if isinstance(request.data.get('password'), str):
+            try:
+                validate_password(request.data.get('password'), user=request.user)
+            except DjangoValidationError as errors:
+                raise ValidationError({'detail': ' '.join(errors)})
             user.set_password(request.data.get('password'))
             user.save()
             return Response({'detail': _('Password successfully reset.')})
@@ -319,6 +325,10 @@ class SetPasswordView(APIView):
     def post(self, request, *args, **kwargs):
         user = request.user
         if user.check_password(request.data['old_password']):
+            try:
+                validate_password(request.data.get('new_password'), user=user)
+            except DjangoValidationError as errors:
+                raise ValidationError({'detail': ' '.join(errors)})
             user.set_password(request.data['new_password'])
             user.save()
             update_session_auth_hash(request, user)
