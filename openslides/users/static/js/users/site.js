@@ -1021,9 +1021,17 @@ angular.module('OpenSlidesApp.users.site', [
                 // Check for duplicates
                 user.duplicate = false;
                 users.forEach(function(user_) {
-                    if (user_.first_name == user.first_name &&
-                        user_.last_name == user.last_name &&
-                        user_.structure_level == user.structure_level) {
+                    user_.fullname = [
+                        user_.title,
+                        user_.first_name,
+                        user_.last_name,
+                        user_.structure_level].join(' ').trim();
+                    user.fullname = [
+                        user.title,
+                        user.first_name,
+                        user.last_name,
+                        user.structure_level].join(' ').trim();
+                    if (user_.fullname === user.fullname) {
                         if (user.duplicate) {
                             // there are multiple duplicates!
                             user.duplicate_info += '\n' + gettextCatalog.getString('There are more than one duplicates of this user!');
@@ -1130,9 +1138,17 @@ angular.module('OpenSlidesApp.users.site', [
                             // delete existing user
                             var deletePromises = [];
                             existingUsers.forEach(function(user_) {
-                                if (user_.first_name == user.first_name &&
-                                    user_.last_name == user.last_name &&
-                                    user_.structure_level == user.structure_level) {
+                                user_.fullname = [
+                                    user_.title,
+                                    user_.first_name,
+                                    user_.last_name,
+                                    user_.structure_level].join(' ').trim();
+                                user.fullname = [
+                                    user.title,
+                                    user.first_name,
+                                    user.last_name,
+                                    user.structure_level].join(' ').trim();
+                                if (user_.fullname === user.fullname) {
                                     deletePromises.push(User.destroy(user_.id));
                                 }
                             });

@@ -189,23 +189,30 @@
         last-text="&raquo;">
     </ul>
 
-    <div class="text-danger">
-      <i class="fa fa-exclamation-triangle"></i>
-      {{ usersWillNotBeImported }}
-      <translate>participants will be not imported.</translate>
-    </div>
-    <div>
-      <i class="fa fa-check-circle-o fa-lg"></i>
-      {{ usersWillBeImported }}
-      <translate>participants will be imported.</translate>
-    </div>
-    <div ng-repeat="user in usersImported = (users | filter:{imported:true})"></div>
-    <div ng-if="usersImported.length > 0" class="text-success">
-      <hr class="smallhr">
-      <i class="fa fa-check-circle fa-lg"></i>
-      {{ usersImported.length }}
-      <translate>participants were successfully imported.</translate>
-      (<translate>Groups created</translate>: {{ groupsCreated }})
+    <div class="spacer-top-lg">
+      <div class="text-danger" ng-if="usersWillNotBeImported > 0">
+        <i class="fa fa-exclamation-triangle"></i>
+        {{ usersWillNotBeImported }}
+        <translate>participants will be not imported.</translate>
+      </div>
+      <div class="text-danger" ng-if="duplicates > 0">
+        <i class="fa fa-exclamation-triangle"></i>
+        {{ duplicates }}
+        <translate>duplicates</translate>!
+      </div>
+      <div>
+        <i class="fa fa-check-circle-o fa-lg"></i>
+        {{ usersWillBeImported }}
+        <translate>participants will be imported.</translate>
+      </div>
+      <div ng-repeat="user in usersImported = (users | filter:{imported:true})"></div>
+      <div ng-if="usersImported.length > 0" class="text-success">
+        <hr class="smallhr">
+        <i class="fa fa-check-circle fa-lg"></i>
+        {{ usersImported.length }}
+        <translate>participants were successfully imported.</translate>
+        (<translate>Groups created</translate>: {{ groupsCreated }})
+      </div>
     </div>
 
     <div class="spacer">
