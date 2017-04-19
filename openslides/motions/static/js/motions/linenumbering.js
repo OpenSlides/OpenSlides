@@ -475,7 +475,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                 newRoot = this.insertLineNumbersNode(html, lineLength, highlight, firstLine);
                 newHtml = newRoot.innerHTML;
             } else {
-                var cacheKey = this.djb2hash(html);
+                var cacheKey = this.djb2hash(lineLength.toString() + html);
                 newHtml = lineNumberCache.get(cacheKey);
 
                 if (angular.isUndefined(newHtml)) {

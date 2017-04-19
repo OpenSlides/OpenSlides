@@ -18,6 +18,7 @@ Motions:
 - Removed server side image to base64 transformation and
   added local transformation [#2705]
 - Added support for export motions in a zip archive [#3189].
+- Bugfix: changing motion line length did not invalidate cache [#3202]
 
 Core:
 - No reload on logoff. OpenSlides is now a full single page
