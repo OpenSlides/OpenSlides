@@ -22,7 +22,8 @@ Motions:
 Core:
 - No reload on logoff. OpenSlides is now a full single page
   application [#3172].
-- Adding support for choosing image files as logos.
+- Adding support for choosing image files as logos [#3184].
+- Fixing error when clearing empty chat [#3199].
 
 Users:
 - User without permission to see users can now see agenda item speakers,

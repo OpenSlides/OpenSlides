@@ -737,7 +737,8 @@ class ChatMessageViewSet(ModelViewSet):
             args.append(chatmessage.pk)
         chatmessages.delete()
         # Trigger autoupdate and setup response.
-        inform_deleted_data(*args)
+        if len(args) > 0:
+            inform_deleted_data(*args)
         return Response({'detail': _('All chat messages deleted successfully.')})
 
 
