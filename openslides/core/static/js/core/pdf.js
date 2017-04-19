@@ -681,13 +681,19 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     break;
                                 case "br":
                                     //in case of inline-line-numbers and the os-line-break class ignore the break
-                                    if ((lineNumberMode == "inline" && element.getAttribute("class") == "os-line-break") ||
-                                        (lineNumberMode == "outside" && element.getAttribute("class") == "os-line-break" && element.parentNode.tagName == "INS") ||
-                                        (lineNumberMode == "outside" && element.getAttribute("class") == "os-line-break" && element.parentNode.getAttribute("class") == "merge-before")) {
+                                    if ((lineNumberMode == "inline" &&
+                                                element.getAttribute("class") == "os-line-break") ||
+                                        (lineNumberMode == "outside" &&
+                                                element.getAttribute("class") == "os-line-break" &&
+                                                element.parentNode.getAttribute("class") == "insert") ||
+                                        (lineNumberMode == "outside" &&
+                                                element.getAttribute("class") == "os-line-break" &&
+                                                element.parentNode.getAttribute("class") == "merge-before")) {
                                         break;
                                     } else {
                                         currentParagraph = create("text");
                                         currentParagraph.lineHeight = 1.25;
+                                        currentParagraph.margin = [20, 0, 0, 0];
                                         alreadyConverted.push(currentParagraph);
                                     }
                                     break;
@@ -719,7 +725,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         if (element.childNodes.length > 0) { //if we hit = 0, the code would fail
                                             // add empty line number column for inline diff or pragraph diff mode
                                             if (element.childNodes[0].tagName === "INS" ||
-                                                element.getAttribute("class") === "insert") {
+                                                element.getAttribute("class") === "insert" ||
+                                                element.childNodes[0].tagName === "DEL") {
                                                 var pLineNumberPlaceholder = {
                                                     width: 20,
                                                     text: "",
