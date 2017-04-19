@@ -82,7 +82,7 @@
   <!-- Next speakers -->
   <div ng-show="nextSpeakers.length > 0">
     <div ui-tree="treeOptions" data-empty-placeholder-enabled="false">
-      <ol ui-tree-nodes="" ng-model="speakers">
+      <ol ui-tree-nodes="" ng-model="nextSpeakers">
         <li ng-repeat="speaker in nextSpeakers | orderBy:'weight'" ui-tree-node>
           <i os-perms="agenda.can_manage" ui-tree-handle="" class="fa fa-arrows-v"></i>
           {{ $index + 1 }}.
