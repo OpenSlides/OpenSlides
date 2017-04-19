@@ -144,18 +144,19 @@ angular.module('OpenSlidesApp.core.pdf', [])
          * @param {object} contentProvider - Object with on method `getContent`, which
          * returns an array for content
          */
-        var createInstance = function(contentProvider) {
+        //images shall contain the the logos as URL: base64Str, just like the converter
+        var createInstance = function(contentProvider, images) {
             // PDF header
             var getHeader = function() {
                 var columns = [];
+                var logoUrl = Config.get('logo_pdf_header').value.path;
 
-                // add here your custom logo (which has to be added to a custom vfs_fonts.js)
-                // see https://github.com/pdfmake/pdfmake/wiki/Custom-Fonts---client-side
-                /*
-                columns.push({
-                    image: 'logo.png',
-                    fit: [180,40]
-                });*/
+                if (logoUrl) {
+                    columns.push({
+                        image: images[logoUrl],
+                        fit: [180,40]
+                    });
+                }
 
                 var line1 = [
                     Config.translate(Config.get('general_event_name').value),
@@ -768,7 +769,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         height *= scaleByHeight;
                                     }
                                     alreadyConverted.push({
-                                        image: BaseMap[element.getAttribute("src")],
+                                        image: images[element.getAttribute("src")],
                                         width: width,
                                         height: height
                                     });
@@ -837,7 +838,6 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     ParseHtml(content, html);
                     return content;
                 },
-                BaseMap = images,
                 /**
                  * Creates containerelements for pdfMake
                  * e.g create("text":"MyText") result in { text: "MyText" }
