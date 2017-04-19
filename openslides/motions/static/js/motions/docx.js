@@ -80,10 +80,7 @@ angular.module('OpenSlidesApp.motions.docx', [])
                 status_translation = gettextCatalog.getString('Status'),
                 reason_translation = gettextCatalog.getString('Reason'),
                 data = _.map(motions, function (motion) {
-                    // TODO: Add a parameter 'noLineBreaks' to 'getTextByMode'. Currently linenumbers are
-                    // removed directy after inserting --> not necessary. (See issue #3183)
-                    var text = motion.getTextByMode(params.changeRecommendationMode);
-                    text = lineNumberingService.stripLineNumbers(text);
+                    var text = motion.getTextByMode(params.changeRecommendationMode, null, null, false);
                     var reason = params.includeReason ? motion.getReason() : '';
                     return {
                         motion_translation: translation,
