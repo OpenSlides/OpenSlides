@@ -6,6 +6,7 @@ from openslides.utils.autoupdate import (
     ws_add_site,
     ws_disconnect_projector,
     ws_disconnect_site,
+    ws_receive_site,
 )
 
 projector_routing = [
@@ -16,6 +17,7 @@ projector_routing = [
 site_routing = [
     route("websocket.connect", ws_add_site),
     route("websocket.disconnect", ws_disconnect_site),
+    route("websocket.receive", ws_receive_site),
 ]
 
 channel_routing = [

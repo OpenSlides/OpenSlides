@@ -1,7 +1,7 @@
 import json
 import time
 import warnings
-from collections import Iterable
+from collections import Iterable, defaultdict
 
 from channels import Channel, Group
 from channels.asgi import get_channel_layer
@@ -85,6 +85,67 @@ def ws_disconnect_site(message):
     """
     Group('site').discard(message.reply_channel)
     websocket_user_cache.remove(message.user.id or 0, message.reply_channel.name)
+
+
+@channel_session_user
+def ws_receive_site(message):
+    """
+    This function is called if a message from a client comes in. The message
+    should be a list. Every item is broadcasted to the given users (or all
+    users if no user list is given) if it is a notify element.
+
+    The server adds the sender's user id (0 for anonymous) and reply
+    channel name so that a receiver client may reply to the sender or to all
+    sender's instances.
+    """
+    try:
+        incomming = json.loads(message.content['text'])
+    except ValueError:
+        # Message content is invalid. Just do nothing.
+        pass
+    else:
+        if isinstance(incomming, list):
+            # Parse all items
+            receivers_users = defaultdict(list)
+            receivers_reply_channels = defaultdict(list)
+            items_for_all = []
+            for item in incomming:
+                if item.get('collection') == 'notify':
+                    use_receivers_dict = False
+                    item['senderReplyChannelName'] = message.reply_channel.name
+                    item['senderUserId'] = message.user.id or 0
+
+                    users = item.get('users')
+                    if isinstance(users, list):
+                        # Send this item only to all reply channels of some site users.
+                        for user_id in users:
+                            receivers_users[user_id].append(item)
+                        use_receivers_dict = True
+
+                    reply_channels = item.get('replyChannels')
+                    if isinstance(reply_channels, list):
+                        # Send this item only to some reply channels.
+                        for reply_channel_name in reply_channels:
+                            receivers_reply_channels[reply_channel_name].append(item)
+                        use_receivers_dict = True
+
+                    if not use_receivers_dict:
+                        # Send this item to all reply channels.
+                        items_for_all.append(item)
+
+            # Send all items
+            for user_id, channel_names in websocket_user_cache.get_all().items():
+                output = receivers_users[user_id]
+                if len(output) > 0:
+                    for channel_name in channel_names:
+                        send_or_wait(Channel(channel_name).send, {'text': json.dumps(output)})
+
+            for channel_name, output in receivers_reply_channels.items():
+                if len(output) > 0:
+                    send_or_wait(Channel(channel_name).send, {'text': json.dumps(output)})
+
+            if len(items_for_all) > 0:
+                send_or_wait(Group('site').send, {'text': json.dumps(items_for_all)})
 
 
 @channel_session_user_from_http

@@ -99,6 +99,11 @@ angular.module('OpenSlidesApp.core', [
                 ErrorMessage.clearConnectionError();
             };
         };
+        Autoupdate.send = function (message) {
+            if (socket) {
+                socket.send(JSON.stringify(message));
+            }
+        };
         Autoupdate.closeConnection = function () {
             if (socket) {
                 socket.close();
@@ -262,38 +267,40 @@ angular.module('OpenSlidesApp.core', [
     'autoupdate',
     'dsEject',
     function (DS, autoupdate, dsEject) {
+        // Handler for normal autoupdate messages.
         autoupdate.onMessage(function(json) {
-            // TODO: when MODEL.find() is called after this
-            //       a new request is fired. This could be a bug in DS
             var dataList = [];
             try {
-                 dataList = JSON.parse(json);
+                dataList = JSON.parse(json);
             } catch(err) {
                 console.error(json);
             }
 
             var dataListByCollection = _.groupBy(dataList, 'collection');
-            _.forEach(dataListByCollection, function(list, key) {
+            _.forEach(dataListByCollection, function (list, key) {
                 var changedElements = [];
                 var deletedElements = [];
                 var collectionString = key;
-                _.forEach(list, function(data) {
+                _.forEach(list, function (data) {
                     // Uncomment this line for debugging to log all autoupdates:
                     // console.log("Received object: " + data.collection + ", " + data.id);
 
-                    // remove (=eject) object from local DS store
-                    var instance = DS.get(data.collection, data.id);
-                    if (instance) {
-                        dsEject(data.collection, instance);
-                    }
-                    // check if object changed or deleted
-                    if (data.action === 'changed') {
-                        changedElements.push(data.data);
-                    } else if (data.action === 'deleted') {
-                        deletedElements.push(data.id);
-                    } else {
-                        console.error('Error: Undefined action for received object' +
-                            '(' + data.collection + ', ' + data.id + ')');
+                    // Now handle autoupdate message but do not handle notify messages.
+                    if (data.collection !== 'notify') {
+                        // remove (=eject) object from local DS store
+                        var instance = DS.get(data.collection, data.id);
+                        if (instance) {
+                            dsEject(data.collection, instance);
+                        }
+                        // check if object changed or deleted
+                        if (data.action === 'changed') {
+                            changedElements.push(data.data);
+                        } else if (data.action === 'deleted') {
+                            deletedElements.push(data.id);
+                        } else {
+                            console.error('Error: Undefined action for received object' +
+                                '(' + data.collection + ', ' + data.id + ')');
+                        }
                     }
                 });
                 // add (=inject) all given objects into local DS store
@@ -304,6 +311,26 @@ angular.module('OpenSlidesApp.core', [
                 // (note: js-data does not provide 'bulk eject' as for DS.inject)
                 _.forEach(deletedElements, function(id) {
                     DS.eject(collectionString, id);
+                });
+            });
+        });
+
+        // Handler for notify messages.
+        autoupdate.onMessage(function(json) {
+            var dataList = [];
+            try {
+                dataList = JSON.parse(json);
+            } catch(err) {
+                console.error(json);
+            }
+
+            var dataListByCollection = _.groupBy(dataList, 'collection');
+            _.forEach(dataListByCollection, function (list, key) {
+                _.forEach(list, function (data) {
+                    if (data.collection === 'notify') {
+                        // TODO: Add more code here.
+                        console.log(data);
+                    }
                 });
             });
         });

@@ -276,6 +276,7 @@ angular.module('OpenSlidesApp.motions.site', [
 .factory('MotionForm', [
     'gettextCatalog',
     'operator',
+    'autoupdate',
     'Editor',
     'MotionComment',
     'Category',
@@ -287,10 +288,18 @@ angular.module('OpenSlidesApp.motions.site', [
     'Workflow',
     'Agenda',
     'AgendaTree',
-    function (gettextCatalog, operator, Editor, MotionComment, Category, Config, Mediafile, MotionBlock, Tag, User, Workflow, Agenda, AgendaTree) {
+    function (gettextCatalog, operator, autoupdate, Editor, MotionComment, Category, Config, Mediafile, MotionBlock, Tag, User, Workflow, Agenda, AgendaTree) {
         return {
             // ngDialog for motion form
             getDialog: function (motion) {
+                //TODO: This is just a test implementation. Remove it later.
+                autoupdate.send([{
+                    collection: 'notify',
+                    name: 'motion_edit_dialog_opened',
+                    //users: [4, 5, ],
+                    //replyChannels: ["daphne.response.StSjKMGYeq!PfqbSbiJNP", ],
+                }]);
+                //End of test implementation
                 return {
                     template: 'static/templates/motions/motion-form.html',
                     controller: motion ? 'MotionUpdateCtrl' : 'MotionCreateCtrl',
