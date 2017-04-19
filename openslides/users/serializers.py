@@ -72,16 +72,22 @@ class UserFullSerializer(ModelSerializer):
                 data.get('last_name', ''))
         return data
 
-    def create(self, validated_data):
+    def prepare_password(self, validated_data):
         """
-        Creates the user. Sets the default password.
+        Sets the default password.
         """
         # Prepare setup password.
         if not validated_data.get('default_password'):
             validated_data['default_password'] = User.objects.generate_password()
         validated_data['password'] = make_password(validated_data['default_password'], '', 'md5')
+        return validated_data
+
+    def create(self, validated_data):
+        """
+        Creates the user.
+        """
         # Perform creation in the database and return new user.
-        user = super().create(validated_data)
+        user = super().create(self.prepare_password(validated_data))
         # TODO: This autoupdate call is redundant (required by issue #2727). See #2736.
         inform_changed_data(user)
         return user

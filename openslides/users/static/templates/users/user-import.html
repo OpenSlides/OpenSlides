@@ -11,6 +11,10 @@
 </div>
 
 <div class="details">
+  <div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" close="alert={}">
+    {{ alert.msg }}
+  </div>
+
   <h2 translate>Import by copy/paste</h2>
   <p translate>Copy and paste your participant names in this textbox.
   Keep each person in a single line.</p>
@@ -23,11 +27,6 @@
 
   <div class="clearfix">
     <button ng-click="importByLine()" class="btn btn-primary btn-sm pull-left" translate>Import</button>
-    <div class="col-xs-5" ng-if="usernames">
-      <progressbar animate="false" type="success" max="usernames.length" value="importcounter">
-        <i>{{ importcounter }} / {{ usernames.length }} {{ "imported" | translate }}</i>
-      </progressbar>
-    </div>
   </div>
   <div class="spacer">
     <a ng-if="importcounter > 0 && importcounter == usernames.length" ui-sref="users.user.list"
