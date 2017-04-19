@@ -755,13 +755,12 @@ angular.module('OpenSlidesApp.users.site', [
 .controller('UserUpdateCtrl', [
     '$scope',
     '$state',
-    '$http',
     'User',
     'UserForm',
     'Group',
     'userId',
     'ErrorMessage',
-    function($scope, $state, $http, User, UserForm, Group, userId, ErrorMessage) {
+    function($scope, $state, User, UserForm, Group, userId, ErrorMessage) {
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
         $scope.alert = {};
         // set initial values for form model by create deep copy of user object
@@ -898,34 +897,45 @@ angular.module('OpenSlidesApp.users.site', [
 
 .controller('UserImportCtrl', [
     '$scope',
+    '$http',
     '$q',
     'gettext',
     'gettextCatalog',
     'User',
     'Group',
     'UserCsvExport',
-    function($scope, $q, gettext, gettextCatalog, User, Group, UserCsvExport) {
+    'ErrorMessage',
+    function($scope, $http, $q, gettext, gettextCatalog, User, Group, UserCsvExport, ErrorMessage) {
         // import from textarea
         $scope.importByLine = function () {
-            $scope.usernames = $scope.userlist[0].split("\n");
-            $scope.importcounter = 0;
-            $scope.usernames.forEach(function(name) {
+            var usernames = $scope.userlist[0].split("\n");
+            // Ignore empty lines.
+            /*usernames = _.filter(usernames, function (name) {
+                return name !== '';
+            });*/
+            var users = _.map(usernames, function (name) {
                 // Split each full name in first and last name.
                 // The last word is set as last name, rest is the first name(s).
                 // (e.g.: "Max Martin Mustermann" -> last_name = "Mustermann")
                 var names = name.split(" ");
                 var last_name = names.slice(-1)[0];
                 var first_name = names.slice(0, -1).join(" ");
-                var user = {
+                return {
                     first_name: first_name,
                     last_name: last_name,
-                    groups_id: []
+                    groups_id: [],
                 };
-                User.create(user).then(
-                    function(success) {
-                        $scope.importcounter++;
-                    }
-                );
+            });
+            $http.post('/rest/users/user/mass_import/', {
+                users: users
+            }).then(function (success) {
+                $scope.alert = {
+                    show: true,
+                    type: 'success',
+                    msg: success.data.detail,
+                };
+            }, function (error) {
+                $scope.alert = ErrorMessage.forAlert(error);
             });
         };
 
@@ -955,6 +965,7 @@ angular.module('OpenSlidesApp.users.site', [
         'groups', 'comment', 'is_active', 'is_present', 'is_committee', 'default_password'];
         $scope.users = [];
         $scope.onCsvChange = function (csv) {
+            $scope.csvImporting = false;
             // All user objects are already loaded via the resolve statement from ui-router.
             var users = User.getAll();
             $scope.users = [];
@@ -967,7 +978,8 @@ angular.module('OpenSlidesApp.users.site', [
                 }
             });
             $scope.duplicates = 0;
-            _.forEach(csvUsers, function (user) {
+            _.forEach(csvUsers, function (user, index) {
+                user.importTrackId = index;
                 user.selected = true;
                 if (!user.first_name && !user.last_name) {
                     user.importerror = true;
@@ -1108,6 +1120,11 @@ angular.module('OpenSlidesApp.users.site', [
                 var allGroups = Group.getAll();
                 var existingUsers = User.getAll();
 
+                // For option 'delete existing user' on duplicates
+                var deletePromises = [];
+                // Array of users for mass import
+                var usersToBeImported = [];
+
                 _.forEach($scope.users, function (user) {
                     if (user.selected && !user.importerror) {
                         // Assign all groups
@@ -1124,7 +1141,6 @@ angular.module('OpenSlidesApp.users.site', [
                         // Do nothing on duplicateAction==duplicateActions[0] (keep original)
                         if (user.duplicate && (user.duplicateAction == $scope.duplicateActions[1])) {
                             // delete existing user
-                            var deletePromises = [];
                             existingUsers.forEach(function(user_) {
                                 user_.fullname = [
                                     user_.title,
@@ -1140,29 +1156,44 @@ angular.module('OpenSlidesApp.users.site', [
                                     deletePromises.push(User.destroy(user_.id));
                                 }
                             });
-                            $q.all(deletePromises).then(function() {
-                                User.create(user).then(
-                                    function(success) {
-                                        user.imported = true;
-                                    }
-                                );
-                            });
+                            usersToBeImported.push(user);
                         } else if (!user.duplicate ||
                                    (user.duplicateAction == $scope.duplicateActions[2])) {
                             // create user
-                            User.create(user).then(
-                                function(success) {
-                                    user.imported = true;
-                                }
-                            );
+                            usersToBeImported.push(user);
                         }
                     }
                 });
-                $scope.csvimported = true;
+                $q.all(deletePromises).then(function () {
+                    $http.post('/rest/users/user/mass_import/', {
+                        users: usersToBeImported
+                    }).then(function (success) {
+                        _.forEach(success.data.importedTrackIds, function (trackId) {
+                            _.find($scope.users, function (user) {
+                                return user.importTrackId === trackId;
+                            }).imported = true;
+                        });
+                        $scope.csvimported = true;
+                    }, function (error) {
+                        $scope.alert = ErrorMessage.forAlert(error);
+                    });
+                });
             });
         };
         $scope.clear = function () {
             $scope.users = null;
+        };
+        $scope.excludeImportedUsers = function () {
+            $scope.users = _.filter($scope.users, function (user) {
+                return !user.imported;
+            });
+            $scope.csvImporting = false;
+            $scope.calcStats();
+        };
+        $scope.someImportedUsers = function () {
+            return _.some($scope.users, function (user) {
+                return user.imported;
+            });
         };
         // download CSV example file
         $scope.downloadCSVExample = function () {

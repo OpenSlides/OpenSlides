@@ -37,6 +37,7 @@ Users:
 - Added support for password validation using Django or custom validators
   e. g. for minimum password length [#3200].
 - Fixed compare of duplicated users while csv user import [#3201].
+- Added fast mass import for users [#3290].
 
 Core:
 - No reload on logoff. OpenSlides is now a full single page

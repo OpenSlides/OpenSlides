@@ -4,13 +4,17 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db import transaction
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 
 from ..core.config import config
 from ..core.signals import permission_change
 from ..utils.auth import anonymous_is_enabled, has_perm
-from ..utils.autoupdate import inform_data_collection_element_list
+from ..utils.autoupdate import (
+    inform_changed_data,
+    inform_data_collection_element_list,
+)
 from ..utils.collection import CollectionElement, CollectionElementList
 from ..utils.rest_api import (
     ModelViewSet,
@@ -18,6 +22,7 @@ from ..utils.rest_api import (
     SimpleMetadata,
     ValidationError,
     detail_route,
+    list_route,
     status,
 )
 from ..utils.views import APIView
@@ -48,7 +53,7 @@ class UserViewSet(ModelViewSet):
             result = has_perm(self.request.user, 'users.can_see_name')
         elif self.action in ('update', 'partial_update'):
             result = self.request.user.is_authenticated()
-        elif self.action in ('create', 'destroy', 'reset_password'):
+        elif self.action in ('create', 'destroy', 'reset_password', 'mass_import'):
             result = (has_perm(self.request.user, 'users.can_see_name') and
                       has_perm(self.request.user, 'users.can_see_extra_data') and
                       has_perm(self.request.user, 'users.can_manage'))
@@ -113,6 +118,46 @@ class UserViewSet(ModelViewSet):
             return Response({'detail': _('Password successfully reset.')})
         else:
             raise ValidationError({'detail': 'Password has to be a string.'})
+
+    @list_route(methods=['post'])
+    @transaction.atomic
+    def mass_import(self, request):
+        """
+        API endpoint to create multiple users at once.
+
+        Example: {"users": [{"first_name": "Max"}, {"first_name": "Maxi"}]}
+        """
+        users = request.data.get('users')
+        if not isinstance(users, list):
+            raise ValidationError({'detail': 'Users has to be a list.'})
+
+        created_users = []
+        # List of all track ids of all imported users. The track ids are just used in the client.
+        imported_track_ids = []
+
+        for user in users:
+            serializer = self.get_serializer(data=user)
+            try:
+                serializer.is_valid(raise_exception=True)
+            except ValidationError:
+                # Skip invalid users.
+                continue
+            data = serializer.prepare_password(serializer.data)
+            groups = data['groups_id']
+            del data['groups_id']
+
+            db_user = User(**data)
+            db_user.save(skip_autoupdate=True)
+            db_user.groups.add(*groups)
+            created_users.append(db_user)
+            if 'importTrackId' in user:
+                imported_track_ids.append(user['importTrackId'])
+
+        # Now infom all clients and send a response
+        inform_changed_data(created_users)
+        return Response({
+            'detail': _('{number} users successfully imported.').format(number=len(created_users)),
+            'importedTrackIds': imported_track_ids})
 
 
 class GroupViewSetMetadata(SimpleMetadata):
