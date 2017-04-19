@@ -59,7 +59,12 @@
         <translate>PDF</translate>
       </a>
     </div>
-    <h1>{{ motion.agenda_item.getTitle() || motion.getTitle() }}</h1>
+    <h1>
+      {{ motion.agenda_item.getTitle() || motion.getTitle() }}
+      <i class="fa pointer" ng-class="motion.personalNote.star ? 'fa-star' : 'fa-star-o'"
+        ng-if="operator.user"
+        title="{{ 'Set as favorite' | translate }}" ng-click="toggleStar()"></i>
+    </h1>
     <h2>
         <translate>Motion</translate> {{ motion.identifier }}
         <span ng-if="parent">
@@ -542,3 +547,6 @@
 
 <!-- Comments section -->
 <ng-include src="'static/templates/motions/motion-detail/comments.html'"></ng-include>
+
+<!-- Personal note section -->
+<ng-include src="'static/templates/motions/motion-detail/personal-note.html'" ng-if="operator.user"></ng-include>

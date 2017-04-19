@@ -854,6 +854,7 @@ angular.module('OpenSlidesApp.motions.site', [
     '$http',
     'gettext',
     'gettextCatalog',
+    'operator',
     'ngDialog',
     'MotionForm',
     'Motion',
@@ -871,10 +872,9 @@ angular.module('OpenSlidesApp.motions.site', [
     'osTableSort',
     'MotionExportForm',
     'MotionPdfExport',
-    function($scope, $state, $http, gettext, gettextCatalog, ngDialog, MotionForm, Motion, MotionComment,
-                Category, Config, Tag, Workflow, User, Agenda, MotionBlock, Projector,
+    function($scope, $state, $http, gettext, gettextCatalog, operator, ngDialog, MotionForm, Motion,
+                MotionComment, Category, Config, Tag, Workflow, User, Agenda, MotionBlock, Projector,
                 ProjectionDefault, osTableFilter, osTableSort, MotionExportForm, MotionPdfExport) {
-        Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         MotionBlock.bindAll({}, $scope, 'motionBlocks');
         Tag.bindAll({}, $scope, 'tags');
@@ -888,6 +888,18 @@ angular.module('OpenSlidesApp.motions.site', [
             if (projectiondefault) {
                 $scope.defaultProjectorId = projectiondefault.projector_id;
             }
+        });
+        $scope.$watch(function () {
+            return Motion.lastModified();
+        }, function () {
+            $scope.motions = Motion.getAll();
+            _.forEach($scope.motions, function (motion) {
+                motion.personalNote = _.find(motion.personal_notes, function (note) {
+                    return note.user_id === operator.user.id;
+                });
+                // For filtering, we cannot filter for .personalNote.star
+                motion.star = motion.personalNote ? motion.personalNote.star : false;
+            });
         });
         $scope.alert = {};
 
@@ -938,6 +950,14 @@ angular.module('OpenSlidesApp.motions.site', [
                 motionBlock: [],
                 tag: [],
                 recommendation: [],
+            };
+            $scope.filter.booleanFilters = {
+                isFavorite: {
+                    value: undefined,
+                    displayName: gettext('Favorite'),
+                    choiceYes: gettext('Is favorite'),
+                    choiceNo: gettext('Is not favorite'),
+                },
             };
         }
         updateStateFilter();
@@ -1061,6 +1081,16 @@ angular.module('OpenSlidesApp.motions.site', [
                 motion.motion_block_id = block.id;
             }
             $scope.save(motion);
+        };
+        $scope.toggleStar = function (motion) {
+            if (motion.personalNote) {
+                motion.personalNote.star = !motion.personalNote.star;
+            } else {
+                motion.personalNote = {star: true};
+            }
+            $http.put('/rest/motions/motion/' + motion.id + '/set_personal_note/',
+                motion.personalNote
+            );
         };
 
         // open new/edit dialog
@@ -1198,6 +1228,9 @@ angular.module('OpenSlidesApp.motions.site', [
         }, function () {
             $scope.motion = Motion.get(motionId);
             MotionComment.populateFields($scope.motion);
+            $scope.motion.personalNote = _.find($scope.motion.personal_notes, function (note) {
+                return note.user_id === operator.user.id;
+            });
         });
         $scope.projectionModes = [
             {mode: 'original',
@@ -1419,6 +1452,19 @@ angular.module('OpenSlidesApp.motions.site', [
             }
             return Boolean(isAllowed);
         };
+        // personal note
+        $scope.toggleStar = function () {
+            if ($scope.motion.personalNote) {
+                $scope.motion.personalNote.star = !$scope.motion.personalNote.star;
+            } else {
+                $scope.motion.personalNote = {star: true};
+            }
+            $http.put('/rest/motions/motion/' + $scope.motion.id + '/set_personal_note/',
+                $scope.motion.personalNote
+            );
+        };
+        $scope.changePN = function () {
+        };
 
         // personal note
         $scope.toggleStar = function () {
@@ -1446,6 +1492,25 @@ angular.module('OpenSlidesApp.motions.site', [
             }
         );
         $scope.commentsInlineEditing = MotionCommentsInlineEditing.createInstances($scope, motion);
+        $scope.personalNoteInlineEditing = MotionInlineEditing.createInstance($scope, motion,
+            'personal-note-inline-editor', false,
+            function (obj) {
+                return motion.personalNote ? motion.personalNote.note : '';
+            },
+            function (obj) {
+                if (motion.personalNote) {
+                    motion.personalNote.note = obj.editor.getData();
+                } else {
+                    motion.personalNote = {note: obj.editor.getData()};
+                }
+                $http.put('/rest/motions/motion/' + $scope.motion.id + '/set_personal_note/',
+                    motion.personalNote
+                );
+                obj.revert();
+                obj.disable();
+                return true; // Do not update the motion via patch request.
+            }
+        );
 
         // Change recommendation creation functions
         $scope.createChangeRecommendation = ChangeRecommmendationCreate;

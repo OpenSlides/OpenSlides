@@ -268,6 +268,30 @@
               </li>
             </ul>
           </span>
+          <!-- boolean Filters -->
+          <span ng-repeat="(name, booleanFilter) in filter.booleanFilters"
+            ng-if="operator.user.id" uib-dropdown>
+            <span class="pointer" id="dropdown{{ name }}" uib-dropdown-toggle
+              ng-class="{'bold': booleanFilter.value !== undefined, 'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
+              {{ booleanFilter.displayName | translate }}
+              <span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown{{ name }}">
+              <li>
+                <a href ng-click="booleanFilter.value = (booleanFilter.value ? undefined : true); filter.save();">
+                  <i class="fa" ng-class="{'fa-check': booleanFilter.value === true}"></i>
+                  {{ booleanFilter.choiceYes | translate }}
+                </a>
+              </li>
+              <li>
+                <a href ng-click="booleanFilter.value = (booleanFilter.value === false) ? undefined : false; filter.save();">
+                  <i class="fa" ng-class="{'fa-check': booleanFilter.value === false}"></i>
+                  {{ booleanFilter.choiceNo | translate }}
+                </a>
+              </li>
+            </ul>
+          </span>
           <!-- dropdown sort -->
           <span uib-dropdown>
             <span class="pointer" id="dropdownSort" uib-dropdown-toggle
@@ -387,6 +411,17 @@
             <i class="fa fa-times-circle"></i>
             <translate>No tag set</translate>
           </span>
+          <!-- for all boolean Filters -->
+          <span ng-repeat="(name, booleanFilter) in filter.booleanFilters"
+            ng-hide="booleanFilter.value === undefined"
+            class="pointer spacer-left-lg"
+            ng-click="booleanFilter.value = undefined; filter.save();"
+            ng-class="{'disabled': isSelectMode}">
+            <span class="nobr">
+              <i class="fa fa-times-circle"></i>
+              {{ booleanFilter.value ? booleanFilter.choiceYes : booleanFilter.choiceNo | translate }}
+            </span>
+          </span>
         </span>
       </div>
     </div>
@@ -402,6 +437,7 @@
         | MultiselectFilter: filter.multiselectFilters.motionBlock : getItemId.motionBlock
         | MultiselectFilter: filter.multiselectFilters.recommendation : getItemId.recommendation
         | MultiselectFilter: filter.multiselectFilters.tag : getItemId.tag
+        | filter: {star: filter.booleanFilters.isFavorite.value}
         | toArray
         | orderBy: sort.column : sort.reverse)
         | limitTo : itemsPerPage : limitBegin">
@@ -427,7 +463,11 @@
         <div class="id-col-space">
           <!-- ID and title -->
           <div>
-              <a class="title" ui-sref="motions.motion.detail({id: motion.id})">{{ motion.getTitle() }}</a>
+            <a class="title" ui-sref="motions.motion.detail({id: motion.id})">{{ motion.getTitle() }}</a>
+            <a href="" ng-click="toggleStar(motion)">
+              <i class="fa" ng-class="motion.personalNote.star ? 'fa-star' : 'fa-star-o'"
+                title="{{ 'Set as favorite' | translate }}" ng-if="(motion.personalNote.star || motion.hover) && operator.user"></i>
+            </a>
             <i class="fa fa-paperclip" ng-if="motion.attachments_id.length > 0"></i>
           </div>
           <!-- state -->

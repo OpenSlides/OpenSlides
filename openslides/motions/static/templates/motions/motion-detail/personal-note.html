@@ -1,0 +1,36 @@
+<div class="details">
+  <div class="row">
+    <!-- inline editing toolbar -->
+    <div class="motion-toolbar">
+      <div class="pull-right inline-editing-activator">
+        <button ng-if="!personalNoteInlineEditing.active" ng-click="personalNoteInlineEditing.enable()"
+          class="btn btn-sm btn-default">
+          <i class="fa fa-pencil-square-o"></i>
+          <translate>Inline editing</translate>
+        </button>
+        <button ng-if="personalNoteInlineEditing.active" ng-click="personalNoteInlineEditing.disable()"
+          class="btn btn-sm btn-default">
+          <i class="fa fa-times-circle"></i>
+          <translate>Inline editing</translate>
+        </button>
+      </div>
+      <h3 class="toolbar-left" translate>Personal note</h3>
+    </div>
+
+    <!-- personal note editor field -->
+    <div class="col-sm-12">
+      <div id="personal-note-inline-editor" style="min-height: 14px;"
+        ng-bind-html="motion.personalNote.note | trusted" contenteditable="{{ personalNoteInlineEditing.isEditable }}"></div>
+      <!-- save toolbar -->
+      <div class="motion-save-toolbar" ng-class="{ 'visible': (personalNoteInlineEditing.changed && personalNoteInlineEditing.active) }">
+        <div class="changed-hint" translate>The personal note has been changed.</div>
+        <button type="button" ng-click="personalNoteInlineEditing.save()" class="btn btn-primary" translate>
+            Save
+        </button>
+        <button type="button" ng-click="personalNoteInlineEditing.revert()" class="btn btn-default" translate>
+            Revert
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -4,6 +4,13 @@
 
 angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions', 'OpenSlidesApp.motions.lineNumbering'])
 
+/* Generic inline editing factory.
+ *
+ * getOriginalData: Function that should return the editor data. The editor object is passed.
+ * saveData: Function that is called whith the editor object as argument. This function
+ *      should prepare the save. If the function returns true, the save process won't be
+ *      continued. Else a patch request is send.
+ */
 .factory('MotionInlineEditing', [
     'Editor',
     'Motion',
@@ -85,30 +92,31 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             };
 
             obj.save = function () {
-                saveData(obj);
-                obj.disable();
+                if (!saveData(obj)) {
+                    obj.disable();
 
-                Motion.inject(motion);
-                // save change motion object on server
-                Motion.save(motion, {method: 'PATCH'}).then(
-                    function (success) {
-                        if (versioning) {
-                            $scope.showVersion(motion.getVersion(-1));
+                    Motion.inject(motion);
+                    // save change motion object on server
+                    Motion.save(motion, {method: 'PATCH'}).then(
+                        function (success) {
+                            if (versioning) {
+                                $scope.showVersion(motion.getVersion(-1));
+                            }
+                            obj.revert();
+                        },
+                        function (error) {
+                            // save error: revert all changes by restore
+                            // (refresh) original motion object from server
+                            Motion.refresh(motion);
+                            obj.revert();
+                            var message = '';
+                            for (var e in error.data) {
+                                message += e + ': ' + error.data[e] + ' ';
+                            }
+                            $scope.alert = {type: 'danger', msg: message, show: true};
                         }
-                        obj.revert();
-                    },
-                    function (error) {
-                        // save error: revert all changes by restore
-                        // (refresh) original motion object from server
-                        Motion.refresh(motion);
-                        obj.revert();
-                        var message = '';
-                        for (var e in error.data) {
-                            message += e + ': ' + error.data[e] + ' ';
-                        }
-                        $scope.alert = {type: 'danger', msg: message, show: true};
-                    }
-                );
+                    );
+                }
             };
 
             return obj;

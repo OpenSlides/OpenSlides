@@ -259,6 +259,7 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
                 user=self,
                 content_type=ContentType.objects.get_for_model(content_object),
                 object_id=content_object.id,
+                user_id=self.id,
                 defaults=changes,
             )
         else:
