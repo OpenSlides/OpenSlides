@@ -1,5 +1,5 @@
 # Requirements for OpenSlides in production in alphabetical order
-channels>=1.0,<1.1
+channels>=1.1,<1.2
 Django>=1.10.4,<1.11
 djangorestframework>=3.4,<3.5
 jsonfield>=1.0,<1.1
