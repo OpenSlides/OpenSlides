@@ -315,12 +315,12 @@ class UserMassImport(TestCase):
         self.client.login(username='admin', password='admin')
 
     def test_mass_import(self):
-        user_1 =  {
+        user_1 = {
             'first_name': 'first_name_kafaith3woh3thie7Ciy',
             'last_name': 'last_name_phah0jaeph9ThoongaeL',
             'groups_id': []
         }
-        user_2 =  {
+        user_2 = {
             'first_name': 'first_name_kohdao7Eibouwee8ma2O',
             'last_name': 'last_name_kafaith3woh3thie7Ciy',
             'groups_id': []

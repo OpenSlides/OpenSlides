@@ -10,7 +10,10 @@ from django.utils.translation import ugettext as _
 from ..core.config import config
 from ..core.signals import permission_change
 from ..utils.auth import anonymous_is_enabled, has_perm
-from ..utils.autoupdate import inform_changed_data, inform_data_collection_element_list
+from ..utils.autoupdate import (
+    inform_changed_data,
+    inform_data_collection_element_list,
+)
 from ..utils.collection import CollectionElement, CollectionElementList
 from ..utils.rest_api import (
     ModelViewSet,
