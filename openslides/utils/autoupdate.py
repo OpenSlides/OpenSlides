@@ -115,6 +115,10 @@ def ws_receive_site(message):
                     item['senderReplyChannelName'] = message.reply_channel.name
                     item['senderUserId'] = message.user.id or 0
 
+                    # Force the params to be a dict
+                    if not isinstance(item.get('params'), dict):
+                        item['params'] = {}
+
                     users = item.get('users')
                     if isinstance(users, list):
                         # Send this item only to all reply channels of some site users.
