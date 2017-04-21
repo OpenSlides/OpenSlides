@@ -595,9 +595,11 @@ angular.module('OpenSlidesApp.core', [
                 });
             },
             getFromKey: function (key) {
-                var config = Config.get(key).value;
-                config.key = key;
-                return config;
+                var config = Config.get(key);
+                if (config) {
+                    config.value.key = key;
+                    return config.value;
+                }
             },
             isMediafileUsedAsLogo: function (mediafile) {
                 return _.find(this.getAll(), function (logoPlaceholder) {

@@ -139,8 +139,8 @@ def get_config_variables():
         default_value=True,
         input_type='boolean',
         label='Show logo on projector',
-        help_text='You can replace the logo. Just copy a file to '
-                  '"static/img/logo-projector.png" in your OpenSlides data path.',
+        help_text='You can replace the logo by uploading an image and set it as '
+                  'the "main projector logo" in "files".',
         weight=150,
         group='Projector')
 
@@ -150,6 +150,14 @@ def get_config_variables():
         input_type='boolean',
         label='Show title and description of event on projector',
         weight=155,
+        group='Projector')
+
+    yield ConfigVariable(
+        name='projector_enable_clock',
+        default_value=True,
+        input_type='boolean',
+        label='Show the clock on projector',
+        weight=156,
         group='Projector')
 
     yield ConfigVariable(
@@ -213,7 +221,9 @@ def get_config_variables():
     # Logos.
     yield ConfigVariable(
         name='logos_available',
-        default_value=['logo_projector_main'],
+        default_value=[
+            'logo_projector_main',
+            'logo_projector_header'],
         weight=300,
         group='Logo',
         hidden=True)
@@ -225,5 +235,15 @@ def get_config_variables():
             'path': ''},
         input_type='logo',
         weight=301,
+        group='Logo',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='logo_projector_header',
+        default_value={
+            'display_name': 'Projector header image',
+            'path': ''},
+        input_type='logo',
+        weight=302,
         group='Logo',
         hidden=True)

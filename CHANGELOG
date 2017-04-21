@@ -16,14 +16,14 @@ Motions:
   settings [#3187].
 - Fixed empty motion comment field in motion update form [#3194].
 - Removed server side image to base64 transformation and
-  added local transformation [#2705]
+  added local transformation [#3181]
 - Added support for export motions in a zip archive [#3189].
 - Bugfix: changing motion line length did not invalidate cache [#3202]
 
 Core:
 - No reload on logoff. OpenSlides is now a full single page
   application [#3172].
-- Adding support for choosing image files as logos [#3184].
+- Adding support for choosing image files as logos [#3184, #3207].
 - Fixing error when clearing empty chat [#3199].
 
 Users:
