@@ -398,4 +398,18 @@ describe('linenumbering', function () {
       expect(outHtml70).not.toBe(outHtml80);
     });
   });
+
+  describe('behavior regarding ckeditor', function() {
+    it('does not count empty lines, case 1', function () {
+      var inHtml = "<p>Line 1</p>\n\n<p>Line 2</p>";
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+      expect(outHtml).toBe('<p>' + noMarkup(1) + 'Line 1</p>' + "\n\n" + '<p>' + noMarkup(2) + 'Line 2</p>');
+    });
+
+    it('does not count empty lines, case 2', function () {
+      var inHtml = "<ul>\n\n<li>Point 1</li>\n\n</ul>";
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+      expect(outHtml).toBe("<ul>\n\n<li>" + noMarkup(1) + "Point 1</li>\n\n</ul>");
+    });
+  });
 });
