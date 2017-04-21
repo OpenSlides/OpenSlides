@@ -218,6 +218,9 @@
       <button ng-click="clear()" class="btn btn-default btn-sm" translate>
         Clear preview
       </button>
+      <button ng-if="someImportedUsers()" ng-click="excludeImportedUsers()" class="btn btn-default btn-sm" translate>
+        Exclude already imported users
+      </button>
       <button ng-if="!csvImporting && usersWillBeImported > 0" ng-click="import()" class="btn btn-primary btn-sm" translate>
         Import {{ usersWillBeImported }} participants
       </button>

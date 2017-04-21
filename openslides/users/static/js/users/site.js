@@ -966,6 +966,7 @@ angular.module('OpenSlidesApp.users.site', [
         'groups', 'comment', 'is_active', 'is_present', 'is_committee', 'default_password'];
         $scope.users = [];
         $scope.onCsvChange = function (csv) {
+            $scope.csvImporting = false;
             // All user objects are already loaded via the resolve statement from ui-router.
             var users = User.getAll();
             $scope.users = [];
@@ -1183,6 +1184,18 @@ angular.module('OpenSlidesApp.users.site', [
         };
         $scope.clear = function () {
             $scope.users = null;
+        };
+        $scope.excludeImportedUsers = function () {
+            $scope.users = _.filter($scope.users, function (user) {
+                return !user.imported;
+            });
+            $scope.csvImporting = false;
+            $scope.calcStats();
+        };
+        $scope.someImportedUsers = function () {
+            return _.some($scope.users, function (user) {
+                return user.imported;
+            });
         };
         // download CSV example file
         $scope.downloadCSVExample = function () {
