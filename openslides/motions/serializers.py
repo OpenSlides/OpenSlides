@@ -12,6 +12,7 @@ from openslides.utils.rest_api import (
     SerializerMethodField,
     ValidationError,
 )
+from openslides.utils.transaction import LockedAtomicTransaction
 from openslides.utils.validate import validate_html
 
 from .models import (
@@ -322,30 +323,30 @@ class MotionSerializer(ModelSerializer):
         data['comments'] = validated_comments
         return data
 
-    @transaction.atomic
     def create(self, validated_data):
         """
         Customized method to create a new motion from some data.
         """
-        motion = Motion()
-        motion.title = validated_data['title']
-        motion.text = validated_data['text']
-        motion.reason = validated_data.get('reason', '')
-        motion.identifier = validated_data.get('identifier')
-        motion.category = validated_data.get('category')
-        motion.motion_block = validated_data.get('motion_block')
-        motion.origin = validated_data.get('origin', '')
-        motion.comments = validated_data.get('comments')
-        motion.parent = validated_data.get('parent')
-        motion.reset_state(validated_data.get('workflow_id'))
-        motion.save()
-        if validated_data.get('submitters'):
-            motion.submitters.add(*validated_data['submitters'])
-        elif validated_data['request_user'].is_authenticated():
-            motion.submitters.add(validated_data['request_user'])
-        motion.supporters.add(*validated_data.get('supporters', []))
-        motion.attachments.add(*validated_data.get('attachments', []))
-        motion.tags.add(*validated_data.get('tags', []))
+        with LockedAtomicTransaction(Motion):
+            motion = Motion()
+            motion.title = validated_data['title']
+            motion.text = validated_data['text']
+            motion.reason = validated_data.get('reason', '')
+            motion.identifier = validated_data.get('identifier')
+            motion.category = validated_data.get('category')
+            motion.motion_block = validated_data.get('motion_block')
+            motion.origin = validated_data.get('origin', '')
+            motion.comments = validated_data.get('comments')
+            motion.parent = validated_data.get('parent')
+            motion.reset_state(validated_data.get('workflow_id'))
+            motion.save()
+            if validated_data.get('submitters'):
+                motion.submitters.add(*validated_data['submitters'])
+            elif validated_data['request_user'].is_authenticated():
+                motion.submitters.add(validated_data['request_user'])
+            motion.supporters.add(*validated_data.get('supporters', []))
+            motion.attachments.add(*validated_data.get('attachments', []))
+            motion.tags.add(*validated_data.get('tags', []))
         return motion
 
     @transaction.atomic
