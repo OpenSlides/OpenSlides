@@ -332,14 +332,13 @@
                       <i class="fa fa-picture-o spacer-right"
                          ng-style="{'visibility': $first ? 'visible' : 'hidden'}"></i>
                       <small>
-                        {{ logo.display_name }}<span ng-if="!$last">,</br></span>
+                        {{ logo.display_name | translate }}<span ng-if="!$last">,</br></span>
                       </small>
                     </span>
                   </span>
                 </span>
                 <span ng-if="hasProjectorHeaderLogo(mediafile) && mediafile.logoHover"
-                    uib-tooltip="{{ 'The projector header should have a default size of 1024x70px.
-                    Adapt the image width if you change the projector resolution.' | trusted | translate }}">
+                    uib-tooltip="{{ 'The projector header should have a default size of 1024x70px. Adapt the image width if you change the projector resolution.' | translate }}">
                   <i class="fa fa-info-circle"></i>
                 </span>
                 <i class="fa fa-cog fa-lg spacer-left" ng-show="mediafile.logoHover"></i>
@@ -348,7 +347,7 @@
                 <li ng-repeat="logo in logos">
                   <a href ng-click="toggleLogo(mediafile, logo)">
                     <i class="fa fa-check" ng-if="hasLogo(mediafile, logo)"></i>
-                    {{ logo.display_name }}
+                    {{ logo.display_name | translate }}
                   </a>
                 </li>
               </ul>

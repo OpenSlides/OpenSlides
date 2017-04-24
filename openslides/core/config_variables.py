@@ -140,7 +140,7 @@ def get_config_variables():
         input_type='boolean',
         label='Show logo on projector',
         help_text='You can replace the logo by uploading an image and set it as '
-                  'the "main projector logo" in "files".',
+                  'the "Projector logo" in "files".',
         weight=150,
         group='Projector')
 
@@ -231,7 +231,7 @@ def get_config_variables():
     yield ConfigVariable(
         name='logo_projector_main',
         default_value={
-            'display_name': 'Main projector logo',
+            'display_name': 'Projector logo',
             'path': ''},
         input_type='logo',
         weight=301,
