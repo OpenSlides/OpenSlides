@@ -1699,19 +1699,21 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('Show this text on the login page');
         gettext('Separator used for all csv exports and examples');
         gettext('Show logo on projector');
-        gettext('You can replace the logo. Just copy a file to ' +
-                '"static/img/logo-projector.png" in your OpenSlides data ' +
-                'path.');
+        gettext('You can replace the logo by uploading an image and set it as ' +
+                'the "Projector logo" in "files".');
         gettext('Projector');
         gettext('Projector language');
         gettext('Current browser language');
         gettext('Show title and description of event on projector');
+        gettext('Show the clock on projector');
         gettext('Background color of projector header and footer');
         gettext('Font color of projector header and footer');
         gettext('Font color of projector headline');
         gettext('Predefined seconds of new countdowns');
         gettext('Color for blanked projector');
         gettext('List of speakers overlay');
+        gettext('Projector logo');
+        gettext('Projector header image');
 
         // Mark the string 'Default projector' here, because it does not appear in the templates.
         gettext('Default projector');
