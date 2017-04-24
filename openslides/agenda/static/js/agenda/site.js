@@ -563,10 +563,8 @@ angular.module('OpenSlidesApp.agenda.site', [
         // save reordered list of speakers
         $scope.treeOptions = {
             dropped: function (event) {
-                var sortedSpeakers = [];
-                var nextSpeakers = $filter('filter')($scope.speakers, {'begin_time': null});
-                angular.forEach(nextSpeakers, function (speaker) {
-                    sortedSpeakers.push(speaker.id);
+                var sortedSpeakers = _.map($scope.nextSpeakers, function (speaker) {
+                    return speaker.id;
                 });
                 $http.post('/rest/agenda/item/' + $scope.item.id + '/sort_speakers/',
                     {speakers: sortedSpeakers}
