@@ -177,7 +177,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             }
 
             // summary of change recommendations (for motion diff version only)
-            if (changeRecommendationMode == "diff") {
+            if (changeRecommendationMode == "diff" && changeRecommendations.length) {
                 var columnLineNumbers = [];
                 var columnChangeType = [];
                 angular.forEach(_.orderBy(changeRecommendations, ['line_from']), function(change) {
@@ -476,7 +476,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     var createInstance = function(allMotions) {
 
         var title = PDFLayout.createTitle(
-                Config.translate(Config.get('motions_export_title').value)
+            Config.translate(Config.get('motions_export_title').value)
         );
 
         var createPreamble = function() {
@@ -580,14 +580,18 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     motionContent.push(PDFLayout.addPageBreak());
                 }
             });
-
-            return [
-                title,
-                createPreamble(),
-                createTOCategories(),
-                createTOContent(),
-                motionContent
-            ];
+            var content = [];
+            // print extra data (title, preamble, categories, toc) only for more than 1 motion
+            if (allMotions.length > 1) {
+                content.push(
+                    title,
+                    createPreamble(),
+                    createTOCategories(),
+                    createTOContent()
+                );
+            }
+            content.push(motionContent);
+            return content;
         };
         return {
             getContent: getContent
