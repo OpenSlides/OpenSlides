@@ -321,7 +321,6 @@
               ng-mouseleave="mediafile.logoHover=false"
               ng-show="mediafile.canBeUsedAsLogo()">
             <span uib-dropdown>
-<<<<<<< e1a95588e7f81cf06db3e753be82bc17a125d059
               <span id="dropdownLogo{{ mediafile.id }}" class="pointer nobr" uib-dropdown-toggle>
                 <span uib-tooltip="{{ 'Manage logos' | translate }}" tooltip-class="nobr">
                   <span ng-if="!mediafile.isUsedAsLogo()" ng-show="mediafile.hover">
@@ -336,29 +335,13 @@
                         {{ logo.display_name | translate }}<span ng-if="!$last">,</br></span>
                       </small>
                     </span>
-=======
-              <span id="dropdownLogo{{ mediafile.id }}" class="pointer nobr"
-                uib-dropdown-toggle uib-tooltip="{{ 'Manage logos' | translate }}"
-                tooltip-class="nobr">
-                <span ng-if="!mediafile.isUsedAsLogo()" ng-show="mediafile.hover">
-                  <i class="fa fa-picture-o"></i>
-                  <i class="fa fa-plus"></i>
-                </span>
-                <span ng-if="mediafile.isUsedAsLogo()">
-                  <i class="fa fa-picture-o spacer-right"></i>
-                  <span ng-repeat="logo in mediafile.getLogos()">
-                    <small>
-                      {{ logo.display_name }}
-                    </small>
-                    <span ng-if="!$last"><br /><i class="fa fa-picture-o spacer-right"></i></span>
->>>>>>> add logos in PDF (WIP)
                   </span>
                 </span>
                 <span ng-if="hasProjectorHeaderLogo(mediafile) && mediafile.logoHover"
                     uib-tooltip="{{ 'The projector header should have a default size of 1024x70px. Adapt the image width if you change the projector resolution.' | translate }}">
                   <i class="fa fa-info-circle"></i>
                 </span>
-                <i class="fa fa-cog fa-lg spacer-left" ng-show="mediafile.logoHover"></i>
+                <i class="fa fa-cog fa-lg spacer-left" ng-show="mediafile.logoHover && mediafile.isUsedAsLogo()"></i>
               </span>
               <ul class="dropdown-menu" aria-labelledby="dropdownLogos{{ mediafile.id }}">
                 <li ng-repeat="logo in logos">

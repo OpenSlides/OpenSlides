@@ -96,9 +96,14 @@ self.addEventListener('message', function(e) {
     // see https://github.com/bpampuch/pdfmake/issues/38
     if (data.footerTpl) {
         data.footer = function (currentPage, pageCount) {
-            var footerText = data.footerTpl.text
-                .replace('{{currentPage}}', currentPage)
-                .replace('{{pageCount}}', pageCount);
+            var footerText = '';
+            for(var i = 0; i < data.footerTpl.columns.length; i++) {
+                if (data.footerTpl.columns[i].text) {
+                    footerText = data.footerTpl.columns[i].text
+                    .replace('{{currentPage}}', currentPage)
+                    .replace('{{pageCount}}', pageCount);
+                }
+            }
             return {
                 text: footerText,
                 alignment: data.footerTpl.alignment,

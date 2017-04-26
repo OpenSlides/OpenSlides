@@ -89,17 +89,15 @@ angular.module('OpenSlidesApp.agenda.site', [
     'AgendaTree',
     'Projector',
     'ProjectionDefault',
-    'AgendaContentProvider',
-    'PdfMakeDocumentProvider',
     'gettextCatalog',
     'gettext',
     'osTableFilter',
     'AgendaCsvExport',
-    'PdfCreate',
+    'AgendaPdfExport',
     'ErrorMessage',
     function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, TopicForm,
-        AgendaTree, Projector, ProjectionDefault, AgendaContentProvider, PdfMakeDocumentProvider,
-        gettextCatalog, gettext, osTableFilter, AgendaCsvExport, PdfCreate, ErrorMessage) {
+        AgendaTree, Projector, ProjectionDefault, gettextCatalog, gettext, osTableFilter,
+        AgendaCsvExport, AgendaPdfExport, ErrorMessage) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -276,10 +274,7 @@ angular.module('OpenSlidesApp.agenda.site', [
         };
         // export
         $scope.pdfExport = function () {
-            var filename = gettextCatalog.getString('Agenda') + '.pdf';
-            var agendaContentProvider = AgendaContentProvider.createInstance($scope.itemsFiltered);
-            var documentProvider = PdfMakeDocumentProvider.createInstance(agendaContentProvider);
-            PdfCreate.download(documentProvider.getDocument(), filename);
+            AgendaPdfExport.export($scope.itemsFiltered);
         };
         $scope.csvExport = function () {
             AgendaCsvExport.export($scope.itemsFiltered);

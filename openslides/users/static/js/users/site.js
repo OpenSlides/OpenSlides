@@ -478,6 +478,7 @@ angular.module('OpenSlidesApp.users.site', [
     '$scope',
     '$state',
     '$http',
+    '$q',
     'ngDialog',
     'UserForm',
     'User',
@@ -485,21 +486,15 @@ angular.module('OpenSlidesApp.users.site', [
     'PasswordGenerator',
     'Projector',
     'ProjectionDefault',
-    'UserListContentProvider',
     'Config',
-    'UserAccessDataListContentProvider',
-    'PdfMakeDocumentProvider',
     'gettextCatalog',
     'UserCsvExport',
     'osTableFilter',
     'osTableSort',
     'gettext',
-    'PdfCreate',
-    'PDFLayout',
-    '$q',
-    function($scope, $state, $http, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
-        UserListContentProvider, Config, UserAccessDataListContentProvider, PdfMakeDocumentProvider, gettextCatalog,
-        UserCsvExport, osTableFilter, osTableSort, gettext, PdfCreate, PDFLayout, $q) {
+    'UserPdfExport',
+    function($scope, $state, $http, $q, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
+        Config, gettextCatalog, UserCsvExport, osTableFilter, osTableSort, gettext, UserPdfExport) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.$watch(function () {
@@ -687,35 +682,10 @@ angular.module('OpenSlidesApp.users.site', [
 
         // Export as PDF
         $scope.pdfExportUserList = function () {
-            var imageMap = {};
-            var imagePromises = [];
-            var imageSources = [];
-
-            imageSources.push(Config.get('logo_pdf_header').value.path);
-            imageSources.push(Config.get('logo_pdf_footer').value.path);
-
-            imagePromises = _.map(imageSources, function (image_source) {
-                return PDFLayout.imageURLtoBase64(image_source).then(function (base64Str) {
-                    imageMap[image_source] = base64Str;
-                });
-            });
-
-            return $q(function (resolve) {
-                $q.all(imagePromises).then(function(base64Str) {
-                    var filename = gettextCatalog.getString("List of participants")+".pdf";
-                    var userListContentProvider = UserListContentProvider.createInstance($scope.usersFiltered, $scope.groups);
-                    var documentProvider = PdfMakeDocumentProvider.createInstance(userListContentProvider, imageMap);
-                    PdfCreate.download(documentProvider.getDocument(), filename);
-                });
-            });
+            UserPdfExport.exportUserList($scope.usersFiltered);
         };
         $scope.pdfExportUserAccessDataList = function () {
-            var filename = gettextCatalog.getString("List of access data")+".pdf";
-            var userAccessDataListContentProvider = UserAccessDataListContentProvider.createInstance(
-                $scope.usersFiltered, $scope.groups, Config);
-            var documentProvider = PdfMakeDocumentProvider.createInstance(userAccessDataListContentProvider);
-            var noFooter = true;
-            PdfCreate.download(documentProvider.getDocument(noFooter), filename);
+            UserPdfExport.exportUserAccessDataList($scope.usersFiltered);
         };
         // Export as a csv file
         $scope.csvExport = function () {

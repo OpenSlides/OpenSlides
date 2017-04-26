@@ -265,18 +265,14 @@ angular.module('OpenSlidesApp.assignments.site', [
     'Projector',
     'ProjectionDefault',
     'gettextCatalog',
-    'AssignmentContentProvider',
-    'AssignmentCatalogContentProvider',
-    'PdfMakeDocumentProvider',
     'User',
     'osTableFilter',
     'osTableSort',
     'gettext',
-    'PdfCreate',
     'AssignmentPhases',
+    'AssignmentPdfExport',
     function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, Projector, ProjectionDefault,
-        gettextCatalog, AssignmentContentProvider, AssignmentCatalogContentProvider, PdfMakeDocumentProvider,
-        User, osTableFilter, osTableSort, gettext, PdfCreate, AssignmentPhases) {
+        gettextCatalog, User, osTableFilter, osTableSort, gettext, AssignmentPhases, AssignmentPdfExport) {
         Assignment.bindAll({}, $scope, 'assignments');
         Tag.bindAll({}, $scope, 'tags');
         $scope.$watch(function () {
@@ -383,20 +379,8 @@ angular.module('OpenSlidesApp.assignments.site', [
             Assignment.destroy(assignment.id);
         };
         // create the PDF List
-        $scope.makePDF_assignmentList = function () {
-            var filename = gettextCatalog.getString("Elections") + ".pdf";
-            var assignmentContentProviderArray = [];
-
-            //convert the filtered assignments to content providers
-            angular.forEach($scope.assignmentsFiltered, function(assignment) {
-                assignmentContentProviderArray.push(AssignmentContentProvider.createInstance(assignment));
-            });
-
-            var assignmentCatalogContentProvider =
-                AssignmentCatalogContentProvider.createInstance(assignmentContentProviderArray);
-            var documentProvider =
-                PdfMakeDocumentProvider.createInstance(assignmentCatalogContentProvider);
-            PdfCreate.download(documentProvider.getDocument(), filename);
+        $scope.pdfExport = function () {
+            AssignmentPdfExport.export($scope.assignmentsFiltered);
         };
     }
 ])
@@ -416,18 +400,13 @@ angular.module('OpenSlidesApp.assignments.site', [
     'assignmentId',
     'Projector',
     'ProjectionDefault',
-    'AssignmentContentProvider',
-    'BallotContentProvider',
-    'PdfMakeDocumentProvider',
-    'PdfMakeBallotPaperProvider',
     'gettextCatalog',
-    'PdfCreate',
     'AssignmentPhases',
+    'AssignmentPdfExport',
     'ErrorMessage',
-    function($scope, $http, $filter, $timeout, filterFilter, gettext, ngDialog, AssignmentForm, operator, Assignment,
-        User, assignmentId, Projector, ProjectionDefault, AssignmentContentProvider, BallotContentProvider,
-        PdfMakeDocumentProvider, PdfMakeBallotPaperProvider, gettextCatalog, PdfCreate, AssignmentPhases,
-        ErrorMessage) {
+    function($scope, $http, $filter, $timeout, filterFilter, gettext, ngDialog, AssignmentForm, operator,
+        Assignment, User, assignmentId, Projector, ProjectionDefault, gettextCatalog, AssignmentPhases,
+        AssignmentPdfExport, ErrorMessage) {
         User.bindAll({}, $scope, 'users');
         var assignment = Assignment.get(assignmentId);
         Assignment.loadRelations(assignment, 'agenda_item');
@@ -600,28 +579,13 @@ angular.module('OpenSlidesApp.assignments.site', [
 
         };
 
-        //creates the document as pdf
-        $scope.makePDF_singleAssignment = function() {
-            var filename = gettextCatalog.getString("Election") + "_" + $scope.assignment.title + ".pdf";
-            var assignmentContentProvider = AssignmentContentProvider.createInstance($scope.assignment);
-            var documentProvider = PdfMakeDocumentProvider.createInstance(assignmentContentProvider);
-            PdfCreate.download(documentProvider.getDocument(), filename);
+        // Creates the document as pdf
+        $scope.pdfExport = function() {
+            AssignmentPdfExport.export($scope.assignment, true);
         };
-
-        //creates the ballotpaper as pdf
-        $scope.makePDF_assignmentpoll = function(pollID) {
-            var thePoll;
-            var pollNumber;
-            angular.forEach($scope.assignment.polls, function(poll, pollIndex) {
-                if (poll.id == pollID) {
-                    thePoll = poll;
-                    pollNumber = pollIndex+1;
-                }
-            });
-            var filename = gettextCatalog.getString("Ballot") + "_" + pollNumber + "_" + $scope.assignment.title + ".pdf";
-            var ballotContentProvider = BallotContentProvider.createInstance($scope, thePoll, pollNumber);
-            var documentProvider = PdfMakeBallotPaperProvider.createInstance(ballotContentProvider);
-            PdfCreate.download(documentProvider.getDocument(), filename);
+        // Creates the ballotpaper as pdf
+        $scope.ballotpaperExport = function(pollId) {
+            AssignmentPdfExport.createBallotPdf($scope.assignment, pollId);
         };
 
         // Just mark some vote value strings for translation.

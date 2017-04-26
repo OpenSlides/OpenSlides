@@ -250,7 +250,7 @@ def get_config_variables():
         group='Logo',
         hidden=True)
 
-    #PDF logos
+    # PDF logos
     yield ConfigVariable(
         name='logo_pdf_header',
         default_value={
