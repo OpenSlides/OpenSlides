@@ -161,6 +161,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     columns.push({
                         image: imageMap[logoHeaderUrl],
                         fit: [180, 40],
+                        width: '20%'
                     });
                 }
 
@@ -176,7 +177,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 columns.push({
                     text: text,
                     fontSize: 10,
-                    width: '100%',
+                    alignment: 'right',
+                    margin: [0, 10, 0, 0],
                 });
                 return {
                     color: '#555',
@@ -194,22 +196,22 @@ angular.module('OpenSlidesApp.core.pdf', [])
             var getFooter = function() {
                 var columns = [];
 
-                // TODO: This does't work. The image does not get rendered.
                 if (logoFooterUrl) {
                     columns.push({
                         image: imageMap[logoFooterUrl],
-                        fit: [180,40],
+                        fit: [400,50],
+                        width: '80%'
                     });
                 }
                 columns.push({
                     text: '{{currentPage}} / {{pageCount}}',
-                    width: '100%',
+                    color: '#555',
+                    fontSize: 9,
+                    alignment: 'right',
+                    margin: [0, 15, 0, 0],
                 });
                 return {
-                    alignment: 'right',
-                    margin: [0, 15, 75, 0],
-                    fontSize: 9,
-                    color: '#555',
+                    margin: [75, 0, 75, 10],
                     columns: columns,
                     columnGap: 10,
                 };

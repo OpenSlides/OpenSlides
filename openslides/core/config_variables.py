@@ -254,7 +254,7 @@ def get_config_variables():
     yield ConfigVariable(
         name='logo_pdf_header',
         default_value={
-            'display_name': 'Header PDF logo',
+            'display_name': 'PDF header logo',
             'path': ''},
         input_type='logo',
         weight=310,
@@ -264,7 +264,7 @@ def get_config_variables():
     yield ConfigVariable(
         name='logo_pdf_footer',
         default_value={
-            'display_name': 'Footer PDF logo',
+            'display_name': 'PDF footer logo',
             'path': ''},
         input_type='logo',
         weight=311,
