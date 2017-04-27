@@ -27,32 +27,42 @@ class ItemAccessPermissions(BaseAccessPermissions):
         Returns the restricted serialized data for the instance prepared
         for the user.
         """
+        def filtered_data(full_data, blocked_keys):
+            """
+            Returns a new dict like full_data but with all blocked_keys removed.
+            """
+            whitelist = full_data.keys() - blocked_keys
+            return {key: full_data[key] for key in whitelist}
+
+        # many_items is True, when there are more then one items in full_data.
+        many_items = not isinstance(full_data, dict)
+        full_data = full_data if many_items else [full_data]
+
         if has_perm(user, 'agenda.can_see'):
-            if full_data['is_hidden'] and not has_perm(user, 'agenda.can_see_hidden_items'):
-                # The data is hidden but the user isn't allowed to see it. Jst pass
-                # the whitelisted keys so the list of speakers is provided regardless.
-                whitelist = (
+            if has_perm(user, 'agenda.can_manage'):
+                data = full_data
+            elif has_perm(user, 'agenda.can_see_hidden_items'):
+                blocked_keys = ('comment',)
+                data = [filtered_data(full, blocked_keys) for full in full_data]
+            else:
+                data = []
+                filtered_blocked_keys = full_data[0].keys() - (
                     'id',
                     'title',
                     'speakers',
                     'speaker_list_closed',
-                    'content_object',)
-                data = {}
-                for key in full_data.keys():
-                    if key in whitelist:
-                        data[key] = full_data[key]
-            else:
-                if has_perm(user, 'agenda.can_manage'):
-                    data = full_data
-                else:
-                    # Strip out item comments for unprivileged users.
-                    data = {}
-                    for key in full_data.keys():
-                        if key != 'comment':
-                            data[key] = full_data[key]
+                    'content_object')
+                not_filtered_blocked_keys = ('comment',)
+                for full in full_data:
+                    if full['is_hidden']:
+                        blocked_keys = filtered_blocked_keys
+                    else:
+                        blocked_keys = not_filtered_blocked_keys
+                    data.append(filtered_data(full, blocked_keys))
         else:
             data = None
-        return data
+
+        return data if many_items else data[0]
 
     def get_projector_data(self, full_data):
         """

@@ -18,28 +18,14 @@ def get_permission_change_data(sender, permissions=None, **kwargs):
 
 def is_user_data_required(sender, request_user, user_data, **kwargs):
     """
-    Returns True if request user can see assignments and user_data is required
-    to be displayed as candidates (including poll options).
+    If request_user can see assignments, then returns all user ids that are
+    displayed as candidates (including poll options). Else, it returns an empty set.
     """
-    result = False
+    user_ids = set()
     if has_perm(request_user, 'assignments.can_see'):
         for assignment_collection_element in Collection(Assignment.get_collection_string()).element_generator():
             full_data = assignment_collection_element.get_full_data()
-            for related_user in full_data['assignment_related_users']:
-                if user_data['id'] == related_user['user_id']:
-                    result = True
-                    break
-            else:
-                for poll in full_data['polls']:
-                    for option in poll['options']:
-                        if user_data['id'] == option['candidate_id']:
-                            result = True
-                            break
-                    else:
-                        continue
-                    break
-                else:
-                    continue
-                break
-            break
-    return result
+            user_ids.update(related_user['user_id'] for related_user in full_data['assignment_related_users'])
+            for poll in full_data['polls']:
+                user_ids.update(option['candidate_id'] for option in poll['options'])
+    return user_ids

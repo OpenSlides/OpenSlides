@@ -31,57 +31,56 @@ class UserAccessPermissions(BaseAccessPermissions):
         """
         from .serializers import USERCANSEESERIALIZER_FIELDS, USERCANSEEEXTRASERIALIZER_FIELDS
 
-        NO_DATA = 0
-        LITTLE_DATA = 1
-        MANY_DATA = 2
-        FULL_DATA = 3
+        def filtered_data(full_data, only_keys):
+            """
+            Returns a new dict like full_data but with all blocked_keys removed.
+            """
+            return {key: full_data[key] for key in only_keys}
+
+        # many_items is True, when there are more then one items in full_data.
+        many_items = not isinstance(full_data, dict)
+        full_data = full_data if many_items else [full_data]
+
+        many_fields = set(USERCANSEEEXTRASERIALIZER_FIELDS)
+        little_fields = set(USERCANSEESERIALIZER_FIELDS)
+        many_fields.add('groups_id')
+        many_fields.discard('groups')
+        little_fields.add('groups_id')
+        little_fields.discard('groups')
 
         # Check user permissions.
         if has_perm(user, 'users.can_see_name'):
             if has_perm(user, 'users.can_see_extra_data'):
                 if has_perm(user, 'users.can_manage'):
-                    case = FULL_DATA
+                    data = full_data
                 else:
-                    case = MANY_DATA
+                    data = [filtered_data(full, many_fields) for full in full_data]
             else:
-                case = LITTLE_DATA
-        elif user is not None and user.id == full_data.get('id'):
-            # An authenticated user without the permission to see users tries
-            # to see himself.
-            case = LITTLE_DATA
+                data = [filtered_data(full, little_fields) for full in full_data]
         else:
-            # Now check if the user to be sent out is required by any app e. g.
-            # as motion submitter or assignment candidate.
+            # Build a list of users, that can be seen without permissions.
+            no_perm_users = set()
+            if user is not None:
+                no_perm_users.add(user.id)
+
+            # Get a list of all users, that are needed by another app
             receiver_responses = user_data_required.send(
                 sender=self.__class__,
                 request_user=user,
                 user_data=full_data)
             for receiver, response in receiver_responses:
-                if response:
-                    case = LITTLE_DATA
-                    break
-            else:
-                case = NO_DATA
+                no_perm_users.update(response)
 
-        # Setup data.
-        if case == FULL_DATA:
-            data = full_data
-        elif case == NO_DATA:
-            data = None
-        else:
-            # case in (LITTLE_DATA, ḾANY_DATA)
-            if case == MANY_DATA:
-                fields = USERCANSEEEXTRASERIALIZER_FIELDS
-            else:
-                # case == LITTLE_DATA
-                fields = USERCANSEESERIALIZER_FIELDS
-            # Let only some fields pass this method.
-            data = {}
-            for base_key in fields:
-                for key in (base_key, base_key + '_id'):
-                    if key in full_data.keys():
-                        data[key] = full_data[key]
-        return data
+            data = [
+                filtered_data(full, little_fields)
+                for full
+                in full_data
+                if full['id'] in no_perm_users]
+
+            # Set data to [None] if data is empty
+            data = data or [None]
+
+        return data if many_items else data[0]
 
     def get_projector_data(self, full_data):
         """

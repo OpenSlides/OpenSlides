@@ -61,19 +61,26 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
         Returns the restricted serialized data for the instance prepared
         for the user.
 
-        Returns None if the user has no read access. Returns reduced data
-        if the user has limited access. Default: Returns full data if the
-        user has read access to model instances.
+        Returns None or an empty list if the user has no read access. Returns
+        reduced data if the user has limited access. Default: Returns full data
+        if the user has read access to model instances.
 
         Hint: You should override this method if your get_serializer_class()
         method returns different serializers for different users or if you
         have access restrictions in your view or viewset in methods like
         retrieve() or list().
+
+        full_data can be a list or one single item. If it is a list, then the
+        retun value is also a list of restricted data.
+
+        When the user can not access
         """
         if self.check_permissions(user):
             data = full_data
-        else:
+        elif isinstance(full_data, dict):
             data = None
+        else:
+            data = []
         return data
 
     def get_projector_data(self, full_data):

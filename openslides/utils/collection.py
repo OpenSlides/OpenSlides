@@ -100,21 +100,18 @@ class CollectionElement:
         Only for internal use. Do not use it directly. Use as_autoupdate_for_user()
         or as_autoupdate_for_projector().
         """
-        output = {
-            'collection': self.collection_string,
-            'id': self.id,
-            'action': 'deleted' if self.is_deleted() else 'changed',
-        }
         if not self.is_deleted():
             data = getattr(self.get_access_permissions(), method)(
                 self.get_full_data(),
                 *args)
-            if data is None:
-                # The user is not allowed to see this element. Set action to deleted.
-                output['action'] = 'deleted'
-            else:
-                output['data'] = data
-        return output
+        else:
+            data = None
+
+        return format_for_autoupdate(
+            collection_string=self.collection_string,
+            id=self.id,
+            action='deleted' if self.is_deleted() else 'changed',
+            data=data)
 
     def as_autoupdate_for_user(self, user):
         """
@@ -551,3 +548,25 @@ def get_collection_id_from_cache_key(cache_key):
         # The id is no integer. This can happen on config elements
         pass
     return (collection_string, id)
+
+
+def format_for_autoupdate(collection_string, id, action, data=None):
+    """
+    Returns a dict that can be used for autoupdate.
+    """
+    if not data:
+        # If the data is None or is empty, then the action has to be deleted,
+        # even when it says diffrently. This can happen when the object is not
+        # deleted, but the user has no permission to see it.
+        action = 'deleted'
+
+    output = {
+        'collection': collection_string,
+        'id': id,
+        'action': action,
+    }
+
+    if action != 'deleted':
+        output['data'] = data
+
+    return output

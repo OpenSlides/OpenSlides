@@ -26,7 +26,13 @@ class MediafileAccessPermissions(BaseAccessPermissions):
         for the user.
         """
         data = None
-        if has_perm(user, 'mediafiles.can_see'):
-            if (not full_data['hidden'] or has_perm(user, 'mediafiles.can_see_hidden')):
-                data = full_data
+        if has_perm(user, 'mediafiles.can_see') and has_perm(user, 'mediafiles.can_see_hidden'):
+            data = full_data
+        elif has_perm(user, 'mediafiles.can_see'):
+            many_items = not isinstance(full_data, dict)
+            full_data_list = full_data if many_items else [full_data]
+            data = [full_data for full_data in full_data_list if not full_data['hidden']]
+            data = data if many_items else data[0]
+        else:
+            data = None
         return data

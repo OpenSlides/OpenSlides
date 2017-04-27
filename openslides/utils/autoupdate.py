@@ -6,15 +6,20 @@ from collections import Iterable, defaultdict
 from channels import Channel, Group
 from channels.asgi import get_channel_layer
 from channels.auth import channel_session_user, channel_session_user_from_http
-from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 
 from ..core.config import config
 from ..core.models import Projector
 from .auth import has_perm, user_to_collection_user
-from .cache import websocket_user_cache
-from .collection import Collection, CollectionElement, CollectionElementList
+from .cache import start_up_cache, websocket_user_cache
+from .collection import (
+    Collection,
+    CollectionElement,
+    CollectionElementList,
+    format_for_autoupdate,
+    get_model_from_collection_string,
+)
 
 
 def send_or_wait(send_func, *args, **kwargs):
@@ -61,18 +66,29 @@ def ws_add_site(message):
 
     # Collect all elements that shoud be send to the client when the websocket
     # connection is established
+    user = user_to_collection_user(message.user.id)
     output = []
-    for app in apps.get_app_configs():
-        try:
-            # Get the method get_startup_elements() from an app.
-            # This method has to return an iterable of Collection objects.
-            get_startup_elements = app.get_startup_elements
-        except AttributeError:
-            # Skip apps that do not implement get_startup_elements
+    for collection_string, full_data in start_up_cache.get_collection_elements().items():
+        access_permission = get_model_from_collection_string(collection_string).get_access_permissions()
+        if collection_string == 'core/config':
+            id_key = 'key'
+        else:
+            id_key = 'id'
+
+        restricted_data = access_permission.get_restricted_data(full_data, user)
+        if restricted_data is None:
             continue
-        for collection in get_startup_elements():
-            user = user_to_collection_user(message.user.id)
-            output.extend(collection.as_autoupdate_for_user(user))
+
+        for data in restricted_data:
+            if data is None:
+                continue
+
+            output.append(
+                format_for_autoupdate(
+                    collection_string=collection_string,
+                    id=data[id_key],
+                    action='changed',
+                    data=data))
 
     # Send all data. If there is no data, then only accept the connection
     if output:
@@ -341,6 +357,7 @@ def send_autoupdate(collection_elements):
     Does nothing if collection_elements is empty.
     """
     if collection_elements:
+        start_up_cache.clear()
         send_or_wait(
             Channel('autoupdate.send_data').send,
             collection_elements.as_channels_message())

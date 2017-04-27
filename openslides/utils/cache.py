@@ -2,6 +2,7 @@ from collections import defaultdict
 
 from channels import Group
 from channels.sessions import session_for_reply_channel
+from django.apps import apps
 from django.core.cache import cache, caches
 
 
@@ -182,6 +183,65 @@ class DjangoCacheWebsocketUserCache(BaseWebsocketUserCache):
         Saves the data using the django cache.
         """
         cache.set(self.get_cache_key(), data)
+
+
+class StartupCache:
+    """
+    Cache of all data that are needed when a clients connects via websocket.
+    """
+
+    cache_key = "full_data_cache"
+
+    def build(self):
+        """
+        Generate the cache by going though all apps.
+        Returns a dict where the key is the collection string and the value a
+        list of the full_data from the collection_elements.
+        """
+        cache_data = {}
+        for app in apps.get_app_configs():
+            try:
+                # Get the method get_startup_elements() from an app.
+                # This method has to return an iterable of Collection objects.
+                get_startup_elements = app.get_startup_elements
+            except AttributeError:
+                # Skip apps that do not implement get_startup_elements
+                continue
+
+            for collection in get_startup_elements():
+                cache_data[collection.collection_string] = [
+                    collection_element.get_full_data()
+                    for collection_element
+                    in collection.element_generator()]
+
+        cache.set(self.cache_key, cache_data, 86400)
+        return cache_data
+
+    def clear(self):
+        """
+        Clears the cache.
+        """
+        cache.delete(self.cache_key)
+
+    def get_collection_elements(self):
+        """
+        Returns a dict of all collection_elements, that are needed at startup.
+
+        The key is the collection_string and the value a list of CollectionElement
+        objects. Each list has at least one value.
+
+        The data is read from the cache if it exists. It builds the cache, if it
+        does not exists.
+        """
+        data = cache.get(self.cache_key)
+        if data is None:
+            # The cache does not exist.
+            data = self.build()
+
+        return data
+
+
+start_up_cache = StartupCache()
 
 
 def use_redis_cache():

@@ -56,18 +56,12 @@ def get_permission_change_data(sender, permissions, **kwargs):
 
 def is_user_data_required(sender, request_user, user_data, **kwargs):
     """
-    Returns True if request user can see the agenda and user_data is required
-    to be displayed as speaker.
+    If request_user can see the agenda, then returns all user ids that are
+    speakers in some agenda items. Else, it returns an empty set.
     """
-    result = False
+    speakers = set()
     if has_perm(request_user, 'agenda.can_see'):
         for item_collection_element in Collection(Item.get_collection_string()).element_generator():
             full_data = item_collection_element.get_full_data()
-            for speaker in full_data['speakers']:
-                if user_data['id'] == speaker['user_id']:
-                    result = True
-                    break
-            else:
-                continue
-            break
-    return result
+            speakers.update(speaker['user_id'] for speaker in full_data['speakers'])
+    return speakers

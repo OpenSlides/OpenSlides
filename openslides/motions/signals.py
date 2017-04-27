@@ -120,14 +120,13 @@ def get_permission_change_data(sender, permissions, **kwargs):
 
 def is_user_data_required(sender, request_user, user_data, **kwargs):
     """
-    Returns True if request user can see motions and user_data is required
-    to be displayed as motion submitter or supporter.
+    If request_user can see motions, then returns all user ids that are
+    displayed as submitter or supporter. Else, it returns an empty set.
     """
-    result = False
+    user_ids = set()
     if has_perm(request_user, 'motions.can_see'):
         for motion_collection_element in Collection(Motion.get_collection_string()).element_generator():
             full_data = motion_collection_element.get_full_data()
-            if user_data['id'] in full_data['submitters_id'] or user_data['id'] in full_data['supporters_id']:
-                result = True
-                break
-    return result
+            user_ids.update(full_data['submitters_id'])
+            user_ids.update(full_data['supporters_id'])
+    return user_ids

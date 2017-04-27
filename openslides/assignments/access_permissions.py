@@ -33,8 +33,14 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
         if has_perm(user, 'assignments.can_see') and has_perm(user, 'assignments.can_manage'):
             data = full_data
         elif has_perm(user, 'assignments.can_see'):
-            data = full_data.copy()
-            data['polls'] = [poll for poll in data['polls'] if poll['published']]
+            many_items = not isinstance(full_data, dict)
+            full_data_list = full_data if many_items else [full_data]
+            out = []
+            for full_data in full_data_list:
+                data = full_data.copy()
+                data['polls'] = [poll for poll in data['polls'] if data['published']]
+                out.append(data)
+            data = out if many_items else out[0]
         else:
             data = None
         return data

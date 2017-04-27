@@ -1,7 +1,5 @@
 from copy import deepcopy
 
-from django.contrib.auth import get_user_model
-
 from ..core.config import config
 from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import has_perm
@@ -33,46 +31,44 @@ class MotionAccessPermissions(BaseAccessPermissions):
         the motion in this state. Removes non public comment fields for
         some unauthorized users.
         """
-        if isinstance(user, get_user_model()):
-            # Converts a user object to a collection element.
-            # from_instance can not be used because the user serializer loads
-            # the group from the db. So each call to from_instance(user) consts
-            # one db query.
-            user = CollectionElement.from_values('users/user', user.id)
+        many_items = not isinstance(full_data, dict)
+        full_data_list = full_data if many_items else [full_data]
+        out = []
+        for full_data in full_data_list:
+            if isinstance(user, CollectionElement):
+                is_submitter = user.get_full_data()['id'] in full_data.get('submitters_id', [])
+            else:
+                # Anonymous users can not be submitters
+                is_submitter = False
 
-        if isinstance(user, CollectionElement):
-            is_submitter = user.get_full_data()['id'] in full_data.get('submitters_id', [])
-        else:
-            # Anonymous users can not be submitters
-            is_submitter = False
-
-        required_permission_to_see = full_data['state_required_permission_to_see']
-        data = None
-        if has_perm(user, 'motions.can_see'):
-            if (not required_permission_to_see or
-                    has_perm(user, required_permission_to_see) or
-                    has_perm(user, 'motions.can_manage') or
-                    is_submitter):
-                if has_perm(user, 'motions.can_see_and_manage_comments') or not full_data.get('comments'):
-                    data = full_data
-                else:
-                    data = deepcopy(full_data)
-                    for i, field in enumerate(config['motions_comments']):
-                        if not field.get('public'):
-                            try:
-                                data['comments'][i] = None
-                            except IndexError:
-                                # No data in range. Just do nothing.
-                                pass
-                # Now filter personal notes.
-                data = data.copy()
-                data['personal_notes'] = []
-                if user is not None:
-                    for personal_note in full_data.get('personal_notes', []):
-                        if personal_note.get('user_id') == user.id:
-                            data['personal_notes'].append(personal_note)
-                            break
-        return data
+            required_permission_to_see = full_data['state_required_permission_to_see']
+            data = None
+            if has_perm(user, 'motions.can_see'):
+                if (not required_permission_to_see or
+                        has_perm(user, required_permission_to_see) or
+                        has_perm(user, 'motions.can_manage') or
+                        is_submitter):
+                    if has_perm(user, 'motions.can_see_and_manage_comments') or not full_data.get('comments'):
+                        data = full_data
+                    else:
+                        data = deepcopy(full_data)
+                        for i, field in enumerate(config['motions_comments']):
+                            if not field.get('public'):
+                                try:
+                                    data['comments'][i] = None
+                                except IndexError:
+                                    # No data in range. Just do nothing.
+                                    pass
+                    # Now filter personal notes.
+                    data = data.copy()
+                    data['personal_notes'] = []
+                    if user is not None:
+                        for personal_note in full_data.get('personal_notes', []):
+                            if personal_note.get('user_id') == user.id:
+                                data['personal_notes'].append(personal_note)
+                                break
+            out.append(data)
+        return out if many_items else out[0]
 
     def get_projector_data(self, full_data):
         """

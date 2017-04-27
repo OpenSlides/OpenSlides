@@ -20,12 +20,13 @@ def is_user_data_required(sender, request_user, user_data, **kwargs):
     """
     Returns True if request user can see mediafiles and user_data is required
     to be displayed as uploader.
+
+    If request_user can see mediafiles, then returns all user ids that are
+    displayed as uploader. Else, it returns an empty set.
     """
-    result = False
+    user_ids = set()
     if has_perm(request_user, 'mediafiles.can_see'):
         for mediafile_collection_element in Collection(Mediafile.get_collection_string()).element_generator():
             full_data = mediafile_collection_element.get_full_data()
-            if user_data['id'] == full_data['uploader_id']:
-                result = True
-                break
-    return result
+            user_ids.add(full_data['uploader_id'])
+    return user_ids
