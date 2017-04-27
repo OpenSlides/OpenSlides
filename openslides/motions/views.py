@@ -366,7 +366,7 @@ class MotionViewSet(ModelViewSet):
         if not request.user.is_authenticated():
             raise ValidationError({'detail': _('Anonymous users are not able to set personal notes.')})
         motion.set_personal_note(request.user, request.data.get('note'), bool(request.data.get('star')))
-        message = _('You set yopur personal notes successfully.')
+        message = _('Your personal note was successfully saved.')
         return Response({'detail': message})
 
     @detail_route(methods=['post'])
