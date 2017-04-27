@@ -481,6 +481,9 @@ class Collection:
             cache.set(self.get_cache_key(), ids)
 
 
+_models_to_collection_string = {}
+
+
 def get_model_from_collection_string(collection_string):
     """
     Returns a model class which belongs to the argument collection_string.
@@ -493,20 +496,18 @@ def get_model_from_collection_string(collection_string):
             for model in app_config.get_models():
                 yield model
 
-    for model in model_generator():
-        try:
-            model_collection_string = model.get_collection_string()
-        except AttributeError:
-            # Skip models which do not have the method get_collection_string.
-            pass
-        else:
-            if model_collection_string == collection_string:
-                # The model was found.
-                break
-    else:
-        # No model was found in all apps.
-        raise ValueError('Invalid message. A valid collection_string is missing.')
-    return model
+    # On the first run, generate the dict. It can not change at runtime.
+    if not _models_to_collection_string:
+        for model in model_generator():
+            try:
+                get_collection_string = model.get_collection_string
+            except AttributeError:
+                # Skip models which do not have the method get_collection_string.
+                pass
+            else:
+                _models_to_collection_string[get_collection_string()] = model
+
+    return _models_to_collection_string[collection_string]
 
 
 def get_single_element_cache_key(collection_string, id):

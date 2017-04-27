@@ -56,6 +56,9 @@ def ws_add_site(message):
     # Saves the reply channel to the user. Uses 0 for anonymous users.
     websocket_user_cache.add(message.user.id or 0, message.reply_channel.name)
 
+    # Open the websocket connection.
+    send_or_wait(message.reply_channel.send, {'accept': True})
+
     # Collect all elements that shoud be send to the client when the websocket
     # connection is established
     output = []
@@ -74,8 +77,6 @@ def ws_add_site(message):
     # Send all data. If there is no data, then only accept the connection
     if output:
         send_or_wait(message.reply_channel.send, {'text': json.dumps(output)})
-    else:
-        send_or_wait(message.reply_channel.send, {'accept': True})
 
 
 @channel_session_user

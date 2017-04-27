@@ -58,7 +58,7 @@ class TestGetModelFromCollectionString(TestCase):
         self.assertEqual(projector_model, Projector)
 
     def test_unknown_app(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(KeyError):
             collection.get_model_from_collection_string('invalid/model')
 
 
