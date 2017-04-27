@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-24 10:13+0200\n"
+"POT-Creation-Date: 2017-04-27 15:22+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -314,15 +314,15 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: motions/models.py:187
+#: motions/models.py:190
 msgid "Motion"
 msgstr ""
 
-#: motions/models.py:708
+#: motions/models.py:719
 msgid "new"
 msgstr ""
 
-#: motions/models.py:895
+#: motions/models.py:906
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr ""
@@ -456,7 +456,7 @@ msgstr ""
 msgid "The state of the motion was set to %s."
 msgstr ""
 
-#: motions/views.py:314 motions/views.py:597
+#: motions/views.py:314 motions/views.py:611
 msgid "State set to"
 msgstr ""
 
@@ -478,34 +478,42 @@ msgstr ""
 msgid "Recommendation set to"
 msgstr ""
 
-#: motions/views.py:371
+#: motions/views.py:367
+msgid "Anonymous users are not able to set personal notes."
+msgstr ""
+
+#: motions/views.py:369
+msgid "Your personal note was successfully saved."
+msgstr ""
+
+#: motions/views.py:385
 msgid "Vote created"
 msgstr ""
 
-#: motions/views.py:372
+#: motions/views.py:386
 msgid "Vote created successfully."
 msgstr ""
 
-#: motions/views.py:397
+#: motions/views.py:411
 msgid "Vote updated"
 msgstr ""
 
-#: motions/views.py:406
+#: motions/views.py:420
 msgid "Vote deleted"
 msgstr ""
 
-#: motions/views.py:546
+#: motions/views.py:560
 msgid ""
 "Error: At least one identifier of this category does already exist in "
 "another category."
 msgstr ""
 
-#: motions/views.py:551
+#: motions/views.py:565
 #, python-brace-format
 msgid "All motions in category {category} numbered successfully."
 msgstr ""
 
-#: motions/views.py:602
+#: motions/views.py:616
 msgid "Followed recommendations successfully."
 msgstr ""
 

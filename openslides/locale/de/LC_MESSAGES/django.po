@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-24 10:13+0200\n"
-"PO-Revision-Date: 2017-04-24 08:25+0000\n"
+"POT-Creation-Date: 2017-04-27 15:22+0200\n"
+"PO-Revision-Date: 2017-04-27 13:23+0000\n"
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/openslides/openslides/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -322,15 +322,15 @@ msgstr "Alle Chatnachrichten erfolgreich gelöscht."
 msgid "unknown"
 msgstr "unbekannt"
 
-#: motions/models.py:187
+#: motions/models.py:190
 msgid "Motion"
 msgstr "Antrag"
 
-#: motions/models.py:708
+#: motions/models.py:719
 msgid "new"
 msgstr "Neu"
 
-#: motions/models.py:895
+#: motions/models.py:906
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr "%(time_and_messages)s durch %(person)s"
@@ -464,7 +464,7 @@ msgstr "Sie dürfen den Antragsstatus nicht auf %(state_id)d setzen."
 msgid "The state of the motion was set to %s."
 msgstr "Der Status des Antrags wurde auf %s gesetzt."
 
-#: motions/views.py:314 motions/views.py:597
+#: motions/views.py:314 motions/views.py:611
 msgid "State set to"
 msgstr "Status gesetzt auf"
 
@@ -486,34 +486,42 @@ msgstr "Die Empfehlung des Antrags wurde auf %s gesetzt."
 msgid "Recommendation set to"
 msgstr "Empfehlung gesetzt auf"
 
-#: motions/views.py:371
+#: motions/views.py:367
+msgid "Anonymous users are not able to set personal notes."
+msgstr "Anonyme Gast-Benutzer dürfen keine persönlichen Notizen schreiben."
+
+#: motions/views.py:369
+msgid "Your personal note was successfully saved."
+msgstr "Ihre persönliche Notiz wurde erfolgreich gespeichert."
+
+#: motions/views.py:385
 msgid "Vote created"
 msgstr "Abstimmung erstellt"
 
-#: motions/views.py:372
+#: motions/views.py:386
 msgid "Vote created successfully."
 msgstr "Abstimmung erfolgreich angelegt."
 
-#: motions/views.py:397
+#: motions/views.py:411
 msgid "Vote updated"
 msgstr "Abstimmung aktualisiert"
 
-#: motions/views.py:406
+#: motions/views.py:420
 msgid "Vote deleted"
 msgstr "Abstimmung gelöscht"
 
-#: motions/views.py:546
+#: motions/views.py:560
 msgid ""
 "Error: At least one identifier of this category does already exist in "
 "another category."
 msgstr "Fehler: Mindestens ein Bezeichner von diesem Sachgebiet existiert bereits in einem anderen Sachgebiet."
 
-#: motions/views.py:551
+#: motions/views.py:565
 #, python-brace-format
 msgid "All motions in category {category} numbered successfully."
 msgstr "Alle Anträge im Sachgebiet {category} wurden erfolgreich nummeriert."
 
-#: motions/views.py:602
+#: motions/views.py:616
 msgid "Followed recommendations successfully."
 msgstr "Empfehlungen erfolgreich gefolgt."
 
