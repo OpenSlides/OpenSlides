@@ -6,6 +6,7 @@ https://openslides.org/
 
 Version 2.2 (unreleased)
 ==========================
+[https://github.com/OpenSlides/OpenSlides/milestones/2.2]
 
 Agenda:
 - Fixed wrong sorting of last speakers [#3193].
@@ -13,6 +14,7 @@ Agenda:
 
 Motions:
 - New export dialog [#3185].
+- New feature: Personal notes for motions [#3190].
 - Fixed issue when creating/deleting motion comment fields in the
   settings [#3187].
 - Fixed empty motion comment field in motion update form [#3194].

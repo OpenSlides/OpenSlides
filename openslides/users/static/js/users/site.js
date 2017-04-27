@@ -538,7 +538,6 @@ angular.module('OpenSlidesApp.users.site', [
                     choiceYes: gettext('Is a committee'),
                     choiceNo: gettext('Is not a committee'),
                 },
-
             };
         }
         $scope.filter.propertyList = ['first_name', 'last_name', 'title', 'number', 'comment', 'structure_level'];
