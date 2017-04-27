@@ -1463,8 +1463,6 @@ angular.module('OpenSlidesApp.motions.site', [
                 $scope.motion.personalNote
             );
         };
-        $scope.changePN = function () {
-        };
 
         // personal note
         $scope.toggleStar = function () {
