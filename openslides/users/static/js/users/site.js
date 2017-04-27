@@ -478,6 +478,7 @@ angular.module('OpenSlidesApp.users.site', [
     '$scope',
     '$state',
     '$http',
+    '$q',
     'ngDialog',
     'UserForm',
     'User',
@@ -485,19 +486,15 @@ angular.module('OpenSlidesApp.users.site', [
     'PasswordGenerator',
     'Projector',
     'ProjectionDefault',
-    'UserListContentProvider',
     'Config',
-    'UserAccessDataListContentProvider',
-    'PdfMakeDocumentProvider',
     'gettextCatalog',
     'UserCsvExport',
     'osTableFilter',
     'osTableSort',
     'gettext',
-    'PdfCreate',
-    function($scope, $state, $http, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
-        UserListContentProvider, Config, UserAccessDataListContentProvider, PdfMakeDocumentProvider, gettextCatalog,
-        UserCsvExport, osTableFilter, osTableSort, gettext, PdfCreate) {
+    'UserPdfExport',
+    function($scope, $state, $http, $q, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
+        Config, gettextCatalog, UserCsvExport, osTableFilter, osTableSort, gettext, UserPdfExport) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.$watch(function () {
@@ -685,18 +682,10 @@ angular.module('OpenSlidesApp.users.site', [
 
         // Export as PDF
         $scope.pdfExportUserList = function () {
-            var filename = gettextCatalog.getString("List of participants")+".pdf";
-            var userListContentProvider = UserListContentProvider.createInstance($scope.usersFiltered, $scope.groups);
-            var documentProvider = PdfMakeDocumentProvider.createInstance(userListContentProvider);
-            PdfCreate.download(documentProvider.getDocument(), filename);
+            UserPdfExport.exportUserList($scope.usersFiltered);
         };
         $scope.pdfExportUserAccessDataList = function () {
-            var filename = gettextCatalog.getString("List of access data")+".pdf";
-            var userAccessDataListContentProvider = UserAccessDataListContentProvider.createInstance(
-                $scope.usersFiltered, $scope.groups, Config);
-            var documentProvider = PdfMakeDocumentProvider.createInstance(userAccessDataListContentProvider);
-            var noFooter = true;
-            PdfCreate.download(documentProvider.getDocument(noFooter), filename);
+            UserPdfExport.exportUserAccessDataList($scope.usersFiltered);
         };
         // Export as a csv file
         $scope.csvExport = function () {
@@ -1506,7 +1495,7 @@ angular.module('OpenSlidesApp.users.site', [
                 },
                 function (error) {
                     // Error: Username or password is not correct.
-                    $state.transitionTo($state.current, {msg: error.data.detail}, { 
+                    $state.transitionTo($state.current, {msg: error.data.detail}, {
                           reload: true, inherit: false, notify: true
                     });
                 }

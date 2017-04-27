@@ -75,6 +75,24 @@ angular.module('OpenSlidesApp.agenda.pdf', ['OpenSlidesApp.core.pdf'])
         createInstance: createInstance
     };
 
-}]);
+}])
+
+.factory('AgendaPdfExport', [
+    'gettextCatalog',
+    'AgendaContentProvider',
+    'PdfMakeDocumentProvider',
+    'PdfCreate',
+    function (gettextCatalog, AgendaContentProvider, PdfMakeDocumentProvider, PdfCreate) {
+        return {
+            export: function (items) {
+                var filename = gettextCatalog.getString('Agenda') + '.pdf';
+                var agendaContentProvider = AgendaContentProvider.createInstance(items);
+                PdfMakeDocumentProvider.createInstance(agendaContentProvider).then(function (documentProvider) {
+                    PdfCreate.download(documentProvider.getDocument(), filename);
+                });
+            },
+        };
+    }
+]);
 
 }());

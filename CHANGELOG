@@ -38,7 +38,8 @@ Users:
 Core:
 - No reload on logoff. OpenSlides is now a full single page
   application [#3172].
-- Adding support for choosing image files as logos [#3184, #3207].
+- Adding support for choosing image files as logos for projector and
+  pdf [#3184, #3207, #3208].
 - Fixing error when clearing empty chat [#3199].
 - Added notify system [#3212].
 

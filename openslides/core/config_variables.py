@@ -223,7 +223,9 @@ def get_config_variables():
         name='logos_available',
         default_value=[
             'logo_projector_main',
-            'logo_projector_header'],
+            'logo_projector_header',
+            'logo_pdf_header',
+            'logo_pdf_footer'],
         weight=300,
         group='Logo',
         hidden=True)
@@ -245,5 +247,26 @@ def get_config_variables():
             'path': ''},
         input_type='logo',
         weight=302,
+        group='Logo',
+        hidden=True)
+
+    # PDF logos
+    yield ConfigVariable(
+        name='logo_pdf_header',
+        default_value={
+            'display_name': 'PDF header logo',
+            'path': ''},
+        input_type='logo',
+        weight=310,
+        group='Logo',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='logo_pdf_footer',
+        default_value={
+            'display_name': 'PDF footer logo',
+            'path': ''},
+        input_type='logo',
+        weight=311,
         group='Logo',
         hidden=True)

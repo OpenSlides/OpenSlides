@@ -259,10 +259,11 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             };
         };
 
-    return {
-        createInstance: createInstance
-    };
-}])
+        return {
+            createInstance: createInstance
+        };
+    }
+])
 
 .factory('BallotContentProvider', [
     '$filter',
@@ -271,12 +272,12 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
     'Config',
     'User',
     function($filter, gettextCatalog, PDFLayout, Config, User) {
-        var createInstance = function(scope, poll, pollNumber) {
+        var createInstance = function(assignment, poll, pollNumber) {
 
             // page title
             var createTitle = function() {
                 return {
-                    text: scope.assignment.title,
+                    text: assignment.title,
                     style: 'title',
                 };
             };
@@ -477,10 +478,11 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             };
         };
 
-    return {
-        createInstance: createInstance
-    };
-}])
+        return {
+            createInstance: createInstance
+        };
+    }
+])
 
 .factory('AssignmentCatalogContentProvider', [
     'gettextCatalog',
@@ -552,9 +554,68 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             };
         };
 
-    return {
-        createInstance: createInstance
-    };
-}]);
+        return {
+            createInstance: createInstance
+        };
+    }
+])
+
+.factory('AssignmentPdfExport', [
+    'gettextCatalog',
+    'AssignmentContentProvider',
+    'AssignmentCatalogContentProvider',
+    'PdfMakeDocumentProvider',
+    'BallotContentProvider',
+    'PdfMakeBallotPaperProvider',
+    'PdfCreate',
+    function (gettextCatalog, AssignmentContentProvider, AssignmentCatalogContentProvider,
+        PdfMakeDocumentProvider, BallotContentProvider, PdfMakeBallotPaperProvider, PdfCreate) {
+        return {
+            export: function (assignments, singleAssignment) {
+                var filename = singleAssignment ?
+                    gettextCatalog.getString('Election') + '_' + assignments.title :
+                    gettextCatalog.getString('Elections');
+                filename += '.pdf';
+                if (singleAssignment) {
+                    assignments = [assignments];
+                }
+                var assignmentContentProviderArray = [];
+
+                // Convert the assignments to content providers
+                angular.forEach(assignments, function(assignment) {
+                    assignmentContentProviderArray.push(AssignmentContentProvider.createInstance(assignment));
+                });
+
+                var documentProviderPromise;
+                if (singleAssignment) {
+                    documentProviderPromise =
+                        PdfMakeDocumentProvider.createInstance(assignmentContentProviderArray[0]);
+                } else {
+                    var assignmentCatalogContentProvider =
+                        AssignmentCatalogContentProvider.createInstance(assignmentContentProviderArray);
+                    documentProviderPromise =
+                        PdfMakeDocumentProvider.createInstance(assignmentCatalogContentProvider);
+                }
+                documentProviderPromise.then(function (documentProvider) {
+                    PdfCreate.download(documentProvider.getDocument(), filename);
+                });
+            },
+            createBallotPdf: function (assignment, pollId) {
+                var thePoll;
+                var pollNumber;
+                angular.forEach(assignment.polls, function(poll, pollIndex) {
+                    if (poll.id == pollId) {
+                        thePoll = poll;
+                        pollNumber = pollIndex+1;
+                    }
+                });
+                var filename = gettextCatalog.getString('Ballot') + '_' + pollNumber + '_' + assignment.title + '.pdf';
+                var ballotContentProvider = BallotContentProvider.createInstance(assignment, thePoll, pollNumber);
+                var documentProvider = PdfMakeBallotPaperProvider.createInstance(ballotContentProvider);
+                PdfCreate.download(documentProvider.getDocument(), filename);
+            },
+        };
+    }
+]);
 
 }());

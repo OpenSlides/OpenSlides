@@ -135,27 +135,35 @@ angular.module('OpenSlidesApp.core.pdf', [])
 
 
 .factory('PdfMakeDocumentProvider', [
+    '$q',
     'Config',
     'PDFLayout',
-    function(Config, PDFLayout) {
+    'PdfImageConverter',
+    function($q, Config, PDFLayout, PdfImageConverter) {
         /**
          * Provides the global document
          * @constructor
          * @param {object} contentProvider - Object with on method `getContent`, which
          * returns an array for content
          */
+        //images shall contain the the logos as URL: base64Str, just like the converter
         var createInstance = function(contentProvider) {
+            // Logo urls
+            var logoHeaderUrl = Config.get('logo_pdf_header').value.path,
+                logoFooterUrl = Config.get('logo_pdf_footer').value.path;
+            var imageMap = {};
+
             // PDF header
             var getHeader = function() {
                 var columns = [];
 
-                // add here your custom logo (which has to be added to a custom vfs_fonts.js)
-                // see https://github.com/pdfmake/pdfmake/wiki/Custom-Fonts---client-side
-                /*
-                columns.push({
-                    image: 'logo.png',
-                    fit: [180,40]
-                });*/
+                if (logoHeaderUrl) {
+                    columns.push({
+                        image: imageMap[logoHeaderUrl],
+                        fit: [180, 40],
+                        width: '20%'
+                    });
+                }
 
                 var line1 = [
                     Config.translate(Config.get('general_event_name').value),
@@ -168,15 +176,16 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 var text = [line1, line2].join('\n');
                 columns.push({
                     text: text,
-                    fontSize:10,
-                    width: '100%'
+                    fontSize: 10,
+                    alignment: 'right',
+                    margin: [0, 10, 0, 0],
                 });
                 return {
                     color: '#555',
                     fontSize: 9,
                     margin: [75, 30, 75, 10], // [left, top, right, bottom]
                     columns: columns,
-                    columnGap: 10
+                    columnGap: 10,
                 };
             };
 
@@ -185,12 +194,26 @@ angular.module('OpenSlidesApp.core.pdf', [])
             // Used placeholder for currentPage and pageCount which
             // are replaced by dynamic footer function in pdf-worker.js.
             var getFooter = function() {
-                return {
-                    alignment: 'right',
-                    margin: [0, 15, 75, 0],
-                    fontSize: 9,
+                var columns = [];
+
+                if (logoFooterUrl) {
+                    columns.push({
+                        image: imageMap[logoFooterUrl],
+                        fit: [400,50],
+                        width: '80%'
+                    });
+                }
+                columns.push({
+                    text: '{{currentPage}} / {{pageCount}}',
                     color: '#555',
-                    text: '{{currentPage}} / {{pageCount}}'
+                    fontSize: 9,
+                    alignment: 'right',
+                    margin: [0, 15, 0, 0],
+                });
+                return {
+                    margin: [75, 0, 75, 10],
+                    columns: columns,
+                    columnGap: 10,
                 };
             };
             // Generates the document(definition) for pdfMake
@@ -295,9 +318,18 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 };
             };
 
-            return {
-                getDocument: getDocument
-            };
+            return $q(function (resolve) {
+                var imageSources = [
+                    logoHeaderUrl,
+                    logoFooterUrl
+                ];
+                PdfImageConverter.toBase64(imageSources).then(function (_imageMap) {
+                    imageMap = _imageMap;
+                    resolve({
+                        getDocument: getDocument
+                    });
+                });
+            });
         };
         return {
             createInstance: createInstance
@@ -768,7 +800,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         height *= scaleByHeight;
                                     }
                                     alreadyConverted.push({
-                                        image: BaseMap[element.getAttribute("src")],
+                                        image: images[element.getAttribute("src")],
                                         width: width,
                                         height: height
                                     });
@@ -837,7 +869,6 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     ParseHtml(content, html);
                     return content;
                 },
-                BaseMap = images,
                 /**
                  * Creates containerelements for pdfMake
                  * e.g create("text":"MyText") result in { text: "MyText" }
@@ -862,7 +893,34 @@ angular.module('OpenSlidesApp.core.pdf', [])
         return {
             createInstance: createInstance
         };
-}])
+    }
+])
+
+.factory('PdfImageConverter', [
+    '$q',
+    'PDFLayout',
+    function ($q, PDFLayout) {
+        return {
+            toBase64: function (imageSources) {
+                var imageMap = {};
+                var imagePromises = _.map(imageSources, function (imageSource) {
+                    if (imageSource) {
+                        return PDFLayout.imageURLtoBase64(imageSource).then(function (base64Str) {
+                            imageMap[imageSource] = base64Str;
+                        });
+                    }
+                });
+
+                return $q(function (resolve) {
+                    //resolve promises to get base64
+                    $q.all(imagePromises).then(function() {
+                        resolve(imageMap);
+                    });
+                });
+            }
+        };
+    }
+])
 
 .factory('PdfCreate', [
     '$timeout',

@@ -1714,6 +1714,8 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('List of speakers overlay');
         gettext('Projector logo');
         gettext('Projector header image');
+        gettext('PDF header logo');
+        gettext('PDF footer logo');
 
         // Mark the string 'Default projector' here, because it does not appear in the templates.
         gettext('Default projector');

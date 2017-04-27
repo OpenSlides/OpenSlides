@@ -9,108 +9,109 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
     'PDFLayout',
     function(gettextCatalog, PDFLayout) {
 
-    var createInstance = function(userList, groups) {
+        var createInstance = function(userList, groups) {
 
-        //use the Predefined Functions to create the title
-        var title = PDFLayout.createTitle(gettextCatalog.getString("List of participants"));
+            //use the Predefined Functions to create the title
+            var title = PDFLayout.createTitle(gettextCatalog.getString("List of participants"));
 
-        //function to generate the user list
-        var createUserList = function() {
-            var userJsonList = [];
+            //function to generate the user list
+            var createUserList = function() {
+                var userJsonList = [];
 
-            angular.forEach(userList, function (user, counter) {
+                angular.forEach(userList, function (user, counter) {
 
-                //parse for the group names
-                var userGroups = [];
-                angular.forEach(user.groups_id, function (id) {
-                    if (id) {
-                        angular.forEach(groups, function(group) {
-                            if (id == group.id) {
-                                userGroups.push(gettextCatalog.getString(group.name));
-                            }
-                        });
-                    }
+                    //parse for the group names
+                    var userGroups = [];
+                    angular.forEach(user.groups_id, function (id) {
+                        if (id) {
+                            angular.forEach(groups, function(group) {
+                                if (id == group.id) {
+                                    userGroups.push(gettextCatalog.getString(group.name));
+                                }
+                            });
+                        }
+                    });
+
+                    var userJsonObj = [
+                        {
+                            text: "" + (counter+1),
+                            style: PDFLayout.flipTableRowStyle(userJsonList.length)
+                        },
+                        {
+                            text: user.short_name,
+                            style: PDFLayout.flipTableRowStyle(userJsonList.length)
+                        },
+                        {
+                            text: user.structure_level,
+                            style: PDFLayout.flipTableRowStyle(userJsonList.length)
+                        },
+                        {
+                            text: userGroups.join(" "),
+                            style: PDFLayout.flipTableRowStyle(userJsonList.length)
+                        }
+                    ];
+                    userJsonList.push(userJsonObj);
                 });
 
-                var userJsonObj = [
-                    {
-                        text: "" + (counter+1),
-                        style: PDFLayout.flipTableRowStyle(userJsonList.length)
-                    },
-                    {
-                        text: user.short_name,
-                        style: PDFLayout.flipTableRowStyle(userJsonList.length)
-                    },
-                    {
-                        text: user.structure_level,
-                        style: PDFLayout.flipTableRowStyle(userJsonList.length)
-                    },
-                    {
-                        text: userGroups.join(" "),
-                        style: PDFLayout.flipTableRowStyle(userJsonList.length)
-                    }
+                var userTableBody = [
+                    [
+                        {
+                            text: '#',
+                            style: 'tableHeader'
+                        },
+                        {
+                            text: gettextCatalog.getString("Name"),
+                            style: 'tableHeader'
+                        },
+                        {
+                            text: gettextCatalog.getString("Structure level"),
+                            style: 'tableHeader'
+                        },
+                        {
+                            text: gettextCatalog.getString("Groups"),
+                            style: 'tableHeader'
+                        }
+                    ]
                 ];
-                userJsonList.push(userJsonObj);
-            });
+                userTableBody = userTableBody.concat((userJsonList));
 
-            var userTableBody = [
-                [
-                    {
-                        text: '#',
-                        style: 'tableHeader'
+                var userTableJsonString = {
+                    table: {
+                        widths: ['auto', '*', 'auto', 'auto'],
+                        headerRows: 1,
+                        body: userTableBody
                     },
-                    {
-                        text: gettextCatalog.getString("Name"),
-                        style: 'tableHeader'
-                    },
-                    {
-                        text: gettextCatalog.getString("Structure level"),
-                        style: 'tableHeader'
-                    },
-                    {
-                        text: gettextCatalog.getString("Groups"),
-                        style: 'tableHeader'
-                    }
-                ]
-            ];
-            userTableBody = userTableBody.concat((userJsonList));
+                    layout: 'headerLineOnly'
+                };
 
-            var userTableJsonString = {
-                table: {
-                    widths: ['auto', '*', 'auto', 'auto'],
-                    headerRows: 1,
-                    body: userTableBody
-                },
-                layout: 'headerLineOnly'
+                return userTableJsonString;
             };
 
-            return userTableJsonString;
-        };
+            var getContent = function() {
+                return [
+                    title,
+                    createUserList()
+                ];
+            };
 
-        var getContent = function() {
-            return [
-                title,
-                createUserList()
-            ];
+            return {
+                getContent: getContent
+            };
         };
 
         return {
-            getContent: getContent
+            createInstance: createInstance
         };
-    };
-
-    return {
-        createInstance: createInstance
-    };
-
-}])
+    }
+])
 
 .factory('UserAccessDataListContentProvider', [
     'gettextCatalog',
     'PDFLayout',
-    function(gettextCatalog, PDFLayout) {
+    'Config',
+    function(gettextCatalog, PDFLayout, Config) {
 
-        var createInstance = function(userList, groups, Config) {
+        var createInstance = function(userList) {
 
             var creadeUserHeadLine = function(user) {
                 var titleLine = [];
@@ -256,14 +257,17 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
 
             var getContent = function() {
                 var content = [];
-                angular.forEach(userList, function (user) {
+                angular.forEach(userList, function (user, index) {
                     content.push(creadeUserHeadLine(user));
                     content.push(createAccessDataContent(user));
                     content.push(createWelcomeText());
-                    content.push({
-                        text: '',
-                        pageBreak: 'after'
-                    });
+                    // No pagebreak after the last user
+                    if (index !== userList.length - 1) {
+                        content.push({
+                            text: '',
+                            pageBreak: 'after'
+                        });
+                    }
                 });
 
                 return [
@@ -280,5 +284,38 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
             createInstance: createInstance
         };
     }
+])
+
+.factory('UserPdfExport', [
+    'gettextCatalog',
+    'UserListContentProvider',
+    'UserAccessDataListContentProvider',
+    'PdfMakeDocumentProvider',
+    'PdfCreate',
+    function (gettextCatalog, UserListContentProvider, UserAccessDataListContentProvider, PdfMakeDocumentProvider, PdfCreate) {
+        return {
+            exportUserList: function (users) {
+                var filename = gettextCatalog.getString('List of participants') + '.pdf';
+                var userListContentProvider = UserListContentProvider.createInstance(users);
+                PdfMakeDocumentProvider.createInstance(userListContentProvider).then(
+                    function (documentProvider) {
+                        PdfCreate.download(documentProvider.getDocument(), filename);
+                    }
+                );
+            },
+            exportUserAccessDataList: function (users) {
+                var filename = gettextCatalog.getString('List of access data') + '.pdf';
+                var userAccessDataListContentProvider = UserAccessDataListContentProvider.createInstance(
+                    users);
+                PdfMakeDocumentProvider.createInstance(userAccessDataListContentProvider).then(
+                    function (documentProvider) {
+                        var noFooter = true;
+                        PdfCreate.download(documentProvider.getDocument(noFooter), filename);
+                    }
+                );
+            }
+        };
+    }
 ]);
+
 }());

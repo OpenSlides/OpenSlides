@@ -341,7 +341,7 @@
                     uib-tooltip="{{ 'The projector header should have a default size of 1024x70px. Adapt the image width if you change the projector resolution.' | translate }}">
                   <i class="fa fa-info-circle"></i>
                 </span>
-                <i class="fa fa-cog fa-lg spacer-left" ng-show="mediafile.logoHover"></i>
+                <i class="fa fa-cog fa-lg spacer-left" ng-show="mediafile.logoHover && mediafile.isUsedAsLogo()"></i>
               </span>
               <ul class="dropdown-menu" aria-labelledby="dropdownLogos{{ mediafile.id }}">
                 <li ng-repeat="logo in logos">

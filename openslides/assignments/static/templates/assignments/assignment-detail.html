@@ -21,7 +21,7 @@
         <i class="fa fa-pencil"></i>
       </a>
       <!-- pdf -->
-      <a ng-click="makePDF_singleAssignment()" target="_blank" class="btn btn-default btn-sm">
+      <a ng-click="pdfExport()" target="_blank" class="btn btn-default btn-sm">
         <i class="fa fa-file-pdf-o fa-lg"></i>
         <translate>PDF</translate>
       </a>
@@ -152,7 +152,7 @@
           <!-- angular requires to open the link in new tab with "target='_blank'".
           Otherwise the pdf url can't be open in same window; angular redirects to "/". -->
           <!-- PDF -->
-          <a ng-click="makePDF_assignmentpoll(poll.id)" target="_blank" class="btn btn-default btn-sm">
+          <a ng-click="ballotpaperExport(poll.id)" target="_blank" class="btn btn-default btn-sm">
             <i class="fa fa-file-pdf-o"></i>
             <translate>Print ballot paper</translate>
           </a>
