@@ -287,7 +287,8 @@ angular.module('OpenSlidesApp.motions.site', [
     'Workflow',
     'Agenda',
     'AgendaTree',
-    function (gettextCatalog, operator, Editor, MotionComment, Category, Config, Mediafile, MotionBlock, Tag, User, Workflow, Agenda, AgendaTree) {
+    function (gettextCatalog, operator, Editor, MotionComment, Category, Config, Mediafile, MotionBlock,
+        Tag, User, Workflow, Agenda, AgendaTree) {
         return {
             // ngDialog for motion form
             getDialog: function (motion) {
@@ -1682,6 +1683,8 @@ angular.module('OpenSlidesApp.motions.site', [
 .controller('MotionUpdateCtrl', [
     '$scope',
     '$state',
+    'operator',
+    'gettextCatalog',
     'Motion',
     'Category',
     'Config',
@@ -1692,10 +1695,12 @@ angular.module('OpenSlidesApp.motions.site', [
     'Workflow',
     'Agenda',
     'AgendaUpdate',
+    'Notify',
+    'Messaging',
     'motionId',
     'ErrorMessage',
-    function($scope, $state, Motion, Category, Config, Mediafile, MotionForm, Tag,
-        User, Workflow, Agenda, AgendaUpdate, motionId, ErrorMessage) {
+    function($scope, $state, operator, gettextCatalog, Motion, Category, Config, Mediafile, MotionForm,
+        Tag, User, Workflow, Agenda, AgendaUpdate, Notify, Messaging, motionId, ErrorMessage) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1750,7 +1755,97 @@ angular.module('OpenSlidesApp.motions.site', [
             }
         }
 
-        // save motion
+        /* Notify for displaying a warning, if other users edit this motion too */
+        var editorNames = [];
+        var messagingId = 'motionEditDialogOtherUsersWarning';
+        var addActiveEditor = function (editorName) {
+            editorNames.push(editorName);
+            updateActiveEditors();
+        };
+        var removeActiveEditor = function (editorName) {
+            var firstIndex = _.indexOf(editorNames, editorName);
+            editorNames.splice(firstIndex, 1);
+            updateActiveEditors();
+        };
+        var updateActiveEditors = function () {
+            if (editorNames.length === 0) {
+                Messaging.deleteMessage(messagingId);
+            } else {
+                // This block is only for getting the message string together...
+                var editorsWithoutAnonymous = _.filter(editorNames, function (name) {
+                    return name;
+                });
+                var text = gettextCatalog.getString('Warning') + ': ';
+                if (editorsWithoutAnonymous.length === 0) { // Only anonymous
+                    // Singular vs. plural
+                    if (editorNames.length === 1) {
+                        text += gettextCatalog.getString('One anonymous users is also editing this motion.');
+                    } else {
+                        text += editorNames.length + ' ' + gettextCatalog.getString('anonymous users are also editing this motion.');
+                    }
+                } else {
+                    // At least one named user. The max users to display is 5. Anonymous users doesn't get displayed
+                    // by name, but the amount of users is shown.
+                    text += _.slice(editorsWithoutAnonymous, 0, 5).join(', ');
+                    if (editorsWithoutAnonymous.length > 5) {
+                        // More than 5 users with names.
+                        text += ', ... [+' + (editorNames.length - 5) + ']';
+                    } else if (editorsWithoutAnonymous.length !== editorNames.length) {
+                        // Less than 5 users, so the difference is calculated different.
+                        text += ', ... [+' + (editorNames.length - editorsWithoutAnonymous.length) + ']';
+                    }
+                    // Singular vs. plural
+                    if (editorNames.length === 1) {
+                        text += ' ' + gettextCatalog.getString('is also editing this motion.');
+                    } else {
+                        text += ' ' + gettextCatalog.getString('are also editing this motion.');
+                    }
+                }
+                Messaging.createOrEditMessage(messagingId, text, 'warning');
+            }
+        };
+
+        var responseCallbackId = Notify.registerCallback('motion_dialog_open_response', function (notify) {
+            if (!notify.sendBySelf && notify.params.motionId === motionId) {
+                addActiveEditor(notify.params.name);
+            }
+        });
+        var queryCallbackId = Notify.registerCallback('motion_dialog_open_query', function (notify) {
+            if (!notify.sendBySelf && notify.params.motionId === motionId) {
+                addActiveEditor(notify.params.name);
+                if (notify.senderUserId) {
+                    Notify.notify('motion_dialog_open_response', {
+                        name: operator.user ? operator.user.short_name : '',
+                        motionId: motionId,
+                    }, [notify.senderUserId]);
+                } else {
+                    Notify.notify('motion_dialog_open_response', {
+                        name: operator.user ? operator.user.short_name : '',
+                        motionId: motionId,
+                    }, null, [notify.senderReplyChannelName]);
+                }
+            }
+        });
+        var closeCallbackId = Notify.registerCallback('motion_dialog_closed', function (notify) {
+            if (notify.params.motionId === motionId) {
+                removeActiveEditor(notify.params.name);
+            }
+        });
+
+        $scope.$on('$destroy', function () {
+            Notify.deregisterCallbacks(responseCallbackId, queryCallbackId, closeCallbackId);
+            Messaging.deleteMessage(messagingId);
+            Notify.notify('motion_dialog_closed', {
+                name: operator.user ? operator.user.short_name : '',
+                motionId: motionId
+            });
+        });
+        Notify.notify('motion_dialog_open_query', {
+            name: operator.user ? operator.user.short_name : '',
+            motionId: motionId,
+        });
+
+        // Save motion
         $scope.save = function (motion, gotoDetailView) {
             // inject the changed motion (copy) object back into DS store
             Motion.inject(motion);

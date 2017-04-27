@@ -23,6 +23,8 @@ Motions:
 - Added support for export motions in a zip archive [#3189].
 - Bugfix: changing motion line length did not invalidate cache [#3202]
 - Bugfix: Added more distance in motion PDF for DEL-tags in new lines [#3211].
+- Added warning message if an edit dialog was already opened by another
+  client [#3212].
 
 Users:
 - User without permission to see users can now see agenda item speakers,
@@ -38,6 +40,7 @@ Core:
   application [#3172].
 - Adding support for choosing image files as logos [#3184, #3207].
 - Fixing error when clearing empty chat [#3199].
+- Added notify system [#3212].
 
 General:
 - Several bugfixes and minor improvements.

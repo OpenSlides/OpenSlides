@@ -89,15 +89,26 @@ angular.module('OpenSlidesApp.core', [
                 }
             };
             socket.onmessage = function (event) {
-                _.forEach(Autoupdate.messageReceivers, function (receiver) {
-                    receiver(event.data);
-                });
+                var dataList = [];
+                try {
+                    dataList = JSON.parse(event.data);
+                    _.forEach(Autoupdate.messageReceivers, function (receiver) {
+                        receiver(dataList);
+                    });
+                } catch(err) {
+                    console.error(err);
+                }
                 // Check if the promise is not resolved yet.
                 if (Autoupdate.firstMessageDeferred.promise.$$state.status === 0) {
                     Autoupdate.firstMessageDeferred.resolve();
                 }
                 ErrorMessage.clearConnectionError();
             };
+        };
+        Autoupdate.send = function (message) {
+            if (socket) {
+                socket.send(JSON.stringify(message));
+            }
         };
         Autoupdate.closeConnection = function () {
             if (socket) {
@@ -262,38 +273,33 @@ angular.module('OpenSlidesApp.core', [
     'autoupdate',
     'dsEject',
     function (DS, autoupdate, dsEject) {
-        autoupdate.onMessage(function(json) {
-            // TODO: when MODEL.find() is called after this
-            //       a new request is fired. This could be a bug in DS
-            var dataList = [];
-            try {
-                 dataList = JSON.parse(json);
-            } catch(err) {
-                console.error(json);
-            }
-
+        // Handler for normal autoupdate messages.
+        autoupdate.onMessage(function(dataList) {
             var dataListByCollection = _.groupBy(dataList, 'collection');
-            _.forEach(dataListByCollection, function(list, key) {
+            _.forEach(dataListByCollection, function (list, key) {
                 var changedElements = [];
                 var deletedElements = [];
                 var collectionString = key;
-                _.forEach(list, function(data) {
+                _.forEach(list, function (data) {
                     // Uncomment this line for debugging to log all autoupdates:
                     // console.log("Received object: " + data.collection + ", " + data.id);
 
-                    // remove (=eject) object from local DS store
-                    var instance = DS.get(data.collection, data.id);
-                    if (instance) {
-                        dsEject(data.collection, instance);
-                    }
-                    // check if object changed or deleted
-                    if (data.action === 'changed') {
-                        changedElements.push(data.data);
-                    } else if (data.action === 'deleted') {
-                        deletedElements.push(data.id);
-                    } else {
-                        console.error('Error: Undefined action for received object' +
-                            '(' + data.collection + ', ' + data.id + ')');
+                    // Now handle autoupdate message but do not handle notify messages.
+                    if (data.collection !== 'notify') {
+                        // remove (=eject) object from local DS store
+                        var instance = DS.get(data.collection, data.id);
+                        if (instance) {
+                            dsEject(data.collection, instance);
+                        }
+                        // check if object changed or deleted
+                        if (data.action === 'changed') {
+                            changedElements.push(data.data);
+                        } else if (data.action === 'deleted') {
+                            deletedElements.push(data.id);
+                        } else {
+                            console.error('Error: Undefined action for received object' +
+                                '(' + data.collection + ', ' + data.id + ')');
+                        }
                     }
                 });
                 // add (=inject) all given objects into local DS store
@@ -307,6 +313,108 @@ angular.module('OpenSlidesApp.core', [
                 });
             });
         });
+    }
+])
+
+.factory('Notify', [
+    'autoupdate',
+    'operator',
+    function (autoupdate, operator) {
+        var anonymousTrackId;
+
+        // Handler for notify messages.
+        autoupdate.onMessage(function(dataList) {
+            var dataListByCollection = _.groupBy(dataList, 'collection');
+            _.forEach(dataListByCollection.notify, function (notifyItem) {
+                // Check, if this current user (or anonymous instance) has send this notify.
+                if (notifyItem.senderUserId) {
+                    if (operator.user) { // User send to user
+                        notifyItem.sendBySelf = (notifyItem.senderUserId === operator.user.id);
+                    } else { // User send to anonymous
+                        notifyItem.sendBySelf = false;
+                    }
+                } else {
+                    if (operator.user) { // Anonymous send to user
+                        notifyItem.sendBySelf = false;
+                    } else { // Anonymous send to anonymous
+                        notifyItem.sendBySelf = (notifyItem.anonymousTrackId === anonymousTrackId);
+                    }
+                }
+                // notify registered receivers.
+                _.forEach(callbackReceivers[notifyItem.name], function (item) {
+                    item.fn(notifyItem);
+                });
+            });
+        });
+
+        var callbackReceivers = {};
+        /* Structure of callbackReceivers:
+         * event_name_one: [ {id:0, fn:fn}, {id:3, fn:fn} ],
+         * event_name_two: [ {id:2, fn:fn} ],
+         * */
+        var idCounter = 0;
+        var eventNameRegex = new RegExp('^[a-zA-Z_-]+$');
+        var externIdRegex = new RegExp('^[a-zA-Z_-]+\/[0-9]+$');
+        return {
+            registerCallback: function (eventName, fn) {
+                if (!eventNameRegex.test(eventName)) {
+                    throw 'eventName should only consist of [a-zA-z_-]';
+                } else if (typeof fn === 'function') {
+                    var id = idCounter++;
+
+                    if (!callbackReceivers[eventName]) {
+                        callbackReceivers[eventName] = [];
+                    }
+                    callbackReceivers[eventName].push({
+                        id: id,
+                        fn: fn,
+                    });
+                    return eventName + '/' + id;
+                } else {
+                    throw 'fn should be a function.';
+                }
+            },
+            deregisterCallback: function (externId) {
+                if (externIdRegex.test(externId)){
+                    var split = externId.split('/');
+                    var eventName = split[0];
+                    var id = parseInt(split[1]);
+                    callbackReceivers[eventName] = _.filter(callbackReceivers[eventName], function (item) {
+                        return item.id !== id;
+                    });
+                } else {
+                    throw externId + ' is not a valid id';
+                }
+            },
+            // variable length of parameters, just pass ids.
+            deregisterCallbacks: function () {
+                _.forEach(arguments, this.deregisterCallback);
+            },
+            notify: function(eventName, params, users, channels) {
+                if (eventNameRegex.test(eventName)) {
+                    if (!params || typeof params !== 'object') {
+                        params = {};
+                    }
+
+                    var notifyItem = {
+                        collection: 'notify',
+                        name: eventName,
+                        params: params,
+                        users: users,
+                        replyChannels: channels,
+                    };
+                    if (!operator.user) {
+                        if (!anonymousTrackId) {
+                            anonymousTrackId = Math.floor(Math.random()*1000000);
+                        }
+                        notifyItem.anonymousTrackId = anonymousTrackId;
+                    }
+                    autoupdate.send([notifyItem]);
+                } else {
+                    throw 'eventName should only consist of [a-zA-z_-]';
+                }
+            },
+        };
     }
 ])
 
@@ -1200,7 +1308,8 @@ angular.module('OpenSlidesApp.core', [
     'Projector',
     'ProjectionDefault',
     'Tag',
-    function (ChatMessage, Config, Countdown, ProjectorMessage, Projector, ProjectionDefault, Tag) {}
+    'Notify', // For setting up the autoupdate callback
+    function (ChatMessage, Config, Countdown, ProjectorMessage, Projector, ProjectionDefault, Tag, Notify) {}
 ]);
 
 }());
