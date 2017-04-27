@@ -506,8 +506,11 @@ def get_model_from_collection_string(collection_string):
                 pass
             else:
                 _models_to_collection_string[get_collection_string()] = model
-
-    return _models_to_collection_string[collection_string]
+    try:
+        model = _models_to_collection_string[collection_string]
+    except KeyError:
+        raise ValueError('Invalid message. A valid collection_string is missing.')
+    return model
 
 
 def get_single_element_cache_key(collection_string, id):
