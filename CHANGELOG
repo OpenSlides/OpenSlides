@@ -44,10 +44,8 @@ Core:
 - Added notify system [#3212].
 
 General:
+- Switched from npm to Yarn [#3188].
 - Several bugfixes and minor improvements.
-
-Other:
-- Switched from npm to Yarn.
 
 
 Version 2.1.1 (2017-04-05)

@@ -15,9 +15,9 @@
     "gulp-if": "^2.0.2",
     "gulp-inject-string": "^1.1.0",
     "gulp-jshint": "^2.0.4",
-    "gulp-sourcemaps": "^2.5.0",
+    "gulp-sourcemaps": "^2.6.0",
     "gulp-uglify": "^2.1.2",
-    "jasmine-core": "^2.5.2",
+    "jasmine-core": "^2.6.1",
     "jshint": "^2.9.4",
     "karma": "^1.5.0",
     "karma-chrome-launcher": "^2.0.0",
@@ -26,6 +26,6 @@
     "main-bower-files": "^2.13.1",
     "sprintf-js": "^1.0.3",
     "through2": "^2.0.3",
-    "yargs": "^7.0.2"
+    "yargs": "^7.1.0"
   }
 }
