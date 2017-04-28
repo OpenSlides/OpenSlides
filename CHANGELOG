@@ -46,6 +46,9 @@ Core:
 General:
 - Several bugfixes and minor improvements.
 
+Other:
+- Switched from npm to Yarn.
+
 
 Version 2.1.1 (2017-04-05)
 ==========================

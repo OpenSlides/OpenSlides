@@ -16,13 +16,17 @@ a. Check requirements
 '''''''''''''''''''''
 
 Make sure that you have installed `Python (>= 3.4) <https://www.python.org/>`_,
-`Node.js (>=4.x) <https://nodejs.org/>`_, `npm - Node Package Manager (>=3.x)
-<https://npmjs.org/>`_ and `Git <http://git-scm.com/>`_ on your system. You also
-need build-essential packages and header files and a static library for Python.
+`Node.js (>=4.x) <https://nodejs.org/>`_, `Yarn <https://yarnpkg.com/>`_ and
+`Git <http://git-scm.com/>`_ on your system. You also need build-essential
+packages and header files and a static library for Python.
 
-For Ubuntu 16.04 e. g. run::
+For Ubuntu 16.04 e. g. follow `Yarn installation instructions
+<https://yarnpkg.com/en/docs/install>`_ and run::
 
     $ sudo apt-get install git nodejs nodejs-legacy npm build-essential python3-dev
+
+*Note: For Ubuntu 14.04 you have to update Node.js before. The distribution
+version is 0.10.25 which is not sufficient.*
 
 
 b. Get OpenSlides source code
@@ -49,9 +53,9 @@ Install all required Python packages::
 
     $ pip install --requirement requirements.txt
 
-Install all NPM and Bower packages and run several JavaScript build tasks::
+Install all Node.js and Bower packages and run several JavaScript build tasks::
 
-    $ npm install
+    $ yarn
 
 Optional: To enhance performance run Gulp in production mode::
 
