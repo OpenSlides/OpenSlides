@@ -45,6 +45,7 @@ Core:
 
 General:
 - Several bugfixes and minor improvements.
+- Bugfixes for PDF creation [#3227]
 
 
 Version 2.1.1 (2017-04-05)
