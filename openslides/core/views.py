@@ -723,6 +723,9 @@ class ChatMessageViewSet(ModelViewSet):
         method so that the request.user can be saved into the model field.
         """
         serializer.save(user=self.request.user)
+        # Send chatter via autoupdate because users without permission
+        # to see users may not have it but can get it now.
+        inform_changed_data([self.request.user])
 
     @list_route(methods=['post'])
     def clear(self, request):

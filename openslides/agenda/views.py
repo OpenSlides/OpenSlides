@@ -103,6 +103,10 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                 raise ValidationError({'detail': str(e)})
             message = _('User %s was successfully added to the list of speakers.') % user
 
+            # Send new speaker via autoupdate because users without permission
+            # to see users may not have it but can get it now.
+            inform_changed_data([user])
+
         else:
             # request.method == 'DELETE'
             speaker_ids = request.data.get('speaker')

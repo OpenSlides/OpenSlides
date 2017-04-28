@@ -1,8 +1,8 @@
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
-from openslides.poll.serializers import default_votes_validator
-from openslides.utils.rest_api import (
+from ..poll.serializers import default_votes_validator
+from ..utils.rest_api import (
     CharField,
     DictField,
     Field,
@@ -12,8 +12,7 @@ from openslides.utils.rest_api import (
     SerializerMethodField,
     ValidationError,
 )
-from openslides.utils.validate import validate_html
-
+from ..utils.validate import validate_html
 from .models import (
     Category,
     Motion,

@@ -17,9 +17,10 @@ class MotionViewSetCreate(TestCase):
         self.view_instance.get_serializer = get_serializer_mock = MagicMock()
         get_serializer_mock.return_value = self.mock_serializer = MagicMock()
 
+    @patch('openslides.motions.views.inform_changed_data')
     @patch('openslides.motions.views.has_perm')
     @patch('openslides.motions.views.config')
-    def test_simple_create(self, mock_config, mock_has_perm):
+    def test_simple_create(self, mock_config, mock_has_perm, mock_icd):
         self.request.user = 1
         mock_has_perm.return_value = True
 
@@ -41,9 +42,10 @@ class MotionViewSetUpdate(TestCase):
         self.view_instance.get_serializer = get_serializer_mock = MagicMock()
         get_serializer_mock.return_value = self.mock_serializer = MagicMock()
 
+    @patch('openslides.motions.views.inform_changed_data')
     @patch('openslides.motions.views.has_perm')
     @patch('openslides.motions.views.config')
-    def test_simple_update(self, mock_config, mock_has_perm):
+    def test_simple_update(self, mock_config, mock_has_perm, mock_icd):
         self.request.user = 1
         self.request.data.get.return_value = versioning_mock = MagicMock()
         mock_has_perm.return_value = True
