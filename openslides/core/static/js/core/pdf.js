@@ -477,6 +477,37 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             return currentParagraph;
                         },
                         /**
+                         * Returns the color in a hex format (e.g. #12ff00).
+                         * Tries to convert the rgb form into this.
+                         * @function
+                         * @param {string} color
+                         */
+                        parseColor = function (color) {
+                            var hexRegex = new RegExp('^#([0-9a-f]{3}|[0-9a-f]{6})$');
+                            // e.g. #fff or #ff0048
+                            var rgbRegex = new RegExp('^rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)$');
+                            // e.g. rgb(0,255,34) or rgb(22, 0, 0)
+
+                            if (hexRegex.test(color)) {
+                                return color;
+                            } else if(rgbRegex.test(color)) {
+                                var decimalColors = rgbRegex.exec(color).slice(1);
+                                for (var i = 0; i < 3; i++) {
+                                    var decimalValue = parseInt(decimalColors[i]);
+                                    if (decimalValue > 255) {
+                                        decimalValue = 255;
+                                    }
+                                    var hexString = '0' + decimalValue.toString(16);
+                                    hexString = hexString.slice(-2);
+                                    decimalColors[i] = hexString;
+                                }
+                                return '#' + decimalColors.join('');
+                            } else {
+                                console.err('Could not parse color "' + color + '"');
+                                return color;
+                            }
+                        },
+                        /**
                          * Extracts the style from an object
                          * @function
                          * @param {object} o       - the current object
@@ -529,7 +560,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                             }
                                             break;
                                         case "color":
-                                            o.color = value;
+                                            o.color = parseColor(value);
                                             break;
                                         case "background-color":
                                             o.background = value;
@@ -724,8 +755,12 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         break;
                                     } else {
                                         currentParagraph = create("text");
+                                        if (lineNumberMode == "none") {
+                                            currentParagraph.margin = [0, 0, 0, 0];
+                                        } else {
+                                            currentParagraph.margin = [20, 0, 0, 0];
+                                        }
                                         currentParagraph.lineHeight = 1.25;
-                                        currentParagraph.margin = [20, 0, 0, 0];
                                         alreadyConverted.push(currentParagraph);
                                     }
                                     break;
