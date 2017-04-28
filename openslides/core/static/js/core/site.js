@@ -581,6 +581,122 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+/* This Factory could be used in any dialog, if the user should be warned, if another user
+ * also has this dialog open. Use it like in this example in any dialog controller:
+      var dialogClosedCallback = DialogEditingWarning.dialogOpened('dialog_name' + item.id);
+      $scope.$on('$destroy', dialogClosedCallback);
+ */
+.factory('DialogEditingWarning', [
+    'operator',
+    'gettextCatalog',
+    'Notify',
+    'Messaging',
+    function (operator, gettextCatalog, Notify, Messaging) {
+        return {
+            // This returns the callback function that the controller should call, if
+            // the dialog got closed by the user. Provide a unique dialog name.
+            dialogOpened: function (dialogName) {
+                // List of active editors
+                var editorNames = [];
+                var messagingId = dialogName + 'EditingWarning';
+                // Add an editor (may come from open_request or open_response)
+                var addActiveEditor = function (editorName) {
+                    editorNames.push(editorName);
+                    updateActiveEditors();
+                };
+                // Remove an editor, if he closes his dialog (dialog_closed)
+                var removeActiveEditor = function (editorName) {
+                    var firstIndex = _.indexOf(editorNames, editorName);
+                    editorNames.splice(firstIndex, 1);
+                    updateActiveEditors();
+                };
+                // Show a warning.
+                var updateActiveEditors = function () {
+                    if (editorNames.length === 0) {
+                        Messaging.deleteMessage(messagingId);
+                    } else {
+                        // This block is only for getting the message string together...
+                        var editorsWithoutAnonymous = _.filter(editorNames, function (name) {
+                            return name;
+                        });
+                        var text = gettextCatalog.getString('Warning') + ': ';
+                        if (editorsWithoutAnonymous.length === 0) { // Only anonymous
+                            // Singular vs. plural
+                            if (editorNames.length === 1) {
+                                text += gettextCatalog.getString('One anonymous users is also editing this.');
+                            } else {
+                                text += editorNames.length + ' ' + gettextCatalog.getString('anonymous users are also editing this.');
+                            }
+                        } else {
+                            // At least one named user. The max users to display is 5. Anonymous users doesn't get displayed
+                            // by name, but the amount of users is shown.
+                            text += _.slice(editorsWithoutAnonymous, 0, 5).join(', ');
+                            if (editorsWithoutAnonymous.length > 5) {
+                                // More than 5 users with names.
+                                text += ', ... [+' + (editorNames.length - 5) + ']';
+                            } else if (editorsWithoutAnonymous.length !== editorNames.length) {
+                                // Less than 5 users, so the difference is calculated different.
+                                text += ', ... [+' + (editorNames.length - editorsWithoutAnonymous.length) + ']';
+                            }
+                            // Singular vs. plural
+                            if (editorNames.length === 1) {
+                                text += ' ' + gettextCatalog.getString('is also editing this.');
+                            } else {
+                                text += ' ' + gettextCatalog.getString('are also editing this.');
+                            }
+                        }
+                        Messaging.createOrEditMessage(messagingId, text, 'warning');
+                    }
+                };
+
+                // The stucture of determinating which users are editing this dialog:
+                // - send an open_query to every user with the name of this operator in the parameter. With
+                //   this information all clients that listen to this request knows that this operator has
+                //   opened the dialog.
+                // - The clients, which have recieved the query send an answer (open_resonse) to this operator.
+                // - The operator collects all resonses and fills the editornames list.
+                // - If the dialog get closed, a dialog_closed is send. All recieven clients remove this
+                //   operato from their editorNames list.
+                var responseCallbackId = Notify.registerCallback(dialogName + '_open_response', function (notify) {
+                    if (!notify.sendBySelf) {
+                        addActiveEditor(notify.params.name);
+                    }
+                });
+                var queryCallbackId = Notify.registerCallback(dialogName + '_open_query', function (notify) {
+                    if (!notify.sendBySelf) {
+                        addActiveEditor(notify.params.name);
+                        if (notify.senderUserId) {
+                            Notify.notify(dialogName + '_open_response', {
+                                name: operator.user ? operator.user.short_name : '',
+                            }, [notify.senderUserId]);
+                        } else {
+                            Notify.notify(dialogName + '_open_response', {
+                                name: operator.user ? operator.user.short_name : '',
+                            }, null, [notify.senderReplyChannelName]);
+                        }
+                    }
+                });
+                var closeCallbackId = Notify.registerCallback(dialogName + '_dialog_closed', function (notify) {
+                    removeActiveEditor(notify.params.name);
+                });
+                // Send here the open_query to get the notify-chain started.
+                Notify.notify(dialogName + '_open_query', {
+                    name: operator.user ? operator.user.short_name : '',
+                });
+                // The function returned is to deregister the callbacks and send the dialog_closed notify, if
+                // the dialog get closed.
+                return function () {
+                    Notify.deregisterCallbacks(responseCallbackId, queryCallbackId, closeCallbackId);
+                    Messaging.deleteMessage(messagingId);
+                    Notify.notify(dialogName + '_dialog_closed', {
+                        name: operator.user ? operator.user.short_name : '',
+                    });
+                };
+            },
+        };
+    }
+])
+
 /*
  * This filter filters all items in an array. If the filterArray is empty, the
  * array is passed. The filterArray contains numbers of the multiselect, e. g. [1, 3, 4].
