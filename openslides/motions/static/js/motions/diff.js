@@ -32,6 +32,18 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             return context;
         };
 
+        this._isFirstNonemptyChild = function(node, child) {
+            for (var i = 0; i < node.childNodes.length; i++) {
+                if (node.childNodes[i] === child) {
+                    return true;
+                }
+                if (node.childNodes[i].nodeType !== TEXT_NODE || node.childNodes[i].nodeValue.match(/\S/)) {
+                    return false;
+                }
+            }
+            return false;
+        };
+
         // Adds elements like <OS-LINEBREAK class="os-line-number line-number-23" data-line-number="23"/>
         this._insertInternalLineMarkers = function(fragment) {
             if (fragment.querySelectorAll('OS-LINEBREAK').length > 0) {
@@ -43,7 +55,8 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
             for (var i = 0; i < lineNumbers.length; i++) {
                 var insertBefore = lineNumbers[i];
-                while (insertBefore.parentNode.nodeType != DOCUMENT_FRAGMENT_NODE && insertBefore.parentNode.childNodes[0] == insertBefore) {
+                while (insertBefore.parentNode.nodeType !== DOCUMENT_FRAGMENT_NODE &&
+                       this._isFirstNonemptyChild(insertBefore.parentNode, insertBefore)) {
                     insertBefore = insertBefore.parentNode;
                 }
                 lineMarker = document.createElement('OS-LINEBREAK');
@@ -384,10 +397,10 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
             var found = false;
             for (var i = 0; i < fromChildTraceRel.length && !found; i++) {
-                if (fromChildTraceRel[i].nodeName == 'OS-LINEBREAK') {
+                if (fromChildTraceRel[i].nodeName === 'OS-LINEBREAK') {
                     found = true;
                 } else {
-                    if (fromChildTraceRel[i].nodeName == 'OL') {
+                    if (fromChildTraceRel[i].nodeName === 'OL') {
                         fakeOl = fromChildTraceRel[i].cloneNode(false);
                         fakeOl.setAttribute('start', this._isWithinNthLIOfOL(fromChildTraceRel[i], fromLineNode));
                         innerContextStart += this._serializeTag(fakeOl);
@@ -398,7 +411,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             }
             found = false;
             for (i = 0; i < toChildTraceRel.length && !found; i++) {
-                if (toChildTraceRel[i].nodeName == 'OS-LINEBREAK') {
+                if (toChildTraceRel[i].nodeName === 'OS-LINEBREAK') {
                     found = true;
                 } else {
                     innerContextEnd = '</' + toChildTraceRel[i].nodeName + '>' + innerContextEnd;
@@ -407,11 +420,11 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
             found = false;
             for (i = 0; i < ancestor.childNodes.length; i++) {
-                if (ancestor.childNodes[i] == fromChildTraceRel[0]) {
+                if (ancestor.childNodes[i] === fromChildTraceRel[0]) {
                     found = true;
                     fromChildTraceRel.shift();
                     htmlOut += this._serializePartialDomFromChild(ancestor.childNodes[i], fromChildTraceRel, true);
-                } else if (ancestor.childNodes[i] == toChildTraceRel[0]) {
+                } else if (ancestor.childNodes[i] === toChildTraceRel[0]) {
                     found = false;
                     toChildTraceRel.shift();
                     htmlOut += this._serializePartialDomToChild(ancestor.childNodes[i], toChildTraceRel, true);
@@ -422,7 +435,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
             currNode = ancestor;
             while (currNode.parentNode) {
-                if (currNode.nodeName == 'OL') {
+                if (currNode.nodeName === 'OL') {
                     fakeOl = currNode.cloneNode(false);
                     fakeOl.setAttribute('start', this._isWithinNthLIOfOL(currNode, fromLineNode));
                     outerContextStart = this._serializeTag(fakeOl) + outerContextStart;

@@ -144,6 +144,14 @@ describe('linenumbering', function () {
       expect(diff.followingHtmlStartSnippet).toBe('<UL class="ul-class"><LI class="li-class"><UL>');
     });
 
+    it('extracts a single line right before a UL/LI', function () {
+      // Test case for https://github.com/OpenSlides/OpenSlides/issues/3226
+      var html = "<p>A line</p><p>Another line</p>\n<ul>\t<li>A list item</li>\t<li>Yet another item</li></ul>";
+      html = lineNumberingService.insertLineNumbers(html, 80);
+      var diff = diffService.extractRangeByLineNumbers(html, 2, 3, true);
+      expect(diff.html).toBe("<P>Another line</P>\n");
+    });
+
     it('extracts lines from a more complex example', function () {
       var diff = diffService.extractRangeByLineNumbers(baseHtml2, 6, 11);
 
@@ -172,7 +180,7 @@ describe('linenumbering', function () {
     });
 
     it('preserves the numbering of OLs (1)', function () {
-      var diff = diffService.extractRangeByLineNumbers(baseHtml3, 5, 7, true);
+      var diff = diffService.extractRangeByLineNumbers(baseHtml3, 5, 7);
 
       expect(diff.html).toBe('<LI>Line 3.3</LI></OL></LI><LI> Line 4</LI></OL>');
       expect(diff.ancestor.nodeName).toBe('#document-fragment');
@@ -182,7 +190,7 @@ describe('linenumbering', function () {
     });
 
     it('preserves the numbering of OLs (2)', function () {
-      var diff = diffService.extractRangeByLineNumbers(baseHtml3, 3, 5, true);
+      var diff = diffService.extractRangeByLineNumbers(baseHtml3, 3, 5);
 
       expect(diff.html).toBe('<LI><OL><LI>Line 3.1</LI><LI>Line 3.2</LI>');
       expect(diff.ancestor.nodeName).toBe('OL');
@@ -192,7 +200,7 @@ describe('linenumbering', function () {
 
     it('escapes text resembling HTML-Tags', function () {
         var inHtml = '<h2>' + noMarkup(1) + 'Looks like a &lt;p&gt; tag &lt;/p&gt;</h2><p>' + noMarkup(2) + 'Another line</p>';
-        var diff = diffService.extractRangeByLineNumbers(inHtml, 1, 2, true);
+        var diff = diffService.extractRangeByLineNumbers(inHtml, 1, 2);
         expect(diff.html).toBe('<H2>Looks like a &lt;p&gt; tag &lt;/p&gt;</H2>');
     });
   });
