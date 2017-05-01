@@ -3,7 +3,7 @@ from copy import deepcopy
 from ..core.config import config
 from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import has_perm
-from ..utils.collection import CollectionElement
+from ..utils.collection import Collection, CollectionElement
 
 
 class MotionAccessPermissions(BaseAccessPermissions):
@@ -24,51 +24,77 @@ class MotionAccessPermissions(BaseAccessPermissions):
 
         return MotionSerializer
 
-    def get_restricted_data(self, full_data, user):
+    def get_restricted_data(self, container, user):
         """
         Returns the restricted serialized data for the instance prepared for
         the user. Removes motion if the user has not the permission to see
         the motion in this state. Removes non public comment fields for
-        some unauthorized users.
+        some unauthorized users. Ensures that a user can only see his own
+        personal notes.
         """
-        many_items = not isinstance(full_data, dict)
-        full_data_list = full_data if many_items else [full_data]
-        out = []
-        for full_data in full_data_list:
-            if isinstance(user, CollectionElement):
-                is_submitter = user.get_full_data()['id'] in full_data.get('submitters_id', [])
-            else:
-                # Anonymous users can not be submitters
-                is_submitter = False
+        # Expand full_data to a list if it is not one.
+        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
 
-            required_permission_to_see = full_data['state_required_permission_to_see']
-            data = None
-            if has_perm(user, 'motions.can_see'):
-                if (not required_permission_to_see or
-                        has_perm(user, required_permission_to_see) or
-                        has_perm(user, 'motions.can_manage') or
-                        is_submitter):
-                    if has_perm(user, 'motions.can_see_and_manage_comments') or not full_data.get('comments'):
-                        data = full_data
+        # Parse data.
+        if has_perm(user, 'motions.can_see'):
+            # TODO: Refactor this after personal_notes system is refactored.
+            data = []
+            for full in full_data:
+                # Check if user is submitter of this motion.
+                if isinstance(user, CollectionElement):
+                    is_submitter = user.get_full_data()['id'] in full.get('submitters_id', [])
+                else:
+                    # Anonymous users can not be submitters.
+                    is_submitter = False
+
+                # Check see permission for this motion.
+                required_permission_to_see = full['state_required_permission_to_see']
+                permission = (
+                    not required_permission_to_see or
+                    has_perm(user, required_permission_to_see) or
+                    has_perm(user, 'motions.can_manage') or
+                    is_submitter)
+
+                # Parse single motion.
+                if permission:
+                    if has_perm(user, 'motions.can_see_and_manage_comments') or not full.get('comments'):
+                        # Provide access to all fields.
+                        motion = full
                     else:
-                        data = deepcopy(full_data)
+                        # Set private comment fields to None.
+                        full_copy = deepcopy(full)
                         for i, field in enumerate(config['motions_comments']):
                             if not field.get('public'):
                                 try:
-                                    data['comments'][i] = None
+                                    full_copy['comments'][i] = None
                                 except IndexError:
                                     # No data in range. Just do nothing.
                                     pass
+                        motion = full_copy
+
                     # Now filter personal notes.
-                    data = data.copy()
-                    data['personal_notes'] = []
+                    motion = motion.copy()
+                    motion['personal_notes'] = []
                     if user is not None:
-                        for personal_note in full_data.get('personal_notes', []):
+                        for personal_note in full.get('personal_notes', []):
                             if personal_note.get('user_id') == user.id:
-                                data['personal_notes'].append(personal_note)
+                                motion['personal_notes'].append(personal_note)
                                 break
-            out.append(data)
-        return out if many_items else out[0]
+
+                    data.append(motion)
+        else:
+            data = []
+
+        # Reduce result to a single item or None if it was not a collection at
+        # the beginning of the method.
+        if isinstance(container, Collection):
+            restricted_data = data
+        elif data:
+            restricted_data = data[0]
+        else:
+            restricted_data = None
+
+        return restricted_data
 
     def get_projector_data(self, full_data):
         """

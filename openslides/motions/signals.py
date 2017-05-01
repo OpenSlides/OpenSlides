@@ -118,15 +118,16 @@ def get_permission_change_data(sender, permissions, **kwargs):
             yield from motions_app.get_startup_elements()
 
 
-def is_user_data_required(sender, request_user, user_data, **kwargs):
+def is_user_data_required(sender, request_user, **kwargs):
     """
-    If request_user can see motions, then returns all user ids that are
-    displayed as submitter or supporter. Else, it returns an empty set.
+    Returns all user ids that are displayed as as submitter or supporter in
+    any motion if request_user can see motions. This function may return an
+    empty set.
     """
-    user_ids = set()
+    submitters_supporters = set()
     if has_perm(request_user, 'motions.can_see'):
         for motion_collection_element in Collection(Motion.get_collection_string()).element_generator():
             full_data = motion_collection_element.get_full_data()
-            user_ids.update(full_data['submitters_id'])
-            user_ids.update(full_data['supporters_id'])
-    return user_ids
+            submitters_supporters.update(full_data['submitters_id'])
+            submitters_supporters.update(full_data['supporters_id'])
+    return submitters_supporters

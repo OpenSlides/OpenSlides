@@ -54,10 +54,11 @@ def get_permission_change_data(sender, permissions, **kwargs):
             break
 
 
-def is_user_data_required(sender, request_user, user_data, **kwargs):
+def is_user_data_required(sender, request_user, **kwargs):
     """
-    If request_user can see the agenda, then returns all user ids that are
-    speakers in some agenda items. Else, it returns an empty set.
+    Returns all user ids that are displayed as speakers in any agenda item
+    if request_user can see the agenda. This function may return an empty
+    set.
     """
     speakers = set()
     if has_perm(request_user, 'agenda.can_see'):

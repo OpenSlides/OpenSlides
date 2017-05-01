@@ -187,16 +187,15 @@ class DjangoCacheWebsocketUserCache(BaseWebsocketUserCache):
 
 class StartupCache:
     """
-    Cache of all data that are needed when a clients connects via websocket.
+    Cache of all data that are required when a client connects via websocket.
     """
-
-    cache_key = "full_data_cache"
+    cache_key = "full_data_startup_cache"
 
     def build(self):
         """
-        Generate the cache by going though all apps.
-        Returns a dict where the key is the collection string and the value a
-        list of the full_data from the collection_elements.
+        Generate the cache by going through all apps. Returns a dict where the
+        key is the collection string and the value a list of the full_data from
+        the collection elements.
         """
         cache_data = {}
         for app in apps.get_app_configs():
@@ -205,7 +204,7 @@ class StartupCache:
                 # This method has to return an iterable of Collection objects.
                 get_startup_elements = app.get_startup_elements
             except AttributeError:
-                # Skip apps that do not implement get_startup_elements
+                # Skip apps that do not implement get_startup_elements.
                 continue
 
             for collection in get_startup_elements():
@@ -223,25 +222,23 @@ class StartupCache:
         """
         cache.delete(self.cache_key)
 
-    def get_collection_elements(self):
+    def get_collections(self):
         """
-        Returns a dict of all collection_elements, that are needed at startup.
+        Generator that returns all cached Collections.
 
-        The key is the collection_string and the value a list of CollectionElement
-        objects. Each list has at least one value.
-
-        The data is read from the cache if it exists. It builds the cache, if it
+        The data is read from the cache if it exists. It builds the cache if it
         does not exists.
         """
+        from .collection import Collection
         data = cache.get(self.cache_key)
         if data is None:
             # The cache does not exist.
             data = self.build()
+        for collection_string, full_data in data.items():
+            yield Collection(collection_string, full_data)
 
-        return data
 
-
-start_up_cache = StartupCache()
+startup_cache = StartupCache()
 
 
 def use_redis_cache():

@@ -12,14 +12,8 @@ from django.db import transaction
 from ..core.config import config
 from ..core.models import Projector
 from .auth import has_perm, user_to_collection_user
-from .cache import start_up_cache, websocket_user_cache
-from .collection import (
-    Collection,
-    CollectionElement,
-    CollectionElementList,
-    format_for_autoupdate,
-    get_model_from_collection_string,
-)
+from .cache import startup_cache, websocket_user_cache
+from .collection import Collection, CollectionElement, CollectionElementList
 
 
 def send_or_wait(send_func, *args, **kwargs):
@@ -47,6 +41,28 @@ def send_or_wait(send_func, *args, **kwargs):
         )
 
 
+def format_for_autoupdate(collection_string, id, action, data=None):
+    """
+    Returns a dict that can be used for autoupdate.
+    """
+    if not data:
+        # If the data is None or is empty, then the action has to be deleted,
+        # even when it says diffrently. This can happen when the object is not
+        # deleted, but the user has no permission to see it.
+        action = 'deleted'
+
+    output = {
+        'collection': collection_string,
+        'id': id,
+        'action': action,
+    }
+
+    if action != 'deleted':
+        output['data'] = data
+
+    return output
+
+
 @channel_session_user_from_http
 def ws_add_site(message):
     """
@@ -65,32 +81,31 @@ def ws_add_site(message):
     send_or_wait(message.reply_channel.send, {'accept': True})
 
     # Collect all elements that shoud be send to the client when the websocket
-    # connection is established
+    # connection is established.
     user = user_to_collection_user(message.user.id)
     output = []
-    for collection_string, full_data in start_up_cache.get_collection_elements().items():
-        access_permission = get_model_from_collection_string(collection_string).get_access_permissions()
-        if collection_string == 'core/config':
+    for collection in startup_cache.get_collections():
+        access_permissions = collection.get_access_permissions()
+        restricted_data = access_permissions.get_restricted_data(collection, user)
+
+        if collection.collection_string == 'core/config':
             id_key = 'key'
         else:
             id_key = 'id'
 
-        restricted_data = access_permission.get_restricted_data(full_data, user)
-        if restricted_data is None:
-            continue
-
         for data in restricted_data:
             if data is None:
+                # We do not want to send 'deleted' objects on startup.
+                # That's why we skip such data.
                 continue
-
             output.append(
                 format_for_autoupdate(
-                    collection_string=collection_string,
+                    collection_string=collection.collection_string,
                     id=data[id_key],
                     action='changed',
                     data=data))
 
-    # Send all data. If there is no data, then only accept the connection
+    # Send all data.
     if output:
         send_or_wait(message.reply_channel.send, {'text': json.dumps(output)})
 
@@ -354,10 +369,13 @@ def send_autoupdate(collection_elements):
     Helper function, that sends collection_elements through a channel to the
     autoupdate system.
 
+    Before sending the startup_cache is cleared because it is possibly out of
+    date.
+
     Does nothing if collection_elements is empty.
     """
     if collection_elements:
-        start_up_cache.clear()
+        startup_cache.clear()
         send_or_wait(
             Channel('autoupdate.send_data').send,
             collection_elements.as_channels_message())
