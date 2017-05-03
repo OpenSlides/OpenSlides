@@ -1,5 +1,6 @@
 from django.dispatch import Signal
 
+from .collection import Collection
 from .dispatch import SignalConnectMetaClass
 
 
@@ -56,14 +57,17 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
         """
         return self.get_serializer_class(user=None)(instance).data
 
-    def get_restricted_data(self, full_data, user):
+    def get_restricted_data(self, container, user):
         """
         Returns the restricted serialized data for the instance prepared
         for the user.
 
-        Returns None if the user has no read access. Returns reduced data
-        if the user has limited access. Default: Returns full data if the
-        user has read access to model instances.
+        The argument container should be a CollectionElement or a
+        Collection. The type of the return value is a dictionary or a list
+        according to the given type (or None). Returns None or an empty
+        list if the user has no read access. Returns reduced data if the
+        user has limited access. Default: Returns full data if the user has
+        read access to model instances.
 
         Hint: You should override this method if your get_serializer_class()
         method returns different serializers for different users or if you
@@ -71,7 +75,9 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
         retrieve() or list().
         """
         if self.check_permissions(user):
-            data = full_data
+            data = container.get_full_data()
+        elif isinstance(container, Collection):
+            data = []
         else:
             data = None
         return data

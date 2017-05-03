@@ -42,6 +42,8 @@ Core:
   pdf [#3184, #3207, #3208].
 - Fixing error when clearing empty chat [#3199].
 - Added notify system [#3212].
+- Enhanced performance esp. for server restart and first connection of all
+  clients by refactorting autoupdate, Collection and AccessPermission [#3223].
 
 General:
 - Switched from npm to Yarn [#3188].

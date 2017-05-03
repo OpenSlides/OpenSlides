@@ -128,7 +128,7 @@ class TestCollectionElement(TestCase):
              'id': 42,
              'action': 'changed',
              'data': 'restricted_data'})
-        collection_element.get_full_data.assert_called_once_with()
+        collection_element.get_full_data.assert_not_called()
 
     def test_as_autoupdate_for_user_no_permission(self):
         with patch.object(collection.CollectionElement, 'get_full_data'):
@@ -143,7 +143,7 @@ class TestCollectionElement(TestCase):
             {'collection': 'testmodule/model',
              'id': 42,
              'action': 'deleted'})
-        collection_element.get_full_data.assert_called_once_with()
+        collection_element.get_full_data.assert_not_called()
 
     def test_as_autoupdate_for_user_deleted(self):
         collection_element = collection.CollectionElement.from_values('testmodule/model', 42, deleted=True)

@@ -52,16 +52,14 @@ def get_permission_change_data(sender, permissions, **kwargs):
                 yield Collection(core_app.get_model('ChatMessage').get_collection_string())
 
 
-def is_user_data_required(sender, request_user, user_data, **kwargs):
+def is_user_data_required(sender, request_user, **kwargs):
     """
-    Returns True if request user can use chat and user_data is required
-    to be displayed as chatter.
+    Returns all user ids that are displayed as chatters if request_user can
+    use the chat. This function may return an empty set.
     """
-    result = False
+    chatters = set()
     if has_perm(request_user, 'core.can_use_chat'):
         for chat_message_collection_element in Collection(ChatMessage.get_collection_string()).element_generator():
             full_data = chat_message_collection_element.get_full_data()
-            if user_data['id'] == full_data['user_id']:
-                result = True
-                break
-    return result
+            chatters.add(full_data['user_id'])
+    return chatters

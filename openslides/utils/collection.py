@@ -100,21 +100,27 @@ class CollectionElement:
         Only for internal use. Do not use it directly. Use as_autoupdate_for_user()
         or as_autoupdate_for_projector().
         """
-        output = {
-            'collection': self.collection_string,
-            'id': self.id,
-            'action': 'deleted' if self.is_deleted() else 'changed',
-        }
+        from .autoupdate import format_for_autoupdate
+
+        # TODO: Revert this after get_projector_data is also enhanced like get_restricted_data.
+        if method == 'get_restricted_data':
+            container = self
+        else:
+            container = self.get_full_data()
+        # End of hack
+
         if not self.is_deleted():
             data = getattr(self.get_access_permissions(), method)(
-                self.get_full_data(),
+                container,
                 *args)
-            if data is None:
-                # The user is not allowed to see this element. Set action to deleted.
-                output['action'] = 'deleted'
-            else:
-                output['data'] = data
-        return output
+        else:
+            data = None
+
+        return format_for_autoupdate(
+            collection_string=self.collection_string,
+            id=self.id,
+            action='deleted' if self.is_deleted() else 'changed',
+            data=data)
 
     def as_autoupdate_for_user(self, user):
         """
@@ -143,9 +149,7 @@ class CollectionElement:
         The argument `user` can be anything, that is allowd as argument for
         utils.auth.has_perm().
         """
-        return self.get_access_permissions().get_restricted_data(
-            self.get_full_data(),
-            user)
+        return self.get_access_permissions().get_restricted_data(self, user)
 
     def get_model(self):
         """
@@ -286,8 +290,15 @@ class Collection:
     Represents all elements of one collection.
     """
 
-    def __init__(self, collection_string):
+    def __init__(self, collection_string, full_data=None):
+        """
+        Initiates a Collection. A collection_string has to be given. If
+        full_data (a list of dictionaries) is not given the method
+        get_full_data() exposes all data by iterating over all
+        CollectionElements.
+        """
         self.collection_string = collection_string
+        self.full_data = full_data
 
     def get_cache_key(self, raw=False):
         """
@@ -307,10 +318,18 @@ class Collection:
         """
         return get_model_from_collection_string(self.collection_string)
 
+    def get_access_permissions(self):
+        """
+        Returns the get_access_permissions object for the this collection.
+        """
+        return self.get_model().get_access_permissions()
+
     def element_generator(self):
         """
         Generator that yields all collection_elements of this collection.
         """
+        # TODO: This method should use self.full_data if it already exists.
+
         # Get all cache keys.
         ids = self.get_all_ids()
         cache_keys = [
@@ -355,10 +374,23 @@ class Collection:
                 for instance in query.filter(pk__in=missing_ids):
                     yield CollectionElement.from_instance(instance)
 
+    def get_full_data(self):
+        """
+        Returns a list of dictionaries with full_data of all collection
+        elements.
+        """
+        if self.full_data is None:
+            self.full_data = [
+                collection_element.get_full_data()
+                for collection_element
+                in self.element_generator()]
+        return self.full_data
+
     def as_autoupdate_for_projector(self):
         """
         Returns a list of dictonaries to send them to the projector.
         """
+        # TODO: This method is only used in one case. Remove it.
         output = []
         for collection_element in self.element_generator():
             content = collection_element.as_autoupdate_for_projector()
@@ -374,6 +406,7 @@ class Collection:
         The argument `user` can be anything, that is allowd as argument for
         utils.auth.has_perm().
         """
+        # TODO: This method is not used. Remove it.
         output = []
         for collection_element in self.element_generator():
             content = collection_element.as_autoupdate_for_user(user)

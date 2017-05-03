@@ -16,16 +16,15 @@ def get_permission_change_data(sender, permissions=None, **kwargs):
             yield from mediafiles_app.get_startup_elements()
 
 
-def is_user_data_required(sender, request_user, user_data, **kwargs):
+def is_user_data_required(sender, request_user, **kwargs):
     """
-    Returns True if request user can see mediafiles and user_data is required
-    to be displayed as uploader.
+    Returns all user ids that are displayed as uploaders in any mediafile
+    if request_user can see mediafiles. This function may return an empty
+    set.
     """
-    result = False
+    uploaders = set()
     if has_perm(request_user, 'mediafiles.can_see'):
         for mediafile_collection_element in Collection(Mediafile.get_collection_string()).element_generator():
             full_data = mediafile_collection_element.get_full_data()
-            if user_data['id'] == full_data['uploader_id']:
-                result = True
-                break
-    return result
+            uploaders.add(full_data['uploader_id'])
+    return uploaders

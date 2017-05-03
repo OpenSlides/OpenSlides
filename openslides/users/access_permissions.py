@@ -3,6 +3,7 @@ from django.contrib.auth.models import AnonymousUser
 from ..core.signals import user_data_required
 from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import anonymous_is_enabled, has_perm
+from ..utils.collection import Collection
 
 
 class UserAccessPermissions(BaseAccessPermissions):
@@ -23,7 +24,7 @@ class UserAccessPermissions(BaseAccessPermissions):
 
         return UserFullSerializer
 
-    def get_restricted_data(self, full_data, user):
+    def get_restricted_data(self, container, user):
         """
         Returns the restricted serialized data for the instance prepared
         for the user. Removes several fields for non admins so that they do
@@ -31,57 +32,75 @@ class UserAccessPermissions(BaseAccessPermissions):
         """
         from .serializers import USERCANSEESERIALIZER_FIELDS, USERCANSEEEXTRASERIALIZER_FIELDS
 
-        NO_DATA = 0
-        LITTLE_DATA = 1
-        MANY_DATA = 2
-        FULL_DATA = 3
+        def filtered_data(full_data, whitelist):
+            """
+            Returns a new dict like full_data but only with whitelisted keys.
+            """
+            return {key: full_data[key] for key in whitelist}
+
+        # Expand full_data to a list if it is not one.
+        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
+
+        # We have four sets of data to be sent:
+        # * full data i. e. all fields,
+        # * many data i. e. all fields but not the default password,
+        # * little data i. e. all fields but not the default password, comments and active status,
+        # * no data.
+
+        # Prepare field set for users with "many" data and with "little" data.
+        many_data_fields = set(USERCANSEEEXTRASERIALIZER_FIELDS)
+        many_data_fields.add('groups_id')
+        many_data_fields.discard('groups')
+        litte_data_fields = set(USERCANSEESERIALIZER_FIELDS)
+        litte_data_fields.add('groups_id')
+        litte_data_fields.discard('groups')
 
         # Check user permissions.
         if has_perm(user, 'users.can_see_name'):
             if has_perm(user, 'users.can_see_extra_data'):
                 if has_perm(user, 'users.can_manage'):
-                    case = FULL_DATA
+                    data = full_data
                 else:
-                    case = MANY_DATA
+                    data = [filtered_data(full, many_data_fields) for full in full_data]
             else:
-                case = LITTLE_DATA
-        elif user is not None and user.id == full_data.get('id'):
-            # An authenticated user without the permission to see users tries
-            # to see himself.
-            case = LITTLE_DATA
+                data = [filtered_data(full, litte_data_fields) for full in full_data]
         else:
-            # Now check if the user to be sent out is required by any app e. g.
-            # as motion submitter or assignment candidate.
+            # Build a list of users, that can be seen without any permissions (with little fields).
+
+            user_ids = set()
+
+            # Everybody can see himself. Also everybody can see every user
+            # that is required e. g. as speaker, motion submitter or
+            # assignment candidate.
+
+            # Add oneself.
+            if user is not None:
+                user_ids.add(user.id)
+
+            # Get a list of all users, that are required by another app.
             receiver_responses = user_data_required.send(
                 sender=self.__class__,
-                request_user=user,
-                user_data=full_data)
+                request_user=user)
             for receiver, response in receiver_responses:
-                if response:
-                    case = LITTLE_DATA
-                    break
-            else:
-                case = NO_DATA
+                user_ids.update(response)
 
-        # Setup data.
-        if case == FULL_DATA:
-            data = full_data
-        elif case == NO_DATA:
-            data = None
+            # Parse data.
+            data = [
+                filtered_data(full, litte_data_fields)
+                for full
+                in full_data
+                if full['id'] in user_ids]
+
+        # Reduce result to a single item or None if it was not a collection at
+        # the beginning of the method.
+        if isinstance(container, Collection):
+            restricted_data = data
+        elif data:
+            restricted_data = data[0]
         else:
-            # case in (LITTLE_DATA, ḾANY_DATA)
-            if case == MANY_DATA:
-                fields = USERCANSEEEXTRASERIALIZER_FIELDS
-            else:
-                # case == LITTLE_DATA
-                fields = USERCANSEESERIALIZER_FIELDS
-            # Let only some fields pass this method.
-            data = {}
-            for base_key in fields:
-                for key in (base_key, base_key + '_id'):
-                    if key in full_data.keys():
-                        data[key] = full_data[key]
-        return data
+            restricted_data = None
+
+        return restricted_data
 
     def get_projector_data(self, full_data):
         """
