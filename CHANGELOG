@@ -27,6 +27,7 @@ Motions:
 - Added warning message if an edit dialog was already opened by another
   client [#3212].
 - Reworked DOCX export parser and added comments to DOCX [#3258].
+- New pdf export for personal note and comments [#3239].
 
 Users:
 - User without permission to see users can now see agenda item speakers,

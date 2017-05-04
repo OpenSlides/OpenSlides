@@ -3,6 +3,11 @@
     <!-- inline editing toolbar -->
     <div class="motion-toolbar">
       <div class="pull-right inline-editing-activator">
+        <button ng-click="exportPersonalNote()" class="btn btn-default btn-sm"
+          uib-tooltip="{{ 'Export personal note only' | translate }}">
+          <i class="fa fa-file-pdf-o"></i>
+          <translate>PDF</translate>
+        </button>
         <button ng-if="!personalNoteInlineEditing.active" ng-click="personalNoteInlineEditing.enable()"
           class="btn btn-sm btn-default">
           <i class="fa fa-pencil-square-o"></i>
