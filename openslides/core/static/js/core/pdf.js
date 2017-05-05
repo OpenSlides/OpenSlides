@@ -503,7 +503,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 }
                                 return '#' + decimalColors.join('');
                             } else {
-                                console.err('Could not parse color "' + color + '"');
+                                console.error('Could not parse color "' + color + '"');
                                 return color;
                             }
                         },
