@@ -44,6 +44,10 @@ class AssignmentsAppConfig(AppConfig):
         """
         yield Collection(self.get_model('Assignment').get_collection_string())
 
+    def get_collection_sources(self):
+        from .models import Assignment
+        yield Assignment
+
     def get_angular_constants(self):
         assignment = self.get_model('Assignment')
         data = {

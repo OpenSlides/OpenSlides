@@ -39,6 +39,7 @@ class CollectionElement:
         self.full_data = full_data
         self.information = information or {}
         if instance is not None:
+            #TODO Try to get rid of config by using instance.get_full_data()['id'] here
             # Collection element is created via instance
             self.collection_string = instance.get_collection_string()
             from openslides.core.config import config
@@ -64,7 +65,7 @@ class CollectionElement:
             # The call to get_full_data() has some sideeffects. When the object
             # was created with from_instance() or the object is not in the cache
             # then get_full_data() will save the object into the cache.
-            # This will also raise a DoesNotExist error, if the object does
+            # This will also raise a KeyError, if the object does
             # neither exist in the cache nor in the database.
             self.get_full_data()
 
@@ -110,7 +111,7 @@ class CollectionElement:
         # End of hack
 
         if not self.is_deleted():
-            data = getattr(self.get_access_permissions(), method)(
+            data = getattr(self.get_collection_source().get_access_permissions(), method)(
                 container,
                 *args)
         else:
@@ -149,43 +150,13 @@ class CollectionElement:
         The argument `user` can be anything, that is allowd as argument for
         utils.auth.has_perm().
         """
-        return self.get_access_permissions().get_restricted_data(self, user)
+        return self.get_collection_source().get_access_permissions().get_restricted_data(self, user)
 
-    def get_model(self):
+    def get_collection_source(self):
         """
-        Returns the django model that is used for this collection.
+        Returns the CollectionSource object for this instance.
         """
-        return get_model_from_collection_string(self.collection_string)
-
-    def get_instance(self):
-        """
-        Returns the instance as django object.
-
-        May raise a DoesNotExist exception.
-        """
-        if self.is_deleted():
-            raise RuntimeError("The collection element is deleted.")
-
-        if self.instance is None:
-            # The config instance has to be get from the config element, because
-            # some config values are not in the db.
-            from openslides.core.config import config
-            if self.collection_string == config.get_collection_string():
-                self.instance = {'key': self.id, 'value': config[self.id]}
-            else:
-                model = self.get_model()
-                try:
-                    query = model.objects.get_full_queryset()
-                except AttributeError:
-                    query = model.objects
-                self.instance = query.get(pk=self.id)
-        return self.instance
-
-    def get_access_permissions(self):
-        """
-        Returns the get_access_permissions object for the this collection element.
-        """
-        return self.get_model().get_access_permissions()
+        return CollectionSource(self.collection_string)
 
     def get_full_data(self):
         """
@@ -206,7 +177,11 @@ class CollectionElement:
             self.full_data = cache.get(self.get_cache_key())
 
         if self.full_data is None:
-            self.full_data = self.get_access_permissions().get_full_data(self.get_instance())
+            #TODO Fix me. Save all elements at once into the cache
+            full_data_list = self.get_collection_source().get_full_data_list(ids=(self.id,))
+
+            # This line raise a KeyError, if the element is not in the database
+            self.full_data = full_data_list[0]
             self.save_to_cache()
         return self.full_data
 
@@ -312,17 +287,11 @@ class Collection:
             key = cache.make_key(key)
         return key
 
-    def get_model(self):
+    def get_collection_source(self):
         """
-        Returns the django model that is used for this collection.
+        Returns the collection_source that is used for this collection.
         """
-        return get_model_from_collection_string(self.collection_string)
-
-    def get_access_permissions(self):
-        """
-        Returns the get_access_permissions object for the this collection.
-        """
-        return self.get_model().get_access_permissions()
+        return CollectionSource(self.collection_string)
 
     def element_generator(self):
         """
@@ -351,28 +320,14 @@ class Collection:
 
         # Generate collection element that where not in the cache.
         if missing_ids:
-            from openslides.core.config import config
-            if self.collection_string == config.get_collection_string():
-                # If config elements are not in the cache, they have to be read from
-                # the config object.
-                for key, value in config.items():
-                    if key in missing_ids:
-                        collection_element = CollectionElement.from_values(
-                            config.get_collection_string(),
-                            key,
-                            full_data={'key': key, 'value': value})
-                        # We can not use .from_instance therefore the config value
-                        # is not saved to the cache. We have to do it manualy.
-                        collection_element.save_to_cache()
-                        yield collection_element
-            else:
-                model = self.get_model()
-                try:
-                    query = model.objects.get_full_queryset()
-                except AttributeError:
-                    query = model.objects
-                for instance in query.filter(pk__in=missing_ids):
-                    yield CollectionElement.from_instance(instance)
+            for full_data in self.get_collection_source().get_full_data_list(missing_ids):
+                #TODO Save all collection elements to cache at once
+                collection_element = CollectionElement.from_values(
+                    self.collection_string,
+                    full_data['id'],
+                    full_data=full_data)
+                collection_element.save_to_cache()
+                yield collection_element
 
     def get_full_data(self):
         """
@@ -434,6 +389,7 @@ class Collection:
         Returns a set of all ids of instances in this collection.
         """
         from openslides.core.config import config
+        #TODO get rid of config
         if self.collection_string == config.get_collection_string():
             ids = config.config_variables.keys()
         elif use_redis_cache():
@@ -446,7 +402,7 @@ class Collection:
         redis = get_redis_connection()
         ids = redis.smembers(self.get_cache_key(raw=True))
         if not ids:
-            ids = set(self.get_model().objects.values_list('pk', flat=True))
+            ids = set(full_data['id'] for full_data in self.get_collection_source().get_full_data_list())
             if ids:
                 redis.sadd(self.get_cache_key(raw=True), *ids)
         # Redis returns the ids as string.
@@ -457,7 +413,7 @@ class Collection:
         ids = cache.get(self.get_cache_key())
         if ids is None:
             # If it is not in the cache then get it from the database.
-            ids = set(self.get_model().objects.values_list('pk', flat=True))
+            ids = set(full_data['id'] for full_data in self.get_collection_source().get_full_data_list())
             cache.set(self.get_cache_key(), ids)
         return ids
 
@@ -514,36 +470,48 @@ class Collection:
             cache.set(self.get_cache_key(), ids)
 
 
-_models_to_collection_string = {}
-
-
-def get_model_from_collection_string(collection_string):
+class CollectionSource:
     """
-    Returns a model class which belongs to the argument collection_string.
-    """
-    def model_generator():
-        """
-        Yields all models of all apps.
-        """
-        for app_config in apps.get_app_configs():
-            for model in app_config.get_models():
-                yield model
+    A CollectionSource represents a group of same objects that can be used for
+    autoupdate.
 
-    # On the first run, generate the dict. It can not change at runtime.
-    if not _models_to_collection_string:
-        for model in model_generator():
-            try:
-                get_collection_string = model.get_collection_string
-            except AttributeError:
-                # Skip models which do not have the method get_collection_string.
-                pass
-            else:
-                _models_to_collection_string[get_collection_string()] = model
-    try:
-        model = _models_to_collection_string[collection_string]
-    except KeyError:
-        raise ValueError('Invalid message. A valid collection_string is missing.')
-    return model
+    The CollectionSource is the adapter for the main data source, for examle
+    the sql database.
+
+    A CollectionSource has to implement the methods get_collection_string(),
+    get_full_data_list(ids=None) and get_access_permissions().
+
+    A Django Model can be a CollectionSource instance, if it implements all
+    necessary methods as class methods.
+    """
+
+    all_collection_sources = None
+
+    def __new__(cls, collection_string):
+        return cls.get_all_collection_sources()[collection_string]
+
+    @classmethod
+    def get_all_collection_sources(cls):
+        """
+        Build the class attribute all_collection_sources from all django apps.
+        """
+        if cls.all_collection_sources is None:
+            # This is the first call.
+            sources = {}
+            for app in apps.get_app_configs():
+                try:
+                    # Get the method get_collection_sources() from an app.
+                    # This method has to return an iterable of CollectionSource instances.
+                    get_collection_sources = app.get_collection_sources
+                except AttributeError:
+                    # Skip apps that do not implement get_collection_sources().
+                    continue
+
+                for collection_source in get_collection_sources():
+                    collection_string = collection_source.get_collection_string()
+                    sources[collection_string] = collection_source
+            cls.all_collection_sources = sources
+        return cls.all_collection_sources
 
 
 def get_single_element_cache_key(collection_string, id):

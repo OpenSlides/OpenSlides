@@ -2,7 +2,6 @@ from collections import defaultdict
 
 from channels import Group
 from channels.sessions import session_for_reply_channel
-from django.apps import apps
 from django.core.cache import cache, caches
 
 
@@ -193,25 +192,15 @@ class StartupCache:
 
     def build(self):
         """
-        Generate the cache by going through all apps. Returns a dict where the
-        key is the collection string and the value a list of the full_data from
-        the collection elements.
+        Generate the cache by going through all collection sources. Returns a
+        dict where the key is the collection string and the value a list of the
+        full_data from the collection elements.
         """
-        cache_data = {}
-        for app in apps.get_app_configs():
-            try:
-                # Get the method get_startup_elements() from an app.
-                # This method has to return an iterable of Collection objects.
-                get_startup_elements = app.get_startup_elements
-            except AttributeError:
-                # Skip apps that do not implement get_startup_elements.
-                continue
+        from .collection import CollectionSource
 
-            for collection in get_startup_elements():
-                cache_data[collection.collection_string] = [
-                    collection_element.get_full_data()
-                    for collection_element
-                    in collection.element_generator()]
+        cache_data = {}
+        for collection_string, collection_source in CollectionSource.get_all_collection_sources().items():
+            cache_data[collection_string] = collection_source.get_full_data_list()
 
         cache.set(self.cache_key, cache_data, 86400)
         return cache_data

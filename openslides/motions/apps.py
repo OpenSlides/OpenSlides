@@ -1,8 +1,6 @@
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 
-from ..utils.collection import Collection
-
 
 class MotionsAppConfig(AppConfig):
     name = 'openslides.motions'
@@ -44,10 +42,6 @@ class MotionsAppConfig(AppConfig):
                         MotionChangeRecommendationViewSet)
         router.register(self.get_model('MotionPoll').get_collection_string(), MotionPollViewSet)
 
-    def get_startup_elements(self):
-        """
-        Yields all collections required on startup i. e. opening the websocket
-        connection.
-        """
-        for model in ('Category', 'Motion', 'MotionBlock', 'Workflow', 'MotionChangeRecommendation'):
-            yield Collection(self.get_model(model).get_collection_string())
+    def get_collection_sources(self):
+        from .models import Category, Motion, MotionBlock, Workflow, MotionChangeRecommendation
+        yield from (Category, Motion, MotionBlock, Workflow, MotionChangeRecommendation)

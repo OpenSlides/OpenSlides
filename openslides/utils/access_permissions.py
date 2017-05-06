@@ -40,23 +40,6 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
         """
         return False
 
-    def get_serializer_class(self, user=None):
-        """
-        Returns different serializer classes according to users permissions.
-
-        This should return the serializer for full data access if user is
-        None. See get_full_data().
-        """
-        raise NotImplementedError(
-            "You have to add the method 'get_serializer_class' to your "
-            "access permissions class.".format(self))
-
-    def get_full_data(self, instance):
-        """
-        Returns all possible serialized data for the given instance.
-        """
-        return self.get_serializer_class(user=None)(instance).data
-
     def get_restricted_data(self, container, user):
         """
         Returns the restricted serialized data for the instance prepared

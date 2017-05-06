@@ -195,6 +195,11 @@ class Motion(RESTModelMixin, models.Model):
         """
         return self.title
 
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import MotionSerializer
+        return MotionSerializer
+
     # TODO: Use transaction
     def save(self, use_version=None, skip_autoupdate=False, *args, **kwargs):
         """
@@ -789,6 +794,11 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
         """Return a string, representing this object."""
         return "Recommendation for Version %s, line %s - %s" % (self.motion_version_id, self.line_from, self.line_to)
 
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import MotionChangeRecommendationSerializer
+        return MotionChangeRecommendationSerializer
+
 
 class Category(RESTModelMixin, models.Model):
     """
@@ -811,6 +821,11 @@ class Category(RESTModelMixin, models.Model):
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import CategorySerializer
+        return CategorySerializer
 
 
 class MotionBlockManager(models.Manager):
@@ -844,6 +859,11 @@ class MotionBlock(RESTModelMixin, models.Model):
 
     def __str__(self):
         return self.title
+
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import MotionBlockSerializer
+        return MotionBlockSerializer
 
     @property
     def agenda_item(self):
@@ -1171,6 +1191,11 @@ class Workflow(RESTModelMixin, models.Model):
     def __str__(self):
         """Returns the name of the workflow."""
         return self.name
+
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import WorkflowSerializer
+        return WorkflowSerializer
 
     def save(self, **kwargs):
         """Saves a workflow in the database.

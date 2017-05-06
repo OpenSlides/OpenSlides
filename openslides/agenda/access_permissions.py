@@ -14,6 +14,7 @@ class ItemAccessPermissions(BaseAccessPermissions):
         return has_perm(user, 'agenda.can_see')
 
     def get_serializer_class(self, user=None):
+        #TODO Remoe me
         """
         Returns serializer class.
         """

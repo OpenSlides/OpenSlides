@@ -284,6 +284,11 @@ class Item(RESTModelMixin, models.Model):
     def __str__(self):
         return self.title
 
+    @classmethod
+    def get_serializer_class(cls):
+        from .serializers import ItemSerializer
+        return ItemSerializer
+
     @property
     def title(self):
         """

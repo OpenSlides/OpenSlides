@@ -52,6 +52,11 @@ class Mediafile(RESTModelMixin, models.Model):
         """
         return self.title
 
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import MediafileSerializer
+        return MediafileSerializer
+
     def get_filesize(self):
         """
         Transforms bytes to kilobytes or megabytes. Returns the size as string.

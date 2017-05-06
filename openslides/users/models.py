@@ -227,6 +227,11 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         # Return result
         return name
 
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import UserFullSerializer
+        return UserFullSerializer
+
     def save(self, *args, **kwargs):
         """
         Overridden method to skip autoupdate if only last_login field was
@@ -292,3 +297,8 @@ class Group(RESTModelMixin, DjangoGroup):
 
     class Meta:
         default_permissions = ()
+
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import GroupSerializer
+        return GroupSerializer

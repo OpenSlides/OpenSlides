@@ -42,6 +42,30 @@ class RESTModelMixin:
         return cls.access_permissions
 
     @classmethod
+    def get_serializer_class(cls):
+        """
+        Returns the serializer class for this model.
+        """
+        raise NotImplementedError(
+            "You have to add the method 'get_serializer_clas()s' to your "
+            "Model {} to use it as root rest element.".format(cls))
+
+    @classmethod
+    def get_full_data_list(cls, ids=None):
+        """
+        Returns all possible serialized data for all instances of this model.
+        """
+        try:
+            query = cls.objects.get_full_queryset()
+        except AttributeError:
+            query = cls.objects
+
+        if ids is not None:
+            query = query.filter(pk__in=ids)
+
+        return cls.get_serializer_class()(query, many=True).data
+
+    @classmethod
     def get_collection_string(cls):
         """
         Returns the string representing the name of the collection. Returns
