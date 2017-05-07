@@ -43,7 +43,6 @@ class CollectionElement:
         self.full_data = full_data
         self.information = information or {}
         if instance is not None:
-            #TODO Try to get rid of config by using instance.get_full_data()['id'] here
             # Collection element is created via instance
             self.collection_string = instance.get_collection_string()
             from openslides.core.config import config
@@ -181,7 +180,8 @@ class CollectionElement:
             self.full_data = cache.get(self.get_cache_key())
 
         if self.full_data is None:
-            #TODO Fix me. Save all elements at once into the cache
+            # TODO: This line saves only one element into the cache. This is not
+            #       efficient. We should save all element at once.
             full_data_list = self.get_collection_source().get_full_data_list(ids=(self.id,))
 
             try:
@@ -329,7 +329,8 @@ class Collection:
         # Generate collection element that where not in the cache.
         if missing_ids:
             for full_data in self.get_collection_source().get_full_data_list(missing_ids):
-                #TODO Save all collection elements to cache at once
+                # TODO: This line saves any collection element to the cache at once.
+                #       This is not efficient.
                 collection_element = CollectionElement.from_values(
                     self.collection_string,
                     full_data['id'],
@@ -397,8 +398,9 @@ class Collection:
         Returns a set of all ids of instances in this collection.
         """
         from openslides.core.config import config
-        #TODO get rid of config
         if self.collection_string == config.get_collection_string():
+            # The keys for config elements are fix. So there is no need to
+            # get them from the cache.
             ids = config.config_variables.keys()
         elif use_redis_cache():
             ids = self.get_all_ids_redis()
