@@ -1,6 +1,5 @@
 from ..utils.auth import has_perm
 from ..utils.rest_api import ModelViewSet, ValidationError
-from .access_permissions import MediafileAccessPermissions
 from .models import Mediafile
 
 
@@ -13,8 +12,7 @@ class MediafileViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
-    access_permissions = MediafileAccessPermissions()
-    queryset = Mediafile.objects.all()
+    collection_source = Mediafile
 
     def check_view_permissions(self):
         """

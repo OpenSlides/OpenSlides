@@ -30,9 +30,22 @@ from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
 from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
 
 from .auth import user_to_collection_user
-from .collection import Collection, CollectionElement
+from .collection import Collection, CollectionElement, ElementDoesNotExist
 
-router = DefaultRouter()
+
+class Router(DefaultRouter):
+    def get_default_base_name(self, viewset):
+        """
+        Read the base_name from the model.
+        """
+        try:
+            base_name = viewset.collection_source.get_collection_string().split('/')[1]
+        except AttributeError:
+            base_name = super().get_default_base_name(viewset)
+        return base_name
+
+
+router = Router()
 
 
 class IdManyRelatedField(ManyRelatedField):
@@ -129,18 +142,7 @@ class PermissionMixin:
         Returns a container to handle access permissions for this viewset and
         its corresponding model.
         """
-        return self.access_permissions
-
-    def get_serializer_class(self):
-        """
-        Overridden method to return the serializer class given by the
-        access permissions container.
-        """
-        if self.get_access_permissions() is not None:
-            serializer_class = self.get_access_permissions().get_serializer_class(self.request.user)
-        else:
-            serializer_class = super().get_serializer_class()
-        return serializer_class
+        return self.collection_source.get_access_permissions()
 
 
 class ModelSerializer(_ModelSerializer):
@@ -175,16 +177,10 @@ class ListModelMixin(_ListModelMixin):
     queryset = Model.objects.all()
     """
     def list(self, request, *args, **kwargs):
-        model = self.get_queryset().model
-        try:
-            collection_string = model.get_collection_string()
-        except AttributeError:
-            # The corresponding queryset does not support caching.
-            response = super().list(request, *args, **kwargs)
-        else:
-            collection = Collection(collection_string)
-            user = user_to_collection_user(request.user)
-            response = Response(collection.as_list_for_user(user))
+        collection_string = self.collection_source.get_collection_string()
+        collection = Collection(collection_string)
+        user = user_to_collection_user(request.user)
+        response = Response(collection.as_list_for_user(user))
         return response
 
 
@@ -198,32 +194,49 @@ class RetrieveModelMixin(_RetrieveModelMixin):
     queryset = Model.objects.all()
     """
     def retrieve(self, request, *args, **kwargs):
-        model = self.get_queryset().model
+        collection_string = self.collection_source.get_collection_string()
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
         try:
-            collection_string = model.get_collection_string()
-        except AttributeError:
-            # The corresponding queryset does not support caching.
-            response = super().retrieve(request, *args, **kwargs)
-        else:
-            lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
             collection_element = CollectionElement.from_values(
-                collection_string, self.kwargs[lookup_url_kwarg])
-            user = user_to_collection_user(request.user)
-            try:
-                content = collection_element.as_dict_for_user(user)
-            except collection_element.get_model().DoesNotExist:
-                raise Http404
-            if content is None:
-                self.permission_denied(request)
-            response = Response(content)
-        return response
+                collection_string=collection_string,
+                id=self.kwargs[lookup_url_kwarg])
+        except ElementDoesNotExist:
+            raise Http404
+        user = user_to_collection_user(request.user)
+        content = collection_element.as_dict_for_user(user)
+        if content is None:
+            self.permission_denied(request)
+        return Response(content)
 
 
-class GenericViewSet(PermissionMixin, _GenericViewSet):
+class RootRestMixin:
+    """
+    Methods for viewsets, that work with RootRestElements.
+    """
+
+    def get_serializer_class(self):
+        try:
+            collection_source = self.collection_source
+        except AttributeError:
+            return super().get_serializer_class()
+        return collection_source.get_serializer_class()
+
+    def get_queryset(self):
+        # The code should never use this but django-rest-framework needs this
+        # method to work
+        # A collection_source is a model
+        try:
+            collection_source = self.collection_source
+        except AttributeError:
+            return super().get_queryset()
+        return collection_source.objects
+
+
+class GenericViewSet(PermissionMixin, RootRestMixin, _GenericViewSet):
     pass
 
 
-class ModelViewSet(PermissionMixin, ListModelMixin, RetrieveModelMixin, _ModelViewSet):
+class ModelViewSet(PermissionMixin, RootRestMixin, ListModelMixin, RetrieveModelMixin, _ModelViewSet):
     pass
 
 

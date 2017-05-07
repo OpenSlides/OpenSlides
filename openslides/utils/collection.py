@@ -4,6 +4,10 @@ from django.core.cache import cache
 from .cache import get_redis_connection, use_redis_cache
 
 
+class ElementDoesNotExist(Exception):
+    pass
+
+
 class CollectionElement:
     @classmethod
     def from_instance(cls, instance, deleted=False, information=None):
@@ -65,7 +69,7 @@ class CollectionElement:
             # The call to get_full_data() has some sideeffects. When the object
             # was created with from_instance() or the object is not in the cache
             # then get_full_data() will save the object into the cache.
-            # This will also raise a KeyError, if the object does
+            # This will also raise a ElementDoesNotExist error, if the object does
             # neither exist in the cache nor in the database.
             self.get_full_data()
 
@@ -180,8 +184,12 @@ class CollectionElement:
             #TODO Fix me. Save all elements at once into the cache
             full_data_list = self.get_collection_source().get_full_data_list(ids=(self.id,))
 
-            # This line raise a KeyError, if the element is not in the database
-            self.full_data = full_data_list[0]
+            try:
+                self.full_data = full_data_list[0]
+            except IndexError:
+                raise ElementDoesNotExist(
+                    "The element from the collection {} with the id {} does not exists".format(
+                        self.collection_string, self.id))
             self.save_to_cache()
         return self.full_data
 

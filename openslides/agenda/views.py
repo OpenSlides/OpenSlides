@@ -17,7 +17,6 @@ from openslides.utils.rest_api import (
 )
 
 from ..utils.auth import has_perm
-from .access_permissions import ItemAccessPermissions
 from .models import Item, Speaker
 
 
@@ -30,8 +29,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
     There are the following views: metadata, list, retrieve, create,
     partial_update, update, destroy, manage_speaker, speak and tree.
     """
-    access_permissions = ItemAccessPermissions()
-    queryset = Item.objects.all()
+    collection_source = Item
 
     def check_view_permissions(self):
         """

@@ -31,14 +31,6 @@ from ..utils.rest_api import (
     detail_route,
     list_route,
 )
-from .access_permissions import (
-    ChatMessageAccessPermissions,
-    ConfigAccessPermissions,
-    CountdownAccessPermissions,
-    ProjectorAccessPermissions,
-    ProjectorMessageAccessPermissions,
-    TagAccessPermissions,
-)
 from .config import config
 from .exceptions import ConfigError, ConfigNotFound
 from .models import (
@@ -199,8 +191,7 @@ class ProjectorViewSet(ModelViewSet):
 
     There are the following views: See strings in check_view_permissions().
     """
-    access_permissions = ProjectorAccessPermissions()
-    queryset = Projector.objects.all()
+    collection_source = Projector
 
     def check_view_permissions(self):
         """
@@ -558,8 +549,7 @@ class TagViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
-    access_permissions = TagAccessPermissions()
-    queryset = Tag.objects.all()
+    collection_source = Tag
 
     def check_view_permissions(self):
         """
@@ -615,7 +605,7 @@ class ConfigViewSet(ViewSet):
     There are the following views: metadata, list, retrieve, update and
     partial_update.
     """
-    access_permissions = ConfigAccessPermissions()
+    collection_source = config
     metadata_class = ConfigMetadata
 
     def check_view_permissions(self):
@@ -694,8 +684,7 @@ class ChatMessageViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve and create.
     The views partial_update, update and destroy are disabled.
     """
-    access_permissions = ChatMessageAccessPermissions()
-    queryset = ChatMessage.objects.all()
+    collection_source = ChatMessage
 
     def check_view_permissions(self):
         """
@@ -749,8 +738,7 @@ class ProjectorMessageViewSet(ModelViewSet):
     There are the following views: list, retrieve, create, update,
     partial_update and destroy.
     """
-    access_permissions = ProjectorMessageAccessPermissions()
-    queryset = ProjectorMessage.objects.all()
+    collection_source = ProjectorMessage
 
     def check_view_permissions(self):
         """
@@ -772,8 +760,7 @@ class CountdownViewSet(ModelViewSet):
     There are the following views: list, retrieve, create, update,
     partial_update and destroy.
     """
-    access_permissions = CountdownAccessPermissions()
-    queryset = Countdown.objects.all()
+    collection_source = Countdown
 
     def check_view_permissions(self):
         """

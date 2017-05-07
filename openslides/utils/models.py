@@ -47,7 +47,7 @@ class RESTModelMixin:
         Returns the serializer class for this model.
         """
         raise NotImplementedError(
-            "You have to add the method 'get_serializer_clas()s' to your "
+            "You have to add the method 'get_serializer_class()' to your "
             "Model {} to use it as root rest element.".format(cls))
 
     @classmethod

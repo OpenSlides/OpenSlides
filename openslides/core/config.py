@@ -181,7 +181,7 @@ class ConfigHandler:
             items = self.items()
         else:
             items = ((key, value) for key, value in self.items() if key in ids)
-        return [{'key': key, 'value': value} for key, value in items]
+        return [{'id': key, 'key': key, 'value': value} for key, value in items]
 
     def get_access_permissions(self):
         return ConfigAccessPermissions()

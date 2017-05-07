@@ -21,9 +21,8 @@ from ..utils.rest_api import (
     status,
 )
 from ..utils.views import APIView
-from .access_permissions import GroupAccessPermissions, UserAccessPermissions
 from .models import Group, User
-from .serializers import GroupSerializer, PermissionRelatedField
+from .serializers import PermissionRelatedField
 
 
 # Viewsets for the REST API
@@ -35,8 +34,7 @@ class UserViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update, destroy and reset_password.
     """
-    access_permissions = UserAccessPermissions()
-    queryset = User.objects.all()
+    collection_source = User
 
     def check_view_permissions(self):
         """
@@ -143,9 +141,7 @@ class GroupViewSet(ModelViewSet):
     partial_update, update and destroy.
     """
     metadata_class = GroupViewSetMetadata
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-    access_permissions = GroupAccessPermissions()
+    collection_source = Group
 
     def check_view_permissions(self):
         """
