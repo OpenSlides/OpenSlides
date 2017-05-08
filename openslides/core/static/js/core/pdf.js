@@ -743,21 +743,21 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     }
                                     break;
                                 case "br":
+                                    var brParent = element.parentNode;
+                                    var brParentNodeName = brParent.nodeName;
                                     //in case of inline-line-numbers and the os-line-break class ignore the break
                                     if ((lineNumberMode == "inline" &&
                                                 element.getAttribute("class") == "os-line-break") ||
                                         (lineNumberMode == "outside" &&
                                                 element.getAttribute("class") == "os-line-break" &&
-                                                element.parentNode.getAttribute("class") == "insert") ||
+                                                brParent.getAttribute("class") == "insert") ||
                                         (lineNumberMode == "outside" &&
                                                 element.getAttribute("class") == "os-line-break" &&
-                                                element.parentNode.getAttribute("class") == "merge-before")) {
+                                                brParent.getAttribute("class") == "merge-before")) {
                                         break;
                                     } else {
                                         currentParagraph = create("text");
-                                        if (lineNumberMode == "none") {
-                                            currentParagraph.margin = [0, 0, 0, 0];
-                                        } else {
+                                        if (lineNumberMode == "outside" && brParentNodeName == ("INS" || "DEL")) {
                                             currentParagraph.margin = [20, 0, 0, 0];
                                         }
                                         currentParagraph.lineHeight = 1.25;
