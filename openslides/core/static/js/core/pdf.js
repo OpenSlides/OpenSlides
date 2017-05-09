@@ -766,6 +766,10 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     break;
                                 case "li":
                                 case "div":
+                                    // Hotfix! Fix this..
+                                    if (nodeName === 'li') {
+                                        styles.push('padding-left: 20px');
+                                    }
                                     currentParagraph = create("text");
                                     currentParagraph.lineHeight = 1.25;
                                     var stackDiv = create("stack");
