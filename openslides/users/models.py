@@ -38,6 +38,9 @@ class PersonalNote(models.Model):
     note = models.TextField(blank=True)
     star = models.BooleanField(default=False, blank=True)
 
+    class Meta:
+        default_permissions = ()
+
     def get_data(self):
         """
         Returns note and star to be serialized in content object serializers.
