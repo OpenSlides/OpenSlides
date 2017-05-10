@@ -706,6 +706,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 });
             },
             export: function (motions, params, singleMotion) {
+                params = params || {};
                 _.defaults(params, {
                     filename: gettextCatalog.getString('motions') + '.pdf',
                 });
