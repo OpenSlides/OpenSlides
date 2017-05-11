@@ -1008,7 +1008,34 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     pdfWorker.addEventListener('error', function (event) {
                         reject(event);
                     });
-                    pdfWorker.postMessage(JSON.stringify(pdfDocument));
+                    pdfWorker.postMessage(JSON.stringify({
+                        pdfDocument: pdfDocument
+                    }));
+                });
+            },
+            // Struckture of pdfDocuments: { filname1: doc, filename2: doc, ...}
+            getBase64FromMultipleDocuments: function (pdfDocuments) {
+                return $q(function (resolve, reject) {
+                    var pdfWorker = new Worker('/static/js/workers/pdf-worker.js');
+                    var resultCount = 0;
+                    var base64Map = {}; // Maps filename to base64
+                    pdfWorker.addEventListener('message', function (event) {
+                        resultCount++;
+                        var data = JSON.parse(event.data);
+                        base64Map[data.filename] = data.base64;
+                        if (resultCount === _.keys(pdfDocuments).length) {
+                            resolve(base64Map);
+                        }
+                    });
+                    pdfWorker.addEventListener('error', function (event) {
+                        reject(event);
+                    });
+                    _.forEach(pdfDocuments, function (doc, filename) {
+                        pdfWorker.postMessage(JSON.stringify({
+                            filename: filename,
+                            pdfDocument: doc
+                        }));
+                    });
                 });
             },
             download: function (pdfDocument, filename) {

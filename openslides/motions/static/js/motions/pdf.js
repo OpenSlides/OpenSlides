@@ -723,9 +723,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 params.filename = void 0; // clear this, so we do not override the default filenames for each pdf.
 
                 var self = this;
-                var pdfs = {};
                 var usedFilenames = [];
-                var pdfPromises = _.map(motions, function (motion) {
+                var docMap = {};
+                var docPromises = _.map(motions, function (motion) {
                     var identifier = motion.identifier ? '-' + motion.identifier : '';
                     var filename = gettextCatalog.getString('Motion') + identifier;
 
@@ -742,36 +742,30 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     usedFilenames.push(filename);
                     filename += '.pdf';
 
-                    return $q(function (resolve, reject) {
+                    return $q(function (resolve) {
                         // get documentProvider for every motion.
                         self.getDocumentProvider(motion, params, true).then(function (documentProvider) {
-                            var doc = documentProvider.getDocument();
-
-                            PdfCreate.getBase64FromDocument(doc).then(function (data) {
-                                pdfs[filename] = data;
-                                resolve();
-                            }, function (error) {
-                                reject(error);
-                            });
+                            docMap[filename] = documentProvider.getDocument();
+                            resolve();
                         });
                     });
                 });
-
-                // Wait for all documents to be generated. Then put them into a zip and download it.
-                $q.all(pdfPromises).then(function () {
-                    var zip = new JSZip();
-                    _.forEach(pdfs, function (data, filename) {
-                        zip.file(filename, data, {base64: true});
+                $q.all(docPromises).then(function () {
+                    PdfCreate.getBase64FromMultipleDocuments(docMap).then(function (pdfMap) {
+                        var zip = new JSZip();
+                        _.forEach(pdfMap, function (data, filename) {
+                            zip.file(filename, data, {base64: true});
+                        });
+                        Messaging.createOrEditMessage(messageId, '<i class="fa fa-check fa-lg spacer-right"></i>' +
+                            gettextCatalog.getString('ZIP successfully generated.'), 'success', {timeout: 3000});
+                        zip.generateAsync({type: 'blob'}).then(function (content) {
+                            FileSaver.saveAs(content, zipFilename);
+                        });
+                    }, function (error) {
+                        Messaging.createOrEditMessage(messageId, '<i class="fa fa-exclamation-triangle fa-lg ' +
+                            'spacer-right"></i>' + gettextCatalog.getString('Error while generating ZIP file') +
+                            ': <code>' + error + '</code>', 'error');
                     });
-                    Messaging.createOrEditMessage(messageId, '<i class="fa fa-check fa-lg spacer-right"></i>' +
-                        gettextCatalog.getString('ZIP successfully generated.'), 'success', {timeout: 3000});
-                    zip.generateAsync({type: 'blob'}).then(function (content) {
-                        FileSaver.saveAs(content, zipFilename);
-                    });
-                }, function (error) {
-                    Messaging.createOrEditMessage(messageId, '<i class="fa fa-exclamation-triangle fa-lg ' +
-                        'spacer-right"></i>' + gettextCatalog.getString('Error while generating ZIP file') +
-                        ': <code>' + error + '</code>', 'error');
                 });
             },
             createPollPdf: function (motion, version) {

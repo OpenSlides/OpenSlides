@@ -86,34 +86,46 @@ var replacePlaceholder = function (content) {
     }
 };
 
-
-// Create PDF on message and return the base64 decoded document
-self.addEventListener('message', function(e) {
-    var data = JSON.parse(e.data);
-
-    // Workaround for using dynamic footer with page number.
-    // TODO: Needs improvement of pdfmake's web worker support.
-    // see https://github.com/bpampuch/pdfmake/issues/38
-    if (data.footerTpl) {
-        data.footer = function (currentPage, pageCount) {
-            for(var i = 0; i < data.footerTpl.columns.length; i++) {
-                if (data.footerTpl.columns[i].text) {
-                    data.footerTpl.columns[i].text = data.footerTpl.columns[i].text
+// Workaround for using dynamic footer with page number.
+// TODO: Needs improvement of pdfmake's web worker support.
+// see https://github.com/bpampuch/pdfmake/issues/38
+var replaceFooter = function (doc) {
+    if (doc.footerTpl) {
+        doc.footer = function (currentPage, pageCount) {
+            // One way to clone arrays/objects in js, that are serilizeable.
+            var columns = JSON.parse(JSON.stringify(doc.footerTpl.columns));
+            for (var i = 0; i < columns.length; i++) {
+                if (columns[i].text) {
+                    columns[i].text = columns[i].text
                     .replace('{{currentPage}}', currentPage)
                     .replace('{{pageCount}}', pageCount);
                 }
             }
             return {
-                columns: data.footerTpl.columns,
-                margin: data.footerTpl.margin,
+                columns: columns,
+                margin: doc.footerTpl.margin,
             };
         };
     }
+};
 
-    replacePlaceholder(data.content);
+// Create PDF on message and return the base64 decoded document
+self.addEventListener('message', function(e) {
+    var data = JSON.parse(e.data);
+    var doc = data.pdfDocument;
 
-    var pdf = pdfMake.createPdf(data);
+    replaceFooter(doc);
+    replacePlaceholder(doc.content);
+
+    var pdf = pdfMake.createPdf(doc);
     pdf.getBase64(function (base64) {
-        self.postMessage(base64);
+        if (data.filename) {
+            self.postMessage(JSON.stringify({
+                filename: data.filename,
+                base64: base64
+            }));
+        } else {
+            self.postMessage(base64);
+        }
     });
 }, false);
