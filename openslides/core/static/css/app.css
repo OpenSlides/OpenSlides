@@ -1512,6 +1512,11 @@ img {
     margin-left: 2px;
 }
 
+/* Bootbox: override z-index, that bootboxes are higher than ngDialogs */
+.bootbox {
+    z-index: 100000;
+}
+
 /* angular-chosen: override default width of select fields in quickmode */
 .chosen-container {
     width: 100% !important;

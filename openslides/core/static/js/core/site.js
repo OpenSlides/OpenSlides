@@ -80,7 +80,9 @@ angular.module('OpenSlidesApp.core.site', [
                     this.scope = scope;
                 },
                 updateMainMenu: function () {
-                    this.scope.elements = this.getElements();
+                    if (this.scope) {
+                        this.scope.elements = this.getElements();
+                    }
                 },
                 getElements: function() {
                     var elements = mainMenuList.filter(function (element) {
