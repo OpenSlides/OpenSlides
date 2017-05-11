@@ -7,12 +7,14 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
 .factory('UserListContentProvider', [
     'gettextCatalog',
     'PDFLayout',
-    function(gettextCatalog, PDFLayout) {
+    'Group',
+    function(gettextCatalog, PDFLayout, Group) {
 
-        var createInstance = function(userList, groups) {
+        var createInstance = function(userList) {
+            var groups = Group.getAll();
 
             //use the Predefined Functions to create the title
-            var title = PDFLayout.createTitle(gettextCatalog.getString("List of participants"));
+            var title = PDFLayout.createTitle(gettextCatalog.getString('List of participants'));
 
             //function to generate the user list
             var createUserList = function() {
@@ -46,7 +48,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                             style: PDFLayout.flipTableRowStyle(userJsonList.length)
                         },
                         {
-                            text: userGroups.join(" "),
+                            text: userGroups.join(', '),
                             style: PDFLayout.flipTableRowStyle(userJsonList.length)
                         }
                     ];
@@ -60,15 +62,15 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                             style: 'tableHeader'
                         },
                         {
-                            text: gettextCatalog.getString("Name"),
+                            text: gettextCatalog.getString('Name'),
                             style: 'tableHeader'
                         },
                         {
-                            text: gettextCatalog.getString("Structure level"),
+                            text: gettextCatalog.getString('Structure level'),
                             style: 'tableHeader'
                         },
                         {
-                            text: gettextCatalog.getString("Groups"),
+                            text: gettextCatalog.getString('Groups'),
                             style: 'tableHeader'
                         }
                     ]
@@ -132,11 +134,11 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                 // wlan access data
                 var columnWifi = [
                     {
-                        text: gettextCatalog.getString("WLAN access data"),
+                        text: gettextCatalog.getString('WLAN access data'),
                         style: 'userDataHeading'
                     },
                     {
-                        text: gettextCatalog.getString("WLAN name (SSID)") + ":",
+                        text: gettextCatalog.getString('WLAN name (SSID)') + ':',
                         style: 'userDataTopic'
                     },
                     {
@@ -144,7 +146,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                         style: 'userDataValue'
                     },
                     {
-                        text: gettextCatalog.getString("WLAN password") + ":",
+                        text: gettextCatalog.getString('WLAN password') + ':',
                         style: 'userDataTopic'
                     },
                     {
@@ -152,7 +154,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                         style: 'userDataValue'
                     },
                     {
-                        text: gettextCatalog.getString("WLAN encryption") + ":",
+                        text: gettextCatalog.getString('WLAN encryption') + ':',
                         style: 'userDataTopic'
                     },
                     {
@@ -160,14 +162,14 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                         style: 'userDataValue'
                     },
                     {
-                        text: "\n"
+                        text: '\n'
                     }
                 ];
                 // wifi qr code
                 if (Config.get('users_pdf_wlan_ssid').value && Config.get('users_pdf_wlan_encryption').value) {
-                    var wifiQrCode = "WIFI:S:" + Config.get('users_pdf_wlan_ssid').value +
-                        ";T:" + Config.get('users_pdf_wlan_encryption').value +
-                        ";P:" + Config.get('users_pdf_wlan_password').value + ";;";
+                    var wifiQrCode = 'WIFI:S:' + Config.get('users_pdf_wlan_ssid').value +
+                        ';T:' + Config.get('users_pdf_wlan_encryption').value +
+                        ';P:' + Config.get('users_pdf_wlan_password').value + ';;';
                     columnWifi.push(
                         {
                             qr: wifiQrCode,
@@ -175,7 +177,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                             margin: [0, 0, 0, 8]
                         },
                         {
-                            text: gettextCatalog.getString("Scan this QR code to connect to WLAN."),
+                            text: gettextCatalog.getString('Scan this QR code to connect to WLAN.'),
                             style: 'small'
                         }
                     );
@@ -184,11 +186,11 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                 // openslides access data
                 var columnOpenSlides = [
                     {
-                        text: gettextCatalog.getString("OpenSlides access data"),
+                        text: gettextCatalog.getString('OpenSlides access data'),
                         style: 'userDataHeading'
                     },
                     {
-                        text: gettextCatalog.getString("Username") + ":",
+                        text: gettextCatalog.getString('Username') + ':',
                         style: 'userDataTopic'
                     },
                     {
@@ -196,7 +198,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                         style: 'userDataValue'
                     },
                     {
-                        text: gettextCatalog.getString("Initial password") + ":",
+                        text: gettextCatalog.getString('Initial password') + ':',
                         style: 'userDataTopic'
                     },
                     {
@@ -204,7 +206,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                         style: 'userDataValue'
                     },
                     {
-                        text: "URL:",
+                        text: 'URL:',
                         style: 'userDataTopic'
                     },
                     {
@@ -213,7 +215,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                         style: 'userDataValue'
                     },
                     {
-                        text: "\n"
+                        text: '\n'
                     }
                 ];
                 // url qr code
@@ -225,7 +227,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                             margin: [0, 0, 0, 8]
                         },
                         {
-                            text: gettextCatalog.getString("Scan this QR code to open URL."),
+                            text: gettextCatalog.getString('Scan this QR code to open URL.'),
                             style: 'small'
                         }
                     );
