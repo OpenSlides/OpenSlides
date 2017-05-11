@@ -918,6 +918,16 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 return true;
             }
 
+            // Opening tags, followed by </del> or </ins>, indicate broken HTML (if it's not a <ins> / <del>)
+            var brokenRegexp = /<(\w+)[^>]*><\/(ins|del)>/gi,
+                result;
+            while ((result = brokenRegexp.exec(html)) !== null) {
+                if (result[1].toLowerCase() !== 'ins' && result[1].toLowerCase() !== 'del') {
+                    return true;
+                }
+            }
+
+
             // If other HTML tags are contained within INS/DEL (e.g. "<ins>Test</p></ins>"), let's better be cautious
             // The "!!(found=...)"-construction is only used to make jshint happy :)
             var findDel = /<del>(.*?)<\/del>/gi,
@@ -1090,12 +1100,26 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 return out;
             });
 
+            // Remove <del> tags that only delete line numbers
             diffUnnormalized = diffUnnormalized.replace(
                 /<del>((<BR CLASS="OS-LINE-BREAK">)?<span[^>]+OS-LINE-NUMBER[^>]+?>\s*<\/span>)<\/del>/gi,
                 function(found,tag) {
-                    return tag.toLowerCase().replace(/> <\/span/gi, ">&nbsp;</span");
+                    return tag;
                 }
             );
+
+            // Lowercase line number markup
+            diffUnnormalized = diffUnnormalized.replace(
+                /<BR CLASS="OS-LINE-BREAK">/gi,
+                '<br class="os-line-break">'
+            );
+            diffUnnormalized = diffUnnormalized.replace(
+                /<span[^>]+OS-LINE-NUMBER[^>]+?>\s*<\/span>/gi,
+                function(found) {
+                    return found.toLowerCase().replace(/> <\/span/gi, ">&nbsp;</span");
+                }
+            );
+
 
             if (diffUnnormalized.substr(0, workaroundPrepend.length) === workaroundPrepend) {
                 diffUnnormalized = diffUnnormalized.substring(workaroundPrepend.length);
