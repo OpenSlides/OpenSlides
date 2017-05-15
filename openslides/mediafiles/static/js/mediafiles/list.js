@@ -188,10 +188,11 @@ angular.module('OpenSlidesApp.mediafiles.list', [
         };
 
         $scope.mediafileGoToPage = function (mediafile, page) {
-            if (parseInt(page) > 0) {
+            page = parseInt(page);
+            if (page > 0 && page <= mediafile.numPages) {
                 sendMediafileCommand(
                     mediafile,
-                    {page: parseInt(page)}
+                    {page: page}
                 );
             }
         };
