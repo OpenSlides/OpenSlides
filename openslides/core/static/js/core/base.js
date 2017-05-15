@@ -353,12 +353,12 @@ angular.module('OpenSlidesApp.core', [
          * event_name_two: [ {id:2, fn:fn} ],
          * */
         var idCounter = 0;
-        var eventNameRegex = new RegExp('^[a-zA-Z_-]+$');
-        var externIdRegex = new RegExp('^[a-zA-Z_-]+\/[0-9]+$');
+        var eventNameRegex = new RegExp('^[a-zA-Z0-9_-]+$');
+        var externIdRegex = new RegExp('^[a-zA-Z0-9_-]+\/[0-9]+$');
         return {
             registerCallback: function (eventName, fn) {
                 if (!eventNameRegex.test(eventName)) {
-                    throw 'eventName should only consist of [a-zA-z_-]';
+                    throw 'eventName should only consist of [a-zA-Z0-9_-]';
                 } else if (typeof fn === 'function') {
                     var id = idCounter++;
 
@@ -411,7 +411,7 @@ angular.module('OpenSlidesApp.core', [
                     }
                     autoupdate.send([notifyItem]);
                 } else {
-                    throw 'eventName should only consist of [a-zA-z_-]';
+                    throw 'eventName should only consist of [a-zA-Z0-9_-]';
                 }
             },
         };
