@@ -724,9 +724,23 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
                 var self = this;
                 var pdfs = {};
+                var usedFilenames = [];
                 var pdfPromises = _.map(motions, function (motion) {
                     var identifier = motion.identifier ? '-' + motion.identifier : '';
-                    var filename = gettextCatalog.getString('Motion') + identifier + '.pdf';
+                    var filename = gettextCatalog.getString('Motion') + identifier;
+
+                    // If the filename is already in use, try to append a number to it (like '(2)')
+                    if (_.includes(usedFilenames, filename)) {
+                        var i = 1;
+                        var filenameWithNumber = filename;
+                        while(_.includes(usedFilenames, filenameWithNumber)) {
+                            filenameWithNumber = filename + ' (' + i + ')';
+                            i++;
+                        }
+                        filename = filenameWithNumber;
+                    }
+                    usedFilenames.push(filename);
+                    filename += '.pdf';
 
                     return $q(function (resolve, reject) {
                         // get documentProvider for every motion.
