@@ -503,6 +503,19 @@ describe('linenumbering', function () {
           "<div>" + noMarkup(4) + "Go on</div>"
       );
     });
+
+    it('detects broken HTML and lowercases class names', function () {
+        var before = "<p><span class=\"os-line-number line-number-3\" data-line-number=\"3\" contenteditable=\"false\">&nbsp;</span>holen, da rief sie alle sieben herbei und sprach:</p>\n\n<p><span class=\"os-line-number line-number-4\" data-line-number=\"4\" contenteditable=\"false\">&nbsp;</span><span style=\"color: #000000;\">\"Liebe Kinder, ich will hinaus in den Wald, seid auf der Hut vor dem Wolf! Wenn er <br class=\"os-line-break\"><span class=\"os-line-number line-number-5\" data-line-number=\"5\" contenteditable=\"false\">&nbsp;</span>hereinkommt, frisst er euch alle mit Haut und Haar. Der Bösewicht verstellt sich oft, aber <br class=\"os-line-break\"><span class=\"os-line-number line-number-6\" data-line-number=\"6\" contenteditable=\"false\">&nbsp;</span>an der rauen Stimme und an seinen schwarzen Füßen werdet ihr ihn schon erkennen.\"</span></p>\n\n<p><span class=\"os-line-number line-number-7\" data-line-number=\"7\" contenteditable=\"false\">&nbsp;</span>Die Geißlein sagten: \" Liebe Mutter, wir wollen uns schon in acht nehmen, du kannst ohne </p>",
+            after = "<p>holen, da rief sie alle sieben herbei und sprach:</p>\n\n<p><span style=\"color: #000000;\">Hello</span></p>\n\n<p><span style=\"color: #000000;\">World</span></p>\n\n<p><span style=\"color: #000000;\">Ya</span></p>\n\n<p>Die Geißlein sagten: \" Liebe Mutter, wir wollen uns schon in acht nehmen, du kannst ohne</p>";
+        var diff = diffService.diff(before, after);
+        expect(diff).toBe("<P class=\"delete\"><SPAN class=\"os-line-number line-number-3\" data-line-number=\"3\" contenteditable=\"false\"> </SPAN>holen, da rief sie alle sieben herbei und sprach:</P><DEL>\n\n</DEL>" +
+            "<P class=\"delete\"><SPAN class=\"os-line-number line-number-4\" data-line-number=\"4\" contenteditable=\"false\"> </SPAN><SPAN style=\"color: #000000;\">\"Liebe Kinder, ich will hinaus in den Wald, seid auf der Hut vor dem Wolf! Wenn er <BR class=\"os-line-break\"><SPAN class=\"os-line-number line-number-5\" data-line-number=\"5\" contenteditable=\"false\"> </SPAN>hereinkommt, frisst er euch alle mit Haut und Haar. Der Bösewicht verstellt sich oft, aber <BR class=\"os-line-break\"><SPAN class=\"os-line-number line-number-6\" data-line-number=\"6\" contenteditable=\"false\"> </SPAN>an der rauen Stimme und an seinen schwarzen Füßen werdet ihr ihn schon erkennen.\"</SPAN></P><DEL>\n\n</DEL><P class=\"delete\"><SPAN class=\"os-line-number line-number-7\" data-line-number=\"7\" contenteditable=\"false\"> </SPAN>Die Geißlein sagten: \" Liebe Mutter, wir wollen uns schon in acht nehmen, du kannst ohne </P>" +
+            "<P class=\"insert\">holen, da rief sie alle sieben herbei und sprach:</P><INS>\n\n</INS>" +
+            "<P class=\"insert\"><SPAN style=\"color: #000000;\">Hello</SPAN></P><INS>\n\n</INS>" +
+            "<P class=\"insert\"><SPAN style=\"color: #000000;\">World</SPAN></P><INS>\n\n</INS>" +
+            "<P class=\"insert\"><SPAN style=\"color: #000000;\">Ya</SPAN></P><INS>\n\n</INS>" +
+            "<P class=\"insert\">Die Geißlein sagten: \" Liebe Mutter, wir wollen uns schon in acht nehmen, du kannst ohne</P>");
+    });
   });
 
   describe('addCSSClassToFirstTag function', function () {
