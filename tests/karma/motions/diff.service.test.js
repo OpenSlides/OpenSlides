@@ -463,6 +463,22 @@ describe('linenumbering', function () {
 
       expect(diff).toBe(expected.toLowerCase());
     });
+
+    it('removed inline colors in inserted/deleted parts (1)', function () {
+      var before = "<P>...so frißt er Euch alle mit Haut und Haar.</P>",
+          after = "<P>...so frißt er <span style='color: #000000;'>Euch alle</span> mit Haut und Haar.</P>";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('<P class="delete">...so frißt er Euch alle mit Haut und Haar.</P><P class="insert">...so frißt er <SPAN>Euch alle</SPAN> mit Haut und Haar.</P>');
+    });
+
+    it('removed inline colors in inserted/deleted parts (2)', function () {
+      var before = "<P>...so frißt er Euch alle mit Haut und Haar.</P>",
+          after = "<P>...so frißt er <span style='font-size: 2em; color: #000000; opacity: 0.5'>Euch alle</span> mit Haut und Haar.</P>";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('<P class="delete">...so frißt er Euch alle mit Haut und Haar.</P><P class="insert">...so frißt er <SPAN style="font-size: 2em; opacity: 0.5">Euch alle</SPAN> mit Haut und Haar.</P>');
+    });
   });
 
   describe('ignoring line numbers', function () {
@@ -509,11 +525,11 @@ describe('linenumbering', function () {
             after = "<p>holen, da rief sie alle sieben herbei und sprach:</p>\n\n<p><span style=\"color: #000000;\">Hello</span></p>\n\n<p><span style=\"color: #000000;\">World</span></p>\n\n<p><span style=\"color: #000000;\">Ya</span></p>\n\n<p>Die Geißlein sagten: \" Liebe Mutter, wir wollen uns schon in acht nehmen, du kannst ohne</p>";
         var diff = diffService.diff(before, after);
         expect(diff).toBe("<P class=\"delete\"><SPAN class=\"os-line-number line-number-3\" data-line-number=\"3\" contenteditable=\"false\"> </SPAN>holen, da rief sie alle sieben herbei und sprach:</P><DEL>\n\n</DEL>" +
-            "<P class=\"delete\"><SPAN class=\"os-line-number line-number-4\" data-line-number=\"4\" contenteditable=\"false\"> </SPAN><SPAN style=\"color: #000000;\">\"Liebe Kinder, ich will hinaus in den Wald, seid auf der Hut vor dem Wolf! Wenn er <BR class=\"os-line-break\"><SPAN class=\"os-line-number line-number-5\" data-line-number=\"5\" contenteditable=\"false\"> </SPAN>hereinkommt, frisst er euch alle mit Haut und Haar. Der Bösewicht verstellt sich oft, aber <BR class=\"os-line-break\"><SPAN class=\"os-line-number line-number-6\" data-line-number=\"6\" contenteditable=\"false\"> </SPAN>an der rauen Stimme und an seinen schwarzen Füßen werdet ihr ihn schon erkennen.\"</SPAN></P><DEL>\n\n</DEL><P class=\"delete\"><SPAN class=\"os-line-number line-number-7\" data-line-number=\"7\" contenteditable=\"false\"> </SPAN>Die Geißlein sagten: \" Liebe Mutter, wir wollen uns schon in acht nehmen, du kannst ohne </P>" +
+            "<P class=\"delete\"><SPAN class=\"os-line-number line-number-4\" data-line-number=\"4\" contenteditable=\"false\"> </SPAN><SPAN>\"Liebe Kinder, ich will hinaus in den Wald, seid auf der Hut vor dem Wolf! Wenn er <BR class=\"os-line-break\"><SPAN class=\"os-line-number line-number-5\" data-line-number=\"5\" contenteditable=\"false\"> </SPAN>hereinkommt, frisst er euch alle mit Haut und Haar. Der Bösewicht verstellt sich oft, aber <BR class=\"os-line-break\"><SPAN class=\"os-line-number line-number-6\" data-line-number=\"6\" contenteditable=\"false\"> </SPAN>an der rauen Stimme und an seinen schwarzen Füßen werdet ihr ihn schon erkennen.\"</SPAN></P><DEL>\n\n</DEL><P class=\"delete\"><SPAN class=\"os-line-number line-number-7\" data-line-number=\"7\" contenteditable=\"false\"> </SPAN>Die Geißlein sagten: \" Liebe Mutter, wir wollen uns schon in acht nehmen, du kannst ohne </P>" +
             "<P class=\"insert\">holen, da rief sie alle sieben herbei und sprach:</P><INS>\n\n</INS>" +
-            "<P class=\"insert\"><SPAN style=\"color: #000000;\">Hello</SPAN></P><INS>\n\n</INS>" +
-            "<P class=\"insert\"><SPAN style=\"color: #000000;\">World</SPAN></P><INS>\n\n</INS>" +
-            "<P class=\"insert\"><SPAN style=\"color: #000000;\">Ya</SPAN></P><INS>\n\n</INS>" +
+            "<P class=\"insert\"><SPAN>Hello</SPAN></P><INS>\n\n</INS>" +
+            "<P class=\"insert\"><SPAN>World</SPAN></P><INS>\n\n</INS>" +
+            "<P class=\"insert\"><SPAN>Ya</SPAN></P><INS>\n\n</INS>" +
             "<P class=\"insert\">Die Geißlein sagten: \" Liebe Mutter, wir wollen uns schon in acht nehmen, du kannst ohne</P>");
     });
   });
