@@ -487,10 +487,12 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             // e.g. #fff or #ff0048
                             var rgbRegex = new RegExp('^rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)$');
                             // e.g. rgb(0,255,34) or rgb(22, 0, 0)
+                            var nameRegex = new RegExp('^[a-z]+$');
+                            // matches just text like 'red', 'black', 'green'
 
                             if (hexRegex.test(color)) {
                                 return color;
-                            } else if(rgbRegex.test(color)) {
+                            } else if (rgbRegex.test(color)) {
                                 var decimalColors = rgbRegex.exec(color).slice(1);
                                 for (var i = 0; i < 3; i++) {
                                     var decimalValue = parseInt(decimalColors[i]);
@@ -502,6 +504,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     decimalColors[i] = hexString;
                                 }
                                 return '#' + decimalColors.join('');
+                            } else if (nameRegex.test(color)) {
+                                return color;
                             } else {
                                 console.error('Could not parse color "' + color + '"');
                                 return color;
