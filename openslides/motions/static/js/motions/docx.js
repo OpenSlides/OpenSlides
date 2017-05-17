@@ -2,24 +2,28 @@
 
 'use strict';
 
-angular.module('OpenSlidesApp.motions.docx', [])
+angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
 
 .factory('MotionDocxExport', [
     '$http',
     '$q',
+    'operator',
     'Config',
     'Category',
     'gettextCatalog',
     'FileSaver',
     'lineNumberingService',
-    function ($http, $q, Config, Category, gettextCatalog, FileSaver, lineNumberingService) {
+    'Html2DocxConverter',
+    function ($http, $q, operator, Config, Category, gettextCatalog, FileSaver, lineNumberingService, Html2DocxConverter) {
 
         var PAGEBREAK = '<w:p><w:r><w:br w:type="page" /></w:r></w:p>';
-        var TAGS_NO_PARAM = ['b', 'strong', 'em', 'i'];
+        /*var TAGS_NO_PARAM = ['b', 'strong', 'em', 'i'];
 
         var images;
         var relationships;
-        var contentTypes;
+        var contentTypes; */
+
+        var converter;
 
         var getData = function (motions, params) {
             var data = {};
@@ -48,11 +52,15 @@ angular.module('OpenSlidesApp.motions.docx', [])
 
             // motions
             data.tableofcontents_translation = gettextCatalog.getString('Table of contents');
-            data.motions = getMotionFullData(motions, params);
             data.motions_list = getMotionShortData(motions);
             data.no_motions = gettextCatalog.getString('No motions available.');
 
-            return data;
+            return $q(function (resolve) {
+                getMotionFullData(motions, params).then(function (motionData) {
+                    data.motions = motionData;
+                    resolve(data);
+                });
+            });
         };
 
         var getCategoriesData = function (categories) {
@@ -74,289 +82,95 @@ angular.module('OpenSlidesApp.motions.docx', [])
         };
 
         var getMotionFullData = function (motions, params) {
+            // All translations
             var translation = gettextCatalog.getString('Motion'),
                 sequential_translation = gettextCatalog.getString('Sequential number'),
                 submitters_translation = gettextCatalog.getString('Submitters'),
                 status_translation = gettextCatalog.getString('Status'),
                 reason_translation = gettextCatalog.getString('Reason'),
-                data = _.map(motions, function (motion) {
-                    var text = motion.getTextByMode(params.changeRecommendationMode, null, null, false);
-                    var reason = params.includeReason ? motion.getReason() : '';
-                    return {
-                        motion_translation: translation,
-                        sequential_translation: sequential_translation,
-                        id: motion.id,
-                        identifier: motion.identifier,
-                        title: motion.getTitle(),
-                        submitters_translation: submitters_translation,
-                        submitters: _.map(motion.submitters, function (submitter) {
-                                        return submitter.get_full_name();
-                                    }).join(', '),
-                        status_translation: status_translation,
-                        status: motion.getStateName(),
-                        preamble: gettextCatalog.getString(Config.get('motions_preamble').value),
-                        text: html2docx(text),
-                        reason_translation: reason.length === 0 ? '' : reason_translation,
-                        reason: html2docx(reason),
-                        pagebreak: PAGEBREAK,
-                    };
-                });
-            if (data.length) {
-                // clear pagebreak on last element
-                data[data.length - 1].pagebreak = '';
-            }
-            return data;
-        };
+                comment_translation = gettextCatalog.getString('Comments');
+            // promises for create the actual motion data
+            var promises = _.map(motions, function (motion) {
+                var text = motion.getTextByMode(params.changeRecommendationMode, null, null, false);
+                var reason = params.includeReason ? motion.getReason() : '';
+                var comments = params.includeComments ? getMotionComments(motion) : [];
 
-        var html2docx = function (html) {
-            var docx = '';
-            var stack = [];
-
-            var isTag = false; // Even if html starts with '<p....' it is split to '', '<', ..., so always no tag at the beginning
-            var hasParagraph = true;
-            var skipFirstParagraphClosing = true;
-            if (html.substring(0,3) != '<p>') {
-                docx += '<w:p>';
-                skipFirstParagraphClosing = false;
-            }
-            html = html.split(/(<|>)/g);
-
-            html.forEach(function (part) {
-                if (part !== '' && part != '\n' && part != '<' && part != '>') {
-                    if (isTag) {
-                        if (part.startsWith('p')) { /** p **/
-                            // Special: begin new paragraph (only if its the first):
-                            if (hasParagraph && !skipFirstParagraphClosing) {
-                                // End, if there is one
-                                docx += '</w:p>';
-                            }
-                            skipFirstParagraphClosing = false;
-                            docx += '<w:p>';
-                            hasParagraph = true;
-                        } else if (part.startsWith('/p')) {
-                            // Special: end paragraph:
-                            docx += '</w:p>';
-                            hasParagraph = false;
-
-                        } else if (part.charAt(0) == "/") {
-                            // remove from stack
-                            stack.pop();
-                        } else { // now all other tags
-                            var tag = {};
-                            if (_.indexOf(TAGS_NO_PARAM, part) > -1) { /** b, strong, em, i **/
-                                stack.push({tag: part});
-                            } else if (part.startsWith('span')) { /** span **/
-                                tag = {tag: 'span', attrs: {}};
-                                var rStyle = /(?:\"|\;\s?)([a-zA-z\-]+)\:\s?([a-zA-Z0-9\-\#]+)/g, matchSpan;
-                                while ((matchSpan = rStyle.exec(part)) !== null) {
-                                    switch (matchSpan[1]) {
-                                        case 'color':
-                                                tag.attrs.color = matchSpan[2].slice(1); // cut off the #
-                                            break;
-                                        case 'background-color':
-                                                tag.attrs.backgroundColor = matchSpan[2].slice(1); // cut off the #
-                                            break;
-                                        case 'text-decoration':
-                                            if (matchSpan[2] === 'underline') {
-                                                tag.attrs.underline = true;
-                                            } else if (matchSpan[2] === 'line-through') {
-                                                tag.attrs.strike = true;
-                                            }
-                                            break;
-                                    }
-                                }
-                                stack.push(tag);
-                            } else if (part.startsWith('a')) { /** a **/
-                                var rHref = /href="([^"]+)"/g;
-                                var href = rHref.exec(part)[1];
-                                tag = {tag: 'a', href: href};
-                                stack.push(tag);
-                            } else if (part.startsWith('img')) {
-                                // images has to be placed instantly, so there is no use of 'tag'.
-                                var img = {}, rImg = /(\w+)=\"([^\"]*)\"/g, matchImg;
-                                while ((matchImg = rImg.exec(part)) !== null) {
-                                    img[matchImg[1]] = matchImg[2];
-                                }
-
-                                // With and height and source have to be given!
-                                if (img.width && img.height && img.src) {
-                                    var rrId = relationships.length + 1;
-                                    var imgId = images.length + 1;
-
-                                    // set name ('pic.jpg'), title, ext ('jpg'), mime ('image/jpeg')
-                                    img.name = img.src.split('/');
-                                    img.name = _.last(img.name);
-
-                                    var tmp = img.name.split('.');
-                                    // set name without extension as title if there isn't a title
-                                    if (!img.title) {
-                                        img.title = tmp[0];
-                                    }
-                                    img.ext = tmp[1];
-
-                                    img.mime = 'image/' + img.ext;
-                                    if (img.ext == 'jpe' || img.ext == 'jpg') {
-                                        img.mime = 'image/jpeg';
-                                    }
-
-                                    // x and y for the container and picture size in EMU (assuming 96dpi)!
-                                    var x = img.width * 914400 / 96;
-                                    var y = img.height * 914400 / 96;
-
-                                    // Own paragraph for the image
-                                    if (hasParagraph) {
-                                        docx += '</w:p>';
-                                    }
-                                    docx += '<w:p><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extend cx="' + x +'" cy="' + y + '"/><wp:effectExtent l="0" t="0" r="0" b="0"/>' +
-                                        '<wp:docPr id="' + imgId + '" name="' + img.name + '" title="' + img.title + '" descr="' + img.title + '"/><wp:cNvGraphicFramePr>' +
-                                        '<a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1"/></wp:cNvGraphicFramePr>' +
-                                        '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">' +
-                                        '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="' + imgId + '" name="' +
-                                        img.name + '" title="' + img.title + '" descr="' + img.title + '"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rrId' + rrId + '"/><a:stretch>' +
-                                        '<a:fillRect/></a:stretch></pic:blipFill><pic:spPr bwMode="auto"><a:xfrm><a:off x="0" y="0"/><a:ext cx="' + x + '" cy="' + y + '"/></a:xfrm>' +
-                                        '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>';
-
-                                    // hasParagraph stays untouched, the documents paragraph state is restored here
-                                    if (hasParagraph) {
-                                        docx += '<w:p>';
-                                    }
-
-                                    // entries in images, relationships and contentTypes
-                                    images.push({
-                                        url: img.src,
-                                        zipPath: 'word/media/' + img.name
-                                    });
-                                    relationships.push({
-                                        Id: 'rrId' + rrId,
-                                        Type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/image',
-                                        Target: 'media/' + img.name
-                                    });
-                                    contentTypes.push({
-                                        PartName: '/word/media/' + img.name,
-                                        ContentType: img.mime
-                                    });
-                                }
-                            }
-                        }
-                    } else { /** No tag **/
-                        if (!hasParagraph) {
-                            docx += '<w:p>';
-                            hasParagraph = true;
-                        }
-                        var docx_part = '<w:r><w:rPr>';
-                        var hyperlink = false;
-                        stack.forEach(function (tag) {
-                            switch (tag.tag) {
-                                case 'b': case 'strong':
-                                    docx_part += '<w:b/><w:bCs/>';
-                                    break;
-                                case 'em': case 'i':
-                                        docx_part += '<w:i/><w:iCs/>';
-                                    break;
-                                case 'span':
-                                    for (var key in tag.attrs) {
-                                        switch (key) {
-                                            case 'color':
-                                                docx_part += '<w:color w:val="' + tag.attrs[key] + '"/>';
-                                                break;
-                                            case 'backgroundColor':
-                                                docx_part += '<w:shd w:fill="' + tag.attrs[key] + '"/>';
-                                                break;
-                                            case 'underline':
-                                                docx_part += '<w:u w:val="single"/>';
-                                                break;
-                                            case 'strike':
-                                                docx_part += '<w:strike/>';
-                                                break;
-                                        }
-                                    }
-                                    break;
-                                case 'a':
-                                    var id = relationships.length + 1;
-                                    docx_part = '<w:hyperlink r:id="rrId' + id + '">' + docx_part;
-                                    docx_part += '<w:rStyle w:val="Internetlink"/>'; // necessary?
-                                    relationships.push({
-                                        Id: 'rrId' + id,
-                                        Type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink',
-                                        Target: tag.href,
-                                        TargetMode: 'External'
-                                    });
-                                    hyperlink = true;
-                                    break;
-                            }
+                // Data for one motions. Must include translations, ...
+                var motionData = {
+                    // Translations
+                    motion_translation: translation,
+                    sequential_translation: sequential_translation,
+                    submitters_translation: submitters_translation,
+                    reason_translation: reason.length === 0 ? '' : reason_translation,
+                    status_translation: status_translation,
+                    comment_translation: comments.length === 0 ? '' : comment_translation,
+                    // Actual data
+                    id: motion.id,
+                    identifier: motion.identifier,
+                    title: motion.getTitle(),
+                    submitters: _.map(motion.submitters, function (submitter) {
+                                    return submitter.get_full_name();
+                                }).join(', '),
+                    status: motion.getStateName(),
+                    // Miscellaneous stuff
+                    preamble: gettextCatalog.getString(Config.get('motions_preamble').value),
+                    pagebreak: PAGEBREAK,
+                };
+                // converting html to docx is async, so text, reason and comments are inserted here.
+                return $q(function (resolve) {
+                    var convertPromises = _.map(comments, function (comment) {
+                        return converter.html2docx(comment.comment).then(function (commentAsDocx) {
+                            comment.comment = commentAsDocx;
                         });
-                        docx_part += '</w:rPr><w:t>' + part + '</w:t></w:r>';
-                        if (hyperlink) {
-                            docx_part += '</w:hyperlink>';
-                        }
-
-                        // append to docx
-                        docx += docx_part;
-                    }
-                    isTag = !isTag;
-                }
-                if (part === '' || part == '\n') {
-                    // just if two tags following eachother: <b><span> --> ...,'>', '', '<',...
-                    // or there is a line break between: <b>\n<span> --> ...,'>', '\n', '<',...
-                    isTag = !isTag;
-                }
-            });
-
-            // for finishing close the last paragraph (if open)
-            if (hasParagraph) {
-                docx += '</w:p>';
-            }
-
-            // replacing of special symbols:
-            docx = docx.replace(new RegExp('\&auml\;', 'g'), 'ä');
-            docx = docx.replace(new RegExp('\&uuml\;', 'g'), 'ü');
-            docx = docx.replace(new RegExp('\&ouml\;', 'g'), 'ö');
-            docx = docx.replace(new RegExp('\&Auml\;', 'g'), 'Ä');
-            docx = docx.replace(new RegExp('\&Uuml\;', 'g'), 'Ü');
-            docx = docx.replace(new RegExp('\&Ouml\;', 'g'), 'Ö');
-            docx = docx.replace(new RegExp('\&szlig\;', 'g'), 'ß');
-            docx = docx.replace(new RegExp('\&nbsp\;', 'g'), ' ');
-            docx = docx.replace(new RegExp('\&sect\;', 'g'), '§');
-
-            // remove all entities except gt, lt and amp
-            var rEntity = /\&(?!gt|lt|amp)\w+\;/g, matchEntry, indexes = [];
-            while ((matchEntry = rEntity.exec(docx)) !== null) {
-                indexes.push({
-                    startId: matchEntry.index,
-                    stopId: matchEntry.index + matchEntry[0].length
+                    });
+                    convertPromises.push(converter.html2docx(text).then(function (textAsDocx) {
+                        motionData.text = textAsDocx;
+                    }));
+                    convertPromises.push(converter.html2docx(reason).then(function (reasonAsDocx) {
+                        motionData.reason = reasonAsDocx;
+                    }));
+                    $q.all(convertPromises).then(function () {
+                        motionData.comments = comments;
+                        resolve(motionData);
+                    });
                 });
-            }
-            for (var i = indexes.length - 1; i>=0; i--) {
-                docx = docx.substring(0, indexes[i].startId) + docx.substring(indexes[i].stopId, docx.length);
-            }
+            });
+            // resolve, if all motion data is fetched.
+            return $q(function (resolve) {
+                $q.all(promises).then(function (data) {
+                    if (data.length) {
+                        // clear pagebreak on last element
+                        data[data.length - 1].pagebreak = '';
+                    }
+                    resolve(data);
+                });
+            });
+        };
 
-            return docx;
-        };
-        var updateRelationships = function (oldContent) {
-            var content = oldContent.split('\n');
-            relationships.forEach(function (rel) {
-                content[1] += '<Relationship';
-                for (var key in rel) {
-                    content[1] += ' ' + key + '="' + rel[key] + '"';
+        var getMotionComments = function (motion) {
+            var fields = Config.get('motions_comments').value;
+            var canSeeComment = function (index) {
+                return fields[index].public || operator.hasPerms('motions.can_manage');
+            };
+            var comments = [];
+            for (var i = 0; i < fields.length; i++) {
+                if (motion.comments[i] && canSeeComment(i)) {
+                    var title = gettextCatalog.getString('Comment') + ' ' + fields[i].name;
+                    if (!fields[i].public) {
+                        title += ' (' + gettextCatalog.getString('internal') + ')';
+                    }
+                    comments.push({
+                        title: title,
+                        comment: motion.comments[i],
+                    });
                 }
-                content[1] += '/>';
-            });
-            return content.join('\n');
-        };
-        var updateContentTypes = function (oldContent) {
-            var content = oldContent.split('\n');
-            contentTypes.forEach(function (type) {
-                content[1] += '<Override';
-                for (var key in type) {
-                    content[1] += ' ' + key + '="' + type[key] + '"';
-                }
-                content[1] += '/>';
-            });
-            return content.join('\n');
+            }
+            return comments;
         };
 
         return {
             export: function (motions, params) {
+                converter = Html2DocxConverter.createInstance();
                 if (!params) {
                     params = {};
                 }
@@ -364,40 +178,23 @@ angular.module('OpenSlidesApp.motions.docx', [])
                     filename: 'motions-export.docx',
                     changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
                     includeReason: true,
+                    includeComments: false,
                 });
                 if (!_.includes(['original', 'changed', 'agreed'], params.changeRecommendationMode)) {
                     params.changeRecommendationMode = 'original';
                 }
 
-                images = [];
-                relationships = [];
-                contentTypes = [];
                 $http.get('/motions/docxtemplate/').then(function (success) {
                     var content = window.atob(success.data);
                     var doc = new Docxgen(content);
 
-                    doc.setData(getData(motions, params));
-                    doc.render();
-                    var zip = doc.getZip();
+                    getData(motions, params).then(function (data) {
+                        doc.setData(data);
+                        doc.render();
 
-                    // update relationships from 'relationships'
-                    var rels = updateRelationships(zip.file('word/_rels/document.xml.rels').asText());
-                    zip.file('word/_rels/document.xml.rels', rels);
+                        var zip = doc.getZip();
+                        zip = converter.updateZipFile(zip);
 
-                    // update content type from 'contentTypes'
-                    var contentTypes = updateContentTypes(zip.file('[Content_Types].xml').asText());
-                    zip.file('[Content_Types].xml', contentTypes);
-
-                    var imgPromises = [];
-                    images.forEach(function (img) {
-                        imgPromises.push(
-                            $http.get(img.url, {responseType: 'arraybuffer'}).then(function (resolvedImage) {
-                                zip.file(img.zipPath, resolvedImage.data);
-                            })
-                        );
-                    });
-                    // wait for all images to be resolved
-                    $q.all(imgPromises).then(function () {
                         var out = zip.generate({type: 'blob'});
                         FileSaver.saveAs(out, params.filename);
                     });

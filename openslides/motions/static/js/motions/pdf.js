@@ -10,12 +10,12 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'gettextCatalog',
     'PDFLayout',
     'PdfMakeConverter',
-    'PdfImageConverter',
+    'ImageConverter',
     'HTMLValidizer',
     'Category',
     'Config',
     'Motion',
-    function($q, operator, gettextCatalog, PDFLayout, PdfMakeConverter, PdfImageConverter, HTMLValidizer, Category, Config, Motion) {
+    function($q, operator, gettextCatalog, PDFLayout, PdfMakeConverter, ImageConverter, HTMLValidizer, Category, Config, Motion) {
         /**
          * Provides the content as JS objects for Motions in pdfMake context
          * @constructor
@@ -354,7 +354,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             };
 
             return $q(function (resolve) {
-                PdfImageConverter.toBase64(getImageSources()).then(function (imageMap) {
+                ImageConverter.toBase64(getImageSources()).then(function (imageMap) {
                     converter = PdfMakeConverter.createInstance(imageMap);
                     resolve({
                         getContent: getContent,
