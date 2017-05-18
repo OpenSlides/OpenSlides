@@ -976,6 +976,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                     wrapDel.appendChild(currChild);
                 } else {
                     this.addCSSClass(currChild, 'delete');
+                    this._removeColorStyles(currChild);
                 }
             }
             for (i = 0; i < newTextWithBreaks.childNodes.length; i++) {
@@ -987,6 +988,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                     wrapIns.appendChild(currChild);
                 } else {
                     this.addCSSClass(currChild, 'insert');
+                    this._removeColorStyles(currChild);
                 }
             }
 
@@ -1016,6 +1018,38 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                     return match.substring(0, match.length - 1) + " class=\"" + className + "\">";
                 }
             });
+        };
+
+        /**
+         * This function removes color-Attributes from the styles of this node or a descendant,
+         * as they interfer with the green/red color in HTML and PDF
+         *
+         * For the moment, it is sufficient to do this only in paragraph diff mode, as we fall back to this mode anyway
+         * once we encounter SPANs or other tags inside of INS/DEL-tags
+         *
+         * @param {Element} node
+         * @private
+         */
+        this._removeColorStyles = function (node) {
+            var styles = node.getAttribute('style');
+            if (styles && styles.indexOf('color') > -1) {
+                var stylesNew = [];
+                styles.split(';').forEach(function(style) {
+                    if (!style.match(/^\s*color\s*:/i)) {
+                        stylesNew.push(style);
+                    }
+                });
+                if (stylesNew.join(";") === '') {
+                    node.removeAttribute('style');
+                } else {
+                    node.setAttribute('style', stylesNew.join(";"));
+                }
+            }
+            for (var i = 0; i < node.childNodes.length; i++) {
+                if (node.childNodes[i].nodeType === ELEMENT_NODE) {
+                    this._removeColorStyles(node.childNodes[i]);
+                }
+            }
         };
 
         /**
