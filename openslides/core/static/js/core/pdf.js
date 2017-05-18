@@ -99,7 +99,12 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     var ctx = canvas.getContext("2d");
                     ctx.drawImage(img, 0, 0);
                     var dataURL = canvas.toDataURL("image/png");
-                    resolve(dataURL);
+                    var imageData = {
+                        data: dataURL,
+                        width: img.width,
+                        height: img.height
+                    };
+                    resolve(imageData);
                 };
                 img.src = url;
             });
@@ -159,7 +164,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
 
                 if (logoHeaderUrl) {
                     columns.push({
-                        image: imageMap[logoHeaderUrl],
+                        image: imageMap[logoHeaderUrl].data,
                         fit: [180, 40],
                         width: '20%'
                     });
@@ -198,7 +203,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
 
                 if (logoFooterUrl) {
                     columns.push({
-                        image: imageMap[logoFooterUrl],
+                        image: imageMap[logoFooterUrl].data,
                         fit: [400,50],
                         width: '80%'
                     });
@@ -813,31 +818,39 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     alreadyConverted.push(pObjectToPush);
                                     break;
                                 case "img":
-                                    // TODO: need a proper way to calculate the space
-                                    // left on the page.
-                                    // This requires further information
-                                    // A4 in 72dpi: 595px x 842px
+                                    var regex = /([\w-]*)\s*:\s*([^;]*)/g;
+                                    var match; //helper variable for the refegex
+                                    var imageSize={};
                                     var maxResolution = {
                                         width: 435,
                                         height: 830
-                                    },
-                                        width = parseInt(element.getAttribute("width")),
-                                        height = parseInt(element.getAttribute("height"));
+                                    };
 
-                                    if (width > maxResolution.width) {
-                                        var scaleByWidth = maxResolution.width/width;
-                                        width *= scaleByWidth;
-                                        height *= scaleByWidth;
+                                    if (element.getAttribute("style")) {
+                                        while ((match = regex.exec(element.getAttribute("style"))) !== null) {
+                                            imageSize[match[1]] = parseInt(match[2].trim());
+                                        }
+                                    } else {
+                                        imageSize = {
+                                            height: images[element.getAttribute("src")].height,
+                                            width: images[element.getAttribute("src")].width
+                                        };
                                     }
-                                    if (height > maxResolution.height) {
-                                        var scaleByHeight = maxResolution.height/height;
-                                        width *= scaleByHeight;
-                                        height *= scaleByHeight;
+
+                                    if (imageSize.width > maxResolution.width) {
+                                        var scaleByWidth = maxResolution.width/imageSize.width;
+                                        imageSize.width *= scaleByWidth;
+                                        imageSize.height *= scaleByWidth;
+                                    }
+                                    if (imageSize.height > maxResolution.height) {
+                                        var scaleByHeight = maxResolution.height/imageSize.height;
+                                        imageSize.width *= scaleByHeight;
+                                        imageSize.height *= scaleByHeight;
                                     }
                                     alreadyConverted.push({
-                                        image: images[element.getAttribute("src")],
-                                        width: width,
-                                        height: height
+                                        image: images[element.getAttribute("src")].data,
+                                        width: imageSize.width,
+                                        height: imageSize.height
                                     });
                                     break;
                                 case "ul":
