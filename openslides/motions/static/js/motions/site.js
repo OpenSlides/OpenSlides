@@ -1191,10 +1191,12 @@ angular.module('OpenSlidesApp.motions.site', [
     'ProjectionDefault',
     'MotionBlock',
     'MotionPdfExport',
+    'EditingWarning',
     function($scope, $http, $timeout, operator, ngDialog, gettextCatalog, MotionForm,
              ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation,
              Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motionId, MotionInlineEditing,
-             MotionCommentsInlineEditing, Projector, ProjectionDefault, MotionBlock, MotionPdfExport) {
+             MotionCommentsInlineEditing, Projector, ProjectionDefault, MotionBlock, MotionPdfExport,
+             EditingWarning) {
         var motion = Motion.get(motionId);
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1490,6 +1492,18 @@ angular.module('OpenSlidesApp.motions.site', [
                     Config.get('motions_allow_disable_versioning').value);
             }
         );
+        // Wrapper functions for $scope.inlineEditing, to warn other users.
+        var editingStoppedCallback;
+        $scope.enableMotionInlineEditing = function () {
+            editingStoppedCallback = EditingWarning.editingStarted('motion_update_' + motion.id);
+            $scope.inlineEditing.enable();
+        };
+        $scope.disableMotionInlineEditing = function () {
+            if (editingStoppedCallback) {
+                editingStoppedCallback();
+            }
+            $scope.inlineEditing.disable();
+        };
         $scope.commentsInlineEditing = MotionCommentsInlineEditing.createInstances($scope, motion);
         $scope.personalNoteInlineEditing = MotionInlineEditing.createInstance($scope, motion,
             'personal-note-inline-editor', false,
@@ -1693,9 +1707,9 @@ angular.module('OpenSlidesApp.motions.site', [
     'AgendaUpdate',
     'motionId',
     'ErrorMessage',
-    'DialogEditingWarning',
+    'EditingWarning',
     function($scope, $state, Motion, Category, Config, Mediafile, MotionForm,
-        Tag, User, Workflow, Agenda, AgendaUpdate, motionId, ErrorMessage, DialogEditingWarning) {
+        Tag, User, Workflow, Agenda, AgendaUpdate, motionId, ErrorMessage, EditingWarning) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1751,8 +1765,8 @@ angular.module('OpenSlidesApp.motions.site', [
         }
 
         // Displaying a warning, if other users edit this motion too
-        var dialogClosedCallback = DialogEditingWarning.dialogOpened('motion_update_dialog_' + motionId);
-        $scope.$on('$destroy', dialogClosedCallback);
+        var editingStoppedCallback = EditingWarning.editingStarted('motion_update_' + motionId);
+        $scope.$on('$destroy', editingStoppedCallback);
 
         // Save motion
         $scope.save = function (motion, gotoDetailView) {

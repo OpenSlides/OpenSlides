@@ -583,10 +583,10 @@ angular.module('OpenSlidesApp.core.site', [
 
 /* This Factory could be used in any dialog, if the user should be warned, if another user
  * also has this dialog open. Use it like in this example in any dialog controller:
-      var dialogClosedCallback = DialogEditingWarning.dialogOpened('dialog_name' + item.id);
-      $scope.$on('$destroy', dialogClosedCallback);
+      var editingStoppedCallback = EditingWarning.editingStarted('editing_name' + item.id);
+      $scope.$on('$destroy', editingStoppedCallback);
  */
-.factory('DialogEditingWarning', [
+.factory('EditingWarning', [
     'operator',
     'gettextCatalog',
     'Notify',
@@ -595,7 +595,7 @@ angular.module('OpenSlidesApp.core.site', [
         return {
             // This returns the callback function that the controller should call, if
             // the dialog got closed by the user. Provide a unique dialog name.
-            dialogOpened: function (dialogName) {
+            editingStarted: function (dialogName) {
                 // List of active editors
                 var editorNames = [];
                 var messagingId = dialogName + 'EditingWarning';
