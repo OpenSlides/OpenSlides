@@ -1547,6 +1547,18 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.createPollPdf = function () {
             MotionPdfExport.createPollPdf($scope.motion, $scope.version);
         };
+        $scope.exportComments = function () {
+            var identifier = $scope.motion.identifier ? '-' + $scope.motion.identifier : '';
+            var commentsString = ' - ' + gettextCatalog.getString('Comments');
+            var filename = gettextCatalog.getString('Motion') + identifier + commentsString + '.pdf';
+            MotionPdfExport.exportComments($scope.motion, filename);
+        };
+        $scope.exportPersonalNote = function () {
+            var identifier = $scope.motion.identifier ? '-' + $scope.motion.identifier : '';
+            var personalNoteString = ' - ' + gettextCatalog.getString('personal note');
+            var filename = gettextCatalog.getString('Motion') + identifier + personalNoteString + '.pdf';
+            MotionPdfExport.exportPersonalNote($scope.motion, filename);
+        };
     }
 ])
 

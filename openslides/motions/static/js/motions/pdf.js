@@ -372,6 +372,167 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     }
 ])
 
+.factory('MotionPartialContentProvider', [
+    '$q',
+    'gettextCatalog',
+    'PDFLayout',
+    'PdfMakeConverter',
+    'PdfImageConverter',
+    'HTMLValidizer',
+    function ($q, gettextCatalog, PDFLayout, PdfMakeConverter, PdfImageConverter, HTMLValidizer) {
+        /*
+         * content should be an array of content blocks. Each content is an object providing a
+         * heading and a text. E.g.
+         * [{heading: 'comment1', text: '<html in here>'}, {heading: ...}, ...]
+         * */
+        var createInstance = function (motion, content) {
+
+            var converter;
+
+            // Query all image sources from the content
+            var getImageSources = function () {
+                var imageSources = [];
+                _.forEach(content, function (contentBlock) {
+                    var html = HTMLValidizer.validize(contentBlock.text);
+                    imageSources = imageSources.concat(_.map($(html).find('img'), function(element) {
+                        return element.getAttribute('src');
+                    }));
+                });
+                return imageSources;
+            };
+
+            // title
+            var identifier = motion.identifier ? ' ' + motion.identifier : '';
+            var title = PDFLayout.createTitle(
+                    gettextCatalog.getString('Motion') + identifier + ': ' + motion.getTitle()
+            );
+
+            // subtitle
+            var subtitleLines = [];
+            if (motion.parent_id) {
+                var parentMotion = Motion.get(motion.parent_id);
+                subtitleLines.push(
+                    gettextCatalog.getString('Amendment of motion') + ': ' +
+                    (parentMotion.identifier ? parentMotion.identifier : parentMotion.getTitle())
+                );
+            }
+            subtitleLines.push(gettextCatalog.getString('Sequential number') + ': ' +  motion.id);
+            var subtitle = PDFLayout.createSubtitle(subtitleLines);
+
+            // meta data table
+            var metaTable = function() {
+                var metaTableBody = [];
+
+                // submitters
+                var submitters = _.map(motion.submitters, function (submitter) {
+                    return submitter.get_full_name();
+                }).join(', ');
+                metaTableBody.push([
+                    {
+                        text: gettextCatalog.getString('Submitters') + ':',
+                        style: ['bold', 'grey'],
+                    },
+                    {
+                        text: submitters,
+                        style: 'grey'
+                    }
+                ]);
+
+                // state
+                metaTableBody.push([
+                    {
+                        text: gettextCatalog.getString('State') + ':',
+                        style: ['bold', 'grey']
+                    },
+                    {
+                        text: motion.getStateName(),
+                        style: 'grey'
+                    }
+                ]);
+
+                // recommendation
+                if (motion.getRecommendationName()) {
+                    metaTableBody.push([
+                        {
+                            text: Config.get('motions_recommendations_by').value + ':',
+                            style: ['bold', 'grey']
+                        },
+                        {
+                            text: motion.getRecommendationName(),
+                            style: 'grey'
+                        }
+                    ]);
+                }
+
+                // category
+                if (motion.category) {
+                    metaTableBody.push([
+                        {
+                            text: gettextCatalog.getString('Category') + ':',
+                            style: ['bold', 'grey'] },
+                        {
+                            text: motion.category.name,
+                            style: 'grey'
+                        }
+                    ]);
+                }
+
+                // build table
+                // Used placeholder for 'layout' functions whiche are
+                // replaced by lineWitdh/lineColor function in pfd-worker.js.
+                // TODO: Remove placeholder and us static values for LineWidth and LineColor
+                // if pdfmake has fixed this.
+                var metaTableJsonString = {
+                    table: {
+                        widths: ['30%','70%'],
+                        body: metaTableBody,
+                    },
+                    margin: [0, 0, 0, 20],
+                    layout: '{{motion-placeholder-to-insert-functions-here}}'
+                };
+                return metaTableJsonString;
+            };
+
+            var getContentBlockData = function (block) {
+                var data = [];
+                data.push({
+                    text:  block.heading,
+                    style: 'heading3',
+                    marginTop: 25,
+                });
+                data.push(converter.convertHTML(block.text));
+                return data;
+            };
+
+            // Generates content as a pdfmake consumable
+            var getContent = function() {
+                var pdfContent = [
+                    title,
+                    subtitle,
+                    metaTable(),
+                ];
+                _.forEach(content, function (contentBlock) {
+                    pdfContent.push(getContentBlockData(contentBlock));
+                });
+                return pdfContent;
+            };
+
+            return $q(function (resolve) {
+                PdfImageConverter.toBase64(getImageSources()).then(function (imageMap) {
+                    converter = PdfMakeConverter.createInstance(imageMap);
+                    resolve({
+                        getContent: getContent,
+                    });
+                });
+            });
+        };
+
+        return {
+            createInstance: createInstance
+        };
+    }
+])
+
 .factory('PollContentProvider', [
     'PDFLayout',
     'gettextCatalog',
@@ -630,6 +791,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 .factory('MotionPdfExport', [
     '$http',
     '$q',
+    'operator',
     'Config',
     'gettextCatalog',
     'MotionChangeRecommendation',
@@ -640,13 +802,15 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'PdfMakeDocumentProvider',
     'PollContentProvider',
     'PdfMakeBallotPaperProvider',
+    'MotionPartialContentProvider',
     'PdfCreate',
     'PDFLayout',
     'Messaging',
     'FileSaver',
-    function ($http, $q, Config, gettextCatalog, MotionChangeRecommendation, HTMLValidizer, PdfMakeConverter,
-        MotionContentProvider, MotionCatalogContentProvider, PdfMakeDocumentProvider, PollContentProvider,
-        PdfMakeBallotPaperProvider, PdfCreate, PDFLayout, Messaging, FileSaver) {
+    function ($http, $q, operator, Config, gettextCatalog, MotionChangeRecommendation, HTMLValidizer,
+        PdfMakeConverter, MotionContentProvider, MotionCatalogContentProvider, PdfMakeDocumentProvider,
+        PollContentProvider, PdfMakeBallotPaperProvider, MotionPartialContentProvider, PdfCreate,
+        PDFLayout, Messaging, FileSaver) {
         return {
             getDocumentProvider: function (motions, params, singleMotion) {
                 params = _.clone(params || {}); // Clone this to avoid sideeffects.
@@ -775,6 +939,44 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 var pollContentProvider = PollContentProvider.createInstance(title, id);
                 var documentProvider = PdfMakeBallotPaperProvider.createInstance(pollContentProvider);
                 PdfCreate.download(documentProvider.getDocument(), filename);
+            },
+            exportPersonalNote: function (motion, filename) {
+                var personalNote = _.find(motion.personal_notes, function (note) {
+                    return note.user_id === operator.user.id;
+                });
+                var content = [{
+                    heading: gettextCatalog.getString('Personal note'),
+                    text: personalNote ? personalNote.note : '',
+                }];
+                MotionPartialContentProvider.createInstance(motion, content).then(function (contentProvider) {
+                    PdfMakeDocumentProvider.createInstance(contentProvider).then(function (documentProvider) {
+                        PdfCreate.download(documentProvider.getDocument(), filename);
+                    });
+                });
+            },
+            exportComments: function (motion, filename) {
+                var fields = Config.get('motions_comments').value;
+                var canSeeComment = function (index) {
+                    return fields[index].public || operator.hasPerms('motions.can_manage');
+                };
+                var content = [];
+                for (var i = 0; i < fields.length; i++) {
+                    if (motion.comments[i] && canSeeComment(i)) {
+                        var title = gettextCatalog.getString('Comment') + ' ' + fields[i].name;
+                        if (!fields[i].public) {
+                            title += ' (' + gettextCatalog.getString('internal') + ')';
+                        }
+                        content.push({
+                            heading: title,
+                            text: motion.comments[i],
+                        });
+                    }
+                }
+                MotionPartialContentProvider.createInstance(motion, content).then(function (contentProvider) {
+                    PdfMakeDocumentProvider.createInstance(contentProvider).then(function (documentProvider) {
+                        PdfCreate.download(documentProvider.getDocument(), filename);
+                    });
+                });
             },
         };
     }

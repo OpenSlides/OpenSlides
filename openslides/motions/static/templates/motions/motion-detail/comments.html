@@ -2,17 +2,24 @@
   <div class="row">
     <!-- inline editing toolbar -->
     <div class="motion-toolbar">
-      <div class="pull-right inline-editing-activator" ng-if="motion.isAllowed('change_comments')">
-        <button ng-if="!commentsInlineEditing.active()" ng-click="commentsInlineEditing.enable()"
-          class="btn btn-sm btn-default">
-          <i class="fa fa-pencil-square-o"></i>
-          <translate>Inline editing</translate>
+      <div class="pull-right inline-editing-activator">
+        <button ng-click="exportComments()" class="btn btn-default btn-sm"
+          uib-tooltip="{{ 'Export comments only' | translate }}">
+          <i class="fa fa-file-pdf-o"></i>
+          <translate>PDF</translate>
         </button>
-        <button ng-if="commentsInlineEditing.active()" ng-click="commentsInlineEditing.disable()"
-          class="btn btn-sm btn-default">
-          <i class="fa fa-times-circle"></i>
-          <translate>Inline editing</translate>
-        </button>
+        <span ng-if="motion.isAllowed('change_comments')">
+          <button ng-if="!commentsInlineEditing.active()" ng-click="commentsInlineEditing.enable()"
+            class="btn btn-sm btn-default">
+            <i class="fa fa-pencil-square-o"></i>
+            <translate>Inline editing</translate>
+          </button>
+          <button ng-if="commentsInlineEditing.active()" ng-click="commentsInlineEditing.disable()"
+            class="btn btn-sm btn-default">
+            <i class="fa fa-times-circle"></i>
+            <translate>Inline editing</translate>
+          </button>
+        </span>
       </div>
       <h3 class="toolbar-left" translate>Comments</h3>
     </div>
