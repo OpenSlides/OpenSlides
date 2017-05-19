@@ -143,8 +143,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
     '$q',
     'Config',
     'PDFLayout',
-    'PdfImageConverter',
-    function($q, Config, PDFLayout, PdfImageConverter) {
+    'ImageConverter',
+    function($q, Config, PDFLayout, ImageConverter) {
         /**
          * Provides the global document
          * @constructor
@@ -328,7 +328,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     logoHeaderUrl,
                     logoFooterUrl
                 ];
-                PdfImageConverter.toBase64(imageSources).then(function (_imageMap) {
+                ImageConverter.toBase64(imageSources).then(function (_imageMap) {
                     imageMap = _imageMap;
                     resolve({
                         getDocument: getDocument
@@ -948,7 +948,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
     }
 ])
 
-.factory('PdfImageConverter', [
+.factory('ImageConverter', [
     '$q',
     'PDFLayout',
     function ($q, PDFLayout) {

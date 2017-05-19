@@ -733,7 +733,7 @@ angular.module('OpenSlidesApp.motions.site', [
                                     {name: gettextCatalog.getString('No'), value: false},
                                 ],
                             },
-                            hideExpression: "model.format !== 'pdf'",
+                            hideExpression: "model.format === 'csv'",
                         });
                     }
                 }

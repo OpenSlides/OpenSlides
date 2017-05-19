@@ -26,6 +26,7 @@ Motions:
 - Bugfix: Added more distance in motion PDF for DEL-tags in new lines [#3211].
 - Added warning message if an edit dialog was already opened by another
   client [#3212].
+- Reworked DOCX export parser and added comments to DOCX [#3258].
 
 Users:
 - User without permission to see users can now see agenda item speakers,
