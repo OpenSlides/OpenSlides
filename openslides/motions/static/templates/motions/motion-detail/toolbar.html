@@ -2,12 +2,12 @@
     <!-- inline editing -->
     <div class="pull-right inline-editing-activator"
          ng-if="motion.isAllowed('update') && version == motion.getVersion(-1).id && viewChangeRecommendations.mode == 'original'">
-        <button ng-if="!inlineEditing.active && change_recommendations.length == 0" ng-click="inlineEditing.enable()"
+        <button ng-if="!inlineEditing.active && change_recommendations.length == 0" ng-click="enableMotionInlineEditing()"
                 class="btn btn-sm btn-default">
             <i class="fa fa-pencil-square-o"></i>
             <translate>Inline editing</translate>
         </button>
-        <button ng-if="inlineEditing.active && change_recommendations.length == 0" ng-click="inlineEditing.disable()"
+        <button ng-if="inlineEditing.active && change_recommendations.length == 0" ng-click="disableMotionInlineEditing()"
                 class="btn btn-sm btn-default">
             <i class="fa fa-times-circle"></i>
             <translate>Inline editing</translate>
