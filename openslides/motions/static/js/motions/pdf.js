@@ -377,9 +377,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'gettextCatalog',
     'PDFLayout',
     'PdfMakeConverter',
-    'PdfImageConverter',
+    'ImageConverter',
     'HTMLValidizer',
-    function ($q, gettextCatalog, PDFLayout, PdfMakeConverter, PdfImageConverter, HTMLValidizer) {
+    function ($q, gettextCatalog, PDFLayout, PdfMakeConverter, ImageConverter, HTMLValidizer) {
         /*
          * content should be an array of content blocks. Each content is an object providing a
          * heading and a text. E.g.
@@ -518,7 +518,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             };
 
             return $q(function (resolve) {
-                PdfImageConverter.toBase64(getImageSources()).then(function (imageMap) {
+                ImageConverter.toBase64(getImageSources()).then(function (imageMap) {
                     converter = PdfMakeConverter.createInstance(imageMap);
                     resolve({
                         getContent: getContent,
