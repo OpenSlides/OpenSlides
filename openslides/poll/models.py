@@ -78,12 +78,6 @@ class CollectDefaultVotesMixin(models.Model):
     class Meta:
         abstract = True
 
-    def append_pollform_fields(self, fields):
-        fields.append('votesvalid')
-        fields.append('votesinvalid')
-        fields.append('votescast')
-        super(CollectDefaultVotesMixin, self).append_pollform_fields(fields)
-
     def get_percent_base_choice(self):
         """
         Returns one of the strings of the percent base.
@@ -188,32 +182,6 @@ class BasePoll(models.Model):
             else:
                 values.append(vote)
         return values
-
-    def get_vote_form(self, **kwargs):
-        """
-        Returns the form for one option of the poll.
-        """
-        from openslides.poll.forms import OptionForm
-        return OptionForm(extra=self.get_vote_objects_with_values(kwargs['formid']),
-                          **kwargs)
-
-    def get_vote_forms(self, **kwargs):
-        """
-        Returns a list of forms for the poll.
-        """
-        forms = []
-        for option in self.get_options():
-            form = self.get_vote_form(formid=option.id, **kwargs)
-            form.option = option
-            forms.append(form)
-        return forms
-
-    def append_pollform_fields(self, fields):
-        """
-        Appends additional field to a given list of fields. By default it
-        appends nothing.
-        """
-        pass
 
 
 def print_value(value, percent_base=0):
