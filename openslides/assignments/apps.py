@@ -19,7 +19,7 @@ class AssignmentsAppConfig(AppConfig):
         from openslides.core.signals import permission_change, user_data_required
         from openslides.utils.rest_api import router
         from .config_variables import get_config_variables
-        from .signals import get_permission_change_data, is_user_data_required
+        from .signals import get_permission_change_data, required_users
         from .views import AssignmentViewSet, AssignmentPollViewSet
 
         # Define config variables
@@ -30,8 +30,8 @@ class AssignmentsAppConfig(AppConfig):
             get_permission_change_data,
             dispatch_uid='assignments_get_permission_change_data')
         user_data_required.connect(
-            is_user_data_required,
-            dispatch_uid='assignments_is_user_data_required')
+            required_users,
+            dispatch_uid='assignments_required_users')
 
         # Register viewsets.
         router.register(self.get_model('Assignment').get_collection_string(), AssignmentViewSet)

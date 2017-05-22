@@ -16,7 +16,7 @@ def get_permission_change_data(sender, permissions=None, **kwargs):
             yield from assignments_app.get_startup_elements()
 
 
-def is_user_data_required(sender, request_user, **kwargs):
+def required_users(sender, request_user, **kwargs):
     """
     Returns all user ids that are displayed as candidates (including poll
     options) in any assignment if request_user can see assignments. This
