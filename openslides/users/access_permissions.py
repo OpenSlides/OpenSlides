@@ -136,3 +136,51 @@ class GroupAccessPermissions(BaseAccessPermissions):
         from .serializers import GroupSerializer
 
         return GroupSerializer
+
+
+class PersonalNoteAccessPermissions(BaseAccessPermissions):
+    """
+    Access permissions container for personal notes. Every authenticated user
+    can handle personal notes.
+    """
+    def check_permissions(self, user):
+        """
+        Returns True if the user has read access model instances.
+        """
+        # Every authenticated user can retrieve personal notes.
+        return not isinstance(user, AnonymousUser)
+
+    def get_serializer_class(self, user=None):
+        """
+        Returns serializer class.
+        """
+        from .serializers import PersonalNoteSerializer
+
+        return PersonalNoteSerializer
+
+    def get_restricted_data(self, container, user):
+        """
+        Returns the restricted serialized data for the instance prepared
+        for the user. Everybody gets only his own personal notes.
+        """
+        # Expand full_data to a list if it is not one.
+        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
+
+        # Parse data.
+        for full in full_data:
+            if full['user_id'] == user.id:
+                data = [full]
+                break
+        else:
+            data = []
+
+        # Reduce result to a single item or None if it was not a collection at
+        # the beginning of the method.
+        if isinstance(container, Collection):
+            restricted_data = data
+        elif data:
+            restricted_data = data[0]
+        else:
+            restricted_data = None
+
+        return restricted_data

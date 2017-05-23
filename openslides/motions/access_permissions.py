@@ -71,16 +71,6 @@ class MotionAccessPermissions(BaseAccessPermissions):
                                     # No data in range. Just do nothing.
                                     pass
                         motion = full_copy
-
-                    # Now filter personal notes.
-                    motion = motion.copy()
-                    motion['personal_notes'] = []
-                    if user is not None:
-                        for personal_note in full.get('personal_notes', []):
-                            if personal_note.get('user_id') == user.id:
-                                motion['personal_notes'].append(personal_note)
-                                break
-
                     data.append(motion)
         else:
             data = []

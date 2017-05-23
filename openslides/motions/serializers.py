@@ -269,7 +269,6 @@ class MotionSerializer(ModelSerializer):
     """
     active_version = PrimaryKeyRelatedField(read_only=True)
     comments = MotionCommentsJSONSerializerField(required=False)
-    personal_notes = SerializerMethodField()
     log_messages = MotionLogSerializer(many=True, read_only=True)
     polls = MotionPollSerializer(many=True, read_only=True)
     reason = CharField(allow_blank=True, required=False, write_only=True)
@@ -300,7 +299,6 @@ class MotionSerializer(ModelSerializer):
             'submitters',
             'supporters',
             'comments',
-            'personal_notes',
             'state',
             'state_required_permission_to_see',
             'workflow_id',
@@ -386,12 +384,6 @@ class MotionSerializer(ModelSerializer):
                 attr.add(*validated_data[key])
 
         return motion
-
-    def get_personal_notes(self, motion):
-        """
-        Returns the personal notes of all users.
-        """
-        return [personal_note.get_data() for personal_note in motion.personal_notes.all()]
 
     def get_state_required_permission_to_see(self, motion):
         """

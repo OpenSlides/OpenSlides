@@ -6,11 +6,12 @@ from django.utils.translation import ugettext_lazy
 from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
     IdPrimaryKeyRelatedField,
+    JSONField,
     ModelSerializer,
     RelatedField,
     ValidationError,
 )
-from .models import Group, User
+from .models import Group, PersonalNote, User
 
 USERCANSEESERIALIZER_FIELDS = (
     'id',
@@ -147,3 +148,15 @@ class GroupSerializer(ModelSerializer):
         """
         instance = super().update(*args, **kwargs)
         return Group.objects.get(pk=instance.pk)
+
+
+class PersonalNoteSerializer(ModelSerializer):
+    """
+    Serializer for users.models.PersonalNote objects.
+    """
+    notes = JSONField()
+
+    class Meta:
+        model = PersonalNote
+        fields = ('id', 'user', 'notes', )
+        read_only_fields = ('user', )

@@ -63,7 +63,7 @@ class MotionViewSet(ModelViewSet):
         """
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ('metadata', 'partial_update', 'update', 'set_personal_note'):
+        elif self.action in ('metadata', 'partial_update', 'update'):
             result = has_perm(self.request.user, 'motions.can_see')
             # For partial_update and update requests the rest of the check is
             # done in the update method. See below.
@@ -370,20 +370,6 @@ class MotionViewSet(ModelViewSet):
         motion.write_log(
             message_list=[ugettext_noop('Recommendation set to'), ' ', label],
             person=request.user)
-        return Response({'detail': message})
-
-    @detail_route(methods=['put'])
-    def set_personal_note(self, request, pk=None):
-        """
-        Special view endpoint to save a personal note to a motion.
-
-        Send PUT with {'note': <note>, 'star': True|False}.
-        """
-        motion = self.get_object()
-        if not request.user.is_authenticated():
-            raise ValidationError({'detail': _('Anonymous users are not able to set personal notes.')})
-        motion.set_personal_note(request.user, request.data.get('note'), bool(request.data.get('star')))
-        message = _('Your personal note was successfully saved.')
         return Response({'detail': message})
 
     @detail_route(methods=['post'])

@@ -14,36 +14,36 @@ Agenda:
 
 Motions:
 - New export dialog [#3185].
-- New feature: Personal notes for motions [#3190].
+- New feature: Personal notes for motions [#3190, #3267].
 - Fixed issue when creating/deleting motion comment fields in the
   settings [#3187].
 - Fixed empty motion comment field in motion update form [#3194].
 - Removed server side image to base64 transformation and
   added local transformation [#3181]
-- Added support for export motions in a zip archive [#3189].
-- Performance improvement for zip creation [#3251]
-- Bugfix: changing motion line length did not invalidate cache [#3202]
+- Added support for export motions in a ZIP archive [#3189].
+- Performance improvement for ZIP creation [#3251].
+- Bugfix: Changing motion line length did not invalidate cache [#3202].
 - Bugfix: Added more distance in motion PDF for DEL-tags in new lines [#3211].
 - Added warning message if an edit dialog was already opened by another
   client [#3212].
 - Reworked DOCX export parser and added comments to DOCX [#3258].
-- New pdf export for personal note and comments [#3239].
+- New PDF export for personal note and comments [#3239].
 
 Users:
 - User without permission to see users can now see agenda item speakers,
   motion submitters and supporters, assignment candidates, mediafile
   uploader and chat message users if they have the respective
-  permissions [#3191].
+  permissions [#3191, #3233].
 - Added support for password validation using Django or custom validators
   e. g. for minimum password length [#3200].
-- Fixed compare of duplicated users while csv user import [#3201].
+- Fixed compare of duplicated users while CSV user import [#3201].
 - Added fast mass import for users [#3290].
 
 Core:
 - No reload on logoff. OpenSlides is now a full single page
   application [#3172].
 - Adding support for choosing image files as logos for projector and
-  pdf [#3184, #3207, #3208].
+  PDF [#3184, #3207, #3208].
 - Fixing error when clearing empty chat [#3199].
 - Added notify system [#3212].
 - Enhanced performance esp. for server restart and first connection of all
@@ -51,14 +51,14 @@ Core:
 - Fixes autoupdate bug for a user without user.can_see_name permission [#3233].
 
 Mediafiles:
-- Fixed reloading of PDF on page change [#3274]
+- Fixed reloading of PDF on page change [#3274].
 
 General:
 - Switched from npm to Yarn [#3188].
 - Several bugfixes and minor improvements.
-- Improved performance for pdf generation significantly (by upgrading
+- Improved performance for PDF generation significantly (by upgrading
   to pdfmake 0.1.30) [#3278, #3285].
-- Bugfixes for PDF creation [#3227, #3251, #3279, #3286]
+- Bugfixes for PDF creation [#3227, #3251, #3279, #3286].
 
 
 Version 2.1.1 (2017-04-05)

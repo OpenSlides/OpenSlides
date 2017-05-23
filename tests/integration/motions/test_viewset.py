@@ -42,11 +42,10 @@ class TestMotionDBQueries(TestCase):
         * 1 request to get the polls,
         * 1 request to get the attachments,
         * 1 request to get the tags,
-        * 2 requests to get the submitters and supporters,
-        * 1 requests to get the personal notes.
+        * 2 requests to get the submitters and supporters.
         """
         self.client.force_login(get_user_model().objects.get(pk=1))
-        with self.assertNumQueries(15):
+        with self.assertNumQueries(14):
             self.client.get(reverse('motion-list'))
 
     @use_cache()
@@ -61,10 +60,9 @@ class TestMotionDBQueries(TestCase):
         * 1 request to get the polls,
         * 1 request to get the attachments,
         * 1 request to get the tags,
-        * 2 requests to get the submitters and supporters,
-        * 1 request to get the personal notes.
+        * 2 requests to get the submitters and supporters.
         """
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(13):
             self.client.get(reverse('motion-list'))
 
 
@@ -400,12 +398,10 @@ class RetrieveMotion(TestCase):
         * 3 request to get the polls (1 of them is possibly a bug),
         * 1 request to get the attachments,
         * 1 request to get the tags,
-        * 2 requests to get the submitters and supporters,
-        * 1 request to get personal notes.
-
+        * 2 requests to get the submitters and supporters.
         TODO: Fix all bugs.
         """
-        with self.assertNumQueries(19):
+        with self.assertNumQueries(18):
             self.client.get(reverse('motion-detail', args=[self.motion.pk]))
 
     def test_guest_state_with_required_permission_to_see(self):
@@ -457,14 +453,6 @@ class RetrieveMotion(TestCase):
             password='password_ooth7taechai5Oocieya')
         response_3 = guest_client.get(reverse('user-detail', args=[extra_user.pk]))
         self.assertEqual(response_3.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_anonymous_without_personal_notes(self):
-        self.motion.set_personal_note(get_user_model().objects.get(pk=1), note='admin_personal_note_OoGh8choro0oosh0roob')
-        config['general_system_enable_anonymous'] = True
-        guest_client = APIClient()
-        response = guest_client.get(reverse('motion-detail', args=[self.motion.pk]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertNotContains(response, 'admin_personal_note_OoGh8choro0oosh0roob')
 
 
 class UpdateMotion(TestCase):

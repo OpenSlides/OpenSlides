@@ -9,47 +9,17 @@ from django.contrib.auth.models import (
     Permission,
     PermissionsMixin,
 )
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Prefetch, Q
+from jsonfield import JSONField
 
 from ..utils.collection import CollectionElement
 from ..utils.models import RESTModelMixin
-from .access_permissions import GroupAccessPermissions, UserAccessPermissions
-
-
-class PersonalNote(models.Model):
-    """
-    Model for personal notes and likes (stars) of a user concerning different
-    openslides models like motions.
-
-    To use this in your app simply run e. g.
-
-        user.set_personal_note(motion, note, star)
-
-    in a setter view and add a SerializerMethodField to your serializer that
-    calls get_data for all users.
-    """
-    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='personal_notes')
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey()
-    note = models.TextField(blank=True)
-    star = models.BooleanField(default=False, blank=True)
-
-    class Meta:
-        default_permissions = ()
-
-    def get_data(self):
-        """
-        Returns note and star to be serialized in content object serializers.
-        """
-        return {
-            'user_id': self.user_id,
-            'note': self.note,
-            'star': self.star,
-        }
+from .access_permissions import (
+    GroupAccessPermissions,
+    PersonalNoteAccessPermissions,
+    UserAccessPermissions,
+)
 
 
 class UserManager(BaseUserManager):
@@ -246,29 +216,6 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         """
         raise RuntimeError('Do not use user.has_perm() but use openslides.utils.auth.has_perm')
 
-    def set_personal_note(self, content_object, note=None, star=None):
-        """
-        Saves or overrides a personal note for this user for a given object
-        like motion.
-        """
-        changes = {}
-        if note is not None:
-            changes['note'] = note
-        if star is not None:
-            changes['star'] = star
-        if changes:
-            # TODO: This is prone to race-conditions in rare cases. Fix it.
-            personal_note, created = PersonalNote.objects.update_or_create(
-                user=self,
-                content_type=ContentType.objects.get_for_model(content_object),
-                object_id=content_object.id,
-                user_id=self.id,
-                defaults=changes,
-            )
-        else:
-            personal_note = None
-        return personal_note
-
 
 class GroupManager(GroupManager):
     """
@@ -292,6 +239,36 @@ class Group(RESTModelMixin, DjangoGroup):
     """
     access_permissions = GroupAccessPermissions()
     objects = GroupManager()
+
+    class Meta:
+        default_permissions = ()
+
+
+class PersonalNoteManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all personal notes. In the background all
+        users are prefetched from the database.
+        """
+        return self.get_queryset().select_related('user')
+
+
+class PersonalNote(RESTModelMixin, models.Model):
+    """
+    Model for personal notes (e. g. likes/stars) of a user concerning different
+    openslides objects like motions.
+    """
+    access_permissions = PersonalNoteAccessPermissions()
+
+    objects = PersonalNoteManager()
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE)
+    notes = JSONField()
 
     class Meta:
         default_permissions = ()
