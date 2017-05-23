@@ -432,10 +432,6 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
     def get_percent_base_choice(self):
         return config['assignments_poll_100_percent_base']
 
-    def append_pollform_fields(self, fields):
-        fields.append('description')
-        super().append_pollform_fields(fields)
-
     def get_slide_context(self, **context):
         return super().get_slide_context(poll=self)
 
