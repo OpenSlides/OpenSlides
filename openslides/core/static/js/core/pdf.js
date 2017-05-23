@@ -766,7 +766,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         break;
                                     } else {
                                         currentParagraph = create("text");
-                                        if (lineNumberMode == "outside" && brParentNodeName == ("INS" || "DEL")) {
+                                        if (lineNumberMode == "outside" &&
+                                                brParentNodeName != "LI"&&
+                                                element.parentNode.parentNode.nodeName != "LI") {
                                             currentParagraph.margin = [20, 0, 0, 0];
                                         }
                                         currentParagraph.lineHeight = 1.25;
@@ -860,6 +862,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "ul":
                                 case "ol":
                                     var list = create(nodeName);
+                                    ComputeStyle(list, styles);
                                     if (lineNumberMode == "outside") {
                                         var lines = extractLineNumbers(element);
                                         currentParagraph = parseChildren(list[nodeName], element, currentParagraph, styles, diff_mode);
@@ -884,6 +887,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                             listCol.margin = [0,10,0,0];
                                             alreadyConverted.push(listCol);
                                         } else {
+                                            list.margin = [20, 0, 0, 0];
                                             alreadyConverted.push(list);
                                         }
                                     } else {
