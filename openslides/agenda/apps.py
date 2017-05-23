@@ -22,9 +22,9 @@ class AgendaAppConfig(AppConfig):
         from .config_variables import get_config_variables
         from .signals import (
             get_permission_change_data,
-            is_user_data_required,
             listen_to_related_object_post_delete,
-            listen_to_related_object_post_save)
+            listen_to_related_object_post_save,
+            required_users)
         from .views import ItemViewSet
 
         # Define config variables
@@ -41,8 +41,8 @@ class AgendaAppConfig(AppConfig):
             get_permission_change_data,
             dispatch_uid='agenda_get_permission_change_data')
         user_data_required.connect(
-            is_user_data_required,
-            dispatch_uid='agenda_is_user_data_required')
+            required_users,
+            dispatch_uid='agenda_required_users')
 
         # Register viewsets.
         router.register(self.get_model('Item').get_collection_string(), ItemViewSet)

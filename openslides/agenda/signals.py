@@ -54,7 +54,7 @@ def get_permission_change_data(sender, permissions, **kwargs):
             break
 
 
-def is_user_data_required(sender, request_user, **kwargs):
+def required_users(sender, request_user, **kwargs):
     """
     Returns all user ids that are displayed as speakers in any agenda item
     if request_user can see the agenda. This function may return an empty

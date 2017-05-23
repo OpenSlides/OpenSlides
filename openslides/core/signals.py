@@ -18,10 +18,10 @@ post_permission_creation = Signal()
 permission_change = Signal()
 
 # This signal is sent if someone wants to see basic user data. Connected
-# receivers may answer True if the user data is required for the request user
-# (this can be anything that is allowd as argument for utils.auth.has_perm())
-# e. g. as motion submitter or assignment candidate.
-user_data_required = Signal(providing_args=['request_user', 'user_data'])
+# receivers may answer a set of user ids that are required for the request
+# user (this can be anything that is allowd as argument for
+# utils.auth.has_perm()) e. g. as motion submitter or assignment candidate.
+user_data_required = Signal(providing_args=['request_user'])
 
 
 def delete_django_app_permissions(sender, **kwargs):
@@ -52,7 +52,7 @@ def get_permission_change_data(sender, permissions, **kwargs):
                 yield Collection(core_app.get_model('ChatMessage').get_collection_string())
 
 
-def is_user_data_required(sender, request_user, **kwargs):
+def required_users(sender, request_user, **kwargs):
     """
     Returns all user ids that are displayed as chatters if request_user can
     use the chat. This function may return an empty set.

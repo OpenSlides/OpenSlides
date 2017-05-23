@@ -17,7 +17,7 @@ class MediafilesAppConfig(AppConfig):
         # Import all required stuff.
         from openslides.core.signals import permission_change, user_data_required
         from openslides.utils.rest_api import router
-        from .signals import get_permission_change_data, is_user_data_required
+        from .signals import get_permission_change_data, required_users
         from .views import MediafileViewSet
 
         # Connect signals.
@@ -25,8 +25,8 @@ class MediafilesAppConfig(AppConfig):
             get_permission_change_data,
             dispatch_uid='mediafiles_get_permission_change_data')
         user_data_required.connect(
-            is_user_data_required,
-            dispatch_uid='mediafiles_is_user_data_required')
+            required_users,
+            dispatch_uid='mediafiles_required_users')
 
         # Register viewsets.
         router.register(self.get_model('Mediafile').get_collection_string(), MediafileViewSet)

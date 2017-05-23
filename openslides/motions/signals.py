@@ -118,7 +118,7 @@ def get_permission_change_data(sender, permissions, **kwargs):
             yield from motions_app.get_startup_elements()
 
 
-def is_user_data_required(sender, request_user, **kwargs):
+def required_users(sender, request_user, **kwargs):
     """
     Returns all user ids that are displayed as as submitter or supporter in
     any motion if request_user can see motions. This function may return an
