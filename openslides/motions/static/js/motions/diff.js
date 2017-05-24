@@ -384,26 +384,44 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             toChildTraceAbs.shift();
             var followingHtml = this._serializePartialDomFromChild(fragment, toChildTraceAbs, false);
 
-            var currNode = fromLineNode.parentNode;
+            var currNode = fromLineNode,
+                isSplit = false;
             while (currNode.parentNode) {
-                previousHtmlEndSnippet += '</' + currNode.nodeName + '>';
+                if (!this._isFirstNonemptyChild(currNode.parentNode, currNode)) {
+                    isSplit = true;
+                }
+                if (currNode.parentNode.nodeName === 'LI' && true) {
+                    this.addCSSClass(currNode.parentNode, 'os-split-li');
+                }
+                if (currNode.nodeName !== 'OS-LINEBREAK') {
+                    previousHtmlEndSnippet += '</' + currNode.nodeName + '>';
+                }
                 currNode = currNode.parentNode;
             }
-            currNode = toLineNode.parentNode;
+            currNode = toLineNode;
             while (currNode.parentNode) {
-                followingHtmlStartSnippet = this._serializeTag(currNode) + followingHtmlStartSnippet;
+                followingHtmlStartSnippet = this._serializeTag(currNode.parentNode) + followingHtmlStartSnippet;
                 currNode = currNode.parentNode;
             }
 
             var found = false;
+            isSplit = false;
             for (var i = 0; i < fromChildTraceRel.length && !found; i++) {
                 if (fromChildTraceRel[i].nodeName === 'OS-LINEBREAK') {
                     found = true;
                 } else {
+                    if (!this._isFirstNonemptyChild(fromChildTraceRel[i], fromChildTraceRel[i + 1])) {
+                        isSplit = true;
+                    }
                     if (fromChildTraceRel[i].nodeName === 'OL') {
                         fakeOl = fromChildTraceRel[i].cloneNode(false);
                         fakeOl.setAttribute('start', this._isWithinNthLIOfOL(fromChildTraceRel[i], fromLineNode));
                         innerContextStart += this._serializeTag(fakeOl);
+                    } else if (fromChildTraceRel[i].nodeName === 'LI') {
+                        if (i < (fromChildTraceRel.length - 1) && isSplit) {
+                            this.addCSSClass(fromChildTraceRel[i], 'os-split-li');
+                        }
+                        innerContextStart += this._serializeTag(fromChildTraceRel[i]);
                     } else {
                         innerContextStart += this._serializeTag(fromChildTraceRel[i]);
                     }
@@ -671,12 +689,12 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         };
 
         this.addCSSClass = function (node, className) {
-            if (node.nodeType != ELEMENT_NODE) {
+            if (node.nodeType !== ELEMENT_NODE) {
                 return;
             }
             var classes = node.getAttribute('class');
             classes = (classes ? classes.split(' ') : []);
-            if (classes.indexOf(className) == -1) {
+            if (classes.indexOf(className) === -1) {
                 classes.push(className);
             }
             node.setAttribute('class', classes.join(' '));
@@ -1147,6 +1165,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 /<BR CLASS="OS-LINE-BREAK">/gi,
                 '<br class="os-line-break">'
             );
+            diffUnnormalized = diffUnnormalized.replace(/CLASS="OS-SPLIT-LI"/gi, 'class="os-split-li"');
             diffUnnormalized = diffUnnormalized.replace(
                 /<span[^>]+OS-LINE-NUMBER[^>]+?>\s*<\/span>/gi,
                 function(found) {

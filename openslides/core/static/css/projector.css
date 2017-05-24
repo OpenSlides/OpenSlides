@@ -540,6 +540,9 @@ tr.elected td {
     padding-top: 0;
     margin-top: -10px;
 }
+.motion-text-with-diffs li.os-split-li {
+    list-style-type: none;
+}
 .motion-text-with-diffs .original-text {
     min-height: 30px; // Spacer between .diff-box, in case .original-text is empty
 }
