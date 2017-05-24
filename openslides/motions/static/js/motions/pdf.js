@@ -805,12 +805,13 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'MotionPartialContentProvider',
     'PdfCreate',
     'PDFLayout',
+    'PersonalNoteManager',
     'Messaging',
     'FileSaver',
     function ($http, $q, operator, Config, gettextCatalog, MotionChangeRecommendation, HTMLValidizer,
         PdfMakeConverter, MotionContentProvider, MotionCatalogContentProvider, PdfMakeDocumentProvider,
         PollContentProvider, PdfMakeBallotPaperProvider, MotionPartialContentProvider, PdfCreate,
-        PDFLayout, Messaging, FileSaver) {
+        PDFLayout, PersonalNoteManager, Messaging, FileSaver) {
         return {
             getDocumentProvider: function (motions, params, singleMotion) {
                 params = _.clone(params || {}); // Clone this to avoid sideeffects.
@@ -941,9 +942,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 PdfCreate.download(documentProvider.getDocument(), filename);
             },
             exportPersonalNote: function (motion, filename) {
-                var personalNote = _.find(motion.personal_notes, function (note) {
-                    return note.user_id === operator.user.id;
-                });
+                var personalNote = PersonalNoteManager.getNote(motion);
                 var content = [{
                     heading: gettextCatalog.getString('Personal note'),
                     text: personalNote ? personalNote.note : '',

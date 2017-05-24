@@ -203,6 +203,53 @@ angular.module('OpenSlidesApp.users.site', [
     }
 ])
 
+.factory('PersonalNoteManager', [
+    'PersonalNote',
+    'operator',
+    function (PersonalNote, operator) {
+        var _getPersonalNoteObject = function (resourceName) {
+            var personalNote = _.find(PersonalNote.getAll(), function (pn) {
+                return pn.user_id === operator.user.id;
+            });
+            if (!personalNote) {
+                personalNote = {
+                    notes: {},
+                };
+            }
+            if (!personalNote.notes[resourceName]) {
+                personalNote.notes[resourceName] = {};
+            }
+            return personalNote;
+        };
+        var get = function (resourceName, id) {
+            return _getPersonalNoteObject(resourceName).notes[resourceName][id];
+        };
+        var save = function (resourceName, id, note) {
+            var personalNote = _getPersonalNoteObject(resourceName);
+            personalNote.notes[resourceName][id] = note;
+            if (personalNote.id) {
+                return PersonalNote.save(personalNote);
+            } else {
+                return PersonalNote.create(personalNote);
+            }
+        };
+        return {
+            getNote: function (obj) {
+                if (typeof obj.getResourceName === 'undefined') {
+                    throw 'The Object has to be a js data model!';
+                }
+                return get(obj.getResourceName(), obj.id);
+            },
+            saveNote: function (obj, note) {
+                if (typeof obj.getResourceName === 'undefined') {
+                    throw 'The Object has to be a js data model!';
+                }
+                return save(obj.getResourceName(), obj.id, note);
+            },
+        };
+    }
+])
+
 // Service for generic assignment form (create and update)
 .factory('UserForm', [
     '$http',
