@@ -309,6 +309,25 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         };
 
         /**
+         * When a <li> with a os-split-before-class (set by extractRangeByLineNumbers) is edited when creating a
+         * change recommendation and is split again in CKEditor, the second list items also gets that class.
+         * This is not correct however, as the second one actually is a new list item. So we need to remove it again.
+         *
+         * @param {string} html
+         * @returns {string}
+         */
+        this.removeDuplicateClassesInsertedByCkeditor = function(html) {
+            var fragment = this.htmlToFragment(html);
+            var items = fragment.querySelectorAll('li.os-split-before');
+            for (var i = 0; i < items.length; i++) {
+                if (!this._isFirstNonemptyChild(items[i].parentNode, items[i])) {
+                    this.removeCSSClass(items[i], 'os-split-before');
+                }
+            }
+            return this._serializeDom(fragment, false);
+        };
+
+        /**
          * Returns the HTML snippet between two given line numbers.
          *
          * Hint:
@@ -338,8 +357,18 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
          * - followingHtml:     The HTML after the selected area
          * - followingHtmlStartSnippet: A HTML snippet that opens all HTML tags necessary to render "followingHtml"
          *
+         *
+         * In some cases, the returned HTML tags receive additional CSS classes, providing information both for
+         * rendering it and for merging it again correctly.
+         * - os-split-*:        These classes are set for all HTML Tags that have been split into two by this process,
+         *                      e.g. if the fromLine- or toLine-line-break was somewhere in the middle of this tag.
+         *                      If a tag is split, the first one receives "os-split-after", and the second one "os-split-before".
+         * For example, for the following string <p>Line 1<br>Line 2<br>Line 3</p>:
+         * - extracting line 1 to 2 results in <p class="os-split-after">Line 1</p>
+         * - extracting line 2 to 3 results in <p class="os-split-after os-split-before">Line 2</p>
+         * - extracting line 3 to null/4 results in <p class="os-split-before">Line 3</p>
          */
-        this.extractRangeByLineNumbers = function(htmlIn, fromLine, toLine, debug) {
+        this.extractRangeByLineNumbers = function(htmlIn, fromLine, toLine) {
             if (typeof(htmlIn) !== 'string') {
                 throw 'Invalid call - extractRangeByLineNumbers expects a string as first argument';
             }
@@ -384,27 +413,51 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             toChildTraceAbs.shift();
             var followingHtml = this._serializePartialDomFromChild(fragment, toChildTraceAbs, false);
 
-            var currNode = fromLineNode.parentNode;
+            var currNode = fromLineNode,
+                isSplit = false;
             while (currNode.parentNode) {
-                previousHtmlEndSnippet += '</' + currNode.nodeName + '>';
+                if (!this._isFirstNonemptyChild(currNode.parentNode, currNode)) {
+                    isSplit = true;
+                }
+                if (isSplit) {
+                    this.addCSSClass(currNode.parentNode, 'os-split-before');
+                }
+                if (currNode.nodeName !== 'OS-LINEBREAK') {
+                    previousHtmlEndSnippet += '</' + currNode.nodeName + '>';
+                }
                 currNode = currNode.parentNode;
             }
-            currNode = toLineNode.parentNode;
+
+            currNode = toLineNode;
+            isSplit = false;
             while (currNode.parentNode) {
-                followingHtmlStartSnippet = this._serializeTag(currNode) + followingHtmlStartSnippet;
+                if (!this._isFirstNonemptyChild(currNode.parentNode, currNode)) {
+                    isSplit = true;
+                }
+                if (isSplit) {
+                    this.addCSSClass(currNode.parentNode, 'os-split-after');
+                }
+                followingHtmlStartSnippet = this._serializeTag(currNode.parentNode) + followingHtmlStartSnippet;
                 currNode = currNode.parentNode;
             }
 
             var found = false;
+            isSplit = false;
             for (var i = 0; i < fromChildTraceRel.length && !found; i++) {
                 if (fromChildTraceRel[i].nodeName === 'OS-LINEBREAK') {
                     found = true;
                 } else {
+                    if (!this._isFirstNonemptyChild(fromChildTraceRel[i], fromChildTraceRel[i + 1])) {
+                        isSplit = true;
+                    }
                     if (fromChildTraceRel[i].nodeName === 'OL') {
                         fakeOl = fromChildTraceRel[i].cloneNode(false);
                         fakeOl.setAttribute('start', this._isWithinNthLIOfOL(fromChildTraceRel[i], fromLineNode));
                         innerContextStart += this._serializeTag(fakeOl);
                     } else {
+                        if (i < (fromChildTraceRel.length - 1) && isSplit) {
+                            this.addCSSClass(fromChildTraceRel[i], 'os-split-before');
+                        }
                         innerContextStart += this._serializeTag(fromChildTraceRel[i]);
                     }
                 }
@@ -512,28 +565,28 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
             var lastNode = nodes1[nodes1.length - 1],
                 firstNode = nodes2[0];
-            if (lastNode.nodeType == TEXT_NODE && firstNode.nodeType == TEXT_NODE) {
+            if (lastNode.nodeType === TEXT_NODE && firstNode.nodeType === TEXT_NODE) {
                 var newTextNode = lastNode.ownerDocument.createTextNode(lastNode.nodeValue + firstNode.nodeValue);
                 out.push(newTextNode);
-            } else if (lastNode.nodeName == firstNode.nodeName) {
+            } else if (lastNode.nodeName === firstNode.nodeName) {
                 var newNode = lastNode.ownerDocument.createElement(lastNode.nodeName);
                 for (i = 0; i < lastNode.attributes.length; i++) {
                     var attr = lastNode.attributes[i];
                     newNode.setAttribute(attr.name, attr.value);
                 }
 
-                // Remove #text nodes inside of List elements, as they are confusing
+                // Remove #text nodes inside of List elements (OL/UL), as they are confusing
                 var lastChildren, firstChildren;
-                if (lastNode.nodeName == 'OL' || lastNode.nodeName == 'UL') {
+                if (lastNode.nodeName === 'OL' || lastNode.nodeName === 'UL') {
                     lastChildren = [];
                     firstChildren = [];
                     for (i = 0; i < firstNode.childNodes.length; i++) {
-                        if (firstNode.childNodes[i].nodeType == ELEMENT_NODE) {
+                        if (firstNode.childNodes[i].nodeType === ELEMENT_NODE) {
                             firstChildren.push(firstNode.childNodes[i]);
                         }
                     }
                     for (i = 0; i < lastNode.childNodes.length; i++) {
-                        if (lastNode.childNodes[i].nodeType == ELEMENT_NODE) {
+                        if (lastNode.childNodes[i].nodeType === ELEMENT_NODE) {
                             lastChildren.push(lastNode.childNodes[i]);
                         }
                     }
@@ -546,12 +599,13 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 for (i = 0; i < children.length; i++) {
                     newNode.appendChild(children[i]);
                 }
+
                 out.push(newNode);
             } else {
-                if (lastNode.nodeName != 'TEMPLATE') {
+                if (lastNode.nodeName !== 'TEMPLATE') {
                     out.push(lastNode);
                 }
-                if (firstNode.nodeName != 'TEMPLATE') {
+                if (firstNode.nodeName !== 'TEMPLATE') {
                     out.push(firstNode);
                 }
             }
@@ -570,9 +624,23 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
          * @private
          */
         this._normalizeHtmlForDiff = function (html) {
-            // Convert all HTML tags to uppercase, strip trailing whitespaces
-            html = html.replace(/<[^>]+>/g, function (tag) {
-                return tag.toUpperCase();
+            // Convert all HTML tags to uppercase, but leave the values of attributes unchanged
+            html = html.replace(/<(\/?[a-z]*)( [^>]*)?>/ig, function (html, tag, attributes) {
+                var tagNormalized = tag.toUpperCase();
+                if (attributes === undefined) {
+                    attributes = "";
+                }
+                attributes = attributes.replace(/( [^"'=]*)(= *((["'])(.*?)\4))?/gi, function (attr, attrName, attrRest, attrRest2, quot, attrValue) {
+                    var attrNormalized = attrName.toUpperCase();
+                    if (attrRest !== undefined) {
+                        if (attrNormalized === ' CLASS') {
+                            attrValue = attrValue.split(' ').sort().join(' ');
+                        }
+                        attrNormalized += "=" + quot + attrValue + quot;
+                    }
+                    return attrNormalized;
+                });
+                return "<" + tagNormalized + attributes + ">";
             });
 
             var entities = {
@@ -649,7 +717,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 followingFragment = this.htmlToFragment(followingHtml),
                 newFragment = this.htmlToFragment(newHTML);
 
-            if (data.html.length > 0 && data.html.substr(-1) == ' ') {
+            if (data.html.length > 0 && data.html.substr(-1) === ' ') {
                 this._insertDanglingSpace(newFragment);
             }
 
@@ -667,19 +735,44 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 el.parentNode.removeChild(el);
             }
 
+            var forgottenSplitClasses = mergedFragment.querySelectorAll(".os-split-before, .os-split-after");
+            for (i = 0; i < forgottenSplitClasses.length; i++) {
+                this.removeCSSClass(forgottenSplitClasses[i], 'os-split-before');
+                this.removeCSSClass(forgottenSplitClasses[i], 'os-split-after');
+            }
+
             return this._serializeDom(mergedFragment, true);
         };
 
         this.addCSSClass = function (node, className) {
-            if (node.nodeType != ELEMENT_NODE) {
+            if (node.nodeType !== ELEMENT_NODE) {
                 return;
             }
             var classes = node.getAttribute('class');
             classes = (classes ? classes.split(' ') : []);
-            if (classes.indexOf(className) == -1) {
+            if (classes.indexOf(className) === -1) {
                 classes.push(className);
             }
             node.setAttribute('class', classes.join(' '));
+        };
+
+        this.removeCSSClass = function (node, className) {
+            if (node.nodeType !== ELEMENT_NODE) {
+                return;
+            }
+            var classes = node.getAttribute('class'),
+                newClasses = [];
+            classes = (classes ? classes.split(' ') : []);
+            for (var i = 0; i < classes.length; i++) {
+                if (classes[i] !== className) {
+                    newClasses.push(classes[i]);
+                }
+            }
+            if (newClasses.length === 0) {
+                node.removeAttribute('class');
+            } else {
+                node.setAttribute('class', newClasses.join(' '));
+            }
         };
 
         this.addDiffMarkup = function (originalHTML, newHTML, fromLine, toLine, diffFormatterCb) {
@@ -1151,19 +1244,14 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
             // Remove <del> tags that only delete line numbers
             diffUnnormalized = diffUnnormalized.replace(
-                /<del>((<BR CLASS="OS-LINE-BREAK">)?<span[^>]+OS-LINE-NUMBER[^>]+?>\s*<\/span>)<\/del>/gi,
+                /<del>((<BR CLASS="os-line-break">)?<span[^>]+os-line-number[^>]+?>\s*<\/span>)<\/del>/gi,
                 function(found,tag) {
                     return tag;
                 }
             );
 
-            // Lowercase line number markup
             diffUnnormalized = diffUnnormalized.replace(
-                /<BR CLASS="OS-LINE-BREAK">/gi,
-                '<br class="os-line-break">'
-            );
-            diffUnnormalized = diffUnnormalized.replace(
-                /<span[^>]+OS-LINE-NUMBER[^>]+?>\s*<\/span>/gi,
+                /<span[^>]+os-line-number[^>]+?>\s*<\/span>/gi,
                 function(found) {
                     return found.toLowerCase().replace(/> <\/span/gi, ">&nbsp;</span");
                 }

@@ -1550,9 +1550,10 @@ angular.module('OpenSlidesApp.motions.site', [
     '$scope',
     'MotionChangeRecommendation',
     'ChangeRecommendationForm',
+    'diffService',
     'change',
     'ErrorMessage',
-    function ($scope, MotionChangeRecommendation, ChangeRecommendationForm, change, ErrorMessage) {
+    function ($scope, MotionChangeRecommendation, ChangeRecommendationForm, diffService, change, ErrorMessage) {
         $scope.alert = {};
         $scope.model = angular.copy(change);
 
@@ -1560,6 +1561,7 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.formFields = ChangeRecommendationForm.getFormFields(change.line_from, change.line_to);
         // save motion
         $scope.save = function (change) {
+            change.text = diffService.removeDuplicateClassesInsertedByCkeditor(change.text);
             // inject the changed change recommendation (copy) object back into DS store
             MotionChangeRecommendation.inject(change);
             // save changed change recommendation object on server
@@ -1607,6 +1609,7 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.formFields = ChangeRecommendationForm.getFormFields(lineFrom, lineTo);
         // save motion
         $scope.save = function (motion) {
+            motion.text = diffService.removeDuplicateClassesInsertedByCkeditor(motion.text);
             MotionChangeRecommendation.create(motion).then(
                 function(success) {
                     $scope.closeThisDialog();
