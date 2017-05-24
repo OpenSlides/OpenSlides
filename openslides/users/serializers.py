@@ -10,7 +10,7 @@ from ..utils.rest_api import (
     RelatedField,
     ValidationError,
 )
-from .models import Group, User
+from .models import Group, User, UserGroupRelation
 
 USERCANSEESERIALIZER_FIELDS = (
     'id',
@@ -87,10 +87,36 @@ class UserFullSerializer(ModelSerializer):
         Creates the user.
         """
         # Perform creation in the database and return new user.
+        groups = validated_data['groups']
+        del validated_data['groups']
         user = super().create(self.prepare_password(validated_data))
+
+        userGroupRelations = []
+        for group in groups:
+            userGroupRelations.append(UserGroupRelation(user=user, group=group))
+        UserGroupRelation.objects.bulk_create(userGroupRelations)
+
         # TODO: This autoupdate call is redundant (required by issue #2727). See #2736.
         inform_changed_data(user)
         return user
+
+
+    def update(self, user, validated_data):
+        """
+        Updates the user. Handles the groups separate.
+        """
+        groups = validated_data['groups']
+        del validated_data['groups']
+        response = super().update(user, validated_data)
+
+        UserGroupRelation.objects.filter(user=user).delete()
+        userGroupRelations = []
+        for group in groups:
+            userGroupRelations.append(UserGroupRelation(user=user, group=group))
+        UserGroupRelation.objects.bulk_create(userGroupRelations)
+
+        inform_changed_data(user)
+        return response
 
 
 class PermissionRelatedField(RelatedField):
