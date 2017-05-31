@@ -137,7 +137,7 @@ b. Running AngularJS test cases
 
 Run client tests by starting karma::
 
-    $ node_modules/.bin/karma start tests/karma/karma.conf.js
+    $ yarn run karma
 
 
 OpenSlides in big mode
