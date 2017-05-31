@@ -2,7 +2,8 @@
   "name": "openslides",
   "private": true,
   "scripts": {
-    "prepublish": "bower install && gulp"
+    "prepublish": "bower install && gulp",
+    "karma": "karma start tests/karma/karma.conf.js"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.11",
