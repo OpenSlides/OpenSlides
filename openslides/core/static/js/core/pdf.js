@@ -527,7 +527,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 var styleDefinition = singleStyle.trim().toLowerCase().split(":");
                                 var style = styleDefinition[0];
                                 var value = styleDefinition[1];
-                                if (styleDefinition.length == 2) {
+                                if (styleDefinition.length === 2) {
                                     switch (style) {
                                         case "padding-left":
                                             o.margin = [parseInt(value), 0, 0, 0];
@@ -572,7 +572,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                             o.color = parseColor(value);
                                             break;
                                         case "background-color":
-                                            o.background = value;
+                                            o.background = parseColor(value);
                                             break;
                                     }
                                 }
@@ -591,7 +591,6 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             styles = styles || [];
                             var classes = [];
                             if (element.getAttribute) {
-                                styles = [];
                                 var nodeStyle = element.getAttribute("style");
                                 if (nodeStyle) {
                                     nodeStyle.split(";").forEach(function(nodeStyle) {
@@ -672,9 +671,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     });
                                     var border = element.getAttribute("border");
                                     var isBorder = false;
-                                    if (border)
-                                        if (parseInt(border) == 1) isBorder = true;
-                                    if (!isBorder) t.layout = 'noBorders';
+                                    if (border) {
+                                        isBorder = (parseInt(border) === 1);
+                                    } else {
+                                        t.layout = 'noBorders';
+                                    }
                                     currentParagraph = parseChildren(t.table.body, element, currentParagraph, styles, diff_mode);
                                     var widths = element.getAttribute("widths");
                                     if (!widths) {
@@ -712,8 +713,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     break;
                                 case "span":
                                     if (element.getAttribute("data-line-number")) {
-                                        if (lineNumberMode == "inline") {
-                                            if (diff_mode != DIFF_MODE_INSERT) {
+                                        if (lineNumberMode === "inline") {
+                                            if (diff_mode !== DIFF_MODE_INSERT) {
                                                 var lineNumberInline = element.getAttribute("data-line-number"),
                                                     lineNumberObjInline = {
                                                         text: lineNumberInline,
@@ -722,9 +723,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                                     };
                                                 currentParagraph.text.push(lineNumberObjInline);
                                             }
-                                        } else if (lineNumberMode == "outside") {
+                                        } else if (lineNumberMode === "outside") {
                                             var lineNumberOutline;
-                                            if (diff_mode == DIFF_MODE_INSERT) {
+                                            if (diff_mode === DIFF_MODE_INSERT) {
                                                 lineNumberOutline = "";
                                             } else {
                                                 lineNumberOutline = element.getAttribute("data-line-number");
@@ -766,9 +767,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         break;
                                     } else {
                                         currentParagraph = create("text");
-                                        if (lineNumberMode == "outside" &&
-                                                brParentNodeName != "LI"&&
-                                                element.parentNode.parentNode.nodeName != "LI") {
+                                        if (lineNumberMode === "outside" &&
+                                                brParentNodeName !== "LI" &&
+                                                element.parentNode.parentNode.nodeName !== "LI") {
                                             currentParagraph.margin = [20, 0, 0, 0];
                                         }
                                         currentParagraph.lineHeight = 1.25;
@@ -863,7 +864,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "ol":
                                     var list = create(nodeName);
                                     ComputeStyle(list, styles);
-                                    if (lineNumberMode == "outside") {
+                                    if (lineNumberMode === "outside") {
                                         var lines = extractLineNumbers(element);
                                         currentParagraph = parseChildren(list[nodeName], element, currentParagraph, styles, diff_mode);
                                         if (lines.length > 0) {
