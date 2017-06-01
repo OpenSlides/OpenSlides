@@ -731,16 +731,27 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                                 lineNumberOutline = element.getAttribute("data-line-number");
                                             }
                                             var lineNumberObject = {
-                                                    width: 20,
-                                                    text: lineNumberOutline,
-                                                    color: "gray",
-                                                    fontSize: 8,
-                                                    margin: [0, 2, 0, 0]
-                                            },
-                                                col = {
-                                                    columns: [
-                                                        lineNumberObject,
-                                                    ]
+                                                width: 20,
+                                                text: [
+                                                    {
+                                                        text: ' ', // Add a blank with the normal font size here, so in rare cases the text
+                                                                   // is rendered on the next page and the linenumber on the previous page.
+                                                        fontSize: 10,
+                                                        decoration: '',
+                                                    },
+                                                    {
+                                                        text: lineNumberOutline,
+                                                        color: "gray",
+                                                        fontSize: 8,
+                                                        decoration: '',
+                                                    },
+                                                ],
+                                                margin: [0, 2, 0, 0]
+                                            };
+                                            var col = {
+                                                columns: [
+                                                    lineNumberObject,
+                                                ]
                                             };
                                             currentParagraph = create("text");
                                             currentParagraph.lineHeight = 1.25;
