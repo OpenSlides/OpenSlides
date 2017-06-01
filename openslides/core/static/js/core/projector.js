@@ -157,15 +157,48 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         $scope.broadcast = 0;
 
         var setElements = function (projector) {
-            $scope.elements = [];
+            // Get all elements, that should be projected.
+            var newElements = [];
             _.forEach(slides.getElements(projector), function (element) {
                 if (!element.error) {
                     // Exclude the clock if it should be disabled.
                     if (Config.get('projector_enable_clock').value || element.name !== 'core/clock') {
-                        $scope.elements.push(element);
+                        newElements.push(element);
                     }
                 } else {
                     console.error("Error for slide " + element.name + ": " + element.error);
+                }
+            });
+
+            // Now we have to align $scope.elements to newElements:
+            // We cannot just assign them, because the ng-repeat would reload every
+            // element. This should be prevented (see #3259). To change $scope.elements:
+            // 1) remove all elements from scope, that are not in newElements (compared by the uuid)
+            // 2) Every new element in newElements, that is not in $scope.elements, get inserted there.
+            // 3) If there is the same element in newElements and $scope.elements every changed property
+            //    is copied from the new element to the scope element.
+
+            $scope.elements = _.filter($scope.elements, function (element) {
+                return _.some(newElements, function (newElement) {
+                    return element.uuid === newElement.uuid;
+                });
+            });
+
+            _.forEach(newElements, function (newElement) {
+                var matchingElement = _.find($scope.elements, function (element) {
+                    return element.uuid === newElement.uuid;
+                });
+                if (matchingElement) {
+                    // copy all changed properties.
+                    _.forEach(newElement, function (value, key) {
+                        if (newElement.hasOwnProperty(key) && !key.startsWith('$')) {
+                            if (typeof matchingElement[key] === 'undefined' || matchingElement[key] !== value) {
+                                matchingElement[key] = value;
+                            }
+                        }
+                    });
+                } else {
+                    $scope.elements.push(newElement);
                 }
             });
         };

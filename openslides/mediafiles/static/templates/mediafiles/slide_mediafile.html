@@ -1,7 +1,7 @@
 <div ng-controller="SlideMediafileCtrl" class="content" ng-class="{'fullscreen': element.fullscreen, 'video-container': element.is_video}">
     <!-- PDF -->
-    <ng-pdf ng-if="mediafile.is_pdf" template-url="/static/templates/mediafiles/slide_mediafile_partial.html"
-         ng-attr-scale="{{ element.scale }}"
+    <ng-pdf ng-if="mediafile.is_pdf && showPdf" template-url="/static/templates/mediafiles/slide_mediafile_partial.html"
+         scale="{{ element.scale }}"
          ng-attr-page="{{ element.page }}">
     </ng-pdf>
 
