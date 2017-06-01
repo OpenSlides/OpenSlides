@@ -18,7 +18,6 @@ from .access_permissions import AssignmentAccessPermissions
 from .models import Assignment, AssignmentPoll, AssignmentRelatedUser
 from .serializers import AssignmentAllPollSerializer
 
-
 # Viewsets for the REST API
 
 class AssignmentViewSet(ModelViewSet):

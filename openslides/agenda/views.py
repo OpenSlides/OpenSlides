@@ -20,7 +20,6 @@ from ..utils.auth import has_perm
 from .access_permissions import ItemAccessPermissions
 from .models import Item, Speaker
 
-
 # Viewsets for the REST API
 
 class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):

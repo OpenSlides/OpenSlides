@@ -51,7 +51,6 @@ from .models import (
     Tag,
 )
 
-
 # Special Django views
 
 class IndexView(utils_views.CSRFMixin, utils_views.View):
