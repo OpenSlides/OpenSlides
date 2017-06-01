@@ -106,7 +106,9 @@ class CollectionElement:
         if method == 'get_restricted_data':
             container = self
         else:
-            container = self.get_full_data()
+            # TODO: Find a better solution for this hotfix, see issue #3282.
+            if not self.is_deleted():
+                container = self.get_full_data()
         # End of hack
 
         if not self.is_deleted():
