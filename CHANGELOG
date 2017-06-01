@@ -54,9 +54,9 @@ Mediafiles:
 General:
 - Switched from npm to Yarn [#3188].
 - Several bugfixes and minor improvements.
-- Bugfixes for PDF creation [#3227, #3251]
 - Improved performance for pdf generation significantly (by upgrading
   to pdfmake 0.1.29) [#3278].
+- Bugfixes for PDF creation [#3227, #3251, #3279]
 
 
 Version 2.1.1 (2017-04-05)
