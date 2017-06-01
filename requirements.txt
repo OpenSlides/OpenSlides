@@ -4,4 +4,4 @@
 # Requirements for development and tests in alphabetical order
 coverage
 flake8
-isort
+isort==4.2.5
