@@ -730,27 +730,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                             } else {
                                                 lineNumberOutline = element.getAttribute("data-line-number");
                                             }
-                                            var lineNumberObject = {
-                                                width: 20,
-                                                text: [
-                                                    {
-                                                        text: ' ', // Add a blank with the normal font size here, so in rare cases the text
-                                                                   // is rendered on the next page and the linenumber on the previous page.
-                                                        fontSize: 10,
-                                                        decoration: '',
-                                                    },
-                                                    {
-                                                        text: lineNumberOutline,
-                                                        color: "gray",
-                                                        fontSize: 8,
-                                                        decoration: '',
-                                                    },
-                                                ],
-                                                margin: [0, 2, 0, 0]
-                                            };
                                             var col = {
                                                 columns: [
-                                                    lineNumberObject,
+                                                    getLineNumberObject(lineNumberOutline),
                                                 ]
                                             };
                                             currentParagraph = create("text");
@@ -769,9 +751,6 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     //in case of inline-line-numbers and the os-line-break class ignore the break
                                     if ((lineNumberMode == "inline" &&
                                                 element.getAttribute("class") == "os-line-break") ||
-                                        (lineNumberMode == "outside" &&
-                                                element.getAttribute("class") == "os-line-break" &&
-                                                brParent.getAttribute("class") == "insert") ||
                                         (lineNumberMode == "outside" &&
                                                 element.getAttribute("class") == "os-line-break" &&
                                                 brParent.getAttribute("class") == "merge-before")) {
@@ -800,10 +779,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "p":
                                     var pObjectToPush; //determine what to push later
                                     currentParagraph = create("text");
-                                    if (classes.indexOf("merge-before") > -1) {
-                                        currentParagraph.marginTop = 0;
-                                    } else {
-                                        currentParagraph.marginTop = 8;
+                                    currentParagraph.margin = [20, 0, 0, 0];
+                                    if (classes.indexOf("merge-before") === -1) {
+                                        currentParagraph.margin[1] = 8;
                                     }
                                     currentParagraph.lineHeight = 1.25;
                                     var stackP = create("stack");
@@ -815,7 +793,6 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         if (element.childNodes.length > 0) { //if we hit = 0, the code would fail
                                             // add empty line number column for inline diff or pragraph diff mode
                                             if (element.childNodes[0].tagName === "INS" ||
-                                                element.getAttribute("class") === "insert" ||
                                                 element.childNodes[0].tagName === "DEL") {
                                                 var pLineNumberPlaceholder = {
                                                     width: 20,
@@ -880,20 +857,13 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         currentParagraph = parseChildren(list[nodeName], element, currentParagraph, styles, diff_mode);
                                         if (lines.length > 0) {
                                             var listCol = {
-                                                    columns: [{
-                                                        width: 20,
-                                                        stack: []
-                                                    }]
-                                                };
-                                            _.forEach(lines, function(line) {
-                                                listCol.columns[0].stack.push({
+                                                columns: [{
                                                     width: 20,
-                                                    text: line,
-                                                    color: "gray",
-                                                    fontSize: 8,
-                                                    lineHeight: 1.25,
-                                                    margin: [0, 2.85, 0, 0]
-                                                });
+                                                    stack: []
+                                                }]
+                                            };
+                                            _.forEach(lines, function(line) {
+                                                listCol.columns[0].stack.push(getLineNumberObject(line));
                                             });
                                             listCol.columns.push(list);
                                             listCol.margin = [0,10,0,0];
@@ -932,6 +902,27 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             slice(html).forEach(function(element) {
                                 ParseElement(converted, element, null, [], DIFF_MODE_NORMAL);
                             });
+                        },
+                        /* Returns the object to push first into every column, that represents the given line. */
+                        getLineNumberObject = function (line) {
+                            return {
+                                width: 20,
+                                text: [
+                                    {
+                                        text: ' ', // Add a blank with the normal font size here, so in rare cases the text
+                                                   // is rendered on the next page and the linenumber on the previous page.
+                                        fontSize: 10,
+                                        decoration: '',
+                                    },
+                                    {
+                                        text: line,
+                                        color: "gray",
+                                        fontSize: 8,
+                                        decoration: '',
+                                    },
+                                ],
+                                lineHeight: 1.25,
+                            };
                         },
                         content = [];
                     ParseHtml(content, html);
