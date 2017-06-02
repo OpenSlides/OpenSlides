@@ -55,7 +55,7 @@ General:
 - Switched from npm to Yarn [#3188].
 - Several bugfixes and minor improvements.
 - Improved performance for pdf generation significantly (by upgrading
-  to pdfmake 0.1.29) [#3278].
+  to pdfmake 0.1.30) [#3278, #3285].
 - Bugfixes for PDF creation [#3227, #3251, #3279]
 
 
