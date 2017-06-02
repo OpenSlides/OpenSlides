@@ -1,4 +1,5 @@
 from random import choice
+import settings
 
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group as DjangoGroup
@@ -7,8 +8,8 @@ from django.contrib.auth.models import (
     BaseUserManager,
     GroupManager,
     Permission,
-    PermissionsMixin,
 )
+from django.contrib.auth.models import PermissionsMixin as DjangoPermissionsMixin
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -37,6 +38,20 @@ class PersonalNote(models.Model):
     content_object = GenericForeignKey()
     note = models.TextField(blank=True)
     star = models.BooleanField(default=False, blank=True)
+class GroupManager(GroupManager):
+    """
+    Customized manager that supports our get_full_queryset method.
+    """
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all groups. In the background all
+        permissions with the content types are prefetched from the database.
+        """
+        return (self.get_queryset()
+                    .select_related('group_ptr')
+                    .prefetch_related(Prefetch(
+                        'permissions',
+                        queryset=Permission.objects.select_related('content_type'))))
 
     class Meta:
         default_permissions = ()
@@ -50,6 +65,31 @@ class PersonalNote(models.Model):
             'note': self.note,
             'star': self.star,
         }
+
+
+class Group(RESTModelMixin, DjangoGroup):
+    """
+    Extend the django group with support of our REST and caching system.
+    """
+    access_permissions = GroupAccessPermissions()
+    objects = GroupManager()
+
+    class Meta:
+        default_permissions = ()
+
+
+class PermissionsMixin(DjangoPermissionsMixin):
+    groups = None
+
+
+class UserGroupRelation(models.Model):
+    group = models.ForeignKey(
+        Group,
+        on_delete=models.CASCADE)
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE)
 
 
 class UserManager(BaseUserManager):
@@ -101,7 +141,8 @@ class UserManager(BaseUserManager):
         admin.default_password = 'admin'
         admin.password = make_password(admin.default_password, '', 'md5')
         admin.save()
-        admin.groups.add(staff)
+        adminStaffRelation = UserGroupRelation(user=admin, group=staff)
+        adminStaffRelation.save()
         return created
 
     def generate_username(self, first_name, last_name):
@@ -164,6 +205,17 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
     last_name = models.CharField(
         max_length=255,
         blank=True)
+
+    groups = models.ManyToManyField(
+        Group,
+        blank=True,
+        help_text=(
+            'The groups this user belongs to. A user will get all permissions '
+            'granted to each of their groups.'
+        ),
+        related_name='user_set',
+        related_query_name='user',
+        through='UserGroupRelation')
 
     # TODO: Try to remove the default argument in the following fields.
 
@@ -268,30 +320,3 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         else:
             personal_note = None
         return personal_note
-
-
-class GroupManager(GroupManager):
-    """
-    Customized manager that supports our get_full_queryset method.
-    """
-    def get_full_queryset(self):
-        """
-        Returns the normal queryset with all groups. In the background all
-        permissions with the content types are prefetched from the database.
-        """
-        return (self.get_queryset()
-                    .select_related('group_ptr')
-                    .prefetch_related(Prefetch(
-                        'permissions',
-                        queryset=Permission.objects.select_related('content_type'))))
-
-
-class Group(RESTModelMixin, DjangoGroup):
-    """
-    Extend the django group with support of our REST and caching system.
-    """
-    access_permissions = GroupAccessPermissions()
-    objects = GroupManager()
-
-    class Meta:
-        default_permissions = ()

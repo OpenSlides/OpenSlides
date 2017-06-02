@@ -306,6 +306,33 @@ class UserResetPassword(TestCase):
         self.assertTrue(User.objects.get(pk=user.pk).check_password(default_password))
 
 
+class UserMassImport(TestCase):
+    """
+    Tests mass import of users.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+
+    def test_mass_import(self):
+        user_1 = {
+            'first_name': 'first_name_kafaith3woh3thie7Ciy',
+            'last_name': 'last_name_phah0jaeph9ThoongaeL',
+            'groups_id': []
+        }
+        user_2 = {
+            'first_name': 'first_name_kohdao7Eibouwee8ma2O',
+            'last_name': 'last_name_kafaith3woh3thie7Ciy',
+            'groups_id': []
+        }
+        response = self.client.post(
+            reverse('user-mass-import'),
+            {'users': [user_1, user_2]},
+            format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(User.objects.count(), 3)
+
+
 class GroupMetadata(TestCase):
     def test_options_request_as_anonymous_user_activated(self):
         config['general_system_enable_anonymous'] = True

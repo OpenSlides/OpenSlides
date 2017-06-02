@@ -10,7 +10,10 @@ from django.utils.translation import ugettext as _
 from ..core.config import config
 from ..core.signals import permission_change
 from ..utils.auth import anonymous_is_enabled, has_perm
-from ..utils.autoupdate import inform_data_collection_element_list
+from ..utils.autoupdate import (
+    inform_changed_data,
+    inform_data_collection_element_list,
+)
 from ..utils.collection import CollectionElement, CollectionElementList
 from ..utils.rest_api import (
     ModelViewSet,
@@ -18,6 +21,7 @@ from ..utils.rest_api import (
     SimpleMetadata,
     ValidationError,
     detail_route,
+    list_route,
     status,
 )
 from ..utils.views import APIView
@@ -48,7 +52,7 @@ class UserViewSet(ModelViewSet):
             result = has_perm(self.request.user, 'users.can_see_name')
         elif self.action in ('update', 'partial_update'):
             result = self.request.user.is_authenticated()
-        elif self.action in ('create', 'destroy', 'reset_password'):
+        elif self.action in ('create', 'destroy', 'reset_password', 'mass_import'):
             result = (has_perm(self.request.user, 'users.can_see_name') and
                       has_perm(self.request.user, 'users.can_see_extra_data') and
                       has_perm(self.request.user, 'users.can_manage'))
@@ -113,6 +117,59 @@ class UserViewSet(ModelViewSet):
             return Response({'detail': _('Password successfully reset.')})
         else:
             raise ValidationError({'detail': 'Password has to be a string.'})
+
+    @list_route(methods=['post'])
+    def mass_import(self, request):
+        """
+        API endpoint to create multiple users at once. Settings groups is not
+        supported.
+
+        Example: {"users": [{"first_name": "Max"}, {"first_name": "Maxi"}]}
+
+        Attention: This method triggers autoupdate for all users, not only
+        for the new ones.
+        """
+        users = request.data.get('users')
+        if not isinstance(users, list):
+            raise ValidationError({'detail': 'Users has to be a list.'})
+        # List of users to create
+        create_users = []
+        # Associate usernames to groups. This has to be assigned after creation of the users.
+        groups_to_assign = {}
+        # List of all track ids of all imported users. The track ids are just used in the client.
+        imported_track_ids = []
+
+        # Make the users unique, which will have the same username on import by
+        # converting the users to a dict {username: user} (so the usernames are
+        # unique) and convert back to a list of users.
+        users = list({
+            User.objects.generate_username(user.get('first_name', ''), user.get('last_name', '')): user
+            for user in users}.values())
+
+        for user in users:
+            try:
+                serializer = self.get_serializer(data=user)
+                serializer.is_valid(raise_exception=True)
+                data = serializer.prepare_password(serializer.data)
+                # Save all groups that has to be assigned
+                groups_to_assign[data['username']] = data['groups_id']
+                del data['groups_id']
+
+                create_users.append(User(**data))
+                if 'importTrackId' in user:
+                    imported_track_ids.append(user['importTrackId'])
+            except ValidationError:
+                pass
+        User.objects.bulk_create(create_users)
+        # Assign groups to the new created users
+        for username, groups_ids in groups_to_assign.items():
+            User.objects.get(username=username).groups.add(*groups_ids)
+
+        # Now infom all clients and send a response
+        inform_changed_data(User.objects.all())
+        return Response({
+            'detail': _('{number} users successfully imported.').format(number=len(create_users)),
+            'importedTrackIds': imported_track_ids})
 
 
 class GroupViewSetMetadata(SimpleMetadata):

@@ -10,7 +10,7 @@ from ..utils.rest_api import (
     RelatedField,
     ValidationError,
 )
-from .models import Group, User
+from .models import Group, User, UserGroupRelation
 
 USERCANSEESERIALIZER_FIELDS = (
     'id',
@@ -72,19 +72,51 @@ class UserFullSerializer(ModelSerializer):
                 data.get('last_name', ''))
         return data
 
-    def create(self, validated_data):
+    def prepare_password(self, validated_data):
         """
-        Creates the user. Sets the default password.
+        Sets the default password.
         """
         # Prepare setup password.
         if not validated_data.get('default_password'):
             validated_data['default_password'] = User.objects.generate_password()
         validated_data['password'] = make_password(validated_data['default_password'], '', 'md5')
+        return validated_data
+
+    def create(self, validated_data):
+        """
+        Creates the user.
+        """
         # Perform creation in the database and return new user.
-        user = super().create(validated_data)
+        groups = validated_data['groups']
+        del validated_data['groups']
+        user = super().create(self.prepare_password(validated_data))
+
+        userGroupRelations = []
+        for group in groups:
+            userGroupRelations.append(UserGroupRelation(user=user, group=group))
+        UserGroupRelation.objects.bulk_create(userGroupRelations)
+
         # TODO: This autoupdate call is redundant (required by issue #2727). See #2736.
         inform_changed_data(user)
         return user
+
+
+    def update(self, user, validated_data):
+        """
+        Updates the user. Handles the groups separate.
+        """
+        groups = validated_data['groups']
+        del validated_data['groups']
+        response = super().update(user, validated_data)
+
+        UserGroupRelation.objects.filter(user=user).delete()
+        userGroupRelations = []
+        for group in groups:
+            userGroupRelations.append(UserGroupRelation(user=user, group=group))
+        UserGroupRelation.objects.bulk_create(userGroupRelations)
+
+        inform_changed_data(user)
+        return response
 
 
 class PermissionRelatedField(RelatedField):
