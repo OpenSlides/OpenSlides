@@ -479,6 +479,14 @@ describe('linenumbering', function () {
 
       expect(diff).toBe('<P class="delete">...so frißt er Euch alle mit Haut und Haar.</P><P class="insert">...so frißt er <SPAN style="font-size: 2em; opacity: 0.5">Euch alle</SPAN> mit Haut und Haar.</P>');
     });
+
+    it('marks a single moved word as deleted and inserted again', function () {
+      var before = '<p>tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren bla, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>',
+          after = '<p>tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd bla, no sea takimata sanctus est Lorem ipsum dolor gubergren sit amet.</p>';
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('<p>tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd <del>gubergren </del>bla, no sea takimata sanctus est Lorem ipsum dolor <ins>gubergren </ins>sit amet.</p>');
+    });
   });
 
   describe('ignoring line numbers', function () {
