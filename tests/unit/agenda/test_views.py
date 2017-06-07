@@ -15,9 +15,10 @@ class ItemViewSetManageSpeaker(TestCase):
         self.view_instance.get_object = get_object_mock = MagicMock()
         get_object_mock.return_value = self.mock_item = MagicMock()
 
+    @patch('openslides.agenda.views.inform_changed_data')
     @patch('openslides.agenda.views.has_perm')
     @patch('openslides.agenda.views.Speaker')
-    def test_add_oneself_as_speaker(self, mock_speaker, mock_has_perm):
+    def test_add_oneself_as_speaker(self, mock_speaker, mock_has_perm, mock_icd):
         self.request.method = 'POST'
         self.request.user = 1
         mock_has_perm.return_value = True
@@ -28,10 +29,11 @@ class ItemViewSetManageSpeaker(TestCase):
 
         mock_speaker.objects.add.assert_called_with(self.request.user, self.mock_item)
 
+    @patch('openslides.agenda.views.inform_changed_data')
     @patch('openslides.agenda.views.has_perm')
     @patch('openslides.agenda.views.get_user_model')
     @patch('openslides.agenda.views.Speaker')
-    def test_add_someone_else_as_speaker(self, mock_speaker, mock_get_user_model, mock_has_perm):
+    def test_add_someone_else_as_speaker(self, mock_speaker, mock_get_user_model, mock_has_perm, mock_icd):
         self.request.method = 'POST'
         self.request.user = 1
         self.request.data = {'user': '2'}  # It is assumed that the request user has pk!=2.

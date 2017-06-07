@@ -102,13 +102,13 @@ class CollectionElement:
         """
         from .autoupdate import format_for_autoupdate
 
-        # TODO: Revert this after get_projector_data is also enhanced like get_restricted_data.
+        # TODO: Revert this after get_projector_data is also enhanced like get_restricted_data. See also #3282.
         if method == 'get_restricted_data':
             container = self
+        elif not self.is_deleted():
+            container = self.get_full_data()
         else:
-            # TODO: Find a better solution for this hotfix, see issue #3282.
-            if not self.is_deleted():
-                container = self.get_full_data()
+            container = None
         # End of hack
 
         if not self.is_deleted():

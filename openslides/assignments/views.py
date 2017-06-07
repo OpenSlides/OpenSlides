@@ -79,6 +79,9 @@ class AssignmentViewSet(ModelViewSet):
             self.permission_denied(request)
         # If the request.user is already a candidate he can nominate himself nevertheless.
         assignment.set_candidate(request.user)
+        # Send new candidate via autoupdate because users without permission
+        # to see users may not have it but can get it now.
+        inform_changed_data([request.user])
         return _('You were nominated successfully.')
 
     def withdraw_self(self, request, assignment):
@@ -140,6 +143,9 @@ class AssignmentViewSet(ModelViewSet):
         if assignment.is_candidate(user):
             raise ValidationError({'detail': _('User %s is already nominated.') % user})
         assignment.set_candidate(user)
+        # Send new candidate via autoupdate because users without permission
+        # to see users may not have it but can get it now.
+        inform_changed_data(user)
         return _('User %s was nominated successfully.') % user
 
     def delete_other(self, request, user, assignment):

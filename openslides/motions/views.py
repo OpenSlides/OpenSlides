@@ -137,6 +137,13 @@ class MotionViewSet(ModelViewSet):
 
         # Write the log message and initiate response.
         motion.write_log([ugettext_noop('Motion created')], request.user)
+
+        # Send new submitters and supporters via autoupdate because users
+        # without permission to see users may not have them but can get it now.
+        new_users = list(motion.submitters.all())
+        new_users.extend(motion.supporters.all())
+        inform_changed_data(new_users)
+
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -198,6 +205,13 @@ class MotionViewSet(ModelViewSet):
                 not has_perm(request.user, 'motions.can_manage')):
             updated_motion.supporters.clear()
             updated_motion.write_log([ugettext_noop('All supporters removed')], request.user)
+
+        # Send new submitters and supporters via autoupdate because users
+        # without permission to see users may not have them but can get it now.
+        new_users = list(updated_motion.submitters.all())
+        new_users.extend(updated_motion.supporters.all())
+        inform_changed_data(new_users)
+
         return Response(serializer.data)
 
     @detail_route(methods=['put', 'delete'])
@@ -265,6 +279,9 @@ class MotionViewSet(ModelViewSet):
                 raise ValidationError({'detail': _('You can not support this motion.')})
             motion.supporters.add(request.user)
             motion.write_log([ugettext_noop('Motion supported')], request.user)
+            # Send new supporter via autoupdate because users without permission
+            # to see users may not have it but can get it now.
+            inform_changed_data([request.user])
             message = _('You have supported this motion successfully.')
         else:
             # Unsupport motion.

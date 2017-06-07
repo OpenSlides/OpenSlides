@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext as _
 
+from ..utils.autoupdate import inform_changed_data
 from ..utils.models import RESTModelMixin
 from .access_permissions import MediafileAccessPermissions
 
@@ -51,6 +52,16 @@ class Mediafile(RESTModelMixin, models.Model):
         Method for representation.
         """
         return self.title
+
+    def save(self, *args, **kwargs):
+        """
+        Saves mediafile (mainly on create and update requests).
+        """
+        result = super().save(*args, **kwargs)
+        # Send uploader via autoupdate because users without permission
+        # to see users may not have it but can get it now.
+        inform_changed_data(self.uploader)
+        return result
 
     def get_filesize(self):
         """
