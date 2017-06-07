@@ -13,18 +13,6 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
         """
         return has_perm(user, 'assignments.can_see')
 
-    def get_serializer_class(self, user=None):
-        """
-        Returns different serializer classes according to users permissions.
-        """
-        from .serializers import AssignmentFullSerializer, AssignmentShortSerializer
-
-        if user is None or (has_perm(user, 'assignments.can_see') and has_perm(user, 'assignments.can_manage')):
-            serializer_class = AssignmentFullSerializer
-        else:
-            serializer_class = AssignmentShortSerializer
-        return serializer_class
-
     def get_restricted_data(self, container, user):
         """
         Returns the restricted serialized data for the instance prepared

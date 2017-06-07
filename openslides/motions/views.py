@@ -23,13 +23,6 @@ from ..utils.rest_api import (
     detail_route,
 )
 from ..utils.views import APIView
-from .access_permissions import (
-    CategoryAccessPermissions,
-    MotionAccessPermissions,
-    MotionBlockAccessPermissions,
-    MotionChangeRecommendationAccessPermissions,
-    WorkflowAccessPermissions,
-)
 from .exceptions import WorkflowError
 from .models import (
     Category,
@@ -54,8 +47,7 @@ class MotionViewSet(ModelViewSet):
     partial_update, update, destroy, manage_version, support, set_state and
     create_poll.
     """
-    access_permissions = MotionAccessPermissions()
-    queryset = Motion.objects.all()
+    collection_source = Motion
 
     def check_view_permissions(self):
         """
@@ -392,8 +384,8 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
 
     There are the following views: update, partial_update and destroy.
     """
-    queryset = MotionPoll.objects.all()
     serializer_class = MotionPollSerializer
+    queryset = MotionPoll.objects.all()
 
     def check_view_permissions(self):
         """
@@ -428,8 +420,7 @@ class MotionChangeRecommendationViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
-    access_permissions = MotionChangeRecommendationAccessPermissions()
-    queryset = MotionChangeRecommendation.objects.all()
+    collection_source = MotionChangeRecommendation
 
     def check_view_permissions(self):
         """
@@ -454,8 +445,7 @@ class CategoryViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update, destroy and numbering.
     """
-    access_permissions = CategoryAccessPermissions()
-    queryset = Category.objects.all()
+    collection_source = Category
 
     def check_view_permissions(self):
         """
@@ -575,8 +565,7 @@ class MotionBlockViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
-    access_permissions = MotionBlockAccessPermissions()
-    queryset = MotionBlock.objects.all()
+    collection_source = MotionBlock
 
     def check_view_permissions(self):
         """
@@ -623,8 +612,7 @@ class WorkflowViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
-    access_permissions = WorkflowAccessPermissions()
-    queryset = Workflow.objects.all()
+    collection_source = Workflow
 
     def check_view_permissions(self):
         """

@@ -11,11 +11,3 @@ class TopicAccessPermissions(BaseAccessPermissions):
         Returns True if the user has read access model instances.
         """
         return has_perm(user, 'agenda.can_see')
-
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import TopicSerializer
-
-        return TopicSerializer

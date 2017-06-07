@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import ugettext as _
 
+from .access_permissions import ConfigAccessPermissions
 from .exceptions import ConfigError, ConfigNotFound
 from .models import ConfigStore
 
@@ -171,6 +172,19 @@ class ConfigHandler:
         Returns the collection_string from the CollectionStore.
         """
         return ConfigStore.get_collection_string()
+
+    def get_full_data_list(self, ids=None):
+        """
+        Returns a list of all config elements.
+        """
+        if ids is None:
+            items = self.items()
+        else:
+            items = ((key, value) for key, value in self.items() if key in ids)
+        return [{'id': key, 'key': key, 'value': value} for key, value in items]
+
+    def get_access_permissions(self):
+        return ConfigAccessPermissions()
 
 
 config = ConfigHandler()

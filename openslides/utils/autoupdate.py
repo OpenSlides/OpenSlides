@@ -85,13 +85,8 @@ def ws_add_site(message):
     user = user_to_collection_user(message.user.id)
     output = []
     for collection in startup_cache.get_collections():
-        access_permissions = collection.get_access_permissions()
+        access_permissions = collection.get_collection_source().get_access_permissions()
         restricted_data = access_permissions.get_restricted_data(collection, user)
-
-        if collection.collection_string == 'core/config':
-            id_key = 'key'
-        else:
-            id_key = 'id'
 
         for data in restricted_data:
             if data is None:
@@ -101,7 +96,7 @@ def ws_add_site(message):
             output.append(
                 format_for_autoupdate(
                     collection_string=collection.collection_string,
-                    id=data[id_key],
+                    id=data['id'],
                     action='changed',
                     data=data))
 

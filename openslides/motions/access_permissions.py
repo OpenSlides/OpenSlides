@@ -16,14 +16,6 @@ class MotionAccessPermissions(BaseAccessPermissions):
         """
         return has_perm(user, 'motions.can_see')
 
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import MotionSerializer
-
-        return MotionSerializer
-
     def get_restricted_data(self, container, user):
         """
         Returns the restricted serialized data for the instance prepared for
@@ -123,14 +115,6 @@ class MotionChangeRecommendationAccessPermissions(BaseAccessPermissions):
         """
         return has_perm(user, 'motions.can_see')
 
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import MotionChangeRecommendationSerializer
-
-        return MotionChangeRecommendationSerializer
-
 
 class CategoryAccessPermissions(BaseAccessPermissions):
     """
@@ -141,14 +125,6 @@ class CategoryAccessPermissions(BaseAccessPermissions):
         Returns True if the user has read access model instances.
         """
         return has_perm(user, 'motions.can_see')
-
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import CategorySerializer
-
-        return CategorySerializer
 
 
 class MotionBlockAccessPermissions(BaseAccessPermissions):
@@ -161,14 +137,6 @@ class MotionBlockAccessPermissions(BaseAccessPermissions):
         """
         return has_perm(user, 'motions.can_see')
 
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import MotionBlockSerializer
-
-        return MotionBlockSerializer
-
 
 class WorkflowAccessPermissions(BaseAccessPermissions):
     """
@@ -179,11 +147,3 @@ class WorkflowAccessPermissions(BaseAccessPermissions):
         Returns True if the user has read access model instances.
         """
         return has_perm(user, 'motions.can_see')
-
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import WorkflowSerializer
-
-        return WorkflowSerializer

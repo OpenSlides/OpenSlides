@@ -42,6 +42,11 @@ class Topic(RESTModelMixin, models.Model):
     def __str__(self):
         return self.title
 
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import TopicSerializer
+        return TopicSerializer
+
     @property
     def agenda_item(self):
         """

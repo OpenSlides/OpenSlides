@@ -165,6 +165,11 @@ class Assignment(RESTModelMixin, models.Model):
     def __str__(self):
         return self.title
 
+    @classmethod
+    def get_serializer_class(cls):
+        from .serializers import AssignmentFullSerializer
+        return AssignmentFullSerializer
+
     def get_slide_context(self, **context):
         """
         Retuns the context to generate the assignment slide.

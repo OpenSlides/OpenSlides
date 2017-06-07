@@ -102,6 +102,11 @@ class Projector(RESTModelMixin, models.Model):
             ('can_manage_projector', 'Can manage the projector'),
             ('can_see_frontpage', 'Can see the front page'),)
 
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import ProjectorSerializer
+        return ProjectorSerializer
+
     @property
     def elements(self):
         """
@@ -241,6 +246,11 @@ class Tag(RESTModelMixin, models.Model):
     def __str__(self):
         return self.name
 
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import TagSerializer
+        return TagSerializer
+
 
 class ConfigStore(RESTModelMixin, models.Model):
     """
@@ -296,6 +306,11 @@ class ChatMessage(RESTModelMixin, models.Model):
     def __str__(self):
         return 'Message {}'.format(self.timestamp)
 
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import ChatMessageSerializer
+        return ChatMessageSerializer
+
 
 class ProjectorMessage(RESTModelMixin, models.Model):
     """
@@ -307,6 +322,11 @@ class ProjectorMessage(RESTModelMixin, models.Model):
 
     class Meta:
         default_permissions = ()
+
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import ProjectorMessageSerializer
+        return ProjectorMessageSerializer
 
 
 class Countdown(RESTModelMixin, models.Model):
@@ -325,6 +345,11 @@ class Countdown(RESTModelMixin, models.Model):
 
     class Meta:
         default_permissions = ()
+
+    @classmethod
+    def get_serializer_class(self):
+        from .serializers import CountdownSerializer
+        return CountdownSerializer
 
     def control(self, action):
         if action not in ('start', 'stop', 'reset'):

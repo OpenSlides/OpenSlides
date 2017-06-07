@@ -14,7 +14,6 @@ from openslides.utils.rest_api import (
 )
 
 from ..utils.auth import has_perm
-from .access_permissions import AssignmentAccessPermissions
 from .models import Assignment, AssignmentPoll, AssignmentRelatedUser
 from .serializers import AssignmentAllPollSerializer
 
@@ -29,8 +28,7 @@ class AssignmentViewSet(ModelViewSet):
     partial_update, update, destroy, candidature_self, candidature_other,
     mark_elected and create_poll.
     """
-    access_permissions = AssignmentAccessPermissions()
-    queryset = Assignment.objects.all()
+    collection_source = Assignment
 
     def check_view_permissions(self):
         """

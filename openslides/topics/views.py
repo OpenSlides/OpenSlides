@@ -1,7 +1,6 @@
 from openslides.utils.rest_api import ModelViewSet
 
 from ..utils.auth import has_perm
-from .access_permissions import TopicAccessPermissions
 from .models import Topic
 
 
@@ -12,8 +11,7 @@ class TopicViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
-    access_permissions = TopicAccessPermissions()
-    queryset = Topic.objects.all()
+    collection_source = Topic
 
     def check_view_permissions(self):
         """

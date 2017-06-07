@@ -16,14 +16,6 @@ class UserAccessPermissions(BaseAccessPermissions):
         """
         return True
 
-    def get_serializer_class(self, user=None):
-        """
-        Returns different serializer classes with respect user's permissions.
-        """
-        from .serializers import UserFullSerializer
-
-        return UserFullSerializer
-
     def get_restricted_data(self, container, user):
         """
         Returns the restricted serialized data for the instance prepared
@@ -128,11 +120,3 @@ class GroupAccessPermissions(BaseAccessPermissions):
         # Every authenticated user can retrieve groups. Anonymous users can do
         # so if they are enabled.
         return not isinstance(user, AnonymousUser) or anonymous_is_enabled()
-
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import GroupSerializer
-
-        return GroupSerializer

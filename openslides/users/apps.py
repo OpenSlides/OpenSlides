@@ -1,7 +1,5 @@
 from django.apps import AppConfig
 
-from ..utils.collection import Collection
-
 
 class UsersAppConfig(AppConfig):
     name = 'openslides.users'
@@ -37,10 +35,6 @@ class UsersAppConfig(AppConfig):
         router.register(self.get_model('User').get_collection_string(), UserViewSet)
         router.register(self.get_model('Group').get_collection_string(), GroupViewSet)
 
-    def get_startup_elements(self):
-        """
-        Yields all collections required on startup i. e. opening the websocket
-        connection.
-        """
-        for model in ('User', 'Group'):
-            yield Collection(self.get_model(model).get_collection_string())
+    def get_collection_sources(self):
+        from .models import User, Group
+        yield from (User, Group)
