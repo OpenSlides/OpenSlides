@@ -863,18 +863,33 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                     }
                 }
 
+                var currOldRow = 0;
                 for (i = 0; i < out.n.length; i++) {
                     if (out.n[i].text === undefined) {
                         if (out.n[i] !== "") {
                             str += '<ins>' + out.n[i] + "</ins>";
                         }
+                    } else if (out.n[i].row < currOldRow) {
+                        str += '<ins>' + out.n[i].text + "</ins>";
                     } else {
                         var pre = "";
 
-                        for (var j = out.n[i].row + 1; j < out.o.length && out.o[j].text === undefined; j++) {
-                            pre += '<del>' + out.o[j] + "</del>";
+                        if ((i + 1) < out.n.length && out.n[i + 1].row !== undefined && out.n[i + 1].row > out.n[i].row + 1) {
+                            for (var n = out.n[i].row + 1; n < out.n[i + 1].row; n++) {
+                                if (out.o[n].text === undefined) {
+                                    pre += '<del>' + out.o[n] + "</del>";
+                                } else {
+                                    pre += '<del>' + out.o[n].text + "</del>";
+                                }
+                            }
+                        } else {
+                            for (var j = out.n[i].row + 1; j < out.o.length && out.o[j].text === undefined; j++) {
+                                pre += '<del>' + out.o[j] + "</del>";
+                            }
                         }
                         str += out.n[i].text + pre;
+
+                        currOldRow = out.n[i].row;
                     }
                 }
             }
