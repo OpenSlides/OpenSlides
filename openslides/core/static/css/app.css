@@ -607,6 +607,10 @@ img {
 
 /** Diff view */
 
+.motion-text-holder li.os-split-li {
+    list-style-type: none;
+}
+
 .change-recommendation-overview {
     background-color: #eee;
     border: solid 1px #ddd;
@@ -664,10 +668,13 @@ img {
 .diff-box-transparent {
     margin-top: -24px;
 }
+.motion-text-with-diffs li.os-split-li {
+    list-style-type: none;
+}
 .motion-text-with-diffs .original-text {
     min-height: 30px; /* Spacer between .diff-box, in case .original-text is empty */
 }
-.motion-text-with-diffs .original-text ul:last-child {
+.motion-text-with-diffs .original-text ul:last-child, .motion-text-with-diffs .original-text ol:last-child {
     padding-bottom: 16px;
 }
 .motion-text-with-diffs.line-numbers-inline .diff-box, .motion-text-with-diffs.line-numbers-none .diff-box {

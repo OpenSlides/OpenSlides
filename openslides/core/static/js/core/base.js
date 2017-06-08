@@ -902,7 +902,7 @@ angular.module('OpenSlidesApp.core', [
                         'a[!href];' +
                         'img[!src,alt]{width,height,float};' +
                         'tr th td caption;' +
-                        'li; ol[start]{list-style-type};' +
+                        'li(os-split-li); ol[start]{list-style-type};' +
                         'ul{list-style};' +
                         'span[!*]{color,background-color}(os-line-number,line-number-*);' +
                         'br(os-line-break);',
