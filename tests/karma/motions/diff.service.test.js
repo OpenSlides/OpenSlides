@@ -205,6 +205,15 @@ describe('linenumbering', function () {
     });
   });
 
+  describe('diff formatting', function () {
+    it('adds the merge-before-class for the pdf', function () {
+        var inHtml = '<p><span><span>' + noMarkup(1) + 'Es war einmal eine alte Geis, ' + brMarkup(2) + 'die hatte sieben junge Geislein, ' + brMarkup(3) + 'und hatte sie lieb, wie eine Mutter ihre Kinder lieb hat.</span></span></p>',
+            diffHtml = '<p><span><span>die hatte sieben junge Geislein, </span></span></p>';
+        var diff = diffService.getAndFormatDiff(inHtml, diffHtml, 80, 2, 3, 0);
+        expect(diff).toBe('<p class="merge-before">' + noMarkup(2) + '<span><span>die hatte sieben junge Geislein, </span></span></p>');
+    });
+  });
+
   describe('merging two sections', function () {
       it('merges OLs recursively, ignoring whitespaces between OL and LI', function () {
           var node1 = document.createElement('DIV');

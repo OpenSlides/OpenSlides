@@ -767,31 +767,9 @@ angular.module('OpenSlidesApp.motions', [
                 },
                 getDiff: function(motion, version, highlight) {
                     var lineLength = Config.get('motions_line_length').value,
-                        html = lineNumberingService.insertLineNumbers(motion.getVersion(version).text, lineLength);
+                        motionHtml = motion.getVersion(version).text;
 
-                    var data = diffService.extractRangeByLineNumbers(html, this.line_from, this.line_to),
-                        oldText = data.outerContextStart + data.innerContextStart +
-                            data.html + data.innerContextEnd + data.outerContextEnd;
-
-                    oldText = lineNumberingService.insertLineNumbers(oldText, lineLength, null, null, this.line_from);
-                    var diff = diffService.diff(oldText, this.text);
-
-                    // If an insertion makes the line longer than the line length limit, we need two line breaking runs:
-                    // - First, for the official line numbers, ignoring insertions (that's been done some lines before)
-                    // - Second, another one to prevent the displayed including insertions to exceed the page width
-                    diff = lineNumberingService.insertLineBreaksWithoutNumbers(diff, lineLength, true);
-
-                    if (highlight > 0) {
-                        diff = lineNumberingService.highlightLine(diff, highlight);
-                    }
-
-                    var origBeginning = data.outerContextStart + data.innerContextStart;
-                    if (diff.toLowerCase().indexOf(origBeginning.toLowerCase()) === 0) {
-                        // Add "merge-before"-css-class if the first line begins in the middle of a paragraph. Used for PDF.
-                        diff = diffService.addCSSClassToFirstTag(origBeginning, "merge-before") + diff.substring(origBeginning.length);
-                    }
-
-                    return diff;
+                    return diffService.getAndFormatDiff(motionHtml, this.text, lineLength, this.line_from, this.line_to, highlight);
                 },
                 getType: function(original_full_html) {
                     return this.type;
