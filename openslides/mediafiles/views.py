@@ -3,7 +3,6 @@ from ..utils.rest_api import ModelViewSet, ValidationError
 from .access_permissions import MediafileAccessPermissions
 from .models import Mediafile
 
-
 # Viewsets for the REST API
 
 class MediafileViewSet(ModelViewSet):

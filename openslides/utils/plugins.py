@@ -12,7 +12,6 @@ from openslides.utils.main import (
     get_win32_portable_user_data_path,
 )
 
-
 # Methods to collect plugins.
 
 def collect_plugins_from_entry_points():

@@ -43,7 +43,6 @@ from .models import (
 )
 from .serializers import MotionPollSerializer
 
-
 # Viewsets for the REST API
 
 class MotionViewSet(ModelViewSet):

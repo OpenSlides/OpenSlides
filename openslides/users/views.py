@@ -25,7 +25,6 @@ from .access_permissions import GroupAccessPermissions, UserAccessPermissions
 from .models import Group, User
 from .serializers import GroupSerializer, PermissionRelatedField
 
-
 # Viewsets for the REST API
 
 class UserViewSet(ModelViewSet):
