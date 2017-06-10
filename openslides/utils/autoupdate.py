@@ -11,7 +11,7 @@ from django.db import transaction
 
 from ..core.config import config
 from ..core.models import Projector
-from .auth import has_perm, user_to_collection_user
+from .auth import anonymous_is_enabled, has_perm, user_to_collection_user
 from .cache import startup_cache, websocket_user_cache
 from .collection import Collection, CollectionElement, CollectionElementList
 
@@ -72,6 +72,10 @@ def ws_add_site(message):
 
     Send all "startup-data" through the connection.
     """
+    if not anonymous_is_enabled() and not message.user.id:
+        send_or_wait(message.reply_channel.send, {'accept': False})
+        return
+
     Group('site').add(message.reply_channel)
     message.channel_session['user_id'] = message.user.id
     # Saves the reply channel to the user. Uses 0 for anonymous users.
