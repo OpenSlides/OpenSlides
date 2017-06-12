@@ -1001,6 +1001,8 @@ angular.module('OpenSlidesApp.users.site', [
 
                     // for template:
                     user.groupsNotToCreate = _.difference(user.groups, user.groupsToCreate);
+                } else {
+                    user.groups = [];
                 }
                 user.is_active = (user.is_active !== undefined && user.is_active === '1');
                 user.is_present = (user.is_present !== undefined && user.is_present === '1');
