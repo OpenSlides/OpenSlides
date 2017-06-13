@@ -89,13 +89,32 @@ class ItemAccessPermissions(BaseAccessPermissions):
 
         return restricted_data
 
-    def get_projector_data(self, full_data):
+    def get_projector_data(self, container):
         """
         Returns the restricted serialized data for the instance prepared
         for the projector. Removes field 'comment'.
         """
-        data = {}
-        for key in full_data.keys():
-            if key != 'comment':
-                data[key] = full_data[key]
-        return data
+        def filtered_data(full_data, blocked_keys):
+            """
+            Returns a new dict like full_data but with all blocked_keys removed.
+            """
+            whitelist = full_data.keys() - blocked_keys
+            return {key: full_data[key] for key in whitelist}
+
+        # Expand full_data to a list if it is not one.
+        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
+
+        # Parse data.
+        blocked_keys = ('comment',)
+        data = [filtered_data(full, blocked_keys) for full in full_data]
+
+        # Reduce result to a single item or None if it was not a collection at
+        # the beginning of the method.
+        if isinstance(container, Collection):
+            projector_data = data
+        elif data:
+            projector_data = data[0]
+        else:
+            projector_data = None
+
+        return projector_data

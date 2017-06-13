@@ -82,10 +82,10 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
             data = None
         return data
 
-    def get_projector_data(self, full_data):
+    def get_projector_data(self, container):
         """
         Returns the serialized data for the projector. Returns None if the
         user has no access to this specific data. Returns reduced data if
         the user has limited access. Default: Returns full data.
         """
-        return full_data
+        return container.get_full_data()
