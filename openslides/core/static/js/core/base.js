@@ -48,10 +48,11 @@ angular.module('OpenSlidesApp.core', [
     'REALM',
     'ProjectorID',
     '$q',
+    '$timeout',
     'ErrorMessage',
-    function (DS, REALM, ProjectorID, $q, ErrorMessage) {
+    function (DS, REALM, ProjectorID, $q, $timeout, ErrorMessage) {
         var socket = null;
-        var recInterval = null;
+        var retryConnectCallbacks = [];
 
         var websocketProtocol;
         if (location.protocol == 'https:') {
@@ -69,6 +70,21 @@ angular.module('OpenSlidesApp.core', [
           console.error('The constant REALM is not set properly.');
         }
 
+        /* The callbacks are invoked if the ws connection closed and this factory tries to
+         * reconnect after 1 second. The callbacks should return a promise. If the promise
+         * resolves, the retry-process is stopped, so the callback can indicate whether it
+         * has managed the reconnecting different.*/
+        var runRetryConnectCallbacks = function () {
+            var callbackPromises = _.map(retryConnectCallbacks, function (callback) {
+                return callback();
+            });
+            $q.all(callbackPromises).then(function (success) {
+                ErrorMessage.clearConnectionError();
+            }, function (error) {
+                $timeout(runRetryConnectCallbacks, 1000);
+            });
+        };
+
         var Autoupdate = {};
         Autoupdate.messageReceivers = [];
         // We use later a promise to defer the first message of the established ws connection.
@@ -78,15 +94,14 @@ angular.module('OpenSlidesApp.core', [
         };
         Autoupdate.newConnect = function () {
             socket = new WebSocket(websocketProtocol + '//' + location.host + websocketPath);
-            clearInterval(recInterval);
+            // Make shure the servers state hasn't changed: Send a whoami request. If no users is logged and
+            // anonymous are deactivated, reboot the client in fact that the server has lost all login information.
             socket.onclose = function (event) {
                 socket = null;
-                recInterval = setInterval(function () {
-                    Autoupdate.newConnect();
-                }, 1000);
                 if (event.code !== 1000) { // 1000 is a normal close, like the close on logout
                     ErrorMessage.setConnectionError();
                 }
+                $timeout(runRetryConnectCallbacks, 1000);
             };
             socket.onmessage = function (event) {
                 var dataList = [];
@@ -115,6 +130,9 @@ angular.module('OpenSlidesApp.core', [
                 socket.close();
             }
             Autoupdate.firstMessageDeferred = $q.defer();
+        };
+        Autoupdate.registerRetryConnectCallback = function (callback) {
+            retryConnectCallbacks.push(callback);
         };
         return Autoupdate;
     }

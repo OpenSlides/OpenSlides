@@ -8,13 +8,14 @@ angular.module('OpenSlidesApp.core.start', [])
     '$http',
     '$rootScope',
     '$state',
+    '$q',
     'DS',
     'autoupdate',
     'operator',
     'Group',
     'mainMenu',
-    function($http, $rootScope, $state, DS, autoupdate, operator, Group, mainMenu) {
-        return {
+    function($http, $rootScope, $state, $q, DS, autoupdate, operator, Group, mainMenu) {
+        var OpenSlides = {
             bootup: function () {
                 $rootScope.openslidesBootstrapDone = false;
                 $http.get('/users/whoami/').then(function (success) {
@@ -46,6 +47,22 @@ angular.module('OpenSlidesApp.core.start', [])
                 this.bootup();
             },
         };
+
+        // We need to 'ping' the server with a get request to whoami, because then we can decide,
+        // if the server is down or respond with a 403 (this cannot be differentiated with websockets)
+        autoupdate.registerRetryConnectCallback(function () {
+            return $http.get('/users/whoami').then(function (success) {
+                if (success.data.user_id === null && !success.data.guest_enabled) {
+                    OpenSlides.shutdown();
+                    // Redirect to login dialog if user is not logged in.
+                    $state.go('login', {guest_enabled: success.data.guest_enabled});
+                } else {
+                    autoupdate.newConnect();
+                }
+            });
+        });
+
+        return OpenSlides;
     }
 ])
 
