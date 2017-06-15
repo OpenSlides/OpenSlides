@@ -30,7 +30,13 @@ angular.module('OpenSlidesApp.motions.projector', [
 
         Motion.bindOne(id, $scope, 'motion');
         User.bindAll({}, $scope, 'users');
-        MotionChangeRecommendation.bindAll({}, $scope, 'change_recommendations');
+        MotionChangeRecommendation.bindAll({
+            where: {
+                motion_version_id: {
+                    '==': id,
+                },
+            },
+        }, $scope, 'change_recommendations');
     }
 ]);
 

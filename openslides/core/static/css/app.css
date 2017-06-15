@@ -1567,6 +1567,7 @@ img {
     display: inline-block;
     padding: .4em .6em;
     margin-right: .2em;
+    white-space: normal;
 }
 
 /* for csv import form */
