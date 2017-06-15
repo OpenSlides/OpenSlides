@@ -102,18 +102,9 @@ class CollectionElement:
         """
         from .autoupdate import format_for_autoupdate
 
-        # TODO: Revert this after get_projector_data is also enhanced like get_restricted_data. See also #3282.
-        if method == 'get_restricted_data':
-            container = self
-        elif not self.is_deleted():
-            container = self.get_full_data()
-        else:
-            container = None
-        # End of hack
-
         if not self.is_deleted():
             data = getattr(self.get_access_permissions(), method)(
-                container,
+                self,
                 *args)
         else:
             data = None

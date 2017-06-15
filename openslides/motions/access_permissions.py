@@ -96,21 +96,41 @@ class MotionAccessPermissions(BaseAccessPermissions):
 
         return restricted_data
 
-    def get_projector_data(self, full_data):
+    def get_projector_data(self, container):
         """
         Returns the restricted serialized data for the instance prepared
-        for the projector. Removes several fields.
+        for the projector. Removes several comment fields.
         """
-        data = full_data.copy()
-        if data.get('comments') is not None:
-            for i, field in enumerate(config['motions_comments']):
-                if not field.get('public'):
-                    try:
-                        data['comments'][i] = None
-                    except IndexError:
-                        # No data in range. Just do nothing.
-                        pass
-        return data
+        # Expand full_data to a list if it is not one.
+        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
+
+        # Parse data.
+        data = []
+        for full in full_data:
+            # Set private comment fields to None.
+            if full.get('comments') is not None:
+                full_copy = deepcopy(full)
+                for i, field in enumerate(config['motions_comments']):
+                    if not field.get('public'):
+                        try:
+                            full_copy['comments'][i] = None
+                        except IndexError:
+                            # No data in range. Just do nothing.
+                            pass
+                data.append(full_copy)
+            else:
+                data.append(full)
+
+        # Reduce result to a single item or None if it was not a collection at
+        # the beginning of the method.
+        if isinstance(container, Collection):
+            projector_data = data
+        elif data:
+            projector_data = data[0]
+        else:
+            projector_data = None
+
+        return projector_data
 
 
 class MotionChangeRecommendationAccessPermissions(BaseAccessPermissions):

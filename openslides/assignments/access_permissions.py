@@ -58,11 +58,28 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
 
         return restricted_data
 
-    def get_projector_data(self, full_data):
+    def get_projector_data(self, container):
         """
         Returns the restricted serialized data for the instance prepared
-        for the projector. Removes several fields.
+        for the projector. Removes unpublished polls.
         """
-        data = full_data.copy()
-        data['polls'] = [poll for poll in data['polls'] if poll['published']]
-        return data
+        # Expand full_data to a list if it is not one.
+        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
+
+        # Parse data. Exclude unpublished polls.
+        data = []
+        for full in full_data:
+            full_copy = full.copy()
+            full_copy['polls'] = [poll for poll in full['polls'] if poll['published']]
+            data.append(full_copy)
+
+        # Reduce result to a single item or None if it was not a collection at
+        # the beginning of the method.
+        if isinstance(container, Collection):
+            projector_data = data
+        elif data:
+            projector_data = data[0]
+        else:
+            projector_data = None
+
+        return projector_data
