@@ -367,9 +367,11 @@ angular.module('OpenSlidesApp.assignments', [])
                     }
                 },
                 // override isProjected function of jsDataModel factory
-                isProjected: function (poll_id) {
+                isProjected: function (poll_id, anyPoll) {
                     // Returns the ids of all projectors with an element
                     // with the name 'assignments/assignment'. Else returns an empty list.
+                    // Provide a poll_id to query a specific poll or set anyPoll to true, to
+                    // query whether any poll (but not the assignment itself) is projected.
                     var self = this;
                     var predicate = function (element) {
                         var value;
@@ -379,6 +381,12 @@ angular.module('OpenSlidesApp.assignments', [])
                                 typeof element.id !== 'undefined' &&
                                 element.id == self.id &&
                                 typeof element.poll === 'undefined';
+                        } else if (anyPoll) {
+                            // Assignment detail slide with any poll
+                            value = element.name == 'assignments/assignment' &&
+                                typeof element.id !== 'undefined' &&
+                                element.id == self.id &&
+                                typeof element.poll !== 'undefined';
                         } else {
                             // Assignment detail slide with specific poll
                             value = element.name == 'assignments/assignment' &&
@@ -396,7 +404,11 @@ angular.module('OpenSlidesApp.assignments', [])
                         }
                     });
                     return isProjectedIds;
-                }
+                },
+                isRelatedProjected: function () {
+                    var listOfSpeakers = this.agenda_item.isListOfSpeakersProjected();
+                    return listOfSpeakers.concat(this.isProjected(null, true));
+                },
             },
             relations: {
                 belongsTo: {

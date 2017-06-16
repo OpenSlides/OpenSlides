@@ -197,6 +197,10 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                     });
                     return isProjectedIds;
                 },
+                isRelatedProjected: function () {
+                    // related objects for agenda items: list of speakers slide.
+                    return this.isListOfSpeakersProjected();
+                },
                 // project list of speakers
                 projectListOfSpeakers: function(projectorId) {
                     var isProjectedIds = this.isListOfSpeakersProjected();

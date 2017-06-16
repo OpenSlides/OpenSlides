@@ -50,6 +50,8 @@ Core:
   clients by refactoring autoupdate, Collection and AccessPermission [#3223].
 - Fixes autoupdate bug for a user without user.can_see_name permission [#3233].
 - Improved reconnect handling if the server was flushed [#3297].
+- Highlight list entries in a light blue, if a related object is projected (e.g.
+  a list of speakers of a motion) [#3301]
 
 Mediafiles:
 - Fixed reloading of PDF on page change [#3274].

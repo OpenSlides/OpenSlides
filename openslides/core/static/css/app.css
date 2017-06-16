@@ -1664,6 +1664,10 @@ tr.activeline td, li.activeline, .projected {
     background-color: #bed4de !important;
 }
 
+.related-projected {
+    background-color: #e1ecfe !important;
+}
+
 tr.selected td {
     background-color: #ff9999;
 }
