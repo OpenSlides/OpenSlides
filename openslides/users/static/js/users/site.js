@@ -493,8 +493,9 @@ angular.module('OpenSlidesApp.users.site', [
     'osTableSort',
     'gettext',
     'UserPdfExport',
+    'ErrorMessage',
     function($scope, $state, $http, $q, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
-        Config, gettextCatalog, UserCsvExport, osTableFilter, osTableSort, gettext, UserPdfExport) {
+        Config, gettextCatalog, UserCsvExport, osTableFilter, osTableSort, gettext, UserPdfExport, ErrorMessage) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.$watch(function () {

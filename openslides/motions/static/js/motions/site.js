@@ -1245,7 +1245,10 @@ angular.module('OpenSlidesApp.motions.site', [
             {mode: 'agreed',
             label: 'Final version'},
         ];
-        $scope.projectionMode = $scope.projectionModes[0];
+        var motionDefaultTextMode = Config.get('motions_recommendation_text_mode').value;
+        $scope.projectionMode = _.find($scope.projectionModes, function (mode) {
+            return mode.mode == motionDefaultTextMode;
+        });
         if (motion.isProjected().length) {
             var modeMapping = motion.isProjectedWithMode();
             _.forEach($scope.projectionModes, function (mode) {

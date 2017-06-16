@@ -610,8 +610,8 @@ angular.module('OpenSlidesApp.core', [
                 $timeout(function () {
                     Messaging.createOrEditMessage(
                         'connectionLostMessage',
-                        gettextCatalog.getString('Connection lost. You are not connected to the server anymore.'),
-                        'error',
+                        gettextCatalog.getString('Offline mode: You can use OpenSlides but changes are not saved.'),
+                        'warning',
                         {noClose: true});
                 }, 1);
             },

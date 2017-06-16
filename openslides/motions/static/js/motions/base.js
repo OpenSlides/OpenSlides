@@ -566,7 +566,7 @@ angular.module('OpenSlidesApp.motions', [
                         }
                         return value;
                     });
-                    mode = mode || 'original';
+                    mode = mode || Config.get('motions_recommendation_text_mode').value;
                     if (!wasProjectedBefore) {
                         return $http.post(
                             '/rest/core/projector/' + projectorId + '/prune_elements/',
