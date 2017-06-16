@@ -20,7 +20,7 @@ class UsersAppConfig(AppConfig):
         from ..utils.rest_api import router
         from .config_variables import get_config_variables
         from .signals import create_builtin_groups_and_admin, get_permission_change_data
-        from .views import GroupViewSet, UserViewSet
+        from .views import GroupViewSet, PersonalNoteViewSet, UserViewSet
 
         # Define config variables
         config.update_config_variables(get_config_variables())
@@ -36,11 +36,12 @@ class UsersAppConfig(AppConfig):
         # Register viewsets.
         router.register(self.get_model('User').get_collection_string(), UserViewSet)
         router.register(self.get_model('Group').get_collection_string(), GroupViewSet)
+        router.register(self.get_model('PersonalNote').get_collection_string(), PersonalNoteViewSet)
 
     def get_startup_elements(self):
         """
         Yields all collections required on startup i. e. opening the websocket
         connection.
         """
-        for model in ('User', 'Group'):
+        for model in ('User', 'Group', 'PersonalNote'):
             yield Collection(self.get_model(model).get_collection_string())

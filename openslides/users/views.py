@@ -26,8 +26,12 @@ from ..utils.rest_api import (
     status,
 )
 from ..utils.views import APIView
-from .access_permissions import GroupAccessPermissions, UserAccessPermissions
-from .models import Group, User
+from .access_permissions import (
+    GroupAccessPermissions,
+    PersonalNoteAccessPermissions,
+    UserAccessPermissions,
+)
+from .models import Group, PersonalNote, User
 from .serializers import GroupSerializer, PermissionRelatedField
 
 
@@ -266,6 +270,57 @@ class GroupViewSet(ModelViewSet):
             self.permission_denied(request)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PersonalNoteViewSet(ModelViewSet):
+    """
+    API endpoint for personal notes.
+
+    There are the following views: metadata, list, retrieve, create,
+    partial_update, update, and destroy.
+    """
+    access_permissions = PersonalNoteAccessPermissions()
+    queryset = PersonalNote.objects.all()
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action in ('metadata', 'create', 'partial_update', 'update', 'destroy'):
+            # Every authenticated user can see metadata and create personal
+            # notes for himself and can manipulate only his own personal notes.
+            # See self.perform_create(), self.update() and self.destroy().
+            result = self.request.user.is_authenticated()
+        else:
+            result = False
+        return result
+
+    def perform_create(self, serializer):
+        """
+        Customized method to inject the request.user into serializer's save
+        method so that the request.user can be saved into the model field.
+        """
+        serializer.save(user=self.request.user)
+
+    def update(self, request, *args, **kwargs):
+        """
+        Customized method to ensure that every user can change only his own
+        personal notes.
+        """
+        if self.get_object().user != self.request.user:
+            self.permission_denied(request)
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Customized method to ensure that every user can delete only his own
+        personal notes.
+        """
+        if self.get_object().user != self.request.user:
+            self.permission_denied(request)
+        return super().destroy(request, *args, **kwargs)
 
 
 # Special API views

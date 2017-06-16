@@ -873,9 +873,11 @@ angular.module('OpenSlidesApp.motions.site', [
     'osTableSort',
     'MotionExportForm',
     'MotionPdfExport',
+    'PersonalNoteManager',
     function($scope, $state, $http, gettext, gettextCatalog, operator, ngDialog, MotionForm, Motion,
                 MotionComment, Category, Config, Tag, Workflow, User, Agenda, MotionBlock, Projector,
-                ProjectionDefault, osTableFilter, osTableSort, MotionExportForm, MotionPdfExport) {
+                ProjectionDefault, osTableFilter, osTableSort, MotionExportForm, MotionPdfExport,
+                PersonalNoteManager) {
         Category.bindAll({}, $scope, 'categories');
         MotionBlock.bindAll({}, $scope, 'motionBlocks');
         Tag.bindAll({}, $scope, 'tags');
@@ -895,9 +897,7 @@ angular.module('OpenSlidesApp.motions.site', [
         }, function () {
             $scope.motions = Motion.getAll();
             _.forEach($scope.motions, function (motion) {
-                motion.personalNote = _.find(motion.personal_notes, function (note) {
-                    return note.user_id === operator.user.id;
-                });
+                motion.personalNote = PersonalNoteManager.getNote(motion);
                 // For filtering, we cannot filter for .personalNote.star
                 motion.star = motion.personalNote ? motion.personalNote.star : false;
             });
@@ -1089,9 +1089,7 @@ angular.module('OpenSlidesApp.motions.site', [
             } else {
                 motion.personalNote = {star: true};
             }
-            $http.put('/rest/motions/motion/' + motion.id + '/set_personal_note/',
-                motion.personalNote
-            );
+            PersonalNoteManager.saveNote(motion, motion.personalNote);
         };
 
         // open new/edit dialog
@@ -1191,12 +1189,13 @@ angular.module('OpenSlidesApp.motions.site', [
     'ProjectionDefault',
     'MotionBlock',
     'MotionPdfExport',
+    'PersonalNoteManager',
     'EditingWarning',
     function($scope, $http, $timeout, operator, ngDialog, gettextCatalog, MotionForm,
              ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation,
              Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motionId, MotionInlineEditing,
              MotionCommentsInlineEditing, Projector, ProjectionDefault, MotionBlock, MotionPdfExport,
-             EditingWarning) {
+             PersonalNoteManager, EditingWarning) {
         var motion = Motion.get(motionId);
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1231,9 +1230,7 @@ angular.module('OpenSlidesApp.motions.site', [
         }, function () {
             $scope.motion = Motion.get(motionId);
             MotionComment.populateFields($scope.motion);
-            $scope.motion.personalNote = _.find($scope.motion.personal_notes, function (note) {
-                return note.user_id === operator.user.id;
-            });
+            $scope.motion.personalNote = PersonalNoteManager.getNote($scope.motion);
         });
         $scope.projectionModes = [
             {mode: 'original',
@@ -1465,21 +1462,7 @@ angular.module('OpenSlidesApp.motions.site', [
             } else {
                 $scope.motion.personalNote = {star: true};
             }
-            $http.put('/rest/motions/motion/' + $scope.motion.id + '/set_personal_note/',
-                $scope.motion.personalNote
-            );
-        };
-
-        // personal note
-        $scope.toggleStar = function () {
-            if ($scope.motion.personalNote) {
-                $scope.motion.personalNote.star = !$scope.motion.personalNote.star;
-            } else {
-                $scope.motion.personalNote = {star: true};
-            }
-            $http.put('/rest/motions/motion/' + $scope.motion.id + '/set_personal_note/',
-                $scope.motion.personalNote
-            );
+            PersonalNoteManager.saveNote($scope.motion, $scope.motion.personalNote);
         };
 
         // Inline editing functions
@@ -1519,9 +1502,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 } else {
                     motion.personalNote = {note: obj.editor.getData()};
                 }
-                $http.put('/rest/motions/motion/' + $scope.motion.id + '/set_personal_note/',
-                    motion.personalNote
-                );
+                PersonalNoteManager.saveNote(motion, motion.personalNote);
                 obj.revert();
                 obj.disable();
                 return true; // Do not update the motion via patch request.

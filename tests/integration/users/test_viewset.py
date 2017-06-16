@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.core.config import config
-from openslides.users.models import Group, User
+from openslides.users.models import Group, PersonalNote, User
 from openslides.users.serializers import UserFullSerializer
 from openslides.utils.test import TestCase, use_cache
 
@@ -540,3 +540,35 @@ class GroupDelete(TestCase):
 
         response = admin_client.delete(reverse('group-detail', args=[group_pk]))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class PersonalNoteTest(TestCase):
+    """
+    Tests for PersonalNote model.
+    """
+    def test_anonymous_without_personal_notes(self):
+        admin = User.objects.get(pk=1)
+        personal_note = PersonalNote.objects.create(user=admin, notes='["admin_personal_note_OoGh8choro0oosh0roob"]')
+        config['general_system_enable_anonymous'] = True
+        guest_client = APIClient()
+        response = guest_client.get(reverse('personalnote-detail', args=[personal_note.pk]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_admin_send_JSON(self):
+        admin_client = APIClient()
+        admin_client.login(username='admin', password='admin')
+        response = admin_client.post(
+            reverse('personalnote-list'),
+            {
+                "notes": {
+                    "example-model": {
+                        "1": {
+                            "note": "note for the example.model with id 1 Oohae1JeuSedooyeeviH",
+                            "star": True
+                        }
+                    }
+                }
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

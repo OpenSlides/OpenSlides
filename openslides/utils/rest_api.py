@@ -17,6 +17,7 @@ from rest_framework.serializers import (  # noqa
     Field,
     FileField,
     IntegerField,
+    JSONField,
     ListField,
     ListSerializer,
     ManyRelatedField,
