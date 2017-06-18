@@ -3,6 +3,7 @@ import re
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError, transaction
 from django.http import Http404
 from django.utils.translation import ugettext as _
@@ -448,6 +449,15 @@ class MotionChangeRecommendationViewSet(ModelViewSet):
         else:
             result = False
         return result
+
+    def create(self, request, *args, **kwargs):
+        """
+        Creating a Change Recommendation, custom exception handling
+        """
+        try:
+            return super().create(request, *args, **kwargs)
+        except DjangoValidationError as err:
+            return Response({'detail': err.message}, status=400)
 
 
 class CategoryViewSet(ModelViewSet):

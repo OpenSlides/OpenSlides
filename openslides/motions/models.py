@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import IntegrityError, models, transaction
 from django.db.models import Max
 from django.utils import formats, timezone
@@ -770,6 +770,25 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
 
     creation_time = models.DateTimeField(auto_now=True)
     """Time when the change recommendation was saved."""
+
+    def collides_with_other_recommendation(self, recommendations):
+        for recommendation in recommendations:
+            if (not (self.line_from < recommendation.line_from and self.line_to <= recommendation.line_from) and
+                    not (self.line_from >= recommendation.line_to and self.line_to > recommendation.line_to)):
+                return True
+
+        return False
+
+    def save(self, *args, **kwargs):
+        recommendations = (MotionChangeRecommendation.objects
+                           .filter(motion_version=self.motion_version)
+                           .exclude(pk=self.pk))
+
+        if self.collides_with_other_recommendation(recommendations):
+            raise ValidationError('The recommendation collides with an existing one (line %s - %s).' %
+                                  (self.line_from, self.line_to))
+
+        return super().save(*args, **kwargs)
 
     class Meta:
         default_permissions = ()

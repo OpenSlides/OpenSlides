@@ -607,6 +607,83 @@ class ManageVersion(TestCase):
         self.assertEqual(response.data, {'detail': 'You can not delete the active version of a motion.'})
 
 
+class CreateMotionChangeRecommendation(TestCase):
+    """
+    Tests motion change recommendation creation.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+
+        self.client.post(
+            reverse('motion-list'),
+            {'title': 'test_title_OoCoo3MeiT9li5Iengu9',
+             'text': 'test_text_thuoz0iecheiheereiCi'})
+
+    def test_simple(self):
+        """
+        Creating a change plain, simple change recommendation
+        """
+        response = self.client.post(
+            reverse('motionchangerecommendation-list'),
+            {'line_from': '5',
+             'line_to': '7',
+             'motion_version_id': '1',
+             'text': '<p>New test</p>',
+             'type': '0'})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_collission(self):
+        """
+        Two change recommendations with overlapping lines should lead to a Bad Request
+        """
+        response = self.client.post(
+            reverse('motionchangerecommendation-list'),
+            {'line_from': '5',
+             'line_to': '7',
+             'motion_version_id': '1',
+             'text': '<p>New test</p>',
+             'type': '0'})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.post(
+            reverse('motionchangerecommendation-list'),
+            {'line_from': '3',
+             'line_to': '6',
+             'motion_version_id': '1',
+             'text': '<p>New test</p>',
+             'type': '0'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'detail': 'The recommendation collides with an existing one (line 3 - 6).'})
+
+    def test_no_collission_different_motions(self):
+        """
+        Two change recommendations with overlapping lines, but affecting different motions, should not interfere
+        """
+        self.client.post(
+            reverse('motion-list'),
+            {'title': 'test_title_OoCoo3MeiT9li5Iengu9',
+             'text': 'test_text_thuoz0iecheiheereiCi'})
+
+        response = self.client.post(
+            reverse('motionchangerecommendation-list'),
+            {'line_from': '5',
+             'line_to': '7',
+             'motion_version_id': '1',
+             'text': '<p>New test</p>',
+             'type': '0'})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.post(
+            reverse('motionchangerecommendation-list'),
+            {'line_from': '3',
+             'line_to': '6',
+             'motion_version_id': '2',
+             'text': '<p>New test</p>',
+             'type': '0'})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
 class SupportMotion(TestCase):
     """
     Tests supporting a motion.
