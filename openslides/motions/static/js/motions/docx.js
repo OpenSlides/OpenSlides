@@ -17,11 +17,6 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
     function ($http, $q, operator, Config, Category, gettextCatalog, FileSaver, lineNumberingService, Html2DocxConverter) {
 
         var PAGEBREAK = '<w:p><w:r><w:br w:type="page" /></w:r></w:p>';
-        /*var TAGS_NO_PARAM = ['b', 'strong', 'em', 'i'];
-
-        var images;
-        var relationships;
-        var contentTypes; */
 
         var converter;
 

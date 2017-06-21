@@ -33,7 +33,7 @@ angular.module('OpenSlidesApp.core.docx', [])
                         tagStack.pop();
 
                         // Special: end paragraphs
-                        if (tag.startsWith('/p')) {
+                        if (tag.indexOf('/p') === 0) {
                             docx += '</w:p>';
                             inParagraph = false;
                         }
