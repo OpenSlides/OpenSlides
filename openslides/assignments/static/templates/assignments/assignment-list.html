@@ -202,7 +202,8 @@
     <!-- main table -->
     <div class="row data-row" ng-mouseover="assignment.hover=true"
       ng-mouseleave="assignment.hover=false"
-      ng-class="{'projected': assignment.isProjected().length}"
+      ng-class="{'projected': assignment.isProjected().length,
+        'related-projected': assignment.isRelatedProjected().length}"
       ng-repeat="assignment in assignmentsFiltered = (assignments
         | osFilter: filter.filterString : filter.getObjectQueryString
         | MultiselectFilter: filter.multiselectFilters.tag : getItemId.tag

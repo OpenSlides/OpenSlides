@@ -211,7 +211,8 @@
     <!-- main table -->
     <div class="row data-row" ng-mouseover="item.hover=true"
       ng-mouseleave="item.hover=false"
-      ng-class="{'projected': item.isProjected().length}"
+      ng-class="{'projected': item.isProjected().length,
+      'related-projected': item.isRelatedProjected().length}"
       ng-repeat="item in itemsFiltered = (items
         | osFilter: filter.filterString : filter.getObjectQueryString
         | filter: {closed: filter.booleanFilters.closed.value}

@@ -600,6 +600,10 @@ angular.module('OpenSlidesApp.core', [
             });
             return isProjectedIds;
         };
+        // Override this method to get object spzific behavior
+        BaseModel.prototype.isRelatedProjected = function() {
+            throw "needs to be implemented!";
+        };
         return BaseModel;
     }
 ])

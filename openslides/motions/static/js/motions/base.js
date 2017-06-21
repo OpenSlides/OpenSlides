@@ -611,6 +611,10 @@ angular.module('OpenSlidesApp.motions', [
                     });
                     return mapping;
                 },
+                isRelatedProjected: function () {
+                    // A motion related object is the list of speakers (through the agenda item)
+                    return this.agenda_item.isListOfSpeakersProjected();
+                },
             },
             relations: {
                 belongsTo: {
