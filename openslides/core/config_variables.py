@@ -251,7 +251,8 @@ def get_config_variables():
             'logo_projector_main',
             'logo_projector_header',
             'logo_pdf_header',
-            'logo_pdf_footer'],
+            'logo_pdf_footer',
+            'logo_web_header'],
         weight=300,
         group='Logo',
         hidden=True)
@@ -291,6 +292,16 @@ def get_config_variables():
         name='logo_pdf_footer',
         default_value={
             'display_name': 'PDF footer logo',
+            'path': ''},
+        input_type='logo',
+        weight=311,
+        group='Logo',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='logo_web_header',
+        default_value={
+            'display_name': 'Web interface header logo',
             'path': ''},
         input_type='logo',
         weight=311,
