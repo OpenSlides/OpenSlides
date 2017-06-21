@@ -1444,6 +1444,31 @@ img {
     font-size: 85%;
 }
 
+/* Custom OpenSlides slider classes */
+.os-slider {
+    margin-top: 40px;
+    margin-bottom: 12px;
+}
+.os-slider.rzslider .rz-bar {
+    background: #317796;
+    opacity: 0.3;
+    height: 2px;
+}
+.os-slider.rzslider .rz-selection {
+    background: #317796;
+}
+.os-slider.rzslider .rz-pointer {
+    width: 14px;
+    height: 14px;
+    top: -7px;
+    bottom: 0;
+    background-color: #317796;
+    border-radius: 7px;
+}
+.os-slider.rzslider .rz-pointer:after {
+    display: none;
+}
+
 /* ngDialog: override ngdialog-theme-default */
 
 .ngdialog.ngdialog-theme-default {

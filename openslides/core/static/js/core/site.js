@@ -20,6 +20,7 @@ angular.module('OpenSlidesApp.core.site', [
     'ckeditor',
     'luegg.directives',
     'xeditable',
+    'rzModule',
 ])
 
 // Can be used to find out if the projector or the side is used
@@ -1428,6 +1429,20 @@ angular.module('OpenSlidesApp.core.site', [
         ProjectorMessage, ngDialog) {
         ProjectionDefault.bindAll({}, $scope, 'projectiondefaults');
 
+        /* Info on resolution calculating:
+         * Internally the resolution is saved as (width, height) but the user has
+         * an aspect ratio to choose and a width from 800 to 3840 (4K).*/
+        $scope.aspectRatios = {
+            '4:3': 4/3,
+            '16:9': 16/9,
+            '16:10': 16/10,
+        };
+        // when converting (x,y) -> (ratio, percentage) round issues may occur
+        // (e.g. 800/600 != 4/3 with internal calculation issues). With this environment
+        // is tested, if the calculated value is in the following interval:
+        // [expected-environment; expected+environment]
+        var RATIO_ENVIRONMENT = 0.05;
+
         // watch for changes in projector_broadcast
         // and projector_currentListOfSpeakers_reference
         var last_broadcast, last_clos;
@@ -1448,8 +1463,9 @@ angular.module('OpenSlidesApp.core.site', [
 
         // watch for changes in Projector, and recalc scale and iframeHeight
         var first_watch = true;
-        $scope.resolutions = [];
+        $scope.resolutions = {};
         $scope.edit = [];
+        $scope.sliders = {};
         $scope.$watch(function () {
             return Projector.lastModified();
         }, function () {
@@ -1463,12 +1479,61 @@ angular.module('OpenSlidesApp.core.site', [
                         height: projector.height
                     };
                     $scope.edit[projector.id] = false;
+                    $scope.sliders[projector.id] = {
+                        value: projector.width,
+                        options: {
+                            id: projector.id,
+                            floor: 800,
+                            ceil: 3840,
+                            translate: function (value) {
+                                return value + 'px';
+                            },
+                            onChange: function (v) {
+                                $scope.calcResolution(projector);
+                            },
+                            onEnd: function (v) {
+                                $scope.saveResolution(projector);
+                            },
+                            hideLimitLabels: true,
+                        },
+                    };
+                    $scope.setAspectRatio(projector, $scope.getAspectRatio(projector));
                 }
             });
             if ($scope.projectors.length) {
                 first_watch = false;
             }
         });
+
+        $scope.getAspectRatio = function (projector) {
+            var ratio = projector.width/projector.height;
+            var foundRatio = _.findKey($scope.aspectRatios, function (value) {
+                return value >= (ratio-RATIO_ENVIRONMENT) && value <= (ratio+RATIO_ENVIRONMENT);
+            });
+            if (foundRatio === undefined) {
+                return _.keys($scope.aspectRatios)[0];
+            } else {
+                return foundRatio;
+            }
+        };
+        $scope.setAspectRatio = function (projector, aspectRatio) {
+            $scope.resolutions[projector.id].aspectRatio = aspectRatio;
+            $scope.resolutions[projector.id].aspectRatioNumber = $scope.aspectRatios[aspectRatio];
+            $scope.calcResolution(projector);
+        };
+        $scope.calcResolution = function (projector) {
+            var ratio = $scope.resolutions[projector.id].aspectRatioNumber;
+            var width = $scope.sliders[projector.id].value;
+            $scope.resolutions[projector.id].width = width;
+            $scope.resolutions[projector.id].height = Math.round(width/ratio);
+        };
+
+        $scope.toggleEditMenu = function (projectorId) {
+            $scope.edit[projectorId] = !$scope.edit[projectorId];
+            $timeout(function () {
+                $scope.$broadcast('rzSliderForceRender');
+            });
+        };
 
         // Set list of speakers reference
         $scope.setListOfSpeakers = function (projector) {
@@ -1521,14 +1586,18 @@ angular.module('OpenSlidesApp.core.site', [
             projector.config = projector.elements;
             Projector.save(projector);
         };
-        $scope.changeResolution = function (projectorId) {
+        $scope.saveResolution = function (projector) {
             $http.post(
-                '/rest/core/projector/' + projectorId + '/set_resolution/',
-                $scope.resolutions[projectorId]
+                '/rest/core/projector/' + projector.id + '/set_resolution/',
+                $scope.resolutions[projector.id]
             ).then(function (success) {
-                $scope.resolutions[projectorId].error = null;
+                $scope.resolutions[projector.id].error = null;
             }, function (error) {
-                $scope.resolutions[projectorId].error = error.data.detail;
+                if (error.data) {
+                    $scope.resolutions[projector.id].error = error.data.detail;
+                } else {
+                    $scope.resolutions[projector.id].error = null;
+                }
             });
         };
 
