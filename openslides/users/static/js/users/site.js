@@ -85,13 +85,7 @@ angular.module('OpenSlidesApp.users.site', [
                 title: gettext('Groups'),
             },
         })
-        .state('users.group.list', {
-            resolve: {
-                permissions: function(Group) {
-                    return Group.getPermissions();
-                }
-            }
-        })
+        .state('users.group.list', {})
         .state('login', {
             template: null,
             url: '/login',

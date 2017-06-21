@@ -128,25 +128,12 @@ angular.module('OpenSlidesApp.users', [])
 ])
 
 .factory('Group', [
-    '$http',
     'DS',
-    function($http, DS) {
+    function(DS) {
         var name = 'users/group';
         var permissions;
         return DS.defineResource({
             name: name,
-            permissions: permissions,
-            // TODO (Issue 2862): Do not query the permissions from server. They should be included
-            // in the startup data. Then remove 'permission' injection from group list controller.
-            getPermissions: function() {
-                if (!this.permissions) {
-                    this.permissions = $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' })
-                        .then(function(result) {
-                            return result.data.actions.POST.permissions.choices;
-                        });
-                }
-                return this.permissions;
-            }
         });
     }
 ])

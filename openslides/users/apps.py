@@ -45,3 +45,16 @@ class UsersAppConfig(AppConfig):
         """
         for model in ('User', 'Group', 'PersonalNote'):
             yield Collection(self.get_model(model).get_collection_string())
+
+    def get_angular_constants(self):
+        from django.contrib.auth.models import Permission
+
+        permissions = []
+        for permission in Permission.objects.all():
+            permissions.append({
+                'display_name': permission.name,
+                'value': '.'.join((permission.content_type.app_label, permission.codename,))})
+        permission_settings = {
+            'name': 'permissions',
+            'value': permissions}
+        return [permission_settings]
