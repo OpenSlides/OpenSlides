@@ -9,9 +9,24 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 .constant('REALM', 'projector')
 
 .run([
+    '$http',
     'autoupdate',
-    function (autoupdate) {
+    'DS',
+    function ($http, autoupdate, DS) {
         autoupdate.newConnect();
+
+        // If the connection aborts, we try to ping the server with whoami requests. If
+        // the server is flushed, we clear the datastore, so the message 'this projector
+        // cannot be shown' will be displayed. Otherwise establish the websocket connection.
+        autoupdate.registerRetryConnectCallback(function () {
+            return $http.get('/users/whoami').then(function (success) {
+                if (success.data.user_id === null && !success.data.guest_enabled) {
+                    DS.clear();
+                } else {
+                    autoupdate.newConnect();
+                }
+            });
+        });
     }
 ])
 
