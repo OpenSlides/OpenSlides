@@ -540,11 +540,13 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 ])
 
 .factory('PollContentProvider', [
+    '$q',
     'PDFLayout',
     'gettextCatalog',
     'Config',
     'User',
-    function(PDFLayout, gettextCatalog, Config, User) {
+    'ImageConverter',
+    function($q, PDFLayout, gettextCatalog, Config, User, ImageConverter) {
         /**
         * Generates a content provider for polls
         * @constructor
@@ -553,6 +555,36 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         */
         var createInstance = function(title, id) {
 
+            var logoMotionPollUrl = Config.get('logo_pdf_motion_poll').value.path;
+            var imageMap = {};
+
+            // PDF header
+            var header = function() {
+                var columns = [];
+
+                var text = Config.get('general_event_name').value
+                columns.push({
+                    text: text,
+                    fontSize: 8,
+                    alignment: 'left',
+                    width: '80%'
+                });
+
+                // logo
+                columns.push({
+                    image: imageMap[logoMotionPollUrl].data,
+                    fit: [90,25],
+                    width: '20%'
+                });
+                return {
+                    color: '#555',
+                    fontSize: 10,
+                    margin: [30, 10, 10, 0], // [left, top, right, bottom]
+                    columns: columns,
+                    columnGap: 5
+                };
+            };
+
             /**
             * Returns a single section on the ballot paper
             * @function
@@ -560,18 +592,21 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             var createSection = function() {
                 var sheetend = 75;
                 return {
-                    stack: [{
-                        text: gettextCatalog.getString("Motion") + " " + id,
-                        style: 'title',
-                    }, {
-                        text: title,
-                        style: 'description'
-                    },
-                    PDFLayout.createBallotEntry(gettextCatalog.getString("Yes")),
-                    PDFLayout.createBallotEntry(gettextCatalog.getString("No")),
-                    PDFLayout.createBallotEntry(gettextCatalog.getString("Abstain")),
+                    stack: [
+                        header(),
+                        {
+                            text: gettextCatalog.getString('Motion') + ' ' + id,
+                            style: 'title',
+                        },
+                        {
+                            text: title,
+                            style: 'description'
+                        },
+                        PDFLayout.createBallotEntry(gettextCatalog.getString('Yes')),
+                        PDFLayout.createBallotEntry(gettextCatalog.getString('No')),
+                        PDFLayout.createBallotEntry(gettextCatalog.getString('Abstain')),
                     ],
-                    margin: [0, 0, 0, sheetend]
+                    margin: [0, 0, 0, sheetend],
                 };
             };
 
@@ -642,9 +677,17 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 return content;
             };
 
-            return {
-                getContent: getContent,
-            };
+            return $q(function (resolve) {
+                var imageSources = [
+                    logoMotionPollUrl,
+                ];
+                ImageConverter.toBase64(imageSources).then(function (_imageMap) {
+                    imageMap = _imageMap;
+                    resolve({
+                        getContent: getContent
+                    });
+                });
+            });
         };
         return {
             createInstance: createInstance
@@ -944,9 +987,10 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 var id = motion.identifier.replace(' ', '');
                 var title = motion.getTitle(version);
                 var filename = gettextCatalog.getString('Motion') + '-' + id + '-' + gettextCatalog.getString('ballot-paper') + '.pdf';
-                var pollContentProvider = PollContentProvider.createInstance(title, id);
-                var documentProvider = PdfMakeBallotPaperProvider.createInstance(pollContentProvider);
-                PdfCreate.download(documentProvider.getDocument(), filename);
+                PollContentProvider.createInstance(title, id).then(function (pollContentProvider) {
+                    var documentProvider = PdfMakeBallotPaperProvider.createInstance(pollContentProvider);
+                    PdfCreate.download(documentProvider.getDocument(), filename);
+                });
             },
             exportPersonalNote: function (motion, filename) {
                 var personalNote = PersonalNoteManager.getNote(motion);

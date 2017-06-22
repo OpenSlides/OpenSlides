@@ -266,13 +266,45 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 ])
 
 .factory('BallotContentProvider', [
+    '$q',
     '$filter',
     'gettextCatalog',
     'PDFLayout',
     'Config',
     'User',
-    function($filter, gettextCatalog, PDFLayout, Config, User) {
+    'ImageConverter',
+    function($q, $filter, gettextCatalog, PDFLayout, Config, User, ImageConverter) {
         var createInstance = function(assignment, poll, pollNumber) {
+
+            var logoAssignmentBallotPaperUrl = Config.get('logo_pdf_assignment_ballot_paper').value.path;
+            var imageMap = {};
+
+            // PDF header
+            var header = function() {
+                var columns = [];
+
+                var text = Config.get('general_event_name').value
+                columns.push({
+                    text: text,
+                    fontSize: 8,
+                    alignment: 'left',
+                    width: '80%'
+                });
+
+                // logo
+                columns.push({
+                    image: imageMap[logoAssignmentBallotPaperUrl].data,
+                    fit: [90,25],
+                    width: '20%'
+                });
+                return {
+                    color: '#555',
+                    fontSize: 10,
+                    margin: [30, 10, 10, 0], // [left, top, right, bottom]
+                    columns: columns,
+                    columnGap: 5
+                };
+            };
 
             // page title
             var createTitle = function() {
@@ -351,11 +383,12 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 // since it is not possible to give a column a fixed height, we draw an "empty" column
                 // with a one px width and a fixed top-margin
                 return {
-                    columns : [
+                    columns: [
+                        header(),
                         {
                             width: 1,
                             margin: [0, marginTop],
-                            text: ""
+                            text: '',
                         },
                         {
                             width: '*',
@@ -363,8 +396,8 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                                 createTitle(),
                                 createPollHint(),
                                 createSelectionField(),
-                            ]
-                        }
+                            ],
+                        },
                     ]
                 };
             };
@@ -473,9 +506,17 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 return createContentTable();
             };
 
-            return {
-                getContent: getContent
-            };
+            return $q(function (resolve) {
+                var imageSources = [
+                    logoAssignmentBallotPaperUrl,
+                ];
+                ImageConverter.toBase64(imageSources).then(function (_imageMap) {
+                    imageMap = _imageMap;
+                    resolve({
+                        getContent: getContent
+                    });
+                });
+            });
         };
 
         return {
@@ -610,9 +651,10 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                     }
                 });
                 var filename = gettextCatalog.getString('Ballot') + '_' + pollNumber + '_' + assignment.title + '.pdf';
-                var ballotContentProvider = BallotContentProvider.createInstance(assignment, thePoll, pollNumber);
-                var documentProvider = PdfMakeBallotPaperProvider.createInstance(ballotContentProvider);
-                PdfCreate.download(documentProvider.getDocument(), filename);
+                BallotContentProvider.createInstance(assignment, thePoll, pollNumber).then(function (ballotContentProvider) {
+                    var documentProvider = PdfMakeBallotPaperProvider.createInstance(ballotContentProvider);
+                    PdfCreate.download(documentProvider.getDocument(), filename);
+                });
             },
         };
     }
