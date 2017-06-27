@@ -153,18 +153,25 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 },
                 // override project function of jsDataModel factory
                 project: function (projectorId, tree) {
-                    var isProjectedIds = this.isProjected(tree);
-                    _.forEach(isProjectedIds, function (id) {
-                        $http.post('/rest/core/projector/' + id + '/clear_elements/');
-                    });
-                    // Activate, if the projector_id is a new projector.
-                    if (_.indexOf(isProjectedIds, projectorId) == -1) {
-                        var name = tree ? 'agenda/item-list' : this.content_object.collection;
-                        var id = tree ? this.id : this.content_object.id;
-                        return $http.post(
-                            '/rest/core/projector/' + projectorId + '/prune_elements/',
-                            [{name: name, tree: tree, id: id}]
-                        );
+                    if (tree) {
+                        var isProjectedIds = this.isProjected(tree);
+                        _.forEach(isProjectedIds, function (id) {
+                            $http.post('/rest/core/projector/' + id + '/clear_elements/');
+                        });
+                        // Activate, if the projector_id is a new projector.
+                        if (_.indexOf(isProjectedIds, projectorId) == -1) {
+                            return $http.post(
+                                '/rest/core/projector/' + projectorId + '/prune_elements/',
+                                [{
+                                    name: 'agenda/item-list',
+                                    tree: true,
+                                    id: this.id
+                                }]
+                            );
+                        }
+                    } else {  // Project the content object
+                        var contentObject = DS.get(this.content_object.collection, this.content_object.id);
+                        contentObject.project(projectorId);
                     }
                 },
                 // override isProjected function of jsDataModel factory
