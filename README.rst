@@ -185,6 +185,7 @@ OpenSlides uses the following projects or parts of them:
   * `angular-ui-router <http://angular-ui.github.io/ui-router/>`_, License: MIT
   * `angular-ui-tree <https://github.com/angular-ui-tree/angular-ui-tree>`_, License: MIT
   * `angular-xeditable <https://github.com/vitalets/angular-xeditable>`_, License: MIT
+  * `angularjs-slider <https://github.com/angular-slider/angularjs-slider>`_, License: MIT
   * `api-check <https://github.com/kentcdodds/api-check>`_, License: MIT
   * `bootstrap <http://getbootstrap.com>`_, License: MIT
   * `bootstrap-ui-datetime-picker <https://github.com/Gillardo/bootstrap-ui-datetime-picker>`_, License: MIT

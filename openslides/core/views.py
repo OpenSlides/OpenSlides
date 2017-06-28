@@ -404,8 +404,8 @@ class ProjectorViewSet(ModelViewSet):
         if not isinstance(request.data['width'], int) or not isinstance(request.data['height'], int):
             raise ValidationError({'detail': 'Data has to be integers.'})
         if (request.data['width'] < 800 or request.data['width'] > 3840 or
-                request.data['height'] < 600 or request.data['height'] > 2160):
-            raise ValidationError({'detail': 'The Resolution have to be between 800x600 and 3840x2160.'})
+                request.data['height'] < 340 or request.data['height'] > 2880):
+            raise ValidationError({'detail': 'The Resolution have to be between 800x340 and 3840x2880.'})
 
         projector_instance = self.get_object()
         projector_instance.width = request.data['width']

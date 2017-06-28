@@ -45,21 +45,22 @@
           {{ projector.id }}:
           <strong>{{ projector.name | translate }}</strong>
         </a>
-        <a href="" class="pull-right" ng-click="edit[projector.id] = !edit[projector.id]"><i class="fa" ng-class="edit[projector.id] ? 'fa-times' : 'fa-pencil'"></i></a>
+        <a href="" class="pull-right" ng-click="toggleEditMenu(projector.id)"><i class="fa" ng-class="edit[projector.id] ? 'fa-times' : 'fa-pencil'"></i></a>
       </div>
 
       <div ng-show="edit[projector.id]" style="margin-bottom: -20px;">
         <div>
           <div class="dropdown" uib-dropdown>
-            <button class="btn btn-default btn-sm" id="menuProjector{{ pr.id }}" uib-dropdown-toggle>
+            <button class="btn btn-default btn-sm" id="menuProjector{{ projector.id }}" uib-dropdown-toggle>
               <translate>Projection defaults</translate>
               <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu dropdown-entries" aria-labelledby="menuProjector{{ pr.id }}">
-              <li ng-repeat="projectiondefault in projectiondefaults | orderBy:'id'"
-                  ng-click="setProjectionDefault(projector, projectiondefault)">
-                <i class="fa fa-check" ng-if="projectiondefault.projector_id === projector.id"></i>
-                {{ projectiondefault.display_name | translate }}
+            <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="menuProjector{{ projector.id }}">
+              <li ng-repeat="projectiondefault in projectiondefaults | orderBy:'id'">
+                <a href ng-click="setProjectionDefault(projector, projectiondefault)">
+                  <i class="fa fa-check" ng-if="projectiondefault.projector_id === projector.id"></i>
+                  {{ projectiondefault.display_name | translate }}
+                </a>
               </li>
             </ul>
           </div>
@@ -82,19 +83,30 @@
         <div>
           <label for="resolution{{ projector.id }}" class="control-label"><translate>Resolution</translate>:</label>
           <div id="resolution{{ projector.id }}">
-            <input ng-model="resolutions[projector.id].width"
-                   ng-model-option="{debounce: 2000}"
-                   ng-change="changeResolution(projector.id)"
-                   class="form-control resolution"
-                   id="{{ projector.id }}_width"
-                   type="number">
-            x
-            <input ng-model="resolutions[projector.id].height"
-                   ng-model-option="{debounce: 2000}"
-                   ng-change="changeResolution(projector.id)"
-                   class="form-control resolution"
-                   id="{{ projector.id }}_height"
-                   type="number">
+            <div>
+              <span>
+                {{ resolutions[projector.id].width }}&times;{{ resolutions[projector.id].height }}
+              </span>
+              <div class="dropdown" uib-dropdown>
+                <button class="btn btn-default btn-sm" id="aspectRatio{{ projector.id }}" uib-dropdown-toggle>
+                  <translate>Aspect ratio</translate>: {{ resolutions[projector.id].aspectRatio }}
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="aspectRatio{{ projector.id }}">
+                  <li ng-repeat="(aspectRatio, value) in aspectRatios track by $index">
+                    <a href ng-click="setAspectRatio(projector, aspectRatio); saveResolution(projector);">
+                      <i class="fa fa-check" ng-if="aspectRatio === resolutions[projector.id].aspectRatio"></i>
+                      {{ aspectRatio }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <rzslider class="os-slider"
+                rz-slider-model="sliders[projector.id].value"
+                rz-slider-options="sliders[projector.id].options"></rzslider>
+            </div>
           </div>
           <p class="help-block">
             {{ resolutions[projector.id].error }}
