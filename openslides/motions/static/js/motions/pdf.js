@@ -375,11 +375,12 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 .factory('MotionPartialContentProvider', [
     '$q',
     'gettextCatalog',
+    'Config',
     'PDFLayout',
     'PdfMakeConverter',
     'ImageConverter',
     'HTMLValidizer',
-    function ($q, gettextCatalog, PDFLayout, PdfMakeConverter, ImageConverter, HTMLValidizer) {
+    function ($q, gettextCatalog, Config, PDFLayout, PdfMakeConverter, ImageConverter, HTMLValidizer) {
         /*
          * content should be an array of content blocks. Each content is an object providing a
          * heading and a text. E.g.
