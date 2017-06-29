@@ -613,7 +613,11 @@ angular.module('OpenSlidesApp.motions', [
                 },
                 isRelatedProjected: function () {
                     // A motion related object is the list of speakers (through the agenda item)
-                    return this.agenda_item.isListOfSpeakersProjected();
+                    if (this.agenda_item) {
+                        return this.agenda_item.isListOfSpeakersProjected();
+                    } else {
+                        return [];
+                    }
                 },
             },
             relations: {
