@@ -18,6 +18,7 @@ Motions:
 - Fixed issue when creating/deleting motion comment fields in the
   settings [#3187].
 - Fixed empty motion comment field in motion update form [#3194].
+- Fixed error on category sort [#3318].
 - Removed server side image to base64 transformation and
   added local transformation [#3181]
 - Added support for export motions in a ZIP archive [#3189].
