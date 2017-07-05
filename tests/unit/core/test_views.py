@@ -164,3 +164,15 @@ class ProjectorAPI(TestCase):
         self.viewset.request = request
         self.viewset.clear_elements(request=request, pk=MagicMock())
         self.assertEqual(len(mock_object.return_value.config), 1)
+
+
+class WebclientJavaScriptView(TestCase):
+    def setUp(self):
+        self.request = MagicMock()
+        self.view_instance = views.WebclientJavaScriptView()
+        self.view_instance.request = self.request
+
+    @patch('django.contrib.auth.models.Permission.objects.all')
+    def test_permissions_as_constant(self, mock_all):
+        self.view_instance.get()
+        self.assertEqual(mock_all.call_count, 1)
