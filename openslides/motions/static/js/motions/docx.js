@@ -154,9 +154,13 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
                     if (!fields[i].public) {
                         title += ' (' + gettextCatalog.getString('internal') + ')';
                     }
+                    var comment = motion.comments[i];
+                    if (comment.indexOf('<p>') !== 0) {
+                        comment = '<p>' + comment + '</p>';
+                    }
                     comments.push({
                         title: title,
-                        comment: motion.comments[i],
+                        comment: comment,
                     });
                 }
             }
