@@ -144,6 +144,9 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
 
         var getMotionComments = function (motion) {
             var fields = Config.get('motions_comments').value;
+            fields = _.filter(fields, function (field) {
+                return !field.forState && !field.forRecommendation;
+            });
             var canSeeComment = function (index) {
                 return fields[index].public || operator.hasPerms('motions.can_manage');
             };
