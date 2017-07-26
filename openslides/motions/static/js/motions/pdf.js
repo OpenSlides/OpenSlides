@@ -44,7 +44,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     motion.getTitle(motionVersion)
             );
 
-            // subtitle
+            // subtitle and sequential number
             var subtitleLines = [];
             if (motion.parent_id) {
                 var parentMotion = Motion.get(motion.parent_id);
@@ -53,7 +53,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     (parentMotion.identifier ? parentMotion.identifier : parentMotion.getTitle())
                 );
             }
-            subtitleLines.push(gettextCatalog.getString('Sequential number') + ': ' +  motion.id);
+            if (Config.get('motions_export_sequential_number').value) {
+                subtitleLines.push(gettextCatalog.getString('Sequential number') + ': ' +  motion.id);
+            }
             var subtitle = PDFLayout.createSubtitle(subtitleLines);
 
             // meta data table
@@ -408,7 +410,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     gettextCatalog.getString('Motion') + identifier + ': ' + motion.getTitle()
             );
 
-            // subtitle
+            // subtitle and sequential number
             var subtitleLines = [];
             if (motion.parent_id) {
                 var parentMotion = Motion.get(motion.parent_id);
@@ -417,7 +419,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     (parentMotion.identifier ? parentMotion.identifier : parentMotion.getTitle())
                 );
             }
-            subtitleLines.push(gettextCatalog.getString('Sequential number') + ': ' +  motion.id);
+            if (Config.get('motions_export_sequential_number').value) {
+                subtitleLines.push(gettextCatalog.getString('Sequential number') + ': ' +  motion.id);
+            }
             var subtitle = PDFLayout.createSubtitle(subtitleLines);
 
             // meta data table

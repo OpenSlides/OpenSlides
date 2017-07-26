@@ -92,6 +92,7 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
                 status_translation = gettextCatalog.getString('Status'),
                 reason_translation = gettextCatalog.getString('Reason'),
                 comment_translation = gettextCatalog.getString('Comments');
+            var sequential_enabled = Config.get('motions_export_sequential_number').value;
             // promises for create the actual motion data
             var promises = _.map(motions, function (motion) {
                 var text = motion.getTextByMode(params.changeRecommendationMode, null, null, false);
@@ -107,6 +108,7 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
                     reason_translation: reason.length === 0 ? '' : reason_translation,
                     status_translation: status_translation,
                     comment_translation: comments.length === 0 ? '' : comment_translation,
+                    sequential_enabled: sequential_enabled,
                     // Actual data
                     id: motion.id,
                     identifier: motion.identifier,
