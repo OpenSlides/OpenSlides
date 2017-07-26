@@ -212,7 +212,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     text: '{{currentPage}} / {{pageCount}}',
                     color: '#555',
                     fontSize: 9,
-                    alignment: 'right',
+                    alignment: Config.get('general_export_pdf_pagenumber_alignment').value,
                     margin: [0, 15, 0, 0],
                 });
                 return {
