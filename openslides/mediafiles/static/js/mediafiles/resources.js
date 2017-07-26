@@ -85,7 +85,7 @@ angular.module('OpenSlidesApp.mediafiles.resources', [
                     return /\/(.+?)$/.exec(filename)[1];
                 }],
                 filetype: [function () {
-                    return this.mediafile.type;
+                    return this.mediafile.type || gettext('undefined');
                 }],
                 title_or_filename: ['title', 'mediafile', function (title) {
                     return title || this.filename;
