@@ -259,7 +259,7 @@ angular.module('OpenSlidesApp.core.docx', [])
                     // remove whitespaces and > brackets. Leave < brackets in there to check, whether
                     // the following string is a tag or text.
                     html = _.filter(html, function (part) {
-                        var skippedCharsRegex = new RegExp('^([\s\n\r]|>)*$', 'gm');
+                        var skippedCharsRegex = new RegExp('^([\s\n\r]|>)*$', 'g');
                         return !skippedCharsRegex.test(part);
                     });
 
