@@ -233,11 +233,17 @@ class Motion(RESTModelMixin, models.Model):
                 with transaction.atomic():
                     super(Motion, self).save(skip_autoupdate=True, *args, **kwargs)
             except IntegrityError:
-                # Identifier is already used. Calculate a new one and try again.
-                self.identifier_number, self.identifier = self.increment_identifier_number(
-                    self.identifier_number,
-                    self._identifier_prefix,
-                )
+                # Identifier is already used.
+                if hasattr(self, '_identifier_prefix'):
+                    # Calculate a new one and try again.
+                    self.identifier_number, self.identifier = self.increment_identifier_number(
+                        self.identifier_number,
+                        self._identifier_prefix,
+                    )
+                else:
+                    # Do not calculate a new one but reraise the IntegrityError.
+                    # The error is caught in the category sort view.
+                    raise
             else:
                 # Save was successful. End loop.
                 break
