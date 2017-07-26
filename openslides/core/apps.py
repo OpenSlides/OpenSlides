@@ -70,6 +70,7 @@ class CoreAppConfig(AppConfig):
     def get_angular_constants(self):
         # Client settings
         client_settings_keys = [
+            'DEBUG',
             'MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS'
         ]
         client_settings_dict = {}

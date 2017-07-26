@@ -129,6 +129,10 @@ def get_parser():
         '--use-geiss',
         action='store_true',
         help='Use Geiss instead of Daphne as ASGI protocol server.')
+    subcommand_start.add_argument(
+        '-D', '--DEBUG',
+        action='store_true',
+        help="Enable Django's DEBUG mode.")
 
     # Subcommand createsettings
     createsettings_help = 'Creates the settings file.'
@@ -186,6 +190,10 @@ def start(args):
     setup_django_settings_module(settings_path, local_installation=local_installation)
     django.setup()
     from django.conf import settings
+
+    # Enable DEBUG option, if the user give the DEBUG option.
+    if args.DEBUG:
+        settings.DEBUG = True
 
     # Migrate database
     call_command('migrate')
