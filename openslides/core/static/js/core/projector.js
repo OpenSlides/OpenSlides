@@ -104,11 +104,12 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
 // Projector Container Controller
 .controller('ProjectorContainerCtrl', [
     '$scope',
+    '$timeout',
     '$location',
     'gettext',
     'Projector',
-    function($scope, $location, gettext, Projector) {
-        $scope.error = '';
+    function($scope, $timeout, $location, gettext, Projector) {
+        $scope.showError = true;
 
         // watch for changes in Projector
         $scope.$watch(function () {
@@ -116,12 +117,20 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         }, function () {
             var projector = Projector.get($scope.projectorId);
             if (projector) {
-                $scope.error = '';
+                $scope.showError = false;
                 $scope.projectorWidth = projector.width;
                 $scope.projectorHeight = projector.height;
                 $scope.recalculateIframe();
             } else {
-                $scope.error = gettext('Can not open the projector.');
+                $scope.showError = true;
+                // delay displaying the error message, because with a slow internet
+                // connection, the autoupdate with the projector may be delayed. We
+                // de not want to irritate the user by showing this error to early.
+                $timeout(function () {
+                    if ($scope.showError) {
+                        $scope.error = gettext('Can not open the projector.');
+                    }
+                }, 3000);
             }
         });
 

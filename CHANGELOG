@@ -56,6 +56,8 @@ Core:
 - Highlight list entries in a light blue, if a related object is projected
   (e. g. a list of speakers of a motion) [#3301].
 - Select the projector resolution with a slider and an aspect ratio [#3311].
+- Delay the 'could not load projector' error 3 seconds to not irritate users
+  with a slow internet connection [#3323]
 
 Mediafiles:
 - Fixed reloading of PDF on page change [#3274].
