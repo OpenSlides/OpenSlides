@@ -30,7 +30,9 @@ Motions:
 - Reworked DOCX export parser and added comments to DOCX [#3258].
 - New PDF export for personal note and comments [#3239].
 - Bugfix: Creating colliding change recommendation is now prevented
-  on server side [#3304]
+  on server side [#3304].
+- Added config value for customize sorting of category list in
+  pdf/docx export [#3329].
 
 Users:
 - User without permission to see users can now see agenda item speakers,

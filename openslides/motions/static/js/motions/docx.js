@@ -22,7 +22,6 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
 
         var getData = function (motions, params) {
             var data = {};
-            var categories = Category.getAll();
             // header
             var headerline1 = [
                 Config.translate(Config.get('general_event_name').value),
@@ -39,9 +38,10 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
             data.preamble = Config.get('motions_export_preamble').value;
 
             // categories
+            var categories = getCategoriesData(motions);
             data.has_categories = categories.length === 0 ? false : true;
             data.categories_translation = gettextCatalog.getString('Categories');
-            data.categories = getCategoriesData(categories);
+            data.categories = categories;
             data.no_categories = gettextCatalog.getString('No categories available.');
             data.pagebreak_main = categories.length === 0 ? '' : PAGEBREAK;
 
@@ -58,13 +58,21 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
             });
         };
 
-        var getCategoriesData = function (categories) {
-            return _.map(categories, function (category) {
-                return {
-                    prefix: category.prefix,
-                    name: category.name,
-                };
+        var getCategoriesData = function (motions) {
+            var categories = _.map(motions, function (motion) {
+                if (motion.category) {
+                    return {
+                        prefix: motion.category.prefix,
+                        name: motion.category.name,
+                    };
+                }
             });
+            // clear out 'undefined' and make the categories unique.
+            categories = _.uniqBy(_.filter(categories, function(category) {
+                return category;
+            }), 'prefix');
+            var sortKey = Config.get('motions_export_category_sorting').value;
+            return _.orderBy(categories, [sortKey]);
         };
 
         var getMotionShortData = function (motions) {

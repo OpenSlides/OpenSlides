@@ -253,3 +253,15 @@ def get_config_variables():
         weight=375,
         group='Motions',
         subgroup='Export')
+
+    yield ConfigVariable(
+        name='motions_export_category_sorting',
+        default_value='prefix',
+        input_type='choice',
+        label='Sort categories by',
+        choices=(
+            {'value': 'prefix', 'display_name': 'Prefix'},
+            {'value': 'name', 'display_name': 'Name'}),
+        weight=385,
+        group='Motions',
+        subgroup='Export')

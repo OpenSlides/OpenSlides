@@ -712,21 +712,22 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             // function to create the table of catergories (if any)
             var createTOCategories = function() {
                 var categories = [];
-                _.forEach(allMotions, function(motion) {
+                _.forEach(allMotions, function (motion) {
                     var category = motion.getCategory();
                     if (category) {
                         categories.push(category);
                     }
                 });
-                categories = _.uniqBy(categories, 'id');
+                var sortKey = Config.get('motions_export_category_sorting').value;
+                categories = _.orderBy(_.uniqBy(categories, 'id'), [sortKey]);
                 if (categories.length > 1) {
                     var heading = {
-                        text: gettextCatalog.getString("Categories"),
-                        style: "heading2"
+                        text: gettextCatalog.getString('Categories'),
+                        style: 'heading2',
                     };
 
                     var toc = [];
-                    angular.forEach(_.orderBy(categories, ['prefix']), function(cat) {
+                    angular.forEach(categories, function(cat) {
                         toc.push(
                             {
                                 columns: [
