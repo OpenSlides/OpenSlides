@@ -153,7 +153,8 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
         var getMotionComments = function (motion) {
             var fields = Config.get('motions_comments').value;
             var canSeeComment = function (index) {
-                return fields[index].public || operator.hasPerms('motions.can_manage');
+                var specialComment = fields[index].forState || fields[index].forRecommendation;
+                return (fields[index].public || operator.hasPerms('motions.can_manage')) && !specialComment;
             };
             var comments = [];
             for (var i = 0; i < fields.length; i++) {
