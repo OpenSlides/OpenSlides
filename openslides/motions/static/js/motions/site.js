@@ -2260,6 +2260,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // subgroup PDF
         gettext('Title for PDF and DOCX documents (all motions)');
         gettext('Preamble text for PDF and DOCX documents (all motions)');
+        gettext('Sort categories by');
 
         // misc strings (used dynamically in templates by translate filter)
         gettext('needed');
