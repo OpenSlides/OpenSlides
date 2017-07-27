@@ -105,7 +105,7 @@ def get_config_variables():
         group='General',
         subgroup='System')
 
-    # CSV
+    # General export settings
 
     yield ConfigVariable(
         name='general_csv_separator',
@@ -113,9 +113,7 @@ def get_config_variables():
         label='Separator used for all csv exports and examples',
         weight=144,
         group='General',
-        subgroup='CSV')
-
-    # General export settings
+        subgroup='Export')
 
     yield ConfigVariable(
         name='general_export_pdf_pagenumber_alignment',
@@ -126,7 +124,7 @@ def get_config_variables():
             {'value': 'left', 'display_name': 'Left'},
             {'value': 'center', 'display_name': 'Center'},
             {'value': 'right', 'display_name': 'Right'}),
-        weight=146,
+        weight=145,
         group='General',
         subgroup='Export')
 
@@ -139,7 +137,7 @@ def get_config_variables():
             {'value': '10', 'display_name': '10'},
             {'value': '11', 'display_name': '11'},
             {'value': '12', 'display_name': '12'}),
-        weight=148,
+        weight=146,
         group='General',
         subgroup='Export')
 
