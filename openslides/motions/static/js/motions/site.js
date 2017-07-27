@@ -975,7 +975,7 @@ angular.module('OpenSlidesApp.motions.site', [
             'submitters' : function (submitter) {
                 return submitter.get_short_name();
             },
-            'supporters' : function (submitter) {
+            'supporters' : function (supporter) {
                 return supporter.get_short_name();
             },
             'tags' : function (tag) {
@@ -2224,7 +2224,7 @@ angular.module('OpenSlidesApp.motions.site', [
         gettext('Apply text for new amendments');
         gettext('The title of the motion is always applied.');
 
-        // subgroup Suppoerters
+        // subgroup Supporters
         gettext('Supporters');
         gettext('Number of (minimum) required supporters for a motion');
         gettext('Choose 0 to disable the supporting system.');
@@ -2257,10 +2257,11 @@ angular.module('OpenSlidesApp.motions.site', [
         gettext('Use the following custom number');
         gettext('Custom number of ballot papers');
 
-        // subgroup PDF
+        // subgroup PDF and DOCX
         gettext('Title for PDF and DOCX documents (all motions)');
         gettext('Preamble text for PDF and DOCX documents (all motions)');
         gettext('Sort categories by');
+        gettext('Include the sequential number in PDF and DOCX');
 
         // misc strings (used dynamically in templates by translate filter)
         gettext('needed');
