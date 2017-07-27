@@ -538,13 +538,25 @@ tr.elected td {
 .diff-box {
     margin-left: 25px;
     padding-top: 0;
-    margin-top: -10px;
+}
+.motion-text-with-diffs li.os-split-before {
+    list-style-type: none;
 }
 .motion-text-with-diffs .original-text {
     min-height: 30px; // Spacer between .diff-box, in case .original-text is empty
 }
 .motion-text-with-diffs .original-text ul:last-child {
     padding-bottom: 16px;
+}
+.motion-text-with-diffs .original-text ul.os-split-after:last-child {
+    padding-bottom: 0;
+}
+ol.os-split-after, ul.os-split-after {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+p.os-split-after {
+    margin-bottom: 0;
 }
 .motion-text-with-diffs.line-numbers-inline .diff-box, .motion-text-with-diffs.line-numbers-none .diff-box {
     margin-right: -220px;
@@ -560,8 +572,11 @@ tr.elected td {
     color: green;
     text-decoration: underline;
 }
-.motion-text-diff p {
-    padding-bottom: 0;
+.motion-text-diff p.os-split-before {
+    padding-top: 0;
+    margin-top: 0;
+}
+.motion-text-diff p.os-split-after {
     margin-top: 0;
     margin-bottom: 0;
 }

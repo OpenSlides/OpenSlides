@@ -920,13 +920,13 @@ angular.module('OpenSlidesApp.core', [
                     allowedContent:
                         'h1 h2 h3 b i u strike sup sub strong em;' +
                         'blockquote p pre table' +
-                        '(text-align-left,text-align-center,text-align-right,text-align-justify){text-align};' +
+                        '(text-align-left,text-align-center,text-align-right,text-align-justify,os-split-before,os-split-after){text-align};' +
                         'a[!href];' +
                         'img[!src,alt]{width,height,float};' +
                         'tr th td caption;' +
-                        'li; ol[start]{list-style-type};' +
-                        'ul{list-style};' +
-                        'span[!*]{color,background-color}(os-line-number,line-number-*);' +
+                        'li(os-split-before,os-split-after); ol(os-split-before,os-split-after)[start]{list-style-type};' +
+                        'ul(os-split-before,os-split-after){list-style};' +
+                        'span[!*]{color,background-color}(os-split-before,os-split-after,os-line-number,line-number-*);' +
                         'br(os-line-break);',
 
                     // there seems to be an error in CKeditor that parses spaces in extraPlugins as part of the plugin name.
