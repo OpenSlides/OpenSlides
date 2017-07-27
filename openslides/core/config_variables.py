@@ -115,6 +115,21 @@ def get_config_variables():
         group='General',
         subgroup='CSV')
 
+    # General export settings
+
+    yield ConfigVariable(
+        name='general_export_pdf_pagenumber_alignment',
+        default_value='center',
+        input_type='choice',
+        label='Pagenumber alignment in PDF',
+        choices=(
+            {'value': 'left', 'display_name': 'Left'},
+            {'value': 'center', 'display_name': 'Center'},
+            {'value': 'right', 'display_name': 'Right'}),
+        weight=146,
+        group='General',
+        subgroup='Export')
+
     # Projector
 
     yield ConfigVariable(

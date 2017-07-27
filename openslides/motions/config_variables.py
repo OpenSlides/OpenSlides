@@ -262,6 +262,6 @@ def get_config_variables():
         choices=(
             {'value': 'prefix', 'display_name': 'Prefix'},
             {'value': 'name', 'display_name': 'Name'}),
-        weight=385,
+        weight=380,
         group='Motions',
         subgroup='Export')

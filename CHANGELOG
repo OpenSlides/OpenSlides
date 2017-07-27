@@ -33,6 +33,7 @@ Motions:
   on server side [#3304].
 - Added config value for customize sorting of category list in
   pdf/docx export [#3329].
+- Added config value for pagenumber alignment in PDF [#3327].
 
 Users:
 - User without permission to see users can now see agenda item speakers,
