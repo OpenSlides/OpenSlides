@@ -1883,10 +1883,11 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('Allow access for anonymous guest users');
         gettext('Show this text on the login page');
         gettext('Separator used for all csv exports and examples');
-        gettext('Pagenumber alignment in PDF');
+        gettext('Page number alignment in PDF');
         gettext('Left');
         gettext('Center');
         gettext('Right');
+        gettext('Standard font size in PDF');
         gettext('Show logo on projector');
         gettext('You can replace the logo by uploading an image and set it as ' +
                 'the "Projector logo" in "files".');

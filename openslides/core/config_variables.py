@@ -121,12 +121,25 @@ def get_config_variables():
         name='general_export_pdf_pagenumber_alignment',
         default_value='center',
         input_type='choice',
-        label='Pagenumber alignment in PDF',
+        label='Page number alignment in PDF',
         choices=(
             {'value': 'left', 'display_name': 'Left'},
             {'value': 'center', 'display_name': 'Center'},
             {'value': 'right', 'display_name': 'Right'}),
         weight=146,
+        group='General',
+        subgroup='Export')
+
+    yield ConfigVariable(
+        name='general_export_pdf_fontsize',
+        default_value='10',
+        input_type='choice',
+        label='Standard font size in PDF',
+        choices=(
+            {'value': '10', 'display_name': '10'},
+            {'value': '11', 'display_name': '11'},
+            {'value': '12', 'display_name': '12'}),
+        weight=148,
         group='General',
         subgroup='Export')
 

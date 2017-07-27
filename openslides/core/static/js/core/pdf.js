@@ -224,12 +224,13 @@ angular.module('OpenSlidesApp.core.pdf', [])
             // Generates the document(definition) for pdfMake
             var getDocument = function(noFooter) {
                 var content = contentProvider.getContent();
+                var standardFontsize = Config.get('general_export_pdf_fontsize').value;
                 return {
                     pageSize: 'A4',
                     pageMargins: [75, 90, 75, 75],
                     defaultStyle: {
                         font: 'PdfFont',
-                        fontSize: 10
+                        fontSize: standardFontsize
                     },
                     header: getHeader(),
                     footerTpl: noFooter ? '' : getFooter(),
@@ -246,7 +247,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             color: 'grey'
                         },
                         preamble: {
-                            fontSize: 10,
+                            fontSize: standardFontsize,
                             margin: [0,0,0,10],
                         },
                         userDataTitle: {
