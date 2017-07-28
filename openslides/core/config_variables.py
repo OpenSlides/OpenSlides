@@ -111,7 +111,7 @@ def get_config_variables():
         name='general_csv_separator',
         default_value=',',
         label='Separator used for all csv exports and examples',
-        weight=144,
+        weight=142,
         group='General',
         subgroup='Export')
 
@@ -124,7 +124,7 @@ def get_config_variables():
             {'value': 'left', 'display_name': 'Left'},
             {'value': 'center', 'display_name': 'Center'},
             {'value': 'right', 'display_name': 'Right'}),
-        weight=145,
+        weight=144,
         group='General',
         subgroup='Export')
 
@@ -157,7 +157,7 @@ def get_config_variables():
             {'value': 'pt', 'display_name': 'Português'},
             {'value': 'cs', 'display_name': 'Čeština'},
             {'value': 'ru', 'display_name': 'русский'}),
-        weight=148,
+        weight=150,
         group='Projector')
 
     yield ConfigVariable(
@@ -167,7 +167,7 @@ def get_config_variables():
         label='Show logo on projector',
         help_text='You can replace the logo by uploading an image and set it as '
                   'the "Projector logo" in "files".',
-        weight=150,
+        weight=152,
         group='Projector')
 
     yield ConfigVariable(
@@ -183,7 +183,7 @@ def get_config_variables():
         default_value=True,
         input_type='boolean',
         label='Show the clock on projector',
-        weight=156,
+        weight=154,
         group='Projector')
 
     yield ConfigVariable(
