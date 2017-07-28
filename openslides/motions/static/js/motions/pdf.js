@@ -248,7 +248,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 // if pdfmake has fixed this.
                 var metaTableJsonString = {
                     table: {
-                        widths: ['30%','70%'],
+                        widths: ['35%','65%'],
                         body: metaTableBody,
                     },
                     margin: [0, 0, 0, 20],
