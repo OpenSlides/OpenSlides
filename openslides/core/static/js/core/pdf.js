@@ -391,7 +391,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
 
 .factory('PdfMakeConverter', [
     'HTMLValidizer',
-    function(HTMLValidizer) {
+    'Config',
+    function(HTMLValidizer, Config) {
         /**
          * Converter component for HTML->JSON for pdfMake
          * @constructor
@@ -906,19 +907,20 @@ angular.module('OpenSlidesApp.core.pdf', [])
                         },
                         /* Returns the object to push first into every column, that represents the given line. */
                         getLineNumberObject = function (line) {
+                            var standardFontsize = Config.get('general_export_pdf_fontsize').value;
                             return {
                                 width: 20,
                                 text: [
                                     {
                                         text: ' ', // Add a blank with the normal font size here, so in rare cases the text
                                                    // is rendered on the next page and the linenumber on the previous page.
-                                        fontSize: 10,
+                                        fontSize: standardFontsize,
                                         decoration: '',
                                     },
                                     {
                                         text: line,
                                         color: "gray",
-                                        fontSize: 8,
+                                        fontSize: standardFontsize - 2,
                                         decoration: '',
                                     },
                                 ],

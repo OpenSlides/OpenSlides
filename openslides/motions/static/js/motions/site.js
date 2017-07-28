@@ -896,6 +896,8 @@ angular.module('OpenSlidesApp.motions.site', [
             return Motion.lastModified();
         }, function () {
             $scope.motions = Motion.getAll();
+            // always order by identifier (after custom ordering)
+            $scope.motions = _.orderBy($scope.motions, ['identifier']);
             _.forEach($scope.motions, function (motion) {
                 motion.personalNote = PersonalNoteManager.getNote(motion);
                 // For filtering, we cannot filter for .personalNote.star
