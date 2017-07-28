@@ -34,6 +34,8 @@ def listen_to_related_object_post_delete(sender, instance, **kwargs):
     if hasattr(instance, 'get_agenda_title'):
         content_type = ContentType.objects.get_for_model(instance)
         try:
+            # Attention: This delete() call is also necessary to remove
+            # respective active list of speakers projector elements.
             Item.objects.get(object_id=instance.pk, content_type=content_type).delete()
         except Item.DoesNotExist:
             # Item does not exist so we do not have to delete it.

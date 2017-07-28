@@ -62,6 +62,7 @@ Core:
 - Highlight list entries in a light blue, if a related object is projected
   (e. g. a list of speakers of a motion) [#3301].
 - Select the projector resolution with a slider and an aspect ratio [#3311].
+- Fixed bug the elements are projected and the deleted [#3336].
 - Delay the 'could not load projector' error 3 seconds to not irritate users
   with a slow internet connection [#3323].
 - Added config value for standard font size in PDF [#3332].

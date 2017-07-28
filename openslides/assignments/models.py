@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
 from openslides.core.config import config
-from openslides.core.models import Tag
+from openslides.core.models import Projector, Tag
 from openslides.poll.models import (
     BaseOption,
     BasePoll,
@@ -165,14 +165,16 @@ class Assignment(RESTModelMixin, models.Model):
     def __str__(self):
         return self.title
 
-    def get_slide_context(self, **context):
+    def delete(self, skip_autoupdate=False, *args, **kwargs):
         """
-        Retuns the context to generate the assignment slide.
+        Customized method to delete an assignment. Ensures that a respective
+        assignment projector element is disabled.
         """
-        return super().get_slide_context(
-            polls=self.polls.filter(published=True),
-            vote_results=self.vote_results(only_published=True),
-            **context)
+        Projector.remove_any(
+            skip_autoupdate=skip_autoupdate,
+            name='assignments/assignment',
+            id=self.pk)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
 
     @property
     def candidates(self):
@@ -415,6 +417,18 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
     class Meta:
         default_permissions = ()
 
+    def delete(self, skip_autoupdate=False, *args, **kwargs):
+        """
+        Customized method to delete an assignment poll. Ensures that a respective
+        assignment projector element (with poll, so called poll slide) is disabled.
+        """
+        Projector.remove_any(
+            skip_autoupdate=skip_autoupdate,
+            name='assignments/assignment',
+            id=self.assignment.pk,
+            poll=self.pk)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
+
     def get_assignment(self):
         return self.assignment
 
@@ -431,9 +445,6 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
 
     def get_percent_base_choice(self):
         return config['assignments_poll_100_percent_base']
-
-    def get_slide_context(self, **context):
-        return super().get_slide_context(poll=self)
 
     def get_root_rest_element(self):
         """
