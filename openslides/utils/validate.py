@@ -13,6 +13,7 @@ allowed_attributes = {
     'img': ['alt', 'src', 'title'],
     'a': ['href', 'title'],
     'th': ['scope'],
+    'ol': ['start'],
 }
 allowed_styles = [
     'color', 'background-color', 'height', 'width', 'text-align'
