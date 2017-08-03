@@ -330,6 +330,11 @@ class Assignment(RESTModelMixin, models.Model):
                 vote_results_dict[candidate].append(votes)
         return vote_results_dict
 
+    """
+    Container for runtime information for agenda app (on create or update of this instance).
+    """
+    agenda_item_update_information = {}
+
     def get_agenda_title(self):
         return str(self)
 

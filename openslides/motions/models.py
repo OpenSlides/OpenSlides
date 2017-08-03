@@ -628,6 +628,11 @@ class Motion(RESTModelMixin, models.Model):
         if self.recommendation is not None:
             self.set_state(self.recommendation)
 
+    """
+    Container for runtime information for agenda app (on create or update of this instance).
+    """
+    agenda_item_update_information = {}
+
     def get_agenda_title(self):
         """
         Return a simple title string for the agenda.
@@ -894,6 +899,11 @@ class MotionBlock(RESTModelMixin, models.Model):
             name='motions/motion-block',
             id=self.pk)
         return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
+
+    """
+    Container for runtime information for agenda app (on create or update of this instance).
+    """
+    agenda_item_update_information = {}
 
     @property
     def agenda_item(self):

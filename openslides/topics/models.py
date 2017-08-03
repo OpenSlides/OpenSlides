@@ -54,6 +54,11 @@ class Topic(RESTModelMixin, models.Model):
             id=self.pk)
         return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
 
+    """
+    Container for runtime information for agenda app (on create or update of this instance).
+    """
+    agenda_item_update_information = {}
+
     @property
     def agenda_item(self):
         """
