@@ -119,10 +119,21 @@ angular.module('OpenSlidesApp.core.pdf', [])
 .factory('HTMLValidizer', function() {
     var HTMLValidizer = {};
 
+    // In some cases copying from word to OpenSlides results in umlauts
+    // that are the base letter and then the entity #776; to make the dots
+    // above the base letter. This breaks the PDF.
+    HTMLValidizer.replaceMalformedUmlauts = function (text) {
+        return text.replace(/([aeiouAEIOUy])[\u0308]/g, function (match, baseChar) {
+            return '&' + baseChar + 'uml;';
+        });
+    };
+
     //checks if str is valid HTML. Returns valid HTML if not,
     //return emptystring if empty
     HTMLValidizer.validize = function(str) {
         if (str) {
+            str = HTMLValidizer.replaceMalformedUmlauts(str);
+
             var a = document.createElement('div');
             a.innerHTML = str;
             angular.forEach(a.childNodes, function (child) {
