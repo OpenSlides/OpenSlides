@@ -2,6 +2,8 @@ from textwrap import dedent
 
 from django.contrib.auth.hashers import make_password
 from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
+from django.db.utils import IntegrityError
 from django.utils.crypto import get_random_string
 
 from openslides.agenda.models import Item
@@ -116,6 +118,7 @@ class Command(BaseCommand):
         self.create_assignments(options)
         self.create_users(options)
 
+    @transaction.atomic
     def create_topics(self, options):
         number_of_topics = options['topics']
         if number_of_topics is None and not options['only']:
@@ -135,12 +138,13 @@ class Command(BaseCommand):
         elif number_of_topics is not None and number_of_topics < 0:
             raise CommandError('Number for topics must not be negative.')
 
+    @transaction.atomic
     def create_motions(self, options):
         number_of_motions = options['motions']
         if number_of_motions is None and not options['only']:
             number_of_motions = DEFAULT_NUMBER
         if number_of_motions is not None and number_of_motions > 0:
-            self.stdout.write('Start creating {} motions ... (sorry, this might be slow) ...'.format(number_of_motions))
+            self.stdout.write('Start creating {} motions ...'.format(number_of_motions))
             text = ''
             for i in range(MOTION_NUMBER_OF_PARAGRAPHS):
                 text += dedent(LOREM_IPSUM[i % 3])
@@ -154,6 +158,7 @@ class Command(BaseCommand):
         elif number_of_motions is not None and number_of_motions < 0:
             raise CommandError('Number for motions must not be negative.')
 
+    @transaction.atomic
     def create_assignments(self, options):
         number_of_assignments = options['assignments']
         if number_of_assignments is None and not options['only']:
@@ -177,6 +182,7 @@ class Command(BaseCommand):
         self.create_staff_users(options)
         self.create_default_users(options)
 
+    @transaction.atomic
     def create_staff_users(self, options):
         if options['users'] is None and not options['only']:
             staff_users = DEFAULT_NUMBER
@@ -185,7 +191,7 @@ class Command(BaseCommand):
         else:
             staff_users = options['users'][0]
         if staff_users is not None and staff_users > 0:
-            self.stdout.write('Start creating {} staff users ... (sorry, this might be slow) ...'.format(staff_users))
+            self.stdout.write('Start creating {} staff users ...'.format(staff_users))
             group_staff = Group.objects.get(name='Staff')
             hashed_password = make_password(PASSWORD, '', 'md5')
             current_users = list(User.objects.values_list('id', flat=True))
@@ -196,13 +202,18 @@ class Command(BaseCommand):
                     default_password=PASSWORD,
                     password=hashed_password
                 ))
-            User.objects.bulk_create(new_users)
-            for user in User.objects.exclude(pk__in=current_users):
-                user.groups.add(group_staff)
-            self.stdout.write(self.style.SUCCESS('{} staff users successfully created.'.format(staff_users)))
+            try:
+                User.objects.bulk_create(new_users)
+            except IntegrityError:
+                self.stdout.write('FAILED: The requested staff users to create are already existing...')
+            else:
+                for user in User.objects.exclude(pk__in=current_users):
+                    user.groups.add(group_staff)
+                self.stdout.write(self.style.SUCCESS('{} staff users successfully created.'.format(staff_users)))
         elif staff_users is not None and staff_users < 0:
             raise CommandError('Number for staff users must not be negative.')
 
+    @transaction.atomic
     def create_default_users(self, options):
         if options['users'] is None and not options['only']:
             default_users = DEFAULT_NUMBER
@@ -220,7 +231,11 @@ class Command(BaseCommand):
                     default_password=PASSWORD,
                     password=hashed_password
                 ))
-            User.objects.bulk_create(new_users)
-            self.stdout.write(self.style.SUCCESS('{} default users successfully created.'.format(default_users)))
+            try:
+                User.objects.bulk_create(new_users)
+            except IntegrityError:
+                self.stdout.write('FAILED: The requested staff users to create are already existing...')
+            else:
+                self.stdout.write(self.style.SUCCESS('{} default users successfully created.'.format(default_users)))
         elif default_users is not None and default_users < 0:
             raise CommandError('Number for default users must not be negative.')
