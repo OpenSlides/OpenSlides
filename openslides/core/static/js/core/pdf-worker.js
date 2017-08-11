@@ -59,12 +59,6 @@ var replacePlaceholder = function (content) {
                     hLineWidth: function(i, node) {
                         if (i === 0){
                             return 0;
-                        } else if (i === node.table.body.length) {
-                            if (node.rowsperpage && node.rowsperpage > i) {
-                                return 0.5;
-                            } else {
-                                return 0;
-                            }
                         } else {
                             return 0.5;
                         }

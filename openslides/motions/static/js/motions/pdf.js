@@ -555,31 +555,34 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         */
         var createInstance = function(title, id) {
 
-            var logoMotionPollUrl = Config.get('logo_pdf_motion_poll').value.path;
+            var logoBallotPaperUrl = Config.get('logo_pdf_ballot_paper').value.path;
             var imageMap = {};
 
             // PDF header
             var header = function() {
                 var columns = [];
 
-                var text = Config.get('general_event_name').value
+                var text = Config.get('general_event_name').value;
                 columns.push({
                     text: text,
                     fontSize: 8,
                     alignment: 'left',
-                    width: '80%'
+                    width: '60%'
                 });
 
                 // logo
-                columns.push({
-                    image: imageMap[logoMotionPollUrl].data,
-                    fit: [90,25],
-                    width: '20%'
-                });
+                if (logoBallotPaperUrl) {
+                    columns.push({
+                        image: imageMap[logoBallotPaperUrl].data,
+                        fit: [90,25],
+                        alignment: 'right',
+                        width: '40%'
+                    });
+                }
                 return {
                     color: '#555',
                     fontSize: 10,
-                    margin: [30, 10, 10, 0], // [left, top, right, bottom]
+                    margin: [30, 10, 10, -10], // [left, top, right, bottom]
                     columns: columns,
                     columnGap: 5
                 };
@@ -590,7 +593,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             * @function
             */
             var createSection = function() {
-                var sheetend = 75;
+                var sheetend = 40;
                 return {
                     stack: [
                         header(),
@@ -679,7 +682,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
             return $q(function (resolve) {
                 var imageSources = [
-                    logoMotionPollUrl,
+                    logoBallotPaperUrl,
                 ];
                 ImageConverter.toBase64(imageSources).then(function (_imageMap) {
                     imageMap = _imageMap;

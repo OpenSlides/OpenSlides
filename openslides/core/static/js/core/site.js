@@ -1907,6 +1907,7 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('PDF header logo');
         gettext('PDF footer logo');
         gettext('Web interface header logo');
+        gettext('PDF ballot paper logo');
 
         // Mark the string 'Default projector' here, because it does not appear in the templates.
         gettext('Default projector');

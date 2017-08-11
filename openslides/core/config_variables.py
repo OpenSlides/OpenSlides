@@ -253,8 +253,7 @@ def get_config_variables():
             'logo_web_header',
             'logo_pdf_header',
             'logo_pdf_footer',
-            'logo_pdf_assignment_ballot_paper',
-            'logo_pdf_motion_poll'],
+            'logo_pdf_ballot_paper'],
         weight=300,
         group='Logo',
         hidden=True)
@@ -311,21 +310,11 @@ def get_config_variables():
         hidden=True)
 
     yield ConfigVariable(
-        name='logo_pdf_assignment_ballot_paper',
+        name='logo_pdf_ballot_paper',
         default_value={
-            'display_name': 'Election ballot paper',
+            'display_name': 'PDF ballot paper logo',
             'path': ''},
         input_type='logo',
         weight=312,
-        group='Logo',
-        hidden=True)
-
-    yield ConfigVariable(
-        name='logo_pdf_motion_poll',
-        default_value={
-            'display_name': 'Motion poll',
-            'path': ''},
-        input_type='logo',
-        weight=313,
         group='Logo',
         hidden=True)

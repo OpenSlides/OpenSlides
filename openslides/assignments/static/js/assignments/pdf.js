@@ -276,33 +276,33 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
     function($q, $filter, gettextCatalog, PDFLayout, Config, User, ImageConverter) {
         var createInstance = function(assignment, poll, pollNumber) {
 
-            var logoAssignmentBallotPaperUrl = Config.get('logo_pdf_assignment_ballot_paper').value.path;
+            var logoBallotPaperUrl = Config.get('logo_pdf_ballot_paper').value.path;
             var imageMap = {};
 
             // PDF header
             var header = function() {
                 var columns = [];
 
-                var text = Config.get('general_event_name').value
+                // logo
+                if (logoBallotPaperUrl) {
+                    columns.push({
+                        image: imageMap[logoBallotPaperUrl].data,
+                        fit: [90,20],
+                        width: '20%'
+                    });
+                }
+                var text = Config.get('general_event_name').value;
                 columns.push({
                     text: text,
                     fontSize: 8,
-                    alignment: 'left',
-                    width: '80%'
+                    alignment: 'right',
                 });
 
-                // logo
-                columns.push({
-                    image: imageMap[logoAssignmentBallotPaperUrl].data,
-                    fit: [90,25],
-                    width: '20%'
-                });
                 return {
                     color: '#555',
-                    fontSize: 10,
-                    margin: [30, 10, 10, 0], // [left, top, right, bottom]
+                    margin: [30, 10, 10, -10], // [left, top, right, bottom]
                     columns: columns,
-                    columnGap: 5
+                    columnGap: 10
                 };
             };
 
@@ -384,7 +384,6 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 // with a one px width and a fixed top-margin
                 return {
                     columns: [
-                        header(),
                         {
                             width: 1,
                             margin: [0, marginTop],
@@ -393,6 +392,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                         {
                             width: '*',
                             stack: [
+                                header(),
                                 createTitle(),
                                 createPollHint(),
                                 createSelectionField(),
@@ -508,7 +508,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 
             return $q(function (resolve) {
                 var imageSources = [
-                    logoAssignmentBallotPaperUrl,
+                    logoBallotPaperUrl,
                 ];
                 ImageConverter.toBase64(imageSources).then(function (_imageMap) {
                     imageMap = _imageMap;
