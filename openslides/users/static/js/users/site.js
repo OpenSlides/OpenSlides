@@ -537,7 +537,11 @@ angular.module('OpenSlidesApp.users.site', [
     'ErrorMessage',
     function($scope, $state, $http, $q, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
         Config, gettextCatalog, UserCsvExport, osTableFilter, osTableSort, gettext, UserPdfExport, ErrorMessage) {
-        User.bindAll({}, $scope, 'users');
+        $scope.$watch(function () {
+            return User.lastModified();
+        }, function () {
+            $scope.users = _.orderBy(User.getAll(), ['first_name']);
+        });
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.$watch(function () {
             return Projector.lastModified();

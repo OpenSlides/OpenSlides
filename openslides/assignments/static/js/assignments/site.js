@@ -273,7 +273,11 @@ angular.module('OpenSlidesApp.assignments.site', [
     'AssignmentPdfExport',
     function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, Projector, ProjectionDefault,
         gettextCatalog, User, osTableFilter, osTableSort, gettext, AssignmentPhases, AssignmentPdfExport) {
-        Assignment.bindAll({}, $scope, 'assignments');
+        $scope.$watch(function () {
+            return Assignment.lastModified();
+        }, function () {
+            $scope.assignments = _.orderBy(Assignment.getAll(), ['title']);
+        });
         Tag.bindAll({}, $scope, 'tags');
         $scope.$watch(function () {
             return Projector.lastModified();

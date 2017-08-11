@@ -25,17 +25,17 @@ angular.module('OpenSlidesApp.mediafiles.list', [
     'Logos',
     function ($http, $scope, gettext, ngDialog, osTableFilter, osTableSort,
               ProjectionDefault, Projector, User, Mediafile, MediafileForm, Logos) {
-        Mediafile.bindAll({}, $scope, 'mediafiles');
+        $scope.$watch(function () {
+            return Mediafile.lastModified();
+        }, function () {
+            $scope.mediafiles = _.orderBy(Mediafile.getAll(), ['title']);
+        });
         User.bindAll({}, $scope, 'users');
         $scope.$watch(function() {
             return Projector.lastModified();
         }, function() {
             $scope.projectors = Projector.getAll();
             updatePresentedMediafiles();
-        });
-        $scope.$watch(function () {
-            return Projector.lastModified();
-        }, function () {
             var projectiondefault = ProjectionDefault.filter({name: 'mediafiles'})[0];
             if (projectiondefault) {
                 $scope.defaultProjectorId = projectiondefault.projector_id;
