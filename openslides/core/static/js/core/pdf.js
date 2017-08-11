@@ -590,7 +590,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                          * @param {number} diff_mode
                          */
                         ParseElement = function(alreadyConverted, element, currentParagraph, styles, diff_mode) {
-                            styles = styles || [];
+                            styles = styles ? _.clone(styles) : [];
                             var classes = [];
                             if (element.getAttribute) {
                                 var nodeStyle = element.getAttribute("style");
