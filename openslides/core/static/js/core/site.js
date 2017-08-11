@@ -741,6 +741,15 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+.filter('excludeSpecialComments', function () {
+    return function (comments) {
+        return _.filter(comments, function (comment) {
+            var specialComment = comment.forState || comment.forRecommendation;
+            return !specialComment;
+        });
+    };
+})
+
 // angular formly config options
 .run([
     'formlyConfig',

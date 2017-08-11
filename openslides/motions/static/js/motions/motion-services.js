@@ -134,7 +134,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             var commentsInlineEditing = {
                 editors: []
             };
-            _.forEach($scope.commentsFields, function (field) {
+            _.forEach($scope.commentsFieldsNoSpecialComments, function (field) {
                 var inlineEditing = MotionInlineEditing.createInstance($scope, motion,
                     'view-original-comment-inline-editor-' + field.name, false,
                     function (obj) {

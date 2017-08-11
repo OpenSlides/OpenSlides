@@ -1268,6 +1268,10 @@ angular.module('OpenSlidesApp.motions.site', [
             }
         };
         $scope.commentsFields = Config.get('motions_comments').value;
+        $scope.commentsFieldsNoSpecialComments = _.filter($scope.commentsFields, function (field) {
+            var specialComment = field.forState || field.forRecommendation;
+            return !specialComment;
+        });
         $scope.commentFieldForState = MotionComment.getFieldNameForFlag('forState');
         $scope.commentFieldForRecommendation = MotionComment.getFieldNameForFlag('forRecommendation');
         $scope.version = motion.active_version;
