@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext as _
 
+from ..core.models import Projector
 from ..utils.autoupdate import inform_changed_data
 from ..utils.models import RESTModelMixin
 from .access_permissions import MediafileAccessPermissions
@@ -62,6 +63,17 @@ class Mediafile(RESTModelMixin, models.Model):
         # to see users may not have it but can get it now.
         inform_changed_data(self.uploader)
         return result
+
+    def delete(self, skip_autoupdate=False, *args, **kwargs):
+        """
+        Customized method to delete a mediafile. Ensures that a respective
+        mediafile projector element is disabled.
+        """
+        Projector.remove_any(
+            skip_autoupdate=skip_autoupdate,
+            name='mediafiles/mediafile',
+            id=self.pk)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
 
     def get_filesize(self):
         """

@@ -192,6 +192,36 @@ class Projector(RESTModelMixin, models.Model):
 
         return output
 
+    @classmethod
+    def remove_any(cls, skip_autoupdate=False, **kwargs):
+        """
+        Removes all projector elements from all projectors with matching kwargs.
+        Additional properties of active projector elements are ignored:
+
+        Example: Sending {'name': 'assignments/assignment', 'id': 1} will remove
+        also projector elements with {'name': 'assignments/assignment', 'id': 1, 'poll': 2}.
+        """
+        # Loop over all projectors.
+        for projector in cls.objects.all():
+            change_projector_config = False
+            projector_config = {}
+            # Loop over all projector elements of this projector.
+            for key, value in projector.config.items():
+                # Check if the kwargs match this element.
+                for kwarg_key, kwarg_value in kwargs.items():
+                    if not value.get(kwarg_key) == kwarg_value:
+                        # No match so the element should stay. Write it into
+                        # new config field and break the loop.
+                        projector_config[key] = value
+                        break
+                else:
+                    # All kwargs match this projector element. So mark this
+                    # projector to be changed. Do not write it into new config field.
+                    change_projector_config = True
+            if change_projector_config:
+                projector.config = projector_config
+                projector.save(skip_autoupdate=skip_autoupdate)
+
 
 class ProjectionDefault(RESTModelMixin, models.Model):
     """
@@ -308,6 +338,17 @@ class ProjectorMessage(RESTModelMixin, models.Model):
     class Meta:
         default_permissions = ()
 
+    def delete(self, skip_autoupdate=False, *args, **kwargs):
+        """
+        Customized method to delete a projector message. Ensures that a respective
+        projector message projector element is disabled.
+        """
+        Projector.remove_any(
+            skip_autoupdate=skip_autoupdate,
+            name='core/projector-message',
+            id=self.pk)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
+
 
 class Countdown(RESTModelMixin, models.Model):
     """
@@ -325,6 +366,17 @@ class Countdown(RESTModelMixin, models.Model):
 
     class Meta:
         default_permissions = ()
+
+    def delete(self, skip_autoupdate=False, *args, **kwargs):
+        """
+        Customized method to delete a countdown. Ensures that a respective
+        countdown projector element is disabled.
+        """
+        Projector.remove_any(
+            skip_autoupdate=skip_autoupdate,
+            name='core/countdown',
+            id=self.pk)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
 
     def control(self, action):
         if action not in ('start', 'stop', 'reset'):

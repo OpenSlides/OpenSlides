@@ -2,6 +2,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from ..agenda.models import Item
+from ..core.models import Projector
 from ..mediafiles.models import Mediafile
 from ..utils.models import RESTModelMixin
 from .access_permissions import TopicAccessPermissions
@@ -41,6 +42,17 @@ class Topic(RESTModelMixin, models.Model):
 
     def __str__(self):
         return self.title
+
+    def delete(self, skip_autoupdate=False, *args, **kwargs):
+        """
+        Customized method to delete a topic. Ensures that a respective
+        topic projector element is disabled.
+        """
+        Projector.remove_any(
+            skip_autoupdate=skip_autoupdate,
+            name='topics/topic',
+            id=self.pk)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
 
     @property
     def agenda_item(self):

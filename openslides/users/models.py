@@ -13,6 +13,7 @@ from django.db import models
 from django.db.models import Prefetch, Q
 from jsonfield import JSONField
 
+from ..core.models import Projector
 from ..utils.collection import CollectionElement
 from ..utils.models import RESTModelMixin
 from .access_permissions import (
@@ -209,6 +210,17 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             kwargs['skip_autoupdate'] = True
             CollectionElement.from_instance(self)
         return super().save(*args, **kwargs)
+
+    def delete(self, skip_autoupdate=False, *args, **kwargs):
+        """
+        Customized method to delete an user. Ensures that a respective
+        user projector element is disabled.
+        """
+        Projector.remove_any(
+            skip_autoupdate=skip_autoupdate,
+            name='users/user',
+            id=self.pk)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
 
     def has_perm(self, perm):
         """

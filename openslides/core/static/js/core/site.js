@@ -1343,10 +1343,6 @@ angular.module('OpenSlidesApp.core.site', [
             Countdown.create(countdown);
         };
         $scope.removeCountdown = function (countdown) {
-            var isProjectedIds = countdown.isProjected();
-            _.forEach(isProjectedIds, function(id) {
-                countdown.project(id);
-            });
             Countdown.destroy(countdown.id);
         };
 
@@ -1359,10 +1355,6 @@ angular.module('OpenSlidesApp.core.site', [
             ProjectorMessage.create(message);
         };
         $scope.removeMessage = function (message) {
-            var isProjectedIds = message.isProjected();
-            _.forEach(isProjectedIds, function(id) {
-                message.project(id);
-            });
             ProjectorMessage.destroy(message.id);
         };
 
