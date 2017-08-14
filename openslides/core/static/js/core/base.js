@@ -476,6 +476,17 @@ angular.module('OpenSlidesApp.core', [
 ])
 
 // Template hooks
+// 2 possible uses:
+// - { Id: 'myHookId', template: '<button>click me</button>' }
+// - { Id: 'myHookId', templateUrl: '/static/templates/plugin_name/my-hook.html' }
+// It is possible to provide a scope, that is merged into the scope of the templateHook.
+// This overrides functions/values of the parent scope, but there may are conflicts
+// with other plugins defining the same function/value. E.g.:
+// { Id: 'hookId', template: '<button ng-click="customFn()">click me</button>',
+//   scope: {
+//     customFn: function () { /*Do something */ },
+//   },
+// }
 .factory('templateHooks', [
     function () {
         var hooks = {};
@@ -493,22 +504,36 @@ angular.module('OpenSlidesApp.core', [
 
 .directive('templateHook', [
     '$compile',
+    '$http',
+    '$q',
+    '$templateCache',
     'templateHooks',
-    function ($compile, templateHooks) {
+    function ($compile, $http, $q, $templateCache, templateHooks) {
         return {
             restrict: 'E',
             template: '',
             link: function (scope, iElement, iAttr) {
                 var hooks = templateHooks.hooks[iAttr.hookName];
-                var html;
                 if (hooks) {
-                    html = hooks.map(function (hook) {
-                        return '<div>' + hook.template + '</div>';
-                    }).join('');
-                } else {
-                    html = '';
+                    var templates = _.map(hooks, function (hook) {
+                        // Populate scope
+                        _.forEach(hook.scope, function (value, key) {
+                            if (!scope.hasOwnProperty(key)) {
+                                scope[key] = value;
+                            }
+                        });
+                        // Either a template (html given as string) or a templateUrl has
+                        // to be given. If a scope is provided, the schope of this templateHook
+                        // is populated with the given functions/values.
+                        if (hook.template) {
+                            return '<div>' + hook.template + '</div>';
+                        } else {
+                            return $templateCache.get(hook.templateUrl);
+                        }
+                    });
+                    var html = templates.join('');
+                    iElement.append($compile(html)(scope));
                 }
-                iElement.append($compile(html)(scope));
             }
         };
     }
