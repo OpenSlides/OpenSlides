@@ -23,6 +23,9 @@ OPENSLIDES_USER_DATA_PATH = %(openslides_user_data_path)s
 
 INSTALLED_PLUGINS += (
 #    'plugin_module_name',
+
+# Built-in plugins:
+#    'tests.example_data_generator',
 )
 
 INSTALLED_APPS += INSTALLED_PLUGINS
