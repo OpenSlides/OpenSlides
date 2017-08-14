@@ -580,6 +580,16 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 }
                             });
                         },
+                        // A little helper function to check, if an element has the given class.
+                        hasClass = function (element, className) {
+                            var classes = element.getAttribute('class');
+                            if (classes) {
+                                classes = classes.toLowerCase().split(' ');
+                                return _.indexOf(classes, className) > -1;
+                            } else {
+                                return false;
+                            }
+                        },
                         /**
                          * Parses a single HTML element
                          * @function
@@ -751,11 +761,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     var brParent = element.parentNode;
                                     var brParentNodeName = brParent.nodeName;
                                     //in case of inline-line-numbers and the os-line-break class ignore the break
-                                    if ((lineNumberMode == "inline" &&
-                                                element.getAttribute("class") == "os-line-break") ||
-                                        (lineNumberMode == "outside" &&
-                                                element.getAttribute("class") == "os-line-break" &&
-                                                brParent.getAttribute("class") == "merge-before")) {
+                                    if ((lineNumberMode == 'inline' &&
+                                                hasClass(element, 'os-line-break')) ||
+                                        (lineNumberMode == 'outside' &&
+                                                hasClass(element, 'os-line-break') &&
+                                                hasClass(brParent, 'os-split-before'))) {
                                         break;
                                     } else {
                                         currentParagraph = create("text");
@@ -782,7 +792,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     var pObjectToPush; //determine what to push later
                                     currentParagraph = create("text");
                                     currentParagraph.margin = [20, 0, 0, 0];
-                                    if (classes.indexOf("merge-before") === -1) {
+                                    if (classes.indexOf('os-split-before') === -1) {
                                         currentParagraph.margin[1] = 8;
                                     }
                                     currentParagraph.lineHeight = 1.25;
@@ -868,7 +878,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                                 listCol.columns[0].stack.push(getLineNumberObject(line));
                                             });
                                             listCol.columns.push(list);
-                                            listCol.margin = [0,10,0,0];
+                                            if (!hasClass(element, 'os-split-before')) {
+                                                listCol.margin = [0, 10, 0, 0];
+                                            }
                                             alreadyConverted.push(listCol);
                                         } else {
                                             list.margin = [20, 0, 0, 0];
