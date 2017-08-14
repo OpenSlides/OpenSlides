@@ -250,8 +250,10 @@ def get_config_variables():
         default_value=[
             'logo_projector_main',
             'logo_projector_header',
+            'logo_web_header',
             'logo_pdf_header',
-            'logo_pdf_footer'],
+            'logo_pdf_footer',
+            'logo_pdf_ballot_paper'],
         weight=300,
         group='Logo',
         hidden=True)
@@ -276,6 +278,16 @@ def get_config_variables():
         group='Logo',
         hidden=True)
 
+    yield ConfigVariable(
+        name='logo_web_header',
+        default_value={
+            'display_name': 'Web interface header logo',
+            'path': ''},
+        input_type='logo',
+        weight=303,
+        group='Logo',
+        hidden=True)
+
     # PDF logos
     yield ConfigVariable(
         name='logo_pdf_header',
@@ -294,5 +306,15 @@ def get_config_variables():
             'path': ''},
         input_type='logo',
         weight=311,
+        group='Logo',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='logo_pdf_ballot_paper',
+        default_value={
+            'display_name': 'PDF ballot paper logo',
+            'path': ''},
+        input_type='logo',
+        weight=312,
         group='Logo',
         hidden=True)
