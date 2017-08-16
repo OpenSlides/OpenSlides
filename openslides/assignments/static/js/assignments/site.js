@@ -352,6 +352,7 @@ angular.module('OpenSlidesApp.assignments.site', [
         $scope.isSelectMode = false;
         // check all checkboxes
         $scope.checkAll = function () {
+            $scope.selectedAll = !$scope.selectedAll;
             angular.forEach($scope.assignments, function (assignment) {
                 assignment.selected = $scope.selectedAll;
             });
