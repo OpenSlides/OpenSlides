@@ -7,6 +7,7 @@ angular.module('OpenSlidesApp.mediafiles.site', [
     'OpenSlidesApp.mediafiles.list',
     'OpenSlidesApp.mediafiles.states',
     'OpenSlidesApp.mediafiles.update',
+    'OpenSlidesApp.mediafiles.image-plugin',
 ]);
 
 }());
