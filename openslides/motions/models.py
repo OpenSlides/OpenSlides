@@ -581,13 +581,20 @@ class Motion(RESTModelMixin, models.Model):
 
     def reset_state(self, workflow=None):
         """
-        Set the state to the default state.
+        Set the state to the default state. If an identifier was set
+        automatically, reset the identifier and identifier_number.
 
         'workflow' can be a workflow, an id of a workflow or None.
 
         If the motion is new and workflow is None, it chooses the default
         workflow from config.
         """
+
+        # The identifier is set automatically.
+        if config['motions_identifier'] is not 'manually':
+            self.identifier = ''
+            self.identifier_number = None
+
         if type(workflow) is int:
             workflow = Workflow.objects.get(pk=workflow)
 
