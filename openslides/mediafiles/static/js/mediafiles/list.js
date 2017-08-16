@@ -158,7 +158,7 @@ angular.module('OpenSlidesApp.mediafiles.list', [
                         rotate: 0,
                         visible: true,
                         playing: false,
-                        fullscreen: mediafile.is_pdf
+                        fullscreen: mediafile.is_pdf || mediafile.is_image
                 }];
                 $http.post(postUrl, data);
             }
