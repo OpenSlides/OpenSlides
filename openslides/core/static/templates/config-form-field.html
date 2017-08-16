@@ -20,7 +20,7 @@
 
     <!-- comments -->
     <div class="input-comments" ng-if="type === 'comments'">
-      <div ng-repeat="entry in $parent.value" class="input-group">
+      <div ng-repeat="entry in $parent.value | excludeSpecialComments" class="input-group">
         <input ng-model="entry.name"
                ng-model-options="{debounce: 1000}"
                ng-change="save(configOption, $parent.value)"
