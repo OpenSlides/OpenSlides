@@ -590,6 +590,17 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 return false;
                             }
                         },
+                        // Helper function for determinating whether a parent of element is a list item.
+                        isInsideAList = function (element) {
+                            parent = element.parentNode;
+                            while(parent !== null) {
+                                if (parent.nodeName.toLowerCase() === 'li') {
+                                    return true;
+                                }
+                                parent = parent.parentNode;
+                            }
+                            return false;
+                        },
                         /**
                          * Parses a single HTML element
                          * @function
@@ -791,9 +802,13 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "p":
                                     var pObjectToPush; //determine what to push later
                                     currentParagraph = create("text");
-                                    currentParagraph.margin = [20, 0, 0, 0];
-                                    if (classes.indexOf('os-split-before') === -1) {
-                                        currentParagraph.margin[1] = 8;
+                                    // If this element is inside a list (happens if copied from word), do not set spaces
+                                    // and margins. Just leave the paragraph there..
+                                    if (!isInsideAList(element)) {
+                                        currentParagraph.margin = [20, 0, 0, 0];
+                                        if (classes.indexOf('os-split-before') === -1) {
+                                            currentParagraph.margin[1] = 8;
+                                        }
                                     }
                                     currentParagraph.lineHeight = 1.25;
                                     var stackP = create("stack");
