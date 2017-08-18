@@ -144,7 +144,7 @@
     {{(mediafiles|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
   </div>
 
-  <div class="os-table container-fluid">
+  <div id="mediafile-table" class="os-table container-fluid">
     <div class="row header-row">
       <div class="col-xs-1 centered" ng-show="isSelectMode" os-perms="mediafiles.can_manage">
         <i class="fa text-danger pointer" ng-class="selectedAll ? 'fa-check-square-o' : 'fa-square-o'"
@@ -279,13 +279,13 @@
       <div class="no-projector-spacer" os-perms="!core.can_manage_projector"></div>
       <!-- main content column -->
       <div class="col-xs-5 content">
-        <div class="spacer-right"> <!-- horizontal block -->
+        <div class="icon-column"> <!-- horizontal block -->
           <i ng-style="{'visibility': mediafile.hidden ? 'visible' : 'hidden'}" class="fa fa-lock fa-lg"
               title="{{ 'Is hidden' | translate }}"></i>
           <i ng-style="{'visibility': mediafile.isUsedAsLogo() ? 'visible' : 'hidden'}" class="fa fa-picture-o fa-lg spacer-left"
               title="{{ 'Is used as a logo' | translate }}" os-perms="core.can_manage_logos"></i>
         </div>
-        <div>
+        <div class="title-column">
           <div> <!-- vertical block -->
             <a ng-href="{{ mediafile.mediafileUrl }}" class="title" target="_blank">{{ mediafile.title_or_filename }}</a>
           </div>

@@ -1083,6 +1083,16 @@ img {
     padding: 5px 5px 5px 0;
 }
 
+/** Mediafile table **/
+#mediafile-table .icon-column {
+    width: 10%;
+}
+
+#mediafile-table .title-column {
+    padding: 0px 10px;
+    width: 90%;
+}
+
 /** Config **/
 .input-comments > div {
     margin-bottom: 5px
