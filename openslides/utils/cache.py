@@ -1,3 +1,4 @@
+import json
 from collections import defaultdict
 from typing import (  # noqa
     TYPE_CHECKING,
@@ -9,11 +10,11 @@ from typing import (  # noqa
     List,
     Optional,
     Set,
+    Union,
 )
 
 from channels import Group
 from channels.sessions import session_for_reply_channel
-from django.apps import apps
 from django.core.cache import cache, caches
 
 if TYPE_CHECKING:
@@ -202,60 +203,76 @@ class DjangoCacheWebsocketUserCache(BaseWebsocketUserCache):
         cache.set(self.get_cache_key(), data)
 
 
-class StartupCache:
+class RestrictedDataCache:
     """
-    Cache of all data that are required when a client connects via websocket.
+    Caches all Data for a specific users.
+
+    The cached values are expected to be formatted for outout via websocket.
     """
-    cache_key = "full_data_startup_cache"
 
-    def build(self) -> Dict[str, List[str]]:
+    base_cache_key = 'restricted_user_cache'
+
+    def add_element(self, user_id: int, collection_string: str, id: int, data: object) -> None:
         """
-        Generate the cache by going through all apps. Returns a dict where the
-        key is the collection string and the value a list of the full_data from
-        the collection elements.
+        Adds one element to the cache. If the cache does not exists for the user,
+        it is created.
         """
-        cache_data = {}  # type: Dict[str, List[str]]
-        for app in apps.get_app_configs():
-            try:
-                # Get the method get_startup_elements() from an app.
-                # This method has to return an iterable of Collection objects.
-                get_startup_elements = app.get_startup_elements  # type: Callable[[], Iterable[Collection]]
-            except AttributeError:
-                # Skip apps that do not implement get_startup_elements.
-                continue
+        redis = get_redis_connection()
+        redis.hset(
+            self.get_cache_key(user_id),
+            "{}/{}".format(collection_string, id),
+            json.dumps(data))
 
-            for collection in get_startup_elements():
-                cache_data[collection.collection_string] = [
-                    collection_element.get_full_data()
-                    for collection_element
-                    in collection.element_generator()]
-
-        cache.set(self.cache_key, cache_data, 86400)
-        return cache_data
-
-    def clear(self) -> None:
+    def del_element(self, user_id: int, collection_string: str, id: int) -> None:
         """
-        Clears the cache.
+        Removes one element from the cache.
+
+        Does nothing if the cache does not exist.
         """
-        cache.delete(self.cache_key)
+        redis = get_redis_connection()
+        redis.hdel(
+            self.get_cache_key(user_id),
+            "{}/{}".format(collection_string, id))
 
-    def get_collections(self) -> Generator['Collection', None, None]:
+    def exists_for_user(self, user_id: int) -> bool:
         """
-        Generator that returns all cached Collections.
-
-        The data is read from the cache if it exists. It builds the cache if it
-        does not exists.
+        Returns True if the cache for the user exists, else False.
         """
-        from .collection import Collection  # noqa
-        data = cache.get(self.cache_key)
-        if data is None:
-            # The cache does not exist.
-            data = self.build()
-        for collection_string, full_data in data.items():
-            yield Collection(collection_string, full_data)
+        redis = get_redis_connection()
+        return redis.exists(self.get_cache_key(user_id))
+
+    def get_data(self, user_id: int) -> List[object]:
+        """
+        Returns all data for the user.
+
+        The returned value is a list of the elements.
+        """
+        redis = get_redis_connection()
+        return [json.loads(element) for element in redis.hvals(self.get_cache_key(user_id))]
+
+    def get_cache_key(self, user_id: int) -> str:
+        """
+        Returns the cache key for a user.
+        """
+        return cache.make_key('{}:{}'.format(self.base_cache_key, user_id))
 
 
-startup_cache = StartupCache()
+class DummyRestrictedDataCache:
+    """
+    Dummy RestrictedDataCache that does nothing.
+    """
+
+    def add_element(self, user_id: int, collection_string: str, id: int, data: object) -> None:
+        pass
+
+    def del_element(self, user_id: int, collection_string: str, id: int) -> None:
+        pass
+
+    def exists_for_user(self, user_id: int) -> bool:
+        return False
+
+    def get_data(self, user_id: int) -> List[object]:
+        pass
 
 
 def use_redis_cache() -> bool:
@@ -279,5 +296,7 @@ def get_redis_connection() -> Any:
 
 if use_redis_cache():
     websocket_user_cache = RedisWebsocketUserCache()  # type: BaseWebsocketUserCache
+    restricted_data_cache = RestrictedDataCache()  # type: Union[RestrictedDataCache, DummyRestrictedDataCache]
 else:
     websocket_user_cache = DjangoCacheWebsocketUserCache()
+    restricted_data_cache = DummyRestrictedDataCache()
