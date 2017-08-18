@@ -1,4 +1,4 @@
-<div class="details">
+<div id="personalNote" class="details" ng-class="{'pinned': personalNotePinned}">
   <div class="row">
     <!-- inline editing toolbar -->
     <div class="motion-toolbar">
@@ -17,6 +17,9 @@
           class="btn btn-sm btn-default">
           <i class="fa fa-times-circle"></i>
           <translate>Inline editing</translate>
+        </button>
+        <button ng-click="pinPersonalNote()" class="btn btn-sm btn-default">
+          <i class="fa fa-thumb-tack" ng-class="{'rotate-45-deg-right': !personalNotePinned}"></i>
         </button>
       </div>
       <h3 class="toolbar-left" translate>Personal note</h3>
@@ -39,3 +42,4 @@
     </div>
   </div>
 </div>
+<div id="personalNoteSpacer" ng-class="{'activeSpace': personalNotePinned}"></div>

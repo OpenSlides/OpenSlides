@@ -742,6 +742,31 @@ img {
     display: none;
 }
 
+/** Motion personal note **/
+#personalNote.pinned {
+    position: fixed;
+    z-index: 1000;
+    bottom: 0;
+    margin: 0px 20px;
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+}
+
+#personalNote.pinned .col-sm-12 {
+    overflow-x: auto;
+    max-height: 200px;
+}
+
+#personalNoteSpacer {
+    display: none;
+    height: 220px;
+}
+
+#personalNoteSpacer.activeSpace {
+    display: block;
+}
+
 /** Projector sidebar column **/
 
 #content .col2 {
@@ -1340,6 +1365,15 @@ img {
     white-space: nowrap;
 }
 
+.rotate-45-deg-right {
+    filter: progid: DXImageTransform.Microsoft.BasicImage(rotation=0.5);
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
 .optional { /* show optional column */
     display: auto;
 }
@@ -1906,5 +1940,8 @@ tr.selected td {
     }
     #groups-table .perm-head {
         width: 150px;
+    }
+    .personalNoteFixed {
+        width: 100%;
     }
 }
