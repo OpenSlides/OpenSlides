@@ -1898,6 +1898,7 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('Projector language');
         gettext('Current browser language');
         gettext('Show title and description of event on projector');
+        gettext('Display header and footer');
         gettext('Show the clock on projector');
         gettext('Background color of projector header and footer');
         gettext('Font color of projector header and footer');

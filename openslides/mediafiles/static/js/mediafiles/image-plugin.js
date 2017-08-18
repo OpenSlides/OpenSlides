@@ -152,7 +152,7 @@ angular.module('OpenSlidesApp.mediafiles.image-plugin', [
                     return {
                         title: gettextCatalog.getString('Image browser'),
                         minWidth: 1000,
-                        minHeight: 400,
+                        minHeight: 500,
                         contents: [
                             {
                                 id: 'imagebrowser-tab1',

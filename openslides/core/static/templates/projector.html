@@ -37,7 +37,7 @@
     }
   </style>
 
-  <div id="header">
+  <div id="header" ng-if="config('projector_enable_header_footer')">
     <img ng-if="config('projector_enable_logo')" id="logo" alt="OpenSlides"
       ng-src="{{ config('logo_projector_main').path || '/static/img/logo-projector.png' }}"/>
     <div ng-if="config('projector_enable_title')" id="eventdata">
@@ -60,11 +60,19 @@
       transform: scale({{scale/100}});
     }
   </style>
+
+
+  <style type="text/css" ng-if="config('projector_enable_header_footer')">
+    .content {
+      top: 100px;
+    }
+  </style>
+
   <div class="contentContainer" ng-repeat="element in elements | orderBy:'index'">
     <div ng-include="element.template"></div>
   </div>
 
-  <div id="footer">
+  <div id="footer" ng-if="config('projector_enable_header_footer')">
     <span ng-if="config('general_event_date')">
       {{ config('general_event_date') }}
     </span>

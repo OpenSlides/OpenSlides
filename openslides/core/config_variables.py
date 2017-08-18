@@ -171,6 +171,14 @@ def get_config_variables():
         group='Projector')
 
     yield ConfigVariable(
+        name='projector_enable_clock',
+        default_value=True,
+        input_type='boolean',
+        label='Show the clock on projector',
+        weight=154,
+        group='Projector')
+
+    yield ConfigVariable(
         name='projector_enable_title',
         default_value=True,
         input_type='boolean',
@@ -179,11 +187,11 @@ def get_config_variables():
         group='Projector')
 
     yield ConfigVariable(
-        name='projector_enable_clock',
+        name='projector_enable_header_footer',
         default_value=True,
         input_type='boolean',
-        label='Show the clock on projector',
-        weight=154,
+        label='Display header and footer',
+        weight=157,
         group='Projector')
 
     yield ConfigVariable(
