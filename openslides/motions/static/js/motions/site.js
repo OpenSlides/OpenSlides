@@ -346,7 +346,7 @@ angular.module('OpenSlidesApp.motions.site', [
                         required: true
                     },
                     data: {
-                        ckeditorOptions: Editor.getOptions(images)
+                        ckeditorOptions: Editor.getOptions()
                     }
                 },
                 {
@@ -356,7 +356,7 @@ angular.module('OpenSlidesApp.motions.site', [
                         label: gettextCatalog.getString('Reason'),
                     },
                     data: {
-                        ckeditorOptions: Editor.getOptions(images)
+                        ckeditorOptions: Editor.getOptions()
                     }
                 },
                 {
@@ -1186,6 +1186,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'motionId',
     'MotionInlineEditing',
     'MotionCommentsInlineEditing',
+    'Editor',
     'Projector',
     'ProjectionDefault',
     'MotionBlock',
@@ -1195,7 +1196,7 @@ angular.module('OpenSlidesApp.motions.site', [
     function($scope, $http, $timeout, operator, ngDialog, gettextCatalog, MotionForm,
              ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation,
              Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motionId, MotionInlineEditing,
-             MotionCommentsInlineEditing, Projector, ProjectionDefault, MotionBlock, MotionPdfExport,
+             MotionCommentsInlineEditing, Editor, Projector, ProjectionDefault, MotionBlock, MotionPdfExport,
              PersonalNoteManager, EditingWarning) {
         var motion = Motion.get(motionId);
         Category.bindAll({}, $scope, 'categories');
@@ -1472,7 +1473,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // Inline editing functions
         $scope.inlineEditing = MotionInlineEditing.createInstance($scope, motion,
-            'view-original-text-inline-editor', true,
+            'view-original-text-inline-editor', true, Editor.getOptions('inline'),
             function (obj) {
                 return motion.getTextWithLineBreaks($scope.version);
             },
@@ -1497,7 +1498,7 @@ angular.module('OpenSlidesApp.motions.site', [
         };
         $scope.commentsInlineEditing = MotionCommentsInlineEditing.createInstances($scope, motion);
         $scope.personalNoteInlineEditing = MotionInlineEditing.createInstance($scope, motion,
-            'personal-note-inline-editor', false,
+            'personal-note-inline-editor', false, Editor.getOptions('inline'),
             function (obj) {
                 return motion.personalNote ? motion.personalNote.note : '';
             },

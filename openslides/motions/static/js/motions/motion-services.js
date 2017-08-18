@@ -12,21 +12,19 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
  *      continued. Else a patch request is send.
  */
 .factory('MotionInlineEditing', [
-    'Editor',
     'Motion',
     '$timeout',
     'gettextCatalog',
-    function (Editor, Motion, $timeout, gettextCatalog) {
-        var createInstance = function ($scope, motion, selector, versioning, getOriginalData, saveData) {
+    function (Motion, $timeout, gettextCatalog) {
+        var createInstance = function ($scope, motion, selector, versioning, ckeditorOptions, getOriginalData, saveData) {
             var obj = {
                 active: false,
                 changed: false,
                 isEditable: false,
                 trivialChange: false,
                 originalHtml: null,
-                ckeditorOptions: Editor.getOptions(),
             };
-            obj.ckeditorOptions.readOnly = true;
+            ckeditorOptions.readOnly = true;
 
             obj.setVersion = function (_motion, versionId) {
                 motion = _motion; // If this is not updated,
@@ -41,8 +39,8 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             obj.enable = function () {
                 obj.active = true;
                 obj.isEditable = true;
-                obj.ckeditorOptions.language = gettextCatalog.getCurrentLanguage();
-                obj.editor = CKEDITOR.inline(selector, obj.ckeditorOptions);
+                ckeditorOptions.language = gettextCatalog.getCurrentLanguage();
+                obj.editor = CKEDITOR.inline(selector, ckeditorOptions);
                 obj.editor.on('change', function () {
                     $timeout(function() {
                         if (obj.editor.getData() != obj.originalHtml) {
@@ -129,14 +127,16 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
 
 .factory('MotionCommentsInlineEditing', [
     'MotionInlineEditing',
-    function (MotionInlineEditing) {
+    'Editor',
+    function (MotionInlineEditing, Editor) {
         var createInstances = function ($scope, motion) {
             var commentsInlineEditing = {
                 editors: []
             };
+            var options = Editor.getOptions('inline', 'YOffset');
             _.forEach($scope.commentsFieldsNoSpecialComments, function (field) {
                 var inlineEditing = MotionInlineEditing.createInstance($scope, motion,
-                    'view-original-comment-inline-editor-' + field.name, false,
+                    'view-original-comment-inline-editor-' + field.name, false, options,
                     function (obj) {
                         return motion['comment ' + field.name];
                     },
