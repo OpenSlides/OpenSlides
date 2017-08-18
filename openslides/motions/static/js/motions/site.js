@@ -1214,7 +1214,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 $scope.setProjectionMode($scope.projectionModes[0]);
             }
             if ($scope.change_recommendations.length > 0) {
-                $scope.inlineEditing.disable();
+                $scope.disableMotionInlineEditing();
             }
         });
         $scope.$watch(function () {
@@ -1313,7 +1313,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // open edit dialog
         $scope.openDialog = function (motion) {
             if ($scope.inlineEditing.active) {
-                $scope.inlineEditing.disable();
+                $scope.disableMotionInlineEditing();
             }
             ngDialog.open(MotionForm.getDialog(motion));
         };
@@ -1428,6 +1428,7 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.showVersion = function (version) {
             $scope.version = version.id;
             $scope.inlineEditing.setVersion(motion, version.id);
+            $scope.reasonInlineEditing.setVersion(motion, version.id);
             $scope.createChangeRecommendation.setVersion(motion, version.id);
         };
         // permit specific version
@@ -1483,17 +1484,50 @@ angular.module('OpenSlidesApp.motions.site', [
                     Config.get('motions_allow_disable_versioning').value);
             }
         );
+        $scope.reasonInlineEditing = MotionInlineEditing.createInstance($scope, motion,
+            'reason-inline-editor', true,
+            function (obj) {
+                return motion.getReason($scope.version);
+            },
+            function (obj) {
+                motion.reason = obj.editor.getData();
+                motion.disable_versioning = (obj.trivialChange &&
+                    Config.get('motions_allow_disable_versioning').value);
+            }
+        );
         // Wrapper functions for $scope.inlineEditing, to warn other users.
         var editingStoppedCallback;
         $scope.enableMotionInlineEditing = function () {
             editingStoppedCallback = EditingWarning.editingStarted('motion_update_' + motion.id);
+            if ($scope.motion.getReason($scope.version)) {
+                $scope.reasonInlineEditing.enable();
+            }
             $scope.inlineEditing.enable();
         };
         $scope.disableMotionInlineEditing = function () {
             if (editingStoppedCallback) {
                 editingStoppedCallback();
             }
+            if ($scope.motion.getReason($scope.version)) {
+                $scope.reasonInlineEditing.disable();
+            }
             $scope.inlineEditing.disable();
+        };
+        $scope.textReasonSaveToolbarVisible = function () {
+            return ($scope.inlineEditing.changed && $scope.inlineEditing.active) ||
+                ($scope.reasonInlineEditing.changed && $scope.reasonInlineEditing.active);
+        };
+        $scope.textReasonSave = function () {
+            if ($scope.motion.getReason($scope.version)) {
+                $scope.reasonInlineEditing.save();
+            }
+            $scope.inlineEditing.save();
+        };
+        $scope.textReasonRevert = function () {
+            if ($scope.motion.getReason($scope.version)) {
+                $scope.reasonInlineEditing.revert();
+            }
+            $scope.inlineEditing.revert();
         };
         $scope.commentsInlineEditing = MotionCommentsInlineEditing.createInstances($scope, motion);
         $scope.personalNoteInlineEditing = MotionInlineEditing.createInstance($scope, motion,

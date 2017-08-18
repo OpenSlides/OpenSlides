@@ -4,12 +4,12 @@
       class="motion-text motion-text-original line-numbers-{{ lineNumberMode }}"
       contenteditable="{{ inlineEditing.isEditable }}">
     </div>
-    <div class="motion-save-toolbar" ng-class="{ 'visible': (inlineEditing.changed && inlineEditing.active) }">
-        <div class="changed-hint" translate>The text has been changed.</div>
-        <button type="button" ng-click="inlineEditing.save()" class="btn btn-primary" translate>
+    <div class="motion-save-toolbar" ng-class="{ 'visible': textReasonSaveToolbarVisible() }">
+        <div class="changed-hint" translate>The text or reason have been changed.</div>
+        <button type="button" ng-click="textReasonSave()" class="btn btn-primary" translate>
             Save
         </button>
-        <button type="button" ng-click="inlineEditing.revert()" class="btn btn-default" translate>
+        <button type="button" ng-click="textReasonRevert()" class="btn btn-default" translate>
             Revert
         </button>
         <label ng-if="motion.state.versioning && config('motions_allow_disable_versioning')">

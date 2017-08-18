@@ -482,7 +482,9 @@
       <!-- reason -->
       <div ng-if="motion.getReason(version) != ''">
         <h3 translate>Reason</h3>
-        <div ng-bind-html="motion.getReason(version) | trusted"></div>
+        <div id="reason-inline-editor" ng-bind-html="motion.getReason(version) | trusted"
+          contenteditable="{{ reasonInlineEditing.isEditable }}">
+        </div>
       </div>
 
       <!-- attachments -->
