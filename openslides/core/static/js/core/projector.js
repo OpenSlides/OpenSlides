@@ -227,28 +227,9 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
             });
         };
 
-        // This function scrolls the projector smoothly. It scrolls is steps calling each
-        // step with a little timeout.
-        var STEPS = 5;
         $scope.scroll = 0;
         var setScroll = function (scroll) {
-            scroll = -250 * scroll;
-            if ($scope.scrollTimeout) {
-                $timeout.cancel($scope.scrollTimeout);
-            }
-            var oldScroll = $scope.scroll;
-            var diff = scroll - oldScroll;
-            var count = 0;
-            if (scroll !== oldScroll) {
-                var scrollFunction = function () {
-                    $scope.scroll += diff/STEPS;
-                    count++;
-                    if (count < STEPS) {
-                        $scope.scrollTimeout = $timeout(scrollFunction, 1);
-                    }
-                };
-                scrollFunction();
-            }
+            $scope.scroll = -250 * scroll;
         };
 
         $scope.$watch(function () {
