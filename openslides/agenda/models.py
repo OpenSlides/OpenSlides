@@ -278,6 +278,7 @@ class Item(RESTModelMixin, models.Model):
         permissions = (
             ('can_see', 'Can see agenda'),
             ('can_manage', 'Can manage agenda'),
+            ('can_manage_list_of_speakers', 'Can manage list of speakers'),
             ('can_see_hidden_items', 'Can see hidden items and time scheduling of agenda'))
         unique_together = ('content_type', 'object_id')
 

@@ -31,6 +31,7 @@ def create_builtin_groups_and_admin(**kwargs):
     permission_strings = (
         'agenda.can_be_speaker',
         'agenda.can_manage',
+        'agenda.can_manage_list_of_speakers',
         'agenda.can_see',
         'agenda.can_see_hidden_items',
         'assignments.can_manage',
@@ -107,6 +108,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['agenda.can_see_hidden_items'],
         permission_dict['agenda.can_be_speaker'],
         permission_dict['agenda.can_manage'],
+        permission_dict['agenda.can_manage_list_of_speakers'],
         permission_dict['assignments.can_see'],
         permission_dict['assignments.can_manage'],
         permission_dict['assignments.can_nominate_other'],

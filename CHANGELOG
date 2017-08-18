@@ -11,6 +11,7 @@ Version 2.2 (unreleased)
 Agenda:
 - Fixed wrong sorting of last speakers [#3193].
 - Fixed issue when sorting a new inserted speaker [#3210].
+- New permission for managing lists of speakers [#3366].
 
 Motions:
 - New export dialog [#3185].

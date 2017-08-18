@@ -1596,6 +1596,7 @@ angular.module('OpenSlidesApp.users.site', [
         // agenda
         gettext('Can see agenda');
         gettext('Can manage agenda');
+        gettext('Can manage list of speakers');
         gettext('Can see hidden items and time scheduling of agenda');
         gettext('Can put oneself on the list of speakers');
         // assignments

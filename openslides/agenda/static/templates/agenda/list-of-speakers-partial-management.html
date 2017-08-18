@@ -1,13 +1,15 @@
 <div ng-if="item" class="details" ng-controller="ListOfSpeakersManagementCtrl">
 <div class="speakers-toolbar">
   <div class="pull-right">
-    <span os-perms="agenda.can_manage">
+    <span os-perms="agenda.can_manage_list_of_speakers">
       <button ng-if="isAllowed('removeAll')" class="btn btn-sm btn-danger"
           ng-bootbox-confirm="{{ 'Are you sure you want to remove all speakers from this list?'| translate }}"
           ng-bootbox-confirm-action="removeAllSpeakers()">
           <i class="fa fa-trash fa-lg"></i>
           <translate>Remove all speakers</translate>
       </button>
+    </span>
+    <span os-perms="agenda.can_manage">
       <button ng-if="item.speaker_list_closed" ng-click="closeList(false)"
           class="btn btn-sm btn-default">
         <i class="fa fa-toggle-off"></i>
@@ -57,7 +59,7 @@
             (<translate>Start time</translate>:
             {{ speaker.begin_time | date:'yyyy-MM-dd HH:mm:ss' }})
           </small>
-          <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"
+          <button os-perms="agenda.can_manage_list_of_speakers" ng-click="removeSpeaker(speaker.id)"
               class="btn btn-default btn-xs" title="{{ 'Remove' | translate }}">
             <i class="fa fa-times"></i>
           </button>
@@ -69,11 +71,11 @@
   <p ng-repeat="speaker in currentSpeaker" class="currentSpeaker spacer indentation">
     <i class="fa fa-microphone fa-lg"></i>
     {{ speaker.user.get_full_name() }}
-    <button os-perms="agenda.can_manage" ng-click="endSpeech()"
+    <button os-perms="agenda.can_manage_list_of_speakers" ng-click="endSpeech()"
         class="btn btn-default btn-sm" title="{{ 'End speech' | translate }}">
       <i class="fa fa-microphone-slash"></i> <translate>Stop</translate>
     </button>
-    <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"
+    <button os-perms="agenda.can_manage_list_of_speakers" ng-click="removeSpeaker(speaker.id)"
         class="btn btn-default btn-sm" title="{{ 'Remove' | translate }}">
       <i class="fa fa-times"></i>
     </button>
@@ -84,15 +86,15 @@
     <div ui-tree="treeOptions" data-empty-placeholder-enabled="false">
       <ol ui-tree-nodes="" ng-model="nextSpeakers">
         <li ng-repeat="speaker in nextSpeakers | orderBy:'weight'" ui-tree-node>
-          <i os-perms="agenda.can_manage" ui-tree-handle="" class="fa fa-arrows-v"></i>
+          <i os-perms="agenda.can_manage_list_of_speakers" ui-tree-handle="" class="fa fa-arrows-v"></i>
           {{ $index + 1 }}.
           {{ speaker.user.get_full_name() }}
           &nbsp;
-          <button os-perms="agenda.can_manage" ng-click="beginSpeech(speaker.id)"
+          <button os-perms="agenda.can_manage_list_of_speakers" ng-click="beginSpeech(speaker.id)"
               class="btn btn-default btn-sm" title="{{ 'Begin speech' | translate }}">
             <i class="fa fa-microphone"></i> <translate>Start</translate>
           </button>
-          <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"
+          <button os-perms="agenda.can_manage_list_of_speakers" ng-click="removeSpeaker(speaker.id)"
               class="btn btn-default btn-sm" title="{{ 'Remove' | translate }}">
             <i class="fa fa-times"></i>
           </button>
@@ -105,7 +107,7 @@
     <div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
       {{ alert.msg }}
     </div>
-    <div os-perms="agenda.can_manage">
+    <div os-perms="agenda.can_manage_list_of_speakers">
       <select chosen
           ng-model="speakerSelectBox.selected"
           ng-change="addSpeaker(speakerSelectBox.selected)"
