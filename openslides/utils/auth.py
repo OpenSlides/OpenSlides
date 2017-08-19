@@ -1,10 +1,13 @@
+from typing import Union
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import Model
 
 from .collection import CollectionElement
 
 
-def has_perm(user, perm):
+def has_perm(user: CollectionElement, perm: str) -> bool:
     """
     Checks that user has a specific permission.
 
@@ -34,7 +37,7 @@ def has_perm(user, perm):
     return has_perm
 
 
-def anonymous_is_enabled():
+def anonymous_is_enabled() -> bool:
     """
     Returns True if the anonymous user is enabled in the settings.
     """
@@ -42,7 +45,10 @@ def anonymous_is_enabled():
             .get_full_data()['value'])
 
 
-def user_to_collection_user(user):
+AnyUser = Union[Model, CollectionElement, int, AnonymousUser]
+
+
+def user_to_collection_user(user: AnyUser) -> CollectionElement:
     """
     Takes an object, that represents a user and converts it to a CollectionElement
     or to None, if it is an anonymous user.
@@ -57,7 +63,9 @@ def user_to_collection_user(user):
     """
     User = get_user_model()
 
-    if user is None:
+    # The if-condition should be 'user is None'. This does currently raises an
+    # exception in mypy, see: https://github.com/python/mypy/issues/3845
+    if isinstance(user, type(None)):
         # Nothing to do
         pass
     elif isinstance(user, CollectionElement) and user.collection_string == User.get_collection_string():
