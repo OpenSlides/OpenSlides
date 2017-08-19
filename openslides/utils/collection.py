@@ -1,4 +1,4 @@
-from typing import Mapping
+from typing import Mapping  # noqa
 
 from django.apps import apps
 from django.core.cache import cache
@@ -509,7 +509,7 @@ class Collection:
             cache.set(self.get_cache_key(), ids)
 
 
-_models_to_collection_string: Mapping[str, object] = {}
+_models_to_collection_string = {}  # type: Mapping[str, object]
 
 
 def get_model_from_collection_string(collection_string):

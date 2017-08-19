@@ -261,6 +261,6 @@ def get_redis_connection():
 
 
 if use_redis_cache():
-    websocket_user_cache: BaseWebsocketUserCache = RedisWebsocketUserCache()
+    websocket_user_cache = RedisWebsocketUserCache()  # type: BaseWebsocketUserCache
 else:
     websocket_user_cache = DjangoCacheWebsocketUserCache()

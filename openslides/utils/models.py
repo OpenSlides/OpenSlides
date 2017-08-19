@@ -1,6 +1,6 @@
 from django.db import models
 
-from .access_permissions import BaseAccessPermissions
+from .access_permissions import BaseAccessPermissions  # noqa
 from .utils import convert_camel_case_to_pseudo_snake_case
 
 
@@ -24,7 +24,7 @@ class RESTModelMixin:
     Mixin for Django models which are used in our REST API.
     """
 
-    access_permissions: BaseAccessPermissions = None
+    access_permissions = None  # type: BaseAccessPermissions
 
     def get_root_rest_element(self):
         """
