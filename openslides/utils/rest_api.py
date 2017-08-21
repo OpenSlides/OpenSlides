@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from typing import Optional  # noqa
 
 from django.http import Http404
 from rest_framework import status  # noqa
@@ -30,6 +31,7 @@ from rest_framework.viewsets import GenericViewSet as _GenericViewSet  # noqa
 from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
 from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
 
+from .access_permissions import BaseAccessPermissions  # noqa
 from .auth import user_to_collection_user
 from .collection import Collection, CollectionElement
 
@@ -102,7 +104,7 @@ class PermissionMixin:
     Also connects container to handle access permissions for model and
     viewset.
     """
-    access_permissions = None
+    access_permissions = None  # type: Optional[BaseAccessPermissions]
 
     def get_permissions(self):
         """

@@ -1,3 +1,5 @@
+from typing import Optional  # noqa
+
 from django.dispatch import Signal
 
 from .collection import CollectionElement
@@ -14,7 +16,7 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
     magic.
     """
     signal = Signal()
-    name = None
+    name = None  # type: Optional[str]
 
     def __init__(self, **kwargs):
         """
