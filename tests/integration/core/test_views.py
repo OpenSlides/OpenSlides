@@ -109,19 +109,12 @@ class ConfigViewSet(TestCase):
         # TODO: Can be changed to setUpClass when Django 1.8 is no longer supported
         self._config_values = config.config_variables.copy()
         config.update_config_variables(set_simple_config_view_integration_config_test())
+        config.save_default_values()
 
     def tearDown(self):
         # Reset the config variables
         config.config_variables = self._config_values
-
-    def test_retrieve(self):
-        self.client.login(username='admin', password='admin')
-        config['test_var_aeW3Quahkah1phahCheo'] = 'test_value_Oovoojieme7eephaed2A'
-        response = self.client.get(reverse('config-detail', args=['test_var_aeW3Quahkah1phahCheo']))
-        self.assertEqual(
-            response.data,
-            {'key': 'test_var_aeW3Quahkah1phahCheo',
-             'value': 'test_value_Oovoojieme7eephaed2A'})
+        super().tearDown()
 
     def test_update(self):
         self.client = APIClient()

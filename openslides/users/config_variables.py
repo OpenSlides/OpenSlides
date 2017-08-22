@@ -29,8 +29,7 @@ def get_config_variables():
         label='Title for access data and welcome PDF',
         weight=520,
         group='Participants',
-        subgroup='PDF',
-        translatable=True)
+        subgroup='PDF')
 
     yield ConfigVariable(
         name='users_pdf_welcometext',
@@ -38,8 +37,7 @@ def get_config_variables():
         label='Help text for access data and welcome PDF',
         weight=530,
         group='Participants',
-        subgroup='PDF',
-        translatable=True)
+        subgroup='PDF')
 
     # TODO: Use Django's URLValidator here.
     yield ConfigVariable(

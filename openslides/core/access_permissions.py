@@ -116,18 +116,10 @@ class ConfigAccessPermissions(BaseAccessPermissions):
         # the config. Anonymous users can do so if they are enabled.
         return not isinstance(user, AnonymousUser) or anonymous_is_enabled()
 
-    def get_full_data(self, instance):
+    def get_serializer_class(self, user=None):
         """
-        Returns the serlialized config data.
+        Returns serializer class.
         """
-        from .config import config
-        from .models import ConfigStore
+        from .serializers import ConfigSerializer
 
-        # Attention: The format of this response has to be the same as in
-        # the retrieve method of ConfigViewSet.
-        if isinstance(instance, ConfigStore):
-            result = {'key': instance.key, 'value': config[instance.key]}
-        else:
-            # It is possible, that the caching system already sends the correct data as "instance".
-            result = instance
-        return result
+        return ConfigSerializer

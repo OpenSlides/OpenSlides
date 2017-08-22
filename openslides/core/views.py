@@ -16,7 +16,6 @@ from .. import __version__ as version
 from ..utils import views as utils_views
 from ..utils.auth import anonymous_is_enabled, has_perm
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
-from ..utils.collection import Collection, CollectionElement
 from ..utils.plugins import (
     get_plugin_description,
     get_plugin_verbose_name,
@@ -27,7 +26,6 @@ from ..utils.rest_api import (
     Response,
     SimpleMetadata,
     ValidationError,
-    ViewSet,
     detail_route,
     list_route,
 )
@@ -608,7 +606,7 @@ class ConfigMetadata(SimpleMetadata):
         return metadata
 
 
-class ConfigViewSet(ViewSet):
+class ConfigViewSet(ModelViewSet):
     """
     API endpoint for the config.
 
@@ -616,6 +614,7 @@ class ConfigViewSet(ViewSet):
     partial_update.
     """
     access_permissions = ConfigAccessPermissions()
+    queryset = ConfigStore.objects.all()
     metadata_class = ConfigMetadata
 
     def check_view_permissions(self):
@@ -640,29 +639,6 @@ class ConfigViewSet(ViewSet):
         else:
             result = False
         return result
-
-    def list(self, request):
-        """
-        Lists all config variables.
-        """
-        collection = Collection(config.get_collection_string())
-        return Response(collection.as_list_for_user(request.user))
-
-    def retrieve(self, request, *args, **kwargs):
-        """
-        Retrieves a config variable.
-        """
-        key = kwargs['pk']
-        collection_element = CollectionElement.from_values(config.get_collection_string(), key)
-        try:
-            content = collection_element.as_dict_for_user(request.user)
-        except ConfigStore.DoesNotExist:
-            raise Http404
-        if content is None:
-            # If content is None, the user has no permissions to see the item.
-            # See ConfigAccessPermissions or rather its parent class.
-            self.permission_denied()
-        return Response(content)
 
     def update(self, request, *args, **kwargs):
         """

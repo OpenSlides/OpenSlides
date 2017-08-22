@@ -27,8 +27,7 @@ def get_config_variables():
         weight=115,
         group='General',
         subgroup='Event',
-        validators=(MaxLengthValidator(100),),
-        translatable=True)
+        validators=(MaxLengthValidator(100),))
 
     yield ConfigVariable(
         name='general_event_date',
@@ -64,8 +63,7 @@ def get_config_variables():
         label='Legal notice',
         weight=132,
         group='General',
-        subgroup='Event',
-        translatable=True)
+        subgroup='Event')
 
     yield ConfigVariable(
         name='general_event_welcome_title',
@@ -73,8 +71,7 @@ def get_config_variables():
         label='Front page title',
         weight=134,
         group='General',
-        subgroup='Event',
-        translatable=True)
+        subgroup='Event')
 
     yield ConfigVariable(
         name='general_event_welcome_text',
@@ -83,8 +80,7 @@ def get_config_variables():
         label='Front page text',
         weight=136,
         group='General',
-        subgroup='Event',
-        translatable=True)
+        subgroup='Event')
 
     # General System
 

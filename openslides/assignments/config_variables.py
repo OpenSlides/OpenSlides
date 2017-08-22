@@ -86,8 +86,7 @@ def get_config_variables():
         label='Title for PDF document (all elections)',
         weight=460,
         group='Elections',
-        subgroup='PDF',
-        translatable=True)
+        subgroup='PDF')
 
     yield ConfigVariable(
         name='assignments_pdf_preamble',

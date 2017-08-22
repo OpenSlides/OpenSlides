@@ -10,8 +10,6 @@ import webbrowser
 from django.conf import ENVIRONMENT_VARIABLE
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
-from django.utils.translation import ugettext as _
-from django.utils.translation import activate, check_for_language, get_language
 
 DEVELOPMENT_VERSION = 'Development Version'
 UNIX_VERSION = 'Unix Version'
@@ -313,19 +311,6 @@ def get_database_path_from_settings():
     if default.get('ENGINE') != 'django.db.backends.sqlite3':
         database_path = None
     return database_path
-
-
-def translate_customizable_strings(language_code):
-    """
-    Translates all translatable config values and saves them into database.
-    """
-    if check_for_language(language_code):
-        from openslides.core.config import config
-        current_language = get_language()
-        activate(language_code)
-        for name in config.get_all_translatable():
-            config[name] = _(config[name])
-        activate(current_language)
 
 
 def is_local_installation():

@@ -294,12 +294,6 @@ class ConfigStore(RESTModelMixin, models.Model):
     def get_collection_string(cls):
         return 'core/config'
 
-    def get_rest_pk(self):
-        """
-        Returns the primary key used in the REST API.
-        """
-        return self.key
-
 
 class ChatMessage(RESTModelMixin, models.Model):
     """

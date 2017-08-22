@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 from django.conf import settings
+from django.db.models.signals import post_migrate
 
 from ..utils.collection import Collection
 
@@ -49,6 +50,8 @@ class CoreAppConfig(AppConfig):
             required_users,
             dispatch_uid='core_required_users')
 
+        post_migrate.connect(call_save_default_values, sender=self, dispatch_uid='core_save_config_default_values')
+
         # Register viewsets.
         router.register(self.get_model('Projector').get_collection_string(), ProjectorViewSet)
         router.register(self.get_model('ChatMessage').get_collection_string(), ChatMessageViewSet)
@@ -62,10 +65,8 @@ class CoreAppConfig(AppConfig):
         Yields all collections required on startup i. e. opening the websocket
         connection.
         """
-        from .config import config
-        for model in ('Projector', 'ChatMessage', 'Tag', 'ProjectorMessage', 'Countdown'):
+        for model in ('Projector', 'ChatMessage', 'Tag', 'ProjectorMessage', 'Countdown', 'ConfigStore'):
             yield Collection(self.get_model(model).get_collection_string())
-        yield Collection(config.get_collection_string())
 
     def get_angular_constants(self):
         # Client settings
@@ -84,3 +85,8 @@ class CoreAppConfig(AppConfig):
             'name': 'OpenSlidesSettings',
             'value': client_settings_dict}
         return [client_settings]
+
+
+def call_save_default_values(**kwargs):
+    from .config import config
+    config.save_default_values()

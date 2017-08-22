@@ -17,10 +17,12 @@ class HandleConfigTest(TestCase):
         config.update_config_variables(set_simple_config_view_multiple_vars())
         config.update_config_variables(set_simple_config_collection_disabled_view())
         config.update_config_variables(set_simple_config_collection_with_callback())
+        config.save_default_values()
 
     def tearDown(self):
         # Reset the config variables
         config.config_variables = self._config_values
+        super().tearDown()
 
     def get_config_var(self, key):
         return config[key]
@@ -42,7 +44,7 @@ class HandleConfigTest(TestCase):
     def test_get_multiple_config_var_error(self):
         with self.assertRaisesMessage(
                 ConfigError,
-                'Too many values for config variable multiple_config_var found.'):
+                'Too many values for config variables {\'multiple_config_var\'} found.'):
             config.update_config_variables(set_simple_config_view_multiple_vars())
 
     def test_setup_config_var(self):
@@ -58,9 +60,9 @@ class HandleConfigTest(TestCase):
     def test_missing_cache_(self):
         self.assertEqual(config['string_var'], 'default_string_rien4ooCZieng6ah')
 
-    def test_config_contains(self):
-        self.assertTrue('string_var' in config)
-        self.assertFalse('unknown_config_var' in config)
+    def test_config_exists(self):
+        self.assertTrue(config.exists('string_var'))
+        self.assertFalse(config.exists('unknown_config_var'))
 
     def test_set_value_before_getting_it(self):
         """

@@ -1,6 +1,19 @@
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    TypeVar,
+    Union,
+)
+
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import ugettext as _
+from mypy_extensions import TypedDict
 
+from ..utils.collection import CollectionElement
 from .exceptions import ConfigError, ConfigNotFound
 from .models import ConfigStore
 
@@ -26,30 +39,31 @@ class ConfigHandler:
     config[...] = x.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Dict, that keeps all ConfigVariable objects. Has to be set at statup.
-        # See the run method in openslides.core.apps.
-        self.config_variables = {}
+        # See the ready() method in openslides.core.apps.
+        self.config_variables = {}  # type: Dict[str, ConfigVariable]
 
-    def __getitem__(self, key):
+        # Index to get the database id from a given config key
+        self.key_to_id = {}  # type: Dict[str, int]
+
+    def __getitem__(self, key: str) -> Any:
         """
-        Returns the value of the config variable. Returns the default value, if
-        not value exists in the database.
+        Returns the value of the config variable.
         """
-        try:
-            default_value = self.config_variables[key].default_value
-        except KeyError:
+        # Build the key_to_id dict
+        self.save_default_values()
+
+        if not self.exists(key):
             raise ConfigNotFound(_('The config variable {} was not found.').format(key))
 
-        try:
-            db_value = ConfigStore.objects.get(key=key)
-        except ConfigStore.DoesNotExist:
-            return default_value
-        return db_value.value
+        return CollectionElement.from_values(
+            self.get_collection_string(),
+            self.key_to_id[key]).get_full_data()['value']
 
-    def __contains__(self, key):
+    def exists(self, key: str) -> bool:
         """
-        Returns True, if the config varialbe exists.
+        Returns True, if the config varialbe was defined.
         """
         try:
             self.config_variables[key]
@@ -58,7 +72,8 @@ class ConfigHandler:
         else:
             return True
 
-    def __setitem__(self, key, value):
+    # TODO: Remove the any by using right types in INPUT_TYPE_MAPPING
+    def __setitem__(self, key: str, value: Any) -> None:
         """
         Sets the new value. First it validates the input.
         """
@@ -84,8 +99,9 @@ class ConfigHandler:
                 choices = config_variable.choices()
             else:
                 choices = config_variable.choices
-            if value not in map(lambda choice: choice['value'], choices):
+            if choices is None or value not in map(lambda choice: choice['value'], choices):
                 raise ConfigError(_('Invalid input. Choice does not match.'))
+
         for validator in config_variable.validators:
             try:
                 validator(value)
@@ -119,10 +135,7 @@ class ConfigHandler:
                     raise ConfigError(_('{} has to be a string.'.format(required_entry)))
 
         # Save the new value to the database.
-        try:
-            db_value = ConfigStore.objects.get(key=key)
-        except ConfigStore.DoesNotExist:
-            db_value = ConfigStore(key=key)
+        db_value = ConfigStore.objects.get(key=key)
         db_value.value = value
         db_value.save(information={'changed_config': key})
 
@@ -130,43 +143,41 @@ class ConfigHandler:
         if config_variable.on_change:
             config_variable.on_change()
 
-    def update_config_variables(self, items):
+    def update_config_variables(self, items: Iterable['ConfigVariable']) -> None:
         """
         Updates the config_variables dict.
-
-        items has to be an iterator over ConfigVariable objects.
         """
-        new_items = dict((variable.name, variable) for variable in items)
+        # build an index from variable name to the variable
+        item_index = dict((variable.name, variable) for variable in items)
+
         # Check that all ConfigVariables are unique. So no key from items can
         # be in already in self.config_variables
-        for key in new_items.keys():
-            if key in self.config_variables:
-                raise ConfigError(_('Too many values for config variable {} found.').format(key))
+        intersection = set(item_index.keys()).intersection(self.config_variables.keys())
+        if intersection:
+            raise ConfigError(_('Too many values for config variables {} found.').format(intersection))
 
-        self.config_variables.update(new_items)
+        self.config_variables.update(item_index)
 
-    def items(self):
+    def save_default_values(self) -> None:
         """
-        Iterates over key-value pairs of all config variables.
-        """
-        # Create a dict with the default values of each ConfigVariable
-        config_items = dict((key, variable.default_value) for key, variable in self.config_variables.items())
+        Saves the default values to the database.
 
-        # Update the dict with all values, which are in the db
-        for db_value in ConfigStore.objects.all():
-            config_items[db_value.key] = db_value.value
-        return config_items.items()
+        Does also build the dictonary key_to_id.
 
-    def get_all_translatable(self):
+        Does nothing on a second run.
         """
-        Generator to get all config variables as strings when their values are
-        intended to be translated.
-        """
-        for config_variable in self.config_variables.values():
-            if config_variable.translatable:
-                yield config_variable.name
+        if not self.key_to_id:
+            for item in self.config_variables.values():
+                try:
+                    db_value = ConfigStore.objects.get(key=item.name)
+                except ConfigStore.DoesNotExist:
+                    db_value = ConfigStore()
+                    db_value.key = item.name
+                    db_value.value = item.default_value
+                    db_value.save(skip_autoupdate=True)
+                self.key_to_id[item.name] = db_value.pk
 
-    def get_collection_string(self):
+    def get_collection_string(self) -> str:
         """
         Returns the collection_string from the CollectionStore.
         """
@@ -178,6 +189,22 @@ config = ConfigHandler()
 Final entry point to get an set config variables. To get a config variable
 use x = config[...], to set it use config[...] = x.
 """
+
+
+T = TypeVar('T')
+ChoiceType = Optional[List[Dict[str, str]]]
+ChoiceCallableType = Union[ChoiceType, Callable[[], ChoiceType]]
+ValidatorsType = List[Callable[[T], None]]
+OnChangeType = Callable[[], None]
+ConfigVariableDict = TypedDict('ConfigVariableDict', {
+    'key': str,
+    'default_value': Any,
+    'value': Any,
+    'input_type': str,
+    'label': str,
+    'help_text': str,
+    'choices': ChoiceType,
+})
 
 
 class ConfigVariable:
@@ -206,10 +233,10 @@ class ConfigVariable:
     the value during setup of the database if the admin uses the respective
     command line option.
     """
-    def __init__(self, name, default_value, input_type='string', label=None,
-                 help_text=None, choices=None, hidden=False, weight=0,
-                 group=None, subgroup=None, validators=None, on_change=None,
-                 translatable=False):
+    def __init__(self, name: str, default_value: T, input_type: str='string',
+                 label: str=None, help_text: str=None, choices: ChoiceCallableType=None,
+                 hidden: bool=False, weight: int=0, group: str=None, subgroup: str=None,
+                 validators: ValidatorsType=None, on_change: OnChangeType=None) -> None:
         if input_type not in INPUT_TYPE_MAPPING:
             raise ValueError(_('Invalid value for config attribute input_type.'))
         if input_type == 'choice' and choices is None:
@@ -230,26 +257,23 @@ class ConfigVariable:
         self.subgroup = subgroup
         self.validators = validators or ()
         self.on_change = on_change
-        self.translatable = translatable
 
     @property
-    def data(self):
+    def data(self) -> ConfigVariableDict:
         """
         Property with all data for OPTIONS requests.
         """
-        data = {
-            'key': self.name,
-            'default_value': self.default_value,
-            'value': config[self.name],
-            'input_type': self.input_type,
-            'label': self.label,
-            'help_text': self.help_text,
-        }
-        if self.input_type == 'choice':
-            data['choices'] = self.choices() if callable(self.choices) else self.choices
-        return data
+        return ConfigVariableDict(
+            key=self.name,
+            default_value=self.default_value,
+            value=config[self.name],
+            input_type=self.input_type,
+            label=self.label,
+            help_text=self.help_text,
+            choices=self.choices() if callable(self.choices) else self.choices
+        )
 
-    def is_hidden(self):
+    def is_hidden(self) -> bool:
         """
         Returns True if the config variable is hidden so it can be removed
         from response of OPTIONS request.

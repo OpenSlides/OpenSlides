@@ -3,6 +3,7 @@ from openslides.utils.validate import validate_html
 
 from .models import (
     ChatMessage,
+    ConfigStore,
     Countdown,
     ProjectionDefault,
     Projector,
@@ -13,7 +14,7 @@ from .models import (
 
 class JSONSerializerField(Field):
     """
-    Serializer for projector's JSONField.
+    Serializer for projector's and config JSONField.
     """
     def to_internal_value(self, data):
         """
@@ -28,6 +29,12 @@ class JSONSerializerField(Field):
             elif element.get('name') is None:
                 raise ValidationError({'detail': "Every dictionary must have a key 'name'."})
         return data
+
+    def to_representation(self, value):
+        """
+        Returns the value. It is decoded from the Django JSONField.
+        """
+        return value
 
 
 class ProjectionDefaultSerializer(ModelSerializer):
@@ -59,6 +66,17 @@ class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', )
+
+
+class ConfigSerializer(ModelSerializer):
+    """
+    Serializer for core.models.Tag objects.
+    """
+    value = JSONSerializerField()
+
+    class Meta:
+        model = ConfigStore
+        fields = ('id', 'key', 'value')
 
 
 class ChatMessageSerializer(ModelSerializer):
