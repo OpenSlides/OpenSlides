@@ -743,15 +743,6 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-.filter('excludeSpecialComments', function () {
-    return function (comments) {
-        return _.filter(comments, function (comment) {
-            var specialComment = comment.forState || comment.forRecommendation;
-            return !specialComment;
-        });
-    };
-})
-
 // angular formly config options
 .run([
     'formlyConfig',
@@ -1124,14 +1115,20 @@ angular.module('OpenSlidesApp.core.site', [
 
         // For comments input
         $scope.addComment = function (configOption, parent) {
-            parent.value.push({
+            var maxId = _.max(_.keys(parent.value));
+            if (maxId === undefined) {
+                maxId = 1;
+            } else {
+                maxId = parseInt(maxId) + 1;
+            }
+            parent.value[maxId] = {
                 name: gettextCatalog.getString('New'),
                 public: false,
-            });
+            };
             $scope.save(configOption, parent.value);
         };
-        $scope.removeComment = function (configOption, parent, index) {
-            parent.value.splice(index, 1);
+        $scope.removeComment = function (configOption, parent, id) {
+            parent.value[id] = null;
             $scope.save(configOption, parent.value);
         };
 

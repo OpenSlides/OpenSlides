@@ -15,7 +15,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'Category',
     'Config',
     'Motion',
-    function($q, operator, gettextCatalog, PDFLayout, PdfMakeConverter, ImageConverter, HTMLValidizer, Category, Config, Motion) {
+    'MotionComment',
+    function($q, operator, gettextCatalog, PDFLayout, PdfMakeConverter, ImageConverter, HTMLValidizer,
+        Category, Config, Motion, MotionComment) {
         /**
          * Provides the content as JS objects for Motions in pdfMake context
          * @constructor
@@ -27,10 +29,19 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             var converter;
 
             // Query all image sources from motion text and reason
-            // TODO: Do we need images for comments here too??
             var getImageSources = function () {
                 var text = motion.getTextByMode(changeRecommendationMode, null);
-                var content = HTMLValidizer.validize(text) + HTMLValidizer.validize(motion.getReason());
+                var reason = motion.getReason();
+                var comments = '';
+                if (includeComments) {
+                    var fields = MotionComment.getNoSpecialCommentsFields();
+                    _.forEach(fields, function (field, id) {
+                        if (motion.comments[id]) {
+                            comments += HTMLValidizer.validize(motion.comments[id]);
+                        }
+                    });
+                }
+                var content = HTMLValidizer.validize(text) + HTMLValidizer.validize(motion.getReason()) + comments;
                 var map = Function.prototype.call.bind([].map);
                 return map($(content).find('img'), function(element) {
                     return element.getAttribute('src');
@@ -298,16 +309,12 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             // motion comments handling
             var motionComments = function () {
                 if (includeComments) {
-                    var fields = Config.get('motions_comments').value;
-                    var canSeeComment = function (index) {
-                        var specialComment = fields[index].forState || fields[index].forRecommendation;
-                        return (fields[index].public || operator.hasPerms('motions.can_manage')) && !specialComment;
-                    };
+                    var fields = MotionComment.getNoSpecialCommentsFields();
                     var comments = [];
-                    for (var i = 0; i < fields.length; i++) {
-                        if (motion.comments[i] && canSeeComment(i)) {
-                            var title = gettextCatalog.getString('Comment') + ' ' + fields[i].name;
-                            if (!fields[i].public) {
+                    _.forEach(fields, function (field, id) {
+                        if (motion.comments[id]) {
+                            var title = gettextCatalog.getString('Comment') + ' ' + field.name;
+                            if (!field.public) {
                                 title += ' (' + gettextCatalog.getString('internal') + ')';
                             }
                             comments.push({
@@ -315,9 +322,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                                 style: 'heading3',
                                 marginTop: 25,
                             });
-                            comments.push(converter.convertHTML(motion.comments[i]));
+                            comments.push(converter.convertHTML(motion.comments[id]));
                         }
-                    }
+                    });
                     return comments;
                 }
             };
@@ -859,12 +866,13 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'PdfCreate',
     'PDFLayout',
     'PersonalNoteManager',
+    'MotionComment',
     'Messaging',
     'FileSaver',
     function ($http, $q, operator, Config, gettextCatalog, MotionChangeRecommendation, HTMLValidizer,
         PdfMakeConverter, MotionContentProvider, MotionCatalogContentProvider, PdfMakeDocumentProvider,
         PollContentProvider, PdfMakeBallotPaperProvider, MotionPartialContentProvider, PdfCreate,
-        PDFLayout, PersonalNoteManager, Messaging, FileSaver) {
+        PDFLayout, PersonalNoteManager, MotionComment, Messaging, FileSaver) {
         return {
             getDocumentProvider: function (motions, params, singleMotion) {
                 params = _.clone(params || {}); // Clone this to avoid sideeffects.
@@ -1008,24 +1016,20 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 });
             },
             exportComments: function (motion, filename) {
-                var fields = Config.get('motions_comments').value;
-                var canSeeComment = function (index) {
-                    var specialComment = fields[index].forState || fields[index].forRecommendation;
-                    return (fields[index].public || operator.hasPerms('motions.can_manage')) && !specialComment;
-                };
+                var fields = MotionComment.getNoSpecialCommentsFields();
                 var content = [];
-                for (var i = 0; i < fields.length; i++) {
-                    if (motion.comments[i] && canSeeComment(i)) {
-                        var title = gettextCatalog.getString('Comment') + ' ' + fields[i].name;
-                        if (!fields[i].public) {
+                _.forEach(fields, function (field, id) {
+                    if (motion.comments[id]) {
+                        var title = gettextCatalog.getString('Comment') + ' ' + field.name;
+                        if (!field.public) {
                             title += ' (' + gettextCatalog.getString('internal') + ')';
                         }
                         content.push({
                             heading: title,
-                            text: motion.comments[i],
+                            text: motion.comments[id],
                         });
                     }
-                }
+                });
                 MotionPartialContentProvider.createInstance(motion, content).then(function (contentProvider) {
                     PdfMakeDocumentProvider.createInstance(contentProvider).then(function (documentProvider) {
                         PdfCreate.download(documentProvider.getDocument(), filename);

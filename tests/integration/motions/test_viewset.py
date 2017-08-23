@@ -238,10 +238,9 @@ class CreateMotion(TestCase):
         self.assertEqual(motion.tags.get().name, 'test_tag_iRee3kiecoos4rorohth')
 
     def test_with_multiple_comments(self):
-        config['motions_comments'] = [
-            {'name': 'comment1', 'public': True},
-            {'name': 'comment2', 'public': False}]
-        comments = ['comemnt1_sdpoiuffo3%7dwDwW)', 'comment2_iusd_D/TdskDWH(5DWas46WAd078']
+        comments = {
+            '1': 'comemnt1_sdpoiuffo3%7dwDwW)',
+            '2': 'comment2_iusd_D/TdskDWH(5DWas46WAd078'}
         response = self.client.post(
             reverse('motion-list'),
             {'title': 'title_test_sfdAaufd56HR7sd5FDq7av',
@@ -251,6 +250,31 @@ class CreateMotion(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         motion = Motion.objects.get()
         self.assertEqual(motion.comments, comments)
+
+    def test_wrong_comment_format(self):
+        comments = [
+            'comemnt1_wpcjlwgj$§ks)skj2LdmwKDWSLw6',
+            'comment2_dq2Wd)Jwdlmm:,w82DjwQWSSiwjd']
+        response = self.client.post(
+            reverse('motion-list'),
+            {'title': 'title_test_sfdAaufd56HR7sd5FDq7av',
+             'text': 'text_test_fiuhefF86()ew1Ef346AF6W',
+             'comments': comments},
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'comments': {'detail': 'Data must be a dict.'}})
+
+    def test_wrong_comment_id(self):
+        comment = {
+            'string': 'comemnt1_wpcjlwgj$§ks)skj2LdmwKDWSLw6'}
+        response = self.client.post(
+            reverse('motion-list'),
+            {'title': 'title_test_sfdAaufd56HR7sd5FDq7av',
+             'text': 'text_test_fiuhefF86()ew1Ef346AF6W',
+             'comments': comment},
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'comments': {'detail': 'Id must be an int.'}})
 
     def test_with_workflow(self):
         """
@@ -298,13 +322,12 @@ class CreateMotion(TestCase):
             reverse('motion-list'),
             {'title': 'test_title_peiJozae0luew9EeL8bo',
              'text': 'test_text_eHohS8ohr5ahshoah8Oh',
-             'comments': ['comment_for_field_one__xiek1Euhae9xah2wuuraaaa'],
-             'comment_field_one': 'comment_for_field_one__xiek1Euhae9xah2wuuraaaa'},
+             'comments': {'1': 'comment_for_field_one__xiek1Euhae9xah2wuuraaaa'}},
             format='json',
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Motion.objects.get().comments, ['comment_for_field_one__xiek1Euhae9xah2wuuraaaa'])
+        self.assertEqual(Motion.objects.get().comments, {'1': 'comment_for_field_one__xiek1Euhae9xah2wuuraaaa'})
 
     def test_amendment_motion(self):
         """

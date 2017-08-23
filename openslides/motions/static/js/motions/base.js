@@ -678,18 +678,32 @@ angular.module('OpenSlidesApp.motions', [
 
 // Service for generic comment fields
 .factory('MotionComment', [
+    '$filter',
     'Config',
     'operator',
     'Editor',
-    function (Config, operator, Editor) {
+    function ($filter, Config, operator, Editor) {
         return {
-            getFormFields: function () {
+            isSpecialCommentField: function (field) {
+                if (field) {
+                    return field.forState || field.forRecommendation;
+                } else {
+                    return false;
+                }
+            },
+            getCommentsFields: function () {
                 var fields = Config.get('motions_comments').value;
-                return _.map(
-                    _.filter(fields, function(element) { return !element.forState && !element.forRecommendation; }),
-                    function (field) {
+                return $filter('excludeDeletedAndForbiddenCommentsFields')(fields);
+            },
+            getNoSpecialCommentsFields: function () {
+                var fields = this.getCommentsFields();
+                return $filter('excludeSpecialCommentsFields')(fields);
+            },
+            getFormFields: function () {
+                var fields = this.getNoSpecialCommentsFields();
+                return _.map(fields, function (field, id) {
                         return {
-                            key: 'comment ' + field.name,
+                            key: 'comment_' + id,
                             type: 'editor',
                             templateOptions: {
                                 label: field.name,
@@ -704,32 +718,56 @@ angular.module('OpenSlidesApp.motions', [
             },
             populateFields: function (motion) {
                 // Populate content of motion.comments to the single comment
-                // fields like motion['comment MyComment'], motion['comment MyOtherComment'], ...
-                var fields = Config.get('motions_comments').value;
-                if (!motion.comments) {
-                    motion.comments = [];
-                }
-                for (var i = 0; i < fields.length; i++) {
-                    motion['comment ' + fields[i].name] = motion.comments[i];
+                var fields = this.getCommentsFields();
+                if (motion.comments) {
+                    _.forEach(fields, function (field, id) {
+                        motion['comment_' + id] = motion.comments[id];
+                    });
                 }
             },
             populateFieldsReverse: function (motion) {
                 // Reverse equivalent to populateFields.
-                var fields = Config.get('motions_comments').value;
-                motion.comments = [];
-                for (var i = 0; i < fields.length; i++) {
-                    motion.comments.push(motion['comment ' + fields[i].name] || '');
-                }
+                var fields = this.getCommentsFields();
+                motion.comments = {};
+                _.forEach(fields, function (field, id) {
+                    motion.comments[id] = motion['comment_' + id] || '';
+                });
             },
-            getFieldNameForFlag: function (flag) {
-                var fields = Config.get('motions_comments').value;
-                var fieldName = '';
-                var index = _.findIndex(fields, [flag, true]);
-                if (index > -1) {
-                    fieldName = fields[index].name;
-                }
-                return fieldName;
+            getFieldIdForFlag: function (flag) {
+                var fields = this.getCommentsFields();
+                return _.findKey(fields, [flag, true]);
             },
+        };
+    }
+])
+
+.filter('excludeSpecialCommentsFields', [
+    'MotionComment',
+    function (MotionComment) {
+        return function (commentsFields) {
+            var withoutSpecialCommentsFields = {};
+            _.forEach(commentsFields, function (field, id) {
+                if (!MotionComment.isSpecialCommentField(field)) {
+                    withoutSpecialCommentsFields[id] = field;
+                }
+            });
+            return withoutSpecialCommentsFields;
+        };
+    }
+])
+
+.filter('excludeDeletedAndForbiddenCommentsFields', [
+    'MotionComment',
+    'operator',
+    function (MotionComment, operator) {
+        return function (commentsFields) {
+            var withoutDeletedAndForbiddenCommentsFields = {};
+            _.forEach(commentsFields, function (field, id) {
+                if (field && (field.public || operator.hasPerms('motions.can_see_and_manage_comments'))) {
+                    withoutDeletedAndForbiddenCommentsFields[id] = field;
+                }
+            });
+            return withoutDeletedAndForbiddenCommentsFields;
         };
     }
 ])

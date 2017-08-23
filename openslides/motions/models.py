@@ -167,7 +167,7 @@ class Motion(RESTModelMixin, models.Model):
 
     comments = JSONField(null=True)
     """
-    Configurable fields for comments. Contains a list of strings.
+    Configurable fields for comments.
     """
 
     # In theory there could be one then more agenda_item. But we support only

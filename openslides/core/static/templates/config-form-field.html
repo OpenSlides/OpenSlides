@@ -20,8 +20,11 @@
 
     <!-- comments -->
     <div class="input-comments" ng-if="type === 'comments'">
-      <div ng-repeat="entry in $parent.value | excludeSpecialComments" class="input-group">
-        <input ng-model="entry.name"
+      <div ng-repeat="(id, field) in ($parent.value
+        | excludeSpecialCommentsFields
+        | excludeDeletedAndForbiddenCommentsFields)"
+        class="input-group">
+        <input ng-model="field.name"
                ng-model-options="{debounce: 1000}"
                ng-change="save(configOption, $parent.value)"
                class="form-control"
@@ -29,12 +32,12 @@
                type="text">
         <span class="input-group-btn">
           <button type=button" class="btn btn-default"
-            ng-click="entry.public = !entry.public; save(configOption, $parent.value);">
-            <i class="fa" ng-class="entry.public ? 'fa-unlock' : 'fa-lock'"></i>
-            {{ (entry.public ? 'Public' : 'Private') | translate }}
+            ng-click="field.public = !field.public; save(configOption, $parent.value);">
+            <i class="fa" ng-class="field.public ? 'fa-unlock' : 'fa-lock'"></i>
+            {{ (field.public ? 'Public' : 'Private') | translate }}
           </button>
           <button type="button" class="btn btn-default"
-            ng-click="removeComment(configOption, $parent, $index)">
+            ng-click="removeComment(configOption, $parent, id)">
             <i class="fa fa-minus"></i>
             <translate>Remove</translate>
           </button>

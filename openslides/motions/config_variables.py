@@ -174,7 +174,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name='motions_comments',
-        default_value=[],
+        default_value={},
         input_type='comments',
         label='Comment fields for motions',
         weight=353,

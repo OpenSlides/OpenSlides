@@ -910,11 +910,10 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.alert = {};
 
         // Motion comments
-        $scope.commentsFields = Config.get('motions_comments').value;
-        $scope.commentsFieldsNoSpecialComments = _.filter($scope.commentsFields, function (field) {
-            var specialComment = field.forState || field.forRecommendation;
-            return !specialComment;
-        });
+        $scope.noSpecialCommentsFields = MotionComment.getNoSpecialCommentsFields();
+        $scope.showCommentsFilter = function () {
+            return _.keys($scope.noSpecialCommentsFields).length > 0;
+        };
 
         // collect all states and all recommendations of all workflows
         $scope.states = [];
@@ -1289,13 +1288,10 @@ angular.module('OpenSlidesApp.motions.site', [
                 });
             }
         };
-        $scope.commentsFields = Config.get('motions_comments').value;
-        $scope.commentsFieldsNoSpecialComments = _.filter($scope.commentsFields, function (field) {
-            var specialComment = field.forState || field.forRecommendation;
-            return !specialComment;
-        });
-        $scope.commentFieldForState = MotionComment.getFieldNameForFlag('forState');
-        $scope.commentFieldForRecommendation = MotionComment.getFieldNameForFlag('forRecommendation');
+        $scope.commentsFields = MotionComment.getCommentsFields();
+        $scope.noSpecialCommentsFields = MotionComment.getNoSpecialCommentsFields();
+        $scope.commentFieldForStateId = MotionComment.getFieldIdForFlag('forState');
+        $scope.commentFieldForRecommendationId = MotionComment.getFieldIdForFlag('forRecommendation');
         $scope.version = motion.active_version;
         $scope.isCollapsed = true;
         $scope.lineNumberMode = Config.get('motions_default_line_numbering').value;
@@ -1402,14 +1398,14 @@ angular.module('OpenSlidesApp.motions.site', [
         // save additional state field
         $scope.saveAdditionalStateField = function (stateExtension) {
             if (stateExtension) {
-                motion["comment " + $scope.commentFieldForState] = stateExtension;
+                motion['comment_' + $scope.commentFieldForStateId] = stateExtension;
                 $scope.save(motion);
             }
         };
         // save additional recommendation field
         $scope.saveAdditionalRecommendationField = function (recommendationExtension) {
             if (recommendationExtension) {
-                motion["comment " + $scope.commentFieldForRecommendation] = recommendationExtension;
+                motion['comment_' + $scope.commentFieldForRecommendationId] = recommendationExtension;
                 $scope.save(motion);
             }
         };
@@ -1471,18 +1467,9 @@ angular.module('OpenSlidesApp.motions.site', [
                     $scope.showVersion({id: motion.active_version});
                 });
         };
-        // check if user is allowed to see at least one comment field
-        $scope.isAllowedToSeeCommentField = function () {
-            var isAllowed = false;
-            if ($scope.commentsFields.length > 0) {
-                isAllowed = operator.hasPerms('motions.can_see_and_manage_comments') || _.find(
-                        $scope.commentsFields,
-                        function(field) {
-                            return field.public && !field.forState && !field.forRecommendation;
-                        }
-                );
-            }
-            return Boolean(isAllowed);
+        // check if there is at least one comment field
+        $scope.commentFieldsAvailable = function () {
+            return _.keys($scope.noSpecialCommentsFields).length > 0;
         };
         // personal note
         // For pinning the personal note container we need to adjust the width with JS. We
