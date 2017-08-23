@@ -71,7 +71,7 @@ class SignalConnectMetaClass(type):
         return new_class
 
 
-@classmethod
+@classmethod  # type: ignore
 def get_all(cls, request=None):
     """
     Collects all objects of the class created by the SignalConnectMetaClass

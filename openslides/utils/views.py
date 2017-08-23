@@ -1,3 +1,5 @@
+from typing import List  # noqa
+
 from django.views import generic as django_views
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.response import Response
@@ -22,7 +24,7 @@ class APIView(_APIView):
     The Django Rest framework APIView with improvements for OpenSlides.
     """
 
-    http_method_names = []
+    http_method_names = []  # type: List[str]
     """
     The allowed actions have to be explicitly defined.
 

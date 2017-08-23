@@ -2,10 +2,10 @@ from random import choice
 
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group as DjangoGroup
+from django.contrib.auth.models import GroupManager as _GroupManager
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
-    GroupManager,
     Permission,
     PermissionsMixin,
 )
@@ -229,7 +229,7 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         raise RuntimeError('Do not use user.has_perm() but use openslides.utils.auth.has_perm')
 
 
-class GroupManager(GroupManager):
+class GroupManager(_GroupManager):
     """
     Customized manager that supports our get_full_queryset method.
     """

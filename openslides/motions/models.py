@@ -994,7 +994,9 @@ class MotionOption(RESTModelMixin, BaseOption):
         return self.poll.motion
 
 
-class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):
+# TODO: remove the type-ignoring in the next line, after this is solved:
+#       https://github.com/python/mypy/issues/3855
+class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):  # type: ignore
     """The Class to saves the vote result for a motion poll."""
 
     motion = models.ForeignKey(

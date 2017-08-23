@@ -399,7 +399,9 @@ class AssignmentOption(RESTModelMixin, BaseOption):
         return self.poll.assignment
 
 
-class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
+# TODO: remove the type-ignoring in the next line, after this is solved:
+#       https://github.com/python/mypy/issues/3855
+class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,  # type: ignore
                      PublishPollMixin, BasePoll):
     option_class = AssignmentOption
 

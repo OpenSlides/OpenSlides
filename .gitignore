@@ -31,3 +31,6 @@ tests/file/*
 
 # Plugin development
 openslides_*
+
+# Mypy cache for typechecking
+.mypy_cache
