@@ -37,6 +37,7 @@ Motions:
 - Bugfix: Several bugfixes regarding splitting list items in
   change recommendations [#3288]
 - Added inline Editing for motion reason [#3361].
+- Added multiselect filter for motion comments [#3372].
 
 Users:
 - User without permission to see users can now see agenda item speakers,

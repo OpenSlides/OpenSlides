@@ -168,6 +168,32 @@
               </li>
             </ul>
           </span>
+          <!-- Comment filter -->
+          <span os-perms="motions.can_see_and_manage_comments">
+            <span uib-dropdown ng-if="commentsFieldsNoSpecialComments.length > 0">
+              <span class="pointer" id="dropdownComment" uib-dropdown-toggle
+                ng-class="{'bold': filter.multiselectFilters.comment.length > 0, 'disabled': isSelectMode}"
+                ng-disabled="isSelectMode">
+                <translate>Comment</translate>
+                <span class="caret"></span>
+              </span>
+              <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownComment">
+                <li ng-repeat="commentsField in commentsFieldsNoSpecialComments">
+                  <a href ng-click="filter.operateMultiselectFilter('comment', commentsField.name, isSelectMode)">
+                    <i class="fa fa-check" ng-if="filter.multiselectFilters.comment.indexOf(commentsField.name) > -1"></i>
+                    {{ commentsField.name }} <translate>is set</translate>
+                  </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href ng-click="filter.operateMultiselectFilter('comment', -1, isSelectMode)">
+                    <i class="fa fa-check" ng-if="filter.multiselectFilters.comment.indexOf(-1) > -1"></i>
+                    <translate>No comments set</translate>
+                  </a>
+                </li>
+              </ul>
+            </span>
+          </span>
           <!-- recommendation filter -->
           <span uib-dropdown ng-if="config('motions_recommendations_by') != ''">
             <span class="pointer" id="dropdownRecommendation" uib-dropdown-toggle
@@ -353,6 +379,22 @@
             <i class="fa fa-times-circle"></i>
             <translate>done</translate>
           </span>
+          <!-- comment -->
+          <span ng-repeat="commentsField in commentsFields" class="pointer spacer-left-lg"
+            ng-if="filter.multiselectFilters.comment.indexOf(commentsField.name) > -1"
+            ng-click="filter.operateMultiselectFilter('comment', commentsField.name, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
+            <span class="nobr">
+              <i class="fa fa-times-circle"></i>
+              {{ commentsField.name | translate }}
+            </span>
+          </span>
+          <span ng-if="filter.multiselectFilters.comment.indexOf(-1) > -1" class="pointer spacer-left-lg"
+            ng-click="filter.operateMultiselectFilter('comment', -1, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
+            <i class="fa fa-times-circle"></i>
+            <translate>No comments set</translate>
+          </span>
           <!-- category -->
           <span ng-repeat="category in categories" class="pointer spacer-left-lg"
             ng-if="filter.multiselectFilters.category.indexOf(category.id) > -1"
@@ -434,6 +476,7 @@
       ng-repeat="motion in motionsFiltered = (motions
         | osFilter: filter.filterString : filter.getObjectQueryString
         | MultiselectFilter: stateFilter : getItemId.state
+        | MultiselectFilter: filter.multiselectFilters.comment : getItemId.comment
         | MultiselectFilter: filter.multiselectFilters.category : getItemId.category
         | MultiselectFilter: filter.multiselectFilters.motionBlock : getItemId.motionBlock
         | MultiselectFilter: filter.multiselectFilters.recommendation : getItemId.recommendation
