@@ -1,8 +1,8 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import ugettext as _
-
-from .exceptions import ConfigError, ConfigNotFound
 from .models import ConfigStore
+from .exceptions import ConfigError, ConfigNotFound
+
 
 INPUT_TYPE_MAPPING = {
     'string': str,
