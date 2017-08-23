@@ -26,13 +26,13 @@
     <!-- comment fields -->
     <div class="col-sm-12">
       <div ng-repeat="field in commentsFieldsNoSpecialComments">
-        <div ng-if="operator.hasPerms('motions.can_see_and_manage_comments') && !field.forState && !field.forRecommendation">
+        <div ng-if="operator.hasPerms('motions.can_see_and_manage_comments')">
           <h4>
             {{ field.name }}
             <span ng-if="!field.public" class="label label-warning" translate>internal</span>
           </h4>
           <div id="view-original-comment-inline-editor-{{ field.name }}" style="min-height: 14px;"
-            ng-bind-html="motion.comments[$index] | trusted" contenteditable="{{ commentsInlineEditing.editors[$index].isEditable }}"></div>
+            ng-bind-html="motion['comment ' + field.name] | trusted" contenteditable="{{ commentsInlineEditing.editors[$index].isEditable }}"></div>
         </div>
       </div>
       <!-- save toolbar -->
