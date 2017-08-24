@@ -3,6 +3,7 @@
 import os
 import subprocess
 import sys
+from typing import Dict  # noqa
 
 import django
 from django.core.management import call_command, execute_from_command_line
@@ -88,7 +89,7 @@ def get_parser():
         dest='subcommand',
         title='Available subcommands',
         description="Type '%s <subcommand> --help' for help on a "
-                    "specific subcommand." % parser.prog,
+                    "specific subcommand." % parser.prog,  # type: ignore
         help='You can choose only one subcommand at once.',
         metavar='')
 
@@ -155,8 +156,8 @@ def get_parser():
         ('runserver', 'Starts the Tornado webserver.'),
     )
     for django_subcommand, help_text in django_subcommands:
-        subparsers._choices_actions.append(
-            subparsers._ChoicesPseudoAction(
+        subparsers._choices_actions.append(  # type: ignore
+            subparsers._ChoicesPseudoAction(  # type: ignore
                 django_subcommand,
                 (),
                 help_text))
@@ -248,7 +249,7 @@ def createsettings(args):
     """
     settings_path = args.settings_path
     local_installation = is_local_installation()
-    context = {}
+    context = {}  # type: Dict[str, str]
 
     if local_installation:
         if settings_path is None:

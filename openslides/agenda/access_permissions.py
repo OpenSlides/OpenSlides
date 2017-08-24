@@ -1,4 +1,9 @@
-from ..utils.access_permissions import BaseAccessPermissions
+from typing import Iterable  # noqa
+
+from ..utils.access_permissions import (  # noqa
+    BaseAccessPermissions,
+    RestrictedData,
+)
 from ..utils.auth import has_perm
 from ..utils.collection import Collection
 
@@ -55,17 +60,17 @@ class ItemAccessPermissions(BaseAccessPermissions):
 
                 # In hidden case managers and non managers see only some fields
                 # so that list of speakers is provided regardless.
-                blocked_keys_hidden_case = full_data[0].keys() - (
+                blocked_keys_hidden_case = set(full_data[0].keys()) - set((
                     'id',
                     'title',
                     'speakers',
                     'speaker_list_closed',
-                    'content_object')
+                    'content_object'))
 
                 # In non hidden case managers see everything and non managers see
                 # everything but comments.
                 if has_perm(user, 'agenda.can_manage'):
-                    blocked_keys_non_hidden_case = []
+                    blocked_keys_non_hidden_case = []  # type: Iterable[str]
                 else:
                     blocked_keys_non_hidden_case = ('comment',)
 
@@ -81,7 +86,7 @@ class ItemAccessPermissions(BaseAccessPermissions):
         # Reduce result to a single item or None if it was not a collection at
         # the beginning of the method.
         if isinstance(container, Collection):
-            restricted_data = data
+            restricted_data = data  # type: RestrictedData
         elif data:
             restricted_data = data[0]
         else:
@@ -111,7 +116,7 @@ class ItemAccessPermissions(BaseAccessPermissions):
         # Reduce result to a single item or None if it was not a collection at
         # the beginning of the method.
         if isinstance(container, Collection):
-            projector_data = data
+            projector_data = data  # type: RestrictedData
         elif data:
             projector_data = data[0]
         else:

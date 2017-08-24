@@ -1,4 +1,5 @@
 from contextlib import ContextDecorator
+from typing import Any
 from unittest.mock import patch
 
 from django.core.cache import caches
@@ -9,7 +10,7 @@ from ..core.config import config
 
 
 class OpenSlidesDiscoverRunner(DiscoverRunner):
-    def run_tests(self, test_labels, extra_tests=None, **kwargs):
+    def run_tests(self, test_labels, extra_tests=None, **kwargs):  # type: ignore
         """
         Test Runner which does not create a database, if only unittest are run.
         """
@@ -35,7 +36,7 @@ class TestCase(_TestCase):
     Resets the config object after each test.
     """
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         config.key_to_id = {}
 
 
@@ -48,11 +49,11 @@ class use_cache(ContextDecorator):
     The code inside the contextmananger starts with an empty cache.
     """
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         cache = caches['locmem']
         cache.clear()
         self.patch = patch('openslides.utils.collection.cache', cache)
         self.patch.start()
 
-    def __exit__(self, *exc):
+    def __exit__(self, *exc: Any) -> None:
         self.patch.stop()

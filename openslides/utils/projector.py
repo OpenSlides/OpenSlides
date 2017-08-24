@@ -1,4 +1,4 @@
-from typing import Optional  # noqa
+from typing import Any, Dict, Iterable, List, Optional  # noqa
 
 from django.dispatch import Signal
 
@@ -18,7 +18,7 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
     signal = Signal()
     name = None  # type: Optional[str]
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: str) -> None:
         """
         Initializes the projector element instance. This is done when the
         signal is sent.
@@ -29,15 +29,16 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
         pass
 
     @classmethod
-    def get_dispatch_uid(cls):
+    def get_dispatch_uid(cls) -> Optional[str]:
         """
         Returns the classname as a unique string for each class. Returns None
         for the base class so it will not be connected to the signal.
         """
         if not cls.__name__ == 'ProjectorElement':
             return cls.__name__
+        return None
 
-    def check_and_update_data(self, projector_object, config_entry):
+    def check_and_update_data(self, projector_object: Any, config_entry: Any) -> Any:
         """
         Checks projector element data via self.check_data() and updates
         them via self.update_data(). The projector object and the config
@@ -50,7 +51,7 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
         self.check_data()
         return self.update_data() or {}
 
-    def check_data(self):
+    def check_data(self) -> None:
         """
         Method can be overridden to validate projector element data. This
         may raise ProjectorException in case of an error.
@@ -59,7 +60,7 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
         """
         pass
 
-    def update_data(self):
+    def update_data(self) -> Dict[Any, Any]:
         """
         Method can be overridden to update the projector element data
         output. This should return a dictonary. Use this for server
@@ -69,21 +70,23 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
         """
         pass
 
-    def get_requirements(self, config_entry):
+    def get_requirements(self, config_entry: Any) -> Iterable[Any]:
         """
         Returns an iterable of instances that are required for this projector
         element. The config_entry has to be given.
         """
         return ()
 
-    def get_requirements_as_collection_elements(self, config_entry):
+    def get_requirements_as_collection_elements(self, config_entry: Any) -> Iterable[CollectionElement]:
         """
         Returns an iterable of collection elements that are required for this
         projector element. The config_entry has to be given.
         """
         return (CollectionElement.from_instance(instance) for instance in self.get_requirements(config_entry))
 
-    def get_collection_elements_required_for_this(self, collection_element, config_entry):
+    def get_collection_elements_required_for_this(
+            self, collection_element: CollectionElement,
+            config_entry: Any) -> List[CollectionElement]:
         """
         Returns a list of CollectionElements that have to be sent to every
         projector that shows this projector element according to the given

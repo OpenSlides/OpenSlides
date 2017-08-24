@@ -51,7 +51,7 @@ class Command(BaseCommand):
         response = urlopen(self.get_geiss_url()).read()
         releases = json.loads(response.decode())
         for release in releases:
-            version = distutils.version.StrictVersion(release['tag_name'])
+            version = distutils.version.StrictVersion(release['tag_name'])  # type: ignore
             if version < self.FIRST_NOT_SUPPORTED_VERSION:
                 break
         else:

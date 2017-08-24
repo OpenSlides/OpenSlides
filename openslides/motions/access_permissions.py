@@ -1,7 +1,10 @@
 from copy import deepcopy
 
 from ..core.config import config
-from ..utils.access_permissions import BaseAccessPermissions
+from ..utils.access_permissions import (  # noqa
+    BaseAccessPermissions,
+    RestrictedData,
+)
 from ..utils.auth import has_perm
 from ..utils.collection import Collection, CollectionElement
 
@@ -78,7 +81,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
         # Reduce result to a single item or None if it was not a collection at
         # the beginning of the method.
         if isinstance(container, Collection):
-            restricted_data = data
+            restricted_data = data  # type: RestrictedData
         elif data:
             restricted_data = data[0]
         else:
@@ -114,7 +117,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
         # Reduce result to a single item or None if it was not a collection at
         # the beginning of the method.
         if isinstance(container, Collection):
-            projector_data = data
+            projector_data = data  # type: RestrictedData
         elif data:
             projector_data = data[0]
         else:

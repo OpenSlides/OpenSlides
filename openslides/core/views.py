@@ -3,6 +3,7 @@ import uuid
 from collections import OrderedDict
 from operator import attrgetter
 from textwrap import dedent
+from typing import Any, Dict, List  # noqa
 
 from django.apps import apps
 from django.conf import settings
@@ -11,6 +12,7 @@ from django.db.models import F
 from django.http import Http404, HttpResponse
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
+from mypy_extensions import TypedDict
 
 from .. import __version__ as version
 from ..utils import views as utils_views
@@ -105,7 +107,7 @@ class WebclientJavaScriptView(utils_views.View):
     """
     def get(self, *args, **kwargs):
         angular_modules = []
-        js_files = []
+        js_files = []  # type: List[str]
         realm = kwargs.get('realm')  # Result is 'site' or 'projector'
         for app_config in apps.get_app_configs():
             # Add the angular app if the module has one.
@@ -582,7 +584,7 @@ class ConfigMetadata(SimpleMetadata):
     """
     def determine_metadata(self, request, view):
         # Build tree.
-        config_groups = []
+        config_groups = []  # type: List[Any] # TODO: Replace Any by correct type
         for config_variable in sorted(config.config_variables.values(), key=attrgetter('weight')):
             if config_variable.is_hidden():
                 # Skip hidden config variables. Do not even check groups and subgroups.
@@ -787,7 +789,8 @@ class VersionView(utils_views.APIView):
     http_method_names = ['get']
 
     def get_context_data(self, **context):
-        result = dict(openslides_version=version, plugins=[])
+        Result = TypedDict('Result', {'openslides_version': str, 'plugins': List[Dict[str, str]]})  # noqa
+        result = dict(openslides_version=version, plugins=[])  # type: Result
         # Versions of plugins.
         for plugin in settings.INSTALLED_PLUGINS:
             result['plugins'].append({

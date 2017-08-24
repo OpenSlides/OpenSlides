@@ -1,3 +1,5 @@
+from typing import Set  # noqa
+
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 
@@ -62,7 +64,7 @@ def required_users(sender, request_user, **kwargs):
     if request_user can see the agenda. This function may return an empty
     set.
     """
-    speakers = set()
+    speakers = set()  # type: Set[int]
     if has_perm(request_user, 'agenda.can_see'):
         for item_collection_element in Collection(Item.get_collection_string()).element_generator():
             full_data = item_collection_element.get_full_data()

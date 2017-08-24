@@ -49,7 +49,7 @@ class SignalConnectMetaClass(type):
         default attributes and methods.
         """
         class_attributes['get_all'] = get_all
-        new_class = super(SignalConnectMetaClass, metaclass).__new__(
+        new_class = super().__new__(
             metaclass, class_name, class_parents, class_attributes)
         try:
             dispatch_uid = new_class.get_dispatch_uid()

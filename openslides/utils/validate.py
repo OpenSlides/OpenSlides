@@ -20,16 +20,13 @@ allowed_styles = [
 ]
 
 
-def validate_html(html):
+def validate_html(html: str) -> str:
     """
     This method takes a string and escapes all non-whitelisted html entries.
     Every field of a model that is loaded trusted in the DOM should be validated.
     """
-    if isinstance(html, str):
-        return bleach.clean(
-            html,
-            tags=allowed_tags,
-            attributes=allowed_attributes,
-            styles=allowed_styles)
-    else:
-        return html
+    return bleach.clean(
+        html,
+        tags=allowed_tags,
+        attributes=allowed_attributes,
+        styles=allowed_styles)

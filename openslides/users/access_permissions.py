@@ -1,7 +1,12 @@
+from typing import Any, Dict, List  # noqa
+
 from django.contrib.auth.models import AnonymousUser
 
 from ..core.signals import user_data_required
-from ..utils.access_permissions import BaseAccessPermissions
+from ..utils.access_permissions import (  # noqa
+    BaseAccessPermissions,
+    RestrictedData,
+)
 from ..utils.auth import anonymous_is_enabled, has_perm
 from ..utils.collection import Collection
 
@@ -94,7 +99,7 @@ class UserAccessPermissions(BaseAccessPermissions):
         # Reduce result to a single item or None if it was not a collection at
         # the beginning of the method.
         if isinstance(container, Collection):
-            restricted_data = data
+            restricted_data = data  # type: RestrictedData
         elif data:
             restricted_data = data[0]
         else:
@@ -127,7 +132,7 @@ class UserAccessPermissions(BaseAccessPermissions):
         # Reduce result to a single item or None if it was not a collection at
         # the beginning of the method.
         if isinstance(container, Collection):
-            projector_data = data
+            projector_data = data  # type: RestrictedData
         elif data:
             projector_data = data[0]
         else:
@@ -187,7 +192,7 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
 
         # Parse data.
         if user is None:
-            data = []
+            data = []  # type: List[Dict[str, Any]]
         else:
             for full in full_data:
                 if full['user_id'] == user.id:
@@ -199,7 +204,7 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
         # Reduce result to a single item or None if it was not a collection at
         # the beginning of the method.
         if isinstance(container, Collection):
-            restricted_data = data
+            restricted_data = data  # type: RestrictedData
         elif data:
             restricted_data = data[0]
         else:

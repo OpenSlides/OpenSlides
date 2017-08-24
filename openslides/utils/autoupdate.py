@@ -2,12 +2,14 @@ import json
 import time
 import warnings
 from collections import Iterable, defaultdict
+from typing import Any, Dict, Iterable, List, cast  # noqa
 
 from channels import Channel, Group
 from channels.asgi import get_channel_layer
 from channels.auth import channel_session_user, channel_session_user_from_http
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.db.models import Model
 
 from ..core.config import config
 from ..core.models import Projector
@@ -16,7 +18,7 @@ from .cache import startup_cache, websocket_user_cache
 from .collection import Collection, CollectionElement, CollectionElementList
 
 
-def send_or_wait(send_func, *args, **kwargs):
+def send_or_wait(send_func: Any, *args: Any, **kwargs: Any) -> None:
     """
     Wrapper for channels' send() method.
 
@@ -41,7 +43,7 @@ def send_or_wait(send_func, *args, **kwargs):
         )
 
 
-def format_for_autoupdate(collection_string, id, action, data=None):
+def format_for_autoupdate(collection_string: str, id: int, action: str, data: Dict[str, Any]=None) -> Dict[str, Any]:
     """
     Returns a dict that can be used for autoupdate.
     """
@@ -64,7 +66,7 @@ def format_for_autoupdate(collection_string, id, action, data=None):
 
 
 @channel_session_user_from_http
-def ws_add_site(message):
+def ws_add_site(message: Any) -> None:
     """
     Adds the websocket connection to a group specific to the connecting user.
 
@@ -92,6 +94,9 @@ def ws_add_site(message):
         access_permissions = collection.get_access_permissions()
         restricted_data = access_permissions.get_restricted_data(collection, user)
 
+        # At this point restricted_data has to be a list. So we have to tell it mypy
+        restricted_data = cast(List[Dict[str, Any]], restricted_data)
+
         for data in restricted_data:
             if data is None:
                 # We do not want to send 'deleted' objects on startup.
@@ -100,7 +105,7 @@ def ws_add_site(message):
             output.append(
                 format_for_autoupdate(
                     collection_string=collection.collection_string,
-                    id=data['id'],
+                    id=int(data['id']),
                     action='changed',
                     data=data))
 
@@ -110,7 +115,7 @@ def ws_add_site(message):
 
 
 @channel_session_user
-def ws_disconnect_site(message):
+def ws_disconnect_site(message: Any) -> None:
     """
     This function is called, when a client on the site disconnects.
     """
@@ -119,7 +124,7 @@ def ws_disconnect_site(message):
 
 
 @channel_session_user
-def ws_receive_site(message):
+def ws_receive_site(message: Any) -> None:
     """
     This function is called if a message from a client comes in. The message
     should be a list. Every item is broadcasted to the given users (or all
@@ -137,8 +142,8 @@ def ws_receive_site(message):
     else:
         if isinstance(incomming, list):
             # Parse all items
-            receivers_users = defaultdict(list)
-            receivers_reply_channels = defaultdict(list)
+            receivers_users = defaultdict(list)  # type: Dict[int, List[Any]]
+            receivers_reply_channels = defaultdict(list)  # type: Dict[str, List[Any]]
             items_for_all = []
             for item in incomming:
                 if item.get('collection') == 'notify':
@@ -184,12 +189,12 @@ def ws_receive_site(message):
 
 
 @channel_session_user_from_http
-def ws_add_projector(message, projector_id):
+def ws_add_projector(message: Any, projector_id: int) -> None:
     """
     Adds the websocket connection to a group specific to the projector with the given id.
     Also sends all data that are shown on the projector.
     """
-    user = message.user.id
+    user = user_to_collection_user(message.user.id)
 
     if not has_perm(user, 'core.can_see_projector'):
         send_or_wait(message.reply_channel.send, {'text': 'No permissions to see this projector.'})
@@ -230,14 +235,14 @@ def ws_add_projector(message, projector_id):
             send_or_wait(message.reply_channel.send, {'text': json.dumps(output)})
 
 
-def ws_disconnect_projector(message, projector_id):
+def ws_disconnect_projector(message: Any, projector_id: int) -> None:
     """
     This function is called, when a client on the projector disconnects.
     """
     Group('projector-{}'.format(projector_id)).discard(message.reply_channel)
 
 
-def send_data(message):
+def send_data(message: Any) -> None:
     """
     Informs all site users and projector clients about changed data.
     """
@@ -285,7 +290,7 @@ def send_data(message):
                     {'text': json.dumps(output)})
 
 
-def inform_changed_data(instances, information=None):
+def inform_changed_data(instances: Iterable[Model], information: Dict[str, Any]=None) -> None:
     """
     Informs the autoupdate system and the caching system about the creation or
     update of an element.
@@ -317,7 +322,8 @@ def inform_changed_data(instances, information=None):
     transaction.on_commit(lambda: send_autoupdate(collection_elements))
 
 
-def inform_deleted_data(*args, information=None):
+# TODO: Change the input argument to tuples
+def inform_deleted_data(*args: Any, information: Dict[str, Any]=None) -> None:
     """
     Informs the autoupdate system and the caching system about the deletion of
     elements.
@@ -351,7 +357,8 @@ def inform_deleted_data(*args, information=None):
     transaction.on_commit(lambda: send_autoupdate(collection_elements))
 
 
-def inform_data_collection_element_list(collection_elements, information=None):
+def inform_data_collection_element_list(collection_elements: CollectionElementList,
+                                        information: Dict[str, Any]=None) -> None:
     """
     Informs the autoupdate system about some collection elements. This is
     used just to send some data to all users.
@@ -363,7 +370,7 @@ def inform_data_collection_element_list(collection_elements, information=None):
     transaction.on_commit(lambda: send_autoupdate(collection_elements))
 
 
-def send_autoupdate(collection_elements):
+def send_autoupdate(collection_elements: CollectionElementList) -> None:
     """
     Helper function, that sends collection_elements through a channel to the
     autoupdate system.

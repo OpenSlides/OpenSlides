@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import Dict, List, Set  # noqa
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -79,7 +80,7 @@ class ItemManager(models.Manager):
         HIDDEN_ITEM and all of their children.
         """
         queryset = self.order_by('weight')
-        item_children = defaultdict(list)
+        item_children = defaultdict(list)  # type: Dict[int, List[Item]]
         root_items = []
         for item in queryset:
             if only_agenda_items and item.type == item.HIDDEN_ITEM:
@@ -135,7 +136,7 @@ class ItemManager(models.Manager):
                 yield (element['id'], parent, weight)
                 yield from walk_items(element.get('children', []), element['id'])
 
-        touched_items = set()
+        touched_items = set()  # type: Set[int]
         db_items = dict((item.pk, item) for item in Item.objects.all())
         for item_id, parent_id, weight in walk_items(tree):
             # Check that the item is only once in the tree to prevent invalid trees
@@ -293,7 +294,7 @@ class Item(RESTModelMixin, models.Model):
             skip_autoupdate=skip_autoupdate,
             name='agenda/list-of-speakers',
             id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
 
     @property
     def title(self):

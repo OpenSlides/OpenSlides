@@ -6,7 +6,7 @@ CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_1 = re.compile('(.)([A-Z][a-z]+
 CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_2 = re.compile('([a-z0-9])([A-Z])')
 
 
-def convert_camel_case_to_pseudo_snake_case(text):
+def convert_camel_case_to_pseudo_snake_case(text: str) -> str:
     """
     Converts camel case to pseudo snake case using hyphen instead of
     underscore.
@@ -19,12 +19,13 @@ def convert_camel_case_to_pseudo_snake_case(text):
     return CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_2.sub(r'\1-\2', s1).lower()
 
 
-def to_roman(number):
+def to_roman(number: int) -> str:
     """
     Converts an arabic number within range from 1 to 4999 to the
-    corresponding roman number. Returns None on error conditions.
+    corresponding roman number. Returns the input converted as string on error
+    conditions or higher numbers.
     """
     try:
         return roman.toRoman(number)
     except (roman.NotIntegerError, roman.OutOfRangeError):
-        return None
+        return str(number)

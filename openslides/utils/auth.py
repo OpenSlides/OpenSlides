@@ -16,6 +16,7 @@ def has_perm(user: Optional[CollectionElement], perm: str) -> bool:
     group_collection_string = 'users/group'  # This is the hard coded collection string for openslides.users.models.Group
 
     # Convert user to right type
+    # TODO: Remove this and make use, that user has always the right type
     user = user_to_collection_user(user)
     if user is None and not anonymous_is_enabled():
         has_perm = False

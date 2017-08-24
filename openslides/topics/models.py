@@ -52,7 +52,7 @@ class Topic(RESTModelMixin, models.Model):
             skip_autoupdate=skip_autoupdate,
             name='topics/topic',
             id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
 
     @property
     def agenda_item(self):

@@ -73,7 +73,7 @@ class Mediafile(RESTModelMixin, models.Model):
             skip_autoupdate=skip_autoupdate,
             name='mediafiles/mediafile',
             id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
 
     def get_filesize(self):
         """
