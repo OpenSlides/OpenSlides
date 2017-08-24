@@ -660,7 +660,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "h6":
                                     // Special case quick fix to handle the dirty HTML format*/
                                     // see following issue: https://github.com/OpenSlides/OpenSlides/issues/3025
-                                    if (lineNumberMode === "outside") {
+                                    if (lineNumberMode === "outside" &&
+                                            element.childNodes.length > 0 &&
+                                            element.childNodes[0].getAttribute) {
                                         var HeaderOutsideLineNumber = {
                                             width: 20,
                                             text: element.childNodes[0].getAttribute("data-line-number"),
