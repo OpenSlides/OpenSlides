@@ -70,6 +70,7 @@ Core:
 - Added default sorting for agenda, motions, elections, mediafiles and
   users [#3334, 3348].
 - Added config for disabling header and footer in the projector [#3357].
+- Updated CKEditor to 4.7 [#3375].
 - Reduced ckeditor toolbar for inline editing [#3368].
 
 Mediafiles:

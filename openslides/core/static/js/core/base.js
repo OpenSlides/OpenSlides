@@ -976,7 +976,7 @@ angular.module('OpenSlidesApp.core', [
 
                     // there seems to be an error in CKeditor that parses spaces in extraPlugins as part of the plugin name.
                     extraPlugins: extraPluginsString,
-                    removePlugins: 'wsc,scayt,a11yhelp,filebrowser,sourcearea,liststyle,tabletools,contextmenu,image',
+                    removePlugins: 'wsc,scayt,a11yhelp,filebrowser,sourcearea,liststyle,tabletools,tableselection,contextmenu,image',
                     removeButtons: 'Scayt,Anchor,Styles,HorizontalRule',
                 };
                 if (_.indexOf(arguments, 'inline') > -1) {
