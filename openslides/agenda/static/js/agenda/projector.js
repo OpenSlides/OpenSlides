@@ -77,6 +77,7 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
         // class.
 
         // Bind agenda tree to the scope
+        var items;
         $scope.$watch(function () {
             return Agenda.lastModified();
         }, function () {
@@ -101,12 +102,19 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
                     $scope.items.push(item);
                 }
             } else if ($scope.element.tree) {
-                $scope.items = AgendaTree.getFlatTree(Agenda.getAll());
+                items = _.filter(Agenda.getAll(), function (item) {
+                    return item.type === 1;
+                });
+                $scope.tree = AgendaTree.getTree(items);
             } else {
-                $scope.items = Agenda.filter({
+                items = Agenda.filter({
                     where: { parent_id: null },
                     orderBy: 'weight'
                 });
+                items = _.filter(items, function (item) {
+                    return item.type === 1;
+                });
+                $scope.tree = AgendaTree.getTree(items);
             }
         });
     }

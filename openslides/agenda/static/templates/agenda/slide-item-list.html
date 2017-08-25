@@ -3,11 +3,30 @@
   <h1 ng-if="element.id">{{ rootItem.getTitle() }}</h1>
 
   <div class="agendalist">
-    <!-- item type: AGENDA_ITEM = 1, HIDDEN_ITEM = 2 -->
-    <p ng-repeat="item in items | filter: {type: 1}"
-        ng-class="{mainitem: item.parentCount == 0, subitem: item.parentCount != 0, done: item.closed}">
-      <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-      {{ item.getListViewTitle() }}
-    </p>
+    <table class="agendalist-table">
+      <tr ng-repeat="node in tree" ng-include="'projector_agenda_renderer.html'"></tr>
+    </table>
   </div>
 </div>
+
+<!-- Nested node template -->
+<script type="text/ng-template" id="projector_agenda_renderer.html">
+  <td class="number">
+    <p ng-class="{mainitem: node.item.parent_id === null, subitem: node.item.parent_id !== null, done: node.item.closed}">
+      {{ node.item.item_number }}
+    </p>
+  </td>
+  <td>
+    <p ng-class="{mainitem: node.item.parent_id === null}" ng-if="node.item.item_number">
+      &middot;
+    </p>
+  </td>
+  <td>
+    <p ng-class="{mainitem: node.item.parent_id === null, subitem: node.item.parent_id !== null, done: node.item.closed}">
+      {{ node.item.title }}
+    </p>
+    <table ng-if="node.children.length" class="agendalist-table">
+      <tr ng-repeat="node in node.children" ng-include="'projector_agenda_renderer.html'"></tr>
+    </table>
+  </td>
+</script>

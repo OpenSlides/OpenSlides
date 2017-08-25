@@ -142,7 +142,7 @@
       </span>
   </div>
 
-  <div class="os-table container-fluid">
+  <div id="agenda-table" class="os-table container-fluid">
     <div class="row header-row">
       <div class="col-xs-1 centered" ng-show="isSelectMode">
         <i class="fa text-danger pointer" ng-class="selectedAll ? 'fa-check-square-o' : 'fa-square-o'"
@@ -265,11 +265,11 @@
 
       <!-- main content column -->
       <div class="col-xs-6 content" style="padding-left: calc({{ item.parentCount }}*15px)">
-        <div class="spacer-right">
+        <div class="icon-column">
           <i class="fa fa-ban" ng-style="{'visibility': item.is_hidden ? 'visible' : 'hidden'}"
             title="{{ 'Internal item' | translate }}"></i>
         </div>
-        <div>
+        <div class="title-column">
           <!-- ID and title -->
           <div>
             <a class="title" ui-sref="{{ item.getContentObjectDetailState() }}" ng-show="isAllowedToSeeOpenLink(item)">
