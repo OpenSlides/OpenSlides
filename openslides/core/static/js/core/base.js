@@ -889,13 +889,19 @@ angular.module('OpenSlidesApp.core', [
                 CKEDITOR.plugins.add(name, plugin);
                 extraPlugins.push(name);
             },
-            getOptions: function (images) {
+            /* Provide special keyword in the arguments for a special behaviour:
+             * Example: getOptions('inline', 'YOffset')
+             * Available keywords:
+             *  - inline: smaller toolbar
+             *  - YOffset: move the editor toolbar 40px up
+             */
+            getOptions: function () {
                 var extraPluginsString = 'colorbutton,find,sourcedialog,justify,showblocks';
                 var registeredPluginsString = extraPlugins.join(',');
                 if (registeredPluginsString) {
                     extraPluginsString += ',' + registeredPluginsString;
                 }
-                return {
+                var options = {
                     on: {
                         instanceReady: function() {
                             // This adds a listener to ckeditor to remove unwanted blank lines on import.
@@ -946,6 +952,7 @@ angular.module('OpenSlidesApp.core', [
                         }
                     },
                     customConfig: '',
+                    floatSpaceDockedOffsetY: _.indexOf(arguments, 'YOffset') > -1 ? 35 : 0,
                     disableNativeSpellChecker: false,
                     language_list: [
                         'fr:français',
@@ -971,7 +978,19 @@ angular.module('OpenSlidesApp.core', [
                     extraPlugins: extraPluginsString,
                     removePlugins: 'wsc,scayt,a11yhelp,filebrowser,sourcearea,liststyle,tabletools,contextmenu,image',
                     removeButtons: 'Scayt,Anchor,Styles,HorizontalRule',
-                    toolbarGroups: [
+                };
+                if (_.indexOf(arguments, 'inline') > -1) {
+                    options.toolbarGroups = [
+                        { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                        { name: 'colors', groups: [ 'colors' ] },
+                        { name: 'paragraph', groups: [ 'list'] },
+                        { name: 'links', groups: [ 'links' ] },
+                        { name: 'clipboard', groups: [ 'undo' ] },
+                        { name: 'document', groups: [ 'mode' ] },
+                    ];
+                    options.removeButtons = 'Underline,Subscript,Superscript,PasteFromWord,PasteText,Scayt,Link,Unlink,Anchor,HorizontalRule,Table,Image,Maximize,Source,Format,About,Paste,Cut,Copy';
+                } else {
+                    options.toolbarGroups = [
                         { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
                         { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
                         { name: 'links', groups: [ 'links' ] },
@@ -985,8 +1004,9 @@ angular.module('OpenSlidesApp.core', [
                         { name: 'paragraph', groups: [ 'list', 'indent' ] },
                         { name: 'align'},
                         { name: 'paragraph', groups: [ 'blocks' ] }
-                    ]
-                };
+                    ];
+                }
+                return options;
             }
         };
     }
