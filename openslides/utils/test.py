@@ -5,6 +5,8 @@ from django.core.cache import caches
 from django.test import TestCase as _TestCase
 from django.test.runner import DiscoverRunner
 
+from ..core.config import config
+
 
 class OpenSlidesDiscoverRunner(DiscoverRunner):
     def run_tests(self, test_labels, extra_tests=None, **kwargs):
@@ -30,11 +32,11 @@ class OpenSlidesDiscoverRunner(DiscoverRunner):
 
 class TestCase(_TestCase):
     """
-    Does nothing at the moment.
-
-    Could be used in the future. Use this this for the integration test suit.
+    Resets the config object after each test.
     """
-    pass
+
+    def tearDown(self):
+        config.key_to_id = {}
 
 
 class use_cache(ContextDecorator):

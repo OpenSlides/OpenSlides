@@ -41,8 +41,8 @@ def anonymous_is_enabled() -> bool:
     """
     Returns True if the anonymous user is enabled in the settings.
     """
-    return (CollectionElement.from_values('core/config', 'general_system_enable_anonymous')
-            .get_full_data()['value'])
+    from ..core.config import config
+    return config['general_system_enable_anonymous']
 
 
 AnyUser = Union[Model, CollectionElement, int, AnonymousUser, None]

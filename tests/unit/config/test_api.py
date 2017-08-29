@@ -1,7 +1,8 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from openslides.core.config import ConfigVariable
+from openslides.core.config import ConfigVariable, config
+from openslides.core.exceptions import ConfigNotFound
 
 
 class TestConfigVariable(TestCase):
@@ -22,3 +23,12 @@ class TestConfigVariable(TestCase):
             'test_default_value',
             "The value of config_variable.data['default_value'] should be the same "
             "as set as second argument of ConfigVariable()")
+
+
+class TestConfigHandler(TestCase):
+    def test_get_not_found(self):
+        config.key_to_id = 'has to be set or there is a db query'
+        self.assertRaises(
+            ConfigNotFound,
+            config.__getitem__,
+            'key_leehah4Sho4ee7aCohbn')

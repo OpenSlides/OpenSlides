@@ -19,6 +19,7 @@ class TestCase(ChannelTestCase):
 
     def tearDown(self):
         self.patch.stop()
+        super().tearDown()
 
 
 class TestCollectionElementCache(TestCase):
@@ -131,17 +132,3 @@ class TestCollectionCache(TestCase):
         with self.assertNumQueries(0):
             instance_list = list(topic_collection.as_autoupdate_for_projector())
         self.assertEqual(len(instance_list), 2)
-
-    def test_config_elements_without_cache(self):
-        topic_collection = collection.Collection('core/config')
-        caches['locmem'].clear()
-
-        with self.assertNumQueries(1):
-            list(topic_collection.as_autoupdate_for_projector())
-
-    def test_config_elements_with_cache(self):
-        topic_collection = collection.Collection('core/config')
-        list(topic_collection.as_autoupdate_for_projector())
-
-        with self.assertNumQueries(0):
-            list(topic_collection.as_autoupdate_for_projector())

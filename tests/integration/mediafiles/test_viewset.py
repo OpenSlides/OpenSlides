@@ -19,6 +19,7 @@ class TestDBQueries(TestCase):
     def setUp(self):
         self.client = APIClient()
         config['general_system_enable_anonymous'] = True
+        config.save_default_values()
         for index in range(10):
             Mediafile.objects.create(
                 title='some_file{}'.format(index),

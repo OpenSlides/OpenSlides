@@ -23,6 +23,7 @@ class TestMotionDBQueries(TestCase):
     def setUp(self):
         self.client = APIClient()
         config['general_system_enable_anonymous'] = True
+        config.save_default_values()
         for index in range(10):
             Motion.objects.create(title='motion{}'.format(index))
             get_user_model().objects.create_user(
@@ -76,6 +77,7 @@ class TestCategoryDBQueries(TestCase):
 
     def setUp(self):
         self.client = APIClient()
+        config.save_default_values()
         config['general_system_enable_anonymous'] = True
         for index in range(10):
             Category.objects.create(name='category{}'.format(index))
@@ -109,6 +111,7 @@ class TestWorkflowDBQueries(TestCase):
 
     def setUp(self):
         self.client = APIClient()
+        config.save_default_values()
         config['general_system_enable_anonymous'] = True
         # There do not need to be more workflows
 

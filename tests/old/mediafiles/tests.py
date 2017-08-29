@@ -37,6 +37,7 @@ class MediafileTest(TestCase):
 
     def tearDown(self):
         self.object.mediafile.delete(save=False)
+        super().tearDown()
 
     def test_str(self):
         self.assertEqual(str(self.object), 'Title File 1')

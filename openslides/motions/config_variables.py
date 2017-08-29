@@ -53,8 +53,7 @@ def get_config_variables():
         label='Motion preamble',
         weight=320,
         group='Motions',
-        subgroup='General',
-        translatable=True)
+        subgroup='General')
 
     yield ConfigVariable(
         name='motions_default_line_numbering',
@@ -105,8 +104,7 @@ def get_config_variables():
         help_text='Will be displayed as label before selected recommendation. Use an empty value to disable the recommendation system.',
         weight=332,
         group='Motions',
-        subgroup='General',
-        translatable=True)
+        subgroup='General')
 
     yield ConfigVariable(
         name='motions_recommendation_text_mode',
@@ -243,8 +241,7 @@ def get_config_variables():
         label='Title for PDF and DOCX documents (all motions)',
         weight=370,
         group='Motions',
-        subgroup='Export',
-        translatable=True)
+        subgroup='Export')
 
     yield ConfigVariable(
         name='motions_export_preamble',

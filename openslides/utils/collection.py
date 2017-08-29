@@ -43,16 +43,11 @@ class CollectionElement:
         if instance is not None:
             # Collection element is created via instance
             self.collection_string = instance.get_collection_string()
-            from openslides.core.config import config
-            if self.collection_string == config.get_collection_string():
-                # For config objects we do not work with the pk but with the key.
-                self.id = instance.key
-            else:
-                self.id = instance.pk
+            self.id = instance.pk
         elif collection_string is not None and id is not None:
             # Collection element is created via values
             self.collection_string = collection_string
-            self.id = id
+            self.id = int(id)
         else:
             raise RuntimeError(
                 'Invalid state. Use CollectionElement.from_instance() or '
@@ -162,18 +157,12 @@ class CollectionElement:
             raise RuntimeError("The collection element is deleted.")
 
         if self.instance is None:
-            # The config instance has to be get from the config element, because
-            # some config values are not in the db.
-            from openslides.core.config import config
-            if self.collection_string == config.get_collection_string():
-                self.instance = {'key': self.id, 'value': config[self.id]}
-            else:
-                model = self.get_model()
-                try:
-                    query = model.objects.get_full_queryset()
-                except AttributeError:
-                    query = model.objects
-                self.instance = query.get(pk=self.id)
+            model = self.get_model()
+            try:
+                query = model.objects.get_full_queryset()
+            except AttributeError:
+                query = model.objects
+            self.instance = query.get(pk=self.id)
         return self.instance
 
     def get_access_permissions(self):
@@ -346,28 +335,13 @@ class Collection:
 
         # Generate collection element that where not in the cache.
         if missing_ids:
-            from openslides.core.config import config
-            if self.collection_string == config.get_collection_string():
-                # If config elements are not in the cache, they have to be read from
-                # the config object.
-                for key, value in config.items():
-                    if key in missing_ids:
-                        collection_element = CollectionElement.from_values(
-                            config.get_collection_string(),
-                            key,
-                            full_data={'key': key, 'value': value})
-                        # We can not use .from_instance therefore the config value
-                        # is not saved to the cache. We have to do it manualy.
-                        collection_element.save_to_cache()
-                        yield collection_element
-            else:
-                model = self.get_model()
-                try:
-                    query = model.objects.get_full_queryset()
-                except AttributeError:
-                    query = model.objects
-                for instance in query.filter(pk__in=missing_ids):
-                    yield CollectionElement.from_instance(instance)
+            model = self.get_model()
+            try:
+                query = model.objects.get_full_queryset()
+            except AttributeError:
+                query = model.objects
+            for instance in query.filter(pk__in=missing_ids):
+                yield CollectionElement.from_instance(instance)
 
     def get_full_data(self):
         """
@@ -428,10 +402,7 @@ class Collection:
         """
         Returns a set of all ids of instances in this collection.
         """
-        from openslides.core.config import config
-        if self.collection_string == config.get_collection_string():
-            ids = config.config_variables.keys()
-        elif use_redis_cache():
+        if use_redis_cache():
             ids = self.get_all_ids_redis()
         else:
             ids = self.get_all_ids_other()
@@ -573,9 +544,4 @@ def get_collection_id_from_cache_key(cache_key):
     The returned id can be an integer or an string.
     """
     collection_string, id = cache_key.rsplit(':', 1)
-    try:
-        id = int(id)
-    except ValueError:
-        # The id is no integer. This can happen on config elements
-        pass
-    return (collection_string, id)
+    return (collection_string, int(id))

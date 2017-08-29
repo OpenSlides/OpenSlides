@@ -17,16 +17,6 @@ class TestCacheKeys(TestCase):
             collection.get_collection_id_from_cache_key(
                 collection.get_single_element_cache_key(*element)))
 
-    def test_get_collection_id_from_cache_key_for_strings(self):
-        """
-        Test get_collection_id_from_cache_key for strings
-        """
-        element = ('some/testkey', 'my_config_value')
-        self.assertEqual(
-            element,
-            collection.get_collection_id_from_cache_key(
-                collection.get_single_element_cache_key(*element)))
-
     def test_get_single_element_cache_key_prefix(self):
         """
         Tests that the cache prefix is realy a prefix.
@@ -161,19 +151,6 @@ class TestCollectionElement(TestCase):
         with self.assertRaises(RuntimeError):
             collection_element.get_instance()
 
-    @patch('openslides.core.config.config')
-    def test_get_instance_config_str(self, mock_config):
-        mock_config.get_collection_string.return_value = 'core/config'
-        mock_config.__getitem__.return_value = 'config_value'
-        collection_element = collection.CollectionElement.from_values('core/config', 'my_config_value')
-
-        instance = collection_element.get_instance()
-
-        self.assertEqual(
-            instance,
-            {'key': 'my_config_value',
-             'value': 'config_value'})
-
     def test_get_instance(self):
         with patch.object(collection.CollectionElement, 'get_full_data'):
             collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
@@ -252,23 +229,6 @@ class TestCollectionElement(TestCase):
         self.assertNotEqual(
             collection.CollectionElement.from_values('testmodule/model', 1),
             collection.CollectionElement.from_values('testmodule/other_model', 1))
-
-    @patch.object(collection.CollectionElement, 'get_full_data')
-    def test_config_cache_key(self, mock_get_full_data):
-        """
-        Test that collection elements for config values do always use the
-        config key as cache key.
-        """
-        fake_config_instance = MagicMock()
-        fake_config_instance.get_collection_string.return_value = 'core/config'
-        fake_config_instance.key = 'test_config_key'
-
-        self.assertEqual(
-            collection.CollectionElement.from_values('core/config', 'test_config_key').get_cache_key(),
-            'core/config:test_config_key')
-        self.assertEqual(
-            collection.CollectionElement.from_instance(fake_config_instance).get_cache_key(),
-            'core/config:test_config_key')
 
 
 class TestcollectionElementList(TestCase):

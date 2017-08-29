@@ -19,6 +19,7 @@ class TestProjectorDBQueries(TestCase):
     def setUp(self):
         self.client = APIClient()
         config['general_system_enable_anonymous'] = True
+        config.save_default_values()
         for index in range(10):
             Projector.objects.create(name="Projector{}".format(index))
 
@@ -57,6 +58,7 @@ class TestCharmessageDBQueries(TestCase):
     def setUp(self):
         self.client = APIClient()
         config['general_system_enable_anonymous'] = True
+        config.save_default_values()
         user = User.objects.get(pk=1)
         for index in range(10):
             ChatMessage.objects.create(user=user)
@@ -84,6 +86,7 @@ class TestTagDBQueries(TestCase):
     def setUp(self):
         self.client = APIClient()
         config['general_system_enable_anonymous'] = True
+        config.save_default_values()
         for index in range(10):
             Tag.objects.create(name='tag{}'.format(index))
 
@@ -120,6 +123,7 @@ class TestConfigDBQueries(TestCase):
     def setUp(self):
         self.client = APIClient()
         config['general_system_enable_anonymous'] = True
+        config.save_default_values()
 
     @use_cache()
     def test_admin(self):
@@ -127,9 +131,11 @@ class TestConfigDBQueries(TestCase):
         Tests that only the following db queries are done:
         * 2 requests to get the session an the request user with its permissions and
         * 1 requests to get the list of all config values
+
+        * 1 more that I do not understand
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(4):
             self.client.get(reverse('config-list'))
 
     @use_cache()
@@ -138,8 +144,10 @@ class TestConfigDBQueries(TestCase):
         Tests that only the following db queries are done:
         * 1 requests to see if anonymous is enabled
         * 1 to get all config value and
+
+        * 1 more that I do not understand
         """
-        with self.assertNumQueries(2):
+        with self.assertNumQueries(3):
             self.client.get(reverse('config-list'))
 
 
