@@ -898,12 +898,23 @@ angular.module('OpenSlidesApp.motions.site', [
             // always order by identifier (after custom ordering)
             $scope.motions = _.orderBy(Motion.getAll(), ['identifier']);
             _.forEach($scope.motions, function (motion) {
+                MotionComment.populateFields(motion);
                 motion.personalNote = PersonalNoteManager.getNote(motion);
                 // For filtering, we cannot filter for .personalNote.star
                 motion.star = motion.personalNote ? motion.personalNote.star : false;
+                if (motion.star === undefined) {
+                    motion.star = false;
+                }
             });
         });
         $scope.alert = {};
+
+        // Motion comments
+        $scope.commentsFields = Config.get('motions_comments').value;
+        $scope.commentsFieldsNoSpecialComments = _.filter($scope.commentsFields, function (field) {
+            var specialComment = field.forState || field.forRecommendation;
+            return !specialComment;
+        });
 
         // collect all states and all recommendations of all workflows
         $scope.states = [];
@@ -952,6 +963,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 motionBlock: [],
                 tag: [],
                 recommendation: [],
+                comment: [],
             };
             $scope.filter.booleanFilters = {
                 isFavorite: {
@@ -971,20 +983,33 @@ angular.module('OpenSlidesApp.motions.site', [
             function (motion) {return motion.category ? motion.category.name : '';},
             function (motion) {return motion.motionBlock ? motion.motionBlock.name : '';},
             function (motion) {return motion.recommendation ? motion.getRecommendationName() : '';},
+            function (motion) {return motion.comments.join(' ');},
         ];
         $scope.filter.propertyDict = {
-            'submitters' : function (submitter) {
+            'submitters': function (submitter) {
                 return submitter.get_short_name();
             },
-            'supporters' : function (supporter) {
+            'supporters': function (supporter) {
                 return supporter.get_short_name();
             },
-            'tags' : function (tag) {
+            'tags': function (tag) {
                 return tag.name;
             },
         };
         $scope.getItemId = {
             state: function (motion) {return motion.state_id;},
+            comment: function (motion) {
+                // Map all populated fields to their names
+                return _.map(
+                    // Returns all fields that are populated
+                    _.filter($scope.commentsFieldsNoSpecialComments, function (field) {
+                        return motion['comment ' + field.name];
+                    }),
+                    function (field) {
+                        return field.name;
+                    }
+                );
+            },
             category: function (motion) {return motion.category_id;},
             motionBlock: function (motion) {return motion.motion_block_id;},
             tag: function (motion) {return motion.tags_id;},
@@ -1006,7 +1031,7 @@ angular.module('OpenSlidesApp.motions.site', [
              display_name: gettext('Identifier')},
             {name: 'getTitle()',
              display_name: gettext('Title')},
-            {name: 'submitters',
+            {name: 'submitters[0].get_short_name()',
              display_name: gettext('Submitters')},
             {name: 'category.name',
              display_name: gettext('Category')},
@@ -1095,9 +1120,6 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // open new/edit dialog
         $scope.openDialog = function (motion) {
-            if (motion) {
-                MotionComment.populateFields(motion);
-            }
             ngDialog.open(MotionForm.getDialog(motion));
         };
         // Export dialog
