@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 
 from ..utils.collection import Collection
+from ..utils.projector import register_projector_elements
 
 
 class MediafilesAppConfig(AppConfig):
@@ -10,15 +11,15 @@ class MediafilesAppConfig(AppConfig):
     angular_projector_module = True
 
     def ready(self):
-        # Load projector elements.
-        # Do this by just importing all from these files.
-        from . import projector  # noqa
-
         # Import all required stuff.
         from openslides.core.signals import permission_change, user_data_required
         from openslides.utils.rest_api import router
+        from .projector import get_projector_elements
         from .signals import get_permission_change_data, required_users
         from .views import MediafileViewSet
+
+        # Define projector elements.
+        register_projector_elements(get_projector_elements())
 
         # Connect signals.
         permission_change.connect(

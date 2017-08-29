@@ -1,3 +1,5 @@
+from typing import Generator, Type
+
 from ..core.exceptions import ProjectorException
 from ..utils.projector import ProjectorElement
 from .models import Motion, MotionBlock, MotionChangeRecommendation, Workflow
@@ -90,3 +92,8 @@ class MotionBlockSlide(ProjectorElement):
         else:
             data = {'agenda_item_id': motion_block.agenda_item_id}
         return data
+
+
+def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
+    yield MotionSlide
+    yield MotionBlockSlide

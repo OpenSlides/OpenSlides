@@ -1,3 +1,5 @@
+from typing import Generator, Type
+
 from ..core.exceptions import ProjectorException
 from ..utils.projector import ProjectorElement
 from .models import Assignment, AssignmentPoll
@@ -64,3 +66,7 @@ class AssignmentSlide(ProjectorElement):
         else:
             data = {'agenda_item_id': assignment.agenda_item_id}
         return data
+
+
+def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
+    yield AssignmentSlide

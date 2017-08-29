@@ -1,3 +1,5 @@
+from typing import Generator, Type
+
 from ..core.exceptions import ProjectorException
 from ..utils.projector import ProjectorElement
 from .models import User
@@ -21,3 +23,7 @@ class UserSlide(ProjectorElement):
             pass
         else:
             yield user
+
+
+def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
+    yield UserSlide

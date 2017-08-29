@@ -1,3 +1,5 @@
+from typing import Generator, Type
+
 from ..core.exceptions import ProjectorException
 from ..utils.projector import ProjectorElement
 from .models import Topic
@@ -33,3 +35,7 @@ class TopicSlide(ProjectorElement):
         else:
             data = {'agenda_item_id': topic.agenda_item_id}
         return data
+
+
+def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
+    yield TopicSlide
