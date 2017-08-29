@@ -168,7 +168,6 @@ gulp.task('ckeditor-plugins', function () {
                 path.join('bower_components', 'ckeditor', 'plugins', 'specialchar', '**', '*'),
                 path.join('bower_components', 'ckeditor', 'plugins', 'sourcedialog', '**', '*'),
                 path.join('bower_components', 'ckeditor', 'plugins', 'table', '**', '*'),
-                path.join('bower_components', 'ckeditor', 'plugins', 'tabeltools', '**', '*'),
             ],
             {
                 base: path.join('bower_components', 'ckeditor', 'plugins')

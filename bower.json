@@ -23,7 +23,7 @@
     "angularjs-slider": "~6.2.2",
     "bootstrap-css-only": "~3.3.6",
     "bootstrap-ui-datetime-picker": "~2.4.0",
-    "ckeditor": "4.6.1",
+    "ckeditor": "~4.7.2",
     "docxtemplater": "~2.1.5",
     "font-awesome-bower": "~4.5.0",
     "jquery.cookie": "~1.4.1",
