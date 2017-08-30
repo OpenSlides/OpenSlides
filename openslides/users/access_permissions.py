@@ -185,21 +185,23 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
         # Expand full_data to a list if it is not one.
         full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
 
-        # Parse data.
-        for full in full_data:
-            if full['user_id'] == user.id:
-                data = [full]
-                break
-        else:
-            data = []
+        restricted_data = None
+        if user is not None:
+            # Parse data.
+            for full in full_data:
+                if full['user_id'] == user.id:
+                    data = [full]
+                    break
+            else:
+                data = []
 
-        # Reduce result to a single item or None if it was not a collection at
-        # the beginning of the method.
-        if isinstance(container, Collection):
-            restricted_data = data
-        elif data:
-            restricted_data = data[0]
-        else:
-            restricted_data = None
+            # Reduce result to a single item or None if it was not a collection at
+            # the beginning of the method.
+            if isinstance(container, Collection):
+                restricted_data = data
+            elif data:
+                restricted_data = data[0]
+            else:
+                restricted_data = None
 
         return restricted_data
