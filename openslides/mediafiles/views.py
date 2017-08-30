@@ -1,3 +1,6 @@
+from django.http import HttpResponseForbidden, HttpResponseNotFound
+from django.views.static import serve
+
 from ..utils.auth import has_perm
 from ..utils.rest_api import ModelViewSet, ValidationError
 from .access_permissions import MediafileAccessPermissions
@@ -66,3 +69,16 @@ class MediafileViewSet(ModelViewSet):
         mediafile = self.get_object()
         mediafile.mediafile.storage.delete(mediafile.mediafile.name)
         return super().destroy(request, *args, **kwargs)
+
+
+def protected_serve(request, path, document_root=None, show_indexes=False):
+    try:
+        mediafile = Mediafile.objects.get(mediafile=path)
+    except Mediafile.DoesNotExist:
+        return HttpResponseNotFound(content="Not found.")
+
+    if (not has_perm(request.user, 'mediafiles.can_see') or
+            (mediafile.hidden and not has_perm(request.user, 'mediafiles.can_see_hidden'))):
+        return HttpResponseForbidden(content="Forbidden.")
+    else:
+        return serve(request, path, document_root, show_indexes)

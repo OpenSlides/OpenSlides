@@ -75,8 +75,6 @@ angular.module('OpenSlidesApp.mediafiles.forms', [
                         type: 'checkbox',
                         templateOptions: {
                             label: gettextCatalog.getString('Hidden'),
-                            description: gettextCatalog.getString('This does not protect the ' +
-                                'file but hides it for non authorized users.'),
                         },
                         hide: !operator.hasPerms('mediafiles.can_see_hidden'),
                     },

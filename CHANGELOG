@@ -78,6 +78,7 @@ Mediafiles:
 - Fixed reloading of PDF on page change [#3274].
 - Custom CKEditor plugin for browsing mediafiles [#3337].
 - Project images always in fullscreen [#3355].
+- Protect mediafiles for forbidden access [#3384].
 
 General:
 - Several bugfixes and minor improvements.
