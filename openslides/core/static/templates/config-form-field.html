@@ -95,6 +95,41 @@
             ng-options="option.value as option.display_name | translate for option in choices">
     </select>
 
+    <!-- custom trnaslations -->
+    <div class="config-translations" ng-if="type === 'translations'">
+      <div ng-repeat="entry in $parent.value" class="input-group">
+        <div class="inputs">
+          <input ng-model="entry.original"
+                 ng-model-options="{debounce: 1000}"
+                 ng-change="save(configOption, $parent.value)"
+                 class="form-control"
+                 id="{{ key }}_original"
+                 type="text">
+          <span class="arrow form-control"><i class="fa fa-arrow-right"></i></span>
+          <input ng-model="entry.translation"
+                 ng-model-options="{debounce: 1000}"
+                 ng-change="save(configOption, $parent.value)"
+                 class="form-control"
+                 id="{{ key }}_translated"
+                 type="text">
+        </div>
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default"
+            ng-click="removeTranslation(configOption, $parent, $index)">
+            <i class="fa fa-minus"></i>
+            <translate>Remove</translate>
+          </button>
+        </span>
+      </div>
+      <div>
+        <button type="button" ng-click="addTranslation(configOption, $parent)"
+          class="btn btn-default btn-sm">
+          <i class="fa fa-plus"></i>
+          <translate>Add new custom translation</translate>
+        </button>
+      </div>
+    </div>
+
     <span id="success-{{ key }}" class="input-group-addon" ng-if="configOption.success !== undefined">
       <i class="fa fa-lg fa-check-circle text-success"
         ng-if="configOption.success === true"></i>

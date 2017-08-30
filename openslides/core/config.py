@@ -29,6 +29,7 @@ INPUT_TYPE_MAPPING = {
     'datetimepicker': int,
     'majorityMethod': str,
     'logo': dict,
+    'translations': list,
 }
 
 
@@ -133,6 +134,22 @@ class ConfigHandler:
                     raise ConfigError(_('{} has to be given.'.format(required_entry)))
                 if not isinstance(value[required_entry], str):
                     raise ConfigError(_('{} has to be a string.'.format(required_entry)))
+
+        if config_variable.input_type == 'translations':
+            if not isinstance(value, list):
+                raise ConfigError(_('Translations has to be a list.'))
+            for entry in value:
+                if not isinstance(entry, dict):
+                    raise ConfigError(_('Every value has to be a dict, not {}.'.format(type(entry))))
+                whitelist = (
+                    'original',
+                    'translation',
+                )
+                for required_entry in whitelist:
+                    if required_entry not in entry:
+                        raise ConfigError(_('{} has to be given.'.format(required_entry)))
+                    if not isinstance(entry[required_entry], str):
+                        raise ConfigError(_('{} has to be a string.'.format(required_entry)))
 
         # Save the new value to the database.
         db_value = ConfigStore.objects.get(key=key)
