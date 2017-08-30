@@ -1501,14 +1501,13 @@ angular.module('OpenSlidesApp.motions.site', [
                 return motion.getTextWithLineBreaks($scope.version);
             },
             function (obj) {
-                motion.reason = motion.getReason(-1);
                 motion.setTextStrippingLineBreaks(obj.editor.getData());
                 motion.disable_versioning = (obj.trivialChange &&
                     Config.get('motions_allow_disable_versioning').value);
             }
         );
         $scope.reasonInlineEditing = MotionInlineEditing.createInstance($scope, motion,
-            'reason-inline-editor', true,
+            'reason-inline-editor', true, Editor.getOptions('inline'),
             function (obj) {
                 return motion.getReason($scope.version);
             },
