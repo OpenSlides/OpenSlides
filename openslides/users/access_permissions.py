@@ -186,12 +186,15 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
         full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
 
         # Parse data.
-        for full in full_data:
-            if full['user_id'] == user.id:
-                data = [full]
-                break
-        else:
+        if user is None:
             data = []
+        else:
+            for full in full_data:
+                if full['user_id'] == user.id:
+                    data = [full]
+                    break
+            else:
+                data = []
 
         # Reduce result to a single item or None if it was not a collection at
         # the beginning of the method.

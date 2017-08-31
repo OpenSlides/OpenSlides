@@ -1,6 +1,9 @@
 from unittest import TestCase
 
-from openslides.users.access_permissions import UserAccessPermissions
+from openslides.users.access_permissions import (
+    PersonalNoteAccessPermissions,
+    UserAccessPermissions,
+)
 from openslides.utils.collection import CollectionElement
 
 
@@ -37,3 +40,25 @@ class UserGetProjectorDataTest(TestCase):
             'is_present': False,
             'is_committee': False,
         })
+
+
+class TestPersonalNoteAccessPermissions(TestCase):
+    def test_get_restricted_data(self):
+        ap = PersonalNoteAccessPermissions()
+        rd = ap.get_restricted_data(
+            CollectionElement.from_values(
+                'users/personal_note',
+                1,
+                full_data={'user_id': 1}),
+            CollectionElement.from_values('users/user', 5, full_data={}))
+        self.assertEqual(rd, None)
+
+    def test_get_restricted_data_for_anonymous(self):
+        ap = PersonalNoteAccessPermissions()
+        rd = ap.get_restricted_data(
+            CollectionElement.from_values(
+                'users/personal_note',
+                1,
+                full_data={'user_id': 1}),
+            None)
+        self.assertEqual(rd, None)
