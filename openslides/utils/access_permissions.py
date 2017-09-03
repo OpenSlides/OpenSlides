@@ -1,46 +1,29 @@
-from django.dispatch import Signal
+from typing import Any, Dict, List, Optional, Union
 
-from .collection import Collection
-from .dispatch import SignalConnectMetaClass
+from django.db.models import Model
+from rest_framework.serializers import Serializer
+
+from .collection import Collection, CollectionElement
+
+Container = Union[CollectionElement, Collection]
+RestrictedData = Union[List[Dict[str, Any]], Dict[str, Any], None]
 
 
-class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
+class BaseAccessPermissions:
     """
     Base access permissions container.
 
     Every app which has autoupdate models has to create classes subclassing
-    from this base class for every autoupdate root model. Each subclass has
-    to have a globally unique name. The metaclass (SignalConnectMetaClass)
-    does the rest of the magic.
+    from this base class for every autoupdate root model.
     """
-    signal = Signal()
 
-    def __init__(self, **kwargs):
-        """
-        Initializes the access permission instance. This is done when the
-        signal is sent.
-
-        Because of Django's signal API, we have to take wildcard keyword
-        arguments. But they are not used here.
-        """
-        pass
-
-    @classmethod
-    def get_dispatch_uid(cls):
-        """
-        Returns the classname as a unique string for each class. Returns None
-        for the base class so it will not be connected to the signal.
-        """
-        if not cls.__name__ == 'BaseAccessPermissions':
-            return cls.__name__
-
-    def check_permissions(self, user):
+    def check_permissions(self, user: Optional[CollectionElement]) -> bool:
         """
         Returns True if the user has read access to model instances.
         """
         return False
 
-    def get_serializer_class(self, user=None):
+    def get_serializer_class(self, user: CollectionElement=None) -> Serializer:
         """
         Returns different serializer classes according to users permissions.
 
@@ -51,13 +34,13 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
             "You have to add the method 'get_serializer_class' to your "
             "access permissions class.".format(self))
 
-    def get_full_data(self, instance):
+    def get_full_data(self, instance: Model) -> Dict[str, Any]:
         """
         Returns all possible serialized data for the given instance.
         """
         return self.get_serializer_class(user=None)(instance).data
 
-    def get_restricted_data(self, container, user):
+    def get_restricted_data(self, container: Container, user: Optional[CollectionElement]) -> RestrictedData:
         """
         Returns the restricted serialized data for the instance prepared
         for the user.
@@ -82,7 +65,7 @@ class BaseAccessPermissions(object, metaclass=SignalConnectMetaClass):
             data = None
         return data
 
-    def get_projector_data(self, container):
+    def get_projector_data(self, container: Container) -> RestrictedData:
         """
         Returns the serialized data for the projector. Returns None if the
         user has no access to this specific data. Returns reduced data if

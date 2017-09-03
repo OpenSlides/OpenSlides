@@ -1,38 +1,33 @@
 from typing import Mapping  # noqa
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generator,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Type,
+    Union,
+)
 
 from django.apps import apps
 from django.core.cache import cache
+from django.db.models import Model
 
 from .cache import get_redis_connection, use_redis_cache
 
+if TYPE_CHECKING:
+    from .access_permissions import BaseAccessPermissions  # noqa
+
+# TODO: Try to import this type from access_permission
+RestrictedData = Union[List[Dict[str, Any]], Dict[str, Any], None]
+
 
 class CollectionElement:
-    @classmethod
-    def from_instance(cls, instance, deleted=False, information=None):
-        """
-        Returns a collection element from a database instance.
-
-        This will also update the instance in the cache.
-
-        If deleted is set to True, the element is deleted from the cache.
-        """
-        return cls(instance=instance, deleted=deleted, information=information)
-
-    @classmethod
-    def from_values(cls, collection_string, id, deleted=False, full_data=None, information=None):
-        """
-        Returns a collection element from a collection_string and an id.
-
-        If deleted is set to True, the element is deleted from the cache.
-
-        With the argument full_data, the content of the CollectionElement can be set.
-        It has to be a dict in the format that is used be access_permission.get_full_data().
-        """
-        return cls(collection_string=collection_string, id=id, deleted=deleted,
-                   full_data=full_data, information=information)
-
-    def __init__(self, instance=None, deleted=False, collection_string=None, id=None,
-                 full_data=None, information=None):
+    def __init__(self, instance: Model=None, deleted: bool=False, collection_string: str=None,
+                 id: int=None, full_data: Dict[str, Any]=None, information: Dict[str, Any]=None) -> None:
         """
         Do not use this. Use the methods from_instance() or from_values().
         """
@@ -47,7 +42,7 @@ class CollectionElement:
         elif collection_string is not None and id is not None:
             # Collection element is created via values
             self.collection_string = collection_string
-            self.id = int(id)
+            self.id = id
         else:
             raise RuntimeError(
                 'Invalid state. Use CollectionElement.from_instance() or '
@@ -65,7 +60,32 @@ class CollectionElement:
             # neither exist in the cache nor in the database.
             self.get_full_data()
 
-    def __eq__(self, collection_element):
+    @classmethod
+    def from_instance(cls, instance: Model, deleted: bool=False, information: Dict[str, Any]=None) -> 'CollectionElement':
+        """
+        Returns a collection element from a database instance.
+
+        This will also update the instance in the cache.
+
+        If deleted is set to True, the element is deleted from the cache.
+        """
+        return cls(instance=instance, deleted=deleted, information=information)
+
+    @classmethod
+    def from_values(cls, collection_string: str, id: int, deleted: bool=False,
+                    full_data: Dict[str, Any]=None, information: Dict[str, Any]=None) -> 'CollectionElement':
+        """
+        Returns a collection element from a collection_string and an id.
+
+        If deleted is set to True, the element is deleted from the cache.
+
+        With the argument full_data, the content of the CollectionElement can be set.
+        It has to be a dict in the format that is used be access_permission.get_full_data().
+        """
+        return cls(collection_string=collection_string, id=id, deleted=deleted,
+                   full_data=full_data, information=information)
+
+    def __eq__(self, collection_element: 'CollectionElement') -> bool:  # type: ignore
         """
         Compares two collection_elements.
 
@@ -75,7 +95,7 @@ class CollectionElement:
         return (self.collection_string == collection_element.collection_string and
                 self.id == collection_element.id)
 
-    def as_channels_message(self):
+    def as_channels_message(self) -> Dict[str, Any]:
         """
         Returns a dictonary that can be used to send the object through the
         channels system.
@@ -92,7 +112,7 @@ class CollectionElement:
             channel_message['full_data'] = self.full_data
         return channel_message
 
-    def as_autoupdate(self, method, *args):
+    def as_autoupdate(self, method: str, *args: Any) -> Dict[str, Any]:
         """
         Only for internal use. Do not use it directly. Use as_autoupdate_for_user()
         or as_autoupdate_for_projector().
@@ -112,19 +132,16 @@ class CollectionElement:
             action='deleted' if self.is_deleted() else 'changed',
             data=data)
 
-    def as_autoupdate_for_user(self, user):
+    def as_autoupdate_for_user(self, user: Optional['CollectionElement']) -> Dict[str, Any]:
         """
         Returns a dict that can be sent through the autoupdate system for a site
         user.
-
-        The argument `user` can be anything, that is allowd as argument for
-        utils.auth.has_perm().
         """
         return self.as_autoupdate(
             'get_restricted_data',
             user)
 
-    def as_autoupdate_for_projector(self):
+    def as_autoupdate_for_projector(self) -> Dict[str, Any]:
         """
         Returns a dict that can be sent through the autoupdate system for the
         projector.
@@ -132,22 +149,19 @@ class CollectionElement:
         return self.as_autoupdate(
             'get_projector_data')
 
-    def as_dict_for_user(self, user):
+    def as_dict_for_user(self, user: Optional['CollectionElement']) -> 'RestrictedData':
         """
         Returns a dict with the data for a user. Can be used for the rest api.
-
-        The argument `user` can be anything, that is allowd as argument for
-        utils.auth.has_perm().
         """
         return self.get_access_permissions().get_restricted_data(self, user)
 
-    def get_model(self):
+    def get_model(self) -> Type[Model]:
         """
         Returns the django model that is used for this collection.
         """
         return get_model_from_collection_string(self.collection_string)
 
-    def get_instance(self):
+    def get_instance(self) -> Model:
         """
         Returns the instance as django object.
 
@@ -165,13 +179,13 @@ class CollectionElement:
             self.instance = query.get(pk=self.id)
         return self.instance
 
-    def get_access_permissions(self):
+    def get_access_permissions(self) -> 'BaseAccessPermissions':
         """
         Returns the get_access_permissions object for the this collection element.
         """
         return self.get_model().get_access_permissions()
 
-    def get_full_data(self):
+    def get_full_data(self) -> Any:
         """
         Returns the full_data of this collection_element from with all other
         dics can be generated.
@@ -194,21 +208,21 @@ class CollectionElement:
             self.save_to_cache()
         return self.full_data
 
-    def is_deleted(self):
+    def is_deleted(self) -> bool:
         """
         Returns Ture if the item is marked as deleted.
         """
         return self.deleted
 
-    def get_cache_key(self):
+    def get_cache_key(self) -> str:
         """
         Returns a string that is used as cache key for a single instance.
         """
         return get_single_element_cache_key(self.collection_string, self.id)
 
-    def delete_from_cache(self):
+    def delete_from_cache(self) -> None:
         """
-        Delets an element from the cache.
+        Delets the element from the cache.
 
         Does nothing if the element is not in the cache.
         """
@@ -218,7 +232,7 @@ class CollectionElement:
         # Delete the id of the instance of the instance list
         Collection(self.collection_string).delete_id_from_cache(self.id)
 
-    def save_to_cache(self):
+    def save_to_cache(self) -> None:
         """
         Add or update the element to the cache.
         """
@@ -238,7 +252,7 @@ class CollectionElementList(list):
     """
 
     @classmethod
-    def from_channels_message(cls, message):
+    def from_channels_message(cls, message: Dict[str, Any]) -> 'CollectionElementList':
         """
         Creates a collection element list from a channel message.
         """
@@ -247,16 +261,16 @@ class CollectionElementList(list):
             self.append(CollectionElement.from_values(**values))
         return self
 
-    def as_channels_message(self):
+    def as_channels_message(self) -> Dict[str, Any]:
         """
         Returns a list of dicts that can be send through the channel system.
         """
-        message = {'elements': []}
+        message = {'elements': []}  # type: Dict[str, Any]
         for element in self:
             message['elements'].append(element.as_channels_message())
         return message
 
-    def as_autoupdate_for_user(self, user):
+    def as_autoupdate_for_user(self, user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
         """
         Returns a list of dicts, that can be send though the websocket to a user.
 
@@ -274,7 +288,7 @@ class Collection:
     Represents all elements of one collection.
     """
 
-    def __init__(self, collection_string, full_data=None):
+    def __init__(self, collection_string: str, full_data: List[Dict[str, Any]]=None) -> None:
         """
         Initiates a Collection. A collection_string has to be given. If
         full_data (a list of dictionaries) is not given the method
@@ -284,7 +298,7 @@ class Collection:
         self.collection_string = collection_string
         self.full_data = full_data
 
-    def get_cache_key(self, raw=False):
+    def get_cache_key(self, raw: bool=False) -> str:
         """
         Returns a string that is used as cache key for a collection.
 
@@ -296,19 +310,19 @@ class Collection:
             key = cache.make_key(key)
         return key
 
-    def get_model(self):
+    def get_model(self) -> Type[Model]:
         """
         Returns the django model that is used for this collection.
         """
         return get_model_from_collection_string(self.collection_string)
 
-    def get_access_permissions(self):
+    def get_access_permissions(self) -> 'BaseAccessPermissions':
         """
         Returns the get_access_permissions object for the this collection.
         """
         return self.get_model().get_access_permissions()
 
-    def element_generator(self):
+    def element_generator(self) -> Generator[CollectionElement, None, None]:
         """
         Generator that yields all collection_elements of this collection.
         """
@@ -329,8 +343,10 @@ class Collection:
 
         # Generate collection elements that where in the cache.
         for cache_key, cached_full_data in cached_full_data_dict.items():
+            collection_string, id = get_collection_id_from_cache_key(cache_key)
             yield CollectionElement.from_values(
-                *get_collection_id_from_cache_key(cache_key),
+                collection_string,
+                id,
                 full_data=cached_full_data)
 
         # Generate collection element that where not in the cache.
@@ -343,7 +359,7 @@ class Collection:
             for instance in query.filter(pk__in=missing_ids):
                 yield CollectionElement.from_instance(instance)
 
-    def get_full_data(self):
+    def get_full_data(self) -> List[Dict[str, Any]]:
         """
         Returns a list of dictionaries with full_data of all collection
         elements.
@@ -355,7 +371,7 @@ class Collection:
                 in self.element_generator()]
         return self.full_data
 
-    def as_autoupdate_for_projector(self):
+    def as_autoupdate_for_projector(self) -> List[Dict[str, Any]]:
         """
         Returns a list of dictonaries to send them to the projector.
         """
@@ -368,12 +384,9 @@ class Collection:
             output.append(content)
         return output
 
-    def as_autoupdate_for_user(self, user):
+    def as_autoupdate_for_user(self, user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
         """
         Returns a list of dicts, that can be send though the websocket to a user.
-
-        The argument `user` can be anything, that is allowd as argument for
-        utils.auth.has_perm().
         """
         # TODO: This method is not used. Remove it.
         output = []
@@ -383,22 +396,19 @@ class Collection:
                 output.append(content)
         return output
 
-    def as_list_for_user(self, user):
+    def as_list_for_user(self, user: Optional[CollectionElement]) -> List['RestrictedData']:
         """
         Returns a list of dictonaries to send them to a user, for example over
         the rest api.
-
-        The argument `user` can be anything, that is allowd as argument for
-        utils.auth.has_perm().
         """
-        output = []
+        output = []  # type: List[RestrictedData]
         for collection_element in self.element_generator():
-            content = collection_element.as_dict_for_user(user)
+            content = collection_element.as_dict_for_user(user)  # type: RestrictedData
             if content is not None:
                 output.append(content)
         return output
 
-    def get_all_ids(self):
+    def get_all_ids(self) -> Set[int]:
         """
         Returns a set of all ids of instances in this collection.
         """
@@ -408,7 +418,7 @@ class Collection:
             ids = self.get_all_ids_other()
         return ids
 
-    def get_all_ids_redis(self):
+    def get_all_ids_redis(self) -> Set[int]:
         redis = get_redis_connection()
         ids = redis.smembers(self.get_cache_key(raw=True))
         if not ids:
@@ -419,7 +429,7 @@ class Collection:
         ids = set(int(id) for id in ids)
         return ids
 
-    def get_all_ids_other(self):
+    def get_all_ids_other(self) -> Set[int]:
         ids = cache.get(self.get_cache_key())
         if ids is None:
             # If it is not in the cache then get it from the database.
@@ -427,7 +437,7 @@ class Collection:
             cache.set(self.get_cache_key(), ids)
         return ids
 
-    def delete_id_from_cache(self, id):
+    def delete_id_from_cache(self, id: int) -> None:
         """
         Delets a id from the cache.
         """
@@ -436,11 +446,11 @@ class Collection:
         else:
             self.delete_id_from_cache_other(id)
 
-    def delete_id_from_cache_redis(self, id):
+    def delete_id_from_cache_redis(self, id: int) -> None:
         redis = get_redis_connection()
         redis.srem(self.get_cache_key(raw=True), id)
 
-    def delete_id_from_cache_other(self, id):
+    def delete_id_from_cache_other(self, id: int) -> None:
         ids = cache.get(self.get_cache_key())
         if ids is not None:
             ids = set(ids)
@@ -456,7 +466,7 @@ class Collection:
                     # Delete the key, if there are not ids left
                     cache.delete(self.get_cache_key())
 
-    def add_id_to_cache(self, id):
+    def add_id_to_cache(self, id: int) -> None:
         """
         Adds a collection id to the list of collection ids in the cache.
         """
@@ -465,13 +475,13 @@ class Collection:
         else:
             self.add_id_to_cache_other(id)
 
-    def add_id_to_cache_redis(self, id):
+    def add_id_to_cache_redis(self, id: int) -> None:
         redis = get_redis_connection()
         if redis.exists(self.get_cache_key(raw=True)):
             # Only add the value if it is in the cache.
             redis.sadd(self.get_cache_key(raw=True), id)
 
-    def add_id_to_cache_other(self, id):
+    def add_id_to_cache_other(self, id: int) -> None:
         ids = cache.get(self.get_cache_key())
         if ids is not None:
             # Only change the value if it is in the cache.
@@ -480,14 +490,14 @@ class Collection:
             cache.set(self.get_cache_key(), ids)
 
 
-_models_to_collection_string = {}  # type: Mapping[str, object]
+_models_to_collection_string = {}  # type: Dict[str, Type[Model]]
 
 
-def get_model_from_collection_string(collection_string):
+def get_model_from_collection_string(collection_string: str) -> Type[Model]:
     """
     Returns a model class which belongs to the argument collection_string.
     """
-    def model_generator():
+    def model_generator() -> Generator[Type[Model], None, None]:
         """
         Yields all models of all apps.
         """
@@ -512,7 +522,7 @@ def get_model_from_collection_string(collection_string):
     return model
 
 
-def get_single_element_cache_key(collection_string, id):
+def get_single_element_cache_key(collection_string: str, id: int) -> str:
     """
     Returns a string that is used as cache key for a single instance.
     """
@@ -521,7 +531,7 @@ def get_single_element_cache_key(collection_string, id):
         id=id)
 
 
-def get_single_element_cache_key_prefix(collection_string):
+def get_single_element_cache_key_prefix(collection_string: str) -> str:
     """
     Returns the first part of the cache key for single elements, which is the
     same for all cache keys of the same collection.
@@ -529,14 +539,14 @@ def get_single_element_cache_key_prefix(collection_string):
     return "{collection}:".format(collection=collection_string)
 
 
-def get_element_list_cache_key(collection_string):
+def get_element_list_cache_key(collection_string: str) -> str:
     """
     Returns a string that is used as cache key for a collection.
     """
     return "{collection}".format(collection=collection_string)
 
 
-def get_collection_id_from_cache_key(cache_key):
+def get_collection_id_from_cache_key(cache_key: str) -> Tuple[str, int]:
     """
     Returns a tuble of the collection string and the id from a cache_key
     created with get_instance_cache_key.

@@ -1,4 +1,7 @@
+from typing import Dict, List, Union  # noqa
+
 from django.apps import AppConfig
+from mypy_extensions import TypedDict
 
 from ..utils.collection import Collection
 
@@ -46,9 +49,11 @@ class AssignmentsAppConfig(AppConfig):
 
     def get_angular_constants(self):
         assignment = self.get_model('Assignment')
+        InnerItem = TypedDict('InnerItem', {'value': int, 'display_name': str})
+        Item = TypedDict('Item', {'name': str, 'value': List[InnerItem]})  # noqa
         data = {
             'name': 'AssignmentPhases',
-            'value': []}
+            'value': []}  # type: Item
         for phase in assignment.PHASES:
             data['value'].append({
                 'value': phase[0],

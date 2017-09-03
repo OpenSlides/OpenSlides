@@ -1,5 +1,6 @@
 import base64
 import re
+from typing import Optional  # noqa
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
@@ -92,7 +93,7 @@ class MotionViewSet(ModelViewSet):
             try:
                 parent_motion = CollectionElement.from_values(
                     Motion.get_collection_string(),
-                    request.data['parent_id'])
+                    request.data['parent_id'])  # type: Optional[CollectionElement]
             except Motion.DoesNotExist:
                 raise ValidationError({'detail': _('The parent motion does not exist.')})
         else:

@@ -220,7 +220,7 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             skip_autoupdate=skip_autoupdate,
             name='users/user',
             id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
 
     def has_perm(self, perm):
         """

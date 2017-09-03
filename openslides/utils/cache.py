@@ -1,9 +1,26 @@
 from collections import defaultdict
+from typing import (  # noqa
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    Iterable,
+    List,
+    Optional,
+    Set,
+)
 
 from channels import Group
 from channels.sessions import session_for_reply_channel
 from django.apps import apps
 from django.core.cache import cache, caches
+
+if TYPE_CHECKING:
+    # Dummy import Collection for mypy
+    from .collection import Collection  # noqa
+
+UserCacheDataType = Dict[int, Set[str]]
 
 
 class BaseWebsocketUserCache:
@@ -15,36 +32,36 @@ class BaseWebsocketUserCache:
     """
     cache_key = 'current_websocket_users'
 
-    def add(self, user_id, channel_name):
+    def add(self, user_id: int, channel_name: str) -> None:
         """
         Adds a channel name to an user id.
         """
         raise NotImplementedError()
 
-    def remove(self, user_id, channel_name):
+    def remove(self, user_id: int, channel_name: str) -> None:
         """
         Removes one channel name from the cache.
         """
         raise NotImplementedError()
 
-    def get_all(self):
+    def get_all(self) -> UserCacheDataType:
         """
         Returns all data using a dict where the key is a user id and the value
         is a set of channel_names.
         """
         raise NotImplementedError()
 
-    def save_data(self, data):
+    def save_data(self, data: UserCacheDataType) -> None:
         """
         Saves the full data set (like created with build_data) to the cache.
         """
         raise NotImplementedError()
 
-    def build_data(self):
+    def build_data(self) -> UserCacheDataType:
         """
         Creates all the data, saves it to the cache and returns it.
         """
-        websocket_user_ids = defaultdict(set)
+        websocket_user_ids = defaultdict(set)  # type: UserCacheDataType
         for channel_name in Group('site').channel_layer.group_channels('site'):
             session = session_for_reply_channel(channel_name)
             user_id = session.get('user_id', None)
@@ -52,7 +69,7 @@ class BaseWebsocketUserCache:
         self.save_data(websocket_user_ids)
         return websocket_user_ids
 
-    def get_cache_key(self):
+    def get_cache_key(self) -> str:
         """
         Returns the cache key.
         """
@@ -67,7 +84,7 @@ class RedisWebsocketUserCache(BaseWebsocketUserCache):
     for each user another set to save the channel names.
     """
 
-    def add(self, user_id, channel_name):
+    def add(self, user_id: int, channel_name: str) -> None:
         """
         Adds a channel name to an user id.
         """
@@ -77,35 +94,35 @@ class RedisWebsocketUserCache(BaseWebsocketUserCache):
         pipe.sadd(self.get_user_cache_key(user_id), channel_name)
         pipe.execute()
 
-    def remove(self, user_id, channel_name):
+    def remove(self, user_id: int, channel_name: str) -> None:
         """
         Removes one channel name from the cache.
         """
         redis = get_redis_connection()
         redis.srem(self.get_user_cache_key(user_id), channel_name)
 
-    def get_all(self):
+    def get_all(self) -> UserCacheDataType:
         """
         Returns all data using a dict where the key is a user id and the value
         is a set of channel_names.
         """
         redis = get_redis_connection()
-        user_ids = redis.smembers(self.get_cache_key())
+        user_ids = redis.smembers(self.get_cache_key())  # type: Optional[List[str]]
         if user_ids is None:
             websocket_user_ids = self.build_data()
         else:
             websocket_user_ids = dict()
-            for user_id in user_ids:
+            for redis_user_id in user_ids:
                 # Redis returns the id as string. So we have to convert it
-                user_id = int(user_id)
-                channel_names = redis.smembers(self.get_user_cache_key(user_id))
+                user_id = int(redis_user_id)
+                channel_names = redis.smembers(self.get_user_cache_key(user_id))  # type: Optional[List[str]]
                 if channel_names is not None:
                     # If channel name is empty, then we can assume, that the user
                     # has no active connection.
                     websocket_user_ids[user_id] = set(channel_names)
         return websocket_user_ids
 
-    def save_data(self, data):
+    def save_data(self, data: UserCacheDataType) -> None:
         """
         Saves the full data set (like created with the method build_data()) to
         the cache.
@@ -122,13 +139,13 @@ class RedisWebsocketUserCache(BaseWebsocketUserCache):
             pipe.sadd(self.get_user_cache_key(user_id), *channel_names)
         pipe.execute()
 
-    def get_cache_key(self):
+    def get_cache_key(self) -> str:
         """
         Returns the cache key.
         """
         return cache.make_key(self.cache_key)
 
-    def get_user_cache_key(self, user_id):
+    def get_user_cache_key(self, user_id: int) -> str:
         """
         Returns a cache key to save the channel names for a specific user.
         """
@@ -146,7 +163,7 @@ class DjangoCacheWebsocketUserCache(BaseWebsocketUserCache):
     the value is a set of channel names.
     """
 
-    def add(self, user_id, channel_name):
+    def add(self, user_id: int, channel_name: str) -> None:
         """
         Adds a channel name for a user using the django cache.
         """
@@ -160,7 +177,7 @@ class DjangoCacheWebsocketUserCache(BaseWebsocketUserCache):
             websocket_user_ids[user_id] = set([channel_name])
         cache.set(self.get_cache_key(), websocket_user_ids)
 
-    def remove(self, user_id, channel_name):
+    def remove(self, user_id: int, channel_name: str) -> None:
         """
         Removes one channel name from the django cache.
         """
@@ -169,7 +186,7 @@ class DjangoCacheWebsocketUserCache(BaseWebsocketUserCache):
             websocket_user_ids[user_id].discard(channel_name)
             cache.set(self.get_cache_key(), websocket_user_ids)
 
-    def get_all(self):
+    def get_all(self) -> UserCacheDataType:
         """
         Returns the data using the django cache.
         """
@@ -178,7 +195,7 @@ class DjangoCacheWebsocketUserCache(BaseWebsocketUserCache):
             return self.build_data()
         return websocket_user_ids
 
-    def save_data(self, data):
+    def save_data(self, data: UserCacheDataType) -> None:
         """
         Saves the data using the django cache.
         """
@@ -191,18 +208,18 @@ class StartupCache:
     """
     cache_key = "full_data_startup_cache"
 
-    def build(self):
+    def build(self) -> Dict[str, List[str]]:
         """
         Generate the cache by going through all apps. Returns a dict where the
         key is the collection string and the value a list of the full_data from
         the collection elements.
         """
-        cache_data = {}
+        cache_data = {}  # type: Dict[str, List[str]]
         for app in apps.get_app_configs():
             try:
                 # Get the method get_startup_elements() from an app.
                 # This method has to return an iterable of Collection objects.
-                get_startup_elements = app.get_startup_elements
+                get_startup_elements = app.get_startup_elements  # type: Callable[[], Iterable[Collection]]
             except AttributeError:
                 # Skip apps that do not implement get_startup_elements.
                 continue
@@ -216,20 +233,20 @@ class StartupCache:
         cache.set(self.cache_key, cache_data, 86400)
         return cache_data
 
-    def clear(self):
+    def clear(self) -> None:
         """
         Clears the cache.
         """
         cache.delete(self.cache_key)
 
-    def get_collections(self):
+    def get_collections(self) -> Generator['Collection', None, None]:
         """
         Generator that returns all cached Collections.
 
         The data is read from the cache if it exists. It builds the cache if it
         does not exists.
         """
-        from .collection import Collection
+        from .collection import Collection  # noqa
         data = cache.get(self.cache_key)
         if data is None:
             # The cache does not exist.
@@ -241,7 +258,7 @@ class StartupCache:
 startup_cache = StartupCache()
 
 
-def use_redis_cache():
+def use_redis_cache() -> bool:
     """
     Returns True if Redis is used als caching backend.
     """
@@ -252,7 +269,7 @@ def use_redis_cache():
     return isinstance(caches['default'], RedisCache)
 
 
-def get_redis_connection():
+def get_redis_connection() -> Any:
     """
     Returns an object that can be used to talk directly to redis.
     """

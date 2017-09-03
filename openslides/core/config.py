@@ -1,13 +1,4 @@
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    TypeVar,
-    Union,
-)
+from typing import Any, Callable, Dict, Iterable, Optional, TypeVar, Union
 
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import ugettext as _
@@ -192,9 +183,9 @@ use x = config[...], to set it use config[...] = x.
 
 
 T = TypeVar('T')
-ChoiceType = Optional[List[Dict[str, str]]]
+ChoiceType = Optional[Iterable[Dict[str, str]]]
 ChoiceCallableType = Union[ChoiceType, Callable[[], ChoiceType]]
-ValidatorsType = List[Callable[[T], None]]
+ValidatorsType = Iterable[Callable[[T], None]]
 OnChangeType = Callable[[], None]
 ConfigVariableDict = TypedDict('ConfigVariableDict', {
     'key': str,

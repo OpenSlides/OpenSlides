@@ -231,7 +231,7 @@ class Motion(RESTModelMixin, models.Model):
             try:
                 # Always skip autoupdate. Maybe we run it later in this method.
                 with transaction.atomic():
-                    super(Motion, self).save(skip_autoupdate=True, *args, **kwargs)
+                    super(Motion, self).save(skip_autoupdate=True, *args, **kwargs)  # type: ignore
             except IntegrityError:
                 # Identifier is already used.
                 if hasattr(self, '_identifier_prefix'):
@@ -309,7 +309,7 @@ class Motion(RESTModelMixin, models.Model):
             skip_autoupdate=skip_autoupdate,
             name='motions/motion',
             id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
 
     def version_data_changed(self, version):
         """
@@ -879,7 +879,7 @@ class MotionBlock(RESTModelMixin, models.Model):
             skip_autoupdate=skip_autoupdate,
             name='motions/motion-block',
             id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
 
     @property
     def agenda_item(self):

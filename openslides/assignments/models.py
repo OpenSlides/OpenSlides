@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from typing import Any, Dict, List, Optional  # noqa
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
@@ -174,7 +175,7 @@ class Assignment(RESTModelMixin, models.Model):
             skip_autoupdate=skip_autoupdate,
             name='assignments/assignment',
             id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore # TODO fix typing
 
     @property
     def candidates(self):
@@ -300,14 +301,14 @@ class Assignment(RESTModelMixin, models.Model):
         Returns a table represented as a list with all candidates from all
         related polls and their vote results.
         """
-        vote_results_dict = OrderedDict()
+        vote_results_dict = OrderedDict()  # type: Dict[Any, List[AssignmentVote]]
 
         polls = self.polls.all()
         if only_published:
             polls = polls.filter(published=True)
 
         # All PollOption-Objects related to this assignment
-        options = []
+        options = []  # type: List[AssignmentOption]
         for poll in polls:
             options += poll.get_options()
 
@@ -317,7 +318,7 @@ class Assignment(RESTModelMixin, models.Model):
                 continue
             vote_results_dict[candidate] = []
             for poll in polls:
-                votes = {}
+                votes = {}  # type: Any
                 try:
                     # candidate related to this poll
                     poll_option = poll.get_options().get(candidate=candidate)
@@ -429,7 +430,7 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,  # type: ignore
             name='assignments/assignment',
             id=self.assignment.pk,
             poll=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore  # TODO: fix typing
 
     def get_assignment(self):
         return self.assignment

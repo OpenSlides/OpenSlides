@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import Optional  # noqa
+from typing import Any, Dict, Iterable, Optional, Type  # noqa
 
 from django.http import Http404
 from rest_framework import status  # noqa
@@ -24,6 +24,7 @@ from rest_framework.serializers import (  # noqa
     ManyRelatedField,
     PrimaryKeyRelatedField,
     RelatedField,
+    Serializer,
     SerializerMethodField,
     ValidationError,
 )
@@ -31,7 +32,7 @@ from rest_framework.viewsets import GenericViewSet as _GenericViewSet  # noqa
 from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
 from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
 
-from .access_permissions import BaseAccessPermissions  # noqa
+from .access_permissions import BaseAccessPermissions, RestrictedData  # noqa
 from .auth import user_to_collection_user
 from .collection import Collection, CollectionElement
 
@@ -47,7 +48,7 @@ class IdManyRelatedField(ManyRelatedField):
     """
     field_name_suffix = '_id'
 
-    def bind(self, field_name, parent):
+    def bind(self, field_name: str, parent: Any) -> None:
         """
         Called when the field is bound to the serializer.
 
@@ -65,7 +66,7 @@ class IdPrimaryKeyRelatedField(PrimaryKeyRelatedField):
     """
     field_name_suffix = '_id'
 
-    def bind(self, field_name, parent):
+    def bind(self, field_name: str, parent: Any) -> None:
         """
         Called when the field is bound to the serializer.
 
@@ -80,7 +81,7 @@ class IdPrimaryKeyRelatedField(PrimaryKeyRelatedField):
         super().bind(field_name, parent)
 
     @classmethod
-    def many_init(cls, *args, **kwargs):
+    def many_init(cls, *args: Any, **kwargs: Any) -> IdManyRelatedField:
         """
         Method from rest_framework.relations.RelatedField That uses our
         IdManyRelatedField class instead of
@@ -106,7 +107,7 @@ class PermissionMixin:
     """
     access_permissions = None  # type: Optional[BaseAccessPermissions]
 
-    def get_permissions(self):
+    def get_permissions(self) -> Iterable[str]:
         """
         Overridden method to check view permissions. Returns an empty
         iterable so Django REST framework won't do any other permission
@@ -114,10 +115,10 @@ class PermissionMixin:
         and the request passes.
         """
         if not self.check_view_permissions():
-            self.permission_denied(self.request)
+            self.permission_denied(self.request)  # type: ignore
         return ()
 
-    def check_view_permissions(self):
+    def check_view_permissions(self) -> bool:
         """
         Override this and return True if the requesting user should be able to
         get access to your view.
@@ -127,22 +128,22 @@ class PermissionMixin:
         """
         return False
 
-    def get_access_permissions(self):
+    def get_access_permissions(self) -> BaseAccessPermissions:
         """
         Returns a container to handle access permissions for this viewset and
         its corresponding model.
         """
-        return self.access_permissions
+        return self.access_permissions  # type: ignore
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> Type[Serializer]:
         """
         Overridden method to return the serializer class given by the
         access permissions container.
         """
         if self.get_access_permissions() is not None:
-            serializer_class = self.get_access_permissions().get_serializer_class(self.request.user)
+            serializer_class = self.get_access_permissions().get_serializer_class(self.request.user)  # type: ignore
         else:
-            serializer_class = super().get_serializer_class()
+            serializer_class = super().get_serializer_class()  # type: ignore
         return serializer_class
 
 
@@ -153,11 +154,11 @@ class ModelSerializer(_ModelSerializer):
     """
     serializer_related_field = IdPrimaryKeyRelatedField
 
-    def get_fields(self):
+    def get_fields(self) -> Any:
         """
         Returns all fields of the serializer.
         """
-        fields = OrderedDict()
+        fields = OrderedDict()  # type: Dict[str, Field]
 
         for field_name, field in super().get_fields().items():
             try:
@@ -177,7 +178,7 @@ class ListModelMixin(_ListModelMixin):
 
     queryset = Model.objects.all()
     """
-    def list(self, request, *args, **kwargs):
+    def list(self, request: Any, *args: Any, **kwargs: Any) -> Response:
         model = self.get_queryset().model
         try:
             collection_string = model.get_collection_string()
@@ -200,7 +201,7 @@ class RetrieveModelMixin(_RetrieveModelMixin):
 
     queryset = Model.objects.all()
     """
-    def retrieve(self, request, *args, **kwargs):
+    def retrieve(self, request: Any, *args: Any, **kwargs: Any) -> Response:
         model = self.get_queryset().model
         try:
             collection_string = model.get_collection_string()
@@ -213,7 +214,7 @@ class RetrieveModelMixin(_RetrieveModelMixin):
                 collection_string, self.kwargs[lookup_url_kwarg])
             user = user_to_collection_user(request.user)
             try:
-                content = collection_element.as_dict_for_user(user)
+                content = collection_element.as_dict_for_user(user)  # type: RestrictedData
             except collection_element.get_model().DoesNotExist:
                 raise Http404
             if content is None:

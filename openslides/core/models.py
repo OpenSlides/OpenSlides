@@ -111,7 +111,7 @@ class Projector(RESTModelMixin, models.Model):
         """
         # Get all elements from all apps.
         elements = {}
-        for element in ProjectorElement.get_all():
+        for element in ProjectorElement.get_all():  # type: ignore
             elements[element.name] = element
 
         # Parse result
@@ -138,7 +138,7 @@ class Projector(RESTModelMixin, models.Model):
         """
         # Get all elements from all apps.
         elements = {}
-        for element in ProjectorElement.get_all():
+        for element in ProjectorElement.get_all():  # type: ignore
             elements[element.name] = element
 
         # Generator
@@ -169,7 +169,7 @@ class Projector(RESTModelMixin, models.Model):
             elements = {}
 
             # Build projector elements.
-            for element in ProjectorElement.get_all():
+            for element in ProjectorElement.get_all():  # type: ignore
                 elements[element.name] = element
 
             # Iterate over all active projector elements.
@@ -341,7 +341,7 @@ class ProjectorMessage(RESTModelMixin, models.Model):
             skip_autoupdate=skip_autoupdate,
             name='core/projector-message',
             id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
 
 
 class Countdown(RESTModelMixin, models.Model):
@@ -370,7 +370,7 @@ class Countdown(RESTModelMixin, models.Model):
             skip_autoupdate=skip_autoupdate,
             name='core/countdown',
             id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)
+        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
 
     def control(self, action):
         if action not in ('start', 'stop', 'reset'):

@@ -1,6 +1,7 @@
 import os
 import pkgutil
 import sys
+from typing import Any, List, Tuple
 
 from django.apps import apps
 from django.conf import settings
@@ -15,7 +16,7 @@ from openslides.utils.main import (
 
 # Methods to collect plugins.
 
-def collect_plugins_from_entry_points():
+def collect_plugins_from_entry_points() -> Tuple[str, ...]:
     """
     Collects all entry points in the group openslides_plugins from all
     distributions in the default working set and returns their module names as
@@ -24,7 +25,7 @@ def collect_plugins_from_entry_points():
     return tuple(entry_point.module_name for entry_point in iter_entry_points('openslides_plugins'))
 
 
-def collect_plugins_from_path(path):
+def collect_plugins_from_path(path: str) -> Tuple[str, ...]:
     """
     Collects all modules/packages in the given `path` and returns a tuple
     of their names.
@@ -32,7 +33,7 @@ def collect_plugins_from_path(path):
     return tuple(x[1] for x in pkgutil.iter_modules([path]))
 
 
-def collect_plugins():
+def collect_plugins() -> Tuple[str, ...]:
     """
     Collect all plugins that can be automatically discovered.
     """
@@ -52,7 +53,7 @@ def collect_plugins():
 
 # Methods to retrieve plugin metadata and urlpatterns.
 
-def get_plugin_verbose_name(plugin):
+def get_plugin_verbose_name(plugin: str) -> str:
     """
     Returns the verbose name of a plugin. The plugin argument must be a python
     dotted module path.
@@ -60,7 +61,7 @@ def get_plugin_verbose_name(plugin):
     return apps.get_app_config(plugin).verbose_name
 
 
-def get_plugin_description(plugin):
+def get_plugin_description(plugin: str) -> str:
     """
     Returns the short descrption of a plugin. The plugin argument must be a
     python dotted module path.
@@ -76,7 +77,7 @@ def get_plugin_description(plugin):
     return description
 
 
-def get_plugin_version(plugin):
+def get_plugin_version(plugin: str) -> str:
     """
     Returns the version string of a plugin. The plugin argument must be a
     python dotted module path.
@@ -92,7 +93,7 @@ def get_plugin_version(plugin):
     return version
 
 
-def get_plugin_urlpatterns(plugin):
+def get_plugin_urlpatterns(plugin: str) -> Any:
     """
     Returns the urlpatterns object for a plugin. The plugin argument must be
     a python dotted module path.
@@ -108,12 +109,12 @@ def get_plugin_urlpatterns(plugin):
     return urlpatterns
 
 
-def get_all_plugin_urlpatterns():
+def get_all_plugin_urlpatterns() -> List[Any]:
     """
     Helper function to return all urlpatterns of all plugins listed in
     settings.INSTALLED_PLUGINS.
     """
-    urlpatterns = []
+    urlpatterns = []  # type: List[Any]
     for plugin in settings.INSTALLED_PLUGINS:
         plugin_urlpatterns = get_plugin_urlpatterns(plugin)
         if plugin_urlpatterns:

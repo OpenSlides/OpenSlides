@@ -6,10 +6,12 @@ import tempfile
 import threading
 import time
 import webbrowser
+from typing import Dict, Optional
 
 from django.conf import ENVIRONMENT_VARIABLE
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
+from mypy_extensions import NoReturn
 
 DEVELOPMENT_VERSION = 'Development Version'
 UNIX_VERSION = 'Unix Version'
@@ -34,11 +36,11 @@ class UnknownCommand(Exception):
 
 
 class ExceptionArgumentParser(argparse.ArgumentParser):
-    def error(self, message):
+    def error(self, message: str) -> NoReturn:
         raise UnknownCommand(message)
 
 
-def detect_openslides_type():
+def detect_openslides_type() -> str:
     """
     Returns the type of this OpenSlides version.
     """
@@ -58,7 +60,7 @@ def detect_openslides_type():
     return openslides_type
 
 
-def get_default_settings_path(openslides_type=None):
+def get_default_settings_path(openslides_type: str=None) -> str:
     """
     Returns the default settings path according to the OpenSlides type.
 
@@ -80,7 +82,7 @@ def get_default_settings_path(openslides_type=None):
     return os.path.join(parent_directory, 'openslides', 'settings.py')
 
 
-def get_local_settings_path():
+def get_local_settings_path() -> str:
     """
     Returns the path to a local settings.
 
@@ -89,7 +91,7 @@ def get_local_settings_path():
     return os.path.join('personal_data', 'var', 'settings.py')
 
 
-def setup_django_settings_module(settings_path=None, local_installation=None):
+def setup_django_settings_module(settings_path: str =None, local_installation: bool=False) -> None:
     """
     Sets the environment variable ENVIRONMENT_VARIABLE, that means
     'DJANGO_SETTINGS_MODULE', to the given settings.
@@ -100,7 +102,7 @@ def setup_django_settings_module(settings_path=None, local_installation=None):
     If the argument settings_path is set, then the environment variable is
     always overwritten.
     """
-    if settings_path is None and os.environ.get(ENVIRONMENT_VARIABLE, None):
+    if settings_path is None and os.environ.get(ENVIRONMENT_VARIABLE, ""):
         return
 
     if settings_path is None:
@@ -128,7 +130,7 @@ def setup_django_settings_module(settings_path=None, local_installation=None):
     os.environ[ENVIRONMENT_VARIABLE] = settings_module_name
 
 
-def get_default_settings_context(user_data_path=None):
+def get_default_settings_context(user_data_path: str=None) -> Dict[str, str]:
     """
     Returns the default context values for the settings template:
     'openslides_user_data_path', 'import_function' and 'debug'.
@@ -154,7 +156,7 @@ def get_default_settings_context(user_data_path=None):
     return default_context
 
 
-def get_default_user_data_path(openslides_type):
+def get_default_user_data_path(openslides_type: str) -> str:
     """
     Returns the default path for user specific data according to the OpenSlides
     type.
@@ -174,7 +176,7 @@ def get_default_user_data_path(openslides_type):
     return default_user_data_path
 
 
-def get_win32_app_data_path():
+def get_win32_app_data_path() -> str:
     """
     Returns the path to Windows' AppData directory.
     """
@@ -197,7 +199,7 @@ def get_win32_app_data_path():
     return buf.value
 
 
-def get_win32_portable_path():
+def get_win32_portable_path() -> str:
     """
     Returns the path to the Windows portable version.
     """
@@ -217,14 +219,14 @@ def get_win32_portable_path():
     return portable_path
 
 
-def get_win32_portable_user_data_path():
+def get_win32_portable_user_data_path() -> str:
     """
     Returns the user data path to the Windows portable version.
     """
     return os.path.join(get_win32_portable_path(), 'openslides')
 
 
-def write_settings(settings_path=None, template=None, **context):
+def write_settings(settings_path: str=None, template: str=None, **context: str) -> str:
     """
     Creates the settings file at the given path using the given values for the
     file template.
@@ -259,7 +261,7 @@ def write_settings(settings_path=None, template=None, **context):
     return os.path.realpath(settings_path)
 
 
-def open_browser(host, port):
+def open_browser(host: str, port: int) -> None:
     """
     Launches the default web browser at the given host and port and opens
     the webinterface. Uses start_browser internally.
@@ -271,7 +273,7 @@ def open_browser(host, port):
         start_browser('http://%s:%s' % (host, port))
 
 
-def start_browser(browser_url):
+def start_browser(browser_url: str) -> None:
     """
     Launches the default web browser at the given url and opens the
     webinterface.
@@ -282,7 +284,7 @@ def start_browser(browser_url):
         print('Could not locate runnable browser: Skipping start')
     else:
 
-        def function():
+        def function() -> None:
             # TODO: Use a nonblocking sleep event here. Tornado has such features.
             time.sleep(1)
             browser.open(browser_url)
@@ -291,7 +293,7 @@ def start_browser(browser_url):
         thread.start()
 
 
-def get_database_path_from_settings():
+def get_database_path_from_settings() -> Optional[str]:
     """
     Retrieves the database path out of the settings file. Returns None,
     if it is not a SQLite3 database.
@@ -313,7 +315,7 @@ def get_database_path_from_settings():
     return database_path
 
 
-def is_local_installation():
+def is_local_installation() -> bool:
     """
     Returns True if the command is called for a local installation
 
@@ -322,7 +324,7 @@ def is_local_installation():
     return True if '--local-installation' in sys.argv or 'manage.py' in sys.argv[0] else False
 
 
-def get_geiss_path():
+def get_geiss_path() -> str:
     """
     Returns the path and file to the Geiss binary.
     """
@@ -332,7 +334,7 @@ def get_geiss_path():
     return os.path.join(download_path, bin_name)
 
 
-def is_windows():
+def is_windows() -> bool:
     """
     Returns True if the current system is Windows. Returns False otherwise.
     """
