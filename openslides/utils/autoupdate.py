@@ -2,7 +2,7 @@ import json
 import time
 import warnings
 from collections import defaultdict
-from typing import Any, Dict, Generator, Iterable, List, Union, cast
+from typing import Any, Dict, Generator, Iterable, List, Tuple, Union
 
 from channels import Channel, Group
 from channels.asgi import get_channel_layer
@@ -16,7 +16,15 @@ from ..core.config import config
 from ..core.models import Projector
 from .auth import anonymous_is_enabled, has_perm, user_to_collection_user
 from .cache import restricted_data_cache, websocket_user_cache
-from .collection import Collection, CollectionElement, CollectionElementList
+from .collection import AutoupdateFormat  # noqa
+from .collection import (
+    ChannelMessageFormat,
+    Collection,
+    CollectionElement,
+    format_for_autoupdate,
+    from_channel_message,
+    to_channel_message,
+)
 
 
 def send_or_wait(send_func: Any, *args: Any, **kwargs: Any) -> None:
@@ -42,28 +50,6 @@ def send_or_wait(send_func: Any, *args: Any, **kwargs: Any) -> None:
             'Channel layer is full. Channel message dropped.',
             RuntimeWarning
         )
-
-
-def format_for_autoupdate(collection_string: str, id: int, action: str, data: Dict[str, Any]=None) -> Dict[str, Any]:
-    """
-    Returns a dict that can be used for autoupdate.
-    """
-    if not data:
-        # If the data is None or is empty, then the action has to be deleted,
-        # even when it says diffrently. This can happen when the object is not
-        # deleted, but the user has no permission to see it.
-        action = 'deleted'
-
-    output = {
-        'collection': collection_string,
-        'id': id,
-        'action': action,
-    }
-
-    if action != 'deleted':
-        output['data'] = data
-
-    return output
 
 
 @channel_session_user_from_http
@@ -97,10 +83,7 @@ def ws_add_site(message: Any) -> None:
         output = []
         for collection in get_startup_collections():
             access_permissions = collection.get_access_permissions()
-            restricted_data = access_permissions.get_restricted_data(collection, user)
-
-            # At this point restricted_data has to be a list. So we have to tell it mypy
-            restricted_data = cast(List[Dict[str, Any]], restricted_data)
+            restricted_data = access_permissions.get_restricted_data(collection.get_full_data(), user)
 
             for data in restricted_data:
                 if data is None:
@@ -109,10 +92,10 @@ def ws_add_site(message: Any) -> None:
                     continue
 
                 formatted_data = format_for_autoupdate(
-                        collection_string=collection.collection_string,
-                        id=data['id'],
-                        action='changed',
-                        data=data)
+                    collection_string=collection.collection_string,
+                    id=data['id'],
+                    action='changed',
+                    data=data)
 
                 output.append(formatted_data)
                 # Cache restricted data for user
@@ -231,14 +214,21 @@ def ws_add_projector(message: Any, projector_id: int) -> None:
                 projector = Projector.objects.get(pk=config['projector_broadcast'])
 
             # Collect all elements that are on the projector.
-            output = []
+            output = []  # type: List[AutoupdateFormat]
             for requirement in projector.get_all_requirements():
                 required_collection_element = CollectionElement.from_instance(requirement)
                 output.append(required_collection_element.as_autoupdate_for_projector())
 
             # Collect all config elements.
-            collection = Collection(config.get_collection_string())
-            output.extend(collection.as_autoupdate_for_projector())
+            config_collection = Collection(config.get_collection_string())
+            projector_data = (config_collection.get_access_permissions()
+                              .get_projector_data(config_collection.get_full_data()))
+            for data in projector_data:
+                output.append(format_for_autoupdate(
+                    config_collection.collection_string,
+                    data['id'],
+                    'changed',
+                    data))
 
             # Collect the projector instance.
             collection_element = CollectionElement.from_instance(projector)
@@ -255,11 +245,11 @@ def ws_disconnect_projector(message: Any, projector_id: int) -> None:
     Group('projector-{}'.format(projector_id)).discard(message.reply_channel)
 
 
-def send_data(message: Any) -> None:
+def send_data(message: ChannelMessageFormat) -> None:
     """
     Informs all site users and projector clients about changed data.
     """
-    collection_elements = CollectionElementList.from_channels_message(message)
+    collection_elements = from_channel_message(message)
 
     # Send data to site users.
     for user_id, channel_names in websocket_user_cache.get_all().items():
@@ -338,7 +328,7 @@ def inform_changed_data(instances: Union[Iterable[Model], Model], information: D
             pass
 
     # Generates an collection element list for the root_instances.
-    collection_elements = CollectionElementList()
+    collection_elements = []  # type: List[CollectionElement]
     for root_instance in root_instances:
         collection_elements.append(
             CollectionElement.from_instance(
@@ -351,32 +341,20 @@ def inform_changed_data(instances: Union[Iterable[Model], Model], information: D
     transaction.on_commit(lambda: send_autoupdate(collection_elements))
 
 
-# TODO: Change the input argument to tuples
-def inform_deleted_data(*args: Any, information: Dict[str, Any]=None) -> None:
+def inform_deleted_data(elements: Iterable[Tuple[str, int]], information: Dict[str, Any]=None) -> None:
     """
     Informs the autoupdate system and the caching system about the deletion of
     elements.
 
-    The function has to be called with the attributes collection_string and id.
-    Multible elements can be used. For example:
-
-    inform_deleted_data('motions/motion', 1, 'assignments/assignment', 5)
-
     The argument information is added to each collection element.
     """
-    if len(args) % 2 or not args:
-        raise ValueError(
-            "inform_deleted_data has to be called with the same number of "
-            "collection strings and ids. It has to be at least one collection "
-            "string and one id.")
-
     # Go through each pair of collection_string and id and generate a collection
     # element from it.
-    collection_elements = CollectionElementList()
-    for index in range(0, len(args), 2):
+    collection_elements = []  # type: List[CollectionElement]
+    for element in elements:
         collection_elements.append(CollectionElement.from_values(
-            collection_string=args[index],
-            id=args[index + 1],
+            collection_string=element[0],
+            id=element[1],
             deleted=True,
             information=information))
     # If currently there is an open database transaction, then the
@@ -386,7 +364,7 @@ def inform_deleted_data(*args: Any, information: Dict[str, Any]=None) -> None:
     transaction.on_commit(lambda: send_autoupdate(collection_elements))
 
 
-def inform_data_collection_element_list(collection_elements: CollectionElementList,
+def inform_data_collection_element_list(collection_elements: List[CollectionElement],
                                         information: Dict[str, Any]=None) -> None:
     """
     Informs the autoupdate system about some collection elements. This is
@@ -399,7 +377,7 @@ def inform_data_collection_element_list(collection_elements: CollectionElementLi
     transaction.on_commit(lambda: send_autoupdate(collection_elements))
 
 
-def send_autoupdate(collection_elements: CollectionElementList) -> None:
+def send_autoupdate(collection_elements: List[CollectionElement]) -> None:
     """
     Helper function, that sends collection_elements through a channel to the
     autoupdate system.
@@ -409,7 +387,7 @@ def send_autoupdate(collection_elements: CollectionElementList) -> None:
     if collection_elements:
         send_or_wait(
             Channel('autoupdate.send_data').send,
-            collection_elements.as_channels_message())
+            to_channel_message(collection_elements))
 
 
 def get_startup_collections() -> Generator[Collection, None, None]:

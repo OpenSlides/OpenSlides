@@ -41,6 +41,10 @@ DATABASES = {
     }
 }
 
+# When use_redis is True, the restricted data cache caches the data individuel
+# for each user. This requires a lot of memory if there are a lot of active
+# users. If use_redis is False, this setting has no effect.
+DISABLE_USER_CACHE = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
@@ -75,13 +79,12 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.MD5PasswordHasher',
 ]
 
-
-# Use the dummy cache that does not cache anything
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
-    },
-    'locmem': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/0",
+        "OPTIONS": {
+            "REDIS_CLIENT_CLASS": "fakeredis.FakeStrictRedis",
+        }
     }
 }

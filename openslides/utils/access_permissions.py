@@ -1,12 +1,9 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from django.db.models import Model
 from rest_framework.serializers import Serializer
 
-from .collection import Collection, CollectionElement
-
-Container = Union[CollectionElement, Collection]
-RestrictedData = Union[List[Dict[str, Any]], Dict[str, Any], None]
+from .collection import CollectionElement
 
 
 class BaseAccessPermissions:
@@ -40,35 +37,30 @@ class BaseAccessPermissions:
         """
         return self.get_serializer_class(user=None)(instance).data
 
-    def get_restricted_data(self, container: Container, user: Optional[CollectionElement]) -> RestrictedData:
+    def get_restricted_data(
+            self, full_data: List[Dict[str, Any]],
+            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user.
 
-        The argument container should be a CollectionElement or a
-        Collection. The type of the return value is a dictionary or a list
-        according to the given type (or None). Returns None or an empty
-        list if the user has no read access. Returns reduced data if the
-        user has limited access. Default: Returns full data if the user has
-        read access to model instances.
+        The argument full_data has to be a list of full_data dicts as they are
+        created with CollectionElement.get_full_data(). The type of the return
+        is the same. Returns an empty list if the user has no read access.
+        Returns reduced data if the user has limited access.
+        Default: Returns full data if the user has read access to model instances.
 
         Hint: You should override this method if your get_serializer_class()
         method returns different serializers for different users or if you
         have access restrictions in your view or viewset in methods like
         retrieve() or list().
         """
-        if self.check_permissions(user):
-            data = container.get_full_data()
-        elif isinstance(container, Collection):
-            data = []
-        else:
-            data = None
-        return data
+        return full_data if self.check_permissions(user) else []
 
-    def get_projector_data(self, container: Container) -> RestrictedData:
+    def get_projector_data(self, full_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
-        Returns the serialized data for the projector. Returns None if the
-        user has no access to this specific data. Returns reduced data if
+        Returns the serialized data for the projector. Returns an empty list if
+        the user has no access to this specific data. Returns reduced data if
         the user has limited access. Default: Returns full data.
         """
-        return container.get_full_data()
+        return full_data

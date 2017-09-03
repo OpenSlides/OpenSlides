@@ -1,11 +1,12 @@
 from django.core.urlresolvers import reverse
+from django_redis import get_redis_connection
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.core.config import config
 from openslides.users.models import Group, PersonalNote, User
 from openslides.users.serializers import UserFullSerializer
-from openslides.utils.test import TestCase, use_cache
+from openslides.utils.test import TestCase
 
 
 class TestUserDBQueries(TestCase):
@@ -23,7 +24,6 @@ class TestUserDBQueries(TestCase):
         for index in range(10):
             User.objects.create(username='user{}'.format(index))
 
-    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
@@ -32,18 +32,19 @@ class TestUserDBQueries(TestCase):
         * 1 requests to get the list of all groups.
         """
         self.client.force_login(User.objects.get(pk=1))
+        get_redis_connection('default').flushall()
         with self.assertNumQueries(7):
             self.client.get(reverse('user-list'))
 
-    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
         * 3 requests to get the permission for anonymous,
-        * 2 requests to get the list of all users and
+        * 1 requests to get the list of all users and
         * 2 request to get all groups (needed by the user serializer).
         """
-        with self.assertNumQueries(7):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(6):
             self.client.get(reverse('user-list'))
 
 
@@ -62,28 +63,28 @@ class TestGroupDBQueries(TestCase):
         for index in range(10):
             Group.objects.create(name='group{}'.format(index))
 
-    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 4 requests to get the session an the request user with its permissions and
+        * 6 requests to get the session an the request user with its permissions and
         * 1 request to get the list of all groups.
 
         The data of the groups where loaded when the admin was authenticated. So
         only the list of all groups has be fetched from the db.
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(5):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(7):
             self.client.get(reverse('group-list'))
 
-    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
         * 1 requests to find out if anonymous is enabled
-        * 3 request to get the list of all groups and
+        * 2 request to get the list of all groups and
         """
-        with self.assertNumQueries(4):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(3):
             self.client.get(reverse('group-list'))
 
 

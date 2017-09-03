@@ -1,8 +1,3 @@
-from contextlib import ContextDecorator
-from typing import Any
-from unittest.mock import patch
-
-from django.core.cache import caches
 from django.test import TestCase as _TestCase
 from django.test.runner import DiscoverRunner
 
@@ -37,23 +32,6 @@ class TestCase(_TestCase):
     """
 
     def tearDown(self) -> None:
+        from django_redis import get_redis_connection
         config.key_to_id = {}
-
-
-class use_cache(ContextDecorator):
-    """
-    Contextmanager that changes the code to use the local memory cache.
-
-    Can also be used as decorator for a function.
-
-    The code inside the contextmananger starts with an empty cache.
-    """
-
-    def __enter__(self) -> None:
-        cache = caches['locmem']
-        cache.clear()
-        self.patch = patch('openslides.utils.collection.cache', cache)
-        self.patch.start()
-
-    def __exit__(self, *exc: Any) -> None:
-        self.patch.stop()
+        get_redis_connection("default").flushall()

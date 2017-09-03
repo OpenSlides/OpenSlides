@@ -108,6 +108,7 @@ class ConfigViewSet(TestCase):
         # Save the old value of the config object and add the test values
         # TODO: Can be changed to setUpClass when Django 1.8 is no longer supported
         self._config_values = config.config_variables.copy()
+        config.key_to_id = {}
         config.update_config_variables(set_simple_config_view_integration_config_test())
         config.save_default_values()
 

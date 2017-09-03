@@ -1,3 +1,5 @@
+from typing import List  # noqa
+
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import update_session_auth_hash
@@ -15,7 +17,7 @@ from ..utils.autoupdate import (
     inform_changed_data,
     inform_data_collection_element_list,
 )
-from ..utils.collection import CollectionElement, CollectionElementList
+from ..utils.collection import CollectionElement
 from ..utils.rest_api import (
     ModelViewSet,
     Response,
@@ -250,7 +252,7 @@ class GroupViewSet(ModelViewSet):
 
             # Some permissions are added.
             if len(new_permissions) > 0:
-                collection_elements = CollectionElementList()
+                collection_elements = []  # type: List[CollectionElement]
                 signal_results = permission_change.send(None, permissions=new_permissions, action='added')
                 for receiver, signal_collections in signal_results:
                     for collection in signal_collections:

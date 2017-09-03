@@ -714,12 +714,11 @@ class ChatMessageViewSet(ModelViewSet):
         chatmessages = ChatMessage.objects.all()
         args = []
         for chatmessage in chatmessages:
-            args.append(chatmessage.get_collection_string())
-            args.append(chatmessage.pk)
+            args.append((chatmessage.get_collection_string(), chatmessage.pk))
         chatmessages.delete()
         # Trigger autoupdate and setup response.
         if len(args) > 0:
-            inform_deleted_data(*args)
+            inform_deleted_data(args)
         return Response({'detail': _('All chat messages deleted successfully.')})
 
 
