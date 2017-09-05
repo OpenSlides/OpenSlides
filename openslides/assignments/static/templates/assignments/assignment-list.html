@@ -208,7 +208,8 @@
         | osFilter: filter.filterString : filter.getObjectQueryString
         | MultiselectFilter: filter.multiselectFilters.tag : getItemId.tag
         | MultiselectFilter: filter.multiselectFilters.phase : getItemId.phase
-        | orderBy: sort.column : sort.reverse)">
+        | orderBy: sort.column : sort.reverse)
+        | limitTo : itemsPerPage : limitBegin">
 
       <!-- select column -->
       <div ng-show="isSelectMode" os-perms="assignments.can_manage" class="col-xs-1 centered">
@@ -321,6 +322,19 @@
         </div>
       </div>
     </div> <!-- main table -->
-  </div> <!-- end container -->
 
+    <ul uib-pagination
+        ng-show="assignmentsFiltered.length > itemsPerPage"
+        total-items="assignmentsFiltered.length"
+        items-per-page="itemsPerPage"
+        ng-model="currentPage"
+        ng-change="pageChanged()"
+        class="pagination-sm"
+        direction-links="false"
+        boundary-links="true"
+        first-text="&laquo;"
+        last-text="&raquo;">
+    </ul>
+
+  </div> <!-- end container -->
 </div>

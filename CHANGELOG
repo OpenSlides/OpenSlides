@@ -39,6 +39,9 @@ Motions:
 - Added inline Editing for motion reason [#3361].
 - Added multiselect filter for motion comments [#3372].
 
+Elections:
+- Added pagination for list view [#3393].
+
 Users:
 - User without permission to see users can now see agenda item speakers,
   motion submitters and supporters, assignment candidates, mediafile
