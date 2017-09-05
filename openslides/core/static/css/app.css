@@ -1120,10 +1120,23 @@ img {
 
 /** Config **/
 .input-comments > div {
-    margin-bottom: 5px
+    margin-bottom: 5px;
 }
 .config-checkbox {
     padding: 6px 12px;
+}
+.config-translations > div {
+    margin-bottom: 5px;
+    padding-right: 15px;
+    width: 100%;
+}
+.config-translations .inputs input {
+    width: 47%;
+}
+.config-translations .inputs .arrow {
+    width: 6%;
+    float: left;
+    text-align: center;
 }
 
 /** Pojector sidebar **/

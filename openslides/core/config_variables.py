@@ -322,3 +322,12 @@ def get_config_variables():
         weight=312,
         group='Logo',
         hidden=True)
+
+    # Custom translations
+    yield ConfigVariable(
+        name='translations',
+        label='Custom translations',
+        default_value=[],
+        input_type='translations',
+        weight=1000,
+        group='Custom translations')

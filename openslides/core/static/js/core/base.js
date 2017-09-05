@@ -254,6 +254,52 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+// Hook into gettextCatalog to include custom translations by wrapping
+// the getString method. The translations are stored in the config.
+.decorator('gettextCatalog', [
+    '$delegate',
+    '$rootScope',
+    function ($delegate, $rootScope) {
+        var oldGetString = $delegate.getString;
+        var customTranslations = {};
+
+        $delegate.getString = function () {
+            var translated = oldGetString.apply($delegate, arguments);
+            if (customTranslations[translated]) {
+                translated = customTranslations[translated];
+            }
+            return translated;
+        };
+        $delegate.setCustomTranslations = function (translations) {
+            customTranslations = translations;
+            $rootScope.$broadcast('gettextLanguageChanged');
+        };
+
+        return $delegate;
+    }
+])
+
+.run([
+    '$rootScope',
+    'Config',
+    'gettextCatalog',
+    function ($rootScope, Config, gettextCatalog) {
+        $rootScope.$watch(function () {
+            return Config.lastModified('translations');
+        }, function () {
+            var translations = Config.get('translations');
+            if (translations) {
+                var customTranslations = {};
+                _.forEach(translations.value, function (entry) {
+                    customTranslations[entry.original] = entry.translation;
+                });
+                // Update all translate directives
+                gettextCatalog.setCustomTranslations(customTranslations);
+            }
+        });
+    }
+])
+
 // set browser language as default language for OpenSlides
 .run([
     'gettextCatalog',

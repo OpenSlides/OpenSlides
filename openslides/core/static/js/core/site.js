@@ -825,6 +825,7 @@ angular.module('OpenSlidesApp.core.site', [
                 colorpicker: 'colorpicker',
                 datetimepicker: 'datetimepicker',
                 majorityMethod: 'choice',
+                translations: 'translations',
             }[type];
         };
 
@@ -1130,6 +1131,19 @@ angular.module('OpenSlidesApp.core.site', [
             $scope.save(configOption, parent.value);
         };
         $scope.removeComment = function (configOption, parent, index) {
+            parent.value.splice(index, 1);
+            $scope.save(configOption, parent.value);
+        };
+
+        // For custom translations input
+        $scope.addTranslation = function (configOption, parent) {
+            parent.value.push({
+                original: gettextCatalog.getString('New'),
+                translation: gettextCatalog.getString('New'),
+            });
+            $scope.save(configOption, parent.value);
+        };
+        $scope.removeTranslation = function (configOption, parent, index) {
             parent.value.splice(index, 1);
             $scope.save(configOption, parent.value);
         };
@@ -1912,6 +1926,7 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('PDF footer logo');
         gettext('Web interface header logo');
         gettext('PDF ballot paper logo');
+        gettext('Custom translations');
 
         // Mark the string 'Default projector' here, because it does not appear in the templates.
         gettext('Default projector');
