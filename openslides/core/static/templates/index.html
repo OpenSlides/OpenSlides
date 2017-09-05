@@ -210,7 +210,7 @@
     </div>
 
     <!-- col1 -->
-    <div class="col1" ng-class="{
+    <div id="main-column" class="col1" ng-class="{
         'sidebar-max': isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
         'sidebar-min': !isProjectorSidebar && operator.hasPerms('core.can_see_projector'),
         'sidebar-none': !operator.hasPerms('core.can_see_projector') }">

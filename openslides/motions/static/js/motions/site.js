@@ -1485,6 +1485,10 @@ angular.module('OpenSlidesApp.motions.site', [
             return Boolean(isAllowed);
         };
         // personal note
+        // For pinning the personal note container we need to adjust the width with JS. We
+        // do not use angular here, because on every window resize a digist cycle would trigger.
+        // This costs too much performance. We use JQuery here, because it is fast for DOM
+        // manipulation and very responsive.
         $scope.toggleStar = function () {
             if ($scope.motion.personalNote) {
                 $scope.motion.personalNote.star = !$scope.motion.personalNote.star;
@@ -1493,6 +1497,22 @@ angular.module('OpenSlidesApp.motions.site', [
             }
             PersonalNoteManager.saveNote($scope.motion, $scope.motion.personalNote);
         };
+        $scope.personalNotePinned = false;
+        $scope.pinPersonalNote = function () {
+            $scope.personalNotePinned = !$scope.personalNotePinned;
+            if ($scope.personalNotePinned) {
+                resizePersonalNoteContainer();
+            } else {
+                $('#personalNote').css('width', '');
+            }
+        };
+        var resizePersonalNoteContainer = function () {
+            if ($scope.personalNotePinned) {
+                var width = $('#main-column').width() - 40; // Subtract 2x20px margin
+                $('#personalNote').css('width', width + 'px');
+            }
+        };
+        $(window).resize(resizePersonalNoteContainer);
 
         // Inline editing functions
         $scope.inlineEditing = MotionInlineEditing.createInstance($scope, motion,

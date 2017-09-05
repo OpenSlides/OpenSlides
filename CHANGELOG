@@ -38,6 +38,7 @@ Motions:
   change recommendations [#3288]
 - Added inline Editing for motion reason [#3361].
 - Added multiselect filter for motion comments [#3372].
+- Added support for pinning personal notes to the window [#3360].
 
 Users:
 - User without permission to see users can now see agenda item speakers,
