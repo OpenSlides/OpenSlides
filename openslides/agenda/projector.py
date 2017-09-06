@@ -1,3 +1,5 @@
+from typing import Generator, Type
+
 from ..core.config import config
 from ..core.exceptions import ProjectorException
 from ..core.models import Projector
@@ -136,3 +138,9 @@ class CurrentListOfSpeakersSlide(ProjectorElement):
                         output.extend(self.get_requirements_as_collection_elements(config_entry))
                         break
         return output
+
+
+def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
+    yield ItemListSlide
+    yield ListOfSpeakersSlide
+    yield CurrentListOfSpeakersSlide

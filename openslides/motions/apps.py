@@ -2,6 +2,7 @@ from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 
 from ..utils.collection import Collection
+from ..utils.projector import register_projector_elements
 
 
 class MotionsAppConfig(AppConfig):
@@ -11,20 +12,18 @@ class MotionsAppConfig(AppConfig):
     angular_projector_module = True
 
     def ready(self):
-        # Load projector elements.
-        # Do this by just importing all from these files.
-        from . import projector  # noqa
-
         # Import all required stuff.
         from openslides.core.config import config
         from openslides.core.signals import permission_change, user_data_required
         from openslides.utils.rest_api import router
         from .config_variables import get_config_variables
+        from .projector import get_projector_elements
         from .signals import create_builtin_workflows, get_permission_change_data, required_users
         from .views import CategoryViewSet, MotionViewSet, MotionBlockViewSet, MotionPollViewSet, MotionChangeRecommendationViewSet, WorkflowViewSet
 
-        # Define config variables
+        # Define config variables and projector elements.
         config.update_config_variables(get_config_variables())
+        register_projector_elements(get_projector_elements())
 
         # Connect signals.
         post_migrate.connect(create_builtin_workflows, dispatch_uid='motion_create_builtin_workflows')

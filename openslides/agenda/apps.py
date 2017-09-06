@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 
 from ..utils.collection import Collection
+from ..utils.projector import register_projector_elements
 
 
 class AgendaAppConfig(AppConfig):
@@ -10,16 +11,13 @@ class AgendaAppConfig(AppConfig):
     angular_projector_module = True
 
     def ready(self):
-        # Load projector elements.
-        # Do this by just importing all from these files.
-        from . import projector  # noqa
-
         # Import all required stuff.
         from django.db.models.signals import pre_delete, post_save
-        from openslides.core.config import config
-        from openslides.core.signals import permission_change, user_data_required
-        from openslides.utils.rest_api import router
+        from ..core.config import config
+        from ..core.signals import permission_change, user_data_required
+        from ..utils.rest_api import router
         from .config_variables import get_config_variables
+        from .projector import get_projector_elements
         from .signals import (
             get_permission_change_data,
             listen_to_related_object_post_delete,
@@ -27,8 +25,9 @@ class AgendaAppConfig(AppConfig):
             required_users)
         from .views import ItemViewSet
 
-        # Define config variables
+        # Define config variables and projector elements.
         config.update_config_variables(get_config_variables())
+        register_projector_elements(get_projector_elements())
 
         # Connect signals.
         post_save.connect(

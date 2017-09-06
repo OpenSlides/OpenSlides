@@ -1,3 +1,5 @@
+from typing import Generator, Type
+
 from ..core.exceptions import ProjectorException
 from ..utils.projector import ProjectorElement
 from .models import Mediafile
@@ -21,3 +23,7 @@ class MediafileSlide(ProjectorElement):
             pass
         else:
             yield mediafile
+
+
+def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
+    yield MediafileSlide

@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db.models.signals import post_migrate
 
 from ..utils.collection import Collection
+from ..utils.projector import register_projector_elements
 
 
 class CoreAppConfig(AppConfig):
@@ -12,15 +13,12 @@ class CoreAppConfig(AppConfig):
     angular_projector_module = True
 
     def ready(self):
-        # Load projector elements.
-        # Do this by just importing all from these files.
-        from . import projector  # noqa
-
         # Import all required stuff.
         from .config import config
         from .signals import post_permission_creation
         from ..utils.rest_api import router
         from .config_variables import get_config_variables
+        from .projector import get_projector_elements
         from .signals import (
             delete_django_app_permissions,
             get_permission_change_data,
@@ -36,8 +34,9 @@ class CoreAppConfig(AppConfig):
             TagViewSet,
         )
 
-        # Define config variables
+        # Define config variables and projector elements.
         config.update_config_variables(get_config_variables())
+        register_projector_elements(get_projector_elements())
 
         # Connect signals.
         post_permission_creation.connect(

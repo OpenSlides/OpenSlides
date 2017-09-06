@@ -5,7 +5,7 @@ from jsonfield import JSONField
 
 from ..utils.collection import CollectionElement
 from ..utils.models import RESTModelMixin
-from ..utils.projector import ProjectorElement
+from ..utils.projector import get_all_projector_elements
 from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,
@@ -110,9 +110,7 @@ class Projector(RESTModelMixin, models.Model):
         result is also used.
         """
         # Get all elements from all apps.
-        elements = {}
-        for element in ProjectorElement.get_all():  # type: ignore
-            elements[element.name] = element
+        elements = get_all_projector_elements()
 
         # Parse result
         result = {}
@@ -137,9 +135,7 @@ class Projector(RESTModelMixin, models.Model):
         Generator which returns all instances that are shown on this projector.
         """
         # Get all elements from all apps.
-        elements = {}
-        for element in ProjectorElement.get_all():  # type: ignore
-            elements[element.name] = element
+        elements = get_all_projector_elements()
 
         # Generator
         for key, value in self.config.items():
@@ -166,11 +162,8 @@ class Projector(RESTModelMixin, models.Model):
             # It is necessary to parse all active projector elements to check whether they require some data.
             this_projector = collection_element.collection_string == self.get_collection_string() and collection_element.id == self.pk
             collection_element.information['this_projector'] = this_projector
-            elements = {}
 
-            # Build projector elements.
-            for element in ProjectorElement.get_all():  # type: ignore
-                elements[element.name] = element
+            elements = get_all_projector_elements()
 
             # Iterate over all active projector elements.
             for key, value in self.config.items():

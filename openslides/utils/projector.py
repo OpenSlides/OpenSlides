@@ -1,42 +1,17 @@
-from typing import Any, Dict, Iterable, List, Optional  # noqa
-
-from django.dispatch import Signal
+from typing import Any, Dict, Generator, Iterable, List, Type
 
 from .collection import CollectionElement
-from .dispatch import SignalConnectMetaClass
 
 
-class ProjectorElement(object, metaclass=SignalConnectMetaClass):
+class ProjectorElement:
     """
     Base class for an element on the projector.
 
     Every app which wants to add projector elements has to create classes
     subclassing from this base class with different names. The name attribute
-    has to be set. The metaclass (SignalConnectMetaClass) does the rest of the
-    magic.
+    has to be set.
     """
-    signal = Signal()
-    name = None  # type: Optional[str]
-
-    def __init__(self, **kwargs: str) -> None:
-        """
-        Initializes the projector element instance. This is done when the
-        signal is sent.
-
-        Because of Django's signal API, we have to take wildcard keyword
-        arguments. But they are not used here.
-        """
-        pass
-
-    @classmethod
-    def get_dispatch_uid(cls) -> Optional[str]:
-        """
-        Returns the classname as a unique string for each class. Returns None
-        for the base class so it will not be connected to the signal.
-        """
-        if not cls.__name__ == 'ProjectorElement':
-            return cls.__name__
-        return None
+    name = None  # type: str
 
     def check_and_update_data(self, projector_object: Any, config_entry: Any) -> Any:
         """
@@ -107,3 +82,25 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
             else:
                 output = []
         return output
+
+
+projector_elements = {}  # type: Dict[str, ProjectorElement]
+
+
+def register_projector_elements(elements: Generator[Type[ProjectorElement], None, None]) -> None:
+    """
+    Registers projector elements for later use.
+
+    Has to be called in the app.ready method.
+    """
+    for Element in elements:
+        element = Element()
+        projector_elements[element.name] = element
+
+
+def get_all_projector_elements() -> Dict[str, ProjectorElement]:
+    """
+    Returns all projector elements that where registered with
+    register_projector_elements()
+    """
+    return projector_elements

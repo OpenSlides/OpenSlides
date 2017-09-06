@@ -1,3 +1,5 @@
+from typing import Generator, Type
+
 from ..utils.projector import ProjectorElement
 from .exceptions import ProjectorException
 from .models import Countdown, ProjectorMessage
@@ -48,3 +50,9 @@ class ProjectorMessageElement(ProjectorElement):
             pass
         else:
             yield message
+
+
+def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
+    yield Clock
+    yield CountdownElement
+    yield ProjectorMessageElement
