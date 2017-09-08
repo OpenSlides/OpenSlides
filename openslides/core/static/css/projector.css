@@ -170,7 +170,7 @@ body {
 }
 .fullscreen {
     position: fixed;
-    top: 0;
+    top: 0 !important;
     left: 0;
     width: 100%;
     height: 100%;
@@ -389,6 +389,9 @@ tr.elected td {
 }
 
 /*** Agenda list ***/
+.agendalist {
+    line-height: 1.5em;
+}
 .agendalist p {
     font-size: 140%;
 }
@@ -404,6 +407,16 @@ tr.elected td {
 }
 .spacer {
     margin-top: 10px;
+}
+
+.agendalist-table td {
+    vertical-align: top;
+    padding-left: 5px;
+}
+
+.agendalist-table .number {
+    padding: 0;
+    white-space: nowrap;
 }
 
 

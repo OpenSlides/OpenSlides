@@ -1108,6 +1108,16 @@ img {
     padding: 5px 5px 5px 0;
 }
 
+/** Agenda table **/
+#agenda-table .icon-column {
+    width: 5%;
+}
+
+#agenda-table .title-column {
+    padding: 0px 10px;
+    width: 95%;
+}
+
 /** Mediafile table **/
 #mediafile-table .icon-column {
     width: 10%;
