@@ -40,6 +40,7 @@ Motions:
 - Added inline Editing for motion reason [#3361].
 - Added multiselect filter for motion comments [#3372].
 - Added support for pinning personal notes to the window [#3360].
+- Clear identifier on state reset [#3356].
 
 Elections:
 - Added pagination for list view [#3393].
