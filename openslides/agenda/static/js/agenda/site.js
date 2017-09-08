@@ -451,7 +451,6 @@ angular.module('OpenSlidesApp.agenda.site', [
             $http.post('/rest/agenda/item/' + $scope.item.id + '/manage_speaker/', {'user': userId}).then(
                 function (success) {
                     $scope.alert.show = false;
-                    $scope.speakers = $scope.item.speakers;
                     $scope.speakerSelectBox = {};
                 }, function (error) {
                     $scope.alert = ErrorMessage.forAlert(error);
@@ -468,11 +467,9 @@ angular.module('OpenSlidesApp.agenda.site', [
                  data: JSON.stringify({speaker: speakerId})}
             )
             .then(function (success) {
-                $scope.speakers = $scope.item.speakers;
             }, function (error) {
                 $scope.alert = ErrorMessage.forAlert(error);
             });
-            $scope.speakers = $scope.item.speakers;
         };
 
         //delete all speakers from list of speakers
@@ -487,11 +484,9 @@ angular.module('OpenSlidesApp.agenda.site', [
                  data: JSON.stringify({speaker: speakersOnList})}
             )
             .then(function (success) {
-                $scope.speakers = $scope.item.speakers;
             }, function (error) {
                 $scope.alert = ErrorMessage.forAlert(error);
             });
-            $scope.speakers = $scope.item.speakers;
         };
 
         // Return true if the requested user is allowed to do a specific action
@@ -512,13 +507,13 @@ angular.module('OpenSlidesApp.agenda.site', [
                     }
                     return false;
                 case 'removeAll':
-                    return (operator.hasPerms('agenda.can_manage') &&
+                    return (operator.hasPerms('agenda.can_manage_list_of_speakers') &&
                             $scope.speakers.length > 0);
                 case 'beginNextSpeech':
-                    return (operator.hasPerms('agenda.can_manage') &&
+                    return (operator.hasPerms('agenda.can_manage_list_of_speakers') &&
                             $scope.nextSpeakers.length > 0);
                 case 'endCurrentSpeech':
-                    return (operator.hasPerms('agenda.can_manage') &&
+                    return (operator.hasPerms('agenda.can_manage_list_of_speakers') &&
                             $scope.currentSpeaker.length > 0);
                 case 'showLastSpeakers':
                     return $scope.lastSpeakers.length > 0;

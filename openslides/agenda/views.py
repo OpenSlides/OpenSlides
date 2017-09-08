@@ -47,7 +47,10 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             result = (has_perm(self.request.user, 'agenda.can_see') and
                       has_perm(self.request.user, 'agenda.can_see_hidden_items') and
                       has_perm(self.request.user, 'agenda.can_manage'))
-        elif self.action in ('speak', 'sort_speakers', 'numbering', 'sort'):
+        elif self.action in ('speak', 'sort_speakers'):
+            result = (has_perm(self.request.user, 'agenda.can_see') and
+                      has_perm(self.request.user, 'agenda.can_manage_list_of_speakers'))
+        elif self.action in ('numbering', 'sort'):
             result = (has_perm(self.request.user, 'agenda.can_see') and
                       has_perm(self.request.user, 'agenda.can_manage'))
         else:
@@ -88,7 +91,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                 user = self.request.user
             else:
                 # Add someone else.
-                if not has_perm(self.request.user, 'agenda.can_manage'):
+                if not has_perm(self.request.user, 'agenda.can_manage_list_of_speakers'):
                     self.permission_denied(request)
                 try:
                     user = get_user_model().objects.get(pk=int(user_id))
@@ -128,7 +131,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                     message = _('You are successfully removed from the list of speakers.')
             else:
                 # Remove someone else.
-                if not has_perm(self.request.user, 'agenda.can_manage'):
+                if not has_perm(self.request.user, 'agenda.can_manage_list_of_speakers'):
                     self.permission_denied(request)
                 if type(speaker_ids) is int:
                     speaker_ids = [speaker_ids]
