@@ -317,6 +317,7 @@ angular.module('OpenSlidesApp.assignments.site', [
             tag: function (assignment) {return assignment.tags_id;},
             phase: function (assignment) {return assignment.phase;},
         };
+
         // Sorting
         $scope.sort = osTableSort.createInstance();
         $scope.sort.column = 'title';
@@ -343,6 +344,15 @@ angular.module('OpenSlidesApp.assignments.site', [
             }
             Assignment.save(assignment);
         };
+
+        // Pagination
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 25;
+        $scope.limitBegin = 0;
+        $scope.pageChanged = function() {
+            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+        };
+
         // update phase
         $scope.updatePhase = function (assignment, phase_id) {
             assignment.phase = phase_id;
