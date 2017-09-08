@@ -27,7 +27,7 @@
 
     <!-- personal note editor field -->
     <div class="col-sm-12">
-      <div id="personal-note-inline-editor" style="min-height: 14px;"
+      <div id="personal-note-inline-editor"
         ng-bind-html="motion.personalNote.note | trusted" contenteditable="{{ personalNoteInlineEditing.isEditable }}"></div>
       <!-- save toolbar -->
       <div class="motion-save-toolbar" ng-class="{ 'visible': (personalNoteInlineEditing.changed && personalNoteInlineEditing.active) }">
