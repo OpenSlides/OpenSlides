@@ -55,6 +55,8 @@ Users:
 - Fixed compare of duplicated users while CSV user import [#3201].
 - Added fast mass import for users [#3290].
 - Removed OPTIONS request. All permissions are now provided on startup [#3306].
+- Added option to enable updating the last_login field in the database. The
+  default is now disabled [#3400].
 
 Core:
 - No reload on logoff. OpenSlides is now a full single page

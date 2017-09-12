@@ -1,4 +1,6 @@
 from django.apps import AppConfig
+from django.conf import settings
+from django.contrib.auth.signals import user_logged_in
 
 from ..utils.collection import Collection
 from ..utils.projector import register_projector_elements
@@ -31,6 +33,10 @@ class UsersAppConfig(AppConfig):
         permission_change.connect(
             get_permission_change_data,
             dispatch_uid='users_get_permission_change_data')
+
+        # Disconnect the last_login signal
+        if not settings.ENABLE_LAST_LOGIN_FIELD:
+            user_logged_in.disconnect(dispatch_uid='update_last_login')
 
         # Register viewsets.
         router.register(self.get_model('User').get_collection_string(), UserViewSet)

@@ -106,7 +106,6 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher',
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
     'django.contrib.auth.hashers.BCryptPasswordHasher',
-    'django.contrib.auth.hashers.MD5PasswordHasher',  # MD5 is only used for initial passwords.
 ]
 
 
@@ -143,3 +142,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+# Enable updating the last_login field for users on every login.
+ENABLE_LAST_LOGIN_FIELD = False
