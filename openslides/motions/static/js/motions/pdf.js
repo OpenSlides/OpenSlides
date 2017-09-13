@@ -121,7 +121,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                             text: gettextCatalog.getString('Category') + ':',
                             style: ['bold', 'grey'] },
                         {
-                            text: motion.category.name,
+                            text: motion.category.prefix + ' - ' + motion.category.name,
                             style: 'grey'
                         }
                     ]);
@@ -484,7 +484,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                             text: gettextCatalog.getString('Category') + ':',
                             style: ['bold', 'grey'] },
                         {
-                            text: motion.category.name,
+                            text: motion.category.prefix + ' - ' + motion.category.name,
                             style: 'grey'
                         }
                     ]);

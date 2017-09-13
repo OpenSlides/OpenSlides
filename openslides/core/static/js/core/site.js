@@ -134,20 +134,30 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-// Set up the activeAppTitle for the title from the webpage
+.factory('WebpageTitle', [
+    '$rootScope',
+    function ($rootScope) {
+        $rootScope.activeAppTitle = '';
+        return {
+            updateTitle: function (text) {
+                $rootScope.activeAppTitle = text || '';
+            },
+        };
+    }
+])
+
+// Watch for the basePerm on a stateChange and initialize the WebpageTitle factory
 .run([
     '$rootScope',
-    'gettextCatalog',
     'operator',
-    function ($rootScope, gettextCatalog, operator) {
-        $rootScope.activeAppTitle = '';
+    'WebpageTitle',
+    function ($rootScope, operator, WebpageTitle) {
         $rootScope.$on('$stateChangeSuccess', function(event, toState) {
+            WebpageTitle.updateTitle(toState.data ? toState.data.title : '');
             if (toState.data) {
-                $rootScope.activeAppTitle = toState.data.title || '';
                 $rootScope.baseViewPermissionsGranted = toState.data.basePerm ?
                     operator.hasPerms(toState.data.basePerm) : true;
             } else {
-                $rootScope.activeAppTitle = '';
                 $rootScope.baseViewPermissionsGranted = true;
             }
         });
@@ -983,6 +993,23 @@ angular.module('OpenSlidesApp.core.site', [
         $scope.switchLanguage = function (lang) {
             $scope.languages = Languages.setCurrentLanguage(lang);
             $scope.selectedLanguage = filterFilter($scope.languages, {selected: true});
+        };
+    }
+])
+
+.controller('GotoTopCtrl', [
+    '$scope',
+    '$window',
+    '$timeout',
+    function ($scope, $window, $timeout) {
+        $scope.show = false;
+        angular.element($window).bind('scroll', function () {
+            $timeout(function () {
+                $scope.show = ($window.pageYOffset >= 150);
+            });
+        });
+        $scope.gotoTop = function () {
+            $window.scrollTo(0, 0);
         };
     }
 ])

@@ -418,10 +418,11 @@ angular.module('OpenSlidesApp.assignments.site', [
     'gettextCatalog',
     'AssignmentPhases',
     'AssignmentPdfExport',
+    'WebpageTitle',
     'ErrorMessage',
     function($scope, $http, $filter, $timeout, filterFilter, gettext, ngDialog, AssignmentForm, operator,
         Assignment, User, assignmentId, Projector, ProjectionDefault, gettextCatalog, AssignmentPhases,
-        AssignmentPdfExport, ErrorMessage) {
+        AssignmentPdfExport, WebpageTitle, ErrorMessage) {
         User.bindAll({}, $scope, 'users');
         var assignment = Assignment.get(assignmentId);
         Assignment.loadRelations(assignment, 'agenda_item');
@@ -447,6 +448,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                 $scope.activeTab = $scope.assignment.polls.length - 1;
                 updateBallotTabsFlag = false;
             }
+            WebpageTitle.updateTitle(gettextCatalog.getString('Election') + ' ' + $scope.assignment.title);
         });
         $scope.candidateSelectBox = {};
         $scope.phases = AssignmentPhases;

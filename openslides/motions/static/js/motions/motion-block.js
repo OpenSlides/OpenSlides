@@ -144,9 +144,18 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
     'motionBlockId',
     'Projector',
     'ProjectionDefault',
+    'WebpageTitle',
+    'gettextCatalog',
     'ErrorMessage',
-    function($scope, $http, ngDialog, Motion, MotionBlockForm, MotionBlock, motionBlockId, Projector, ProjectionDefault, ErrorMessage) {
-        MotionBlock.bindOne(motionBlockId, $scope, 'motionBlock');
+    function($scope, $http, ngDialog, Motion, MotionBlockForm, MotionBlock, motionBlockId, Projector,
+        ProjectionDefault, WebpageTitle, gettextCatalog, ErrorMessage) {
+        $scope.$watch(function () {
+            return MotionBlock.lastModified(motionBlockId);
+        }, function () {
+            $scope.motionBlock = MotionBlock.get(motionBlockId);
+            WebpageTitle.updateTitle(gettextCatalog.getString('Motion block') + ' ' +
+                $scope.motionBlock.agenda_item.getTitle());
+        });
         Motion.bindAll({}, $scope, 'motions');
         $scope.$watch(function () {
             return Projector.lastModified();

@@ -15,7 +15,7 @@ Agenda:
 
 Motions:
 - New export dialog [#3185].
-- New feature: Personal notes for motions [#3190, #3267].
+- New feature: Personal notes for motions [#3190, #3267, #3404].
 - Fixed issue when creating/deleting motion comment fields in the
   settings [#3187].
 - Fixed empty motion comment field in motion update form [#3194].
@@ -80,6 +80,8 @@ Core:
 - Updated CKEditor to 4.7 [#3375].
 - Reduced ckeditor toolbar for inline editing [#3368].
 - Added custom translations in config [#3383].
+- Added dynamic webpage title [#3404].
+- Added 'go to top'-link [#3404].
 
 Mediafiles:
 - Fixed reloading of PDF on page change [#3274].

@@ -134,7 +134,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                 editors: []
             };
             var options = Editor.getOptions('inline', 'YOffset');
-            _.forEach($scope.noSpecialCommentsFields, function (field, id) {
+            _.forEachRight($scope.noSpecialCommentsFields, function (field, id) {
                 var inlineEditing = MotionInlineEditing.createInstance($scope, motion,
                     'view-original-comment-inline-editor-' + id, false, options,
                     function (obj) {
