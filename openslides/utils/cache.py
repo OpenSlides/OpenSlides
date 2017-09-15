@@ -15,6 +15,7 @@ from typing import (  # noqa
 
 from channels import Group
 from channels.sessions import session_for_reply_channel
+from django.conf import settings
 from django.core.cache import cache, caches
 
 if TYPE_CHECKING:
@@ -296,7 +297,10 @@ def get_redis_connection() -> Any:
 
 if use_redis_cache():
     websocket_user_cache = RedisWebsocketUserCache()  # type: BaseWebsocketUserCache
-    restricted_data_cache = RestrictedDataCache()  # type: Union[RestrictedDataCache, DummyRestrictedDataCache]
+    if settings.DISABLE_USER_CACHE:
+        restricted_data_cache = DummyRestrictedDataCache()  # type: Union[RestrictedDataCache, DummyRestrictedDataCache]
+    else:
+        restricted_data_cache = RestrictedDataCache()
 else:
     websocket_user_cache = DjangoCacheWebsocketUserCache()
     restricted_data_cache = DummyRestrictedDataCache()
