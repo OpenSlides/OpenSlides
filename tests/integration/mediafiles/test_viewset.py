@@ -1,11 +1,12 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
+from django_redis import get_redis_connection
 from rest_framework.test import APIClient
 
 from openslides.core.config import config
 from openslides.mediafiles.models import Mediafile
 from openslides.users.models import User
-from openslides.utils.test import TestCase, use_cache
+from openslides.utils.test import TestCase
 
 
 class TestDBQueries(TestCase):
@@ -27,23 +28,23 @@ class TestDBQueries(TestCase):
                     'some_file{}'.format(index),
                     b'some content.'))
 
-    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 4 requests to get the session an the request user with its permissions and
-        * 2 requests to get the list of all files.
+        * 7 requests to get the session an the request user with its permissions and
+        * 1 requests to get the list of all files.
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(6):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(8):
             self.client.get(reverse('mediafile-list'))
 
-    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
         * 3 requests to get the permission for anonymous and
-        * 2 requests to get the list of all projectors.
+        * 1 requests to get the list of all projectors.
         """
-        with self.assertNumQueries(5):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(4):
             self.client.get(reverse('mediafile-list'))

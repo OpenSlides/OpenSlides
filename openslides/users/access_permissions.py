@@ -1,14 +1,11 @@
-from typing import Any, Dict, List  # noqa
+from typing import Any, Dict, List, Optional
 
 from django.contrib.auth.models import AnonymousUser
 
 from ..core.signals import user_data_required
-from ..utils.access_permissions import (  # noqa
-    BaseAccessPermissions,
-    RestrictedData,
-)
+from ..utils.access_permissions import BaseAccessPermissions  # noqa
 from ..utils.auth import anonymous_is_enabled, has_perm
-from ..utils.collection import Collection
+from ..utils.collection import CollectionElement
 
 
 class UserAccessPermissions(BaseAccessPermissions):
@@ -29,7 +26,10 @@ class UserAccessPermissions(BaseAccessPermissions):
 
         return UserFullSerializer
 
-    def get_restricted_data(self, container, user):
+    def get_restricted_data(
+            self,
+            full_data: List[Dict[str, Any]],
+            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user. Removes several fields for non admins so that they do
@@ -42,9 +42,6 @@ class UserAccessPermissions(BaseAccessPermissions):
             Returns a new dict like full_data but only with whitelisted keys.
             """
             return {key: full_data[key] for key in whitelist}
-
-        # Expand full_data to a list if it is not one.
-        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
 
         # We have four sets of data to be sent:
         # * full data i. e. all fields,
@@ -96,18 +93,9 @@ class UserAccessPermissions(BaseAccessPermissions):
                 in full_data
                 if full['id'] in user_ids]
 
-        # Reduce result to a single item or None if it was not a collection at
-        # the beginning of the method.
-        if isinstance(container, Collection):
-            restricted_data = data  # type: RestrictedData
-        elif data:
-            restricted_data = data[0]
-        else:
-            restricted_data = None
+        return data
 
-        return restricted_data
-
-    def get_projector_data(self, container):
+    def get_projector_data(self, full_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the projector. Removes several fields.
@@ -120,25 +108,13 @@ class UserAccessPermissions(BaseAccessPermissions):
             """
             return {key: full_data[key] for key in whitelist}
 
-        # Expand full_data to a list if it is not one.
-        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
-
         # Parse data.
         litte_data_fields = set(USERCANSEESERIALIZER_FIELDS)
         litte_data_fields.add('groups_id')
         litte_data_fields.discard('groups')
         data = [filtered_data(full, litte_data_fields) for full in full_data]
 
-        # Reduce result to a single item or None if it was not a collection at
-        # the beginning of the method.
-        if isinstance(container, Collection):
-            projector_data = data  # type: RestrictedData
-        elif data:
-            projector_data = data[0]
-        else:
-            projector_data = None
-
-        return projector_data
+        return data
 
 
 class GroupAccessPermissions(BaseAccessPermissions):
@@ -182,14 +158,14 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
 
         return PersonalNoteSerializer
 
-    def get_restricted_data(self, container, user):
+    def get_restricted_data(
+            self,
+            full_data: List[Dict[str, Any]],
+            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user. Everybody gets only his own personal notes.
         """
-        # Expand full_data to a list if it is not one.
-        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
-
         # Parse data.
         if user is None:
             data = []  # type: List[Dict[str, Any]]
@@ -201,13 +177,4 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
             else:
                 data = []
 
-        # Reduce result to a single item or None if it was not a collection at
-        # the beginning of the method.
-        if isinstance(container, Collection):
-            restricted_data = data  # type: RestrictedData
-        elif data:
-            restricted_data = data[0]
-        else:
-            restricted_data = None
-
-        return restricted_data
+        return data

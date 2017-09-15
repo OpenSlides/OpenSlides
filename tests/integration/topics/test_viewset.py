@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from django_redis import get_redis_connection
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.agenda.models import Item
 from openslides.core.config import config
 from openslides.topics.models import Topic
-from openslides.utils.test import TestCase, use_cache
+from openslides.utils.test import TestCase
 
 
 class TestDBQueries(TestCase):
@@ -24,29 +25,29 @@ class TestDBQueries(TestCase):
         for index in range(10):
             Topic.objects.create(title='topic-{}'.format(index))
 
-    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 4 requests to get the session an the request user with its permissions,
-        * 2 requests to get the list of all topics,
+        * 7 requests to get the session an the request user with its permissions,
+        * 1 requests to get the list of all topics,
         * 1 request to get attachments,
         * 1 request to get the agenda item
         """
         self.client.force_login(get_user_model().objects.get(pk=1))
-        with self.assertNumQueries(8):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(10):
             self.client.get(reverse('topic-list'))
 
-    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
         * 3 requests to get the permission for anonymous,
-        * 2 requests to get the list of all topics,
+        * 1 requests to get the list of all topics,
         * 1 request to get attachments,
         * 1 request to get the agenda item,
         """
-        with self.assertNumQueries(7):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(6):
             self.client.get(reverse('topic-list'))
 
 

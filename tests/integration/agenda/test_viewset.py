@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext
+from django_redis import get_redis_connection
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -11,7 +12,8 @@ from openslides.core.models import Countdown
 from openslides.motions.models import Motion
 from openslides.topics.models import Topic
 from openslides.users.models import User
-from openslides.utils.test import TestCase, use_cache
+from openslides.utils.autoupdate import inform_changed_data
+from openslides.utils.test import TestCase
 
 
 class RetrieveItem(TestCase):
@@ -91,12 +93,11 @@ class TestDBQueries(TestCase):
         Motion.objects.create(title='motion2')
         Assignment.objects.create(title='assignment', open_posts=5)
 
-    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 4 requests to get the session an the request user with its permissions,
-        * 2 requests to get the list of all agenda items,
+        * 7 requests to get the session an the request user with its permissions,
+        * 1 requests to get the list of all agenda items,
         * 1 request to get all speakers,
         * 3 requests to get the assignments, motions and topics and
 
@@ -105,15 +106,15 @@ class TestDBQueries(TestCase):
         TODO: The last two request for the motionsversions are a bug.
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(12):
+        get_redis_connection("default").flushall()
+        with self.assertNumQueries(14):
             self.client.get(reverse('item-list'))
 
-    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
         * 3 requests to get the permission for anonymous,
-        * 2 requests to get the list of all agenda items,
+        * 1 requests to get the list of all agenda items,
         * 1 request to get all speakers,
         * 3 requests to get the assignments, motions and topics and
 
@@ -121,7 +122,8 @@ class TestDBQueries(TestCase):
 
         TODO: The last two request for the motionsversions are a bug.
         """
-        with self.assertNumQueries(11):
+        get_redis_connection("default").flushall()
+        with self.assertNumQueries(10):
             self.client.get(reverse('item-list'))
 
 
@@ -205,6 +207,8 @@ class ManageSpeaker(TestCase):
         group_delegates = type(group_staff).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_staff)
+        inform_changed_data(admin)
+
         response = self.client.post(
             reverse('item-manage-speaker', args=[self.item.pk]),
             {'user': self.user.pk})
@@ -240,7 +244,9 @@ class ManageSpeaker(TestCase):
         group_delegates = type(group_staff).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_staff)
+        inform_changed_data(admin)
         speaker = Speaker.objects.add(self.user, self.item)
+
         response = self.client.delete(
             reverse('item-manage-speaker', args=[self.item.pk]),
             {'speaker': speaker.pk})

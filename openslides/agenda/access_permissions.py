@@ -1,11 +1,8 @@
-from typing import Iterable  # noqa
+from typing import Any, Dict, Iterable, List, Optional  # noqa
 
-from ..utils.access_permissions import (  # noqa
-    BaseAccessPermissions,
-    RestrictedData,
-)
+from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import has_perm
-from ..utils.collection import Collection
+from ..utils.collection import CollectionElement
 
 
 class ItemAccessPermissions(BaseAccessPermissions):
@@ -28,7 +25,10 @@ class ItemAccessPermissions(BaseAccessPermissions):
 
     # TODO: In the following method we use full_data['is_hidden'] but this can be out of date.
 
-    def get_restricted_data(self, container, user):
+    def get_restricted_data(
+            self,
+            full_data: List[Dict[str, Any]],
+            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user.
@@ -42,9 +42,6 @@ class ItemAccessPermissions(BaseAccessPermissions):
             """
             whitelist = full_data.keys() - blocked_keys
             return {key: full_data[key] for key in whitelist}
-
-        # Expand full_data to a list if it is not one.
-        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
 
         # Parse data.
         if has_perm(user, 'agenda.can_see'):
@@ -83,18 +80,9 @@ class ItemAccessPermissions(BaseAccessPermissions):
         else:
             data = []
 
-        # Reduce result to a single item or None if it was not a collection at
-        # the beginning of the method.
-        if isinstance(container, Collection):
-            restricted_data = data  # type: RestrictedData
-        elif data:
-            restricted_data = data[0]
-        else:
-            restricted_data = None
+        return data
 
-        return restricted_data
-
-    def get_projector_data(self, container):
+    def get_projector_data(self, full_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the projector. Removes field 'comment'.
@@ -106,20 +94,8 @@ class ItemAccessPermissions(BaseAccessPermissions):
             whitelist = full_data.keys() - blocked_keys
             return {key: full_data[key] for key in whitelist}
 
-        # Expand full_data to a list if it is not one.
-        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
-
         # Parse data.
         blocked_keys = ('comment',)
         data = [filtered_data(full, blocked_keys) for full in full_data]
 
-        # Reduce result to a single item or None if it was not a collection at
-        # the beginning of the method.
-        if isinstance(container, Collection):
-            projector_data = data  # type: RestrictedData
-        elif data:
-            projector_data = data[0]
-        else:
-            projector_data = None
-
-        return projector_data
+        return data

@@ -95,7 +95,7 @@ class TestsInformChangedData(ChannelTestCase):
     def test_delete_one_element(self):
         channel_layers[DEFAULT_CHANNEL_LAYER].flush()
 
-        inform_deleted_data('topics/topic', 1)
+        inform_deleted_data([('topics/topic', 1)])
 
         channel_message = self.get_next_message('autoupdate.send_data', require=True)
         self.assertEqual(len(channel_message['elements']), 1)
@@ -104,18 +104,7 @@ class TestsInformChangedData(ChannelTestCase):
     def test_delete_many_elements(self):
         channel_layers[DEFAULT_CHANNEL_LAYER].flush()
 
-        inform_deleted_data('topics/topic', 1, 'topics/topic', 2, 'testmodule/model', 1)
+        inform_deleted_data([('topics/topic', 1), ('topics/topic', 2), ('testmodule/model', 1)])
 
         channel_message = self.get_next_message('autoupdate.send_data', require=True)
         self.assertEqual(len(channel_message['elements']), 3)
-
-    def test_delete_no_element(self):
-        with self.assertRaises(ValueError):
-            inform_deleted_data()
-
-    def test_delete_wrong_arguments(self):
-        with self.assertRaises(ValueError):
-            inform_deleted_data('testmodule/model')
-
-        with self.assertRaises(ValueError):
-            inform_deleted_data('testmodule/model', 5, 'testmodule/model')

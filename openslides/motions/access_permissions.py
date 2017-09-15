@@ -1,12 +1,10 @@
 from copy import deepcopy
+from typing import Any, Dict, List, Optional
 
 from ..core.config import config
-from ..utils.access_permissions import (  # noqa
-    BaseAccessPermissions,
-    RestrictedData,
-)
+from ..utils.access_permissions import BaseAccessPermissions  # noqa
 from ..utils.auth import has_perm
-from ..utils.collection import Collection, CollectionElement
+from ..utils.collection import CollectionElement
 
 
 class MotionAccessPermissions(BaseAccessPermissions):
@@ -27,7 +25,10 @@ class MotionAccessPermissions(BaseAccessPermissions):
 
         return MotionSerializer
 
-    def get_restricted_data(self, container, user):
+    def get_restricted_data(
+            self,
+            full_data: List[Dict[str, Any]],
+            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared for
         the user. Removes motion if the user has not the permission to see
@@ -35,9 +36,6 @@ class MotionAccessPermissions(BaseAccessPermissions):
         some unauthorized users. Ensures that a user can only see his own
         personal notes.
         """
-        # Expand full_data to a list if it is not one.
-        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
-
         # Parse data.
         if has_perm(user, 'motions.can_see'):
             # TODO: Refactor this after personal_notes system is refactored.
@@ -78,25 +76,13 @@ class MotionAccessPermissions(BaseAccessPermissions):
         else:
             data = []
 
-        # Reduce result to a single item or None if it was not a collection at
-        # the beginning of the method.
-        if isinstance(container, Collection):
-            restricted_data = data  # type: RestrictedData
-        elif data:
-            restricted_data = data[0]
-        else:
-            restricted_data = None
+        return data
 
-        return restricted_data
-
-    def get_projector_data(self, container):
+    def get_projector_data(self, full_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the projector. Removes several comment fields.
         """
-        # Expand full_data to a list if it is not one.
-        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
-
         # Parse data.
         data = []
         for full in full_data:
@@ -114,16 +100,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
             else:
                 data.append(full)
 
-        # Reduce result to a single item or None if it was not a collection at
-        # the beginning of the method.
-        if isinstance(container, Collection):
-            projector_data = data  # type: RestrictedData
-        elif data:
-            projector_data = data[0]
-        else:
-            projector_data = None
-
-        return projector_data
+        return data
 
 
 class MotionChangeRecommendationAccessPermissions(BaseAccessPermissions):

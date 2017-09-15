@@ -1,25 +1,8 @@
-from unittest.mock import patch
-
-from channels.tests import ChannelTestCase
-from django.core.cache import caches
+from channels.tests import ChannelTestCase as TestCase
+from django_redis import get_redis_connection
 
 from openslides.topics.models import Topic
 from openslides.utils import collection
-
-
-class TestCase(ChannelTestCase):
-    """
-    Testcase that uses the local mem cache and clears the cache after each test.
-    """
-    def setUp(self):
-        cache = caches['locmem']
-        cache.clear()
-        self.patch = patch('openslides.utils.collection.cache', cache)
-        self.patch.start()
-
-    def tearDown(self):
-        self.patch.stop()
-        super().tearDown()
 
 
 class TestCollectionElementCache(TestCase):
@@ -28,7 +11,7 @@ class TestCollectionElementCache(TestCase):
         Tests that the data is retrieved from the database.
         """
         topic = Topic.objects.create(title='test topic')
-        caches['locmem'].clear()
+        get_redis_connection("default").flushall()
 
         with self.assertNumQueries(3):
             collection_element = collection.CollectionElement.from_values('topics/topic', 1)
@@ -51,19 +34,6 @@ class TestCollectionElementCache(TestCase):
             instance = collection_element.get_full_data()
         self.assertEqual(topic.title, instance['title'])
 
-    @patch('openslides.utils.collection.cache')
-    def test_save_to_cache_called_once(self, mock_cache):
-        """
-        Makes sure, that save_to_cache ins called (only) once, if CollectionElement
-        is created with "from_instance()".
-        """
-        topic = Topic.objects.create(title='test topic')
-        mock_cache.set.reset_mock()
-        collection.CollectionElement.from_instance(topic)
-
-        # cache.set() is called two times. Once for the object and once for the collection.
-        self.assertEqual(mock_cache.set.call_count, 2)
-
     def test_fail_early(self):
         """
         Tests that a CollectionElement.from_values fails, if the object does
@@ -82,10 +52,10 @@ class TestCollectionCache(TestCase):
         Topic.objects.create(title='test topic2')
         Topic.objects.create(title='test topic3')
         topic_collection = collection.Collection('topics/topic')
-        caches['locmem'].clear()
+        get_redis_connection("default").flushall()
 
-        with self.assertNumQueries(4):
-            instance_list = list(topic_collection.as_autoupdate_for_projector())
+        with self.assertNumQueries(3):
+            instance_list = list(topic_collection.get_full_data())
         self.assertEqual(len(instance_list), 3)
 
     def test_with_cache(self):
@@ -96,24 +66,10 @@ class TestCollectionCache(TestCase):
         Topic.objects.create(title='test topic2')
         Topic.objects.create(title='test topic3')
         topic_collection = collection.Collection('topics/topic')
-        list(topic_collection.as_autoupdate_for_projector())
+        list(topic_collection.get_full_data())
 
         with self.assertNumQueries(0):
-            instance_list = list(topic_collection.as_autoupdate_for_projector())
-        self.assertEqual(len(instance_list), 3)
-
-    def test_with_some_objects_in_the_cache(self):
-        """
-        One element (topic3) is in the cache and two are not.
-        """
-        Topic.objects.create(title='test topic1')
-        Topic.objects.create(title='test topic2')
-        caches['locmem'].clear()
-        Topic.objects.create(title='test topic3')
-        topic_collection = collection.Collection('topics/topic')
-
-        with self.assertNumQueries(4):
-            instance_list = list(topic_collection.as_autoupdate_for_projector())
+            instance_list = list(topic_collection.get_full_data())
         self.assertEqual(len(instance_list), 3)
 
     def test_deletion(self):
@@ -125,10 +81,10 @@ class TestCollectionCache(TestCase):
         Topic.objects.create(title='test topic2')
         topic3 = Topic.objects.create(title='test topic3')
         topic_collection = collection.Collection('topics/topic')
-        list(topic_collection.as_autoupdate_for_projector())
+        list(topic_collection.get_full_data())
 
         topic3.delete()
 
         with self.assertNumQueries(0):
-            instance_list = list(topic_collection.as_autoupdate_for_projector())
+            instance_list = list(collection.Collection('topics/topic').get_full_data())
         self.assertEqual(len(instance_list), 2)

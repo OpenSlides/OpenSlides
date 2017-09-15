@@ -32,7 +32,7 @@ from rest_framework.viewsets import GenericViewSet as _GenericViewSet  # noqa
 from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
 from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
 
-from .access_permissions import BaseAccessPermissions, RestrictedData  # noqa
+from .access_permissions import BaseAccessPermissions
 from .auth import user_to_collection_user
 from .collection import Collection, CollectionElement
 
@@ -214,7 +214,7 @@ class RetrieveModelMixin(_RetrieveModelMixin):
                 collection_string, self.kwargs[lookup_url_kwarg])
             user = user_to_collection_user(request.user)
             try:
-                content = collection_element.as_dict_for_user(user)  # type: RestrictedData
+                content = collection_element.as_dict_for_user(user)
             except collection_element.get_model().DoesNotExist:
                 raise Http404
             if content is None:

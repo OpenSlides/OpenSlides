@@ -1,8 +1,9 @@
 # Requirements for OpenSlides in production
--r requirements_production.txt
+-r requirements_big_mode.txt
 
 # Requirements for development and tests in alphabetical order
 coverage
 flake8
 isort==4.2.5
 mypy
+fakeredis

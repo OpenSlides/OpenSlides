@@ -1,12 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from django_redis import get_redis_connection
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.assignments.models import Assignment
 from openslides.core.config import config
 from openslides.users.models import User
-from openslides.utils.test import TestCase, use_cache
+from openslides.utils.autoupdate import inform_changed_data
+from openslides.utils.test import TestCase
 
 
 class TestDBQueries(TestCase):
@@ -24,12 +26,11 @@ class TestDBQueries(TestCase):
         for index in range(10):
             Assignment.objects.create(title='motion{}'.format(index), open_posts=1)
 
-    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 4 requests to get the session an the request user with its permissions,
-        * 2 requests to get the list of all assignments,
+        * 7 requests to get the session an the request user with its permissions,
+        * 1 requests to get the list of all assignments,
         * 1 request to get all related users,
         * 1 request to get the agenda item,
         * 1 request to get the polls,
@@ -40,15 +41,15 @@ class TestDBQueries(TestCase):
         TODO: The last request are a bug.
         """
         self.client.force_login(User.objects.get(pk=1))
-        with self.assertNumQueries(20):
+        get_redis_connection("default").flushall()
+        with self.assertNumQueries(22):
             self.client.get(reverse('assignment-list'))
 
-    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
         * 3 requests to get the permission for anonymous,
-        * 2 requests to get the list of all assignments,
+        * 1 requests to get the list of all assignments,
         * 1 request to get all related users,
         * 1 request to get the agenda item,
         * 1 request to get the polls,
@@ -58,7 +59,8 @@ class TestDBQueries(TestCase):
 
         TODO: The last 10 requests are an bug.
         """
-        with self.assertNumQueries(19):
+        get_redis_connection("default").flushall()
+        with self.assertNumQueries(18):
             self.client.get(reverse('assignment-list'))
 
 
@@ -109,6 +111,7 @@ class CanidatureSelf(TestCase):
         group_delegates = type(group_staff).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_staff)
+        inform_changed_data(admin)
 
         response = self.client.post(reverse('assignment-candidature-self', args=[self.assignment.pk]))
 
@@ -155,6 +158,7 @@ class CanidatureSelf(TestCase):
         group_delegates = type(group_staff).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_staff)
+        inform_changed_data(admin)
 
         response = self.client.delete(reverse('assignment-candidature-self', args=[self.assignment.pk]))
 
@@ -235,6 +239,7 @@ class CandidatureOther(TestCase):
         group_delegates = type(group_staff).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_staff)
+        inform_changed_data(admin)
 
         response = self.client.post(
             reverse('assignment-candidature-other', args=[self.assignment.pk]),
@@ -290,6 +295,7 @@ class CandidatureOther(TestCase):
         group_delegates = type(group_staff).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_staff)
+        inform_changed_data(admin)
 
         response = self.client.delete(
             reverse('assignment-candidature-other', args=[self.assignment.pk]),

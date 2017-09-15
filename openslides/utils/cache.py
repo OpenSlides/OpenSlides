@@ -10,6 +10,7 @@ from typing import (  # noqa
     List,
     Optional,
     Set,
+    Type,
     Union,
 )
 
@@ -204,9 +205,158 @@ class DjangoCacheWebsocketUserCache(BaseWebsocketUserCache):
         cache.set(self.get_cache_key(), data)
 
 
+class FullDataCache:
+    """
+    Caches all data as full data.
+
+    Helps to get all data from one collection.
+    """
+
+    base_cache_key = 'full_data_cache'
+
+    def build_for_collection(self, collection_string: str) -> None:
+        """
+        Build the cache for collection from a django model.
+
+        Rebuilds the cache for that collection, if it already exists.
+        """
+        redis = get_redis_connection()
+        pipe = redis.pipeline()
+
+        # Clear the cache for collection
+        pipe.delete(self.get_cache_key(collection_string))
+
+        # Save all elements
+        from .collection import get_model_from_collection_string
+        model = get_model_from_collection_string(collection_string)
+        try:
+            query = model.objects.get_full_queryset()
+        except AttributeError:
+            # If the model des not have to method get_full_queryset(), then use
+            # the default queryset from django.
+            query = model.objects
+
+        # Build a dict from the instance id to the full_data
+        mapping = {instance.pk: json.dumps(model.get_access_permissions().get_full_data(instance))
+                   for instance in query.all()}
+
+        if mapping:
+            # Save the dict into a redis map, if there is at least one value
+            pipe.hmset(
+                self.get_cache_key(collection_string),
+                mapping)
+
+        pipe.execute()
+
+    def add_element(self, collection_string: str, id: int, data: Dict[str, Any]) -> None:
+        """
+        Adds one element to the cache. If the cache does not exists for the collection,
+        it is created.
+        """
+        redis = get_redis_connection()
+
+        # If the cache does not exist for the collection, then create it first.
+        if not self.exists_for_collection(collection_string):
+            self.build_for_collection(collection_string)
+
+        redis.hset(
+            self.get_cache_key(collection_string),
+            id,
+            json.dumps(data))
+
+    def del_element(self, collection_string: str, id: int) -> None:
+        """
+        Removes one element from the cache.
+
+        Does nothing if the cache does not exist.
+        """
+        redis = get_redis_connection()
+        redis.hdel(
+            self.get_cache_key(collection_string),
+            id)
+
+    def exists_for_collection(self, collection_string: str) -> bool:
+        """
+        Returns True if the cache for the collection exists, else False.
+        """
+        redis = get_redis_connection()
+        return redis.exists(self.get_cache_key(collection_string))
+
+    def get_data(self, collection_string: str) -> List[Dict[str, Any]]:
+        """
+        Returns all data for the collection.
+        """
+        redis = get_redis_connection()
+        return [json.loads(element.decode()) for element in redis.hvals(self.get_cache_key(collection_string))]
+
+    def get_element(self, collection_string: str, id: int) -> Dict[str, Any]:
+        """
+        Returns one element from the collection.
+
+        Raises model.DoesNotExist if the element is not in the cache.
+        """
+        redis = get_redis_connection()
+        element = redis.hget(self.get_cache_key(collection_string), id)
+        if element is None:
+            from .collection import get_model_from_collection_string
+            model = get_model_from_collection_string(collection_string)
+            raise model.DoesNotExist(collection_string, id)
+        return json.loads(element.decode())
+
+    def get_cache_key(self, collection_string: str) -> str:
+        """
+        Returns the cache key for a collection.
+        """
+        return cache.make_key('{}:{}'.format(self.base_cache_key, collection_string))
+
+
+class DummyFullDataCache:
+    """
+    Dummy FullDataCache that does nothing.
+    """
+    def build_for_collection(self, collection_string: str) -> None:
+        pass
+
+    def add_element(self, collection_string: str, id: int, data: Dict[str, Any]) -> None:
+        pass
+
+    def del_element(self, collection_string: str, id: int) -> None:
+        pass
+
+    def exists_for_collection(self, collection_string: str) -> bool:
+        return False
+
+    def get_data(self, collection_string: str) -> List[Dict[str, Any]]:
+        from .collection import get_model_from_collection_string
+        model = get_model_from_collection_string(collection_string)
+        try:
+            query = model.objects.get_full_queryset()
+        except AttributeError:
+            # If the model des not have to method get_full_queryset(), then use
+            # the default queryset from django.
+            query = model.objects
+
+        return [model.get_access_permissions().get_full_data(instance)
+                for instance in query.all()]
+
+    def get_element(self, collection_string: str, id: int) -> Dict[str, Any]:
+        from .collection import get_model_from_collection_string
+        model = get_model_from_collection_string(collection_string)
+        try:
+            query = model.objects.get_full_queryset()
+        except AttributeError:
+            # If the model des not have to method get_full_queryset(), then use
+            # the default queryset from django.
+            query = model.objects
+
+        return model.get_access_permissions().get_full_data(query.get(pk=id))
+
+
 class RestrictedDataCache:
     """
-    Caches all Data for a specific users.
+    Caches all data for a specific users.
+
+    Helps to get all data from all collections for a specific user.
 
     The cached values are expected to be formatted for outout via websocket.
     """
@@ -249,7 +399,7 @@ class RestrictedDataCache:
         The returned value is a list of the elements.
         """
         redis = get_redis_connection()
-        return [json.loads(element) for element in redis.hvals(self.get_cache_key(user_id))]
+        return [json.loads(element.decode()) for element in redis.hvals(self.get_cache_key(user_id))]
 
     def get_cache_key(self, user_id: int) -> str:
         """
@@ -301,6 +451,8 @@ if use_redis_cache():
         restricted_data_cache = DummyRestrictedDataCache()  # type: Union[RestrictedDataCache, DummyRestrictedDataCache]
     else:
         restricted_data_cache = RestrictedDataCache()
+    full_data_cache = FullDataCache()  # type: Union[FullDataCache, DummyFullDataCache]
 else:
     websocket_user_cache = DjangoCacheWebsocketUserCache()
     restricted_data_cache = DummyRestrictedDataCache()
+    full_data_cache = DummyFullDataCache()

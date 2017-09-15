@@ -115,5 +115,5 @@ class RESTModelMixin:
                 # The deletion of a included element is a change of the root element.
                 inform_changed_data(self.get_root_rest_element(), information=information)
             else:
-                inform_deleted_data(self.get_collection_string(), instance_pk, information=information)
+                inform_deleted_data([(self.get_collection_string(), instance_pk)], information=information)
         return return_value

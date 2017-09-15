@@ -98,6 +98,7 @@ General:
   to pdfmake 0.1.30) [#3278, #3285].
 - Bugfixes for PDF creation [#3227, #3251, #3279, #3286, #3346, #3347, #3342].
 - Improvements for plugin integration [#3330].
+- Cleanups for the collection and autoupdate system [#3390]
 
 
 Version 2.1.1 (2017-04-05)

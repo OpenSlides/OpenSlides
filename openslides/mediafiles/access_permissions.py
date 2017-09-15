@@ -1,9 +1,8 @@
-from ..utils.access_permissions import (  # noqa
-    BaseAccessPermissions,
-    RestrictedData,
-)
+from typing import Any, Dict, List, Optional
+
+from ..utils.access_permissions import BaseAccessPermissions  # noqa
 from ..utils.auth import has_perm
-from ..utils.collection import Collection
+from ..utils.collection import CollectionElement
 
 
 class MediafileAccessPermissions(BaseAccessPermissions):
@@ -24,14 +23,14 @@ class MediafileAccessPermissions(BaseAccessPermissions):
 
         return MediafileSerializer
 
-    def get_restricted_data(self, container, user):
+    def get_restricted_data(
+            self,
+            full_data: List[Dict[str, Any]],
+            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user. Removes hidden mediafiles for  some users.
         """
-        # Expand full_data to a list if it is not one.
-        full_data = container.get_full_data() if isinstance(container, Collection) else [container.get_full_data()]
-
         # Parse data.
         if has_perm(user, 'mediafiles.can_see') and has_perm(user, 'mediafiles.can_see_hidden'):
             data = full_data
@@ -41,13 +40,4 @@ class MediafileAccessPermissions(BaseAccessPermissions):
         else:
             data = []
 
-        # Reduce result to a single item or None if it was not a collection at
-        # the beginning of the method.
-        if isinstance(container, Collection):
-            restricted_data = data  # type: RestrictedData
-        elif data:
-            restricted_data = data[0]
-        else:
-            restricted_data = None
-
-        return restricted_data
+        return data

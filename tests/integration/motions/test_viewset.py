@@ -3,13 +3,16 @@ import json
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.core.urlresolvers import reverse
+from django_redis import get_redis_connection
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.motions.models import Category, Motion, MotionBlock, State
-from openslides.utils.test import TestCase, use_cache
+from openslides.users.models import Group
+from openslides.utils.autoupdate import inform_changed_data
+from openslides.utils.test import TestCase
 
 
 class TestMotionDBQueries(TestCase):
@@ -31,12 +34,11 @@ class TestMotionDBQueries(TestCase):
                 password='password')
         # TODO: Create some polls etc.
 
-    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 4 requests to get the session an the request user with its permissions,
-        * 2 requests to get the list of all motions,
+        * 7 requests to get the session an the request user with its permissions,
+        * 1 requests to get the list of all motions,
         * 1 request to get the motion versions,
         * 1 request to get the agenda item,
         * 1 request to get the motion log,
@@ -46,15 +48,15 @@ class TestMotionDBQueries(TestCase):
         * 2 requests to get the submitters and supporters.
         """
         self.client.force_login(get_user_model().objects.get(pk=1))
-        with self.assertNumQueries(14):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(16):
             self.client.get(reverse('motion-list'))
 
-    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
         * 3 requests to get the permission for anonymous,
-        * 2 requests to get the list of all motions,
+        * 1 requests to get the list of all motions,
         * 1 request to get the motion versions,
         * 1 request to get the agenda item,
         * 1 request to get the motion log,
@@ -63,7 +65,8 @@ class TestMotionDBQueries(TestCase):
         * 1 request to get the tags,
         * 2 requests to get the submitters and supporters.
         """
-        with self.assertNumQueries(13):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(12):
             self.client.get(reverse('motion-list'))
 
 
@@ -82,25 +85,25 @@ class TestCategoryDBQueries(TestCase):
         for index in range(10):
             Category.objects.create(name='category{}'.format(index))
 
-    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 4 requests to get the session an the request user with its permissions and
-        * 2 requests to get the list of all categories.
+        * 7 requests to get the session an the request user with its permissions and
+        * 1 requests to get the list of all categories.
         """
         self.client.force_login(get_user_model().objects.get(pk=1))
-        with self.assertNumQueries(6):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(8):
             self.client.get(reverse('category-list'))
 
-    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
         * 3 requests to get the permission for anonymous (config and permissions)
-        * 2 requests to get the list of all motions and
+        * 1 requests to get the list of all motions and
         """
-        with self.assertNumQueries(5):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(4):
             self.client.get(reverse('category-list'))
 
 
@@ -115,29 +118,29 @@ class TestWorkflowDBQueries(TestCase):
         config['general_system_enable_anonymous'] = True
         # There do not need to be more workflows
 
-    @use_cache()
     def test_admin(self):
         """
         Tests that only the following db queries are done:
-        * 4 requests to get the session an the request user with its permissions,
-        * 2 requests to get the list of all workflows,
+        * 7 requests to get the session an the request user with its permissions,
+        * 1 requests to get the list of all workflows,
         * 1 request to get all states and
         * 1 request to get the next states of all states.
         """
         self.client.force_login(get_user_model().objects.get(pk=1))
-        with self.assertNumQueries(8):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(10):
             self.client.get(reverse('workflow-list'))
 
-    @use_cache()
     def test_anonymous(self):
         """
         Tests that only the following db queries are done:
         * 3 requests to get the permission for anonymous,
-        * 2 requests to get the list of all workflows,
+        * 1 requests to get the list of all workflows,
         * 1 request to get all states and
         * 1 request to get the next states of all states.
         """
-        with self.assertNumQueries(7):
+        get_redis_connection('default').flushall()
+        with self.assertNumQueries(6):
             self.client.get(reverse('workflow-list'))
 
 
@@ -372,6 +375,7 @@ class CreateMotion(TestCase):
         self.admin = get_user_model().objects.get(username='admin')
         self.admin.groups.add(2)
         self.admin.groups.remove(3)
+        inform_changed_data(self.admin)
 
         response = self.client.post(
             reverse('motion-list'),
@@ -412,7 +416,6 @@ class RetrieveMotion(TestCase):
                 username='user_{}'.format(index),
                 password='password')
 
-    @use_cache()
     def test_number_of_queries(self):
         """
         Tests that only the following db queries are done:
@@ -427,6 +430,7 @@ class RetrieveMotion(TestCase):
         * 2 requests to get the submitters and supporters.
         TODO: Fix all bugs.
         """
+        get_redis_connection('default').flushall()
         with self.assertNumQueries(18):
             self.client.get(reverse('motion-detail', args=[self.motion.pk]))
 
@@ -436,6 +440,9 @@ class RetrieveMotion(TestCase):
         state = self.motion.state
         state.required_permission_to_see = 'permission_that_the_user_does_not_have_leeceiz9hi7iuta4ahY2'
         state.save()
+        # The cache has to be cleared, see:
+        # https://github.com/OpenSlides/OpenSlides/issues/3396
+        get_redis_connection("default").flushall()
         response = guest_client.get(reverse('motion-detail', args=[self.motion.pk]))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -461,11 +468,13 @@ class RetrieveMotion(TestCase):
 
     def test_user_without_can_see_user_permission_to_see_motion_and_submitter_data(self):
         self.motion.submitters.add(get_user_model().objects.get(username='admin'))
-        group = get_user_model().groups.field.related_model.objects.get(pk=1)  # Group with pk 1 is for anonymous and default users.
+        inform_changed_data(self.motion)
+        group = Group.objects.get(pk=1)  # Group with pk 1 is for anonymous and default users.
         permission_string = 'users.can_see_name'
         app_label, codename = permission_string.split('.')
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
         group.permissions.remove(permission)
+        inform_changed_data(group)
         config['general_system_enable_anonymous'] = True
         guest_client = APIClient()
 
@@ -549,6 +558,7 @@ class UpdateMotion(TestCase):
         admin = get_user_model().objects.get(username='admin')
         group_staff = admin.groups.get(name='Staff')
         admin.groups.remove(group_staff)
+        inform_changed_data(admin)
         self.motion.submitters.add(admin)
         supporter = get_user_model().objects.create_user(
             username='test_username_ahshi4oZin0OoSh9chee',
