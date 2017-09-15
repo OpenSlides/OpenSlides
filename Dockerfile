@@ -3,9 +3,9 @@ RUN apt-get -y update && apt-get -y upgrade
 
 RUN apt-get install -y libpq-dev supervisor curl
 ## BUILD JS STUFF
-RUN wget https://nodejs.org/dist/v4.5.0/node-v4.5.0-linux-x64.tar.xz -P /tmp
-RUN cd /tmp && tar xfvJ node-v4.5.0-linux-x64.tar.xz
-RUN ln -sf /tmp/node-v4.5.0-linux-x64/bin/node /usr/bin/node
+RUN wget https://nodejs.org/dist/v6.11.3/node-v6.11.3-linux-x64.tar.xz -P /tmp
+RUN cd /tmp && tar xfvJ node-v6.11.3-linux-x64.tar.xz
+RUN ln -sf /tmp/node-v6.11.3-linux-x64/bin/node /usr/bin/node
 RUN useradd -m openslides
 RUN mkdir /app
 ADD package.json /app
