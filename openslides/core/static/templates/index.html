@@ -4,7 +4,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <base href="/">
 <title ng-if="!activeAppTitle">OpenSlides</title> <!-- avoid {{ ... }} in title while angular is not loaded -->
-<title ng-if="activeAppTitle">OpenSlides &ndash; {{ activeAppTitle | translate }}</title>
+<title ng-if="activeAppTitle">{{ activeAppTitle | translate }} &ndash; OpenSlides</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <link rel="stylesheet" href="static/css/openslides-libs.css">
@@ -257,6 +257,14 @@
 </div><!--end content-->
 
 <messaging></messaging>
+
+<div ng-controller="GotoTopCtrl">
+  <div id="goto-top" class="pointer" ng-click="gotoTop()" ng-if="show">
+    <a>
+      <i class="fa fa-lg fa-arrow-up"></i>
+    </a>
+  </div>
+</div>
 
 </div><!--end wrapper-->
 

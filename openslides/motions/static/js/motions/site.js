@@ -902,6 +902,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 motion.personalNote = PersonalNoteManager.getNote(motion);
                 // For filtering, we cannot filter for .personalNote.star
                 motion.star = motion.personalNote ? motion.personalNote.star : false;
+                motion.hasPersonalNote = motion.personalNote ? !!motion.personalNote.note : false;
                 if (motion.star === undefined) {
                     motion.star = false;
                 }
@@ -967,9 +968,13 @@ angular.module('OpenSlidesApp.motions.site', [
             $scope.filter.booleanFilters = {
                 isFavorite: {
                     value: undefined,
-                    displayName: gettext('Favorite'),
-                    choiceYes: gettext('Is favorite'),
-                    choiceNo: gettext('Is not favorite'),
+                    choiceYes: gettext('Marked as favorite'),
+                    choiceNo: gettext('Not marked as favorite'),
+                },
+                hasPersonalNote: {
+                    value: undefined,
+                    choiceYes: gettext('Personal note set'),
+                    choiceNo: gettext('Personal note not set'),
                 },
             };
         }
@@ -1213,12 +1218,13 @@ angular.module('OpenSlidesApp.motions.site', [
     'MotionBlock',
     'MotionPdfExport',
     'PersonalNoteManager',
+    'WebpageTitle',
     'EditingWarning',
     function($scope, $http, $timeout, operator, ngDialog, gettextCatalog, MotionForm,
              ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation,
              Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motionId, MotionInlineEditing,
              MotionCommentsInlineEditing, Editor, Projector, ProjectionDefault, MotionBlock, MotionPdfExport,
-             PersonalNoteManager, EditingWarning) {
+             PersonalNoteManager, WebpageTitle, EditingWarning) {
         var motion = Motion.get(motionId);
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1254,6 +1260,13 @@ angular.module('OpenSlidesApp.motions.site', [
             $scope.motion = Motion.get(motionId);
             MotionComment.populateFields($scope.motion);
             $scope.motion.personalNote = PersonalNoteManager.getNote($scope.motion);
+
+            var webpageTitle = gettextCatalog.getString('Motion') + ' ';
+            if ($scope.motion.identifier) {
+                webpageTitle += $scope.motion.identifier + ' - ';
+            }
+            webpageTitle += $scope.motion.getTitle();
+            WebpageTitle.updateTitle(webpageTitle);
         });
         $scope.projectionModes = [
             {mode: 'original',
@@ -1537,7 +1550,7 @@ angular.module('OpenSlidesApp.motions.site', [
             if (editingStoppedCallback) {
                 editingStoppedCallback();
             }
-            if ($scope.motion.getReason($scope.version)) {
+            if ($scope.motion && $scope.motion.getReason($scope.version)) {
                 $scope.reasonInlineEditing.disable();
             }
             $scope.inlineEditing.disable();

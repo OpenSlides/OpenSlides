@@ -296,6 +296,24 @@ img {
     color: #555;
 }
 
+/** Goto top link **/
+#goto-top {
+    position: fixed;
+    bottom: 15px;
+    right: 30px;
+    padding: 10px 30px;
+    background: white;
+    opacity: 0.6;
+    transition: opacity 250ms ease-out;
+    z-index: 100;
+}
+#goto-top:hover {
+    opacity: 1;
+    transition: opacity 250ms ease-in;
+}
+#goto-top a:hover {
+    text-decoration: none;
+}
 
 /** Content **/
 

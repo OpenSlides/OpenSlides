@@ -238,13 +238,13 @@
                 <li ng-repeat="category in categories">
                   <a href ng-click="toggleCategory(category)">
                     <i class="fa fa-check" ng-if="category.id == motion.category.id"></i>
-                    {{ category.name }}
+                    {{ category.prefix }} &ndash; {{ category.name }}
                   </a>
                 </li>
               </ul>
             </span>
           </div>
-          {{ motion.category.name }}
+          {{ motion.category.prefix }} &ndash; {{ motion.category.name }}
 
           <!-- Motion block -->
           <h3 class="heading" os-perms="!motions.can_manage" ng-show="motion.motionBlock" translate>Motion block</h3>
@@ -424,6 +424,13 @@
             <i class="fa fa-bar-chart fa-lg"></i>
             <translate>New vote</translate>
           </button>
+
+          <div class="spacer-top pull-right nobr">
+            <a href="#personalNote" translate>Personal note</a>
+            <span ng-click="pinPersonalNote()" class="spacer-left pointer" title="{{ 'Pin personal note' || translate }}">
+              <i class="fa fa-thumb-tack" ng-class="{'rotate-45-deg-right': !personalNotePinned}"></i>
+            </span>
+          </div>
       </div>
     </div>
   </div>

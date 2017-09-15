@@ -155,8 +155,17 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
     'topicId',
     'Projector',
     'ProjectionDefault',
-    function($scope, ngDialog, TopicForm, Topic, topicId, Projector, ProjectionDefault) {
-        Topic.bindOne(topicId, $scope, 'topic');
+    'WebpageTitle',
+    'gettextCatalog',
+    function($scope, ngDialog, TopicForm, Topic, topicId, Projector, ProjectionDefault, WebpageTitle,
+        gettextCatalog) {
+        $scope.$watch(function () {
+            return Topic.lastModified(topicId);
+        }, function () {
+            $scope.topic = Topic.get(topicId);
+            WebpageTitle.updateTitle(gettextCatalog.getString('Topic') + ' ' +
+                $scope.topic.agenda_item.getTitle());
+        });
         $scope.$watch(function () {
             return Projector.lastModified();
         }, function () {

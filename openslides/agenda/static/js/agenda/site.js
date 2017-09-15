@@ -391,14 +391,19 @@ angular.module('OpenSlidesApp.agenda.site', [
     'itemId',
     'Projector',
     'ProjectionDefault',
+    'gettextCatalog',
+    'WebpageTitle',
     'ErrorMessage',
-    function ($scope, $filter, Agenda, itemId, Projector, ProjectionDefault, ErrorMessage) {
+    function ($scope, $filter, Agenda, itemId, Projector, ProjectionDefault, gettextCatalog, WebpageTitle,
+        ErrorMessage) {
         $scope.alert = {};
 
         $scope.$watch(function () {
             return Agenda.lastModified(itemId);
         }, function () {
             $scope.item = Agenda.get(itemId);
+            WebpageTitle.updateTitle(gettextCatalog.getString('List of speakers') + ' ' +
+                gettextCatalog.getString('of') + ' ' + $scope.item.getTitle());
             // all speakers
             $scope.speakers = $filter('orderBy')($scope.item.speakers, 'weight');
             // next speakers

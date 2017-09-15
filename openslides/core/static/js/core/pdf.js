@@ -818,7 +818,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     // If this element is inside a list (happens if copied from word), do not set spaces
                                     // and margins. Just leave the paragraph there..
                                     if (!isInsideAList(element)) {
-                                        currentParagraph.margin = [20, 0, 0, 0];
+                                        currentParagraph.margin = [0, 0, 0, 0];
                                         if (classes.indexOf('os-split-before') === -1) {
                                             currentParagraph.margin[1] = 8;
                                         }

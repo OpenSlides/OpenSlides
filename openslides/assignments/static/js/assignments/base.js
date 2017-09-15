@@ -406,7 +406,10 @@ angular.module('OpenSlidesApp.assignments', [])
                     return isProjectedIds;
                 },
                 isRelatedProjected: function () {
-                    var listOfSpeakers = this.agenda_item.isListOfSpeakersProjected();
+                    var listOfSpeakers = [];
+                    if (this.agenda_item) {
+                        listOfSpeakers = this.agenda_item.isListOfSpeakersProjected();
+                    }
                     return listOfSpeakers.concat(this.isProjected(null, true));
                 },
             },

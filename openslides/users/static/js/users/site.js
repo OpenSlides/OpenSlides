@@ -749,9 +749,17 @@ angular.module('OpenSlidesApp.users.site', [
     'Group',
     'Projector',
     'ProjectionDefault',
-    function($scope, ngDialog, UserForm, User, userId, Group, Projector, ProjectionDefault) {
-        User.bindOne(userId, $scope, 'user');
+    'gettextCatalog',
+    'WebpageTitle',
+    function($scope, ngDialog, UserForm, User, userId, Group, Projector, ProjectionDefault, gettextCatalog,
+        WebpageTitle) {
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
+        $scope.$watch(function () {
+            return User.lastModified(userId);
+        }, function () {
+            $scope.user = User.get(userId);
+            WebpageTitle.updateTitle(gettextCatalog.getString('Participant') + ' ' + $scope.user.get_short_name());
+        });
         $scope.$watch(function () {
             return Projector.lastModified();
         }, function () {
