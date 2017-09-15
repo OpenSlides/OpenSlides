@@ -134,14 +134,14 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                 editors: []
             };
             var options = Editor.getOptions('inline', 'YOffset');
-            _.forEach($scope.commentsFieldsNoSpecialComments, function (field) {
+            _.forEach($scope.noSpecialCommentsFields, function (field, id) {
                 var inlineEditing = MotionInlineEditing.createInstance($scope, motion,
-                    'view-original-comment-inline-editor-' + field.name, false, options,
+                    'view-original-comment-inline-editor-' + id, false, options,
                     function (obj) {
-                        return motion['comment ' + field.name];
+                        return motion['comment_' + id];
                     },
                     function (obj) {
-                        motion['comment ' + field.name] = obj.editor.getData();
+                        motion['comment_' + id] = obj.editor.getData();
                     }
                 );
                 commentsInlineEditing.editors.push(inlineEditing);

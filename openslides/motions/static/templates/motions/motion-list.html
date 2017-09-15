@@ -169,30 +169,28 @@
             </ul>
           </span>
           <!-- Comment filter -->
-          <span os-perms="motions.can_see_and_manage_comments">
-            <span uib-dropdown ng-if="commentsFieldsNoSpecialComments.length > 0">
-              <span class="pointer" id="dropdownComment" uib-dropdown-toggle
-                ng-class="{'bold': filter.multiselectFilters.comment.length > 0, 'disabled': isSelectMode}"
-                ng-disabled="isSelectMode">
-                <translate>Comment</translate>
-                <span class="caret"></span>
-              </span>
-              <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownComment">
-                <li ng-repeat="commentsField in commentsFieldsNoSpecialComments">
-                  <a href ng-click="filter.operateMultiselectFilter('comment', commentsField.name, isSelectMode)">
-                    <i class="fa fa-check" ng-if="filter.multiselectFilters.comment.indexOf(commentsField.name) > -1"></i>
-                    {{ commentsField.name }} <translate>is set</translate>
-                  </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                  <a href ng-click="filter.operateMultiselectFilter('comment', -1, isSelectMode)">
-                    <i class="fa fa-check" ng-if="filter.multiselectFilters.comment.indexOf(-1) > -1"></i>
-                    <translate>No comments set</translate>
-                  </a>
-                </li>
-              </ul>
+          <span uib-dropdown ng-if="showCommentsFilter()">
+            <span class="pointer" id="dropdownComment" uib-dropdown-toggle
+              ng-class="{'bold': filter.multiselectFilters.comment.length > 0, 'disabled': isSelectMode}"
+              ng-disabled="isSelectMode">
+              <translate>Comment</translate>
+              <span class="caret"></span>
             </span>
+            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownComment">
+              <li ng-repeat="commentsField in noSpecialCommentsFields">
+                <a href ng-click="filter.operateMultiselectFilter('comment', commentsField.name, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.comment.indexOf(commentsField.name) > -1"></i>
+                  {{ commentsField.name }} <translate>is set</translate>
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href ng-click="filter.operateMultiselectFilter('comment', -1, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.comment.indexOf(-1) > -1"></i>
+                  <translate>No comments set</translate>
+                </a>
+              </li>
+            </ul>
           </span>
           <!-- recommendation filter -->
           <span uib-dropdown ng-if="config('motions_recommendations_by') != ''">

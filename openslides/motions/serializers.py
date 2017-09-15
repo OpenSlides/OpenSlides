@@ -105,11 +105,15 @@ class MotionCommentsJSONSerializerField(Field):
         """
         Checks that data is a list of strings.
         """
-        if type(data) is not list:
-            raise ValidationError({'detail': 'Data must be an array.'})
-        for element in data:
-            if type(element) is not str:
-                raise ValidationError({'detail': 'Data must be an array of strings.'})
+        if type(data) is not dict:
+            raise ValidationError({'detail': 'Data must be a dict.'})
+        for id, comment in data.items():
+            try:
+                id = int(id)
+            except ValueError:
+                raise ValidationError({'detail': 'Id must be an int.'})
+            if type(comment) is not str:
+                raise ValidationError({'detail': 'Comment must be a string.'})
         return data
 
 
@@ -317,9 +321,9 @@ class MotionSerializer(ModelSerializer):
             data['text'] = validate_html(data['text'])
         if 'reason' in data:
             data['reason'] = validate_html(data['reason'])
-        validated_comments = []
-        for comment in data.get('comments', []):
-            validated_comments.append(validate_html(comment))
+        validated_comments = dict()
+        for id, comment in data.get('comments', {}).items():
+            validated_comments[id] = validate_html(comment)
         data['comments'] = validated_comments
         return data
 

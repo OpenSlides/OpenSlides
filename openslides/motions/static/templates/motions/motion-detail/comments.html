@@ -1,4 +1,4 @@
-<div class="details" ng-if="isAllowedToSeeCommentField() && commentsFieldsNoSpecialComments.length">
+<div class="details" ng-if="commentFieldsAvailable()">
   <div class="row">
     <!-- inline editing toolbar -->
     <div class="motion-toolbar">
@@ -25,15 +25,13 @@
     </div>
     <!-- comment fields -->
     <div class="col-sm-12">
-      <div ng-repeat="field in commentsFieldsNoSpecialComments">
-        <div ng-if="operator.hasPerms('motions.can_see_and_manage_comments') && !field.forState && !field.forRecommendation">
-          <h4>
-            {{ field.name }}
-            <span ng-if="!field.public" class="label label-warning" translate>internal</span>
-          </h4>
-          <div id="view-original-comment-inline-editor-{{ field.name }}" style="min-height: 14px;"
-            ng-bind-html="motion.comments[$index] | trusted" contenteditable="{{ commentsInlineEditing.editors[$index].isEditable }}"></div>
-        </div>
+      <div ng-repeat="(id, field) in noSpecialCommentsFields">
+        <h4>
+          {{ field.name }}
+          <span ng-if="!field.public" class="label label-warning" translate>internal</span>
+        </h4>
+        <div id="view-original-comment-inline-editor-{{ id }}" style="min-height: 14px;"
+          ng-bind-html="motion.comments[id] | trusted" contenteditable="{{ commentsInlineEditing.editors[$index].isEditable }}"></div>
       </div>
       <!-- save toolbar -->
       <div class="motion-save-toolbar" ng-class="{ 'visible': commentsInlineEditing.saveToolbarVisible() }">

@@ -14,7 +14,9 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
     'FileSaver',
     'lineNumberingService',
     'Html2DocxConverter',
-    function ($http, $q, operator, Config, Category, gettextCatalog, FileSaver, lineNumberingService, Html2DocxConverter) {
+    'MotionComment',
+    function ($http, $q, operator, Config, Category, gettextCatalog, FileSaver, lineNumberingService,
+        Html2DocxConverter, MotionComment) {
 
         var PAGEBREAK = '<w:p><w:r><w:br w:type="page" /></w:r></w:p>';
 
@@ -153,19 +155,15 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
         };
 
         var getMotionComments = function (motion) {
-            var fields = Config.get('motions_comments').value;
-            var canSeeComment = function (index) {
-                var specialComment = fields[index].forState || fields[index].forRecommendation;
-                return (fields[index].public || operator.hasPerms('motions.can_manage')) && !specialComment;
-            };
+            var fields = MotionComment.getNoSpecialCommentsFields();
             var comments = [];
-            for (var i = 0; i < fields.length; i++) {
-                if (motion.comments[i] && canSeeComment(i)) {
-                    var title = gettextCatalog.getString('Comment') + ' ' + fields[i].name;
-                    if (!fields[i].public) {
+            _.forEach(fields, function (field, id) {
+                if (motion.comments[id]) {
+                    var title = gettextCatalog.getString('Comment') + ' ' + field.name;
+                    if (!field.public) {
                         title += ' (' + gettextCatalog.getString('internal') + ')';
                     }
-                    var comment = motion.comments[i];
+                    var comment = motion.comments[id];
                     if (comment.indexOf('<p>') !== 0) {
                         comment = '<p>' + comment + '</p>';
                     }
@@ -174,7 +172,7 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
                         comment: comment,
                     });
                 }
-            }
+            });
             return comments;
         };
 
