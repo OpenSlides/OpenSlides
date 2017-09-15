@@ -193,7 +193,7 @@ class Command(BaseCommand):
         if staff_users is not None and staff_users > 0:
             self.stdout.write('Start creating {} staff users ...'.format(staff_users))
             group_staff = Group.objects.get(name='Staff')
-            hashed_password = make_password(PASSWORD, '', 'md5')
+            hashed_password = make_password(PASSWORD)
             current_users = list(User.objects.values_list('id', flat=True))
             new_users = []
             for i in range(staff_users):
@@ -223,7 +223,7 @@ class Command(BaseCommand):
             default_users = options['users'][1]
         if default_users is not None and default_users > 0:
             self.stdout.write('Start creating {} default users ...'.format(default_users))
-            hashed_password = make_password(PASSWORD, '', 'md5')
+            hashed_password = make_password(PASSWORD)
             new_users = []
             for i in range(default_users):
                 new_users.append(User(

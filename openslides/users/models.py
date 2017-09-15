@@ -70,7 +70,7 @@ class UserManager(BaseUserManager):
             username='admin',
             defaults={'last_name': 'Administrator'})
         admin.default_password = 'admin'
-        admin.password = make_password(admin.default_password, '', 'md5')
+        admin.password = make_password(admin.default_password)
         admin.save()
         admin.groups.add(staff)
         return created
