@@ -433,6 +433,14 @@ describe('linenumbering', function () {
       expect(diff).toBe('<DEL>Test1 Test2 Test3 Test4 Test5 Test9</DEL><INS>Test1 Test6 Test7 Test8 Test9</INS>');
     });
 
+    it('does not result in separate paragraphs when only the first word has changed', function () {
+      var before = '<p class="os-split-after"><span class="os-line-number line-number-1" data-line-number="1" contenteditable="false">&nbsp;</span>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor </p>',
+          after = '<p class="os-split-after">Bla ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor</p>';
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('<p class="os-split-after"><span class="line-number-1 os-line-number" data-line-number="1" contenteditable="false">&nbsp;</span><del>Lorem</del><ins>Bla</ins> ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor</p>');
+    });
+
     it('merges multiple inserts and deletes', function () {
       var before = "Some additional text to circumvent the threshold Test1 Test2 Test3 Test4 Test5 Test9",
           after = "Some additional text to circumvent the threshold Test1 Test6 Test7 Test8 Test9";
@@ -538,10 +546,10 @@ describe('linenumbering', function () {
               brMarkup(14) + 'gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>',
           after= '<p>Test</p>';
       var diff = diffService.diff(before, after).toLowerCase(),
-          expected = '<p class="delete">' +
-          noMarkup(13).replace(/&nbsp;/, "\u00A0") + 'diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd ' +
-          brMarkup(14).replace(/&nbsp;/, "\u00A0") + 'gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>' +
-          '<p class="insert">Test</p>';
+          expected = '<p>' +
+              noMarkup(13) + '<del>diam voluptua. at vero eos et accusam et justo duo dolores et ea rebum. stet clita kasd </del>' +
+              brMarkup(14) + '<del>gubergren, no sea takimata sanctus est lorem ipsum dolor sit amet.</del>' +
+              '<ins>test</ins></p>';
 
       expect(diff).toBe(expected.toLowerCase());
     });

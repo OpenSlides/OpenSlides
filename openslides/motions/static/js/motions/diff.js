@@ -1189,9 +1189,20 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             var workaroundPrepend = "<DUMMY><PREPEND>";
 
             var str = this._diffString(workaroundPrepend + htmlOld, workaroundPrepend + htmlNew),
-                diffUnnormalized = str.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/ {2,}/g, ' ')
-                .replace(/<\/ins><ins>/gi, '').replace(/<\/del><del>/gi, '');
+                diffUnnormalized = str.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/ {2,}/g, ' ');
 
+            // Remove <del> tags that only delete line numbers
+            // We need to do this before removing </del><del> as done in one of the next statements
+            diffUnnormalized = diffUnnormalized.replace(
+                /<del>((<BR CLASS="os-line-break"><\/del><del>)?(<span[^>]+os-line-number[^>]+?>)(\s|<\/?del>)*<\/span>)<\/del>/gi,
+                function(found,tag,br,span) {
+                    return (br !== undefined ? br : '') + span + ' </span>';
+                }
+            );
+
+            diffUnnormalized = diffUnnormalized.replace(/<\/ins><ins>/gi, '').replace(/<\/del><del>/gi, '');
+
+            // Move whitespaces around inserted P's out of the INS-tag
             diffUnnormalized = diffUnnormalized.replace(
                 /<ins>(\s*)(<p( [^>]*)?>[\s\S]*?<\/p>)(\s*)<\/ins>/gim,
                 function(match, whiteBefore, inner, tagInner, whiteAfter) {
@@ -1205,6 +1216,8 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 }
             );
 
+            // If only a few characters of a word have changed, don't display this as a replacement of the whole word,
+            // but only of these specific characters
             diffUnnormalized = diffUnnormalized.replace(/<del>([a-z0-9,_-]* ?)<\/del><ins>([a-z0-9,_-]* ?)<\/ins>/gi, function (found, oldText, newText) {
                 var foundDiff = false, commonStart = '', commonEnd = '',
                     remainderOld = oldText, remainderNew = newText;
@@ -1242,14 +1255,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 return out;
             });
 
-            // Remove <del> tags that only delete line numbers
-            diffUnnormalized = diffUnnormalized.replace(
-                /<del>((<BR CLASS="os-line-break">)?<span[^>]+os-line-number[^>]+?>\s*<\/span>)<\/del>/gi,
-                function(found,tag) {
-                    return tag;
-                }
-            );
-
+            // Replace spaces in line numbers by &nbsp;
             diffUnnormalized = diffUnnormalized.replace(
                 /<span[^>]+os-line-number[^>]+?>\s*<\/span>/gi,
                 function(found) {

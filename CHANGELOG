@@ -21,7 +21,7 @@ Motions:
 - Fixed empty motion comment field in motion update form [#3194].
 - Fixed error on category sort [#3318].
 - Removed server side image to base64 transformation and
-  added local transformation [#3181]
+  added local transformation [#3181].
 - Added support for export motions in a ZIP archive [#3189].
 - Performance improvement for ZIP creation [#3251].
 - Bugfix: Changing motion line length did not invalidate cache [#3202].
@@ -36,7 +36,8 @@ Motions:
   pdf/docx export [#3329].
 - Added config value for pagenumber alignment in PDF [#3327].
 - Bugfix: Several bugfixes regarding splitting list items in
-  change recommendations [#3288]
+  change recommendations [#3288].
+- Bugfix: Several bugfixes regarding diff version [#3407, #3408].
 - Added inline Editing for motion reason [#3361].
 - Added multiselect filter for motion comments [#3372].
 - Added support for pinning personal notes to the window [#3360].
