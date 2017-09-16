@@ -202,7 +202,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                             lineBreakAt = i - 1;
                         }
                     }
-                    if (lineBreakAt !== null && node.nodeValue[i] != ' ') {
+                    if (lineBreakAt !== null && (node.nodeValue[i] !== ' ' && node.nodeValue[i] !== "\n")) {
                         var currLine = node.nodeValue.substring(currLineStart, lineBreakAt + 1);
                         addLine(currLine, highlight);
 
@@ -211,7 +211,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                         lastBreakableIndex = null;
                     }
 
-                    if (node.nodeValue[i] == ' ' || node.nodeValue[i] == '-') {
+                    if (node.nodeValue[i] === ' ' || node.nodeValue[i] === '-' || node.nodeValue[i] === "\n") {
                         lastBreakableIndex = i;
                     }
 
@@ -413,6 +413,12 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         this._stripLineNumbers = function (node) {
             for (var i = 0; i < node.childNodes.length; i++) {
                 if (this._isOsLineBreakNode(node.childNodes[i]) || this._isOsLineNumberNode(node.childNodes[i])) {
+                    // If a newline character follows a line break, it's been very likely inserted by the WYSIWYG-editor
+                    if (node.childNodes.length > (i + 1) && node.childNodes[i + 1].nodeType === TEXT_NODE) {
+                        if (node.childNodes[i + 1].nodeValue[0] === "\n") {
+                            node.childNodes[i + 1].nodeValue = " " + node.childNodes[i + 1].nodeValue.substring(1);
+                        }
+                    }
                     node.removeChild(node.childNodes[i]);
                     i--;
                 } else {
@@ -439,6 +445,9 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
          * @param {number|null} firstLine
          */
         this.insertLineNumbersNode = function (html, lineLength, highlight, firstLine) {
+            // Removing newlines after BRs, as they lead to problems like #3410
+            html = html.replace(/(<br[^>]*>)[\n\r]+/gi, '$1');
+
             var root = document.createElement('div');
             root.innerHTML = html;
 
