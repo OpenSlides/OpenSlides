@@ -143,5 +143,6 @@ CHANNEL_LAYERS = {
     },
 }
 
+
 # Enable updating the last_login field for users on every login.
 ENABLE_LAST_LOGIN_FIELD = False
