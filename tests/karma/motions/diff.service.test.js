@@ -438,7 +438,7 @@ describe('linenumbering', function () {
           after = '<p class="os-split-after">Bla ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor</p>';
       var diff = diffService.diff(before, after);
 
-      expect(diff).toBe('<p class="os-split-after"><span class="line-number-1 os-line-number" data-line-number="1" contenteditable="false">&nbsp;</span><del>Lorem</del><ins>Bla</ins> ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor</p>');
+      expect(diff).toBe('<p class="os-split-after"><span class="line-number-1 os-line-number" contenteditable="false" data-line-number="1">&nbsp;</span><del>Lorem</del><ins>Bla</ins> ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor</p>');
     });
 
     it('merges multiple inserts and deletes', function () {
