@@ -5,10 +5,10 @@ describe('linenumbering', function () {
   var diffService, baseHtml1, baseHtmlDom1, baseHtml2, baseHtmlDom2, baseHtml3, baseHtmlDom3,
       brMarkup = function (no) {
         return '<br class="os-line-break">' +
-            '<span class="line-number-' + no + ' os-line-number" data-line-number="' + no + '" contenteditable="false">&nbsp;</span>';
+            '<span class="line-number-' + no + ' os-line-number" contenteditable="false" data-line-number="' + no + '">&nbsp;</span>';
       },
       noMarkup = function (no) {
-        return '<span class="line-number-' + no + ' os-line-number" data-line-number="' + no + '" contenteditable="false">&nbsp;</span>';
+        return '<span class="line-number-' + no + ' os-line-number" contenteditable="false" data-line-number="' + no + '">&nbsp;</span>';
       };
 
   beforeEach(inject(function (_diffService_, _lineNumberingService_) {
@@ -374,12 +374,12 @@ describe('linenumbering', function () {
       expect(normalized).toBe('The <STRONG>brown</STRONG> fox')
     });
 
-    it('uppercases the names of html attributes, but not the values', function () {
+    it('uppercases the names of html attributes, but not the values, and sort the attributes', function () {
       var unnormalized = 'This is our cool <a href="https://www.openslides.de/">home page</a> - have a look! ' +
           '<input type="checkbox" checked title=\'A title with "s\'>',
           normalized = diffService._normalizeHtmlForDiff(unnormalized);
       expect(normalized).toBe('This is our cool <A HREF="https://www.openslides.de/">home page</A> - have a look! ' +
-          '<INPUT TYPE="checkbox" CHECKED TITLE=\'A title with "s\'>')
+          '<INPUT CHECKED TITLE=\'A title with "s\' TYPE="checkbox">')
     });
 
     it('strips unnecessary spaces', function () {
@@ -568,6 +568,14 @@ describe('linenumbering', function () {
       var diff = diffService.diff(before, after);
 
       expect(diff).toBe('<p>tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd <del>gubergren </del>bla, no sea takimata sanctus est Lorem ipsum dolor <ins>gubergren </ins>sit amet.</p>');
+    });
+
+    it('works with style-tags in spans', function () {
+        var before = '<p class="os-split-before os-split-after"><span class="os-line-number line-number-4" data-line-number="4" contenteditable="false">&nbsp;</span><span style="color: #0000ff;" class="os-split-before os-split-after">sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing </span></p>',
+          after = '<p class="os-split-after os-split-before"><span class="os-split-after os-split-before" style="color: #0000ff;">sanctus est Lorem ipsum dolor sit amet. Test Lorem ipsum dolor sit amet, consetetur sadipscing </span></p>';
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('<p class="os-split-after os-split-before"><span class="line-number-4 os-line-number" contenteditable="false" data-line-number="4">&nbsp;</span><span class="os-split-after os-split-before" style="color: #0000ff;">sanctus est Lorem ipsum dolor sit amet. <ins>Test </ins>Lorem ipsum dolor sit amet, consetetur sadipscing </span></p>');
     });
   });
 

@@ -625,21 +625,30 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
          */
         this._normalizeHtmlForDiff = function (html) {
             // Convert all HTML tags to uppercase, but leave the values of attributes unchanged
+            // All attributes and CSS class names  are sorted alphabetically
             html = html.replace(/<(\/?[a-z]*)( [^>]*)?>/ig, function (html, tag, attributes) {
                 var tagNormalized = tag.toUpperCase();
                 if (attributes === undefined) {
                     attributes = "";
                 }
-                attributes = attributes.replace(/( [^"'=]*)(= *((["'])(.*?)\4))?/gi, function (attr, attrName, attrRest, attrRest2, quot, attrValue) {
-                    var attrNormalized = attrName.toUpperCase();
-                    if (attrRest !== undefined) {
-                        if (attrNormalized === ' CLASS') {
-                            attrValue = attrValue.split(' ').sort().join(' ');
+                var attributesList = [],
+                    attributesMatcher = /( [^"'=]*)(= *((["'])(.*?)\4))?/gi,
+                    match;
+                do {
+                    match = attributesMatcher.exec(attributes);
+                    if (match) {
+                        var attrNormalized = match[1].toUpperCase(),
+                            attrValue = match[5];
+                        if (match[2] !== undefined) {
+                            if (attrNormalized === ' CLASS') {
+                                attrValue = attrValue.split(' ').sort().join(' ');
+                            }
+                            attrNormalized += "=" + match[4] + attrValue + match[4];
                         }
-                        attrNormalized += "=" + quot + attrValue + quot;
+                        attributesList.push(attrNormalized);
                     }
-                    return attrNormalized;
-                });
+                } while (match);
+                attributes = attributesList.sort().join('');
                 return "<" + tagNormalized + attributes + ">";
             });
 
