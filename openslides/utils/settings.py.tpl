@@ -141,6 +141,7 @@ MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, 'media', '')
 # https://docs.djangoproject.com/en/1.10/topics/auth/passwords/#module-django.contrib.auth.password_validation
 # AUTH_PASSWORD_VALIDATORS = []
 
+
 # Customization of OpenSlides apps
 
 MOTION_IDENTIFIER_MIN_DIGITS = 1
