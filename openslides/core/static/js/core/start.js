@@ -14,7 +14,9 @@ angular.module('OpenSlidesApp.core.start', [])
     'operator',
     'Group',
     'mainMenu',
-    function($http, $rootScope, $state, $q, DS, autoupdate, operator, Group, mainMenu) {
+    'ngDialog',
+    'LoginDialog',
+    function($http, $rootScope, $state, $q, DS, autoupdate, operator, Group, mainMenu, ngDialog, LoginDialog) {
         var OpenSlides = {
             bootup: function () {
                 $rootScope.openslidesBootstrapDone = false;
@@ -41,6 +43,12 @@ angular.module('OpenSlidesApp.core.start', [])
                 operator.setUser(null);
                 $rootScope.openslidesBootstrapDone = false;
                 $rootScope.operator = operator;
+                // close all open dialogs (except the login dialog)
+                _.forEach(ngDialog.getOpenDialogs(), function (id) {
+                    if (id !== LoginDialog.id) {
+                        ngDialog.close(id);
+                    }
+                });
             },
             reboot: function () {
                 this.shutdown();

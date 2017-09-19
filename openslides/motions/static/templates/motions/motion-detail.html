@@ -161,10 +161,10 @@
           </div>
           <div os-perms="motions.can_manage" class="input-group spacer"
               ng-show="motion.state.show_state_extension_field">
-            <label class="sr-only" for="stateExtensionField">{{ commentsFields[commentFieldForStateId] }}</label>
+            <label class="sr-only" for="stateExtensionField">{{ motion.comments[commentFieldForStateId] }}</label>
             <input type="text" ng-model="stateExtension"
                 id="stateNameExtensionField" class="form-control input-sm"
-                placeholder="{{ commentsFields[commentFieldForStateId] }}">
+                placeholder="{{ motion.comments[commentFieldForStateId] }}">
             <span class="input-group-btn">
               <button ng-click="saveAdditionalStateField(stateExtension)" class="btn btn-default btn-sm">
                 <i class="fa fa-check"></i>
@@ -204,11 +204,11 @@
             <div class="input-group spacer"
                 ng-if="motion.recommendation.show_recommendation_extension_field">
               <label class="sr-only" for="recommendationExtensionField">
-                {{ commentsFields[commentFieldForRecommendationId] }}
+                {{ motion.comments[commentFieldForRecommendationId] }}
               </label>
               <input type="text" ng-model="recommendationExtension"
                   id="recommendationExtensionField" class="form-control input-sm"
-                  placeholder="{{ commentsFields[commentFieldForRecommendationId] }}">
+                  placeholder="{{ motion.comments[commentFieldForRecommendationId] }}">
               <span class="input-group-btn">
                 <button ng-click="saveAdditionalRecommendationField(recommendationExtension)" class="btn btn-default btn-sm">
                   <i class="fa fa-check"></i>

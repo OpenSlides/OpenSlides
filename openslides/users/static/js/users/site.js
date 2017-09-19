@@ -93,14 +93,14 @@ angular.module('OpenSlidesApp.users.site', [
                 guest_enabled: false,
                 msg: null,
             },
-            onEnter: ['$state', '$stateParams', 'ngDialog', function($state, $stateParams, ngDialog) {
-                ngDialog.open({
+            onEnter: ['$state', '$stateParams', 'ngDialog', 'LoginDialog', function($state, $stateParams, ngDialog, LoginDialog) {
+                LoginDialog.id = ngDialog.open({
                     template: 'static/templates/core/login-form.html',
                     controller: 'LoginFormCtrl',
                     showClose: $stateParams.guest_enabled,
                     closeByEscape: $stateParams.guest_enabled,
                     closeByDocument: $stateParams.guest_enabled,
-                });
+                }).id;
             }],
             data: {
                 title: 'Login',
@@ -108,6 +108,8 @@ angular.module('OpenSlidesApp.users.site', [
         });
     }
 ])
+
+.value('LoginDialog', {id: undefined})
 
 /*
  * Directive to check for permissions
