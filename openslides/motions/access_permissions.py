@@ -64,7 +64,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
                     else:
                         # Set private comment fields to None.
                         full_copy = deepcopy(full)
-                        for i, field in enumerate(config['motions_comments']):
+                        for i, field in config['motions_comments'].items():
                             if not field.get('public'):
                                 try:
                                     full_copy['comments'][i] = None
@@ -89,7 +89,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
             # Set private comment fields to None.
             if full.get('comments') is not None:
                 full_copy = deepcopy(full)
-                for i, field in enumerate(config['motions_comments']):
+                for i, field in config['motions_comments'].items():
                     if not field.get('public'):
                         try:
                             full_copy['comments'][i] = None
