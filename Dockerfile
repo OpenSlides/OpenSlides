@@ -8,10 +8,7 @@ RUN cd /tmp && tar xfvJ node-v6.11.3-linux-x64.tar.xz
 RUN ln -sf /tmp/node-v6.11.3-linux-x64/bin/node /usr/bin/node
 RUN useradd -m openslides
 RUN mkdir /app
-ADD package.json /app
-ADD yarn.lock /app
-ADD bower.json /app
-ADD gulpfile.js /app
+COPY package.json yarn.lock bower.json gulpfile.js /app/
 WORKDIR /app
 RUN chown -R openslides /app
 USER openslides
@@ -20,9 +17,8 @@ RUN $HOME/.yarn/bin/yarn --non-interactive
 
 # INSTALL PYTHON DEPENDENCIES
 USER root
-ADD requirements_production.txt /app/requirements_production.txt
-RUN pip install -r /app/requirements_production.txt
-RUN pip install django-redis asgi-redis django-redis-sessions psycopg2
+COPY requirements_*.txt /app/
+RUN pip install -r /app/requirements_big_mode.txt
 
 ## Clean up
 RUN apt-get remove -y python3-pip wget curl
