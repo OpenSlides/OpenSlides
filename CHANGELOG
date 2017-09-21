@@ -37,7 +37,7 @@ Motions:
 - Added config value for pagenumber alignment in PDF [#3327].
 - Bugfix: Several bugfixes regarding splitting list items in
   change recommendations [#3288].
-- Bugfix: Several bugfixes regarding diff version [#3407, #3408].
+- Bugfix: Several bugfixes regarding diff version [#3407, #3408, #3410].
 - Added inline Editing for motion reason [#3361].
 - Added multiselect filter for motion comments [#3372].
 - Added support for pinning personal notes to the window [#3360].

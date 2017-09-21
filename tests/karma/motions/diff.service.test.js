@@ -399,6 +399,12 @@ describe('linenumbering', function () {
           normalized = diffService._normalizeHtmlForDiff(unnormalized);
       expect(normalized).toBe("<P CLASS='os-split-after os-split-before'>Test</P>");
     });
+
+    it('treats newlines like spaces', function () {
+      var unnormalized = "<P>Test line\n\t 2</P>",
+          normalized = diffService._normalizeHtmlForDiff(unnormalized);
+      expect(normalized).toBe("<P>Test line 2</P>");
+    });
   });
 
   describe('the core diff algorithm', function () {
@@ -521,7 +527,7 @@ describe('linenumbering', function () {
           after = "<p>sem. Nulla consequat massa quis enim. TEST<br>\nTEST</p>";
       var diff = diffService.diff(before, after);
 
-      expect(diff).toBe('<p>sem. Nulla consequat massa quis enim.<ins> TEST<br>' + "\n" + "TEST</ins></p>");
+      expect(diff).toBe('<p>sem. Nulla consequat massa quis enim.<ins> TEST<br> TEST</ins></p>');
     });
 
     it('does not repeat the last word (2)', function () {

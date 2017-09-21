@@ -671,6 +671,8 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             for (var ent in entities) {
                 html = html.replace(new RegExp(ent, 'g'), entities[ent]);
             }
+            html = html.replace(/[ \n\t]+/gi, ' ');
+            html = html.replace(/(<\/(div|p|ul|li|blockquote>)>) /gi, "$1\n");
 
             return html;
         };
@@ -1049,14 +1051,16 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             // The "!!(found=...)"-construction is only used to make jshint happy :)
             var findDel = /<del>(.*?)<\/del>/gi,
                 findIns = /<ins>(.*?)<\/ins>/gi,
-                found;
+                found, inner;
             while (!!(found = findDel.exec(html))) {
-                if (found[1].match(/<[^>]*>/)) {
+                inner = found[1].replace(/<br[^>]*>/gi, '');
+                if (inner.match(/<[^>]*>/)) {
                     return true;
                 }
             }
             while (!!(found = findIns.exec(html))) {
-                if (found[1].match(/<[^>]*>/)) {
+                inner = found[1].replace(/<br[^>]*>/gi, '');
+                if (inner.match(/<[^>]*>/)) {
                     return true;
                 }
             }

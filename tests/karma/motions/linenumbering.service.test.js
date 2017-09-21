@@ -145,6 +145,12 @@ describe('linenumbering', function () {
       expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
       expect(lineNumberingService.insertLineBreaksWithoutNumbers(outHtml, 80)).toBe(outHtml);
     });
+
+    it('treats ascii newline characters like spaces', function () {
+      var inHtml = "<p>Test 123\nTest1</p>";
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml, 5);
+      expect(outHtml).toBe('<p>' + noMarkup(1) + 'Test ' + brMarkup(2) + "123\n" + brMarkup(3) + 'Test1</p>');
+    });
   });
 
 
@@ -290,6 +296,12 @@ describe('linenumbering', function () {
         expect(outHtml).toBe("<p>" + noMarkup(1) + "<ins>lauthals </ins>'liebe Kinder, ich will hinaus in den Wald, seid auf der Hut vor dem Wolf!' Und " + brMarkup(2) + "noch etwas mehr Text bis zur nächsten Zeile</p>");
         expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
         expect(lineNumberingService.insertLineBreaksWithoutNumbers(outHtml, 80)).toBe(outHtml);
+    });
+
+    it('cancels newlines after br-elements', function () {
+      var inHtml = "<p>Test 123<br>\nTest 456</p>";
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+      expect(outHtml).toBe("<p>" + noMarkup(1) + "Test 123<br>" + noMarkup(2) + "Test 456</p>");
     });
   });
 
