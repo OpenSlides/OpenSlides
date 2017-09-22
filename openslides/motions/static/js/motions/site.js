@@ -1194,6 +1194,7 @@ angular.module('OpenSlidesApp.motions.site', [
     '$scope',
     '$http',
     '$timeout',
+    '$window',
     'operator',
     'ngDialog',
     'gettextCatalog',
@@ -1220,7 +1221,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'PersonalNoteManager',
     'WebpageTitle',
     'EditingWarning',
-    function($scope, $http, $timeout, operator, ngDialog, gettextCatalog, MotionForm,
+    function($scope, $http, $timeout, $window, operator, ngDialog, gettextCatalog, MotionForm,
              ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation,
              Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motionId, MotionInlineEditing,
              MotionCommentsInlineEditing, Editor, Projector, ProjectionDefault, MotionBlock, MotionPdfExport,
@@ -1259,6 +1260,10 @@ angular.module('OpenSlidesApp.motions.site', [
         }, function () {
             $scope.motion = Motion.get(motionId);
             MotionComment.populateFields($scope.motion);
+            if (motion.comments) {
+                $scope.stateExtension = $scope.motion.comments[$scope.commentFieldForStateId];
+                $scope.recommendationExtension = $scope.motion.comments[$scope.commentFieldForRecommendationId];
+            }
             $scope.motion.personalNote = PersonalNoteManager.getNote($scope.motion);
 
             var webpageTitle = gettextCatalog.getString('Motion') + ' ';
@@ -1410,17 +1415,13 @@ angular.module('OpenSlidesApp.motions.site', [
         };
         // save additional state field
         $scope.saveAdditionalStateField = function (stateExtension) {
-            if (stateExtension) {
-                motion['comment_' + $scope.commentFieldForStateId] = stateExtension;
-                $scope.save(motion);
-            }
+            motion['comment_' + $scope.commentFieldForStateId] = stateExtension;
+            $scope.save(motion);
         };
         // save additional recommendation field
         $scope.saveAdditionalRecommendationField = function (recommendationExtension) {
-            if (recommendationExtension) {
-                motion['comment_' + $scope.commentFieldForRecommendationId] = recommendationExtension;
-                $scope.save(motion);
-            }
+            motion['comment_' + $scope.commentFieldForRecommendationId] = recommendationExtension;
+            $scope.save(motion);
         };
         // update recommendation
         $scope.updateRecommendation = function (recommendation_id) {
@@ -1505,6 +1506,10 @@ angular.module('OpenSlidesApp.motions.site', [
             } else {
                 $('#personalNote').css('width', '');
             }
+        };
+        $scope.gotoPersonalNote = function () {
+            var pos = $('#personalNote').offset();
+            $window.scrollTo(pos.left, pos.top);
         };
         var resizePersonalNoteContainer = function () {
             if ($scope.personalNotePinned) {

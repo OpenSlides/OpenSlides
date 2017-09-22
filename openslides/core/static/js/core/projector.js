@@ -183,10 +183,12 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         var setElements = function (projector) {
             // Get all elements, that should be projected.
             var newElements = [];
+            var enable_clock = Config.get('projector_enable_clock');
+            enable_clock = enable_clock ? enable_clock.value : true;
             _.forEach(slides.getElements(projector), function (element) {
                 if (!element.error) {
                     // Exclude the clock if it should be disabled.
-                    if (Config.get('projector_enable_clock').value || element.name !== 'core/clock') {
+                    if (enable_clock || element.name !== 'core/clock') {
                         newElements.push(element);
                     }
                 } else {

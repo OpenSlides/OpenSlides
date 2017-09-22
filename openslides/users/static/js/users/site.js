@@ -585,7 +585,8 @@ angular.module('OpenSlidesApp.users.site', [
                 },
             };
         }
-        $scope.filter.propertyList = ['first_name', 'last_name', 'title', 'number', 'comment', 'structure_level'];
+        $scope.filter.propertyList = ['first_name', 'last_name', 'username', 'title',
+            'number', 'comment', 'structure_level'];
         $scope.filter.propertyDict = {
             'groups_id' : function (group_id) {
                 return Group.get(group_id).name;

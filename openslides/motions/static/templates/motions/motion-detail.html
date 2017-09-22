@@ -92,7 +92,7 @@
   </div>
   <div class="detail" uib-collapse="isMeta">
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-sm-4">
           <!-- submitters -->
           <h3 translate>Submitters</h3>
           <div ng-repeat="submitter in motion.submitters">
@@ -132,7 +132,7 @@
             </button>
           </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-sm-4">
           <!-- State -->
           <h3 ng-if="!motion.isAllowed('change_state')" class="heading" translate>State</h3>
           <div ng-if="motion.isAllowed('change_state')" class="heading">
@@ -161,10 +161,10 @@
           </div>
           <div os-perms="motions.can_manage" class="input-group spacer"
               ng-show="motion.state.show_state_extension_field">
-            <label class="sr-only" for="stateExtensionField">{{ motion.comments[commentFieldForStateId] }}</label>
+            <label class="sr-only" for="stateExtensionField">{{ commentsFields[commentFieldForStateId].name }}</label>
             <input type="text" ng-model="stateExtension"
                 id="stateNameExtensionField" class="form-control input-sm"
-                placeholder="{{ motion.comments[commentFieldForStateId] }}">
+                placeholder="{{ commentsFields[commentFieldForStateId].name }}">
             <span class="input-group-btn">
               <button ng-click="saveAdditionalStateField(stateExtension)" class="btn btn-default btn-sm">
                 <i class="fa fa-check"></i>
@@ -204,11 +204,11 @@
             <div class="input-group spacer"
                 ng-if="motion.recommendation.show_recommendation_extension_field">
               <label class="sr-only" for="recommendationExtensionField">
-                {{ motion.comments[commentFieldForRecommendationId] }}
+                {{ commentsFields[commentFieldForRecommendationId].name }}
               </label>
               <input type="text" ng-model="recommendationExtension"
                   id="recommendationExtensionField" class="form-control input-sm"
-                  placeholder="{{ motion.comments[commentFieldForRecommendationId] }}">
+                  placeholder="{{ commentsFields[commentFieldForRecommendationId].name }}">
               <span class="input-group-btn">
                 <button ng-click="saveAdditionalRecommendationField(recommendationExtension)" class="btn btn-default btn-sm">
                   <i class="fa fa-check"></i>
@@ -244,7 +244,9 @@
               </ul>
             </span>
           </div>
-          {{ motion.category.prefix }} &ndash; {{ motion.category.name }}
+          <div ng-show="motion.category">
+            {{ motion.category.prefix }} &ndash; {{ motion.category.name }}
+          </div>
 
           <!-- Motion block -->
           <h3 class="heading" os-perms="!motions.can_manage" ng-show="motion.motionBlock" translate>Motion block</h3>
@@ -295,7 +297,7 @@
           {{ motion.origin }}
 
       </div>
-      <div class="col-md-4">
+      <div class="col-sm-4">
           <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
           <ol>
             <li ng-controller="MotionPollDetailCtrl" ng-repeat="poll in motion.polls" class="spacer"
@@ -426,7 +428,7 @@
           </button>
 
           <div class="spacer-top pull-right nobr">
-            <a href="#personalNote" translate>Personal note</a>
+            <a href ng-click="gotoPersonalNote()" translate>Personal note</a>
             <span ng-click="pinPersonalNote()" class="spacer-left pointer" title="{{ 'Pin personal note' || translate }}">
               <i class="fa fa-thumb-tack" ng-class="{'rotate-45-deg-right': !personalNotePinned}"></i>
             </span>

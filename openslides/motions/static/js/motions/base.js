@@ -376,10 +376,9 @@ angular.module('OpenSlidesApp.motions', [
                         name = gettextCatalog.getString(this.state.name);
                         if (this.state.show_state_extension_field) {
                             // check motion comment fields for flag 'forState'
-                            var fields = Config.get('motions_comments').value;
-                            var index = _.findIndex(fields, ['forState', true]);
-                            if (index > -1) {
-                                additionalName = ' ' + this.comments[index];
+                            var commentFieldForStateId = MotionComment.getFieldIdForFlag('forState');
+                            if (commentFieldForStateId > -1) {
+                                additionalName = ' ' + this.comments[commentFieldForStateId];
                             }
                         }
                     }
@@ -394,10 +393,9 @@ angular.module('OpenSlidesApp.motions', [
                         recommendation = gettextCatalog.getString(this.recommendation.recommendation_label);
                         if (this.recommendation.show_recommendation_extension_field) {
                             // check motion comment fields for flag 'forRecommendation'
-                            var fields = Config.get('motions_comments').value;
-                            var index = _.findIndex(fields, ['forRecommendation', true]);
-                            if (index > -1) {
-                                additionalName = ' ' + this.comments[index];
+                            var commentFieldForRecommendationId = MotionComment.getFieldIdForFlag('forRecommendation');
+                            if (commentFieldForRecommendationId > -1) {
+                                additionalName = ' ' + this.comments[commentFieldForRecommendationId];
                             }
                         }
                     }

@@ -70,6 +70,11 @@ angular.module('OpenSlidesApp.core', [
           console.error('The constant REALM is not set properly.');
         }
 
+        // Get a random retry timeout between 2000 and 5000 ms.
+        var getTimeoutTime = function () {
+            return Math.floor(Math.random() * 3000 + 2000);
+        };
+
         /* The callbacks are invoked if the ws connection closed and this factory tries to
          * reconnect after 1 second. The callbacks should return a promise. If the promise
          * resolves, the retry-process is stopped, so the callback can indicate whether it
@@ -81,7 +86,7 @@ angular.module('OpenSlidesApp.core', [
             $q.all(callbackPromises).then(function (success) {
                 ErrorMessage.clearConnectionError();
             }, function (error) {
-                $timeout(runRetryConnectCallbacks, 1000);
+                $timeout(runRetryConnectCallbacks, getTimeoutTime());
             });
         };
 
@@ -101,7 +106,7 @@ angular.module('OpenSlidesApp.core', [
                 if (event.code !== 1000) { // 1000 is a normal close, like the close on logout
                     ErrorMessage.setConnectionError();
                 }
-                $timeout(runRetryConnectCallbacks, 1000);
+                $timeout(runRetryConnectCallbacks, getTimeoutTime());
             };
             socket.onmessage = function (event) {
                 var dataList = [];
