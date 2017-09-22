@@ -22,8 +22,7 @@ LOREM_IPSUM = [
     commodi consequat. Quis aute iure reprehenderit in voluptate velit esse
     cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat
     cupiditat non proident, sunt in culpa qui officia deserunt mollit anim
-    id est laborum.</p>
-    """,
+    id est laborum.</p>""".replace('\n', ' '),
 
     """\
     <p>Sed ut perspiciatis, unde omnis iste natus error sit voluptatem
@@ -39,8 +38,7 @@ LOREM_IPSUM = [
     aliquid ex ea commodi consequatur? Quis autem vel eum iure
     reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae
     consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla
-    pariatur?</p>
-    """,
+    pariatur?</p>""".replace('\n', ' '),
 
     """\
     <p>At vero eos et accusamus et iusto odio dignissimos ducimus, qui
@@ -55,8 +53,7 @@ LOREM_IPSUM = [
     necessitatibus saepe eveniet, ut et voluptates repudiandae sint et
     molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente
     delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut
-    perferendis doloribus asperiores repellat…</p>
-    """,
+    perferendis doloribus asperiores repellat…</p>""".replace('\n', ' '),
 ]
 
 DEFAULT_NUMBER = 100
