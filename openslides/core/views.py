@@ -3,11 +3,10 @@ import uuid
 from collections import OrderedDict
 from operator import attrgetter
 from textwrap import dedent
-from typing import Any, Dict, List  # noqa
+from typing import Any, Dict, List, cast  # noqa
 
 from django.apps import apps
 from django.conf import settings
-from django.contrib.staticfiles import finders
 from django.db.models import F
 from django.http import Http404, HttpResponse
 from django.utils.timezone import now
@@ -54,7 +53,7 @@ from .models import (
 
 # Special Django views
 
-class IndexView(utils_views.CSRFMixin, utils_views.View):
+class IndexView(utils_views.CSRFMixin, utils_views.IndexView):
     """
     The primary view for OpenSlides using AngularJS.
 
@@ -62,28 +61,20 @@ class IndexView(utils_views.CSRFMixin, utils_views.View):
     You can override it by simply adding a custom 'templates/index.html' file
     to the custom staticfiles directory. See STATICFILES_DIRS in settings.py.
     """
-
-    def get(self, *args, **kwargs):
-        with open(finders.find('templates/index.html')) as f:
-            content = f.read()
-        return HttpResponse(content)
+    template_name = 'templates/index.html'
 
 
-class ProjectorView(utils_views.View):
+class ProjectorView(utils_views.IndexView):
     """
     The primary view for OpenSlides projector using AngularJS.
 
     The projector container template is 'openslides/core/static/templates/projector-container.html'.
     This container is for controlling the projector resolution.
     """
-
-    def get(self, *args, **kwargs):
-        with open(finders.find('templates/projector-container.html')) as f:
-            content = f.read()
-        return HttpResponse(content)
+    template_name = 'templates/projector-container.html'
 
 
-class RealProjectorView(utils_views.View):
+class RealProjectorView(utils_views.IndexView):
     """
     The original view without resolutioncontrol for OpenSlides projector using AngularJS.
 
@@ -92,11 +83,7 @@ class RealProjectorView(utils_views.View):
     file to the custom staticfiles directory. See STATICFILES_DIRS in
     settings.py.
     """
-
-    def get(self, *args, **kwargs):
-        with open(finders.find('templates/projector.html')) as f:
-            content = f.read()
-        return HttpResponse(content)
+    template_name = 'templates/projector.html'
 
 
 class WebclientJavaScriptView(utils_views.View):
@@ -105,10 +92,15 @@ class WebclientJavaScriptView(utils_views.View):
     AngularJS app for the requested realm (site or projector). Also code
     for plugins is appended. The result is not uglified.
     """
-    def get(self, *args, **kwargs):
-        angular_modules = []
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.cache = {}  # type: Dict[str, str]
+        self.init_cache('site')
+        self.init_cache('projector')
+
+    def init_cache(self, realm: str) -> None:
+        angular_modules = []  # type: List[str]
         js_files = []  # type: List[str]
-        realm = kwargs.get('realm')  # Result is 'site' or 'projector'
         for app_config in apps.get_app_configs():
             # Add the angular app if the module has one.
             if getattr(app_config, 'angular_{}_module'.format(realm), False):
@@ -187,8 +179,11 @@ class WebclientJavaScriptView(utils_views.View):
             """
             }());
             """)
+        self.cache[realm] = content
 
-        return HttpResponse(content, content_type='application/javascript')
+    def get(self, *args: Any, **kwargs: Any) -> HttpResponse:
+        realm = cast(str, kwargs.get('realm'))  # Result is 'site' or 'projector'
+        return HttpResponse(self.cache[realm], content_type='application/javascript')
 
 
 # Viewsets for the REST API
