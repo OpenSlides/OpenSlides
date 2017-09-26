@@ -77,8 +77,9 @@ def protected_serve(request, path, document_root=None, show_indexes=False):
     except Mediafile.DoesNotExist:
         return HttpResponseNotFound(content="Not found.")
 
-    if (not has_perm(request.user, 'mediafiles.can_see') or
-            (mediafile.hidden and not has_perm(request.user, 'mediafiles.can_see_hidden'))):
+    if ((not has_perm(request.user, 'mediafiles.can_see') or
+            (mediafile.hidden and not has_perm(request.user, 'mediafiles.can_see_hidden'))) and
+            not mediafile.is_logo()):
         return HttpResponseForbidden(content="Forbidden.")
     else:
         return serve(request, path, document_root, show_indexes)
