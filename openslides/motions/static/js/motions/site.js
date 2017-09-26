@@ -987,7 +987,7 @@ angular.module('OpenSlidesApp.motions.site', [
             function (motion) {return motion.category ? motion.category.name : '';},
             function (motion) {return motion.motionBlock ? motion.motionBlock.name : '';},
             function (motion) {return motion.recommendation ? motion.getRecommendationName() : '';},
-            function (motion) {return _.filter(motion.comments, function (comment) {return !!comment;}).join(' ');},
+            function (motion) {return _.filter(motion.comments).join(' ');},
         ];
         $scope.filter.propertyDict = {
             'submitters': function (submitter) {

@@ -603,7 +603,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                         },
                         // Helper function for determinating whether a parent of element is a list item.
                         isInsideAList = function (element) {
-                            parent = element.parentNode;
+                            var parent = element.parentNode;
                             while(parent !== null) {
                                 if (parent.nodeName.toLowerCase() === 'li') {
                                     return true;
