@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext as _
 
+from ..core.config import config
 from ..core.models import Projector
 from ..utils.autoupdate import inform_changed_data
 from ..utils.models import RESTModelMixin
@@ -94,3 +95,9 @@ class Mediafile(RESTModelMixin, models.Model):
                 kB = size / 1024
                 size_string = '%d kB' % kB
         return size_string
+
+    def is_logo(self):
+        for key in config['logos_available']:
+            if config[key]['path'] == self.mediafile.url:
+                return True
+        return False
