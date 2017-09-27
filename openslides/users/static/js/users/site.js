@@ -109,7 +109,7 @@ angular.module('OpenSlidesApp.users.site', [
     }
 ])
 
-.value('LoginDialog', {id: undefined})
+.value('LoginDialog', {})
 
 /*
  * Directive to check for permissions
@@ -912,6 +912,18 @@ angular.module('OpenSlidesApp.users.site', [
         };
     }
 ])
+
+.directive("showPassword", function() {
+    return function linkFn(scope, elem, attrs) {
+        scope.$watch(attrs.showPassword, function(value) {
+            if (value) {
+                elem.attr("type", "text");
+            } else {
+                elem.attr("type", "password");
+            }
+        });
+    };
+})
 
 .controller('UserPasswordCtrl', [
     '$scope',
