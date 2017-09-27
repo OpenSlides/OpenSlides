@@ -1,5 +1,8 @@
 from typing import Any, Dict, List  # noqa
 
+from django.contrib.staticfiles import finders
+from django.core.exceptions import ImproperlyConfigured
+from django.http import HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.base import View
 from rest_framework.response import Response
@@ -45,3 +48,22 @@ class APIView(_APIView):
     # Add the http-methods and delete the method "method_call"
     get = post = put = patch = delete = head = options = trace = method_call
     del method_call
+
+
+class IndexView(View):
+    """
+    A view to serve a single cached template file. Subclasses has to provide 'template_name'.
+    """
+    template_name = None  # type: str
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+
+        if self.template_name is None:
+            raise ImproperlyConfigured("'template_name' is not provided")
+
+        with open(finders.find(self.template_name)) as template:
+            self.template = template.read()
+
+    def get(self, *args: Any, **kwargs: Any) -> HttpResponse:
+        return HttpResponse(self.template)
