@@ -65,7 +65,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
                         # Set private comment fields to None.
                         full_copy = deepcopy(full)
                         for i, field in config['motions_comments'].items():
-                            if not field.get('public'):
+                            if field is None or not field.get('public'):
                                 try:
                                     full_copy['comments'][i] = None
                                 except IndexError:
@@ -90,7 +90,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
             if full.get('comments') is not None:
                 full_copy = deepcopy(full)
                 for i, field in config['motions_comments'].items():
-                    if not field.get('public'):
+                    if field is None or not field.get('public'):
                         try:
                             full_copy['comments'][i] = None
                         except IndexError:
