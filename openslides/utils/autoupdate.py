@@ -251,6 +251,32 @@ def send_data(message: ChannelMessageFormat) -> None:
     """
     collection_elements = from_channel_message(message)
 
+    # Check whether broadcast is active at the moment and set the local
+    # projector queryset.
+    if config['projector_broadcast'] > 0:
+        queryset = Projector.objects.filter(pk=config['projector_broadcast'])
+    else:
+        queryset = Projector.objects.all()
+
+    # Loop over all projectors and send data that they need.
+    for projector in queryset:
+        output = []
+        for collection_element in collection_elements:
+            if collection_element.is_deleted():
+                output.append(collection_element.as_autoupdate_for_projector())
+            else:
+                for element in projector.get_collection_elements_required_for_this(collection_element):
+                    output.append(element.as_autoupdate_for_projector())
+        if output:
+            if config['projector_broadcast'] > 0:
+                send_or_wait(
+                    Group('projector-all').send,
+                    {'text': json.dumps(output)})
+            else:
+                send_or_wait(
+                    Group('projector-{}'.format(projector.pk)).send,
+                    {'text': json.dumps(output)})
+
     # Send data to site users.
     for user_id, channel_names in websocket_user_cache.get_all().items():
         if not user_id:
@@ -281,32 +307,6 @@ def send_data(message: ChannelMessageFormat) -> None:
 
         for channel_name in channel_names:
             send_or_wait(Channel(channel_name).send, {'text': json.dumps(output)})
-
-    # Check whether broadcast is active at the moment and set the local
-    # projector queryset.
-    if config['projector_broadcast'] > 0:
-        queryset = Projector.objects.filter(pk=config['projector_broadcast'])
-    else:
-        queryset = Projector.objects.all()
-
-    # Loop over all projectors and send data that they need.
-    for projector in queryset:
-        output = []
-        for collection_element in collection_elements:
-            if collection_element.is_deleted():
-                output.append(collection_element.as_autoupdate_for_projector())
-            else:
-                for element in projector.get_collection_elements_required_for_this(collection_element):
-                    output.append(element.as_autoupdate_for_projector())
-        if output:
-            if config['projector_broadcast'] > 0:
-                send_or_wait(
-                    Group('projector-all').send,
-                    {'text': json.dumps(output)})
-            else:
-                send_or_wait(
-                    Group('projector-{}'.format(projector.pk)).send,
-                    {'text': json.dumps(output)})
 
 
 def inform_changed_data(instances: Union[Iterable[Model], Model], information: Dict[str, Any]=None) -> None:

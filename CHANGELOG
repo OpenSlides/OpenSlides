@@ -87,6 +87,7 @@ Core:
 - Added 'go to top'-link [#3404].
 - Added caching for the index views. When using a Webserver for serving
   static files see the example configuration in the PR [#3419].
+- Added projector prioritization [#3425].
 
 Mediafiles:
 - Fixed reloading of PDF on page change [#3274].
