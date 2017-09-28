@@ -50,9 +50,9 @@ class APIView(_APIView):
     del method_call
 
 
-class IndexView(View):
+class TemplateView(View):
     """
-    A view to serve a single cached template file. Subclasses has to provide 'template_name'.
+    A view to serve a single cached template file. Subclasses have to provide 'template_name'.
     """
     template_name = None  # type: str
 

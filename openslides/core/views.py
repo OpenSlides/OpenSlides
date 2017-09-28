@@ -53,7 +53,7 @@ from .models import (
 
 # Special Django views
 
-class IndexView(utils_views.CSRFMixin, utils_views.IndexView):
+class IndexView(utils_views.CSRFMixin, utils_views.TemplateView):
     """
     The primary view for OpenSlides using AngularJS.
 
@@ -64,7 +64,7 @@ class IndexView(utils_views.CSRFMixin, utils_views.IndexView):
     template_name = 'templates/index.html'
 
 
-class ProjectorView(utils_views.IndexView):
+class ProjectorView(utils_views.TemplateView):
     """
     The primary view for OpenSlides projector using AngularJS.
 
@@ -74,7 +74,7 @@ class ProjectorView(utils_views.IndexView):
     template_name = 'templates/projector-container.html'
 
 
-class RealProjectorView(utils_views.IndexView):
+class RealProjectorView(utils_views.TemplateView):
     """
     The original view without resolutioncontrol for OpenSlides projector using AngularJS.
 
