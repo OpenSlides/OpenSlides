@@ -193,9 +193,12 @@ Populate your new database::
 4. Run OpenSlides
 -----------------
 
-First start e. g. four workers::
+First start e. g. four workers (do not use the `--threads` option, because the threads will not spawn across all cores)::
 
-    $ python manage.py runworker --threads 4
+    $ python manage.py runworker&
+    $ python manage.py runworker&
+    $ python manage.py runworker&
+    $ python manage.py runworker&
 
 To start Daphne as protocol server run::
 
@@ -207,3 +210,52 @@ To use Geiss instead of Daphne, just download Geiss and start it::
 
     $ python manage.py getgeiss
     $ ./personal_data/var/geiss
+
+5. Use Nginx (optional)
+
+When using Nginx as a proxy for delivering staticfiles the performance of the setup will increase very much. For delivering staticfiles you have to collect those::
+
+    $ python manage.py collectstatic
+
+This is an example configuration for a single Daphne/Geiss listen on port 8000::
+
+    server {
+         listen 80;
+         listen [::]:80;
+
+         server_name _;
+
+         location /static {
+             alias <your path to>/collected-static;
+         }
+         location ~* ^/(?!ws|wss|webclient|core/servertime|users/whoami|users/login|users/logout|users/setpassword|motions/docxtemplate|projector|real-projector|static|media|rest).*$ {
+             rewrite ^.*$ /static/html/index.html;
+         }
+         location ~* ^/projector.*$ {
+             rewrite ^.*$ /static/html/projector-container.html;
+         }
+         location ~* ^/real-projector.*$ {
+             rewrite ^.*$ /static/html/projector.html;
+         }
+         location ~* ^/webclient.*$ {
+             rewrite ^/webclient/(site|projector).*$ /static/js/webclient-$1.js;
+         }
+
+         location / {
+             proxy_pass http://localhost:8000;
+             proxy_read_timeout 5m;
+             proxy_http_version 1.1;
+             proxy_set_header Upgrade $http_upgrade;
+             proxy_set_header Connection "upgrade";
+             proxy_set_header Host $http_host;
+             proxy_set_header X-Real-IP $remote_addr;
+             proxy_set_header X-Scheme $scheme;
+         }
+     }
+
+Using Nginx as a load balancer is fairly easy. Just start multiple Daphnes/Geiss on different ports, change the `proxy_pass` to `http://openslides/` and add this on top of the Nginx configuration::
+
+    upstream openslides {
+        server localhost:2001;
+        server localhost:2002;
+    }
