@@ -225,25 +225,24 @@ This is an example configuration for a single Daphne/Geiss listen on port 8000::
 
          server_name _;
 
-         location /static {
-             alias <your path to>/collected-static;
-         }
          location ~* ^/(?!ws|wss|webclient|core/servertime|users/whoami|users/login|users/logout|users/setpassword|motions/docxtemplate|projector|real-projector|static|media|rest).*$ {
-             rewrite ^.*$ /static/html/index.html;
+             rewrite ^.*$ /static/templates/index.html;
          }
          location ~* ^/projector.*$ {
-             rewrite ^.*$ /static/html/projector-container.html;
+             rewrite ^.*$ /static/templates/projector-container.html;
          }
          location ~* ^/real-projector.*$ {
-             rewrite ^.*$ /static/html/projector.html;
+             rewrite ^.*$ /static/templates/projector.html;
          }
          location ~* ^/webclient.*$ {
              rewrite ^/webclient/(site|projector).*$ /static/js/webclient-$1.js;
          }
+         location /static {
+             alias <your path to>/collected-static;
+         }
 
          location / {
              proxy_pass http://localhost:8000;
-             proxy_read_timeout 5m;
              proxy_http_version 1.1;
              proxy_set_header Upgrade $http_upgrade;
              proxy_set_header Connection "upgrade";
