@@ -82,25 +82,27 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
             return Agenda.lastModified();
         }, function () {
             if ($scope.element.id) {
-                $scope.rootItem = Agenda.get($scope.element.id);
-                var tree = AgendaTree.getFlatTree(Agenda.getAll());
-                var startIndex = tree.indexOf($scope.rootItem);
-                tree = tree.slice(startIndex);
-                // define delta to move the whole subtree to level 0
-                var parentCountDelta = 0;
-                if (tree[0]) {
-                    parentCountDelta = tree[0].parentCount;
-                }
-                $scope.items = [];
-                for (var i = 1; i < tree.length; i++) {
-                    if (tree[i].parentCount - parentCountDelta <= 0) {
-                        break;
+                var tree = AgendaTree.getTree(Agenda.getAll());
+
+                var getRootNode = function (node) {
+                    if (node.id == $scope.element.id) {
+                        return node;
                     }
-                    var item = tree[i];
-                    // move rootItem (and all childs) to level 0
-                    item.parentCount = item.parentCount - parentCountDelta;
-                    $scope.items.push(item);
-                }
+                    for (var i = 0; i < node.children.length; i++) {
+                        var result = getRootNode(node.children[i]);
+                        if (result) {
+                            return result;
+                        }
+                    }
+                    return false;
+                };
+                _.forEach(tree, function (node) {
+                    var result = getRootNode(node);
+                    if (result) {
+                        $scope.rootItem = result.item;
+                        $scope.tree = result.children;
+                    }
+                });
             } else if ($scope.element.tree) {
                 items = _.filter(Agenda.getAll(), function (item) {
                     return item.type === 1;
