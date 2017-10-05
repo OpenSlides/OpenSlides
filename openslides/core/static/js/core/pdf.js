@@ -678,7 +678,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                             columns: [
                                                 HeaderOutsideLineNumber,
                                                 HeaderOutsideLineNumberText
-                                            ]
+                                            ],
+                                            margin: [0, 11, 0, 0]
                                         };
                                         alreadyConverted.push(HeaderOutsideLineNumberColumns);
                                     } else {
@@ -907,7 +908,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                             });
                                             listCol.columns.push(list);
                                             if (!hasClass(element, 'os-split-before')) {
-                                                listCol.margin = [0, 10, 0, 0];
+                                                listCol.margin = [0, 5, 0, 0];
                                             }
                                             alreadyConverted.push(listCol);
                                         } else {

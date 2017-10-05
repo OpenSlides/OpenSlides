@@ -740,8 +740,6 @@ img {
     color: green;
     text-decoration: underline;
 }
-.motion-text-diff p {
-}
 .motion-text-diff.line-numbers-outside .insert .os-line-number {
     display: none;
 }

@@ -197,7 +197,6 @@ h3 {
     margin-bottom: 10px
 }
 #title {
-    width: calc(100% - 230px);
     border-bottom: 5px solid #d3d3d3;
     margin-bottom: 40px;
 }
@@ -209,6 +208,9 @@ h3 {
     margin-top: 10px;
     margin-bottom: 5px;
 }
+#motioncontent {
+    width: calc(100% - 260px);
+}
 #sidebox {
     width: 260px;
     float: right;
@@ -217,6 +219,8 @@ h3 {
     background: #d3d3d3;
     border-radius: 7px 0 0 7px;
     padding: 3px 7px 10px 19px;
+    position: absolute;
+    z-index: 5;
 }
 #sidebox h3 {
     margin-top: 10px;
@@ -281,7 +285,7 @@ hr {
     margin: 0 0 10px 10px;
     top: 0px;
     right: 0px;
-    padding: 26px 45px 3px 19px;
+    padding: 26px 45px 7px 19px;
     min-height: 72px;
     font-size: 3.7em;
     font-weight: bold;
@@ -467,14 +471,20 @@ tr.elected td {
 
 .motion-text.line-numbers-outside .os-line-number {
     display: inline-block;
+    font-size: 0;
+    line-height: 0;
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    left: -25px;
 }
 .motion-text.line-numbers-outside .os-line-number:after {
     content: attr(data-line-number);
     position: absolute;
-    left: -25px;
+    top: 17px;
     vertical-align: top;
     color: gray;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: normal;
 }
 
@@ -495,7 +505,6 @@ tr.elected td {
     margin-left: 0;
 }
 
-
 .motion-text.line-numbers-none .os-line-break {
     display: none;
 }
@@ -504,66 +513,30 @@ tr.elected td {
 }
 
 /** Diff view */
-
-.change-recommendation-overview {
-    background-color: #eee;
-    border: solid 1px #ddd;
-    border-radius: 3px;
-    margin-bottom: 5px;
-    margin-top: -15px;
-    padding-top: 5px;
+p.os-split-after {
+    margin-bottom: 0;
 }
-.change-recommendation-overview {
-    margin-bottom: 50px;
-    padding: 10px;
-}
-.change-recommendation-overview h2 {
+p.os-split-before {
     margin-top: 0;
 }
-.change-recommendation-overview ul {
-    list-style: none;
-    display: table;
+ul.os-split-after, ol.os-split-after {
+    margin-bottom: 0;
 }
-.change-recommendation-overview li {
-    display: table-row;
-    cursor: pointer;
-}
-.change-recommendation-overview li:hover {
-    text-decoration: underline;
-}
-.change-recommendation-overview li > * {
-    display: table-cell;
-    padding: 4px;
-}
-.change-recommendation-overview .status {
-    color: gray;
-    font-style: italic;
-}
-.change-recommendation-overview .status > *:before {
-    content: '(';
-}
-.change-recommendation-overview .status > *:after {
-    content: ')';
-}
-.change-recommendation-overview .no-changes {
-    font-style: italic;
-    color: grey;
+
+.motion-text-holder li.os-split-before {
+    list-style-type: none;
 }
 
 .diff-box {
-    margin-left: 25px;
     padding-top: 0;
 }
 .motion-text-with-diffs li.os-split-before {
     list-style-type: none;
 }
-.motion-text-with-diffs .original-text {
-    min-height: 30px; // Spacer between .diff-box, in case .original-text is empty
-}
-.motion-text-with-diffs .original-text ul:last-child {
+.motion-text-with-diffs .original-text ul:last-child, .motion-text-with-diffs .original-text ol:last-child {
     padding-bottom: 16px;
 }
-.motion-text-with-diffs .original-text ul.os-split-after:last-child {
+.motion-text-with-diffs .original-text ul.os-split-after:last-child, .motion-text-with-diffs .original-text ol.os-split-after:last-child {
     padding-bottom: 0;
 }
 ol.os-split-after, ul.os-split-after {
@@ -572,9 +545,6 @@ ol.os-split-after, ul.os-split-after {
 }
 p.os-split-after {
     margin-bottom: 0;
-}
-.motion-text-with-diffs.line-numbers-inline .diff-box, .motion-text-with-diffs.line-numbers-none .diff-box {
-    margin-right: -220px;
 }
 .diff-box:hover {
     background-color: #f0f0f0;
