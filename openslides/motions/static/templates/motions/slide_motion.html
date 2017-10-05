@@ -66,6 +66,7 @@
       </div>
   </div>
 
+<div id="motioncontent">
   <!-- Title -->
   <div id="title">
     <h1>{{  motion.agenda_item.getTitle() || motion.getTitle() }}</h1>
@@ -123,4 +124,5 @@
     <h3 translate>Reason</h3>
     <div ng-bind-html="motion.getReason() | trusted"></div>
   </div>
+</div>
 </div>
