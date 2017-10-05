@@ -80,11 +80,20 @@ def get_config_variables():
         validators=(MinValueValidator(40),))
 
     yield ConfigVariable(
-        name='motions_stop_submitting',
+        name='motions_disable_reason_on_projector',
         default_value=False,
         input_type='boolean',
-        label='Stop submitting new motions by non-staff users',
+        label='Hide reason on projector',
         weight=325,
+        group='Motions',
+        subgroup='General')
+
+    yield ConfigVariable(
+        name='motions_disable_recommendation_on_projector',
+        default_value=False,
+        input_type='boolean',
+        label='Hide recommendation on projector',
+        weight=327,
         group='Motions',
         subgroup='General')
 
@@ -93,7 +102,16 @@ def get_config_variables():
         default_value=False,
         input_type='boolean',
         label='Allow to disable versioning',
-        weight=330,
+        weight=329,
+        group='Motions',
+        subgroup='General')
+
+    yield ConfigVariable(
+        name='motions_stop_submitting',
+        default_value=False,
+        input_type='boolean',
+        label='Stop submitting new motions by non-staff users',
+        weight=331,
         group='Motions',
         subgroup='General')
 
