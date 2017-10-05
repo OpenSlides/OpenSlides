@@ -6,7 +6,7 @@
     {{ motion.getStateName() }}
 
     <!-- Recommendation -->
-    <div ng-if="motion.getRecommendationName() != ''">
+    <div ng-if="motion.getRecommendationName() != '' && !config('motions_disable_recommendation_on_projector')">
       <h3>{{ config('motions_recommendations_by') }}</h3>
       {{ motion.getRecommendationName() }}
     </div>
@@ -119,6 +119,8 @@
   </div>
 
   <!-- Reason -->
-  <h3 ng-if="motion.getReason()" translate>Reason</h3>
-  <div ng-bind-html="motion.getReason() | trusted"></div>
+  <div ng-if="motion.getReason() && !config('motions_disable_reason_on_projector')">
+    <h3 translate>Reason</h3>
+    <div ng-bind-html="motion.getReason() | trusted"></div>
+  </div>
 </div>
