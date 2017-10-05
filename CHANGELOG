@@ -85,7 +85,7 @@ Core:
 - Added custom translations in config [#3383].
 - Added dynamic webpage title [#3404].
 - Added 'go to top'-link [#3404].
-- Added caching for the index views [#3419].
+- Added caching for the index views [#3419, #3424].
 - Added projector prioritization [#3425].
 
 Mediafiles:

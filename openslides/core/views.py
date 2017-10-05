@@ -178,7 +178,7 @@ class WebclientJavaScriptView(utils_views.View):
             """.format(realm=realm, angular_modules=angular_modules, angular_constants=angular_constants, js_files=js_files) +
             """
             }());
-            """)
+            """).replace('\n', '')
         self.cache[realm] = content
 
     def get(self, *args: Any, **kwargs: Any) -> HttpResponse:
