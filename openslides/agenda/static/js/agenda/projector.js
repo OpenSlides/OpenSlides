@@ -101,6 +101,7 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
                     if (result) {
                         $scope.rootItem = result.item;
                         $scope.tree = result.children;
+                        return false;
                     }
                 });
             } else if ($scope.element.tree) {
