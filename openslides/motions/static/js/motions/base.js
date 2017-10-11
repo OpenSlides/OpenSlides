@@ -505,6 +505,7 @@ angular.module('OpenSlidesApp.motions', [
                         case 'create_poll':
                             return (
                                 operator.hasPerms('motions.can_manage') &&
+                                this.state &&
                                 this.state.allow_create_poll
                             );
                         case 'support':
