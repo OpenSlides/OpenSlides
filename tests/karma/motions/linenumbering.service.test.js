@@ -218,20 +218,20 @@ describe('linenumbering', function () {
       expect(lineNumberingService.insertLineBreaksWithoutNumbers(outHtml, 80)).toBe(outHtml);
     });
 
-    it('shortens the line for H1-elements by 1/2', function () {
+    it('shortens the line for H1-elements by 2/3', function () {
       var inHtml = '<h1>' + longstr(80) + '</h1>';
-      var expected = '<h1>' + noMarkup(1) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMN' +
-          brMarkup(2) + 'OPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZAB</h1>';
+      var expected = '<h1>' + noMarkup(1) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZA' +
+          brMarkup(2) + 'BCDEFGHIJKLMNOPQRSTUVWXYZAB</h1>';
       var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
       expect(outHtml).toBe(expected);
       expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
       expect(lineNumberingService.insertLineBreaksWithoutNumbers(outHtml, 80)).toBe(outHtml);
     });
 
-    it('shortens the line for H2-elements by 2/3', function () {
+    it('shortens the line for H2-elements by 0.75', function () {
       var inHtml = '<h2>' + longstr(80) + '</h2>';
-      var expected = '<h2>' + noMarkup(1) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZA' +
-          brMarkup(2) + 'BCDEFGHIJKLMNOPQRSTUVWXYZAB</h2>';
+      var expected = '<h2>' + noMarkup(1) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGH' +
+          brMarkup(2) + 'IJKLMNOPQRSTUVWXYZAB</h2>';
       var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
       expect(outHtml).toBe(expected);
       expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);

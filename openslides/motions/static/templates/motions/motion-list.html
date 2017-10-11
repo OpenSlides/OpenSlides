@@ -85,7 +85,8 @@
       <!-- category select -->
       <select ng-show="selectedAction == 'setCategory'" ng-model="selectedCategory" class="form-control input-sm">
         <option value="" translate>--- Select category ---</option>
-        <option ng-repeat="category in categories" value="{{ category.id }}">
+        <option ng-repeat="category in categories | orderBy: config('motions_export_category_sorting')"
+            value="{{ category.id }}">
           {{ category.prefix }} &ndash; {{ category.name }}
         </option>
         <option value="no_category_selected" translate>No category</option>
@@ -205,7 +206,7 @@
               <span class="caret"></span>
             </span>
             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCategory">
-              <li ng-repeat="category in categories">
+            <li ng-repeat="category in categories | orderBy: config('motions_export_category_sorting')">
                 <a href ng-click="filter.operateMultiselectFilter('category', category.id, isSelectMode)">
                   <i class="fa fa-check" ng-if="filter.multiselectFilters.category.indexOf(category.id) > -1"></i>
                   {{ category.prefix }} &ndash; {{ category.name }}
@@ -391,7 +392,8 @@
             <translate>done</translate>
           </span>
           <!-- category -->
-          <span ng-repeat="category in categories" class="pointer spacer-left-lg"
+          <span ng-repeat="category in categories | orderBy: config('motions_export_category_sorting')"
+            class="pointer spacer-left-lg"
             ng-if="filter.multiselectFilters.category.indexOf(category.id) > -1"
             ng-click="filter.operateMultiselectFilter('category', category.id, isSelectMode)"
             ng-class="{'disabled': isSelectMode}">
@@ -625,7 +627,7 @@
                   </span>
                 </span>
                 <ul class="dropdown-menu" aria-labelledby="dropdownCategory{{ motion.id }}">
-                  <li ng-repeat="category in categories">
+                  <li ng-repeat="category in categories | orderBy: config('motions_export_category_sorting')">
                     <a href ng-click="toggleCategory(motion, category)">
                       <i class="fa fa-check" ng-if="category.id == motion.category.id"></i>
                       {{ category.prefix }} &ndash; {{ category.name }}
