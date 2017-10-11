@@ -471,6 +471,14 @@ describe('linenumbering', function () {
       expect(diff).toBe('Test Test<ins>append</ins>');
     });
 
+    it('recognizes commas as a word separator', function () {
+      var before = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat",
+          after = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe('Lorem ipsum dolor sit amet, consetetur sadipscing elitr<del> sed</del><ins>,</ins> diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat');
+    });
+
     it('cannot handle changing CSS-classes', function () {
       var before = "<p class='p1'>Test1 Test2</p>",
           after = "<p class='p2'>Test1 Test2</p>";
