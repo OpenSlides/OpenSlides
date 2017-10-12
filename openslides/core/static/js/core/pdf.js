@@ -128,11 +128,14 @@ angular.module('OpenSlidesApp.core.pdf', [])
         });
     };
 
+
     //checks if str is valid HTML. Returns valid HTML if not,
     //return emptystring if empty
     HTMLValidizer.validize = function(str) {
         if (str) {
             str = HTMLValidizer.replaceMalformedUmlauts(str);
+            // Sometimes, some \n are in the text instead of whitespaces. Replace them.
+            str = str.replace(/\n/g, ' ');
 
             var a = document.createElement('div');
             a.innerHTML = str;
@@ -143,7 +146,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
             });
             return "<p>" + str + "</p>";
         } else {
-            return ""; //needed for blank "reaons" field
+            return ""; //needed for blank "reasons" field
         }
     };
     return HTMLValidizer;
@@ -822,6 +825,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         currentParagraph.margin = [0, 0, 0, 0];
                                         if (classes.indexOf('os-split-before') === -1) {
                                             currentParagraph.margin[1] = 8;
+                                        }
+                                        if (classes.indexOf('insert') > -1) {
+                                            currentParagraph.margin[0] = 20;
                                         }
                                     }
                                     currentParagraph.lineHeight = 1.25;
