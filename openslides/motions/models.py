@@ -338,21 +338,6 @@ class Motion(RESTModelMixin, models.Model):
             # Do not set an identifier.
             return
 
-        # The motion is an amendment.
-        elif self.is_amendment():
-            motions = self.parent.amendments.all()
-
-        # The motions should be counted per category.
-        elif config['motions_identifier'] == 'per_category':
-            motions = Motion.objects.filter(category=self.category)
-
-        # The motions should be counted over all.
-        else:
-            motions = Motion.objects.all()
-
-        # Get biggest number.
-        number = motions.aggregate(Max('identifier_number'))['identifier_number__max'] or 0
-
         # If MOTION_IDENTIFIER_WITHOUT_BLANKS is set, don't use blanks when building identifier.
         without_blank = hasattr(settings, 'MOTION_IDENTIFIER_WITHOUT_BLANKS') and settings.MOTION_IDENTIFIER_WITHOUT_BLANKS
 
@@ -372,19 +357,42 @@ class Motion(RESTModelMixin, models.Model):
                 prefix = '%s ' % self.category.prefix
         self._identifier_prefix = prefix
 
+        # Use the already assigned identifier_number, if the motion has one.
+        # Else get the biggest number.
+        if self.identifier_number is not None:
+            number = self.identifier_number
+            initial_increment = False
+        else:
+            # Find all motions that should be included in the calculations.
+            if self.is_amendment():
+                motions = self.parent.amendments.all()
+            # The motions should be counted per category.
+            elif config['motions_identifier'] == 'per_category':
+                motions = Motion.objects.filter(category=self.category)
+            # The motions should be counted over all.
+            else:
+                motions = Motion.objects.all()
+
+            number = motions.aggregate(Max('identifier_number'))['identifier_number__max'] or 0
+            initial_increment = True
+
         # Calculate new identifier.
-        number, identifier = self.increment_identifier_number(number, prefix)
+        number, identifier = self.increment_identifier_number(
+            number,
+            prefix,
+            initial_increment=initial_increment)
 
         # Set identifier and identifier_number.
         self.identifier = identifier
         self.identifier_number = number
 
-    def increment_identifier_number(self, number, prefix):
+    def increment_identifier_number(self, number, prefix, initial_increment=True):
         """
         Helper method. It increments the number until a free identifier
         number is found. Returns new number and identifier.
         """
-        number += 1
+        if initial_increment:
+            number += 1
         identifier = '%s%s' % (prefix, self.extend_identifier_number(number))
         while Motion.objects.filter(identifier=identifier).exists():
             number += 1
@@ -589,11 +597,6 @@ class Motion(RESTModelMixin, models.Model):
         If the motion is new and workflow is None, it chooses the default
         workflow from config.
         """
-
-        # The identifier is set automatically.
-        if config['motions_identifier'] is not 'manually':
-            self.identifier = ''
-            self.identifier_number = None
 
         if type(workflow) is int:
             workflow = Workflow.objects.get(pk=workflow)
