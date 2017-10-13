@@ -1003,16 +1003,13 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.getItemId = {
             state: function (motion) {return motion.state_id;},
             comment: function (motion) {
-                // Map all populated fields to their names
-                return _.map(
-                    // Returns all fields that are populated
-                    _.filter($scope.commentsFieldsNoSpecialComments, function (field) {
-                        return motion['comment ' + field.name];
-                    }),
-                    function (field) {
-                        return field.name;
+                var ids = [];
+                _.forEach(motion.comments, function (comment, id) {
+                    if (comment) {
+                        ids.push(id);
                     }
-                );
+                });
+                return ids;
             },
             category: function (motion) {return motion.category_id;},
             motionBlock: function (motion) {return motion.motion_block_id;},
