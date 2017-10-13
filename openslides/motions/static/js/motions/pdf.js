@@ -300,7 +300,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                             style: 'heading3',
                             marginTop: 25,
                         });
-                        reason.push(converter.convertHTML(motion.getReason(motionVersion), lineNumberMode));
+                        reason.push(converter.convertHTML(motion.getReason(motionVersion), 'none'));
                     }
                     return reason;
                 }

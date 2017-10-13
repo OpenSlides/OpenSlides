@@ -661,30 +661,38 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "h4":
                                 case "h5":
                                 case "h6":
-                                    // Special case quick fix to handle the dirty HTML format*/
-                                    // see following issue: https://github.com/OpenSlides/OpenSlides/issues/3025
                                     if (lineNumberMode === "outside" &&
                                             element.childNodes.length > 0 &&
                                             element.childNodes[0].getAttribute) {
-                                        var HeaderOutsideLineNumber = {
-                                            width: 20,
-                                            text: element.childNodes[0].getAttribute("data-line-number"),
-                                            color: "gray",
-                                            fontSize: 8,
-                                            margin: [0, 2, 0, 0]
-                                        };
-                                        var HeaderOutsideLineNumberText = {
-                                            text: element.childNodes[1].textContent,
-                                        };
-                                        ComputeStyle(HeaderOutsideLineNumberText, elementStyles[nodeName]);
-                                        var HeaderOutsideLineNumberColumns = {
-                                            columns: [
-                                                HeaderOutsideLineNumber,
-                                                HeaderOutsideLineNumberText
-                                            ],
-                                            margin: [0, 11, 0, 0]
-                                        };
-                                        alreadyConverted.push(HeaderOutsideLineNumberColumns);
+                                        // A heading may have multiple lines, so handle line by line separated by line number elements
+                                        var outerStack = create("stack");
+                                        var currentCol;
+                                        _.forEach(element.childNodes, function (node) {
+                                            if (node.getAttribute && node.getAttribute('data-line-number')) {
+                                                if (currentCol) {
+                                                    ComputeStyle(currentCol, elementStyles[nodeName]);
+                                                    outerStack.stack.push(currentCol);
+                                                }
+                                                currentCol = {
+                                                    columns: [
+                                                        getLineNumberObject(node.getAttribute('data-line-number')),
+                                                    ],
+                                                    margin: [0, 2, 0, 0],
+                                                };
+                                            } else if (node.textContent) {
+                                                var HeaderText = {
+                                                    text: node.textContent,
+                                                };
+                                                currentCol.columns.push(HeaderText);
+                                            }
+                                        });
+                                        ComputeStyle(currentCol, elementStyles[nodeName]);
+                                        outerStack.stack.push(currentCol);
+                                        outerStack.margin = [0, 0, 0, 0];
+                                        if (!/h[1-6]/.test(element.previousSibling.nodeName.toLowerCase())) {
+                                            outerStack.margin[1] = 10;
+                                        }
+                                        alreadyConverted.push(outerStack);
                                     } else {
                                         currentParagraph = create("text");
                                         currentParagraph.marginBottom = 4;
@@ -861,7 +869,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     break;
                                 case "img":
                                     var regex = /([\w-]*)\s*:\s*([^;]*)/g;
-                                    var match; //helper variable for the refegex
+                                    var match; //helper variable for the regex
                                     var imageSize={};
                                     var maxResolution = {
                                         width: 435,
