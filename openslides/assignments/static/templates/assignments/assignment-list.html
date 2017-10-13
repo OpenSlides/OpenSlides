@@ -71,10 +71,17 @@
     </div>
   </div>
 
-  <div class="spacer-top-lg italic">
-    {{ assignmentsFiltered.length }} /
-    {{ assignments.length }} {{ "elections" | translate }}<span ng-if="(assignments|filter:{selected:true}).length > 0">,
-    {{(assignments|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
+  <div class="spacer-top-lg italic row">
+    <div class="col-md-6">
+      {{ assignmentsFiltered.length }} /
+      {{ assignments.length }} {{ "elections" | translate }}<span ng-if="(assignments|filter:{selected:true}).length > 0">,
+      {{(assignments|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
+    </div>
+    <div class="col-md-6" ng-show="assignmentsFiltered.length > itemsPerPage">
+      <span class="pull-right">
+        <translate>Page</translate> {{ currentPage }} / {{ Math.ceil(assignmentsFiltered.length/itemsPerPage) }}
+      </span>
+    </div>
   </div>
 
   <div class="os-table container-fluid">

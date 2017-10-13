@@ -164,6 +164,7 @@ angular.module('OpenSlidesApp.agenda.site', [
         $scope.limitBegin = 0;
         $scope.pageChanged = function() {
             $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+            $scope.gotoTop();
         };
 
         // parse duration for inline editing

@@ -119,10 +119,17 @@
     </div>
   </div>
 
-  <div class="spacer-top-lg italic">
-    {{ motionsFiltered.length }} /
-    {{ motions.length }} {{ "motions" | translate }}<span ng-if="(motions|filter:{selected:true}).length > 0">,
-    {{(motions|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
+  <div class="spacer-top-lg italic row">
+    <div class="col-md-6">
+      {{ motionsFiltered.length }} /
+      {{ motions.length }} {{ "motions" | translate }}<span ng-if="(motions|filter:{selected:true}).length > 0">,
+      {{(motions|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
+    </div>
+    <div class="col-md-6" ng-show="motionsFiltered.length > itemsPerPage">
+      <span class="pull-right">
+        <translate>Page</translate> {{ currentPage }} / {{ Math.ceil(motionsFiltered.length/itemsPerPage) }}
+      </span>
+    </div>
   </div>
 
   <div class="os-table container-fluid">
