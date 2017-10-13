@@ -446,7 +446,7 @@ class Speaker(RESTModelMixin, models.Model):
             except Countdown.DoesNotExist:
                 pass  # Do not create a new countdown on stop action
             else:
-                countdown.control(action='stop')
+                countdown.control(action='reset')
 
     def get_root_rest_element(self):
         """
