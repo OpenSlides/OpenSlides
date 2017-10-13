@@ -18,7 +18,7 @@
   <!-- Current speaker -->
   <p ng-repeat="speaker in currentspeakers = (agendaItem.speakers
     | filter: {end_time: null, begin_time: '!!'})"
-    class="currentSpeaker">
+    class="currentSpeaker nobr">
     <i class="fa fa-microphone fa-lg"></i> {{ speaker.user.get_full_name() }}
   </p>
 

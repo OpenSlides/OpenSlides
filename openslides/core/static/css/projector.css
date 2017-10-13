@@ -239,6 +239,7 @@ h3 {
     padding: 0px 7px 10px 19px;
     z-index: 99;
     box-shadow: 3px 3px 10px 1px rgba(0,0,0,0.5);
+    overflow: hidden;
 }
 ul, ol {
     margin: 0 0 10px 2em;
