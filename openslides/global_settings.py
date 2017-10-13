@@ -81,10 +81,8 @@ LOCALE_PATHS = [
 
 STATIC_URL = '/static/'
 
-OS_STATICFILES_DIR = os.path.join(MODULE_DIR, 'static')
-
 STATICFILES_DIRS = [
-    OS_STATICFILES_DIR,
+    os.path.join(MODULE_DIR, 'static'),
 ]
 
 

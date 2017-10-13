@@ -26,18 +26,24 @@ class Command(CollectStatic):
         return super().handle(**options)
 
     def collect(self) -> Dict[str, Any]:
-        destination_dir = os.path.join(settings.OS_STATICFILES_DIR, 'js')
-        if not os.path.exists(destination_dir):
-            os.makedirs(destination_dir)
+        try:
+            destination_dir = os.path.join(settings.STATICFILES_DIRS[0], 'js')
+        except IndexError:
+            # If the user does not want do have staticfiles, he should not get
+            # the webclient files either.
+            pass
+        else:
+            if not os.path.exists(destination_dir):
+                os.makedirs(destination_dir)
 
-        for realm in self.realms:
-            filename = self.js_filename.format(realm)
-            content = self.view.get(realm=realm).content
-            path = os.path.join(destination_dir, filename)
-            with open(path, 'wb+') as f:
-                f.write(content)
-            self.stdout.write("Written WebclientJavaScriptView for realm {} to '{}'".format(
-                realm,
-                path))
+            for realm in self.realms:
+                filename = self.js_filename.format(realm)
+                content = self.view.get(realm=realm).content
+                path = os.path.join(destination_dir, filename)
+                with open(path, 'wb+') as f:
+                    f.write(content)
+                self.stdout.write("Written WebclientJavaScriptView for realm {} to '{}'".format(
+                    realm,
+                    path))
 
         return super().collect()
