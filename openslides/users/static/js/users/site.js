@@ -623,6 +623,7 @@ angular.module('OpenSlidesApp.users.site', [
         $scope.limitBegin = 0;
         $scope.pageChanged = function() {
             $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+            $scope.gotoTop();
         };
 
         // Toggle group from user

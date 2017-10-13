@@ -126,10 +126,17 @@
     </div>
   </div>
 
-  <div class="spacer-top-lg italic">
-    {{ usersFiltered.length }} /
-    {{ users.length }} {{ "participants" | translate }}<span ng-if="(users|filter:{selected:true}).length > 0">,
-    {{(users|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
+  <div class="spacer-top-lg italic row">
+    <div class="col-md-6">
+      {{ usersFiltered.length }} /
+      {{ users.length }} {{ "participants" | translate }}<span ng-if="(users|filter:{selected:true}).length > 0">,
+      {{(users|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
+    </div>
+    <div class="col-md-6" ng-show="usersFiltered.length > itemsPerPage">
+      <span class="pull-right">
+        <translate>Page</translate> {{ currentPage }} / {{ Math.ceil(usersFiltered.length/itemsPerPage) }}
+      </span>
+    </div>
   </div>
 
   <!-- filter users (for user with 'can_see_extra_data' permission) - consider present filter -->
