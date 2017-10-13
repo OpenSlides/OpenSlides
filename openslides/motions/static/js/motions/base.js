@@ -235,6 +235,14 @@ angular.module('OpenSlidesApp.motions', [
                 getTitle: function (versionId) {
                     return this.getVersion(versionId).title;
                 },
+                getAgendaTitle: function () {
+                    var title = '';
+                    if (this.identifier) {
+                        title = gettextCatalog.getString('Motion') + ' ' + this.identifier + ': ';
+                    }
+                    title += this.getTitle();
+                    return title;
+                },
                 getText: function (versionId) {
                     return this.getVersion(versionId).text;
                 },

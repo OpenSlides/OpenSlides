@@ -54,6 +54,7 @@ class ListOfSpeakersSlide(ProjectorElement):
                 pass
             else:
                 yield item
+                yield item.content_object
                 for speaker in item.speakers.filter(end_time=None):
                     # Yield current speaker and next speakers
                     yield speaker.user
@@ -96,6 +97,7 @@ class CurrentListOfSpeakersSlide(ProjectorElement):
             items = self.get_agenda_items(reference_projector)
             for item in items:
                 yield item
+                yield item.content_object
                 for speaker in item.speakers.filter(end_time=None):
                     yield speaker.user
                 query = (item.speakers.exclude(end_time=None)
