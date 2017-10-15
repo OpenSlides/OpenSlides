@@ -423,20 +423,14 @@ describe('linenumbering', function () {
       expect(diff).toBe('The <strong>brown</strong> spotted fox <del>jum</del><ins>lea</ins>ped over the rolling log.');
     });
 
-    it('too many changes result in separate paragraphs', function () {
-      var before = "<p>Test1 Test2 Test3 Test4 Test5 Test9</p>",
-          after = "<p>Test1 Test6 Test7 Test8 Test9</p>";
-      var diff = diffService.diff(before, after);
-
-      expect(diff).toBe('<P class="delete">Test1 Test2 Test3 Test4 Test5 Test9</P><P class="insert">Test1 Test6 Test7 Test8 Test9</P>');
-    });
-
-    it('too many changes result in separate paragraphs - special case with un-wrapped text', function () {
-      var before = "Test1 Test2 Test3 Test4 Test5 Test9",
-          after = "Test1 Test6 Test7 Test8 Test9";
-      var diff = diffService.diff(before, after);
-
-      expect(diff).toBe('<DEL>Test1 Test2 Test3 Test4 Test5 Test9</DEL><INS>Test1 Test6 Test7 Test8 Test9</INS>');
+    it('does not mark the last line of a paragraph as change if a long new one is appended', function () {
+      var before = "<p><span class=\"os-line-number line-number-5\" data-line-number=\"5\" contenteditable=\"false\">&nbsp;</span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>",
+            after = "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>\n" +
+                "\n" +
+                "<p>Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.</p>";
+        var diff = diffService.diff(before, after);
+        expect(diff).toBe("<p><span class=\"line-number-5 os-line-number\" contenteditable=\"false\" data-line-number=\"5\">&nbsp;</span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>\n" +
+            "<p><ins>Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.</ins></p>");
     });
 
     it('does not result in separate paragraphs when only the first word has changed', function () {
@@ -521,13 +515,6 @@ describe('linenumbering', function () {
             after = "";
         var diff = diffService.diff(before, after);
         expect(diff).toBe("<P class=\"delete\">Ihr könnt ohne Sorge fortgehen.'Da meckerte die Alte und machte sich getrost auf den Weg.</P>");
-    });
-
-    it('does not perform inline diff if there are too many changes', function () {
-        var before = "<P>Dann kam er zurück, klopfte an die Hausthür und rief 'macht auf, ihr lieben Kinder, eure Mutter ist da und hat jedem von Euch etwas mitgebarcht.' Aber der Wolf hatte seine schwarze Pfote in das Fenster gelegt, das sahen die Kinder und riefen</P>",
-            after = "<p>(hier: Missbrauch von bewusstseinsverändernde Mittel - daher Zensiert)</p>";
-        var diff = diffService.diff(before, after);
-        expect(diff).toBe('<P class="delete">Dann kam er zurück, klopfte an die Hausthür und rief \'macht auf, ihr lieben Kinder, eure Mutter ist da und hat jedem von Euch etwas mitgebarcht.\' Aber der Wolf hatte seine schwarze Pfote in das Fenster gelegt, das sahen die Kinder und riefen</P><P class="insert">(hier: Missbrauch von bewusstseinsverändernde Mittel - daher Zensiert)</P>');
     });
 
     it('does not repeat the last word (1)', function () {
