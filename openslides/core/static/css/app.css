@@ -46,6 +46,19 @@ h1, h2, h3, h4, h5, h6, #header .title {
 #content .col1 .meta .heading .drop-down-name, #content .col1 .meta h3 {
     font-family: 'Roboto Condensed Light';
 }
+.details h1 {
+    font-size: 20px;
+    color: #000;
+}
+.details h2 {
+    font-size: 18px;
+    color: #000;
+}
+.details h3 {
+    font-size: 16px;
+    color: #000;
+}
+
 
 /*
  * Template styles for OpenSlides site

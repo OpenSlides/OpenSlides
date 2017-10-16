@@ -127,6 +127,18 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     ]);
                 }
 
+                // motion block
+                if (motion.motionBlock) {
+                    metaTableBody.push([
+                        {
+                            text: gettextCatalog.getString('Motion block') + ':',
+                            style: ['bold', 'grey'] },
+                        {
+                            text: motion.motionBlock.title,
+                            style: 'grey'
+                        }
+                    ]);
+                }
                 // voting result
                 if (motion.polls.length > 0 && motion.polls[0].has_votes) {
                     var column1 = [];
@@ -313,7 +325,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     var comments = [];
                     _.forEach(fields, function (field, id) {
                         if (motion.comments[id]) {
-                            var title = gettextCatalog.getString('Comment') + ' ' + field.name;
+                            var title = field.name;
                             if (!field.public) {
                                 title += ' (' + gettextCatalog.getString('internal') + ')';
                             }
@@ -1020,7 +1032,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 var content = [];
                 _.forEach(fields, function (field, id) {
                     if (motion.comments[id]) {
-                        var title = gettextCatalog.getString('Comment') + ' ' + field.name;
+                        var title = field.name;
                         if (!field.public) {
                             title += ' (' + gettextCatalog.getString('internal') + ')';
                         }

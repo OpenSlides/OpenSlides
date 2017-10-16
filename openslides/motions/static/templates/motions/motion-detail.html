@@ -235,7 +235,7 @@
                 <i class="fa fa-cog"></i>
               </span>
               <ul class="dropdown-menu" aria-labelledby="category-dropdown">
-                <li ng-repeat="category in categories">
+                <li ng-repeat="category in categories | orderBy: config('motions_export_category_sorting')">
                   <a href ng-click="toggleCategory(category)">
                     <i class="fa fa-check" ng-if="category.id == motion.category.id"></i>
                     {{ category.prefix }} &ndash; {{ category.name }}

@@ -324,13 +324,13 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                     }
                     break;
                 case 'H1':
-                    newLength *= 0.5;
+                    newLength *= 0.66;
                     break;
                 case 'H2':
-                    newLength *= 0.66;
+                    newLength *= 0.75;
                     break;
                 case 'H3':
-                    newLength *= 0.66;
+                    newLength *= 0.85;
                     break;
             }
             return Math.ceil(newLength);
