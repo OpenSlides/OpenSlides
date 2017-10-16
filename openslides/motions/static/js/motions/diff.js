@@ -1003,29 +1003,6 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         };
 
         /**
-         * Calculates the ratio of the text affected by inline diff
-         * From 0 (no changes at all) to 1 (everything has changed)
-         *
-         * @param html
-         * @returns {number}
-         * @private
-         */
-        this._calcChangeRatio = function(html) {
-            var lengthChanged = 0;
-
-            html = html.replace(/<del>(.*?)<\/del>/gi, function() { lengthChanged += arguments[1].length; return ""; });
-            html = html.replace(/<ins>(.*?)<\/ins>/gi, function() { lengthChanged += arguments[1].length; return ""; });
-            html = html.replace(/<.*?>/, "").trim();
-
-            var lengthRemaining = html.length;
-            if (lengthRemaining === 0 && lengthChanged === 0) {
-                return 0;
-            } else {
-                return (lengthChanged / (lengthChanged + lengthRemaining));
-            }
-        };
-
-        /**
          *
          * @param {string} html
          * @returns {boolean}
@@ -1064,12 +1041,6 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 if (inner.match(/<[^>]*>/)) {
                     return true;
                 }
-            }
-
-            // If too much of the text is changed, it's better to separate the old from new new version,
-            // otherwise the result looks strange
-            if (this._calcChangeRatio(html) > 0.66) {
-                return true;
             }
 
             // If non of the conditions up to now is met, we consider the diff as being sane
