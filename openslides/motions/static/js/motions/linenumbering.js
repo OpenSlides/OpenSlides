@@ -446,7 +446,9 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
          */
         this.insertLineNumbersNode = function (html, lineLength, highlight, firstLine) {
             // Removing newlines after BRs, as they lead to problems like #3410
-            html = html.replace(/(<br[^>]*>)[\n\r]+/gi, '$1');
+            if (html) {
+                html = html.replace(/(<br[^>]*>)[\n\r]+/gi, '$1');
+            }
 
             var root = document.createElement('div');
             root.innerHTML = html;
