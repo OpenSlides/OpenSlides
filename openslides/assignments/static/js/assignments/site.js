@@ -351,6 +351,7 @@ angular.module('OpenSlidesApp.assignments.site', [
         $scope.limitBegin = 0;
         $scope.pageChanged = function() {
             $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+            $scope.gotoTop();
         };
 
         // update phase

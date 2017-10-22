@@ -1008,7 +1008,14 @@ angular.module('OpenSlidesApp.core.site', [
                 $scope.show = ($window.pageYOffset >= 150);
             });
         });
-        $scope.gotoTop = function () {
+    }
+])
+
+.run([
+    '$rootScope',
+    '$window',
+    function ($rootScope, $window) {
+        $rootScope.gotoTop = function () {
             $window.scrollTo(0, 0);
         };
     }

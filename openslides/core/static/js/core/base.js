@@ -526,6 +526,14 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+// Put the Math object into every scope.
+.run([
+    '$rootScope',
+    function ($rootScope) {
+        $rootScope.Math = window.Math;
+    }
+])
+
 // Template hooks
 // 2 possible uses:
 // - { Id: 'myHookId', template: '<button>click me</button>' }

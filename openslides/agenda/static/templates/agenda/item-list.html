@@ -128,18 +128,26 @@
     </div>
   </div>
 
-  <div class="spacer-top-lg italic">
-    <span os-perms="agenda.can_see_hidden_items">{{ itemsFiltered.length }} /</span>
-    {{ items.length }} {{ "items" | translate }}<span ng-if="(items|filter:{selected:true}).length > 0">,
-    {{(items|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
-    <span os-perms="agenda.can_see_hidden_items" class="optional">
-      <span ng-if="sumDurations() > 0">&middot;
-        <translate>Duration</translate>:
-        {{ sumDurations() | osMinutesToTime }}h
-        <span ng-if="config('agenda_start_event_date_time')">
-          (<translate>Estimated end:</translate> {{ calculateEndTime() }})
+  <div class="spacer-top-lg italic row">
+    <div class="col-md-6">
+      <span os-perms="agenda.can_see_hidden_items">{{ itemsFiltered.length }} /</span>
+      {{ items.length }} {{ "items" | translate }}<span ng-if="(items|filter:{selected:true}).length > 0">,
+      {{(items|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
+      <span os-perms="agenda.can_see_hidden_items" class="optional">
+        <span ng-if="sumDurations() > 0">&middot;
+          <translate>Duration</translate>:
+          {{ sumDurations() | osMinutesToTime }}h
+          <span ng-if="config('agenda_start_event_date_time')">
+            (<translate>Estimated end:</translate> {{ calculateEndTime() }})
+          </span>
         </span>
       </span>
+    </div>
+    <div class="col-md-6" ng-show="itemsFiltered.length > itemsPerPage">
+      <span class="pull-right">
+        <translate>Page</translate> {{ currentPage }} / {{ Math.ceil(itemsFiltered.length/itemsPerPage) }}
+      </span>
+    </div>
   </div>
 
   <div id="agenda-table" class="os-table container-fluid">
