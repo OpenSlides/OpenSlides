@@ -335,9 +335,8 @@ angular.module('OpenSlidesApp.users.site', [
                     type: 'select-multiple',
                     templateOptions: {
                         label: gettextCatalog.getString('Groups'),
-                        options: Group.getAll(),
-                        ngOptions: 'option.id as option.name | translate for option in to.options | ' +
-                                   'filter: {id: "!1"}',
+                        options: Group.filter({where: {id: {'>': 1}}}),
+                        ngOptions: "option.id as option.name | translate for option in to.options | orderBy: 'id'",
                         placeholder: gettextCatalog.getString('Select or search a group ...')
                     }
                 },
@@ -784,10 +783,8 @@ angular.module('OpenSlidesApp.users.site', [
     '$state',
     'User',
     'UserForm',
-    'Group',
     'ErrorMessage',
-    function($scope, $state, User, UserForm, Group, ErrorMessage) {
-        Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
+    function($scope, $state, User, UserForm, ErrorMessage) {
         $scope.alert = {};
         // get all form fields
         $scope.formFields = UserForm.getFormFields(true);
@@ -814,11 +811,9 @@ angular.module('OpenSlidesApp.users.site', [
     '$state',
     'User',
     'UserForm',
-    'Group',
     'userId',
     'ErrorMessage',
-    function($scope, $state, User, UserForm, Group, userId, ErrorMessage) {
-        Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
+    function($scope, $state, User, UserForm, userId, ErrorMessage) {
         $scope.alert = {};
         // set initial values for form model by create deep copy of user object
         // so list/detail view is not updated while editing

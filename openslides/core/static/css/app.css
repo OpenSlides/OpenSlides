@@ -1479,6 +1479,7 @@ img {
     vertical-align: top;
     text-align: center;
     min-width: 40px;
+    overflow: hidden;
 }
 
 #groups-table .perm-head {
