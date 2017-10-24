@@ -256,9 +256,19 @@ angular.module('OpenSlidesApp.motions', [
                     }
 
                     var lineLength = Config.get('motions_line_length').value,
-                        html = lineNumberingService.insertLineNumbers(this.getVersion(versionId).text, lineLength);
+                        html = lineNumberingService.insertLineNumbers(this.getVersion(versionId).text, lineLength),
+                        data;
 
-                    var data = diffService.extractRangeByLineNumbers(html, line_from, line_to);
+                    try {
+                        data = diffService.extractRangeByLineNumbers(html, line_from, line_to);
+                    } catch (e) {
+                        // This only happens (as far as we know) when the motion text has been altered (shortened)
+                        // without modifying the change recommendations accordingly.
+                        // That's a pretty serious inconsistency that should not happen at all,
+                        // we're just doing some basic damage control here.
+                        var msg = 'Inconsistent data. A change recommendation is probably referring to a non-existant line number.';
+                        return '<em style="color: red; font-weight: bold;">' + msg + '</em>';
+                    }
 
                     // Add "merge-before"-css-class if the first line begins in the middle of a paragraph. Used for PDF.
                     html = diffService.addCSSClassToFirstTag(data.outerContextStart + data.innerContextStart, "merge-before") +
@@ -276,9 +286,19 @@ angular.module('OpenSlidesApp.motions', [
                     }
 
                     var lineLength = Config.get('motions_line_length').value,
-                        html = lineNumberingService.insertLineNumbers(this.getVersion(versionId).text, lineLength);
+                        html = lineNumberingService.insertLineNumbers(this.getVersion(versionId).text, lineLength),
+                        data;
 
-                    var data = diffService.extractRangeByLineNumbers(html, maxLine, null);
+                    try {
+                        data = diffService.extractRangeByLineNumbers(html, maxLine, null);
+                    } catch (e) {
+                        // This only happens (as far as we know) when the motion text has been altered (shortened)
+                        // without modifying the change recommendations accordingly.
+                        // That's a pretty serious inconsistency that should not happen at all,
+                        // we're just doing some basic damage control here.
+                        var msg = 'Inconsistent data. A change recommendation is probably referring to a non-existant line number.';
+                        return '<em style="color: red; font-weight: bold;">' + msg + '</em>';
+                    }
 
                     if (data.html !== '') {
                         // Add "merge-before"-css-class if the first line begins in the middle of a paragraph. Used for PDF.
@@ -812,12 +832,21 @@ angular.module('OpenSlidesApp.motions', [
                 },
                 getDiff: function(motion, version, highlight) {
                     var lineLength = Config.get('motions_line_length').value,
-                        html = lineNumberingService.insertLineNumbers(motion.getVersion(version).text, lineLength);
+                        html = lineNumberingService.insertLineNumbers(motion.getVersion(version).text, lineLength),
+                        data, oldText;
 
-                    var data = diffService.extractRangeByLineNumbers(html, this.line_from, this.line_to),
+                    try {
+                        data = diffService.extractRangeByLineNumbers(html, this.line_from, this.line_to);
                         oldText = data.outerContextStart + data.innerContextStart +
                             data.html + data.innerContextEnd + data.outerContextEnd;
-
+                    } catch (e) {
+                        // This only happens (as far as we know) when the motion text has been altered (shortened)
+                        // without modifying the change recommendations accordingly.
+                        // That's a pretty serious inconsistency that should not happen at all,
+                        // we're just doing some basic damage control here.
+                        var msg = 'Inconsistent data. A change recommendation is probably referring to a non-existant line number.';
+                        return '<em style="color: red; font-weight: bold;">' + msg + '</em>';
+                    }
                     oldText = lineNumberingService.insertLineNumbers(oldText, lineLength, null, null, this.line_from);
                     var diff = diffService.diff(oldText, this.text);
 
