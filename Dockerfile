@@ -35,5 +35,4 @@ RUN mkdir /data && chown openslides /data
 USER openslides
 EXPOSE 8000
 USER openslides
-VOLUME /supervisord.conf
 VOLUME /data
