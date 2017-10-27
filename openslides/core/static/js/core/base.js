@@ -1420,8 +1420,8 @@ angular.module('OpenSlidesApp.core', [
 ])
 
 // filters the requesting object (id=selfid) from a list of input objects
-.filter('notself', function() {
-    return function(input, selfid) {
+.filter('notself', function () {
+    return function (input, selfid) {
         var result;
         if (selfid) {
             result = [];
@@ -1437,6 +1437,26 @@ angular.module('OpenSlidesApp.core', [
         return result;
     };
 })
+
+// Wraps the orderBy filter. But puts ("", null, undefined) last.
+.filter('orderByEmptyLast', [
+    '$filter',
+    function ($filter) {
+        return function (array, sortPredicate, reverseOrder, compareFn) {
+            var falsyItems = [];
+            var truthyItems = _.filter(array, function (item) {
+                var falsy = item[sortPredicate] === void 0 ||
+                    item[sortPredicate] === null || item[sortPredicate] === '';
+                if (falsy) {
+                    falsyItems.push(item);
+                }
+                return !falsy;
+            });
+            truthyItems = $filter('orderBy')(truthyItems, sortPredicate, reverseOrder, compareFn);
+            return _.concat(truthyItems, falsyItems);
+        };
+    }
+])
 
 // Make sure that the DS factories are loaded by making them a dependency
 .run([

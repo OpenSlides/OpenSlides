@@ -215,7 +215,7 @@
         | osFilter: filter.filterString : filter.getObjectQueryString
         | MultiselectFilter: filter.multiselectFilters.tag : getItemId.tag
         | MultiselectFilter: filter.multiselectFilters.phase : getItemId.phase
-        | orderBy: sort.column : sort.reverse)
+        | orderByEmptyLast: sort.column : sort.reverse)
         | limitTo : itemsPerPage : limitBegin">
 
       <!-- select column -->

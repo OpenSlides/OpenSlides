@@ -65,18 +65,36 @@
         ng-if="operator.user"
         title="{{ 'Set as favorite' | translate }}" ng-click="toggleStar()"></i>
     </h1>
-    <h2>
-        <translate>Motion</translate> {{ motion.identifier }}
-        <span ng-if="parent">
-          (<translate>Amendment of motion</translate>
-          <a ui-sref="motions.motion.detail({id: parent.id})">{{ parent.identifier || parent.getTitle() }}</a>)
+    <div class="row">
+      <div class="col-sm-6">
+        <h2>
+            <translate>Motion</translate> {{ motion.identifier }}
+            <span ng-if="parent">
+              (<translate>Amendment of motion</translate>
+              <a ui-sref="motions.motion.detail({id: parent.id})">{{ parent.identifier || parent.getTitle() }}</a>)
+            </span>
+            <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion(version).version_number }}</span>
+            <span ng-if="motion.active_version != version" class="label label-warning">
+              <i class="fa fa-exclamation-triangle"></i>
+              <translate>This version is not permitted.</translate>
+            </span>
+        </h2>
+      </div>
+      <div class="col-sm-6">
+        <span class="pull-right">
+          <a ui-sref="motions.motion.detail({id: navigation.previousMotion.id})" class="btn btn-default"
+            ng-disabled="!navigation.previousMotion">
+            <i class="fa fa-angle-double-left"></i>
+            <translate>Motion</translate> {{ navigation.previousMotion.identifier }}
+          </a>
+          <a ui-sref="motions.motion.detail({id: navigation.nextMotion.id})" class="btn btn-default"
+            ng-disabled="!navigation.nextMotion">
+            <translate>Motion</translate> {{ navigation.nextMotion.identifier }}
+            <i class="fa fa-angle-double-right"></i>
+          </a>
         </span>
-        <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion(version).version_number }}</span>
-        <span ng-if="motion.active_version != version" class="label label-warning">
-          <i class="fa fa-exclamation-triangle"></i>
-          <translate>This version is not permitted.</translate>
-        </span>
-    </h2>
+      </div>
+    </div>
   </div>
 </div>
 

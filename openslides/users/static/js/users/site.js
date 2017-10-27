@@ -595,8 +595,10 @@ angular.module('OpenSlidesApp.users.site', [
             group: function (user) {return user.groups_id;},
         };
         // Sorting
-        $scope.sort = osTableSort.createInstance();
-        $scope.sort.column = $scope.config('users_sort_by');
+        $scope.sort = osTableSort.createInstance('UserTableSort');
+        if (!$scope.sort.column) {
+            $scope.sort.column = $scope.config('users_sort_by');
+        }
         $scope.sortOptions = [
             {name: 'first_name',
              display_name: gettext('Given name')},

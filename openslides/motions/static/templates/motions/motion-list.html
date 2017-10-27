@@ -157,11 +157,11 @@
               <span class="caret"></span>
             </span>
             <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownState">
-              <li ng-repeat="state in states" ng-class="state.workflowHeader ? 'dropdown-header' : ''">
+              <li ng-repeat="state in states" ng-class="{'dropdown-header': state.workflowHeader, 'divider': state.divider}">
                 <a ng-if="state.workflowHeader">
                   {{ state.headername | translate }}
                 </a>
-                <a href ng-if="!state.workflowHeader"
+                <a href ng-if="!state.workflowHeader && !state.divider"
                   ng-click="operateStateFilter(state.id, isSelectMode)">
                   <i class="fa fa-check" ng-if="filter.multiselectFilters.state.indexOf(state.id) > -1"></i>
                   {{ state.name | translate }}
@@ -172,6 +172,12 @@
                 <a href ng-click="operateStateFilter(-1, isSelectMode)">
                   <i class="fa fa-check" ng-if="filter.multiselectFilters.state.indexOf(-1) > -1"></i>
                   <translate>done</translate>
+                </a>
+              </li>
+              <li>
+                <a href ng-click="operateStateFilter(-2, isSelectMode)">
+                  <i class="fa fa-check" ng-if="filter.multiselectFilters.state.indexOf(-2) > -1"></i>
+                  <translate>undone</translate>
                 </a>
               </li>
             </ul>
@@ -398,6 +404,12 @@
             <i class="fa fa-times-circle"></i>
             <translate>done</translate>
           </span>
+          <span ng-if="filter.multiselectFilters.state.indexOf(-2) > -1" class="pointer spacer-left-lg"
+            ng-click="operateStateFilter(-2, isSelectMode)"
+            ng-class="{'disabled': isSelectMode}">
+            <i class="fa fa-times-circle"></i>
+            <translate>undone</translate>
+          </span>
           <!-- category -->
           <span ng-repeat="category in categories | orderBy: config('motions_export_category_sorting')"
             class="pointer spacer-left-lg"
@@ -504,7 +516,7 @@
         | filter: {star: filter.booleanFilters.isFavorite.value}
         | filter: {hasPersonalNote: filter.booleanFilters.hasPersonalNote.value}
         | toArray
-        | orderBy: sort.column : sort.reverse)
+        | orderByEmptyLast: sort.column : sort.reverse)
         | limitTo : itemsPerPage : limitBegin">
 
       <!-- select column -->
