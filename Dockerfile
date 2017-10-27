@@ -33,7 +33,8 @@ RUN rm -fr /app/node_modules
 
 RUN mkdir /data && chown openslides /data
 USER openslides
-EXPOSE 8000
+# 8000 for supporting old multiinstance-servers. 8001-8008 for new ones.
+EXPOSE 8000 8001 8002 8003 8004 8005 8006 8007 8008
 USER openslides
 VOLUME /supervisord.conf
 VOLUME /data
