@@ -932,6 +932,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             arr = splitArrayEntriesSplitSeparator(arr, " ");
             arr = splitArrayEntriesSplitSeparator(arr, ".");
             arr = splitArrayEntriesSplitSeparator(arr, ",");
+            arr = splitArrayEntriesSplitSeparator(arr, "!");
             arr = splitArrayEntriesEmbedSeparator(arr, "\n", false);
 
             var arrWithoutEmptes = [];
