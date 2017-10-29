@@ -1372,6 +1372,11 @@ angular.module('OpenSlidesApp.motions.site', [
             dialog.scope = $scope;
             ngDialog.open(dialog);
         };
+        // follow recommendation
+        $scope.followRecommendation = function () {
+            $scope.updateState($scope.motion.recommendation.id);
+            $scope.saveAdditionalStateField($scope.recommendationExtension);
+        };
         // update state
         $scope.updateState = function (state_id) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {'state': state_id});
