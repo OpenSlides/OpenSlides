@@ -819,6 +819,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     currentParagraph = create("text");
                                     currentParagraph.lineHeight = 1.25;
                                     var stackDiv = create("stack");
+                                    if (_.indexOf(classes, 'os-split-before') > -1) {
+                                        stackDiv.listType = 'none';
+                                    }
                                     stackDiv.stack.push(currentParagraph);
                                     ComputeStyle(stackDiv, styles);
                                     currentParagraph = parseChildren(stackDiv.stack, element, currentParagraph, [], diff_mode);
