@@ -502,9 +502,21 @@ describe('linenumbering', function () {
       var before = "<P>rief sie alle sieben herbei und sprach 'liebe Kinder, ich will hinaus in den Wald, seid </P>",
           after = "<p>rief sie alle sieben herbei und sprach 'liebe Kinder, ich will hinaus in den Wald, seid Noch</p>" +
               "<p>Test 123</p>",
-          expected = "<P class=\"delete\">rief sie alle sieben herbei und sprach 'liebe Kinder, ich will hinaus in den Wald, seid </P>" +
-              "<P class=\"insert\">rief sie alle sieben herbei und sprach 'liebe Kinder, ich will hinaus in den Wald, seid Noch</P>" +
-              "<P class=\"insert\">Test 123</P>";
+          expected = "<p>rief sie alle sieben herbei und sprach 'liebe Kinder, ich will hinaus in den Wald, seid<ins> Noch</ins></p>" +
+              "<p><ins>Test 123</ins></p>";
+
+      var diff = diffService.diff(before, after);
+      expect(diff).toBe(expected);
+    });
+
+    it('handles insterted paragraphs (3)', function () {
+      // Hint: os-split-after should be moved from the first paragraph to the second one
+      var before = "<p class=\"os-split-after\"><span class=\"os-line-number line-number-1\" data-line-number=\"1\" contenteditable=\"false\">&nbsp;</span>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, </p>",
+          after = "<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>\n" +
+              "\n" +
+              "<p>Stet clita kasd gubergren, no sea takimata sanctus est.</p>",
+          expected = "<p><span class=\"line-number-1 os-line-number\" contenteditable=\"false\" data-line-number=\"1\">&nbsp;</span>Lorem ipsum dolor sit amet, consetetur sadipscing elitr,<ins> sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</ins></p>\n" +
+              "<p class=\"os-split-after\"><ins>Stet clita kasd gubergren, no sea takimata sanctus est.</ins></p>";
 
       var diff = diffService.diff(before, after);
       expect(diff).toBe(expected);

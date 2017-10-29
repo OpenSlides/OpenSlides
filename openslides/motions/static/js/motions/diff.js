@@ -626,6 +626,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         this._normalizeHtmlForDiff = function (html) {
             // Convert all HTML tags to uppercase, but leave the values of attributes unchanged
             // All attributes and CSS class names  are sorted alphabetically
+            // If an attribute is empty, it is removed
             html = html.replace(/<(\/?[a-z]*)( [^>]*)?>/ig, function (html, tag, attributes) {
                 var tagNormalized = tag.toUpperCase();
                 if (attributes === undefined) {
@@ -641,11 +642,13 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                             attrValue = match[5];
                         if (match[2] !== undefined) {
                             if (attrNormalized === ' CLASS') {
-                                attrValue = attrValue.split(' ').sort().join(' ');
+                                attrValue = attrValue.split(' ').sort().join(' ').replace(/^\s+/, '').replace(/\s+$/, '');
                             }
                             attrNormalized += "=" + match[4] + attrValue + match[4];
                         }
-                        attributesList.push(attrNormalized);
+                        if (attrValue !== '') {
+                            attributesList.push(attrNormalized);
+                        }
                     }
                 } while (match);
                 attributes = attributesList.sort().join('');
@@ -1113,6 +1116,24 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             });
         };
 
+        this._addClassToLastNode = function (html, className) {
+            var node = document.createElement('div');
+            node.innerHTML = html;
+            var foundLast = false;
+            for (var i = node.childNodes.length - 1; i >= 0 && !foundLast; i--) {
+                if (node.childNodes[i].nodeType === ELEMENT_NODE) {
+                    var classes = [];
+                    if (node.childNodes[i].getAttribute("class")) {
+                        classes = node.childNodes[i].getAttribute("class").split(" ");
+                    }
+                    classes.push(className);
+                    node.childNodes[i].setAttribute("class", classes.sort().join(' ').replace(/^\s+/, '').replace(/\s+$/, ''));
+                    foundLast = true;
+                }
+            }
+            return node.innerHTML;
+        };
+
         /**
          * This function removes color-Attributes from the styles of this node or a descendant,
          * as they interfer with the green/red color in HTML and PDF
@@ -1173,6 +1194,22 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             // to make sure this situation does not happen (and uses invisible pseudo-tags in case something goes wrong)
             var workaroundPrepend = "<DUMMY><PREPEND>";
 
+            // os-split-after should not be considered for detecting changes in paragraphs, so we strip it here
+            // and add it afterwards.
+            // We only do this for P for now, as for more complex types like UL/LI that tend to be nestend,
+            // information would get lost by this that we will need to recursively merge it again later on.
+            var oldIsSplitAfter = false,
+                newIsSplitAfter = false;
+            htmlOld = htmlOld.replace(/(\s*<p[^>]+class\s*=\s*["'][^"']*)os-split-after/gi, function(match, beginning) {
+                oldIsSplitAfter = true;
+                return beginning;
+            });
+            htmlNew = htmlNew.replace(/(\s*<p[^>]+class\s*=\s*["'][^"']*)os-split-after/gi, function(match, beginning) {
+                newIsSplitAfter = true;
+                return beginning;
+            });
+
+            // Performing the actual diff
             var str = this._diffString(workaroundPrepend + htmlOld, workaroundPrepend + htmlNew),
                 diffUnnormalized = str.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/ {2,}/g, ' ');
 
@@ -1198,6 +1235,20 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                         })
                         .replace(/<\/p>/gi, "</ins></p>") +
                         whiteAfter;
+                }
+            );
+
+            // Fixes HTML produced by the diff like this:
+            // from: <del></P></del><ins> Inserted Text</P>\n<P>More inserted text</P></ins>
+            // into: <ins> Inserted Text</ins></P>\n<P>More inserted text</ins></P>
+            diffUnnormalized = diffUnnormalized.replace(
+                /<del><\/p><\/del><ins>([\s\S]*?)<\/p><\/ins>/gim,
+                "<ins>$1</ins></p>"
+            );
+            diffUnnormalized = diffUnnormalized.replace(
+                /<ins>[\s\S]*?<\/ins>/gim,
+                function(match) {
+                    return match.replace(/(<\/p>\s*<p>)/gi, "</ins>$1<ins>");
                 }
             );
 
@@ -1277,6 +1328,10 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                     node = lineNumberingService.insertLineNumbersNode(diff, lineLength, null, firstLineNumber);
                     diff = node.innerHTML;
                 }
+            }
+
+            if (oldIsSplitAfter || newIsSplitAfter) {
+                diff = this._addClassToLastNode(diff, "os-split-after");
             }
 
             diffCache.put(cacheKey, diff);
