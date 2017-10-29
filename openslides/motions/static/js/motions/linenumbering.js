@@ -21,10 +21,27 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         var ELEMENT_NODE = 1,
             TEXT_NODE = 3;
 
+        // Counts the number of characters in the current line, beyond singe nodes.
+        // Needs to be resetted after each line break and after entering a new block node.
         this._currentInlineOffset = null;
+
+        // The last position of a point suitable for breaking the line. null or an object with the following values:
+        // - node: the node that contains the position. Guaranteed to be a TextNode
+        // - offset: the offset of the breaking characters (like the space)
+        // Needs to be resetted after each line break and after entering a new block node.
+        this._lastInlineBreakablePoint = null;
+
+        // The line number counter
         this._currentLineNumber = null;
+
+        // Indicates that we just entered a block element and we want to add a line number without line break at the beginning.
         this._prependLineNumberToFirstText = false;
+
+        // A workaround to prevent double line numbers
         this._ignoreNextRegularLineNumber = false;
+
+        // Decides if the content of inserted nodes should count as well. This is used so we can use the algorithm on a
+        // text with inline diff annotations and get the same line numbering as with the original text (when set to false)
         this._ignoreInsertedText = false;
 
         var lineNumberCache = $cacheFactory('linenumbering.service');
@@ -141,7 +158,6 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                 currLineStart = 0,
                 i = 0,
                 firstTextNode = true,
-                lastBreakableIndex = null,
                 service = this;
             var addLine = function (text, highlight) {
                 var node;
@@ -171,9 +187,19 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                     }
                 }
                 out.push(node);
+                return node;
+            };
+            var addLinebreakToPreviousNode = function (node, offset, highlight) {
+                var firstText = node.nodeValue.substr(0, offset + 1),
+                    secondText = node.nodeValue.substr(offset + 1);
+                var lineBreak = service._createLineBreak();
+                var firstNode = document.createTextNode(firstText);
+                node.parentNode.insertBefore(firstNode, node);
+                node.parentNode.insertBefore(lineBreak, node);
+                node.nodeValue = secondText;
             };
 
-            if (node.nodeValue == "\n") {
+            if (node.nodeValue === "\n") {
                 out.push(node);
             } else {
 
@@ -184,6 +210,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                         out.push(service._createLineNumber());
                     }
                     this._currentInlineOffset = 0;
+                    this._lastInlineBreakablePoint = null;
                 } else if (this._prependLineNumberToFirstText) {
                     if (this._ignoreNextRegularLineNumber) {
                         this._ignoreNextRegularLineNumber = false;
@@ -196,30 +223,50 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                 while (i < node.nodeValue.length) {
                     var lineBreakAt = null;
                     if (this._currentInlineOffset >= length) {
-                        if (lastBreakableIndex !== null) {
-                            lineBreakAt = lastBreakableIndex;
+                        if (this._lastInlineBreakablePoint !== null) {
+                            lineBreakAt = this._lastInlineBreakablePoint;
                         } else {
-                            lineBreakAt = i - 1;
+                            lineBreakAt = {
+                                'node': node,
+                                'offset': i - 1
+                            };
                         }
                     }
                     if (lineBreakAt !== null && (node.nodeValue[i] !== ' ' && node.nodeValue[i] !== "\n")) {
-                        var currLine = node.nodeValue.substring(currLineStart, lineBreakAt + 1);
-                        addLine(currLine, highlight);
+                        if (lineBreakAt.node === node) {
+                            // The last possible breaking point is in this text node
+                            var currLine = node.nodeValue.substring(currLineStart, lineBreakAt.offset + 1);
+                            addLine(currLine, highlight);
 
-                        currLineStart = lineBreakAt + 1;
-                        this._currentInlineOffset = i - lineBreakAt - 1;
-                        lastBreakableIndex = null;
+                            currLineStart = lineBreakAt.offset + 1;
+                            this._currentInlineOffset = i - lineBreakAt.offset - 1;
+                            this._lastInlineBreakablePoint = null;
+                        } else {
+                            // The last possible breaking point was not in this text not, but one we have already passed
+                            var remainderOfPrev = lineBreakAt.node.nodeValue.length - lineBreakAt.offset - 1;
+                            addLinebreakToPreviousNode(lineBreakAt.node, lineBreakAt.offset, highlight);
+
+                            this._currentInlineOffset = i + remainderOfPrev;
+                            this._lastInlineBreakablePoint = null;
+                        }
+
                     }
 
                     if (node.nodeValue[i] === ' ' || node.nodeValue[i] === '-' || node.nodeValue[i] === "\n") {
-                        lastBreakableIndex = i;
+                        this._lastInlineBreakablePoint = {
+                            'node': node,
+                            'offset': i
+                        };
                     }
 
                     this._currentInlineOffset++;
                     i++;
 
                 }
-                addLine(node.nodeValue.substring(currLineStart), highlight);
+                var lastLine = addLine(node.nodeValue.substring(currLineStart), highlight);
+                if (this._lastInlineBreakablePoint !== null) {
+                    this._lastInlineBreakablePoint.node = lastLine;
+                }
             }
             return out;
         };
@@ -280,6 +327,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                         overlength = ((this._currentInlineOffset + firstword) > length && this._currentInlineOffset > 0);
                     if (overlength && this._isInlineElement(oldChildren[i])) {
                         this._currentInlineOffset = 0;
+                        this._lastInlineBreakablePoint = null;
                         node.appendChild(this._createLineBreak());
                         if (this._currentLineNumber !== null) {
                             node.appendChild(this._createLineNumber());
@@ -338,6 +386,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
         this._insertLineNumbersToBlockNode = function (node, length, highlight) {
             this._currentInlineOffset = 0;
+            this._lastInlineBreakablePoint = null;
             this._prependLineNumberToFirstText = true;
 
             var oldChildren = [], i;
@@ -369,6 +418,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                         overlength = ((this._currentInlineOffset + firstword) > length && this._currentInlineOffset > 0);
                     if (overlength && this._isInlineElement(oldChildren[i]) && !this._isIgnoredByLineNumbering(oldChildren[i])) {
                         this._currentInlineOffset = 0;
+                        this._lastInlineBreakablePoint = null;
                         node.appendChild(this._createLineBreak());
                         if (this._currentLineNumber !== null) {
                             node.appendChild(this._createLineNumber());
@@ -383,6 +433,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             }
 
             this._currentInlineOffset = 0;
+            this._lastInlineBreakablePoint = null;
             this._prependLineNumberToFirstText = true;
             this._ignoreNextRegularLineNumber = false;
 
@@ -454,6 +505,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             root.innerHTML = html;
 
             this._currentInlineOffset = 0;
+            this._lastInlineBreakablePoint = null;
             if (firstLine) {
                 this._currentLineNumber = parseInt(firstLine);
             } else {
@@ -513,6 +565,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             root.innerHTML = html;
 
             this._currentInlineOffset = 0;
+            this._lastInlineBreakablePoint = null;
             this._currentLineNumber = null;
             this._prependLineNumberToFirstText = true;
             this._ignoreNextRegularLineNumber = false;
