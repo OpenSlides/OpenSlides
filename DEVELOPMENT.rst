@@ -139,6 +139,9 @@ Run client tests by starting karma::
 
     $ yarn run karma
 
+Watch for file changes and run the tests automatically after each change::
+
+    $ yarn run karma:watch
 
 OpenSlides in big mode
 ======================

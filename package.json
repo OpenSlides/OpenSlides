@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "prepublish": "bower install && gulp",
-    "karma": "karma start tests/karma/karma.conf.js"
+    "karma": "karma start tests/karma/karma.conf.js",
+    "karma:watch": "karma start tests/karma/karma.conf.js --single-run=false"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.11",
