@@ -44,6 +44,7 @@ Motions:
 - Added support for pinning personal notes to the window [#3360].
 - Clear identifier on state reset [#3356].
 - New config options to hide reason and recommendation on projector [#3432].
+- Show motion identifier in (current) list of speakers [#3442]
 
 Elections:
 - Added pagination for list view [#3393].

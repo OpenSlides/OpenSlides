@@ -618,8 +618,10 @@ angular.module('OpenSlidesApp.agenda.site', [
     'Config',
     'CurrentListOfSpeakersItem',
     'CurrentListOfSpeakersSlide',
+    'gettextCatalog',
+    'WebpageTitle',
     function($scope, $http, $filter, Projector, ProjectionDefault, Agenda, Config,
-        CurrentListOfSpeakersItem, CurrentListOfSpeakersSlide) {
+        CurrentListOfSpeakersItem, CurrentListOfSpeakersSlide, gettextCatalog, WebpageTitle) {
         $scope.alert = {};
         $scope.currentListOfSpeakers = CurrentListOfSpeakersSlide;
 
@@ -666,6 +668,12 @@ angular.module('OpenSlidesApp.agenda.site', [
                 $scope.nextSpeakers = void 0;
                 $scope.currentSpeaker = void 0;
                 $scope.lastSpeakers = void 0;
+            }
+            if ($scope.item) {
+                WebpageTitle.updateTitle(gettextCatalog.getString('Current list of speakers') + ' ' +
+                    gettextCatalog.getString('of') + ' ' + $scope.item.getTitle());
+            } else {
+                WebpageTitle.updateTitle(gettextCatalog.getString('Current list of speakers'));
             }
         };
 
