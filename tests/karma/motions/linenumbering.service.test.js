@@ -303,6 +303,12 @@ describe('linenumbering', function () {
       var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
       expect(outHtml).toBe("<p>" + noMarkup(1) + "Test 123<br>" + noMarkup(2) + "Test 456</p>");
     });
+
+    it('does not force-break words right after an INS', function () {
+      var inHtml = "<p>" + noMarkup(1) + "012345 <ins>78 01 34567</ins>8901234567890123456789</p>";
+      var outHtml = lineNumberingService.insertLineBreaksWithoutNumbers(inHtml, 20, true);
+      expect(outHtml).toBe("<p>" + noMarkup(1) + "012345 <ins>78 01 <br class=\"os-line-break\">34567</ins>890123456789012<br class=\"os-line-break\">3456789</p>");
+    });
   });
 
   describe('line breaking without adding line numbers', function() {
