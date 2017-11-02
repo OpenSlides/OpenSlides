@@ -89,8 +89,10 @@ angular.module('OpenSlidesApp.mediafiles.list', [
             function (mediafile) {return mediafile.mediafile.name;},
         ];
         // Sorting
-        $scope.sort = osTableSort.createInstance();
-        $scope.sort.column = 'title_or_filename';
+        $scope.sort = osTableSort.createInstance('MediafileTableSort');
+        if (!$scope.sort.column) {
+            $scope.sort.column = 'title_or_filename';
+        }
         $scope.sortOptions = [
             {name: 'title_or_filename',
              display_name: gettext('Title')},

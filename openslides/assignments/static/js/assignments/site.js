@@ -319,8 +319,10 @@ angular.module('OpenSlidesApp.assignments.site', [
         };
 
         // Sorting
-        $scope.sort = osTableSort.createInstance();
-        $scope.sort.column = 'title';
+        $scope.sort = osTableSort.createInstance('AssignmentTableSort');
+        if (!$scope.sort.column) {
+            $scope.sort.column = 'title';
+        }
         $scope.sortOptions = [
             {name: 'agenda_item.getItemNumberWithAncestors()',
              display_name: gettext('Item')},

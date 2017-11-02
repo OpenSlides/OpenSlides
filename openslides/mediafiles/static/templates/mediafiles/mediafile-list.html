@@ -240,7 +240,7 @@
       | osFilter: filter.filterString : filter.getObjectQueryString
       | filter: {filetype: (filter.booleanFilters.isPdf.value ? 'application/pdf' : (filter.booleanFilters.isPdf.value === false ? '!application/pdf' : ''))}
       | filter: {hidden: filter.booleanFilters.isHidden.value}
-      | orderBy: sort.column : sort.reverse )">
+      | orderByEmptyLast: sort.column : sort.reverse )">
 
       <!-- select column -->
       <div ng-show="isSelectMode" os-perms="mediafiles.can_manage" class="col-xs-1 centered">

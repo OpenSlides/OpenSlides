@@ -45,6 +45,8 @@ Motions:
 - Clear identifier on state reset [#3356].
 - New config options to hide reason and recommendation on projector [#3432].
 - Show motion identifier in (current) list of speakers [#3442]
+- Added navigation between single motions [#3459].
+- Improved the multiselect state filter [#3459]. 
 
 Elections:
 - Added pagination for list view [#3393].

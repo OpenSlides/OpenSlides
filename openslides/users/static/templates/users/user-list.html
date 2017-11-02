@@ -147,7 +147,7 @@
       | filter: {is_active: filter.booleanFilters.isActive.value}
       | filter: {is_committee: filter.booleanFilters.isCommittee.value}
       | MultiselectFilter: filter.multiselectFilters.group : getItemId.group
-      | orderBy: sort.column: sort.reverse)"></span>
+      | orderByEmptyLast: sort.column: sort.reverse)"></span>
   </div>
   <!-- filter users (for user without 'can_see_extra_data' permission) -->
   <div os-perms="!users.can_see_extra_data"
@@ -155,7 +155,7 @@
       | osFilter: filter.filterString : filter.getObjectQueryString
       | filter: {is_committee: filter.booleanFilters.isCommittee.value}
       | MultiselectFilter: filter.multiselectFilters.group : getItemId.group
-      | orderBy: sort.column: sort.reverse)"></div>
+      | orderByEmptyLast: sort.column: sort.reverse)"></div>
 
   <div class="os-table container-fluid">
     <div class="row header-row">

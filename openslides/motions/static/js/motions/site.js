@@ -907,6 +907,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     motion.star = false;
                 }
             });
+            $scope.collectStatesAndRecommendations();
         });
         $scope.alert = {};
 
@@ -917,40 +918,69 @@ angular.module('OpenSlidesApp.motions.site', [
         };
 
         // collect all states and all recommendations of all workflows
-        $scope.states = [];
-        $scope.recommendations = [];
-        var workflows = Workflow.getAll();
-        _.forEach(workflows, function (workflow) {
-            var workflowHeader = {
-                headername: workflow.name,
-                workflowHeader: true,
-            };
-            $scope.states.push(workflowHeader);
-            $scope.recommendations.push(workflowHeader);
-            _.forEach(workflow.states, function (state) {
-                $scope.states.push(state);
-                if (state.recommendation_label) {
-                    $scope.recommendations.push(state);
+        $scope.collectStatesAndRecommendations = function () {
+            $scope.states = [];
+            $scope.recommendations = [];
+            var workflows = $scope.collectAllUsedWorkflows();
+            _.forEach(workflows, function (workflow) {
+                if (workflows.length > 1) {
+                    var workflowHeader = {
+                        headername: workflow.name,
+                        workflowHeader: true,
+                    };
+                    $scope.states.push(workflowHeader);
+                    $scope.recommendations.push(workflowHeader);
                 }
+
+                var firstEndStateSeen = false;
+                _.forEach(_.orderBy(workflow.states, 'id'), function (state) {
+                    if (state.next_states_id.length === 0 && !firstEndStateSeen) {
+                        $scope.states.push({divider: true});
+                        firstEndStateSeen = true;
+                    }
+                    $scope.states.push(state);
+                    if (state.recommendation_label) {
+                        $scope.recommendations.push(state);
+                    }
+                });
             });
-        });
+        };
+        $scope.collectAllUsedWorkflows = function () {
+            return _.filter(Workflow.getAll(), function (workflow) {
+                return _.some($scope.motions, function (motion) {
+                    return motion.state.workflow_id === workflow.id;
+                });
+            });
+        };
 
         $scope.stateFilter = [];
         var updateStateFilter = function () {
-            if (_.indexOf($scope.filter.multiselectFilters.state, -1) > -1) { // contains -1
-                $scope.stateFilter = _.filter($scope.filter.multiselectFilters.state, function (id) {
-                    return id >= 0;
-                }); // remove -1
+            $scope.stateFilter = _.clone($scope.filter.multiselectFilters.state);
+
+            var doneIndex = _.indexOf($scope.stateFilter, -1);
+            if (doneIndex > -1) { // contains -1 (done)
+                $scope.stateFilter.splice(doneIndex, 1); // remove -1
                 _.forEach($scope.states, function (state) {
-                    if (!state.workflowHeader) {
-                        if (state.getNextStates().length === 0) { // done state
+                    if (!state.workflowHeader && !state.divider) {
+                        if (state.next_states_id.length === 0) { // add all done state
                             $scope.stateFilter.push(state.id);
                         }
                     }
                 });
-            } else {
-                $scope.stateFilter = _.clone($scope.filter.multiselectFilters.state);
             }
+
+            var undoneIndex = _.indexOf($scope.stateFilter, -2);
+            if (undoneIndex > -1) { // contains -2 (undone)
+                $scope.stateFilter.splice(undoneIndex, 1); // remove -2
+                _.forEach($scope.states, function (state) {
+                    if (!state.workflowHeader && !state.divider) {
+                        if (state.next_states_id.length !== 0) { // add all undone state
+                            $scope.stateFilter.push(state.id);
+                        }
+                    }
+                });
+            }
+            $scope.stateFilter = _.uniq($scope.stateFilter);
         };
 
         // Filtering
@@ -1025,8 +1055,10 @@ angular.module('OpenSlidesApp.motions.site', [
             updateStateFilter();
         };
         // Sorting
-        $scope.sort = osTableSort.createInstance();
-        $scope.sort.column = 'identifier';
+        $scope.sort = osTableSort.createInstance('MotionTableSort');
+        if (!$scope.sort.column) {
+            $scope.sort.column = 'identifier';
+        }
         $scope.sortOptions = [
             {name: 'identifier',
              display_name: gettext('Identifier')},
@@ -1193,6 +1225,7 @@ angular.module('OpenSlidesApp.motions.site', [
     '$http',
     '$timeout',
     '$window',
+    '$filter',
     'operator',
     'ngDialog',
     'gettextCatalog',
@@ -1219,11 +1252,12 @@ angular.module('OpenSlidesApp.motions.site', [
     'PersonalNoteManager',
     'WebpageTitle',
     'EditingWarning',
-    function($scope, $http, $timeout, $window, operator, ngDialog, gettextCatalog, MotionForm,
-             ChangeRecommmendationCreate, ChangeRecommmendationView, MotionChangeRecommendation,
-             Motion, MotionComment, Category, Mediafile, Tag, User, Workflow, Config, motionId, MotionInlineEditing,
-             MotionCommentsInlineEditing, Editor, Projector, ProjectionDefault, MotionBlock, MotionPdfExport,
-             PersonalNoteManager, WebpageTitle, EditingWarning) {
+    function($scope, $http, $timeout, $window, $filter, operator, ngDialog, gettextCatalog,
+            MotionForm, ChangeRecommmendationCreate, ChangeRecommmendationView,
+            MotionChangeRecommendation, Motion, MotionComment, Category, Mediafile, Tag, User,
+            Workflow, Config, motionId, MotionInlineEditing, MotionCommentsInlineEditing, Editor,
+            Projector, ProjectionDefault, MotionBlock, MotionPdfExport, PersonalNoteManager,
+            WebpageTitle, EditingWarning) {
         var motion = Motion.get(motionId);
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1263,6 +1297,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 $scope.recommendationExtension = $scope.motion.comments[$scope.commentFieldForRecommendationId];
             }
             $scope.motion.personalNote = PersonalNoteManager.getNote($scope.motion);
+            $scope.navigation.evaluate();
 
             var webpageTitle = gettextCatalog.getString('Motion') + ' ';
             if ($scope.motion.identifier) {
@@ -1354,6 +1389,17 @@ angular.module('OpenSlidesApp.motions.site', [
         };
         $scope.save = function (motion) {
             Motion.save(motion, {method: 'PATCH'});
+        };
+        // Navigation buttons
+        $scope.navigation = {
+            evaluate: function () {
+                var motions = $filter('orderByEmptyLast')(Motion.getAll(), 'identifier');
+                var thisIndex = _.findIndex(motions, function (motion) {
+                    return motion.id === $scope.motion.id;
+                });
+                this.nextMotion = thisIndex < motions.length-1 ? motions[thisIndex+1] : _.head(motions);
+                this.previousMotion = thisIndex > 0 ? motions[thisIndex-1] : _.last(motions);
+            },
         };
         // support
         $scope.support = function () {

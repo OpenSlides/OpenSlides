@@ -573,17 +573,27 @@ angular.module('OpenSlidesApp.core.site', [
  *   instance.column='title')
  */
 .factory('osTableSort', [
-    function () {
-        var createInstance = function () {
+    '$sessionStorage',
+    function ($sessionStorage) {
+        var createInstance = function (tableName) {
             var self = {
                 column: '',
                 reverse: false,
+            };
+            var storage = $sessionStorage[tableName];
+            if (storage) {
+                self = storage;
+            }
+
+            self.save = function () {
+                $sessionStorage[tableName] = self;
             };
             self.toggle = function (column) {
                 if (self.column === column) {
                     self.reverse = !self.reverse;
                 }
                 self.column = column;
+                self.save();
             };
             return self;
         };
