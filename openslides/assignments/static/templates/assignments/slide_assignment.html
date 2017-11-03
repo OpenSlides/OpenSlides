@@ -9,12 +9,12 @@
   </div>
 
   <!-- Description -->
-  <div ng-if="!showResult && assignment.description !== ''" class="white-space-pre-line">
+  <div ng-if="!showResult && assignment.description !== ''" class="white-space-pre-line zoomcontent">
     {{ assignment.description }}
   </div>
 
   <!-- Candidates -->
-  <div ng-if="!showResult">
+  <div class="zoomcontent" ng-if="!showResult">
     <h3 translate>Candidates</h3>
     <ul>
       <li ng-repeat="related_user in assignment.assignment_related_users | orderBy:'weight'">
@@ -24,7 +24,7 @@
   </div>
 
   <!-- vote results -->
-  <div ng-show="showResult">
+  <div class="zoomcontent" ng-show="showResult">
     <div ng-if="(assignment.polls | filter: {id: element.poll}).length == 0" translate>
         Waiting for results ...
     </div>

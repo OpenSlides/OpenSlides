@@ -1,5 +1,4 @@
 <div ng-controller="SlideMotionCtrl" class="content scrollcontent">
-
   <div id="sidebox">
     <!-- State -->
     <h3 translate>State</h3>
@@ -66,63 +65,65 @@
       </div>
   </div>
 
-<div id="motioncontent">
-  <!-- Title -->
-  <div id="title">
-    <h1>{{  motion.agenda_item.getTitle() || motion.getTitle() }}</h1>
-    <h2>
-      <translate>Motion</translate> {{ motion.identifier }}
-      <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion().version_number }}</span>
-    </h2>
-  </div>
+  <div id="motioncontent">
+    <!-- Title -->
+    <div id="title">
+      <h1>{{  motion.agenda_item.getTitle() || motion.getTitle() }}</h1>
+      <h2>
+        <translate>Motion</translate> {{ motion.identifier }}
+        <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion().version_number }}</span>
+      </h2>
+    </div>
 
-  <!-- Preamble -->
-  <div><p>{{ config('motions_preamble') | translate }}</p></div><br>
+    <div class="zoomcontent">
+      <!-- Preamble -->
+      <div><p>{{ config('motions_preamble') | translate }}</p></div><br>
 
-  <!-- Text -->
-  <!-- Original view -->
-  <div ng-if="mode == 'original'">
-    <div id="view-original-inline-editor" ng-bind-html="motion.getTextWithLineBreaks(null, line) | trusted"
-      class="motion-text motion-text-original line-numbers-{{ config('motions_default_line_numbering') }}"
-      contenteditable="false"></div>
-  </div>
-
-  <!-- Diff View -->
-  <div ng-if="mode == 'diff'">
-    <!-- The actual diff view -->
-    <div class="motion-text-with-diffs line-numbers-{{ config('motions_default_line_numbering') }}">
-      <div ng-repeat="change in (changes = (change_recommendations | orderBy: 'line_from')) ">
-
-        <div class="motion-text original-text line-numbers-{{ config('motions_default_line_numbering') }}"
-          ng-bind-html="motion.getTextBetweenChangeRecommendations(null, changes[$index - 1], change, line) | trusted">
-        </div>
-        <div class="diff-box diff-box-{{ change.id }} clearfix motion-text motion-text-diff line-numbers-{{ config('motions_default_line_numbering') }}">
-          <div ng-bind-html="change.getDiff(motion, null, line) | trusted"></div>
-        </div>
-      </div>
-      <div class="motion-text original-text line-numbers-{{ config('motions_default_line_numbering') }}"
-        ng-bind-html="motion.getTextRemainderAfterLastChangeRecommendation(null, changes, line) | trusted">
+      <!-- Text -->
+      <!-- Original view -->
+      <div ng-if="mode == 'original'">
+        <div id="view-original-inline-editor" ng-bind-html="motion.getTextWithLineBreaks(null, line) | trusted"
+          class="motion-text motion-text-original line-numbers-{{ config('motions_default_line_numbering') }}"
+          contenteditable="false"></div>
       </div>
 
+      <!-- Diff View -->
+      <div ng-if="mode == 'diff'">
+        <!-- The actual diff view -->
+        <div class="motion-text-with-diffs line-numbers-{{ config('motions_default_line_numbering') }}">
+          <div ng-repeat="change in (changes = (change_recommendations | orderBy: 'line_from')) ">
+
+            <div class="motion-text original-text line-numbers-{{ config('motions_default_line_numbering') }}"
+              ng-bind-html="motion.getTextBetweenChangeRecommendations(null, changes[$index - 1], change, line) | trusted">
+            </div>
+            <div class="diff-box diff-box-{{ change.id }} clearfix motion-text motion-text-diff line-numbers-{{ config('motions_default_line_numbering') }}">
+              <div ng-bind-html="change.getDiff(motion, null, line) | trusted"></div>
+            </div>
+          </div>
+          <div class="motion-text original-text line-numbers-{{ config('motions_default_line_numbering') }}"
+            ng-bind-html="motion.getTextRemainderAfterLastChangeRecommendation(null, changes, line) | trusted">
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Changed View -->
+      <div ng-if="mode == 'changed'">
+        <div ng-bind-html="motion.getTextByMode('changed', null, line) | trusted"
+          class="motion-text motion-text-changed line-numbers-{{ config('motions_default_line_numbering') }}"></div>
+      </div>
+
+      <!-- Agreed View -->
+      <div ng-if="mode == 'agreed'">
+        <div ng-bind-html="motion.getTextByMode('agreed', null, line) | trusted"
+          class="motion-text motion-text-changed line-numbers-{{ config('motions_default_line_numbering') }}"></div>
+      </div>
+
+      <!-- Reason -->
+      <div ng-if="motion.getReason() && !config('motions_disable_reason_on_projector')">
+        <h3 translate>Reason</h3>
+        <div ng-bind-html="motion.getReason() | trusted"></div>
+      </div>
     </div>
   </div>
-
-  <!-- Changed View -->
-  <div ng-if="mode == 'changed'">
-    <div ng-bind-html="motion.getTextByMode('changed', null, line) | trusted"
-      class="motion-text motion-text-changed line-numbers-{{ config('motions_default_line_numbering') }}"></div>
-  </div>
-
-  <!-- Agreed View -->
-  <div ng-if="mode == 'agreed'">
-    <div ng-bind-html="motion.getTextByMode('agreed', null, line) | trusted"
-      class="motion-text motion-text-changed line-numbers-{{ config('motions_default_line_numbering') }}"></div>
-  </div>
-
-  <!-- Reason -->
-  <div ng-if="motion.getReason() && !config('motions_disable_reason_on_projector')">
-    <h3 translate>Reason</h3>
-    <div ng-bind-html="motion.getReason() | trusted"></div>
-  </div>
-</div>
 </div>
