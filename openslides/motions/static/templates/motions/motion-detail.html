@@ -60,7 +60,7 @@
       </a>
     </div>
     <h1>
-      {{ motion.agenda_item.getTitle() || motion.getTitle() }}
+      {{ motion.getTitle() }}
       <i class="fa pointer" ng-class="motion.personalNote.star ? 'fa-star' : 'fa-star-o'"
         ng-if="operator.user"
         title="{{ 'Set as favorite' | translate }}" ng-click="toggleStar()"></i>

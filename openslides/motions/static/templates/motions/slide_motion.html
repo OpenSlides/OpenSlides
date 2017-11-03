@@ -68,7 +68,7 @@
   <div id="motioncontent">
     <!-- Title -->
     <div id="title">
-      <h1>{{  motion.getTitle() || motion.getTitle() }}</h1>
+      <h1>{{  motion.getTitle() }}</h1>
       <h2>
         <translate>Motion</translate> {{ motion.identifier }}
         <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion().version_number }}</span>
