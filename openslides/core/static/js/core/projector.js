@@ -218,7 +218,8 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                 if (matchingElement) {
                     // copy all changed properties.
                     _.forEach(newElement, function (value, key) {
-                        if (newElement.hasOwnProperty(key) && !key.startsWith('$')) {
+                        // key has own property and does not start with a '$'.
+                        if (newElement.hasOwnProperty(key) && key.indexOf('$') != 0) {
                             if (typeof matchingElement[key] === 'undefined' || matchingElement[key] !== value) {
                                 matchingElement[key] = value;
                             }

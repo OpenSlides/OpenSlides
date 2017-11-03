@@ -312,7 +312,14 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                             style: 'heading3',
                             marginTop: 25,
                         });
-                        reason.push(converter.convertHTML(motion.getReason(motionVersion), 'none'));
+                        reason.push({
+                            columns: [
+                                {
+                                    width: '80%',
+                                    stack: converter.convertHTML(motion.getReason(motionVersion), 'none'),
+                                },
+                            ]
+                        });
                     }
                     return reason;
                 }
