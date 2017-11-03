@@ -1396,6 +1396,9 @@ img {
 .badge-info {
     background-color: #f0ad4e;
 }
+.badge-success {
+    background-color: #5bb85b;
+}
 
 .smallhr {
     margin-top: 5px;

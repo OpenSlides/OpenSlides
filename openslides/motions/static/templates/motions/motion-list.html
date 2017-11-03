@@ -625,7 +625,7 @@
       </div>
       <!-- additional content column -->
       <div class="col-xs-4 content" ng-style="{'width': isSelectMode ? 'calc(50% - 120px)' : 'calc(50% - 70px)'}">
-        <div style="width: 60%;" class="optional">
+        <div style="width: 50%;" class="optional">
           <small>
             <!-- Category dropdown for manage user -->
             <div os-perms="motions.can_manage" ng-show="categories.length > 0"
@@ -751,9 +751,19 @@
             {{ (config('motions_min_supporters') - motion.supporters.length) > 0 ? '(' +  (config('motions_min_supporters') - motion.supporters.length) + ' ' + ('needed' | translate) + ')': '' }}"
             tooltip-class="nobr">
             <span class="badge"
-              ng-class="{'badge-info': motion.supporters.length < config('motions_min_supporters')}">
+              ng-class="motion.supporters.length < config('motions_min_supporters') ? 'badge-info' : 'badge-success'">
               {{ motion.supporters.length }}
             </span>
+          </div>
+        </div>
+        <div style="width: 10%;" class="pull-right">
+          <div class="centered" ng-if="(motion.agenda_item.speakers | filter: {'begin_time': null}).length"
+            uib-tooltip="{{ (motion.agenda_item.speakers | filter: {'begin_time': null}).length }} {{ 'speakers' | translate }}"
+            tooltip-class="nobr">
+            <a ui-sref="agenda.item.detail({id: motion.agenda_item_id})" os-perms="agenda.can_see" class="badge">
+              <i class="fa fa-comment-o"></i>
+              {{ (motion.agenda_item.speakers | filter: {'begin_time': null}).length }}
+            </a>
           </div>
         </div>
         <div style="width: 30%;" class="pull-right">
