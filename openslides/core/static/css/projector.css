@@ -592,12 +592,15 @@ p.os-split-after {
 .motion-block {
     display: flex;
     flex-wrap: wrap;
-    padding: 10px;
 }
 .motion-block > div {
     width: 50%;
     margin-bottom: 15px;
+    padding-right: 15px;
     line-height: 1em;
+}
+.motion-block .label {
+    text-align: left;
 }
 
 /*** Video and Image projection ***/
