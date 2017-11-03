@@ -82,13 +82,13 @@
       </div>
       <div class="col-sm-6">
         <span class="pull-right">
-          <a ui-sref="motions.motion.detail({id: navigation.previousMotion.id})" class="btn btn-default"
-            ng-disabled="!navigation.previousMotion">
+          <a ui-sref="motions.motion.detail({id: navigation.previousMotion.id})"
+            class="btn btn-default btn-sm" ng-disabled="!navigation.previousMotion">
             <i class="fa fa-angle-double-left"></i>
             <translate>Motion</translate> {{ navigation.previousMotion.identifier }}
           </a>
-          <a ui-sref="motions.motion.detail({id: navigation.nextMotion.id})" class="btn btn-default"
-            ng-disabled="!navigation.nextMotion">
+          <a ui-sref="motions.motion.detail({id: navigation.nextMotion.id})"
+            class="btn btn-default btn-sm" ng-disabled="!navigation.nextMotion">
             <translate>Motion</translate> {{ navigation.nextMotion.identifier }}
             <i class="fa fa-angle-double-right"></i>
           </a>
