@@ -24,6 +24,9 @@
 body {
     font-family: "Roboto", sans-serif;
 }
+h1, h2, h3, h4, h5, h6 {
+    font-size: inherit;
+}
 h1, h2, h3, h4, h5, h6, .countdown, .message {
     font-family: "Roboto Condensed", sans-serif;
     font-weight: normal;
@@ -166,14 +169,18 @@ body {
     left: 50px;
     right: 50px;
     z-index: -1;
-    line-height: 1.3em;
+    line-height: 1.5em;
 }
 .content img {
     max-width: 65%;
     height: auto;
 }
 .scrollcontent {
-    transition-property: margin, font-size;
+    transition-property: margin;
+    transition-duration: 1s;
+}
+.zoomcontent {
+    transition-property: font-size;
     transition-duration: 1s;
 }
 .fullscreen {
