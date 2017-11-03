@@ -365,7 +365,7 @@ class Countdown(RESTModelMixin, models.Model):
             id=self.pk)
         return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
 
-    def control(self, action):
+    def control(self, action, skip_autoupdate=False):
         if action not in ('start', 'stop', 'reset'):
             raise ValueError("Action must be 'start', 'stop' or 'reset', not {}.".format(action))
 
@@ -378,4 +378,4 @@ class Countdown(RESTModelMixin, models.Model):
         else:  # reset
             self.running = False
             self.countdown_time = self.default_time
-        self.save()
+        self.save(skip_autoupdate=skip_autoupdate)

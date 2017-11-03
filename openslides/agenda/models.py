@@ -12,6 +12,7 @@ from django.utils.translation import ugettext_lazy
 
 from openslides.core.config import config
 from openslides.core.models import Countdown, Projector
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.utils import to_roman
@@ -422,31 +423,35 @@ class Speaker(RESTModelMixin, models.Model):
         except Speaker.DoesNotExist:
             pass
         else:
-            current_speaker.end_speech()
+            # Do not send an autoupdate for the countdown and the item. This is done
+            # by saving the item and countdown later.
+            current_speaker.end_speech(skip_autoupdate=True)
         self.weight = None
         self.begin_time = timezone.now()
-        self.save()
+        self.save()  # Here, the item is saved and causes an autoupdate.
         if config['agenda_couple_countdown_and_speakers']:
             countdown, created = Countdown.objects.get_or_create(pk=1, defaults={
                 'default_time': config['projector_default_countdown'],
                 'countdown_time': config['projector_default_countdown']})
             if not created:
-                countdown.control(action='reset')
-            countdown.control(action='start')
+                countdown.control(action='reset', skip_autoupdate=True)
+            countdown.control(action='start', skip_autoupdate=True)
 
-    def end_speech(self):
+            inform_changed_data(countdown)  # Here, the autoupdate for the countdown is triggered.
+
+    def end_speech(self, skip_autoupdate=False):
         """
         The speech is finished. Set the time to now.
         """
         self.end_time = timezone.now()
-        self.save()
+        self.save(skip_autoupdate=skip_autoupdate)
         if config['agenda_couple_countdown_and_speakers']:
             try:
                 countdown = Countdown.objects.get(pk=1)
             except Countdown.DoesNotExist:
                 pass  # Do not create a new countdown on stop action
             else:
-                countdown.control(action='reset')
+                countdown.control(action='reset', skip_autoupdate=skip_autoupdate)
 
     def get_root_rest_element(self):
         """
