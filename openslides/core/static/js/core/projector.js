@@ -126,6 +126,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                 // delay displaying the error message, because with a slow internet
                 // connection, the autoupdate with the projector may be delayed. We
                 // de not want to irritate the user by showing this error to early.
+                $scope.error = '';
                 $timeout(function () {
                     if ($scope.showError) {
                         $scope.error = gettext('Can not open the projector.');
