@@ -77,20 +77,22 @@
           </div>
 
       <!-- total votes (valid/invalid/casts) -->
-      <tr class="total">
+      <tr class="total" ng-if="poll.has_votes && poll.getVote('votesvalid').value !== null">
         <td>
           <translate>Valid ballots</translate>
-        <td ng-if="poll.has_votes" ng-init="vote = poll.getVote('votesvalid')">
+        <td ng-init="vote = poll.getVote('votesvalid')">
           {{ vote.value }} {{ vote.percentStr }}
-      <tr class="total">
+
+      <tr class="total" ng-if="poll.has_votes && poll.getVote('votesinvalid').value !== null">
         <td>
           <translate>Invalid ballots</translate>
-        <td ng-if="poll.has_votes" ng-init="vote = poll.getVote('votesinvalid')">
+        <td ng-init="vote = poll.getVote('votesinvalid')">
           {{ vote.value }} {{ vote.percentStr }}
-      <tr class="total bg-info">
+
+      <tr class="total bg-info" ng-if="poll.has_votes && poll.getVote('votescast').value !== null">
         <td>
           <translate>Casted ballots</translate>
-        <td ng-if="poll.has_votes" ng-init="vote = poll.getVote('votescast')">
+        <td ng-init="vote = poll.getVote('votescast')">
           {{ vote.value }} {{ vote.percentStr }}
       </table>
     </div>
