@@ -18,7 +18,7 @@
     "angular-sanitize": "~1.5.8",
     "angular-scroll-glue": "~2.0.7",
     "angular-ui-router": "~0.3.1",
-    "angular-ui-tree": "2.22.5",
+    "angular-ui-tree": "https://github.com/FinnStutzenstein/angular-ui-tree.git#94dbaaff6b36f9d7a514843b73c28d2a3684c0c0",
     "angular-xeditable": "~0.5.0",
     "angularjs-slider": "~6.2.2",
     "bootstrap-css-only": "~3.3.6",
