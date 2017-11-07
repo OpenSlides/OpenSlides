@@ -177,7 +177,11 @@ angular.module('OpenSlidesApp.core', [
             },
             // Returns true if the operator is a member of group.
             isInGroup: function(group) {
-                return _.indexOf(operator.user.groups_id, group.id) > -1;
+                var groups = operator.user.groups_id;
+                if (groups.length === 0) {
+                    groups = [1]; // Set the default group, if no other groups are set.
+                }
+                return _.indexOf(groups, group.id) > -1;
             },
         };
         return operator;
