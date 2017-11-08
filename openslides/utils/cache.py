@@ -363,6 +363,17 @@ class RestrictedDataCache:
 
     base_cache_key = 'restricted_user_cache'
 
+    def update_element(self, user_id: int, collection_string: str, id: int, data: object) -> None:
+        """
+        Adds on element to the cache only if the cache exists for the user.
+
+        Note: This method is not atomic. So in very rare cases it is possible
+        that the restricted date cache can become corrupt. The best solution would be to
+        use a lua script instead. See also #3427.
+        """
+        if self.exists_for_user(user_id):
+            self.add_element(user_id, collection_string, id, data)
+
     def add_element(self, user_id: int, collection_string: str, id: int, data: object) -> None:
         """
         Adds one element to the cache. If the cache does not exists for the user,
@@ -412,6 +423,9 @@ class DummyRestrictedDataCache:
     """
     Dummy RestrictedDataCache that does nothing.
     """
+
+    def update_element(self, user_id: int, collection_string: str, id: int, data: object) -> None:
+        pass
 
     def add_element(self, user_id: int, collection_string: str, id: int, data: object) -> None:
         pass

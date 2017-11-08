@@ -99,7 +99,7 @@ def ws_add_site(message: Any) -> None:
 
                 output.append(formatted_data)
                 # Cache restricted data for user
-                restricted_data_cache.add_element(
+                restricted_data_cache.update_element(
                     user_id,
                     collection.collection_string,
                     data['id'],
@@ -293,7 +293,7 @@ def send_data(message: ChannelMessageFormat) -> None:
         for collection_element in collection_elements:
             formatted_data = collection_element.as_autoupdate_for_user(user)
             if formatted_data['action'] == 'changed':
-                restricted_data_cache.add_element(
+                restricted_data_cache.update_element(
                     user_id or 0,
                     collection_element.collection_string,
                     collection_element.id,
