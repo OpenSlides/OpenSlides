@@ -2,7 +2,8 @@ import json
 import time
 import warnings
 from collections import defaultdict
-from typing import Any, Dict, Generator, Iterable, List, Tuple, Union
+from contextlib import contextmanager
+from typing import Any, Callable, Dict, Generator, Iterable, List, Tuple, Union
 
 from channels import Channel, Group
 from channels.asgi import get_channel_layer
@@ -310,6 +311,14 @@ def send_data(message: ChannelMessageFormat) -> None:
 
 
 def inform_changed_data(instances: Union[Iterable[Model], Model], information: Dict[str, Any]=None) -> None:
+    print("inform_changed_data")
+    global blocked_autoupdate_callback
+    if blocked_autoupdate_callback is None:
+        _inform_changed_data(instances, information)
+    else:
+        blocked_autoupdate_callback(instances, information)
+
+def _inform_changed_data(instances: Union[Iterable[Model], Model], information: Dict[str, Any]=None) -> None:
     """
     Informs the autoupdate system and the caching system about the creation or
     update of an element.
@@ -348,6 +357,7 @@ def inform_deleted_data(elements: Iterable[Tuple[str, int]], information: Dict[s
 
     The argument information is added to each collection element.
     """
+    print("inform_DELETED_data")
     # Go through each pair of collection_string and id and generate a collection
     # element from it.
     collection_elements = []  # type: List[CollectionElement]
@@ -370,11 +380,63 @@ def inform_data_collection_element_list(collection_elements: List[CollectionElem
     Informs the autoupdate system about some collection elements. This is
     used just to send some data to all users.
     """
+    print("inform_DATA_LIST_data")
     # If currently there is an open database transaction, then the
     # send_autoupdate function is only called, when the transaction is
     # commited. If there is currently no transaction, then the function
     # is called immediately.
     transaction.on_commit(lambda: send_autoupdate(collection_elements))
+
+
+blocked_autoupdate_callback = None
+
+
+def block_autoupdates(cb: Callable[[Union[Iterable[Model], Model], Dict[str, Any]], None]) -> None:
+    global blocked_autoupdate_callback
+    if blocked_autoupdate_callback is None:
+        blocked_autoupdate_callback = cb
+
+
+def release_autoupdates():
+    global blocked_autoupdate_callback
+    blocked_autoupdate_callback = None
+
+
+@contextmanager
+def AutoupdateBundle():
+    tracked_instances_no_information = set()
+    tracked_instances = set()
+
+    def callback(instances: Union[Iterable[Model], Model], information: Dict[str, Any]=None) -> None:
+        if information is None:
+            try:
+                _ = iter(instances)
+            except TypeError:
+                # instances is not iterable.
+                tracked_instances_no_information.add(instances)
+            else:
+                tracked_instances_no_information.update(instances)
+        else:
+            tracked_instances.add((instances, information))
+    block_autoupdates(callback)
+
+    yield
+
+    print(tracked_instances_no_information)
+    print(tracked_instances)
+
+    release_autoupdates()
+    inform_changed_data(tracked_instances_no_information)
+    for instance, information in tracked_instances:
+        inform_changed_data(instance, information)
+
+
+def bundle_autoupdates(function):
+    def wrapper(*args, **kwargs):
+        with AutoupdateBundle():
+            res = function(*args, **kwargs)
+        return res
+    return wrapper
 
 
 def send_autoupdate(collection_elements: List[CollectionElement]) -> None:

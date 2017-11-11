@@ -13,7 +13,7 @@ from rest_framework import status
 
 from ..core.config import config
 from ..utils.auth import has_perm
-from ..utils.autoupdate import inform_changed_data
+from ..utils.autoupdate import inform_changed_data, bundle_autoupdates
 from ..utils.collection import CollectionElement
 from ..utils.rest_api import (
     DestroyModelMixin,
@@ -149,6 +149,7 @@ class MotionViewSet(ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    @bundle_autoupdates
     def update(self, request, *args, **kwargs):
         """
         Customized view endpoint to update a motion.
@@ -298,6 +299,7 @@ class MotionViewSet(ModelViewSet):
         return Response({'detail': message})
 
     @detail_route(methods=['put'])
+    @bundle_autoupdates
     def set_state(self, request, pk=None):
         """
         Special view endpoint to set and reset a state of a motion.
@@ -375,6 +377,7 @@ class MotionViewSet(ModelViewSet):
         return Response({'detail': message})
 
     @detail_route(methods=['post'])
+    @bundle_autoupdates
     def create_poll(self, request, pk=None):
         """
         View to create a poll. It is a POST request without any data.
