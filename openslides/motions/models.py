@@ -553,15 +553,16 @@ class Motion(RESTModelMixin, models.Model):
         """
         return user in self.supporters.all()
 
-    def create_poll(self):
+    def create_poll(self, skip_autoupdate=False):
         """
         Create a new poll for this motion.
 
         Return the new poll object.
         """
         if self.state.allow_create_poll:
-            poll = MotionPoll.objects.create(motion=self)
-            poll.set_options()
+            poll = MotionPoll(motion=self)
+            poll.save(skip_autoupdate=skip_autoupdate)
+            poll.set_options(skip_autoupdate=skip_autoupdate)
             return poll
         else:
             raise WorkflowError('You can not create a poll in state %s.' % self.state.name)
@@ -1030,11 +1031,11 @@ class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):  # type: i
         """
         return 'MotionPoll for motion %s' % self.motion
 
-    def set_options(self):
+    def set_options(self, skip_autoupdate=False):
         """Create the option class for this poll."""
         # TODO: maybe it is possible with .create() to call this without poll=self
         #       or call this in save()
-        self.get_option_class()(poll=self).save()
+        self.get_option_class()(poll=self).save(skip_autoupdate=skip_autoupdate)
 
     def get_percent_base_choice(self):
         return config['motions_poll_100_percent_base']
