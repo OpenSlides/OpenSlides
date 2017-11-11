@@ -3,7 +3,7 @@ import time
 import warnings
 from collections import defaultdict
 from contextlib import contextmanager
-from typing import Any, Callable, Dict, Generator, Iterable, List, Tuple, Union
+from typing import Any, Callable, Dict, Generator, Iterable, List, Optional, Tuple, Union
 
 from channels import Channel, Group
 from channels.asgi import get_channel_layer
@@ -311,12 +311,13 @@ def send_data(message: ChannelMessageFormat) -> None:
 
 
 def inform_changed_data(instances: Union[Iterable[Model], Model], information: Dict[str, Any]=None) -> None:
-    print("inform_changed_data")
+    #print("inform_changed_data")
     global blocked_autoupdate_callback
     if blocked_autoupdate_callback is None:
         _inform_changed_data(instances, information)
     else:
         blocked_autoupdate_callback(instances, information)
+
 
 def _inform_changed_data(instances: Union[Iterable[Model], Model], information: Dict[str, Any]=None) -> None:
     """
@@ -391,7 +392,7 @@ def inform_data_collection_element_list(collection_elements: List[CollectionElem
 blocked_autoupdate_callback = None
 
 
-def block_autoupdates(cb: Callable[[Union[Iterable[Model], Model], Dict[str, Any]], None]) -> None:
+def block_autoupdates(cb: Callable[[Union[Iterable[Model], Model], Optional[Dict[str, Any]]], None]) -> None:
     global blocked_autoupdate_callback
     if blocked_autoupdate_callback is None:
         blocked_autoupdate_callback = cb
@@ -410,14 +411,14 @@ def AutoupdateBundle():
     def callback(instances: Union[Iterable[Model], Model], information: Dict[str, Any]=None) -> None:
         if information is None:
             try:
-                _ = iter(instances)
+                _ = iter(instances)  # noqa
             except TypeError:
                 # instances is not iterable.
                 tracked_instances_no_information.add(instances)
             else:
                 tracked_instances_no_information.update(instances)
         else:
-            tracked_instances.add((instances, information))
+            tracked_instances.add((instances, frozenset(information)))
     block_autoupdates(callback)
 
     yield
