@@ -224,17 +224,16 @@ h3 {
     margin-bottom: 5px;
 }
 #motioncontent {
-    width: calc(100% - 260px);
+    width: calc(100% - 230px);
 }
 #sidebox {
     width: 260px;
-    float: right;
-    margin: 75px -50px 20px 10px;
     right: 0;
+    margin-top: 75px;
     background: #d3d3d3;
     border-radius: 7px 0 0 7px;
     padding: 3px 7px 10px 19px;
-    position: absolute;
+    position: fixed;
     z-index: 5;
 }
 #sidebox h3 {
@@ -595,12 +594,15 @@ p.os-split-after {
 }
 .motion-block > div {
     width: 50%;
+    font-size: 1.1em;
     margin-bottom: 15px;
     padding-right: 15px;
     line-height: 1em;
 }
 .motion-block .label {
     text-align: left;
+    padding: 5px 10px;
+    margin-top: 3px;
 }
 
 /*** Video and Image projection ***/

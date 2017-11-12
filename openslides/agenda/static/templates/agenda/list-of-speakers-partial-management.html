@@ -22,18 +22,6 @@
       </button>
     </span>
   </div>
-
-  <!-- Start/Stop controls -->
-  <button ng-if="isAllowed('endCurrentSpeech')" ng-click="endSpeech()"
-      class="btn btn-sm btn-default">
-    <i class="fa fa-stop"></i>
-    <translate>End current speech</translate>
-  </button>
-  <button ng-if="isAllowed('beginNextSpeech')" ng-click="beginSpeech()"
-      class="btn btn-sm btn-default">
-    <i class="fa fa-play"></i>
-    <translate>Begin next speech</translate>
-  </button>
 </div>
 
   <!-- text for empty list -->
@@ -44,7 +32,7 @@
   <template-hook hook-name="itemDetailListOfSpeakersButtons"></template-hook>
 
   <!-- Last speakers -->
-  <div class="spacer-top-lg">
+  <div class="spacer-top-lg spacer-bottom">
     <button ng-if="isAllowed('showLastSpeakers')" ng-click="$parent.showOldSpeakers = !$parent.showOldSpeakers"
         class="btn btn-xs btn-default">
       <translate ng-if="!$parent.showOldSpeakers">Last speakers</translate>

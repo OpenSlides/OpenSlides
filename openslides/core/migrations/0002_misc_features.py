@@ -94,7 +94,7 @@ def add_projection_defaults(apps, schema_editor):
         projector=default_projector))
     projectiondefaults.append(ProjectionDefault(
         name='motionBlocks',
-        display_name='Motion Blocks',
+        display_name='Motion blocks',
         projector=default_projector))
     projectiondefaults.append(ProjectionDefault(
         name='assignments',

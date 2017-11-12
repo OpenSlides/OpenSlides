@@ -139,7 +139,7 @@
 
           <div ng-if="motion.isAllowed('can_see_amendments')">
             <h3 translate>Amendments</h3>
-            <div ng-repeat="amendment in amendments">
+            <div ng-repeat="amendment in amendments | orderBy: 'identifier'">
               <a ui-sref="motions.motion.detail({id: amendment.id})">
                 <translate>Motion</translate> {{ amendment.identifier || amendment.getTitle() }}
               </a>

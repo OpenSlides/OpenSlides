@@ -10,11 +10,9 @@
     <div ng-repeat="motion in motionBlock.motions">
       {{ motion.identifier }}
       <br>
-      <small>
-        <span class="label" ng-class="'label-'+motion.recommendation.css_class">
-              {{ motion.getRecommendationName() }}
-        </span>
-      </small>
+      <span class="label" ng-class="'label-'+motion.recommendation.css_class">
+        {{ motion.getRecommendationName() }}
+      </span>
     </div>
   </div>
 </div>

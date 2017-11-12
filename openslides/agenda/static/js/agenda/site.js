@@ -515,12 +515,6 @@ angular.module('OpenSlidesApp.agenda.site', [
                 case 'removeAll':
                     return (operator.hasPerms('agenda.can_manage_list_of_speakers') &&
                             $scope.speakers.length > 0);
-                case 'beginNextSpeech':
-                    return (operator.hasPerms('agenda.can_manage_list_of_speakers') &&
-                            $scope.nextSpeakers.length > 0);
-                case 'endCurrentSpeech':
-                    return (operator.hasPerms('agenda.can_manage_list_of_speakers') &&
-                            $scope.currentSpeaker.length > 0);
                 case 'showLastSpeakers':
                     return $scope.lastSpeakers.length > 0;
             }
@@ -682,7 +676,7 @@ angular.module('OpenSlidesApp.agenda.site', [
             var isProjected = $scope.currentListOfSpeakers.isProjectedWithOverlayStatus();
             $scope.currentListOfSpeakersAsOverlay = isProjected[0].overlay;
         } else {
-            $scope.currentListOfSpeakersAsOverlay = true;
+            $scope.currentListOfSpeakersAsOverlay = false;
         }
         $scope.setOverlay = function (overlay) {
             $scope.currentListOfSpeakersAsOverlay = overlay;
