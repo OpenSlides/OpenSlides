@@ -1,9 +1,13 @@
 <div class="content scrollcontent">
-  <div class="title">
-    <h1 translate>Current list of speakers</h1>
-    <h2> {{ agendaItem.getTitle() }}
-      <span class="slimlabel label label-danger ng-scope"
-        ng-if="agendaItem.speaker_list_closed" translate>Closed</span>
+
+  <!-- Title -->
+  <div id="title">
+    <h1>{{ agendaItem.getTitle() }}</h1>
+    <h2>
+      <span translate>List of speakers</span>
+      <span ng-if="(agendaItem.speakers | filter: {begin_time: null}).length > 0">
+      &ndash; {{ (agendaItem.speakers | filter: {begin_time: null}).length }} <translate>speakers</translate>
+      <span ng-if="agendaItem.speaker_list_closed" class="slimlabel label label-danger" translate>Closed</span>
     </h2>
   </div>
 
