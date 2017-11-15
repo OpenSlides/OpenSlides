@@ -106,6 +106,15 @@ angular.module('OpenSlidesApp.mediafiles.list', [
              display_name: gettext('Uploaded by')},
         ];
 
+        // pagination
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 25;
+        $scope.limitBegin = 0;
+        $scope.pageChanged = function() {
+            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+            $scope.gotoTop();
+        };
+
         // open new/edit dialog
         $scope.openDialog = function (mediafile) {
             ngDialog.open(MediafileForm.getDialog(mediafile));
