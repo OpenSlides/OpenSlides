@@ -50,6 +50,7 @@ Motions:
 - Added karma:watch command [#3466].
 - Show the number of next speakers in motion list view [#3470].
 - Reference to motions by id in state and recommendation special field [#3498].
+- Added new change recommendation type "other" [#3495].
 
 Elections:
 - Added pagination for list view [#3393].

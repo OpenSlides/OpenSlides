@@ -17,6 +17,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         this.TYPE_REPLACEMENT = 0;
         this.TYPE_INSERTION = 1;
         this.TYPE_DELETION = 2;
+        this.TYPE_OTHER = 3;
 
         this.getLineNumberNode = function(fragment, lineNumber) {
             return fragment.querySelector('os-linebreak.os-line-number.line-number-' + lineNumber);

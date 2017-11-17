@@ -902,6 +902,9 @@ angular.module('OpenSlidesApp.motions', [
                         case diffService.TYPE_REPLACEMENT:
                             title = title.replace('%TYPE%', gettextCatalog.getString('Replacement'));
                             break;
+                        case diffService.TYPE_OTHER:
+                            title = title.replace('%TYPE%', this.other_description);
+                            break;
                     }
                     title = title.replace('%FROM%', this.line_from).replace('%TO%', (this.line_to - 1));
                     return title;

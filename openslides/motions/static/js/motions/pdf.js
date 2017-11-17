@@ -270,6 +270,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                             columnChangeType.push(gettextCatalog.getString("Insertion"));
                         } else if (change.getType(motion.getVersion(motionVersion).text) === 2) {
                             columnChangeType.push(gettextCatalog.getString("Deletion"));
+                        } else if (change.getType(motion.getVersion(motionVersion).text) === 3) {
+                            columnChangeType.push(change.other_description);
                         }
                     });
                     metaTableBody.push([
