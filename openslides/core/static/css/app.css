@@ -296,7 +296,8 @@ img {
 
 #nav .searchbar {
     float: right;
-    margin-top: 35px;
+    margin-top: 33px;
+    margin-bottom: 32px;
     display: inline-table;
 }
 

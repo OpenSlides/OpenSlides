@@ -709,6 +709,8 @@ angular.module('OpenSlidesApp.core', [
                     message += gettextCatalog.getString("The server didn't respond.");
                 } else if (error.data.detail) {
                     message += error.data.detail;
+                } else if (error.status === 500) {
+                    message += gettextCatalog.getString("A server error occurred. Please check the system logs.");
                 } else {
                     for (var e in error.data) {
                         message += e + ': ' + error.data[e] + ' ';
