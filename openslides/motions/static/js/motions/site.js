@@ -1230,8 +1230,9 @@ angular.module('OpenSlidesApp.motions.site', [
     'ngDialog',
     'gettextCatalog',
     'MotionForm',
-    'ChangeRecommmendationCreate',
-    'ChangeRecommmendationView',
+    'ChangeRecommendationCreate',
+    'ChangeRecommendationView',
+    'MotionStateAndRecommendationParser',
     'MotionChangeRecommendation',
     'Motion',
     'MotionComment',
@@ -1253,11 +1254,11 @@ angular.module('OpenSlidesApp.motions.site', [
     'WebpageTitle',
     'EditingWarning',
     function($scope, $http, $timeout, $window, $filter, operator, ngDialog, gettextCatalog,
-            MotionForm, ChangeRecommmendationCreate, ChangeRecommmendationView,
-            MotionChangeRecommendation, Motion, MotionComment, Category, Mediafile, Tag, User,
-            Workflow, Config, motionId, MotionInlineEditing, MotionCommentsInlineEditing, Editor,
-            Projector, ProjectionDefault, MotionBlock, MotionPdfExport, PersonalNoteManager,
-            WebpageTitle, EditingWarning) {
+            MotionForm, ChangeRecommendationCreate, ChangeRecommendationView,
+            MotionStateAndRecommendationParser, MotionChangeRecommendation, Motion, MotionComment,
+            Category, Mediafile, Tag, User, Workflow, Config, motionId, MotionInlineEditing,
+            MotionCommentsInlineEditing, Editor, Projector, ProjectionDefault, MotionBlock,
+            MotionPdfExport, PersonalNoteManager, WebpageTitle, EditingWarning) {
         var motion = Motion.get(motionId);
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1265,6 +1266,7 @@ angular.module('OpenSlidesApp.motions.site', [
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
         MotionBlock.bindAll({}, $scope, 'motionBlocks');
+        Motion.bindAll({}, $scope, 'motions');
         $scope.$watch(function () {
             return MotionChangeRecommendation.lastModified();
         }, function () {
@@ -1472,6 +1474,9 @@ angular.module('OpenSlidesApp.motions.site', [
             motion['comment_' + $scope.commentFieldForRecommendationId] = recommendationExtension;
             $scope.save(motion);
         };
+        $scope.addMotionToRecommendationField = function (motion) {
+            $scope.recommendationExtension += MotionStateAndRecommendationParser.formatMotion(motion);
+        };
         // update recommendation
         $scope.updateRecommendation = function (recommendation_id) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_recommendation/', {'recommendation': recommendation_id});
@@ -1645,11 +1650,11 @@ angular.module('OpenSlidesApp.motions.site', [
         );
 
         // Change recommendation creation functions
-        $scope.createChangeRecommendation = ChangeRecommmendationCreate;
+        $scope.createChangeRecommendation = ChangeRecommendationCreate;
         $scope.createChangeRecommendation.init($scope, motion);
 
         // Change recommendation viewing
-        $scope.viewChangeRecommendations = ChangeRecommmendationView;
+        $scope.viewChangeRecommendations = ChangeRecommendationView;
         $scope.viewChangeRecommendations.init($scope, Config.get('motions_recommendation_text_mode').value);
 
         // PDF creating functions
@@ -2283,26 +2288,28 @@ angular.module('OpenSlidesApp.motions.site', [
     '$scope',
     '$stateParams',
     '$http',
-    'MotionList',
     'Category',
     'categoryId',
     'Motion',
     'ErrorMessage',
-    function($scope, $stateParams, $http, MotionList, Category, categoryId, Motion, ErrorMessage) {
+    function($scope, $stateParams, $http, Category, categoryId, Motion, ErrorMessage) {
         Category.bindOne(categoryId, $scope, 'category');
         Motion.bindAll({}, $scope, 'motions');
         $scope.filter = { category_id: categoryId,
                           parent_id: null,
                           orderBy: 'identifier' };
 
-        $scope.$watch(
-            function () {
-                return Motion.lastModified();
-            },
-            function () {
-                $scope.items = MotionList.getList(Motion.filter($scope.filter));
-            }
-        );
+        $scope.$watch(function () {
+            return Motion.lastModified();
+        }, function () {
+            var motions = Motion.filter($scope.filter);
+            $scope.items = _.map(motions, function (motion) {
+                return {
+                    id: motion.id,
+                    item: motion
+                };
+            });
+        });
 
         $scope.alert = {};
         // Numbers all motions in this category by the given order in $scope.items
