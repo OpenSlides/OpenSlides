@@ -25,9 +25,11 @@
           <translate>Reason</translate>,
           <translate>Submitter</translate>,
           <translate>Category</translate>,
-          <translate>Origin</translate>
+          <translate>Origin</translate>,
+          <translate>Motion block</translate>
         </code>
-      <li translate>Identifier, reason, submitter, category and origin are optional and may be empty.
+      <li translate>Identifier, reason, submitter, category, origin and motion block are optional and may be empty.
+      <li translate>Additional columns after the required ones may be present and won't affect the import.
       <li translate>Only double quotes are accepted as text delimiter (no single quotes).
       <li><a id="downloadLink" href="" ng-click="downloadCSVExample()" translate>Download CSV example file</a>
   </ul>
@@ -46,7 +48,8 @@
             <th translate>Reason
             <th translate>Submitter
             <th translate>Category
-            <th translate>Origin</th>
+            <th translate>Origin
+            <th translate>Motion block
         <tbody ng-repeat="motion in motions">
           <tr>
             <td class="minimum"
@@ -93,6 +96,11 @@
               </span>
               {{ motion.category }}
             <td>{{ motion.origin | limitTo:30 }}{{ motion.origin.length > 30 ? '...' : '' }}
+            <td ng-class="{ 'text-warning': motion.motionBlock_create }">
+              <span ng-if="motion.motionBlock_create" title="{{ motion.motionBlock_create | translate }}">
+                <i class="fa fa-plus-circle"></i>
+              </span>
+              {{ motion.motionBlock }}
       </table>
     </div>
 
@@ -113,7 +121,8 @@
       {{ motionsImported.length }}
       <translate>motions were successfully imported.</translate>
       (<translate>Users created</translate>: {{ usersCreated }},
-      <translate>Categories created</translate>: {{ categoriesCreated }})
+      <translate>Categories created</translate>: {{ categoriesCreated }},
+        <translate>Motion blocks created</translate>: {{ motionBlocksCreated }})
     </div>
 
     <div class="spacer">
