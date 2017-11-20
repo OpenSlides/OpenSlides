@@ -12,6 +12,7 @@ from openslides.utils.rest_api import (
     ValidationError,
 )
 
+from ..utils.validate import validate_html
 from .models import (
     Assignment,
     AssignmentOption,
@@ -209,6 +210,11 @@ class AssignmentFullSerializer(ModelSerializer):
             'tags',)
         validators = (posts_validator,)
 
+    def validate(self, data):
+        if 'description' in data:
+            data['description'] = validate_html(data['description'])
+        return data
+
 
 class AssignmentShortSerializer(AssignmentFullSerializer):
     """
@@ -231,3 +237,8 @@ class AssignmentShortSerializer(AssignmentFullSerializer):
             'agenda_item_id',
             'tags',)
         validators = (posts_validator,)
+
+    def validate(self, data):
+        if 'description' in data:
+            data['description'] = validate_html(data['description'])
+        return data

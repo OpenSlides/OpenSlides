@@ -96,11 +96,13 @@ angular.module('OpenSlidesApp.assignments.site', [
 .factory('AssignmentForm', [
     'gettextCatalog',
     'operator',
+    'Editor',
+    'Mediafile',
     'Tag',
     'Assignment',
     'Agenda',
     'AgendaTree',
-    function (gettextCatalog, operator, Tag, Assignment, Agenda, AgendaTree) {
+    function (gettextCatalog, operator, Editor, Mediafile, Tag, Assignment, Agenda, AgendaTree) {
         return {
             // ngDialog for assignment form
             getDialog: function (assignment) {
@@ -117,6 +119,7 @@ angular.module('OpenSlidesApp.assignments.site', [
             },
             // angular-formly fields for assignment form
             getFormFields: function (isCreateForm) {
+                var images = Mediafile.getAllImages();
                 var formFields = [
                 {
                     key: 'title',
@@ -128,9 +131,12 @@ angular.module('OpenSlidesApp.assignments.site', [
                 },
                 {
                     key: 'description',
-                    type: 'textarea',
+                    type: 'editor',
                     templateOptions: {
                         label: gettextCatalog.getString('Description')
+                    },
+                    data: {
+                        ckeditorOptions: Editor.getOptions(images)
                     }
                 },
                 {

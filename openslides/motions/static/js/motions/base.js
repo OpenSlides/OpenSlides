@@ -155,7 +155,7 @@ angular.module('OpenSlidesApp.motions', [
                     // Calculate percent value
                     var base = this.getPercentBase(config, type);
                     if (base) {
-                        percentNumber = Math.round(vote * 100 / (base) * 10) / 10;
+                        percentNumber = Math.round(vote * 100 / (base) * 100) / 100;
                         percentStr = '(' + percentNumber + ' %)';
                     }
                     return {
