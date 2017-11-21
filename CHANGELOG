@@ -66,6 +66,7 @@ Users:
 - Added option to enable updating the last_login field in the database. The
   default is now disabled [#3400].
 - Hide password in change password view [#3417].
+- Added a change presence view [#3496].
 
 Core:
 - No reload on logoff. OpenSlides is now a full single page

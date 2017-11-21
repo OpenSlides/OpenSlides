@@ -21,6 +21,15 @@ def get_config_variables():
         group='Participants',
         subgroup='General')
 
+    yield ConfigVariable(
+        name='users_enable_presence_view',
+        default_value=False,
+        input_type='boolean',
+        label='Enable participant presence view',
+        weight=511,
+        group='Participants',
+        subgroup='General')
+
     # PDF
 
     yield ConfigVariable(
