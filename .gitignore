@@ -22,6 +22,7 @@ docs/_build/*
 *.egg-info
 build/*
 dist/*
+debug/
 .DS_Store
 .idea
 
