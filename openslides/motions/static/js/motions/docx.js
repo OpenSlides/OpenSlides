@@ -97,9 +97,9 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
             var sequential_enabled = Config.get('motions_export_sequential_number').value;
             // promises for create the actual motion data
             var promises = _.map(motions, function (motion) {
-                var text = motion.getTextByMode(params.changeRecommendationMode, null, null, false);
-                var reason = params.includeReason ? motion.getReason() : '';
-                var comments = params.includeComments ? getMotionComments(motion) : [];
+                var text = params.include.text ? motion.getTextByMode(params.changeRecommendationMode, null, null, false) : '';
+                var reason = params.include.reason ? motion.getReason() : '';
+                var comments = getMotionComments(motion, params.includeComments);
 
                 // Data for one motions. Must include translations, ...
                 var motionData = {
@@ -115,9 +115,9 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
                     id: motion.id,
                     identifier: motion.identifier,
                     title: motion.getTitle(),
-                    submitters: _.map(motion.submitters, function (submitter) {
+                    submitters: params.include.submitters ?  _.map(motion.submitters, function (submitter) {
                                     return submitter.get_full_name();
-                                }).join(', '),
+                                }).join(', ') : '',
                     status: motion.getStateName(),
                     // Miscellaneous stuff
                     preamble: gettextCatalog.getString(Config.get('motions_preamble').value),
@@ -154,13 +154,13 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
             });
         };
 
-        var getMotionComments = function (motion) {
+        var getMotionComments = function (motion, fieldsIncluded) {
             var fields = MotionComment.getNoSpecialCommentsFields();
             var comments = [];
-            _.forEach(fields, function (field, id) {
-                if (motion.comments[id]) {
-                    var title = gettextCatalog.getString('Comment') + ' ' + field.name;
-                    if (!field.public) {
+            _.forEach(fieldsIncluded, function (ok, id) {
+                if (ok && motion.comments[id]) {
+                    var title = fields[id].name;
+                    if (!fields[id].public) {
                         title += ' (' + gettextCatalog.getString('internal') + ')';
                     }
                     var comment = motion.comments[id];
@@ -179,14 +179,16 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
         return {
             export: function (motions, params) {
                 converter = Html2DocxConverter.createInstance();
-                if (!params) {
-                    params = {};
-                }
+                params = _.clone(params || {}); // Clone this to avoid sideeffects.
                 _.defaults(params, {
                     filename: 'motions-export.docx',
                     changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
-                    includeReason: true,
-                    includeComments: false,
+                    include: {
+                        text: true,
+                        reason: true,
+                        submitters: true,
+                    },
+                    includeComments: {},
                 });
                 if (!_.includes(['original', 'changed', 'agreed'], params.changeRecommendationMode)) {
                     params.changeRecommendationMode = 'original';
