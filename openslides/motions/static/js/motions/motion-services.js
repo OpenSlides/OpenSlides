@@ -185,7 +185,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
     }
 ])
 
-.factory('ChangeRecommmendationCreate', [
+.factory('ChangeRecommendationCreate', [
     'ngDialog',
     'ChangeRecommendationForm',
     function(ngDialog, ChangeRecommendationForm) {
@@ -366,7 +366,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
     }
 ])
 
-.factory('ChangeRecommmendationView', [
+.factory('ChangeRecommendationView', [
     'Motion',
     'MotionChangeRecommendation',
     'Config',

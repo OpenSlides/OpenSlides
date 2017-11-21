@@ -189,10 +189,34 @@ angular.module('OpenSlidesApp.motions', [
     }
 ])
 
+.factory('MotionStateAndRecommendationParser', [
+    'DS',
+    'gettextCatalog',
+    function (DS, gettextCatalog) {
+        return {
+            formatMotion: function (motion) {
+                return '[motion:' + motion.id + ']';
+            },
+            parse: function (recommendation) {
+                return recommendation.replace(/\[motion:(\d+)\]/g, function (match, id) {
+                    var motion = DS.get('motions/motion', id);
+                    if (motion) {
+                        return motion.identifier ? motion.identifier : motion.getTitle();
+                    } else {
+                        return gettextCatalog.getString("<unknown motion>");
+                    }
+                });
+            },
+        };
+    }
+])
+
+
 .factory('Motion', [
     'DS',
     '$http',
     'MotionPoll',
+    'MotionStateAndRecommendationParser',
     'MotionChangeRecommendation',
     'MotionComment',
     'jsDataModel',
@@ -204,7 +228,7 @@ angular.module('OpenSlidesApp.motions', [
     'OpenSlidesSettings',
     'Projector',
     'operator',
-    function(DS, $http, MotionPoll, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog,
+    function(DS, $http, MotionPoll, MotionStateAndRecommendationParser, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog,
         Config, lineNumberingService, diffService, OpenSlidesSettings, Projector, operator) {
         var name = 'motions/motion';
         return DS.defineResource({
@@ -399,35 +423,33 @@ angular.module('OpenSlidesApp.motions', [
                 // depended by state and provided by a custom comment field
                 getStateName: function () {
                     var name = '';
-                    var additionalName = '';
                     if (this.state) {
                         name = gettextCatalog.getString(this.state.name);
                         if (this.state.show_state_extension_field) {
                             // check motion comment fields for flag 'forState'
                             var commentFieldForStateId = MotionComment.getFieldIdForFlag('forState');
                             if (commentFieldForStateId > -1) {
-                                additionalName = ' ' + this.comments[commentFieldForStateId];
+                                name += ' ' + this.comments[commentFieldForStateId];
                             }
                         }
                     }
-                    return name + additionalName;
+                    return MotionStateAndRecommendationParser.parse(name);
                 },
                 // full recommendation string - optional with custom recommendationextension
                 // depended by state and provided by a custom comment field
                 getRecommendationName: function () {
                     var recommendation = '';
-                    var additionalName = '';
                     if (Config.get('motions_recommendations_by').value !== '' && this.recommendation) {
                         recommendation = gettextCatalog.getString(this.recommendation.recommendation_label);
                         if (this.recommendation.show_recommendation_extension_field) {
                             // check motion comment fields for flag 'forRecommendation'
                             var commentFieldForRecommendationId = MotionComment.getFieldIdForFlag('forRecommendation');
                             if (commentFieldForRecommendationId > -1) {
-                                additionalName = ' ' + this.comments[commentFieldForRecommendationId];
+                                recommendation += ' ' + this.comments[commentFieldForRecommendationId];
                             }
                         }
                     }
-                    return recommendation + additionalName;
+                    return MotionStateAndRecommendationParser.parse(recommendation);
                 },
                 // link name which is shown in search result
                 getSearchResultName: function () {
@@ -805,21 +827,6 @@ angular.module('OpenSlidesApp.motions', [
         return DS.defineResource({
             name: 'motions/category',
         });
-    }
-])
-
-.factory('MotionList', [
-    function () {
-        return {
-            getList: function (items){
-                var list = [];
-                _.each(items, function (item) {
-                    list.push({ id: item.id,
-                                item: item });
-                });
-                return list;
-            }
-        };
     }
 ])
 

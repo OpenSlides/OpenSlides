@@ -224,13 +224,28 @@
               <label class="sr-only" for="recommendationExtensionField">
                 {{ commentsFields[commentFieldForRecommendationId].name }}
               </label>
-              <input type="text" ng-model="recommendationExtension"
+              <input type="text" ng-model="$parent.$parent.recommendationExtension"
                   id="recommendationExtensionField" class="form-control input-sm"
                   placeholder="{{ commentsFields[commentFieldForRecommendationId].name }}">
               <span class="input-group-btn">
                 <button ng-click="saveAdditionalRecommendationField(recommendationExtension)" class="btn btn-default btn-sm">
                   <i class="fa fa-check"></i>
                 </button>
+              </span>
+              <span class="input-group-btn">
+                <span uib-dropdown>
+                  <span id="motion-dropdown" class="drop-down-name btn btn-default btn-sm" uib-dropdown-toggle>
+                    <i class="fa fa-plus"></i>
+                    <translate>Motion</translate>
+                  </span>
+                  <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="motion-dropdown">
+                    <li ng-repeat="m in motions">
+                      <a href ng-click="addMotionToRecommendationField(m)">
+                        {{ m.identifier ? m.identifier + ':' : '' }} {{ m.getTitle() }}
+                      </a>
+                    </li>
+                  </ul>
+                </span>
               </span>
             </div>
             <button
