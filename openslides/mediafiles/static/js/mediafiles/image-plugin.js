@@ -81,7 +81,7 @@ angular.module('OpenSlidesApp.mediafiles.image-plugin', [
                         });
                         // Set the toolbar icon to the default image icon.
                         CKEDITOR.on('instanceReady', function () {
-                            var toolbarIcon = $('span.cke_button_icon.cke_button__image.browser_icon');
+                            var toolbarIcon = $('span.cke_button_icon.cke_button__bildbrowser_icon');
                             toolbarIcon.removeClass('cke_button__image browser_icon');
                             toolbarIcon.addClass('cke_button__image_icon');
                         });
