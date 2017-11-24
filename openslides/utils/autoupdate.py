@@ -402,7 +402,6 @@ def release_autoupdates():
     global blocked_autoupdate_callback
     blocked_autoupdate_callback = None
 
-
 @contextmanager
 def AutoupdateBundle():
     tracked_instances_no_information = set()
@@ -432,12 +431,12 @@ def AutoupdateBundle():
         inform_changed_data(instance, information)
 
 
-def bundle_autoupdates(function):
-    def wrapper(*args, **kwargs):
+def AutoupdateBundleMiddleware(get_response):
+    def middleware(request):
         with AutoupdateBundle():
-            res = function(*args, **kwargs)
-        return res
-    return wrapper
+            response = get_response(request)
+        return response
+    return middleware
 
 
 def send_autoupdate(collection_elements: List[CollectionElement]) -> None:
