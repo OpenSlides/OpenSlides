@@ -1,3 +1,4 @@
+from django.core import mail
 from django.core.urlresolvers import reverse
 from django_redis import get_redis_connection
 from rest_framework import status
@@ -334,6 +335,30 @@ class UserMassImport(TestCase):
             format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(User.objects.count(), 3)
+
+
+class UserSendIntivationEmail(TestCase):
+    """
+    Tests sending an email to the user.
+    """
+    email = "admin@test-domain.com"
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+        self.admin = User.objects.get()
+        self.admin.email = self.email
+        self.admin.save()
+
+    def test_email_sending(self):
+        response = self.client.post(
+            reverse('user-mass-invite-email'),
+            {'user_ids': [self.admin.pk]},
+            format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to[0], self.email)
 
 
 class GroupMetadata(TestCase):

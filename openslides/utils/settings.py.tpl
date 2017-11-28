@@ -43,6 +43,13 @@ SECRET_KEY = %(secret_key)r
 
 DEBUG = %(debug)s
 
+# Email settings
+# For SSL/TLS specific settings see https://docs.djangoproject.com/en/1.11/topics/email/#smtp-backend
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases

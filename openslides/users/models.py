@@ -1,3 +1,5 @@
+import smtplib
+
 from random import choice
 
 from django.contrib.auth.hashers import make_password
@@ -9,10 +11,14 @@ from django.contrib.auth.models import (
     Permission,
     PermissionsMixin,
 )
+from django.core import mail
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Prefetch, Q
+from django.utils import timezone
 from jsonfield import JSONField
 
+from ..core.config import config
 from ..core.models import Projector
 from ..utils.collection import CollectionElement
 from ..utils.models import RESTModelMixin
@@ -136,6 +142,12 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         max_length=255,
         blank=True)
 
+    email = models.EmailField(blank=True)
+
+    last_email_send = models.DateTimeField(
+        blank=True,
+        null=True)
+
     # TODO: Try to remove the default argument in the following fields.
 
     structure_level = models.CharField(
@@ -227,6 +239,53 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         This method is closed. Do not use it but use openslides.utils.auth.has_perm.
         """
         raise RuntimeError('Do not use user.has_perm() but use openslides.utils.auth.has_perm')
+
+    def send_invitation_email(self, connection, skip_autoupdate=False):
+        """
+        Sends an invitation email to the users. Returns True on success, False on failiure.
+        May raise an ValidationError, if something went wrong.
+        """
+        if not self.email:
+            return False
+
+        # Custom dict class that for formatstrings with entries like {not_existent}
+        # no error is raised and this is replaced with ''.
+        class format_dict(dict):
+            def __missing__(self, key):
+                return ''
+
+        message_format = format_dict({
+            'name': str(self),
+            'event_name': config['general_event_name'],
+            'url': config['users_pdf_url'],
+            'username': self.username,
+            'password': self.default_password})
+        message = config['users_email_body'].format(**message_format)
+
+        subject_format = format_dict({'event_name': config['general_event_name']})
+        subject = config['users_email_subject'].format(**subject_format)
+
+        # Create an email and send it.
+        email = mail.EmailMessage(subject, message, config['users_email_sender'], [self.email])
+        try:
+            count = connection.send_messages([email])
+        except smtplib.SMTPDataError as e:
+            error = e.smtp_code
+            helptext = ''
+            if error == 554:
+                helptext = ' Is the email sender correct?'
+            connection.close()
+            raise ValidationError({'detail': 'Error {}. Cannot send email.{}'.format(error, helptext)})
+        except smtplib.SMTPRecipientsRefused:
+            pass  # Run into returning false later
+        else:
+            if count == 1:
+                self.email_send = True
+                self.last_email_send = timezone.now()
+                self.save(skip_autoupdate=skip_autoupdate)
+                return True
+
+        return False
 
 
 class GroupManager(_GroupManager):

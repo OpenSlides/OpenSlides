@@ -10,6 +10,7 @@ from openslides.global_settings import *  # noqa
 
 OPENSLIDES_USER_DATA_PATH = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
 
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 # OpenSlides plugins
 

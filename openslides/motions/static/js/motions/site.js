@@ -1165,8 +1165,8 @@ angular.module('OpenSlidesApp.motions.site', [
             $scope.filter.operateMultiselectFilter('state', id, danger);
             updateStateFilter();
         };
-        $scope.resetFilters = function () {
-            $scope.filter.reset();
+        $scope.resetFilters = function (danger) {
+            $scope.filter.reset(danger);
             updateStateFilter();
         };
         // Sorting

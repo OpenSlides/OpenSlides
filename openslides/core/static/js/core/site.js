@@ -535,7 +535,10 @@ angular.module('OpenSlidesApp.core.site', [
                 areFiltersSet = areFiltersSet || (self.filterString !== '');
                 return areFiltersSet !== false;
             };
-            self.reset = function () {
+            self.reset = function (danger) {
+                if (danger) {
+                    return;
+                }
                 _.forEach(self.multiselectFilters, function (filterList, filter) {
                     self.multiselectFilters[filter] = [];
                 });
