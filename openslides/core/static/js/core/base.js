@@ -1447,12 +1447,13 @@ angular.module('OpenSlidesApp.core', [
 // Wraps the orderBy filter. But puts ("", null, undefined) last.
 .filter('orderByEmptyLast', [
     '$filter',
-    function ($filter) {
+    '$parse',
+    function ($filter, $parse) {
         return function (array, sortPredicate, reverseOrder, compareFn) {
+            var parsed = $parse(sortPredicate);
             var falsyItems = [];
             var truthyItems = _.filter(array, function (item) {
-                var falsy = item[sortPredicate] === void 0 ||
-                    item[sortPredicate] === null || item[sortPredicate] === '';
+                var falsy = parsed(item) === void 0 || parsed(item) === null || parsed(item) === '';
                 if (falsy) {
                     falsyItems.push(item);
                 }
