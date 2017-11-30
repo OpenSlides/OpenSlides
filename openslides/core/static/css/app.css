@@ -639,6 +639,9 @@ img {
 .motion-text-holder .change-recommendation-list > li.replace {
     background-color: #0333ff;
 }
+.motion-text-holder .change-recommendation-list > li.other {
+    background-color: #777777;
+}
 
 .motion-text-holder .change-recommendation-list .tooltip {
     display: none;

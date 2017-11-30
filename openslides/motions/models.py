@@ -778,7 +778,10 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
     """If true, this change recommendation has been rejected"""
 
     type = models.PositiveIntegerField(default=0)
-    """Replacement (0), Insertion (1), Deletion (2)"""
+    """Replacement (0), Insertion (1), Deletion (2), Other (3)"""
+
+    other_description = models.TextField(blank=True)
+    """The description text for type 'other'"""
 
     line_from = models.PositiveIntegerField()
     """The number or the first affected line"""

@@ -246,9 +246,18 @@ angular.module('OpenSlidesApp.motions.site', [
                             options: [
                                 {name: gettextCatalog.getString('Replacement'), value: 0},
                                 {name: gettextCatalog.getString('Insertion'), value: 1},
-                                {name: gettextCatalog.getString('Deletion'), value: 2}
+                                {name: gettextCatalog.getString('Deletion'), value: 2},
+                                {name: gettextCatalog.getString('Other'), value: 3},
                             ]
                         }
+                    },
+                    {
+                        key: 'other_description',
+                        type: 'input',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Description'),
+                        },
+                        hideExpression: "model.type !== 3",
                     },
                     {
                         key: 'text',
