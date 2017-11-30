@@ -5,6 +5,12 @@
         <i class="fa fa-plus fa-lg"></i>
         <translate>New</translate>
       </a>
+      <span ng-if="config('users_enable_presence_view')">
+        <a ui-sref="users.user.presence" os-perms="users.can_manage" class="btn btn-default btn-sm">
+          <i class="fa fa-barcode fa-lg"></i>
+          <translate>Presence</translate>
+        </a>
+      </span>
       <a ui-sref="users.group.list" os-perms="users.can_manage" class="btn btn-default btn-sm">
         <i class="fa fa-group fa-lg"></i>
         <translate>Groups</translate>

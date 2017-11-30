@@ -76,6 +76,10 @@ angular.module('OpenSlidesApp.users.site', [
             url: '/import',
             controller: 'UserImportCtrl',
         })
+        .state('users.user.presence', {
+            url: '/presence',
+            controller: 'UserPresenceCtrl',
+        })
         // groups
         .state('users.group', {
             url: '/groups',
@@ -432,7 +436,7 @@ angular.module('OpenSlidesApp.users.site', [
     function (gettextCatalog, Editor, Mediafile) {
         return {
             // ngDialog for user form
-            getDialog: function (user) {
+            getDialog: function () {
                 return {
                     template: 'static/templates/users/profile-password-form.html',
                     controller: 'UserProfileCtrl',
@@ -474,7 +478,7 @@ angular.module('OpenSlidesApp.users.site', [
     function (gettextCatalog) {
         return {
             // ngDialog for user form
-            getDialog: function (user) {
+            getDialog: function () {
                 return {
                     template: 'static/templates/users/profile-password-form.html',
                     controller: 'UserPasswordCtrl',
@@ -536,8 +540,9 @@ angular.module('OpenSlidesApp.users.site', [
     'gettext',
     'UserPdfExport',
     'ErrorMessage',
-    function($scope, $state, $http, $q, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
-        Config, gettextCatalog, UserCsvExport, osTableFilter, osTableSort, gettext, UserPdfExport, ErrorMessage) {
+    function($scope, $state, $http, $q, ngDialog, UserForm, User, Group, PasswordGenerator,
+        Projector, ProjectionDefault, Config, gettextCatalog, UserCsvExport, osTableFilter,
+        osTableSort, gettext, UserPdfExport, ErrorMessage) {
         $scope.$watch(function () {
             return User.lastModified();
         }, function () {
@@ -958,6 +963,49 @@ angular.module('OpenSlidesApp.users.site', [
                     }
                 );
             }
+        };
+    }
+])
+
+.controller('UserPresenceCtrl', [
+    '$scope',
+    'User',
+    'gettextCatalog',
+    'ErrorMessage',
+    function ($scope, User, gettextCatalog, ErrorMessage) {
+        $scope.alert = {};
+        $('#userNumber').focus();
+
+        $scope.changeState = function () {
+            if (!$scope.number) {
+                return;
+            }
+            var enteredNumber = $scope.number.trim();
+            var user = _.find(User.getAll(), function (user) {
+                return user.number === enteredNumber;
+            });
+            if (user) {
+                user.is_present = !user.is_present;
+                User.save(user).then(function (success) {
+                    var messageText = user.full_name + ' ' + gettextCatalog.getString('is now') + ' ';
+                    messageText += gettextCatalog.getString(user.is_present ? 'present' : 'not present') + '.';
+                    $scope.alert = {
+                        msg: messageText,
+                        show: true,
+                        type: 'success',
+                    };
+                    $scope.number = '';
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
+                });
+            } else {
+                $scope.alert = {
+                    msg: gettextCatalog.getString('Cannot find the participant with the participant number') + ' "' + enteredNumber + '".',
+                    show: true,
+                    type: 'danger',
+                };
+            }
+            $('#userNumber').focus();
         };
     }
 ])
@@ -1653,6 +1701,7 @@ angular.module('OpenSlidesApp.users.site', [
         // config strings in users/config_variables.py
         gettext('General');
         gettext('Sort name of participants by');
+        gettext('Enable participant presence view');
         gettext('Participants');
         gettext('Given name');
         gettext('Surname');
