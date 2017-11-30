@@ -1,4 +1,3 @@
-
 <div class="details">
 
   <div ng-controller="ProjectorControlCtrl">
@@ -153,11 +152,15 @@
                 <i class="fa fa-times"></i>
             </button>
             <!-- edit countdown button -->
-            <button type="button" class="close editicon"
+            <button type="button" class="close icons"
                 ng-click="countdown.editFlag=true; countdown.new_description = countdown.description;"
                 title="{{ 'Edit countdown' | translate}}">
                 <i class="fa fa-pencil"></i>
             </button>
+            <a ui-sref="core.countdown.detail({id: countdown.id})" class="close icons" target="_blank"
+              uib-tooltip="{{ 'Open countdown in fullscreen' | translate }}">
+              <i class="fa fa-arrows-alt"></i>
+            </a>
           </div>
           <div class="panel-body"
             ng-class="{ 'projected': isProjected(countdown).length }">
