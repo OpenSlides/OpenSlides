@@ -1537,8 +1537,9 @@ angular.module('OpenSlidesApp.motions.site', [
         };
         // follow recommendation
         $scope.followRecommendation = function () {
-            $scope.updateState($scope.motion.recommendation.id);
-            $scope.saveAdditionalStateField($scope.recommendationExtension);
+            $http.post('/rest/motions/motion/' + motion.id + '/follow_recommendation/', {
+                'recommendationExtension': $scope.recommendationExtension
+            });
         };
         // update state
         $scope.updateState = function (state_id) {
