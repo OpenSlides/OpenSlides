@@ -240,6 +240,11 @@ angular.module('OpenSlidesApp.motions', [
                 MotionComment.populateFieldsReverse(data);
                 callback(null, data);
             },
+            computed: {
+                isAmendment: function () {
+                    return this.parent_id !== null;
+                },
+            },
             methods: {
                 getResourceName: function () {
                     return name;
@@ -505,9 +510,6 @@ angular.module('OpenSlidesApp.motions', [
                         ]
                     });
                 },
-                isAmendment: function () {
-                    return this.parent_id !== null;
-                },
                 hasAmendments: function () {
                     return DS.filter('motions/motion', {parent_id: this.id}).length > 0;
                 },
@@ -591,8 +593,8 @@ angular.module('OpenSlidesApp.motions', [
                             return (
                                 operator.hasPerms('motions.can_create') &&
                                 Config.get('motions_amendments_enabled').value &&
-                                ( !this.isAmendment() ||
-                                  (this.isAmendment() && OpenSlidesSettings.MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS))
+                                ( !this.isAmendment ||
+                                  (this.isAmendment && OpenSlidesSettings.MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS))
                             );
                         default:
                             return false;

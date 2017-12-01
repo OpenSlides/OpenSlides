@@ -1024,6 +1024,9 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // collect all states and all recommendations of all workflows
         $scope.collectStatesAndRecommendations = function () {
+            // Special case: If it is the first time updated, update the state filter.
+            // This causes to set the done/undone states correct on page load.
+            var doStateFilterUpdate = !$scope.states;
             $scope.states = [];
             $scope.recommendations = [];
             var workflows = $scope.collectAllUsedWorkflows();
@@ -1049,6 +1052,9 @@ angular.module('OpenSlidesApp.motions.site', [
                     }
                 });
             });
+            if (doStateFilterUpdate) {
+                updateStateFilter();
+            }
         };
         $scope.collectAllUsedWorkflows = function () {
             return _.filter(Workflow.getAll(), function (workflow) {
@@ -1101,6 +1107,11 @@ angular.module('OpenSlidesApp.motions.site', [
                 comment: [],
             };
             $scope.filter.booleanFilters = {
+                isAmendment: {
+                    value: undefined,
+                    choiceYes: gettext('Is an amendment'),
+                    choiceNo: gettext('Is not an amendment'),
+                },
                 isFavorite: {
                     value: undefined,
                     choiceYes: gettext('Marked as favorite'),
@@ -1113,7 +1124,6 @@ angular.module('OpenSlidesApp.motions.site', [
                 },
             };
         }
-        updateStateFilter();
         $scope.filter.propertyList = ['identifier', 'origin'];
         $scope.filter.propertyFunctionList = [
             function (motion) {return motion.getTitle();},

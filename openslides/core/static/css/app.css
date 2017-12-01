@@ -1118,6 +1118,7 @@ img {
 
 .os-table .main-header .form-inline {
     margin-left: 15px;
+    width: 100%;
 }
 
 .os-table .content > div { /* horizontal blocks */
