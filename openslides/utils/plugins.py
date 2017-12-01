@@ -93,6 +93,38 @@ def get_plugin_version(plugin: str) -> str:
     return version
 
 
+def get_plugin_license(plugin: str) -> str:
+    """
+    Returns the license string of a plugin. The plugin argument must be a
+    python dotted module path.
+    """
+    plugin_app_config = apps.get_app_config(plugin)
+    try:
+        license = plugin_app_config.get_license()
+    except AttributeError:
+        try:
+            license = plugin_app_config.license
+        except AttributeError:
+            license = ''
+    return license
+
+
+def get_plugin_url(plugin: str) -> str:
+    """
+    Returns the url of a plugin. The plugin argument must be a
+    python dotted module path.
+    """
+    plugin_app_config = apps.get_app_config(plugin)
+    try:
+        url = plugin_app_config.get_url()
+    except AttributeError:
+        try:
+            url = plugin_app_config.url
+        except AttributeError:
+            url = ''
+    return url
+
+
 def get_plugin_urlpatterns(plugin: str) -> Any:
     """
     Returns the urlpatterns object for a plugin. The plugin argument must be

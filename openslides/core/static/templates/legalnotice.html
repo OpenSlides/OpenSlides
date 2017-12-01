@@ -7,12 +7,26 @@
 <div class="details">
   <div ng-bind-html="config('general_event_legal_notice') | translate"></div>
   <hr>
-  <p>OpenSlides {{ core_version }}
+  <p>
+    <a ng-href="{{ core_url }}" target="_blank">
+      <strong>OpenSlides {{ core_version }}</strong>
+    </a>
+    (<translate>License</translate>: {{ core_license }})
+  </p>
   <div ng-show="plugins.length">
     <p translate>Installed plugins:</p>
-    <ol>
+    <ul>
       <li ng-repeat="plugin in plugins">
-        {{ plugin.verbose_name }}: {{ plugin.version }}
-    </ol>
+        <a ng-if="plugin.url" ng-href="{{ plugin.url }}" target="_blank">
+          {{ plugin.verbose_name }} {{ plugin.version }}
+        </a>
+        <span ng-if="!plugin.url">
+          {{ plugin.verbose_name }} {{ plugin.version }}
+        </span>
+        <span ng-if="plugin.license">
+          (<translate>License</translate>: {{ plugin.license}})
+        </span>
+      </li>
+    </ul>
   </div>
 </div>

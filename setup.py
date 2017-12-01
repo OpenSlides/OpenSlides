@@ -5,6 +5,8 @@ from setuptools import find_packages, setup
 from openslides import __author__ as openslides_author
 from openslides import __description__ as openslides_description
 from openslides import __version__ as openslides_version
+from openslides import __license__ as openslides_license
+from openslides import __url__ as openslides_url
 
 with open('README.rst') as readme:
     long_description = readme.read()
@@ -17,9 +19,9 @@ setup(
     author=openslides_author,
     author_email='support@openslides.org',
     description=openslides_description,
-    license='MIT',
+    license=openslides_license,
     long_description=long_description,
-    url='https://openslides.org',
+    url=openslides_url,
     version=openslides_version,
 
     classifiers=[

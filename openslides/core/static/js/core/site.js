@@ -1111,6 +1111,8 @@ angular.module('OpenSlidesApp.core.site', [
     function ($scope, $http) {
         $http.get('/core/version/').then(function (success) {
             $scope.core_version = success.data.openslides_version;
+            $scope.core_license = success.data.openslides_license;
+            $scope.core_url = success.data.openslides_url;
             $scope.plugins = success.data.plugins;
         });
     }

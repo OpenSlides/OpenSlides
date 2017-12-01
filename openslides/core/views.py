@@ -13,12 +13,16 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from mypy_extensions import TypedDict
 
+from .. import __license__ as license
+from .. import __url__ as url
 from .. import __version__ as version
 from ..utils import views as utils_views
 from ..utils.auth import anonymous_is_enabled, has_perm
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
 from ..utils.plugins import (
     get_plugin_description,
+    get_plugin_license,
+    get_plugin_url,
     get_plugin_verbose_name,
     get_plugin_version,
 )
@@ -783,12 +787,22 @@ class VersionView(utils_views.APIView):
     http_method_names = ['get']
 
     def get_context_data(self, **context):
-        Result = TypedDict('Result', {'openslides_version': str, 'plugins': List[Dict[str, str]]})  # noqa
-        result = dict(openslides_version=version, plugins=[])  # type: Result
+        Result = TypedDict('Result', {  # noqa
+            'openslides_version': str,
+            'openslides_license': str,
+            'openslides_url': str,
+            'plugins': List[Dict[str, str]]})
+        result = dict(
+            openslides_version=version,
+            openslides_license=license,
+            openslides_url=url,
+            plugins=[])  # type: Result
         # Versions of plugins.
         for plugin in settings.INSTALLED_PLUGINS:
             result['plugins'].append({
                 'verbose_name': get_plugin_verbose_name(plugin),
                 'description': get_plugin_description(plugin),
-                'version': get_plugin_version(plugin)})
+                'version': get_plugin_version(plugin),
+                'license': get_plugin_license(plugin),
+                'url': get_plugin_url(plugin)})
         return result
