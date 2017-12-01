@@ -1,0 +1,103 @@
+/** OS-Table **/
+#content .col1 .os-table {
+    font-weight: normal;
+
+    small {
+        color: #555;
+    }
+
+    .row {
+        border: 1px solid #ddd;
+        border-top: 0px;
+
+        .col-xs-1 {
+            width: 50px;
+        }
+
+        .col-xs-4 {
+            padding-right: 10px;
+        }
+
+        // TODO: Isn't this defined in the _helper.scss?
+        .centered {
+            text-align: center;
+        }
+    }
+
+    .data-row:hover {
+        background-color: #f5f5f5;
+    }
+
+    .data-row > div {
+        padding: 10px 0px 10px 0px;
+    }
+
+    .id-col {
+        width: 50px;
+        min-height: 1px;
+        word-wrap: break-word;
+    }
+
+    .id-col-space {
+        width: calc(100% - 50px);
+    }
+
+    .no-projector-spacer {
+        margin-right: 20px;
+        float: left;
+    }
+
+    .header-row {
+        border-top: 1px solid #ddd;
+        background-color: #f5f5f5;
+    }
+
+    .header-row > div {
+        padding: 10px;
+    }
+
+    .main-header {
+        width: calc(100% - 50px);
+        float: right;
+
+        .form-inline {
+            margin-left: 15px;
+        }
+    }
+
+    .content > div { /* horizontal blocks */
+        display: inline-block;
+        float: left;
+    }
+
+    .content > div > div { /* vertival blocks */
+        margin-bottom: 3px;
+    }
+
+    .content > div > div:last-child {
+        margin-bottom: 0px;
+    }
+
+    .projector {
+        width: 70px !important;
+    }
+
+
+    .header-row .dropdown > span, .sort-spacer {
+        padding: 5px 10px 5px 10px;
+    }
+
+    .title {
+        font-family: $font-medium;
+        font-family: $font-medium, sans-serif;
+        font-weight: normal;
+        font-size: 120%;
+        margin-right: 3px;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .dropdown-hover-space {
+        padding: 5px 5px 5px 0;
+    }
+}

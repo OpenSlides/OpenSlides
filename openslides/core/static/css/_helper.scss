@@ -1,0 +1,228 @@
+/** General helper classes **/
+.disabled {
+    color: #555;
+    cursor: not-allowed !important;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.dropdown-menu {
+    margin-left: 0px !important;
+}
+
+.slimDropDown {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+}
+
+.btn-primary {
+    background-color: #317796;
+}
+
+.btn-slim {
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.spacer, .spacer-top {
+    margin-top: 7px;
+}
+
+.spacer-top-lg {
+    margin-top: 25px;
+}
+
+.spacer-bottom {
+    margin-bottom: 7px;
+}
+
+.spacer-right {
+    margin-right: 5px;
+}
+
+.spacer-left {
+    margin-left: 5px;
+}
+
+.spacer-left-lg {
+    margin-left: 10px;
+}
+
+.no-padding {
+    padding: 0px;
+}
+
+.lead-div {
+    margin-bottom: 20px;
+
+    .lead {
+        margin-bottom: 0;
+    }
+}
+
+.italic {
+    font-style: italic;
+}
+
+.hoverActions {
+    font-size: 85%;
+}
+
+.hiddenDiv {
+    visibility: hidden;
+}
+
+.vcenter {
+    vertical-align: middle;
+}
+
+.white-space-pre-line {
+    white-space: pre-line;
+}
+
+.slimlabel.label {
+    padding: 0px 10px;
+}
+
+.indentation, .indentation20 {
+    margin-left: 20px !important;
+}
+
+.indentation-lg {
+    margin-left: 35px !important;
+}
+
+.halfWidth {
+    width: 50%;
+}
+
+.badge-info {
+    background-color: #f0ad4e;
+}
+
+.badge-success {
+    background-color: #5bb85b;
+}
+
+.smallhr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-color: #cccccc;
+}
+
+.nobr {
+    white-space: nowrap;
+}
+
+.rotate-45-deg-right {
+    filter: "progid: DXImageTransform.Microsoft.BasicImage(rotation=0.5)";
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.optional { /* show optional column */
+    display: auto;
+}
+
+.login-logo {
+    width: 250px;
+}
+
+.loginForm .input-group-addon i {
+    width: 15px;
+}
+
+.modal-header {
+    padding: 5px;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.no-padding-left {
+    padding-left: 0 !important;
+}
+
+.no-padding-right {
+    padding-right: 0 !important;
+}
+
+.scroll-x-container {
+    overflow-x: auto;
+}
+
+.btn-group > label > input[type=radio] {
+    display: none;
+}
+
+/* tables */
+.minimum {
+    width: 1px;
+}
+
+.minimumTable {
+    width: auto;
+}
+
+.deleteColumn {
+    text-align: center;
+    background-color: #ff9999 !important;
+}
+
+th.sortable:hover, tr.pointer:hover, .pointer {
+    cursor: pointer;
+}
+
+/** background colors for table rows **/
+tr.hiddenrow td {
+    background-color: #F5DCDC;
+}
+
+tr.activeline td, li.activeline, .projected {
+    background-color: #bed4de !important;
+}
+
+.related-projected {
+    background-color: #e1ecfe !important;
+}
+
+tr.selected td {
+    background-color: #ff9999;
+}
+
+.help-block {
+    font-size: 85%;
+    margin-top: 2px;
+    margin-left: 2px;
+}
+
+.grey {
+    color: #9a9898;
+}
+
+.info {
+    color: #222;
+    background-color: #bed4de;
+    border-color: #46b8da;
+}
+.error {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+.success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+.warning {
+    color: #725523;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}

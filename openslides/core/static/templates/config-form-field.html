@@ -19,7 +19,7 @@
     </div>
 
     <!-- comments -->
-    <div class="input-comments" ng-if="type === 'comments'">
+    <div class="comments" ng-if="type === 'comments'">
       <div ng-repeat="(id, field) in ($parent.value
         | excludeSpecialCommentsFields
         | excludeDeletedAndForbiddenCommentsFields)"
@@ -99,7 +99,7 @@
     </select>
 
     <!-- custom trnaslations -->
-    <div class="config-translations" ng-if="type === 'translations'">
+    <div class="custom-translations" ng-if="type === 'translations'">
       <div ng-repeat="entry in $parent.value" class="input-group">
         <div class="inputs">
           <input ng-model="entry.original"

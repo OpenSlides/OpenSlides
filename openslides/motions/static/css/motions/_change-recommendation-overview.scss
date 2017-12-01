@@ -1,0 +1,49 @@
+.change-recommendation-overview {
+    background-color: #eee;
+    border: solid 1px #ddd;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    margin-top: -15px;
+    padding-top: 5px;
+
+    h3 {
+        margin-top: 10px;
+    }
+
+    ul {
+        list-style: none;
+        display: table;
+    }
+
+    li {
+        display: table-row;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+
+        & > * {
+            display: table-cell;
+            padding: 1px;
+        }
+    }
+
+    .status {
+        color: gray;
+        font-style: italic;
+
+        & > *:before {
+            content: '(';
+        }
+
+        & > *:after {
+            content: ')';
+        }
+    }
+
+    .no-changes {
+        font-style: italic;
+        color: grey;
+    }
+}

@@ -1,0 +1,67 @@
+/** image plugin for CKEditor **/
+#imageBrowserContainer {
+    .imageTable {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    #imagePreviewSection {
+        position: absolute;
+        margin: 0px 20px 20px 20px;
+
+        input {
+            width: 65px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        i {
+            font-size: 130%;
+            cursor: pointer;
+        }
+
+        > div {
+            margin-bottom: 10px;
+        }
+    }
+
+    #imagePreview {
+        max-width: 400px;
+        max-height: 300px;
+        overflow: auto;
+        padding: 2px;
+        border: 3px solid #317796;
+
+        img[src=""] {
+            display: none;
+        }
+    }
+
+    #imageBrowser {
+        max-height: 500px;
+        overflow: auto;
+
+        .image {
+            position: relative;
+            float: left;
+            width: 75px;
+            height: 75px;
+            margin: 5px;
+            background-size: 125%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            border: 2px solid #bed4de;
+            cursor: pointer;
+
+            &:hover {
+                border-color: #317796;
+            }
+
+            &.selected {
+                border-color: #317796;
+            }
+        }
+    }
+}

@@ -1,0 +1,19 @@
+/* Chatbox */
+#chatbox {
+    position: fixed;
+    top: 40px;
+    right: 0;
+    width: 40%;
+    border-color: #dddddd;
+    border-width: 1px;
+    box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.2);
+    height: 234px;
+    padding: 0 10px 10px 10px;
+    z-index: 5;
+}
+
+#chatbox-text {
+    overflow-y: scroll;
+    height: 190px;
+    color: #222;
+}

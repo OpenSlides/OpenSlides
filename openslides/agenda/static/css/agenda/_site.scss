@@ -1,0 +1,28 @@
+@import 'list_of_speakers';
+
+#agenda-table {
+    .icon-column {
+        width: 5%;
+    }
+
+    .title-column {
+        padding: 0px 10px;
+        width: 95%;
+    }
+}
+
+.agenda-sort {
+    .internal {
+        padding: 7px;
+        opacity: 0.6;
+    }
+    .angular-ui-tree-node {
+        min-height: 0;
+    }
+}
+
+.speakers-toolbar {
+    margin: -20px -20px 30px -20px;
+    padding: 12px 15px 10px 15px;
+
+}

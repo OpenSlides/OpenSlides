@@ -1,0 +1,32 @@
+/** Countdown fullscreen mode **/
+#countdownWrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background-color: white;
+}
+#countdownWrapper > div {
+    text-align: center;
+    margin-top: 50px;
+}
+#countdown {
+    display: inline-block;
+    padding: 20px 50px;
+    border-radius: 8px;
+    font-size: 30vw;
+    line-height: 1;
+    font-weight: bold;
+}
+#countdown .description {
+    font-weight: normal;
+    font-size: 5vw;
+}
+#countdown.warning {
+    color: #ed940d;
+}
+#countdown.negative {
+    color: #CC0000;
+}

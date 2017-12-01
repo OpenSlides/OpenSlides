@@ -368,7 +368,7 @@
                     <td class="icon">
                       <i class="fa fa-thumbs-up fa-2x"></i>
                     <td ng-init="voteYes = poll.getVote(poll.yes, 'yes')">
-                      <span class="result_label"><translate>Yes</translate>:</span>
+                      <span class="result-label"><translate>Yes</translate>:</span>
                       <span class="result_value">
                         {{ voteYes.value }} {{ voteYes.percentStr }}
                       </span>
@@ -380,7 +380,7 @@
                     <td class="icon">
                       <i class="fa fa-thumbs-down fa-2x"></i>
                     <td ng-init="voteNo = poll.getVote(poll.no, 'no')">
-                      <span class="result_label"><translate>No</translate>:</span>
+                      <span class="result-label"><translate>No</translate>:</span>
                       <span class="result_value" >
                         {{ voteNo.value }} {{ voteNo.percentStr }}
                       </span>
@@ -392,7 +392,7 @@
                     <td class="icon">
                       <strong style="font-size: 26px">&empty;</strong>
                     <td ng-init="voteAbstain = poll.getVote(poll.abstain, 'abstain')">
-                      <span class="result_label"><translate>Abstain</translate>:</span>
+                      <span class="result-label"><translate>Abstain</translate>:</span>
                       <span class="result_value">
                         {{ voteAbstain.value }} {{ voteAbstain.percentStr }}
                       </span>
@@ -404,7 +404,7 @@
                     <td class="icon">
                       <i class="fa fa-check fa-lg"></i>
                     <td ng-init="votesValid = poll.getVote(poll.votesvalid, 'votesvalid')">
-                      <span class="result_label"><translate>Valid votes</translate>:</span>
+                      <span class="result-label"><translate>Valid votes</translate>:</span>
                       <span class="result_value">
                         {{ votesValid.value }} {{ votesValid.percentStr }}
                       </span>
@@ -413,7 +413,7 @@
                     <td class="icon">
                       <i class="fa fa-ban fa-lg"></i>
                     <td ng-init="votesInvalid = poll.getVote(poll.votesinvalid, 'votesinvalid')">
-                      <span class="result_label"><translate>Invalid votes</translate>:</span>
+                      <span class="result-label"><translate>Invalid votes</translate>:</span>
                       <span class="result_value">
                         {{ votesInvalid.value }} {{ votesInvalid.percentStr }}
                       </span>
@@ -422,7 +422,7 @@
                     <td class="icon">
                       <strong style="font-size: 16px">&sum;</strong>
                     <td ng-init="votesCast = poll.getVote(poll.votescast, 'votescast')">
-                      <span class="result_label"><translate>Votes cast</translate>:</span>
+                      <span class="result-label"><translate>Votes cast</translate>:</span>
                       <span class="result_value">
                         {{ votesCast.value }} {{ votesCast.percentStr }}
                       </span>

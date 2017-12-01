@@ -1,0 +1,14 @@
+/* Main projector CSS file. Just import all files needed for the site here. */
+
+/* General */
+@import "variables";
+@import "fonts";
+@import "helper";
+@import "ui-override";
+
+/* Apps */
+@import "core/projector";
+@import "../../../agenda/static/css/agenda/projector";
+@import "../../../assignments/static/css/assignments/projector";
+@import "../../../motions/static/css/motions/projector";
+@import "../../../mediafiles/static/css/mediafiles/projector";

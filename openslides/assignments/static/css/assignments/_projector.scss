@@ -1,0 +1,19 @@
+.electionresults table {
+    width: calc(100% - 230px);
+}
+
+#speakerbox {
+    width: 40%;
+    float: right;
+    margin: 20px;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    background: #d3d3d3;
+    border-radius: 7px;
+    border: 1px solid #999;
+    padding: 0px 7px 10px 19px;
+    z-index: 99;
+    box-shadow: 3px 3px 10px 1px rgba(0,0,0,0.5);
+    overflow: hidden;
+}

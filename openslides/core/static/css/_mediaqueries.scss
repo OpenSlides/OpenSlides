@@ -1,0 +1,109 @@
+/*////////////////////////////////////////
+    =MEDIA QUERIES (RESPONSIVE DESIGN)
+////////////////////////////////////////*/
+
+/* display for 900 to 1200px resolutions */
+@media only screen and (max-width: 1200px) {
+
+    body { font-size: 12px; }
+
+    h1 { font-size: 30px; padding-bottom: 6px; }
+
+    h2 { font-size: 22px; padding-bottom: 10px; }
+
+    h3 { font-size: 18px; padding-bottom: 10px; }
+
+    .col-md-4 {
+        float: left;
+        width: 50%;
+    }
+
+    .motion-text.line-numbers-outside .os-line-number:after {
+        font-size: 10px;
+        top: 9px;
+    }
+}
+
+
+/* display for resolutions smaller that 900px */
+@media only screen and (max-width: 900px) {
+
+    #nav .navbar li a { padding: 24px 5px; }
+
+    #groups-table .perm-head {
+        width: 200px;
+    }
+
+    /* hide text in groups-table earlier */
+    #groups-table .optional { display: none; }
+
+    /* show replacement elements, if any */
+    #groups-table .optional-show { display: block !important; }
+
+    /* hide searchbar input */
+    #nav .searchbar input { display: none !important; }
+    #nav .searchbar .btn {
+        border-top-left-radius: 4px !important;
+        border-bottom-left-radius: 4px !important;
+    }
+}
+
+
+/* display for resolutions smaller that 760px */
+@media only screen and (max-width: 760px) {
+
+    h1 { font-size: 22px; padding-bottom: 4px; }
+
+    h2 { font-size: 16px; padding-bottom: 4px; }
+
+    h3 { font-size: 14px; padding-bottom: 4px; }
+
+    .user i { font-size: 16px;  padding: 3px; }
+
+    #nav .navbar { box-shadow: none; padding-right: 60px !important; }
+    #nav .navbar ul li a { padding: 10px 15px; }
+    #nav .searchbar { margin: 15px -53px 0 0 !important; }
+
+    #chatbox { width: 100%; top: 40px; }
+
+    .badge { font-size: 10px; }
+
+    /* show replacement elements, if any */
+    .optional-show { display: block !important; }
+
+    /* hide marked element / column */
+    .optional, .hide-sm { display: none !important; }
+}
+
+/* display for resolutions smaller that 560px */
+@media only screen and (max-width: 560px) {
+    #content .containerOS { padding: 0; }
+
+    #content .col2 { width: 100%; }
+
+    #content .col2.sidebar-max, #content .col2.sidebar-min,
+    #content .col1.sidebar-min, #content .col1.sidebar-max  {
+        width: 100%;
+    }
+
+    #sidebar {
+        display: none !important;
+    }
+
+    #sidebar-xs {
+        display: block !important;
+    }
+
+    #sidebar-xs .projector_full {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+
+    #groups-table .perm-head {
+        width: 150px;
+    }
+
+    .personalNoteFixed {
+        width: 100%;
+    }
+}

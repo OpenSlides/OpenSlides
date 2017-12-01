@@ -1,0 +1,28 @@
+.pollresults {
+    table {
+        margin-bottom: 0;
+
+        td {
+            border: none !important;
+            padding: 5px 2px !important;
+            vertical-align: middle !important;
+        }
+
+        .icon {
+            color: #636363;
+        }
+
+        tr.total td {
+            border-top: 1px solid #444 !important;
+        }
+    }
+
+    .result-label {
+        margin-top: 5px;
+    }
+
+    .progress {
+        height: 12px;
+        margin-bottom: 0;
+    }
+}

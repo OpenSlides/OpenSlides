@@ -1,0 +1,20 @@
+/** Goto top link **/
+#goto-top {
+    position: fixed;
+    bottom: 15px;
+    right: 30px;
+    padding: 10px 30px;
+    background: white;
+    opacity: 0.6;
+    transition: opacity 250ms ease-out;
+    z-index: 100;
+
+    &:hover {
+        opacity: 1;
+        transition: opacity 250ms ease-in;
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+}
