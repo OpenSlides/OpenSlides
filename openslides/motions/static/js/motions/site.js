@@ -768,7 +768,7 @@ angular.module('OpenSlidesApp.motions.site', [
                             key: 'include',
                             type: 'checkbox-buttons',
                             templateOptions: {
-                                label: gettextCatalog.getString('Metainformation'),
+                                label: gettextCatalog.getString('Meta information'),
                                 options: getMetaInformationOptions(),
                             },
                             hideExpression: "model.format !== 'pdf'",
@@ -777,7 +777,7 @@ angular.module('OpenSlidesApp.motions.site', [
                             key: 'include',
                             type: 'checkbox-buttons',
                             templateOptions: {
-                                label: gettextCatalog.getString('Metainformation'),
+                                label: gettextCatalog.getString('Meta information'),
                                 options: getMetaInformationOptions({votingResult: true}),
                             },
                             hideExpression: "model.format !== 'csv'",
@@ -786,7 +786,7 @@ angular.module('OpenSlidesApp.motions.site', [
                             key: 'include',
                             type: 'checkbox-buttons',
                             templateOptions: {
-                                label: gettextCatalog.getString('Metainformation'),
+                                label: gettextCatalog.getString('Meta information'),
                                 options: getMetaInformationOptions({
                                     state: true,
                                     votingResult: true,
