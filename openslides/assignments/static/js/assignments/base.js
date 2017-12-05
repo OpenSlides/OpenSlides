@@ -71,7 +71,7 @@ angular.module('OpenSlidesApp.assignments', [])
                         var skipPercents = config === 'YES_NO' && vote.value === 'Abstain';
 
                         if (base && !skipPercents) {
-                            percentNumber = Math.round(vote.weight * 100 / base * 10) / 10;
+                            percentNumber = Math.round(vote.weight * 100 / base * 100) / 100;
                             percentStr = "(" + percentNumber + "%)";
                         }
                         votes.push({

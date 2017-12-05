@@ -16,7 +16,7 @@ allowed_attributes = {
     'ol': ['start'],
 }
 allowed_styles = [
-    'color', 'background-color', 'height', 'width', 'text-align'
+    'color', 'background-color', 'height', 'width', 'text-align', 'float', 'padding'
 ]
 
 

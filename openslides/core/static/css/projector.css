@@ -273,7 +273,7 @@ li {
     font-size: 120%;
     line-height: 40px;
 }
-.result .bold {
+.result .bold, .electionresults .bold {
     font-weight: bold;
 }
 .electionresults table {
