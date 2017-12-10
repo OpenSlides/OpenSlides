@@ -1,12 +1,19 @@
 <div class="header">
   <div class="title">
-    <div class="submenu">
+    <div class="title-h1">
+      <h1 translate>Files</h1>
+    </div>
+    <div class="title-upload-wrapper" os-perms="mediafiles.can_upload">
+      <div class="title-upload-div"  ngf-drop="onFilesDropped($files)">
+        Drop files there
+      </div>
+    </div>
+    <div class="files-submenu">
       <a  ng-click="openDialog()" os-perms="mediafiles.can_upload" class="btn btn-primary btn-sm">
         <i class="fa fa-plus fa-lg"></i>
         <translate>New</translate>
       </a>
     </div>
-    <h1 translate>Files</h1>
   </div>
 </div>
 

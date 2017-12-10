@@ -23,8 +23,9 @@ angular.module('OpenSlidesApp.mediafiles.list', [
     'Mediafile',
     'MediafileForm',
     'Logos',
+    'Messaging',
     function ($http, $scope, gettext, ngDialog, osTableFilter, osTableSort,
-              ProjectionDefault, Projector, User, Mediafile, MediafileForm, Logos) {
+              ProjectionDefault, Projector, User, Mediafile, MediafileForm, Logos, Messaging) {
         $scope.$watch(function () {
             return Mediafile.lastModified();
         }, function () {
@@ -41,6 +42,57 @@ angular.module('OpenSlidesApp.mediafiles.list', [
                 $scope.defaultProjectorId = projectiondefault.projector_id;
             }
         });
+
+        $scope.onFilesDropped = function (files, event) {
+            // Don't process multiple files
+            if (files.length != 1) {
+                return;
+            }
+
+            var mediafile = {
+                getFile: function () {
+                    return files[0];
+                }
+            };
+
+            $scope.uploadFile(mediafile);
+        };
+
+        // upload and save mediafile
+        $scope.uploadFile = function (mediafile) {
+            var progressMessageId = -1;
+            MediafileForm.uploadFile(mediafile).then(
+                function (success) {
+                    if (progressMessageId !== -1) {
+                        Messaging.deleteMessage(progressMessageId);
+                    }
+
+                    Messaging.addMessage('The file is uploaded successfully.', 'success',  {
+                        timeout: 3000
+                    });
+                },
+                function (error) {
+                    Messaging.addMessage('Error while uploading: ' + error.data.title, 'error',  {
+                        timeout: 3000
+                    });
+                },
+                function (progress) {
+                    var percentage = parseInt(100.0 * progress.loaded / progress.total);
+                    if (progressMessageId === -1) {
+                        progressMessageId = Messaging.addMessage(
+                            '[' + percentage + '% ] The file is uploading...',
+                            'info'
+                        );
+                    } else {
+                        Messaging.createOrEditMessage(
+                            progressMessageId,
+                            '[' + percentage + '% ] The file is uploading...',
+                            'info'
+                        );
+                    }
+                }
+            );
+        };
 
         function updatePresentedMediafiles () {
             $scope.presentedMediafiles = [];
