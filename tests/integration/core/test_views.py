@@ -5,6 +5,8 @@ from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from openslides import __license__ as license
+from openslides import __url__ as url
 from openslides import __version__ as version
 from openslides.core.config import ConfigVariable, config
 from openslides.core.models import Projector
@@ -71,10 +73,14 @@ class VersionView(TestCase):
         response = self.client.get(reverse('core_version'))
         self.assertEqual(json.loads(response.content.decode()), {
             'openslides_version': version,
+            'openslides_license': license,
+            'openslides_url': url,
             'plugins': [
                 {'verbose_name': 'OpenSlides Test Plugin',
                  'description': 'This is a test plugin for OpenSlides.',
-                 'version': 'unknown'}]})
+                 'version': 'unknown',
+                 'license': 'MIT',
+                 'url': ''}]})
 
 
 class WebclientJavaScriptView(TestCase):
