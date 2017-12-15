@@ -9,7 +9,13 @@ from rest_framework.test import APIClient
 
 from openslides.core.config import config
 from openslides.core.models import Tag
-from openslides.motions.models import Category, Motion, MotionBlock, State
+from openslides.motions.models import (
+    Category,
+    Motion,
+    MotionBlock,
+    State,
+    Workflow,
+)
 from openslides.users.models import Group
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.test import TestCase
@@ -596,6 +602,58 @@ class UpdateMotion(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         motion = Motion.objects.get()
         self.assertEqual(motion.versions.count(), 1)
+
+
+class DeleteMotion(TestCase):
+    """
+    Tests deleting motions.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+        self.admin = get_user_model().objects.get(username='admin')
+        self.motion = Motion(
+            title='test_title_acle3fa93l11lwlkcc31',
+            text='test_text_f390sjfyycj29ss56sro')
+        self.motion.save()
+
+    def test_simple_delete(self):
+        response = self.client.delete(
+            reverse('motion-detail', args=[self.motion.pk]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        motions = Motion.objects.count()
+        self.assertEqual(motions, 0)
+
+    def make_admin_delegate(self):
+        group_staff = self.admin.groups.get(name='Staff')
+        group_delegates = Group.objects.get(name='Delegates')
+        self.admin.groups.remove(group_staff)
+        self.admin.groups.add(group_delegates)
+        inform_changed_data(self.admin)
+
+    def put_motion_in_complex_workflow(self):
+        workflow = Workflow.objects.get(name='Complex Workflow')
+        self.motion.reset_state(workflow=workflow)
+        self.motion.save()
+
+    def test_delete_foreign_motion_as_delegate(self):
+        self.make_admin_delegate()
+        self.put_motion_in_complex_workflow()
+
+        response = self.client.delete(
+            reverse('motion-detail', args=[self.motion.pk]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_own_motion_as_delegate(self):
+        self.make_admin_delegate()
+        self.put_motion_in_complex_workflow()
+        self.motion.submitters.add(self.admin)
+
+        response = self.client.delete(
+            reverse('motion-detail', args=[self.motion.pk]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        motions = Motion.objects.count()
+        self.assertEqual(motions, 0)
 
 
 class ManageVersion(TestCase):
