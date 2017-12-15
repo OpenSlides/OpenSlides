@@ -53,6 +53,7 @@ Motions:
 - Added new change recommendation type "other" [#3495].
 - Combined all boolean filters into one dropdown menu and added a filter
   for amendments [#3501].
+- Allow to delete own motions [#3516].
 
 Elections:
 - Added pagination for list view [#3393].

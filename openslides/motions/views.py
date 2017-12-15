@@ -65,7 +65,7 @@ class MotionViewSet(ModelViewSet):
         """
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ('metadata', 'partial_update', 'update'):
+        elif self.action in ('metadata', 'partial_update', 'update', 'destroy'):
             result = has_perm(self.request.user, 'motions.can_see')
             # For partial_update and update requests the rest of the check is
             # done in the update method. See below.
@@ -74,7 +74,7 @@ class MotionViewSet(ModelViewSet):
                       has_perm(self.request.user, 'motions.can_create') and
                       (not config['motions_stop_submitting'] or
                        has_perm(self.request.user, 'motions.can_manage')))
-        elif self.action in ('destroy', 'manage_version', 'set_state', 'set_recommendation',
+        elif self.action in ('manage_version', 'set_state', 'set_recommendation',
                              'follow_recommendation', 'create_poll'):
             result = (has_perm(self.request.user, 'motions.can_see') and
                       has_perm(self.request.user, 'motions.can_manage'))
@@ -84,6 +84,19 @@ class MotionViewSet(ModelViewSet):
         else:
             result = False
         return result
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Destroy is allowed if the user has manage permissions, or he is the submitter and
+        the current state allows to edit the motion.
+        """
+        motion = self.get_object()
+
+        if (has_perm(request.user, 'motions.can_manage') or
+                motion.is_submitter(request.user) and motion.state.allow_submitter_edit):
+            return super().destroy(request, *args, **kwargs)
+        else:
+            raise ValidationError({'detail': _('You can not delete this motion.')})
 
     def create(self, request, *args, **kwargs):
         """
