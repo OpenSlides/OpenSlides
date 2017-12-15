@@ -11,11 +11,11 @@
   <!-- Description -->
   <div ng-if="!showResult && assignment.description !== ''"
     ng-bind-html="assignment.description | trusted"
-    class="zoomcontent">
+    class="zoomcontent clearfix">
   </div>
 
   <!-- Candidates -->
-  <div class="zoomcontent" ng-if="!showResult" class="clearfix">
+  <div class="zoomcontent" ng-if="!showResult">
     <h3 translate>Candidates</h3>
     <ul>
       <li ng-repeat="related_user in assignment.assignment_related_users | orderBy:'weight'">
