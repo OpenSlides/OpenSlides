@@ -553,7 +553,13 @@ angular.module('OpenSlidesApp.motions', [
                                 )
                             );
                         case 'delete':
-                            return operator.hasPerms('motions.can_manage');
+                            return (
+                                operator.hasPerms('motions.can_manage') ||
+                                (
+                                    (_.indexOf(this.submitters, operator.user) !== -1) &&
+                                    this.state.allow_submitter_edit
+                                )
+                            );
                         case 'create_poll':
                             return (
                                 operator.hasPerms('motions.can_manage') &&
