@@ -25,6 +25,9 @@
 </div>
 
 <div class="details">
+  <div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" close="alert={}">
+    {{ alert.msg }}
+  </div>
   <div class="row">
     <div class="col-sm-6">
       <!-- select mode -->
@@ -80,6 +83,7 @@
         <option value="is_active" translate>Set/Unset 'is active'</option>
         <option value="is_present" translate>Set/Unset 'is present'</option>
         <option value="is_committee" translate>Set/Unset 'is a committee'</option>
+        <option value="send_invite_email" translate>Send invitation emails</option>
       </select>
       <!-- delete button -->
       <a ng-show="selectedAction == 'delete'"
@@ -129,6 +133,11 @@
         <span ng-if="selectedAction == 'is_present'" translate>Is not present</span>
         <span ng-if="selectedAction == 'is_committee'" translate>Is not a committee</span>
       </a>
+      <!-- send_invite_email -->
+      <a ng-show="selectedAction == 'send_invite_email'" class="btn btn-default btn-sm"
+        ng-click="sendInvitationEmails()">
+        <translate>Send invitation emails</translate>
+      </a>
     </div>
   </div>
 
@@ -172,7 +181,7 @@
       <div class="col-xs-11 main-header">
         <span class="form-inline text-right pull-right">
           <!-- reset Filters -->
-          <span class="sort-spacer pointer" ng-click="filter.reset()"
+          <span class="sort-spacer pointer" ng-click="filter.reset(isSelectMode)"
             ng-if="filter.areFiltersSet()" ng-disabled="isSelectMode"
             ng-class="{'disabled': isSelectMode}">
             <i class="fa fa-times-circle"></i>
@@ -412,6 +421,13 @@
               <div ng-if="user.comment" uib-tooltip="{{ 'Comment' | translate }}" tooltip-placement="top-left">
                 <i class="fa fa-info-circle"></i>
                 {{ user.comment | limitTo:25}}{{ user.comment.length > 25 ? '...' : '' }}
+              </div>
+            </div>
+
+            <div os-perms="users.can_manage" ng-show="user.last_email_send">
+              <div uib-tooltip="{{ 'Last email send to the user' | translate }}" tooltip-placement="top-left">
+                <i class="fa fa-envelope"></i>
+                {{ user.last_email_send | date: 'yyyy-MM-dd HH:mm:ss' }}
               </div>
             </div>
           </small>

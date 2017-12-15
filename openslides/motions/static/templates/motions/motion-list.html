@@ -396,7 +396,7 @@
         <!-- show all selected multiselectoptions -->
         <div>
           <!-- clear all filters -->
-          <span class="spacer-left-lg pointer" ng-click="resetFilters()"
+          <span class="spacer-left-lg pointer" ng-click="resetFilters(isSelectMode)"
             ng-if="filter.areFiltersSet()" ng-disabled="isSelectMode"
             ng-class="{'disabled': isSelectMode}">
             <i class="fa fa-times-circle"></i>

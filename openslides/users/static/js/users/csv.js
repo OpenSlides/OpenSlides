@@ -12,7 +12,7 @@ angular.module('OpenSlidesApp.users.csv', [])
     function ($filter, Group, gettextCatalog, CsvDownload) {
         var makeHeaderline = function () {
             var headerline = ['Title', 'Given name', 'Surname', 'Structure level', 'Participant number', 'Groups',
-                'Comment', 'Is active', 'Is present', 'Is a committee', 'Initial password'];
+                'Comment', 'Is active', 'Is present', 'Is a committee', 'Initial password', 'Email'];
             return _.map(headerline, function (entry) {
                 return gettextCatalog.getString(entry);
             });
@@ -38,6 +38,7 @@ angular.module('OpenSlidesApp.users.csv', [])
                     row.push(user.is_present ? '1' : '0');
                     row.push(user.is_committee ? '1' : '0');
                     row.push('"' + user.default_password + '"');
+                    row.push('"' + user.email + '"');
                     csvRows.push(row);
                 });
                 CsvDownload(csvRows, 'users-export.csv');
@@ -58,10 +59,10 @@ angular.module('OpenSlidesApp.users.csv', [])
 
                 var csvRows = [makeHeaderline(),
                     // example entries
-                    ['Dr.', 'Max', 'Mustermann', 'Berlin','1234567890', csvGroups, 'xyz', '1', '1', '', ''],
-                    ['', 'John', 'Doe', 'Washington','75/99/8-2', csvGroup, 'abc', '1', '1', '', ''],
-                    ['', 'Fred', 'Bloggs', 'London', '', '', '', '', '', '', ''],
-                    ['', '', 'Executive Board', '', '', '', '', '', '', '1', ''],
+                    ['Dr.', 'Max', 'Mustermann', 'Berlin','1234567890', csvGroups, 'xyz', '1', '1', '', 'initialPassword', ''],
+                    ['', 'John', 'Doe', 'Washington','75/99/8-2', csvGroup, 'abc', '1', '1', '', '', 'john.doe@email.com'],
+                    ['', 'Fred', 'Bloggs', 'London', '', '', '', '', '', '', '', ''],
+                    ['', '', 'Executive Board', '', '', '', '', '', '', '1', '', ''],
 
                 ];
                 CsvDownload(csvRows, 'users-example.csv');

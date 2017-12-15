@@ -93,7 +93,7 @@
       <div class="col-xs-11 main-header">
         <span class="form-inline text-right pull-right">
           <!-- clear all filters -->
-          <span class="sort-spacer pointer" ng-click="filter.reset()"
+          <span class="sort-spacer pointer" ng-click="filter.reset(isSelectMode)"
             ng-if="filter.areFiltersSet()" ng-disabled="isSelectMode"
             ng-class="{'disabled': isSelectMode}">
             <i class="fa fa-times-circle"></i>

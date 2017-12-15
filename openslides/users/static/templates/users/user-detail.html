@@ -32,6 +32,10 @@
         </div>
       <label translate>Participant number</label>
         {{ user.number }}
+      <label translate>Email</label>
+        {{ user.email }}
+      <label ng-if="user.last_email_send" translate>Last email send</label>
+        {{ user.last_email_send | date: 'yyyy-MM-dd HH:mm:ss' }}
       <label translate>About me</label>
         <div ng-bind-html="user.about_me | trusted"></div>
     </fieldset>
