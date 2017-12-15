@@ -47,7 +47,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                             style: 'textItem'
                         },
                         {
-                            text: assignment.description,
+                            text: $(assignment.description).text(),
                             style: 'textItem',
                             margin: [10, 0, 0, 0]
                         }

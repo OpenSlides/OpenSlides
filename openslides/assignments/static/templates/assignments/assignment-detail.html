@@ -75,12 +75,12 @@
 </div>
 
 <div class="details">
-  <div ng-if="assignment.description">
+  <div ng-if="assignment.description" class="clearfix">
     <h3 translate>Description</h3>
     <div ng-bind-html="assignment.description | trusted"></div>
   </div>
 
-  <div ng-if="assignment.phase !== 2" class="clearfix">
+  <div ng-if="assignment.phase !== 2">
     <h3 translate>Candidates</h3>
     <div ui-tree="treeOptions" ng-if="assignment.assignment_related_users.length"
         data-empty-placeholder-enabled="false">
