@@ -13,7 +13,7 @@
   <div ng-repeat="speaker in agendaItem.speakers | filter: {end_time: null, begin_time: '!!'} "
     class="currentSpeaker">
     <i class="fa fa-microphone fa-lg"></i>
-    <span class="pull-right" style="width:calc(100% - 25px);">
+    <span class="pull-right" style="width:calc(100% - 30px);">
       {{ speaker.user.get_full_name() }}
     </span>
   </div>
