@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
-from . import __description__, __verbose_name__
+from . import __description__, __license__, __verbose_name__
 
 
 class TestPluginAppConfig(AppConfig):
@@ -11,3 +11,4 @@ class TestPluginAppConfig(AppConfig):
     label = 'tests.integration.test_plugin'
     verbose_name = __verbose_name__
     description = __description__
+    license = __license__

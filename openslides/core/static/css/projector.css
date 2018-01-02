@@ -273,7 +273,7 @@ li {
     font-size: 120%;
     line-height: 40px;
 }
-.result .bold {
+.result .bold, .electionresults .bold {
     font-weight: bold;
 }
 .electionresults table {
@@ -459,7 +459,7 @@ tr.elected td {
     padding-right: 5px;
 }
 .nextSpeakers {
-    margin-left: 8px;
+    margin-left: 13px;
 }
 .nextSpeakers li {
     line-height: 150%;

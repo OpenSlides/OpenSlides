@@ -9,8 +9,9 @@
   </div>
 
   <!-- Description -->
-  <div ng-if="!showResult && assignment.description !== ''" class="white-space-pre-line zoomcontent">
-    {{ assignment.description }}
+  <div ng-if="!showResult && assignment.description !== ''"
+    ng-bind-html="assignment.description | trusted"
+    class="zoomcontent clearfix">
   </div>
 
   <!-- Candidates -->
@@ -33,45 +34,31 @@
       <table class="table table-bordered table-striped minimumTable">
       <tr>
         <th translate>Candidates
-        <th ng-if="poll.has_votes" class="col-sm-6" translate>Votes</th>
+        <th ng-if="poll.has_votes" class="col-sm-5" translate>Votes</th>
 
       <!-- candidates (poll options) -->
       <tr ng-repeat="option in poll.options | orderBy:'weight'">
 
         <!-- candidate name -->
-        <td>
+        <td class="bold">
           <i ng-if="option.is_elected" class="fa fa-star" title="{{ 'is elected' | translate }}"></i>
-          <strong>{{ option.candidate.get_full_name() }}</strong>
+          {{ option.candidate.get_full_name() }}
 
         <!-- votes -->
-        <td ng-if="poll.has_votes">
+        <td ng-if="poll.has_votes" class="bold">
           <div ng-init="votes = option.getVotes()">
             <div ng-show="poll.pollmethod == 'yna' || poll.pollmethod == 'yn'">
               <span ng-show="poll.pollmethod == 'yna'">
-                {{ votes[0].label | translate }}: {{ votes[0].value }} ·
-                {{ votes[1].label | translate }}: {{ votes[1].value }} ·
-                {{ votes[2].label | translate }}: {{ votes[2].value }} </span>
+                {{ votes[0].label | translate }}: {{ votes[0].value }} {{ votes[0].percentStr }}<br>
+                {{ votes[1].label | translate }}: {{ votes[1].value }} {{ votes[1].percentStr }}<br>
+                {{ votes[2].label | translate }}: {{ votes[2].value }} {{ votes[2].percentStr }}</span>
               <span ng-show="poll.pollmethod == 'yn'">
-                {{ votes[0].label | translate }}: {{ votes[0].value }} ·
-                {{ votes[1].label | translate }}: {{ votes[1].value }}</span>
-              <uib-progress ng-if="votes[0].percentNumber>=0">
-                <uib-bar value="votes[0].percentNumber" type="success">
-                  <span ng-hide="votes[0].percentNumber < 5">{{votes[0].percentNumber}} %</span>
-                </uib-bar>
-                <uib-bar value="votes[1].percentNumber" type="danger">
-                  <span ng-hide="votes[1].percentNumber < 5">{{votes[1].percentNumber}} %</span>
-                </uib-bar>
-                <uib-bar value="votes[2].percentNumber" type="warning">
-                  <span ng-hide="votes[2].percentNumber < 5">{{votes[2].percentNumber}} %</span>
-                </uib-bar>
-              </uib-progress>
+                {{ votes[0].label | translate }}: {{ votes[0].value }} {{ votes[0].percentStr }}<br>
+                {{ votes[1].label | translate }}: {{ votes[1].value }} {{ votes[1].percentStr }}</span>
             </div>
             <div ng-show="poll.pollmethod == 'votes'">
               <div ng-repeat="vote in votes">
                 {{ vote.value }} {{ vote.percentStr }}
-                <div ng-if="vote.percentNumber >= 0">
-                  <uib-progressbar value="vote.percentNumber" type="success"></uib-progressbar>
-                </div>
               </div>
             </div>
           </div>

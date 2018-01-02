@@ -1,0 +1,16 @@
+<div id="countdownWrapper">
+  <div>
+    <div id="countdown" ng-class="{
+        'negative': countdown.seconds <= 0,
+        'warning': countdown.seconds <= config('agenda_countdown_warning_time') && countdown.seconds > 0 }">
+      <div class="row">
+        <div class="col-d-12">{{ countdown.seconds | osSecondsToTime}}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 description">
+          <span class="pull-right">{{ countdown.description }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

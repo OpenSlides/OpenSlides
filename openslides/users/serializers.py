@@ -29,6 +29,8 @@ USERCANSEESERIALIZER_FIELDS = (
 
 
 USERCANSEEEXTRASERIALIZER_FIELDS = USERCANSEESERIALIZER_FIELDS + (
+    'email',
+    'last_email_send',
     'comment',
     'is_active',
 )
@@ -51,6 +53,7 @@ class UserFullSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = USERCANSEEEXTRASERIALIZER_FIELDS + ('default_password',)
+        read_only_fields = ('last_email_send',)
 
     def validate(self, data):
         """

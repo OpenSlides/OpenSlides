@@ -296,7 +296,8 @@ img {
 
 #nav .searchbar {
     float: right;
-    margin-top: 35px;
+    margin-top: 33px;
+    margin-bottom: 32px;
     display: inline-table;
 }
 
@@ -638,6 +639,9 @@ img {
 .motion-text-holder .change-recommendation-list > li.replace {
     background-color: #0333ff;
 }
+.motion-text-holder .change-recommendation-list > li.other {
+    background-color: #777777;
+}
 
 .motion-text-holder .change-recommendation-list .tooltip {
     display: none;
@@ -927,6 +931,39 @@ img {
     margin-top: 10px;
 }
 
+/* Countdown fullscreen mode */
+#countdownWrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background-color: white;
+}
+#countdownWrapper > div {
+    text-align: center;
+    margin-top: 50px;
+}
+#countdown {
+    display: inline-block;
+    padding: 20px 50px;
+    border-radius: 8px;
+    font-size: 30vw;
+    line-height: 1;
+    font-weight: bold;
+}
+#countdown .description {
+    font-weight: normal;
+    font-size: 5vw;
+}
+#countdown.warning {
+    color: #ed940d;
+}
+#countdown.negative {
+    color: #CC0000;
+}
+
 /* countdown and message controls */
 .col2 .countdown.panel, .col2 .message.panel {
     margin-bottom: 7px;
@@ -972,7 +1009,7 @@ img {
     font-weight: bold;
 }
 
-.col2 .countdown .editicon, .col2 .message .editicon {
+.col2 .countdown .icons, .col2 .message .editicon {
     padding-right: 10px;
 }
 
@@ -1081,6 +1118,7 @@ img {
 
 .os-table .main-header .form-inline {
     margin-left: 15px;
+    width: 100%;
 }
 
 .os-table .content > div { /* horizontal blocks */
@@ -1507,12 +1545,6 @@ img {
 
 #groups-table .optional-show { /* hide optional-show column */
     display: none;
-}
-
-/* List of speakers view */
-.fullscreendiv-title {
-    border-bottom: 5px solid #d3d3d3;
-    margin-bottom: 40px;
 }
 
 .lastSpeakers {

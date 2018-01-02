@@ -75,9 +75,9 @@
 </div>
 
 <div class="details">
-  <div ng-if="assignment.description">
+  <div ng-if="assignment.description" class="clearfix">
     <h3 translate>Description</h3>
-    <div class="white-space-pre-line">{{ assignment.description }}</div>
+    <div ng-bind-html="assignment.description | trusted"></div>
   </div>
 
   <div ng-if="assignment.phase !== 2">

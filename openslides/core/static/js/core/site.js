@@ -392,7 +392,25 @@ angular.module('OpenSlidesApp.core.site', [
                     basePerm: 'core.can_manage_tags',
                 },
             })
-            .state('core.tag.list', {});
+            .state('core.tag.list', {})
+
+            // Countdown
+            .state('core.countdown', {
+                url: '/countdown',
+                abstract: true,
+                template: "<ui-view/>",
+                data: {
+                    title: gettext('Countdown'),
+                    basePerm: 'core.can_manage_projector',
+                },
+            })
+            .state('core.countdown.detail', {
+                resolve: {
+                    countdownId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
+                }
+            });
 
         $locationProvider.html5Mode(true);
     }
@@ -517,7 +535,10 @@ angular.module('OpenSlidesApp.core.site', [
                 areFiltersSet = areFiltersSet || (self.filterString !== '');
                 return areFiltersSet !== false;
             };
-            self.reset = function () {
+            self.reset = function (danger) {
+                if (danger) {
+                    return;
+                }
                 _.forEach(self.multiselectFilters, function (filterList, filter) {
                     self.multiselectFilters[filter] = [];
                 });
@@ -788,8 +809,9 @@ angular.module('OpenSlidesApp.core.site', [
             overwriteOk: true,
         });
         formlyConfig.setType({
-            name: 'select-radio',
-            templateUrl: 'static/templates/core/select-radio.html',
+            name: 'checkbox-buttons',
+            templateUrl: 'static/templates/core/checkbox-buttons.html',
+            overwriteOk: true,
         });
         formlyConfig.setType({
             name: 'select-single',
@@ -1092,6 +1114,8 @@ angular.module('OpenSlidesApp.core.site', [
     function ($scope, $http) {
         $http.get('/core/version/').then(function (success) {
             $scope.core_version = success.data.openslides_version;
+            $scope.core_license = success.data.openslides_license;
+            $scope.core_url = success.data.openslides_url;
             $scope.plugins = success.data.plugins;
         });
     }
@@ -1781,6 +1805,41 @@ angular.module('OpenSlidesApp.core.site', [
                 $scope.alert = ErrorMessage.forAlert(error);
             });
         };
+    }
+])
+
+.controller('CountdownDetailCtrl', [
+    '$scope',
+    '$interval',
+    'Countdown',
+    'countdownId',
+    function ($scope, $interval, Countdown, countdownId) {
+        var interval;
+        var calculateCountdownTime = function (countdown) {
+            countdown.seconds = Math.floor( $scope.countdown.countdown_time - Date.now() / 1000 + $scope.serverOffset );
+        };
+        $scope.$watch(function () {
+            return Countdown.lastModified(countdownId);
+        }, function () {
+            $scope.countdown = Countdown.get(countdownId);
+            if (interval) {
+                $interval.cancel(interval);
+            }
+            if ($scope.countdown) {
+                if ($scope.countdown.running) {
+                    calculateCountdownTime($scope.countdown);
+                    interval = $interval(function () { calculateCountdownTime($scope.countdown); }, 1000);
+                } else {
+                    $scope.countdown.seconds = $scope.countdown.countdown_time;
+                }
+            }
+        });
+        $scope.$on('$destroy', function() {
+            // Cancel the interval if the controller is destroyed
+            if (interval) {
+                $interval.cancel(interval);
+            }
+        });
     }
 ])
 

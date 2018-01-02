@@ -155,7 +155,7 @@ angular.module('OpenSlidesApp.motions', [
                     // Calculate percent value
                     var base = this.getPercentBase(config, type);
                     if (base) {
-                        percentNumber = Math.round(vote * 100 / (base) * 10) / 10;
+                        percentNumber = Math.round(vote * 100 / (base) * 100) / 100;
                         percentStr = '(' + percentNumber + ' %)';
                     }
                     return {
@@ -189,10 +189,34 @@ angular.module('OpenSlidesApp.motions', [
     }
 ])
 
+.factory('MotionStateAndRecommendationParser', [
+    'DS',
+    'gettextCatalog',
+    function (DS, gettextCatalog) {
+        return {
+            formatMotion: function (motion) {
+                return '[motion:' + motion.id + ']';
+            },
+            parse: function (recommendation) {
+                return recommendation.replace(/\[motion:(\d+)\]/g, function (match, id) {
+                    var motion = DS.get('motions/motion', id);
+                    if (motion) {
+                        return motion.identifier ? motion.identifier : motion.getTitle();
+                    } else {
+                        return gettextCatalog.getString("<unknown motion>");
+                    }
+                });
+            },
+        };
+    }
+])
+
+
 .factory('Motion', [
     'DS',
     '$http',
     'MotionPoll',
+    'MotionStateAndRecommendationParser',
     'MotionChangeRecommendation',
     'MotionComment',
     'jsDataModel',
@@ -204,7 +228,7 @@ angular.module('OpenSlidesApp.motions', [
     'OpenSlidesSettings',
     'Projector',
     'operator',
-    function(DS, $http, MotionPoll, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog,
+    function(DS, $http, MotionPoll, MotionStateAndRecommendationParser, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog,
         Config, lineNumberingService, diffService, OpenSlidesSettings, Projector, operator) {
         var name = 'motions/motion';
         return DS.defineResource({
@@ -215,6 +239,11 @@ angular.module('OpenSlidesApp.motions', [
             validate: function (resource, data, callback) {
                 MotionComment.populateFieldsReverse(data);
                 callback(null, data);
+            },
+            computed: {
+                isAmendment: function () {
+                    return this.parent_id !== null;
+                },
             },
             methods: {
                 getResourceName: function () {
@@ -399,35 +428,33 @@ angular.module('OpenSlidesApp.motions', [
                 // depended by state and provided by a custom comment field
                 getStateName: function () {
                     var name = '';
-                    var additionalName = '';
                     if (this.state) {
                         name = gettextCatalog.getString(this.state.name);
                         if (this.state.show_state_extension_field) {
                             // check motion comment fields for flag 'forState'
                             var commentFieldForStateId = MotionComment.getFieldIdForFlag('forState');
                             if (commentFieldForStateId > -1) {
-                                additionalName = ' ' + this.comments[commentFieldForStateId];
+                                name += ' ' + this.comments[commentFieldForStateId];
                             }
                         }
                     }
-                    return name + additionalName;
+                    return MotionStateAndRecommendationParser.parse(name);
                 },
                 // full recommendation string - optional with custom recommendationextension
                 // depended by state and provided by a custom comment field
                 getRecommendationName: function () {
                     var recommendation = '';
-                    var additionalName = '';
                     if (Config.get('motions_recommendations_by').value !== '' && this.recommendation) {
                         recommendation = gettextCatalog.getString(this.recommendation.recommendation_label);
                         if (this.recommendation.show_recommendation_extension_field) {
                             // check motion comment fields for flag 'forRecommendation'
                             var commentFieldForRecommendationId = MotionComment.getFieldIdForFlag('forRecommendation');
                             if (commentFieldForRecommendationId > -1) {
-                                additionalName = ' ' + this.comments[commentFieldForRecommendationId];
+                                recommendation += ' ' + this.comments[commentFieldForRecommendationId];
                             }
                         }
                     }
-                    return recommendation + additionalName;
+                    return MotionStateAndRecommendationParser.parse(recommendation);
                 },
                 // link name which is shown in search result
                 getSearchResultName: function () {
@@ -483,9 +510,6 @@ angular.module('OpenSlidesApp.motions', [
                         ]
                     });
                 },
-                isAmendment: function () {
-                    return this.parent_id !== null;
-                },
                 hasAmendments: function () {
                     return DS.filter('motions/motion', {parent_id: this.id}).length > 0;
                 },
@@ -529,7 +553,13 @@ angular.module('OpenSlidesApp.motions', [
                                 )
                             );
                         case 'delete':
-                            return operator.hasPerms('motions.can_manage');
+                            return (
+                                operator.hasPerms('motions.can_manage') ||
+                                (
+                                    (_.indexOf(this.submitters, operator.user) !== -1) &&
+                                    this.state.allow_submitter_edit
+                                )
+                            );
                         case 'create_poll':
                             return (
                                 operator.hasPerms('motions.can_manage') &&
@@ -569,8 +599,8 @@ angular.module('OpenSlidesApp.motions', [
                             return (
                                 operator.hasPerms('motions.can_create') &&
                                 Config.get('motions_amendments_enabled').value &&
-                                ( !this.isAmendment() ||
-                                  (this.isAmendment() && OpenSlidesSettings.MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS))
+                                ( !this.isAmendment ||
+                                  (this.isAmendment && OpenSlidesSettings.MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS))
                             );
                         default:
                             return false;
@@ -808,21 +838,6 @@ angular.module('OpenSlidesApp.motions', [
     }
 ])
 
-.factory('MotionList', [
-    function () {
-        return {
-            getList: function (items){
-                var list = [];
-                _.each(items, function (item) {
-                    list.push({ id: item.id,
-                                item: item });
-                });
-                return list;
-            }
-        };
-    }
-])
-
 .factory('MotionChangeRecommendation', [
     'DS',
     'Config',
@@ -894,6 +909,9 @@ angular.module('OpenSlidesApp.motions', [
                             break;
                         case diffService.TYPE_REPLACEMENT:
                             title = title.replace('%TYPE%', gettextCatalog.getString('Replacement'));
+                            break;
+                        case diffService.TYPE_OTHER:
+                            title = title.replace('%TYPE%', this.other_description);
                             break;
                     }
                     title = title.replace('%FROM%', this.line_from).replace('%TO%', (this.line_to - 1));

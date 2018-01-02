@@ -39,7 +39,7 @@ angular.module('OpenSlidesApp.agenda.site', [
 .config([
     '$stateProvider',
     'gettext',
-    function($stateProvider, gettext) {
+    function ($stateProvider, gettext) {
         $stateProvider
             .state('agenda', {
                 url: '/agenda',
@@ -73,6 +73,14 @@ angular.module('OpenSlidesApp.agenda.site', [
                     title: gettext('Current list of speakers'),
                 },
             });
+    }
+])
+
+// Set the sensitivity of moving nodes horizontal for the ui-tree.
+.config([
+    'treeConfig',
+    function (treeConfig) {
+        treeConfig.dragMoveSensitivity = 20;
     }
 ])
 

@@ -709,6 +709,9 @@ angular.module('OpenSlidesApp.core', [
                     message += gettextCatalog.getString("The server didn't respond.");
                 } else if (error.data.detail) {
                     message += error.data.detail;
+                } else if (error.status > 500) { // Some kind of server error.
+                    message += gettextCatalog.getString("A server error occurred (%%code%%). Please check the system logs.");
+                    message = message.replace('%%code%%', error.status);
                 } else {
                     for (var e in error.data) {
                         message += e + ': ' + error.data[e] + ' ';
@@ -1028,9 +1031,9 @@ angular.module('OpenSlidesApp.core', [
                     allowedContent:
                         'h1 h2 h3 b i u strike sup sub strong em;' +
                         'blockquote p pre table' +
-                        '(text-align-left,text-align-center,text-align-right,text-align-justify,os-split-before,os-split-after){text-align};' +
+                        '(text-align-left,text-align-center,text-align-right,text-align-justify,os-split-before,os-split-after){text-align, float, padding};' +
                         'a[!href];' +
-                        'img[!src,alt]{width,height,float};' +
+                        'img[!src,alt]{width,height,float, padding};' +
                         'tr th td caption;' +
                         'li(os-split-before,os-split-after); ol(os-split-before,os-split-after)[start]{list-style-type};' +
                         'ul(os-split-before,os-split-after){list-style};' +
@@ -1445,12 +1448,13 @@ angular.module('OpenSlidesApp.core', [
 // Wraps the orderBy filter. But puts ("", null, undefined) last.
 .filter('orderByEmptyLast', [
     '$filter',
-    function ($filter) {
+    '$parse',
+    function ($filter, $parse) {
         return function (array, sortPredicate, reverseOrder, compareFn) {
+            var parsed = $parse(sortPredicate);
             var falsyItems = [];
             var truthyItems = _.filter(array, function (item) {
-                var falsy = item[sortPredicate] === void 0 ||
-                    item[sortPredicate] === null || item[sortPredicate] === '';
+                var falsy = parsed(item) === void 0 || parsed(item) === null || parsed(item) === '';
                 if (falsy) {
                     falsyItems.push(item);
                 }

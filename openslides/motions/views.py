@@ -65,7 +65,7 @@ class MotionViewSet(ModelViewSet):
         """
         if self.action in ('list', 'retrieve'):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ('metadata', 'partial_update', 'update'):
+        elif self.action in ('metadata', 'partial_update', 'update', 'destroy'):
             result = has_perm(self.request.user, 'motions.can_see')
             # For partial_update and update requests the rest of the check is
             # done in the update method. See below.
@@ -74,7 +74,8 @@ class MotionViewSet(ModelViewSet):
                       has_perm(self.request.user, 'motions.can_create') and
                       (not config['motions_stop_submitting'] or
                        has_perm(self.request.user, 'motions.can_manage')))
-        elif self.action in ('destroy', 'manage_version', 'set_state', 'set_recommendation', 'create_poll'):
+        elif self.action in ('manage_version', 'set_state', 'set_recommendation',
+                             'follow_recommendation', 'create_poll'):
             result = (has_perm(self.request.user, 'motions.can_see') and
                       has_perm(self.request.user, 'motions.can_manage'))
         elif self.action == 'support':
@@ -83,6 +84,19 @@ class MotionViewSet(ModelViewSet):
         else:
             result = False
         return result
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Destroy is allowed if the user has manage permissions, or he is the submitter and
+        the current state allows to edit the motion.
+        """
+        motion = self.get_object()
+
+        if (has_perm(request.user, 'motions.can_manage') or
+                motion.is_submitter(request.user) and motion.state.allow_submitter_edit):
+            return super().destroy(request, *args, **kwargs)
+        else:
+            raise ValidationError({'detail': _('You can not delete this motion.')})
 
     def create(self, request, *args, **kwargs):
         """
@@ -325,13 +339,15 @@ class MotionViewSet(ModelViewSet):
             motion.reset_state()
 
         # Save motion.
-        motion.save(update_fields=['state', 'identifier', 'identifier_number'])
+        motion.save(update_fields=['state', 'identifier', 'identifier_number'], skip_autoupdate=True)
         message = _('The state of the motion was set to %s.') % motion.state.name
 
         # Write the log message and initiate response.
         motion.write_log(
             message_list=[ugettext_noop('State set to'), ' ', motion.state.name],
-            person=request.user)
+            person=request.user,
+            skip_autoupdate=True)
+        inform_changed_data(motion)
         return Response({'detail': message})
 
     @detail_route(methods=['put'])
@@ -375,6 +391,37 @@ class MotionViewSet(ModelViewSet):
         return Response({'detail': message})
 
     @detail_route(methods=['post'])
+    def follow_recommendation(self, request, pk=None):
+        motion = self.get_object()
+        if motion.recommendation is None:
+            raise ValidationError({'detail': _('Cannot set an empty recommendation.')})
+
+        # Set state.
+        motion.set_state(motion.recommendation)
+
+        # Set the special state comment.
+        extension = request.data.get('recommendationExtension')
+        if extension is not None:
+            # Find the special "state" comment field.
+            for id, field in config['motions_comments'].items():
+                if 'forState' in field and field['forState'] is True:
+                    motion.comments[id] = extension
+                    break
+
+        # Save and write log.
+        motion.save(
+            update_fields=['state', 'identifier', 'identifier_number', 'comments'],
+            skip_autoupdate=True)
+        motion.write_log(
+            message_list=[ugettext_noop('State set to'), ' ', motion.state.name],
+            person=request.user,
+            skip_autoupdate=True)
+
+        # Now send all changes to the clients.
+        inform_changed_data(motion)
+        return Response({'detail': 'Recommendation followed successfully.'})
+
+    @detail_route(methods=['post'])
     def create_poll(self, request, pk=None):
         """
         View to create a poll. It is a POST request without any data.
@@ -384,10 +431,12 @@ class MotionViewSet(ModelViewSet):
             raise ValidationError({'detail': 'You can not create a poll in this motion state.'})
         try:
             with transaction.atomic():
-                motion.create_poll()
+                motion.create_poll(skip_autoupdate=True)
         except WorkflowError as e:
             raise ValidationError({'detail': e})
-        motion.write_log([ugettext_noop('Vote created')], request.user)
+        motion.write_log([ugettext_noop('Vote created')], request.user, skip_autoupdate=True)
+
+        inform_changed_data(motion)
         return Response({'detail': _('Vote created successfully.')})
 
 

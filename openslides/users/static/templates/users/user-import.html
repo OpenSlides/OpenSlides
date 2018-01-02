@@ -58,6 +58,7 @@
           <translate>Is present</translate>,
           <translate>Is committee</translate>,
           <translate>Initial password</translate>
+          <translate>Email</translate>
         </code>
       <li translate>At least given name or surname have to be filled in. All
         other fields are optional and may be empty.
@@ -83,7 +84,8 @@
             <th translate>Is active
             <th translate>Is present
             <th translate>Is committee
-            <th translate>Initial password</th>
+            <th translate>Initial password
+            <th translate>Email
             <th ng-if="duplicates > 0">
               <i class="fa fa-exclamation-triangle text-danger"></i>
               <strong class="text-danger" ng-if="duplicates == 1">1 <translate>duplicate</translate></strong>
@@ -158,6 +160,8 @@
                 ng-click="user.is_committee = !user.is_committee"></i>
             <td>
               {{ user.default_password }}
+            <td>
+              {{ user.email }}
             <td ng-if="duplicates > 0">
                 <div ng-if="user.duplicate" uib-tooltip="{{ user.duplicate_info }}" uib-dropdown>
                   <button id="UserAction{{ $index }}" type="button" class="btn btn-default btn-sm"

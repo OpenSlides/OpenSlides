@@ -23,24 +23,36 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
          * @constructor
          */
 
-        var createInstance = function(motion, motionVersion, changeRecommendationMode,
-            changeRecommendations, lineNumberMode, includeReason, includeComments) {
+        var createInstance = function(motion, motionVersion, params) {
+            params = _.clone(params || {}); // Clone this to avoid sideeffects.
+            _.defaults(params, {
+                changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
+                lineNumberMode: Config.get('motions_default_line_numbering').value,
+                include: {
+                    text: true,
+                    reason: true,
+                    state: true,
+                    submitters: true,
+                    votingresult: true,
+                    motionBlock: true,
+                    origin: true,
+                    recommendation: true,
+                },
+                includeComments: {},
+            });
 
             var converter;
 
             // Query all image sources from motion text and reason
             var getImageSources = function () {
-                var text = motion.getTextByMode(changeRecommendationMode, null);
+                var text = motion.getTextByMode(params.changeRecommendationMode, null);
                 var reason = motion.getReason();
                 var comments = '';
-                if (includeComments) {
-                    var fields = MotionComment.getNoSpecialCommentsFields();
-                    _.forEach(fields, function (field, id) {
-                        if (motion.comments[id]) {
-                            comments += HTMLValidizer.validize(motion.comments[id]);
-                        }
-                    });
-                }
+                _.forEach(params.includeComments, function (ok, id) {
+                    if (ok && motion.comments[id]) {
+                        comments += HTMLValidizer.validize(motion.comments[id]);
+                    }
+                });
                 var content = HTMLValidizer.validize(text) + HTMLValidizer.validize(motion.getReason()) + comments;
                 var map = Function.prototype.call.bind([].map);
                 return map($(content).find('img'), function(element) {
@@ -77,31 +89,35 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 var submitters = _.map(motion.submitters, function (submitter) {
                     return submitter.get_full_name();
                 }).join(', ');
-                metaTableBody.push([
-                    {
-                        text: gettextCatalog.getString('Submitters') + ':',
-                        style: ['bold', 'grey'],
-                    },
-                    {
-                        text: submitters,
-                        style: 'grey'
-                    }
-                ]);
+                if (params.include.submitters) {
+                    metaTableBody.push([
+                        {
+                            text: gettextCatalog.getString('Submitters') + ':',
+                            style: ['bold', 'grey'],
+                        },
+                        {
+                            text: submitters,
+                            style: 'grey'
+                        }
+                    ]);
+                }
 
                 // state
-                metaTableBody.push([
-                    {
-                        text: gettextCatalog.getString('State') + ':',
-                        style: ['bold', 'grey']
-                    },
-                    {
-                        text: motion.getStateName(),
-                        style: 'grey'
-                    }
-                ]);
+                if (params.include.state) {
+                    metaTableBody.push([
+                        {
+                            text: gettextCatalog.getString('State') + ':',
+                            style: ['bold', 'grey']
+                        },
+                        {
+                            text: motion.getStateName(),
+                            style: 'grey'
+                        }
+                    ]);
+                }
 
                 // recommendation
-                if (motion.getRecommendationName()) {
+                if (params.include.recommendation && motion.getRecommendationName()) {
                     metaTableBody.push([
                         {
                             text: Config.get('motions_recommendations_by').value + ':',
@@ -128,7 +144,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 }
 
                 // motion block
-                if (motion.motionBlock) {
+                if (params.include.motionBlock && motion.motionBlock) {
                     metaTableBody.push([
                         {
                             text: gettextCatalog.getString('Motion block') + ':',
@@ -139,8 +155,22 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         }
                     ]);
                 }
+
+                // origin
+                if (params.include.origin && motion.origin) {
+                    metaTableBody.push([
+                        {
+                            text: gettextCatalog.getString('Origin') + ':',
+                            style: ['bold', 'grey'] },
+                        {
+                            text: motion.origin,
+                            style: 'grey'
+                        }
+                    ]);
+                }
+
                 // voting result
-                if (motion.polls.length > 0 && motion.polls[0].has_votes) {
+                if (params.include.votingresult && motion.polls.length > 0 && motion.polls[0].has_votes) {
                     var column1 = [];
                     var column2 = [];
                     var column3 = [];
@@ -219,10 +249,10 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 }
 
                 // summary of change recommendations (for motion diff version only)
-                if (changeRecommendationMode == "diff" && changeRecommendations.length) {
+                if (params.changeRecommendationMode == "diff" && motion.changeRecommendations.length) {
                     var columnLineNumbers = [];
                     var columnChangeType = [];
-                    angular.forEach(_.orderBy(changeRecommendations, ['line_from']), function(change) {
+                    angular.forEach(_.orderBy(motion.changeRecommendations, ['line_from']), function(change) {
                         // line numbers column
                         var line;
                         if (change.line_from >= change.line_to - 1) {
@@ -240,6 +270,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                             columnChangeType.push(gettextCatalog.getString("Insertion"));
                         } else if (change.getType(motion.getVersion(motionVersion).text) === 2) {
                             columnChangeType.push(gettextCatalog.getString("Deletion"));
+                        } else if (change.getType(motion.getVersion(motionVersion).text) === 3) {
+                            columnChangeType.push(change.other_description);
                         }
                     });
                     metaTableBody.push([
@@ -264,47 +296,57 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     ]);
                 }
 
-                // build table
-                // Used placeholder for 'layout' functions whiche are
-                // replaced by lineWitdh/lineColor function in pfd-worker.js.
-                // TODO: Remove placeholder and us static values for LineWidth and LineColor
-                // if pdfmake has fixed this.
-                var metaTableJsonString = {
-                    table: {
-                        widths: ['35%','65%'],
-                        body: metaTableBody,
-                    },
-                    margin: [0, 0, 0, 20],
-                    layout: '{{motion-placeholder-to-insert-functions-here}}'
-                };
-                return metaTableJsonString;
+                if (metaTableBody.length) {
+                    // build table
+                    // Used placeholder for 'layout' functions whiche are
+                    // replaced by lineWitdh/lineColor function in pfd-worker.js.
+                    // TODO: Remove placeholder and us static values for LineWidth and LineColor
+                    // if pdfmake has fixed this.
+                    var metaTable = {
+                        table: {
+                            widths: ['35%','65%'],
+                            body: metaTableBody,
+                        },
+                        margin: [0, 0, 0, 20],
+                        layout: '{{motion-placeholder-to-insert-functions-here}}'
+                    };
+                    return metaTable;
+                } else {
+                    return {};
+                }
             };
 
             // motion title
             var motionTitle = function() {
-                return [{
-                    text: motion.getTitle(motionVersion),
-                    style: 'heading3'
-                }];
+                if (params.include.text) {
+                    return [{
+                        text: motion.getTitle(motionVersion),
+                        style: 'heading3'
+                    }];
+                }
             };
 
             // motion preamble
             var motionPreamble = function () {
-                return {
-                    text: Config.translate(Config.get('motions_preamble').value),
-                    margin: [0, 10, 0, 0]
-                };
+                if (params.include.text) {
+                    return {
+                        text: Config.translate(Config.get('motions_preamble').value),
+                        margin: [0, 10, 0, 0]
+                    };
+                }
             };
 
             // motion text (with line-numbers)
             var motionText = function() {
-                var motionTextContent = motion.getTextByMode(changeRecommendationMode, motionVersion);
-                return converter.convertHTML(motionTextContent, lineNumberMode);
+                if (params.include.text) {
+                    var motionTextContent = motion.getTextByMode(params.changeRecommendationMode, motionVersion);
+                    return converter.convertHTML(motionTextContent, params.lineNumberMode);
+                }
             };
 
             // motion reason heading
             var motionReason = function() {
-                if (includeReason) {
+                if (params.include.reason) {
                     var reason = [];
                     if (motion.getReason(motionVersion)) {
                         reason.push({
@@ -327,13 +369,13 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
             // motion comments handling
             var motionComments = function () {
-                if (includeComments) {
+                if (_.keys(params.includeComments).length !== 0) {
                     var fields = MotionComment.getNoSpecialCommentsFields();
                     var comments = [];
-                    _.forEach(fields, function (field, id) {
-                        if (motion.comments[id]) {
-                            var title = field.name;
-                            if (!field.public) {
+                    _.forEach(params.includeComments, function (ok, id) {
+                        if (ok && motion.comments[id]) {
+                            var title = fields[id].name;
+                            if (!fields[id].public) {
                                 title += ' (' + gettextCatalog.getString('internal') + ')';
                             }
                             comments.push({
@@ -895,13 +937,6 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         return {
             getDocumentProvider: function (motions, params, singleMotion) {
                 params = _.clone(params || {}); // Clone this to avoid sideeffects.
-                _.defaults(params, {
-                    filename: gettextCatalog.getString('motions') + '.pdf',
-                    changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
-                    lineNumberMode: Config.get('motions_default_line_numbering').value,
-                    includeReason: true,
-                    includeComments: false,
-                });
 
                 if (singleMotion) {
                     _.defaults(params, {
@@ -927,9 +962,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 var motionContentProviderPromises = _.map(motions, function (motion) {
                     var version = (singleMotion ? params.version : motion.active_version);
                     return MotionContentProvider.createInstance(
-                        motion, version, params.changeRecommendationMode,
-                        motion.changeRecommendations, params.lineNumberMode,
-                        params.includeReason, params.includeComments
+                        motion, version, params
                     ).then(function (contentProvider) {
                         motionContentProviderArray.push(contentProvider);
                     });

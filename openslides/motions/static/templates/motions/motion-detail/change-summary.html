@@ -24,6 +24,9 @@
                 <translate ng-if="change.getType(motion.getVersion(version).text) == 0">Replacement</translate>
                 <translate ng-if="change.getType(motion.getVersion(version).text) == 1">Insertion</translate>
                 <translate ng-if="change.getType(motion.getVersion(version).text) == 2">Deletion</translate>
+                <span ng-if="change.getType(motion.getVersion(version).text) == 3">
+                  {{ change.other_description }}
+                </span>
             </span>
             <span class="status">
                 <translate ng-if="change.rejected">Rejected</translate>

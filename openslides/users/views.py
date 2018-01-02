@@ -1,10 +1,13 @@
+import smtplib
 from typing import List  # noqa
 
+from django.conf import settings
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.password_validation import validate_password
+from django.core import mail
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.utils.encoding import force_text
@@ -59,7 +62,7 @@ class UserViewSet(ModelViewSet):
             result = has_perm(self.request.user, 'users.can_see_name')
         elif self.action in ('update', 'partial_update'):
             result = self.request.user.is_authenticated()
-        elif self.action in ('create', 'destroy', 'reset_password', 'mass_import'):
+        elif self.action in ('create', 'destroy', 'reset_password', 'mass_import', 'mass_invite_email'):
             result = (has_perm(self.request.user, 'users.can_see_name') and
                       has_perm(self.request.user, 'users.can_see_extra_data') and
                       has_perm(self.request.user, 'users.can_manage'))
@@ -164,6 +167,44 @@ class UserViewSet(ModelViewSet):
         return Response({
             'detail': _('{number} users successfully imported.').format(number=len(created_users)),
             'importedTrackIds': imported_track_ids})
+
+    @list_route(methods=['post'])
+    def mass_invite_email(self, request):
+        """
+        Endpoint to send invitation emails to all given users (by id). Returns the
+        number of emails send.
+        """
+        user_ids = request.data.get('user_ids')
+        if not isinstance(user_ids, list):
+            raise ValidationError({'detail': 'User_ids has to be a list.'})
+        for user_id in user_ids:
+            if not isinstance(user_id, int):
+                raise ValidationError({'detail': 'User_id has to be an int.'})
+        users = User.objects.filter(pk__in=user_ids)
+
+        # Sending Emails. Keep track, which users gets an email.
+        # First, try to open the connection to the smtp server.
+        connection = mail.get_connection(fail_silently=False)
+        try:
+            connection.open()
+        except ConnectionRefusedError:
+            raise ValidationError({'detail': 'Cannot connect to SMTP server on {}:{}'.format(
+                settings.EMAIL_HOST,
+                settings.EMAIL_PORT)})
+        except smtplib.SMTPException as e:
+            raise ValidationError({'detail': '{}: {}'.format(e.errno, e.strerror)})
+
+        success_users = []
+        try:
+            for user in users:
+                if user.send_invitation_email(connection, skip_autoupdate=True):
+                    success_users.append(user)
+        except DjangoValidationError as e:
+            raise ValidationError(e.message_dict)
+
+        connection.close()
+        inform_changed_data(success_users)
+        return Response({'count': len(success_users)})
 
 
 class GroupViewSetMetadata(SimpleMetadata):

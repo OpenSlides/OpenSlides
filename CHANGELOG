@@ -49,6 +49,11 @@ Motions:
 - Improved the multiselect state filter [#3459].
 - Added karma:watch command [#3466].
 - Show the number of next speakers in motion list view [#3470].
+- Reference to motions by id in state and recommendation special field [#3498].
+- Added new change recommendation type "other" [#3495].
+- Combined all boolean filters into one dropdown menu and added a filter
+  for amendments [#3501].
+- Allow to delete own motions [#3516].
 
 Elections:
 - Added pagination for list view [#3393].
@@ -66,6 +71,8 @@ Users:
 - Added option to enable updating the last_login field in the database. The
   default is now disabled [#3400].
 - Hide password in change password view [#3417].
+- Added a change presence view [#3496].
+- New feature to send invitation emails with OpenSlides login [#3503].
 
 Core:
 - No reload on logoff. OpenSlides is now a full single page
@@ -95,6 +102,7 @@ Core:
 - Added 'go to top'-link [#3404].
 - Added caching for the index views [#3419, #3424].
 - Added projector prioritization [#3425].
+- Use native twisted mode for daphne [#3487].
 
 Mediafiles:
 - Fixed reloading of PDF on page change [#3274].

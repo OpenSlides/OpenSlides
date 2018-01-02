@@ -22,7 +22,7 @@
 <ul ng-if="viewChangeRecommendations.mode == 'original'" ng-show="lineNumberMode != 'none'"
     class="change-recommendation-list">
     <li ng-repeat="change in change_recommendations | filter:{motion_version_id:version}:true"
-        ng-class="['replace', 'insert', 'delete'][change.getType(motion.getVersion(version).text)]"
+        ng-class="['replace', 'insert', 'delete', 'other'][change.getType(motion.getVersion(version).text)]"
         ng-click="viewChangeRecommendations.scrollToDiffBox(change.id)"
         data-line-from="{{ change.line_from }}" data-line-to="{{ change.line_to}}"
         title="{{ change.getTitle(motion.getVersion(version).text) }}">

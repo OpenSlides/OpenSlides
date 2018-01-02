@@ -242,13 +242,22 @@ angular.module('OpenSlidesApp.motions.site', [
                         key: 'type',
                         type: 'radio-buttons',
                         templateOptions: {
-                            name: 'type',
+                            label: 'Type',
                             options: [
                                 {name: gettextCatalog.getString('Replacement'), value: 0},
                                 {name: gettextCatalog.getString('Insertion'), value: 1},
-                                {name: gettextCatalog.getString('Deletion'), value: 2}
+                                {name: gettextCatalog.getString('Deletion'), value: 2},
+                                {name: gettextCatalog.getString('Other'), value: 3},
                             ]
                         }
+                    },
+                    {
+                        key: 'other_description',
+                        type: 'input',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Description'),
+                        },
+                        hideExpression: "model.type !== 3",
                     },
                     {
                         key: 'text',
@@ -618,7 +627,9 @@ angular.module('OpenSlidesApp.motions.site', [
     'operator',
     'gettextCatalog',
     'Config',
-    function (operator, gettextCatalog, Config) {
+    'MotionComment',
+    function (operator, gettextCatalog, Config, MotionComment) {
+        var noSpecialCommentsFields = MotionComment.getNoSpecialCommentsFields();
         return {
             getDialog: function (motions, params, singleMotion) {
                 return {
@@ -634,14 +645,46 @@ angular.module('OpenSlidesApp.motions.site', [
                     },
                 };
             },
-            getFormFields: function (singleMotion, formatChangeCallback) {
+            getFormFields: function (singleMotion, motions, formatChangeCallback) {
                 var fields = [];
-                var commentsAvailable = Config.get('motions_comments').value.length !== 0;
+                var commentsAvailable = _.keys(noSpecialCommentsFields).length !== 0;
+                var getMetaInformationOptions = function (disabled) {
+                    if (!disabled) {
+                        disabled = {};
+                    }
+                    var options = [
+                        {name: gettextCatalog.getString('State'), id: 'state', disabled: disabled.state},
+                        {name: gettextCatalog.getString('Submitters'), id: 'submitters', disabled: disabled.submitters},
+                        {name: gettextCatalog.getString('Voting result'), id: 'votingresult', disabled: disabled.votingResult}
+                    ];
+                    if (_.some(motions, function (motion) { return motion.motionBlock; })) {
+                        options.push({
+                            name: gettextCatalog.getString('Motion block'),
+                            id: 'motionBlock',
+                            disabled: disabled.motionBlock,
+                        });
+                    }
+                    if (_.some(motions, function (motion) { return motion.origin; })) {
+                        options.push({
+                            name: gettextCatalog.getString('Origin'),
+                            id: 'origin',
+                            disabled: disabled.origin,
+                        });
+                    }
+                    if (Config.get('motions_recommendations_by').value) {
+                        options.push({
+                            name: gettextCatalog.getString('Recommendation'),
+                            id: 'recommendation',
+                            disabled: disabled.recommendation
+                        });
+                    }
+                    return options;
+                };
                 if (!singleMotion) {
                     fields = [
                         {
                             key: 'format',
-                            type: 'select-radio',
+                            type: 'radio-buttons',
                             templateOptions: {
                                 label: gettextCatalog.getString('Format'),
                                 options: [
@@ -658,7 +701,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     fields.push.apply(fields, [
                         {
                             key: 'lineNumberMode',
-                            type: 'select-radio',
+                            type: 'radio-buttons',
                             templateOptions: {
                                 label: gettextCatalog.getString('Line numbering'),
                                 options: [
@@ -671,7 +714,7 @@ angular.module('OpenSlidesApp.motions.site', [
                         },
                         {
                             key: 'lineNumberMode',
-                            type: 'select-radio',
+                            type: 'radio-buttons',
                             templateOptions: {
                                 label: gettextCatalog.getString('Line numbering'),
                                 options: [
@@ -684,7 +727,7 @@ angular.module('OpenSlidesApp.motions.site', [
                         },
                         {
                             key: 'changeRecommendationMode',
-                            type: 'select-radio',
+                            type: 'radio-buttons',
                             templateOptions: {
                                 label: gettextCatalog.getString('Change recommendations'),
                                 options: [
@@ -698,7 +741,7 @@ angular.module('OpenSlidesApp.motions.site', [
                         },
                         {
                             key: 'changeRecommendationMode',
-                            type: 'select-radio',
+                            type: 'radio-buttons',
                             templateOptions: {
                                 label: gettextCatalog.getString('Change recommendations'),
                                 options: [
@@ -711,27 +754,62 @@ angular.module('OpenSlidesApp.motions.site', [
                             hideExpression: "model.format === 'pdf'",
                         },
                         {
-                            key: 'includeReason',
-                            type: 'select-radio',
+                            key: 'include',
+                            type: 'checkbox-buttons',
                             templateOptions: {
-                                label: gettextCatalog.getString('Reason'),
+                                label: gettextCatalog.getString('Content'),
                                 options: [
-                                    {name: gettextCatalog.getString('Yes'), value: true},
-                                    {name: gettextCatalog.getString('No'), value: false},
+                                    {name: gettextCatalog.getString('Text'), id: 'text'},
+                                    {name: gettextCatalog.getString('Reason'), id: 'reason'},
                                 ],
                             },
+                        },
+                        {
+                            key: 'include',
+                            type: 'checkbox-buttons',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Meta information'),
+                                options: getMetaInformationOptions(),
+                            },
+                            hideExpression: "model.format !== 'pdf'",
+                        },
+                        {
+                            key: 'include',
+                            type: 'checkbox-buttons',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Meta information'),
+                                options: getMetaInformationOptions({votingResult: true}),
+                            },
+                            hideExpression: "model.format !== 'csv'",
+                        },
+                        {
+                            key: 'include',
+                            type: 'checkbox-buttons',
+                            templateOptions: {
+                                label: gettextCatalog.getString('Meta information'),
+                                options: getMetaInformationOptions({
+                                    state: true,
+                                    votingResult: true,
+                                    motionBlock: true,
+                                    origin: true,
+                                    recommendation: true,
+                                }),
+                            },
+                            hideExpression: "model.format !== 'docx'",
                         },
                     ]);
                     if (commentsAvailable) {
                         fields.push({
                             key: 'includeComments',
-                            type: 'select-radio',
+                            type: 'checkbox-buttons',
                             templateOptions: {
                                 label: gettextCatalog.getString('Comments'),
-                                options: [
-                                    {name: gettextCatalog.getString('Yes'), value: true},
-                                    {name: gettextCatalog.getString('No'), value: false},
-                                ],
+                                options: _.map(noSpecialCommentsFields, function (field, id) {
+                                    return {
+                                        name: gettextCatalog.getString(field.name),
+                                        id: id,
+                                    };
+                                }),
                             },
                             hideExpression: "model.format === 'csv'",
                         });
@@ -740,7 +818,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 if (!singleMotion) {
                     fields.push({
                         key: 'pdfFormat',
-                        type: 'select-radio',
+                        type: 'radio-buttons',
                         templateOptions: {
                             label: gettextCatalog.getString('PDF format'),
                             options: [
@@ -769,9 +847,27 @@ angular.module('OpenSlidesApp.motions.site', [
     'singleMotion',
     function ($scope, Config, MotionExportForm, MotionPdfExport, MotionCsvExport,
             MotionDocxExport, motions, params, singleMotion) {
-        $scope.formFields = MotionExportForm.getFormFields(singleMotion, function () {
-            $scope.params.changeRecommendationMode = 'original';
-            $scope.params.lineNumberMode = 'none';
+        $scope.formFields = MotionExportForm.getFormFields(singleMotion, motions, function () {
+            if ($scope.params.format !== 'pdf') {
+                $scope.params.changeRecommendationMode = 'original';
+                $scope.params.lineNumberMode = 'none';
+                $scope.params.include.votingresult = false;
+            }
+            if ($scope.params.format === 'docx') {
+                $scope.params.include.state = false;
+                $scope.params.include.motionBlock = false;
+                $scope.params.include.origin = false;
+                $scope.params.include.recommendation = false;
+            } else {
+                $scope.params.include.state = true;
+                $scope.params.include.motionBlock = true;
+                $scope.params.include.origin = true;
+                $scope.params.include.recommendation = true;
+            }
+            if ($scope.params.format === 'pdf') {
+                $scope.params.include.state = true;
+                $scope.params.include.votingresult = true;
+            }
         });
         $scope.params = params || {};
         _.defaults($scope.params, {
@@ -779,8 +875,17 @@ angular.module('OpenSlidesApp.motions.site', [
             pdfFormat: 'pdf',
             changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
             lineNumberMode: Config.get('motions_default_line_numbering').value,
-            includeReason: true,
-            includeComments: false,
+            include: {
+                text: true,
+                reason: true,
+                state: true,
+                submitters: true,
+                votingresult: true,
+                motionBlock: true,
+                origin: true,
+                recommendation: true,
+            },
+            includeComments: {},
         });
         $scope.motions = motions;
         $scope.singleMotion = singleMotion;
@@ -919,6 +1024,9 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // collect all states and all recommendations of all workflows
         $scope.collectStatesAndRecommendations = function () {
+            // Special case: If it is the first time updated, update the state filter.
+            // This causes to set the done/undone states correct on page load.
+            var doStateFilterUpdate = !$scope.states;
             $scope.states = [];
             $scope.recommendations = [];
             var workflows = $scope.collectAllUsedWorkflows();
@@ -944,6 +1052,9 @@ angular.module('OpenSlidesApp.motions.site', [
                     }
                 });
             });
+            if (doStateFilterUpdate) {
+                updateStateFilter();
+            }
         };
         $scope.collectAllUsedWorkflows = function () {
             return _.filter(Workflow.getAll(), function (workflow) {
@@ -996,6 +1107,11 @@ angular.module('OpenSlidesApp.motions.site', [
                 comment: [],
             };
             $scope.filter.booleanFilters = {
+                isAmendment: {
+                    value: undefined,
+                    choiceYes: gettext('Is an amendment'),
+                    choiceNo: gettext('Is not an amendment'),
+                },
                 isFavorite: {
                     value: undefined,
                     choiceYes: gettext('Marked as favorite'),
@@ -1008,7 +1124,6 @@ angular.module('OpenSlidesApp.motions.site', [
                 },
             };
         }
-        updateStateFilter();
         $scope.filter.propertyList = ['identifier', 'origin'];
         $scope.filter.propertyFunctionList = [
             function (motion) {return motion.getTitle();},
@@ -1050,8 +1165,8 @@ angular.module('OpenSlidesApp.motions.site', [
             $scope.filter.operateMultiselectFilter('state', id, danger);
             updateStateFilter();
         };
-        $scope.resetFilters = function () {
-            $scope.filter.reset();
+        $scope.resetFilters = function (danger) {
+            $scope.filter.reset(danger);
             updateStateFilter();
         };
         // Sorting
@@ -1230,8 +1345,9 @@ angular.module('OpenSlidesApp.motions.site', [
     'ngDialog',
     'gettextCatalog',
     'MotionForm',
-    'ChangeRecommmendationCreate',
-    'ChangeRecommmendationView',
+    'ChangeRecommendationCreate',
+    'ChangeRecommendationView',
+    'MotionStateAndRecommendationParser',
     'MotionChangeRecommendation',
     'Motion',
     'MotionComment',
@@ -1253,11 +1369,11 @@ angular.module('OpenSlidesApp.motions.site', [
     'WebpageTitle',
     'EditingWarning',
     function($scope, $http, $timeout, $window, $filter, operator, ngDialog, gettextCatalog,
-            MotionForm, ChangeRecommmendationCreate, ChangeRecommmendationView,
-            MotionChangeRecommendation, Motion, MotionComment, Category, Mediafile, Tag, User,
-            Workflow, Config, motionId, MotionInlineEditing, MotionCommentsInlineEditing, Editor,
-            Projector, ProjectionDefault, MotionBlock, MotionPdfExport, PersonalNoteManager,
-            WebpageTitle, EditingWarning) {
+            MotionForm, ChangeRecommendationCreate, ChangeRecommendationView,
+            MotionStateAndRecommendationParser, MotionChangeRecommendation, Motion, MotionComment,
+            Category, Mediafile, Tag, User, Workflow, Config, motionId, MotionInlineEditing,
+            MotionCommentsInlineEditing, Editor, Projector, ProjectionDefault, MotionBlock,
+            MotionPdfExport, PersonalNoteManager, WebpageTitle, EditingWarning) {
         var motion = Motion.get(motionId);
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1265,6 +1381,7 @@ angular.module('OpenSlidesApp.motions.site', [
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
         MotionBlock.bindAll({}, $scope, 'motionBlocks');
+        Motion.bindAll({}, $scope, 'motions');
         $scope.$watch(function () {
             return MotionChangeRecommendation.lastModified();
         }, function () {
@@ -1420,8 +1537,9 @@ angular.module('OpenSlidesApp.motions.site', [
         };
         // follow recommendation
         $scope.followRecommendation = function () {
-            $scope.updateState($scope.motion.recommendation.id);
-            $scope.saveAdditionalStateField($scope.recommendationExtension);
+            $http.post('/rest/motions/motion/' + motion.id + '/follow_recommendation/', {
+                'recommendationExtension': $scope.recommendationExtension
+            });
         };
         // update state
         $scope.updateState = function (state_id) {
@@ -1471,6 +1589,9 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.saveAdditionalRecommendationField = function (recommendationExtension) {
             motion['comment_' + $scope.commentFieldForRecommendationId] = recommendationExtension;
             $scope.save(motion);
+        };
+        $scope.addMotionToRecommendationField = function (motion) {
+            $scope.recommendationExtension += MotionStateAndRecommendationParser.formatMotion(motion);
         };
         // update recommendation
         $scope.updateRecommendation = function (recommendation_id) {
@@ -1645,11 +1766,11 @@ angular.module('OpenSlidesApp.motions.site', [
         );
 
         // Change recommendation creation functions
-        $scope.createChangeRecommendation = ChangeRecommmendationCreate;
+        $scope.createChangeRecommendation = ChangeRecommendationCreate;
         $scope.createChangeRecommendation.init($scope, motion);
 
         // Change recommendation viewing
-        $scope.viewChangeRecommendations = ChangeRecommmendationView;
+        $scope.viewChangeRecommendations = ChangeRecommendationView;
         $scope.viewChangeRecommendations.init($scope, Config.get('motions_recommendation_text_mode').value);
 
         // PDF creating functions
@@ -1973,9 +2094,10 @@ angular.module('OpenSlidesApp.motions.site', [
     'gettext',
     'Category',
     'Motion',
+    'MotionBlock',
     'User',
     'MotionCsvExport',
-    function($scope, $q, gettext, Category, Motion, User, MotionCsvExport) {
+    function($scope, $q, gettext, Category, Motion, MotionBlock, User, MotionCsvExport) {
         // set initial data for csv import
         $scope.motions = [];
 
@@ -1988,7 +2110,7 @@ angular.module('OpenSlidesApp.motions.site', [
             },
         };
 
-        var FIELDS = ['identifier', 'title', 'text', 'reason', 'submitter', 'category', 'origin'];
+        var FIELDS = ['identifier', 'title', 'text', 'reason', 'submitter', 'category', 'origin', 'motionBlock'];
         $scope.motions = [];
         $scope.onCsvChange = function (csv) {
             $scope.motions = [];
@@ -2030,37 +2152,42 @@ angular.module('OpenSlidesApp.motions.site', [
                     motion.reason = '<p>' + motion.reason + '</p>';
                 }
                 // submitter
-                if (motion.submitter) {
-                    if (motion.submitter !== '') {
-                        // All user objects are already loaded via the resolve statement from ui-router.
-                        var users = User.getAll();
-                        angular.forEach(users, function (user) {
-                            if (user.short_name == motion.submitter.trim()) {
-                                motion.submitters_id = [user.id];
-                                motion.submitter = User.get(user.id).full_name;
-                            }
-                        });
+                if (motion.submitter && motion.submitter !== '') {
+                    angular.forEach(User.getAll(), function (user) {
+                        if (user.short_name == motion.submitter.trim()) {
+                            motion.submitters_id = [user.id];
+                            motion.submitter = user.full_name;
+                        }
+                    });
+                    if (!motion.submitters_id) {
+                        motion.submitter_create = gettext('New participant will be created.');
                     }
-                }
-                if (motion.submitter && motion.submitter !== '' && !motion.submitters_id) {
-                    motion.submitter_create = gettext('New participant will be created.');
                 }
                 // category
-                if (motion.category) {
-                    if (motion.category !== '') {
-                        // All categore objects are already loaded via the resolve statement from ui-router.
-                        var categories = Category.getAll();
-                        angular.forEach(categories, function (category) {
-                            // search for existing category
-                            if (category.name == motion.category) {
-                                motion.category_id = category.id;
-                                motion.category = Category.get(category.id).name;
-                            }
-                        });
+                if (motion.category && motion.category !== '') {
+                    angular.forEach(Category.getAll(), function (category) {
+                        // search for existing category
+                        if (category.name == motion.category.trim()) {
+                            motion.category_id = category.id;
+                            motion.category = category.name;
+                        }
+                    });
+                    if (!motion.category_id) {
+                        motion.category_create = gettext('New category will be created.');
                     }
                 }
-                if (motion.category && motion.category !== '' && !motion.category_id) {
-                    motion.category_create = gettext('New category will be created.');
+                // Motion block
+                if (motion.motionBlock && motion.motionBlock !== '') {
+                    angular.forEach(MotionBlock.getAll(), function (block) {
+                        // search for existing block
+                        if (block.title == motion.motionBlock.trim()) {
+                            motion.motion_block_id = block.id;
+                            motion.motionBlock = block.title;
+                        }
+                    });
+                    if (!motion.motion_block_id) {
+                        motion.motionBlock_create = gettext('New motion block will be created.');
+                    }
                 }
 
                 $scope.motions.push(motion);
@@ -2092,10 +2219,12 @@ angular.module('OpenSlidesApp.motions.site', [
             // Reset counters
             $scope.usersCreated = 0;
             $scope.categoriesCreated = 0;
+            $scope.motionBlocksCreated = 0;
 
             var importedUsers = [];
             var importedCategories = [];
-            // collect users and categories
+            var importedMotionBlocks = [];
+            // collect users, categories and motion blocks
             angular.forEach($scope.motions, function (motion) {
                 if (motion.selected && !motion.importerror) {
                     // collect user if not exists
@@ -2116,10 +2245,17 @@ angular.module('OpenSlidesApp.motions.site', [
                         };
                         importedCategories.push(category);
                     }
+                    // collect motion block if not exists
+                    if (!motion.motion_block_id && motion.motionBlock) {
+                        var motionBlock = {
+                            title: motion.motionBlock,
+                        };
+                        importedMotionBlocks.push(motionBlock);
+                    }
                 }
             });
 
-            // unique users and categories
+            // unique users, categories and motion blocks
             var importedUsersUnique = _.uniqWith(importedUsers, function (u1, u2) {
                 return u1.first_name == u2.first_name &&
                     u1.last_name == u2.last_name;
@@ -2127,12 +2263,15 @@ angular.module('OpenSlidesApp.motions.site', [
             var importedCategoriesUnique = _.uniqWith(importedCategories, function (c1, c2) {
                 return c1.name == c2.name;
             });
+            var importedMotionBlocksUnique = _.uniqWith(importedMotionBlocks, function (c1, c2) {
+                return c1.title == c2.title;
+            });
 
             // Promises for users and categories
             var createPromises = [];
 
             // create users and categories
-            importedUsersUnique.forEach(function (user) {
+            _.forEach(importedUsersUnique, function (user) {
                 createPromises.push(User.create(user).then(
                     function (success) {
                         user.id = success.id;
@@ -2140,11 +2279,19 @@ angular.module('OpenSlidesApp.motions.site', [
                     }
                 ));
             });
-            importedCategoriesUnique.forEach(function (category) {
+            _.forEach(importedCategoriesUnique, function (category) {
                 createPromises.push(Category.create(category).then(
                     function (success) {
                         category.id = success.id;
                         $scope.categoriesCreated++;
+                    }
+                ));
+            });
+            _.forEach(importedMotionBlocksUnique, function (motionBlock) {
+                createPromises.push(MotionBlock.create(motionBlock).then(
+                    function (success) {
+                        motionBlock.id = success.id;
+                        $scope.motionBlocksCreated++;
                     }
                 ));
             });
@@ -2160,7 +2307,7 @@ angular.module('OpenSlidesApp.motions.site', [
                             var last_name = motion.submitter.substr(index+1);
 
                             // search for user, set id.
-                            importedUsersUnique.forEach(function (user) {
+                            _.forEach(importedUsersUnique, function (user) {
                                 if (user.first_name == first_name &&
                                     user.last_name == last_name) {
                                     motion.submitters_id = [user.id];
@@ -2172,12 +2319,24 @@ angular.module('OpenSlidesApp.motions.site', [
                             var name = motion.category;
 
                             // search for category, set id.
-                            importedCategoriesUnique.forEach(function (category) {
+                            _.forEach(importedCategoriesUnique, function (category) {
                                 if (category.name == name) {
                                     motion.category_id = category.id;
                                 }
                             });
                         }
+                        // add motion block
+                        if (!motion.motion_block_id && motion.motionBlock) {
+                            var title = motion.motionBlock;
+
+                            // search for motion block
+                            _.forEach(importedMotionBlocksUnique, function (motionBlock) {
+                                if (motionBlock.title == title) {
+                                    motion.motion_block_id = motionBlock.id;
+                                }
+                            });
+                        }
+
 
                         // finally create motion
                         Motion.create(motion).then(
@@ -2283,26 +2442,28 @@ angular.module('OpenSlidesApp.motions.site', [
     '$scope',
     '$stateParams',
     '$http',
-    'MotionList',
     'Category',
     'categoryId',
     'Motion',
     'ErrorMessage',
-    function($scope, $stateParams, $http, MotionList, Category, categoryId, Motion, ErrorMessage) {
+    function($scope, $stateParams, $http, Category, categoryId, Motion, ErrorMessage) {
         Category.bindOne(categoryId, $scope, 'category');
         Motion.bindAll({}, $scope, 'motions');
         $scope.filter = { category_id: categoryId,
                           parent_id: null,
                           orderBy: 'identifier' };
 
-        $scope.$watch(
-            function () {
-                return Motion.lastModified();
-            },
-            function () {
-                $scope.items = MotionList.getList(Motion.filter($scope.filter));
-            }
-        );
+        $scope.$watch(function () {
+            return Motion.lastModified();
+        }, function () {
+            var motions = Motion.filter($scope.filter);
+            $scope.items = _.map(motions, function (motion) {
+                return {
+                    id: motion.id,
+                    item: motion
+                };
+            });
+        });
 
         $scope.alert = {};
         // Numbers all motions in this category by the given order in $scope.items

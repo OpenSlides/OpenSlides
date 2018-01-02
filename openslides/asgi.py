@@ -7,3 +7,6 @@ from .utils.main import setup_django_settings_module
 setup_django_settings_module()
 
 channel_layer = get_channel_layer()
+
+# Use native twisted mode
+channel_layer.extensions.append("twisted")

@@ -1,0 +1,14 @@
+<div class="form-group">
+  <div>
+    <label class="control-label" ng-if="to.label">
+      {{ to.label }}
+    </label>
+  </div>
+  <div class="btn-group">
+    <label ng-repeat="option in to.options" class="btn btn-default btn-sm" uib-btn-checkbox
+      ng-model="model[options.key][option.id]"
+      ng-disabled="option.disabled">
+        {{ option.name | translate }}
+    </label>
+  </div>
+</div>

@@ -76,6 +76,10 @@ angular.module('OpenSlidesApp.users.site', [
             url: '/import',
             controller: 'UserImportCtrl',
         })
+        .state('users.user.presence', {
+            url: '/presence',
+            controller: 'UserPresenceCtrl',
+        })
         // groups
         .state('users.group', {
             url: '/groups',
@@ -303,6 +307,13 @@ angular.module('OpenSlidesApp.users.site', [
                     ]
                 },
                 {
+                    key: 'email',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Email')
+                    },
+                },
+                {
                     className: "row",
                     fieldGroup: [
                         {
@@ -432,7 +443,7 @@ angular.module('OpenSlidesApp.users.site', [
     function (gettextCatalog, Editor, Mediafile) {
         return {
             // ngDialog for user form
-            getDialog: function (user) {
+            getDialog: function () {
                 return {
                     template: 'static/templates/users/profile-password-form.html',
                     controller: 'UserProfileCtrl',
@@ -451,6 +462,13 @@ angular.module('OpenSlidesApp.users.site', [
                     templateOptions: {
                         label: gettextCatalog.getString('Username'),
                         required: true
+                    },
+                },
+                {
+                    key: 'email',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettextCatalog.getString('Email')
                     },
                 },
                 {
@@ -474,7 +492,7 @@ angular.module('OpenSlidesApp.users.site', [
     function (gettextCatalog) {
         return {
             // ngDialog for user form
-            getDialog: function (user) {
+            getDialog: function () {
                 return {
                     template: 'static/templates/users/profile-password-form.html',
                     controller: 'UserPasswordCtrl',
@@ -536,8 +554,9 @@ angular.module('OpenSlidesApp.users.site', [
     'gettext',
     'UserPdfExport',
     'ErrorMessage',
-    function($scope, $state, $http, $q, ngDialog, UserForm, User, Group, PasswordGenerator, Projector, ProjectionDefault,
-        Config, gettextCatalog, UserCsvExport, osTableFilter, osTableSort, gettext, UserPdfExport, ErrorMessage) {
+    function($scope, $state, $http, $q, ngDialog, UserForm, User, Group, PasswordGenerator,
+        Projector, ProjectionDefault, Config, gettextCatalog, UserCsvExport, osTableFilter,
+        osTableSort, gettext, UserPdfExport, ErrorMessage) {
         $scope.$watch(function () {
             return User.lastModified();
         }, function () {
@@ -616,6 +635,8 @@ angular.module('OpenSlidesApp.users.site', [
              display_name: gettext('Structure level')},
             {name: 'comment',
              display_name: gettext('Comment')},
+            {name: 'last_email_send',
+             display_name: gettext('Last email send')},
         ];
 
         // pagination
@@ -728,6 +749,33 @@ angular.module('OpenSlidesApp.users.site', [
             selectModeAction(function (user) {
                 user[property] = value;
                 User.save(user);
+            });
+        };
+        // Send invitation emails
+        $scope.sendInvitationEmails = function () {
+            var user_ids = _
+                .chain($scope.usersFiltered)
+                .filter(function (user) {
+                    return user.selected;
+                })
+                .map(function (user) {
+                    return user.id;
+                })
+                .value();
+            $http.post('/rest/users/user/mass_invite_email/', {
+                user_ids: user_ids,
+            }).then(function (success) {
+                $scope.alert = {
+                    msg: gettextCatalog.getString('Send %num% emails sucessfully.').replace('%num%', success.data.count),
+                    type: 'success',
+                    show: true,
+                };
+                $scope.isSelectMode = false;
+                $scope.uncheckAll();
+            }, function (error) {
+                $scope.alert = ErrorMessage.forAlert(error);
+                $scope.isSelectMode = false;
+                $scope.uncheckAll();
             });
         };
 
@@ -962,6 +1010,49 @@ angular.module('OpenSlidesApp.users.site', [
     }
 ])
 
+.controller('UserPresenceCtrl', [
+    '$scope',
+    'User',
+    'gettextCatalog',
+    'ErrorMessage',
+    function ($scope, User, gettextCatalog, ErrorMessage) {
+        $scope.alert = {};
+        $('#userNumber').focus();
+
+        $scope.changeState = function () {
+            if (!$scope.number) {
+                return;
+            }
+            var enteredNumber = $scope.number.trim();
+            var user = _.find(User.getAll(), function (user) {
+                return user.number === enteredNumber;
+            });
+            if (user) {
+                user.is_present = !user.is_present;
+                User.save(user).then(function (success) {
+                    var messageText = user.full_name + ' ' + gettextCatalog.getString('is now') + ' ';
+                    messageText += gettextCatalog.getString(user.is_present ? 'present' : 'not present') + '.';
+                    $scope.alert = {
+                        msg: messageText,
+                        show: true,
+                        type: 'success',
+                    };
+                    $scope.number = '';
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
+                });
+            } else {
+                $scope.alert = {
+                    msg: gettextCatalog.getString('Cannot find the participant with the participant number') + ' "' + enteredNumber + '".',
+                    show: true,
+                    type: 'danger',
+                };
+            }
+            $('#userNumber').focus();
+        };
+    }
+])
+
 .controller('UserImportCtrl', [
     '$scope',
     '$http',
@@ -1029,7 +1120,7 @@ angular.module('OpenSlidesApp.users.site', [
         };
 
         var FIELDS = ['title', 'first_name', 'last_name', 'structure_level', 'number',
-        'groups', 'comment', 'is_active', 'is_present', 'is_committee', 'default_password'];
+        'groups', 'comment', 'is_active', 'is_present', 'is_committee', 'default_password', 'email'];
         $scope.users = [];
         $scope.onCsvChange = function (csv) {
             $scope.csvImporting = false;
@@ -1653,6 +1744,7 @@ angular.module('OpenSlidesApp.users.site', [
         // config strings in users/config_variables.py
         gettext('General');
         gettext('Sort name of participants by');
+        gettext('Enable participant presence view');
         gettext('Participants');
         gettext('Given name');
         gettext('Surname');
@@ -1672,6 +1764,14 @@ angular.module('OpenSlidesApp.users.site', [
         gettext('WEP');
         gettext('WPA/WPA2');
         gettext('No encryption');
+        gettext('Email');
+        gettext('Email sender');
+        gettext('Email subject');
+        gettext('Your login for {event_name}');
+        gettext('You can use {event_name} as a placeholder.');
+        gettext('Email body');
+        gettext('Dear {name},\n\nthis is your OpenSlides login for the event "{event_name}":\n    {url}\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.');
+        gettext('Use these placeholders: {name}, {event_name}, {url}, {username}, {password}. The url referrs to the system url.');
     }
 ]);
 

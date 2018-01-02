@@ -258,6 +258,7 @@ class MotionChangeRecommendationSerializer(ModelSerializer):
             'motion_version',
             'rejected',
             'type',
+            'other_description',
             'line_from',
             'line_to',
             'text',

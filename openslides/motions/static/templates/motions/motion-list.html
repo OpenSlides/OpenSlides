@@ -135,19 +135,12 @@
 
   <div class="os-table container-fluid">
     <div class="row header-row">
-      <div class="col-xs-1 centered" ng-show="isSelectMode">
+      <div class="col-xs-1 centered" ng-if="isSelectMode">
         <i class="fa text-danger pointer" ng-class=" selectedAll ? 'fa-check-square-o' : 'fa-square-o'"
           ng-click="checkAll()"></i>
       </div>
-      <div class="col-xs-11 main-header">
-        <span class="form-inline text-right pull-right">
-          <!-- clear all filters -->
-          <span class="sort-spacer pointer" ng-click="resetFilters()"
-            ng-if="filter.areFiltersSet()" ng-disabled="isSelectMode"
-            ng-class="{'disabled': isSelectMode}">
-            <i class="fa fa-times-circle"></i>
-            <translate>Filter</translate>
-          </span>
+      <div class="col-xs-11 main-header" ng-style="{'width': isSelectMode ? '' : '100%'}">
+        <div class="form-inline text-right pull-right">
           <!-- State filter -->
           <span uib-dropdown>
             <span class="pointer" id="dropdownState" uib-dropdown-toggle
@@ -308,14 +301,28 @@
           </span>
           <!-- boolean Filters (customized!) -->
           <span ng-if="operator.user.id" uib-dropdown>
-            <span class="pointer" id="dropdownPrivate" uib-dropdown-toggle
+            <span class="pointer" id="dropdownMisc" uib-dropdown-toggle
               ng-class="{'bold': (filter.booleanFilters.isFavorite.value !== undefined) ||
-              (filter.booleanFilters.hasPersonalNote.value !== undefined), 'disabled': isSelectMode}"
+              (filter.booleanFilters.hasPersonalNote.value !== undefined) ||
+              (filter.booleanFilters.isAmendment.value !== undefined), 'disabled': isSelectMode}"
               ng-disabled="isSelectMode">
-              <translate>Private</translate>
+              <translate>Misc</translate>
               <span class="caret"></span>
             </span>
-            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownPrivate">
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMisc">
+              <li>
+                <a href ng-click="filter.booleanFilters.isAmendment.value = (filter.booleanFilters.isAmendment.value ? undefined : true); filter.save();">
+                  <i class="fa" ng-class="{'fa-check': filter.booleanFilters.isAmendment.value === true}"></i>
+                  {{ filter.booleanFilters.isAmendment.choiceYes | translate }}
+                </a>
+              </li>
+              <li>
+                <a href ng-click="filter.booleanFilters.isAmendment.value = (filter.booleanFilters.isAmendment.value === false) ? undefined : false; filter.save();">
+                  <i class="fa" ng-class="{'fa-check': filter.booleanFilters.isAmendment.value === false}"></i>
+                  {{ filter.booleanFilters.isAmendment.choiceNo | translate }}
+                </a>
+              </li>
+              <li class="divider"></li>
               <li>
                 <a href ng-click="filter.booleanFilters.isFavorite.value = (filter.booleanFilters.isFavorite.value ? undefined : true); filter.save();">
                   <i class="fa" ng-class="{'fa-check': filter.booleanFilters.isFavorite.value === true}"></i>
@@ -385,9 +392,16 @@
                  ng-change="filter.save()">
             </span>
           </span>
-        </span>
+        </div>
         <!-- show all selected multiselectoptions -->
-        <span>
+        <div>
+          <!-- clear all filters -->
+          <span class="spacer-left-lg pointer" ng-click="resetFilters(isSelectMode)"
+            ng-if="filter.areFiltersSet()" ng-disabled="isSelectMode"
+            ng-class="{'disabled': isSelectMode}">
+            <i class="fa fa-times-circle"></i>
+            <strong translate>All Filters</strong>
+          </span>
           <!-- state -->
           <span ng-repeat="state in states" class="pointer spacer-left-lg"
             ng-if="!state.workflowHeader && filter.multiselectFilters.state.indexOf(state.id) > -1"
@@ -496,7 +510,7 @@
               {{ booleanFilter.value ? booleanFilter.choiceYes : booleanFilter.choiceNo | translate }}
             </span>
           </span>
-        </span>
+        </div>
       </div>
     </div>
 
@@ -515,6 +529,7 @@
         | MultiselectFilter: filter.multiselectFilters.tag : getItemId.tag
         | filter: {star: filter.booleanFilters.isFavorite.value}
         | filter: {hasPersonalNote: filter.booleanFilters.hasPersonalNote.value}
+        | filter: {isAmendment: filter.booleanFilters.isAmendment.value}
         | toArray
         | orderByEmptyLast: sort.column : sort.reverse)
         | limitTo : itemsPerPage : limitBegin">
