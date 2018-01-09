@@ -195,16 +195,22 @@ class UserViewSet(ModelViewSet):
             raise ValidationError({'detail': '{}: {}'.format(e.errno, e.strerror)})
 
         success_users = []
+        user_pks_without_email = []
         try:
             for user in users:
-                if user.send_invitation_email(connection, skip_autoupdate=True):
-                    success_users.append(user)
+                if user.email:
+                    if user.send_invitation_email(connection, skip_autoupdate=True):
+                        success_users.append(user)
+                else:
+                    user_pks_without_email.append(user.pk)
         except DjangoValidationError as e:
             raise ValidationError(e.message_dict)
 
         connection.close()
         inform_changed_data(success_users)
-        return Response({'count': len(success_users)})
+        return Response({
+            'count': len(success_users),
+            'no_email_ids': user_pks_without_email})
 
 
 class GroupViewSetMetadata(SimpleMetadata):

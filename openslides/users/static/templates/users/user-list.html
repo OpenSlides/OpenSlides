@@ -161,6 +161,7 @@
       | filter: {is_present: filter.booleanFilters.isPresent.value}
       | filter: {is_active: filter.booleanFilters.isActive.value}
       | filter: {is_committee: filter.booleanFilters.isCommittee.value}
+      | filter: {has_last_email_send: filter.booleanFilters.hasLastEmailSend.value}
       | MultiselectFilter: filter.multiselectFilters.group : getItemId.group
       | orderByEmptyLast: sort.column: sort.reverse)"></span>
   </div>
