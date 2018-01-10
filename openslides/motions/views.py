@@ -67,7 +67,7 @@ class MotionViewSet(ModelViewSet):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action in ('metadata', 'partial_update', 'update', 'destroy'):
             result = has_perm(self.request.user, 'motions.can_see')
-            # For partial_update and update requests the rest of the check is
+            # For partial_update, update and delete requests the rest of the check is
             # done in the update method. See below.
         elif self.action == 'create':
             result = (has_perm(self.request.user, 'motions.can_see') and
@@ -92,11 +92,11 @@ class MotionViewSet(ModelViewSet):
         """
         motion = self.get_object()
 
-        if (has_perm(request.user, 'motions.can_manage') or
-                motion.is_submitter(request.user) and motion.state.allow_submitter_edit):
-            return super().destroy(request, *args, **kwargs)
-        else:
-            raise ValidationError({'detail': _('You can not delete this motion.')})
+        if not ((has_perm(request.user, 'motions.can_manage') or
+                motion.is_submitter(request.user) and motion.state.allow_submitter_edit)):
+            self.permission_denied(request)
+
+        return super().destroy(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         """
