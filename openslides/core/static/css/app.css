@@ -2023,3 +2023,33 @@ tr.selected td {
         width: 100%;
     }
 }
+
+/* Styles for 'Files' page header' */
+
+.col1 .header .title-h1 {
+    display: table-cell;
+    padding-right: 20px;
+}
+
+.col1 .header .title-upload-wrapper {
+    display: table-cell;
+    width: 100%;
+    margin: 20px;
+}
+
+.col1 .header .title-upload-div {
+    border: 2px solid rgb(126, 122, 122);
+    color: rgb(126, 122, 122);
+    font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.col1 .header .title-upload-div:hover {
+    background-color: rgb(233, 232, 232);
+}
+
+.col1 .header .files-submenu {
+    display: table-cell;
+    padding-left: 20px;
+}
