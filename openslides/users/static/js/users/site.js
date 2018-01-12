@@ -561,6 +561,9 @@ angular.module('OpenSlidesApp.users.site', [
             return User.lastModified();
         }, function () {
             $scope.users = _.orderBy(User.getAll(), ['first_name']);
+            _.forEach($scope.users, function (user) {
+                user.has_last_email_send = !!user.last_email_send;
+            });
         });
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.$watch(function () {
@@ -600,6 +603,12 @@ angular.module('OpenSlidesApp.users.site', [
                     displayName: gettext('Committee'),
                     choiceYes: gettext('Is a committee'),
                     choiceNo: gettext('Is not a committee'),
+                },
+                hasLastEmailSend: {
+                    value: undefined,
+                    displayName: gettext('Last email send'),
+                    choiceYes: gettext('Got an email'),
+                    choiceNo: gettext("Didn't get an email"),
                 },
             };
         }
@@ -765,9 +774,54 @@ angular.module('OpenSlidesApp.users.site', [
             $http.post('/rest/users/user/mass_invite_email/', {
                 user_ids: user_ids,
             }).then(function (success) {
+                var numEmails = success.data.count;
+                var noEmailIds = success.data.no_email_ids;
+                var type = 'success', msg;
+                if (numEmails === 0) {
+                    type = 'danger';
+                    msg = gettextCatalog.getString('No emails were send.');
+                } else if (numEmails === 1) {
+                    msg = gettextCatalog.getString('One email was send sucessfully.');
+                } else {
+                    msg = gettextCatalog.getString('%num% emails were send sucessfully.').replace('%num%', numEmails);
+                }
+
+                if (noEmailIds.length) {
+                    type = 'warning';
+                    msg += ' ';
+
+                    if (noEmailIds.length === 1) {
+                        msg += gettextCatalog.getString('The user %user% has no email, so the invitation email could not be send.');
+                    } else {
+                        msg += gettextCatalog.getString('The users %user% have no email, so the invitation emails could not be send.');
+                    }
+
+                    // This one builds a username string like "user1, user2 and user3" with the full names.
+                    var lastUsername, userString = _
+                        .chain(noEmailIds)
+                        .map(function (id) {
+                            var user = User.get(id);
+                            return user ? user.get_full_name() : '';
+                        })
+                        .filter(function (username) {
+                            return username;
+                        })
+                        .tap(function (names) {
+                            if (names.length !== 1) {
+                                lastUsername = names.pop();
+                            }
+                        })
+                        .join(', ')
+                        .thru(function (names) {
+                            return lastUsername ? names + ' ' + gettextCatalog.getString('and') + ' ' + lastUsername : names;
+                        })
+                        .value();
+                    msg = msg.replace('%user%', userString);
+                }
+
                 $scope.alert = {
-                    msg: gettextCatalog.getString('Send %num% emails sucessfully.').replace('%num%', success.data.count),
-                    type: 'success',
+                    msg: msg,
+                    type: type,
                     show: true,
                 };
                 $scope.isSelectMode = false;
