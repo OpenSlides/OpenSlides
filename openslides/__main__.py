@@ -108,6 +108,10 @@ def get_parser():
         action='store_true',
         help='Do not launch the default web browser.')
     subcommand_start.add_argument(
+        '--debug-email',
+        action='store_true',
+        help='Change the email backend to console output.')
+    subcommand_start.add_argument(
         '--host',
         action='store',
         default='0.0.0.0',
@@ -187,6 +191,9 @@ def start(args):
     setup_django_settings_module(settings_path, local_installation=local_installation)
     django.setup()
     from django.conf import settings
+
+    if args.debug_email:
+        settings.EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
     # Migrate database
     call_command('migrate')

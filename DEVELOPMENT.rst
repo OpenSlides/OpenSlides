@@ -83,6 +83,10 @@ windows run::
 
     $ python manage.py start --no-browser
 
+When debugging something email related change the email backend to console::
+
+    $ python manage.py start --debug-email
+
 To start OpenSlides with Daphne and four workers (avoid concurrent write
 requests or use PostgreSQL, see below) run::
 
