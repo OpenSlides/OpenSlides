@@ -26,11 +26,12 @@ var argv = require('yargs').argv,
     templateCache = require('gulp-angular-templatecache'),
     through = require('through2'),
     uglify = require('gulp-uglify'),
-    vsprintf = require('sprintf-js').vsprintf;
+    vsprintf = require('sprintf-js').vsprintf,
+    jshint = require('gulp-jshint'),
+    stylish = require('jshint-stylish');
 
 // Directory where the results go to
 var output_directory = path.join('openslides', 'static');
-
 
 /**
  * Default tasks to be run before start.
@@ -64,6 +65,15 @@ gulp.task('js-libs', function () {
                 "window.CKEDITOR_BASEPATH = '/static/ckeditor/';\n\n"))
         .pipe(gulpif(argv.production, uglify()))
         .pipe(gulp.dest(path.join(output_directory, 'js')));
+});
+
+// Lints all js files
+gulp.task('js-lint', function() {
+  return gulp.src([
+            path.join('openslides', '*', 'static', 'js', '**', '*.js')
+    ])
+    .pipe(jshint())
+    .pipe(jshint.reporter(stylish, { verbose: true }));
 });
 
 // Catches all pdfmake files for pdf worker.
@@ -214,7 +224,8 @@ gulp.task('default', [
         'fonts-libs',
         'ckeditor',
         'angular-chosen-img',
-        'translations'
+        'translations',
+	'js-lint'
     ], function () {});
 
 

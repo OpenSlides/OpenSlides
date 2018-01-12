@@ -147,6 +147,13 @@ Watch for file changes and run the tests automatically after each change::
 
     $ yarn run karma:watch
 
+c. Running python checkstyle
+''''''''''''''''''''''''''''
+
+Run the checkstyle for python::
+
+    $ pycodestyle
+
 OpenSlides in big mode
 ======================
 
