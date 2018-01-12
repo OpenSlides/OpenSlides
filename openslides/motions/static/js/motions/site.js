@@ -1961,10 +1961,12 @@ angular.module('OpenSlidesApp.motions.site', [
     'Agenda',
     'AgendaUpdate',
     'motionId',
+    'operator',
     'ErrorMessage',
     'EditingWarning',
     function($scope, $state, Motion, Category, Config, Mediafile, MotionForm,
-        Tag, User, Workflow, Agenda, AgendaUpdate, motionId, ErrorMessage, EditingWarning) {
+        Tag, User, Workflow, Agenda, AgendaUpdate, motionId, operator, ErrorMessage,
+        EditingWarning) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1984,8 +1986,8 @@ angular.module('OpenSlidesApp.motions.site', [
         // override default values for update form
         for (var i = 0; i < $scope.formFields.length; i++) {
             if ($scope.formFields[i].key == "identifier") {
-                // show identifier field
-               $scope.formFields[i].hide = false;
+                // show identifier field if the operator has manage permissions
+               $scope.formFields[i].hide = !operator.hasPerms('motions.can_manage');
             }
             if ($scope.formFields[i].key == "title") {
                 // get title of latest version
