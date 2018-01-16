@@ -3,3 +3,5 @@ __description__ = 'Presentation and assembly system'
 __version__ = '2.2b2-dev'
 __license__ = 'MIT'
 __url__ = 'https://openslides.org'
+
+args = None

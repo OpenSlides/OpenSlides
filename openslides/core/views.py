@@ -96,11 +96,15 @@ class WebclientJavaScriptView(utils_views.View):
     AngularJS app for the requested realm (site or projector). Also code
     for plugins is appended. The result is not uglified.
     """
+    cache = {}  # type: Dict[str, str]
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.cache = {}  # type: Dict[str, str]
-        self.init_cache('site')
-        self.init_cache('projector')
+
+        if 'site' not in self.cache:
+            self.init_cache('site')
+        if 'projector' not in self.cache:
+            self.init_cache('projector')
 
     def init_cache(self, realm: str) -> None:
         angular_modules = []  # type: List[str]

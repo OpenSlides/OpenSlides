@@ -23,6 +23,6 @@ urlpatterns = [
 
     # Main entry point for all angular pages.
     # Has to be the last entry in the urls.py
-    url(r'^.*$', views.IndexView.as_view()),
+    url(r'^.*$', views.IndexView.as_view(), name="index"),
 
 ]

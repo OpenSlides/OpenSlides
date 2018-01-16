@@ -12,9 +12,9 @@ import os
 from openslides.global_settings import *
 %(import_function)s
 
-# Path to the directory for user specific data files
+# The directory for user specific data files
 
-OPENSLIDES_USER_DATA_PATH = %(openslides_user_data_path)s
+OPENSLIDES_USER_DATA_DIR = %(openslides_user_data_dir)s
 
 
 # OpenSlides plugins
@@ -70,7 +70,7 @@ EMAIL_HOST_PASSWORD = ''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(OPENSLIDES_USER_DATA_PATH, 'db.sqlite3'),
+        'NAME': os.path.join(OPENSLIDES_USER_DATA_DIR, 'db.sqlite3'),
     }
 }
 
@@ -133,15 +133,15 @@ TIME_ZONE = 'Europe/Berlin'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATICFILES_DIRS = [os.path.join(OPENSLIDES_USER_DATA_PATH, 'static')] + STATICFILES_DIRS
+STATICFILES_DIRS = [os.path.join(OPENSLIDES_USER_DATA_DIR, 'static')] + STATICFILES_DIRS
 
-STATIC_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, 'collected-static')
+STATIC_ROOT = os.path.join(OPENSLIDES_USER_DATA_DIR, 'collected-static')
 
 
 # Files
 # https://docs.djangoproject.com/en/1.10/topics/files/
 
-MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, 'media', '')
+MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_DIR, 'media', '')
 
 
 # Password validation
