@@ -22,6 +22,8 @@ var argv = require('yargs').argv,
     jshint = require('gulp-jshint'),
     mainBowerFiles = require('main-bower-files'),
     path = require('path'),
+    rename = require('gulp-rename'),
+    sass = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps'),
     templateCache = require('gulp-angular-templatecache'),
     through = require('through2'),
@@ -100,6 +102,30 @@ gulp.task('templates', function () {
         }))
         .pipe(gulpif(argv.production, uglify()))
         .pipe(gulp.dest(path.join(output_directory, 'js')));
+});
+
+// Build the openslides-site.css file from the main file core/static/css/site.scss.
+// Minimizes the outputfile if the production flag is given.
+gulp.task('css-site', function () {
+    return gulp.src([
+            path.join('openslides', 'core', 'static', 'css', 'site.scss')
+        ])
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulpif(argv.production, cssnano({safe: true})))
+        .pipe(rename('openslides-site.css'))
+        .pipe(gulp.dest(path.join(output_directory, 'css')));
+});
+
+// Build the openslides-projector.css file from the main file core/static/css/projector.scss.
+// Minimizes the outputfile if the production flag is given.
+gulp.task('css-projector', function () {
+    return gulp.src([
+            path.join('openslides', 'core', 'static', 'css', 'projector.scss')
+        ])
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulpif(argv.production, cssnano({safe: true})))
+        .pipe(rename('openslides-projector.css'))
+        .pipe(gulp.dest(path.join(output_directory, 'css')));
 });
 
 // Catches all CSS files from all bower components and concats them to one file
@@ -210,6 +236,8 @@ gulp.task('default', [
         'pdf-worker',
         'pdf-worker-libs',
         'templates',
+        'css-site',
+        'css-projector',
         'css-libs',
         'fonts-libs',
         'ckeditor',
@@ -223,13 +251,16 @@ gulp.task('default', [
  */
 
 // Watches changes in JavaScript and templates.
-gulp.task('watch', ['js', 'templates', 'pdf-worker'], function () {
+gulp.task('watch', ['js', 'templates', 'pdf-worker', 'css-site', 'css-projector'], function () {
     gulp.watch([
         path.join('openslides', '*', 'static', 'js', '**', '*.js'),
         '!' + path.join('openslides', 'core', 'static', 'js', 'core', 'pdf-worker.js')
     ], ['js']);
     gulp.watch(path.join('openslides', '*', 'static', 'templates', '**', '*.html'), ['templates']);
     gulp.watch(path.join('openslides', 'core', 'static', 'js', 'core', 'pdf-worker.js'), ['pdf-worker']);
+    // We cannot differentiate between all scss files which belong to each realm. So if
+    // one scss file changes the site and projector css is rebuild.
+    gulp.watch(path.join('openslides', '*', 'static', 'css', '**', '*.scss'), ['css-site', 'css-projector']);
 });
 
 // Extracts translatable strings using angular-gettext and saves them in file

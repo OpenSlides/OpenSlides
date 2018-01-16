@@ -1,0 +1,43 @@
+/* ProjectorContainer */
+.pContainer {
+    background-color: #222;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: table;
+
+    & > div {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    #iframe {
+        -moz-transform-origin: 0 0;
+        -webkit-transform-origin: 0 0;
+        -o-transform-origin: 0 0;
+        transform-origin: 0 0 0;
+    }
+
+    #iframewrapper, .error {
+        position: relative;
+        overflow: hidden;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .error > p {
+        color: #f00;
+        font-size: 150%;
+        text-align: center;
+    }
+
+    #iframeoverlay {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        display: block;
+        z-index: 1;
+    }
+}

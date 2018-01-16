@@ -1,0 +1,30 @@
+/* Pojector sidebar */
+.col2 .projectorSelector {
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    & > div {
+        margin-bottom: 10px;
+
+        & > div {
+            width: 65%;
+            padding-right: 5px;
+            float: left;
+            margin-bottom: 10px;
+
+            & > button {
+                width: 100%;
+            }
+        }
+    }
+
+    .manageBtn {
+        width: 35%;
+    }
+
+    .btn-group {
+        margin-left: auto;
+        margin-right: auto;
+        display: table;
+    }
+}

@@ -1,0 +1,28 @@
+/* for csv import form */
+#content .col1 #csv-import {
+    margin-left: 15px;
+    width: 35%;
+
+    .file-select {
+        input {
+            display: none;
+        }
+
+        label {
+            font-weight: normal;
+            cursor: pointer;
+        }
+    }
+
+    .clear-file {
+        color: #555;
+    }
+
+    .help-block {
+        padding-bottom: 0;
+    }
+
+    .help-block-big {
+        font-size: 100%;
+    }
+}

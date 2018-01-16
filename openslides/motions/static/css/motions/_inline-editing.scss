@@ -1,0 +1,45 @@
+/* Toolbar to save motion in inline editing mode */
+.motion-save-toolbar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    height: 75px;
+    width: 300px;
+    background: #d3d3d3;
+    color: black;
+    text-align: center;
+    padding: 5px;
+    z-index: 1000001;
+    display: none;
+    border: 1px solid #d3d3d3;
+    margin-left: -150px;
+    border-bottom: none;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+
+    &.visible {
+        display: block;
+    }
+
+    .changed-hint {
+        display: block;
+        line-height: 16px;
+        text-align: center;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    label {
+        font-weight: normal;
+        line-height: 16px;
+        text-align: left;
+        padding-left: 16px;
+        margin-top: 5px;
+        margin-left: 15px;
+
+        input {
+            margin-left: -16px;
+        }
+    }
+}

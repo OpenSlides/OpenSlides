@@ -1,0 +1,28 @@
+/** Config **/
+#content .col1 #config {
+    .comments > div {
+        margin-bottom: 5px;
+    }
+    .config-checkbox {
+        padding: 6px 12px;
+    }
+    .custom-translations {
+        > div {
+            margin-bottom: 5px;
+            padding-right: 15px;
+            width: 100%;
+        }
+
+        .inputs {
+            input {
+                width: 47%;
+            }
+
+            .arrow {
+                width: 6%;
+                float: left;
+                text-align: center;
+            }
+        }
+    }
+}

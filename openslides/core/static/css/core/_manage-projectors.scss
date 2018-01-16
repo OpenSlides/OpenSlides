@@ -1,0 +1,41 @@
+/** manage-projectors **/
+#manage-projectors {
+    > div {
+        display: inline-table;
+        width: 256px;
+        margin: 10px 20px 35px 10px;
+
+        > div {
+            margin-bottom: 10px;
+        }
+    }
+
+    .middle {
+        width: 100%;
+
+        > div {
+            margin-left: auto;
+            margin-right: auto;
+            display: table;
+        }
+    }
+
+    .dropdown {
+        width: 65%;
+        padding-right: 5px;
+        float: left;
+
+        button {
+            width: 100%;
+        }
+    }
+
+    .btn-danger {
+        width: 35%;
+    }
+
+    .resolution {
+        display: inline-block;
+        width: 120px;
+    }
+}

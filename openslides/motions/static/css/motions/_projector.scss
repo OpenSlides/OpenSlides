@@ -1,0 +1,63 @@
+@import "line-numbering";
+@import "diff";
+@import "pollresults";
+@import "sidebox";
+
+#motioncontent {
+    width: calc(100% - 230px);
+}
+
+/* TODO: why do the projector has these extra diff related classes?
+ * -> Unify the site and projector in the _diff.scss and _line-numbers.scss*/
+ol.os-split-after, ul.os-split-after {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+p.os-split-after {
+    margin-bottom: 0;
+}
+.motion-text-diff p.os-split-before {
+    padding-top: 0;
+    margin-top: 0;
+}
+.motion-text-diff p.os-split-after {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.diff-box {
+    padding-top: 0;
+}
+.motion-text.line-numbers-outside {
+    padding-left: 0;
+    margin-left: 25px;
+    position: relative;
+}
+.motion-text.line-numbers-outside .os-line-number:after {
+    content: attr(data-line-number);
+    position: absolute;
+    top: 17px;
+    vertical-align: top;
+    color: gray;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+/* Motion blocks */
+.motion-block {
+    display: flex;
+    flex-wrap: wrap;
+
+    & > div {
+        width: 50%;
+        font-size: 1.1em;
+        margin-bottom: 15px;
+        padding-right: 15px;
+        line-height: 1em;
+    }
+
+    .label {
+        text-align: left;
+        padding: 5px 10px;
+        margin-top: 3px;
+    }
+}

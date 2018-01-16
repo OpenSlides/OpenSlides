@@ -1,0 +1,25 @@
+/* Motion personal note */
+#personalNote.pinned {
+    position: fixed;
+    z-index: 1000;
+    bottom: 0;
+    margin: 0px 20px;
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+
+    #personal-note-inline-editor {
+        overflow-y: scroll;
+        min-height: 100px;
+        max-height: 200px;
+    }
+}
+
+#personalNoteSpacer {
+    display: none;
+    height: 220px;
+
+    &.activeSpace {
+        display: block;
+    }
+}

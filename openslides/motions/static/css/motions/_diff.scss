@@ -1,0 +1,54 @@
+/* Diff view */
+p {
+    &.os-split-after {
+        margin-bottom: 0;
+    }
+
+    &.os-split-before {
+        margin-top: 0;
+    }
+}
+
+ul.os-split-after, ol.os-split-after {
+    margin-bottom: 0;
+}
+
+.motion-text-holder li.os-split-before {
+    list-style-type: none;
+}
+
+.motion-text-with-diffs {
+    li.os-split-before {
+        list-style-type: none;
+    }
+
+    .original-text {
+        ul:last-child, ol:last-child {
+            padding-bottom: 16px;
+        }
+
+        ul.os-split-after:last-child, ol.os-split-after:last-child {
+            padding-bottom: 0;
+        }
+    }
+}
+
+.motion-text-diff {
+    .delete {
+        color: red;
+        text-decoration: line-through;
+    }
+
+    .insert {
+        color: green;
+        text-decoration: underline;
+    }
+
+    &.line-numbers-outside .insert .os-line-number {
+        display: none;
+    }
+
+    &.line-numbers-inline .insert .os-line-number {
+        display: none;
+    }
+}

@@ -1,0 +1,15 @@
+#sidebox {
+    width: 260px;
+    right: 0;
+    margin-top: 75px;
+    background: #d3d3d3;
+    border-radius: 7px 0 0 7px;
+    padding: 3px 7px 10px 19px;
+    position: fixed;
+    z-index: 5;
+
+    h3 {
+        margin-top: 10px;
+        margin-bottom: 0px;
+    }
+}
