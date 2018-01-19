@@ -31,7 +31,7 @@
               <td ng-init="voteYes = poll.getVote(poll.yes, 'yes')">
                 <span class="result_label"><translate>Yes</translate>:</span>
                 <span class="result_value">
-                  {{ voteYes.value }} {{ voteYes.percentStr }}
+                  {{ voteYes.value | number:precision }} {{ voteYes.percentStr }}
                 </span>
                 <div ng-if="voteYes.percentNumber">
                   <uib-progressbar value="voteYes.percentNumber" type="success"></uib-progressbar>
@@ -43,7 +43,7 @@
               <td ng-init="voteNo = poll.getVote(poll.no, 'no')">
                 <span class="result_label"><translate>No</translate>:</span>
                 <span class="result_value" >
-                  {{ voteNo.value }} {{ voteNo.percentStr }}
+                  {{ voteNo.value | number:precision }} {{ voteNo.percentStr }}
                 </span>
                 <div ng-if="voteNo.percentNumber">
                   <uib-progressbar value="voteNo.percentNumber" type="danger"></uib-progressbar>
@@ -55,7 +55,7 @@
               <td ng-init="voteAbstain = poll.getVote(poll.abstain, 'abstain')">
                 <span class="result_label"><translate>Abstain</translate>:</span>
                 <span class="result_value">
-                  {{ voteAbstain.value }} {{ voteAbstain.percentStr }}
+                  {{ voteAbstain.value | number:precision }} {{ voteAbstain.percentStr }}
                 </span>
                 <div ng-if="voteAbstain.percentNumber">
                   <uib-progressbar value="voteAbstain.percentNumber" type="warning"></uib-progressbar>

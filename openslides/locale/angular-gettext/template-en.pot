@@ -2517,11 +2517,11 @@ msgid "Quorum ({{ option.getVoteYes() - option.majorityReached }}) reached."
 msgstr ""
 
 #: motions/static/templates/motions/motion-detail.html:450
-msgid "Quorum ({{ voteYes.value - isReached() }}) not reached."
+msgid "Quorum ({{ (voteYes.value - isReached()) | number:precision }}) not reached."
 msgstr ""
 
 #: motions/static/templates/motions/motion-detail.html:447
-msgid "Quorum ({{ voteYes.value - isReached() }}) reached."
+msgid "Quorum ({{ (voteYes.value - isReached()) | number:precision }}) reached."
 msgstr ""
 
 #: motions/static/js/motions/docx.js:95
