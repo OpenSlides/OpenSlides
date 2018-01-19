@@ -8,6 +8,7 @@ from ..utils.rest_api import (
     CharField,
     DictField,
     Field,
+    FloatField,
     IntegerField,
     ModelSerializer,
     PrimaryKeyRelatedField,
@@ -142,7 +143,7 @@ class MotionPollSerializer(ModelSerializer):
     no = SerializerMethodField()
     abstain = SerializerMethodField()
     votes = DictField(
-        child=IntegerField(min_value=-2, allow_null=True),
+        child=FloatField(min_value=-2, allow_null=True),
         write_only=True)
     has_votes = SerializerMethodField()
 
