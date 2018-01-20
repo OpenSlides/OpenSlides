@@ -190,15 +190,16 @@ angular.module('OpenSlidesApp.core', [
 
 // gets all in OpenSlides available languages
 .factory('Languages', [
+    '$sessionStorage',
+    '$ngBootbox',
     'gettext',
     'gettextCatalog',
     'OpenSlidesPlugins',
-    '$ngBootbox',
-    function (gettext, gettextCatalog, OpenSlidesPlugins, $ngBootbox) {
+    function ($sessionStorage, $ngBootbox, gettext, gettextCatalog, OpenSlidesPlugins) {
         return {
             // get all available languages
             getLanguages: function () {
-                var current = gettextCatalog.getCurrentLanguage();
+                var current = $sessionStorage.language;
                 // Define here new languages...
                 var languages = [
                     { code: 'en', name: 'English' },
@@ -236,7 +237,7 @@ angular.module('OpenSlidesApp.core', [
                     language.selected = false;
                     if (language.code == lang) {
                         language.selected = true;
-                        gettextCatalog.setCurrentLanguage(lang);
+                        $sessionStorage.language = lang;
                         // Plugins
                         if (lang != 'en') {
                             gettextCatalog.loadRemote("static/i18n/" + lang + ".json").then(function (success) {
@@ -311,12 +312,16 @@ angular.module('OpenSlidesApp.core', [
 
 // set browser language as default language for OpenSlides
 .run([
+    '$sessionStorage',
     'gettextCatalog',
     'Languages',
-    function(gettextCatalog, Languages) {
+    function($sessionStorage, gettextCatalog, Languages) {
         // set detected browser language as default language (fallback: 'en')
-        Languages.setCurrentLanguage(Languages.getBrowserLanguage());
-
+        if ($sessionStorage.language) {
+            Languages.setCurrentLanguage($sessionStorage.language);
+        } else {
+            Languages.setCurrentLanguage(Languages.getBrowserLanguage());
+        }   
         // Set this to true for debug. Helps to find untranslated strings by
         // adding "[MISSING]:".
         gettextCatalog.debug = false;
