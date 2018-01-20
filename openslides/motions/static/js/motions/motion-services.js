@@ -39,7 +39,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             obj.enable = function () {
                 obj.active = true;
                 obj.isEditable = true;
-                ckeditorOptions.language = gettextCatalog.getCurrentLanguage();
+                ckeditorOptions.language = localStorage.getItem('language');
                 obj.editor = CKEDITOR.inline(selector, ckeditorOptions);
                 obj.editor.on('change', function () {
                     $timeout(function() {
