@@ -651,6 +651,15 @@ describe('linenumbering', function () {
             "<P class=\"insert\"><SPAN>Ya</SPAN></P><INS>\n\n</INS>" +
             "<P class=\"insert\">Die Geißlein sagten: \" Liebe Mutter, wir wollen uns schon in acht nehmen, du kannst ohne</P>");
     });
+
+    it('line breaks at dashes does not delete/insert the last/first word of the split lines', function () {
+      var before = "<ul><li>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ei rmodtem-Porinv idunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</li></ul>",
+          after = "<ul><li>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ei rmodtem-Porinv idunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</li></ul>";
+
+      before = lineNumberingService.insertLineNumbers(before, 90);
+      var diff = diffService.diff(before, after);
+      expect(diff).toBe("<ul><li>" + noMarkup(1) + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ei rmodtem-" + brMarkup(2) + "Porinv idunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</li></ul>");
+    });
   });
 
   describe('addCSSClassToFirstTag function', function () {
