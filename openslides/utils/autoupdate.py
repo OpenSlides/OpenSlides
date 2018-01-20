@@ -1,7 +1,8 @@
 import json
+import threading
 import time
 import warnings
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 from typing import Any, Dict, Generator, Iterable, List, Tuple, Union
 
 from channels import Channel, Group
@@ -316,12 +317,23 @@ def send_data_site(message: ChannelMessageFormat) -> None:
             send_or_wait(Channel(channel_name).send, {'text': json.dumps(output)})
 
 
+def to_ordered_dict(d):
+    """
+    Little helper to hash information dict in inform_*_data.
+    """
+    if isinstance(d, dict):
+        result = OrderedDict([(key, to_ordered_dict(d[key])) for key in sorted(d.keys())])
+    else:
+        result = d
+    return result
+
+
 def inform_changed_data(instances: Union[Iterable[Model], Model], information: Dict[str, Any]=None) -> None:
     """
     Informs the autoupdate system and the caching system about the creation or
-    update of an element.
+    update of an element. This is done via the AutoupdateBundleMiddleware.
 
-    The argument instances can be one instance or an interable over instances.
+    The argument instances can be one instance or an iterable over instances.
     """
     root_instances = set()
     if not isinstance(instances, Iterable):
@@ -334,41 +346,37 @@ def inform_changed_data(instances: Union[Iterable[Model], Model], information: D
             # Instance has no method get_root_rest_element. Just ignore it.
             pass
 
-    # Generates an collection element list for the root_instances.
-    collection_elements = []  # type: List[CollectionElement]
-    for root_instance in root_instances:
-        collection_elements.append(
-            CollectionElement.from_instance(
+    # Put all collection elements into the autoupdate_bundle.
+    bundle = autoupdate_bundle.get(threading.get_ident())
+    if bundle is not None:
+        # Run autoupdate only if the bundle exists because we are in a request-response-cycle.
+        for root_instance in root_instances:
+            collection_element = CollectionElement.from_instance(
                 root_instance,
-                information=information))
-    # If currently there is an open database transaction, then the
-    # send_autoupdate function is only called, when the transaction is
-    # commited. If there is currently no transaction, then the function
-    # is called immediately.
-    transaction.on_commit(lambda: send_autoupdate(collection_elements))
+                information=information)
+            key = root_instance.get_collection_string() + str(root_instance.get_rest_pk()) + str(to_ordered_dict(information))
+            bundle[key] = collection_element
 
 
 def inform_deleted_data(elements: Iterable[Tuple[str, int]], information: Dict[str, Any]=None) -> None:
     """
     Informs the autoupdate system and the caching system about the deletion of
-    elements.
+    elements. This is done via the AutoupdateBundleMiddleware.
 
     The argument information is added to each collection element.
     """
-    # Go through each pair of collection_string and id and generate a collection
-    # element from it.
-    collection_elements = []  # type: List[CollectionElement]
-    for element in elements:
-        collection_elements.append(CollectionElement.from_values(
-            collection_string=element[0],
-            id=element[1],
-            deleted=True,
-            information=information))
-    # If currently there is an open database transaction, then the
-    # send_autoupdate function is only called, when the transaction is
-    # commited. If there is currently no transaction, then the function
-    # is called immediately.
-    transaction.on_commit(lambda: send_autoupdate(collection_elements))
+    # Put all stuff to be deleted into the autoupdate_bundle.
+    bundle = autoupdate_bundle.get(threading.get_ident())
+    if bundle is not None:
+        # Run autoupdate only if the bundle exists because we are in a request-response-cycle.
+        for element in elements:
+            collection_element = CollectionElement.from_values(
+                collection_string=element[0],
+                id=element[1],
+                deleted=True,
+                information=information)
+            key = element[0] + str(element[1]) + str(to_ordered_dict(information))
+            bundle[key] = collection_element
 
 
 def inform_data_collection_element_list(collection_elements: List[CollectionElement],
@@ -377,14 +385,45 @@ def inform_data_collection_element_list(collection_elements: List[CollectionElem
     Informs the autoupdate system about some collection elements. This is
     used just to send some data to all users.
     """
-    # If currently there is an open database transaction, then the
-    # send_autoupdate function is only called, when the transaction is
-    # commited. If there is currently no transaction, then the function
-    # is called immediately.
-    transaction.on_commit(lambda: send_autoupdate(collection_elements))
+    # Put all stuff into the autoupdate_bundle.
+    bundle = autoupdate_bundle.get(threading.get_ident())
+    if bundle is not None:
+        # Run autoupdate only if the bundle exists because we are in a request-response-cycle.
+        for collection_element in collection_elements:
+            key = collection_element.collection_string + str(collection_element.id) + str(to_ordered_dict(information))
+            bundle[key] = collection_element
 
 
-def send_autoupdate(collection_elements: List[CollectionElement]) -> None:
+"""
+Global container for autoupdate bundles
+"""
+autoupdate_bundle = {}  # type: Dict[int, Dict[str, CollectionElement]]
+
+
+class AutoupdateBundleMiddleware:
+    """
+    Middleware to handle autoupdate bundling.
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
+        # One-time configuration and initialization.
+
+    def __call__(self, request):
+        thread_id = threading.get_ident()
+        autoupdate_bundle[thread_id] = {}
+
+        response = self.get_response(request)
+
+        bundle = autoupdate_bundle.pop(thread_id)  # type: Dict[str, CollectionElement]
+        # If currently there is an open database transaction, then the
+        # send_autoupdate function is only called, when the transaction is
+        # commited. If there is currently no transaction, then the function
+        # is called immediately.
+        transaction.on_commit(lambda: send_autoupdate(bundle.values()))
+        return response
+
+
+def send_autoupdate(collection_elements: Iterable[CollectionElement]) -> None:
     """
     Helper function, that sends collection_elements through a channel to the
     autoupdate system.

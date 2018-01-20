@@ -62,6 +62,7 @@ class TestCollectionCache(TestCase):
         """
         Tests that no db query is used when the list is received twice.
         """
+        get_redis_connection("default").flushall()
         Topic.objects.create(title='test topic1')
         Topic.objects.create(title='test topic2')
         Topic.objects.create(title='test topic3')
@@ -83,6 +84,7 @@ class TestCollectionCache(TestCase):
         topic_collection = collection.Collection('topics/topic')
         list(topic_collection.get_full_data())
 
+        collection.CollectionElement.from_instance(topic3, deleted=True)
         topic3.delete()
 
         with self.assertNumQueries(0):

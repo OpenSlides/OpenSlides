@@ -3,6 +3,7 @@ from typing import (
     Any,
     Dict,
     Generator,
+    Iterable,
     List,
     Optional,
     Type,
@@ -317,7 +318,7 @@ def format_for_autoupdate(collection_string: str, id: int, action: str, data: Di
     return output
 
 
-def to_channel_message(elements: List[CollectionElement]) -> ChannelMessageFormat:
+def to_channel_message(elements: Iterable[CollectionElement]) -> ChannelMessageFormat:
     """
     Converts a list of collection elements to a dict, that can be send to the
     channels system.

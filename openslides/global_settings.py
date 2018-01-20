@@ -33,6 +33,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'openslides.utils.autoupdate.AutoupdateBundleMiddleware',
 ]
 
 ROOT_URLCONF = 'openslides.urls'

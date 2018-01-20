@@ -1,3 +1,5 @@
+from django_redis import get_redis_connection
+
 from openslides.core.config import config
 from openslides.motions.exceptions import WorkflowError
 from openslides.motions.models import Motion, State, Workflow
@@ -130,6 +132,7 @@ class ModelTest(TestCase):
 
     def test_is_amendment(self):
         config['motions_amendments_enabled'] = True
+        get_redis_connection('default').flushall()
         amendment = Motion.objects.create(title='amendment', parent=self.motion)
 
         self.assertTrue(amendment.is_amendment())
@@ -150,6 +153,7 @@ class ModelTest(TestCase):
         If the config is set to manually, the method does nothing.
         """
         config['motions_identifier'] = 'manually'
+        get_redis_connection("default").flushall()
         motion = Motion()
 
         motion.set_identifier()
@@ -165,6 +169,7 @@ class ModelTest(TestCase):
         config['motions_amendments_enabled'] = True
         self.motion.identifier = 'Parent identifier'
         self.motion.save()
+        get_redis_connection("default").flushall()
         motion = Motion(parent=self.motion)
 
         motion.set_identifier()
@@ -179,6 +184,7 @@ class ModelTest(TestCase):
         config['motions_amendments_enabled'] = True
         self.motion.identifier = 'Parent identifier'
         self.motion.save()
+        get_redis_connection("default").flushall()
         Motion.objects.create(title='Amendment1', parent=self.motion)
         motion = Motion(parent=self.motion)
 

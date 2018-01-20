@@ -1,3 +1,5 @@
+from django_redis import get_redis_connection
+
 from openslides.core.config import ConfigVariable, config
 from openslides.core.exceptions import ConfigError, ConfigNotFound
 from openslides.utils.test import TestCase
@@ -55,6 +57,7 @@ class HandleConfigTest(TestCase):
     def test_change_config_value(self):
         self.assertEqual(config['string_var'], 'default_string_rien4ooCZieng6ah')
         config['string_var'] = 'other_special_unique_string dauTex9eAiy7jeen'
+        get_redis_connection('default').flushall()
         self.assertEqual(config['string_var'], 'other_special_unique_string dauTex9eAiy7jeen')
 
     def test_missing_cache_(self):

@@ -12,7 +12,7 @@ from openslides.core.models import Countdown
 from openslides.motions.models import Motion
 from openslides.topics.models import Topic
 from openslides.users.models import User
-from openslides.utils.autoupdate import inform_changed_data
+from openslides.utils.collection import CollectionElement
 from openslides.utils.test import TestCase
 
 
@@ -207,7 +207,7 @@ class ManageSpeaker(TestCase):
         group_delegates = type(group_staff).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_staff)
-        inform_changed_data(admin)
+        CollectionElement.from_instance(admin)
 
         response = self.client.post(
             reverse('item-manage-speaker', args=[self.item.pk]),
@@ -244,7 +244,7 @@ class ManageSpeaker(TestCase):
         group_delegates = type(group_staff).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_staff)
-        inform_changed_data(admin)
+        CollectionElement.from_instance(admin)
         speaker = Speaker.objects.add(self.user, self.item)
 
         response = self.client.delete(
