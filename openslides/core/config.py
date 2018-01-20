@@ -281,7 +281,7 @@ class ConfigVariable:
     @property
     def data(self) -> ConfigVariableDict:
         """
-        Property with all data for OPTIONS requests.
+        Property with all data for AngularJS variable on startup.
         """
         return ConfigVariableDict(
             key=self.name,

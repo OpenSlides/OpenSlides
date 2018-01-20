@@ -360,11 +360,6 @@ angular.module('OpenSlidesApp.core.site', [
             .state('config', {
                 url: '/config',
                 controller: 'ConfigCtrl',
-                resolve: {
-                    configOptions: function(Config) {
-                        return Config.getConfigOptions();
-                    }
-                },
                 data: {
                     title: gettext('Settings'),
                     basePerm: 'core.can_manage_config',
@@ -1119,14 +1114,14 @@ angular.module('OpenSlidesApp.core.site', [
     '$timeout',
     'MajorityMethodChoices',
     'Config',
-    'configOptions',
+    'OpenSlidesConfigVariables',
     'gettextCatalog',
     'DateTimePickerTranslation',
     'Editor',
-    function($scope, $timeout, MajorityMethodChoices, Config, configOptions,
+    function($scope, $timeout, MajorityMethodChoices, Config, OpenSlidesConfigVariables,
         gettextCatalog, DateTimePickerTranslation, Editor) {
         Config.bindAll({}, $scope, 'configs');
-        $scope.configGroups = configOptions.data.config_groups;
+        $scope.configGroups = OpenSlidesConfigVariables;
         $scope.dateTimePickerTranslatedButtons = DateTimePickerTranslation.getButtons();
 
         $scope.ckeditorOptions = Editor.getOptions();

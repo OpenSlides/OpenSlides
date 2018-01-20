@@ -1,3 +1,7 @@
+from collections import OrderedDict
+from operator import attrgetter
+from typing import Any, List  # noqa
+
 from django.apps import AppConfig
 from django.conf import settings
 from django.db.models.signals import post_migrate
@@ -68,6 +72,8 @@ class CoreAppConfig(AppConfig):
             yield Collection(self.get_model(model).get_collection_string())
 
     def get_angular_constants(self):
+        from .config import config
+
         # Client settings
         client_settings_keys = [
             'MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS'
@@ -83,7 +89,30 @@ class CoreAppConfig(AppConfig):
         client_settings = {
             'name': 'OpenSlidesSettings',
             'value': client_settings_dict}
-        return [client_settings]
+
+        # Config variables
+        config_groups = []  # type: List[Any]  # TODO: Replace Any by correct type
+        for config_variable in sorted(config.config_variables.values(), key=attrgetter('weight')):
+            if config_variable.is_hidden():
+                # Skip hidden config variables. Do not even check groups and subgroups.
+                continue
+            if not config_groups or config_groups[-1]['name'] != config_variable.group:
+                # Add new group.
+                config_groups.append(OrderedDict(
+                    name=config_variable.group,
+                    subgroups=[]))
+            if not config_groups[-1]['subgroups'] or config_groups[-1]['subgroups'][-1]['name'] != config_variable.subgroup:
+                # Add new subgroup.
+                config_groups[-1]['subgroups'].append(OrderedDict(
+                    name=config_variable.subgroup,
+                    items=[]))
+            # Add the config variable to the current group and subgroup.
+            config_groups[-1]['subgroups'][-1]['items'].append(config_variable.data)
+        config_variables = {
+            'name': 'OpenSlidesConfigVariables',
+            'value': config_groups}
+
+        return [client_settings, config_variables]
 
 
 def call_save_default_values(**kwargs):

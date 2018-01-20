@@ -1,7 +1,5 @@
 import json
 import uuid
-from collections import OrderedDict
-from operator import attrgetter
 from textwrap import dedent
 from typing import Any, Dict, List, cast  # noqa
 
@@ -29,7 +27,6 @@ from ..utils.plugins import (
 from ..utils.rest_api import (
     ModelViewSet,
     Response,
-    SimpleMetadata,
     ValidationError,
     detail_route,
     list_route,
@@ -581,36 +578,6 @@ class TagViewSet(ModelViewSet):
         return result
 
 
-class ConfigMetadata(SimpleMetadata):
-    """
-    Custom metadata class to add config info to responses on OPTIONS requests.
-    """
-    def determine_metadata(self, request, view):
-        # Build tree.
-        config_groups = []  # type: List[Any] # TODO: Replace Any by correct type
-        for config_variable in sorted(config.config_variables.values(), key=attrgetter('weight')):
-            if config_variable.is_hidden():
-                # Skip hidden config variables. Do not even check groups and subgroups.
-                continue
-            if not config_groups or config_groups[-1]['name'] != config_variable.group:
-                # Add new group.
-                config_groups.append(OrderedDict(
-                    name=config_variable.group,
-                    subgroups=[]))
-            if not config_groups[-1]['subgroups'] or config_groups[-1]['subgroups'][-1]['name'] != config_variable.subgroup:
-                # Add new subgroup.
-                config_groups[-1]['subgroups'].append(OrderedDict(
-                    name=config_variable.subgroup,
-                    items=[]))
-            # Add the config variable to the current group and subgroup.
-            config_groups[-1]['subgroups'][-1]['items'].append(config_variable.data)
-
-        # Add tree to metadata.
-        metadata = super().determine_metadata(request, view)
-        metadata['config_groups'] = config_groups
-        return metadata
-
-
 class ConfigViewSet(ModelViewSet):
     """
     API endpoint for the config.
@@ -620,7 +587,6 @@ class ConfigViewSet(ModelViewSet):
     """
     access_permissions = ConfigAccessPermissions()
     queryset = ConfigStore.objects.all()
-    metadata_class = ConfigMetadata
 
     def check_view_permissions(self):
         """
