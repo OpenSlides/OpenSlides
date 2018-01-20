@@ -60,8 +60,8 @@ class ProjectorAPI(TestCase):
             'scroll': 0,
             'name': 'Default projector',
             'blank': False,
-            'width': 1024,
-            'height': 768})
+            'width': 1220,
+            'height': 915})
 
 
 class VersionView(TestCase):
