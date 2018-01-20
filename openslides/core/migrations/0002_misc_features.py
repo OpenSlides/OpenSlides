@@ -209,7 +209,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='projector',
             name='height',
-            field=models.PositiveIntegerField(default=768),
+            field=models.PositiveIntegerField(default=915),
         ),
         migrations.AddField(
             model_name='projector',
@@ -219,7 +219,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='projector',
             name='width',
-            field=models.PositiveIntegerField(default=1024),
+            field=models.PositiveIntegerField(default=1220),
         ),
         migrations.AddField(
             model_name='projectiondefault',

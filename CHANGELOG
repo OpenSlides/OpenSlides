@@ -104,6 +104,7 @@ Core:
 - Added projector prioritization [#3425].
 - Use native twisted mode for daphne [#3487].
 - Save language selection to session storage [#3543]
+- Set default of projector resolution to 1220x915 [#2549].
 
 Mediafiles:
 - Fixed reloading of PDF on page change [#3274].
