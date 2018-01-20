@@ -15,18 +15,17 @@ def listen_to_related_object_post_save(sender, instance, created, **kwargs):
     django.db.models.signals.post_save during app loading.
 
     The agenda_item_update_information container may have fields like type,
-    parent or skip_autoupdate.
+    parent_id, comment, duration, weight or skip_autoupdate.
 
-    Do not run caching and autoupdate if the instance as a key
+    Do not run caching and autoupdate if the instance has a key
     skip_autoupdate in the agenda_item_update_information container.
     """
     if hasattr(instance, 'get_agenda_title'):
         if created:
             attrs = {}
-            if instance.agenda_item_update_information.get('type'):
-                attrs['type'] = instance.agenda_item_update_information.get('type')
-            if instance.agenda_item_update_information.get('parent'):
-                attrs['parent'] = instance.agenda_item_update_information.get('parent')
+            for attr in ('type', 'parent_id', 'comment', 'duration', 'weight'):
+                if instance.agenda_item_update_information.get(attr):
+                    attrs[attr] = instance.agenda_item_update_information.get(attr)
             Item.objects.create(content_object=instance, **attrs)
 
             # If the object is created, the related_object has to be sent again.

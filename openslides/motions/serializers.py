@@ -49,9 +49,25 @@ class MotionBlockSerializer(ModelSerializer):
     """
     Serializer for motion.models.Category objects.
     """
+    agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=2)
+    agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
+
     class Meta:
         model = MotionBlock
-        fields = ('id', 'title', 'agenda_item_id',)
+        fields = ('id', 'title', 'agenda_item_id', 'agenda_type', 'agenda_parent_id',)
+
+    def create(self, validated_data):
+        """
+        Customized create method. Set information about related agenda item
+        into agenda_item_update_information container.
+        """
+        agenda_type = validated_data.pop('agenda_type', None)
+        agenda_parent_id = validated_data.pop('agenda_parent_id', None)
+        motion_block = MotionBlock(**validated_data)
+        motion_block.agenda_item_update_information['type'] = agenda_type
+        motion_block.agenda_item_update_information['parent_id'] = agenda_parent_id
+        motion_block.save()
+        return motion_block
 
 
 class StateSerializer(ModelSerializer):
@@ -288,6 +304,8 @@ class MotionSerializer(ModelSerializer):
         required=False,
         validators=[validate_workflow_field],
         write_only=True)
+    agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=2)
+    agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
 
     class Meta:
         model = Motion
@@ -314,6 +332,8 @@ class MotionSerializer(ModelSerializer):
             'attachments',
             'polls',
             'agenda_item_id',
+            'agenda_type',
+            'agenda_parent_id',
             'log_messages',)
         read_only_fields = ('state', 'recommendation',)  # Some other fields are also read_only. See definitions above.
 
@@ -332,6 +352,9 @@ class MotionSerializer(ModelSerializer):
     def create(self, validated_data):
         """
         Customized method to create a new motion from some data.
+
+        Set also information about related agenda item into
+        agenda_item_update_information container.
         """
         motion = Motion()
         motion.title = validated_data['title']
@@ -344,6 +367,8 @@ class MotionSerializer(ModelSerializer):
         motion.comments = validated_data.get('comments')
         motion.parent = validated_data.get('parent')
         motion.reset_state(validated_data.get('workflow_id'))
+        motion.agenda_item_update_information['type'] = validated_data.get('agenda_type')
+        motion.agenda_item_update_information['parent_id'] = validated_data.get('agenda_parent_id')
         motion.save()
         if validated_data.get('submitters'):
             motion.submitters.add(*validated_data['submitters'])

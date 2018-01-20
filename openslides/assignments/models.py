@@ -333,7 +333,7 @@ class Assignment(RESTModelMixin, models.Model):
     """
     Container for runtime information for agenda app (on create or update of this instance).
     """
-    agenda_item_update_information = {}
+    agenda_item_update_information = {}  # type: Dict[str, Any]
 
     def get_agenda_title(self):
         return str(self)

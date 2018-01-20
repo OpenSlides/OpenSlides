@@ -1,3 +1,5 @@
+from typing import Any, Dict  # noqa
+
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ImproperlyConfigured, ValidationError
@@ -631,7 +633,7 @@ class Motion(RESTModelMixin, models.Model):
     """
     Container for runtime information for agenda app (on create or update of this instance).
     """
-    agenda_item_update_information = {}
+    agenda_item_update_information = {}  # type: Dict[str, Any]
 
     def get_agenda_title(self):
         """
@@ -903,7 +905,7 @@ class MotionBlock(RESTModelMixin, models.Model):
     """
     Container for runtime information for agenda app (on create or update of this instance).
     """
-    agenda_item_update_information = {}
+    agenda_item_update_information = {}  # type: Dict[str, Any]
 
     @property
     def agenda_item(self):
