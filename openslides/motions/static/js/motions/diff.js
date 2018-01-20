@@ -960,6 +960,19 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             newStr = this._normalizeHtmlForDiff(newStr.replace(/\s+$/, '').replace(/^\s+/, ''));
 
             var out = this._diff(this._tokenizeHtml(oldStr), this._tokenizeHtml(newStr));
+
+            // This fixes the problem tested by "does not lose words when changes are moved X-wise"
+            var lastRow = 0;
+            for (var z = 0; z < out.n.length; z++) {
+                if (out.n[z].row && out.n[z].row > lastRow) {
+                    lastRow = out.n[z].row;
+                }
+                if (out.n[z].row && out.n[z].row < lastRow) {
+                    out.o[out.n[z].row] = out.o[out.n[z].row].text;
+                    out.n[z] = out.n[z].text;
+                }
+            }
+
             var str = "";
             var i;
 
