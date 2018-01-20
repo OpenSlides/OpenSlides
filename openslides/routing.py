@@ -1,7 +1,8 @@
 from channels.routing import include, route
 
 from openslides.utils.autoupdate import (
-    send_data,
+    send_data_projector,
+    send_data_site,
     ws_add_projector,
     ws_add_site,
     ws_disconnect_projector,
@@ -23,5 +24,6 @@ site_routing = [
 channel_routing = [
     include(projector_routing, path=r'^/ws/projector/(?P<projector_id>\d+)/$'),
     include(site_routing, path=r'^/ws/site/$'),
-    route("autoupdate.send_data", send_data),
+    route("autoupdate.send_data_projector", send_data_projector),
+    route("autoupdate.send_data_site", send_data_site),
 ]

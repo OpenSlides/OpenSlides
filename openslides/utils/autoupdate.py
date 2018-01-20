@@ -245,9 +245,9 @@ def ws_disconnect_projector(message: Any, projector_id: int) -> None:
     Group('projector-{}'.format(projector_id)).discard(message.reply_channel)
 
 
-def send_data(message: ChannelMessageFormat) -> None:
+def send_data_projector(message: ChannelMessageFormat) -> None:
     """
-    Informs all site users and projector clients about changed data.
+    Informs all projector clients about changed data.
     """
     collection_elements = from_channel_message(message)
 
@@ -276,6 +276,13 @@ def send_data(message: ChannelMessageFormat) -> None:
                 send_or_wait(
                     Group('projector-{}'.format(projector.pk)).send,
                     {'text': json.dumps(output)})
+
+
+def send_data_site(message: ChannelMessageFormat) -> None:
+    """
+    Informs all site users about changed data.
+    """
+    collection_elements = from_channel_message(message)
 
     # Send data to site users.
     for user_id, channel_names in websocket_user_cache.get_all().items():
@@ -386,7 +393,10 @@ def send_autoupdate(collection_elements: List[CollectionElement]) -> None:
     """
     if collection_elements:
         send_or_wait(
-            Channel('autoupdate.send_data').send,
+            Channel('autoupdate.send_data_projector').send,
+            to_channel_message(collection_elements))
+        send_or_wait(
+            Channel('autoupdate.send_data_site').send,
             to_channel_message(collection_elements))
 
 
