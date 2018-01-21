@@ -238,6 +238,7 @@ angular.module('OpenSlidesApp.core', [
                     if (language.code == lang) {
                         language.selected = true;
                         $sessionStorage.language = lang;
+                        gettextCatalog.setCurrentLanguage(lang);
                         // Plugins
                         if (lang != 'en') {
                             gettextCatalog.loadRemote("static/i18n/" + lang + ".json").then(function (success) {
