@@ -675,6 +675,9 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             for (var ent in entities) {
                 html = html.replace(new RegExp(ent, 'g'), entities[ent]);
             }
+
+            // Newline characters: after closing block-level-elements, but not after BR (which is inline)
+            html = html.replace(/(<br *\/?>)\n/gi, "$1");
             html = html.replace(/[ \n\t]+/gi, ' ');
             html = html.replace(/(<\/(div|p|ul|li|blockquote>)>) /gi, "$1\n");
 

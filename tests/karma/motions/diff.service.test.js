@@ -423,6 +423,14 @@ describe('linenumbering', function () {
       expect(diff).toBe('The <strong>brown</strong> spotted fox <del>jum</del><ins>lea</ins>ped over the rolling log.');
     });
 
+    it('does not insert spaces after a unchanged BR tag', function() {
+      var before = "<p>" + noMarkup(1) + "Hendl Kirwa hod Maßkruag<br>" + noMarkup(2) + "gmahde Wiesn</p>",
+          after = "<p>Hendl Kirwa hod Maßkruag<br>\ngmahde Wiesn</p>";
+      var diff = diffService.diff(before, after);
+
+      expect(diff).toBe(before);
+    });
+
     it('does not mark the last line of a paragraph as change if a long new one is appended', function () {
       var before = "<p><span class=\"os-line-number line-number-5\" data-line-number=\"5\" contenteditable=\"false\">&nbsp;</span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>",
             after = "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>\n" +
@@ -534,7 +542,7 @@ describe('linenumbering', function () {
           after = "<p>sem. Nulla consequat massa quis enim. TEST<br>\nTEST</p>";
       var diff = diffService.diff(before, after);
 
-      expect(diff).toBe('<p>sem. Nulla consequat massa quis enim.<ins> TEST<br> TEST</ins></p>');
+      expect(diff).toBe('<p>sem. Nulla consequat massa quis enim.<ins> TEST<br>TEST</ins></p>');
     });
 
     it('does not repeat the last word (2)', function () {

@@ -38,7 +38,7 @@ Motions:
 - Bugfix: Several bugfixes regarding splitting list items in
   change recommendations [#3288].
 - Bugfix: Several bugfixes regarding diff version [#3407, #3408, #3410,
-  #3440, #3450, #3465, #3537, #3546].
+  #3440, #3450, #3465, #3537, #3546, #3548].
 - Added inline Editing for motion reason [#3361].
 - Added multiselect filter for motion comments [#3372].
 - Added support for pinning personal notes to the window [#3360].
