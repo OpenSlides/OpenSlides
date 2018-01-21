@@ -598,6 +598,14 @@ describe('linenumbering', function () {
 
       expect(diff).toBe('<p class="os-split-after os-split-before"><span class="line-number-4 os-line-number" contenteditable="false" data-line-number="4">&nbsp;</span><span class="os-split-after os-split-before" style="color: #0000ff;">sanctus est Lorem ipsum dolor sit amet. <ins>Test </ins>Lorem ipsum dolor sit amet, consetetur sadipscing </span></p>');
     });
+
+    it('does not lose words when changes are moved X-wise', function () {
+      var before = 'elitr. einsetzt. VERSCHLUCKT noch die sog. Gleichbleibend (Wird gelöscht).',
+          after = 'elitr, Einfügung durch Änderung der Gleichbleibend, einsetzt.';
+
+      var diff = diffService.diff(before, after);
+      expect(diff).toBe('elitr<del>. einsetzt. VERSCHLUCKT noch die sog.</del><ins>, Einfügung durch Änderung der</ins> Gleichbleibend<del> (Wird gelöscht).</del><ins>, einsetzt.</ins>');
+    });
   });
 
   describe('ignoring line numbers', function () {
