@@ -29,7 +29,12 @@ class TestsInformChangedData(ChannelTestCase):
 
         inform_changed_data(topic)
 
-        channel_message = self.get_next_message('autoupdate.send_data', require=True)
+        channel_message = self.get_next_message('autoupdate.send_data_projector', require=True)
+        self.assertEqual(len(channel_message['elements']), 1)
+        self.assertEqual(
+            channel_message['elements'][0]['collection_string'],
+            'topics/topic')
+        channel_message = self.get_next_message('autoupdate.send_data_site', require=True)
         self.assertEqual(len(channel_message['elements']), 1)
         self.assertEqual(
             channel_message['elements'][0]['collection_string'],
@@ -44,7 +49,9 @@ class TestsInformChangedData(ChannelTestCase):
 
         inform_changed_data(topics)
 
-        channel_message = self.get_next_message('autoupdate.send_data', require=True)
+        channel_message = self.get_next_message('autoupdate.send_data_projector', require=True)
+        self.assertEqual(len(channel_message['elements']), 3)
+        channel_message = self.get_next_message('autoupdate.send_data_site', require=True)
         self.assertEqual(len(channel_message['elements']), 3)
 
     def test_change_with_non_root_rest_elements(self):
@@ -59,7 +66,9 @@ class TestsInformChangedData(ChannelTestCase):
 
         inform_changed_data((assignment, poll))
 
-        channel_message = self.get_next_message('autoupdate.send_data', require=True)
+        channel_message = self.get_next_message('autoupdate.send_data_projector', require=True)
+        self.assertEqual(len(channel_message['elements']), 1)
+        channel_message = self.get_next_message('autoupdate.send_data_site', require=True)
         self.assertEqual(len(channel_message['elements']), 1)
 
     def test_change_only_non_root_rest_element(self):
@@ -73,7 +82,9 @@ class TestsInformChangedData(ChannelTestCase):
 
         inform_changed_data(poll)
 
-        channel_message = self.get_next_message('autoupdate.send_data', require=True)
+        channel_message = self.get_next_message('autoupdate.send_data_projector', require=True)
+        self.assertEqual(len(channel_message['elements']), 1)
+        channel_message = self.get_next_message('autoupdate.send_data_site', require=True)
         self.assertEqual(len(channel_message['elements']), 1)
 
     def test_change_no_autoupdate_model(self):
@@ -90,14 +101,22 @@ class TestsInformChangedData(ChannelTestCase):
         with self.assertRaises(AssertionError):
             # self.get_next_message() with require=True raises a AssertionError
             # if there is no message in the channel
-            self.get_next_message('autoupdate.send_data', require=True)
+            self.get_next_message('autoupdate.send_data_projector', require=True)
+
+        with self.assertRaises(AssertionError):
+            # self.get_next_message() with require=True raises a AssertionError
+            # if there is no message in the channel
+            self.get_next_message('autoupdate.send_data_site', require=True)
 
     def test_delete_one_element(self):
         channel_layers[DEFAULT_CHANNEL_LAYER].flush()
 
         inform_deleted_data([('topics/topic', 1)])
 
-        channel_message = self.get_next_message('autoupdate.send_data', require=True)
+        channel_message = self.get_next_message('autoupdate.send_data_projector', require=True)
+        self.assertEqual(len(channel_message['elements']), 1)
+        self.assertTrue(channel_message['elements'][0]['deleted'])
+        channel_message = self.get_next_message('autoupdate.send_data_site', require=True)
         self.assertEqual(len(channel_message['elements']), 1)
         self.assertTrue(channel_message['elements'][0]['deleted'])
 
@@ -106,5 +125,7 @@ class TestsInformChangedData(ChannelTestCase):
 
         inform_deleted_data([('topics/topic', 1), ('topics/topic', 2), ('testmodule/model', 1)])
 
-        channel_message = self.get_next_message('autoupdate.send_data', require=True)
+        channel_message = self.get_next_message('autoupdate.send_data_projector', require=True)
+        self.assertEqual(len(channel_message['elements']), 3)
+        channel_message = self.get_next_message('autoupdate.send_data_site', require=True)
         self.assertEqual(len(channel_message['elements']), 3)
