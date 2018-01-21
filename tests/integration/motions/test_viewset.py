@@ -794,6 +794,8 @@ class SupportMotion(TestCase):
     def test_support(self):
         config['motions_min_supporters'] = 1
         response = self.client.post(reverse('motion-support', args=[self.motion.pk]))
+        print(response.data) #??? Disappear if just tests.integration.motions.test_viewset.SupportMotion is run
+        # When running full tests, this error appears.
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, {'detail': 'You have supported this motion successfully.'})
 
