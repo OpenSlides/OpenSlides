@@ -10,7 +10,7 @@ from pkg_resources import iter_entry_points
 from openslides.utils.main import (
     WINDOWS_PORTABLE_VERSION,
     detect_openslides_type,
-    get_win32_portable_user_data_path,
+    get_win32_portable_user_data_dir,
 )
 
 
@@ -25,12 +25,12 @@ def collect_plugins_from_entry_points() -> Tuple[str, ...]:
     return tuple(entry_point.module_name for entry_point in iter_entry_points('openslides_plugins'))
 
 
-def collect_plugins_from_path(path: str) -> Tuple[str, ...]:
+def collect_plugins_from_dir(plugin_dir: str) -> Tuple[str, ...]:
     """
-    Collects all modules/packages in the given `path` and returns a tuple
+    Collects all modules/packages in the given `plugin_dir` and returns a tuple
     of their names.
     """
-    return tuple(x[1] for x in pkgutil.iter_modules([path]))
+    return tuple(x[1] for x in pkgutil.iter_modules([plugin_dir]))
 
 
 def collect_plugins() -> Tuple[str, ...]:
@@ -42,11 +42,11 @@ def collect_plugins() -> Tuple[str, ...]:
 
     # Collect plugins in plugins/ directory of portable.
     if detect_openslides_type() == WINDOWS_PORTABLE_VERSION:
-        plugins_path = os.path.join(
-            get_win32_portable_user_data_path(), 'plugins')
-        if plugins_path not in sys.path:
-            sys.path.append(plugins_path)
-        collected_plugins += collect_plugins_from_path(plugins_path)
+        plugins_dir = os.path.join(
+            get_win32_portable_user_data_dir(), 'plugins')
+        if plugins_dir not in sys.path:
+            sys.path.append(plugins_dir)
+        collected_plugins += collect_plugins_from_dir(plugins_dir)
 
     return collected_plugins
 

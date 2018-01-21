@@ -60,7 +60,7 @@ def detect_openslides_type() -> str:
     return openslides_type
 
 
-def get_default_settings_path(openslides_type: str=None) -> str:
+def get_default_settings_dir(openslides_type: str=None) -> str:
     """
     Returns the default settings path according to the OpenSlides type.
 
@@ -74,21 +74,21 @@ def get_default_settings_path(openslides_type: str=None) -> str:
         parent_directory = os.environ.get(
             'XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
     elif openslides_type == WINDOWS_VERSION:
-        parent_directory = get_win32_app_data_path()
+        parent_directory = get_win32_app_data_dir()
     elif openslides_type == WINDOWS_PORTABLE_VERSION:
-        parent_directory = get_win32_portable_path()
+        parent_directory = get_win32_portable_dir()
     else:
         raise TypeError('%s is not a valid OpenSlides type.' % openslides_type)
-    return os.path.join(parent_directory, 'openslides', 'settings.py')
+    return os.path.join(parent_directory, 'openslides')
 
 
-def get_local_settings_path() -> str:
+def get_local_settings_dir() -> str:
     """
     Returns the path to a local settings.
 
-    On Unix systems: 'personal_data/var/settings.py'
+    On Unix systems: 'personal_data/var/'
     """
-    return os.path.join('personal_data', 'var', 'settings.py')
+    return os.path.join('personal_data', 'var')
 
 
 def setup_django_settings_module(settings_path: str =None, local_installation: bool=False) -> None:
@@ -107,9 +107,10 @@ def setup_django_settings_module(settings_path: str =None, local_installation: b
 
     if settings_path is None:
         if local_installation:
-            settings_path = get_local_settings_path()
+            settings_dir = get_local_settings_dir()
         else:
-            settings_path = get_default_settings_path()
+            settings_dir = get_default_settings_dir()
+        settings_path = os.path.join(settings_dir, 'settings.py')
 
     settings_file = os.path.basename(settings_path)
     settings_module_name = ".".join(settings_file.split('.')[:-1])
@@ -130,7 +131,7 @@ def setup_django_settings_module(settings_path: str =None, local_installation: b
     os.environ[ENVIRONMENT_VARIABLE] = settings_module_name
 
 
-def get_default_settings_context(user_data_path: str=None) -> Dict[str, str]:
+def get_default_settings_context(user_data_dir: str=None) -> Dict[str, str]:
     """
     Returns the default context values for the settings template:
     'openslides_user_data_path', 'import_function' and 'debug'.
@@ -140,45 +141,45 @@ def get_default_settings_context(user_data_path: str=None) -> Dict[str, str]:
     # Setup path for user specific data (SQLite3 database, media, ...):
     # Take it either from command line or get default path
     default_context = {}
-    if user_data_path:
-        default_context['openslides_user_data_path'] = repr(user_data_path)
+    if user_data_dir:
+        default_context['openslides_user_data_dir'] = repr(user_data_dir)
         default_context['import_function'] = ''
     else:
         openslides_type = detect_openslides_type()
         if openslides_type == WINDOWS_PORTABLE_VERSION:
-            default_context['openslides_user_data_path'] = 'get_win32_portable_user_data_path()'
-            default_context['import_function'] = 'from openslides.utils.main import get_win32_portable_user_data_path'
+            default_context['openslides_user_data_dir'] = 'get_win32_portable_user_data_dir()'
+            default_context['import_function'] = 'from openslides.utils.main import get_win32_portable_user_data_dir'
         else:
-            path = get_default_user_data_path(openslides_type)
-            default_context['openslides_user_data_path'] = repr(os.path.join(path, 'openslides'))
+            data_dir = get_default_user_data_dir(openslides_type)
+            default_context['openslides_user_data_dir'] = repr(os.path.join(data_dir, 'openslides'))
             default_context['import_function'] = ''
     default_context['debug'] = 'False'
     return default_context
 
 
-def get_default_user_data_path(openslides_type: str) -> str:
+def get_default_user_data_dir(openslides_type: str) -> str:
     """
-    Returns the default path for user specific data according to the OpenSlides
+    Returns the default directory for user specific data according to the OpenSlides
     type.
 
     The argument 'openslides_type' has to be one of the three types mentioned
     in openslides.utils.main.
     """
     if openslides_type == UNIX_VERSION:
-        default_user_data_path = os.environ.get(
+        default_user_data_dir = os.environ.get(
             'XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
     elif openslides_type == WINDOWS_VERSION:
-        default_user_data_path = get_win32_app_data_path()
+        default_user_data_dir = get_win32_app_data_dir()
     elif openslides_type == WINDOWS_PORTABLE_VERSION:
-        default_user_data_path = get_win32_portable_path()
+        default_user_data_dir = get_win32_portable_dir()
     else:
         raise TypeError('%s is not a valid OpenSlides type.' % openslides_type)
-    return default_user_data_path
+    return default_user_data_dir
 
 
-def get_win32_app_data_path() -> str:
+def get_win32_app_data_dir() -> str:
     """
-    Returns the path to Windows' AppData directory.
+    Returns the directory of Windows' AppData directory.
     """
     shell32 = ctypes.WinDLL("shell32.dll")
     SHGetFolderPath = shell32.SHGetFolderPathW
@@ -199,16 +200,16 @@ def get_win32_app_data_path() -> str:
     return buf.value
 
 
-def get_win32_portable_path() -> str:
+def get_win32_portable_dir() -> str:
     """
-    Returns the path to the Windows portable version.
+    Returns the directory of the Windows portable version.
     """
     # NOTE: sys.executable will be the path to openslides.exe
     #       since it is essentially a small wrapper that embeds the
     #       python interpreter
-    portable_path = os.path.dirname(os.path.abspath(sys.executable))
+    portable_dir = os.path.dirname(os.path.abspath(sys.executable))
     try:
-        fd, test_file = tempfile.mkstemp(dir=portable_path)
+        fd, test_file = tempfile.mkstemp(dir=portable_dir)
     except OSError:
         raise PortableDirNotWritable(
             'Portable directory is not writeable. '
@@ -216,25 +217,26 @@ def get_win32_portable_path() -> str:
     else:
         os.close(fd)
         os.unlink(test_file)
-    return portable_path
+    return portable_dir
 
 
-def get_win32_portable_user_data_path() -> str:
+def get_win32_portable_user_data_dir() -> str:
     """
-    Returns the user data path to the Windows portable version.
+    Returns the user data directory to the Windows portable version.
     """
-    return os.path.join(get_win32_portable_path(), 'openslides')
+    return os.path.join(get_win32_portable_dir(), 'openslides')
 
 
-def write_settings(settings_path: str=None, template: str=None, **context: str) -> str:
+def write_settings(settings_dir: str=None, settings_filename: str='settings.py', template: str=None, **context: str) -> str:
     """
-    Creates the settings file at the given path using the given values for the
+    Creates the settings file at the given dir using the given values for the
     file template.
 
     Retuns the path to the created settings.
     """
-    if settings_path is None:
-        settings_path = get_default_settings_path()
+    if settings_dir is None:
+        settings_dir = get_default_settings_dir()
+    settings_path = os.path.join(settings_dir, settings_filename)
 
     if template is None:
         with open(os.path.join(os.path.dirname(__file__), 'settings.py.tpl')) as template_file:
@@ -248,16 +250,17 @@ def write_settings(settings_path: str=None, template: str=None, **context: str) 
         context.setdefault(key, value)
 
     content = template % context
-    settings_module = os.path.realpath(os.path.dirname(settings_path))
+    settings_module = os.path.realpath(settings_dir)
     if not os.path.exists(settings_module):
         os.makedirs(settings_module)
     with open(settings_path, 'w') as settings_file:
         settings_file.write(content)
-    if context['openslides_user_data_path'] == 'get_win32_portable_user_data_path()':
-        openslides_user_data_path = get_win32_portable_user_data_path()
+
+    if context['openslides_user_data_dir'] == 'get_win32_portable_user_data_dir()':
+        openslides_user_data_dir = get_win32_portable_user_data_dir()
     else:
-        openslides_user_data_path = context['openslides_user_data_path'].strip("'")
-    os.makedirs(os.path.join(openslides_user_data_path, 'static'), exist_ok=True)
+        openslides_user_data_dir = context['openslides_user_data_dir'].strip("'")
+    os.makedirs(os.path.join(openslides_user_data_dir, 'static'), exist_ok=True)
     return os.path.realpath(settings_path)
 
 
@@ -329,9 +332,9 @@ def get_geiss_path() -> str:
     Returns the path and file to the Geiss binary.
     """
     from django.conf import settings
-    download_path = getattr(settings, 'OPENSLIDES_USER_DATA_PATH', '')
+    download_dir = getattr(settings, 'OPENSLIDES_USER_DATA_PATH', '')
     bin_name = 'geiss.exe' if is_windows() else 'geiss'
-    return os.path.join(download_path, bin_name)
+    return os.path.join(download_dir, bin_name)
 
 
 def is_windows() -> bool:

@@ -8,13 +8,13 @@ from typing import Dict  # noqa
 import django
 from django.core.management import call_command, execute_from_command_line
 
-from openslides import __version__ as openslides_version
+import openslides
 from openslides.utils.main import (
     ExceptionArgumentParser,
     UnknownCommand,
-    get_default_settings_path,
+    get_default_settings_dir,
     get_geiss_path,
-    get_local_settings_path,
+    get_local_settings_dir,
     is_local_installation,
     open_browser,
     setup_django_settings_module,
@@ -43,6 +43,10 @@ def main():
         # Check for unknown_args.
         if unknown_args:
             parser.error('Unknown arguments {}'.format(' '.join(unknown_args)))
+
+        # Save arguments, if one wants to access them later.
+        openslides.args = known_args
+
         # Run a command that is defined here
         # These are commands that can not rely on an existing settings
         known_args.callback(known_args)
@@ -81,7 +85,7 @@ def get_parser():
     parser.add_argument(
         '--version',
         action='version',
-        version=openslides_version,
+        version=openslides.__version__,
         help='Show version number and exit.')
 
     # Init subparsers
@@ -122,10 +126,15 @@ def get_parser():
         default='8000',
         help='Port to listen on. Default is 8000.')
     subcommand_start.add_argument(
-        '--settings_path',
+        '--settings_dir',
         action='store',
         default=None,
-        help='The used settings file. The file is created, if it does not exist.')
+        help='The settings directory.')
+    subcommand_start.add_argument(
+        '--settings_filename',
+        action='store',
+        default='settings.py',
+        help='The used settings file name. The file is created, if it does not exist.')
     subcommand_start.add_argument(
         '--local-installation',
         action='store_true',
@@ -143,10 +152,10 @@ def get_parser():
         help=createsettings_help)
     subcommand_createsettings.set_defaults(callback=createsettings)
     subcommand_createsettings.add_argument(
-        '--settings_path',
+        '--settings_dir',
         action='store',
         default=None,
-        help='The used settings file. The file is created, even if it exists.')
+        help='The used settings file directory. All settings files are created, even if they exist.')
     subcommand_createsettings.add_argument(
         '--local-installation',
         action='store_true',
@@ -173,16 +182,18 @@ def start(args):
     """
     Starts OpenSlides: Runs migrations and runs runserver.
     """
-    settings_path = args.settings_path
+    settings_dir = args.settings_dir
+    settings_filename = args.settings_filename
     local_installation = is_local_installation()
 
-    if settings_path is None:
+    if settings_dir is None:
         if local_installation:
-            settings_path = get_local_settings_path()
+            settings_dir = get_local_settings_dir()
         else:
-            settings_path = get_default_settings_path()
+            settings_dir = get_default_settings_dir()
 
-    # Write settings if it does not exists.
+    # Write django settings if it does not exists.
+    settings_path = os.path.join(settings_dir, settings_filename)
     if not os.path.isfile(settings_path):
         createsettings(args)
 
@@ -254,18 +265,18 @@ def createsettings(args):
     """
     Creates settings for OpenSlides.
     """
-    settings_path = args.settings_path
+    settings_dir = args.settings_dir
     local_installation = is_local_installation()
     context = {}  # type: Dict[str, str]
 
     if local_installation:
-        if settings_path is None:
-            settings_path = get_local_settings_path()
+        if settings_dir is None:
+            settings_dir = get_local_settings_dir()
         context = {
-            'openslides_user_data_path': repr(os.path.join(os.getcwd(), 'personal_data', 'var')),
+            'openslides_user_data_dir': repr(os.path.join(os.getcwd(), 'personal_data', 'var')),
             'debug': 'True'}
 
-    settings_path = write_settings(settings_path, **context)
+    settings_path = write_settings(settings_dir, args.settings_filename, **context)
     print('Settings created at %s' % settings_path)
 
 

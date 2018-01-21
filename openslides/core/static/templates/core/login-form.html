@@ -23,6 +23,7 @@
       <button ng-if="guestAllowed" ng-click="guestLogin()" class="btn btn-default" translate>
         Continue as guest
       </button>
+      <template-hook hook-name="loginFormButtons"></template-hook>
     </div>
   </div>
 </form>

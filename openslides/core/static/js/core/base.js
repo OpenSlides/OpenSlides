@@ -595,7 +595,7 @@ angular.module('OpenSlidesApp.core', [
                         // to be given. If a scope is provided, the schope of this templateHook
                         // is populated with the given functions/values.
                         if (hook.template) {
-                            return '<div>' + hook.template + '</div>';
+                            return hook.template;
                         } else {
                             return $templateCache.get(hook.templateUrl);
                         }

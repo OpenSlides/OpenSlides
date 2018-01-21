@@ -53,8 +53,12 @@ class APIView(_APIView):
 class TemplateView(View):
     """
     A view to serve a single cached template file. Subclasses have to provide 'template_name'.
+    The state dict is used to cache the template. The state variable is static, but the object ID
+    is not allowed to change. So the State has to be saved in this dict. Search for 'Borg design
+    pattern' for more information.
     """
     template_name = None  # type: str
+    state = {}  # type: Dict[str, str]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -62,8 +66,9 @@ class TemplateView(View):
         if self.template_name is None:
             raise ImproperlyConfigured("'template_name' is not provided")
 
-        with open(finders.find(self.template_name)) as template:
-            self.template = template.read()
+        if 'template' not in self.state:
+            with open(finders.find(self.template_name)) as template:
+                self.state['template'] = template.read()
 
     def get(self, *args: Any, **kwargs: Any) -> HttpResponse:
-        return HttpResponse(self.template)
+        return HttpResponse(self.state['template'])

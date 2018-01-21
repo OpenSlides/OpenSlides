@@ -1643,20 +1643,29 @@ angular.module('OpenSlidesApp.users.site', [
     }
 ])
 
-.controller('userMenu', [
-    '$scope',
+.factory('Logout', [
     '$http',
     'OpenSlides',
-    'ngDialog',
-    'UserProfileForm',
-    'UserPasswordForm',
-    function($scope, $http, OpenSlides, ngDialog, UserProfileForm, UserPasswordForm) {
-        $scope.logout = function () {
+    function ($http, OpenSlides) {
+        return function () {
             $http.post('/users/logout/').then(function (response) {
                 // Success: User logged out, so reboot OpenSlides.
                 OpenSlides.reboot();
             });
         };
+    }
+])
+
+.controller('userMenu', [
+    '$scope',
+    '$http',
+    'ngDialog',
+    'UserProfileForm',
+    'UserPasswordForm',
+    'Logout',
+    function($scope, $http, ngDialog, UserProfileForm, UserPasswordForm, Logout) {
+        $scope.logout = Logout;
+
         $scope.editProfile = function () {
             ngDialog.open(UserProfileForm.getDialog());
         };
