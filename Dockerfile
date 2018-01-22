@@ -36,3 +36,4 @@ USER openslides
 EXPOSE 8000
 USER openslides
 VOLUME /data
+VOLUME /plugins
