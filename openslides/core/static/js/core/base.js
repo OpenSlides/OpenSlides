@@ -9,6 +9,7 @@ angular.module('OpenSlidesApp.core', [
     'ngAnimate',
     'ngBootbox',
     'ngSanitize',  // TODO: only use this in functions that need it.
+    'ngStorage',
     'ui.bootstrap',
     'ui.bootstrap.datetimepicker',
     'ui.tree',
@@ -40,6 +41,13 @@ angular.module('OpenSlidesApp.core', [
         return function () {
             return /projector\/(\d+)\//.exec(location.pathname)[1];
         };
+    }
+])
+
+.config([
+    '$sessionStorageProvider',
+    function ($sessionStorageProvider) {
+        $sessionStorageProvider.setKeyPrefix('OpenSlides');
     }
 ])
 
