@@ -404,7 +404,7 @@ class MotionViewSet(ModelViewSet):
         if extension is not None:
             # Find the special "state" comment field.
             for id, field in config['motions_comments'].items():
-                if 'forState' in field and field['forState'] is True:
+                if isinstance(field, dict) and 'forState' in field and field['forState'] is True:
                     motion.comments[id] = extension
                     break
 

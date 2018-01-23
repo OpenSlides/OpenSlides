@@ -64,11 +64,11 @@ class TemplateView(View):
         super().__init__(*args, **kwargs)
 
         if self.template_name is None:
-            raise ImproperlyConfigured("'template_name' is not provided")
+            raise ImproperlyConfigured("'template_name' is not provided.")
 
-        if 'template' not in self.state:
+        if self.template_name not in self.state:
             with open(finders.find(self.template_name)) as template:
-                self.state['template'] = template.read()
+                self.state[self.template_name] = template.read()
 
     def get(self, *args: Any, **kwargs: Any) -> HttpResponse:
-        return HttpResponse(self.state['template'])
+        return HttpResponse(self.state[self.template_name])

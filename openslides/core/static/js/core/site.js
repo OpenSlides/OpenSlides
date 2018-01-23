@@ -16,7 +16,6 @@ angular.module('OpenSlidesApp.core.site', [
     'ngDialog',
     'ngFileSaver',
     'ngMessages',
-    'ngStorage',
     'ckeditor',
     'luegg.directives',
     'xeditable',
@@ -413,13 +412,6 @@ angular.module('OpenSlidesApp.core.site', [
             });
 
         $locationProvider.html5Mode(true);
-    }
-])
-
-.config([
-    '$sessionStorageProvider',
-    function ($sessionStorageProvider) {
-        $sessionStorageProvider.setKeyPrefix('OpenSlides');
     }
 ])
 
