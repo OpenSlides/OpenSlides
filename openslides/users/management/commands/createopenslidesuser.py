@@ -35,6 +35,7 @@ class Command(BaseCommand):
         user_data = {
             'first_name': options['first_name'],
             'last_name': options['last_name'],
+            'default_password': options['password'],
         }
         user = User.objects.create_user(options['username'], options['password'], **user_data)
         if options['groups_id'].isdigit():
