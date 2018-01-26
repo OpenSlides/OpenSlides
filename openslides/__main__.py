@@ -157,6 +157,11 @@ def get_parser():
         default=None,
         help='The used settings file directory. All settings files are created, even if they exist.')
     subcommand_createsettings.add_argument(
+        '--settings_filename',
+        action='store',
+        default='settings.py',
+        help='The used settings file name. The file is created, if it does not exist.')
+    subcommand_createsettings.add_argument(
         '--local-installation',
         action='store_true',
         help='Store settings and user files in a local directory.')
