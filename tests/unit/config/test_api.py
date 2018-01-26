@@ -26,8 +26,8 @@ class TestConfigVariable(TestCase):
 
 
 class TestConfigHandler(TestCase):
-    def test_get_not_found(self):
-        config.key_to_id = 'has to be set or there is a db query'
+    @patch('openslides.core.config.ConfigHandler.save_default_values')
+    def test_get_not_found(self, mock_save_default_values):
         self.assertRaises(
             ConfigNotFound,
             config.__getitem__,

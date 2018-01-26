@@ -878,13 +878,6 @@ angular.module('OpenSlidesApp.core', [
         return DS.defineResource({
             name: 'core/config',
             idAttribute: 'key',
-            configOptions: configOptions,
-            getConfigOptions: function () {
-                if (!this.configOptions) {
-                    this.configOptions = $http({ 'method': 'OPTIONS', 'url': '/rest/core/config/' });
-                }
-                return this.configOptions;
-            },
             translate: function (value) {
                 return gettextCatalog.getString(value);
             }

@@ -103,9 +103,10 @@ Core:
 - Added caching for the index views [#3419, #3424].
 - Added projector prioritization [#3425].
 - Use native twisted mode for daphne [#3487].
-- Save language selection to session storage [#3543]
+- Saved language selection to session storage [#3543].
 - Set default of projector resolution to 1220x915 [#2549].
 - Preparations for the SAML plugin; Fixed caching of main views [#3535].
+- Removed unnecessary OPTIONS request in config [#3541].
 
 Mediafiles:
 - Fixed reloading of PDF on page change [#3274].

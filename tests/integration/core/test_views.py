@@ -197,14 +197,6 @@ class ConfigViewSet(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, {'detail': 'Invalid input. Config value is missing.'})
 
-    def test_metadata_with_hidden(self):
-        self.client.login(username='admin', password='admin')
-        response = self.client.options(reverse('config-list'))
-        filter_obj = filter(
-            lambda item: item['key'] == 'test_var_pud2zah2teeNaiP7IoNa',
-            response.data['config_groups'][0]['subgroups'][0]['items'])
-        self.assertEqual(len(list(filter_obj)), 0)
-
 
 def validator_for_testing(value):
     """

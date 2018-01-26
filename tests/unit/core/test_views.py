@@ -170,10 +170,11 @@ class WebclientJavaScriptView(TestCase):
     def setUp(self):
         self.request = MagicMock()
 
+    @patch('openslides.core.config.config')
     @patch('django.contrib.auth.models.Permission.objects.all')
-    def test_permissions_as_constant(self, mock_all):
+    def test_permissions_as_constant(self, mock_permissions_all, mock_config):
         self.view_instance = views.WebclientJavaScriptView()
         self.view_instance.request = self.request
         response = self.view_instance.get(realm='site')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(mock_all.call_count, 2)
+        self.assertEqual(mock_permissions_all.call_count, 2)
