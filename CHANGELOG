@@ -82,7 +82,7 @@ Core:
 - Fixing error when clearing empty chat [#3199].
 - Added notify system [#3212].
 - Enhanced performance esp. for server restart and first connection of all
-  clients by refactoring autoupdate, Collection and AccessPermission [#3223].
+  clients by refactoring autoupdate, Collection and AccessPermission [#3223, #3539].
 - Fixes autoupdate bug for a user without user.can_see_name permission [#3233].
 - Improved reconnect handling if the server was flushed [#3297].
 - Highlight list entries in a light blue, if a related object is projected

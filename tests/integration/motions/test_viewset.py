@@ -17,7 +17,7 @@ from openslides.motions.models import (
     Workflow,
 )
 from openslides.users.models import Group
-from openslides.utils.autoupdate import inform_changed_data
+from openslides.utils.collection import CollectionElement
 from openslides.utils.test import TestCase
 
 
@@ -381,7 +381,7 @@ class CreateMotion(TestCase):
         self.admin = get_user_model().objects.get(username='admin')
         self.admin.groups.add(2)
         self.admin.groups.remove(3)
-        inform_changed_data(self.admin)
+        get_redis_connection('default').flushall()
 
         response = self.client.post(
             reverse('motion-list'),
@@ -448,7 +448,7 @@ class RetrieveMotion(TestCase):
         state.save()
         # The cache has to be cleared, see:
         # https://github.com/OpenSlides/OpenSlides/issues/3396
-        get_redis_connection("default").flushall()
+        get_redis_connection('default').flushall()
         response = guest_client.get(reverse('motion-detail', args=[self.motion.pk]))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -474,15 +474,14 @@ class RetrieveMotion(TestCase):
 
     def test_user_without_can_see_user_permission_to_see_motion_and_submitter_data(self):
         self.motion.submitters.add(get_user_model().objects.get(username='admin'))
-        inform_changed_data(self.motion)
         group = Group.objects.get(pk=1)  # Group with pk 1 is for anonymous and default users.
         permission_string = 'users.can_see_name'
         app_label, codename = permission_string.split('.')
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
         group.permissions.remove(permission)
-        inform_changed_data(group)
         config['general_system_enable_anonymous'] = True
         guest_client = APIClient()
+        get_redis_connection('default').flushall()
 
         response_1 = guest_client.get(reverse('motion-detail', args=[self.motion.pk]))
         self.assertEqual(response_1.status_code, status.HTTP_200_OK)
@@ -492,6 +491,7 @@ class RetrieveMotion(TestCase):
         extra_user = get_user_model().objects.create_user(
             username='username_wequePhieFoom0hai3wa',
             password='password_ooth7taechai5Oocieya')
+        get_redis_connection('default').flushall()
         response_3 = guest_client.get(reverse('user-detail', args=[extra_user.pk]))
         self.assertEqual(response_3.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -561,10 +561,10 @@ class UpdateMotion(TestCase):
         self.assertFalse(motion.supporters.exists())
 
     def test_removal_of_supporters(self):
+        # No cache used here.
         admin = get_user_model().objects.get(username='admin')
         group_staff = admin.groups.get(name='Staff')
         admin.groups.remove(group_staff)
-        inform_changed_data(admin)
         self.motion.submitters.add(admin)
         supporter = get_user_model().objects.create_user(
             username='test_username_ahshi4oZin0OoSh9chee',
@@ -572,6 +572,7 @@ class UpdateMotion(TestCase):
         self.motion.supporters.add(supporter)
         config['motions_remove_supporters'] = True
         self.assertEqual(self.motion.supporters.count(), 1)
+        get_redis_connection('default').flushall()
 
         response = self.client.patch(
             reverse('motion-detail', args=[self.motion.pk]),
@@ -629,7 +630,7 @@ class DeleteMotion(TestCase):
         group_delegates = Group.objects.get(name='Delegates')
         self.admin.groups.remove(group_staff)
         self.admin.groups.add(group_delegates)
-        inform_changed_data(self.admin)
+        CollectionElement.from_instance(self.admin)
 
     def put_motion_in_complex_workflow(self):
         workflow = Workflow.objects.get(name='Complex Workflow')
@@ -793,6 +794,7 @@ class SupportMotion(TestCase):
 
     def test_support(self):
         config['motions_min_supporters'] = 1
+        get_redis_connection('default').flushall()
         response = self.client.post(reverse('motion-support', args=[self.motion.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, {'detail': 'You have supported this motion successfully.'})
