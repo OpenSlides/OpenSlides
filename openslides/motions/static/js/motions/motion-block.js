@@ -230,9 +230,8 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
     '$state',
     'MotionBlock',
     'MotionBlockForm',
-    'AgendaUpdate',
     'motionBlockId',
-    function($scope, $state, MotionBlock, MotionBlockForm, AgendaUpdate, motionBlockId) {
+    function($scope, $state, MotionBlock, MotionBlockForm, motionBlockId) {
         $scope.alert = {};
 
         // Prepare form. Set initial values by creating a deep copy of
