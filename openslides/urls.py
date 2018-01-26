@@ -12,6 +12,7 @@ urlpatterns += [
     url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL.lstrip('/'), protected_serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^(?P<url>.*[^/])$', RedirectView.as_view(url='/%(url)s/', permanent=True)),
     url(r'^rest/', include(router.urls)),
+    url(r'^agenda/', include('openslides.agenda.urls')),
     url(r'^motions/', include('openslides.motions.urls')),
     url(r'^users/', include('openslides.users.urls')),
 

@@ -78,10 +78,13 @@
               <i class="fa fa-exclamation-triangle"></i>
               <translate>This version is not permitted.</translate>
             </span>
+            <small>
+              <translate>Sequential number</translate> {{ motion.getSequentialNumber() }}
+            </small>
         </h2>
       </div>
       <div class="col-sm-6">
-        <span class="pull-right">
+        <span class="pull-right" ng-if="navigation.count > 2">
           <a ui-sref="motions.motion.detail({id: navigation.previousMotion.id})"
             class="btn btn-default btn-sm" ng-disabled="!navigation.previousMotion">
             <i class="fa fa-angle-double-left"></i>

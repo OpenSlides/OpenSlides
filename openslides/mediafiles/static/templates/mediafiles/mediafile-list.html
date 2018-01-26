@@ -144,9 +144,10 @@
       {{ mediafiles.length }} {{ "files" | translate }}<span ng-if="(mediafiles|filter:{selected:true}).length > 0">,
       {{(mediafiles|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
     </div>
-    <div class="col-md-6" ng-show="mediafilesFiltered.length > itemsPerPage">
+    <div class="col-md-6" ng-show="mediafilesFiltered.length > pagination.itemsPerPage">
       <span class="pull-right">
-        <translate>Page</translate> {{ currentPage }} / {{ Math.ceil(mediafilesFiltered.length/itemsPerPage) }}
+        <translate>Page</translate> {{ pagination.currentPage }} /
+        {{ Math.ceil(mediafilesFiltered.length/pagination.itemsPerPage) }}
       </span>
     </div>
   </div>
@@ -248,7 +249,7 @@
       | filter: {filetype: (filter.booleanFilters.isPdf.value ? 'application/pdf' : (filter.booleanFilters.isPdf.value === false ? '!application/pdf' : ''))}
       | filter: {hidden: filter.booleanFilters.isHidden.value}
       | orderByEmptyLast: sort.column : sort.reverse)
-      | limitTo: itemsPerPage : limitBegin">
+      | limitTo: pagination.itemsPerPage : pagination.limitBegin">
 
       <!-- select column -->
       <div ng-show="isSelectMode" os-perms="mediafiles.can_manage" class="col-xs-1 centered">
@@ -368,11 +369,11 @@
   </div><!-- end os-table -->
 
   <ul uib-pagination
-      ng-show="mediafilesFiltered.length > itemsPerPage"
+      ng-show="mediafilesFiltered.length > pagination.itemsPerPage"
       total-items="mediafilesFiltered.length"
-      items-per-page="itemsPerPage"
-      ng-model="currentPage"
-      ng-change="pageChanged()"
+      items-per-page="pagination.itemsPerPage"
+      ng-model="pagination.currentPage"
+      ng-change="pagination.pageChanged()"
       class="pagination-sm"
       direction-links="false"
       boundary-links="true"

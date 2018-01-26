@@ -76,6 +76,8 @@ class CoreAppConfig(AppConfig):
 
         # Client settings
         client_settings_keys = [
+            'MOTION_IDENTIFIER_MIN_DIGITS',
+            'MOTION_IDENTIFIER_WITHOUT_BLANKS',
             'MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS'
         ]
         client_settings_dict = {}

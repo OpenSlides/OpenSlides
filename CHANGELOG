@@ -14,6 +14,7 @@ Agenda:
 - New permission for managing lists of speakers [#3366].
 - Fixed multiple request on creation of agenda related items [#3341].
 - Added possibility to mark speakers [#3570].
+- New DOCX export of agenda [#3569].
 
 Motions:
 - New export dialog [#3185].
@@ -56,6 +57,8 @@ Motions:
 - Combined all boolean filters into one dropdown menu and added a filter
   for amendments [#3501].
 - Allow to delete own motions [#3516].
+- Log which comment was updated  [#3569].
+- Save pagination sate to session storage [#3569].
 
 Elections:
 - Added pagination for list view [#3393].

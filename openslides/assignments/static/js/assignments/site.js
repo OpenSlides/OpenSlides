@@ -274,11 +274,13 @@ angular.module('OpenSlidesApp.assignments.site', [
     'User',
     'osTableFilter',
     'osTableSort',
+    'osTablePagination',
     'gettext',
     'AssignmentPhases',
     'AssignmentPdfExport',
-    function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, Projector, ProjectionDefault,
-        gettextCatalog, User, osTableFilter, osTableSort, gettext, AssignmentPhases, AssignmentPdfExport) {
+    function($scope, ngDialog, AssignmentForm, Assignment, Tag, Agenda, Projector,
+        ProjectionDefault, gettextCatalog, User, osTableFilter, osTableSort, osTablePagination,
+        gettext, AssignmentPhases, AssignmentPdfExport) {
         $scope.$watch(function () {
             return Assignment.lastModified();
         }, function () {
@@ -354,13 +356,7 @@ angular.module('OpenSlidesApp.assignments.site', [
         };
 
         // Pagination
-        $scope.currentPage = 1;
-        $scope.itemsPerPage = 25;
-        $scope.limitBegin = 0;
-        $scope.pageChanged = function() {
-            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
-            $scope.gotoTop();
-        };
+        $scope.pagination = osTablePagination.createInstance('AssignmentTablePagination');
 
         // update phase
         $scope.updatePhase = function (assignment, phase_id) {

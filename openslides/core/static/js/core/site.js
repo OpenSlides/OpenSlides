@@ -612,6 +612,47 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+/* Factory for pagination of the tables. Saves all settings (currentPage, ...)
+ * to the session storage and recovers them when the table is reloaded.
+ * You have to provide a 'tableName' where the settings are saved in the session
+ * storage. Has to be unique for obvious reasons.
+ * The 'itemsPerPage' is optional. If not given, it defaults to 25.
+ */
+.factory('osTablePagination', [
+    '$rootScope',
+    '$sessionStorage',
+    function ($rootScope, $sessionStorage) {
+        var createInstance = function (tableName, itemsPerPage) {
+            // Defaults
+            var self = {
+                currentPage: 1,
+                itemsPerPage: itemsPerPage || 25,
+                limitBegin: 0,
+            };
+
+            // Check storage; maybe recover old state.
+            var storage = $sessionStorage[tableName];
+            if (storage) {
+                self = storage;
+            }
+
+            self.save = function () {
+                $sessionStorage[tableName] = self;
+            };
+            self.pageChanged = function () {
+                self.limitBegin = (self.currentPage - 1) * self.itemsPerPage;
+                self.save();
+                $rootScope.gotoTop();
+            };
+            return self;
+        };
+
+        return {
+            createInstance: createInstance
+        };
+    }
+])
+
 /* This Factory could be used in any dialog, if the user should be warned, if another user
  * also has this dialog open. Use it like in this example in any dialog controller:
       var editingStoppedCallback = EditingWarning.editingStarted('editing_name' + item.id);

@@ -16,8 +16,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'Config',
     'Motion',
     'MotionComment',
-    function($q, operator, gettextCatalog, PDFLayout, PdfMakeConverter, ImageConverter, HTMLValidizer,
-        Category, Config, Motion, MotionComment) {
+    'OpenSlidesSettings',
+    function($q, operator, gettextCatalog, PDFLayout, PdfMakeConverter, ImageConverter,
+        HTMLValidizer, Category, Config, Motion, MotionComment, OpenSlidesSettings) {
         /**
          * Provides the content as JS objects for Motions in pdfMake context
          * @constructor
@@ -77,7 +78,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 );
             }
             if (Config.get('motions_export_sequential_number').value) {
-                subtitleLines.push(gettextCatalog.getString('Sequential number') + ': ' +  motion.id);
+                subtitleLines.push(gettextCatalog.getString('Sequential number') + ': ' +
+                    motion.getSequentialNumber());
             }
             var subtitle = PDFLayout.createSubtitle(subtitleLines);
 
