@@ -79,12 +79,6 @@ angular.module('OpenSlidesApp.mediafiles.image-plugin', [
                                 }
                             }
                         });
-                        // Set the toolbar icon to the default image icon.
-                        CKEDITOR.on('instanceReady', function () {
-                            var toolbarIcon = $('span.cke_button_icon.cke_button__image.browser_icon');
-                            toolbarIcon.removeClass('cke_button__image browser_icon');
-                            toolbarIcon.addClass('cke_button__image_icon');
-                        });
                         // Handler for selecting an image. It may be called by clicking on a thumbnail or by
                         // just giving the url. The scale is optional.
                         CKEDITOR.tools.imagebrowser.selectImage = function (url, scale) {
@@ -139,7 +133,8 @@ angular.module('OpenSlidesApp.mediafiles.image-plugin', [
                             dialog.hide();
                         };
                         editor.addCommand('imagebrowser-open', new CKEDITOR.dialogCommand('imagebrowser-dialog'));
-                        editor.ui.addButton(gettextCatalog.getString('Image browser'), {
+                        // By naming the button 'image', it gets the same image as the original image button.
+                        editor.ui.addButton('image', {
                             label: gettextCatalog.getString('Open image browser'),
                             command: 'imagebrowser-open',
                             toolbar: 'insert',
