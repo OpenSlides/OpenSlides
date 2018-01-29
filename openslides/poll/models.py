@@ -44,7 +44,7 @@ class BaseVote(models.Model):
     Subclasses have to define an option field. This must be a ForeignKeyField
     to a subclass of BasePoll.
     """
-    weight = models.IntegerField(default=1, null=True)  # Use MinMaxIntegerField
+    weight = models.FloatField(default=1, null=True, blank=True)
     value = models.CharField(max_length=255, null=True)
 
     class Meta:
@@ -72,9 +72,9 @@ class CollectDefaultVotesMixin(models.Model):
     Mixin for a poll to collect the default vote values for valid votes,
     invalid votes and votes cast.
     """
-    votesvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2)
-    votesinvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2)
-    votescast = MinMaxIntegerField(null=True, blank=True, min_value=-2)
+    votesvalid = models.FloatField(null=True, blank=True)
+    votesinvalid = models.FloatField(null=True, blank=True)
+    votescast = models.FloatField(null=True, blank=True)
 
     class Meta:
         abstract = True

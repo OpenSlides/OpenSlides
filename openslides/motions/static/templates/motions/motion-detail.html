@@ -370,7 +370,7 @@
                     <td ng-init="voteYes = poll.getVote(poll.yes, 'yes')">
                       <span class="result-label"><translate>Yes</translate>:</span>
                       <span class="result_value">
-                        {{ voteYes.value }} {{ voteYes.percentStr }}
+                        {{ voteYes.value | number:precision }} {{ voteYes.percentStr }}
                       </span>
                       <div ng-if="voteYes.percentNumber">
                         <uib-progressbar value="voteYes.percentNumber" type="success"></uib-progressbar>
@@ -382,7 +382,7 @@
                     <td ng-init="voteNo = poll.getVote(poll.no, 'no')">
                       <span class="result-label"><translate>No</translate>:</span>
                       <span class="result_value" >
-                        {{ voteNo.value }} {{ voteNo.percentStr }}
+                        {{ voteNo.value | number:precision }} {{ voteNo.percentStr }}
                       </span>
                       <div ng-if="voteNo.percentNumber">
                         <uib-progressbar value="voteNo.percentNumber" type="danger"></uib-progressbar>
@@ -394,7 +394,7 @@
                     <td ng-init="voteAbstain = poll.getVote(poll.abstain, 'abstain')">
                       <span class="result-label"><translate>Abstain</translate>:</span>
                       <span class="result_value">
-                        {{ voteAbstain.value }} {{ voteAbstain.percentStr }}
+                        {{ voteAbstain.value | number:precision }} {{ voteAbstain.percentStr }}
                       </span>
                       <div ng-if="voteAbstain.percentNumber">
                         <uib-progressbar value="voteAbstain.percentNumber" type="warning"></uib-progressbar>
@@ -406,7 +406,7 @@
                     <td ng-init="votesValid = poll.getVote(poll.votesvalid, 'votesvalid')">
                       <span class="result-label"><translate>Valid votes</translate>:</span>
                       <span class="result_value">
-                        {{ votesValid.value }} {{ votesValid.percentStr }}
+                        {{ votesValid.value | number:precision }} {{ votesValid.percentStr }}
                       </span>
                   <!-- invalid votes -->
                   <tr ng-if="poll.votesinvalid !== null">
@@ -415,7 +415,7 @@
                     <td ng-init="votesInvalid = poll.getVote(poll.votesinvalid, 'votesinvalid')">
                       <span class="result-label"><translate>Invalid votes</translate>:</span>
                       <span class="result_value">
-                        {{ votesInvalid.value }} {{ votesInvalid.percentStr }}
+                        {{ votesInvalid.value | number:precision }} {{ votesInvalid.percentStr }}
                       </span>
                   <!-- votes cast -->
                   <tr class="total" ng-if="poll.votescast !== null">
@@ -424,7 +424,7 @@
                     <td ng-init="votesCast = poll.getVote(poll.votescast, 'votescast')">
                       <span class="result-label"><translate>Votes cast</translate>:</span>
                       <span class="result_value">
-                        {{ votesCast.value }} {{ votesCast.percentStr }}
+                        {{ votesCast.value | number:precision }} {{ votesCast.percentStr }}
                       </span>
 
                   <!-- majority calculation -->
@@ -445,10 +445,10 @@
                     <td>
                       <div os-perms="motions.can_manage">
                         <span class="text-success" ng-if="isReached() >= 0" translate>
-                          Quorum ({{ voteYes.value - isReached() }}) reached.
+                          Quorum ({{ (voteYes.value - isReached()) | number:precision }}) reached.
                         </span>
                         <span class="text-danger" ng-if="isReached() < 0" translate>
-                          Quorum ({{ voteYes.value - isReached() }}) not reached.
+                          Quorum ({{ (voteYes.value - isReached()) | number:precision }}) not reached.
                        </span>
                       </div>
 

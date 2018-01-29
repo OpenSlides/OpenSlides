@@ -1,5 +1,6 @@
 from typing import Generator, Type
 
+from ..core.models import Tag
 from ..core.exceptions import ProjectorException
 from ..utils.projector import ProjectorElement
 from .models import Motion, MotionBlock, MotionChangeRecommendation, Workflow
@@ -28,6 +29,7 @@ class MotionSlide(ProjectorElement):
             yield from motion.submitters.all()
             yield from motion.supporters.all()
             yield from MotionChangeRecommendation.objects.filter(motion_version=motion.get_active_version().id)
+            yield from Tag.objects.all()
 
     def get_collection_elements_required_for_this(self, collection_element, config_entry):
         output = super().get_collection_elements_required_for_this(collection_element, config_entry)

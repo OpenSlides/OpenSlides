@@ -922,12 +922,49 @@ angular.module('OpenSlidesApp.motions', [
     }
 ])
 
+.factory('VotingPrinciple', [
+    'Tag',
+    function (Tag) {
+        return {
+            getName: function (value) {
+                // voting principle format: 'name.precision'.
+                var name = typeof value == 'number' ? Tag.get(value).name : value,
+                    i = name.lastIndexOf('.');
+                if (i >= 0) {
+                    return name.substr(0, i);
+                }
+                return name;
+            },
+            getPrecision: function (value) {
+                // voting principle format: 'name.precision'. Max. precision is 6.
+                if (value) {
+                    var name = typeof value == 'number' ? Tag.get(value).name : value,
+                        i = name.lastIndexOf('.');
+                    if (i >= 0) {
+                        var precision = parseInt(name.substr(i + 1));
+                        if (!isNaN(precision) && precision > 0) {
+                            return Math.min(6, precision);
+                        }
+                    }
+                }
+                return 0;
+            },
+            getStep: function (value) {
+                // Step between two values based on precision: 1, 0.1, 0.01 etc.
+                var precision = this.getPrecision(value);
+                return Math.pow(10, -precision);
+            }
+        };
+    }
+])
+
 .run([
     'Motion',
     'Category',
+    'Tag',
     'Workflow',
     'MotionChangeRecommendation',
-    function(Motion, Category, Workflow, MotionChangeRecommendation) {}
+    function(Motion, Category, Tag, Workflow, MotionChangeRecommendation) {}
 ])
 
 
