@@ -194,6 +194,8 @@ class AssignmentFullSerializer(ModelSerializer):
     """
     assignment_related_users = AssignmentRelatedUserSerializer(many=True, read_only=True)
     polls = AssignmentAllPollSerializer(many=True, read_only=True)
+    agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=2)
+    agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
 
     class Meta:
         model = Assignment
@@ -207,6 +209,8 @@ class AssignmentFullSerializer(ModelSerializer):
             'poll_description_default',
             'polls',
             'agenda_item_id',
+            'agenda_type',
+            'agenda_parent_id',
             'tags',)
         validators = (posts_validator,)
 
@@ -214,6 +218,19 @@ class AssignmentFullSerializer(ModelSerializer):
         if 'description' in data:
             data['description'] = validate_html(data['description'])
         return data
+
+    def create(self, validated_data):
+        """
+        Customized create method. Set information about related agenda item
+        into agenda_item_update_information container.
+        """
+        agenda_type = validated_data.pop('agenda_type', None)
+        agenda_parent_id = validated_data.pop('agenda_parent_id', None)
+        assignment = Assignment(**validated_data)
+        assignment.agenda_item_update_information['type'] = agenda_type
+        assignment.agenda_item_update_information['parent_id'] = agenda_parent_id
+        assignment.save()
+        return assignment
 
 
 class AssignmentShortSerializer(AssignmentFullSerializer):

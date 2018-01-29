@@ -376,21 +376,21 @@ angular.module('OpenSlidesApp.motions.site', [
                         description: gettextCatalog.getString("Don't create a new version.")
                     },
                     hide: true
-                },
-                {
-                    key: 'showAsAgendaItem',
-                    type: 'checkbox',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Show as agenda item'),
-                        description: gettextCatalog.getString('If deactivated the motion appears as internal item on agenda.')
-                    },
-                    hide: !(operator.hasPerms('motions.can_manage') && operator.hasPerms('agenda.can_manage'))
                 }];
 
-                // parent item
+                // show as agenda item + parent item
                 if (isCreateForm) {
                     formFields.push({
-                        key: 'agenda_parent_item_id',
+                        key: 'showAsAgendaItem',
+                        type: 'checkbox',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Show as agenda item'),
+                            description: gettextCatalog.getString('If deactivated the motion appears as internal item on agenda.')
+                        },
+                        hide: !(operator.hasPerms('motions.can_manage') && operator.hasPerms('agenda.can_manage'))
+                    });
+                    formFields.push({
+                        key: 'agenda_parent_id',
                         type: 'select-single',
                         templateOptions: {
                             label: gettextCatalog.getString('Parent item'),
@@ -1890,10 +1890,9 @@ angular.module('OpenSlidesApp.motions.site', [
     'User',
     'Workflow',
     'Agenda',
-    'AgendaUpdate',
     'ErrorMessage',
     function($scope, $state, gettext, gettextCatalog, operator, Motion, MotionForm,
-        Category, Config, Mediafile, Tag, User, Workflow, Agenda, AgendaUpdate, ErrorMessage) {
+        Category, Config, Mediafile, Tag, User, Workflow, Agenda, ErrorMessage) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -1927,13 +1926,10 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // save motion
         $scope.save = function (motion, gotoDetailView) {
+            motion.agenda_type = motion.showAsAgendaItem ? 1 : 2;
+            // The attribute motion.agenda_parent_id is set by the form, see form definition.
             Motion.create(motion).then(
                 function(success) {
-                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
-                    // see openslides.agenda.models.Item.ITEM_TYPE.
-                    var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
-                                   {key: 'parent_id', value: motion.agenda_parent_item_id}];
-                    AgendaUpdate.saveChanges(success.agenda_item_id, changes);
                     if (isAmendment || gotoDetailView) {
                         $state.go('motions.motion.detail', {id: success.id});
                     }
@@ -1959,13 +1955,12 @@ angular.module('OpenSlidesApp.motions.site', [
     'User',
     'Workflow',
     'Agenda',
-    'AgendaUpdate',
     'motionId',
     'operator',
     'ErrorMessage',
     'EditingWarning',
     function($scope, $state, Motion, Category, Config, Mediafile, MotionForm,
-        Tag, User, Workflow, Agenda, AgendaUpdate, motionId, operator, ErrorMessage,
+        Tag, User, Workflow, Agenda, motionId, operator, ErrorMessage,
         EditingWarning) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -2007,17 +2002,9 @@ angular.module('OpenSlidesApp.motions.site', [
                     $scope.formFields[i].hide = false;
                 }
             }
-            if ($scope.formFields[i].key == "showAsAgendaItem" && motion.agenda_item) {
-                // get state from agenda item (hidden/internal or agenda item)
-                $scope.formFields[i].defaultValue = !motion.agenda_item.is_hidden;
-            }
             if ($scope.formFields[i].key == "workflow_id") {
                // get saved workflow id from state
                $scope.formFields[i].defaultValue = motion.state.workflow_id;
-            }
-            if ($scope.formFields[i].key == "agenda_parent_item_id") {
-                // get current parent_id of the agenda item
-                $scope.formFields[i].defaultValue = motion.agenda_item.parent_id;
             }
         }
 
@@ -2029,14 +2016,9 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.save = function (motion, gotoDetailView) {
             // inject the changed motion (copy) object back into DS store
             Motion.inject(motion);
-            // save change motion object on server
+            // save changed motion object on server
             Motion.save(motion).then(
                 function(success) {
-                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
-                    // see openslides.agenda.models.Item.ITEM_TYPE.
-                    var changes = [{key: 'type', value: (motion.showAsAgendaItem ? 1 : 2)},
-                                   {key: 'parent_id', value: motion.agenda_parent_item_id}];
-                    AgendaUpdate.saveChanges(success.agenda_item_id,changes);
                     if (gotoDetailView) {
                         $state.go('motions.motion.detail', {id: success.id});
                     }

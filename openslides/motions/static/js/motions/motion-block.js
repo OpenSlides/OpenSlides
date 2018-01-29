@@ -69,8 +69,8 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
                 };
             },
             // Get angular-formly fields.
-            getFormFields: function () {
-                return [
+            getFormFields: function (isCreateForm) {
+                var formFields = [
                     {
                         key: 'title',
                         type: 'input',
@@ -78,7 +78,11 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
                             label: gettextCatalog.getString('Title')
                         }
                     },
-                    {
+                ];
+
+                // show as agenda item + parent item
+                if (isCreateForm) {
+                    formFields.push({
                         key: 'showAsAgendaItem',
                         type: 'checkbox',
                         templateOptions: {
@@ -86,18 +90,21 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
                             description: gettextCatalog.getString('If deactivated it appears as internal item on agenda.')
                         },
                         hide: !(operator.hasPerms('motions.can_manage') && operator.hasPerms('agenda.can_manage'))
-                    },
-                    {
-                        key: 'agenda_parent_item_id',
+                    });
+                    formFields.push({
+                        key: 'agenda_parent_id',
                         type: 'select-single',
                         templateOptions: {
                             label: gettextCatalog.getString('Parent item'),
                             options: AgendaTree.getFlatTree(Agenda.getAll()),
                             ngOptions: 'item.id as item.getListViewTitle() for item in to.options | notself : model.agenda_item_id',
                             placeholder: gettextCatalog.getString('Select a parent item ...')
-                        }
-                    }
-                ];
+                        },
+                        hide: !operator.hasPerms('agenda.can_manage')
+                    });
+                }
+
+                return formFields;
             }
         };
     }
@@ -190,24 +197,20 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
     '$scope',
     'MotionBlock',
     'MotionBlockForm',
-    'AgendaUpdate',
-    function($scope, MotionBlock, MotionBlockForm, AgendaUpdate) {
+    function($scope, MotionBlock, MotionBlockForm) {
         // Prepare form.
         $scope.model = {};
         $scope.model.showAsAgendaItem = true;
 
         // Get all form fields.
-        $scope.formFields = MotionBlockForm.getFormFields();
+        $scope.formFields = MotionBlockForm.getFormFields(true);
 
         // Save form.
         $scope.save = function (motionBlock) {
+            motionBlock.agenda_type = motionBlock.showAsAgendaItem ? 1 : 2;
+            // The attribute motionBlock.agenda_parent_id is set by the form, see form definition.
             MotionBlock.create(motionBlock).then(
                 function (success) {
-                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
-                    // see openslides.agenda.models.Item.ITEM_TYPE.
-                    var changes = [{key: 'type', value: (motionBlock.showAsAgendaItem ? 1 : 2)},
-                                   {key: 'parent_id', value: motionBlock.agenda_parent_item_id}];
-                    AgendaUpdate.saveChanges(success.agenda_item_id, changes);
                     $scope.closeThisDialog();
                 },
                 function (error) {
@@ -227,11 +230,8 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
     '$state',
     'MotionBlock',
     'MotionBlockForm',
-    'AgendaUpdate',
     'motionBlockId',
-    function($scope, $state, MotionBlock, MotionBlockForm, AgendaUpdate, motionBlockId) {
-        // TODO: Check #2486 and remove some agenda related code.
-        //MotionBlock.loadRelations(motionBlock, 'agenda_item');
+    function($scope, $state, MotionBlock, MotionBlockForm, motionBlockId) {
         $scope.alert = {};
 
         // Prepare form. Set initial values by creating a deep copy of
@@ -241,23 +241,14 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
 
         // Get all form fields.
         $scope.formFields = MotionBlockForm.getFormFields();
-        for (var i = 0; i < $scope.formFields.length; i++) {
-            if ($scope.formFields[i].key == 'showAsAgendaItem') {
-                // Get state from agenda item (hidden/internal or agenda item).
-                $scope.formFields[i].defaultValue = !motionBlock.agenda_item.is_hidden;
-            } else if ($scope.formFields[i].key == 'agenda_parent_item_id') {
-                $scope.formFields[i].defaultValue = motionBlock.agenda_item.parent_id;
-            }
-        }
+
         // Save form.
         $scope.save = function (motionBlock) {
+            // inject the changed motionBlock (copy) object back into DS store
+            MotionBlock.inject(motionBlock);
+            // save changed motionBlock object on server
             MotionBlock.create(motionBlock).then(
                 function (success) {
-                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
-                    // see openslides.agenda.models.Item.ITEM_TYPE.
-                    var changes = [{key: 'type', value: (motionBlock.showAsAgendaItem ? 1 : 2)},
-                                   {key: 'parent_id', value: motionBlock.agenda_parent_item_id}];
-                    AgendaUpdate.saveChanges(success.agenda_item_id,changes);
                     $scope.closeThisDialog();
                 },
                 function (error) {

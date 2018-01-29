@@ -116,28 +116,28 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
                         }
                     });
                 }
-                // show as agenda item
-                formFields.push({
-                    key: 'showAsAgendaItem',
-                    type: 'checkbox',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Show as agenda item'),
-                        description: gettextCatalog.getString('If deactivated it appears as internal item on agenda.')
-                    },
-                    hide: !operator.hasPerms('agenda.can_manage')
-                });
 
-                // parent item
+                // show as agenda item + parent item
                 if (isCreateForm) {
                     formFields.push({
-                        key: 'agenda_parent_item_id',
+                        key: 'showAsAgendaItem',
+                        type: 'checkbox',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Show as agenda item'),
+                            description: gettextCatalog.getString('If deactivated it appears as internal item on agenda.')
+                        },
+                        hide: !operator.hasPerms('agenda.can_manage')
+                    });
+                    formFields.push({
+                        key: 'agenda_parent_id',
                         type: 'select-single',
                         templateOptions: {
                             label: gettextCatalog.getString('Parent item'),
                             options: AgendaTree.getFlatTree(Agenda.getAll()),
                             ngOptions: 'item.id as item.getListViewTitle() for item in to.options | notself : model.agenda_item_id',
                             placeholder: gettextCatalog.getString('Select a parent item ...')
-                        }
+                        },
+                        hide: !operator.hasPerms('agenda.can_manage')
                     });
                 }
 
@@ -186,9 +186,8 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
     'Topic',
     'TopicForm',
     'Agenda',
-    'AgendaUpdate',
     'ErrorMessage',
-    function($scope, $state, Topic, TopicForm, Agenda, AgendaUpdate, ErrorMessage) {
+    function($scope, $state, Topic, TopicForm, Agenda, ErrorMessage) {
         $scope.topic = {};
         $scope.model = {};
         $scope.model.showAsAgendaItem = true;
@@ -196,13 +195,10 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
         $scope.formFields = TopicForm.getFormFields(true);
         // save form
         $scope.save = function (topic) {
+            topic.agenda_type = topic.showAsAgendaItem ? 1 : 2;
+            // The attribute topic.agenda_parent_id is set by the form, see form definition.
             Topic.create(topic).then(
                 function (success) {
-                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
-                    // see openslides.agenda.models.Item.ITEM_TYPE.
-                    var changes = [{key: 'type', value: (topic.showAsAgendaItem ? 1 : 2)},
-                                   {key: 'parent_id', value: topic.agenda_parent_item_id}];
-                    AgendaUpdate.saveChanges(success.agenda_item_id,changes);
                     $scope.closeThisDialog();
                 }, function (error) {
                     $scope.alert = ErrorMessage.forAlert(error);
@@ -218,10 +214,9 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
     'Topic',
     'TopicForm',
     'Agenda',
-    'AgendaUpdate',
     'topicId',
     'ErrorMessage',
-    function($scope, $state, Topic, TopicForm, Agenda, AgendaUpdate, topicId, ErrorMessage) {
+    function($scope, $state, Topic, TopicForm, Agenda, topicId, ErrorMessage) {
         var topic = Topic.get(topicId);
         $scope.alert = {};
         // set initial values for form model by create deep copy of topic object
@@ -229,25 +224,17 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
         $scope.model = angular.copy(topic);
         // get all form fields
         $scope.formFields = TopicForm.getFormFields();
-        for (var i = 0; i < $scope.formFields.length; i++) {
-            if ($scope.formFields[i].key == "showAsAgendaItem") {
-                // get state from agenda item (hidden/internal or agenda item)
-                $scope.formFields[i].defaultValue = !topic.agenda_item.is_hidden;
-            } else if ($scope.formFields[i].key == "agenda_parent_item_id") {
-                $scope.formFields[i].defaultValue = topic.agenda_item.parent_id;
-            }
-        }
+
         // save form
         $scope.save = function (topic) {
-            Topic.create(topic).then(
+            // inject the changed topic (copy) object back into DS store
+            Topic.inject(topic);
+            // save changed topic object on server
+            Topic.save(topic).then(
                 function(success) {
-                    // type: Value 1 means a non hidden agenda item, value 2 means a hidden agenda item,
-                    // see openslides.agenda.models.Item.ITEM_TYPE.
-                    var changes = [{key: 'type', value: (topic.showAsAgendaItem ? 1 : 2)},
-                                   {key: 'parent_id', value: topic.agenda_parent_item_id}];
-                    AgendaUpdate.saveChanges(success.agenda_item_id,changes);
                     $scope.closeThisDialog();
-                }, function (error) {
+                },
+                function (error) {
                     // save error: revert all changes by restore
                     // (refresh) original topic object from server
                     Topic.refresh(topic);
@@ -265,8 +252,7 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
     'Topic',
     'HumanTimeConverter',
     'TopicsCsvExample',
-    'AgendaUpdate',
-    function($scope, gettext, Agenda, Topic, HumanTimeConverter, TopicsCsvExample, AgendaUpdate) {
+    function($scope, gettext, Agenda, Topic, HumanTimeConverter, TopicsCsvExample) {
         // Big TODO: Change wording from "item" to "topic".
         // import from textarea
         $scope.importByLine = function () {
@@ -275,12 +261,11 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
                 $scope.importcounter = 0;
                 $scope.titleItems.forEach(function(title, index) {
                     var item = {title: title};
+                    item.agenda_type = 1;  // The new topic is not hidden.
+                    item.agenda_weight = 1000 + index;
                     // TODO: create all items in bulk mode
                     Topic.create(item).then(
                         function(success) {
-                            var changes = [{key: 'type', value: 1},
-                                           {key: 'weight', value: 1000 + index}];
-                            AgendaUpdate.saveChanges(success.agenda_item_id, changes);
                             $scope.importcounter++;
                         }
                     );
@@ -363,13 +348,12 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
             $scope.csvImporting = true;
             angular.forEach($scope.items, function (item) {
                 if (item.selected && !item.importerror) {
+                    item.agenda_type = item.type;
+                    item.agenda_comment = item.comment;
+                    item.agenda_duration = item.duration;
+                    item.agenda_weight = item.weight;
                     Topic.create(item).then(
                         function(success) {
-                            var changes = [{key: 'duration', value: item.duration},
-                                           {key: 'comment', value: item.comment},
-                                           {key: 'type', value: item.type},
-                                           {key: 'weight', value: item.weight}];
-                            AgendaUpdate.saveChanges(success.agenda_item_id, changes);
                             item.imported = true;
                         }
                     );
