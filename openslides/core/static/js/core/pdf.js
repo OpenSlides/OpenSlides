@@ -797,9 +797,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     var brParent = element.parentNode;
                                     var brParentNodeName = brParent.nodeName;
                                     //in case of inline-line-numbers and the os-line-break class ignore the break
-                                    if ((lineNumberMode == 'inline' &&
+                                    if (((lineNumberMode === 'inline' || lineNumberMode === 'none') &&
                                                 hasClass(element, 'os-line-break')) ||
-                                        (lineNumberMode == 'outside' &&
+                                        (lineNumberMode === 'outside' &&
                                                 hasClass(element, 'os-line-break') &&
                                                 hasClass(brParent, 'os-split-before'))) {
                                         break;
