@@ -24,8 +24,9 @@ angular.module('OpenSlidesApp.mediafiles.list', [
     'Mediafile',
     'MediafileForm',
     'Logos',
+    'Fonts',
     function ($http, $scope, gettext, ngDialog, osTableFilter, osTableSort, osTablePagination,
-              ProjectionDefault, Projector, User, Mediafile, MediafileForm, Logos) {
+              ProjectionDefault, Projector, User, Mediafile, MediafileForm, Logos, Fonts) {
         $scope.$watch(function () {
             return Mediafile.lastModified();
         }, function () {
@@ -259,21 +260,9 @@ angular.module('OpenSlidesApp.mediafiles.list', [
             );
         };
 
-        /** Logos **/
+        /** Logos and fonts **/
         $scope.logos = Logos.getAll();
-        $scope.toggleLogo = function (mediafile, logo) {
-            if (!$scope.hasLogo(mediafile, logo)) {
-                Logos.setMediafile(logo.key, mediafile);
-            } else {
-                Logos.setMediafile(logo.key);
-            }
-        };
-        $scope.hasLogo = function (mediafile, logo) {
-            var allUrls = _.map(mediafile.getLogos(), function (logo) {
-               return logo.path;
-            });
-            return _.includes(allUrls, logo.path);
-        };
+        $scope.fonts = Fonts.getAll();
         $scope.hasProjectorHeaderLogo = function (mediafile) {
             return _.some(mediafile.getLogos(), function (logo) {
                 return logo.key === 'logo_projector_header';

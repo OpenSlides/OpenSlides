@@ -1,9 +1,10 @@
 /** Fonts **/
-$font: 'Roboto';
+/* Note: The font naming has to be consistent to the projector.html */
+$font: 'OSFont';
 $font-src: url('../fonts/Roboto-Regular.woff') format('woff');
-$font-medium: 'Roboto Medium';
+$font-medium: 'OSFont Medium';
 $font-medium-src: url('../fonts/Roboto-Medium.woff') format('woff');
-$font-condensed: 'Roboto Condensed';
+$font-condensed: 'OSFont Condensed';
 $font-condensed-src: url('../fonts/Roboto-Condensed-Regular.woff') format('woff');
-$font-condensed-light: 'Roboto Condensed Light';
+$font-condensed-light: 'OSFont Condensed Light';
 $font-condensed-light-src: url('../fonts/Roboto-Condensed-Light.woff') format('woff');

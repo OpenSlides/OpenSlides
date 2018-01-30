@@ -281,7 +281,7 @@ class ConfigStore(RESTModelMixin, models.Model):
         default_permissions = ()
         permissions = (
             ('can_manage_config', 'Can manage configuration'),
-            ('can_manage_logos', 'Can manage logos'))
+            ('can_manage_logos_and_fonts', 'Can manage logos and fonts'))
 
     @classmethod
     def get_collection_string(cls):

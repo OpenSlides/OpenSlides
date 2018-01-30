@@ -80,9 +80,9 @@ gulp.task('pdf-worker', function () {
 gulp.task('pdf-worker-libs', function () {
     return gulp.src([
             path.join('bower_components', 'pdfmake', 'build', 'pdfmake.min.js'),
-            path.join('bower_components', 'pdfmake', 'build', 'vfs_fonts.js'),
         ])
-        .pipe(concat('pdf-worker-libs.js'))
+        .pipe(gulpif(argv.production, uglify()))
+        .pipe(rename('pdf-worker-libs.js'))
         .pipe(gulp.dest(path.join(output_directory, 'js', 'workers')));
 });
 

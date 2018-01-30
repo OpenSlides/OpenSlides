@@ -291,8 +291,12 @@
         <div class="icon-column"> <!-- horizontal block -->
           <i ng-style="{'visibility': mediafile.hidden ? 'visible' : 'hidden'}" class="fa fa-lock fa-lg"
               title="{{ 'Is hidden' | translate }}"></i>
-          <i ng-style="{'visibility': mediafile.isUsedAsLogo() ? 'visible' : 'hidden'}" class="fa fa-picture-o fa-lg spacer-left"
-              title="{{ 'Is used as a logo' | translate }}" os-perms="core.can_manage_logos"></i>
+          <span os-perms="core.can_manage_logos_and_fonts" class="spacer-left">
+            <i ng-if="mediafile.isUsedAsLogo()" class="fa fa-picture-o fa-lg"
+            title="{{ 'Is used as a logo' | translate }}"></i>
+            <i ng-if="mediafile.isUsedAsFont()" class="fa fa-font fa-lg"
+              title="{{ 'Is used as a font' | translate }}"></i>
+          </span>
         </div>
         <div class="title-column">
           <div> <!-- vertical block -->
@@ -325,7 +329,7 @@
         </div>
         <div style="width: 40%;" class="pull-right optional">
           <!-- Logo placeholder dropdown for manage user -->
-          <div os-perms="core.can_manage_logos"
+          <div os-perms="core.can_manage_logos_and_fonts"
               ng-mouseover="mediafile.logoHover=true"
               ng-mouseleave="mediafile.logoHover=false"
               ng-show="mediafile.canBeUsedAsLogo()">
@@ -354,14 +358,49 @@
               </span>
               <ul class="dropdown-menu" aria-labelledby="dropdownLogos{{ mediafile.id }}">
                 <li ng-repeat="logo in logos">
-                  <a href ng-click="toggleLogo(mediafile, logo)">
-                    <i class="fa fa-check" ng-if="hasLogo(mediafile, logo)"></i>
+                  <a href ng-click="mediafile.toggleLogo(logo)">
+                    <i class="fa fa-check" ng-if="mediafile.hasLogo(logo)"></i>
                     {{ logo.display_name | translate }}
                   </a>
                 </li>
               </ul>
             </span>
           </div>
+          <!-- Font placeholder dropdown for manage user -->
+          <div os-perms="core.can_manage_logos_and_fonts"
+              ng-mouseover="mediafile.fontHover=true"
+              ng-mouseleave="mediafile.fontHover=false"
+              ng-show="mediafile.canBeUsedAsFont()">
+            <span uib-dropdown>
+              <span id="dropdownFont{{ mediafile.id }}" class="pointer nobr" uib-dropdown-toggle>
+                <span uib-tooltip="{{ 'Manage fonts' | translate }}" tooltip-class="nobr">
+                  <span ng-if="!mediafile.isUsedAsFont()" ng-show="mediafile.hover">
+                    <i class="fa fa-font"></i>
+                    <i class="fa fa-plus"></i>
+                  </span>
+                  <span ng-if="mediafile.isUsedAsFont()">
+                    <span ng-repeat="font in mediafile.getFonts()">
+                      <i class="fa fa-font spacer-right"
+                         ng-style="{'visibility': $first ? 'visible' : 'hidden'}"></i>
+                      <small>
+                        {{ font.display_name | translate }}<span ng-if="!$last">,</br></span>
+                      </small>
+                    </span>
+                  </span>
+                </span>
+                <i class="fa fa-cog fa-lg spacer-left" ng-show="mediafile.fontHover && mediafile.isUsedAsFont()"></i>
+              </span>
+              <ul class="dropdown-menu" aria-labelledby="dropdownFonts{{ mediafile.id }}">
+                <li ng-repeat="font in fonts">
+                  <a href ng-click="mediafile.toggleFont(font)">
+                    <i class="fa fa-check" ng-if="mediafile.hasFont(font)"></i>
+                    {{ font.display_name | translate }}
+                  </a>
+                </li>
+              </ul>
+            </span>
+          </div>
+
         </div>
       </div>
 

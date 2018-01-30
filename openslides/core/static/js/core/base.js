@@ -826,35 +826,77 @@ angular.module('OpenSlidesApp.core', [
             getAll: function () {
                 var self = this;
                 return _.map(this.getKeys(), function (key) {
-                    return self.getFromKey(key);
+                    return self.get(key);
                 });
             },
-            getFromKey: function (key) {
+            get: function (key) {
                 var config = Config.get(key);
                 if (config) {
                     config.value.key = key;
                     return config.value;
                 }
             },
-            isMediafileUsedAsLogo: function (mediafile) {
-                return _.find(this.getAll(), function (logoPlaceholder) {
-                    return logoPlaceholder.path === mediafile.mediafileUrl;
-                });
-            },
-            canMediafileBeUsedAsLogo: function (mediafile) {
-                return mediafile.is_image;
-            },
-            setMediafile: function (key, mediafile) {
+            set: function (key, path) {
                 var config = Config.get(key);
-                if (!mediafile || mediafile.canBeUsedAsLogo()) {
-                    config.value.path = mediafile ? mediafile.mediafileUrl : '';
+                if (config) {
+                    config.value.path = path;// ? mediafile.mediafileUrl : '';
                     Config.save(key);
                 }
             },
-            getLogosForMediafile: function (mediafile) {
-                return _.filter(this.getAll(), function (logoPlaceholder) {
-                    return logoPlaceholder.path === mediafile.mediafileUrl;
+        };
+    }
+])
+
+.factory('Fonts', [
+    'Config',
+    'gettext',
+    function (Config, gettext) {
+        var extensionFormatMap = {
+            'ttf': 'truetype',
+            'woff': 'woff',
+        };
+
+        return {
+            getKeys: function () {
+                return Config.get('fonts_available').value;
+            },
+            getAll: function () {
+                var self = this;
+                return _.map(this.getKeys(), function (key) {
+                    return self.get(key);
                 });
+            },
+            get: function (key) {
+                var config = Config.get(key);
+                if (config) {
+                    config.value.key = key;
+                    return config.value;
+                }
+            },
+            getUrl: function (key) {
+                var font = this.get(key);
+                if (font) {
+                    var path = font.path;
+                    if (!path) {
+                        return font.default;
+                    }
+                    return path;
+                }
+            },
+            getForCss: function (key) {
+                var url = this.getUrl(key);
+                if (url) {
+                    var ext = _.last(url.split('.'));
+                    return "url('" + url + "') format('" +
+                        extensionFormatMap[ext] + "')";
+                }
+            },
+            set: function (key, path) {
+                var config = Config.get(key);
+                if (config) {
+                    config.value.path = path;
+                    Config.save(key);
+                }
             },
         };
     }

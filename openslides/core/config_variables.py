@@ -259,7 +259,7 @@ def get_config_variables():
         default_value={
             'display_name': 'Projector logo',
             'path': ''},
-        input_type='logo',
+        input_type='static',
         weight=301,
         group='Logo',
         hidden=True)
@@ -269,7 +269,7 @@ def get_config_variables():
         default_value={
             'display_name': 'Projector header image',
             'path': ''},
-        input_type='logo',
+        input_type='static',
         weight=302,
         group='Logo',
         hidden=True)
@@ -279,7 +279,7 @@ def get_config_variables():
         default_value={
             'display_name': 'Web interface header logo',
             'path': ''},
-        input_type='logo',
+        input_type='static',
         weight=303,
         group='Logo',
         hidden=True)
@@ -290,7 +290,7 @@ def get_config_variables():
         default_value={
             'display_name': 'PDF header logo',
             'path': ''},
-        input_type='logo',
+        input_type='static',
         weight=310,
         group='Logo',
         hidden=True)
@@ -300,7 +300,7 @@ def get_config_variables():
         default_value={
             'display_name': 'PDF footer logo',
             'path': ''},
-        input_type='logo',
+        input_type='static',
         weight=311,
         group='Logo',
         hidden=True)
@@ -310,9 +310,65 @@ def get_config_variables():
         default_value={
             'display_name': 'PDF ballot paper logo',
             'path': ''},
-        input_type='logo',
+        input_type='static',
         weight=312,
         group='Logo',
+        hidden=True)
+
+    # Fonts
+    yield ConfigVariable(
+        name='fonts_available',
+        default_value=[
+            'font_regular',
+            'font_italic',
+            'font_bold',
+            'font_bold_italic'],
+        weight=320,
+        group='Font',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='font_regular',
+        default_value={
+            'display_name': 'Font regular',
+            'default': 'static/fonts/Roboto-Regular.woff',
+            'path': ''},
+        input_type='static',
+        weight=321,
+        group='Font',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='font_italic',
+        default_value={
+            'display_name': 'Font italic',
+            'default': 'static/fonts/Roboto-Medium.woff',
+            'path': ''},
+        input_type='static',
+        weight=321,
+        group='Font',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='font_bold',
+        default_value={
+            'display_name': 'Font bold',
+            'default': 'static/fonts/Roboto-Condensed-Regular.woff',
+            'path': ''},
+        input_type='static',
+        weight=321,
+        group='Font',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='font_bold_italic',
+        default_value={
+            'display_name': 'Font bold italic',
+            'default': 'static/fonts/Roboto-Condensed-Light.woff',
+            'path': ''},
+        input_type='static',
+        weight=321,
+        group='Font',
         hidden=True)
 
     # Custom translations
