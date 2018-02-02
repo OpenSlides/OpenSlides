@@ -239,7 +239,7 @@
                     <translate>Motion</translate>
                   </span>
                   <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="motion-dropdown">
-                    <li ng-repeat="m in motions">
+                    <li ng-repeat="m in motions | orderBy: identifier">
                       <a href ng-click="addMotionToRecommendationField(m)">
                         {{ m.identifier ? m.identifier + ':' : '' }} {{ m.getTitle() }}
                       </a>

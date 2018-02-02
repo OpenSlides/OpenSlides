@@ -80,7 +80,7 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
         var getMotionShortData = function (motions) {
             return _.map(motions, function (motion) {
                 return {
-                    identifier: motion.identifier,
+                    identifier: motion.identifier || '',
                     title: motion.getTitle(),
                 };
             });
@@ -113,7 +113,7 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
                     sequential_enabled: sequential_enabled,
                     // Actual data
                     id: motion.id,
-                    identifier: motion.identifier,
+                    identifier: motion.identifier || '',
                     title: motion.getTitle(),
                     submitters: params.include.submitters ?  _.map(motion.submitters, function (submitter) {
                                     return submitter.get_full_name();

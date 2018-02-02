@@ -180,6 +180,14 @@ class UserViewSet(ModelViewSet):
         for user_id in user_ids:
             if not isinstance(user_id, int):
                 raise ValidationError({'detail': 'User_id has to be an int.'})
+        # Get subject and body from the response. Do not use the config values
+        # because they might not be translated.
+        subject = request.data.get('subject')
+        message = request.data.get('message')
+        if not isinstance(subject, str):
+            raise ValidationError({'detail': 'Subject has to be a string.'})
+        if not isinstance(message, str):
+            raise ValidationError({'detail': 'Message has to be a string.'})
         users = User.objects.filter(pk__in=user_ids)
 
         # Sending Emails. Keep track, which users gets an email.
@@ -199,7 +207,7 @@ class UserViewSet(ModelViewSet):
         try:
             for user in users:
                 if user.email:
-                    if user.send_invitation_email(connection, skip_autoupdate=True):
+                    if user.send_invitation_email(connection, subject, message, skip_autoupdate=True):
                         success_users.append(user)
                 else:
                     user_pks_without_email.append(user.pk)
