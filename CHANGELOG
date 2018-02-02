@@ -59,6 +59,8 @@ Motions:
 - Allow to delete own motions [#3516].
 - Log which comment was updated  [#3569].
 - Save pagination sate to session storage [#3569].
+- Split up 'can_see_and_manage_comments' permission in two seperate
+  ones [#3565].
 
 Elections:
 - Added pagination for list view [#3393].

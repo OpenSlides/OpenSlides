@@ -19,7 +19,6 @@ class CoreAppConfig(AppConfig):
     def ready(self):
         # Import all required stuff.
         from .config import config
-        from .signals import post_permission_creation
         from ..utils.rest_api import router
         from .config_variables import get_config_variables
         from .projector import get_projector_elements
@@ -27,8 +26,10 @@ class CoreAppConfig(AppConfig):
             delete_django_app_permissions,
             get_permission_change_data,
             permission_change,
+            post_permission_creation,
             required_users,
-            user_data_required)
+            user_data_required,
+        )
         from .views import (
             ChatMessageViewSet,
             ConfigViewSet,
