@@ -19,7 +19,7 @@
 }
 
 /* Styles for annotating the original motion text with change recommendations */
-.motion-text-holder {
+#content .motion-text-holder {
     position: relative;
 
     .change-recommendation-list {
@@ -35,19 +35,19 @@
             width: 4px;
             cursor: pointer;
 
-            & > li.insert {
+            &.insert {
                 background-color: #00aa00;
             }
 
-            & > li.delete {
+            &.delete {
                 background-color: #aa0000;
             }
 
-            & > li.replace {
+            &.replace {
                 background-color: #0333ff;
             }
 
-            & > li.other {
+            &.other {
                 background-color: #777777;
             }
         }
