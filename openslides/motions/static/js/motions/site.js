@@ -1765,11 +1765,11 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.createPollPdf = function () {
             MotionPdfExport.createPollPdf($scope.motion, $scope.version);
         };
-        $scope.exportComments = function () {
+        $scope.exportComment = function (commentId) {
             var identifier = $scope.motion.identifier ? '-' + $scope.motion.identifier : '';
             var commentsString = ' - ' + gettextCatalog.getString('Comments');
             var filename = gettextCatalog.getString('Motion') + identifier + commentsString + '.pdf';
-            MotionPdfExport.exportComments($scope.motion, filename);
+            MotionPdfExport.exportComment($scope.motion, commentId, filename);
         };
         $scope.exportPersonalNote = function () {
             var identifier = $scope.motion.identifier ? '-' + $scope.motion.identifier : '';

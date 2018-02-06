@@ -298,6 +298,7 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
 
                 function generateFlatTree(tree, parentCount) {
                     _.each(tree, function (item) {
+                        item.item.childrenCount = item.children.length;
                         item.item.parentCount = parentCount;
                         flatItems.push(item.item);
                         generateFlatTree(item.children, parentCount + 1);

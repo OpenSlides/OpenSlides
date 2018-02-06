@@ -131,7 +131,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
     function (MotionInlineEditing, Editor) {
         var createInstances = function ($scope, motion) {
             var commentsInlineEditing = {
-                editors: []
+                editors: {}, // Map comment id to editor instance.
             };
             var options = Editor.getOptions('inline', 'YOffset');
             _.forEachRight($scope.noSpecialCommentsFields, function (field, id) {
@@ -141,20 +141,20 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                         return motion['comment_' + id];
                     },
                     function (obj) {
-                        motion['comment_' + id] = obj.editor.getData();
+                        if (obj.editor) {
+                            motion['comment_' + id] = obj.editor.getData();
+                        }
                     }
                 );
-                commentsInlineEditing.editors.push(inlineEditing);
+                commentsInlineEditing.editors[id] = inlineEditing;
             });
             commentsInlineEditing.saveToolbarVisible = function () {
                 return _.some(commentsInlineEditing.editors, function (instance) {
                     return instance.changed && instance.active;
                 });
             };
-            commentsInlineEditing.active = function () {
-                return _.some(commentsInlineEditing.editors, function (instance) {
-                    return instance.active;
-                });
+            commentsInlineEditing.active = function (commentId) {
+                return commentsInlineEditing.editors[commentId].active;
             };
             commentsInlineEditing.save = function () {
                 _.forEach(commentsInlineEditing.editors, function (instance) {
@@ -166,15 +166,11 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                     instance.revert();
                 });
             };
-            commentsInlineEditing.enable = function () {
-                _.forEach(commentsInlineEditing.editors, function (instance) {
-                    instance.enable();
-                });
+            commentsInlineEditing.enable = function (commentId) {
+                commentsInlineEditing.editors[commentId].enable();
             };
-            commentsInlineEditing.disable = function () {
-                _.forEach(commentsInlineEditing.editors, function (instance) {
-                    instance.disable();
-                });
+            commentsInlineEditing.disable = function (commentId) {
+                commentsInlineEditing.editors[commentId].disable();
             };
 
             return commentsInlineEditing;

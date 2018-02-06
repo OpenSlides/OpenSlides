@@ -11,18 +11,18 @@
 
 <!-- Nested node template -->
 <script type="text/ng-template" id="projector_agenda_renderer.html">
-  <td class="number">
-    <p ng-class="{mainitem: node.item.parent_id === null, subitem: node.item.parent_id !== null, done: node.item.closed}">
+  <td class="number" ng-if="!node.item.closed">
+    <p ng-class="{mainitem: node.item.parent_id === null, subitem: node.item.parent_id !== null}">
       {{ node.item.item_number }}
     </p>
   </td>
-  <td>
+  <td ng-if="!node.item.closed">
     <p ng-class="{mainitem: node.item.parent_id === null}" ng-if="node.item.item_number">
       &middot;
     </p>
   </td>
-  <td>
-    <p ng-class="{mainitem: node.item.parent_id === null, subitem: node.item.parent_id !== null, done: node.item.closed}">
+  <td ng-if="!node.item.closed">
+    <p ng-class="{mainitem: node.item.parent_id === null, subitem: node.item.parent_id !== null}">
       {{ node.item.title }}
     </p>
     <table ng-if="node.children.length" class="agendalist-table">

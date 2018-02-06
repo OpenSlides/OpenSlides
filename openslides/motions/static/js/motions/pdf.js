@@ -1069,26 +1069,23 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     });
                 });
             },
-            exportComments: function (motion, filename) {
-                var fields = MotionComment.getNoSpecialCommentsFields();
-                var content = [];
-                _.forEach(fields, function (field, id) {
-                    if (motion.comments[id]) {
-                        var title = field.name;
-                        if (!field.public) {
-                            title += ' (' + gettextCatalog.getString('internal') + ')';
-                        }
-                        content.push({
-                            heading: title,
-                            text: motion.comments[id],
-                        });
+            exportComment: function (motion, commentId, filename) {
+                var field = MotionComment.getNoSpecialCommentsFields()[commentId];
+                if (field && motion.comments[commentId]) {
+                    var title = field.name;
+                    if (!field.public) {
+                        title += ' (' + gettextCatalog.getString('internal') + ')';
                     }
-                });
-                MotionPartialContentProvider.createInstance(motion, content).then(function (contentProvider) {
-                    PdfMakeDocumentProvider.createInstance(contentProvider).then(function (documentProvider) {
-                        PdfCreate.download(documentProvider.getDocument(), filename);
+                    var content = [{
+                        heading: title,
+                        text: motion.comments[commentId],
+                    }];
+                    MotionPartialContentProvider.createInstance(motion, content).then(function (contentProvider) {
+                        PdfMakeDocumentProvider.createInstance(contentProvider).then(function (documentProvider) {
+                            PdfCreate.download(documentProvider.getDocument(), filename);
+                        });
                     });
-                });
+                }
             },
         };
     }
