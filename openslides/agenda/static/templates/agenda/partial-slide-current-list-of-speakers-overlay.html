@@ -7,6 +7,7 @@
     | limitTo: config('agenda_show_last_speakers') : (lastSpeakers.length - config('agenda_show_last_speakers'))"
     class="lastSpeakers">
     {{ speaker.user.get_full_name() }}
+    <i class="fa fa-star" ng-if="speaker.marked" title="{{ 'Marked' | translate }}"></i>
   </p>
 
   <!-- Current speaker -->
@@ -15,6 +16,7 @@
     <i class="fa fa-microphone fa-lg"></i>
     <span class="pull-right" style="width:calc(100% - 30px);">
       {{ speaker.user.get_full_name() }}
+      <i class="fa fa-star" ng-if="speaker.marked" title="{{ 'Marked' | translate }}"></i>
     </span>
   </div>
 
@@ -25,6 +27,7 @@
       | orderBy:'weight'
       | limitTo: 3">
       {{ speaker.user.get_full_name() }}
+      <i class="fa fa-star" ng-if="speaker.marked" title="{{ 'Marked' | translate }}"></i>
     </li>
   </ol>
   <p ng-if="nextSpeakers.length > 3" class="lastSpeakers">

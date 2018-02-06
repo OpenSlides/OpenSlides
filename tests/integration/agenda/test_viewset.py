@@ -252,6 +252,35 @@ class ManageSpeaker(TestCase):
             {'speaker': speaker.pk})
         self.assertEqual(response.status_code, 403)
 
+    def test_mark_speaker(self):
+        Speaker.objects.add(self.user, self.item)
+        response = self.client.patch(
+            reverse('item-manage-speaker', args=[self.item.pk]),
+            {
+                'user': self.user.pk,
+                'marked': True,
+            },
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Speaker.objects.get().marked)
+
+    def test_mark_speaker_non_admin(self):
+        admin = get_user_model().objects.get(username='admin')
+        group_staff = admin.groups.get(name='Staff')
+        group_delegates = type(group_staff).objects.get(name='Delegates')
+        admin.groups.add(group_delegates)
+        admin.groups.remove(group_staff)
+        CollectionElement.from_instance(admin)
+        Speaker.objects.add(self.user, self.item)
+
+        response = self.client.patch(
+            reverse('item-manage-speaker', args=[self.item.pk]),
+            {'user': self.user.pk})
+
+        self.assertEqual(response.status_code, 403)
+
 
 class Speak(TestCase):
     """

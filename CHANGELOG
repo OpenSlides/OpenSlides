@@ -13,6 +13,7 @@ Agenda:
 - Fixed issue when sorting a new inserted speaker [#3210].
 - New permission for managing lists of speakers [#3366].
 - Fixed multiple request on creation of agenda related items [#3341].
+- Added possibility to mark speakers [#3570].
 
 Motions:
 - New export dialog [#3185].
