@@ -9,6 +9,7 @@ import django
 from django.core.management import call_command, execute_from_command_line
 
 import openslides
+from openslides.utils.arguments import arguments
 from openslides.utils.main import (
     ExceptionArgumentParser,
     UnknownCommand,
@@ -45,7 +46,7 @@ def main():
             parser.error('Unknown arguments {}'.format(' '.join(unknown_args)))
 
         # Save arguments, if one wants to access them later.
-        openslides.args = known_args
+        arguments.set_arguments(known_args)
 
         # Run a command that is defined here
         # These are commands that can not rely on an existing settings
@@ -115,6 +116,11 @@ def get_parser():
         '--debug-email',
         action='store_true',
         help='Change the email backend to console output.')
+    subcommand_start.add_argument(
+        '--no-template-caching',
+        action='store_true',
+        default=False,
+        help='Disables caching of templates.')
     subcommand_start.add_argument(
         '--host',
         action='store',
