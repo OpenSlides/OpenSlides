@@ -448,7 +448,13 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             "delete": ["color:red", "text-decoration:line-through"],
                             "insert": ["color:green", "text-decoration:underline"]
                         },
+                        getLineNumber = function (element) {
+                            if (element.nodeName == 'SPAN' && element.getAttribute('class') && element.getAttribute('class').indexOf('os-line-number') > -1) {
+                                return element.getAttribute('data-line-number');
+                            }
+                        },
                         /**
+                         *
                          * Removes all line number nodes (not line-breaks)
                          * and returns an array containing the reoved numbers (as integer, not as node)
                          *
@@ -457,14 +463,22 @@ angular.module('OpenSlidesApp.core.pdf', [])
                          */
                         extractLineNumbers = function(element) {
                             var foundLineNumbers = [];
-                            if (element.nodeName == 'SPAN' && element.getAttribute('class') && element.getAttribute('class').indexOf('os-line-number') > -1) {
-                                foundLineNumbers.push(element.getAttribute('data-line-number'));
+                            var lineNumber = getLineNumber(element);
+                            if (lineNumber) {
+                                foundLineNumbers.push(lineNumber);
                                 element.parentNode.removeChild(element);
+                            } else if (element.nodeName === 'BR') {
+                                // Check if there is a new line, but it does not get a line number.
+                                // If so, insert a dummy line, so the line nubers stays aligned with
+                                // the text.
+                                if (!getLineNumber(element.nextSibling)) {
+                                    foundLineNumbers.push('');
+                                }
                             } else {
                                 var children = element.childNodes,
                                     childrenLength = children.length;
                                 for (var i = 0; i < children.length; i++) {
-                                    foundLineNumbers = _.union(foundLineNumbers, extractLineNumbers(children[i]));
+                                    foundLineNumbers = _.concat(foundLineNumbers, extractLineNumbers(children[i]));
                                     if (children.length < childrenLength) {
                                         i -= (childrenLength - children.length);
                                         childrenLength = children.length;
@@ -797,12 +811,18 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     var brParent = element.parentNode;
                                     var brParentNodeName = brParent.nodeName;
                                     //in case of inline-line-numbers and the os-line-break class ignore the break
-                                    if ((lineNumberMode == 'inline' &&
+                                    if (((lineNumberMode === 'inline' || lineNumberMode === 'none') &&
                                                 hasClass(element, 'os-line-break')) ||
-                                        (lineNumberMode == 'outside' &&
+                                        (lineNumberMode === 'outside' &&
                                                 hasClass(element, 'os-line-break') &&
                                                 hasClass(brParent, 'os-split-before'))) {
                                         break;
+                                    } else if (element.nextSibling.nodeName === 'BR') {
+                                        // Add a dummy line, if the next tag is a BR tag again.
+                                        currentParagraph = create('text');
+                                        currentParagraph.lineHeight = 1.25;
+                                        currentParagraph.text.push(create('text', ' '));
+                                        alreadyConverted.push(currentParagraph);
                                     } else {
                                         currentParagraph = create("text");
                                         if (lineNumberMode === "outside" &&
