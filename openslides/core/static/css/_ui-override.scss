@@ -75,11 +75,10 @@
     width: 100% !important;
     font-size: 14px;
 
-    .chosen-choices {
-        border: 1px solid #ccc;
-        border-radius: 4px;
+    ul.chosen-results {
+        margin: 0 !important;
 
-        li.search-choice {
+        li.active-result {
             margin: 6px 5px 0 0 !important;
         }
     }
