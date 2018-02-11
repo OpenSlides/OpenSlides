@@ -30,6 +30,6 @@ script:
   - coverage report --fail-under=44
 
   - DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py test tests.integration
-  - coverage report --fail-under=74
+  - coverage report --fail-under=73
 
   - DJANGO_SETTINGS_MODULE='tests.settings' ./manage.py test tests.old

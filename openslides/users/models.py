@@ -240,7 +240,7 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         """
         raise RuntimeError('Do not use user.has_perm() but use openslides.utils.auth.has_perm')
 
-    def send_invitation_email(self, connection, skip_autoupdate=False):
+    def send_invitation_email(self, connection, subject, message, skip_autoupdate=False):
         """
         Sends an invitation email to the users. Returns True on success, False on failiure.
         May raise an ValidationError, if something went wrong.
@@ -260,10 +260,10 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             'url': config['users_pdf_url'],
             'username': self.username,
             'password': self.default_password})
-        message = config['users_email_body'].format(**message_format)
+        message = message.format(**message_format)
 
         subject_format = format_dict({'event_name': config['general_event_name']})
-        subject = config['users_email_subject'].format(**subject_format)
+        subject = subject.format(**subject_format)
 
         # Create an email and send it.
         email = mail.EmailMessage(subject, message, config['users_email_sender'], [self.email])

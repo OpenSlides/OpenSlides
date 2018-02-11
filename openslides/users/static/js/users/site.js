@@ -771,8 +771,13 @@ angular.module('OpenSlidesApp.users.site', [
                     return user.id;
                 })
                 .value();
+            var subject = gettextCatalog.getString(Config.get('users_email_subject').value);
+            var message = gettextCatalog.getString(Config.get('users_email_body').value);
+
             $http.post('/rest/users/user/mass_invite_email/', {
                 user_ids: user_ids,
+                subject: subject,
+                message: message,
             }).then(function (success) {
                 var numEmails = success.data.count;
                 var noEmailIds = success.data.no_email_ids;
@@ -1833,7 +1838,7 @@ angular.module('OpenSlidesApp.users.site', [
         gettext('Your login for {event_name}');
         gettext('You can use {event_name} as a placeholder.');
         gettext('Email body');
-        gettext('Dear {name},\n\nthis is your OpenSlides login for the event "{event_name}":\n    {url}\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.');
+        gettext('Dear {name},\n\nthis is your OpenSlides login for the event "{event_name}":\n    {url}\n\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.');
         gettext('Use these placeholders: {name}, {event_name}, {url}, {username}, {password}. The url referrs to the system url.');
     }
 ]);

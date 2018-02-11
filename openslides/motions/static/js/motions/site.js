@@ -782,21 +782,6 @@ angular.module('OpenSlidesApp.motions.site', [
                             },
                             hideExpression: "model.format !== 'csv'",
                         },
-                        {
-                            key: 'include',
-                            type: 'checkbox-buttons',
-                            templateOptions: {
-                                label: gettextCatalog.getString('Meta information'),
-                                options: getMetaInformationOptions({
-                                    state: true,
-                                    votingResult: true,
-                                    motionBlock: true,
-                                    origin: true,
-                                    recommendation: true,
-                                }),
-                            },
-                            hideExpression: "model.format !== 'docx'",
-                        },
                     ]);
                     if (commentsAvailable) {
                         fields.push({
@@ -855,6 +840,7 @@ angular.module('OpenSlidesApp.motions.site', [
             }
             if ($scope.params.format === 'docx') {
                 $scope.params.include.state = false;
+                $scope.params.include.submitter = true;
                 $scope.params.include.motionBlock = false;
                 $scope.params.include.origin = false;
                 $scope.params.include.recommendation = false;
@@ -1127,12 +1113,9 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.filter.propertyList = ['identifier', 'origin'];
         $scope.filter.propertyFunctionList = [
             function (motion) {return motion.getTitle();},
-            function (motion) {return motion.getText();},
-            function (motion) {return motion.getReason();},
             function (motion) {return motion.category ? motion.category.name : '';},
             function (motion) {return motion.motionBlock ? motion.motionBlock.name : '';},
             function (motion) {return motion.recommendation ? motion.getRecommendationName() : '';},
-            function (motion) {return _.filter(motion.comments).join(' ');},
         ];
         $scope.filter.propertyDict = {
             'submitters': function (submitter) {

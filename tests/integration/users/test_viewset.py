@@ -351,9 +351,14 @@ class UserSendIntivationEmail(TestCase):
         self.admin.save()
 
     def test_email_sending(self):
+        data = {
+            'user_ids': [self.admin.pk],
+            'subject': config['users_email_subject'],
+            'message': config['users_email_body']
+        }
         response = self.client.post(
             reverse('user-mass-invite-email'),
-            {'user_ids': [self.admin.pk]},
+            data,
             format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['count'], 1)
