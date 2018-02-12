@@ -817,18 +817,17 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                                 hasClass(element, 'os-line-break') &&
                                                 hasClass(brParent, 'os-split-before'))) {
                                         break;
-                                    } else if (element.nextSibling.nodeName === 'BR') {
-                                        // Add a dummy line, if the next tag is a BR tag again.
-                                        currentParagraph = create('text');
-                                        currentParagraph.lineHeight = 1.25;
-                                        currentParagraph.text.push(create('text', ' '));
-                                        alreadyConverted.push(currentParagraph);
                                     } else {
                                         currentParagraph = create("text");
                                         if (lineNumberMode === "outside" &&
                                                 brParentNodeName !== "LI" &&
                                                 element.parentNode.parentNode.nodeName !== "LI") {
                                             currentParagraph.margin = [20, 0, 0, 0];
+                                        }
+                                        // Add a dummy line, if the next tag is a BR tag again. The line could
+                                        // not be empty otherwise it will be removed and the empty line is not displayed
+                                        if (element.nextSibling && element.nextSibling.nodeName === 'BR') {
+                                            currentParagraph.text.push(create('text', ' '));
                                         }
                                         currentParagraph.lineHeight = 1.25;
                                         alreadyConverted.push(currentParagraph);
