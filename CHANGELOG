@@ -117,6 +117,7 @@ Core:
 - Preparations for the SAML plugin; Fixed caching of main views [#3535].
 - Removed unnecessary OPTIONS request in config [#3541].
 - Added possibility to upload custom fonts for projector and pdf [#3568].
+- Use custom format cleanup plugin for CKEditor [#3576].
 
 Mediafiles:
 - Fixed reloading of PDF on page change [#3274].
