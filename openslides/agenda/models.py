@@ -401,6 +401,11 @@ class Speaker(RESTModelMixin, models.Model):
     The sort order of the list of speakers. None, if he has already spoken.
     """
 
+    marked = models.BooleanField(default=False)
+    """
+    Marks a speaker.
+    """
+
     class Meta:
         default_permissions = ()
         permissions = (

@@ -15,6 +15,7 @@ class SpeakerSerializer(ModelSerializer):
             'begin_time',
             'end_time',
             'weight',
+            'marked',
             'item',  # js-data needs the item-id in the nested object to define relations.
         )
 

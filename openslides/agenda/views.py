@@ -57,7 +57,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             result = False
         return result
 
-    @detail_route(methods=['POST', 'DELETE'])
+    @detail_route(methods=['POST', 'PATCH', 'DELETE'])
     def manage_speaker(self, request, pk=None):
         """
         Special view endpoint to add users to the list of speakers or remove
@@ -65,6 +65,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         data to add yourself. Send DELETE {'speaker': <speaker_id>} or
         DELETE {'speaker': [<speaker_id>, <speaker_id>, ...]} to remove one or
         more speakers from the list of speakers. Omit data to remove yourself.
+        Send PATCH {'user': <user_id>, 'marked': <bool>} to mark the speaker.
 
         Checks also whether the requesting user can do this. He needs at
         least the permissions 'agenda.can_see' (see
@@ -109,6 +110,39 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             # Send new speaker via autoupdate because users without permission
             # to see users may not have it but can get it now.
             inform_changed_data([user])
+
+        # Toggle 'marked' for the speaker
+        elif request.method == 'PATCH':
+            # Check permissions
+            if not has_perm(self.request.user, 'agenda.can_manage_list_of_speakers'):
+                self.permission_denied(request)
+
+            # Retrieve user_id
+            user_id = request.data.get('user')
+            try:
+                user = get_user_model().objects.get(pk=int(user_id))
+            except (ValueError, get_user_model().DoesNotExist):
+                raise ValidationError({'detail': _('User does not exist.')})
+
+            marked = request.data.get('marked')
+            if not isinstance(marked, bool):
+                raise ValidationError({'detail': _('Marked has to be a bool.')})
+
+            queryset = Speaker.objects.filter(item=item, user=user)
+            try:
+                # We assume that there aren't multiple entries because this
+                # is forbidden by the Manager's add method. We assume that
+                # there is only one speaker instance or none.
+                speaker = queryset.get()
+            except Speaker.DoesNotExist:
+                raise ValidationError({'detail': _('The user is not in the list of speakers.')})
+            else:
+                speaker.marked = marked
+                speaker.save()
+                if speaker.marked:
+                    message = _('You are successfully marked the speaker.')
+                else:
+                    message = _('You are successfully unmarked the speaker.')
 
         else:
             # request.method == 'DELETE'

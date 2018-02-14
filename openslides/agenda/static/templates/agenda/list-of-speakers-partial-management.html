@@ -42,6 +42,7 @@
       <ol class="indentation">
         <li ng-repeat="speaker in lastSpeakers">
           {{ speaker.user.get_full_name() }}
+          <i class="fa fa-star" ng-if="speaker.marked" title="{{ 'Marked' | translate }}"></i>
           <small class="grey">
             {{ getDuration(speaker) | osSecondsToTime }} <translate>minutes</translate>
             (<translate>Start time</translate>:
@@ -59,9 +60,16 @@
   <p ng-repeat="speaker in currentSpeaker" class="currentSpeaker spacer indentation">
     <i class="fa fa-microphone fa-lg"></i>
     {{ speaker.user.get_full_name() }}
+    <span os-perms="!agenda.can_manage_list_of_speakers">
+      <i class="fa fa-star" ng-if="speaker.marked" title="{{ 'Marked' | translate }}"></i>
+    </span>
     <button os-perms="agenda.can_manage_list_of_speakers" ng-click="endSpeech()"
         class="btn btn-default btn-sm" title="{{ 'End speech' | translate }}">
       <i class="fa fa-microphone-slash"></i> <translate>Stop</translate>
+    </button>
+    <button os-perms="agenda.can_manage_list_of_speakers" ng-click="toggleMarked(speaker)"
+        class="btn btn-default btn-sm" title="{{ 'Mark speaker' | translate }}">
+      <i class="fa" ng-class="speaker.marked ? 'fa-star' : 'fa-star-o'"></i>
     </button>
     <button os-perms="agenda.can_manage_list_of_speakers" ng-click="removeSpeaker(speaker.id)"
         class="btn btn-default btn-sm" title="{{ 'Remove' | translate }}">
@@ -77,10 +85,17 @@
           <i os-perms="agenda.can_manage_list_of_speakers" ui-tree-handle="" class="fa fa-arrows-v"></i>
           {{ $index + 1 }}.
           {{ speaker.user.get_full_name() }}
+          <span os-perms="!agenda.can_manage_list_of_speakers">
+            <i class="fa fa-star" ng-if="speaker.marked" title="{{ 'Marked' | translate }}"></i>
+          </span>
           &nbsp;
           <button os-perms="agenda.can_manage_list_of_speakers" ng-click="beginSpeech(speaker.id)"
               class="btn btn-default btn-sm" title="{{ 'Begin speech' | translate }}">
             <i class="fa fa-microphone"></i> <translate>Start</translate>
+          </button>
+          <button os-perms="agenda.can_manage_list_of_speakers" ng-click="toggleMarked(speaker)"
+              class="btn btn-default btn-sm" title="{{ 'Mark speaker' | translate }}">
+            <i class="fa" ng-class="speaker.marked ? 'fa-star' : 'fa-star-o'"></i>
           </button>
           <button os-perms="agenda.can_manage_list_of_speakers" ng-click="removeSpeaker(speaker.id)"
               class="btn btn-default btn-sm" title="{{ 'Remove' | translate }}">

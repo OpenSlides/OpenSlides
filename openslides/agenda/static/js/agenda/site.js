@@ -569,6 +569,18 @@ angular.module('OpenSlidesApp.agenda.site', [
                 );
             }
         };
+
+        // Marking a speaker
+        $scope.toggleMarked = function (speaker) {
+            $http.patch('/rest/agenda/item/' + $scope.item.id + '/manage_speaker/', {
+                user: speaker.user.id,
+                marked: !speaker.marked,
+            }).then(function (success) {
+                $scope.alert.show = false;
+            }, function (error) {
+                $scope.alert = ErrorMessage.forAlert(error);
+            });
+        };
     }
 ])
 
