@@ -57,18 +57,22 @@ class UserFullSerializer(ModelSerializer):
 
     def validate(self, data):
         """
-        Checks that first_name or last_name is given. Generates the
+        Checks if the given data is empty. Generates the
         username if it is empty.
         """
-        if not (data.get('username') or data.get('first_name') or data.get('last_name')):
-            raise ValidationError({'detail': _('Username, given name and surname can not all be empty.')})
 
-        # Generate username. But only if it is not set and the serializer is not
-        # called in a PATCH context (partial_update).
         try:
             action = self.context['view'].action
         except (KeyError, AttributeError):
             action = None
+
+        # Check if we are in Patch context, if not, check if we have the mandatory fields
+        if action != 'partial_update':
+            if not (data.get('username') or data.get('first_name') or data.get('last_name')):
+                raise ValidationError({'detail': _('Username, given name and surname can not all be empty.')})
+
+        # Generate username. But only if it is not set and the serializer is not
+        # called in a PATCH context (partial_update).
 
         if not data.get('username') and action != 'partial_update':
             data['username'] = User.objects.generate_username(
