@@ -1,9 +1,7 @@
-import base64
 import re
 from typing import Optional  # noqa
 
 from django.conf import settings
-from django.contrib.staticfiles import finders
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError, transaction
 from django.http import Http404
@@ -24,7 +22,7 @@ from ..utils.rest_api import (
     ValidationError,
     detail_route,
 )
-from ..utils.views import APIView
+from ..utils.views import BinaryTemplateView
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
@@ -206,6 +204,16 @@ class MotionViewSet(ModelViewSet):
                 # No comments here. Just do nothing.
                 pass
 
+        # get changed comment fields
+        changed_comment_fields = []
+        comments = request.data.get('comments', {})
+        for id, value in comments.items():
+            if not motion.comments or motion.comments.get(id) != value:
+                field = config['motions_comments'].get(id)
+                if field:
+                    name = field['name']
+                    changed_comment_fields.append(name)
+
         # Validate data and update motion.
         serializer = self.get_serializer(
             motion,
@@ -221,6 +229,11 @@ class MotionViewSet(ModelViewSet):
                 not has_perm(request.user, 'motions.can_manage')):
             updated_motion.supporters.clear()
             updated_motion.write_log([ugettext_noop('All supporters removed')], request.user)
+
+        if len(changed_comment_fields) > 0:
+            updated_motion.write_log(
+                [ugettext_noop('Comment {} updated').format(', '.join(changed_comment_fields))],
+                request.user)
 
         # Send new submitters and supporters via autoupdate because users
         # without permission to see users may not have them but can get it now.
@@ -707,15 +720,10 @@ class WorkflowViewSet(ModelViewSet):
         return result
 
 
-# Special API views
+# Special views
 
-class MotionDocxTemplateView(APIView):
+class MotionDocxTemplateView(BinaryTemplateView):
     """
     Returns the template for motions docx export
     """
-    http_method_names = ['get']
-
-    def get_context_data(self, **context):
-        with open(finders.find('templates/docx/motions.docx'), "rb") as file:
-            response = base64.b64encode(file.read())
-        return response
+    template_name = 'templates/docx/motions.docx'

@@ -8,11 +8,12 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.core.config import config
-from openslides.core.models import Tag
+from openslides.core.models import ConfigStore, Tag
 from openslides.motions.models import (
     Category,
     Motion,
     MotionBlock,
+    MotionLog,
     State,
     Workflow,
 )
@@ -603,6 +604,35 @@ class UpdateMotion(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         motion = Motion.objects.get()
         self.assertEqual(motion.versions.count(), 1)
+
+    def test_update_comment_creates_log_entry(self):
+        field_name = 'comment_field_name_texl2i7%sookqerpl29a'
+        config['motions_comments'] = {
+            '1': {
+                'name': field_name,
+                'public': False
+            }
+        }
+
+        # Update Config cache
+        CollectionElement.from_instance(
+            ConfigStore.objects.get(key='motions_comments')
+        )
+
+        response = self.client.patch(
+            reverse('motion-detail', args=[self.motion.pk]),
+            {'title': 'title_test_sfdAaufd56HR7sd5FDq7av',
+             'text': 'text_test_fiuhefF86()ew1Ef346AF6W',
+             'comments': {'1': 'comment1_sdpoiuffo3%7dwDwW)'}
+             },
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        motion_logs = MotionLog.objects.filter(motion=self.motion)
+        self.assertEqual(motion_logs.count(), 2)
+
+        motion_log = motion_logs.order_by('-time').first()
+        self.assertTrue(field_name in motion_log.message_list[0])
 
 
 class DeleteMotion(TestCase):

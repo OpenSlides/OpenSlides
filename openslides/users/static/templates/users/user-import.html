@@ -68,6 +68,12 @@
 
   <div ng-show="users.length">
     <h3 translate>Preview</h3>
+    <div class="clearfix" ng-if="users.length > pagination.itemsPerPage">
+      <span class="pull-right">
+        <translate>Page</translate> {{ pagination.currentPage }} /
+        {{ Math.ceil(users.length/pagination.itemsPerPage) }}
+      </span>
+    </div>
     <div class="scroll-x-container">
       <table class="table table-striped table-bordered table-condensed">
         <thead>
@@ -106,7 +112,7 @@
                 </div>
             </th>
         <tbody>
-          <tr ng-repeat="user in users | limitTo : itemsPerPage : limitBegin">
+          <tr ng-repeat="user in users | limitTo : pagination.itemsPerPage : pagination.limitBegin">
             <td class="minimum"
                 ng-class="{ 'text-danger': (user.importerror || user.duplicateAction == duplicateActions[0]), 'text-success': user.imported }">
               <span ng-if="user.importerror || user.duplicateAction == duplicateActions[0]">
@@ -120,7 +126,7 @@
                 <i class="fa fa-check-circle fa-lg"></i>
               </span>
             <td class="nobr">
-              {{ (currentPage - 1) * itemsPerPage + $index + 1 }}
+              {{ (pagination.currentPage - 1) * pagination.itemsPerPage + $index + 1 }}
             <td>
               {{ user.title }}
             <td ng-class="{ 'text-danger': user.name_error }">
@@ -180,11 +186,11 @@
       </table>
     </div>
     <ul uib-pagination
-        ng-show="users.length > itemsPerPage"
+        ng-show="users.length > pagination.itemsPerPage"
         total-items="users.length"
-        items-per-page="itemsPerPage"
-        ng-model="currentPage"
-        ng-change="pageChanged()"
+        items-per-page="pagination.itemsPerPage"
+        ng-model="pagination.currentPage"
+        ng-change="pagination.pageChanged()"
         class="pagination-sm"
         direction-links="false"
         boundary-links="true"

@@ -962,13 +962,14 @@ angular.module('OpenSlidesApp.motions.site', [
     'ProjectionDefault',
     'osTableFilter',
     'osTableSort',
+    'osTablePagination',
     'MotionExportForm',
     'MotionPdfExport',
     'PersonalNoteManager',
     function($scope, $state, $http, gettext, gettextCatalog, operator, ngDialog, MotionForm, Motion,
                 MotionComment, Category, Config, Tag, Workflow, User, Agenda, MotionBlock, Projector,
-                ProjectionDefault, osTableFilter, osTableSort, MotionExportForm, MotionPdfExport,
-                PersonalNoteManager) {
+                ProjectionDefault, osTableFilter, osTableSort, osTablePagination, MotionExportForm,
+                MotionPdfExport, PersonalNoteManager) {
         Category.bindAll({}, $scope, 'categories');
         MotionBlock.bindAll({}, $scope, 'motionBlocks');
         Tag.bindAll({}, $scope, 'tags');
@@ -1177,14 +1178,7 @@ angular.module('OpenSlidesApp.motions.site', [
         ];
 
         // pagination
-        $scope.currentPage = 1;
-        $scope.itemsPerPage = 25;
-        $scope.limitBegin = 0;
-        $scope.pageChanged = function() {
-            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
-            $scope.gotoTop();
-        };
-
+        $scope.pagination = osTablePagination.createInstance('MotionTablePagination');
 
         // update state
         $scope.updateState = function (motion, state_id) {
@@ -1497,6 +1491,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 var thisIndex = _.findIndex(motions, function (motion) {
                     return motion.id === $scope.motion.id;
                 });
+                this.count = motions.length;
                 this.nextMotion = thisIndex < motions.length-1 ? motions[thisIndex+1] : _.head(motions);
                 this.previousMotion = thisIndex > 0 ? motions[thisIndex-1] : _.last(motions);
             },

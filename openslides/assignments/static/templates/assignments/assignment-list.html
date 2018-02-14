@@ -77,9 +77,10 @@
       {{ assignments.length }} {{ "elections" | translate }}<span ng-if="(assignments|filter:{selected:true}).length > 0">,
       {{(assignments|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
     </div>
-    <div class="col-md-6" ng-show="assignmentsFiltered.length > itemsPerPage">
+    <div class="col-md-6" ng-show="assignmentsFiltered.length > pagination.itemsPerPage">
       <span class="pull-right">
-        <translate>Page</translate> {{ currentPage }} / {{ Math.ceil(assignmentsFiltered.length/itemsPerPage) }}
+        <translate>Page</translate> {{ pagination.currentPage }} /
+        {{ Math.ceil(assignmentsFiltered.length/pagination.itemsPerPage) }}
       </span>
     </div>
   </div>
@@ -87,7 +88,7 @@
   <div class="os-table container-fluid">
     <div class="row header-row">
       <div class="col-xs-1 centered" ng-show="isSelectMode">
-        <i class="fa text-danger pointer" ng-class=" selectedAll ? 'fa-check-square-o' : 'fa-square-o'"
+        <i class="fa text-danger pointer" ng-class="selectedAll ? 'fa-check-square-o' : 'fa-square-o'"
           ng-click="checkAll()"></i>
       </div>
       <div class="col-xs-11 main-header">
@@ -216,7 +217,7 @@
         | MultiselectFilter: filter.multiselectFilters.tag : getItemId.tag
         | MultiselectFilter: filter.multiselectFilters.phase : getItemId.phase
         | orderByEmptyLast: sort.column : sort.reverse)
-        | limitTo : itemsPerPage : limitBegin">
+        | limitTo : pagination.itemsPerPage : pagination.limitBegin">
 
       <!-- select column -->
       <div ng-show="isSelectMode" os-perms="assignments.can_manage" class="col-xs-1 centered">
@@ -332,11 +333,11 @@
     </div> <!-- main table -->
 
     <ul uib-pagination
-        ng-show="assignmentsFiltered.length > itemsPerPage"
+        ng-show="assignmentsFiltered.length > pagination.itemsPerPage"
         total-items="assignmentsFiltered.length"
-        items-per-page="itemsPerPage"
-        ng-model="currentPage"
-        ng-change="pageChanged()"
+        items-per-page="pagination.itemsPerPage"
+        ng-model="pagination.currentPage"
+        ng-change="pagination.pageChanged()"
         class="pagination-sm"
         direction-links="false"
         boundary-links="true"

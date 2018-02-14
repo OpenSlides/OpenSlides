@@ -15,6 +15,7 @@ from openslides.utils.rest_api import (
     detail_route,
     list_route,
 )
+from openslides.utils.views import BinaryTemplateView
 
 from ..utils.auth import has_perm
 from .access_permissions import ItemAccessPermissions
@@ -311,3 +312,11 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
 
         inform_changed_data(items)
         return Response({'detail': _('The agenda has been sorted.')})
+
+
+# Special views
+class AgendaDocxTemplateView(BinaryTemplateView):
+    """
+    Returns the template for motions docx export
+    """
+    template_name = 'templates/docx/agenda.docx'

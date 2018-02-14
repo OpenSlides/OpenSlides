@@ -147,9 +147,10 @@
       {{ users.length }} {{ "participants" | translate }}<span ng-if="(users|filter:{selected:true}).length > 0">,
       {{(users|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
     </div>
-    <div class="col-md-6" ng-show="usersFiltered.length > itemsPerPage">
+    <div class="col-md-6" ng-show="usersFiltered.length > pagination.itemsPerPage">
       <span class="pull-right">
-        <translate>Page</translate> {{ currentPage }} / {{ Math.ceil(usersFiltered.length/itemsPerPage) }}
+        <translate>Page</translate> {{ pagination.currentPage }} /
+        {{ Math.ceil(usersFiltered.length/pagination.itemsPerPage) }}
       </span>
     </div>
   </div>
@@ -304,7 +305,7 @@
       ng-mouseleave="user.hover=false"
       ng-class="{'projected': user.isProjected().length}"
       ng-repeat="user in usersFiltered
-      | limitTo : itemsPerPage : limitBegin">
+      | limitTo : pagination.itemsPerPage : pagination.limitBegin">
 
       <!-- select column -->
       <div ng-show="isSelectMode" os-perms="users.can_manage" class="col-xs-1 centered">
@@ -451,11 +452,11 @@
   </div><!-- end os-table -->
 
   <ul uib-pagination
-      ng-show="usersFiltered.length > itemsPerPage"
+      ng-show="usersFiltered.length > pagination.itemsPerPage"
       total-items="usersFiltered.length"
-      items-per-page="itemsPerPage"
-      ng-model="currentPage"
-      ng-change="pageChanged()"
+      items-per-page="pagination.itemsPerPage"
+      ng-model="pagination.currentPage"
+      ng-change="pagination.pageChanged()"
       class="pagination-sm"
       direction-links="false"
       boundary-links="true"

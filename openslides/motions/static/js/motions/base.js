@@ -272,6 +272,14 @@ angular.module('OpenSlidesApp.motions', [
                     title += this.getTitle();
                     return title;
                 },
+                getSequentialNumber: function () {
+                    var id = this.id + '';
+                    var zeros = Math.max(0, OpenSlidesSettings.MOTION_IDENTIFIER_MIN_DIGITS - id.length);
+                    for (var i = 0; i < zeros; i++) {
+                        id = '0' + id;
+                    }
+                    return id;
+                },
                 getText: function (versionId) {
                     return this.getVersion(versionId).text;
                 },

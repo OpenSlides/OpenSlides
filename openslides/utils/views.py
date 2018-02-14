@@ -1,3 +1,4 @@
+import base64
 from typing import Any, Dict, List  # noqa
 
 from django.contrib.staticfiles import finders
@@ -67,8 +68,20 @@ class TemplateView(View):
             raise ImproperlyConfigured("'template_name' is not provided.")
 
         if self.template_name not in self.state:
-            with open(finders.find(self.template_name)) as template:
-                self.state[self.template_name] = template.read()
+            self.state[self.template_name] = self.load_template()
+
+    def load_template(self) -> str:
+        with open(finders.find(self.template_name)) as template:
+            return template.read()
 
     def get(self, *args: Any, **kwargs: Any) -> HttpResponse:
         return HttpResponse(self.state[self.template_name])
+
+
+class BinaryTemplateView(TemplateView):
+    """
+    Loads the specified binary template and encode it with base64.
+    """
+    def load_template(self):
+        with open(finders.find(self.template_name), 'rb') as template:
+            return base64.b64encode(template.read())

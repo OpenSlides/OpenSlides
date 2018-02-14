@@ -7,6 +7,7 @@ angular.module('OpenSlidesApp.agenda.site', [
     'OpenSlidesApp.core.pdf',
     'OpenSlidesApp.agenda.pdf',
     'OpenSlidesApp.agenda.csv',
+    'OpenSlidesApp.agenda.docx',
 ])
 
 .config([
@@ -100,12 +101,14 @@ angular.module('OpenSlidesApp.agenda.site', [
     'gettextCatalog',
     'gettext',
     'osTableFilter',
+    'osTablePagination',
     'AgendaCsvExport',
     'AgendaPdfExport',
+    'AgendaDocxExport',
     'ErrorMessage',
     function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, TopicForm,
         AgendaTree, Projector, ProjectionDefault, gettextCatalog, gettext, osTableFilter,
-        AgendaCsvExport, AgendaPdfExport, ErrorMessage) {
+        osTablePagination, AgendaCsvExport, AgendaPdfExport, AgendaDocxExport, ErrorMessage) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -167,13 +170,7 @@ angular.module('OpenSlidesApp.agenda.site', [
         };
 
         // pagination
-        $scope.currentPage = 1;
-        $scope.itemsPerPage = 25;
-        $scope.limitBegin = 0;
-        $scope.pageChanged = function() {
-            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
-            $scope.gotoTop();
-        };
+        $scope.pagination = osTablePagination.createInstance('AgendaTablePagination');
 
         // parse duration for inline editing
         $scope.generateDurationText = function (item) {
@@ -287,6 +284,9 @@ angular.module('OpenSlidesApp.agenda.site', [
         };
         $scope.csvExport = function () {
             AgendaCsvExport.export($scope.itemsFiltered);
+        };
+        $scope.docxExport = function () {
+            AgendaDocxExport.export($scope.itemsFiltered);
         };
 
         /** select mode functions **/

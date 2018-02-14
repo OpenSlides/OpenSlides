@@ -551,12 +551,13 @@ angular.module('OpenSlidesApp.users.site', [
     'UserCsvExport',
     'osTableFilter',
     'osTableSort',
+    'osTablePagination',
     'gettext',
     'UserPdfExport',
     'ErrorMessage',
     function($scope, $state, $http, $q, ngDialog, UserForm, User, Group, PasswordGenerator,
         Projector, ProjectionDefault, Config, gettextCatalog, UserCsvExport, osTableFilter,
-        osTableSort, gettext, UserPdfExport, ErrorMessage) {
+        osTableSort, osTablePagination, gettext, UserPdfExport, ErrorMessage) {
         $scope.$watch(function () {
             return User.lastModified();
         }, function () {
@@ -649,13 +650,7 @@ angular.module('OpenSlidesApp.users.site', [
         ];
 
         // pagination
-        $scope.currentPage = 1;
-        $scope.itemsPerPage = 25;
-        $scope.limitBegin = 0;
-        $scope.pageChanged = function() {
-            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
-            $scope.gotoTop();
-        };
+        $scope.pagination = osTablePagination.createInstance('UserTablePagination');
 
         // Toggle group from user
         $scope.toggleGroup = function (user, group) {
@@ -1121,15 +1116,13 @@ angular.module('OpenSlidesApp.users.site', [
     'User',
     'Group',
     'UserCsvExport',
+    'osTablePagination',
     'ErrorMessage',
-    function($scope, $http, $q, gettext, gettextCatalog, User, Group, UserCsvExport, ErrorMessage) {
+    function($scope, $http, $q, gettext, gettextCatalog, User, Group, UserCsvExport,
+        osTablePagination, ErrorMessage) {
         // import from textarea
         $scope.importByLine = function () {
             var usernames = $scope.userlist[0].split("\n");
-            // Ignore empty lines.
-            /*usernames = _.filter(usernames, function (name) {
-                return name !== '';
-            });*/
             var users = _.map(usernames, function (name) {
                 // Split each full name in first and last name.
                 // The last word is set as last name, rest is the first name(s).
@@ -1157,12 +1150,9 @@ angular.module('OpenSlidesApp.users.site', [
         };
 
         // pagination
-        $scope.currentPage = 1;
-        $scope.itemsPerPage = 100;
-        $scope.limitBegin = 0;
-        $scope.pageChanged = function() {
-            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
-        };
+        $scope.pagination = osTablePagination.createInstance('UserImportTablePagination', 100);
+
+        // Duplicates
         $scope.duplicateActions = [
             gettext('keep original'),
             gettext('override new'),

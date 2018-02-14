@@ -17,13 +17,14 @@ angular.module('OpenSlidesApp.mediafiles.list', [
     'ngDialog',
     'osTableFilter',
     'osTableSort',
+    'osTablePagination',
     'ProjectionDefault',
     'Projector',
     'User',
     'Mediafile',
     'MediafileForm',
     'Logos',
-    function ($http, $scope, gettext, ngDialog, osTableFilter, osTableSort,
+    function ($http, $scope, gettext, ngDialog, osTableFilter, osTableSort, osTablePagination,
               ProjectionDefault, Projector, User, Mediafile, MediafileForm, Logos) {
         $scope.$watch(function () {
             return Mediafile.lastModified();
@@ -107,13 +108,7 @@ angular.module('OpenSlidesApp.mediafiles.list', [
         ];
 
         // pagination
-        $scope.currentPage = 1;
-        $scope.itemsPerPage = 25;
-        $scope.limitBegin = 0;
-        $scope.pageChanged = function() {
-            $scope.limitBegin = ($scope.currentPage - 1) * $scope.itemsPerPage;
-            $scope.gotoTop();
-        };
+        $scope.pagination = osTablePagination.createInstance('MediafileTablePagination');
 
         // open new/edit dialog
         $scope.openDialog = function (mediafile) {
