@@ -300,6 +300,13 @@ describe('linenumbering', function () {
       expect(containsError).toBe(-1);
       expect(containsCorrectVersion > 0).toBe(true);
     });
+
+    it('keeps ampersands escaped', function() {
+        var pre = '<p>' + noMarkup(1) + 'foo &amp; bar</p>',
+            after = '<p>' + noMarkup(1) + 'foo &amp; bar ins</p>';
+        var merged = diffService.replaceLines(pre, after, 1, 2, true);
+      expect(merged).toBe('<P>foo &amp; bar ins</P>');
+    });
   });
 
   describe('detecting the type of change', function() {

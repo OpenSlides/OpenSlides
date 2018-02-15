@@ -185,17 +185,17 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         };
 
         this._serializeDom = function(node, stripLineNumbers) {
-            if (node.nodeType == TEXT_NODE) {
+            if (node.nodeType === TEXT_NODE) {
                 return node.nodeValue.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             }
             if (stripLineNumbers && (
                 lineNumberingService._isOsLineNumberNode(node) || lineNumberingService._isOsLineBreakNode(node))) {
                 return '';
             }
-            if (node.nodeName == 'OS-LINEBREAK') {
+            if (node.nodeName === 'OS-LINEBREAK') {
                 return '';
             }
-            if (node.nodeName == 'BR') {
+            if (node.nodeName === 'BR') {
                 var br = '<BR';
                 for (i = 0; i < node.attributes.length; i++) {
                     var attr = node.attributes[i];
@@ -206,13 +206,13 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
             var html = this._serializeTag(node);
             for (var i = 0; i < node.childNodes.length; i++) {
-                if (node.childNodes[i].nodeType == TEXT_NODE) {
-                    html += node.childNodes[i].nodeValue.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                if (node.childNodes[i].nodeType === TEXT_NODE) {
+                    html += node.childNodes[i].nodeValue.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 } else if (!stripLineNumbers || (!lineNumberingService._isOsLineNumberNode(node.childNodes[i]) && !lineNumberingService._isOsLineBreakNode(node.childNodes[i]))) {
                     html += this._serializeDom(node.childNodes[i], stripLineNumbers);
                 }
             }
-            if (node.nodeType != DOCUMENT_FRAGMENT_NODE) {
+            if (node.nodeType !== DOCUMENT_FRAGMENT_NODE) {
                 html += '</' + node.nodeName + '>';
             }
 
