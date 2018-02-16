@@ -15,6 +15,8 @@ Agenda:
 - Fixed multiple request on creation of agenda related items [#3341].
 - Added possibility to mark speakers [#3570].
 - New DOCX export of agenda [#3569].
+- Hide closed agenda items in the item slide [#3567].
+- Agenda is now collapsable for a better overview [#3567].
 
 Motions:
 - New export dialog [#3185].

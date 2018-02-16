@@ -511,6 +511,7 @@ angular.module('OpenSlidesApp.core.site', [
             self.existsStorageEntry = existsStorageEntry;
             self.save = function () {
                 $sessionStorage[tableName] = self;
+                self.changed();
             };
             self.areFiltersSet = function () {
                 var areFiltersSet = _.find(self.multiselectFilters, function (filterList) {
@@ -567,6 +568,8 @@ angular.module('OpenSlidesApp.core.site', [
                 });
                 return stringList.join(' ');
             };
+            // Stub for callback
+            self.changed = function () {};
             return self;
         };
 

@@ -148,6 +148,13 @@
           </span>
         </span>
       </span>
+      <span ng-if="items.length === itemsFiltered.length">
+        &middot;
+        <a href="" ng-click="toggleCollapseState()">
+          <span ng-if="collapseState" translate>Expand all</span>
+          <span ng-if="!collapseState" translate>Collapse all</span>
+        </a>
+      </span>
     </div>
     <div class="col-md-6" ng-show="itemsFiltered.length > pagination.itemsPerPage">
       <span class="pull-right">
@@ -232,6 +239,7 @@
         | osFilter: filter.filterString : filter.getObjectQueryString
         | filter: {closed: filter.booleanFilters.closed.value}
         | filter: {is_hidden: filter.booleanFilters.is_hidden.value})
+        | collapsedItemFilter
         | limitTo : pagination.itemsPerPage : pagination.limitBegin">
 
       <!-- select column -->
@@ -279,10 +287,17 @@
       <div class="no-projector-spacer" os-perms="!core.can_manage_projector"></div>
 
       <!-- main content column -->
-      <div class="col-xs-6 content" style="padding-left: calc({{ item.parentCount }}*15px)">
+      <div class="col-xs-6 content"
+        style="padding-left: calc({{ items.length === itemsFiltered.length ? item.parentCount : 0 }}*25px)">
         <div class="icon-column">
           <i class="fa fa-ban" ng-style="{'visibility': item.is_hidden ? 'visible' : 'hidden'}"
             title="{{ 'Internal item' | translate }}"></i>
+        </div>
+        <div class="caret-spacer" ng-if="items.length === itemsFiltered.length">
+          <i class="fa pointer"
+            ng-style="{visibility: item.childrenCount ? 'visible' : 'hidden'}"
+            ng-class="item.hideChildren ? 'fa-caret-right' : 'fa-caret-down'"
+            ng-click="item.hideChildren = !item.hideChildren"></i>
         </div>
         <div class="title-column">
           <!-- ID and title -->
@@ -295,7 +310,8 @@
             </span>
           </div>
           <!-- hover menu -->
-          <div os-perms="agenda.can_see" ng-class="{'hiddenDiv': !item.hover}">
+          <div os-perms="agenda.can_see" ng-class="{'hiddenDiv': !item.hover}"
+            ng-style="{'padding-left': items.length === itemsFiltered.length ? '15px' : '0px'}">
             <small>
               <a ui-sref="agenda.item.detail({id: item.id})" translate>List of speakers</a>
               <span os-perms="agenda.can_manage"> &middot;

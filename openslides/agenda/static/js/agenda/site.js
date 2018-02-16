@@ -120,10 +120,7 @@ angular.module('OpenSlidesApp.agenda.site', [
                 return item.list_view_title;
             });
             $scope.items = AgendaTree.getFlatTree(allowedItems);
-            var subitems = $filter('filter')($scope.items, {'parent_id': ''});
-            if (subitems.length) {
-                $scope.agendaHasSubitems = true;
-            }
+            $scope.agendaHasSubitems = $filter('filter')($scope.items, {'parent_id': ''}).length;
         });
         Projector.bindAll({}, $scope, 'projectors');
         $scope.mainListTree = true;
@@ -167,6 +164,12 @@ angular.module('OpenSlidesApp.agenda.site', [
             'speakers' : function (speaker) {
                 return '';
             },
+        };
+
+        // Expand all items during searching.
+        $scope.filter.changed = function () {
+            $scope.collapseState = true;
+            $scope.toggleCollapseState();
         };
 
         // pagination
@@ -235,6 +238,14 @@ angular.module('OpenSlidesApp.agenda.site', [
             }
         };
 
+        // Agenda collapse function
+        $scope.toggleCollapseState = function () {
+            $scope.collapseState = !$scope.collapseState;
+            _.forEach($scope.items, function (item) {
+                item.hideChildren = $scope.collapseState;
+            });
+        };
+
         /** Agenda item functions **/
         // open dialog for new topics // TODO Remove this. Don't forget import button in template.
         $scope.newDialog = function () {
@@ -278,6 +289,7 @@ angular.module('OpenSlidesApp.agenda.site', [
         $scope.edit = function (item) {
             ngDialog.open(item.getContentObjectForm().getDialog({id: item.content_object.id}));
         };
+
         // export
         $scope.pdfExport = function () {
             AgendaPdfExport.export($scope.itemsFiltered);
@@ -389,6 +401,33 @@ angular.module('OpenSlidesApp.agenda.site', [
                 }
             });
             return projectorIds;
+        };
+    }
+])
+
+// filter to hide collapsed items. Items has to be a flat tree.
+.filter('collapsedItemFilter', [
+    function () {
+        return function (items) {
+            return _.filter(items, function (item) {
+                var index = _.findIndex(items, item);
+                var parentId = item.parent_id;
+                // Search for parents, if one has the hideChildren attribute set. All parents
+                // have a higher index as this item, because items is a flat tree.
+                // If a parent has this attribute, we should remove this item. Else if we hit
+                // the top or an item on the first layer, the item is not collapsed.
+                for (--index; index >= 0 && parentId !== null; index--) {
+                    var p = items[index];
+                    if (p.id === parentId) {
+                        if (p.hideChildren) {
+                            return false;
+                        } else {
+                            parentId = p.parent_id;
+                        }
+                    }
+                }
+                return true;
+            });
         };
     }
 ])
