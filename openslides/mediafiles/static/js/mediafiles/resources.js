@@ -13,7 +13,8 @@ angular.module('OpenSlidesApp.mediafiles.resources', [
     'gettext',
     'jsDataModel',
     'Logos',
-    function (DS, gettext, jsDataModel, Logos) {
+    'Fonts',
+    function (DS, gettext, jsDataModel, Logos, Fonts) {
         var name = 'mediafiles/mediafile';
         return DS.defineResource({
             name: name,
@@ -50,13 +51,60 @@ angular.module('OpenSlidesApp.mediafiles.resources', [
                     });
                 },
                 isUsedAsLogo: function () {
-                    return Logos.isMediafileUsedAsLogo(this);
+                    var mediafile = this;
+                    return _.find(Logos.getAll(), function (logoPlaceholder) {
+                        return logoPlaceholder.path === mediafile.mediafileUrl;
+                    });
                 },
                 canBeUsedAsLogo: function () {
-                    return Logos.canMediafileBeUsedAsLogo(this);
+                    return this.is_image;
                 },
                 getLogos: function () {
-                    return Logos.getLogosForMediafile(this);
+                    var mediafile = this;
+                    return _.filter(Logos.getAll(), function (logoPlaceholder) {
+                        return logoPlaceholder.path === mediafile.mediafileUrl;
+                    });
+                },
+                hasLogo: function (logo) {
+                    var allUrls = _.map(this.getLogos(), function (logo) {
+                       return logo.path;
+                    });
+                    return _.includes(allUrls, logo.path);
+                },
+                toggleLogo: function (logo) {
+                    if (this.hasLogo(logo)) {
+                        Logos.set(logo.key);
+                    } else {
+                        Logos.set(logo.key, this.mediafileUrl);
+                    }
+                },
+                isUsedAsFont: function () {
+                    var mediafile = this;
+                    return _.find(Fonts.getAll(), function (font) {
+                        return font.path === mediafile.mediafileUrl;
+                    });
+                },
+                canBeUsedAsFont: function () {
+                    return this.is_font;
+                },
+                getFonts: function () {
+                    var mediafile = this;
+                    return _.filter(Fonts.getAll(), function (font) {
+                        return font.path === mediafile.mediafileUrl;
+                    });
+                },
+                hasFont: function (font) {
+                    var allUrls = _.map(this.getFonts(), function (font) {
+                       return font.path;
+                    });
+                    return _.includes(allUrls, font.path);
+                },
+                toggleFont: function (font) {
+                    if (this.hasFont(font)) {
+                        Fonts.set(font.key);
+                    } else {
+                        Fonts.set(font.key, this.mediafileUrl);
+                    }
                 },
             },
             computed: {
@@ -76,6 +124,11 @@ angular.module('OpenSlidesApp.mediafiles.resources', [
                 }],
                 is_presentable: ['is_pdf', 'is_image', 'is_video', function (is_pdf, is_image, is_video) {
                     return (is_pdf && !this.mediafile.encrypted) || is_image || is_video;
+                }],
+                is_font: [function () {
+                    var FONT_FILE_EXTENSIONS = ['ttf', 'woff'];
+                    var ext = _.last(this.mediafile.name.split('.'));
+                    return _.includes(FONT_FILE_EXTENSIONS, ext);
                 }],
                 mediafileUrl: [function () {
                     return this.media_url_prefix + this.mediafile.name;

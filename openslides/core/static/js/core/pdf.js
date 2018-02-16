@@ -1061,13 +1061,99 @@ angular.module('OpenSlidesApp.core.pdf', [])
     }
 ])
 
+// Creates the virtual filesystem for PdfMake.
+.factory('PdfVfs', [
+    '$q',
+    '$http',
+    'Fonts',
+    'Config',
+    function ($q, $http, Fonts, Config) {
+        var urlCache = {}; // Caches the get request. Maps urls to base64 data ready to use.
+
+        var loadFont = function (url) {
+            return $q(function (resolve, reject) {
+                // Get font
+                return $http.get(url, {responseType: 'blob'}).then(function (success) {
+                    // Convert to base64
+                    var reader = new FileReader();
+                    reader.readAsDataURL(success.data);
+                    reader.onloadend = function() {
+                        resolve(reader.result.split(',')[1]);
+                    };
+                }, function (error) {
+                    reject(error);
+                });
+            });
+        };
+
+        /*
+         * Returns a map from urls to arrays of font types used by PdfMake.
+         * E.g. if the font "regular" and bold" have the urls "fonts/myFont.ttf",
+         * the map fould be "fonts/myFont.ttf": ["OSFont-regular.ttf", "OSFont-bold.ttf"]
+         */
+        var getUrlMapping = function () {
+            var urlMap = {};
+            var fonts = ['regular', 'italic', 'bold', 'bold_italic'];
+            _.forEach(fonts, function (font) {
+                var url = Fonts.getUrl('font_' + font);
+                if (!urlMap[url]) {
+                    urlMap[url] = [];
+                }
+                urlMap[url].push('OSFont-' + font + '.ttf');
+            });
+            return urlMap;
+        };
+
+        /*
+         * Create the virtual filesystem needed by PdfMake for the fonts. Gets the url
+         * mapping and loads all fonts via get requests or the urlCache.
+         */
+        var getVfs = function () {
+            return $q(function (resolve, reject) {
+                var vfs = {};
+                var urls = getUrlMapping();
+                var promises = _.chain(urls)
+                    .map(function (filenames, url) {
+                        if (urlCache[url]) {
+                            // Just save the cache data into vfs.
+                            _.forEach(filenames, function (filename) {
+                                vfs[filename] = urlCache[url];
+                            });
+                            return false; // No promise here, it was all cached.
+                        } else {
+                            // Not in the cache, get the font and save the data into vfs.
+                            return loadFont(url).then(function (data) {
+                                urlCache[url] = data;
+                                _.forEach(filenames, function (filename) {
+                                    vfs[filename] = data;
+                                });
+                            });
+                        }
+                    })
+                    .filter(function (promise) {
+                        return promise;
+                    })
+                    .value();
+                $q.all(promises).then(function () {
+                    resolve(vfs);
+                });
+            });
+        };
+
+        return {
+            get: getVfs,
+        };
+    }
+])
+
 .factory('PdfCreate', [
     '$timeout',
     '$q',
     'gettextCatalog',
     'FileSaver',
+    'PdfVfs',
     'Messaging',
-    function ($timeout, $q, gettextCatalog, FileSaver, Messaging) {
+    function ($timeout, $q, gettextCatalog, FileSaver, PdfVfs, Messaging) {
         var filenameMessageMap = {};
         var b64toBlob = function(b64Data) {
             var byteCharacters = atob(b64Data);
@@ -1105,40 +1191,46 @@ angular.module('OpenSlidesApp.core.pdf', [])
         return {
             getBase64FromDocument: function (pdfDocument) {
                 return $q(function (resolve, reject) {
-                    var pdfWorker = new Worker('/static/js/workers/pdf-worker.js');
-                    pdfWorker.addEventListener('message', function (event) {
-                        resolve(event.data);
+                    PdfVfs.get().then(function (vfs) {
+                        var pdfWorker = new Worker('/static/js/workers/pdf-worker.js');
+                        pdfWorker.addEventListener('message', function (event) {
+                            resolve(event.data);
+                        });
+                        pdfWorker.addEventListener('error', function (event) {
+                            reject(event);
+                        });
+                        pdfWorker.postMessage(JSON.stringify({
+                            pdfDocument: pdfDocument,
+                            vfs: vfs,
+                        }));
                     });
-                    pdfWorker.addEventListener('error', function (event) {
-                        reject(event);
-                    });
-                    pdfWorker.postMessage(JSON.stringify({
-                        pdfDocument: pdfDocument
-                    }));
                 });
             },
             // Struckture of pdfDocuments: { filname1: doc, filename2: doc, ...}
             getBase64FromMultipleDocuments: function (pdfDocuments) {
                 return $q(function (resolve, reject) {
-                    var pdfWorker = new Worker('/static/js/workers/pdf-worker.js');
-                    var resultCount = 0;
-                    var base64Map = {}; // Maps filename to base64
-                    pdfWorker.addEventListener('message', function (event) {
-                        resultCount++;
-                        var data = JSON.parse(event.data);
-                        base64Map[data.filename] = data.base64;
-                        if (resultCount === _.keys(pdfDocuments).length) {
-                            resolve(base64Map);
-                        }
-                    });
-                    pdfWorker.addEventListener('error', function (event) {
-                        reject(event);
-                    });
-                    _.forEach(pdfDocuments, function (doc, filename) {
-                        pdfWorker.postMessage(JSON.stringify({
-                            filename: filename,
-                            pdfDocument: doc
-                        }));
+                    PdfVfs.get().then(function (vfs) {
+                        var pdfWorker = new Worker('/static/js/workers/pdf-worker.js');
+                        var resultCount = 0;
+                        var base64Map = {}; // Maps filename to base64
+                        pdfWorker.addEventListener('message', function (event) {
+                            resultCount++;
+                            var data = JSON.parse(event.data);
+                            base64Map[data.filename] = data.base64;
+                            if (resultCount === _.keys(pdfDocuments).length) {
+                                resolve(base64Map);
+                            }
+                        });
+                        pdfWorker.addEventListener('error', function (event) {
+                            reject(event);
+                        });
+                        _.forEach(pdfDocuments, function (doc, filename) {
+                            pdfWorker.postMessage(JSON.stringify({
+                                filename: filename,
+                                pdfDocument: doc,
+                                vfs: vfs,
+                            }));
+                        });
                     });
                 });
             },

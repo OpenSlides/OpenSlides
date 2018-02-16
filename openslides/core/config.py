@@ -19,7 +19,7 @@ INPUT_TYPE_MAPPING = {
     'colorpicker': str,
     'datetimepicker': int,
     'majorityMethod': str,
-    'logo': dict,
+    'static': dict,
     'translations': list,
 }
 
@@ -125,9 +125,9 @@ class ConfigHandler:
                 valuecopy[id] = commentsfield
             value = valuecopy
 
-        if config_variable.input_type == 'logo':
+        if config_variable.input_type == 'static':
             if not isinstance(value, dict):
-                raise ConfigError(_('logo has to be a dict.'))
+                raise ConfigError(_('This has to be a dict.'))
             whitelist = (
                 'path',
                 'display_name',

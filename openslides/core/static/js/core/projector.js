@@ -78,12 +78,13 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     }
 ])
 
-.controller('LanguageCtrl', [
+.controller('LanguageAndFontCtrl', [
     '$scope',
     'Languages',
     'Config',
     'ProjectorID',
-    function ($scope, Languages, Config, ProjectorID) {
+    'Fonts',
+    function ($scope, Languages, Config, ProjectorID, Fonts) {
         // for the dynamic title
         $scope.projectorId = ProjectorID();
 
@@ -97,6 +98,18 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                 $scope.selectedLanguage = lang.value;
             }
             Languages.setCurrentLanguage($scope.selectedLanguage);
+        });
+
+        $scope.$watch(function () {
+            return Config.lastModified('font_regular') +
+                Config.lastModified('font_italic') +
+                Config.lastModified('font_bold') +
+                Config.lastModified('font_bold_italic');
+        }, function () {
+            $scope.font = Fonts.getForCss('font_regular');
+            $scope.font_medium = Fonts.getForCss('font_italic');
+            $scope.font_condensed = Fonts.getForCss('font_bold');
+            $scope.font_condensed_light = Fonts.getForCss('font_bold_italic');
         });
     }
 ])

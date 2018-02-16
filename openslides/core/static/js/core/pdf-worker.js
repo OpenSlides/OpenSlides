@@ -10,20 +10,18 @@ var document = {
 };
 var window = this;
 
-// PdfMake and Fonts
+// PdfMake
 importScripts('/static/js/workers/pdf-worker-libs.js');
 
 // Set default font family.
-// To use custom ttf font files you have to replace the vfs_fonts.js file.
-// See https://github.com/pdfmake/pdfmake/wiki/Custom-Fonts---client-side
-// "PdfFont" is used as generic name in core/pdf.js. Adjust the four
-// font style names only.
+// "PdfFont" and "OSFont-*" are generic names used here and in core/pdf.js. The
+// suffix after "OSFont-" has to be the same as the config value.
 pdfMake.fonts = {
     PdfFont: {
-        normal: 'Roboto-Regular.ttf',
-        bold: 'Roboto-Medium.ttf',
-        italics: 'Roboto-Italic.ttf',
-        bolditalics: 'Roboto-Italic.ttf'
+        normal: 'OSFont-regular.ttf',
+        bold: 'OSFont-bold.ttf',
+        italics: 'OSFont-italic.ttf',
+        bolditalics: 'OSFont-bold_italic.ttf'
     }
 };
 
@@ -106,8 +104,9 @@ var replaceFooter = function (doc) {
 // Create PDF on message and return the base64 decoded document
 self.addEventListener('message', function(e) {
     var data = JSON.parse(e.data);
-    var doc = data.pdfDocument;
+    pdfMake.vfs = data.vfs; // Set custom fonts.
 
+    var doc = data.pdfDocument;
     replaceFooter(doc);
     replacePlaceholder(doc.content);
 

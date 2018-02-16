@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ selectedLanguage }}" ng-controller="LanguageCtrl" class="no-js">
+<html lang="{{ selectedLanguage }}" ng-controller="LanguageAndFontCtrl" class="no-js">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <base href="/">
@@ -7,6 +7,34 @@
 <link rel="stylesheet" href="static/css/openslides-libs.css">
 <link rel="stylesheet" href="static/css/openslides-projector.css">
 <link rel="icon" href="/static/img/favicon.png">
+
+<style type="text/css">
+  @font-face {
+    font-family: 'OSFont';
+    src: {{ font }};
+    font-weight: 400;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'OSFont Medium';
+    src: {{ font_medium }};
+    font-weight: 400;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'OSFont Condensed';
+    src: {{ font_condensed }};
+    font-weight: 100;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'OSFont Condensed Light';
+    src: {{ font_condensed_light }};
+    font-weight: 100;
+    font-style: normal;
+  }
+</style>
+
 <script src="static/js/openslides-libs.js"></script>
 <script src="static/js/openslides.js"></script>
 <script src="static/js/openslides-templates.js"></script>
