@@ -325,7 +325,7 @@ class CreateMotion(TestCase):
         group_delegate = self.admin.groups.get()
         group_delegate.permissions.add(Permission.objects.get(
             content_type__app_label='motions',
-            codename='can_see_and_manage_comments',
+            codename='can_manage_comments',
         ))
 
         response = self.client.post(

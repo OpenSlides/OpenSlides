@@ -1433,6 +1433,9 @@ angular.module('OpenSlidesApp.motions.site', [
                 });
             }
         };
+        // TODO: put this into a Group-watcher, so on permission changes, the comments
+        // show up. For this, the inline editing has to be reloaded, so every field
+        // has to be checked. wait for #3565 to be merged, then edit this in #3567
         $scope.commentsFields = MotionComment.getCommentsFields();
         $scope.noSpecialCommentsFields = MotionComment.getNoSpecialCommentsFields();
         $scope.commentFieldForStateId = MotionComment.getFieldIdForFlag('forState');

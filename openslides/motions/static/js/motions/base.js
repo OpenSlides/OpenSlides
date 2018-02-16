@@ -589,7 +589,7 @@ angular.module('OpenSlidesApp.motions', [
                         case 'reset_state':
                             return operator.hasPerms('motions.can_manage');
                         case 'change_comments':
-                            return operator.hasPerms('motions.can_see_and_manage_comments');
+                            return operator.hasPerms('motions.can_manage_comments');
                         case 'change_recommendation':
                             return operator.hasPerms('motions.can_manage');
                         case 'can_manage':
@@ -776,7 +776,7 @@ angular.module('OpenSlidesApp.motions', [
                             data: {
                                 ckeditorOptions: Editor.getOptions()
                             },
-                            hide: !operator.hasPerms("motions.can_see_and_manage_comments")
+                            hide: !operator.hasPerms("motions.can_manage_comments")
                         };
                     }
                 );
@@ -828,7 +828,7 @@ angular.module('OpenSlidesApp.motions', [
         return function (commentsFields) {
             var withoutDeletedAndForbiddenCommentsFields = {};
             _.forEach(commentsFields, function (field, id) {
-                if (field && (field.public || operator.hasPerms('motions.can_see_and_manage_comments'))) {
+                if (field && (field.public || operator.hasPerms('motions.can_see_comments'))) {
                     withoutDeletedAndForbiddenCommentsFields[id] = field;
                 }
             });

@@ -136,7 +136,8 @@ class MotionViewSet(ModelViewSet):
                     del request.data[key]
 
         # Check permission to send comment data.
-        if not has_perm(request.user, 'motions.can_see_and_manage_comments'):
+        if (not has_perm(request.user, 'motions.can_see_comments') or
+                not has_perm(request.user, 'motions.can_manage_comments')):
             try:
                 # Ignore comments data if user is not allowed to send comments.
                 del request.data['comments']
@@ -176,7 +177,8 @@ class MotionViewSet(ModelViewSet):
         # Check permissions.
         if (not has_perm(request.user, 'motions.can_manage') and
                 not (motion.is_submitter(request.user) and motion.state.allow_submitter_edit) and
-                not has_perm(request.user, 'motions.can_see_and_manage_comments')):
+                not (has_perm(request.user, 'motions.can_see_comments') and
+                     has_perm(request.user, 'motions.can_manage_comments'))):
             self.permission_denied(request)
 
         # Check permission to send only some data.
@@ -197,7 +199,8 @@ class MotionViewSet(ModelViewSet):
             for key in keys:
                 if key not in whitelist:
                     del request.data[key]
-        if not has_perm(request.user, 'motions.can_see_and_manage_comments'):
+        if (not has_perm(request.user, 'motions.can_see_comments') or
+                not has_perm(request.user, 'motions.can_manage_comments')):
             try:
                 del request.data['comments']
             except KeyError:

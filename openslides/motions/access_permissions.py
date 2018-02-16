@@ -58,7 +58,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
 
                 # Parse single motion.
                 if permission:
-                    if has_perm(user, 'motions.can_see_and_manage_comments') or not full.get('comments'):
+                    if has_perm(user, 'motions.can_see_comments') or not full.get('comments'):
                         # Provide access to all fields.
                         motion = full
                     else:
