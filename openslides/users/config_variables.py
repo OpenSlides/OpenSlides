@@ -119,7 +119,7 @@ def get_config_variables():
         default_value=dedent('''\
             Dear {name},
 
-            this is your OpenSlides login for the event "{event_name}":
+            this is your OpenSlides login for the event {event_name}:
 
                 {url}
                 username: {username}
