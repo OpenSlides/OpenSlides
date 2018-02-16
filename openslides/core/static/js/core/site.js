@@ -7,6 +7,7 @@ angular.module('OpenSlidesApp.core.site', [
     'OpenSlidesApp.core',
     'OpenSlidesApp.core.start',
     'OpenSlidesApp.core.csv',
+    'OpenSlidesApp.core.remove-format-plugin',
     'OpenSlidesApp.poll.majority',
     'ui.router',
     'colorpicker.module',
