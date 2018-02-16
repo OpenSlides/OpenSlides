@@ -420,6 +420,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 DIFF_MODE_INSERT = 1,
                 DIFF_MODE_DELETE = 2,
 
+                // Space between list elements
+                LI_MARGIN_BOTTOM = 8,
+
                 /**
                  * Convertes HTML for use with pdfMake
                  * @function
@@ -456,7 +459,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                         /**
                          *
                          * Removes all line number nodes (not line-breaks)
-                         * and returns an array containing the reoved numbers (as integer, not as node)
+                         * and returns an array containing the reoved numbers in this format:
+                         * { lineNumber: '<lineNumber>', marginBottom: <number> }
+                         * where marginBottom is optional.
                          *
                          * @function
                          * @param {object} element
@@ -465,25 +470,31 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             var foundLineNumbers = [];
                             var lineNumber = getLineNumber(element);
                             if (lineNumber) {
-                                foundLineNumbers.push(lineNumber);
+                                foundLineNumbers.push({lineNumber: lineNumber});
                                 element.parentNode.removeChild(element);
                             } else if (element.nodeName === 'BR') {
                                 // Check if there is a new line, but it does not get a line number.
                                 // If so, insert a dummy line, so the line nubers stays aligned with
                                 // the text.
                                 if (!getLineNumber(element.nextSibling)) {
-                                    foundLineNumbers.push('');
+                                    foundLineNumbers.push({lineNumber: ''});
                                 }
                             } else {
                                 var children = element.childNodes,
-                                    childrenLength = children.length;
+                                    childrenLength = children.length,
+                                    childrenLineNumbers = [];
                                 for (var i = 0; i < children.length; i++) {
-                                    foundLineNumbers = _.concat(foundLineNumbers, extractLineNumbers(children[i]));
+                                    childrenLineNumbers = _.concat(childrenLineNumbers, extractLineNumbers(children[i]));
                                     if (children.length < childrenLength) {
                                         i -= (childrenLength - children.length);
                                         childrenLength = children.length;
                                     }
                                 }
+                                // If this is an list item, add some space to the lineNumbers:
+                                if (childrenLineNumbers.length && element.nodeName === 'LI') {
+                                    _.last(childrenLineNumbers).marginBottom = LI_MARGIN_BOTTOM;
+                                }
+                                foundLineNumbers = _.concat(foundLineNumbers, childrenLineNumbers);
                             }
                             return foundLineNumbers;
                         },
@@ -689,7 +700,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                                 }
                                                 currentCol = {
                                                     columns: [
-                                                        getLineNumberObject(node.getAttribute('data-line-number')),
+                                                        getLineNumberObject({
+                                                            lineNumber: node.getAttribute('data-line-number')
+                                                        }),
                                                     ],
                                                     margin: [0, 2, 0, 0],
                                                 };
@@ -794,7 +807,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                             }
                                             var col = {
                                                 columns: [
-                                                    getLineNumberObject(lineNumberOutline),
+                                                    getLineNumberObject({
+                                                        lineNumber: lineNumberOutline,
+                                                    }),
                                                 ]
                                             };
                                             currentParagraph = create("text");
@@ -840,6 +855,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     var stackDiv = create("stack");
                                     if (_.indexOf(classes, 'os-split-before') > -1) {
                                         stackDiv.listType = 'none';
+                                    }
+                                    if (nodeName === 'li') {
+                                        stackDiv.marginBottom = LI_MARGIN_BOTTOM;
                                     }
                                     stackDiv.stack.push(currentParagraph);
                                     ComputeStyle(stackDiv, styles);
@@ -952,6 +970,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                             alreadyConverted.push(list);
                                         }
                                     } else {
+                                        list.margin = [0, LI_MARGIN_BOTTOM, 0, 0];
                                         currentParagraph = parseChildren(list[nodeName], element, currentParagraph, styles, diff_mode);
                                         alreadyConverted.push(list);
                                     }
@@ -995,12 +1014,13 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         decoration: '',
                                     },
                                     {
-                                        text: line,
+                                        text: line.lineNumber,
                                         color: "gray",
                                         fontSize: standardFontsize - 2,
                                         decoration: '',
                                     },
                                 ],
+                                marginBottom: line.marginBottom,
                                 lineHeight: 1.25,
                             };
                         },
