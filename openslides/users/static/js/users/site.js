@@ -1782,7 +1782,7 @@ angular.module('OpenSlidesApp.users.site', [
         gettext('Can manage configuration');
         gettext('Can use the chat');
         gettext('Can manage the chat');
-        gettext('Can manage logos');
+        gettext('Can manage logos and fonts');
         // mediafiles
         gettext('Can see the list of files');
         gettext('Can upload files');
@@ -1793,7 +1793,8 @@ angular.module('OpenSlidesApp.users.site', [
         gettext('Can create motions');
         gettext('Can support motions');
         gettext('Can manage motions');
-        gettext('Can see and manage comments');
+        gettext('Can see comments');
+        gettext('Can manage comments');
         // users
         gettext('Can see names of users');
         gettext('Can see extra data of users (e.g. present and comment)');
