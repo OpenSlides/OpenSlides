@@ -203,10 +203,10 @@ class ManageSpeaker(TestCase):
 
     def test_add_someone_else_non_admin(self):
         admin = get_user_model().objects.get(username='admin')
-        group_staff = admin.groups.get(name='Staff')
-        group_delegates = type(group_staff).objects.get(name='Delegates')
+        group_admin = admin.groups.get(name='Admin')
+        group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
-        admin.groups.remove(group_staff)
+        admin.groups.remove(group_admin)
         CollectionElement.from_instance(admin)
 
         response = self.client.post(
@@ -240,10 +240,10 @@ class ManageSpeaker(TestCase):
 
     def test_remove_someone_else_non_admin(self):
         admin = get_user_model().objects.get(username='admin')
-        group_staff = admin.groups.get(name='Staff')
-        group_delegates = type(group_staff).objects.get(name='Delegates')
+        group_admin = admin.groups.get(name='Admin')
+        group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
-        admin.groups.remove(group_staff)
+        admin.groups.remove(group_admin)
         CollectionElement.from_instance(admin)
         speaker = Speaker.objects.add(self.user, self.item)
 
@@ -268,10 +268,10 @@ class ManageSpeaker(TestCase):
 
     def test_mark_speaker_non_admin(self):
         admin = get_user_model().objects.get(username='admin')
-        group_staff = admin.groups.get(name='Staff')
-        group_delegates = type(group_staff).objects.get(name='Delegates')
+        group_admin = admin.groups.get(name='Admin')
+        group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
-        admin.groups.remove(group_staff)
+        admin.groups.remove(group_admin)
         CollectionElement.from_instance(admin)
         Speaker.objects.add(self.user, self.item)
 
