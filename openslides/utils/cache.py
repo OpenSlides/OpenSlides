@@ -396,6 +396,34 @@ class RestrictedDataCache:
             self.get_cache_key(user_id),
             "{}/{}".format(collection_string, id))
 
+    def del_user(self, user_id: int) -> None:
+        """
+        Removes all elements for one user from the cache.
+        """
+        redis = get_redis_connection()
+        redis.delete(self.get_cache_key(user_id))
+
+    def del_all(self) -> None:
+        """
+        Deletes all elements from the cache.
+
+        This method uses the redis command SCAN. See
+        https://redis.io/commands/scan#scan-guarantees for its limitations. If
+        an element is added to the cache while del_all() is in process, it is
+        possible, that it is not deleted.
+        """
+        redis = get_redis_connection()
+
+        # Get all keys that start with self.base_cache_key and delete them
+        match = cache.make_key('{}:*'.format(self.base_cache_key))
+        cursor = 0
+        while True:
+            cursor, keys = redis.scan(cursor, match)
+            for key in keys:
+                redis.delete(key)
+            if cursor == 0:
+                return
+
     def exists_for_user(self, user_id: int) -> bool:
         """
         Returns True if the cache for the user exists, else False.

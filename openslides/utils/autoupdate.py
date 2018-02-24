@@ -3,7 +3,7 @@ import threading
 import time
 import warnings
 from collections import OrderedDict, defaultdict
-from typing import Any, Dict, Generator, Iterable, List, Tuple, Union, Optional
+from typing import Any, Dict, Generator, Iterable, List, Optional, Tuple, Union
 
 from channels import Channel, Group
 from channels.asgi import get_channel_layer
