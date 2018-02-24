@@ -100,7 +100,7 @@ def ws_add_site(message: Any) -> None:
 
                 output.append(formatted_data)
                 # Cache restricted data for user
-                restricted_data_cache.update_element(
+                restricted_data_cache.add_element(
                     user_id,
                     collection.collection_string,
                     data['id'],
