@@ -3,7 +3,7 @@ import threading
 import time
 import warnings
 from collections import OrderedDict, defaultdict
-from typing import Any, Dict, Generator, Iterable, List, Tuple, Union
+from typing import Any, Dict, Generator, Iterable, List, Tuple, Union, Optional
 
 from channels import Channel, Group
 from channels.asgi import get_channel_layer
@@ -317,12 +317,12 @@ def send_data_site(message: ChannelMessageFormat) -> None:
             send_or_wait(Channel(channel_name).send, {'text': json.dumps(output)})
 
 
-def to_ordered_dict(d):
+def to_ordered_dict(d: Optional[Dict]) -> Optional[OrderedDict]:
     """
     Little helper to hash information dict in inform_*_data.
     """
     if isinstance(d, dict):
-        result = OrderedDict([(key, to_ordered_dict(d[key])) for key in sorted(d.keys())])
+        result = OrderedDict([(key, to_ordered_dict(d[key])) for key in sorted(d.keys())])  # type: Optional[OrderedDict]
     else:
         result = d
     return result
@@ -404,11 +404,11 @@ class AutoupdateBundleMiddleware:
     """
     Middleware to handle autoupdate bundling.
     """
-    def __init__(self, get_response):
+    def __init__(self, get_response: Any) -> None:
         self.get_response = get_response
         # One-time configuration and initialization.
 
-    def __call__(self, request):
+    def __call__(self, request: Any) -> Any:
         thread_id = threading.get_ident()
         autoupdate_bundle[thread_id] = {}
 

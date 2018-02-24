@@ -82,6 +82,6 @@ class BinaryTemplateView(TemplateView):
     """
     Loads the specified binary template and encode it with base64.
     """
-    def load_template(self):
+    def load_template(self) -> str:
         with open(finders.find(self.template_name), 'rb') as template:
-            return base64.b64encode(template.read())
+            return base64.b64encode(template.read()).decode()
