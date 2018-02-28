@@ -92,7 +92,7 @@
               </span>
               {{ item.title }}
             <td>{{ item.text | limitTo:80 }}{{ item.text.length > 80 ? '...' : '' }}
-            <td>{{ item.duration | osMinutesToTime }}
+            <td>{{ item.duration ? 'item.duration | osMinutesToTime' : '' }}
             <td>{{ item.comment }}
             <td>{{ item.is_hidden }}
       </table>
@@ -100,7 +100,7 @@
 
     <div class="text-danger">
       <i class="fa fa-exclamation-triangle"></i>
-      {{ itemsWillNMotBeImported }}
+      {{ itemsWillNotBeImported }}
       <translate>topics will be not imported.</translate>
     </div>
     <div>
