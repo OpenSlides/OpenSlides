@@ -309,7 +309,7 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
                     }
                     item.duration = time;
                 } else {
-                    item.duration = null;
+                    delete item.duration;
                 }
                 // is_hidden
                 if (item.is_hidden) {
