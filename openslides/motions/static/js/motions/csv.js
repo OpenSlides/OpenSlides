@@ -28,12 +28,6 @@ angular.module('OpenSlidesApp.motions.csv', [])
             if (params.include.motionBlock) {
                 headerline.push('Motion block');
             }
-            if (params.include.state) {
-                headerline.push('State');
-            }
-            if (params.include.recommendation) {
-                headerline.push('Recommendation');
-            }
             return _.map(headerline, function (entry) {
                 return gettextCatalog.getString(entry);
             });
@@ -101,16 +95,6 @@ angular.module('OpenSlidesApp.motions.csv', [])
                         row.push('"' + blockTitle + '"');
                     }
 
-                    // State
-                    if (params.include.state) {
-                        row.push('"' + motion.getStateName() + '"');
-                    }
-
-                    // Recommendation
-                    if (params.include.recommendation) {
-                        row.push('"' + motion.getRecommendationName() + '"');
-                    }
-
                     csvRows.push(row);
                 });
                 CsvDownload(csvRows, 'motions-export.csv');
@@ -126,9 +110,9 @@ angular.module('OpenSlidesApp.motions.csv', [])
                         recommendation: true,
                     }}),
                     // example entries
-                    ['A1', 'Title 1', 'Text 1', 'Reason 1', 'Submitter A', 'Category A', 'Last Year Conference A', 'Block A', 'permitted', ''],
-                    ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', '', 'Block A', 'accepted', 'Acceptance'],
-                    [''  , 'Title 3', 'Text 3', '', '', '', '', '', '', ''],
+                    ['A1', 'Title 1', 'Text 1', 'Reason 1', 'Submitter A', 'Category A', 'Last Year Conference A', 'Block A'],
+                    ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', '', 'Block A'],
+                    [''  , 'Title 3', 'Text 3', '', '', '', '', ''],
                 ];
                 CsvDownload(csvRows, 'motions-example.csv');
             },
