@@ -2119,7 +2119,8 @@ angular.module('OpenSlidesApp.motions.site', [
                 // submitter
                 if (motion.submitter && motion.submitter !== '') {
                     angular.forEach(User.getAll(), function (user) {
-                        if (user.short_name == motion.submitter.trim()) {
+                        var user_short_name = [user.title, user.first_name, user.last_name].join(' ').trim();
+                        if (user_short_name == motion.submitter.trim()) {
                             motion.submitters_id = [user.id];
                             motion.submitter = user.full_name;
                         }

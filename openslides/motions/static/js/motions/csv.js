@@ -76,8 +76,12 @@ angular.module('OpenSlidesApp.motions.csv', [])
 
                     // Submitters
                     if (params.include.submitters) {
-                        var submitters = motion.submitters[0] ? motion.submitters[0].get_full_name() : '';
-                        row.push('"' + submitters + '"');
+                        var submitters = [];
+                        angular.forEach(motion.submitters, function(user) {
+                            var user_short_name = [user.title, user.first_name, user.last_name].join(' ').trim();
+                            submitters.push(user_short_name);
+                        });
+                        row.push('"' + submitters.join('; ') + '"');
                     }
 
                     // Category
