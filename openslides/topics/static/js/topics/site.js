@@ -257,9 +257,9 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
         // import from textarea
         $scope.importByLine = function () {
             if ($scope.itemlist) {
-                $scope.titleItems = $scope.itemlist[0].split("\n");
+                $scope.titleItems = _.filter($scope.itemlist[0].split("\n"));
                 $scope.importcounter = 0;
-                $scope.titleItems.forEach(function(title, index) {
+                _.forEach($scope.titleItems, function(title, index) {
                     var item = {title: title};
                     item.agenda_type = 1;  // The new topic is not hidden.
                     item.agenda_weight = 1000 + index;

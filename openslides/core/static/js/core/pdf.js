@@ -87,7 +87,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
             return '{{ballot-placeholder-to-insert-functions-here}}';
         };
 
-        // returns a promise for converting an image in data URL format
+        // returns a promise for converting an image in data URL format with size information
         PDFLayout.imageURLtoBase64 = function(url) {
             var promise = new Promise(function(resolve) {
                 var img = new Image();
@@ -170,15 +170,18 @@ angular.module('OpenSlidesApp.core.pdf', [])
             // Logo urls
             var logoHeaderUrl = Config.get('logo_pdf_header').value.path,
                 logoFooterUrl = Config.get('logo_pdf_footer').value.path;
-            var imageMap = {};
+            var imageMap = contentProvider.getImageMap();
 
             // PDF header
             var getHeader = function() {
                 var columns = [];
 
                 if (logoHeaderUrl) {
+                    if (logoHeaderUrl.indexOf('/') === 0) {
+                        logoHeaderUrl = logoHeaderUrl.substr(1); // remove trailing /
+                    }
                     columns.push({
-                        image: imageMap[logoHeaderUrl].data,
+                        image: logoHeaderUrl,
                         fit: [180, 40],
                         width: '20%'
                     });
@@ -216,8 +219,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 var columns = [];
 
                 if (logoFooterUrl) {
+                    if (logoFooterUrl.indexOf('/') === 0) {
+                        logoFooterUrl = logoFooterUrl.substr(1); // remove trailing /
+                    }
                     columns.push({
-                        image: imageMap[logoFooterUrl].data,
+                        image: logoFooterUrl,
                         fit: [400,50],
                         width: '80%'
                     });
@@ -338,15 +344,24 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 };
             };
 
+            var getImageMap = function () {
+                return imageMap;
+            };
+
             return $q(function (resolve) {
                 var imageSources = [
                     logoHeaderUrl,
                     logoFooterUrl
                 ];
                 ImageConverter.toBase64(imageSources).then(function (_imageMap) {
-                    imageMap = _imageMap;
+                    _.forEach(_imageMap, function (data, path) {
+                        if (!imageMap[path]) {
+                            imageMap[path] = data;
+                        }
+                    });
                     resolve({
-                        getDocument: getDocument
+                        getDocument: getDocument,
+                        getImageMap: getImageMap,
                     });
                 });
             });
@@ -393,8 +408,14 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     }
                 };
             };
+
+            var getImageMap = function() {
+                return contentProvider.getImageMap();
+            };
+
             return {
-                getDocument: getDocument
+                getDocument: getDocument,
+                getImageMap: getImageMap,
             };
         };
         return {
@@ -937,8 +958,12 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         imageSize.width *= scaleByHeight;
                                         imageSize.height *= scaleByHeight;
                                     }
+                                    var path = element.getAttribute("src");
+                                    if (path.indexOf('/') === 0) {
+                                        path = path.substr(1); // remove trailing /
+                                    }
                                     alreadyConverted.push({
-                                        image: images[element.getAttribute("src")].data,
+                                        image: path,
                                         width: imageSize.width,
                                         height: imageSize.height
                                     });
@@ -1064,8 +1089,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 var imageMap = {};
                 var imagePromises = _.map(imageSources, function (imageSource) {
                     if (imageSource) {
-                        return PDFLayout.imageURLtoBase64(imageSource).then(function (base64Str) {
-                            imageMap[imageSource] = base64Str;
+                        return PDFLayout.imageURLtoBase64(imageSource).then(function (imgInfo) {
+                            imageMap[imageSource] = imgInfo;
                         });
                     }
                 });
@@ -1127,10 +1152,17 @@ angular.module('OpenSlidesApp.core.pdf', [])
         /*
          * Create the virtual filesystem needed by PdfMake for the fonts. Gets the url
          * mapping and loads all fonts via get requests or the urlCache.
+         * Adds all image sources to the vfs given by the imageMap.
          */
-        var getVfs = function () {
+        var getVfs = function (imageMap) {
+            var vfs = {};
+            _.forEach(imageMap || {}, function (data, path) {
+                if (path.indexOf('/') === 0) {
+                    path = path.substr(1); // remove trailing /
+                }
+                vfs[path] = data.data.split(',')[1];
+            });
             return $q(function (resolve, reject) {
-                var vfs = {};
                 var urls = getUrlMapping();
                 var promises = _.chain(urls)
                     .map(function (filenames, url) {
@@ -1209,9 +1241,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
             }, 1);
         };
         return {
-            getBase64FromDocument: function (pdfDocument) {
+            getBase64FromDocument: function (documentProvider) {
                 return $q(function (resolve, reject) {
-                    PdfVfs.get().then(function (vfs) {
+                    PdfVfs.get(documentProvider.getImageMap()).then(function (vfs) {
                         var pdfWorker = new Worker('/static/js/workers/pdf-worker.js');
                         pdfWorker.addEventListener('message', function (event) {
                             resolve(event.data);
@@ -1220,7 +1252,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             reject(event);
                         });
                         pdfWorker.postMessage(JSON.stringify({
-                            pdfDocument: pdfDocument,
+                            pdfDocument: documentProvider.getDocument(),
                             vfs: vfs,
                         }));
                     });
@@ -1228,8 +1260,17 @@ angular.module('OpenSlidesApp.core.pdf', [])
             },
             // Struckture of pdfDocuments: { filname1: doc, filename2: doc, ...}
             getBase64FromMultipleDocuments: function (pdfDocuments) {
+                // concat all image sources together
+                var imageMap = {};
+                _.forEach(pdfDocuments, function (doc) {
+                    _.forEach(doc.getImageMap(), function (data, path) {
+                        if (!imageMap[path]) {
+                            imageMap[path] = data;
+                        }
+                    });
+                });
                 return $q(function (resolve, reject) {
-                    PdfVfs.get().then(function (vfs) {
+                    PdfVfs.get(imageMap).then(function (vfs) {
                         var pdfWorker = new Worker('/static/js/workers/pdf-worker.js');
                         var resultCount = 0;
                         var base64Map = {}; // Maps filename to base64
@@ -1247,17 +1288,17 @@ angular.module('OpenSlidesApp.core.pdf', [])
                         _.forEach(pdfDocuments, function (doc, filename) {
                             pdfWorker.postMessage(JSON.stringify({
                                 filename: filename,
-                                pdfDocument: doc,
+                                pdfDocument: doc.getDocument(),
                                 vfs: vfs,
                             }));
                         });
                     });
                 });
             },
-            download: function (pdfDocument, filename) {
+            download: function (documentProvider, filename) {
                 stateChange('info', filename);
 
-                this.getBase64FromDocument(pdfDocument).then(function (data) {
+                this.getBase64FromDocument(documentProvider).then(function (data) {
                     var blob = b64toBlob(data);
                     stateChange('success', filename);
                     FileSaver.saveAs(blob, filename);
