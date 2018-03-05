@@ -1638,35 +1638,38 @@ angular.module('OpenSlidesApp.users.site', [
     }
 ])
 
-.factory('Logout', [
+.factory('UserMenu', [
     '$http',
     'OpenSlides',
-    function ($http, OpenSlides) {
-        return function () {
-            $http.post('/users/logout/').then(function (response) {
-                // Success: User logged out, so reboot OpenSlides.
-                OpenSlides.reboot();
-            });
+    'ngDialog',
+    'UserProfileForm',
+    'UserPasswordForm',
+    function ($http, OpenSlides, ngDialog, UserProfileForm, UserPasswordForm) {
+        return {
+            logout: function () {
+                $http.post('/users/logout/').then(function (response) {
+                    // Success: User logged out, so reboot OpenSlides.
+                    OpenSlides.reboot();
+                });
+            },
+            editProfile: function () {
+                ngDialog.open(UserProfileForm.getDialog());
+            },
+            changePassword: function () {
+                ngDialog.open(UserPasswordForm.getDialog());
+            },
         };
     }
 ])
 
 .controller('userMenu', [
     '$scope',
-    '$http',
-    'ngDialog',
-    'UserProfileForm',
-    'UserPasswordForm',
-    'Logout',
-    function($scope, $http, ngDialog, UserProfileForm, UserPasswordForm, Logout) {
-        $scope.logout = Logout;
+    'UserMenu',
+    function($scope, UserMenu) {
+        $scope.logout = UserMenu.logout;
+        $scope.editProfile = UserMenu.editProfile;
+        $scope.changePassword = UserMenu.changePassword;
 
-        $scope.editProfile = function () {
-            ngDialog.open(UserProfileForm.getDialog());
-        };
-        $scope.changePassword = function () {
-            ngDialog.open(UserPasswordForm.getDialog());
-        };
     }
 ])
 
