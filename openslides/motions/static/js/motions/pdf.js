@@ -42,7 +42,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 includeComments: {},
             });
 
-            var converter;
+            var converter, imageMap = {};
 
             // Query all image sources from motion text and reason
             var getImageSources = function () {
@@ -426,14 +426,20 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 return motion.category;
             };
 
+            var getImageMap = function() {
+                return imageMap;
+            };
+
             return $q(function (resolve) {
-                ImageConverter.toBase64(getImageSources()).then(function (imageMap) {
-                    converter = PdfMakeConverter.createInstance(imageMap);
+                ImageConverter.toBase64(getImageSources()).then(function (_imageMap) {
+                    imageMap = _imageMap;
+                    converter = PdfMakeConverter.createInstance(_imageMap);
                     resolve({
                         getContent: getContent,
                         getTitle: getTitle,
                         getIdentifier: getIdentifier,
-                        getCategory: getCategory
+                        getCategory: getCategory,
+                        getImageMap: getImageMap,
                     });
                 });
             });
@@ -461,7 +467,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
          * */
         var createInstance = function (motion, content) {
 
-            var converter;
+            var converter, imageMap = {};
 
             // Query all image sources from the content
             var getImageSources = function () {
@@ -593,11 +599,17 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 return pdfContent;
             };
 
+            var getImageMap = function () {
+                return imageMap;
+            };
+
             return $q(function (resolve) {
-                ImageConverter.toBase64(getImageSources()).then(function (imageMap) {
-                    converter = PdfMakeConverter.createInstance(imageMap);
+                ImageConverter.toBase64(getImageSources()).then(function (_imageMap) {
+                    imageMap = _imageMap;
+                    converter = PdfMakeConverter.createInstance(_imageMap);
                     resolve({
                         getContent: getContent,
+                        getImageMap: getImageMap,
                     });
                 });
             });
@@ -643,7 +655,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 // logo
                 if (logoBallotPaperUrl) {
                     columns.push({
-                        image: imageMap[logoBallotPaperUrl].data,
+                        image: logoBallotPaperUrl,
                         fit: [90,25],
                         alignment: 'right',
                         width: '40%'
@@ -750,6 +762,10 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 return content;
             };
 
+            var getImageMap = function () {
+                return imageMap;
+            };
+
             return $q(function (resolve) {
                 var imageSources = [
                     logoBallotPaperUrl,
@@ -757,7 +773,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 ImageConverter.toBase64(imageSources).then(function (_imageMap) {
                     imageMap = _imageMap;
                     resolve({
-                        getContent: getContent
+                        getContent: getContent,
+                        getImageMap: getImageMap,
                     });
                 });
             });
@@ -881,7 +898,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             // returns the pure content of the motion, parseable by pdfmake
             var getContent = function() {
                 var motionContent = [];
-                angular.forEach(allMotions, function(motion, key) {
+                _.forEach(allMotions, function(motion, key) {
                     motionContent.push(motion.getContent());
                     if (key < allMotions.length - 1) {
                         motionContent.push(PDFLayout.addPageBreak());
@@ -900,8 +917,22 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 content.push(motionContent);
                 return content;
             };
+
+            var getImageMap = function () {
+                var imageMap = {};
+                _.forEach(allMotions, function (motion) {
+                    _.forEach(motion.getImageMap(), function (data, path) {
+                        if (!imageMap[path]) {
+                            imageMap[path] = data;
+                        }
+                    });
+                });
+                return imageMap;
+            };
+
             return {
-                getContent: getContent
+                getContent: getContent,
+                getImageMap: getImageMap,
             };
         };
 
@@ -992,7 +1023,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 });
                 this.getDocumentProvider(motions, params, singleMotion).then(
                     function (documentProvider) {
-                        PdfCreate.download(documentProvider.getDocument(), params.filename);
+                        PdfCreate.download(documentProvider, params.filename);
                     }
                 );
             },
@@ -1025,7 +1056,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     return $q(function (resolve) {
                         // get documentProvider for every motion.
                         self.getDocumentProvider(motion, params, true).then(function (documentProvider) {
-                            docMap[filename] = documentProvider.getDocument();
+                            docMap[filename] = documentProvider;
                             resolve();
                         });
                     });
@@ -1054,7 +1085,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 var filename = gettextCatalog.getString('Motion') + '-' + id + '-' + gettextCatalog.getString('ballot-paper') + '.pdf';
                 PollContentProvider.createInstance(title, id).then(function (pollContentProvider) {
                     var documentProvider = PdfMakeBallotPaperProvider.createInstance(pollContentProvider);
-                    PdfCreate.download(documentProvider.getDocument(), filename);
+                    PdfCreate.download(documentProvider, filename);
                 });
             },
             exportPersonalNote: function (motion, filename) {
@@ -1065,7 +1096,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 }];
                 MotionPartialContentProvider.createInstance(motion, content).then(function (contentProvider) {
                     PdfMakeDocumentProvider.createInstance(contentProvider).then(function (documentProvider) {
-                        PdfCreate.download(documentProvider.getDocument(), filename);
+                        PdfCreate.download(documentProvider, filename);
                     });
                 });
             },
@@ -1082,7 +1113,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     }];
                     MotionPartialContentProvider.createInstance(motion, content).then(function (contentProvider) {
                         PdfMakeDocumentProvider.createInstance(contentProvider).then(function (documentProvider) {
-                            PdfCreate.download(documentProvider.getDocument(), filename);
+                            PdfCreate.download(documentProvider, filename);
                         });
                     });
                 }
