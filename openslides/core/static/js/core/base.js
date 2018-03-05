@@ -839,7 +839,7 @@ angular.module('OpenSlidesApp.core', [
             set: function (key, path) {
                 var config = Config.get(key);
                 if (config) {
-                    config.value.path = path;// ? mediafile.mediafileUrl : '';
+                    config.value.path = path || '';
                     Config.save(key);
                 }
             },
@@ -894,7 +894,7 @@ angular.module('OpenSlidesApp.core', [
             set: function (key, path) {
                 var config = Config.get(key);
                 if (config) {
-                    config.value.path = path;
+                    config.value.path = path || '';
                     Config.save(key);
                 }
             },
