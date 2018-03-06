@@ -118,6 +118,9 @@ Core:
 - Removed unnecessary OPTIONS request in config [#3541].
 - Added possibility to upload custom fonts for projector and pdf [#3568].
 - Use custom format cleanup plugin for CKEditor [#3576].
+- Added --debug-email flag to print all emails to stdout [#3530].
+- Added --no-template-caching flag to disable template caching for
+  easier development [#3566].
 
 Mediafiles:
 - Fixed reloading of PDF on page change [#3274].

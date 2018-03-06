@@ -9,6 +9,8 @@ from django.views.generic.base import View
 from rest_framework.response import Response
 from rest_framework.views import APIView as _APIView
 
+from .arguments import arguments
+
 
 class CSRFMixin:
     """
@@ -67,7 +69,8 @@ class TemplateView(View):
         if self.template_name is None:
             raise ImproperlyConfigured("'template_name' is not provided.")
 
-        if self.template_name not in self.state:
+        no_caching = arguments.get('no_template_caching', False)
+        if self.template_name not in self.state or no_caching:
             self.state[self.template_name] = self.load_template()
 
     def load_template(self) -> str:
