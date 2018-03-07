@@ -32,6 +32,7 @@
         <img src="/static/img/openslides-logo-dark.png" alt="OpenSlides Logo" height="35">
         <img ng-if="config('logo_web_header').path" ng-src="{{ config('logo_web_header').path }}" alt="OpenSlides Logo" height="35">
       </a>
+      <span ng-bind-html="config('general_event_name')"></span>
     </div>
 
     <!-- user specific header (chat, user settings / login, language)-->
