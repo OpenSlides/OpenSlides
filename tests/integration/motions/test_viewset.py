@@ -321,7 +321,7 @@ class CreateMotion(TestCase):
         """
         self.admin = get_user_model().objects.get(username='admin')
         self.admin.groups.add(2)
-        self.admin.groups.remove(3)
+        self.admin.groups.remove(4)
         group_delegate = self.admin.groups.get()
         group_delegate.permissions.add(Permission.objects.get(
             content_type__app_label='motions',
@@ -381,7 +381,7 @@ class CreateMotion(TestCase):
 
         self.admin = get_user_model().objects.get(username='admin')
         self.admin.groups.add(2)
-        self.admin.groups.remove(3)
+        self.admin.groups.remove(4)
         get_redis_connection('default').flushall()
 
         response = self.client.post(
@@ -564,8 +564,8 @@ class UpdateMotion(TestCase):
     def test_removal_of_supporters(self):
         # No cache used here.
         admin = get_user_model().objects.get(username='admin')
-        group_staff = admin.groups.get(name='Staff')
-        admin.groups.remove(group_staff)
+        group_admin = admin.groups.get(name='Admin')
+        admin.groups.remove(group_admin)
         self.motion.submitters.add(admin)
         supporter = get_user_model().objects.create_user(
             username='test_username_ahshi4oZin0OoSh9chee',
@@ -656,9 +656,9 @@ class DeleteMotion(TestCase):
         self.assertEqual(motions, 0)
 
     def make_admin_delegate(self):
-        group_staff = self.admin.groups.get(name='Staff')
+        group_admin = self.admin.groups.get(name='Admin')
         group_delegates = Group.objects.get(name='Delegates')
-        self.admin.groups.remove(group_staff)
+        self.admin.groups.remove(group_admin)
         self.admin.groups.add(group_delegates)
         CollectionElement.from_instance(self.admin)
 

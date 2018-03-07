@@ -82,6 +82,7 @@ Users:
 - Hide password in change password view [#3417].
 - Added a change presence view [#3496].
 - New feature to send invitation emails with OpenSlides login [#3503].
+- New admin user group [#3621].
 
 Core:
 - No reload on logoff. OpenSlides is now a full single page

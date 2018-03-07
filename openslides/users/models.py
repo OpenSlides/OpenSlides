@@ -68,9 +68,9 @@ class UserManager(BaseUserManager):
         query_can_see_name = Q(content_type__app_label='users') & Q(codename='can_see_name')
         query_can_manage = Q(content_type__app_label='users') & Q(codename='can_manage')
 
-        staff, _ = Group.objects.get_or_create(name='Staff')
-        staff.permissions.add(Permission.objects.get(query_can_see_name))
-        staff.permissions.add(Permission.objects.get(query_can_manage))
+        admin_group, _ = Group.objects.get_or_create(name='Admin')
+        admin_group.permissions.add(Permission.objects.get(query_can_see_name))
+        admin_group.permissions.add(Permission.objects.get(query_can_manage))
 
         admin, created = self.get_or_create(
             username='admin',
@@ -78,7 +78,7 @@ class UserManager(BaseUserManager):
         admin.default_password = 'admin'
         admin.password = make_password(admin.default_password)
         admin.save()
-        admin.groups.add(staff)
+        admin.groups.add(admin_group)
         return created
 
     def generate_username(self, first_name, last_name):
