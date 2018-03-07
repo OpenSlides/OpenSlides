@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header motion-header">
   <div class="title">
     <div class="submenu">
       <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
@@ -59,13 +59,22 @@
         <translate>PDF</translate>
       </a>
     </div>
-    <h1>
-      {{ motion.getTitle() }}
-      <i class="fa pointer" ng-class="motion.personalNote.star ? 'fa-star' : 'fa-star-o'"
-        ng-if="operator.user"
-        title="{{ 'Set as favorite' | translate }}" ng-click="toggleStar()"></i>
-    </h1>
-    <div class="row">
+
+      <h1 class="motion-title">
+          <span class="title-change-indicator"
+              ng-if="viewChangeRecommendations.mode == 'original' && title_change_recommendation"
+              ng-click="viewChangeRecommendations.scrollToDiffBox(title_change_recommendation.id)"></span>
+          <span class="change-title"
+                ng-if="motion.isAllowed('update') && viewChangeRecommendations.mode == 'original' && !title_change_recommendation"></span>
+
+          <span>{{ motion.getTitleWithChanges(viewChangeRecommendations.mode) }}</span>
+
+          <i class="fa pointer" ng-class="motion.personalNote.star ? 'fa-star' : 'fa-star-o'"
+             ng-if="operator.user"
+             title="{{ 'Set as favorite' | translate }}" ng-click="toggleStar()"></i>
+      </h1>
+
+      <div class="row">
       <div class="col-sm-6">
         <h2>
             <translate>Motion</translate> {{ motion.identifier }}

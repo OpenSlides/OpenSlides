@@ -49,7 +49,7 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
 
             // motions
             data.tableofcontents_translation = gettextCatalog.getString('Table of contents');
-            data.motions_list = getMotionShortData(motions);
+            data.motions_list = getMotionShortData(motions, params);
             data.no_motions = gettextCatalog.getString('No motions available.');
 
             return $q(function (resolve) {
@@ -77,11 +77,11 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
             return _.orderBy(categories, [sortKey]);
         };
 
-        var getMotionShortData = function (motions) {
+        var getMotionShortData = function (motions, params) {
             return _.map(motions, function (motion) {
                 return {
                     identifier: motion.identifier || '',
-                    title: motion.getTitle(),
+                    title: motion.getTitleWithChanges(params.changeRecommendationMode),
                 };
             });
         };
@@ -97,6 +97,7 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
             var sequential_enabled = Config.get('motions_export_sequential_number').value;
             // promises for create the actual motion data
             var promises = _.map(motions, function (motion) {
+                var title = motion.getTitleWithChanges(params.changeRecommendationMode);
                 var text = params.include.text ? motion.getTextByMode(params.changeRecommendationMode, null, null, false) : '';
                 var reason = params.include.reason ? motion.getReason() : '';
                 var comments = getMotionComments(motion, params.includeComments);
@@ -114,7 +115,7 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
                     // Actual data
                     id: motion.id,
                     identifier: motion.identifier || '',
-                    title: motion.getTitle(),
+                    title: title,
                     submitters: params.include.submitters ?  _.map(motion.submitters, function (submitter) {
                                     return submitter.get_full_name();
                                 }).join(', ') : '',

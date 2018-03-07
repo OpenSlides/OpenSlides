@@ -280,8 +280,12 @@ class MotionChangeRecommendationSerializer(ModelSerializer):
             'text',
             'creation_time',)
 
+    def is_title_cr(self, data):
+        return int(data['line_from']) == 0 and int(data['line_to']) == 0
+
     def validate(self, data):
-        if 'text' in data:
+        # Change recommendations for titles are stored as plain-text, thus they don't need to be html-escaped
+        if 'text' in data and not self.is_title_cr(data):
             data['text'] = validate_html(data['text'])
         return data
 

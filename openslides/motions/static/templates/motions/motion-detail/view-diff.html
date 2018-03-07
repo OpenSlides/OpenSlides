@@ -1,4 +1,48 @@
 <div ng-if="viewChangeRecommendations.mode == 'diff'">
+    <!-- The changed title -->
+    <div ng-if="title_change_recommendation" ng-class="motion.isAllowed('can_manage') ? 'diff-box' : ''"
+         class="diff-box-{{ title_change_recommendation.id }} diff-box-title clearfix">
+        <div class="action-row" ng-if="motion.isAllowed('can_manage')">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-sm btn-default" ng-class="{active: !title_change_recommendation.rejected}"
+                       title="{{ 'Not rejected' | translate }}"
+                       ng-click="title_change_recommendation.rejected = false; title_change_recommendation.saveStatus();">
+                    <input type="radio" name="changeRecommendationRejected[{{ title_change_recommendation.id }}]" value="0"
+                           ng-change="title_change_recommendation.saveStatus()" ng-model="change.rejected"
+                           ng-checked="title_change_recommendation.rejected == false">
+                    <i class="fa fa-thumbs-up"></i>
+                </label>
+                <label class="btn btn-sm btn-default" ng-class="{active: title_change_recommendation.rejected}"
+                       title="{{ 'Rejected' | translate }}" ng-click="title_change_recommendation.rejected = true; title_change_recommendation.saveStatus();">
+                    <input type="radio" name="changeRecommendationRejected[{{ title_change_recommendation.id }}]" value="1"
+                           ng-change="title_change_recommendation.saveStatus()" ng-model="change.rejected"
+                           ng-checked="title_change_recommendation.rejected == true">
+                    <i class="fa fa-thumbs-down"></i>
+                </label>
+            </div>
+
+            <button class="btn btn-default btn-sm pull-right btn-delete"
+                    ng-bootbox-confirm="{{ 'Are you sure you want to delete this change recommendation?' | translate }}"
+                    ng-bootbox-confirm-action="viewChangeRecommendations.delete(title_change_recommendation.id)"
+                    title="{{ 'Delete' | translate }}">
+                <i class="fa fa-trash"></i>
+            </button>
+
+            <button class="btn btn-default btn-sm pull-right btn-edit"
+                    ng-click="createChangeRecommendation.editTitleDialog(title_change_recommendation)"
+                    title="{{ 'Edit' | translate }}">
+                <i class="fa fa-pencil"></i>
+            </button>
+        </div>
+        <div class="status-row" ng-if="!motion.isAllowed('can_manage') && title_change_recommendation.rejected">
+            <translate>Rejected</translate>
+        </div>
+
+        <div class="motion-text motion-text-diff line-numbers-{{ lineNumberMode }}">
+            <div class="description"><translate>New title</translate>:</div>
+            <div>{{ title_change_recommendation.text }}</div>
+        </div>
+    </div>
 
     <!-- The actual diff view -->
     <div class="motion-text-with-diffs line-numbers-{{ lineNumberMode }}">
@@ -31,7 +75,7 @@
                         <i class="fa fa-trash"></i>
                     </button>
 
-                    <button class="btn btn-default btn-sm pull-right btn-edit" ng-click="createChangeRecommendation.editDialog(change)"
+                    <button class="btn btn-default btn-sm pull-right btn-edit" ng-click="createChangeRecommendation.editTextDialog(change)"
                             title="{{ 'Edit' | translate }}">
                         <i class="fa fa-pencil"></i>
                     </button>

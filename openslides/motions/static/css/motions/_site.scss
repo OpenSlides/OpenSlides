@@ -106,16 +106,12 @@
     left: 20px;
 }
 
-.line-numbers-outside .os-line-number.selectable:hover:before, .line-numbers-outside .os-line-number.selected:before {
+@mixin addChangeRecommendationBtn {
     cursor: pointer;
     content: "\f067";
-    display: inline-block;
-    position: absolute;
     width: 14px;
     height: 14px;
     border-radius: 0.25em;
-    top: 4px;
-    left: 43px;
     font-family: FontAwesome;
     font-size: 12px;
     color: white;
@@ -123,6 +119,55 @@
     text-align: center;
     background-color: #337ab7;
 }
+
+.line-numbers-outside .os-line-number.selectable:hover:before, .line-numbers-outside .os-line-number.selected:before {
+    position: absolute;
+    top: 4px;
+    left: 43px;
+    display: inline-block;
+    @include addChangeRecommendationBtn();
+}
+
+.motion-header {
+  .submenu {
+    position: relative;
+    z-index: 2;
+  }
+  .motion-title {
+    position: relative;
+    z-index: 1;
+
+    // Grab the left padding of the parent element to catch hover-events for the :before element
+    margin-left: -20px;
+    padding-left: 20px;
+
+    .change-title {
+        position: relative;
+        width: 0;
+        height: 0;
+    }
+    .change-title:before {
+        position: absolute;
+        top: 18px;
+        left: -17px;
+        @include addChangeRecommendationBtn();
+        display: none;
+    }
+    &:hover .change-title.selectable:before {
+        display: block;
+    }
+    .title-change-indicator {
+        background-color: #0333ff;
+        position: absolute;
+        width: 4px;
+        height: 32px;
+        left: 10px;
+        top: 5px;
+        cursor: pointer;
+    }
+  }
+}
+
 
 .tt_change_recommendation_create_help {
     display: none;
@@ -187,6 +232,13 @@
         & > *:after {
             content: ':';
         }
+    }
+}
+
+.diff-box-title {
+    margin-bottom: 10px;
+    .description {
+        font-weight: bold;
     }
 }
 

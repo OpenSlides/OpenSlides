@@ -63,10 +63,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
             // title
             var identifier = motion.identifier ? ' ' + motion.identifier : '';
-            var title = PDFLayout.createTitle(
-                    gettextCatalog.getString('Motion') + identifier + ': ' +
-                    motion.getTitle(motionVersion)
-            );
+            var titlePlain = motion.getTitleWithChanges(params.changeRecommendationMode, motionVersion);
+            var title = PDFLayout.createTitle(gettextCatalog.getString('Motion') + identifier + ': ' + titlePlain);
 
             // subtitle and sequential number
             var subtitleLines = [];
@@ -251,20 +249,26 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 }
 
                 // summary of change recommendations (for motion diff version only)
-                if (params.changeRecommendationMode == "diff" && motion.changeRecommendations.length) {
+                if (params.changeRecommendationMode === "diff" && motion.changeRecommendations.length) {
                     var columnLineNumbers = [];
                     var columnChangeType = [];
                     angular.forEach(_.orderBy(motion.changeRecommendations, ['line_from']), function(change) {
-                        // line numbers column
-                        var line;
-                        if (change.line_from >= change.line_to - 1) {
-                            line = change.line_from;
+                        if (change.isTitleRecommendation()) {
+                            columnLineNumbers.push(
+                                gettextCatalog.getString('Title') + ': '
+                            );
                         } else {
-                            line = change.line_from + ' - ' + (change.line_to - 1);
+                            // line numbers column
+                            var line;
+                            if (change.line_from >= change.line_to - 1) {
+                                line = change.line_from;
+                            } else {
+                                line = change.line_from + ' - ' + (change.line_to - 1);
+                            }
+                            columnLineNumbers.push(
+                                gettextCatalog.getString('Line') + ' ' + line + ': '
+                            );
                         }
-                        columnLineNumbers.push(
-                            gettextCatalog.getString('Line') + ' ' + line + ': '
-                        );
                         // change type column
                         if (change.getType(motion.getVersion(motionVersion).text) === 0) {
                             columnChangeType.push(gettextCatalog.getString("Replacement"));
@@ -322,7 +326,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             var motionTitle = function() {
                 if (params.include.text) {
                     return [{
-                        text: motion.getTitle(motionVersion),
+                        text: titlePlain,
                         style: 'heading3'
                     }];
                 }
@@ -338,10 +342,20 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 }
             };
 
+            var escapeHtml = function(text) {
+                return text.replace(/&/, "&amp;").replace(/</, "&lt;").replace(/>/, "&gt;");
+            };
+
             // motion text (with line-numbers)
             var motionText = function() {
                 if (params.include.text) {
-                    var motionTextContent = motion.getTextByMode(params.changeRecommendationMode, motionVersion);
+                    var motionTextContent = '';
+                    var titleChange = motion.getTitleChangeRecommendation();
+                    if (params.changeRecommendationMode === 'diff' && titleChange) {
+                        motionTextContent += '<p><strong>' + gettextCatalog.getString('New title') + ':</strong> ' +
+                            escapeHtml(titleChange.text) + '</p>';
+                    }
+                    motionTextContent += motion.getTextByMode(params.changeRecommendationMode, motionVersion);
                     return converter.convertHTML(motionTextContent, params.lineNumberMode);
                 }
             };
