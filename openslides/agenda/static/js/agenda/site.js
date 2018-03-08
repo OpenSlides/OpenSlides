@@ -246,6 +246,20 @@ angular.module('OpenSlidesApp.agenda.site', [
             });
         };
 
+        // Check, if an item has childs in all filtered items
+        $scope.hasChildren = function (item) {
+            return _.some($scope.itemsFiltered, function (_item) {
+                return _item.parent_id == item.id;
+            });
+        };
+
+        // returns true, if the agenda has at least two layers
+        $scope.agendaHasMultipleLayers = function () {
+            return _.some($scope.items, function (item) {
+                return item.parent_id;
+            });
+        };
+
         /** Agenda item functions **/
         // open dialog for new topics // TODO Remove this. Don't forget import button in template.
         $scope.newDialog = function () {
