@@ -310,8 +310,7 @@
             </span>
           </div>
           <!-- hover menu -->
-          <div os-perms="agenda.can_see" ng-class="{'hiddenDiv': !item.hover}"
-            ng-style="{'padding-left': items.length === itemsSearched.length ? '15px' : '0px'}">
+          <div os-perms="agenda.can_see" ng-class="{'hiddenDiv': !item.hover}">
             <small>
               <a ui-sref="agenda.item.detail({id: item.id})" translate>List of speakers</a>
               <span os-perms="agenda.can_manage"> &middot;

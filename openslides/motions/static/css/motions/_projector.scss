@@ -29,8 +29,11 @@ p.os-split-after {
 }
 .motion-text.line-numbers-outside {
     padding-left: 0;
-    margin-left: 25px;
+    margin-left: 35px;
     position: relative;
+}
+.motion-text.line-numbers-outside .os-line-number {
+    left: -33px;
 }
 .motion-text.line-numbers-outside .os-line-number:after {
     content: attr(data-line-number);
