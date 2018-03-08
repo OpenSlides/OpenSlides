@@ -272,6 +272,22 @@ angular.module('OpenSlidesApp.motions', [
                     title += this.getTitle();
                     return title;
                 },
+                getTitleWithChanges: function (changeRecommendationMode, versionId) {
+                    var titleChange = this.getTitleChangeRecommendation(versionId);
+                    var title;
+                    if (titleChange) {
+                        if (changeRecommendationMode === "changed") {
+                            title = titleChange.text;
+                        } else if (changeRecommendationMode === 'agreed' && !titleChange.rejected) {
+                            title = titleChange.text;
+                        } else {
+                            title = this.getTitle();
+                        }
+                    } else {
+                        title = this.getTitle();
+                    }
+                    return title;
+                },
                 getSequentialNumber: function () {
                     var id = this.id + '';
                     var zeros = Math.max(0, OpenSlidesSettings.MOTION_IDENTIFIER_MIN_DIGITS - id.length);
@@ -359,7 +375,7 @@ angular.module('OpenSlidesApp.motions', [
                 _getTextWithChangeRecommendations: function (versionId, highlight, lineBreaks, statusCompareCb) {
                     var lineLength = Config.get('motions_line_length').value,
                         html = this.getVersion(versionId).text,
-                        changes = this.getChangeRecommendations(versionId, 'DESC');
+                        changes = this.getTextChangeRecommendations(versionId, 'DESC');
 
                     for (var i = 0; i < changes.length; i++) {
                         var change = changes[i];
@@ -405,7 +421,7 @@ angular.module('OpenSlidesApp.motions', [
                             }
                             break;
                         case 'diff':
-                            var changes = this.getChangeRecommendations(versionId, 'ASC');
+                            var changes = this.getTextChangeRecommendations(versionId, 'ASC');
                             text = '';
                             for (var i = 0; i < changes.length; i++) {
                                 text += this.getTextBetweenChangeRecommendations(versionId, (i === 0 ? null : changes[i - 1]), changes[i], highlight);
@@ -500,7 +516,7 @@ angular.module('OpenSlidesApp.motions', [
                     }
                     return foundSomething;
                 },
-                getChangeRecommendations: function (versionId, order) {
+                getTextChangeRecommendations: function (versionId, order) {
                     /*
                      * Returns all change recommendations for this given version, sorted by line
                      * @param versionId
@@ -516,7 +532,25 @@ angular.module('OpenSlidesApp.motions', [
                         orderBy: [
                             ['line_from', order]
                         ]
+                    }).filter(function(change) {
+                        return change.isTextRecommendation();
                     });
+                },
+                getTitleChangeRecommendation: function (versionId) {
+                    /**
+                     * Returns the change recommendation affecting the title, or null
+                     * @param versionId
+                     * @returns MotionChangeRecommendation|null
+                     */
+                    versionId = versionId || this.active_version;
+                    var changes = MotionChangeRecommendation.filter({
+                        where: {
+                            motion_version_id: versionId,
+                            line_from: 0,
+                            line_to: 0
+                        }
+                    });
+                    return (changes.length > 0 ? changes[0] : null);
                 },
                 hasAmendments: function () {
                     return DS.filter('motions/motion', {parent_id: this.id}).length > 0;
@@ -860,6 +894,12 @@ angular.module('OpenSlidesApp.motions', [
             methods: {
                 saveStatus: function() {
                     this.DSSave();
+                },
+                isTitleRecommendation: function() {
+                    return (this.line_from === 0 && this.line_to === 0);
+                },
+                isTextRecommendation: function() {
+                    return (this.line_from !== 0 || this.line_to !== 0);
                 },
                 getDiff: function(motion, version, highlight) {
                     var lineLength = Config.get('motions_line_length').value,

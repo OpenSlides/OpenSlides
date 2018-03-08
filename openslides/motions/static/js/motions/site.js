@@ -159,17 +159,88 @@ angular.module('OpenSlidesApp.motions.site', [
     }
 ])
 
-.factory('ChangeRecommendationForm', [
+.factory('ChangeRecommendationTitleForm', [
     'gettextCatalog',
     'Editor',
     'Config',
-    function(gettextCatalog, Editor, Config) {
+    function(gettextCatalog) {
+        return {
+            // ngDialog for motion form
+            getCreateDialog: function (motion, version) {
+                return {
+                    template: 'static/templates/motions/change-recommendation-form.html',
+                    controller: 'ChangeRecommendationTitleCreateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: {
+                        motion: function() {
+                            return motion;
+                        },
+                        version: function() {
+                            return version;
+                        }
+                    }
+                };
+            },
+            getEditDialog: function(change) {
+                return {
+                    template: 'static/templates/motions/change-recommendation-form.html',
+                    controller: 'ChangeRecommendationTitleUpdateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    closeByEscape: false,
+                    closeByDocument: false,
+                    resolve: {
+                        change: function() {
+                            return change;
+                        }
+                    }
+                };
+            },
+            // angular-formly fields for motion form
+            getFormFields: function () {
+                return [
+                    {
+                        key: 'identifier',
+                        type: 'input',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Identifier')
+                        },
+                        hide: true
+                    },
+                    {
+                        key: 'motion_version_id',
+                        type: 'input',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Motion')
+                        },
+                        hide: true
+                    },
+                    {
+                        key: 'text',
+                        type: 'input',
+                        templateOptions: {
+                            label: gettextCatalog.getString('New title'),
+                            required: false
+                        }
+                    }
+                ];
+            }
+        };
+    }
+])
+
+.factory('ChangeRecommendationTextForm', [
+    'gettextCatalog',
+    'Editor',
+    'Config',
+    function(gettextCatalog, Editor) {
         return {
             // ngDialog for motion form
             getCreateDialog: function (motion, version, lineFrom, lineTo) {
                 return {
                     template: 'static/templates/motions/change-recommendation-form.html',
-                    controller: 'ChangeRecommendationCreateCtrl',
+                    controller: 'ChangeRecommendationTextCreateCtrl',
                     className: 'ngdialog-theme-default wide-form',
                     closeByEscape: false,
                     closeByDocument: false,
@@ -192,7 +263,7 @@ angular.module('OpenSlidesApp.motions.site', [
             getEditDialog: function(change) {
                 return {
                     template: 'static/templates/motions/change-recommendation-form.html',
-                    controller: 'ChangeRecommendationUpdateCtrl',
+                    controller: 'ChangeRecommendationTextUpdateCtrl',
                     className: 'ngdialog-theme-default wide-form',
                     closeByEscape: false,
                     closeByDocument: false,
@@ -1362,9 +1433,19 @@ angular.module('OpenSlidesApp.motions.site', [
         $scope.$watch(function () {
             return MotionChangeRecommendation.lastModified();
         }, function () {
-            $scope.change_recommendations = MotionChangeRecommendation.filter({
+            $scope.change_recommendations = [];
+            $scope.title_change_recommendation = null;
+            MotionChangeRecommendation.filter({
                 'where': {'motion_version_id': {'==': motion.active_version}}
+            }).forEach(function(change) {
+                if (change.isTextRecommendation()) {
+                    $scope.change_recommendations.push(change);
+                }
+                if (change.isTitleRecommendation()) {
+                    $scope.title_change_recommendation = change;
+                }
             });
+
             if ($scope.change_recommendations.length === 0) {
                 $scope.setProjectionMode($scope.projectionModes[0]);
             }
@@ -1399,6 +1480,8 @@ angular.module('OpenSlidesApp.motions.site', [
             }
             webpageTitle += $scope.motion.getTitle();
             WebpageTitle.updateTitle(webpageTitle);
+
+            $scope.createChangeRecommendation.setVersion(motion, motion.active_version);
         });
         $scope.projectionModes = [
             {mode: 'original',
@@ -1783,27 +1866,26 @@ angular.module('OpenSlidesApp.motions.site', [
     }
 ])
 
-.controller('ChangeRecommendationUpdateCtrl', [
+.controller('ChangeRecommendationTitleUpdateCtrl', [
     '$scope',
     'MotionChangeRecommendation',
-    'ChangeRecommendationForm',
+    'ChangeRecommendationTitleForm',
     'diffService',
     'change',
     'ErrorMessage',
-    function ($scope, MotionChangeRecommendation, ChangeRecommendationForm, diffService, change, ErrorMessage) {
+    function ($scope, MotionChangeRecommendation, ChangeRecommendationTitleForm, diffService, change, ErrorMessage) {
         $scope.alert = {};
         $scope.model = angular.copy(change);
 
         // get all form fields
-        $scope.formFields = ChangeRecommendationForm.getFormFields(change.line_from, change.line_to);
+        $scope.formFields = ChangeRecommendationTitleForm.getFormFields();
         // save motion
         $scope.save = function (change) {
-            change.text = diffService.removeDuplicateClassesInsertedByCkeditor(change.text);
             // inject the changed change recommendation (copy) object back into DS store
             MotionChangeRecommendation.inject(change);
             // save changed change recommendation object on server
             MotionChangeRecommendation.save(change).then(
-                function(success) {
+                function() {
                     $scope.closeThisDialog();
                 },
                 function (error) {
@@ -1815,22 +1897,87 @@ angular.module('OpenSlidesApp.motions.site', [
     }
 ])
 
-.controller('ChangeRecommendationCreateCtrl', [
+.controller('ChangeRecommendationTitleCreateCtrl', [
     '$scope',
     'Motion',
     'MotionChangeRecommendation',
-    'ChangeRecommendationForm',
+    'ChangeRecommendationTitleForm',
+    'Config',
+    'diffService',
+    'motion',
+    'version',
+    function($scope, Motion, MotionChangeRecommendation, ChangeRecommendationTitleForm, Config, diffService, motion,
+             version) {
+        $scope.alert = {};
+
+        $scope.model = {
+            text: version.title,
+            motion_version_id: version.id
+        };
+
+        // get all form fields
+        $scope.formFields = ChangeRecommendationTitleForm.getFormFields();
+        // save motion
+        $scope.save = function (change) {
+            change.line_from = 0;
+            change.line_to = 0;
+            MotionChangeRecommendation.create(change).then(
+                function() {
+                    $scope.closeThisDialog();
+                }
+            );
+        };
+    }
+])
+
+.controller('ChangeRecommendationTextUpdateCtrl', [
+    '$scope',
+    'MotionChangeRecommendation',
+    'ChangeRecommendationTextForm',
+    'diffService',
+    'change',
+    'ErrorMessage',
+    function ($scope, MotionChangeRecommendation, ChangeRecommendationTextForm, diffService, change, ErrorMessage) {
+        $scope.alert = {};
+        $scope.model = angular.copy(change);
+
+        // get all form fields
+        $scope.formFields = ChangeRecommendationTextForm.getFormFields(change.line_from, change.line_to);
+        // save motion
+        $scope.save = function (change) {
+            change.text = diffService.removeDuplicateClassesInsertedByCkeditor(change.text);
+            // inject the changed change recommendation (copy) object back into DS store
+            MotionChangeRecommendation.inject(change);
+            // save changed change recommendation object on server
+            MotionChangeRecommendation.save(change).then(
+                function() {
+                    $scope.closeThisDialog();
+                },
+                function (error) {
+                    MotionChangeRecommendation.refresh(change);
+                    $scope.alert = ErrorMessage.forAlert(error);
+                }
+            );
+        };
+    }
+])
+
+.controller('ChangeRecommendationTextCreateCtrl', [
+    '$scope',
+    'Motion',
+    'MotionChangeRecommendation',
+    'ChangeRecommendationTextForm',
     'Config',
     'diffService',
     'motion',
     'version',
     'lineFrom',
     'lineTo',
-    function($scope, Motion, MotionChangeRecommendation, ChangeRecommendationForm, Config, diffService, motion,
+    function($scope, Motion, MotionChangeRecommendation, ChangeRecommendationTextForm, Config, diffService, motion,
              version, lineFrom, lineTo) {
         $scope.alert = {};
 
-        var html = motion.getTextWithLineBreaks(version),
+        var html = motion.getTextWithLineBreaks(version.id),
             lineData = diffService.extractRangeByLineNumbers(html, lineFrom, lineTo);
 
         $scope.model = {
@@ -1838,17 +1985,17 @@ angular.module('OpenSlidesApp.motions.site', [
                 lineData.html + lineData.innerContextEnd + lineData.outerContextEnd,
             line_from: lineFrom,
             line_to: lineTo,
-            motion_version_id: version,
+            motion_version_id: version.id,
             type: 0
         };
 
         // get all form fields
-        $scope.formFields = ChangeRecommendationForm.getFormFields(lineFrom, lineTo);
+        $scope.formFields = ChangeRecommendationTextForm.getFormFields(lineFrom, lineTo);
         // save motion
         $scope.save = function (motion) {
             motion.text = diffService.removeDuplicateClassesInsertedByCkeditor(motion.text);
             MotionChangeRecommendation.create(motion).then(
-                function(success) {
+                function() {
                     $scope.closeThisDialog();
                 }
             );

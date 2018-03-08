@@ -43,7 +43,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                 obj.editor = CKEDITOR.inline(selector, ckeditorOptions);
                 obj.editor.on('change', function () {
                     $timeout(function() {
-                        if (obj.editor.getData() != obj.originalHtml) {
+                        if (obj.editor.getData() !== obj.originalHtml) {
                             obj.changed = true;
                         } else {
                             obj.changed = false;
@@ -183,11 +183,14 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
 
 .factory('ChangeRecommendationCreate', [
     'ngDialog',
-    'ChangeRecommendationForm',
-    function(ngDialog, ChangeRecommendationForm) {
+    'ChangeRecommendationTitleForm',
+    'ChangeRecommendationTextForm',
+    function(ngDialog, ChangeRecommendationTitleForm, ChangeRecommendationTextForm) {
         var MODE_INACTIVE = 0,
             MODE_SELECTING_FROM = 1,
-            MODE_SELECTING_TO = 2;
+            MODE_SELECTING_TO = 2,
+
+            TITLE_DUMMY_LINE_NUMBER = 0;
 
         var obj = {
             mode: MODE_INACTIVE,
@@ -200,7 +203,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
         var $scope, motion, version;
 
         obj._getAffectedLineNumbers = function () {
-            var changeRecommendations = motion.getChangeRecommendations(version),
+            var changeRecommendations = motion.getTextChangeRecommendations(version.id),
                 affectedLines = [];
             for (var i = 0; i < changeRecommendations.length; i++) {
                 var change = changeRecommendations[i];
@@ -211,23 +214,29 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             return affectedLines;
         };
 
+        // startCreating is called right at the beginning after the users interacts with the text for the first time.
+        // This ensures all necessary nodes have been initialized
         obj.startCreating = function () {
             if (obj.mode > MODE_SELECTING_FROM || !motion.isAllowed('can_manage')) {
                 return;
             }
 
             $(".tt_change_recommendation_create_help").removeClass("opened");
-            var $lineNumbers = $(".motion-text-original .os-line-number");
+            var $lineNumbers = $(".motion-text-original .os-line-number"),
+                $title = $(".motion-title .change-title");
             if ($lineNumbers.filter(".selectable").length === 0) {
                 obj.mode = MODE_SELECTING_FROM;
                 var alreadyAffectedLines = obj._getAffectedLineNumbers();
                 $lineNumbers.each(function () {
                     var $this = $(this),
                         lineNumber = $this.data("line-number");
-                    if (alreadyAffectedLines.indexOf(lineNumber) == -1) {
+                    if (alreadyAffectedLines.indexOf(lineNumber) === -1) {
                         $(this).addClass("selectable");
                     }
                 });
+                if (alreadyAffectedLines.indexOf(TITLE_DUMMY_LINE_NUMBER) === -1) {
+                    $title.addClass("selectable");
+                }
             }
         };
 
@@ -253,7 +262,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             $(".motion-text-original .os-line-number").each(function () {
                 var $this = $(this);
                 if ($this.data("line-number") >= line && !foundCollission) {
-                    if (alreadyAffectedLines.indexOf($this.data("line-number")) == -1) {
+                    if (alreadyAffectedLines.indexOf($this.data("line-number")) === -1) {
                         $(this).addClass("selectable");
                     } else {
                         $(this).removeClass("selectable");
@@ -268,18 +277,22 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             $(".tt_change_recommendation_create_help").css("top", tt_pos).addClass("opened");
         };
 
+        obj.titleClicked = function () {
+            ngDialog.open(ChangeRecommendationTitleForm.getCreateDialog(motion, version));
+
+            obj.mode = MODE_INACTIVE;
+            obj.lineFrom = 0;
+            obj.lineTo = 0;
+            $(".motion-text-original .os-line-number").removeClass("selected selectable");
+            obj.startCreating();
+        };
+
         obj.setToLine = function (line) {
             if (line < obj.lineFrom) {
                 return;
             }
             obj.mode = MODE_INACTIVE;
-            obj.lineTo = line + 1;
-            ngDialog.open(ChangeRecommendationForm.getCreateDialog(
-                motion,
-                version,
-                obj.lineFrom,
-                obj.lineTo
-            ));
+            ngDialog.open(ChangeRecommendationTextForm.getCreateDialog(motion, version, obj.lineFrom, line + 1));
 
             obj.lineFrom = 0;
             obj.lineTo = 0;
@@ -288,19 +301,19 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
         };
 
         obj.lineClicked = function (ev) {
-            if (obj.mode == MODE_INACTIVE) {
+            if (obj.mode === MODE_INACTIVE) {
                 return;
             }
-            if (obj.mode == MODE_SELECTING_FROM) {
+            if (obj.mode === MODE_SELECTING_FROM) {
                 obj.setFromLine($(ev.target).data("line-number"));
                 $(ev.target).addClass("selected");
-            } else if (obj.mode == MODE_SELECTING_TO) {
+            } else if (obj.mode === MODE_SELECTING_TO) {
                 obj.setToLine($(ev.target).data("line-number"));
             }
         };
 
         obj.mouseOver = function (ev) {
-            if (obj.mode != MODE_SELECTING_TO) {
+            if (obj.mode !== MODE_SELECTING_TO) {
                 return;
             }
             var hoverLine = $(ev.target).data("line-number");
@@ -316,31 +329,37 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
 
         obj.setVersion = function (_motion, _version) {
             motion = _motion;
-            version = _version;
+            version = motion.getVersion(_version);
         };
 
-        obj.editDialog = function(change_recommendation) {
-            ngDialog.open(ChangeRecommendationForm.getEditDialog(change_recommendation));
+        obj.editTextDialog = function(change_recommendation) {
+            ngDialog.open(ChangeRecommendationTextForm.getEditDialog(change_recommendation));
+        };
+
+        obj.editTitleDialog = function(change_recommendation) {
+            ngDialog.open(ChangeRecommendationTitleForm.getEditDialog(change_recommendation));
         };
 
         obj.init = function (_scope, _motion) {
             $scope = _scope;
             motion = _motion;
-            version = $scope.version;
+            version = motion.getVersion($scope.version);
 
             var $content = $("#content");
             $content.on("click", ".line-numbers-outside .os-line-number.selectable", obj.lineClicked);
+            $content.on("click", ".motion-title .change-title.selectable", obj.titleClicked);
             $content.on("click", obj.cancelCreating);
             $content.on("mouseover", ".line-numbers-outside .os-line-number.selectable", obj.mouseOver);
-            $content.on("mouseover", ".motion-text-original", obj.startCreating);
+            $content.on("mouseover", ".motion-text-original, .motion-title", obj.startCreating);
 
             $scope.$watch(function () {
                 return $scope.change_recommendations.length;
             }, function () {
-                if (obj.mode == MODE_INACTIVE || obj.mode == MODE_SELECTING_FROM) {
+                if (obj.mode === MODE_INACTIVE || obj.mode === MODE_SELECTING_FROM) {
                     // Recalculate the affected lines so we cannot select lines affected by a recommendation
                     // that has just been created
                     $(".motion-text-original .os-line-number").removeClass("selected selectable");
+                    $(".motion-title .change-title").removeClass("selected selectable");
                     obj.startCreating();
                 }
             });
@@ -353,9 +372,10 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
         obj.destroy = function () {
             var $content = $("#content");
             $content.off("click", ".line-numbers-outside .os-line-number.selectable", obj.lineClicked);
+            $content.off("click", ".motion-title .change-title.selectable", obj.titleClicked);
             $content.off("click", obj.cancelCreating);
             $content.off("mouseover", ".line-numbers-outside .os-line-number.selectable", obj.mouseOver);
-            $content.off("mouseover", ".motion-text-original", obj.startCreating);
+            $content.off("mouseover", ".motion-text-original, .motion-title", obj.startCreating);
         };
 
         return obj;

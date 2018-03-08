@@ -11,7 +11,16 @@
       <translate>Reject all change recommendations</translate>
     </button>
 
-    <ul ng-if="change_recommendations.length > 0">
+    <ul ng-if="change_recommendations.length > 0 || title_change_recommendation">
+        <li ng-if="title_change_recommendation">
+            <a href='' ng-click="viewChangeRecommendations.scrollToDiffBox(title_change_recommendation.id)">
+                <span class="line-number"><translate>Title</translate>:</span>
+                <span class="operation"><translate>Replacement</translate></span>
+                <span class="status">
+                    <translate ng-if="title_change_recommendation.rejected">Rejected</translate>
+                </span>
+            </a>
+        </li>
         <li ng-repeat="change in (changes = (change_recommendations | filter:{motion_version_id:version}:true | orderBy: 'line_from')) ">
           <a href='' ng-click="viewChangeRecommendations.scrollToDiffBox(change.id)">
             <span ng-if="change.line_from >= change.line_to - 1" class="line-number">
@@ -35,7 +44,7 @@
         </li>
     </ul>
 
-    <div ng-if="change_recommendations.length == 0" class="no-changes">
+    <div ng-if="change_recommendations.length == 0 && !title_change_recommendation" class="no-changes">
         <translate>No change recommendations yet</translate>
     </div>
 </section>
