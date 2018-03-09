@@ -68,7 +68,7 @@
   <div id="motioncontent" class="scrollcontent">
     <!-- Title -->
     <div id="title">
-      <h1>{{  motion.getTitle() }}</h1>
+      <h1>{{ motion.getTitleWithChanges(mode) }}</h1>
       <h2>
         <translate>Motion</translate> {{ motion.identifier }}
         <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion().version_number }}</span>
@@ -89,6 +89,15 @@
 
       <!-- Diff View -->
       <div ng-if="mode == 'diff'">
+          <div ng-if="title_change_recommendation" class="diff-box-{{ title_change_recommendation.id }} diff-box-title">
+              <div class="motion-text motion-text-diff line-numbers-{{ lineNumberMode }}">
+                  <div class="description">
+                      <translate>New title</translate>:
+                  </div>
+                  <div>{{ title_change_recommendation.text }}</div>
+              </div>
+          </div>
+
         <!-- The actual diff view -->
         <div class="motion-text-with-diffs line-numbers-{{ config('motions_default_line_numbering') }}">
           <div ng-repeat="change in (changes = (change_recommendations | orderBy: 'line_from')) ">

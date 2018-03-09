@@ -30,13 +30,23 @@ angular.module('OpenSlidesApp.motions.projector', [
 
         Motion.bindOne(id, $scope, 'motion');
         User.bindAll({}, $scope, 'users');
-        MotionChangeRecommendation.bindAll({
-            where: {
-                motion_version_id: {
-                    '==': id,
-                },
-            },
-        }, $scope, 'change_recommendations');
+
+        $scope.$watch(function () {
+            return MotionChangeRecommendation.lastModified();
+        }, function () {
+            $scope.change_recommendations = [];
+            $scope.title_change_recommendation = null;
+            MotionChangeRecommendation.filter({
+                'where': {'motion_version_id': {'==': id}}
+            }).forEach(function(change) {
+                if (change.isTextRecommendation()) {
+                    $scope.change_recommendations.push(change);
+                }
+                if (change.isTitleRecommendation()) {
+                    $scope.title_change_recommendation = change;
+                }
+            });
+        });
     }
 ]);
 

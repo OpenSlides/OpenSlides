@@ -27,6 +27,13 @@ p.os-split-after {
 .diff-box {
     padding-top: 0;
 }
+.diff-box-title {
+    margin-bottom: 10px;
+    .description {
+        font-weight: bold;
+    }
+}
+
 .motion-text.line-numbers-outside {
     padding-left: 0;
     margin-left: 35px;
