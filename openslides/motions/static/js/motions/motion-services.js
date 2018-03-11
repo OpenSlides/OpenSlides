@@ -516,13 +516,18 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             $scope.$watch(function() {
                 return $('.change-recommendation-list').children().length;
             }, obj.repositionOriginalAnnotations);
-            $scope.$watch(function () {
-                return $scope.change_recommendations.length;
-            }, function () {
-                if ($scope.change_recommendations.length === 0) {
+
+            var checkGotoOriginal = function () {
+                if ($scope.change_recommendations.length === 0 && $scope.title_change_recommendation === null) {
                     obj.mode = 'original';
                 }
-            });
+            };
+            $scope.$watch(function () {
+                return $scope.change_recommendations.length;
+            }, checkGotoOriginal);
+            $scope.$watch(function () {
+                return $scope.title_change_recommendation;
+            }, checkGotoOriginal);
 
             var sizeCheckerLastSize = null,
                 sizeCheckerLastClass = null,
