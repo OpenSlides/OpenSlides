@@ -125,6 +125,7 @@ Core:
   easier development [#3566].
 
 Mediafiles:
+- New form for uploading multiple files [#3650].
 - Fixed reloading of PDF on page change [#3274].
 - Custom CKEditor plugin for browsing mediafiles [#3337].
 - Project images always in fullscreen [#3355].

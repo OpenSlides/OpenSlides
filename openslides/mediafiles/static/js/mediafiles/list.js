@@ -120,7 +120,8 @@ angular.module('OpenSlidesApp.mediafiles.list', [
         $scope.isSelectMode = false;
         // check all checkboxes
         $scope.checkAll = function () {
-            angular.forEach($scope.mediafiles, function (mediafile) {
+            $scope.selectedAll = !$scope.selectedAll;
+            _.forEach($scope.mediafiles, function (mediafile) {
                 mediafile.selected = $scope.selectedAll;
             });
         };
@@ -128,7 +129,7 @@ angular.module('OpenSlidesApp.mediafiles.list', [
         $scope.uncheckAll = function () {
             if (!$scope.isSelectMode) {
                 $scope.selectedAll = false;
-                angular.forEach($scope.mediafiles, function (mediafile) {
+                _.forEach($scope.mediafiles, function (mediafile) {
                     mediafile.selected = false;
                 });
             }

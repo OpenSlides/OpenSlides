@@ -9,3 +9,15 @@
         width: 90%;
     }
 }
+
+#dropzone {
+    padding: 20px 10px;
+    border-radius: 4px;
+    border: 1px solid #e6e8eb;
+    text-align: center;
+    background-color: #fff;
+
+    &.dragover {
+        border-color: #317796;
+    }
+}
