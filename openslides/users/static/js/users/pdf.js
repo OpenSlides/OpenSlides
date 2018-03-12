@@ -301,7 +301,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                 var userListContentProvider = UserListContentProvider.createInstance(users);
                 PdfMakeDocumentProvider.createInstance(userListContentProvider).then(
                     function (documentProvider) {
-                        PdfCreate.download(documentProvider.getDocument(), filename);
+                        PdfCreate.download(documentProvider, filename);
                     }
                 );
             },
@@ -309,10 +309,10 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                 var filename = gettextCatalog.getString('List of access data') + '.pdf';
                 var userAccessDataListContentProvider = UserAccessDataListContentProvider.createInstance(
                     users);
-                PdfMakeDocumentProvider.createInstance(userAccessDataListContentProvider).then(
+                // no footer here
+                PdfMakeDocumentProvider.createInstance(userAccessDataListContentProvider, true).then(
                     function (documentProvider) {
-                        var noFooter = true;
-                        PdfCreate.download(documentProvider.getDocument(noFooter), filename);
+                        PdfCreate.download(documentProvider, filename, true);
                     }
                 );
             }

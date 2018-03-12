@@ -166,11 +166,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
          * returns an array for content
          */
         //images shall contain the the logos as URL: base64Str, just like the converter
-        var createInstance = function(contentProvider) {
+        var createInstance = function(contentProvider, noFooter) {
             // Logo urls
             var logoHeaderUrl = Config.get('logo_pdf_header').value.path,
                 logoFooterUrl = Config.get('logo_pdf_footer').value.path;
-            var imageMap = contentProvider.getImageMap();
+            var imageMap = contentProvider.getImageMap ? contentProvider.getImageMap() : {};
 
             // PDF header
             var getHeader = function() {
@@ -242,7 +242,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 };
             };
             // Generates the document(definition) for pdfMake
-            var getDocument = function(noFooter) {
+            var getDocument = function() {
                 var content = contentProvider.getContent();
                 var standardFontsize = Config.get('general_export_pdf_fontsize').value;
                 return {

@@ -286,7 +286,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 // logo
                 if (logoBallotPaperUrl) {
                     columns.push({
-                        image: imageMap[logoBallotPaperUrl].data,
+                        image: logoBallotPaperUrl,
                         fit: [90,20],
                         width: '20%'
                     });
@@ -506,6 +506,10 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 return createContentTable();
             };
 
+            var getImageMap = function () {
+                return imageMap;
+            };
+
             return $q(function (resolve) {
                 var imageSources = [
                     logoBallotPaperUrl,
@@ -513,7 +517,8 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 ImageConverter.toBase64(imageSources).then(function (_imageMap) {
                     imageMap = _imageMap;
                     resolve({
-                        getContent: getContent
+                        getContent: getContent,
+                        getImageMap: getImageMap,
                     });
                 });
             });
@@ -531,7 +536,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
     'Config',
     function(gettextCatalog, PDFLayout, Config) {
 
-        var createInstance = function(allAssignmnets) {
+        var createInstance = function(allAssignments) {
 
             var title = PDFLayout.createTitle(
                     Config.translate(Config.get('assignments_pdf_title').value)
@@ -575,10 +580,10 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 var assignmentContent = [];
                 var assignmentTitles = [];
 
-                angular.forEach(allAssignmnets, function(assignment, key) {
+                _.forEach(allAssignments, function(assignment, key) {
                     assignmentTitles.push(assignment.title);
                     assignmentContent.push(assignment.getContent());
-                    if (key < allAssignmnets.length - 1) {
+                    if (key < allAssignments.length - 1) {
                         assignmentContent.push(PDFLayout.addPageBreak());
                     }
                 });
@@ -638,7 +643,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                         PdfMakeDocumentProvider.createInstance(assignmentCatalogContentProvider);
                 }
                 documentProviderPromise.then(function (documentProvider) {
-                    PdfCreate.download(documentProvider.getDocument(), filename);
+                    PdfCreate.download(documentProvider, filename);
                 });
             },
             createBallotPdf: function (assignment, pollId) {

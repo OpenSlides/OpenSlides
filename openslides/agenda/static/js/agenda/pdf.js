@@ -88,7 +88,7 @@ angular.module('OpenSlidesApp.agenda.pdf', ['OpenSlidesApp.core.pdf'])
                 var filename = gettextCatalog.getString('Agenda') + '.pdf';
                 var agendaContentProvider = AgendaContentProvider.createInstance(items);
                 PdfMakeDocumentProvider.createInstance(agendaContentProvider).then(function (documentProvider) {
-                    PdfCreate.download(documentProvider.getDocument(), filename);
+                    PdfCreate.download(documentProvider, filename);
                 });
             },
         };
