@@ -232,7 +232,7 @@ This is an example configuration for a single Daphne/Geiss listen on port 8000::
 
          server_name _;
 
-         location ~* ^/(?!ws|wss|webclient|core/servertime|core/version|users/whoami|users/login|users/logout|users/setpassword|motions/docxtemplate|projector|real-projector|static|media|rest).*$ {
+         location ~* ^/(?!ws|wss|webclient|core/servertime|core/version|users/whoami|users/login|users/logout|users/setpassword|motions/docxtemplate|agenda/docxtemplate|projector|real-projector|static|media|rest).*$ {
              rewrite ^.*$ /static/templates/index.html;
          }
          location ~* ^/projector.*$ {
