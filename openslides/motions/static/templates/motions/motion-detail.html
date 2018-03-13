@@ -251,9 +251,10 @@
                     <translate>Motion</translate>
                   </span>
                   <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="motion-dropdown">
-                    <li ng-repeat="m in motions | orderBy: identifier">
+                    <li ng-repeat="m in motions | orderBy: 'identifier'">
                       <a href ng-click="addMotionToRecommendationField(m)">
-                        {{ m.identifier ? m.identifier + ':' : '' }} {{ m.getTitle() }}
+                        {{ m.identifier ? m.identifier + ':' : '' }}
+                        {{ m.getTitle() | limitTo: 35 }}{{ m.getTitle().length > 35 ? '...' : '' }}
                       </a>
                     </li>
                   </ul>
