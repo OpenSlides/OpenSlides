@@ -618,6 +618,12 @@ class CategoryViewSet(ModelViewSet):
 
                 # Set new identifers and change identifiers of amendments.
                 for obj in motions_to_be_sorted:
+                    if Motion.objects.filter(identifier=obj['new_identifier']).exists():
+                        raise ValidationError({
+                            'detail':
+                            _('Numbering aborted because the motion identifier "%s" already exists outside of this category.') %
+                            obj['new_identifier']
+                        })
                     motion = obj['motion']
                     motion.identifier = obj['new_identifier']
                     motion.identifier_number = obj['number']
@@ -626,7 +632,7 @@ class CategoryViewSet(ModelViewSet):
                     instances.append(motion.agenda_item)
                     # Change identifiers of amendments.
                     for child in motion.get_amendments_deep():
-                        if child.identifier.startswith(obj['old_identifier']):
+                        if child.identifier and child.identifier.startswith(obj['old_identifier']):
                             child.identifier = re.sub(
                                 obj['old_identifier'],
                                 obj['new_identifier'],
