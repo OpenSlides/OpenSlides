@@ -10,6 +10,8 @@
 
 .dropdown-menu {
     margin-left: 0px !important;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .slimDropDown {
@@ -162,6 +164,11 @@
 }
 
 /* tables */
+.topictext table {
+    border-spacing: 10px 0;
+    border-collapse: separate;
+}
+
 .minimum {
     width: 1px;
 }

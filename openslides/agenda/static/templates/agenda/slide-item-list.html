@@ -17,11 +17,6 @@
     </p>
   </td>
   <td ng-if="!node.item.closed">
-    <p ng-class="{mainitem: node.item.parent_id === null}" ng-if="node.item.item_number">
-      &middot;
-    </p>
-  </td>
-  <td ng-if="!node.item.closed">
     <p ng-class="{mainitem: node.item.parent_id === null, subitem: node.item.parent_id !== null}">
       {{ node.item.title }}
     </p>

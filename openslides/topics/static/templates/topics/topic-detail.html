@@ -26,7 +26,7 @@
 </div>
 
 <div class="details">
-  <div ng-bind-html="topic.text | trusted"></div>
+  <div ng-bind-html="topic.text | trusted" class="topictext"></div>
   <h3 ng-if="topic.attachments.length > 0" translate>Attachments</h3>
   <ul>
     <li ng-repeat="attachment in topic.attachments">
