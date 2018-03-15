@@ -116,13 +116,13 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         this._isWithinNthLIOfOL = function(olNode, descendantNode) {
             var nthLIOfOL = null;
             while (descendantNode.parentNode) {
-                if (descendantNode.parentNode == olNode) {
+                if (descendantNode.parentNode === olNode) {
                     var lisBeforeOl = 0,
                         foundMe = false;
                     for (var i = 0; i < olNode.childNodes.length && !foundMe; i++) {
-                        if (olNode.childNodes[i] == descendantNode) {
+                        if (olNode.childNodes[i] === descendantNode) {
                             foundMe = true;
-                        } else if (olNode.childNodes[i].nodeName == 'LI') {
+                        } else if (olNode.childNodes[i].nodeName === 'LI') {
                             lisBeforeOl++;
                         }
                     }
@@ -406,7 +406,7 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 innerContextEnd = '',
                 previousHtmlEndSnippet = '',
                 followingHtmlStartSnippet = '',
-                fakeOl;
+                fakeOl, offset;
 
 
             fromChildTraceAbs.shift();
@@ -438,7 +438,14 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 if (isSplit) {
                     this.addCSSClass(currNode.parentNode, 'os-split-after');
                 }
-                followingHtmlStartSnippet = this._serializeTag(currNode.parentNode) + followingHtmlStartSnippet;
+                if (currNode.parentNode.nodeName === 'OL') {
+                    fakeOl = currNode.parentNode.cloneNode(false);
+                    offset = (currNode.parentNode.getAttribute("start") ? parseInt(currNode.parentNode.getAttribute("start")) - 1 : 0);
+                    fakeOl.setAttribute('start', (this._isWithinNthLIOfOL(currNode.parentNode, toLineNode) + offset).toString());
+                    followingHtmlStartSnippet = this._serializeTag(fakeOl) + followingHtmlStartSnippet;
+                } else {
+                    followingHtmlStartSnippet = this._serializeTag(currNode.parentNode) + followingHtmlStartSnippet;
+                }
                 currNode = currNode.parentNode;
             }
 
@@ -453,7 +460,8 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                     }
                     if (fromChildTraceRel[i].nodeName === 'OL') {
                         fakeOl = fromChildTraceRel[i].cloneNode(false);
-                        fakeOl.setAttribute('start', this._isWithinNthLIOfOL(fromChildTraceRel[i], fromLineNode));
+                        offset = (fromChildTraceRel[i].getAttribute("start") ? parseInt(fromChildTraceRel[i].getAttribute("start")) - 1 : 0);
+                        fakeOl.setAttribute('start', (offset + this._isWithinNthLIOfOL(fromChildTraceRel[i], fromLineNode)).toString());
                         innerContextStart += this._serializeTag(fakeOl);
                     } else {
                         if (i < (fromChildTraceRel.length - 1) && isSplit) {
@@ -491,7 +499,8 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             while (currNode.parentNode) {
                 if (currNode.nodeName === 'OL') {
                     fakeOl = currNode.cloneNode(false);
-                    fakeOl.setAttribute('start', this._isWithinNthLIOfOL(currNode, fromLineNode));
+                    offset = (currNode.getAttribute("start") ? parseInt(currNode.getAttribute("start")) - 1 : 0);
+                    fakeOl.setAttribute('start', (this._isWithinNthLIOfOL(currNode, fromLineNode) + offset).toString());
                     outerContextStart = this._serializeTag(fakeOl) + outerContextStart;
                 } else {
                     outerContextStart = this._serializeTag(currNode) + outerContextStart;
