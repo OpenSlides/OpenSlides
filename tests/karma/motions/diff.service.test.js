@@ -251,6 +251,15 @@ describe('linenumbering', function () {
         expect(diff.innerContextStart.toLowerCase()).toBe('');
         expect(diff.html.toLowerCase()).toBe('<li class="os-split-after">line 2');
     });
+
+    it('sets the start in a more complex list', function () {
+        var html = '<ol start="10"><li>' + noMarkup(1) + 'Line 1</li><li>' + noMarkup(2) + 'Line 2' + brMarkup(3) + 'Line 3</li>' +
+            '<li>' + noMarkup(4) + 'Line 4</li></ol>';
+        var diff = diffService.extractRangeByLineNumbers(html, 3, 4);
+        expect(diff.previousHtml.toLowerCase()).toContain('start="10"');
+        expect(diff.outerContextStart.toLowerCase()).toContain('start="11"');
+        expect(diff.followingHtmlStartSnippet.toLowerCase()).toContain('start="12"');
+    });
   });
 
   describe('merging two sections', function () {
