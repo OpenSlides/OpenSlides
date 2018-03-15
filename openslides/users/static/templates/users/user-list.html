@@ -97,7 +97,7 @@
       <select ng-show="selectedAction == 'addGroup' || selectedAction == 'removeGroup'"
           ng-model="selectedGroup" class="form-control input-sm">
         <option value="" translate>--- Select group ---</option>
-        <option ng-repeat="group in groups" value="{{ group.id }}">{{ group.name | translate }}</option>
+        <option ng-repeat="group in groups | orderBy: 'id'" value="{{ group.id }}">{{ group.name | translate }}</option>
       </select>
       <!-- add group button -->
       <a ng-show="selectedAction == 'addGroup'"
@@ -198,7 +198,7 @@
               <span class="caret"></span>
             </span>
             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownGroup">
-              <li ng-repeat="group in groups">
+              <li ng-repeat="group in groups | orderBy: 'id'">
                 <a href ng-click="filter.operateMultiselectFilter('group', group.id, isSelectMode)">
                   <i class="fa fa-check" ng-if="filter.multiselectFilters.group.indexOf(group.id) > -1"></i>
                   {{ group.name | translate }}
@@ -270,7 +270,7 @@
         </span>
         <!-- show all selected multiselectoptions -->
         <span>
-          <span ng-repeat="group in groups" class="pointer spacer-left-lg"
+          <span ng-repeat="group in groups | orderBy: 'id'" class="pointer spacer-left-lg"
             ng-if="filter.multiselectFilters.group.indexOf(group.id) > -1"
             ng-click="filter.operateMultiselectFilter('group', group.id, isSelectMode)"
             ng-class="{'disabled': isSelectMode}">
@@ -369,13 +369,13 @@
                   <span ng-if="user.groups_id.length">
                     <i class="fa fa-users"></i>
                     <span ng-repeat="group in user.groups_id | limitTo:2">
-                      {{ (groups | filter: {id: group})[0].name | translate }}<span ng-if="!$last">,</span></span><span ng-if="user.groups_id.length > 2">,
+                      {{ (groups | filter: {id: group}:true)[0].name | translate }}<span ng-if="!$last">,</span></span><span ng-if="user.groups_id.length > 2">,
                       ... [+{{ user.groups_id.length - 2}}]</span>
                     <i class="fa fa-cog fa-lg spcaer-left" ng-show="user.groupHover"></i>
                   </span>
                 </span>
                 <ul class="dropdown-menu" aria-labelledby="dropdown-group{{ user.id }}">
-                  <li ng-repeat="group in groups">
+                  <li ng-repeat="group in groups | orderBy: 'id'">
                     <a href ng-click="toggleGroup(user, group)">
                       <i class="fa fa-check" ng-if="inArray(user.groups_id, group.id)"></i>
                       {{ group.name | translate }}
