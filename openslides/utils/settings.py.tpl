@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 from openslides.global_settings import *
 %(import_function)s
+SETTINGS_FILEPATH = __file__  # Do not change!
 
 # The directory for user specific data files
 
