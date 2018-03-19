@@ -33,7 +33,7 @@
           </span>
           <i class="fa fa-info-circle" ng-if="group.id == 1"
             uib-tooltip="{{ 'Users without any assigned group gain the permissions from this group.' | translate }}"></i>
-          <div os-perms="users.can_manage" ng-hide="group.id == 1" class="hoverActions"
+          <div os-perms="users.can_manage" ng-hide="group.id == 1" class="hoverActions text-center"
             ng-class="{'hiddenDiv': !group.hover}">
             <!--edit name-->
             <a href="" ng-click="openDialog(group)">

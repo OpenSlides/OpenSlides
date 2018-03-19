@@ -23,7 +23,7 @@ angular.module('OpenSlidesApp.topics.csv', [])
                     ['Demo 2', 'Demo text 2', '1:30', '', '']
 
                 ];
-                CsvDownload(csvRows, 'agenda-example.csv');
+                CsvDownload(csvRows, gettextCatalog.getString('agenda-example') + '.csv');
             },
         };
     }
