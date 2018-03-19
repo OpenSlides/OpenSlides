@@ -658,7 +658,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 var filename = gettextCatalog.getString('Ballot') + '_' + pollNumber + '_' + assignment.title + '.pdf';
                 BallotContentProvider.createInstance(assignment, thePoll, pollNumber).then(function (ballotContentProvider) {
                     var documentProvider = PdfMakeBallotPaperProvider.createInstance(ballotContentProvider);
-                    PdfCreate.download(documentProvider.getDocument(), filename);
+                    PdfCreate.download(documentProvider, filename);
                 });
             },
         };
