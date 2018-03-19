@@ -38,7 +38,7 @@ angular.module('OpenSlidesApp.motions.csv', [])
                     params = {};
                 }
                 _.defaults(params, {
-                    filename: 'motions-export.csv',
+                    filename: gettextCatalog.getString('motions') + '.csv',
                     changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
                     include: {
                         text: true,
@@ -101,7 +101,7 @@ angular.module('OpenSlidesApp.motions.csv', [])
 
                     csvRows.push(row);
                 });
-                CsvDownload(csvRows, 'motions-export.csv');
+                CsvDownload(csvRows, params.filename);
             },
             downloadExample: function () {
                 var csvRows = [makeHeaderline({ include: {
@@ -118,7 +118,7 @@ angular.module('OpenSlidesApp.motions.csv', [])
                     ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', '', 'Block A'],
                     [''  , 'Title 3', 'Text 3', '', '', '', '', ''],
                 ];
-                CsvDownload(csvRows, 'motions-example.csv');
+                CsvDownload(csvRows, gettextCatalog.getString('motions-example') + '.csv');
             },
         };
     }

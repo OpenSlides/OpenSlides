@@ -32,7 +32,7 @@ angular.module('OpenSlidesApp.agenda.csv', [])
                     row.push('"' + (item.is_hidden ? '1' : '')  + '"');
                     csvRows.push(row);
                 });
-                CsvDownload(csvRows, 'agenda-export.csv');
+                CsvDownload(csvRows, gettextCatalog.getString('Agenda') + '.csv');
             },
         };
     }

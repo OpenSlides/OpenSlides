@@ -1590,14 +1590,15 @@ angular.module('OpenSlidesApp.users.site', [
     '$scope',
     'Group',
     'group',
+    'gettextCatalog',
     'ErrorMessage',
-    function($scope, Group, group, ErrorMessage) {
+    function($scope, Group, group, gettextCatalog, ErrorMessage) {
         $scope.group = group;
-        $scope.new_name = group.name;
+        $scope.new_name = gettextCatalog.getString(group.name);
 
         $scope.alert = {};
         $scope.save = function() {
-            var old_name = $scope.group.name;
+            var old_name = gettextCatalog.getString($scope.group.name);
             $scope.group.name = $scope.new_name;
             Group.save($scope.group).then(
                 function (success) {

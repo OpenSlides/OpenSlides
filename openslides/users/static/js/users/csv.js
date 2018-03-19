@@ -41,7 +41,7 @@ angular.module('OpenSlidesApp.users.csv', [])
                     row.push('"' + user.email + '"');
                     csvRows.push(row);
                 });
-                CsvDownload(csvRows, 'users-export.csv');
+                CsvDownload(csvRows, gettextCatalog.getString('participants') + '.csv');
             },
 
             downloadExample: function () {
@@ -65,7 +65,7 @@ angular.module('OpenSlidesApp.users.csv', [])
                     ['', '', 'Executive Board', '', '', '', '', '', '', '1', '', ''],
 
                 ];
-                CsvDownload(csvRows, 'users-example.csv');
+                CsvDownload(csvRows, gettextCatalog.getString('participants-example') + '.csv');
             }
         };
     }
