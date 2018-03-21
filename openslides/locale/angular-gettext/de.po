@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
-"PO-Revision-Date: 2018-03-08 09:54+0000\n"
+"PO-Revision-Date: 2018-03-21 11:41+0000\n"
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/openslides/openslides/language/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -84,7 +84,7 @@ msgstr "Über mich"
 #: assignments/static/js/assignments/site.js:751
 #: motions/static/js/motions/pdf.js:197 motions/static/js/motions/pdf.js:706
 #: motions/static/js/motions/site.js:663
-#: motions/static/templates/motions/motion-detail.html:407
+#: motions/static/templates/motions/motion-detail.html:408
 #: motions/static/templates/motions/slide_motion.html:56
 msgid "Abstain"
 msgstr "Enthaltung"
@@ -169,11 +169,11 @@ msgstr "Vertagung"
 msgid "Administrative data"
 msgstr "Administrative Daten"
 
-#: agenda/static/js/agenda/base.js:39 agenda/static/js/agenda/docx.js:56
-#: agenda/static/js/agenda/docx.js:64 agenda/static/js/agenda/pdf.js:15
-#: agenda/static/js/agenda/pdf.js:88 agenda/static/js/agenda/site.js:20
-#: agenda/static/js/agenda/site.js:32 agenda/static/js/agenda/site.js:50
-#: agenda/static/js/agenda/site.js:774
+#: agenda/static/js/agenda/base.js:39 agenda/static/js/agenda/csv.js:35
+#: agenda/static/js/agenda/docx.js:56 agenda/static/js/agenda/docx.js:64
+#: agenda/static/js/agenda/pdf.js:15 agenda/static/js/agenda/pdf.js:88
+#: agenda/static/js/agenda/site.js:20 agenda/static/js/agenda/site.js:32
+#: agenda/static/js/agenda/site.js:50 agenda/static/js/agenda/site.js:774
 #: agenda/static/templates/agenda/item-detail.html:6
 #: agenda/static/templates/agenda/item-list.html:35
 #: agenda/static/templates/agenda/item-list.html:61
@@ -269,7 +269,7 @@ msgstr "Soll dieser Wahlgang wirklich gelöscht werden?"
 msgid "Are you sure you want to delete this change recommendation?"
 msgstr "Soll diese Änderungsempfehlung wirklich gelöscht werden?"
 
-#: agenda/static/templates/agenda/item-list.html:320
+#: agenda/static/templates/agenda/item-list.html:319
 #: assignments/static/templates/assignments/assignment-list.html:268
 #: core/static/templates/core/manage-projectors.html:69
 #: core/static/templates/core/tag-list.html:46
@@ -285,11 +285,11 @@ msgstr "Soll dieser Eintrag wirklich gelöscht werden?"
 msgid "Are you sure you want to delete this file?"
 msgstr "Soll diese Datei wirklich gelöscht werden?"
 
-#: motions/static/templates/motions/motion-detail.html:360
+#: motions/static/templates/motions/motion-detail.html:361
 msgid "Are you sure you want to delete this poll?"
 msgstr "Soll diese Abstimmung wirklich gelöscht werden?"
 
-#: motions/static/templates/motions/motion-detail.html:579
+#: motions/static/templates/motions/motion-detail.html:580
 msgid "Are you sure you want to delete this version?"
 msgstr "Soll diese Version wirklich gelöscht werden?"
 
@@ -321,7 +321,7 @@ msgstr "Mindestens der Vorname oder der Nachname müssen angegeben sein. Alle ü
 msgid "Attachment"
 msgstr "Anhang"
 
-#: motions/static/templates/motions/motion-detail.html:550
+#: motions/static/templates/motions/motion-detail.html:551
 #: topics/static/templates/topics/topic-detail.html:30
 msgid "Attachments"
 msgstr "Anhänge"
@@ -377,7 +377,7 @@ msgstr "Hintergrundfarbe des Projektor-Kopf- und Fußbereichs"
 
 #: assignments/static/js/assignments/pdf.js:139
 #: assignments/static/js/assignments/pdf.js:321
-#: assignments/static/js/assignments/pdf.js:653
+#: assignments/static/js/assignments/pdf.js:658
 #: assignments/static/templates/assignments/assignment-detail.html:133
 #: assignments/static/templates/assignments/assignmentpoll-form.html:1
 msgid "Ballot"
@@ -425,63 +425,63 @@ msgstr "Bilder durchsuchen"
 msgid "CSV file"
 msgstr "CSV-Datei"
 
-#: users/static/js/users/site.js:1796
+#: users/static/js/users/site.js:1797
 msgid "Can create motions"
 msgstr "Darf Anträge erstellen"
 
-#: users/static/js/users/site.js:1771
+#: users/static/js/users/site.js:1772
 msgid "Can manage agenda"
 msgstr "Darf die Tagesordung verwalten"
 
-#: users/static/js/users/site.js:1800
+#: users/static/js/users/site.js:1801
 msgid "Can manage comments"
 msgstr "Darf Kommentare verwalten"
 
-#: users/static/js/users/site.js:1785
+#: users/static/js/users/site.js:1786
 msgid "Can manage configuration"
 msgstr "Darf die Konfiguration verwalten"
 
-#: users/static/js/users/site.js:1779
+#: users/static/js/users/site.js:1780
 msgid "Can manage elections"
 msgstr "Darf Wahlen verwalten"
 
-#: users/static/js/users/site.js:1792
+#: users/static/js/users/site.js:1793
 msgid "Can manage files"
 msgstr "Darf Dateien verwalten"
 
-#: users/static/js/users/site.js:1772
+#: users/static/js/users/site.js:1773
 msgid "Can manage list of speakers"
 msgstr "Darf Redelisten verwalten"
 
-#: users/static/js/users/site.js:1788
+#: users/static/js/users/site.js:1789
 msgid "Can manage logos and fonts"
 msgstr "Darf Logos und Schriften verwalten"
 
-#: users/static/js/users/site.js:1798
+#: users/static/js/users/site.js:1799
 msgid "Can manage motions"
 msgstr "Darf Anträge verwalten"
 
-#: users/static/js/users/site.js:1784
+#: users/static/js/users/site.js:1785
 msgid "Can manage tags"
 msgstr "Darf Schlagwörter verwalten"
 
-#: users/static/js/users/site.js:1787
+#: users/static/js/users/site.js:1788
 msgid "Can manage the chat"
 msgstr "Darf den Chat verwalten"
 
-#: users/static/js/users/site.js:1782
+#: users/static/js/users/site.js:1783
 msgid "Can manage the projector"
 msgstr "Darf den Projektor steuern"
 
-#: users/static/js/users/site.js:1804
+#: users/static/js/users/site.js:1805
 msgid "Can manage users"
 msgstr "Darf Benutzer verwalten"
 
-#: users/static/js/users/site.js:1777
+#: users/static/js/users/site.js:1778
 msgid "Can nominate another participant"
 msgstr "Darf andere Teilnehmende für Wahlen vorschlagen"
 
-#: users/static/js/users/site.js:1778
+#: users/static/js/users/site.js:1779
 msgid "Can nominate oneself"
 msgstr "Darf selbst für Wahlen kandidieren"
 
@@ -489,63 +489,63 @@ msgstr "Darf selbst für Wahlen kandidieren"
 msgid "Can not open the projector."
 msgstr "Der Projektor kann nicht geöffnet werden."
 
-#: users/static/js/users/site.js:1774
+#: users/static/js/users/site.js:1775
 msgid "Can put oneself on the list of speakers"
 msgstr "Darf sich selbst auf die Redeliste setzen"
 
-#: users/static/js/users/site.js:1770
+#: users/static/js/users/site.js:1771
 msgid "Can see agenda"
 msgstr "Darf die Tagesordnung sehen"
 
-#: users/static/js/users/site.js:1799
+#: users/static/js/users/site.js:1800
 msgid "Can see comments"
 msgstr "Darf Kommentare sehen"
 
-#: users/static/js/users/site.js:1776
+#: users/static/js/users/site.js:1777
 msgid "Can see elections"
 msgstr "Darf Wahlen sehen"
 
-#: users/static/js/users/site.js:1803
+#: users/static/js/users/site.js:1804
 msgid "Can see extra data of users (e.g. present and comment)"
 msgstr "Darf die zusätzlichen Daten der Benutzer sehen (z. B. anwesend und Kommentar)"
 
-#: users/static/js/users/site.js:1793
+#: users/static/js/users/site.js:1794
 msgid "Can see hidden files"
 msgstr "Darf versteckte Dateien sehen"
 
-#: users/static/js/users/site.js:1773
+#: users/static/js/users/site.js:1774
 msgid "Can see hidden items and time scheduling of agenda"
 msgstr "Darf versteckte Einträge und Zeitplan der Tagesordnung sehen"
 
-#: users/static/js/users/site.js:1795
+#: users/static/js/users/site.js:1796
 msgid "Can see motions"
 msgstr "Darf Anträge sehen"
 
-#: users/static/js/users/site.js:1802
+#: users/static/js/users/site.js:1803
 msgid "Can see names of users"
 msgstr "Darf die Namen der Benutzer sehen"
 
-#: users/static/js/users/site.js:1783
+#: users/static/js/users/site.js:1784
 msgid "Can see the front page"
 msgstr "Darf die Startseite sehen"
 
-#: users/static/js/users/site.js:1790
+#: users/static/js/users/site.js:1791
 msgid "Can see the list of files"
 msgstr "Darf die Dateiliste sehen"
 
-#: users/static/js/users/site.js:1781
+#: users/static/js/users/site.js:1782
 msgid "Can see the projector"
 msgstr "Darf den Projektor sehen"
 
-#: users/static/js/users/site.js:1797
+#: users/static/js/users/site.js:1798
 msgid "Can support motions"
 msgstr "Darf Anträge unterstützen"
 
-#: users/static/js/users/site.js:1791
+#: users/static/js/users/site.js:1792
 msgid "Can upload files"
 msgstr "Darf Dateien hochladen"
 
-#: users/static/js/users/site.js:1786
+#: users/static/js/users/site.js:1787
 msgid "Can use the chat"
 msgstr "Darf den Chat benutzen"
 
@@ -556,7 +556,7 @@ msgstr "Darf den Chat benutzen"
 #: core/static/templates/core/projector-controls.html:212
 #: core/static/templates/core/projector-message-form.html:8
 #: core/static/templates/core/tag-form.html:13
-#: mediafiles/static/templates/mediafiles/mediafile-form.html:20
+#: mediafiles/static/templates/mediafiles/mediafile-form.html:19
 #: motions/static/templates/motions/category-form.html:13
 #: motions/static/templates/motions/change-recommendation-form.html:13
 #: motions/static/templates/motions/motion-block-form.html:13
@@ -608,8 +608,8 @@ msgstr "Sachgebiete angelegt"
 #: motions/static/js/motions/site.js:1240
 #: motions/static/js/motions/site.js:514
 #: motions/static/templates/motions/category-sort.html:9
-#: motions/static/templates/motions/motion-detail.html:275
-#: motions/static/templates/motions/motion-detail.html:279
+#: motions/static/templates/motions/motion-detail.html:276
+#: motions/static/templates/motions/motion-detail.html:280
 #: motions/static/templates/motions/motion-import.html:27
 #: motions/static/templates/motions/motion-import.html:50
 #: motions/static/templates/motions/motion-list.html:212
@@ -620,7 +620,7 @@ msgstr "Sachgebiet"
 msgid "Center"
 msgstr "Mittig"
 
-#: agenda/static/templates/agenda/item-list.html:365
+#: agenda/static/templates/agenda/item-list.html:364
 msgid "Change item number ..."
 msgstr "Nummer ändern ..."
 
@@ -661,11 +661,19 @@ msgstr "Zum Deaktivieren des Unterstützersystems '0' eingeben."
 msgid "Clear"
 msgstr "Löschen"
 
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:90
+msgid "Clear list"
+msgstr "Liste leeren"
+
 #: motions/static/templates/motions/motion-import.html:129
 #: topics/static/templates/topics/topic-import.html:120
 #: users/static/templates/users/user-import.html:231
 msgid "Clear preview"
 msgstr "Vorschau leeren"
+
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:93
+msgid "Close"
+msgstr "Schließen"
 
 #: agenda/static/templates/agenda/current-list-of-speakers.html:53
 #: agenda/static/templates/agenda/item-detail.html:48
@@ -788,7 +796,7 @@ msgstr "Benutzerdefinierte Anzahl von Stimmzetteln"
 msgid "Custom translations"
 msgstr "Benutzerdefinierte Übersetzungen"
 
-#: users/static/js/users/site.js:1835
+#: users/static/js/users/site.js:1836
 msgid ""
 "Dear {name},\n"
 "\n"
@@ -843,7 +851,7 @@ msgstr "Voreingestellte Fassung für Änderungsempfehlungen"
 msgid "Delegates"
 msgstr "Delegierte"
 
-#: agenda/static/templates/agenda/item-list.html:319
+#: agenda/static/templates/agenda/item-list.html:318
 #: assignments/static/templates/assignments/assignment-detail.html:148
 #: assignments/static/templates/assignments/assignment-list.html:267
 #: core/static/templates/core/manage-projectors.html:73
@@ -851,8 +859,8 @@ msgstr "Delegierte"
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:309
 #: motions/static/templates/motions/category-list.html:48
 #: motions/static/templates/motions/motion-block-list.html:44
-#: motions/static/templates/motions/motion-detail.html:362
-#: motions/static/templates/motions/motion-detail.html:582
+#: motions/static/templates/motions/motion-detail.html:363
+#: motions/static/templates/motions/motion-detail.html:583
 #: motions/static/templates/motions/motion-detail/view-diff.html:27
 #: motions/static/templates/motions/motion-detail/view-diff.html:74
 #: motions/static/templates/motions/motion-detail/view-original.html:36
@@ -952,8 +960,8 @@ msgstr "Nicht befassen"
 msgid "Do not decide"
 msgstr "Nicht entscheiden"
 
-#: motions/static/templates/motions/motion-detail.html:514
-#: motions/static/templates/motions/motion-detail.html:529
+#: motions/static/templates/motions/motion-detail.html:515
+#: motions/static/templates/motions/motion-detail.html:530
 msgid ""
 "Do you want to create a new version of this motion based on this changes?"
 msgstr "Wollen Sie eine neue Version des Antrags basierend auf diesen Änderungen erstellen?"
@@ -962,8 +970,8 @@ msgstr "Wollen Sie eine neue Version des Antrags basierend auf diesen Änderunge
 msgid "Don't create a new version."
 msgstr "Keine neue Version erzeugen."
 
-#: agenda/static/templates/agenda/item-list.html:380
-#: agenda/static/templates/agenda/item-list.html:385
+#: agenda/static/templates/agenda/item-list.html:379
+#: agenda/static/templates/agenda/item-list.html:384
 msgid "Done"
 msgstr "Erledigt"
 
@@ -985,13 +993,17 @@ msgid ""
 "renumber."
 msgstr "Verschieben Sie die Anträge um das Sachgebiet neu zu ordnen. Klicken Sie anschließend auf die Schaltfläche um neu zu nummerieren."
 
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:10
+msgid "Drop files into this area OR"
+msgstr "Dateien auf diesen Bereich ziehen ODER"
+
 #: agenda/static/templates/agenda/item-list.html:144
 #: topics/static/templates/topics/topic-import.html:52
 #: topics/static/templates/topics/topic-import.html:71
 msgid "Duration"
 msgstr "Dauer"
 
-#: agenda/static/templates/agenda/item-list.html:318
+#: agenda/static/templates/agenda/item-list.html:317
 #: assignments/static/templates/assignments/assignment-detail.html:20
 #: assignments/static/templates/assignments/assignment-list.html:266
 #: core/static/templates/core/tag-list.html:44
@@ -999,7 +1011,7 @@ msgstr "Dauer"
 #: motions/static/templates/motions/category-list.html:46
 #: motions/static/templates/motions/motion-block-detail.html:19
 #: motions/static/templates/motions/motion-block-list.html:42
-#: motions/static/templates/motions/motion-detail.html:354
+#: motions/static/templates/motions/motion-detail.html:355
 #: motions/static/templates/motions/motion-detail.html:53
 #: motions/static/templates/motions/motion-detail/view-diff.html:33
 #: motions/static/templates/motions/motion-detail/view-diff.html:79
@@ -1009,6 +1021,10 @@ msgstr "Dauer"
 #: users/static/templates/users/user-list.html:343
 msgid "Edit"
 msgstr "Bearbeiten"
+
+#: mediafiles/static/templates/mediafiles/mediafile-form.html:1
+msgid "Edit File"
+msgstr "Datei bearbeiten"
 
 #: motions/static/templates/motions/category-form.html:1
 msgid "Edit category"
@@ -1030,10 +1046,6 @@ msgstr "Aktuelle Folie bearbeiten"
 #: assignments/static/templates/assignments/assignment-form.html:1
 msgid "Edit election"
 msgstr "Wahl bearbeiten"
-
-#: mediafiles/static/templates/mediafiles/mediafile-form.html:1
-msgid "Edit file"
-msgstr "Datei bearbeiten"
 
 #: core/static/templates/core/projector-controls.html:247
 #: core/static/templates/core/projector-message-form.html:1
@@ -1075,7 +1087,7 @@ msgid ""
 msgstr "Die Bearbeitung des Textes ist nicht mehr möglich, sobald Änderungsempfehlungen vorliegen."
 
 #: assignments/static/js/assignments/base.js:330
-#: assignments/static/js/assignments/pdf.js:617
+#: assignments/static/js/assignments/pdf.js:622
 #: assignments/static/js/assignments/site.js:456
 #: assignments/static/templates/assignments/assignment-detail.html:31
 #: assignments/static/templates/assignments/slide_assignment.html:7
@@ -1092,7 +1104,7 @@ msgid "Election result"
 msgstr "Wahlergebnis"
 
 #: assignments/static/js/assignments/base.js:331
-#: assignments/static/js/assignments/pdf.js:618
+#: assignments/static/js/assignments/pdf.js:623
 #: assignments/static/js/assignments/site.js:19
 #: assignments/static/js/assignments/site.js:31
 #: assignments/static/js/assignments/site.js:49
@@ -1101,7 +1113,7 @@ msgstr "Wahlergebnis"
 msgid "Elections"
 msgstr "Wahlen"
 
-#: users/static/js/users/site.js:1829 users/static/js/users/site.js:313
+#: users/static/js/users/site.js:1830 users/static/js/users/site.js:313
 #: users/static/js/users/site.js:471
 #: users/static/templates/users/user-detail.html:35
 #: users/static/templates/users/user-import.html:61
@@ -1109,19 +1121,19 @@ msgstr "Wahlen"
 msgid "Email"
 msgstr "E-Mail"
 
-#: users/static/js/users/site.js:1834
+#: users/static/js/users/site.js:1835
 msgid "Email body"
 msgstr "Nachrichtentext"
 
-#: users/static/js/users/site.js:1830
+#: users/static/js/users/site.js:1831
 msgid "Email sender"
 msgstr "Absender"
 
-#: users/static/js/users/site.js:1831
+#: users/static/js/users/site.js:1832
 msgid "Email subject"
 msgstr "Betreff"
 
-#: users/static/js/users/site.js:1809
+#: users/static/js/users/site.js:1810
 msgid "Enable participant presence view"
 msgstr "Ansicht zur Teilnehmeranwesenheit aktivieren"
 
@@ -1246,9 +1258,9 @@ msgstr "Anträge exportieren"
 msgid "Export personal note only"
 msgstr "Nur persönliche Notiz exportieren"
 
-#: mediafiles/static/js/mediafiles/forms.js:54
-msgid "File"
-msgstr "Datei"
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:21
+msgid "File information"
+msgstr "Dateiinformationen"
 
 #: mediafiles/static/js/mediafiles/list.js:104
 msgid "File size"
@@ -1289,7 +1301,7 @@ msgstr "Beschlussfassung"
 msgid "Finished"
 msgstr "Abgeschlossen"
 
-#: motions/static/templates/motions/motion-detail.html:270
+#: motions/static/templates/motions/motion-detail.html:271
 msgid "Follow recommendation"
 msgstr "Empfehlung folgen"
 
@@ -1330,7 +1342,7 @@ msgid "Front page title"
 msgstr "Titel der Startseite"
 
 #: core/static/js/core/site.js:2021 motions/static/js/motions/site.js:2609
-#: users/static/js/users/site.js:1479 users/static/js/users/site.js:1807
+#: users/static/js/users/site.js:1479 users/static/js/users/site.js:1808
 msgid "General"
 msgstr "Allgemein"
 
@@ -1352,7 +1364,7 @@ msgstr "PDF-Datei wird erstellt"
 msgid "Generating PDFs and ZIP archive"
 msgstr "PDF-Dokumente und ZIP-Archiv werden erstellt"
 
-#: users/static/js/users/site.js:1811 users/static/js/users/site.js:296
+#: users/static/js/users/site.js:1812 users/static/js/users/site.js:296
 #: users/static/js/users/site.js:633
 #: users/static/templates/users/user-import.html:51
 #: users/static/templates/users/user-import.html:84
@@ -1380,12 +1392,13 @@ msgstr "Gruppen"
 msgid "Groups created"
 msgstr "Gruppen angelegt"
 
-#: users/static/js/users/site.js:1817
+#: users/static/js/users/site.js:1818
 msgid "Help text for access data and welcome PDF"
 msgstr "Hilfetext für das Zugangsdaten- und Willkommens-PDF"
 
-#: mediafiles/static/js/mediafiles/forms.js:77
+#: mediafiles/static/js/mediafiles/forms.js:51
 #: mediafiles/static/js/mediafiles/list.js:74
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:27
 msgid "Hidden"
 msgstr "Versteckt"
 
@@ -1542,7 +1555,7 @@ msgid "Installed plugins:"
 msgstr "Installierte Plugins:"
 
 #: agenda/static/templates/agenda/item-list.html:294
-#: agenda/static/templates/agenda/item-list.html:376
+#: agenda/static/templates/agenda/item-list.html:375
 #: topics/static/templates/topics/topic-import.html:54
 #: topics/static/templates/topics/topic-import.html:73
 msgid "Internal item"
@@ -1564,7 +1577,7 @@ msgid "Invalid input."
 msgstr "Ungültige Eingabe."
 
 #: motions/static/js/motions/pdf.js:210 motions/static/js/motions/site.js:680
-#: motions/static/templates/motions/motion-detail.html:428
+#: motions/static/templates/motions/motion-detail.html:429
 msgid "Invalid votes"
 msgstr "Ungültige Stimmen"
 
@@ -1669,7 +1682,7 @@ msgid "Last email send to the user"
 msgstr "Letzte gesendete E-Mail an den Benutzer"
 
 #: motions/static/js/motions/site.js:1248
-#: motions/static/templates/motions/motion-detail.html:585
+#: motions/static/templates/motions/motion-detail.html:586
 msgid "Last modified"
 msgstr "Zuletzt geändert"
 
@@ -1724,7 +1737,7 @@ msgstr "Teilnehmendenliste"
 #: agenda/static/js/agenda/site.js:467 agenda/static/js/agenda/site.js:782
 #: agenda/static/templates/agenda/item-detail.html:21
 #: agenda/static/templates/agenda/item-detail.html:47
-#: agenda/static/templates/agenda/item-list.html:316
+#: agenda/static/templates/agenda/item-list.html:315
 #: agenda/static/templates/agenda/partial-slide-current-list-of-speakers-overlay.html:2
 #: agenda/static/templates/agenda/partial-slide-current-list-of-speakers.html:7
 #: agenda/static/templates/agenda/slide-list-of-speakers.html:7
@@ -1841,8 +1854,8 @@ msgstr "Antrag"
 #: motions/static/js/motions/pdf.js:150 motions/static/js/motions/site.js:1242
 #: motions/static/js/motions/site.js:528 motions/static/js/motions/site.js:733
 #: motions/static/templates/motions/motion-block-detail.html:24
-#: motions/static/templates/motions/motion-detail.html:297
-#: motions/static/templates/motions/motion-detail.html:301
+#: motions/static/templates/motions/motion-detail.html:298
+#: motions/static/templates/motions/motion-detail.html:302
 #: motions/static/templates/motions/motion-import.html:29
 #: motions/static/templates/motions/motion-import.html:52
 #: motions/static/templates/motions/motion-list.html:236
@@ -1938,10 +1951,6 @@ msgstr "Neue Änderungsempfehlung"
 msgid "New election"
 msgstr "Neue Wahl"
 
-#: mediafiles/static/templates/mediafiles/mediafile-form.html:2
-msgid "New file"
-msgstr "Neue Datei"
-
 #: motions/static/templates/motions/motion-form.html:2
 msgid "New motion"
 msgstr "Neuer Antrag"
@@ -1973,6 +1982,7 @@ msgstr "Neues Schlagwort"
 
 #: motions/static/js/motions/pdf.js:355 motions/static/js/motions/site.js:223
 #: motions/static/templates/motions/motion-detail/view-diff.html:42
+#: motions/static/templates/motions/slide_motion.html:95
 msgid "New title"
 msgstr "Neuer Titel"
 
@@ -1980,12 +1990,12 @@ msgstr "Neuer Titel"
 msgid "New topic"
 msgstr "Neues Thema"
 
-#: motions/static/templates/motions/motion-detail.html:517
-#: motions/static/templates/motions/motion-detail.html:532
+#: motions/static/templates/motions/motion-detail.html:518
+#: motions/static/templates/motions/motion-detail.html:533
 msgid "New version on these changes"
 msgstr "Neue Version mit diesen Änderungen"
 
-#: motions/static/templates/motions/motion-detail.html:472
+#: motions/static/templates/motions/motion-detail.html:473
 msgid "New vote"
 msgstr "Neue Abstimmung"
 
@@ -1998,7 +2008,7 @@ msgstr "Nächste Seite"
 #: assignments/static/js/assignments/site.js:738
 #: motions/static/js/motions/pdf.js:192 motions/static/js/motions/pdf.js:705
 #: motions/static/js/motions/site.js:654
-#: motions/static/templates/motions/motion-detail.html:395
+#: motions/static/templates/motions/motion-detail.html:396
 #: motions/static/templates/motions/slide_motion.html:44
 msgid "No"
 msgstr "Nein"
@@ -2037,7 +2047,7 @@ msgstr "Keine Entscheidung"
 msgid "No emails were send."
 msgstr "Es wurden keine E-Mails versandt."
 
-#: users/static/js/users/site.js:1828
+#: users/static/js/users/site.js:1829
 msgid "No encryption"
 msgstr "Keine Verschlüsselung"
 
@@ -2075,6 +2085,7 @@ msgstr "Keine Empfehlung gesetzt"
 #: assignments/static/templates/assignments/assignment-detail.html:105
 #: core/static/templates/core/select-multiple.html:2
 #: core/static/templates/core/select-single.html:2
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:64
 msgid "No results available ..."
 msgstr "Keine Ergebnisse vorhanden ..."
 
@@ -2247,7 +2258,7 @@ msgstr "OpenSlides-Zugangsdaten"
 
 #: motions/static/js/motions/pdf.js:163 motions/static/js/motions/site.js:541
 #: motions/static/js/motions/site.js:740
-#: motions/static/templates/motions/motion-detail.html:341
+#: motions/static/templates/motions/motion-detail.html:342
 #: motions/static/templates/motions/motion-import.html:28
 #: motions/static/templates/motions/motion-import.html:51
 #: motions/static/templates/motions/motion-list.html:754
@@ -2279,7 +2290,7 @@ msgstr "außerhalb"
 #: motions/static/templates/motions/motion-detail.html:59
 #: motions/static/templates/motions/motion-detail/comments.html:9
 #: motions/static/templates/motions/motion-detail/personal-note.html:9
-#: users/static/js/users/site.js:1813
+#: users/static/js/users/site.js:1814
 msgid "PDF"
 msgstr "PDF"
 
@@ -2336,7 +2347,7 @@ msgid "Participant number"
 msgstr "Teilnehmernummer"
 
 #: users/static/js/users/base.js:19 users/static/js/users/base.js:20
-#: users/static/js/users/site.js:1810 users/static/js/users/site.js:19
+#: users/static/js/users/site.js:1811 users/static/js/users/site.js:19
 #: users/static/js/users/site.js:30 users/static/js/users/site.js:48
 #: users/static/templates/users/user-list.html:23
 msgid "Participants"
@@ -2366,7 +2377,7 @@ msgstr "Rechte"
 msgid "Permit"
 msgstr "Zulassen"
 
-#: motions/static/templates/motions/motion-detail.html:573
+#: motions/static/templates/motions/motion-detail.html:574
 msgid "Permit and activate"
 msgstr "Zulassen und aktivieren"
 
@@ -2375,7 +2386,7 @@ msgid "Personal data"
 msgstr "Persönliche Daten"
 
 #: motions/static/js/motions/pdf.js:1108
-#: motions/static/templates/motions/motion-detail.html:476
+#: motions/static/templates/motions/motion-detail.html:477
 #: motions/static/templates/motions/motion-detail/personal-note.html:25
 msgid "Personal note"
 msgstr "Persönliche Notiz"
@@ -2403,8 +2414,8 @@ msgid "Please enter a name for the new projector"
 msgstr "Bitte geben Sie einen Namen für den neuen Projektor ein"
 
 #: users/static/templates/users/group-edit.html:10
-msgid "Please enter a new name for {{ group.name }}:"
-msgstr "Bitte geben Sie einen neuen Namen ein für {{ group.name }}:"
+msgid "Please enter a new group name:"
+msgstr "Bitte geben Sie einen neuen Gruppennamen ein:"
 
 #: motions/static/templates/motions/motion-import.html:18
 #: topics/static/templates/topics/topic-import.html:46
@@ -2463,7 +2474,7 @@ msgid "Previous page"
 msgstr "Vorherige Seite"
 
 #: assignments/static/templates/assignments/assignment-detail.html:157
-#: motions/static/templates/motions/motion-detail.html:368
+#: motions/static/templates/motions/motion-detail.html:369
 msgid "Print ballot paper"
 msgstr "Stimmzettel drucken"
 
@@ -2555,20 +2566,20 @@ msgstr "Quorum ({{ option.getVoteYes() - option.majorityReached }}) nicht erreic
 msgid "Quorum ({{ option.getVoteYes() - option.majorityReached }}) reached."
 msgstr "Quorum ({{ option.getVoteYes() - option.majorityReached }}) erreicht."
 
-#: motions/static/templates/motions/motion-detail.html:462
+#: motions/static/templates/motions/motion-detail.html:463
 msgid "Quorum ({{ voteYes.value - isReached() }}) not reached."
 msgstr "Quorum ({{ voteYes.value - isReached() }}) nicht erreicht."
 
-#: motions/static/templates/motions/motion-detail.html:459
+#: motions/static/templates/motions/motion-detail.html:460
 msgid "Quorum ({{ voteYes.value - isReached() }}) reached."
 msgstr "Quorum ({{ voteYes.value - isReached() }}) erreicht."
 
 #: motions/static/js/motions/docx.js:95 motions/static/js/motions/pdf.js:369
 #: motions/static/js/motions/site.js:436 motions/static/js/motions/site.js:834
-#: motions/static/templates/motions/motion-detail.html:543
+#: motions/static/templates/motions/motion-detail.html:544
 #: motions/static/templates/motions/motion-import.html:25
 #: motions/static/templates/motions/motion-import.html:48
-#: motions/static/templates/motions/slide_motion.html:124
+#: motions/static/templates/motions/slide_motion.html:133
 msgid "Reason"
 msgstr "Begründung"
 
@@ -2678,7 +2689,7 @@ msgstr "Erforderliche Komma- oder Semikolon-separierte Werte mit diesen Spaltenn
 #: assignments/static/js/assignments/site.js:872
 #: assignments/static/templates/assignments/assignment-detail.html:202
 #: motions/static/js/motions/site.js:2662
-#: motions/static/templates/motions/motion-detail.html:450
+#: motions/static/templates/motions/motion-detail.html:451
 msgid "Required majority"
 msgstr "Erforderliche Mehrheit"
 
@@ -2742,7 +2753,7 @@ msgstr "Im Uhrzeigersinn drehen"
 #: core/static/templates/core/projector-controls.html:207
 #: core/static/templates/core/projector-message-form.html:5
 #: core/static/templates/core/tag-form.html:10
-#: mediafiles/static/templates/mediafiles/mediafile-form.html:17
+#: mediafiles/static/templates/mediafiles/mediafile-form.html:16
 #: motions/static/templates/motions/category-form.html:10
 #: motions/static/templates/motions/change-recommendation-form.html:10
 #: motions/static/templates/motions/motion-block-form.html:10
@@ -2836,7 +2847,8 @@ msgstr "Antragsblock auswählen oder suchen ..."
 
 #: agenda/static/templates/agenda/list-of-speakers-partial-management.html:114
 #: assignments/static/templates/assignments/assignment-detail.html:105
-#: mediafiles/static/js/mediafiles/forms.js:88
+#: mediafiles/static/js/mediafiles/forms.js:62
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:64
 msgid "Select or search a participant ..."
 msgstr "Teilnehmer/in auswählen oder suchen ..."
 
@@ -2906,12 +2918,12 @@ msgstr "Als Favoriten setzen"
 msgid "Set category"
 msgstr "Sachgebiet setzen"
 
-#: agenda/static/templates/agenda/item-list.html:355
+#: agenda/static/templates/agenda/item-list.html:354
 #: users/static/templates/users/user-list.html:417
 msgid "Set comment ..."
 msgstr "Kommentar setzen ..."
 
-#: agenda/static/templates/agenda/item-list.html:338
+#: agenda/static/templates/agenda/item-list.html:337
 msgid "Set duration ..."
 msgstr "Dauer setzen ..."
 
@@ -2927,7 +2939,7 @@ msgstr "Stimmzettel-Hinweis setzen ..."
 msgid "Set it manually"
 msgstr "Manuell setzen"
 
-#: agenda/static/templates/agenda/item-list.html:364
+#: agenda/static/templates/agenda/item-list.html:363
 msgid "Set item number ..."
 msgstr "Nummer setzen ..."
 
@@ -2977,7 +2989,7 @@ msgstr "Als Tagesordnungspunkt anzeigen"
 msgid "Show extended fields"
 msgstr "Erweiterte Felder anzeigen"
 
-#: motions/static/templates/motions/motion-detail.html:591
+#: motions/static/templates/motions/motion-detail.html:592
 msgid "Show history"
 msgstr "Verlauf anzeigen"
 
@@ -3023,6 +3035,11 @@ msgstr "Einfache Mehrheit"
 msgid "Smaller"
 msgstr "Kleiner"
 
+#: mediafiles/static/js/mediafiles/upload.js:128
+#: mediafiles/static/js/mediafiles/upload.js:150
+msgid "Some files could not be uploaded"
+msgstr "Einige Dateien konnten nicht hochgeladen werden"
+
 #: assignments/static/templates/assignments/assignment-list.html:151
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:199
 #: motions/static/templates/motions/category-list.html:44
@@ -3043,7 +3060,7 @@ msgstr "Tagesordnung sortieren"
 msgid "Sort categories by"
 msgstr "Sachgebiete sortieren nach"
 
-#: users/static/js/users/site.js:1808
+#: users/static/js/users/site.js:1809
 msgid "Sort name of participants by"
 msgstr "Namen der Teilnehmenden sortieren nach"
 
@@ -3140,18 +3157,18 @@ msgstr "Antrag unterstützen"
 msgid "Supporters"
 msgstr "Unterstützer/innen"
 
-#: users/static/js/users/site.js:1812 users/static/js/users/site.js:304
+#: users/static/js/users/site.js:1813 users/static/js/users/site.js:304
 #: users/static/js/users/site.js:635
 #: users/static/templates/users/user-import.html:52
 #: users/static/templates/users/user-import.html:85
 msgid "Surname"
 msgstr "Nachname"
 
-#: users/static/js/users/site.js:1818
+#: users/static/js/users/site.js:1819
 msgid "System URL"
 msgstr "System-URL"
 
-#: assignments/static/js/assignments/pdf.js:554
+#: assignments/static/js/assignments/pdf.js:559
 #: motions/static/js/motions/docx.js:51 motions/static/js/motions/pdf.js:833
 msgid "Table of contents"
 msgstr "Inhaltsverzeichnis"
@@ -3166,8 +3183,8 @@ msgstr "Schlagwort"
 #: assignments/static/templates/assignments/assignment-list.html:10
 #: core/static/js/core/site.js:386 core/static/templates/core/tag-list.html:13
 #: motions/static/js/motions/site.js:551
-#: motions/static/templates/motions/motion-detail.html:319
-#: motions/static/templates/motions/motion-detail.html:323
+#: motions/static/templates/motions/motion-detail.html:320
+#: motions/static/templates/motions/motion-detail.html:324
 #: motions/static/templates/motions/motion-list.html:18
 msgid "Tags"
 msgstr "Schlagwörter"
@@ -3251,7 +3268,7 @@ msgstr "%user% besitzen keine E-Mail-Adressen; E-Mails konnte daher nicht gesend
 msgid "There are more than one duplicates of this user!"
 msgstr "Es gibt mehr als ein Duplikat von diesem Nutzer!"
 
-#: motions/static/templates/motions/motion-detail.html:569
+#: motions/static/templates/motions/motion-detail.html:570
 msgid "This is the last active version."
 msgstr "Dies ist die letzte aktive Version."
 
@@ -3270,8 +3287,9 @@ msgstr "Dreiviertelmehrheit"
 
 #: assignments/static/js/assignments/site.js:128
 #: assignments/static/js/assignments/site.js:338
-#: mediafiles/static/js/mediafiles/forms.js:70
+#: mediafiles/static/js/mediafiles/forms.js:44
 #: mediafiles/static/js/mediafiles/list.js:100
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:24
 #: motions/static/js/motions/motion-block.js:78
 #: motions/static/js/motions/pdf.js:258 motions/static/js/motions/site.js:1236
 #: motions/static/js/motions/site.js:414
@@ -3295,7 +3313,7 @@ msgstr "Titel für PDF- und DOCX-Dokumente (alle Anträge) "
 msgid "Title for PDF document (all elections)"
 msgstr "Titel für PDF-Dokument (alle Wahlen)"
 
-#: users/static/js/users/site.js:1815
+#: users/static/js/users/site.js:1816
 msgid "Title for access data and welcome PDF"
 msgstr "Titel für das Zugangsdaten- und Begrüßungs-PDF"
 
@@ -3339,13 +3357,29 @@ msgstr "Typ"
 msgid "Unsupport motion"
 msgstr "Unterstützung zurückziehen"
 
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:87
+msgid "Upload"
+msgstr "Hochladen"
+
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:1
+msgid "Upload files"
+msgstr "Dateien hochladen"
+
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:33
+msgid "Upload status"
+msgstr "Hochladestatus"
+
 #: mediafiles/static/js/mediafiles/list.js:106
 msgid "Upload time"
 msgstr "Hochladezeitpunkt"
 
-#: mediafiles/static/js/mediafiles/forms.js:85
+#: mediafiles/static/js/mediafiles/forms.js:59
 #: mediafiles/static/js/mediafiles/list.js:108
 msgid "Uploaded by"
+msgstr "Hochgeladen durch"
+
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:30
+msgid "Uploader"
 msgstr "Hochgeladen durch"
 
 #: assignments/static/js/assignments/site.js:870
@@ -3353,18 +3387,18 @@ msgstr "Hochgeladen durch"
 msgid "Use the following custom number"
 msgstr "Verwende die folgende benutzerdefinierte Anzahl"
 
-#: users/static/js/users/site.js:1836
+#: users/static/js/users/site.js:1837
 msgid ""
 "Use these placeholders: {name}, {event_name}, {url}, {username}, {password}."
 " The url referrs to the system url."
 msgstr "Verwendbare Platzhalter: {name}, {event_name}, {url}, {username}, {password}. Die URL bezieht sich auf die System-URL."
 
-#: users/static/js/users/site.js:1819
+#: users/static/js/users/site.js:1820
 msgid "Used for QRCode in PDF of access data."
 msgstr "Wird als QR-Code im Zugangsdaten-PDF verwendet."
 
-#: users/static/js/users/site.js:1821 users/static/js/users/site.js:1823
-#: users/static/js/users/site.js:1825
+#: users/static/js/users/site.js:1822 users/static/js/users/site.js:1824
+#: users/static/js/users/site.js:1826
 msgid "Used for WLAN QRCode in PDF of access data."
 msgstr "Wird als WLAN-QR-Code im Zugangsdaten-PDF verwendet."
 
@@ -3391,22 +3425,22 @@ msgid "Valid ballots"
 msgstr "Gültige Stimmzettel"
 
 #: motions/static/js/motions/pdf.js:203 motions/static/js/motions/site.js:672
-#: motions/static/templates/motions/motion-detail.html:419
+#: motions/static/templates/motions/motion-detail.html:420
 msgid "Valid votes"
 msgstr "Gültige Stimmen"
 
-#: motions/static/templates/motions/motion-detail.html:562
-#: motions/static/templates/motions/motion-detail.html:565
+#: motions/static/templates/motions/motion-detail.html:563
+#: motions/static/templates/motions/motion-detail.html:566
 msgid "Version"
 msgstr "Version"
 
-#: motions/static/templates/motions/motion-detail.html:558
+#: motions/static/templates/motions/motion-detail.html:559
 msgid "Version history"
 msgstr "Versionshistorie"
 
 #. ballot of a motion
 #: motions/static/js/motions/pdf.js:181
-#: motions/static/templates/motions/motion-detail.html:350
+#: motions/static/templates/motions/motion-detail.html:351
 #: motions/static/templates/motions/motion-poll-form.html:1
 #: motions/static/templates/motions/slide_motion.html:24
 msgid "Vote"
@@ -3419,7 +3453,7 @@ msgid "Votes"
 msgstr "Stimmen"
 
 #: motions/static/js/motions/pdf.js:217 motions/static/js/motions/site.js:688
-#: motions/static/templates/motions/motion-detail.html:437
+#: motions/static/templates/motions/motion-detail.html:438
 msgid "Votes cast"
 msgstr "Abgegebene Stimmen"
 
@@ -3432,12 +3466,12 @@ msgid "Voting and ballot papers"
 msgstr "Abstimmung und Stimmzettel"
 
 #: motions/static/js/motions/pdf.js:225 motions/static/js/motions/site.js:729
-#: motions/static/templates/motions/motion-detail.html:346
+#: motions/static/templates/motions/motion-detail.html:347
 #: motions/static/templates/motions/slide_motion.html:20
 msgid "Voting result"
 msgstr "Abstimmungsergebnis"
 
-#: users/static/js/users/site.js:1826
+#: users/static/js/users/site.js:1827
 msgid "WEP"
 msgstr "WEP"
 
@@ -3445,19 +3479,19 @@ msgstr "WEP"
 msgid "WLAN access data"
 msgstr "WLAN-Zugangsdaten"
 
-#: users/static/js/users/pdf.js:157 users/static/js/users/site.js:1824
+#: users/static/js/users/pdf.js:157 users/static/js/users/site.js:1825
 msgid "WLAN encryption"
 msgstr "WLAN-Verschlüsselung"
 
-#: users/static/js/users/pdf.js:141 users/static/js/users/site.js:1820
+#: users/static/js/users/pdf.js:141 users/static/js/users/site.js:1821
 msgid "WLAN name (SSID)"
 msgstr "WLAN-Name (SSID)"
 
-#: users/static/js/users/pdf.js:149 users/static/js/users/site.js:1822
+#: users/static/js/users/pdf.js:149 users/static/js/users/site.js:1823
 msgid "WLAN password"
 msgstr "WLAN-Passwort"
 
-#: users/static/js/users/site.js:1827
+#: users/static/js/users/site.js:1828
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
@@ -3473,7 +3507,7 @@ msgstr "Warnung"
 msgid "Web interface header logo"
 msgstr "Web-Interface-Kopfzeilen-Logo"
 
-#: core/static/js/core/site.js:2029 users/static/js/users/site.js:1814
+#: core/static/js/core/site.js:2029 users/static/js/users/site.js:1815
 msgid "Welcome to OpenSlides"
 msgstr "Willkommen bei OpenSlides"
 
@@ -3500,7 +3534,7 @@ msgstr "Arbeitsablauf von neuen Anträgen"
 #: assignments/static/js/assignments/site.js:728
 #: motions/static/js/motions/pdf.js:187 motions/static/js/motions/pdf.js:704
 #: motions/static/js/motions/site.js:645
-#: motions/static/templates/motions/motion-detail.html:383
+#: motions/static/templates/motions/motion-detail.html:384
 #: motions/static/templates/motions/slide_motion.html:32
 msgid "Yes"
 msgstr "Ja"
@@ -3533,11 +3567,11 @@ msgid ""
 " logo\" in \"files\"."
 msgstr "Sie können das Logo austauschen indem Sie ein Bild unter \"Dateien\" hochladen und es als \"Projektor-Logo\" festlegen."
 
-#: users/static/js/users/site.js:1833
+#: users/static/js/users/site.js:1834
 msgid "You can use {event_name} as a placeholder."
 msgstr "Sie können {event_name} als Platzhalter verwenden."
 
-#: users/static/js/users/site.js:1716
+#: users/static/js/users/site.js:1717
 msgid "You have to enable cookies to use OpenSlides."
 msgstr "Sie müssen Cookies aktivieren, um OpenSlides verwenden zu können."
 
@@ -3545,7 +3579,7 @@ msgstr "Sie müssen Cookies aktivieren, um OpenSlides verwenden zu können."
 msgid "You override the personally set password of"
 msgstr "Sie überschreiben hiermit das persönlich gesetzte Passwort von"
 
-#: users/static/js/users/site.js:1832
+#: users/static/js/users/site.js:1833
 msgid "Your login for {event_name}"
 msgstr "Zugangsdaten für {event_name}"
 
@@ -3565,7 +3599,7 @@ msgstr "Verkleinern"
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
 msgstr "[Rede beginnen] startet den Countdown, [Rede beenden] stoppt den Countdown."
 
-#: users/static/js/users/site.js:1816
+#: users/static/js/users/site.js:1817
 msgid "[Place for your welcome and help text.]"
 msgstr "[Platz für Ihren Begrüßungs- und Hilfetext.]"
 
@@ -3581,6 +3615,10 @@ msgstr "angenommen"
 #: motions/static/js/motions/base.js:1013
 msgid "adjourned"
 msgstr "vertagt"
+
+#: topics/static/js/topics/csv.js:26
+msgid "agenda-example"
+msgstr "Tagesordnung-Beispiel"
 
 #: users/static/js/users/site.js:1265
 msgid "already exists."
@@ -3649,7 +3687,7 @@ msgid "go"
 msgstr "gehe zu"
 
 #. 'h' means time in hours
-#: agenda/static/templates/agenda/item-list.html:341
+#: agenda/static/templates/agenda/item-list.html:340
 msgid "h"
 msgstr "h"
 
@@ -3713,6 +3751,7 @@ msgstr "Mehrheit"
 msgid "minutes"
 msgstr "Minuten"
 
+#: motions/static/js/motions/csv.js:41 motions/static/js/motions/docx.js:185
 #: motions/static/js/motions/pdf.js:1036 motions/static/js/motions/pdf.js:1047
 #: motions/static/templates/motions/motion-block-detail.html:43
 #: motions/static/templates/motions/motion-list.html:126
@@ -3730,6 +3769,10 @@ msgstr "Anträge werden importiert."
 #: motions/static/templates/motions/motion-import.html:110
 msgid "motions will be not imported."
 msgstr "Anträge werden nicht importiert."
+
+#: motions/static/js/motions/csv.js:121
+msgid "motions-example"
+msgstr "Anträge-Beispiel"
 
 #: motions/static/js/motions/site.js:2681
 msgid "needed"
@@ -3771,6 +3814,7 @@ msgstr "außerhalb"
 msgid "override new"
 msgstr "Neuen überschreiben"
 
+#: users/static/js/users/csv.js:44
 #: users/static/templates/users/user-list.html:147
 msgid "participants"
 msgstr "Teilnehmende"
@@ -3786,6 +3830,10 @@ msgstr "Teilnehmende werden importiert."
 #: users/static/templates/users/user-import.html:205
 msgid "participants will be not imported."
 msgstr "Teilnehmende werden nicht importiert. "
+
+#: users/static/js/users/csv.js:68
+msgid "participants-example"
+msgstr "Teilnehmende-Beispiel"
 
 #: motions/static/js/motions/base.js:1002
 msgid "permitted"
@@ -3815,6 +3863,10 @@ msgstr "verworfen (nicht zulässig)"
 #: search.html:28
 msgid "results"
 msgstr "Ergebnisse"
+
+#: mediafiles/static/templates/mediafiles/mediafile-upload-form.html:11
+msgid "select files"
+msgstr "Dateien auswählen"
 
 #: agenda/static/templates/agenda/item-list.html:141
 #: assignments/static/templates/assignments/assignment-list.html:78
