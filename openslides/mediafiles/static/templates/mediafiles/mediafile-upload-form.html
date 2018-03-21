@@ -7,7 +7,7 @@
 <form editable-form name="mediafileForm" ng-submit="upload()" novalidate>
   <div class="form-group" ng-hide="uploading">
     <div id="dropzone" ngf-drop ngf-select ng-model="dropFiles" ngf-drag-over-class="'dragover'" ngf-multiple="true">
-      Drop or
+      <translate>Drop files into this area OR</translate>
       <a href= ng-disabled="files.length" type="button" ngf-select="addFiles($files)" multiple translate>
         select files
       </a>
