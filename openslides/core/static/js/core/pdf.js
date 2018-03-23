@@ -971,6 +971,12 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "ul":
                                 case "ol":
                                     var list = create(nodeName);
+                                    if (nodeName == 'ol') {
+                                        var start = element.getAttribute('start');
+                                        if (start) {
+                                            list.start = start;
+                                        }
+                                    }
                                     ComputeStyle(list, styles);
                                     if (lineNumberMode === "outside") {
                                         var lines = extractLineNumbers(element);
