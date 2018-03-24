@@ -846,19 +846,37 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 case "br":
                                     var brParent = element.parentNode;
                                     var brParentNodeName = brParent.nodeName;
-                                    //in case of inline-line-numbers and the os-line-break class ignore the break
-                                    if (((lineNumberMode === 'inline' || lineNumberMode === 'none') &&
-                                                hasClass(element, 'os-line-break')) ||
-                                        (lineNumberMode === 'outside' &&
-                                                hasClass(element, 'os-line-break') &&
-                                                hasClass(brParent, 'os-split-before'))) {
+                                    //in case of no or inline-line-numbers and the ignore os-line-breaks.
+                                    if ((lineNumberMode === 'inline' || lineNumberMode === 'none') &&
+                                                hasClass(element, 'os-line-break')) {
                                         break;
                                     } else {
                                         currentParagraph = create("text");
                                         if (lineNumberMode === "outside" &&
                                                 brParentNodeName !== "LI" &&
                                                 element.parentNode.parentNode.nodeName !== "LI") {
-                                            currentParagraph.margin = [20, 0, 0, 0];
+                                            if (brParentNodeName === 'INS' || brParentNodeName === 'DEL') {
+
+                                                var hasPrevSiblingALineNumber = function (element) {
+                                                    // Iterare all nodes up to the top from element.
+                                                    while (element) {
+                                                        if (getLineNumber(element)) {
+                                                            return true;
+                                                        }
+                                                        if (element.previousSibling) {
+                                                            element = element.previousSibling;
+                                                        } else {
+                                                            element = element.parentNode;
+                                                        }
+                                                    }
+                                                    return false;
+                                                };
+                                                if (hasPrevSiblingALineNumber(brParent)) {
+                                                     currentParagraph.margin = [20, 0, 0, 0];
+                                                 }
+                                             } else {
+                                                 currentParagraph.margin = [20, 0, 0, 0];
+                                             }
                                         }
                                         // Add a dummy line, if the next tag is a BR tag again. The line could
                                         // not be empty otherwise it will be removed and the empty line is not displayed
