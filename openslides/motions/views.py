@@ -447,13 +447,15 @@ class MotionViewSet(ModelViewSet):
             raise ValidationError({'detail': 'You can not create a poll in this motion state.'})
         try:
             with transaction.atomic():
-                motion.create_poll(skip_autoupdate=True)
+                poll = motion.create_poll(skip_autoupdate=True)
         except WorkflowError as e:
             raise ValidationError({'detail': e})
         motion.write_log([ugettext_noop('Vote created')], request.user, skip_autoupdate=True)
 
         inform_changed_data(motion)
-        return Response({'detail': _('Vote created successfully.')})
+        return Response({
+            'detail': _('Vote created successfully.'),
+            'createdPollId': poll.pk})
 
 
 class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):

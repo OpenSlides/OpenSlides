@@ -468,10 +468,12 @@
                 </table>
           </ol>
 
-          <button ng-if="motion.isAllowed('create_poll')" ng-click="create_poll()" class="btn btn-default btn-sm">
-            <i class="fa fa-bar-chart fa-lg"></i>
-            <translate>New vote</translate>
-          </button>
+          <template-hook hook-name="motionPollNewVoteButton">
+            <button ng-if="motion.isAllowed('create_poll')" ng-click="create_poll()" class="btn btn-default btn-sm">
+              <i class="fa fa-bar-chart fa-lg"></i>
+              <translate>New vote</translate>
+            </button>
+          </template-hook>
 
           <div class="spacer-top pull-right nobr">
             <a href ng-click="gotoPersonalNote()" translate>Personal note</a>
