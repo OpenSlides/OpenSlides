@@ -473,7 +473,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             "insert": ["color:green", "text-decoration:underline"]
                         },
                         getLineNumber = function (element) {
-                            if (element.nodeName == 'SPAN' && element.getAttribute('class') && element.getAttribute('class').indexOf('os-line-number') > -1) {
+                            if (element && element.nodeName == 'SPAN' && element.getAttribute('class') &&
+                                element.getAttribute('class').indexOf('os-line-number') > -1) {
                                 return element.getAttribute('data-line-number');
                             }
                         },
