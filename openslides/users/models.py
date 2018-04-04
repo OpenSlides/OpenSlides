@@ -1,5 +1,4 @@
 import smtplib
-
 from random import choice
 
 from django.contrib.auth.hashers import make_password
