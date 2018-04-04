@@ -24,7 +24,9 @@ def validate_html(html: str) -> str:
     """
     This method takes a string and escapes all non-whitelisted html entries.
     Every field of a model that is loaded trusted in the DOM should be validated.
+    During copy and paste from Word maybe some tabs are spread over the html. Remove them.
     """
+    html = html.replace('\t', '')
     return bleach.clean(
         html,
         tags=allowed_tags,
