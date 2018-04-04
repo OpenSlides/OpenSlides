@@ -101,3 +101,9 @@ class Mediafile(RESTModelMixin, models.Model):
             if config[key]['path'] == self.mediafile.url:
                 return True
         return False
+
+    def is_font(self):
+        for key in config['fonts_available']:
+            if config[key]['path'] == self.mediafile.url:
+                return True
+        return False
