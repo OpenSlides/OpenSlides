@@ -17,7 +17,7 @@
         tooltip-enable="motion.isProjected().length"
         os-perms="core.can_manage_projector">
         <button type="button" class="btn btn-default btn-sm"
-            title="{{ 'Project motion' | translate }}"
+            title="{{ 'Project' | translate }}"
             ng-click="motion.project(defaultProjectorId, projectionMode.mode)"
             ng-class="{ 'btn-primary': motion.isProjected().length && inArray(motion.isProjected(), defaultProjectorId)}">
           <i class="fa fa-video-camera"></i>
@@ -54,7 +54,8 @@
         <i class="fa fa-pencil"></i>
       </a>
       <!-- pdf -->
-      <a ng-click="pdfExport()" class="btn btn-default btn-sm">
+      <a ng-click="pdfExport()" class="btn btn-default btn-sm"
+          title="{{ 'Export as PDF' | translate}}">
         <i class="fa fa-file-pdf-o fa-lg"></i>
         <translate>PDF</translate>
       </a>

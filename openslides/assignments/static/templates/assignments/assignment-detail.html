@@ -12,7 +12,8 @@
         <translate>List of speakers</translate>
       </a>
       <!-- project -->
-      <projector-button model="assignment", default-projector-id="defaultProjectorId">
+      <projector-button model="assignment", default-projector-id="defaultProjectorId"
+        title="{{ 'Project' | translate }}">
       </projector-button>
       <!-- edit -->
       <a os-perms="assignments.can_manage" ng-click="openDialog()"
@@ -21,7 +22,8 @@
         <i class="fa fa-pencil"></i>
       </a>
       <!-- pdf -->
-      <a ng-click="pdfExport()" target="_blank" class="btn btn-default btn-sm">
+      <a ng-click="pdfExport()" target="_blank" class="btn btn-default btn-sm"
+          title="{{ 'Export as PDF' | translate}}">
         <i class="fa fa-file-pdf-o fa-lg"></i>
         <translate>PDF</translate>
       </a>
