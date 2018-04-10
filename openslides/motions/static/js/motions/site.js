@@ -2624,6 +2624,7 @@ angular.module('OpenSlidesApp.motions.site', [
         gettext('Line length');
         gettext('The maximum number of characters per line. Relevant when line numbering is enabled. Min: 40');
         gettext('Hide reason on projector');
+        gettext('Hide meta information box on projector');
         gettext('Hide recommendation on projector');
         gettext('Stop submitting new motions by non-staff users');
         gettext('Allow to disable versioning');

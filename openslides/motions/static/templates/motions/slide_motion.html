@@ -1,5 +1,5 @@
 <div ng-controller="SlideMotionCtrl" class="content">
-  <div id="sidebox">
+  <div id="sidebox" ng-if="!config('motions_disable_sidebox_on_projector')">
     <!-- State -->
     <h3 translate>State</h3>
     {{ motion.getStateName() }}
@@ -65,7 +65,8 @@
       </div>
   </div>
 
-  <div id="motioncontent" class="scrollcontent">
+  <div ng-style="{'width': config('motions_disable_sidebox_on_projector') ? '100%' : 'calc(100% - 230px)'}"
+      class="scrollcontent">
     <!-- Title -->
     <div id="title">
       <h1>{{ motion.getTitleWithChanges(mode) }}</h1>

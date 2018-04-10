@@ -3,10 +3,6 @@
 @import "pollresults";
 @import "sidebox";
 
-#motioncontent {
-    width: calc(100% - 230px);
-}
-
 /* TODO: why do the projector has these extra diff related classes?
  * -> Unify the site and projector in the _diff.scss and _line-numbers.scss*/
 ol.os-split-after, ul.os-split-after {
