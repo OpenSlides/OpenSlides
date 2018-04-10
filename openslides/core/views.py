@@ -272,6 +272,10 @@ class ProjectorViewSet(ModelViewSet):
             raise ValidationError({'detail': 'Data must be a list.'})
 
         projector_instance = self.get_object()
+        # reset scroll level
+        if (projector_instance.scroll != 0):
+            projector_instance.scroll = 0
+            projector_instance.save()
         projector_config = {}
         for key, value in projector_instance.config.items():
             if value.get('stable'):
