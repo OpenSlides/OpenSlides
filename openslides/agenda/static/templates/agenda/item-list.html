@@ -83,8 +83,8 @@
         <i class="fa fa-sort-numeric-asc"></i>
         <translate>Numbering</translate>
       </button>
-      <!-- pdf -->
-      <div class="pull-right" uib-dropdown>
+      <!-- Export drop down list (for manager) -->
+      <div os-perms="motions.can_manage" class="pull-right" uib-dropdown>
         <button type="button" class="btn btn-default btn-sm" id="dropdownExport" uib-dropdown-toggle>
           <i class="fa fa-upload"></i>
           <span ng-if="itemsFiltered.length == items.length" translate>
@@ -111,6 +111,7 @@
               CSV
             </a>
           </li>
+          <!-- DOCX export -->
           <li>
             <a href="" ng-click="docxExport()">
               <i class="fa fa-file-word-o"></i>
@@ -119,6 +120,17 @@
           </li>
         </ul>
       </div>
+      <!-- Export button (for normal users) -->
+      <button type="button" class="btn btn-default btn-sm pull-right"
+        os-perms="!motions.can_manage" ng-click="pdfExport()">
+        <i class="fa fa-file-pdf-o"></i>
+        <span ng-if="itemsFiltered.length == items.length" translate>
+          Export all
+        </span>
+        <span ng-if="itemsFiltered.length != items.length" translate>
+          Export filtered
+        </span>
+      </button>
     </div>
   </div>
   <div uib-collapse="!isSelectMode" class="row spacer">

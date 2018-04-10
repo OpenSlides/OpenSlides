@@ -24,28 +24,16 @@
         <i class="fa fa-check-square-o"></i>
         <translate>Select ...</translate>
       </button>
-      <!-- export dropdown -->
-      <div class="dropdown pull-right" uib-dropdown>
-        <button type="button" class="btn btn-default btn-sm" id="dropdownExport" uib-dropdown-toggle>
-          <i class="fa fa-upload"></i>
-          <span ng-if="assignmentsFiltered.length == assignments.length" translate>
-            Export all
-          </span>
-          <span ng-if="assignmentsFiltered.length != assignments.length" translate>
-            Export filtered
-          </span>
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownExport">
-          <!-- PDF export -->
-          <li>
-            <a href="" ng-click="pdfExport()">
-              <i class="fa fa-file-pdf-o"></i>
-              <translate>PDF</translate>
-            </a>
-          </li>
-        </ul>
-      </div>
+      <!-- export button -->
+      <button type="button" class="btn btn-default btn-sm pull-right" ng-click="pdfExport()">
+        <i class="fa fa-file-pdf-o"></i>
+        <span ng-if="assignmentsFiltered.length == assignments.length" translate>
+          Export all
+        </span>
+        <span ng-if="assignmentsFiltered.length != assignments.length" translate>
+          Export filtered
+        </span>
+      </button>
     </div>
   </div>
   <div uib-collapse="!isFilterOpen" class="row">
