@@ -160,6 +160,8 @@ angular.module('OpenSlidesApp.core.site', [
             } else {
                 $rootScope.baseViewPermissionsGranted = true;
             }
+            // Scroll to top on every state change
+            $rootScope.gotoTop();
         });
     }
 ])

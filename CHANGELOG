@@ -125,6 +125,7 @@ Core:
 - Added --no-template-caching flag to disable template caching for
   easier development [#3566].
 - Reset scroll level for each new projection [#3686].
+- Scroll to top on every state change [#3689].
 
 Mediafiles:
 - New form for uploading multiple files [#3650].
