@@ -6,9 +6,10 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('AssignmentContentProvider', [
     '$filter',
+    'HTMLValidizer',
     'gettextCatalog',
     'PDFLayout',
-    function($filter, gettextCatalog, PDFLayout) {
+    function($filter, HTMLValidizer, gettextCatalog, PDFLayout) {
 
         var createInstance = function(assignment) {
 
@@ -39,6 +40,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             // description
             var createDescription = function() {
                 if (assignment.description) {
+                    var html = HTMLValidizer.validize(assignment.description);
                     var descriptionText = gettextCatalog.getString("Description") + ":";
                     var description = [
                         {
@@ -47,7 +49,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                             style: 'textItem'
                         },
                         {
-                            text: $(assignment.description).text(),
+                            text: $(html).text(),
                             style: 'textItem',
                             margin: [10, 0, 0, 0]
                         }
