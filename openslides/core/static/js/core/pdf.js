@@ -144,9 +144,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     return str;
                 }
             });
-            return "<p>" + str + "</p>";
+            return '<p>' + str + '</p>';
         } else {
-            return ""; //needed for blank "reasons" field
+            return ''; //needed for blank "reasons" field
         }
     };
     return HTMLValidizer;
