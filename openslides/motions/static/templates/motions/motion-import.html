@@ -104,7 +104,7 @@
       </table>
     </div>
 
-    <div class="text-danger">
+    <div ng-if="motionsWillNotBeImported" class="text-danger">
       <i class="fa fa-exclamation-triangle"></i>
       {{ motionsWillNotBeImported }}
       <translate>motions will be not imported.</translate>

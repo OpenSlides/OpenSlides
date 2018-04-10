@@ -253,7 +253,6 @@
           uib-tooltip="{{ 'Projector' | translate }} {{ item.isProjected(item.tree)[0] || '' }}"
           tooltip-enable="item.isProjected(item.tree).length">
           <button class="btn btn-default btn-sm"
-              title="{{ 'Project item' | translate }}"
               ng-click="item.project(getProjectionDefault(item), item.tree)"
               ng-class="{ 'btn-primary': item.isProjected(item.tree).length && inArray(item.isProjected(item.tree), getProjectionDefault(item))}">
             <i class="fa fa-video-camera"></i>
