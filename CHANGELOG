@@ -50,7 +50,8 @@ Motions:
 - Added multiselect filter for motion comments [#3372].
 - Added support for pinning personal notes to the window [#3360].
 - Clear identifier on state reset [#3356].
-- New config options to hide reason and recommendation on projector [#3432].
+- New config options to hide reason, recommendation and meta
+  information box on projector [#3432, #3692].
 - Show motion identifier in (current) list of speakers [#3442]
 - Added navigation between single motions [#3459].
 - Improved the multiselect state filter [#3459].
