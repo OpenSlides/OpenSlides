@@ -66,6 +66,7 @@ Motions:
 - Save pagination sate to session storage [#3569].
 - Split up 'can_see_and_manage_comments' permission in two seperate
   ones [#3565].
+- Added (shortened) motion title to motion block slide [#3700].
 
 Elections:
 - Added pagination for list view [#3393].
