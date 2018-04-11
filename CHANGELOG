@@ -20,6 +20,7 @@ Agenda:
 - Autoupdates for all children if the item type has changed [#3659].
 - Added config variable to hide internal items when projecting
   subitems [#3701].
+- Added config value to enable numbering of items [#3697].
 
 Motions:
 - New export dialog [#3185].

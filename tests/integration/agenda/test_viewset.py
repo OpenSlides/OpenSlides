@@ -393,6 +393,12 @@ class Numbering(TestCase):
         self.assertEqual(Item.objects.get(pk=self.item_2_1.pk).item_number, '2.1')
         self.assertEqual(Item.objects.get(pk=self.item_3.pk).item_number, '3')
 
+    def test_deactivated_numbering(self):
+        config['agenda_enable_numbering'] = False
+
+        response = self.client.post(reverse('item-numbering'))
+        self.assertEqual(response.status_code, 400)
+
     def test_roman_numbering(self):
         config['agenda_numeral_system'] = 'roman'
 
