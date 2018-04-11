@@ -18,7 +18,7 @@
   </td>
   <td ng-if="!node.item.closed">
     <p ng-class="{mainitem: node.item.parent_id === null, subitem: node.item.parent_id !== null}">
-      {{ node.item.title }}
+      {{ node.item.getProjectorTitle() }}
     </p>
     <table ng-if="node.children.length" class="agendalist-table">
       <tr ng-repeat="node in node.children" ng-include="'projector_agenda_renderer.html'"></tr>

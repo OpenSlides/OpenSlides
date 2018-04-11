@@ -67,6 +67,18 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                     }
                     return title;
                 },
+                getListOfSpeakersTitle: function () {
+                    var title;
+                    try {
+                        title =  this.getContentObject().getListOfSpeakersTitle();
+                        if (this.item_number) {
+                            title = this.item_number + ' · ' + title;
+                        }
+                    } catch (e) {
+                        title = this.getTitle();
+                    }
+                    return title;
+                },
                 getAgendaTitle: function () {
                     return this.title;
                 },
@@ -97,14 +109,16 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                         }
                     });
                 },
-                getListViewTitle: function () {
-                    var title;
+                getProjectorTitle: function () {
                     try {
-                        title =  this.getContentObject().getAgendaListViewTitle();
+                        return this.getContentObject().getAgendaListViewTitle();
                     } catch (e) {
                         // when the content object is not in the DS store
-                        title = this.list_view_title;
+                        return this.list_view_title;
                     }
+                },
+                getListViewTitle: function () {
+                    var title = this.getProjectorTitle();
                     if (this.item_number) {
                         title = this.item_number + ' · ' + title;
                     }
