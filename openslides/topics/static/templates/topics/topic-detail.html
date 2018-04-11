@@ -30,7 +30,7 @@
   <div ng-bind-html="topic.text | trusted" class="topictext"></div>
   <h3 ng-if="topic.attachments.length > 0" translate>Attachments</h3>
   <ul>
-    <li ng-repeat="attachment in topic.attachments">
+    <li ng-repeat="attachment in topic.attachments | orderBy: 'title_or_filename'">
       <a href="{{ attachment.mediafileUrl }}" target="_blank">
         {{ attachment.title_or_filename }}
       </a>

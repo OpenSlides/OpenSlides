@@ -61,13 +61,14 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
 ])
 
 .factory('TopicForm', [
+    '$filter',
     'gettextCatalog',
     'operator',
     'Editor',
     'Mediafile',
     'Agenda',
     'AgendaTree',
-    function (gettextCatalog, operator, Editor, Mediafile, Agenda, AgendaTree) {
+    function ($filter, gettextCatalog, operator, Editor, Mediafile, Agenda, AgendaTree) {
         return {
             // ngDialog for topic form
             getDialog: function (topic) {
@@ -110,7 +111,7 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
                         type: 'select-multiple',
                         templateOptions: {
                             label: gettextCatalog.getString('Attachment'),
-                            options: Mediafile.getAll(),
+                            options: $filter('orderBy')(Mediafile.getAll(), 'title_or_filename'),
                             ngOptions: 'option.id as option.title_or_filename for option in to.options',
                             placeholder: gettextCatalog.getString('Select or search an attachment ...')
                         }
