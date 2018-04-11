@@ -146,8 +146,16 @@
     </div>
     <div class="col-md-6" ng-show="mediafilesFiltered.length > pagination.itemsPerPage">
       <span class="pull-right">
+        <a href="" class="pagination-arrow" ng-click="pagination.prevPage()"
+          ng-if="pagination.showPrevPageArrow()">
+          &laquo;
+        </a>
         <translate>Page</translate> {{ pagination.currentPage }} /
-        {{ Math.ceil(mediafilesFiltered.length/pagination.itemsPerPage) }}
+        {{ pagination.getPageCount(mediafilesFiltered) }}
+        <a href="" class="pagination-arrow" ng-click="pagination.nextPage(mediafilesFiltered)"
+          ng-if="pagination.showNextPageArrow(mediafilesFiltered)">
+          &raquo;
+        </a>
       </span>
     </div>
   </div>

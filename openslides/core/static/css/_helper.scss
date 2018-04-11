@@ -209,6 +209,16 @@ tr.selected td {
     margin-left: 2px;
 }
 
+.pagination-arrow {
+    font-size: 150%;
+    padding: 3px;
+    text-decoration: none;
+
+    &:hover, &:focus {
+        text-decoration: none;
+    }
+}
+
 .grey {
     color: #9a9898;
 }

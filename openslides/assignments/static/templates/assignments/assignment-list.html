@@ -67,8 +67,16 @@
     </div>
     <div class="col-md-6" ng-show="assignmentsFiltered.length > pagination.itemsPerPage">
       <span class="pull-right">
+        <a href="" class="pagination-arrow" ng-click="pagination.prevPage()"
+          ng-if="pagination.showPrevPageArrow()">
+          &laquo;
+        </a>
         <translate>Page</translate> {{ pagination.currentPage }} /
-        {{ Math.ceil(assignmentsFiltered.length/pagination.itemsPerPage) }}
+        {{ pagination.getPageCount(assignmentsFiltered) }}
+        <a href="" class="pagination-arrow" ng-click="pagination.nextPage(assignmentsFiltered)"
+          ng-if="pagination.showNextPageArrow(assignmentsFiltered)">
+          &raquo;
+        </a>
       </span>
     </div>
   </div>
