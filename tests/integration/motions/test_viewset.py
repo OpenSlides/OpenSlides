@@ -53,10 +53,11 @@ class TestMotionDBQueries(TestCase):
         * 1 request to get the attachments,
         * 1 request to get the tags,
         * 2 requests to get the submitters and supporters.
+        * 10 requests (one for each motion) to get the state in 'get_restricted_data'
         """
         self.client.force_login(get_user_model().objects.get(pk=1))
         get_redis_connection('default').flushall()
-        with self.assertNumQueries(16):
+        with self.assertNumQueries(26):
             self.client.get(reverse('motion-list'))
 
     def test_anonymous(self):
@@ -71,9 +72,10 @@ class TestMotionDBQueries(TestCase):
         * 1 request to get the attachments,
         * 1 request to get the tags,
         * 2 requests to get the submitters and supporters.
+        * 10 requests (one for each motion) to get the state in 'get_restricted_data'
         """
         get_redis_connection('default').flushall()
-        with self.assertNumQueries(12):
+        with self.assertNumQueries(22):
             self.client.get(reverse('motion-list'))
 
 
@@ -431,14 +433,15 @@ class RetrieveMotion(TestCase):
         * 1 request to get the version,
         * 1 request to get the agenda item,
         * 1 request to get the log,
-        * 3 request to get the polls (1 of them is possibly a bug),
+        * 3 requests to get the polls (1 of them is possibly a bug),
         * 1 request to get the attachments,
         * 1 request to get the tags,
         * 2 requests to get the submitters and supporters.
+        * 1 request to get the state in 'get_restricted_data'
         TODO: Fix all bugs.
         """
         get_redis_connection('default').flushall()
-        with self.assertNumQueries(18):
+        with self.assertNumQueries(19):
             self.client.get(reverse('motion-detail', args=[self.motion.pk]))
 
     def test_guest_state_with_required_permission_to_see(self):

@@ -49,7 +49,8 @@ class MotionAccessPermissions(BaseAccessPermissions):
                     is_submitter = False
 
                 # Check see permission for this motion.
-                required_permission_to_see = full['state_required_permission_to_see']
+                from .models import State  # import it here to resolve circular imports
+                required_permission_to_see = State.objects.get(pk=full['state_id']).required_permission_to_see
                 permission = (
                     not required_permission_to_see or
                     has_perm(user, required_permission_to_see) or
