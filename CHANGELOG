@@ -18,6 +18,8 @@ Agenda:
 - Hide closed agenda items in the item slide [#3567].
 - Agenda is now collapsable for a better overview [#3567].
 - Autoupdates for all children if the item type has changed [#3659].
+- Added config variable to hide internal items when projecting
+  subitems [#3701].
 
 Motions:
 - New export dialog [#3185].
