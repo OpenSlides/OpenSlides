@@ -553,27 +553,57 @@ angular.module('OpenSlidesApp.core', [
 ])
 
 // Template hooks
-// 2 possible uses:
-// - { Id: 'myHookId', template: '<button>click me</button>' }
-// - { Id: 'myHookId', templateUrl: '/static/templates/plugin_name/my-hook.html' }
-// It is possible to provide a scope, that is merged into the scope of the templateHook.
-// This overrides functions/values of the parent scope, but there may are conflicts
-// with other plugins defining the same function/value. E.g.:
+// Possible uses:
+// 1. { id: 'myHookId', template: '<button>click me</button>' }
+// 2. { id: 'myHookId', templateUrl: '/static/templates/plugin_name/my-hook.html' }
+// 3. { id: 'myHookId' }
+//
+// Deprecated: Give the id with 'Id'. Please use 'id'.
+//
+// Option 3 is for just changing the scope (see below), but not the original content. This
+// is usefull to alter a JS behavior, e.g. on a ng-click. In this case, override is false
+// for this template hook.
+//
+// It is possible to provide a scope, that is merged into the surrounding scope.
+// You can override functions or values of the surrounding scope by providing them:
 // { Id: 'hookId', template: '<button ng-click="customFn()">click me</button>',
 //   scope: {
-//     customFn: function () { /*Do something */ },
+//     customOrOverwritten: function () { /*Do something */ },
 //   },
 // }
+// Or you provide a function that returns an object of functions/values to overwrite to
+// get access to the scope merged in:
+// { Id: 'hookId', template: '<button ng-click="customFn()">click me</button>',
+//   scope: function (scope) {
+//     return {
+//       customOrOverwritten: function () {
+//         scope.value = /* change it */;
+//       },
+//     };
+//   },
+// }
+//
+// As a default, template hooks in flavour of option 1 and 2 override the content that was
+// originally there. Provide 'override: false', to prevent overriding the original content.
 .factory('templateHooks', [
     function () {
         var hooks = {};
         return {
             hooks: hooks,
             registerHook: function (hook) {
-                if (hooks[hook.Id] === undefined) {
-                    hooks[hook.Id] = [];
+                // Deprecated: Set the new style 'id', if 'Id' is given.
+                if (hook.id === undefined) {
+                    hook.id = hook.Id;
                 }
-                hooks[hook.Id].push(hook);
+
+                if (hooks[hook.id] === undefined) {
+                    hooks[hook.id] = [];
+                }
+                // set override default
+                if (hook.override === undefined) {
+                    hook.override = !!(hook.template || hook.templateUrl);
+                }
+                hooks[hook.id].push(hook);
             }
         };
     }
@@ -584,21 +614,41 @@ angular.module('OpenSlidesApp.core', [
     '$http',
     '$q',
     '$templateCache',
+    '$timeout',
     'templateHooks',
-    function ($compile, $http, $q, $templateCache, templateHooks) {
+    function ($compile, $http, $q, $templateCache, $timeout, templateHooks) {
         return {
             restrict: 'E',
             template: '',
             link: function (scope, iElement, iAttr) {
                 var hooks = templateHooks.hooks[iAttr.hookName];
                 if (hooks) {
-                    var templates = _.map(hooks, function (hook) {
-                        // Populate scope
-                        _.forEach(hook.scope, function (value, key) {
-                            if (!scope.hasOwnProperty(key)) {
-                                scope[key] = value;
-                            }
+                    // Populate scopes
+                    _.forEach(hooks, function (hook) {
+                        var _scope = hook.scope;
+                        // If it is a function, get the scope from the function and provide
+                        // the original scope.
+                        if (typeof hook.scope === 'function') {
+                            _scope = hook.scope(scope);
+                        }
+
+                        _.forEach(_scope, function (value, key) {
+                            scope[key] = value;
                         });
+                    });
+
+                    // Check, if at least one hook overrides the original content.
+                    var override = _.some(hooks, function (hook) {
+                        return hook.override;
+                    });
+
+                    // filter hooks, that does actually have a template
+                    hooks = _.filter(hooks, function (hook) {
+                        return hook.template || hook.templateUrl;
+                    });
+
+                    // Get all templates
+                    var templates = _.map(hooks, function (hook) {
                         // Either a template (html given as string) or a templateUrl has
                         // to be given. If a scope is provided, the schope of this templateHook
                         // is populated with the given functions/values.
@@ -608,8 +658,17 @@ angular.module('OpenSlidesApp.core', [
                             return $templateCache.get(hook.templateUrl);
                         }
                     });
-                    var html = templates.join('');
-                    iElement.append($compile(html)(scope));
+
+                    // Wait for the dom to build up, so we can retrieve the inner html of iElement.
+                    $timeout(function () {
+                        var html = override ? '' : iElement.html();
+                        if (templates.length) {
+                            html += templates.join('');
+                        }
+
+                        iElement.empty();
+                        iElement.append($compile(html)(scope));
+                    });
                 }
             }
         };

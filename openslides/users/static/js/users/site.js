@@ -563,6 +563,9 @@ angular.module('OpenSlidesApp.users.site', [
             _.forEach($scope.users, function (user) {
                 user.has_last_email_send = !!user.last_email_send;
             });
+            if ($scope.updateUsers) {
+                $scope.updateUsers();
+            }
         });
         Group.bindAll({where: {id: {'>': 1}}}, $scope, 'groups');
         $scope.$watch(function () {

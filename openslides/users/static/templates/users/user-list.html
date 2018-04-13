@@ -19,6 +19,7 @@
         <i class="fa fa-download fa-lg"></i>
         <translate>Import</translate>
       </a>
+      <template-hook hook-name="userListMenuButtons"></template-hook>
     </div>
     <h1 translate>Participants</h1>
   </div>
@@ -69,6 +70,8 @@
               </a>
         </ul>
       </div>
+
+      <template-hook hook-name="userListSubmenuRight"></template-hook>
     </div>
   </div>
   <div uib-collapse="!isSelectMode" class="row spacer">
@@ -146,6 +149,7 @@
       {{ usersFiltered.length }} /
       {{ users.length }} {{ "participants" | translate }}<span ng-if="(users|filter:{selected:true}).length > 0">,
       {{(users|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
+      <template-hook hook-name="userListTableStats"></template-hook>
     </div>
     <div class="col-md-6" ng-show="usersFiltered.length > pagination.itemsPerPage">
       <span class="pull-right">
@@ -348,7 +352,9 @@
           </div>
           <div os-perms="users.can_manage" ng-class="{'hiddenDiv': !user.hover}">
             <small>
-              <a href="" ng-click="openDialog(user)" translate>Edit</a> &middot;
+              <template-hook hook-name="userListEditButton">
+                <a href="" ng-click="openDialog(user)" translate>Edit</a> &middot;
+              </template-hook>
               <a ui-sref="users.user.change-password({id: user.id})" translate>Change password</a> &middot;
               <a href="" class="text-danger"
                   ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
@@ -442,17 +448,20 @@
             </div>
           </small>
         </div>
-        <div style="width: 40%;" class="pull-right" os-perms="users.can_see_extra_data">
-          <div os-perms="users.can_manage" ng-show="user.hover || user.is_present">
+        <div style="width: 40%;" class="pull-right">
+          <div os-perms="users.can_see_extra_data users.can_manage"
+               ng-style="{'visibility': (user.hover || user.is_present) ? 'visible' : 'hidden'}">
             <span class="pointer nobr" ng-click="user.is_present = !user.is_present; save(user);">
               <i class="fa" ng-class="user.is_present ? 'fa-check-square-o' : 'fa-square-o'"></i>
               <span class="spacer-left" translate>Present</span>
             </span>
           </div>
-          <div os-perms="!users.can_manage" class="nobr" ng-show="user.is_present">
+          <div os-perms="!users.can_manage" class="nobr"
+            ng-style="{'visibility': user.is_present ? 'visible' : 'hidden'}">
             <i class="fa fa-check-square-o"></i>
             <span class="spacer-left" translate>Present</span>
           </div>
+          <template-hook hook-name="userListExtraContent"></template-hook>
         </div>
       </div>
 

@@ -125,11 +125,14 @@
   </div>
 
   <h3 translate>Election result</h3>
-  <button os-perms="assignments.can_manage" ng-show="assignment.phase !== 2" ng-click="createBallot()"
-      class="btn btn-default btn-sm">
-    <i class="fa fa-bar-chart fa-lg"></i>
-    <translate>New ballot</translate>
-  </button>
+  <template-hook hook-name="assignmentPollNewBallotButton">
+    <button os-perms="assignments.can_manage" ng-show="assignment.phase !== 2" ng-click="createBallot()"
+        class="btn btn-default btn-sm">
+      <i class="fa fa-bar-chart fa-lg"></i>
+      <translate>New ballot</translate>
+    </button>
+  </template-hook>
+
   <uib-tabset ng-if="assignment.polls.length > 0" class="spacer ballot-tabs" active="$parent.activeTab">
     <uib-tab ng-repeat="poll in assignment.polls | orderBy:'id'"
         index="$index" heading="{{ 'Ballot' | translate }} {{ $index + 1 }}">
@@ -276,7 +279,7 @@
   </uib-tabset>
 
   <!-- Workaround to prevent page scrolling up after autoupdate. -->
-  <div style="height: 700px"><div>
+  <div style="height: 700px"></div>
 </div>
 
 <template-hook hook-name="assignmentDetailViewDetailContainer"></template-hook>
