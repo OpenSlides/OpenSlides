@@ -769,6 +769,7 @@ angular.module('OpenSlidesApp.agenda.site', [
 .config([
     'gettext',
     function (gettext) {
+        gettext('Enable numbering for agenda items');
         gettext('Numbering prefix for agenda items');
         gettext('This prefix will be set if you run the automatic agenda numbering.');
         gettext('Agenda');

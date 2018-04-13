@@ -10,6 +10,15 @@ def get_config_variables():
     It has to be evaluated during app loading (see apps.py).
     """
     yield ConfigVariable(
+        name='agenda_enable_numbering',
+        label='Enable numbering for agenda items',
+        input_type='boolean',
+        default_value=True,
+        weight=200,
+        group='Agenda',
+        subgroup='General')
+
+    yield ConfigVariable(
         name='agenda_number_prefix',
         default_value='',
         label='Numbering prefix for agenda items',

@@ -13,7 +13,7 @@
 
     <!-- checkbox -->
     <div ng-if="type === 'checkbox'" class="config-checkbox">
-      <i class="fa" id="{{ key }}"
+      <i class="fa pointer" id="{{ key }}"
         ng-click="$parent.value = !$parent.value; save(configOption, $parent.value)"
         ng-class="$parent.value ? 'fa-check-square-o' : 'fa-square-o'"></i>
     </div>

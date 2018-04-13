@@ -305,6 +305,9 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         Auto numbering of the agenda according to the config. Manually added
         item numbers will be overwritten.
         """
+        if not config['agenda_enable_numbering']:
+            raise ValidationError({'detail': _('Numbering of agenda items is deactivated.')})
+
         Item.objects.number_all(numeral_system=config['agenda_numeral_system'])
         return Response({'detail': _('The agenda has been numbered.')})
 
