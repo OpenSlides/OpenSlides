@@ -71,7 +71,8 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
     '$filter',
     'Agenda',
     'AgendaTree',
-    function ($scope, $http, $filter, Agenda, AgendaTree) {
+    'Config',
+    function ($scope, $http, $filter, Agenda, AgendaTree, Config) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
@@ -79,10 +80,18 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
         // Bind agenda tree to the scope
         var items;
         $scope.$watch(function () {
-            return Agenda.lastModified();
+            return Agenda.lastModified() +
+                Config.lastModified('agenda_hide_internal_items_on_projector');
         }, function () {
             if ($scope.element.id) {
-                var tree = AgendaTree.getTree(Agenda.getAll());
+                if (Config.get('agenda_hide_internal_items_on_projector').value) {
+                    items = _.filter(Agenda.getAll(), function (item) {
+                        return item.type === 1;
+                    });
+                } else {
+                    items = Agenda.getAll();
+                }
+                var tree = AgendaTree.getTree(items);
 
                 var getRootNode = function (node) {
                     if (node.id == $scope.element.id) {

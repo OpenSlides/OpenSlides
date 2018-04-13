@@ -41,6 +41,15 @@ def get_config_variables():
         group='Agenda',
         subgroup='General')
 
+    yield ConfigVariable(
+        name='agenda_hide_internal_items_on_projector',
+        default_value=True,
+        input_type='boolean',
+        label='Hide internal items when projecting subitems',
+        weight=225,
+        group='Agenda',
+        subgroup='General')
+
     # List of speakers
 
     yield ConfigVariable(

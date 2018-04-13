@@ -778,6 +778,7 @@ angular.module('OpenSlidesApp.agenda.site', [
         gettext('Roman');
         gettext('Begin of event');
         gettext('Input format: DD.MM.YYYY HH:MM');
+        gettext('Hide internal items when projecting subitems');
         gettext('Number of last speakers to be shown on the projector');
         gettext('List of speakers');
         gettext('Show orange countdown in the last x seconds of speaking time');
