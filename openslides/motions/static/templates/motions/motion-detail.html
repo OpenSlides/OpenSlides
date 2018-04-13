@@ -232,8 +232,8 @@
             <div class="label" ng-if="motion.recommendation" ng-class="'label-'+motion.recommendation.css_class">
               {{ motion.getRecommendationName() }}
             </div>
-            <div class="input-group spacer"
-                ng-if="motion.recommendation.show_recommendation_extension_field">
+            <div os-perms="motions.can_manage" class="input-group spacer"
+                ng-show="motion.recommendation.show_recommendation_extension_field">
               <label class="sr-only" for="recommendationExtensionField">
                 {{ commentsFields[commentFieldForRecommendationId].name }}
               </label>
