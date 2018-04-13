@@ -129,6 +129,7 @@ Core:
   easier development [#3566].
 - Reset scroll level for each new projection [#3686].
 - Scroll to top on every state change [#3689].
+- Added pagination on top of lists [#3698].
 
 Mediafiles:
 - New form for uploading multiple files [#3650].

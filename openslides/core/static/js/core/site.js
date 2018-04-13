@@ -650,6 +650,31 @@ angular.module('OpenSlidesApp.core.site', [
                 self.save();
                 $rootScope.gotoTop();
             };
+            self.getPageCount = function (objs) {
+                if (objs) {
+                    return Math.ceil(objs.length/self.itemsPerPage);
+                }
+            };
+            self.showNextPageArrow = function (objs) {
+                if (objs) {
+                    return self.currentPage != self.getPageCount(objs);
+                }
+            };
+            self.showPrevPageArrow = function () {
+                return self.currentPage != 1;
+            };
+            self.nextPage = function (objs) {
+                if (objs && self.currentPage < self.getPageCount(objs)) {
+                    self.currentPage++;
+                    self.pageChanged();
+                }
+            };
+            self.prevPage = function () {
+                if (self.currentPage > 1) {
+                    self.currentPage--;
+                    self.pageChanged();
+                }
+            };
             return self;
         };
 

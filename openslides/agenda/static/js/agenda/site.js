@@ -173,7 +173,7 @@ angular.module('OpenSlidesApp.agenda.site', [
         };
 
         // pagination
-        $scope.pagination = osTablePagination.createInstance('AgendaTablePagination');
+        $scope.pagination = osTablePagination.createInstance('AgendaTablePagination', 50);
 
         // parse duration for inline editing
         $scope.generateDurationText = function (item) {

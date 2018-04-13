@@ -128,8 +128,16 @@
     </div>
     <div class="col-md-6" ng-show="motionsFiltered.length > pagination.itemsPerPage">
       <span class="pull-right">
+        <a href="" class="pagination-arrow" ng-click="pagination.prevPage()"
+          ng-if="pagination.showPrevPageArrow()">
+          &laquo;
+        </a>
         <translate>Page</translate> {{ pagination.currentPage }} /
-        {{ Math.ceil(motionsFiltered.length/pagination.itemsPerPage) }}
+        {{ pagination.getPageCount(motionsFiltered) }}
+        <a href="" class="pagination-arrow" ng-click="pagination.nextPage(motionsFiltered)"
+          ng-if="pagination.showNextPageArrow(motionsFiltered)">
+          &raquo;
+        </a>
       </span>
     </div>
   </div>

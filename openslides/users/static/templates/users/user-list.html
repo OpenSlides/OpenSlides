@@ -149,8 +149,16 @@
     </div>
     <div class="col-md-6" ng-show="usersFiltered.length > pagination.itemsPerPage">
       <span class="pull-right">
+        <a href="" class="pagination-arrow" ng-click="pagination.prevPage()"
+          ng-if="pagination.showPrevPageArrow()">
+          &laquo;
+        </a>
         <translate>Page</translate> {{ pagination.currentPage }} /
-        {{ Math.ceil(usersFiltered.length/pagination.itemsPerPage) }}
+        {{ pagination.getPageCount(usersFiltered) }}
+        <a href="" class="pagination-arrow" ng-click="pagination.nextPage(usersFiltered)"
+          ng-if="pagination.showNextPageArrow(usersFiltered)">
+          &raquo;
+        </a>
       </span>
     </div>
   </div>
