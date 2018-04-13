@@ -354,6 +354,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
 // Service for generic motion form (create and update)
 .factory('MotionForm', [
+    '$filter',
     'gettextCatalog',
     'operator',
     'Editor',
@@ -367,8 +368,8 @@ angular.module('OpenSlidesApp.motions.site', [
     'Workflow',
     'Agenda',
     'AgendaTree',
-    function (gettextCatalog, operator, Editor, MotionComment, Category, Config, Mediafile, MotionBlock,
-        Tag, User, Workflow, Agenda, AgendaTree) {
+    function ($filter, gettextCatalog, operator, Editor, MotionComment, Category,
+        Config, Mediafile, MotionBlock, Tag, User, Workflow, Agenda, AgendaTree) {
         return {
             // ngDialog for motion form
             getDialog: function (motion) {
@@ -498,7 +499,7 @@ angular.module('OpenSlidesApp.motions.site', [
                         type: 'select-multiple',
                         templateOptions: {
                             label: gettextCatalog.getString('Attachment'),
-                            options: Mediafile.getAll(),
+                            options: $filter('orderBy')(Mediafile.getAll(), 'title_or_filename'),
                             ngOptions: 'option.id as option.title_or_filename for option in to.options',
                             placeholder: gettextCatalog.getString('Select or search an attachment ...')
                         },
