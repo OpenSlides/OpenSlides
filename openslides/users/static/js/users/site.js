@@ -536,9 +536,7 @@ angular.module('OpenSlidesApp.users.site', [
 
 .controller('UserListCtrl', [
     '$scope',
-    '$state',
     '$http',
-    '$q',
     'ngDialog',
     'UserForm',
     'User',
@@ -547,17 +545,17 @@ angular.module('OpenSlidesApp.users.site', [
     'Projector',
     'ProjectionDefault',
     'Config',
-    'gettextCatalog',
     'UserCsvExport',
     'osTableFilter',
     'osTableSort',
     'osTablePagination',
     'gettext',
     'UserPdfExport',
+    'InvitationEmails',
     'ErrorMessage',
-    function($scope, $state, $http, $q, ngDialog, UserForm, User, Group, PasswordGenerator,
-        Projector, ProjectionDefault, Config, gettextCatalog, UserCsvExport, osTableFilter,
-        osTableSort, osTablePagination, gettext, UserPdfExport, ErrorMessage) {
+    function($scope, $http, ngDialog, UserForm, User, Group, PasswordGenerator,
+        Projector, ProjectionDefault, Config, UserCsvExport, osTableFilter, osTableSort,
+        osTablePagination, gettext, UserPdfExport, InvitationEmails, ErrorMessage) {
         $scope.$watch(function () {
             return User.lastModified();
         }, function () {
@@ -757,73 +755,8 @@ angular.module('OpenSlidesApp.users.site', [
         };
         // Send invitation emails
         $scope.sendInvitationEmails = function () {
-            var user_ids = _
-                .chain($scope.usersFiltered)
-                .filter(function (user) {
-                    return user.selected;
-                })
-                .map(function (user) {
-                    return user.id;
-                })
-                .value();
-            var subject = gettextCatalog.getString(Config.get('users_email_subject').value);
-            var message = gettextCatalog.getString(Config.get('users_email_body').value);
-
-            $http.post('/rest/users/user/mass_invite_email/', {
-                user_ids: user_ids,
-                subject: subject,
-                message: message,
-            }).then(function (success) {
-                var numEmails = success.data.count;
-                var noEmailIds = success.data.no_email_ids;
-                var type = 'success', msg;
-                if (numEmails === 0) {
-                    type = 'danger';
-                    msg = gettextCatalog.getString('No emails were send.');
-                } else if (numEmails === 1) {
-                    msg = gettextCatalog.getString('One email was send sucessfully.');
-                } else {
-                    msg = gettextCatalog.getString('%num% emails were send sucessfully.').replace('%num%', numEmails);
-                }
-
-                if (noEmailIds.length) {
-                    type = 'warning';
-                    msg += ' ';
-
-                    if (noEmailIds.length === 1) {
-                        msg += gettextCatalog.getString('The user %user% has no email, so the invitation email could not be send.');
-                    } else {
-                        msg += gettextCatalog.getString('The users %user% have no email, so the invitation emails could not be send.');
-                    }
-
-                    // This one builds a username string like "user1, user2 and user3" with the full names.
-                    var lastUsername, userString = _
-                        .chain(noEmailIds)
-                        .map(function (id) {
-                            var user = User.get(id);
-                            return user ? user.get_full_name() : '';
-                        })
-                        .filter(function (username) {
-                            return username;
-                        })
-                        .tap(function (names) {
-                            if (names.length !== 1) {
-                                lastUsername = names.pop();
-                            }
-                        })
-                        .join(', ')
-                        .thru(function (names) {
-                            return lastUsername ? names + ' ' + gettextCatalog.getString('and') + ' ' + lastUsername : names;
-                        })
-                        .value();
-                    msg = msg.replace('%user%', userString);
-                }
-
-                $scope.alert = {
-                    msg: msg,
-                    type: type,
-                    show: true,
-                };
+            InvitationEmails.send($scope.usersFiltered).then(function (success) {
+                $scope.alert = success;
                 $scope.isSelectMode = false;
                 $scope.uncheckAll();
             }, function (error) {
@@ -843,6 +776,89 @@ angular.module('OpenSlidesApp.users.site', [
         // Export as a csv file
         $scope.csvExport = function () {
             UserCsvExport.export($scope.usersFiltered);
+        };
+    }
+])
+
+.factory('InvitationEmails', [
+    '$http',
+    'User',
+    'Config',
+    'gettextCatalog',
+    function ($http, User, Config, gettextCatalog) {
+        return {
+            // Returns the request promise. If it was successfull, a nice message for
+            // an alert is generated and the alert-object is returned.
+            send: function (users) {
+                var user_ids = _
+                    .chain(users)
+                    .filter(function (user) {
+                        return user.selected;
+                    })
+                    .map(function (user) {
+                        return user.id;
+                    })
+                    .value();
+                var subject = gettextCatalog.getString(Config.get('users_email_subject').value);
+                var message = gettextCatalog.getString(Config.get('users_email_body').value);
+
+                return $http.post('/rest/users/user/mass_invite_email/', {
+                    user_ids: user_ids,
+                    subject: subject,
+                    message: message,
+                }).then(function (success) {
+                    var numEmails = success.data.count;
+                    var noEmailIds = success.data.no_email_ids;
+                    var type = 'success', msg;
+                    if (numEmails === 0) {
+                        type = 'danger';
+                        msg = gettextCatalog.getString('No emails were send.');
+                    } else if (numEmails === 1) {
+                        msg = gettextCatalog.getString('One email was send sucessfully.');
+                    } else {
+                        msg = gettextCatalog.getString('%num% emails were send sucessfully.').replace('%num%', numEmails);
+                    }
+
+                    if (noEmailIds.length) {
+                        type = 'warning';
+                        msg += ' ';
+
+                        if (noEmailIds.length === 1) {
+                            msg += gettextCatalog.getString('The user %user% has no email, so the invitation email could not be send.');
+                        } else {
+                            msg += gettextCatalog.getString('The users %user% have no email, so the invitation emails could not be send.');
+                        }
+
+                        // This one builds a username string like "user1, user2 and user3" with the full names.
+                        var lastUsername, userString = _
+                            .chain(noEmailIds)
+                            .map(function (id) {
+                                var user = User.get(id);
+                                return user ? user.get_full_name() : '';
+                            })
+                            .filter(function (username) {
+                                return username;
+                            })
+                            .tap(function (names) {
+                                if (names.length !== 1) {
+                                    lastUsername = names.pop();
+                                }
+                            })
+                            .join(', ')
+                            .thru(function (names) {
+                                return lastUsername ? names + ' ' + gettextCatalog.getString('and') + ' ' + lastUsername : names;
+                            })
+                            .value();
+                        msg = msg.replace('%user%', userString);
+                    }
+
+                    return {
+                        msg: msg,
+                        type: type,
+                        show: true,
+                    };
+                });
+            },
         };
     }
 ])
