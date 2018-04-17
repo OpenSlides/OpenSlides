@@ -733,16 +733,17 @@ angular.module('OpenSlidesApp.core', [
         BaseModel.prototype.project = function(projectorId) {
             // if this object is already projected on projectorId, delete this element from this projector
             var isProjectedIds = this.isProjected();
-            _.forEach(isProjectedIds, function (id) {
-                $http.post('/rest/core/projector/' + id + '/clear_elements/');
-            });
+            var requestData = {
+                clear_ids: isProjectedIds,
+            };
             // Show the element, if it was not projected before on the given projector
             if (_.indexOf(isProjectedIds, projectorId) == -1) {
-                return $http.post(
-                    '/rest/core/projector/' + projectorId + '/prune_elements/',
-                    [{name: this.getResourceName(), id: this.id}]
-                );
+                requestData.prune = {
+                    id: projectorId,
+                    element: {name: this.getResourceName(), id: this.id},
+                };
             }
+            return $http.post('/rest/core/projector/project/', requestData);
         };
         BaseModel.prototype.isProjected = function() {
             // Returns the ids of all projectors if there is a projector element
@@ -761,7 +762,7 @@ angular.module('OpenSlidesApp.core', [
             });
             return isProjectedIds;
         };
-        // Override this method to get object spzific behavior
+        // Override this method to get object specific behavior
         BaseModel.prototype.isRelatedProjected = function() {
             throw "needs to be implemented!";
         };

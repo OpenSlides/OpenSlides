@@ -132,6 +132,7 @@ Core:
 - Reset scroll level for each new projection [#3686].
 - Scroll to top on every state change [#3689].
 - Added pagination on top of lists [#3698].
+- New api route to project items with just one request needed [#3713].
 
 Mediafiles:
 - New form for uploading multiple files [#3650].

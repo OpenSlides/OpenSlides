@@ -44,12 +44,10 @@ angular.module('OpenSlidesApp.motions', [
 
 .factory('Workflow', [
     'DS',
-    'jsDataModel',
     'WorkflowState',
-    function (DS, jsDataModel, WorkflowState) {
+    function (DS, WorkflowState) {
         return DS.defineResource({
             name: 'motions/workflow',
-            useClass: jsDataModel,
             relations: {
                 hasMany: {
                     'motions/workflowstate': {
@@ -652,13 +650,12 @@ angular.module('OpenSlidesApp.motions', [
                  * Also sets the projection mode if given; If not it projects in 'original' mode. */
                 project: function (projectorId, mode) {
                     // if this object is already projected on projectorId, delete this element from this projector
-                    var isProjected = this.isProjectedWithMode();
-                    _.forEach(isProjected, function (mapping) {
-                        $http.post('/rest/core/projector/' + mapping.projectorId + '/clear_elements/');
-                    });
+                    var requestData = {
+                        clear_ids: this.isProjected(),
+                    };
                     // Was there a projector with the same id and mode as the given id and mode?
                     // If not, project the motion.
-                    var wasProjectedBefore = _.some(isProjected, function (mapping) {
+                    var wasProjectedBefore = _.some(this.isProjectedWithMode(), function (mapping) {
                         var value = (mapping.projectorId === projectorId);
                         if (mode) {
                             value = value && (mapping.mode === mode);
@@ -667,13 +664,16 @@ angular.module('OpenSlidesApp.motions', [
                     });
                     mode = mode || Config.get('motions_recommendation_text_mode').value;
                     if (!wasProjectedBefore) {
-                        return $http.post(
-                            '/rest/core/projector/' + projectorId + '/prune_elements/',
-                            [{name: name,
-                              id: this.id,
-                              mode: mode}]
-                        );
+                        requestData.prune = {
+                            id: projectorId,
+                            element: {
+                                name: name,
+                                id: this.id,
+                                mode: mode,
+                            },
+                        };
                     }
+                    return $http.post('/rest/core/projector/project/', requestData);
                 },
                 isProjected: function (mode) {
                     var self = this;

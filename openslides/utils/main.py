@@ -181,7 +181,7 @@ def get_win32_app_data_dir() -> str:
     """
     Returns the directory of Windows' AppData directory.
     """
-    shell32 = ctypes.WinDLL("shell32.dll")
+    shell32 = ctypes.WinDLL('shell32.dll')  # type: ignore
     SHGetFolderPath = shell32.SHGetFolderPathW
     SHGetFolderPath.argtypes = (
         ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p, ctypes.c_uint32,
@@ -197,7 +197,7 @@ def get_win32_app_data_dir() -> str:
         # TODO: Write other exception
         raise Exception("Could not determine Windows' APPDATA path")
 
-    return buf.value
+    return buf.value.decode('utf-8')
 
 
 def get_win32_portable_dir() -> str:
