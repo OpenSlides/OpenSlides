@@ -123,9 +123,8 @@ def ws_disconnect_site(message: Any) -> None:
 @channel_session_user
 def ws_receive_site(message: Any) -> None:
     """
-    This function is called if a message from a client comes in. The message
-    should be a list. Every item is broadcasted to the given users (or all
-    users if no user list is given) if it is a notify element.
+    If we recieve something from the client we currently just interpret this
+    as a notify message.
 
     The server adds the sender's user id (0 for anonymous) and reply
     channel name so that a receiver client may reply to the sender or to all
@@ -138,51 +137,76 @@ def ws_receive_site(message: Any) -> None:
         pass
     else:
         if isinstance(incomming, list):
-            # Parse all items
-            receivers_users = defaultdict(list)  # type: Dict[int, List[Any]]
-            receivers_reply_channels = defaultdict(list)  # type: Dict[str, List[Any]]
-            items_for_all = []
-            for item in incomming:
-                if item.get('collection') == 'notify':
-                    use_receivers_dict = False
-                    item['senderReplyChannelName'] = message.reply_channel.name
-                    item['senderUserId'] = message.user.id or 0
+            notify(
+                incomming,
+                senderReplyChannelName=message.reply_channel.name,
+                senderUserId=message.user.id or 0)
 
-                    # Force the params to be a dict
-                    if not isinstance(item.get('params'), dict):
-                        item['params'] = {}
 
-                    users = item.get('users')
-                    if isinstance(users, list):
-                        # Send this item only to all reply channels of some site users.
-                        for user_id in users:
-                            receivers_users[user_id].append(item)
-                        use_receivers_dict = True
+def notify(incomming: List[Dict[str, Any]], **attributes: Any) -> None:
+    """
+    The incomming should be a list of notify elements. Every item is broadcasted
+    to the given users, channels or projectors. If none is given, the message is
+    send to each site client.
+    """
+    # Parse all items
+    receivers_users = defaultdict(list)  # type: Dict[int, List[Any]]
+    receivers_projectors = defaultdict(list)  # type: Dict[int, List[Any]]
+    receivers_reply_channels = defaultdict(list)  # type: Dict[str, List[Any]]
+    items_for_all = []
+    for item in incomming:
+        if item.get('collection') == 'notify':
+            use_receivers_dict = False
 
-                    reply_channels = item.get('replyChannels')
-                    if isinstance(reply_channels, list):
-                        # Send this item only to some reply channels.
-                        for reply_channel_name in reply_channels:
-                            receivers_reply_channels[reply_channel_name].append(item)
-                        use_receivers_dict = True
+            for key, value in attributes.items():
+                item[key] = value
 
-                    if not use_receivers_dict:
-                        # Send this item to all reply channels.
-                        items_for_all.append(item)
+            # Force the params to be a dict
+            if not isinstance(item.get('params'), dict):
+                item['params'] = {}
 
-            # Send all items
-            for user_id, channel_names in websocket_user_cache.get_all().items():
-                output = receivers_users[user_id]
-                if len(output) > 0:
-                    for channel_name in channel_names:
-                        send_or_wait(Channel(channel_name).send, {'text': json.dumps(output)})
+            users = item.get('users')
+            if isinstance(users, list):
+                # Send this item only to all reply channels of some site users.
+                for user_id in users:
+                    receivers_users[user_id].append(item)
+                use_receivers_dict = True
 
-            for channel_name, output in receivers_reply_channels.items():
-                if len(output) > 0:
-                    send_or_wait(Channel(channel_name).send, {'text': json.dumps(output)})
+            projectors = item.get('projectors')
+            if isinstance(projectors, list):
+                # Send this item only to all reply channels of some site users.
+                for projector_id in projectors:
+                    receivers_projectors[projector_id].append(item)
+                use_receivers_dict = True
 
-            if len(items_for_all) > 0:
-                send_or_wait(Group('site').send, {'text': json.dumps(items_for_all)})
+            reply_channels = item.get('replyChannels')
+            if isinstance(reply_channels, list):
+                # Send this item only to some reply channels.
+                for reply_channel_name in reply_channels:
+                    receivers_reply_channels[reply_channel_name].append(item)
+                use_receivers_dict = True
+
+            if not use_receivers_dict:
+                # Send this item to all reply channels.
+                items_for_all.append(item)
+
+    # Send all items
+    for user_id, channel_names in websocket_user_cache.get_all().items():
+        output = receivers_users[user_id]
+        if len(output) > 0:
+            for channel_name in channel_names:
+                send_or_wait(Channel(channel_name).send, {'text': json.dumps(output)})
+
+    for channel_name, output in receivers_reply_channels.items():
+        if len(output) > 0:
+            send_or_wait(Channel(channel_name).send, {'text': json.dumps(output)})
+
+    for projector_id, output in receivers_projectors.items():
+        if len(output) > 0:
+            send_or_wait(Group('projector-{}'.format(projector_id)).send, {'text': json.dumps(output)})
+
+    if len(items_for_all) > 0:
+        send_or_wait(Group('site').send, {'text': json.dumps(items_for_all)})
 
 
 @channel_session_user_from_http
@@ -245,6 +269,27 @@ def ws_disconnect_projector(message: Any, projector_id: int) -> None:
     """
     Group('projector-{}'.format(projector_id)).discard(message.reply_channel)
     Group('projector-all').discard(message.reply_channel)
+
+
+def ws_receive_projector(message: Any, projector_id: int) -> None:
+    """
+    If we recieve something from the client we currently just interpret this
+    as a notify message.
+
+    The server adds the sender's projector id and reply channel name so that
+    a receiver client may reply to the sender or to all sender's instances.
+    """
+    try:
+        incomming = json.loads(message.content['text'])
+    except ValueError:
+        # Message content is invalid. Just do nothing.
+        pass
+    else:
+        if isinstance(incomming, list):
+            notify(
+                incomming,
+                senderReplyChannelName=message.reply_channel.name,
+                senderProjectorId=projector_id)
 
 
 def send_data_projector(message: ChannelMessageFormat) -> None:
