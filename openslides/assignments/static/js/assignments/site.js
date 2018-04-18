@@ -716,14 +716,12 @@ angular.module('OpenSlidesApp.assignments.site', [
                     defaultValue[vote.value.toLowerCase()] = vote.weight;
                 });
 
-                $scope.formFields.push(
-                    {
-                        noFormControl: true,
-                        template: '<strong>' + option.candidate.get_full_name() + '</strong>'
-                    },
+                var columnClass = (assignmentpoll.pollmethod === 'yna') ? 'col-xs-4' : 'col-xs-6';
+                var columns = [
                     {
                         key: 'yes_' + option.candidate_id,
                         type: 'input',
+                        className: columnClass + ' no-padding-left',
                         templateOptions: {
                             label: gettextCatalog.getString('Yes'),
                             type: 'number',
@@ -734,6 +732,8 @@ angular.module('OpenSlidesApp.assignments.site', [
                     {
                         key: 'no_' + option.candidate_id,
                         type: 'input',
+                        className: columnClass + ' no-padding-left' +
+                            (assignmentpoll.pollmethod === 'yn' ? ' no-padding-right' : ''),
                         templateOptions: {
                             label: gettextCatalog.getString('No'),
                             type: 'number',
@@ -741,12 +741,12 @@ angular.module('OpenSlidesApp.assignments.site', [
                         },
                         defaultValue: defaultValue.no
                     }
-                );
+                ];
                 if (assignmentpoll.pollmethod == 'yna'){
-                    $scope.formFields.push(
-                    {
+                    columns.push({
                         key:'abstain_' + option.candidate_id,
                         type: 'input',
+                        className: columnClass + ' no-padding-left no-padding-right',
                         templateOptions: {
                             label: gettextCatalog.getString('Abstain'),
                             type: 'number',
@@ -755,6 +755,14 @@ angular.module('OpenSlidesApp.assignments.site', [
                         defaultValue: defaultValue.abstain
                     });
                 }
+                $scope.formFields.push({
+                    noFormControl: true,
+                    template: '<strong>' + option.candidate.get_full_name() + '</strong>'
+                },
+                {
+                    className: 'row',
+                    fieldGroup: columns,
+                });
             } else { // votes method
                 if (option.votes.length) {
                     defaultValue = option.votes[0].weight;

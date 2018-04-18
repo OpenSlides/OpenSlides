@@ -115,7 +115,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
 
         var createInstance = function(userList) {
 
-            var creadeUserHeadLine = function(user) {
+            var createUserHeadLine = function(user) {
                 var titleLine = [];
                 titleLine.push({
                     text: user.get_short_name(),
@@ -260,7 +260,7 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
             var getContent = function() {
                 var content = [];
                 angular.forEach(userList, function (user, index) {
-                    content.push(creadeUserHeadLine(user));
+                    content.push(createUserHeadLine(user));
                     content.push(createAccessDataContent(user));
                     content.push(createWelcomeText());
                     // No pagebreak after the last user

@@ -40,11 +40,16 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
         if has_perm(user, 'assignments.can_see') and has_perm(user, 'assignments.can_manage'):
             data = full_data
         elif has_perm(user, 'assignments.can_see'):
-            # Exclude unpublished polls.
+            # Exclude unpublished poll votes.
             data = []
             for full in full_data:
                 full_copy = full.copy()
-                full_copy['polls'] = [poll for poll in full['polls'] if poll['published']]
+                polls = full_copy['polls']
+                for poll in polls:
+                    if not poll['published']:
+                        for option in poll['options']:
+                            option['votes'] = []  # clear votes for not published polls
+                        poll['has_votes'] = False  # A user should see, if there are votes.
                 data.append(full_copy)
         else:
             data = []

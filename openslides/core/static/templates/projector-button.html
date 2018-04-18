@@ -6,7 +6,7 @@
     ng-click="model.project(defaultProjectorId, arg)"
     ng-class="{ 'btn-primary': inArray(model.isProjected(arg), defaultProjectorId) }">
     <i class="fa fa-video-camera"></i>
-    {{ content }}
+    {{ content | translate }}
   </button>
   <button type="button" class="btn btn-default btn-sm slimDropDown"
     ng-class="{ 'btn-primary': (model.isProjected(arg).length && !inArray(model.isProjected(arg), defaultProjectorId)) }"

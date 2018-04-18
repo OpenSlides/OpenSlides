@@ -355,7 +355,9 @@
           <div os-perms="users.can_manage" ng-class="{'hiddenDiv': !user.hover}">
             <small>
               <template-hook hook-name="userListEditButton">
-                <a href="" ng-click="openDialog(user)" translate>Edit</a> &middot;
+                <span>
+                  <a href="" ng-click="openDialog(user)" translate>Edit</a> &middot;
+                </span>
               </template-hook>
               <a ui-sref="users.user.change-password({id: user.id})" translate>Change password</a> &middot;
               <a href="" class="text-danger"

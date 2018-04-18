@@ -337,8 +337,11 @@ angular.module('OpenSlidesApp.assignments', [])
                 getResourceName: function () {
                     return name;
                 },
-                getAgendaTitle: function () {
+                getTitle: function () {
                     return this.title;
+                },
+                getAgendaTitle: function () {
+                    return this.getTitle();
                 },
                 // link name which is shown in search result
                 getSearchResultName: function () {
