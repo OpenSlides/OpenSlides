@@ -201,7 +201,7 @@ angular.module('OpenSlidesApp.motions', [
                     if (motion) {
                         return motion.identifier ? motion.identifier : motion.getTitle();
                     } else {
-                        return gettextCatalog.getString("<unknown motion>");
+                        return gettextCatalog.getString('<unknown motion>');
                     }
                 });
             },
