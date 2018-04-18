@@ -244,6 +244,7 @@ def ws_disconnect_projector(message: Any, projector_id: int) -> None:
     This function is called, when a client on the projector disconnects.
     """
     Group('projector-{}'.format(projector_id)).discard(message.reply_channel)
+    Group('projector-all').discard(message.reply_channel)
 
 
 def send_data_projector(message: ChannelMessageFormat) -> None:
