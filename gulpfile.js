@@ -181,6 +181,7 @@ gulp.task('ckeditor-plugins', function () {
             [
                 path.join('bower_components', 'ckeditor', 'plugins', 'clipboard', '**', '*'),
                 path.join('bower_components', 'ckeditor', 'plugins', 'colorbutton', '**', '*'),
+                path.join('bower_components', 'ckeditor', 'plugins', 'colordialog', '**', '*'),
                 path.join('bower_components', 'ckeditor', 'plugins', 'dialog', '**', '*'),
                 path.join('bower_components', 'ckeditor', 'plugins', 'find', '**', '*'),
                 path.join('bower_components', 'ckeditor', 'plugins', 'image', '**', '*'),

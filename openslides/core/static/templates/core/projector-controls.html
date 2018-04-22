@@ -49,7 +49,7 @@
             </div>
             <div os-perms="core.can_manage_projector">
               <button class="btn btn-sm" ng-click="active_projector.toggleBlank()" ng-hide="projectors.length > 1"
-                ng-class="active_projector.blank ? 'btn-primary' : 'btn-default'">
+                ng-class="active_projector.blank ? 'btn-danger' : 'btn-default'">
                 <i class="fa" ng-class="active_projector.blank ? 'fa-square' : 'fa-square-o'"></i>
                 <translate>Blank</translate>
               </button>
@@ -58,20 +58,6 @@
               <i class="fa fa-cog fa-lg"></i>
               <translate>Manage</translate>
             </a>
-          </div>
-
-          <div class="btn-group nobr" ng-show="projectors.length > 1" os-perms="core.can_manage_projector">
-            <button class="btn btn-sm" ng-class="broadcast == active_projector.id ? 'btn-primary' : 'btn-default'"
-              ng-click="active_projector.toggleBroadcast()" ng-disabled="broadcast > 0 && broadcast != active_projector.id">
-              <i class="fa" ng-class="broadcast == active_projector.id ? 'fa-star' : 'fa-star-o'"></i>
-              <translate>Broadcast</translate>
-            </button>
-            <button class="btn btn-sm" ng-click="active_projector.toggleBlank()"
-              ng-class="active_projector.blank ? 'btn-primary' : 'btn-default'"
-              ng-disabled="broadcast > 0 && broadcast != active_projector.id">
-              <i class="fa" ng-class="active_projector.blank ? 'fa-square' : 'fa-square-o'"></i>
-              <translate>Blank</translate>
-            </button>
           </div>
         </div>
 
@@ -187,7 +173,7 @@
             <span ng-if="!countdown.editTime" class="countdown_timer vcenter"
                   ng-class="{
                     'negative': countdown.seconds <= 0,
-                    'warning': countdown.seconds <= config('agenda_countdown_warning_time') && countdown.seconds > 0 }">
+                    'warning_time': countdown.seconds <= config('agenda_countdown_warning_time') && countdown.seconds > 0 }">
                 {{ countdown.seconds | osSecondsToTime }}
             </span>
             <!-- edit countdown form -->

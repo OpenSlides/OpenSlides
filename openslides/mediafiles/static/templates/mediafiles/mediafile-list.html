@@ -172,7 +172,7 @@
           <span class="sort-spacer pointer" ng-click="filter.reset(isSelectMode)"
             ng-if="filter.areFiltersSet()" ng-disabled="isSelectMode"
             ng-class="{'disabled': isSelectMode}">
-            <i class="fa fa-times-circle"></i>
+            <i class="fa fa-window-close"></i>
             <translate>Filter</translate>
           </span>
           <!-- boolean Filters -->
@@ -210,11 +210,13 @@
             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownSort">
               <li ng-repeat="option in sortOptions">
                 <a href ng-click="sort.toggle(option.name)">
-                  {{ option.display_name | translate }}
+                  <span ng-style="{'font-weight': sort.column === option.name ? 'bold' : 'normal'}">
+                    {{ option.display_name | translate }}
+                  </span>
                   <span class="spacer-right pull-right"></span>
                   <i class="pull-right fa"
                     ng-style="{'visibility': sort.column === option.name ? 'visible' : 'hidden'}"
-                    ng-class="sort.reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+                    ng-class="sort.reverse ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc'">
                   </i>
                 </a>
               </li>

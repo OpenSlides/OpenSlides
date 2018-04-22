@@ -370,10 +370,16 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                             style: 'heading3',
                             marginTop: 25,
                         });
+                        var width;
+                        if (params.lineNumberMode == 'outside') {
+                            width = '80%';
+                        } else {
+                            width = '100%';
+                        }
                         reason.push({
                             columns: [
                                 {
-                                    width: '80%',
+                                    width: width,
                                     stack: converter.convertHTML(motion.getReason(motionVersion), 'none'),
                                 },
                             ]

@@ -561,7 +561,7 @@ strong, b, th {
 }
 
 .iframewrapper {
-    width: 256px;
+    width: 258px;
     position: relative;
     overflow: hidden;
     border: 1px solid #D5D5D5;
@@ -596,4 +596,14 @@ strong, b, th {
 .details h3 {
     font-size: 16px;
     color: #000;
+}
+
+/** Config **/
+#config .panel-body {
+    padding-top: 0;
+}
+#config.details h3 {
+    font-size: 22px;
+    padding-top: 30px;
+    margin-top: 0;
 }

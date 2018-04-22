@@ -1626,6 +1626,7 @@ angular.module('OpenSlidesApp.core.site', [
                             id: projector.id,
                             floor: 800,
                             ceil: 3840,
+                            step: 10,
                             translate: function (value) {
                                 return value + 'px';
                             },
