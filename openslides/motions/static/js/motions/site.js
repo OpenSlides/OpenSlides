@@ -1484,6 +1484,12 @@ angular.module('OpenSlidesApp.motions.site', [
 
             $scope.createChangeRecommendation.setVersion(motion, motion.active_version);
         });
+        $scope.$watch(function () {
+            return Motion.lastModified();
+        }, function () {
+            $scope.motions = Motion.getAll();
+            $scope.amendments = Motion.filter({parent_id: motion.id});
+        });
         $scope.projectionModes = [
             {mode: 'original',
             label: 'Original version'},
@@ -1531,7 +1537,6 @@ angular.module('OpenSlidesApp.motions.site', [
         if (motion.parent_id) {
             Motion.bindOne(motion.parent_id, $scope, 'parent');
         }
-        $scope.amendments = Motion.filter({parent_id: motion.id});
 
         $scope.highlight = 0;
         $scope.scrollToAndHighlight = function (line) {
