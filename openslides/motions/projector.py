@@ -1,5 +1,8 @@
+import re
+
 from typing import Generator, Type
 
+from ..core.config import config
 from ..core.exceptions import ProjectorException
 from ..utils.projector import ProjectorElement
 from .models import Motion, MotionBlock, MotionChangeRecommendation, Workflow
@@ -25,9 +28,41 @@ class MotionSlide(ProjectorElement):
             yield motion
             yield motion.agenda_item
             yield motion.state.workflow
+            yield from self.required_motions_for_state_and_recommendation(motion)
             yield from motion.submitters.all()
             yield from motion.supporters.all()
             yield from MotionChangeRecommendation.objects.filter(motion_version=motion.get_active_version().id)
+
+    def required_motions_for_state_and_recommendation(self, motion):
+        """
+        Returns a list of motions needed for the projector, because they are mentioned
+        in additional fieds for the state and recommendation.
+        Keep the motion_syntax syncronized with the MotionStateAndRecommendationParser on the client.
+        """
+        # get the comments field for state and recommendation
+        motion_syntax = re.compile('\[motion:(\d+)\]')
+        fields = config['motions_comments']
+        state_field_id = None
+        recommendation_field_id = None
+
+        for id, field in fields.items():
+            if field.get('forState', False):
+                state_field_id = id
+            if field.get('forRecommendation', False):
+                recommendation_field_id = id
+
+        # extract all mentioned motions from the state and recommendation
+        motion_ids = set()
+        if state_field_id is not None:
+            state_text = motion.comments.get(state_field_id)
+            motion_ids.update([int(id) for id in motion_syntax.findall(state_text)])
+
+        if recommendation_field_id is not None:
+            recommendation_text = motion.comments.get(recommendation_field_id)
+            motion_ids.update([int(id) for id in motion_syntax.findall(recommendation_text)])
+
+        # return all motions
+        return Motion.objects.filter(pk__in=motion_ids)
 
     def get_collection_elements_required_for_this(self, collection_element, config_entry):
         output = super().get_collection_elements_required_for_this(collection_element, config_entry)
