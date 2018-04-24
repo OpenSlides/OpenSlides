@@ -213,8 +213,8 @@ class ProjectorViewSet(ModelViewSet):
         elif self.action in (
             'create', 'update', 'partial_update', 'destroy',
             'activate_elements', 'prune_elements', 'update_elements', 'deactivate_elements', 'clear_elements',
-            'control_view', 'set_resolution', 'set_scroll', 'control_blank', 'broadcast',
-            'set_projectiondefault',
+            'project', 'control_view', 'set_resolution', 'set_scroll', 'control_blank',
+            'broadcast', 'set_projectiondefault',
         ):
             result = (has_perm(self.request.user, 'core.can_see_projector') and
                       has_perm(self.request.user, 'core.can_manage_projector'))
@@ -271,24 +271,39 @@ class ProjectorViewSet(ModelViewSet):
         if not isinstance(request.data, list):
             raise ValidationError({'detail': 'Data must be a list.'})
 
-        projector_instance = self.get_object()
-        # reset scroll level
-        if (projector_instance.scroll != 0):
-            projector_instance.scroll = 0
-            projector_instance.save()
-        projector_config = {}
-        for key, value in projector_instance.config.items():
-            if value.get('stable'):
-                projector_config[key] = value
-        for element in request.data:
+        projector = self.get_object()
+        elements = request.data
+        if not isinstance(elements, list):
+            raise ValidationError({'detail': _('The data has to be a list.')})
+        for element in elements:
+            if not isinstance(element, dict):
+                raise ValidationError({'detail': _('All elements have to be dicts.')})
             if element.get('name') is None:
                 raise ValidationError({'detail': 'Invalid projector element. Name is missing.'})
+        return Response(self.prune(projector, elements))
+
+    def prune(self, projector, elements):
+        """
+        Prunes all non stable elements from the projector and adds the given elements.
+        The elements have to a list of dicts, each gict containing at least a name. This
+        is not validated at this point! Should be done before.
+        Returns the new serialized data.
+        """
+        # reset scroll level
+        if (projector.scroll != 0):
+            projector.scroll = 0
+            projector.save()
+        projector_config = {}
+        for key, value in projector.config.items():
+            if value.get('stable'):
+                projector_config[key] = value
+        for element in elements:
             projector_config[uuid.uuid4().hex] = element
 
-        serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
+        serializer = self.get_serializer(projector, data={'config': projector_config}, partial=False)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return serializer.data
 
     @detail_route(methods=['post'])
     def update_elements(self, request, pk):
@@ -370,16 +385,73 @@ class ProjectorViewSet(ModelViewSet):
         entries with stable == True. It expects a POST request to
         /rest/core/projector/<pk>/clear_elements/.
         """
-        projector_instance = self.get_object()
+        projector = self.get_object()
+        return Response(self.clear(projector))
+
+    def clear(self, projector):
         projector_config = {}
-        for key, value in projector_instance.config.items():
+        for key, value in projector.config.items():
             if value.get('stable'):
                 projector_config[key] = value
 
-        serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
+        serializer = self.get_serializer(projector, data={'config': projector_config}, partial=False)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return serializer.data
+
+    @list_route(methods=['post'])
+    def project(self, request, *args, **kwargs):
+        """
+        REST API operation. Does a combination of clear_elements and prune_elements:
+        In the most cases when projecting an element it first need to be removed from
+        all projectors where it is projected. In a second step the new element (which
+        may be not given if the element is just deprojected) needs to be projected on
+        a maybe different projector. The request data has to have this scheme:
+        {
+            clear_ids: [<projector id1>, ...],      # May be an empty list
+            prune: {                                # May not be given.
+                id: <projector id>,
+                element: <projector element to add>
+            }
+        }
+        """
+        # Get projector ids to clear
+        clear_projector_ids = request.data.get('clear_ids', [])
+        for id in clear_projector_ids:
+            if not isinstance(id, int):
+                raise ValidationError({'detail': _('The id "{}" has to be int.').format(id)})
+
+        # Get the projector id and validate element to prune. This is optional.
+        prune = request.data.get('prune')
+        if prune is not None:
+            if not isinstance(prune, dict):
+                raise ValidationError({'detail': _('Prune has to be an object.')})
+            prune_projector_id = prune.get('id')
+            if not isinstance(prune_projector_id, int):
+                raise ValidationError({'detail': _('The prune projector id has to be int.')})
+
+            # Get the projector after all clear operations, but check, if it exist.
+            if not Projector.objects.filter(pk=prune_projector_id).exists():
+                raise ValidationError({
+                    'detail': _('The projector with id "{}" does not exist').format(prune_projector_id)})
+
+            prune_element = prune.get('element', {})
+            if not isinstance(prune_element, dict):
+                raise ValidationError({'detail': _('Prune element has to be a dict or not given.')})
+            if prune_element.get('name') is None:
+                raise ValidationError({'detail': 'Invalid projector element. Name is missing.'})
+
+        # First step: Clear all given projectors
+        for projector in Projector.objects.filter(pk__in=clear_projector_ids):
+            self.clear(projector)
+
+        # Second step: optionally prune
+        if prune is not None:
+            # This get is save. We checked that the projector exists above.
+            prune_projector = Projector.objects.get(pk=prune_projector_id)
+            self.prune(prune_projector, [prune_element])
+
+        return Response()
 
     @detail_route(methods=['post'])
     def set_resolution(self, request, pk):

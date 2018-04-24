@@ -129,23 +129,24 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 project: function (projectorId, tree) {
                     if (tree) {
                         var isProjectedIds = this.isProjected(tree);
-                        _.forEach(isProjectedIds, function (id) {
-                            $http.post('/rest/core/projector/' + id + '/clear_elements/');
-                        });
+                        var requestData = {
+                            clear_ids: isProjectedIds,
+                        };
                         // Activate, if the projector_id is a new projector.
                         if (_.indexOf(isProjectedIds, projectorId) == -1) {
-                            return $http.post(
-                                '/rest/core/projector/' + projectorId + '/prune_elements/',
-                                [{
+                            requestData.prune = {
+                                id: projectorId,
+                                element: {
                                     name: 'agenda/item-list',
                                     tree: true,
-                                    id: this.id
-                                }]
-                            );
+                                    id: this.id,
+                                },
+                            };
                         }
+                        return $http.post('/rest/core/projector/project/', requestData);
                     } else {  // Project the content object
                         var contentObject = DS.get(this.content_object.collection, this.content_object.id);
-                        contentObject.project(projectorId);
+                        return contentObject.project(projectorId);
                     }
                 },
                 // override isProjected function of jsDataModel factory
@@ -185,15 +186,19 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 // project list of speakers
                 projectListOfSpeakers: function(projectorId) {
                     var isProjectedIds = this.isListOfSpeakersProjected();
-                    _.forEach(isProjectedIds, function (id) {
-                        $http.post('/rest/core/projector/' + id + '/clear_elements/');
-                    });
+                    var requestData = {
+                        clear_ids: isProjectedIds,
+                    };
                     if (_.indexOf(isProjectedIds, projectorId) == -1) {
-                        return $http.post(
-                            '/rest/core/projector/' + projectorId + '/prune_elements/',
-                            [{name: 'agenda/list-of-speakers', id: this.id}]
-                        );
+                        requestData.prune = {
+                            id: projectorId,
+                            element: {
+                                name: 'agenda/list-of-speakers',
+                                id: this.id,
+                            },
+                        };
                     }
+                    return $http.post('/rest/core/projector/project/', requestData);
                 },
                 // check if list of speakers is projected
                 isListOfSpeakersProjected: function () {
