@@ -64,6 +64,8 @@ gulp.task('js-libs', function () {
         .pipe(sourcemaps.write())
         .pipe(inject.prepend("/* set basepath of CKEditor */\n" +
                 "window.CKEDITOR_BASEPATH = '/static/ckeditor/';\n\n"))
+        .pipe(inject.prepend("/* Workaround for IE and pdfjs-dist#1.3.100 (see PR#3714) */\n" +
+                "PDFJS = {workerSrc: 'not used but set'};\n\n"))
         .pipe(gulpif(argv.production, uglify()))
         .pipe(gulp.dest(path.join(output_directory, 'js')));
 });
