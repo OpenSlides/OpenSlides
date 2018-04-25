@@ -728,7 +728,8 @@ angular.module('OpenSlidesApp.core', [
 .factory('jsDataModel', [
     '$http',
     'Projector',
-    function($http, Projector) {
+    'ProjectHelper',
+    function($http, Projector, ProjectHelper) {
         var BaseModel = function() {};
         BaseModel.prototype.project = function(projectorId) {
             // if this object is already projected on projectorId, delete this element from this projector
@@ -743,7 +744,7 @@ angular.module('OpenSlidesApp.core', [
                     element: {name: this.getResourceName(), id: this.id},
                 };
             }
-            return $http.post('/rest/core/projector/project/', requestData);
+            ProjectHelper.project(requestData);
         };
         BaseModel.prototype.isProjected = function() {
             // Returns the ids of all projectors if there is a projector element
@@ -1257,6 +1258,92 @@ angular.module('OpenSlidesApp.core', [
                 }
             },
         });
+    }
+])
+
+// This factory sends a request to /rest/core/projectors/project
+// with the given data. Also it does the changes done by the server
+// locally and may reverts them, if something went wrong.
+.factory('ProjectHelper', [
+    '$http',
+    'Projector',
+    function ($http, Projector) {
+        var uuid4 = function () {
+            function s8() {
+                return Math.floor((1 + Math.random()) * 0x100000000)
+                    .toString(16)
+                    .substring(1);
+            }
+            return s8() + s8() + s8() + s8();
+        };
+
+        return {
+            project: function (data) {
+                var projector;
+                // get all projectors that will be changed.
+                var projectorsChanged = _.filter(_.map(data.clear_ids, function (id) {
+                    return Projector.get(id);
+                }));
+                if (data.prune && !_.includes(data.clear_ids, data.prune.id)) {
+                    projector = Projector.get(data.prune.id);
+                    if (projector) {
+                        projectorsChanged.push(projector);
+                    }
+                }
+
+                // copy original projectors in case we have to reconstruct those
+                // _.cloneDeep and angular.clone does not work here; I'm not
+                // exactly sure why..
+                var originalProjectors = _.map(projectorsChanged, function (projector) {
+                    var elements = {};
+                    _.forEach(projector.elements, function (element, key) {
+                        elements[key] = _.cloneDeep(element);
+                    });
+                    return {
+                        id: projector.id,
+                        elements: elements,
+                        scroll: projector.scroll,
+                        scale: projector.scale,
+                        name: projector.name,
+                        blank: projector.blank,
+                        width: projector.width,
+                        height: projector.height,
+                        projectiondefaults: _.cloneDeep(projector.projectiondefaults),
+                    };
+                });
+
+                // Clear every projector
+                _.forEach(projectorsChanged, function (projector) {
+                    var elements = {};
+                    _.forEach(projector.elements, function (element, key) {
+                        if (element.stable) {
+                            elements[key] = element;
+                        }
+                    });
+                    projector.elements = elements;
+                });
+
+                // Add the prune element if given
+                if (data.prune) {
+                    projector = _.find(projectorsChanged, function (projector) {
+                        return projector.id === data.prune.id;
+                    });
+                    if (projector) {
+                        projector.scroll = 0;
+                        projector.elements[uuid4()] = data.prune.element;
+                    }
+                }
+
+                Projector.inject(projectorsChanged);
+
+                $http.post('/rest/core/projector/project/', data).then(null,
+                    function (error) {
+                        // revert the changed made earlier
+                        Projector.inject(originalProjectors);
+                    }
+                );
+            },
+        };
     }
 ])
 

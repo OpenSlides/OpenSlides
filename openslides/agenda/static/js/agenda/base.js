@@ -27,11 +27,13 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
     'Speaker',
     'jsDataModel',
     'Projector',
+    'ProjectHelper',
     'gettextCatalog',
     'gettext',
     'CamelCase',
     'EditForm',
-    function($http, DS, Speaker, jsDataModel, Projector, gettextCatalog, gettext, CamelCase, EditForm) {
+    function($http, DS, Speaker, jsDataModel, Projector, ProjectHelper, gettextCatalog,
+        gettext, CamelCase, EditForm) {
         var name = 'agenda/item';
         return DS.defineResource({
             name: name,
@@ -143,7 +145,7 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                                 },
                             };
                         }
-                        return $http.post('/rest/core/projector/project/', requestData);
+                        ProjectHelper.project(requestData);
                     } else {  // Project the content object
                         var contentObject = DS.get(this.content_object.collection, this.content_object.id);
                         return contentObject.project(projectorId);
@@ -198,7 +200,7 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                             },
                         };
                     }
-                    return $http.post('/rest/core/projector/project/', requestData);
+                    ProjectHelper.project(requestData);
                 },
                 // check if list of speakers is projected
                 isListOfSpeakersProjected: function () {

@@ -225,9 +225,11 @@ angular.module('OpenSlidesApp.motions', [
     'diffService',
     'OpenSlidesSettings',
     'Projector',
+    'ProjectHelper',
     'operator',
-    function(DS, $http, MotionPoll, MotionStateAndRecommendationParser, MotionChangeRecommendation, MotionComment, jsDataModel, gettext, gettextCatalog,
-        Config, lineNumberingService, diffService, OpenSlidesSettings, Projector, operator) {
+    function(DS, $http, MotionPoll, MotionStateAndRecommendationParser, MotionChangeRecommendation,
+        MotionComment, jsDataModel, gettext, gettextCatalog, Config, lineNumberingService,
+        diffService, OpenSlidesSettings, Projector, ProjectHelper, operator) {
         var name = 'motions/motion';
         return DS.defineResource({
             name: name,
@@ -673,7 +675,7 @@ angular.module('OpenSlidesApp.motions', [
                             },
                         };
                     }
-                    return $http.post('/rest/core/projector/project/', requestData);
+                    ProjectHelper.project(requestData);
                 },
                 isProjected: function (mode) {
                     var self = this;
