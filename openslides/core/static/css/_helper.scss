@@ -131,6 +131,10 @@
     display: auto;
 }
 
+.inline {
+    display: inline;
+}
+
 .login-logo {
     width: 250px;
 }
@@ -242,4 +246,10 @@ tr.selected td {
     color: #725523;
     background-color: #fcf8e3;
     border-color: #faebcc;
+}
+.close {
+    opacity: 0.3 !important;
+}
+.close:hover {
+    opacity: 0.6 !important;
 }

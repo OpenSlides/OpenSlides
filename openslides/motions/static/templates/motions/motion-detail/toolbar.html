@@ -47,13 +47,13 @@
             </label>
         </div>
         <!-- line number mode for resonsive size small/extra small (dropdown) -->
-        <div class="dropdown hidden-md hidden-lg" uib-dropdown>
+        <div class="dropdown hidden-md hidden-lg inline" uib-dropdown>
           <button type="button" class="btn btn-default btn-sm" id="dropdownLineMode" uib-dropdown-toggle>
             <i class="fa fa-list-ol" aria-hidden="true"></i>
             <translate>Line numbering</translate>
             <span class="caret"></span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownLineMode">
+          <ul class="dropdown-menu" aria-labelledby="dropdownLineMode">
             <li>
               <a href="" ng-click="setLineNumberMode('none')">
                 <i class="fa fa-check" ng-if="lineNumberMode == 'none'"></i>

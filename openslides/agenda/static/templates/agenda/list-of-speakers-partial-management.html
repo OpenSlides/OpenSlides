@@ -1,24 +1,22 @@
 <div ng-if="item" class="details" ng-controller="ListOfSpeakersManagementCtrl">
 <div class="speakers-toolbar">
   <div class="pull-right">
+    <span os-perms="agenda.can_manage">
+      <button ng-if="item.speaker_list_closed" ng-click="closeList(false)"
+￼         class="btn btn-sm btn-default">
+        <translate>Open list of speakers</translate>
+￼     </button>
+￼     <button ng-if="!item.speaker_list_closed" ng-click="closeList(true)"
+￼         class="btn btn-sm btn-default">
+￼       <translate>Close list of speakers</translate>
+￼     </button>
+    </span>
     <span os-perms="agenda.can_manage_list_of_speakers">
       <button ng-if="isAllowed('removeAll')" class="btn btn-sm btn-danger"
           ng-bootbox-confirm="{{ 'Are you sure you want to remove all speakers from this list?'| translate }}"
           ng-bootbox-confirm-action="removeAllSpeakers()">
           <i class="fa fa-trash fa-lg"></i>
           <translate>Remove all speakers</translate>
-      </button>
-    </span>
-    <span os-perms="agenda.can_manage">
-      <button ng-if="item.speaker_list_closed" ng-click="closeList(false)"
-          class="btn btn-sm btn-default">
-        <i class="fa fa-toggle-off"></i>
-        <translate>Closed</translate>
-      </button>
-      <button ng-if="!item.speaker_list_closed" ng-click="closeList(true)"
-          class="btn btn-sm btn-default">
-        <i class="fa fa-toggle-on"></i>
-        <translate>Open</translate>
       </button>
     </span>
   </div>

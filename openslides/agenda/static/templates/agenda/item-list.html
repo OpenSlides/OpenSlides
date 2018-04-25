@@ -19,7 +19,7 @@
       <!-- current list of speakers -->
       <a ui-sref="agenda.current-list-of-speakers" os-perms="users.can_see_name"
           class="btn btn-default btn-sm">
-        <i class="fa fa-microphone"></i>
+        <i class="fa fa-microphone fa-lg"></i>
         <translate>Current list of speakers</translate>
       </a>
       <!-- project agenda button -->
@@ -199,33 +199,47 @@
           <span class="sort-spacer pointer" ng-click="filter.reset(isSelectMode)"
             ng-if="filter.areFiltersSet()" ng-disabled="isSelectMode"
             ng-class="{'disabled': isSelectMode}">
-            <i class="fa fa-times-circle"></i>
+            <i class="fa fa-window-close"></i>
             <translate>Filter</translate>
           </span>
-          <!-- boolean Filters -->
-          <span ng-repeat="(name, booleanFilter) in filter.booleanFilters"
-            ng-if="!booleanFilter.permission || operator.hasPerms(booleanFilter.permission)" uib-dropdown>
-            <span class="pointer" id="dropdown{{ name }}" uib-dropdown-toggle
-              ng-class="{'bold': booleanFilter.value !== undefined, 'disabled': isSelectMode}"
-              ng-disabled="isSelectMode">
-              {{ booleanFilter.displayName | translate }}
-              <span class="caret"></span>
-            </span>
-            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown{{ name }}">
-              <li>
-                <a href ng-click="booleanFilter.value = (booleanFilter.value ? undefined : true); filter.save();">
-                  <i class="fa" ng-class="{'fa-check': booleanFilter.value === true}"></i>
-                  {{ booleanFilter.choiceYes | translate }}
-                </a>
-              </li>
-              <li>
-                <a href ng-click="booleanFilter.value = (booleanFilter.value === false) ? undefined : false; filter.save();">
-                  <i class="fa" ng-class="{'fa-check': booleanFilter.value === false}"></i>
-                  {{ booleanFilter.choiceNo | translate }}
-                </a>
-              </li>
-            </ul>
-          </span>
+          <!-- boolean Filters (combined!) -->
+         <span uib-dropdown>
+         <span class="sort-spacer pointer" id="dropdownItems" uib-dropdown-toggle
+           ng-class="{'bold': (filter.booleanFilters.closed.value !== undefined) ||
+               (filter.booleanFilters.is_hidden.value !== undefined),
+               'disabled': isSelectMode}"
+           ng-disabled="isSelectMode">
+           <translate>Items</translate>
+           <span class="caret"></span>
+         </span>
+         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownItems">
+           <li>
+             <a href ng-click="filter.booleanFilters.closed.value = (filter.booleanFilters.closed.value ? undefined : true); filter.save();">
+               <i class="fa" ng-class="{'fa-check': filter.booleanFilters.closed.value === true}"></i>
+               {{ filter.booleanFilters.closed.choiceYes | translate }}
+             </a>
+           </li>
+           <li>
+             <a href ng-click="filter.booleanFilters.closed.value = (filter.booleanFilters.closed.value === false) ? undefined : false; filter.save();">
+               <i class="fa" ng-class="{'fa-check': filter.booleanFilters.closed.value === false}"></i>
+               {{ filter.booleanFilters.closed.choiceNo | translate }}
+             </a>
+           </li>
+           <li class="divider"></li>
+           <li>
+             <a href ng-click="filter.booleanFilters.is_hidden.value = (filter.booleanFilters.is_hidden.value ? undefined : true); filter.save();">
+               <i class="fa" ng-class="{'fa-check': filter.booleanFilters.is_hidden.value === true}"></i>
+               {{ filter.booleanFilters.is_hidden.choiceYes | translate }}
+             </a>
+           </li>
+           <li>
+             <a href ng-click="filter.booleanFilters.is_hidden.value = (filter.booleanFilters.is_hidden.value === false) ? undefined : false; filter.save();">
+               <i class="fa" ng-class="{'fa-check': filter.booleanFilters.is_hidden.value === false}"></i>
+               {{ filter.booleanFilters.is_hidden.choiceNo | translate }}
+             </a>
+           </li>
+         </ul>
+         </span>
           <!-- search field -->
           <span class="form-group">
             <span class="input-group">
@@ -311,10 +325,6 @@
       <!-- main content column -->
       <div class="col-xs-6 content"
         style="padding-left: calc({{ items.length === itemsSearched.length ? item.parentCount : 0 }}*25px)">
-        <div class="icon-column">
-          <i class="fa fa-ban" ng-style="{'visibility': item.is_hidden ? 'visible' : 'hidden'}"
-            title="{{ 'Internal item' | translate }}"></i>
-        </div>
         <div class="caret-spacer" ng-if="items.length === itemsSearched.length">
           <i class="fa pointer"
             ng-style="{visibility: hasChildren(item) ? 'visible' : 'hidden'}"
@@ -364,9 +374,12 @@
                 </span>
               </div>
               <div os-perms="!agenda.can_manage">
-                <span ng-if="item.duration">
-                  <i class="fa fa-clock-o"></i> {{ item.duration | osMinutesToTime }}
-                </span>
+                <div os-perms="agenda.can_see_hidden_items">
+                  <span ng-if="item.duration">
+                    <i class="fa fa-clock-o"></i> {{ item.duration | osMinutesToTime }}
+                      <translate translate-comment="'h' means time in hours">h</translate>
+                  </span>
+                </div>
               </div>
             </div>
             <div ng-style="{'visibility': (item.comment || item.hover) ? 'visible' : 'hidden'}">
@@ -390,20 +403,26 @@
             <template-hook hook-name="agendaListAdditionalContentColumn"></template-hook>
           </small>
         </div>
-        <div style="width: 40%;" class="pull-right">
+        <div style="width: 40%; overflow: hidden;" class="pull-right">
           <div os-perms="agenda.can_manage">
             <div class="pointer nobr" ng-click="item.type = (item.type == 1) ? 2 : 1; save(item);" ng-show="item.hover || item.is_hidden">
               <i class="fa" ng-class="item.is_hidden ? 'fa-check-square-o' : 'fa-square-o'"></i>
-              <span class="spacer-left" translate>Internal item</span>
+              <span class="spacer-left" translate>Internal</span>
             </div>
             <div class="pointer nobr" ng-click="item.closed = !item.closed; save(item);" ng-show="item.hover || item.closed">
               <i class="fa" ng-class="item.closed ? 'fa-check-square-o' : 'fa-square-o'"></i>
               <span class="spacer-left" translate>Done</span>
             </div>
           </div>
-          <div os-perms="!agenda.can_manage" ng-if="item.closed">
-            <i class="fa fa-check-square-o"></i>
-            <span class="spacer-left" translate>Done</span>
+          <div os-perms="!agenda.can_manage" >
+            <div ng-show="item.is_hidden">
+              <i class="fa fa-ban"></i>
+              <span class="spacer-left" translate>Internal</span>
+            </div>
+            <div ng-show="item.closed">
+              <i class="fa fa-check-square-o"></i>
+              <span class="spacer-left" translate>Done</span>
+            </div>
           </div>
         </div>
       </div>

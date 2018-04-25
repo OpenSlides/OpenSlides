@@ -115,17 +115,16 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             //creates the voting string for the result table and differentiates between special values
             var parseVoteValue = function(voteObject, printLabel) {
                 var voteVal = "";
+                if (voteObject) {
+                    if (printLabel) {
+                        voteVal += voteObject.label + ": ";
+                    }
+                    voteVal += voteObject.value;
 
-                if (printLabel) {
-                    voteVal += voteObject.label + ": ";
+                    if (voteObject.percentStr) {
+                        voteVal += " " + voteObject.percentStr;
+                    }
                 }
-
-                voteVal += voteObject.value;
-
-                if (voteObject.percentStr) {
-                    voteVal += " " + voteObject.percentStr;
-                }
-
                 voteVal += "\n";
                 return voteVal;
             };
@@ -373,7 +372,10 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                     });
                 } else {
                     angular.forEach(candidates, function(option) {
-                        var candidate = option.candidate.get_full_name();
+                        var candidate;
+                        if (option.candidate) {
+                            candidate = option.candidate.get_full_name();
+                        }
                         candidateBallotList.push(createYNBallotEntry(candidate));
                     });
                 }

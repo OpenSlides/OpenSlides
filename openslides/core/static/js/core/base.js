@@ -1072,7 +1072,7 @@ angular.module('OpenSlidesApp.core', [
              *  - YOffset: move the editor toolbar 40px up
              */
             getOptions: function () {
-                var extraPluginsString = 'colorbutton,find,sourcedialog,justify,showblocks';
+                var extraPluginsString = 'colorbutton,colordialog,find,sourcedialog,justify,showblocks';
                 var registeredPluginsString = extraPlugins.join(',');
                 if (registeredPluginsString) {
                     extraPluginsString += ',' + registeredPluginsString;
