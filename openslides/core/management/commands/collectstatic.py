@@ -27,7 +27,7 @@ class Command(CollectStatic):
 
     def collect(self) -> Dict[str, Any]:
         try:
-            destination_dir = os.path.join(settings.STATICFILES_DIRS[0], 'js')
+            destination_dir = os.path.join(settings.STATIC_ROOT, 'js')
         except IndexError:
             # If the user does not want do have staticfiles, he should not get
             # the webclient files either.
