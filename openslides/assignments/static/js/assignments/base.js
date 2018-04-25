@@ -318,11 +318,13 @@ angular.module('OpenSlidesApp.assignments', [])
     '$http',
     'DS',
     'Projector',
+    'ProjectHelper',
     'AssignmentRelatedUser',
     'AssignmentPoll',
     'jsDataModel',
     'gettext',
-    function ($http, DS, Projector, AssignmentRelatedUser, AssignmentPoll, jsDataModel, gettext) {
+    function ($http, DS, Projector, ProjectHelper, AssignmentRelatedUser, AssignmentPoll,
+        jsDataModel, gettext) {
         var name = 'assignments/assignment';
         return DS.defineResource({
             name: name,
@@ -369,7 +371,7 @@ angular.module('OpenSlidesApp.assignments', [])
                             },
                         };
                     }
-                    return $http.post('/rest/core/projector/project/', requestData);
+                    ProjectHelper.project(requestData);
                 },
                 // override isProjected function of jsDataModel factory
                 isProjected: function (poll_id, anyPoll) {

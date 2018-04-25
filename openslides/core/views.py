@@ -415,6 +415,10 @@ class ProjectorViewSet(ModelViewSet):
             }
         }
         """
+        # The data has to be a dict.
+        if not isinstance(request.data, dict):
+            raise ValidationError({'detail': _('The data has to be a dict.')})
+
         # Get projector ids to clear
         clear_projector_ids = request.data.get('clear_ids', [])
         for id in clear_projector_ids:
