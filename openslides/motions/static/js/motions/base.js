@@ -265,11 +265,21 @@ angular.module('OpenSlidesApp.motions', [
                     return this.getVersion(versionId).title;
                 },
                 getAgendaTitle: function () {
-                    var title = '';
+                    var title = gettextCatalog.getString('Motion');
                     if (this.identifier) {
-                        title = gettextCatalog.getString('Motion') + ' ' + this.identifier + ': ';
+                        title += ' ' + this.identifier;
+                    } else {
+                        title += ' (' + this.getTitle() + ')';
                     }
-                    title += this.getTitle();
+                    return title;
+                },
+                getListOfSpeakersTitle: function () {
+                    var title = gettextCatalog.getString('Motion');
+                    if (this.identifier) {
+                        title += ' ' + this.identifier;
+                    } else {
+                        title += ' (' + this.getTitle() + ')';
+                    }
                     return title;
                 },
                 getTitleWithChanges: function (changeRecommendationMode, versionId) {

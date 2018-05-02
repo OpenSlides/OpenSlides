@@ -2,11 +2,11 @@
 
   <!-- Title -->
   <div id="title">
-    <h1>{{ agendaItem.getTitle() }}</h1>
-    <h2>
-      <span translate>List of speakers</span>
+    <h1 translate>List of speakers</h1>
+    <h2>{{ agendaItem.getListOfSpeakersTitle() }}
       <span ng-if="(agendaItem.speakers | filter: {begin_time: null}).length > 0">
-      &ndash; {{ (agendaItem.speakers | filter: {begin_time: null}).length }} <translate>speakers</translate>
+        &ndash; {{ (agendaItem.speakers | filter: {begin_time: null}).length }} <translate>speakers</translate>
+      </span>
       <span ng-if="agendaItem.speaker_list_closed" class="slimlabel label label-danger" translate>Closed</span>
     </h2>
   </div>

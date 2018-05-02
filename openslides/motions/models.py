@@ -654,9 +654,9 @@ class Motion(RESTModelMixin, models.Model):
         Note: It has to be the same return value like in JavaScript.
         """
         if self.identifier:
-            string = '%s (%s %s)' % (self.title, _(self._meta.verbose_name), self.identifier)
+            string = '%s %s' % (_(self._meta.verbose_name), self.identifier)
         else:
-            string = '%s (%s)' % (self.title, _(self._meta.verbose_name))
+            string = '%s (%s)' % (_(self._meta.verbose_name), self.title)
         return string
 
     @property
