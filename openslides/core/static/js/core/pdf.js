@@ -948,43 +948,37 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     alreadyConverted.push(pObjectToPush);
                                     break;
                                 case "img":
-                                    var regex = /([\w-]*)\s*:\s*([^;]*)/g;
-                                    var match; //helper variable for the regex
-                                    var imageSize={};
-                                    var maxResolution = {
-                                        width: 435,
-                                        height: 830
-                                    };
+                                    var path = element.getAttribute('src');
+                                    var height = images[path].height;
+                                    var width = images[path].width;
+                                    var maxWidth = 450;
+                                    var scale = 100;
 
-                                    if (element.getAttribute("style")) {
-                                        while ((match = regex.exec(element.getAttribute("style"))) !== null) {
-                                            imageSize[match[1]] = parseInt(match[2].trim());
+                                    var style = element.getAttribute('style');
+                                    if (style) {
+                                        var match = style.match(/width:\s*(\d+)\%/);
+                                        if (match) {
+                                            scale = parseInt(match[1]);
                                         }
-                                    } else {
-                                        imageSize = {
-                                            height: images[element.getAttribute("src")].height,
-                                            width: images[element.getAttribute("src")].width
-                                        };
                                     }
 
-                                    if (imageSize.width > maxResolution.width) {
-                                        var scaleByWidth = maxResolution.width/imageSize.width;
-                                        imageSize.width *= scaleByWidth;
-                                        imageSize.height *= scaleByWidth;
+                                    // scale image
+                                    width = (width * scale) / 100;
+                                    height = (height * scale) / 100;
+
+                                    if (width > maxWidth) {
+                                        height = (height * maxWidth) / width;
+                                        width = maxWidth;
                                     }
-                                    if (imageSize.height > maxResolution.height) {
-                                        var scaleByHeight = maxResolution.height/imageSize.height;
-                                        imageSize.width *= scaleByHeight;
-                                        imageSize.height *= scaleByHeight;
-                                    }
-                                    var path = element.getAttribute("src");
+
+                                    // remove trailing / for the virtual file system (there is no root)
                                     if (path.indexOf('/') === 0) {
-                                        path = path.substr(1); // remove trailing /
+                                        path = path.substr(1);
                                     }
                                     alreadyConverted.push({
                                         image: path,
-                                        width: imageSize.width,
-                                        height: imageSize.height
+                                        width: width,
+                                        height: height,
                                     });
                                     break;
                                 case "ul":
