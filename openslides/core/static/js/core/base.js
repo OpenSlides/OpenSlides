@@ -566,14 +566,14 @@ angular.module('OpenSlidesApp.core', [
 //
 // It is possible to provide a scope, that is merged into the surrounding scope.
 // You can override functions or values of the surrounding scope by providing them:
-// { Id: 'hookId', template: '<button ng-click="customFn()">click me</button>',
+// { id: 'hookId', template: '<button ng-click="customOrOverwritten()">click me</button>',
 //   scope: {
 //     customOrOverwritten: function () { /*Do something */ },
 //   },
 // }
 // Or you provide a function that returns an object of functions/values to overwrite to
 // get access to the scope merged in:
-// { Id: 'hookId', template: '<button ng-click="customFn()">click me</button>',
+// { id: 'hookId', template: '<button ng-click="customFn()">click me</button>',
 //   scope: function (scope) {
 //     return {
 //       customOrOverwritten: function () {
@@ -592,15 +592,15 @@ angular.module('OpenSlidesApp.core', [
             hooks: hooks,
             registerHook: function (hook) {
                 // Deprecated: Set the new style 'id', if 'Id' is given.
-                if (hook.id === undefined) {
+                if (hook.id === void 0) {
                     hook.id = hook.Id;
                 }
 
-                if (hooks[hook.id] === undefined) {
+                if (hooks[hook.id] === void 0) {
                     hooks[hook.id] = [];
                 }
                 // set override default
-                if (hook.override === undefined) {
+                if (hook.override === void 0) {
                     hook.override = !!(hook.template || hook.templateUrl);
                 }
                 hooks[hook.id].push(hook);
