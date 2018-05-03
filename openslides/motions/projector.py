@@ -46,10 +46,11 @@ class MotionSlide(ProjectorElement):
         recommendation_field_id = None
 
         for id, field in fields.items():
-            if field.get('forState', False):
-                state_field_id = id
-            if field.get('forRecommendation', False):
-                recommendation_field_id = id
+            if isinstance(field, dict):
+                if field.get('forState', False):
+                    state_field_id = id
+                if field.get('forRecommendation', False):
+                    recommendation_field_id = id
 
         # extract all mentioned motions from the state and recommendation
         motion_ids = set()
