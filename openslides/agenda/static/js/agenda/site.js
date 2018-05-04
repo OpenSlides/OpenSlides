@@ -381,13 +381,15 @@ angular.module('OpenSlidesApp.agenda.site', [
         };
         // change whether one item or all subitems should be projected
         $scope.changeItemTree = function (item) {
-            var isProjected = item.isProjected(item.tree);
-            if (isProjected > 0) {
-                // Deactivate and reactivate
-                item.project(isProjected, item.tree);
-                item.project(isProjected, !item.tree);
-            }
+            var tree = item.tree;
             item.tree = !item.tree;
+            var isProjected = item.isProjected(tree);
+            _.forEach(isProjected, function (projectorId) {
+                // Deactivate and reactivate
+                item.project(projectorId, tree).then(function (s) {
+                    item.project(projectorId, !tree);
+                });
+            });
         };
         // check if agenda is projected
         $scope.isAgendaProjected = function (tree) {

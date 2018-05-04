@@ -685,7 +685,7 @@ angular.module('OpenSlidesApp.motions', [
                             },
                         };
                     }
-                    ProjectHelper.project(requestData);
+                    return ProjectHelper.project(requestData);
                 },
                 isProjected: function (mode) {
                     var self = this;
