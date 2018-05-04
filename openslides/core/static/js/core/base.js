@@ -744,7 +744,7 @@ angular.module('OpenSlidesApp.core', [
                     element: {name: this.getResourceName(), id: this.id},
                 };
             }
-            ProjectHelper.project(requestData);
+            return ProjectHelper.project(requestData);
         };
         BaseModel.prototype.isProjected = function() {
             // Returns the ids of all projectors if there is a projector element
@@ -1265,9 +1265,10 @@ angular.module('OpenSlidesApp.core', [
 // with the given data. Also it does the changes done by the server
 // locally and may reverts them, if something went wrong.
 .factory('ProjectHelper', [
+    '$q',
     '$http',
     'Projector',
-    function ($http, Projector) {
+    function ($q, $http, Projector) {
         var uuid4 = function () {
             function s8() {
                 return Math.floor((1 + Math.random()) * 0x100000000)
@@ -1336,12 +1337,15 @@ angular.module('OpenSlidesApp.core', [
 
                 Projector.inject(projectorsChanged);
 
-                $http.post('/rest/core/projector/project/', data).then(null,
-                    function (error) {
+                return $q(function (resolve, reject) {
+                    $http.post('/rest/core/projector/project/', data).then(function (success) {
+                        resolve(success);
+                    }, function (error) {
                         // revert the changed made earlier
                         Projector.inject(originalProjectors);
-                    }
-                );
+                        reject(error);
+                    });
+                });
             },
         };
     }

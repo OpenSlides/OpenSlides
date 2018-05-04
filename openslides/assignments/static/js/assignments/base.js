@@ -371,7 +371,7 @@ angular.module('OpenSlidesApp.assignments', [])
                             },
                         };
                     }
-                    ProjectHelper.project(requestData);
+                    return ProjectHelper.project(requestData);
                 },
                 // override isProjected function of jsDataModel factory
                 isProjected: function (poll_id, anyPoll) {
