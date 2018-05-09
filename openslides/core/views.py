@@ -289,10 +289,6 @@ class ProjectorViewSet(ModelViewSet):
         is not validated at this point! Should be done before.
         Returns the new serialized data.
         """
-        # reset scroll level
-        if (projector.scroll != 0):
-            projector.scroll = 0
-            projector.save()
         projector_config = {}
         for key, value in projector.config.items():
             if value.get('stable'):
@@ -303,6 +299,10 @@ class ProjectorViewSet(ModelViewSet):
         serializer = self.get_serializer(projector, data={'config': projector_config}, partial=False)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        # reset scroll level
+        if (projector.scroll != 0):
+            projector.scroll = 0
+            projector.save()
         return serializer.data
 
     @detail_route(methods=['post'])
