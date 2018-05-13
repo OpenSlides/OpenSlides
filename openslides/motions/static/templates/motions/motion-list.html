@@ -100,7 +100,7 @@
       <!-- motionBlock select -->
       <select ng-show="selectedAction == 'setMotionBlock'" ng-model="selectedMotionBlock" class="form-control input-sm">
         <option value="" translate>--- Select motion block ---</option>
-        <option ng-repeat="motionBlock in motionBlocks" value="{{ motionBlock.id }}">
+        <option ng-repeat="motionBlock in motionBlocks | orderBy: 'title'" value="{{ motionBlock.id }}">
           {{ motionBlock.title }}
         </option>
         <option value="no_motionBlock_selected" translate>No motion block</option>
@@ -246,7 +246,7 @@
               <span class="caret"></span>
             </span>
             <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownBlock">
-              <li ng-repeat="block in motionBlocks">
+              <li ng-repeat="block in motionBlocks | orderBy: 'title'">
                 <a href ng-click="filter.operateMultiselectFilter('motionBlock', block.id, isSelectMode)">
                   <i class="fa fa-check" ng-if="filter.multiselectFilters.motionBlock.indexOf(block.id) > -1"></i>
                   {{ block.title }}
@@ -454,7 +454,7 @@
             <translate>No category set</translate>
           </span>
           <!-- motion block -->
-          <span ng-repeat="motionBlock in motionBlocks" class="pointer spacer-left-lg"
+          <span ng-repeat="motionBlock in motionBlocks | orderBy: 'title'" class="pointer spacer-left-lg"
             ng-if="filter.multiselectFilters.motionBlock.indexOf(motionBlock.id) > -1"
             ng-click="filter.operateMultiselectFilter('motionBlock', motionBlock.id, isSelectMode)"
             ng-class="{'disabled': isSelectMode}">
@@ -707,7 +707,7 @@
                   </span>
                 </span>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMotionBlock{{ motion.id }}">
-                  <li ng-repeat="motionBlock in motionBlocks">
+                  <li ng-repeat="motionBlock in motionBlocks | orderBy: 'title'">
                     <a href ng-click="toggleMotionBlock(motion, motionBlock)">
                       <i class="fa fa-check" ng-if="motionBlock.id == motion.motionBlock.id"></i>
                       {{ motionBlock.title }}

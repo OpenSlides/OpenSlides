@@ -35,7 +35,7 @@
             </button>
         </div>
         <div class="status-row" ng-if="!motion.isAllowed('can_manage') && title_change_recommendation.rejected">
-            <translate>Rejected</translate>
+            <i class="grey"><translate>Rejected</translate>:</i>
         </div>
 
         <div class="motion-text motion-text-diff line-numbers-{{ lineNumberMode }}">
@@ -81,7 +81,7 @@
                     </button>
                 </div>
                 <div class="status-row" ng-if="!motion.isAllowed('can_manage') && change.rejected">
-                    <translate>Rejected</translate>
+                    <i class="grey"><translate>Rejected</translate>:</i>
                 </div>
 
                 <div class="motion-text motion-text-diff line-numbers-{{ lineNumberMode }}"
