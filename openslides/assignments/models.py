@@ -285,14 +285,15 @@ class Assignment(RESTModelMixin, models.Model):
 
         # Add all candidates to list of speakers of related agenda item
         # TODO: Try to do this in a bulk create
-        for candidate in self.candidates:
-            try:
-                Speaker.objects.add(candidate, self.agenda_item, skip_autoupdate=True)
-            except OpenSlidesError:
-                # The Speaker is already on the list. Do nothing.
-                # TODO: Find a smart way not to catch the error concerning AnonymousUser.
-                pass
-        inform_changed_data(self.agenda_item)
+        if config['assignments_add_candidates_to_list_of_speakers']:
+            for candidate in self.candidates:
+                try:
+                    Speaker.objects.add(candidate, self.agenda_item, skip_autoupdate=True)
+                except OpenSlidesError:
+                    # The Speaker is already on the list. Do nothing.
+                    # TODO: Find a smart way not to catch the error concerning AnonymousUser.
+                    pass
+            inform_changed_data(self.agenda_item)
 
         return poll
 

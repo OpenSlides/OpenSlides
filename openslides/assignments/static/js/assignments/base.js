@@ -72,7 +72,9 @@ angular.module('OpenSlidesApp.assignments', [])
 
                         if (base && !skipPercents) {
                             percentNumber = Math.round(vote.weight * 100 / base * 100) / 100;
-                            percentStr = "(" + percentNumber + "%)";
+                            if (percentNumber >= 0) {
+                                percentStr = '(' + percentNumber + ' %)';
+                            }
                         }
                         votes.push({
                             'order': order,
