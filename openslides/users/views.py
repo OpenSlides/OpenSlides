@@ -333,7 +333,15 @@ class GroupViewSet(ModelViewSet):
         instance = self.get_object()
         if instance.pk == 1:
             self.permission_denied(request)
+        # The list() is required to evaluate the query
+        affected_users_ids = list(instance.user_set.values_list('pk', flat=True))
+
+        # Delete the group
         self.perform_destroy(instance)
+
+        # Get the updated user data from the DB.
+        affected_users = User.objects.filter(pk__in=affected_users_ids)
+        inform_changed_data(affected_users)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
