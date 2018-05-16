@@ -199,13 +199,39 @@ class MotionViewSet(ModelViewSet):
             for key in keys:
                 if key not in whitelist:
                     del request.data[key]
-        if (not has_perm(request.user, 'motions.can_see_comments') or
-                not has_perm(request.user, 'motions.can_manage_comments')):
-            try:
+
+        # Check comments
+        # "normal" comments only can be changed if the user has can_see_comments and
+        # can_manage_comments.
+        # "special" comments (for state and recommendation) can only be changed, if
+        # the user has the can_manage permission
+        if 'comments' in request.data:
+            request_comments = {}  # Here, all valid comments are saved.
+            for id, value in request.data['comments'].items():
+                field = config['motions_comments'].get(id)
+                if field:
+                    is_special_comment = field.get('forRecommendation') or field.get('forState')
+                    if (is_special_comment and has_perm(request.user, 'motions.can_manage')) or (
+                        not is_special_comment and has_perm(request.user, 'motions.can_see_comments') and
+                            has_perm(request.user, 'motions.can_manage_comments')):
+                        # The user has the required permission for at least one case
+                        # Save the comment!
+                        request_comments[id] = value
+
+            # two possibilities here: Either the comments dict is empty: then delete it, so
+            # the serializer will skip it. If we leave it empty, everything will be deleted :(
+            # Second, just special or normal comments are in the comments dict. Fill the original
+            # data, so it won't be delete.
+
+            if len(request_comments) == 0:
                 del request.data['comments']
-            except KeyError:
-                # No comments here. Just do nothing.
-                pass
+            else:
+                if motion.comments:
+                    for id, value in motion.comments.items():
+                        if id not in request_comments:
+                            # populate missing comments with original ones.
+                            request_comments[id] = value
+                request.data['comments'] = request_comments
 
         # get changed comment fields
         changed_comment_fields = []
