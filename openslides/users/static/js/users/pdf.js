@@ -294,7 +294,9 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
     'UserAccessDataListContentProvider',
     'PdfMakeDocumentProvider',
     'PdfCreate',
-    function (gettextCatalog, UserListContentProvider, UserAccessDataListContentProvider, PdfMakeDocumentProvider, PdfCreate) {
+    'Messaging',
+    function (gettextCatalog, UserListContentProvider, UserAccessDataListContentProvider,
+        PdfMakeDocumentProvider, PdfCreate, Messaging) {
         return {
             exportUserList: function (users) {
                 var filename = gettextCatalog.getString('List of participants') + '.pdf';
@@ -302,6 +304,8 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                 PdfMakeDocumentProvider.createInstance(userListContentProvider).then(
                     function (documentProvider) {
                         PdfCreate.download(documentProvider, filename);
+                    }, function (error) {
+                        Messaging.addMessage(error.msg, 'error');
                     }
                 );
             },
@@ -313,6 +317,8 @@ angular.module('OpenSlidesApp.users.pdf', ['OpenSlidesApp.core.pdf'])
                 PdfMakeDocumentProvider.createInstance(userAccessDataListContentProvider, true).then(
                     function (documentProvider) {
                         PdfCreate.download(documentProvider, filename, true);
+                    }, function (error) {
+                        Messaging.addMessage(error.msg, 'error');
                     }
                 );
             }

@@ -450,7 +450,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 return imageMap;
             };
 
-            return $q(function (resolve) {
+            return $q(function (resolve, reject) {
                 ImageConverter.toBase64(getImageSources()).then(function (_imageMap) {
                     imageMap = _imageMap;
                     converter = PdfMakeConverter.createInstance(_imageMap);
@@ -461,7 +461,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         getCategory: getCategory,
                         getImageMap: getImageMap,
                     });
-                });
+                }, reject);
             });
         };
 
@@ -623,7 +623,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 return imageMap;
             };
 
-            return $q(function (resolve) {
+            return $q(function (resolve, reject) {
                 ImageConverter.toBase64(getImageSources()).then(function (_imageMap) {
                     imageMap = _imageMap;
                     converter = PdfMakeConverter.createInstance(_imageMap);
@@ -631,7 +631,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         getContent: getContent,
                         getImageMap: getImageMap,
                     });
-                });
+                }, reject);
             });
         };
 
@@ -786,7 +786,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 return imageMap;
             };
 
-            return $q(function (resolve) {
+            return $q(function (resolve, reject) {
                 var imageSources = [
                     logoBallotPaperUrl,
                 ];
@@ -796,7 +796,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         getContent: getContent,
                         getImageMap: getImageMap,
                     });
-                });
+                }, reject);
             });
         };
         return {
@@ -1014,14 +1014,17 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 var motionContentProviderArray = [];
                 var motionContentProviderPromises = _.map(motions, function (motion) {
                     var version = (singleMotion ? params.version : motion.active_version);
-                    return MotionContentProvider.createInstance(
-                        motion, version, params
-                    ).then(function (contentProvider) {
-                        motionContentProviderArray.push(contentProvider);
+                    return $q(function (resolve, reject) {
+                        MotionContentProvider.createInstance(
+                            motion, version, params
+                        ).then(function (contentProvider) {
+                            motionContentProviderArray.push(contentProvider);
+                            resolve();
+                        }, reject);
                     });
                 });
 
-                return $q(function (resolve) {
+                return $q(function (resolve, reject) {
                     $q.all(motionContentProviderPromises).then(function() {
                         var documentProviderPromise;
                         if (singleMotion) {
@@ -1032,8 +1035,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         }
                         documentProviderPromise.then(function (documentProvider) {
                             resolve(documentProvider);
-                        });
-                    });
+                        }, reject);
+                    }, reject);
                 });
             },
             export: function (motions, params, singleMotion) {
@@ -1044,6 +1047,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 this.getDocumentProvider(motions, params, singleMotion).then(
                     function (documentProvider) {
                         PdfCreate.download(documentProvider, params.filename);
+                    }, function (error) {
+                        Messaging.addMessage(error.msg, 'error');
                     }
                 );
             },
@@ -1073,12 +1078,12 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     usedFilenames.push(filename);
                     filename += '.pdf';
 
-                    return $q(function (resolve) {
+                    return $q(function (resolve, reject) {
                         // get documentProvider for every motion.
                         self.getDocumentProvider(motion, params, true).then(function (documentProvider) {
                             docMap[filename] = documentProvider;
                             resolve();
-                        });
+                        }, reject);
                     });
                 });
                 $q.all(docPromises).then(function () {
@@ -1097,6 +1102,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                             'spacer-right"></i>' + gettextCatalog.getString('Error while generating ZIP file') +
                             ': <code>' + error + '</code>', 'error');
                     });
+                }, function (error) {
+                    Messaging.createOrEditMessage(messageId, error.msg, 'error');
                 });
             },
             createPollPdf: function (motion, version) {
@@ -1106,6 +1113,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 PollContentProvider.createInstance(title, id).then(function (pollContentProvider) {
                     var documentProvider = PdfMakeBallotPaperProvider.createInstance(pollContentProvider);
                     PdfCreate.download(documentProvider, filename);
+                }, function (error) {
+                    Messaging.addMessage(error.msg, 'error');
                 });
             },
             exportPersonalNote: function (motion, filename) {
@@ -1117,7 +1126,11 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 MotionPartialContentProvider.createInstance(motion, content).then(function (contentProvider) {
                     PdfMakeDocumentProvider.createInstance(contentProvider).then(function (documentProvider) {
                         PdfCreate.download(documentProvider, filename);
+                    }, function (error) {
+                        Messaging.addMessage(error.msg, 'error');
                     });
+                }, function (error) {
+                    Messaging.addMessage(error.msg, 'error');
                 });
             },
             exportComment: function (motion, commentId, filename) {
@@ -1134,7 +1147,11 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     MotionPartialContentProvider.createInstance(motion, content).then(function (contentProvider) {
                         PdfMakeDocumentProvider.createInstance(contentProvider).then(function (documentProvider) {
                             PdfCreate.download(documentProvider, filename);
+                        }, function (error) {
+                            Messaging.addMessage(error.msg, 'error');
                         });
+                    }, function (error) {
+                        Messaging.addMessage(error.msg, 'error');
                     });
                 }
             },

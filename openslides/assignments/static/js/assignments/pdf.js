@@ -514,7 +514,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 return imageMap;
             };
 
-            return $q(function (resolve) {
+            return $q(function (resolve, reject) {
                 var imageSources = [
                     logoBallotPaperUrl,
                 ];
@@ -524,7 +524,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                         getContent: getContent,
                         getImageMap: getImageMap,
                     });
-                });
+                }, reject);
             });
         };
 
@@ -618,8 +618,10 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
     'BallotContentProvider',
     'PdfMakeBallotPaperProvider',
     'PdfCreate',
+    'Messaging',
     function (gettextCatalog, AssignmentContentProvider, AssignmentCatalogContentProvider,
-        PdfMakeDocumentProvider, BallotContentProvider, PdfMakeBallotPaperProvider, PdfCreate) {
+        PdfMakeDocumentProvider, BallotContentProvider, PdfMakeBallotPaperProvider, PdfCreate,
+        Messaging) {
         return {
             export: function (assignments, singleAssignment) {
                 var filename = singleAssignment ?
@@ -629,11 +631,10 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 if (singleAssignment) {
                     assignments = [assignments];
                 }
-                var assignmentContentProviderArray = [];
 
                 // Convert the assignments to content providers
-                angular.forEach(assignments, function(assignment) {
-                    assignmentContentProviderArray.push(AssignmentContentProvider.createInstance(assignment));
+                var assignmentContentProviderArray = _.map(assignments, function (assignment) {
+                    return AssignmentContentProvider.createInstance(assignment);
                 });
 
                 var documentProviderPromise;
@@ -648,6 +649,8 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 }
                 documentProviderPromise.then(function (documentProvider) {
                     PdfCreate.download(documentProvider, filename);
+                }, function (error) {
+                    Messaging.addMessage(error.msg, 'error');
                 });
             },
             createBallotPdf: function (assignment, pollId) {
@@ -663,6 +666,8 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 BallotContentProvider.createInstance(assignment, thePoll, pollNumber).then(function (ballotContentProvider) {
                     var documentProvider = PdfMakeBallotPaperProvider.createInstance(ballotContentProvider);
                     PdfCreate.download(documentProvider, filename);
+                }, function (error) {
+                    Messaging.addMessage(error.msg, 'error');
                 });
             },
         };
