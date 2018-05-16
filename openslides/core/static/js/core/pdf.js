@@ -8,7 +8,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
  * General layout functions for building PDFs with pdfmake.
  */
 .factory('PDFLayout', [
-    function() {
+    'gettextCatalog',
+    function(gettextCatalog) {
         var PDFLayout = {};
         var BallotCircleDimensions = {
             yDistance: 6,
@@ -89,10 +90,17 @@ angular.module('OpenSlidesApp.core.pdf', [])
 
         // returns a promise for converting an image in data URL format with size information
         PDFLayout.imageURLtoBase64 = function(url) {
-            var promise = new Promise(function(resolve) {
+            var promise = new Promise(function(resolve, reject) {
                 var img = new Image();
                 img.crossOrigin = "Anonymous";
-                img.onload = function() {
+                img.onerror = function () {
+                    reject({
+                        msg: '<i class="fa fa-exclamation-triangle fa-lg spacer-right"></i>' +
+                             gettextCatalog.getString('Error while generating PDF file') +
+                             ': <code>' + gettextCatalog.getString('Cannot load image') + ' ' + url + '</code>',
+                    });
+                };
+                img.onload = function () {
                     var canvas = document.createElement("canvas");
                     canvas.width = img.width;
                     canvas.height = img.height;
@@ -348,7 +356,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 return imageMap;
             };
 
-            return $q(function (resolve) {
+            return $q(function (resolve, reject) {
                 var imageSources = [
                     logoHeaderUrl,
                     logoFooterUrl
@@ -363,11 +371,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
                         getDocument: getDocument,
                         getImageMap: getImageMap,
                     });
-                });
+                }, reject);
             });
         };
         return {
-            createInstance: createInstance
+            createInstance: createInstance,
         };
     }
 ])
@@ -1114,11 +1122,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     }
                 });
 
-                return $q(function (resolve) {
+                return $q(function (resolve, reject) {
                     //resolve promises to get base64
                     $q.all(imagePromises).then(function() {
                         resolve(imageMap);
-                    });
+                    }, reject);
                 });
             }
         };
