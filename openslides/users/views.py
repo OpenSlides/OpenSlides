@@ -20,6 +20,7 @@ from ..utils.autoupdate import (
     inform_changed_data,
     inform_data_collection_element_list,
 )
+from ..utils.cache import restricted_data_cache
 from ..utils.collection import CollectionElement
 from ..utils.rest_api import (
     ModelViewSet,
@@ -79,12 +80,13 @@ class UserViewSet(ModelViewSet):
         self.check_view_permissions()). Also it is evaluated whether he
         wants to update himself or is manager.
         """
+        user = self.get_object()
         # Check permissions.
         if (has_perm(self.request.user, 'users.can_see_name') and
                 has_perm(request.user, 'users.can_see_extra_data') and
                 has_perm(request.user, 'users.can_manage')):
             # The user has all permissions so he may update every user.
-            if request.data.get('is_active') is False and self.get_object() == request.user:
+            if request.data.get('is_active') is False and user == request.user:
                 # But a user can not deactivate himself.
                 raise ValidationError({'detail': _('You can not deactivate yourself.')})
         else:
@@ -97,6 +99,8 @@ class UserViewSet(ModelViewSet):
                 if key not in ('username', 'about_me'):
                     del request.data[key]
         response = super().update(request, *args, **kwargs)
+        # Maybe some group assignments have changed. Better delete the restricted user cache
+        restricted_data_cache.del_user(user.id)
         return response
 
     def destroy(self, request, *args, **kwargs):
@@ -293,6 +297,10 @@ class GroupViewSet(ModelViewSet):
 
         # Check status code and send 'permission_change' signal.
         if response.status_code == 200:
+
+            # Delete the user chaches of all affected users
+            for user in group.user_set.all():
+                restricted_data_cache.del_user(user.id)
 
             def diff(full, part):
                 """

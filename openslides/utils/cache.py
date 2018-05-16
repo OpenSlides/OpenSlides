@@ -461,6 +461,12 @@ class DummyRestrictedDataCache:
     def del_element(self, user_id: int, collection_string: str, id: int) -> None:
         pass
 
+    def del_user(self, user_id: int) -> None:
+        pass
+
+    def del_all(self) -> None:
+        pass
+
     def exists_for_user(self, user_id: int) -> bool:
         return False
 
