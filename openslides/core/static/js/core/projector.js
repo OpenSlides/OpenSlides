@@ -82,11 +82,20 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     '$scope',
     'Languages',
     'Config',
+    'Projector',
     'ProjectorID',
     'Fonts',
-    function ($scope, Languages, Config, ProjectorID, Fonts) {
+    function ($scope, Languages, Config, Projector, ProjectorID, Fonts) {
         // for the dynamic title
         $scope.projectorId = ProjectorID();
+        $scope.$watch(function () {
+            return Projector.lastModified($scope.projectorId);
+        }, function () {
+            var projector = Projector.get($scope.projectorId);
+            if (projector) {
+                $scope.projectorName = projector.name;
+            }
+        });
 
         $scope.$watch(function () {
             return Config.lastModified('projector_language');

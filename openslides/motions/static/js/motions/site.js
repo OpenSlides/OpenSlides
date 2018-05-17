@@ -1237,7 +1237,7 @@ angular.module('OpenSlidesApp.motions.site', [
              display_name: gettext('Title')},
             {name: 'submitters[0].get_short_name()',
              display_name: gettext('Submitters')},
-            {name: 'category.name',
+            {name: 'category.' + Config.get('motions_export_category_sorting').value,
              display_name: gettext('Category')},
             {name: 'motionBlock.title',
              display_name: gettext('Motion block')},

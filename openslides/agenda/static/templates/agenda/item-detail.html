@@ -5,7 +5,7 @@
         <i class="fa fa-angle-double-left fa-lg"></i>
         <translate>Agenda</translate>
       </a>
-      <a ui-sref="{{ item.content_object.collection.replace('/','.') }}.detail({id: item.content_object.id})" class="btn btn-sm btn-default">
+      <a ui-sref="{{ item.getContentObjectDetailState() }}" class="btn btn-sm btn-default">
         <i class="fa fa-angle-double-left fa-lg"></i>
         {{ item.getContentResource().verboseName | translate }}
       </a>
