@@ -1112,6 +1112,17 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+// Prevent scrolling in number inputs. Instead of changing the number, the input
+// is blurred and the window is scrolled. This is very important for our dialog
+// forms, so a user didn't change a value, when he wants to scroll the form.
+.run(function () {
+    $('body').on('mousewheel', function (e) {
+        if (e.target.nodeName === 'INPUT' && e.target.type === 'number') {
+            $(e.target).blur();
+        }
+    });
+})
+
 // Projector Sidebar Controller
 .controller('ProjectorSidebarCtrl', [
     '$scope',
