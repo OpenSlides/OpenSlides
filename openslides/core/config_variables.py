@@ -58,6 +58,15 @@ def get_config_variables():
         subgroup='Event')
 
     yield ConfigVariable(
+        name='general_event_privacy_policy',
+        default_value='',
+        input_type='markupText',
+        label='Privacy policy',
+        weight=132,
+        group='General',
+        subgroup='Event')
+
+    yield ConfigVariable(
         name='general_event_welcome_title',
         default_value='Welcome to OpenSlides',
         label='Front page title',

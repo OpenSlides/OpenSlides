@@ -359,6 +359,15 @@ angular.module('OpenSlidesApp.core.site', [
                 },
             })
 
+            // privacy policy
+            .state('privacypolicy', {
+                url: '/privacypolicy',
+                controller: 'PrivacyPolicyCtrl',
+                data: {
+                    title: gettext('Privacy policy'),
+                },
+            })
+
             //config
             .state('config', {
                 url: '/config',
@@ -1112,6 +1121,17 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+// Prevent scrolling in number inputs. Instead of changing the number, the input
+// is blurred and the window is scrolled. This is very important for our dialog
+// forms, so a user didn't change a value, when he wants to scroll the form.
+.run(function () {
+    $('body').on('mousewheel', function (e) {
+        if (e.target.nodeName === 'INPUT' && e.target.type === 'number') {
+            $(e.target).blur();
+        }
+    });
+})
+
 // Projector Sidebar Controller
 .controller('ProjectorSidebarCtrl', [
     '$scope',
@@ -1179,6 +1199,9 @@ angular.module('OpenSlidesApp.core.site', [
         });
     }
 ])
+
+// Privacy Policy Controller
+.controller('PrivacyPolicyCtrl', function () {})
 
 // Config Controller
 .controller('ConfigCtrl', [
@@ -2053,6 +2076,7 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('Event location');
         gettext('Event organizer');
         gettext('Legal notice');
+        gettext('Privacy policy');
         gettext('Front page title');
         gettext('Welcome to OpenSlides');
         gettext('Front page text');
