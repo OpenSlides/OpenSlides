@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-15 09:48+0100\n"
-"PO-Revision-Date: 2017-12-15 08:48+0000\n"
+"POT-Creation-Date: 2018-05-23 16:13+0200\n"
+"PO-Revision-Date: 2018-05-23 14:15+0000\n"
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: Spanish (http://www.transifex.com/openslides/openslides/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -36,78 +36,98 @@ msgstr "{user} ya está en la lista de oradores."
 msgid "An anonymous user can not be on lists of speakers."
 msgstr "Un usuario anónimo no puede estar en listas de oradores."
 
-#: agenda/views.py:90
+#: agenda/views.py:116
 msgid "The list of speakers is closed."
 msgstr "La lista de oradores se cerró."
 
-#: agenda/views.py:99
+#: agenda/views.py:125 agenda/views.py:150
 msgid "User does not exist."
 msgstr "El usuario no existe."
 
-#: agenda/views.py:107
+#: agenda/views.py:133
 #, python-format
 msgid "User %s was successfully added to the list of speakers."
 msgstr "Usuario %s se ha añadido correctamente a la lista de oradores."
 
-#: agenda/views.py:128
+#: agenda/views.py:154
+msgid "Marked has to be a bool."
+msgstr ""
+
+#: agenda/views.py:163
+msgid "The user is not in the list of speakers."
+msgstr ""
+
+#: agenda/views.py:168
+msgid "You are successfully marked the speaker."
+msgstr ""
+
+#: agenda/views.py:170
+msgid "You are successfully unmarked the speaker."
+msgstr ""
+
+#: agenda/views.py:187
 msgid "You are not on the list of speakers."
 msgstr "Usted no está en la lista de oradores."
 
-#: agenda/views.py:131
+#: agenda/views.py:190
 msgid "You are successfully removed from the list of speakers."
 msgstr "Usted ha sido eliminado de la lista de oradores."
 
-#: agenda/views.py:153
+#: agenda/views.py:212
 msgid "speakers have been removed from the list of speakers."
 msgstr "oradores han sido eliminados de la lista de oradores."
 
-#: agenda/views.py:155
+#: agenda/views.py:214
 #, python-format
 msgid "User %s has been removed from the list of speakers."
 msgstr "Orador %s ha sido eliminado de la lista de oradores."
 
-#: agenda/views.py:157
+#: agenda/views.py:216
 msgid "No speakers have been removed from the list of speakers."
 msgstr "Ningun orador ha sido eliminado de la lista de oradores."
 
-#: agenda/views.py:177
+#: agenda/views.py:236
 msgid "The list of speakers is empty."
 msgstr "La lista de oradores está vacía."
 
-#: agenda/views.py:182
+#: agenda/views.py:241
 msgid "Speaker does not exist."
 msgstr "El orador no existe."
 
-#: agenda/views.py:184
+#: agenda/views.py:243
 msgid "User is now speaking."
 msgstr "El usuario está hablando."
 
-#: agenda/views.py:195
+#: agenda/views.py:254
 #, python-format
 msgid "There is no one speaking at the moment according to %(item)s."
 msgstr "No hay nadie hablando acerca de %(item)s."
 
-#: agenda/views.py:197
+#: agenda/views.py:256
 msgid "The speech is finished now."
 msgstr "El discurso está terminado ahora."
 
-#: agenda/views.py:216 agenda/views.py:228 assignments/views.py:222
+#: agenda/views.py:275 agenda/views.py:287 assignments/views.py:222
 msgid "Invalid data."
 msgstr "Datos inválidos."
 
-#: agenda/views.py:241
+#: agenda/views.py:300
 msgid "List of speakers successfully sorted."
 msgstr "Lista de oradores ha sido ordenada correctamente."
 
-#: agenda/views.py:250
+#: agenda/views.py:309
+msgid "Numbering of agenda items is deactivated."
+msgstr ""
+
+#: agenda/views.py:312
 msgid "The agenda has been numbered."
 msgstr "Los temas del programa han sido numerados."
 
-#: agenda/views.py:275
+#: agenda/views.py:337
 msgid "There must not be a hierarchical loop. Please reload the page."
 msgstr "No puede haber un círculo de hierarquías. Por favor recarque la página."
 
-#: agenda/views.py:279
+#: agenda/views.py:341
 msgid "The agenda has been sorted."
 msgstr "El programa ha sido ordenado."
 
@@ -124,12 +144,12 @@ msgstr "El valor de {} debe ser superior a 0"
 msgid "You have to submit data for %d candidates."
 msgstr "Usted tiene que enviar datos para %d candidatos."
 
-#: assignments/serializers.py:153 motions/serializers.py:220
+#: assignments/serializers.py:153 motions/serializers.py:236
 #, python-format
 msgid "You have to submit data for %d vote values."
 msgstr "Usted tiene que enviar datos para %d valores de voto."
 
-#: assignments/serializers.py:157 motions/serializers.py:224
+#: assignments/serializers.py:157 motions/serializers.py:240
 #, python-format
 msgid "Vote value %s is invalid."
 msgstr "El valor de voto  %s no es válido."
@@ -287,7 +307,7 @@ msgid "public property has to be bool."
 msgstr "La propiedad pública debe de ser booleano"
 
 #: core/config.py:130
-msgid "logo has to be a dict."
+msgid "This has to be a dict."
 msgstr ""
 
 #: core/config.py:137 core/config.py:153
@@ -330,7 +350,39 @@ msgstr "El atributo 'choices' debe ser Ninguno o 'input_type' debe ser 'choice'.
 msgid "General"
 msgstr "General"
 
-#: core/views.py:721
+#: core/views.py:277
+msgid "The data has to be a list."
+msgstr ""
+
+#: core/views.py:280
+msgid "All elements have to be dicts."
+msgstr ""
+
+#: core/views.py:420
+msgid "The data has to be a dict."
+msgstr ""
+
+#: core/views.py:426
+msgid "The id \"{}\" has to be int."
+msgstr ""
+
+#: core/views.py:432
+msgid "Prune has to be an object."
+msgstr ""
+
+#: core/views.py:435
+msgid "The prune projector id has to be int."
+msgstr ""
+
+#: core/views.py:440
+msgid "The projector with id \"{}\" does not exist"
+msgstr ""
+
+#: core/views.py:444
+msgid "Prune element has to be a dict or not given."
+msgstr ""
+
+#: core/views.py:772
 msgid "All chat messages deleted successfully."
 msgstr "Todos los mensajes de charla se han eliminado correctamente."
 
@@ -338,15 +390,15 @@ msgstr "Todos los mensajes de charla se han eliminado correctamente."
 msgid "unknown"
 msgstr "desconocido"
 
-#: motions/models.py:187
+#: motions/models.py:190
 msgid "Motion"
 msgstr "Moción"
 
-#: motions/models.py:736
+#: motions/models.py:744
 msgid "new"
 msgstr "nuevo"
 
-#: motions/models.py:956
+#: motions/models.py:969
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr "%(time_and_messages)s de %(person)s"
@@ -376,7 +428,7 @@ msgstr "no decidido"
 msgid "published"
 msgstr "publicado"
 
-#: motions/signals.py:52 motions/views.py:245
+#: motions/signals.py:52 motions/views.py:300
 msgid "permitted"
 msgstr "permitido"
 
@@ -404,136 +456,147 @@ msgstr "necesita revisión"
 msgid "rejected (not authorized)"
 msgstr "rechazado (no autorizado)"
 
-#: motions/views.py:99
+#: motions/views.py:110
 msgid "The parent motion does not exist."
 msgstr "La moción principal no existe."
 
-#: motions/views.py:142
+#: motions/views.py:154
 msgid "Motion created"
 msgstr "Moción creada"
 
-#: motions/views.py:206
+#: motions/views.py:256
 msgid "Motion updated"
 msgstr "Moción actualizada"
 
-#: motions/views.py:210
+#: motions/views.py:260
 msgid "All supporters removed"
 msgstr "Todos los apoyadores fueron retirados"
 
-#: motions/views.py:243 motions/views.py:255
+#: motions/views.py:264
+msgid "Comment {} updated"
+msgstr ""
+
+#: motions/views.py:298 motions/views.py:310
 msgid "Version"
 msgstr "Versión"
 
-#: motions/views.py:247
+#: motions/views.py:302
 #, python-format
 msgid "Version %d permitted successfully."
 msgstr "Versión %d permitida correctamente."
 
-#: motions/views.py:252
+#: motions/views.py:307
 msgid "You can not delete the active version of a motion."
 msgstr "No puede eliminar la versión activa de una moción."
 
-#: motions/views.py:257
+#: motions/views.py:312
 msgid "deleted"
 msgstr "eliminado"
 
-#: motions/views.py:259
+#: motions/views.py:314
 #, python-format
 msgid "Version %d deleted successfully."
 msgstr "La versión %d se ha eliminado correctamente."
 
-#: motions/views.py:282
+#: motions/views.py:337
 msgid "You can not support this motion."
 msgstr "Usted no puede apoyar esta propuesta."
 
-#: motions/views.py:284
+#: motions/views.py:339
 msgid "Motion supported"
 msgstr "Moción apoyada"
 
-#: motions/views.py:288
+#: motions/views.py:343
 msgid "You have supported this motion successfully."
 msgstr "Le ha apoyado esta moción correctamente."
 
-#: motions/views.py:293
+#: motions/views.py:348
 msgid "You can not unsupport this motion."
 msgstr "No puede desapoyar esta moción."
 
-#: motions/views.py:295
+#: motions/views.py:350
 msgid "Motion unsupported"
 msgstr "Moción desapoyada."
 
-#: motions/views.py:296
+#: motions/views.py:351
 msgid "You have unsupported this motion successfully."
 msgstr "Usted desapoyó esta moción correctamente."
 
-#: motions/views.py:319
+#: motions/views.py:374
 msgid "Invalid data. State must be an integer."
 msgstr "Datos inválidos. Estado debe ser un número entero."
 
-#: motions/views.py:322
+#: motions/views.py:377
 #, python-format
 msgid "You can not set the state to %(state_id)d."
 msgstr "No puede asignar el estado a %(state_id)d."
 
-#: motions/views.py:330
+#: motions/views.py:385
 #, python-format
 msgid "The state of the motion was set to %s."
 msgstr "El estado de la moción fue establecido en %s."
 
-#: motions/views.py:334 motions/views.py:403 motions/views.py:661
+#: motions/views.py:389 motions/views.py:458 motions/views.py:726
 msgid "State set to"
 msgstr "Estado establecido en"
 
-#: motions/views.py:358
+#: motions/views.py:413
 msgid "Invalid data. Recommendation must be an integer."
 msgstr "Datos inválidos. Recomendación debe de ser un número entero."
 
-#: motions/views.py:362
+#: motions/views.py:417
 #, python-brace-format
 msgid "You can not set the recommendation to {recommendation_state_id}."
 msgstr "No puede asignar la recomendación a  {recommendation_state_id}."
 
-#: motions/views.py:372
+#: motions/views.py:427
 #, python-format
 msgid "The recommendation of the motion was set to %s."
 msgstr "La recomendación de la moción fue establecido en %s."
 
-#: motions/views.py:376
+#: motions/views.py:431
 msgid "Recommendation set to"
 msgstr "Recomendación establecido en"
 
-#: motions/views.py:384
+#: motions/views.py:439
 msgid "Cannot set an empty recommendation."
 msgstr ""
 
-#: motions/views.py:424
+#: motions/views.py:479
 msgid "Vote created"
 msgstr "Voto creado"
 
-#: motions/views.py:427
+#: motions/views.py:483
 msgid "Vote created successfully."
 msgstr "Voto creado correctamente."
 
-#: motions/views.py:452
+#: motions/views.py:509
 msgid "Vote updated"
 msgstr "Voto actualizado"
 
-#: motions/views.py:461
+#: motions/views.py:518
 msgid "Vote deleted"
 msgstr "Voto eliminado"
 
-#: motions/views.py:610
+#: motions/views.py:652
+#, python-format
+msgid ""
+"Numbering aborted because the motion identifier \"%s\" already exists "
+"outside of this category."
+msgstr ""
+
+#: motions/views.py:675
 msgid ""
 "Error: At least one identifier of this category does already exist in "
 "another category."
 msgstr "Error: Al menos un identificador de esta categoría ya existe en otra categoría."
 
-#: motions/views.py:615
+#: motions/views.py:680
 #, python-brace-format
 msgid "All motions in category {category} numbered successfully."
 msgstr "Todas mociones de la categoría {category} numeradas correctamente."
 
-#: motions/views.py:666
+#: motions/views.py:731
 msgid "Followed recommendations successfully."
 msgstr "Las recomendaciones se han seguidos con éxito."
 
@@ -555,56 +618,56 @@ msgid ""
 "each of his/her groups."
 msgstr "Los grupos a las que pertenece este usuario. Un usuario obtendrá todos los permisos concedidos a cada uno de sus grupos."
 
-#: users/serializers.py:64
+#: users/serializers.py:72
 msgid "Username, given name and surname can not all be empty."
 msgstr "Nombre de usuario, nombre y apellido no todos pueden estar vacíos."
 
-#: users/serializers.py:105
+#: users/serializers.py:109
 #, python-brace-format
 msgid "Incorrect value \"{value}\". Expected app_label.codename string."
 msgstr "Valor incorrecto \"{value}\". Esperaba app_label.codename cadena."
 
-#: users/serializers.py:106
+#: users/serializers.py:110
 #, python-brace-format
 msgid "Invalid permission \"{value}\". Object does not exist."
 msgstr "Permiso inválido: \"{value}\". El objeto no existe."
 
-#: users/views.py:89
+#: users/views.py:91
 msgid "You can not deactivate yourself."
 msgstr "No puede desactivarse a sí mismo."
 
-#: users/views.py:110
+#: users/views.py:114
 msgid "You can not delete yourself."
 msgstr "No puede borrar a sí mismo."
 
-#: users/views.py:127
+#: users/views.py:131
 msgid "Password successfully reset."
 msgstr "Contraseña restablecida correctamente."
 
-#: users/views.py:168
+#: users/views.py:172
 #, python-brace-format
 msgid "{number} users successfully imported."
 msgstr ""
 
-#: users/views.py:380
+#: users/views.py:410
 msgid "Cookies have to be enabled to use OpenSlides."
 msgstr "Tiene que permitir cookies para utilizar OpenSlides."
 
-#: users/views.py:383
+#: users/views.py:413
 msgid "Username or password is not correct."
 msgstr "Nombre de usuario o la contraseña no es correcta."
 
-#: users/views.py:409
+#: users/views.py:439
 #, python-brace-format
 msgid ""
 "Installation was successfully. Use {username} and {password} for first "
 "login. Important: Please change your password!"
 msgstr "Instalación exitosa. Utilice {username}  y {password} para el primer inicio de sesión. Importante: ¡Cambie su contraseña!"
 
-#: users/views.py:432
+#: users/views.py:462
 msgid "You are not authenticated."
 msgstr "Usted no está autenticado."
 
-#: users/views.py:479
+#: users/views.py:509
 msgid "Old password does not match."
 msgstr "La contraseña antigua no coincide."
