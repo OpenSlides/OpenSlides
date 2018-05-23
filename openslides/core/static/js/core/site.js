@@ -359,6 +359,15 @@ angular.module('OpenSlidesApp.core.site', [
                 },
             })
 
+            // privacy policy
+            .state('privacypolicy', {
+                url: '/privacypolicy',
+                controller: 'PrivacyPolicyCtrl',
+                data: {
+                    title: gettext('Privacy policy'),
+                },
+            })
+
             //config
             .state('config', {
                 url: '/config',
@@ -1179,6 +1188,9 @@ angular.module('OpenSlidesApp.core.site', [
         });
     }
 ])
+
+// Privacy Policy Controller
+.controller('PrivacyPolicyCtrl', function () {})
 
 // Config Controller
 .controller('ConfigCtrl', [
@@ -2053,6 +2065,7 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('Event location');
         gettext('Event organizer');
         gettext('Legal notice');
+        gettext('Privacy policy');
         gettext('Front page title');
         gettext('Welcome to OpenSlides');
         gettext('Front page text');
