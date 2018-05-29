@@ -346,6 +346,7 @@
       </div>
       <div class="col-sm-4">
           <h3 ng-if="motion.polls.length > 0" translate>Voting result</h3>
+          <template-hook hook-name="motionPollVotingHeader"></template-hook>
           <ol>
             <li ng-controller="MotionPollDetailCtrl" ng-repeat="poll in motion.polls" class="spacer"
                 ng-if="poll.has_votes || operator.hasPerms('motions.can_manage')">

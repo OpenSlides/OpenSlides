@@ -191,8 +191,10 @@ class AssignmentViewSet(ModelViewSet):
         if not assignment.candidates.exists():
             raise ValidationError({'detail': _('Can not create ballot because there are no candidates.')})
         with transaction.atomic():
-            assignment.create_poll()
-        return Response({'detail': _('Ballot created successfully.')})
+            poll = assignment.create_poll()
+        return Response({
+            'detail': _('Ballot created successfully.'),
+            'createdPollId': poll.pk})
 
     @detail_route(methods=['post'])
     def sort_related_users(self, request, pk=None):

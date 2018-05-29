@@ -155,6 +155,7 @@ angular.module('OpenSlidesApp.core', [
     'User',
     'Group',
     function (User, Group) {
+        var setUserCallbacks = [];
         var operator = {
             user: null,
             perms: [],
@@ -167,6 +168,10 @@ angular.module('OpenSlidesApp.core', [
                 } else {
                     operator.user = null;
                 }
+                operator.reloadPerms();
+                _.forEach(setUserCallbacks, function (cb) {
+                    cb(operator.user);
+                });
             },
             // Returns true if the operator has at least one perm of the perms-list.
             hasPerms: function(perms) {
@@ -190,6 +195,9 @@ angular.module('OpenSlidesApp.core', [
                     groups = [1]; // Set the default group, if no other groups are set.
                 }
                 return _.indexOf(groups, group.id) > -1;
+            },
+            registerSetUserCallback: function (cb) {
+                setUserCallbacks.push(cb);
             },
         };
         return operator;
@@ -715,6 +723,7 @@ angular.module('OpenSlidesApp.core', [
                     });
                 }
 
+                scope.content = '';
                 if (attributes.content) {
                     attributes.$observe('content', function (content) {
                         scope.content = content;
@@ -816,8 +825,9 @@ angular.module('OpenSlidesApp.core', [
  * provide also html markup for the messages. There are 4 types: 'info',
  * 'success', 'warning', 'error'. The timeout is for autodeleting the message.
  * Args that could be provided:
- * - timeout: Milliseconds until autoclose the message
- * - noClose: Whether to show the close button*/
+ * - timeout: Milliseconds until autoclose the message (default: not set, no auto close)
+ * - noClose: Whether to show the close button (default: false)
+ */
 .factory('Messaging', [
     '$timeout',
     function($timeout) {
