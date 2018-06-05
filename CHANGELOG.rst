@@ -4,6 +4,10 @@
 
 https://openslides.org/
 
+Version 2.3 (unreleased)
+========================
+
+
 Version 2.2 (2018-06-06)
 ========================
 `Release notes <https://github.com/OpenSlides/OpenSlides/wiki/OpenSlides-2.2>`_ ·
