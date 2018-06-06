@@ -13,9 +13,8 @@ https://openslides.org/ for more information.
 Requirements
 ============
 
-OpenSlides runs everywhere where Python is running (for example on
-GNU/Linux, Mac or Windows (XP or newer)). On each client you need only a
-current version of a webbrowser.
+The OpenSlides server runs everywhere where Python is running (for example on
+GNU/Linux, Mac or Windows). For the OpenSlides client a current webbrowser is required.
 
 
 Installation
@@ -27,10 +26,15 @@ Installation
 a. Check requirements
 '''''''''''''''''''''
 
-Make sure that you have installed `Python (>= 3.4)
-<https://www.python.org/>`_ on your system. You also need build-essential
-packages (``build-essential``) and header files and a static library for
-Python (``python3-dev``).
+Make sure that you have installed `Python (>= 3.4) <https://www.python.org/>`_
+on your system.
+
+Additional you need build-essential packages, header files and a static
+library for Python and also the pyvenv-3 binary package for python3.
+
+E.g. run on Debian/Ubuntu::
+
+    $ sudo apt-get install build-essential python3-dev python3-venv
 
 
 b. Setup a virtual Python environment (optional)
@@ -38,12 +42,6 @@ b. Setup a virtual Python environment (optional)
 
 You can setup a virtual Python environment using the virtual environment
 (venv) package for Python to install OpenSlides as non-root user.
-
-*Note: For Ubuntu 14.04 you have to install the pyvenv binary package*
-``python3.4-venv`` *before.*
-
-*Note: For Ubuntu 16.04 you have to install the pyvenv binary package*
-``python3-venv`` *before.*
 
 Create your OpenSlides directory and change to it::
 
@@ -64,11 +62,14 @@ To install OpenSlides just run::
 
     $ pip install openslides
 
+This installs the latest stable version. To install a specific (beta)
+version use ``openslides==x.y``.
+
 You can also use the package from the `OpenSlides website
 <https://openslides.org/>`_. Download latest OpenSlides release as
 compressed tar archive and run::
 
-    $ pip install openslides-x.x.tar.gz
+    $ pip install openslides-x.y.tar.gz
 
 This will install all required Python packages (see
 ``requirements_production.txt``).
