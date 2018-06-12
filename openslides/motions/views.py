@@ -617,6 +617,7 @@ class CategoryViewSet(ModelViewSet):
             motions = [motion_dict[pk] for pk in motion_list]
 
         # Change identifiers.
+        error_message = None
         try:
             with transaction.atomic():
                 # Collect old and new identifiers.
@@ -647,11 +648,9 @@ class CategoryViewSet(ModelViewSet):
                 # Set new identifers and change identifiers of amendments.
                 for obj in motions_to_be_sorted:
                     if Motion.objects.filter(identifier=obj['new_identifier']).exists():
-                        raise ValidationError({
-                            'detail':
-                            _('Numbering aborted because the motion identifier "%s" already exists outside of this category.') %
-                            obj['new_identifier']
-                        })
+                        # Set the error message and let the code run into an IntegrityError
+                        error_message = _('Numbering aborted because the motion identifier "%s" '
+                                          'already exists outside of this category.') % obj['new_identifier']
                     motion = obj['motion']
                     motion.identifier = obj['new_identifier']
                     motion.identifier_number = obj['number']
@@ -672,9 +671,10 @@ class CategoryViewSet(ModelViewSet):
                             instances.append(child)
                             instances.append(child.agenda_item)
         except IntegrityError:
-            message = _('Error: At least one identifier of this category does '
-                        'already exist in another category.')
-            response = Response({'detail': message}, status=400)
+            if error_message is None:
+                error_message = _('Error: At least one identifier of this category does '
+                                  'already exist in another category.')
+            response = Response({'detail': error_message}, status=400)
         else:
             inform_changed_data(instances)
             message = _('All motions in category {category} numbered '
