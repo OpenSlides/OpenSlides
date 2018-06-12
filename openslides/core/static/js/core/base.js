@@ -485,7 +485,7 @@ angular.module('OpenSlidesApp.core', [
             deregisterCallbacks: function () {
                 _.forEach(arguments, this.deregisterCallback);
             },
-            notify: function(eventName, params, users, channels) {
+            notify: function(eventName, params, users, channels, projectors) {
                 if (eventNameRegex.test(eventName)) {
                     if (!params || typeof params !== 'object') {
                         params = {};
@@ -497,6 +497,7 @@ angular.module('OpenSlidesApp.core', [
                         params: params,
                         users: users,
                         replyChannels: channels,
+                        projectors: projectors,
                     };
                     if (!operator.user) {
                         if (!anonymousTrackId) {

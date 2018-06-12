@@ -1415,6 +1415,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'MotionBlock',
     'MotionPdfExport',
     'PersonalNoteManager',
+    'Notify',
     'WebpageTitle',
     'EditingWarning',
     function($scope, $http, $timeout, $window, $filter, operator, ngDialog, gettextCatalog,
@@ -1422,7 +1423,7 @@ angular.module('OpenSlidesApp.motions.site', [
             MotionStateAndRecommendationParser, MotionChangeRecommendation, Motion, MotionComment,
             Category, Mediafile, Tag, User, Workflow, Config, motionId, MotionInlineEditing,
             MotionCommentsInlineEditing, Editor, Projector, ProjectionDefault, MotionBlock,
-            MotionPdfExport, PersonalNoteManager, WebpageTitle, EditingWarning) {
+            MotionPdfExport, PersonalNoteManager, Notify, WebpageTitle, EditingWarning) {
         var motion = Motion.get(motionId);
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -1538,13 +1539,16 @@ angular.module('OpenSlidesApp.motions.site', [
             Motion.bindOne(motion.parent_id, $scope, 'parent');
         }
 
+        $scope.scrollToLine = 0;
         $scope.highlight = 0;
+        $scope.linesForProjector = false;
         $scope.scrollToAndHighlight = function (line) {
+            $scope.scrollToLine = line;
             $scope.highlight = line;
 
             // The same line number can occur twice in diff view; we scroll to the first one in this case
             var scrollTop = null;
-            $(".line-number-" + line).each(function() {
+            $('.line-number-' + line).each(function() {
                 var top = $(this).offset().top;
                 if (top > 0 && (scrollTop === null || top < scrollTop)) {
                     scrollTop = top;
@@ -1561,6 +1565,29 @@ angular.module('OpenSlidesApp.motions.site', [
                     $scope.highlight = 0;
                 }, 2000);
             }
+
+            $scope.scrollProjectorToLine(line);
+        };
+        $scope.scrollProjectorToLine = function (line) {
+            var projectorIds = $scope.motion.isProjected();
+            if (!$scope.linesForProjector || !line || !projectorIds.length) {
+                return;
+            }
+            var projectorId = projectorIds[0];
+            var notifyNamePrefix = 'projector_' + projectorId + '_motion_line_';
+
+            // register callback
+            var callbackId = Notify.registerCallback(notifyNamePrefix + 'answer', function (params) {
+                Notify.deregisterCallback(callbackId);
+                $http.post('/rest/core/projector/' + projectorId + '/set_scroll/', params.params.scroll);
+            });
+
+            // Query all projectors
+            Notify.notify(notifyNamePrefix + 'request', {line: line}, null, null, [projectorId]);
+        };
+        $scope.toggleLinesForProjector = function () {
+            $scope.linesForProjector = !$scope.linesForProjector;
+            $scope.scrollProjectorToLine($scope.scrollToLine);
         };
 
         // open edit dialog
