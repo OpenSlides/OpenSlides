@@ -29,7 +29,8 @@ class MotionSlide(ProjectorElement):
             yield motion.agenda_item
             yield motion.state.workflow
             yield from self.required_motions_for_state_and_recommendation(motion)
-            yield from motion.submitters.all()
+            for submitter in motion.submitters.all():
+                yield submitter.user
             yield from motion.supporters.all()
             yield from MotionChangeRecommendation.objects.filter(motion_version=motion.get_active_version().id)
 

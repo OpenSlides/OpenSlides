@@ -1,26 +1,26 @@
 <div ng-if="item" class="details" ng-controller="ListOfSpeakersManagementCtrl">
-<div class="speakers-toolbar">
-  <div class="pull-right">
-    <span os-perms="agenda.can_manage">
-      <button ng-if="item.speaker_list_closed" ng-click="closeList(false)"
-￼         class="btn btn-sm btn-default">
-        <translate>Open list of speakers</translate>
-￼     </button>
-￼     <button ng-if="!item.speaker_list_closed" ng-click="closeList(true)"
-￼         class="btn btn-sm btn-default">
-￼       <translate>Close list of speakers</translate>
-￼     </button>
-    </span>
-    <span os-perms="agenda.can_manage_list_of_speakers">
-      <button ng-if="isAllowed('removeAll')" class="btn btn-sm btn-danger"
+  <div class="speakers-toolbar">
+    <div class="pull-right">
+      <span os-perms="agenda.can_manage">
+        <button ng-if="item.speaker_list_closed" ng-click="closeList(false)"
+          class="btn btn-sm btn-default">
+          <translate>Open list of speakers</translate>
+        </button>
+        <button ng-if="!item.speaker_list_closed" ng-click="closeList(true)"
+          class="btn btn-sm btn-default">
+          <translate>Close list of speakers</translate>
+        </button>
+      </span>
+      <span os-perms="agenda.can_manage_list_of_speakers">
+        <button ng-if="isAllowed('removeAll')" class="btn btn-sm btn-danger"
           ng-bootbox-confirm="{{ 'Are you sure you want to remove all speakers from this list?'| translate }}"
           ng-bootbox-confirm-action="removeAllSpeakers()">
           <i class="fa fa-trash fa-lg"></i>
           <translate>Remove all speakers</translate>
-      </button>
-    </span>
+        </button>
+      </span>
+    </div>
   </div>
-</div>
 
   <!-- text for empty list -->
   <p ng-if="speakers.length == 0" translate>
@@ -79,7 +79,7 @@
   <div ng-show="nextSpeakers.length > 0">
     <div ui-tree="treeOptions" data-empty-placeholder-enabled="false">
       <ol ui-tree-nodes="" ng-model="nextSpeakers">
-        <li ng-repeat="speaker in nextSpeakers | orderBy:'weight'" ui-tree-node>
+        <li ng-repeat="speaker in nextSpeakers | orderBy: 'weight'" ui-tree-node>
           <i os-perms="agenda.can_manage_list_of_speakers" ui-tree-handle="" class="fa fa-arrows-v"></i>
           {{ $index + 1 }}.
           {{ speaker.user.get_full_name() }}

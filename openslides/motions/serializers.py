@@ -24,6 +24,7 @@ from .models import (
     MotionPoll,
     MotionVersion,
     State,
+    Submitter,
     Workflow,
 )
 
@@ -290,6 +291,20 @@ class MotionChangeRecommendationSerializer(ModelSerializer):
         return data
 
 
+class SubmitterSerializer(ModelSerializer):
+    """
+    Serializer for motion.models.Submitter objects.
+    """
+    class Meta:
+        model = Submitter
+        fields = (
+            'id',
+            'user',
+            'motion',
+            'weight',
+        )
+
+
 class MotionSerializer(ModelSerializer):
     """
     Serializer for motion.models.Motion objects.
@@ -310,6 +325,7 @@ class MotionSerializer(ModelSerializer):
         write_only=True)
     agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=2)
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
+    submitters = SubmitterSerializer(many=True, read_only=True)
 
     class Meta:
         model = Motion
@@ -374,10 +390,6 @@ class MotionSerializer(ModelSerializer):
         motion.agenda_item_update_information['type'] = validated_data.get('agenda_type')
         motion.agenda_item_update_information['parent_id'] = validated_data.get('agenda_parent_id')
         motion.save()
-        if validated_data.get('submitters'):
-            motion.submitters.add(*validated_data['submitters'])
-        elif validated_data['request_user'].is_authenticated():
-            motion.submitters.add(validated_data['request_user'])
         motion.supporters.add(*validated_data.get('supporters', []))
         motion.attachments.add(*validated_data.get('attachments', []))
         motion.tags.add(*validated_data.get('tags', []))

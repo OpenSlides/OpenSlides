@@ -125,9 +125,15 @@
     <div class="row">
       <div class="col-sm-4">
           <!-- submitters -->
-          <h3 translate>Submitters</h3>
-          <div ng-repeat="submitter in motion.submitters">
-            {{ submitter.get_full_name() }}
+          <h3 ng-if="!motion.isAllowed('update_submitters')" class="heading" translate>Submitters</h3>
+          <h3 ng-if="motion.isAllowed('update_submitters')" class="heading">
+            <translate>Submitters</translate>
+            <a ui-sref="motions.motion.submitters({id: motion.id})" uib-tooltip="{{ 'Sort submitters' | translate }}">
+              <i class="fa fa-cog"></i>
+            </a>
+          </h3>
+          <div ng-repeat="submitter in motion.submitters | orderBy: 'weight'">
+            {{ submitter.user.get_full_name() }}
           </div>
 
           <!-- supporters -->
@@ -211,7 +217,7 @@
             <div ng-if="motion.isAllowed('change_recommendation')" class="heading">
               <span uib-dropdown>
                 <span id="recommendation-dropdown" class="drop-down-name pointer" uib-dropdown-toggle>
-                  {{ config('motions_recommendations_by') }}
+                  {{ config('motions_recommendations_by') | translate }}
                   <i class="fa fa-cog"></i>
                 </span>
                 <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="recommendation-dropdown">

@@ -27,7 +27,7 @@ script:
   - node_modules/.bin/karma start --browsers PhantomJS tests/karma/karma.conf.js
 
   - DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py test tests.unit
-  - coverage report --fail-under=43
+  - coverage report --fail-under=42
 
   - DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py test tests.integration
   - coverage report --fail-under=73

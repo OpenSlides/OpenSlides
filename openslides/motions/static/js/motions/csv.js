@@ -5,11 +5,12 @@
 angular.module('OpenSlidesApp.motions.csv', [])
 
 .factory('MotionCsvExport', [
+    '$filter',
     'gettextCatalog',
     'Config',
     'CsvDownload',
     'lineNumberingService',
-    function (gettextCatalog, Config, CsvDownload, lineNumberingService) {
+    function ($filter, gettextCatalog, Config, CsvDownload, lineNumberingService) {
         var makeHeaderline = function (params) {
             var headerline = ['Identifier', 'Title'];
             if (params.include.text) {
@@ -77,8 +78,12 @@ angular.module('OpenSlidesApp.motions.csv', [])
                     // Submitters
                     if (params.include.submitters) {
                         var submitters = [];
-                        angular.forEach(motion.submitters, function(user) {
-                            var user_short_name = [user.title, user.first_name, user.last_name].join(' ').trim();
+                        _.forEach($filter('orderBy')(motion.submitters, 'weight'), function (user) {
+                            var user_short_name = [
+                                user.user.title,
+                                user.user.first_name,
+                                user.user.last_name
+                            ].join(' ').trim();
                             submitters.push(user_short_name);
                         });
                         row.push('"' + submitters.join('; ') + '"');

@@ -130,6 +130,7 @@ def required_users(sender, request_user, **kwargs):
     if has_perm(request_user, 'motions.can_see'):
         for motion_collection_element in Collection(Motion.get_collection_string()).element_generator():
             full_data = motion_collection_element.get_full_data()
-            submitters_supporters.update(full_data['submitters_id'])
+            submitters_supporters.update(
+                [submitter['user_id'] for submitter in full_data['submitters']])
             submitters_supporters.update(full_data['supporters_id'])
     return submitters_supporters

@@ -628,8 +628,8 @@
           <div ng-if="motion.submitters.length">
             <small>
               <span class="optional" translate>by</span>
-              <span class="optional" ng-repeat="submitter in motion.submitters | limitTo:1">
-                {{ submitter.get_full_name() }}<span ng-if="!$last">,</span></span><span ng-if="motion.submitters.length > 1">,
+              <span class="optional" ng-repeat="submitter in motion.submitters | orderBy: 'weight' | limitTo:1">
+                {{ submitter.user.get_full_name() }}<span ng-if="!$last">,</span></span><span ng-if="motion.submitters.length > 1">,
                 ... [+{{ motion.submitters.length - 1 }}]</span>
               <!-- sorry for merging them together, but otherwise there would be a whitespace because of the new line -->
             </small>
@@ -639,6 +639,11 @@
             <small>
               <span ng-if="motion.isAllowed('update')">
                 <a href="" ng-click="openDialog(motion)" translate>Edit</a>
+              </span>
+              <span ng-if="motion.isAllowed('update_submitters')"> &middot;
+                <a ui-sref="motions.motion.submitters({id: motion.id})" translate>
+                  Edit submitters
+                </a>
               </span>
               <span ng-if="motion.isAllowed('delete')"> &middot;
                 <a href="" class="text-danger"

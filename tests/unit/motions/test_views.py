@@ -11,6 +11,7 @@ class MotionViewSetCreate(TestCase):
     def setUp(self):
         self.request = MagicMock()
         self.request.data.get.return_value = None
+        self.request.user.is_authenticated.return_value = False
         self.view_instance = MotionViewSet()
         self.view_instance.request = self.request
         self.view_instance.format_kwarg = MagicMock()
@@ -21,7 +22,6 @@ class MotionViewSetCreate(TestCase):
     @patch('openslides.motions.views.has_perm')
     @patch('openslides.motions.views.config')
     def test_simple_create(self, mock_config, mock_has_perm, mock_icd):
-        self.request.user = 1
         mock_has_perm.return_value = True
 
         self.view_instance.create(self.request)

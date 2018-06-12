@@ -2,9 +2,11 @@ import re
 from typing import Optional  # noqa
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError, transaction
 from django.http import Http404
+from django.http.request import QueryDict
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_noop
 from rest_framework import status
@@ -13,6 +15,7 @@ from ..core.config import config
 from ..utils.auth import has_perm
 from ..utils.autoupdate import inform_changed_data
 from ..utils.collection import CollectionElement
+from ..utils.exceptions import OpenSlidesError
 from ..utils.rest_api import (
     DestroyModelMixin,
     GenericViewSet,
@@ -39,6 +42,7 @@ from .models import (
     MotionPoll,
     MotionVersion,
     State,
+    Submitter,
     Workflow,
 )
 from .serializers import MotionPollSerializer
@@ -73,7 +77,8 @@ class MotionViewSet(ModelViewSet):
                       (not config['motions_stop_submitting'] or
                        has_perm(self.request.user, 'motions.can_manage')))
         elif self.action in ('manage_version', 'set_state', 'set_recommendation',
-                             'follow_recommendation', 'create_poll'):
+                             'follow_recommendation', 'create_poll', 'manage_submitters',
+                             'sort_submitters'):
             result = (has_perm(self.request.user, 'motions.can_see') and
                       has_perm(self.request.user, 'motions.can_manage'))
         elif self.action == 'support':
@@ -149,6 +154,38 @@ class MotionViewSet(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         motion = serializer.save(request_user=request.user)
+
+        # Check for submitters and make ids unique
+        if isinstance(request.data, QueryDict):
+            submitters_id = request.data.getlist('submitters_id')
+        else:
+            submitters_id = request.data.get('submitters_id')
+            if submitters_id is None:
+                submitters_id = []
+        if not isinstance(submitters_id, list):
+            raise ValidationError({'detail': _('If submitters_id is given, it has to be a list.')})
+
+        submitters_id_unique = set()
+        for id in submitters_id:
+            try:
+                submitters_id_unique.add(int(id))
+            except ValueError:
+                continue
+
+        submitters = []
+        for submitter_id in submitters_id_unique:
+            try:
+                submitters.append(get_user_model().objects.get(pk=submitter_id))
+            except get_user_model().DoesNotExist:
+                continue  # Do not add users that do not exist
+
+        # Add the request user, if he is authenticated and no submitters were given:
+        if len(submitters) == 0 and request.user.is_authenticated():
+            submitters.append(request.user)
+
+        # create all submitters
+        for submitter in submitters:
+            Submitter.objects.add(submitter, motion)
 
         # Write the log message and initiate response.
         motion.write_log([ugettext_noop('Motion created')], request.user)
@@ -264,10 +301,9 @@ class MotionViewSet(ModelViewSet):
                 [ugettext_noop('Comment {} updated').format(', '.join(changed_comment_fields))],
                 request.user)
 
-        # Send new submitters and supporters via autoupdate because users
+        # Send new supporters via autoupdate because users
         # without permission to see users may not have them but can get it now.
-        new_users = list(updated_motion.submitters.all())
-        new_users.extend(updated_motion.supporters.all())
+        new_users = list(updated_motion.supporters.all())
         inform_changed_data(new_users)
 
         return Response(serializer.data)
@@ -315,6 +351,106 @@ class MotionViewSet(ModelViewSet):
 
         # Initiate response.
         return Response({'detail': message})
+
+    @detail_route(methods=['POST', 'DELETE'])
+    def manage_submitters(self, request, pk=None):
+        """
+        POST: Add a user as a submitter to this motion.
+        DELETE: Remove the user as a submitter from this motion.
+        For both cases provide ['user': <user_id>} for the user to add or remove.
+        """
+        motion = self.get_object()
+
+        if request.method == 'POST':
+            user_id = request.data.get('user')
+
+            # Check permissions and other conditions. Get user instance.
+            if user_id is None:
+                raise ValidationError({'detail': _('You have to provide a user.')})
+            else:
+                try:
+                    user = get_user_model().objects.get(pk=int(user_id))
+                except (ValueError, get_user_model().DoesNotExist):
+                    raise ValidationError({'detail': _('User does not exist.')})
+
+            # Try to add the user. This ensurse that a user is not twice a submitter
+            try:
+                Submitter.objects.add(user, motion)
+            except OpenSlidesError as e:
+                raise ValidationError({'detail': str(e)})
+            message = _('User %s was successfully added as a submitter.') % user
+
+            # Send new submitter via autoupdate because users without permission
+            # to see users may not have it but can get it now.
+            inform_changed_data(user)
+
+        else:  # DELETE
+            user_id = request.data.get('user')
+
+            # Check permissions and other conditions. Get user instance.
+            if user_id is None:
+                raise ValidationError({'detail': _('You have to provide a user.')})
+            else:
+                try:
+                    user = get_user_model().objects.get(pk=int(user_id))
+                except (ValueError, get_user_model().DoesNotExist):
+                    raise ValidationError({'detail': _('User does not exist.')})
+
+                queryset = Submitter.objects.filter(motion=motion, user=user)
+                try:
+                    # We assume that there aren't multiple entries because this
+                    # is forbidden by the Manager's add method. We assume that
+                    # there is only one submitter instance or none.
+                    submitter = queryset.get()
+                except Submitter.DoesNotExist:
+                    raise ValidationError({'detail': _('The user is not a submitter.')})
+                else:
+                    name = str(submitter.user)
+                    submitter.delete()
+                    message = _('User {} successfully removed as a submitter.').format(name)
+
+        # Initiate response.
+        return Response({'detail': message})
+
+    @detail_route(methods=['POST'])
+    def sort_submitters(self, request, pk=None):
+        """
+        Special view endpoint to sort the submitters.
+        Send {'submitters': [<submitter_id_1>, <submitter_id_2>, ...]} as payload.
+        """
+        # Retrieve motion.
+        motion = self.get_object()
+
+        # Check data
+        submitter_ids = request.data.get('submitters')
+        if not isinstance(submitter_ids, list):
+            raise ValidationError(
+                {'detail': _('Invalid data.')})
+
+        # Get all submitters
+        submitters = {}
+        for submitter in motion.submitters.all():
+            submitters[submitter.pk] = submitter
+
+        # Check and sort submitters
+        valid_submitters = []
+        for submitter_id in submitter_ids:
+            if not isinstance(submitter_id, int) or submitters.get(submitter_id) is None:
+                raise ValidationError(
+                    {'detail': _('Invalid data.')})
+            valid_submitters.append(submitters[submitter_id])
+        weight = 1
+        with transaction.atomic():
+            for submitter in valid_submitters:
+                submitter.weight = weight
+                submitter.save(skip_autoupdate=True)
+                weight += 1
+
+        # send autoupdate
+        inform_changed_data(motion)
+
+        # Initiate response.
+        return Response({'detail': _('Submitters successfully sorted.')})
 
     @detail_route(methods=['post', 'delete'])
     def support(self, request, pk=None):
