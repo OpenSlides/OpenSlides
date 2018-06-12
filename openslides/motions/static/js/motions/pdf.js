@@ -327,7 +327,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
             // motion title
             var motionTitle = function() {
-                if (params.include.text) {
+                if (params.include.text && !motion.isParagraphBasedAmendment()) {
                     return [{
                         text: titlePlain,
                         style: 'heading3'
@@ -337,30 +337,45 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
             // motion preamble
             var motionPreamble = function () {
-                if (params.include.text) {
-                    return {
-                        text: Config.translate(Config.get('motions_preamble').value),
-                        margin: [0, 10, 0, 0]
-                    };
-                }
+                return {
+                    text: Config.translate(Config.get('motions_preamble').value),
+                    margin: [0, 10, 0, 0]
+                };
             };
 
             var escapeHtml = function(text) {
-                return text.replace(/&/, "&amp;").replace(/</, "&lt;").replace(/>/, "&gt;");
+                return text.replace(/&/, '&amp;').replace(/</, '&lt;').replace(/>/, '&gt;');
             };
 
             // motion text (with line-numbers)
             var motionText = function() {
+                var content = [];
                 if (params.include.text) {
                     var motionTextContent = '';
-                    var titleChange = motion.getTitleChangeRecommendation();
-                    if (params.changeRecommendationMode === 'diff' && titleChange) {
-                        motionTextContent += '<p><strong>' + gettextCatalog.getString('New title') + ':</strong> ' +
-                            escapeHtml(titleChange.text) + '</p>';
+                    if (motion.isParagraphBasedAmendment()) {
+                        // paragraph based amendment
+                        var diffs = motion.getAmendmentParagraphsLinesDiff();
+                        if (diffs.length) {
+                            content.push(motionPreamble());
+                            _.forEach(diffs, function (diff) {
+                                motionTextContent += diff.textPre + diff.text + diff.textPost;
+                            });
+                        } else {
+                            motionTextContent += gettextCatalog.getString('No changes at the text.');
+                        }
+                    } else {
+                        // lead motion or normal amendment
+                        content.push(motionPreamble());
+                        var titleChange = motion.getTitleChangeRecommendation();
+                        if (params.changeRecommendationMode === 'diff' && titleChange) {
+                            motionTextContent += '<p><strong>' + gettextCatalog.getString('New title') + ':</strong> ' +
+                                escapeHtml(titleChange.text) + '</p>';
+                        }
+                        motionTextContent += motion.getTextByMode(params.changeRecommendationMode, motionVersion);
                     }
-                    motionTextContent += motion.getTextByMode(params.changeRecommendationMode, motionVersion);
-                    return converter.convertHTML(motionTextContent, params.lineNumberMode);
+                    content.push(converter.convertHTML(motionTextContent, params.lineNumberMode));
                 }
+                return content;
             };
 
             // motion reason heading
@@ -421,10 +436,10 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     title,
                     subtitle,
                     metaTable(),
-                    motionTitle(),
-                    motionPreamble(),
-                    motionText(),
+                    motionTitle()
                 ];
+                content = content.concat(motionText());
+
                 var reason = motionReason();
                 if (reason) {
                     content.push(reason);
@@ -965,6 +980,210 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     }
 ])
 
+.factory('AmendmentContentProvider', [
+    '$q',
+    'ImageConverter',
+    'PdfMakeConverter',
+    'HTMLValidizer',
+    'PDFLayout',
+    'Config',
+    'gettextCatalog',
+    function ($q, ImageConverter, PdfMakeConverter, HTMLValidizer, PDFLayout, Config, gettextCatalog) {
+        var createInstance = function (motions) {
+            motions = _.filter(motions, function (motion) {
+                return motion.parent_id;
+            });
+
+            var converter, imageMap = {};
+
+            // Query all image sources from motion text and reason
+            var getImageSources = function () {
+                var sources = [];
+                _.forEach(motions, function (motion) {
+                    var text = motion.getText();
+                    var reason = motion.getReason();
+                    var content = HTMLValidizer.validize(text) + HTMLValidizer.validize(motion.getReason());
+                    _.forEach($(content).find('img'), function (element) {
+                        sources.push(element.getAttribute('src'));
+                    });
+                });
+                return _.uniq(sources);
+            };
+
+            var createBundleContent = function (bundle) {
+                return _.flatten(_.map(bundle, function (motion) {
+                    var content = [];
+
+                    // get diffs and title of the changed motions
+                    var motionText;
+                    var title = motion.identifier ? gettextCatalog.getString('Motion') + ' ' + motion.identifier : motion.getTitle();
+                    if (motion.isParagraphBasedAmendment()) {
+                        // get changed parts
+                        var paragraphs = motion.getAmendmentParagraphsLinesDiff();
+                        if (paragraphs.length) {
+                            // Put the changed lines into the info column
+                            var p = paragraphs[0];
+                            title += ' (' + gettextCatalog.getString('Line') + ' ';
+                            if (p.diffLineTo === p.diffLineFrom + 1) {
+                                title += p.diffLineFrom;
+                            } else {
+                                title += p.diffLineFrom + '-' + p.diffLineTo;
+                            }
+                            title += ')';
+
+                            // get the diff
+                            motionText = p.text;
+                        } else {
+                            motionText = gettextCatalog.getString('No changes at the text.');
+                        }
+                    } else { // 'normal' amendment
+                        motionText = motion.getText();
+                    }
+                    content.push({
+                        text: title,
+                        style: 'heading3',
+                        marginTop: 15,
+                    });
+
+                    // submitters
+                    var submitters = _.map(motion.submitters, function (submitter) {
+                        return submitter.get_full_name();
+                    }).join(', ');
+                    content.push({
+                        text: gettextCatalog.getString('Submitters') + ': ' + submitters,
+                    });
+
+                    // state
+                    content.push({
+                        text: gettextCatalog.getString('State') + ': ' + motion.getStateName(),
+                    });
+
+                    // recommendation
+                    var recommendations_by = Config.get('motions_recommendations_by').value;
+                    var recommendation = motion.getRecommendationName();
+                    if (recommendations_by && recommendation) {
+                        content.push({
+                            text: recommendations_by + ': ' + recommendation,
+                        });
+                    }
+
+                    return _.concat(content, converter.convertHTML(motionText, 'outside'));
+                }));
+            };
+
+            var getBundleContent = function (bundle) {
+                var leadMotion = bundle[0].getParentMotion();
+                // title
+                var title = leadMotion.identifier ? ' ' + leadMotion.identifier : '';
+                title += ': ' + leadMotion.getTitle();
+                title = PDFLayout.createTitle(gettextCatalog.getString('Amendments of motion') + title);
+
+                var content = [title],
+                    foundAmendments = [];
+
+                var headings = leadMotion.getTextHeadings().map(function(heading) {
+                    heading.amendments = [];
+                    return heading;
+                });
+                bundle.forEach(function(amendment) {
+                    var headingIdx = null;
+                    var changes = amendment.getAmendmentParagraphsByMode('diff');
+                    if (changes.length === 0) {
+                        return;
+                    }
+                    var amendmentLineNumber = changes[0].lineFrom;
+                    for (var i = 0; i < headings.length; i++) {
+                        if (headings[i].lineNumber <= amendmentLineNumber) {
+                            headingIdx = i;
+                        }
+                    }
+                    if (headingIdx !== null) {
+                        headings[headingIdx].amendments.push(amendment);
+                        foundAmendments.push(amendment.id);
+                    }
+                });
+
+                headings.forEach(function(heading) {
+                    if (heading.amendments.length === 0) {
+                        return;
+                    }
+                    content.push({
+                        text: heading.text,
+                        style: "heading2",
+                        marginTop: 25,
+                    });
+                    content = _.concat(content, createBundleContent(heading.amendments));
+                });
+
+                // If there was an amendment that did not have a heading, we append it at the bottom
+                var missedAmendments = [];
+                bundle.forEach(function(amendment) {
+                    if (foundAmendments.indexOf(amendment.id) === -1) {
+                        missedAmendments.push(amendment);
+                    }
+                });
+                if (missedAmendments.length > 0) {
+                    content = _.concat(content, createBundleContent(missedAmendments));
+                }
+
+                return content;
+            };
+
+            // Generates content as a pdfmake consumable
+            var getContent = function() {
+                if (motions.length === 0) {
+                    return [];
+                }
+
+                // Creates bundles of motions. All motions with the same parent are bundled together
+                // respecting the order, in which they are sorted.
+                // motionBundles is an array containing Arrays of motions with the same parent.
+                var parentId = motions[0].parent_id;
+                var motionBundles = [];
+                var currentBundle = [];
+                _.forEach(motions, function (motion) {
+                    if (motion.parent_id === parentId) {
+                        currentBundle.push(motion);
+                    } else {
+                        motionBundles.push(currentBundle);
+                        currentBundle = [motion];
+                        parentId = motion.parent_id;
+                    }
+                });
+                motionBundles.push(currentBundle);
+
+                // Make the amendment table for each motion bundle.
+                return _.map(motionBundles, function (bundle, index) {
+                    var content = getBundleContent(bundle);
+                    if (index < motionBundles.length - 1) {
+                        content.push(PDFLayout.addPageBreak());
+                    }
+                    return content;
+                });
+            };
+
+            var getImageMap = function() {
+                return imageMap;
+            };
+
+            return $q(function (resolve) {
+                ImageConverter.toBase64(getImageSources()).then(function (_imageMap) {
+                    imageMap = _imageMap;
+                    converter = PdfMakeConverter.createInstance(_imageMap);
+                    resolve({
+                        getContent: getContent,
+                        getImageMap: getImageMap,
+                    });
+                });
+            });
+        };
+
+        return {
+            createInstance: createInstance,
+        };
+    }
+])
+
 .factory('MotionPdfExport', [
     '$http',
     '$q',
@@ -980,6 +1199,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'PollContentProvider',
     'PdfMakeBallotPaperProvider',
     'MotionPartialContentProvider',
+    'AmendmentContentProvider',
     'PdfCreate',
     'PDFLayout',
     'PersonalNoteManager',
@@ -988,8 +1208,8 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'FileSaver',
     function ($http, $q, operator, Config, gettextCatalog, MotionChangeRecommendation, HTMLValidizer,
         PdfMakeConverter, MotionContentProvider, MotionCatalogContentProvider, PdfMakeDocumentProvider,
-        PollContentProvider, PdfMakeBallotPaperProvider, MotionPartialContentProvider, PdfCreate,
-        PDFLayout, PersonalNoteManager, MotionComment, Messaging, FileSaver) {
+        PollContentProvider, PdfMakeBallotPaperProvider, MotionPartialContentProvider, AmendmentContentProvider,
+        PdfCreate, PDFLayout, PersonalNoteManager, MotionComment, Messaging, FileSaver) {
         return {
             getDocumentProvider: function (motions, params, singleMotion) {
                 params = _.clone(params || {}); // Clone this to avoid sideeffects.
@@ -1157,6 +1377,13 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         Messaging.addMessage(error.msg, 'error');
                     });
                 }
+            },
+            exportAmendments: function (motions, filename) {
+                AmendmentContentProvider.createInstance(motions).then(function (contentProvider) {
+                    PdfMakeDocumentProvider.createInstance(contentProvider).then(function (documentProvider) {
+                        PdfCreate.download(documentProvider, filename);
+                    });
+                });
             },
         };
     }

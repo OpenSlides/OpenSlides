@@ -1,9 +1,20 @@
 <div class="header motion-header">
   <div class="title">
     <div class="submenu">
-      <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
+      <a ng-if="motion.isAmendment" ui-sref="motions.motion.amendment-list({id: motion.getParentMotion().id })"
+        class="btn btn-sm btn-default">
         <i class="fa fa-angle-double-left fa-lg"></i>
         <translate>Back to overview</translate>
+      </a>
+      <a ng-if="!motion.isAmendment" ui-sref="motions.motion.list"
+        class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to overview</translate>
+      </a>
+      <a ng-if="motion.hasAmendments()" ui-sref="motions.motion.amendment-list({id: motion.id})"
+        class="btn btn-sm btn-default">
+        <i class="fa fa-book fa-lg"></i>
+        <translate>Amendments</translate>
       </a>
       <!-- List of speakers -->
       <a ui-sref="agenda.item.detail({id: motion.agenda_item_id})"
@@ -23,20 +34,20 @@
           <i class="fa fa-video-camera"></i>
         </button>
         <button type="button" class="btn btn-default btn-sm slimDropDown" uib-dropdown-toggle
-            ng-if="projectors.length > 1 || change_recommendations.length"
+            ng-if="projectors.length > 1 || has_proposed_changes"
             ng-class="{ 'btn-primary': motion.isProjected().length && !inArray(motion.isProjected(), defaultProjectorId)}">
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu" aria-labelledby="split-button"
-          ng-if="projectors.length > 1 || change_recommendations.length">
-          <li role="menuitem" ng-repeat="mode in projectionModes" ng-if="change_recommendations.length">
+          ng-if="projectors.length > 1 || has_proposed_changes">
+          <li role="menuitem" ng-repeat="mode in projectionModes" ng-if="has_proposed_changes">
             <a href="" ng-click="setProjectionMode(mode); $event.stopPropagation();">
               <i class="fa" ng-class="mode.mode == $parent.projectionMode.mode ? 'fa-check-square-o' : 'fa-square-o'"></i>
               <span ng-if="mode.mode!='agreed'">{{ mode.label | translate }}</span>
               <span ng-if="mode.mode=='agreed'"><translate translate-context="resolution">Final version</translate></span>
             </a>
           </li>
-          <li class="divider" ng-show="projectors.length > 1 && change_recommendations.length > 0"></li>
+          <li class="divider" ng-show="projectors.length > 1 && has_proposed_changes"></li>
           <li role="menuitem" ng-repeat="projector in projectors | orderBy:'id'" ng-show="projectors.length > 1">
             <a href="" ng-click="motion.project(projector.id, projectionMode.mode)"
               ng-class="{ 'projected': inArray(motion.isProjected(), projector.id) }">
@@ -61,28 +72,29 @@
       </a>
     </div>
 
-      <h1 class="motion-title">
-          <span class="title-change-indicator"
-              ng-if="viewChangeRecommendations.mode == 'original' && title_change_recommendation"
-              ng-click="viewChangeRecommendations.scrollToDiffBox(title_change_recommendation.id)"></span>
-          <span class="change-title"
-                ng-if="motion.isAllowed('update') && viewChangeRecommendations.mode == 'original' && !title_change_recommendation"></span>
+    <h1 class="motion-title">
+        <span ng-if="!motion.isAmendment && viewChangeRecommendations.mode == 'original'">
+          <span class="title-change-indicator" ng-if="title_change_recommendation"
+                ng-click="viewChangeRecommendations.scrollToDiffBox(title_change_recommendation.id)"></span>
+          <span class="change-title" ng-if="motion.isAllowed('update') && !title_change_recommendation"></span>
+        </span>
 
-          <span>{{ motion.getTitleWithChanges(viewChangeRecommendations.mode) }}</span>
+        <a ui-sref="motions.motion.detail({id: motion.getParentMotion().id })" ng-if="motion.isAmendment">
+          {{ motion.getTitleWithChanges(viewChangeRecommendations.mode) }}
+        </a>
+        <span ng-if="!motion.isAmendment">
+          {{ motion.getTitleWithChanges(viewChangeRecommendations.mode) }}
+        </span>
 
-          <i class="fa pointer" ng-class="motion.personalNote.star ? 'fa-star' : 'fa-star-o'"
-             ng-if="operator.user"
-             title="{{ 'Set as favorite' | translate }}" ng-click="toggleStar()"></i>
-      </h1>
+        <i class="fa pointer" ng-class="motion.personalNote.star ? 'fa-star' : 'fa-star-o'"
+           ng-if="operator.user"
+           title="{{ 'Set as favorite' | translate }}" ng-click="toggleStar()"></i>
+    </h1>
 
-      <div class="row">
+    <div class="row">
       <div class="col-sm-6">
         <h2>
             <translate>Motion</translate> {{ motion.identifier }}
-            <span ng-if="parent">
-              (<translate>Amendment of motion</translate>
-              <a ui-sref="motions.motion.detail({id: parent.id})">{{ parent.identifier || parent.getTitle() }}</a>)
-            </span>
             <span ng-if="motion.versions.length > 1" >| Version {{ motion.getVersion(version).version_number }}</span>
             <span ng-if="motion.active_version != version" class="label label-warning">
               <i class="fa fa-exclamation-triangle"></i>
@@ -154,15 +166,13 @@
               <translate>Unsupport motion</translate>
             </button>
           </div>
-          <!-- Amendments -->
 
-          <div ng-if="motion.isAllowed('can_see_amendments')">
+          <!-- Amendments -->
+          <div ng-if="!motion.isAmendment && motion.isAllowed('can_see_amendments')">
             <h3 translate>Amendments</h3>
-            <div ng-repeat="amendment in amendments | orderBy: 'identifier'">
-              <a ui-sref="motions.motion.detail({id: amendment.id})">
-                <translate>Motion</translate> {{ amendment.identifier || amendment.getTitle() }}
-              </a>
-            </div>
+            <a ng-if="motion.hasAmendments()" ui-sref="motions.motion.amendment-list({id: motion.id})">
+              {{ motion.getAmendments().length }} <translate>Amendments</translate><br>
+            </a>
             <button ng-if="motion.isAllowed('can_create_amendment')" ng-click="newAmendment()" class="btn btn-default btn-sm">
               <i class="fa fa-plus"></i>
               <translate>New amendment</translate>
@@ -180,13 +190,13 @@
               </span>
               <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="state-dropdown">
                 <li ng-repeat="state in motion.state.getNextStates()">
-                  <a href ng-click="updateState(state.id)">
+                  <a href ng-click="motion.setState(state.id)">
                     {{ state.action_word | translate }}
                     <span ng-if="state.show_state_extension_field">...</span>
                   </a>
                 <li class="divider" ng-if="motion.state.getNextStates().length && motion.isAllowed('reset_state')">
                 <li ng-if="motion.isAllowed('reset_state')">
-                  <a href ng-click="reset_state()">
+                  <a href ng-click="motion.setState(null)">
                     <i class="fa fa-exclamation-triangle"></i>
                     <translate>Reset state</translate>
                   </a>
@@ -210,7 +220,7 @@
           </div>
 
           <!-- Recommendation -->
-          <div ng-if="config('motions_recommendations_by') != ''">
+          <div ng-if="config('motions_recommendations_by')">
             <h3 ng-if="!motion.isAllowed('change_recommendation')" class="heading">
               {{ config('motions_recommendations_by') }}
             </h3>
@@ -222,13 +232,13 @@
                 </span>
                 <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="recommendation-dropdown">
                   <li ng-repeat="recommendation in motion.state.getRecommendations()">
-                    <a href ng-click="updateRecommendation(recommendation.id)">
+                    <a href ng-click="motion.setRecommendation(recommendation.id)">
                       {{ recommendation.recommendation_label | translate }}
                       <span ng-if="recommendation.show_recommendation_extension_field">...</span>
                     </a>
                   <li class="divider" ng-if="motion.state.getRecommendations().length && motion.recommendation">
                   <li ng-if="motion.recommendation">
-                    <a href ng-click="resetRecommendation()">
+                    <a href ng-click="motion.setRecommendation(null)">
                       <i class="fa fa-exclamation-triangle"></i>
                       <translate>Reset recommendation</translate>
                     </a>
@@ -498,9 +508,10 @@
   <div class="row">
 
     <!-- Motion toolbar -->
-    <ng-include src="'static/templates/motions/motion-detail/toolbar.html'"></ng-include>
+    <ng-include src="'static/templates/motions/motion-detail/toolbar.html'" ng-if="!motion.isParagraphBasedAmendment()"></ng-include>
 
-    <div ng-class="{'col-sm-8': (lineNumberMode != 'outside'), 'col-sm-12': (lineNumberMode == 'outside')}">
+    <div ng-class="{'col-sm-8': (lineNumberMode != 'outside'), 'col-sm-12': (lineNumberMode == 'outside')}"
+         ng-if="!motion.isParagraphBasedAmendment()">
 
       <ng-include ng-if="viewChangeRecommendations.mode == 'diff'"
           src="'static/templates/motions/motion-detail/change-summary.html'"></ng-include>
@@ -532,6 +543,15 @@
 
         <!-- Agreed View -->
         <div ng-if="viewChangeRecommendations.mode == 'agreed'">
+          <div class="alert alert-danger" ng-if="changed_version_has_accepted_collissions">
+              <i class="fa fa-warning"></i>
+              <translate>
+                  At least two amendments or change recommendations affecting the same line are to be integrated.
+                  This leads to undeterministic results.
+                  Please resolve this conflict by not accepting multiple changes affecting the same line.
+              </translate>
+          </div>
+
           <div ng-bind-html="motion.getTextByMode('agreed', version, highlight) | trusted"
                class="motion-text motion-text-changed line-numbers-{{ lineNumberMode }}"></div>
 
@@ -546,6 +566,10 @@
         </div>
       </div>
     </div>
+
+    <!-- Paragraph-based Amendments -->
+    <ng-include src="'static/templates/motions/motion-detail/amendment-paragraph-diff.html'"></ng-include>
+
   </div>
   <div class="row">
     <div class="col-md-8">

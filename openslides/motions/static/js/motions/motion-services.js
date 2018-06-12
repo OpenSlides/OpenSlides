@@ -391,10 +391,11 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
     '$interval',
     '$timeout',
     function (Motion, MotionChangeRecommendation, Config, lineNumberingService, diffService, $interval, $timeout) {
-        var $scope;
+        var $scope, motion;
 
         var obj = {
-            mode: 'original'
+            mode: 'original',
+            context: null
         };
 
         obj.diffFormatterCb = function (change, oldFragment, newFragment) {
@@ -430,7 +431,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             MotionChangeRecommendation.destroy(changeId);
         };
 
-        obj.rejectAll = function (motion) {
+        obj.rejectAllChangeRecommendations = function (motion) {
             var changeRecommendations = MotionChangeRecommendation.filter({
                 'where': {'motion_version_id': {'==': motion.active_version}}
             });
@@ -508,8 +509,99 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             }, 0, false);
         };
 
-        obj.init = function (_scope, viewMode) {
+        // $scope.amendments_crs holds the change objects of all change recommendations regarding the text,
+        // and all amendments with a "accepted"-recommendation, ordered by the first affected line number.
+        obj.set_amendments_crs_watcher = function($scope, motion) {
+            $scope.amendments_crs = [];
+            $scope.change_recommendations = [];
+            $scope.paragraph_amendments = [];
+            $scope.has_proposed_changes = false;
+            $scope.changed_version_has_collissions = false;
+
+            var rebuild_amendments_crs = function () {
+                $scope.amendments_crs = $scope.change_recommendations.map(function (cr) {
+                    return cr.getUnifiedChangeObject();
+                }).concat(
+                    $scope.paragraph_amendments.map(function (amendment) {
+                        return amendment.getUnifiedChangeObject();
+                    })
+                );
+                $scope.amendments_crs.sort(function (change1, change2) {
+                    if (change1.line_from > change2.line_from) {
+                        return 1;
+                    } else if (change1.line_from < change2.line_from) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                });
+
+                // Set all crs and amendments for collission detection.
+                _.forEach($scope.amendments_crs, function (change) {
+                    change.setOtherChangesForCollission($scope.amendments_crs);
+                });
+
+                $scope.has_proposed_changes = ($scope.amendments_crs.length > 0);
+                $scope.changed_version_has_accepted_collissions = ($scope.amendments_crs.find(function(change) {
+                    return (change.getCollissions(true).length !== 0);
+                }) !== undefined);
+
+                if (obj.context === 'site') {
+                    if (!$scope.has_proposed_changes) {
+                        $scope.setProjectionMode($scope.projectionModes[0]);
+                    }
+                    if ($scope.has_proposed_changes) {
+                        $scope.disableMotionInlineEditing();
+                    }
+                }
+            };
+
+            $scope.$watch(function () {
+                return MotionChangeRecommendation.lastModified();
+            }, function () {
+                $scope.change_recommendations = [];
+                $scope.title_change_recommendation = null;
+                MotionChangeRecommendation.filter({
+                    'where': {'motion_version_id': {'==': motion.active_version}}
+                }).forEach(function (change) {
+                    if (change.isTextRecommendation()) {
+                        $scope.change_recommendations.push(change);
+                    }
+                    if (change.isTitleRecommendation()) {
+                        $scope.title_change_recommendation = change;
+                    }
+                });
+                rebuild_amendments_crs();
+            });
+
+            $scope.$watch(function () {
+                return Motion.lastModified();
+            }, function () {
+                $scope.paragraph_amendments = motion.getParagraphBasedAmendmentsForDiffView();
+                rebuild_amendments_crs();
+            });
+        };
+
+        obj.setVersion = function (_motion/*, _version*/) {
+            motion = _motion;
+        };
+
+        obj.initProjector = function (_scope, _motion, viewMode) {
+            obj.context = 'projector';
             $scope = _scope;
+            motion = _motion;
+
+            obj.set_amendments_crs_watcher($scope, motion);
+            obj.mode = viewMode;
+        };
+
+        obj.initSite = function (_scope, _motion, viewMode) {
+            obj.context = 'site';
+            $scope = _scope;
+            motion = _motion;
+
+            obj.set_amendments_crs_watcher($scope, motion);
+
             $scope.$evalAsync(function() {
                 obj.repositionOriginalAnnotations();
             });
@@ -518,12 +610,12 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             }, obj.repositionOriginalAnnotations);
 
             var checkGotoOriginal = function () {
-                if ($scope.change_recommendations.length === 0 && $scope.title_change_recommendation === null) {
+                if ($scope.amendments_crs.length === 0 && $scope.title_change_recommendation === null) {
                     obj.mode = 'original';
                 }
             };
             $scope.$watch(function () {
-                return $scope.change_recommendations.length;
+                return $scope.amendments_crs.length;
             }, checkGotoOriginal);
             $scope.$watch(function () {
                 return $scope.title_change_recommendation;
@@ -535,7 +627,7 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
                     var $holder = $(".motion-text-original"),
                         newHeight = $holder.height(),
                         classes = $holder.attr("class");
-                    if (newHeight != sizeCheckerLastSize || sizeCheckerLastClass != classes) {
+                    if (newHeight !== sizeCheckerLastSize || sizeCheckerLastClass !== classes) {
                         sizeCheckerLastSize = newHeight;
                         sizeCheckerLastClass = classes;
                         obj.repositionOriginalAnnotations();

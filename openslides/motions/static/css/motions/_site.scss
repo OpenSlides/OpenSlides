@@ -1,3 +1,4 @@
+@import "amendments";
 @import "diff";
 @import "change-recommendation-overview";
 @import "inline-editing";
@@ -70,6 +71,10 @@
 
     > * {
         margin-right: 5px;
+    }
+
+    ng-include {
+        display: inline-block;
     }
 
     .btn.disabled {
@@ -223,6 +228,11 @@
 
         .btn-edit {
             margin-left: 5px;
+        }
+
+        .btn-amend-info {
+            margin-left: 5px;
+            min-width: 68px;
         }
     }
     .status-row {

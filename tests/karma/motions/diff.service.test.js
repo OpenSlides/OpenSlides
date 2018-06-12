@@ -546,6 +546,19 @@ describe('linenumbering', function () {
       expect(diff).toBe(expected);
     });
 
+    it('handles inserted paragraphs (4)', function () {
+      var before = "<p>This is a random first line that remains unchanged.</p>",
+          after = "<p>This is a random first line that remains unchanged.</p>" +
+              '<p style="text-align: justify;"><span style="color: #000000;">Inserting this line should not make any troubles, especially not affect the first line</span></p>' +
+              '<p style="text-align: justify;"><span style="color: #000000;">Neither should this line</span></p>',
+          expected = "<p>This is a random first line that remains unchanged.</p>" +
+              '<p style="text-align: justify;"><ins><span style="color: #000000;">Inserting this line should not make any troubles, especially not affect the first line</span></ins></p>' +
+              '<p style="text-align: justify;"><ins><span style="color: #000000;">Neither should this line</span></ins></p>';
+
+      var diff = diffService.diff(before, after);
+      expect(diff).toBe(expected);
+    });
+
     it('handles completely deleted paragraphs', function () {
         var before = "<P>Ihr könnt ohne Sorge fortgehen.'Da meckerte die Alte und machte sich getrost auf den Weg.</P>",
             after = "";
@@ -630,6 +643,25 @@ describe('linenumbering', function () {
       var diff = diffService.diff(before, after);
       expect(diff).toBe('elitr<del>. einsetzt. VERSCHLUCKT noch die sog.</del><ins>, Einfügung durch Änderung der</ins> Gleichbleibend<del> (Wird gelöscht).</del><ins>, einsetzt.</ins>');
     });
+
+    it('does not fall back to block level replacement when BRs are inserted/deleted', function() {
+      var before = '<p>Lorem ipsum dolor sit amet, consetetur <br>sadipscing elitr.<br>Bavaria ipsum dolor sit amet o’ha wea nia ausgähd<br>kummt nia hoam i hob di narrisch gean</p>',
+          after = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr. Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua..<br>\n' +
+              'Bavaria ipsum dolor sit amet o’ha wea nia ausgähd<br>\n' +
+              'Autonomie erfährt ihre Grenzen</p>';
+      var diff = diffService.diff(before, after);
+      expect(diff).toBe('<p>Lorem ipsum dolor sit amet, consetetur <del><br></del>sadipscing elitr.<ins> Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua..</ins><br>Bavaria ipsum dolor sit amet o’ha wea nia ausgähd<br><del>kummt nia hoam i hob di narrisch gean</del><ins>Autonomie erfährt ihre Grenzen</ins></p>');
+    });
+
+    it('does not a change in a very specific case', function() {
+      // See diff._fixWrongChangeDetection
+      var inHtml = '<p>Test 123<br>wir strikt ab. lehnen wir ' + brMarkup(1486) + 'ab.<br>' + noMarkup(1487) + 'Gegenüber</p>',
+          outHtml = '<p>Test 123<br>\n' +
+              'wir strikt ab. lehnen wir ab.<br>\n' +
+              'Gegenüber</p>';
+      var diff = diffService.diff(inHtml, outHtml);
+      expect(diff).toBe('<p>Test 123<br>wir strikt ab. lehnen wir ' + brMarkup(1486) + 'ab.<br>' + noMarkup(1487) + 'Gegenüber</p>')
+  });
   });
 
   describe('ignoring line numbers', function () {
@@ -713,6 +745,55 @@ describe('linenumbering', function () {
        var strIn = '<ul class="os-split-before os-split-after"><li class="os-split-before"><ul class="os-split-before os-split-after"><li class="os-split-before">...here it goes on</li><li class="os-split-before">This has been added</li></ul></li></ul>',
            cleaned = diffService.removeDuplicateClassesInsertedByCkeditor(strIn);
        expect(cleaned).toBe('<UL class="os-split-before os-split-after"><LI class="os-split-before"><UL class="os-split-before os-split-after"><LI class="os-split-before">...here it goes on</LI><LI>This has been added</LI></UL></LI></UL>');
+    });
+  });
+
+  describe('detecting changed line number range', function () {
+    it('detects changed line numbers in the middle', function () {
+      var before = '<p>' + noMarkup(1) + 'foo &amp; bar' + brMarkup(2) + 'Another line' +
+          brMarkup(3) + 'This will be changed' + brMarkup(4) + 'This, too' + brMarkup(5) + 'End</p>',
+          after = '<p>' + noMarkup(1) + 'foo &amp; bar' + brMarkup(2) + 'Another line' +
+              brMarkup(3) + 'This has been changed' + brMarkup(4) + 'End</p>';
+
+      var diff = diffService.diff(before, after);
+      var affected = diffService.detectAffectedLineRange(diff);
+      expect(affected).toEqual({"from": 3, "to": 5});
+    });
+    it('detects changed line numbers at the beginning', function () {
+        var before = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</p>',
+          after = '<p>sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</p>';
+
+      before = lineNumberingService.insertLineNumbers(before, 20);
+        var diff = diffService.diff(before, after);
+
+      var affected = diffService.detectAffectedLineRange(diff);
+      expect(affected).toEqual({"from": 1, "to": 2});
+    });
+  });
+
+  describe('stripping ins/del-styles/tags', function () {
+    it('deletes to be deleted nodes', function () {
+        var inHtml = '<p>Test <span class="delete">Test 2</span> Another test <del>Test 3</del></p><p class="delete">Test 4</p>';
+        var stripped = diffService.diffHtmlToFinalText(inHtml);
+        expect(stripped).toBe('<P>Test  Another test </P>');
+    });
+
+    it('produces empty paragraphs, if necessary', function () {
+        var inHtml = '<p class="delete">Test <span class="delete">Test 2</span> Another test <del>Test 3</del></p><p class="delete">Test 4</p>';
+        var stripped = diffService.diffHtmlToFinalText(inHtml);
+        expect(stripped).toBe('');
+    });
+
+    it('Removes INS-tags', function () {
+        var inHtml = '<p>Test <ins>Test <strong>2</strong></ins> Another test</p>';
+        var stripped = diffService.diffHtmlToFinalText(inHtml);
+        expect(stripped).toBe('<P>Test Test <STRONG>2</STRONG> Another test</P>');
+    });
+
+    it('Removes .insert-classes', function () {
+        var inHtml = '<p class="insert">Test <strong>1</strong></p><p class="insert anotherclass">Test <strong>2</strong></p>';
+        var stripped = diffService.diffHtmlToFinalText(inHtml);
+        expect(stripped).toBe('<P>Test <STRONG>1</STRONG></P><P class="anotherclass">Test <STRONG>2</STRONG></P>');
     });
   });
 });

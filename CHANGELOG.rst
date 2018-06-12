@@ -10,6 +10,8 @@ Version 2.3 (unreleased)
 Motions:
  - New feature to scroll the projector to a specific line [#3748].
  - New possibility to sort submitters [#3647].
+ - New representation of amendments (paragraph based creation, new diff
+   and list views for amendments) [#3637].
 
 
 Version 2.2 (2018-06-06)

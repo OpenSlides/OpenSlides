@@ -75,7 +75,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
         this._isOsLineBreakNode = function (node) {
             var isLineBreak = false;
-            if (node && node.nodeType === ELEMENT_NODE && node.nodeName == 'BR' && node.hasAttribute('class')) {
+            if (node && node.nodeType === ELEMENT_NODE && node.nodeName === 'BR' && node.hasAttribute('class')) {
                 var classes = node.getAttribute('class').split(' ');
                 if (classes.indexOf('os-line-break') > -1) {
                     isLineBreak = true;
@@ -86,7 +86,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
 
         this._isOsLineNumberNode = function (node) {
             var isLineNumber = false;
-            if (node && node.nodeType === ELEMENT_NODE && node.nodeName == 'SPAN' && node.hasAttribute('class')) {
+            if (node && node.nodeType === ELEMENT_NODE && node.nodeName === 'SPAN' && node.hasAttribute('class')) {
                 var classes = node.getAttribute('class').split(' ');
                 if (classes.indexOf('os-line-number') > -1) {
                     isLineNumber = true;
@@ -189,13 +189,16 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                 out.push(node);
                 return node;
             };
-            var addLinebreakToPreviousNode = function (node, offset, highlight) {
+            var addLinebreakToPreviousNode = function (node, offset) {
                 var firstText = node.nodeValue.substr(0, offset + 1),
                     secondText = node.nodeValue.substr(offset + 1);
                 var lineBreak = service._createLineBreak();
                 var firstNode = document.createTextNode(firstText);
                 node.parentNode.insertBefore(firstNode, node);
                 node.parentNode.insertBefore(lineBreak, node);
+                if (service._currentLineNumber !== null) {
+                    node.parentNode.insertBefore(service._createLineNumber(), node);
+                }
                 node.nodeValue = secondText;
             };
 
@@ -244,7 +247,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                         } else {
                             // The last possible breaking point was not in this text not, but one we have already passed
                             var remainderOfPrev = lineBreakAt.node.nodeValue.length - lineBreakAt.offset - 1;
-                            addLinebreakToPreviousNode(lineBreakAt.node, lineBreakAt.offset, highlight);
+                            addLinebreakToPreviousNode(lineBreakAt.node, lineBreakAt.offset);
 
                             this._currentInlineOffset = i + remainderOfPrev;
                             this._lastInlineBreakablePoint = null;
@@ -298,7 +301,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             if (!node.firstChild) {
                 return 0;
             }
-            if (node.firstChild.nodeType == TEXT_NODE) {
+            if (node.firstChild.nodeType === TEXT_NODE) {
                 var parts = node.firstChild.nodeValue.split(' ');
                 return parts[0].length;
             } else {
@@ -317,12 +320,12 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             }
 
             for (i = 0; i < oldChildren.length; i++) {
-                if (oldChildren[i].nodeType == TEXT_NODE) {
+                if (oldChildren[i].nodeType === TEXT_NODE) {
                     var ret = this._textNodeToLines(oldChildren[i], length, highlight);
                     for (var j = 0; j < ret.length; j++) {
                         node.appendChild(ret[j]);
                     }
-                } else if (oldChildren[i].nodeType == ELEMENT_NODE) {
+                } else if (oldChildren[i].nodeType === ELEMENT_NODE) {
                     var firstword = this._lengthOfFirstInlineWord(oldChildren[i]),
                         overlength = ((this._currentInlineOffset + firstword) > length && this._currentInlineOffset > 0);
                     if (overlength && this._isInlineElement(oldChildren[i])) {
@@ -399,7 +402,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             }
 
             for (i = 0; i < oldChildren.length; i++) {
-                if (oldChildren[i].nodeType == TEXT_NODE) {
+                if (oldChildren[i].nodeType === TEXT_NODE) {
                     if (!oldChildren[i].nodeValue.match(/\S/)) {
                         // White space nodes between block elements should be ignored
                         var prevIsBlock = (i > 0 && !this._isInlineElement(oldChildren[i - 1]));
@@ -413,7 +416,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                     for (var j = 0; j < ret.length; j++) {
                         node.appendChild(ret[j]);
                     }
-                } else if (oldChildren[i].nodeType == ELEMENT_NODE) {
+                } else if (oldChildren[i].nodeType === ELEMENT_NODE) {
                     var firstword = this._lengthOfFirstInlineWord(oldChildren[i]),
                         overlength = ((this._currentInlineOffset + firstword) > length && this._currentInlineOffset > 0);
                     if (overlength && this._isInlineElement(oldChildren[i]) && !this._isIgnoredByLineNumbering(oldChildren[i])) {
@@ -491,7 +494,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
         /**
          *
          * @param {string} html
-         * @param {number} lineLength
+         * @param {number|string} lineLength
          * @param {number|null} highlight - optional
          * @param {number|null} firstLine
          */
@@ -586,6 +589,115 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
             root.innerHTML = html;
             this._stripLineNumbers(root);
             return root.innerHTML;
+        };
+
+        /**
+         * @param {string} html
+         * @returns {object}
+         *          {"from": 23, "to": 42} ; "to" refers to the line breaking element at the end of the last line,
+         *                                   i.e. the line number of the following line
+         */
+        this.getLineNumberRange = function (html) {
+            var fragment = this._htmlToFragment(html),
+                range = {
+                    "from": null,
+                    "to": null
+                };
+            var lineNumbers = fragment.querySelectorAll('.os-line-number');
+            for (var i = 0; i < lineNumbers.length; i++) {
+                var node = lineNumbers.item(i);
+                var number = parseInt(node.getAttribute("data-line-number"));
+                if (range.from === null || number < range.from) {
+                    range.from = number;
+                }
+                if (range.to === null || (number + 1) > range.to) {
+                    range.to = number + 1;
+                }
+            }
+            return range;
+        };
+
+        /**
+         * @param {string} html
+         */
+        this.getHeadingsWithLineNumbers = function (html) {
+            var fragment = this._htmlToFragment(html),
+                headings = [];
+            var headingNodes = fragment.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            for (var i = 0; i < headingNodes.length; i++) {
+                var heading = headingNodes.item(i);
+                var linenumbers = heading.querySelectorAll('.os-line-number');
+                if (linenumbers.length > 0) {
+                    var number = parseInt(linenumbers.item(0).getAttribute("data-line-number"));
+                    headings.push({
+                        "lineNumber": number,
+                        "level": parseInt(heading.nodeName.substr(1)),
+                        "text": heading.innerText.replace(/^\s/, "").replace(/\s$/, "")
+                    });
+                }
+            }
+            return headings.sort(function(heading1, heading2) {
+                if (heading1.lineNumber < heading2.lineNumber) {
+                    return 0;
+                } else if (heading1.lineNumber > heading2.lineNumber) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+        };
+
+        /**
+         * @param {Element} node
+         * @returns {array}
+         * @private
+         */
+        this._splitNodeToParagraphs = function (node) {
+            var elements = [];
+            for (var i = 0; i < node.childNodes.length; i++) {
+                var childNode = node.childNodes.item(i);
+
+                if (childNode.nodeType === TEXT_NODE) {
+                    continue;
+                }
+                if (childNode.nodeName === 'UL' || childNode.nodeName === 'OL') {
+                    var start = 1;
+                    if (childNode.getAttribute("start") !== null) {
+                        start = parseInt(childNode.getAttribute("start"));
+                    }
+                    for (var j = 0; j < childNode.childNodes.length; j++) {
+                        if (childNode.childNodes.item(j).nodeType === TEXT_NODE) {
+                            continue;
+                        }
+                        var newParent = childNode.cloneNode(false);
+                        if (childNode.nodeName === 'OL') {
+                            newParent.setAttribute('start', start);
+                        }
+                        newParent.appendChild(childNode.childNodes.item(j).cloneNode(true));
+                        elements.push(newParent);
+                        start++;
+                    }
+                } else {
+                    elements.push(childNode);
+                }
+            }
+            return elements;
+        };
+
+        /**
+         * Splitting the text into paragraphs:
+         * - Each root-level-element is considered as a paragraph.
+         *   Inline-elements at root-level are not expected and treated as block elements.
+         *   Text-nodes at root-level are not expected and ignored. Every text needs to be wrapped e.g. by <p> or <div>.
+         * - If a UL or OL is encountered, paragraphs are defined by the child-LI-elements.
+         *   List items of nested lists are not considered as a paragraph of their own.
+         *
+         * @param {string} html
+         * @return {string[]}
+         */
+        this.splitToParagraphs = function (html) {
+            var fragment = this._htmlToFragment(html);
+            return this._splitNodeToParagraphs(fragment).map(function(node) { return node.outerHTML; });
         };
 
         /**

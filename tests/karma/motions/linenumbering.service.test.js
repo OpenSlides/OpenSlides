@@ -22,6 +22,46 @@ describe('linenumbering', function () {
     lineNumberingService = _lineNumberingService_;
   }));
 
+  describe('paragraph splitting', function () {
+      it('breaks simple DIVs', function () {
+          var htmlIn = '<DIV class="testclass">Test <strong>1</strong></DIV>' + "\n" + '<p>Test <em>2</em> 3</p>';
+          var out = lineNumberingService.splitToParagraphs(htmlIn);
+          expect(out.length).toBe(2);
+          expect(out[0]).toBe('<div class="testclass">Test <strong>1</strong></div>');
+          expect(out[1]).toBe('<p>Test <em>2</em> 3</p>');
+      });
+      it('ignores root-level text-nodes', function () {
+          var htmlIn = '<DIV class="testclass">Test <strong>3</strong></DIV>' + "\n New line";
+          var out = lineNumberingService.splitToParagraphs(htmlIn);
+          expect(out.length).toBe(1);
+          expect(out[0]).toBe('<div class="testclass">Test <strong>3</strong></div>');
+      });
+      it('splits UL-Lists', function () {
+          var htmlIn = "<UL class='testclass'>\n<li>Node 1</li>\n  <li class='second'>Node <strong>2</strong></li><li><p>Node 3</p></li></UL>";
+          var out = lineNumberingService.splitToParagraphs(htmlIn);
+          expect(out.length).toBe(3);
+          expect(out[0]).toBe('<ul class="testclass"><li>Node 1</li></ul>');
+          expect(out[1]).toBe('<ul class="testclass"><li class="second">Node <strong>2</strong></li></ul>');
+          expect(out[2]).toBe('<ul class="testclass"><li><p>Node 3</p></li></ul>');
+      });
+      it('splits OL-Lists', function () {
+          var htmlIn = "<OL start='2' class='testclass'>\n<li>Node 1</li>\n  <li class='second'>Node <strong>2</strong></li><li><p>Node 3</p></li></OL>";
+          var out = lineNumberingService.splitToParagraphs(htmlIn);
+          expect(out.length).toBe(3);
+          expect(out[0]).toBe('<ol start="2" class="testclass"><li>Node 1</li></ol>');
+          expect(out[1]).toBe('<ol start="3" class="testclass"><li class="second">Node <strong>2</strong></li></ol>');
+          expect(out[2]).toBe('<ol start="4" class="testclass"><li><p>Node 3</p></li></ol>');
+      });
+  });
+
+  describe('getting line number range', function () {
+      it('extracts the line number range, example 1', function () {
+        var html = '<p>' + noMarkup(2) + 'et accusam et justo duo dolores et ea <span style="color: #ff0000;"><strike>rebum </strike></span><span style="color: #006400;">Inserted Text</span>. Stet clita kasd ' + brMarkup(3) + 'gubergren,</p>';
+        var range = lineNumberingService.getLineNumberRange(html);
+        expect(range).toEqual({"from": 2, "to": 4});
+      });
+  });
+
   describe('line numbering: test nodes', function () {
     it('breaks very short lines', function () {
       var textNode = document.createTextNode("0123");
@@ -136,6 +176,12 @@ describe('linenumbering', function () {
       expect(outHtml).toBe(noMarkup(1) + '1234 <del>1234</del> ' + brMarkup(2) + '1234 1234');
       expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
       expect(lineNumberingService.insertLineBreaksWithoutNumbers(outHtml, 80)).toBe(outHtml);
+    });
+
+    it('counts after DEL/INS-nodes', function () {
+        var inHtml = "<P>leo Testelefantgeweih Buchstabenwut als Achzehnzahlunginer. Hierbei <DEL>darf</DEL><INS>setzen</INS> bist der Deifi <DEL>das </DEL><INS>Dor Reh Wachtel da </INS>Subjunktivier <DEL>als Derftige Aal</DEL><INS>san</INS> Orthopädische<DEL>, der Arbeitsnachweisdiskus Bass der Tastatur </DEL><DEL>Weiter schreiben wie Tasse Wasser als</DEL><INS> dienen</INS>.</P>";
+        var outHtml = lineNumberingService.insertLineNumbers(inHtml, 95);
+        expect(outHtml).toBe('<p>' + noMarkup(1) + 'leo Testelefantgeweih Buchstabenwut als Achzehnzahlunginer. Hierbei <del>darf</del><ins>setzen</ins> bist der Deifi <del>das ' + brMarkup(2) + '</del><ins>Dor Reh Wachtel da </ins>Subjunktivier <del>als Derftige Aal</del><ins>san</ins> Orthopädische<del>, der Arbeitsnachweisdiskus Bass der Tastatur </del>' + brMarkup(3) + '<del>Weiter schreiben wie Tasse Wasser als</del><ins> dienen</ins>.</p>');
     });
 
     it('handles STRIKE-tags', function () {
@@ -405,6 +451,23 @@ describe('linenumbering', function () {
         var inHtml = lineNumberingService.insertLineNumbers("<span>Lorem ipsum dolorsit amet</span>", 5);
         var highlighted = lineNumberingService.highlightLine(inHtml, 8);
         expect(highlighted).toBe(noMarkup(1) + '<span>Lorem ' + brMarkup(2) + 'ipsum ' + brMarkup(3) + 'dolor' + brMarkup(4) + 'sit ' + brMarkup(5) + 'amet</span>');
+    });
+  });
+
+  describe('document structure parsing', function () {
+    it('detects the line numbers of headings', function () {
+      var inHtml = '<p>Line 1</p>' +
+          '<h1>Heading 1</h1><p>Line 2</p><h2>Heading 1.1</h2><p>Line 3</p><h2>Heading 1.2</h2><p>Line 4</p>' +
+          '<h1>Heading 2</h1><h2>Heading 2.1</h2><p>Line 5</p>';
+      inHtml = lineNumberingService.insertLineNumbers(inHtml, 80);
+      var structure = lineNumberingService.getHeadingsWithLineNumbers(inHtml);
+      expect(structure).toEqual([
+          {lineNumber: 2, level: 1, text: 'Heading 1'},
+          {lineNumber: 4, level: 2, text: 'Heading 1.1'},
+          {lineNumber: 6, level: 2, text: 'Heading 1.2'},
+          {lineNumber: 8, level: 1, text: 'Heading 2'},
+          {lineNumber: 9, level: 2, text: 'Heading 2.1'}
+      ]);
     });
   });
 

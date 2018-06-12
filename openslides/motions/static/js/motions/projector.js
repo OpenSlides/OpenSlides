@@ -4,6 +4,7 @@
 
 angular.module('OpenSlidesApp.motions.projector', [
     'OpenSlidesApp.motions',
+    'OpenSlidesApp.motions.motionservices',
     'OpenSlidesApp.motions.motionBlockProjector',
 ])
 
@@ -18,17 +19,20 @@ angular.module('OpenSlidesApp.motions.projector', [
 
 .controller('SlideMotionCtrl', [
     '$scope',
+    'Config',
     'Motion',
     'MotionChangeRecommendation',
+    'ChangeRecommendationView',
     'User',
     'Notify',
     'ProjectorID',
-    function($scope, Motion, MotionChangeRecommendation, User, Notify, ProjectorID) {
+    function($scope, Config, Motion, MotionChangeRecommendation, ChangeRecommendationView, User, Notify, ProjectorID) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
-        var id = $scope.element.id;
+        var motionId = $scope.element.id;
         $scope.mode = $scope.element.mode || 'original';
+        $scope.lineNumberMode = Config.get('motions_default_line_numbering').value;
 
         var notifyNamePrefix = 'projector_' + ProjectorID() + '_motion_line_';
         var callbackId = Notify.registerCallback(notifyNamePrefix + 'request', function (params) {
@@ -55,27 +59,19 @@ angular.module('OpenSlidesApp.motions.projector', [
             Notify.deregisterCallback(callbackId);
         });
 
-        Motion.bindOne(id, $scope, 'motion');
         User.bindAll({}, $scope, 'users');
 
         $scope.$watch(function () {
-            return MotionChangeRecommendation.lastModified();
+            return Motion.lastModified(motionId);
         }, function () {
-            $scope.change_recommendations = [];
-            $scope.title_change_recommendation = null;
-            if ($scope.motion) {
-                MotionChangeRecommendation.filter({
-                    'where': {'motion_version_id': {'==': $scope.motion.active_version}}
-                }).forEach(function(change) {
-                    if (change.isTextRecommendation()) {
-                        $scope.change_recommendations.push(change);
-                    }
-                    if (change.isTitleRecommendation()) {
-                        $scope.title_change_recommendation = change;
-                    }
-                });
-            }
+            $scope.motion = Motion.get(motionId);
+            $scope.amendment_diff_paragraphs = $scope.motion.getAmendmentParagraphsLinesDiff();
+            $scope.viewChangeRecommendations.setVersion($scope.motion, $scope.motion.active_version);
         });
+
+        // Change recommendation viewing
+        $scope.viewChangeRecommendations = ChangeRecommendationView;
+        $scope.viewChangeRecommendations.initProjector($scope, Motion.get(motionId), $scope.mode);
     }
 ]);
 

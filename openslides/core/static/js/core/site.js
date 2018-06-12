@@ -166,6 +166,19 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+// Make the main content expandable
+.run([
+    '$rootScope',
+    function ($rootScope) {
+        $rootScope.$on('$stateChangeSuccess', function() {
+            $rootScope.expandContent = false;
+        });
+        $rootScope.toggleExpandContent = function () {
+            $rootScope.expandContent = !$rootScope.expandContent;
+        };
+    }
+])
+
 .config([
     'mainMenuProvider',
     'gettext',

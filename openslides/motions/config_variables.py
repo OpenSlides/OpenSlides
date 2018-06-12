@@ -166,11 +166,15 @@ def get_config_variables():
         subgroup='Amendments')
 
     yield ConfigVariable(
-        name='motions_amendments_apply_text',
-        default_value=False,
-        input_type='boolean',
-        label='Apply text for new amendments',
-        help_text='The title of the motion is always applied.',
+        name='motions_amendments_text_mode',
+        default_value='freestyle',
+        input_type='choice',
+        label='How to create new amendments',
+        choices=(
+            {'value': 'freestyle', 'display_name': 'Empty text field'},
+            {'value': 'fulltext', 'display_name': 'Edit the whole motion text'},
+            {'value': 'paragraph', 'display_name': 'Paragraph-based, Diff-enabled'},
+        ),
         weight=342,
         group='Motions',
         subgroup='Amendments')
