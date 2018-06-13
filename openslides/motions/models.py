@@ -1,6 +1,7 @@
 from typing import Any, Dict  # noqa
 
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import IntegrityError, models, transaction
@@ -21,6 +22,7 @@ from openslides.poll.models import (
     CollectDefaultVotesMixin,
 )
 from openslides.utils.autoupdate import inform_changed_data
+from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 
 from .access_permissions import (
@@ -155,11 +157,6 @@ class Motion(RESTModelMixin, models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     """
     Tags to categorise motions.
-    """
-
-    submitters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_submitters', blank=True)
-    """
-    Users who submit this motion.
     """
 
     supporters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_supporters', blank=True)
@@ -548,7 +545,7 @@ class Motion(RESTModelMixin, models.Model):
         """
         Returns True if user is a submitter of this motion, else False.
         """
-        return user in self.submitters.all()
+        return self.submitters.filter(user=user).exists()
 
     def is_supporter(self, user):
         """
@@ -704,6 +701,69 @@ class Motion(RESTModelMixin, models.Model):
         for amendment in self.amendments.all():
             yield amendment
             yield from amendment.get_amendments_deep()
+
+
+class SubmitterManager(models.Manager):
+    """
+    Manager for Submitter model. Provides a customized add method.
+    """
+    def add(self, user, motion, skip_autoupdate=False):
+        """
+        Customized manager method to prevent anonymous users to be a
+        submitter and that someone is not twice a submitter. Cares also
+        for the initial sorting of the submitters.
+        """
+        if self.filter(user=user, motion=motion).exists():
+            raise OpenSlidesError(
+                _('{user} is already a submitter.').format(user=user))
+        if isinstance(user, AnonymousUser):
+            raise OpenSlidesError(
+                _('An anonymous user can not be a submitter.'))
+        weight = (self.filter(motion=motion).aggregate(
+            models.Max('weight'))['weight__max'] or 0)
+        submitter = self.model(user=user, motion=motion, weight=weight + 1)
+        submitter.save(force_insert=True, skip_autoupdate=skip_autoupdate)
+        return submitter
+
+
+class Submitter(RESTModelMixin, models.Model):
+    """
+    M2M Model for submitters.
+    """
+
+    objects = SubmitterManager()
+    """
+    Use custom Manager.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE)
+    """
+    ForeignKey to the user who is the submitter.
+    """
+
+    motion = models.ForeignKey(
+        Motion,
+        on_delete=models.CASCADE,
+        related_name='submitters')
+    """
+    ForeignKey to the motion.
+    """
+
+    weight = models.IntegerField(null=True)
+
+    class Meta:
+        default_permissions = ()
+
+    def __str__(self):
+        return str(self.user)
+
+    def get_root_rest_element(self):
+        """
+        Returns the motion to this instance which is the root REST element.
+        """
+        return self.motion
 
 
 class MotionVersion(RESTModelMixin, models.Model):

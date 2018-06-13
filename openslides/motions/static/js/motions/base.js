@@ -209,6 +209,22 @@ angular.module('OpenSlidesApp.motions', [
     }
 ])
 
+.factory('Submitter', [
+    'DS',
+    function (DS) {
+        return DS.defineResource({
+            name: 'motions/submitter',
+            relations: {
+                belongsTo: {
+                    'users/user': {
+                        localField: 'user',
+                        localKey: 'user_id',
+                    }
+                }
+            }
+        });
+    }
+])
 
 .factory('Motion', [
     'DS',
@@ -571,6 +587,7 @@ angular.module('OpenSlidesApp.motions', [
                      * There are the following possible actions.
                      * - see
                      * - update
+                     * - update_submitters
                      * - delete
                      * - create_poll
                      * - support
@@ -604,6 +621,8 @@ angular.module('OpenSlidesApp.motions', [
                                     this.state.allow_submitter_edit
                                 )
                             );
+                        case 'update_submitters':
+                            return operator.hasPerms('motions.can_manage');
                         case 'delete':
                             return (
                                 operator.hasPerms('motions.can_manage') ||
@@ -755,20 +774,18 @@ angular.module('OpenSlidesApp.motions', [
                         localField: 'attachments',
                         localKeys: 'attachments_id',
                     },
-                    'users/user': [
-                        {
-                            localField: 'submitters',
-                            localKeys: 'submitters_id',
-                        },
-                        {
-                            localField: 'supporters',
-                            localKeys: 'supporters_id',
-                        }
-                    ],
+                    'users/user': {
+                        localField: 'supporters',
+                        localKeys: 'supporters_id',
+                    },
                     'motions/motion-poll': {
                         localField: 'polls',
                         foreignKey: 'motion_id',
-                    }
+                    },
+                    'motions/submitter': {
+                        localField: 'submitters',
+                        foreignKey: 'motion_id',
+                    },
                 },
                 hasOne: {
                     'motions/workflowstate': [
@@ -987,7 +1004,8 @@ angular.module('OpenSlidesApp.motions', [
     'Category',
     'Workflow',
     'MotionChangeRecommendation',
-    function(Motion, Category, Workflow, MotionChangeRecommendation) {}
+    'Submitter',
+    function(Motion, Category, Workflow, MotionChangeRecommendation, Submitter) {}
 ])
 
 

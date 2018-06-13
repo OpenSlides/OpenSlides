@@ -1,0 +1,44 @@
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a href="javascript:history.back()" class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back</translate>
+      </a>
+    </div>
+    <h1>{{ motion.getAgendaTitle() }}</h1>
+    <h2 translate>Sort submitters</h2>
+  </div>
+</div>
+
+<div class="details">
+  <!-- Submitters -->
+  <div ui-tree="treeOptions" data-empty-placeholder-enabled="false">
+    <ol ui-tree-nodes="" ng-model="submitters">
+      <li ng-repeat="submitter in submitters" ui-tree-node>
+        <i ui-tree-handle="" class="fa fa-arrows-v"></i>
+        {{ $index + 1 }}.
+        {{ submitter.user.get_full_name() }}
+        <button ng-click="removeSubmitter(submitter.user.id)"
+            class="btn btn-default btn-sm" title="{{ 'Remove' | translate }}">
+          <i class="fa fa-times"></i>
+        </button>
+    </ol>
+  </div>
+
+  <!-- Select new submitter form -->
+  <div class="form-group spacer-top-lg">
+    <div uib-alert ng-show="alert.show" ng-class="'alert-' + (alert.type || 'warning')" ng-click="alert={}" close="alert={}">
+      {{ alert.msg }}
+    </div>
+    <select chosen
+        ng-model="submitterSelectBox.selected"
+        ng-change="addSubmitter(submitterSelectBox.selected)"
+        ng-options="user.id as user.get_full_name() for user in users"
+        search-contains="true"
+        placeholder-text-single="'Select or search a participant ...' | translate"
+        no-results-text="'No results available ...' | translate"
+        class="form-control">
+    <select>
+  </div>
+</div>

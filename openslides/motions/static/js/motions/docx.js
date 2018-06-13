@@ -7,6 +7,7 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
 .factory('MotionDocxExport', [
     '$http',
     '$q',
+    '$filter',
     'operator',
     'Config',
     'Category',
@@ -15,8 +16,8 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
     'lineNumberingService',
     'Html2DocxConverter',
     'MotionComment',
-    function ($http, $q, operator, Config, Category, gettextCatalog, FileSaver, lineNumberingService,
-        Html2DocxConverter, MotionComment) {
+    function ($http, $q, $filter, operator, Config, Category, gettextCatalog,
+        FileSaver, lineNumberingService, Html2DocxConverter, MotionComment) {
 
         var PAGEBREAK = '<w:p><w:r><w:br w:type="page" /></w:r></w:p>';
 
@@ -116,9 +117,11 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
                     id: motion.id,
                     identifier: motion.identifier || '',
                     title: title,
-                    submitters: params.include.submitters ?  _.map(motion.submitters, function (submitter) {
-                                    return submitter.get_full_name();
-                                }).join(', ') : '',
+                    submitters: params.include.submitters ? _.map(
+                            $filter('orderBy')(motion.submitters, 'weight'), function (submitter) {
+                                return submitter.user.get_full_name();
+                            }
+                        ).join(', ') : '',
                     status: motion.getStateName(),
                     // Miscellaneous stuff
                     preamble: gettextCatalog.getString(Config.get('motions_preamble').value),

@@ -6,6 +6,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
 .factory('MotionContentProvider', [
     '$q',
+    '$filter',
     'operator',
     'gettextCatalog',
     'PDFLayout',
@@ -17,7 +18,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'Motion',
     'MotionComment',
     'OpenSlidesSettings',
-    function($q, operator, gettextCatalog, PDFLayout, PdfMakeConverter, ImageConverter,
+    function($q, $filter, operator, gettextCatalog, PDFLayout, PdfMakeConverter, ImageConverter,
         HTMLValidizer, Category, Config, Motion, MotionComment, OpenSlidesSettings) {
         /**
          * Provides the content as JS objects for Motions in pdfMake context
@@ -86,9 +87,11 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 var metaTableBody = [];
 
                 // submitters
-                var submitters = _.map(motion.submitters, function (submitter) {
-                    return submitter.get_full_name();
-                }).join(', ');
+                var submitters = _.map(
+                    $filter('orderBy')(motion.submitters, 'weight'), function (submitter) {
+                        return submitter.user.get_full_name();
+                    }
+                ).join(', ');
                 if (params.include.submitters) {
                     metaTableBody.push([
                         {

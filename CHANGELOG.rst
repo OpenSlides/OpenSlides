@@ -8,7 +8,8 @@ Version 2.3 (unreleased)
 ========================
 
 Motions:
-- New feature to scroll the projector to a specific line [#3748].
+ - New feature to scroll the projector to a specific line [#3748].
+ - New possibility to sort submitters [#3647].
 
 
 Version 2.2 (2018-06-06)

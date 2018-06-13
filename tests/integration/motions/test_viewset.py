@@ -15,6 +15,7 @@ from openslides.motions.models import (
     MotionBlock,
     MotionLog,
     State,
+    Submitter,
     Workflow,
 )
 from openslides.users.models import Group
@@ -175,7 +176,7 @@ class CreateMotion(TestCase):
         self.assertEqual(motion.title, 'test_title_OoCoo3MeiT9li5Iengu9')
         self.assertEqual(motion.identifier, '1')
         self.assertTrue(motion.submitters.exists())
-        self.assertEqual(motion.submitters.get().username, 'admin')
+        self.assertEqual(motion.submitters.get().user.username, 'admin')
 
     def test_with_reason(self):
         response = self.client.post(
@@ -467,14 +468,15 @@ class RetrieveMotion(TestCase):
         user = get_user_model().objects.create_user(
             username='username_ohS2opheikaSa5theijo',
             password='password_kau4eequaisheeBateef')
-        self.motion.submitters.add(user)
+        Submitter.objects.add(user, self.motion)
         submitter_client = APIClient()
         submitter_client.force_login(user)
         response = submitter_client.get(reverse('motion-detail', args=[self.motion.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_user_without_can_see_user_permission_to_see_motion_and_submitter_data(self):
-        self.motion.submitters.add(get_user_model().objects.get(username='admin'))
+        admin = get_user_model().objects.get(username='admin')
+        Submitter.objects.add(admin, self.motion)
         group = Group.objects.get(pk=1)  # Group with pk 1 is for anonymous and default users.
         permission_string = 'users.can_see_name'
         app_label, codename = permission_string.split('.')
@@ -486,7 +488,8 @@ class RetrieveMotion(TestCase):
 
         response_1 = guest_client.get(reverse('motion-detail', args=[self.motion.pk]))
         self.assertEqual(response_1.status_code, status.HTTP_200_OK)
-        response_2 = guest_client.get(reverse('user-detail', args=[response_1.data['submitters_id'][0]]))
+        submitter_id = response_1.data['submitters'][0]['user_id']
+        response_2 = guest_client.get(reverse('user-detail', args=[submitter_id]))
         self.assertEqual(response_2.status_code, status.HTTP_200_OK)
 
         extra_user = get_user_model().objects.create_user(
@@ -552,7 +555,7 @@ class UpdateMotion(TestCase):
             username='test_username_uqu6PhoovieB9eicah0o',
             password='test_password_Xaesh8ohg6CoheTe3awo')
         motion = Motion.objects.get()
-        motion.submitters.add(non_admin)
+        Submitter.objects.add(non_admin, self.motion)
         motion.supporters.clear()
         response = self.client.patch(
             reverse('motion-detail', args=[self.motion.pk]),
@@ -566,7 +569,7 @@ class UpdateMotion(TestCase):
         admin = get_user_model().objects.get(username='admin')
         group_admin = admin.groups.get(name='Admin')
         admin.groups.remove(group_admin)
-        self.motion.submitters.add(admin)
+        Submitter.objects.add(admin, self.motion)
         supporter = get_user_model().objects.create_user(
             username='test_username_ahshi4oZin0OoSh9chee',
             password='test_password_Sia8ahgeenixu5cei2Ib')
@@ -678,7 +681,7 @@ class DeleteMotion(TestCase):
     def test_delete_own_motion_as_delegate(self):
         self.make_admin_delegate()
         self.put_motion_in_complex_workflow()
-        self.motion.submitters.add(self.admin)
+        Submitter.objects.add(self.admin, self.motion)
 
         response = self.client.delete(
             reverse('motion-detail', args=[self.motion.pk]))
@@ -730,6 +733,118 @@ class ManageVersion(TestCase):
             {'version_number': '2'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, {'detail': 'You can not delete the active version of a motion.'})
+
+
+class ManageSubmitters(TestCase):
+    """
+    Tests adding and removing of submitters.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+
+        self.admin = get_user_model().objects.get()
+        self.motion = Motion(
+            title='test_title_SlqfMw(waso0saWMPqcZ',
+            text='test_text_f30skclqS9wWF=xdfaSL')
+        self.motion.save()
+
+    def test_add_existing_user(self):
+        response = self.client.post(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': self.admin.pk})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.motion.submitters.count(), 1)
+
+    def test_add_non_existing_user(self):
+        response = self.client.post(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': 1337})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.motion.submitters.count(), 0)
+
+    def test_add_user_twice(self):
+        response = self.client.post(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': self.admin.pk})
+        response = self.client.post(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': self.admin.pk})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.motion.submitters.count(), 1)
+
+    def test_add_user_no_data(self):
+        response = self.client.post(
+            reverse('motion-manage-submitters', args=[self.motion.pk]))
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.motion.submitters.count(), 0)
+
+    def test_add_user_invalid_data(self):
+        response = self.client.post(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': ['invalid_str']})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.motion.submitters.count(), 0)
+
+    def test_add_without_permission(self):
+        admin = get_user_model().objects.get(username='admin')
+        group_admin = admin.groups.get(name='Admin')
+        group_delegates = type(group_admin).objects.get(name='Delegates')
+        admin.groups.add(group_delegates)
+        admin.groups.remove(group_admin)
+        CollectionElement.from_instance(admin)
+
+        response = self.client.post(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': self.admin.pk})
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.motion.submitters.count(), 0)
+
+    def test_remove_existing_user(self):
+        response = self.client.post(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': self.admin.pk})
+        response = self.client.delete(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': self.admin.pk})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.motion.submitters.count(), 0)
+
+    def test_remove_non_existing_user(self):
+        response = self.client.post(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': self.admin.pk})
+        response = self.client.delete(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': 1337})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.motion.submitters.count(), 1)
+
+    def test_remove_existing_user_twice(self):
+        response = self.client.post(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': self.admin.pk})
+        response = self.client.delete(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': self.admin.pk})
+        response = self.client.delete(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': self.admin.pk})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.motion.submitters.count(), 0)
+
+    def test_remove_user_no_data(self):
+        response = self.client.delete(
+            reverse('motion-manage-submitters', args=[self.motion.pk]))
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.motion.submitters.count(), 0)
+
+    def test_remove_user_invalid_data(self):
+        response = self.client.delete(
+            reverse('motion-manage-submitters', args=[self.motion.pk]),
+            {'user': ['invalid_str']})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.motion.submitters.count(), 0)
 
 
 class CreateMotionChangeRecommendation(TestCase):

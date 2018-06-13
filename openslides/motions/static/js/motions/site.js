@@ -89,6 +89,19 @@ angular.module('OpenSlidesApp.motions.site', [
                     }
                 ]
             })
+            .state('motions.motion.submitters', {
+                url: '/submitters/{id:int}',
+                controller: 'MotionSubmitterCtrl',
+                resolve: {
+                    motionId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
+                },
+                data: {
+                    title: gettext('Submitters'),
+                    basePerm: 'motions.can_manage',
+                },
+            })
             .state('motions.motion.import', {
                 url: '/import',
                 controller: 'MotionImportCtrl',
@@ -388,67 +401,73 @@ angular.module('OpenSlidesApp.motions.site', [
             getFormFields: function (isCreateForm) {
                 var workflows = Workflow.getAll();
                 var images = Mediafile.getAllImages();
-                var formFields = [
-                {
+                var formFields = [];
+                formFields.push({
                     key: 'identifier',
                     type: 'input',
                     templateOptions: {
                         label: gettextCatalog.getString('Identifier')
                     },
                     hide: true
-                },
-                {
-                    key: 'submitters_id',
-                    type: 'select-multiple',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Submitters'),
-                        options: User.getAll(),
-                        ngOptions: 'option.id as option.full_name for option in to.options',
-                        placeholder: gettextCatalog.getString('Select or search a submitter ...')
+                });
+
+                if (isCreateForm) {
+                    formFields.push({
+                        key: 'submitters_id',
+                        type: 'select-multiple',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Submitters'),
+                            options: User.getAll(),
+                            ngOptions: 'option.id as option.full_name for option in to.options',
+                            placeholder: gettextCatalog.getString('Select or search a submitter ...'),
+                        },
+                        hide: !operator.hasPerms('motions.can_manage')
+                    });
+                }
+
+                formFields = formFields.concat([
+                    {
+                        key: 'title',
+                        type: 'input',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Title'),
+                            required: true
+                        }
                     },
-                    hide: !operator.hasPerms('motions.can_manage')
-                },
-                {
-                    key: 'title',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Title'),
-                        required: true
+                    {
+                        template: '<p class="spacer-top-lg no-padding">' + Config.translate(Config.get('motions_preamble').value) + '</p>'
+                    },
+                    {
+                        key: 'text',
+                        type: 'editor',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Text'),
+                            required: true
+                        },
+                        data: {
+                            ckeditorOptions: Editor.getOptions()
+                        }
+                    },
+                    {
+                        key: 'reason',
+                        type: 'editor',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Reason'),
+                        },
+                        data: {
+                            ckeditorOptions: Editor.getOptions()
+                        }
+                    },
+                    {
+                        key: 'disable_versioning',
+                        type: 'checkbox',
+                        templateOptions: {
+                            label: gettextCatalog.getString('Trivial change'),
+                            description: gettextCatalog.getString("Don't create a new version.")
+                        },
+                        hide: true
                     }
-                },
-                {
-                    template: '<p class="spacer-top-lg no-padding">' + Config.translate(Config.get('motions_preamble').value) + '</p>'
-                },
-                {
-                    key: 'text',
-                    type: 'editor',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Text'),
-                        required: true
-                    },
-                    data: {
-                        ckeditorOptions: Editor.getOptions()
-                    }
-                },
-                {
-                    key: 'reason',
-                    type: 'editor',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Reason'),
-                    },
-                    data: {
-                        ckeditorOptions: Editor.getOptions()
-                    }
-                },
-                {
-                    key: 'disable_versioning',
-                    type: 'checkbox',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Trivial change'),
-                        description: gettextCatalog.getString("Don't create a new version.")
-                    },
-                    hide: true
-                }];
+                ]);
 
                 // show as agenda item + parent item
                 if (isCreateForm) {
@@ -1192,7 +1211,7 @@ angular.module('OpenSlidesApp.motions.site', [
         ];
         $scope.filter.propertyDict = {
             'submitters': function (submitter) {
-                return submitter.get_short_name();
+                return submitter.user.get_short_name();
             },
             'supporters': function (supporter) {
                 return supporter.get_short_name();
@@ -1235,7 +1254,7 @@ angular.module('OpenSlidesApp.motions.site', [
              display_name: gettext('Identifier')},
             {name: 'getTitle()',
              display_name: gettext('Title')},
-            {name: 'submitters[0].get_short_name()',
+            {name: 'submitters[0].user.get_short_name()',
              display_name: gettext('Submitters')},
             {name: 'category.' + Config.get('motions_export_category_sorting').value,
              display_name: gettext('Category')},
@@ -2117,7 +2136,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'operator',
     'ErrorMessage',
     'EditingWarning',
-    function($scope, $state, Motion, Category, Config, Mediafile, MotionForm,
+    function ($scope, $state, Motion, Category, Config, Mediafile, MotionForm,
         Tag, User, Workflow, Agenda, motionId, operator, ErrorMessage,
         EditingWarning) {
         Category.bindAll({}, $scope, 'categories');
@@ -2176,7 +2195,7 @@ angular.module('OpenSlidesApp.motions.site', [
             Motion.inject(motion);
             // save changed motion object on server
             Motion.save(motion).then(
-                function(success) {
+                function (success) {
                     if (gotoDetailView) {
                         $state.go('motions.motion.detail', {id: success.id});
                     }
@@ -2201,7 +2220,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'motionpollId',
     'voteNumber',
     'ErrorMessage',
-    function($scope, gettextCatalog, MotionPoll, MotionPollForm, motionpollId,
+    function ($scope, gettextCatalog, MotionPoll, MotionPollForm, motionpollId,
         voteNumber, ErrorMessage) {
         // set initial values for form model by create deep copy of motionpoll object
         // so detail view is not updated while editing poll
@@ -2220,12 +2239,72 @@ angular.module('OpenSlidesApp.motions.site', [
                     votesinvalid: poll.votesinvalid,
                     votescast: poll.votescast
             })
-            .then(function(success) {
+            .then(function (success) {
                 $scope.alert.show = false;
                 $scope.closeThisDialog();
-            }, function(error) {
+            }, function (error) {
                 $scope.alert = ErrorMessage.forAlert(error);
             });
+        };
+    }
+])
+
+.controller('MotionSubmitterCtrl', [
+    '$scope',
+    '$filter',
+    '$http',
+    'User',
+    'Motion',
+    'motionId',
+    'ErrorMessage',
+    function ($scope, $filter, $http, User, Motion, motionId, ErrorMessage) {
+        User.bindAll({}, $scope, 'users');
+        $scope.submitterSelectBox = {};
+        $scope.alert = {};
+
+        $scope.$watch(function () {
+            return Motion.lastModified(motionId);
+        }, function () {
+            $scope.motion = Motion.get(motionId);
+            $scope.submitters = $filter('orderBy')($scope.motion.submitters, 'weight');
+        });
+
+        $scope.addSubmitter = function (userId) {
+            $scope.submitterSelectBox = {};
+            $http.post('/rest/motions/motion/' + $scope.motion.id + '/manage_submitters/', {
+                'user': userId
+            }).then(
+                function (success) {
+                    $scope.alert.show = false;
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
+                }
+            );
+        };
+
+        $scope.removeSubmitter = function (userId) {
+            $http.delete('/rest/motions/motion/' + $scope.motion.id + '/manage_submitters/', {
+                headers: {'Content-Type': 'application/json'},
+                data: JSON.stringify({user: userId})
+            }).then(
+                function (success) {
+                    $scope.alert.show = false;
+                }, function (error) {
+                    $scope.alert = ErrorMessage.forAlert(error);
+                }
+            );
+        };
+
+        // save reordered list of submitters
+        $scope.treeOptions = {
+            dropped: function (event) {
+                var submitterIds = _.map($scope.submitters, function (submitter) {
+                    return submitter.id;
+                });
+                $http.post('/rest/motions/motion/' + $scope.motion.id + '/sort_submitters/', {
+                    submitters: submitterIds,
+                });
+            }
         };
     }
 ])
@@ -2239,7 +2318,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'MotionBlock',
     'User',
     'MotionCsvExport',
-    function($scope, $q, gettext, Category, Motion, MotionBlock, User, MotionCsvExport) {
+    function ($scope, $q, gettext, Category, Motion, MotionBlock, User, MotionCsvExport) {
         // set initial data for csv import
         $scope.motions = [];
 
@@ -2295,7 +2374,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 }
                 // submitter
                 if (motion.submitter && motion.submitter !== '') {
-                    angular.forEach(User.getAll(), function (user) {
+                    _.forEach(User.getAll(), function (user) {
                         var user_short_name = [user.title, user.first_name, user.last_name].join(' ').trim();
                         if (user_short_name == motion.submitter.trim()) {
                             motion.submitters_id = [user.id];

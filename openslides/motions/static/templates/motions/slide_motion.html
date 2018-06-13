@@ -12,8 +12,8 @@
 
     <!-- Submitters -->
     <h3 ng-if="motion.submitters.length > 0" translate>Submitters</h3>
-    <div ng-repeat="submitter in motion.submitters">
-      {{ submitter.get_full_name() }}<br>
+    <div ng-repeat="submitter in motion.submitters | orderBy: 'weight'">
+      {{ submitter.user.get_full_name() }}<span ng-hide="$last">,</span>
     </div>
 
     <!-- Poll results -->

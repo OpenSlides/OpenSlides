@@ -43,7 +43,8 @@ class MotionAccessPermissions(BaseAccessPermissions):
             for full in full_data:
                 # Check if user is submitter of this motion.
                 if isinstance(user, CollectionElement):
-                    is_submitter = user.get_full_data()['id'] in full.get('submitters_id', [])
+                    is_submitter = user.get_full_data()['id'] in [
+                        submitter['user_id'] for submitter in full.get('submitters', [])]
                 else:
                     # Anonymous users can not be submitters.
                     is_submitter = False
