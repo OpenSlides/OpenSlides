@@ -37,5 +37,42 @@ openslides_*
 # Mypy cache for typechecking
 .mypy_cache
 
-# Development of a new client. Easier to switch branches with this entry
-client/*
+# OpenSlides 3 Client
+
+# compiled output
+client/dist
+client/tmp
+client/out-tsc
+
+# dependencies
+client/node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+client/.sass-cache
+client/connect.lock
+client/coverage
+client/libpeerconnection.log
+client/npm-debug.log
+client/yarn-error.log
+client/testem.log
+client/typings
+
+# System Files
+client/.DS_Store
+client/Thumbs.db

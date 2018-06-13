@@ -1,0 +1,10 @@
+{
+    "/users/login": {
+        "target": "http://localhost:8000",
+        "secure": false
+    },
+    "/rest": {
+        "target": "http://localhost:8000",
+        "secure": false
+    }
+}
