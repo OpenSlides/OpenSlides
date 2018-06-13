@@ -1348,15 +1348,13 @@ angular.module('OpenSlidesApp.core', [
 
                 Projector.inject(projectorsChanged);
 
-                return $q(function (resolve, reject) {
-                    $http.post('/rest/core/projector/project/', data).then(function (success) {
-                        resolve(success);
-                    }, function (error) {
-                        // revert the changed made earlier
+                return $http.post('/rest/core/projector/project/', data).catch(
+                    function (error) {
+                        // revert the changes made earlier
                         Projector.inject(originalProjectors);
-                        reject(error);
-                    });
-                });
+                        return $q.reject(error);
+                    }
+                );
             },
         };
     }
