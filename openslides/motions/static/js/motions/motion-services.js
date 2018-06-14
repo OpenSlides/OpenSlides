@@ -577,8 +577,10 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             $scope.$watch(function () {
                 return Motion.lastModified();
             }, function () {
-                $scope.paragraph_amendments = motion.getParagraphBasedAmendmentsForDiffView();
-                rebuild_amendments_crs();
+                if (motion) {
+                    $scope.paragraph_amendments = motion.getParagraphBasedAmendmentsForDiffView();
+                    rebuild_amendments_crs();
+                }
             });
         };
 

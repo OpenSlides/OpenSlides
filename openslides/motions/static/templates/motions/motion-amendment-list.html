@@ -318,8 +318,8 @@
           <div ng-if="amendment.submitters.length">
             <small>
               <span class="optional" translate>by</span>
-              <span class="optional" ng-repeat="submitter in amendment.submitters | limitTo:1">
-                {{ submitter.get_full_name() }}<span ng-if="!$last">,</span></span><span ng-if="amendment.submitters.length > 1">,
+              <span class="optional" ng-repeat="submitter in amendment.submitters | orderBy: 'weight' | limitTo:1">
+                {{ submitter.user.get_full_name() }}<span ng-if="!$last">,</span></span><span ng-if="amendment.submitters.length > 1">,
                 ... [+{{ amendment.submitters.length - 1 }}]</span>
               <!-- sorry for merging them together, but otherwise there would be a whitespace because of the new line -->
             </small>
@@ -328,6 +328,11 @@
           <div ng-if="amendment.isAllowed('update')">
             <small>
               <a href="" ng-click="openDialog(amendment)" translate>Edit</a>
+              <span ng-if="amendment.isAllowed('update_submitters')"> &middot;
+                <a ui-sref="motions.motion.submitters({id: amendment.id})" translate>
+                  Edit submitters
+                </a>
+              </span>
               <span ng-if="amendment.isAllowed('delete')"> &middot;
                 <a href="" class="text-danger"
                     ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br><b>{{ amendment.getTitle() }}</b>"
