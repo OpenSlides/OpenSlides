@@ -108,6 +108,11 @@ angular.module('OpenSlidesApp.motions.site', [
                 params: {
                     motionId: null,
                 },
+                resolve: {
+                    motionId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
+                }
             })
             .state('motions.motion.allamendments', {
                 url: '/amendments',
@@ -3179,6 +3184,10 @@ angular.module('OpenSlidesApp.motions.site', [
         gettext('Apply text for new amendments');
         gettext('The title of the motion is always applied.');
         gettext('Amendment to');
+        gettext('How to create new amendments');
+        gettext('Empty text field');
+        gettext('Edit the whole motion text');
+        gettext('Paragraph-based, Diff-enabled');
 
         // subgroup Supporters
         gettext('Supporters');

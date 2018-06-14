@@ -14,7 +14,7 @@
      ng-if="motion.isParagraphBasedAmendment()">
     <section class="motion-text-holder">
         <div class="alert alert-info" ng-if="amendment_diff_paragraphs.length === 0">
-            <translate>No changes at the text</translate>
+            <translate>No changes at the text.</translate>
         </div>
         <div ng-repeat="paragraph in amendment_diff_paragraphs" class="motion-text motion-text-diff line-numbers-{{ lineNumberMode }}"
              ng-class="{'amendment-context': showAmendmentContext}">

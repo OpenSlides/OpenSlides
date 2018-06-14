@@ -136,15 +136,6 @@
 
       <!-- Agreed View -->
       <div ng-if="mode == 'agreed'">
-        <div class="alert alert-danger" ng-if="changed_version_has_accepted_collissions">
-            <i class="fa fa-warning"></i>
-            <translate>
-                At least two amendments or change recommendations affecting the same line are to be integrated.
-                This leads to undeterministic results.
-                Please resolve this conflict by not accepting multiple changes affecting the same line.
-            </translate>
-        </div>
-
         <div ng-bind-html="motion.getTextByMode('agreed', null, line) | trusted"
           class="motion-text motion-text-changed line-numbers-{{ config('motions_default_line_numbering') }}"></div>
       </div>

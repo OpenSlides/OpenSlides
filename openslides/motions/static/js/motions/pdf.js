@@ -72,7 +72,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             if (motion.parent_id) {
                 var parentMotion = Motion.get(motion.parent_id);
                 subtitleLines.push(
-                    gettextCatalog.getString('Amendment of motion') + ': ' +
+                    gettextCatalog.getString('Amendment to motion') + ': ' +
                     (parentMotion.identifier ? parentMotion.identifier : parentMotion.getTitle())
                 );
             }
@@ -530,7 +530,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             if (motion.parent_id) {
                 var parentMotion = Motion.get(motion.parent_id);
                 subtitleLines.push(
-                    gettextCatalog.getString('Amendment of motion') + ': ' +
+                    gettextCatalog.getString('Amendment to motion') + ': ' +
                     (parentMotion.identifier ? parentMotion.identifier : parentMotion.getTitle())
                 );
             }
@@ -545,7 +545,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
                 // submitters
                 var submitters = _.map(motion.submitters, function (submitter) {
-                    return submitter.get_full_name();
+                    return submitter.user.get_full_name();
                 }).join(', ');
                 metaTableBody.push([
                     {
@@ -1047,7 +1047,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
                     // submitters
                     var submitters = _.map(motion.submitters, function (submitter) {
-                        return submitter.get_full_name();
+                        return submitter.user.get_full_name();
                     }).join(', ');
                     content.push({
                         text: gettextCatalog.getString('Submitters') + ': ' + submitters,
@@ -1076,7 +1076,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 // title
                 var title = leadMotion.identifier ? ' ' + leadMotion.identifier : '';
                 title += ': ' + leadMotion.getTitle();
-                title = PDFLayout.createTitle(gettextCatalog.getString('Amendments of motion') + title);
+                title = PDFLayout.createTitle(gettextCatalog.getString('Amendments to motion') + title);
 
                 var content = [title],
                     foundAmendments = [];
