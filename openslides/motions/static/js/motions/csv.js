@@ -127,6 +127,84 @@ angular.module('OpenSlidesApp.motions.csv', [])
             },
         };
     }
+])
+
+.factory('AmendmentCsvExport', [
+    'gettextCatalog',
+    'CsvDownload',
+    'lineNumberingService',
+    function (gettextCatalog, CsvDownload, lineNumberingService) {
+        var makeHeaderline = function () {
+            var headerline = ['Identifier', 'Submitters', 'Category', 'Motion block',
+                'Leadmotion', 'Line', 'Old text', 'New text'];
+            return _.map(headerline, function (entry) {
+                return gettextCatalog.getString(entry);
+            });
+        };
+        return {
+            export: function (amendments) {
+                var csvRows = [
+                    makeHeaderline()
+                ];
+                _.forEach(amendments, function (amendment) {
+                    var row = [];
+                    // Identifier and title
+                    row.push('"' + amendment.identifier !== null ? amendment.identifier : '' + '"');
+                    // Submitters
+                    var submitters = [];
+                    angular.forEach(amendment.submitters, function(user) {
+                        var user_short_name = [user.title, user.first_name, user.last_name].join(' ').trim();
+                        submitters.push(user_short_name);
+                    });
+                    row.push('"' + submitters.join('; ') + '"');
+
+                    // Category
+                    var category = amendment.category ? amendment.category.name : '';
+                    row.push('"' + category + '"');
+
+                    // Motion block
+                    var blockTitle = amendment.motionBlock ? amendment.motionBlock.title : '';
+                    row.push('"' + blockTitle + '"');
+
+                    // Lead motion
+                    var leadmotion = amendment.getParentMotion();
+                    if (leadmotion) {
+                        var leadmotionTitle = leadmotion.identifier ? leadmotion.identifier + ': ' : '';
+                        leadmotionTitle += leadmotion.getTitle();
+                        row.push('"' + leadmotionTitle + '"');
+                    } else {
+                        row.push('""');
+                    }
+
+                    // changed paragraph
+                    if (amendment.isParagraphBasedAmendment()) {
+                        // TODO: get old and new paragraphLine. Resolve todo
+                        // in motion.getAmendmentParagraphsLinesByMode
+                        var p_old = amendment.getAmendmentParagraphsLinesByMode('original', null, false)[0];
+                        //var p_new = amendment.getAmendmentParagraphsLinesByMode('changed', null, false)[0];
+                        var lineStr = p_old.diffLineFrom;
+                        if (p_old.diffLineTo != p_old.diffLineFrom + 1) {
+                            lineStr += '-' + p_old.diffLineTo;
+                        }
+                        row.push('"' + lineStr + '"');
+                        //row.push('"' + p_old.text.html + '"');
+                        //row.push('"' + p_new.text.html + '"');
+
+                        // Work around: Export the full paragraphs instead of changed lines
+                        row.push('"' + amendment.getAmendmentParagraphsByMode('original', null, false)[0].text + '"');
+                        row.push('"' + amendment.getAmendmentParagraphsByMode('changed', null, false)[0].text + '"');
+                    } else {
+                        row.push('""');
+                        row.push('""');
+                        row.push('"' + amendment.getText() + '"');
+                    }
+
+                    csvRows.push(row);
+                });
+                CsvDownload(csvRows, 'amendments-export.csv');
+            },
+        };
+    }
 ]);
 
 }());

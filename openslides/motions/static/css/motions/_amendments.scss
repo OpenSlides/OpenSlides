@@ -1,0 +1,94 @@
+.paragraph-select-list {
+  display: table;
+  border: 1px solid #d3d3d3;
+  width: 100%;
+  margin-bottom: 10px;
+
+  .paragraph-select-holder {
+    display: table-row;
+    cursor: pointer;
+    border-bottom: 1px solid #d3d3d3;
+
+    .paragraph-select {
+      display: table-cell;
+      width: 30px;
+      padding-top: 5px;
+      text-align: center;
+    }
+    .text-holder {
+      display: table-cell;
+      background-color: white;
+      padding: 5px 10px;
+
+      :last-child {
+        margin-bottom: 0;
+      }
+
+      // Show line numbers at the side
+      @media screen and (min-width: 800px) {
+        padding-left: 30px;
+        position: relative;
+
+        .os-line-number {
+          display: inline-block;
+          font-size: 0;
+          line-height: 0;
+          width: 22px;
+          height: 22px;
+          position: absolute;
+          left: -15px;
+          padding-right: 45px;
+
+          &:after {
+            content: attr(data-line-number);
+            position: absolute;
+            top: 8px;
+            right: 5px;
+            vertical-align: top;
+            color: #a9a9a9;
+            font-size: 12px;
+            font-weight: normal;
+          }
+        }
+      }
+
+      // Show line numbers at the side
+      @media screen and (max-width: 799px) {
+        .os-line-break {
+          display: none;
+        }
+
+        .os-line-number {
+          display: inline-block;
+
+          &:after {
+            display: inline-block;
+            content: attr(data-line-number);
+            vertical-align: top;
+            font-size: 10px;
+            font-weight: normal;
+            color: gray;
+            margin-top: -3px;
+            margin-left: 0;
+            margin-right: 0;
+          }
+        }
+      }
+    }
+
+    &:hover {
+      .text-holder {
+        background-color: #f0f0f0;
+      }
+    }
+    &.selected {
+      .paragraph-select {
+        background-color: #ddd;
+      }
+      .text-holder {
+        background-color: #ddd;
+      }
+
+    }
+  }
+}

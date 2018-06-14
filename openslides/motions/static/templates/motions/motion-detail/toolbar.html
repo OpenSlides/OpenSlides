@@ -2,17 +2,17 @@
     <!-- inline editing -->
     <div class="pull-right inline-editing-activator"
          ng-if="motion.isAllowed('update') && version == motion.getVersion(-1).id && viewChangeRecommendations.mode == 'original'">
-        <button ng-if="!inlineEditing.active && change_recommendations.length == 0" ng-click="enableMotionInlineEditing()"
+        <button ng-if="!inlineEditing.active && !has_proposed_changes" ng-click="enableMotionInlineEditing()"
                 class="btn btn-sm btn-default">
             <i class="fa fa-pencil-square-o"></i>
             <translate>Inline editing</translate>
         </button>
-        <button ng-if="inlineEditing.active && change_recommendations.length == 0" ng-click="disableMotionInlineEditing()"
+        <button ng-if="inlineEditing.active && !has_proposed_changes" ng-click="disableMotionInlineEditing()"
                 class="btn btn-sm btn-default">
             <i class="fa fa-times-circle"></i>
             <translate>Inline editing</translate>
         </button>
-        <button ng-if="change_recommendations.length > 0" class="btn btn-sm btn-default" disabled
+        <button ng-if="has_proposed_changes" class="btn btn-sm btn-default" disabled
                 title="{{ 'Editing the text is not possible anymore once there are change recommendations.' | translate }}">
             <i class="fa fa-pencil-square-o"></i>
             <translate>Inline editing</translate>
@@ -21,56 +21,7 @@
 
     <div class="toolbar-left {{ lineNumberMode }}">
 
-        <!-- line number mode for resonsive size medium/large (button group) -->
-        <div class="btn-group hidden-sm hidden-xs" data-toggle="buttons">
-            <span class="btn btn-sm btn-default disabled">
-                <i class="fa fa-list-ol" aria-hidden="true"></i>
-                <translate>Line numbering</translate>:
-            </span>
-            <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'none')}"
-                   ng-click="setLineNumberMode('none')">
-                <input type="radio" name="lineNumberMode" value="none" ng-model="lineNumberMode"
-                       ng-checked="lineNumberMode == 'none'">
-                <translate>none</translate>
-            </label>
-            <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'inline')}"
-                   ng-click="setLineNumberMode('inline')">
-                <input type="radio" name="lineNumberMode" value="inline" ng-model="lineNumberMode"
-                       ng-checked="lineNumberMode == 'inline'">
-                <translate>inline</translate>
-            </label>
-            <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'outside')}"
-                   ng-click="setLineNumberMode('outside')">
-                <input type="radio" name="lineNumberMode" value="outside" ng-model="lineNumberMode"
-                       ng-checked="lineNumberMode == 'outside'">
-                <translate>outside</translate>
-            </label>
-        </div>
-        <!-- line number mode for resonsive size small/extra small (dropdown) -->
-        <div class="dropdown hidden-md hidden-lg inline" uib-dropdown>
-          <button type="button" class="btn btn-default btn-sm" id="dropdownLineMode" uib-dropdown-toggle>
-            <i class="fa fa-list-ol" aria-hidden="true"></i>
-            <translate>Line numbering</translate>
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownLineMode">
-            <li>
-              <a href="" ng-click="setLineNumberMode('none')">
-                <i class="fa fa-check" ng-if="lineNumberMode == 'none'"></i>
-                <translate>none</translate>
-              </a>
-            <li>
-              <a href="" ng-click="setLineNumberMode('inline')">
-                <i class="fa fa-check" ng-if="lineNumberMode == 'inline'"></i>
-                <translate>inline</translate>
-              </a>
-            <li>
-              <a href="" ng-click="setLineNumberMode('outside')">
-                <i class="fa fa-check" ng-if="lineNumberMode == 'outside'"></i>
-                <translate>outside</translate>
-              </a>
-          </ul>
-        </div>
+        <ng-include src="'static/templates/motions/motion-detail/toolbar-line-numbering.html'"></ng-include>
 
         <!-- go to line number -->
         <div class="popover-wrapper">
@@ -98,7 +49,7 @@
 </div>
 
 <!-- View Modes (Original, Diff, Changed) -->
-<div class="motion-toolbar" ng-if="change_recommendations.length > 0 || title_change_recommendation">
+<div class="motion-toolbar" ng-if="has_proposed_changes">
     <div class="toolbar-left">
 
         <!-- change recommendations for resonsive size medium/large (button group) -->
@@ -144,7 +95,7 @@
             <translate>Change recommendations</translate>
             <span class="caret"></span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownChangeVersion">
+          <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownChangeVersion">
             <li>
               <a href="" ng-click="viewChangeRecommendations.mode = 'original'">
                 <i class="fa fa-check" ng-if="viewChangeRecommendations.mode == 'original'"></i>

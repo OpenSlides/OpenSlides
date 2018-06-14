@@ -214,9 +214,12 @@ class Motion(RESTModelMixin, models.Model):
             * Else the given version is used.
 
         To create and use a new version object, you have to set it via the
-        use_version argument. You have to set the title, text and reason into
+        use_version argument. You have to set the title, text/amendment_paragraphs and reason into
         this version object before giving it to this save method. The properties
-        motion.title, motion.text and motion.reason will be ignored.
+        motion.title, motion.text, motion.amendment_paragraphs and motion.reason will be ignored.
+
+        text and amendment_paragraphs are mutually exclusive; if both are given,
+        amendment_paragraphs takes precedence.
         """
         if not self.state:
             self.reset_state()
@@ -261,8 +264,8 @@ class Motion(RESTModelMixin, models.Model):
             return
         elif use_version is None:
             use_version = self.get_last_version()
-            # Save title, text and reason into the version object.
-            for attr in ['title', 'text', 'reason']:
+            # Save title, text, amendment paragraphs and reason into the version object.
+            for attr in ['title', 'text', 'amendment_paragraphs', 'reason']:
                 _attr = '_%s' % attr
                 data = getattr(self, _attr, None)
                 if data is not None:
@@ -323,7 +326,7 @@ class Motion(RESTModelMixin, models.Model):
             return True
 
         last_version = self.get_last_version()
-        for attr in ['title', 'text', 'reason']:
+        for attr in ['title', 'text', 'amendment_paragraphs', 'reason']:
             if getattr(last_version, attr) != getattr(version, attr):
                 return True
         return False
@@ -460,7 +463,33 @@ class Motion(RESTModelMixin, models.Model):
 
     text = property(get_text, set_text)
     """
-    The text of a motin.
+    The text of a motion.
+
+    Is saved in a MotionVersion object.
+    """
+
+    def get_amendment_paragraphs(self):
+        """
+        Get the paragraphs of the amendment.
+        Returns an array of entries that are either null (paragraph is not changed)
+        or a string (the new version of this paragraph).
+        """
+        try:
+            return self._amendment_paragraphs
+        except AttributeError:
+            return self.get_active_version().amendment_paragraphs
+
+    def set_amendment_paragraphs(self, text):
+        """
+        Set the paragraphs of the amendment.
+        Has to be an array of entries that are either null (paragraph is not changed)
+        or a string (the new version of this paragraph).
+        """
+        self._amendment_paragraphs = text
+
+    amendment_paragraphs = property(get_amendment_paragraphs, set_amendment_paragraphs)
+    """
+    The paragraphs of the amendment.
 
     Is saved in a MotionVersion object.
     """
@@ -496,7 +525,7 @@ class Motion(RESTModelMixin, models.Model):
         Return a version object, not saved in the database.
 
         The version data of the new version object is populated with the data
-        set via motion.title, motion.text, motion.reason if these data are
+        set via motion.title, motion.text, motion.amendment_paragraphs and motion.reason if these data are
         not given as keyword arguments. If the data is not set in the motion
         attributes, it is populated with the data from the last version
         object if such object exists.
@@ -510,7 +539,7 @@ class Motion(RESTModelMixin, models.Model):
             last_version = self.get_last_version()
         else:
             last_version = None
-        for attr in ['title', 'text', 'reason']:
+        for attr in ['title', 'text', 'amendment_paragraphs', 'reason']:
             if attr in kwargs:
                 continue
             _attr = '_%s' % attr
@@ -693,6 +722,13 @@ class Motion(RESTModelMixin, models.Model):
         """
         return config['motions_amendments_enabled'] and self.parent is not None
 
+    def is_paragraph_based_amendment(self):
+        """
+        Returns True if the motion is an amendment that stores the changes on a per-paragraph-basis
+        and is therefore eligible to be shown in diff-view.
+        """
+        return self.is_amendment() and self.amendment_paragraphs
+
     def get_amendments_deep(self):
         """
         Generator that yields all amendments of this motion including all
@@ -701,6 +737,12 @@ class Motion(RESTModelMixin, models.Model):
         for amendment in self.amendments.all():
             yield amendment
             yield from amendment.get_amendments_deep()
+
+    def get_paragraph_based_amendments(self):
+        """
+        Returns a list of all paragraph-based amendments to this motion
+        """
+        return list(filter(lambda amend: amend.is_paragraph_based_amendment(), self.amendments.all()))
 
 
 class SubmitterManager(models.Manager):
@@ -788,6 +830,15 @@ class MotionVersion(RESTModelMixin, models.Model):
 
     text = models.TextField()
     """The text of a motion."""
+
+    amendment_paragraphs = JSONField(null=True)
+    """
+    If paragraph-based, diff-enabled amendment style is used, this field stores an array of strings or null values.
+    Each entry corresponds to a paragraph of the text of the original motion.
+    If the entry is null, then the paragraph remains unchanged.
+    If the entry is a string, this is the new text of the paragraph.
+    amendment_paragraphs and text are mutually exclusive.
+    """
 
     reason = models.TextField(null=True, blank=True)
     """The reason for a motion."""

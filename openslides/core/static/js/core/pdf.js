@@ -20,7 +20,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
         PDFLayout.createTitle = function(title) {
             return {
                 text: title,
-                style: "title"
+                style: 'title'
             };
         };
 
@@ -28,7 +28,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
         PDFLayout.createSubtitle = function(subtitle) {
             return {
                 text: subtitle.join('\n'),
-                style: "subtitle"
+                style: 'subtitle'
             };
         };
 
@@ -45,9 +45,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
         // table row style
         PDFLayout.flipTableRowStyle = function(currentTableSize) {
             if (currentTableSize % 2 === 0) {
-                return "tableEven";
+                return 'tableEven';
             } else {
-                return "tableOdd";
+                return 'tableOdd';
             }
         };
 
@@ -76,7 +76,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                 BallotCircleDimensions.size)
                     },
                     {
-                        width: "auto",
+                        width: 'auto',
                         text: decision
                     }
                 ],
@@ -92,7 +92,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
         PDFLayout.imageURLtoBase64 = function(url) {
             var promise = new Promise(function(resolve, reject) {
                 var img = new Image();
-                img.crossOrigin = "Anonymous";
+                img.crossOrigin = 'Anonymous';
                 img.onerror = function () {
                     reject({
                         msg: '<i class="fa fa-exclamation-triangle fa-lg spacer-right"></i>' +
@@ -101,12 +101,12 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     });
                 };
                 img.onload = function () {
-                    var canvas = document.createElement("canvas");
+                    var canvas = document.createElement('canvas');
                     canvas.width = img.width;
                     canvas.height = img.height;
-                    var ctx = canvas.getContext("2d");
+                    var ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
-                    var dataURL = canvas.toDataURL("image/png");
+                    var dataURL = canvas.toDataURL('image/png');
                     var imageData = {
                         data: dataURL,
                         width: img.width,
@@ -154,7 +154,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
             });
             return '<p>' + str + '</p>';
         } else {
-            return ''; //needed for blank "reasons" field
+            return ''; //needed for blank 'reasons' field
         }
     };
     return HTMLValidizer;
@@ -460,25 +460,25 @@ angular.module('OpenSlidesApp.core.pdf', [])
                  */
                 convertHTML = function(html, lineNumberMode) {
                     var elementStyles = {
-                            "b": ["font-weight:bold"],
-                            "strong": ["font-weight:bold"],
-                            "u": ["text-decoration:underline"],
-                            "em": ["font-style:italic"],
-                            "i": ["font-style:italic"],
-                            "h1": ["font-size:14", "font-weight:bold"],
-                            "h2": ["font-size:12", "font-weight:bold"],
-                            "h3": ["font-size:10", "font-weight:bold"],
-                            "h4": ["font-size:10", "font-style:italic"],
-                            "h5": ["font-size:10"],
-                            "h6": ["font-size:10"],
-                            "a": ["color:blue", "text-decoration:underline"],
-                            "strike": ["text-decoration:line-through"],
-                            "del": ["color:red", "text-decoration:line-through"],
-                            "ins": ["color:green", "text-decoration:underline"]
+                            'b': ['font-weight:bold'],
+                            'strong': ['font-weight:bold'],
+                            'u': ['text-decoration:underline'],
+                            'em': ['font-style:italic'],
+                            'i': ['font-style:italic'],
+                            'h1': ['font-size:14', 'font-weight:bold'],
+                            'h2': ['font-size:12', 'font-weight:bold'],
+                            'h3': ['font-size:10', 'font-weight:bold'],
+                            'h4': ['font-size:10', 'font-style:italic'],
+                            'h5': ['font-size:10'],
+                            'h6': ['font-size:10'],
+                            'a': ['color:blue', 'text-decoration:underline'],
+                            'strike': ['text-decoration:line-through'],
+                            'del': ['color:red', 'text-decoration:line-through'],
+                            'ins': ['color:green', 'text-decoration:underline']
                         },
                         classStyles = {
-                            "delete": ["color:red", "text-decoration:line-through"],
-                            "insert": ["color:green", "text-decoration:underline"]
+                            'delete': ['color:red', 'text-decoration:line-through'],
+                            'insert': ['color:green', 'text-decoration:underline']
                         },
                         getLineNumber = function (element) {
                             if (element && element.nodeName == 'SPAN' && element.getAttribute('class') &&
@@ -595,54 +595,54 @@ angular.module('OpenSlidesApp.core.pdf', [])
                          */
                         ComputeStyle = function(o, styles) {
                             styles.forEach(function(singleStyle) {
-                                var styleDefinition = singleStyle.trim().toLowerCase().split(":");
+                                var styleDefinition = singleStyle.trim().toLowerCase().split(':');
                                 var style = styleDefinition[0];
                                 var value = styleDefinition[1];
                                 if (styleDefinition.length === 2) {
                                     switch (style) {
-                                        case "padding-left":
+                                        case 'padding-left':
                                             o.margin = [parseInt(value), 0, 0, 0];
                                             break;
-                                        case "font-size":
+                                        case 'font-size':
                                             o.fontSize = parseInt(value);
                                             break;
-                                        case "text-align":
+                                        case 'text-align':
                                             switch (value) {
-                                                case "right":
-                                                case "center":
-                                                case "justify":
+                                                case 'right':
+                                                case 'center':
+                                                case 'justify':
                                                     o.alignment = value;
                                                     break;
                                             }
                                             break;
-                                        case "font-weight":
+                                        case 'font-weight':
                                             switch (value) {
-                                                case "bold":
+                                                case 'bold':
                                                     o.bold = true;
                                                     break;
                                             }
                                             break;
-                                        case "text-decoration":
+                                        case 'text-decoration':
                                             switch (value) {
-                                                case "underline":
-                                                    o.decoration = "underline";
+                                                case 'underline':
+                                                    o.decoration = 'underline';
                                                     break;
-                                                case "line-through":
-                                                    o.decoration = "lineThrough";
+                                                case 'line-through':
+                                                    o.decoration = 'lineThrough';
                                                     break;
                                             }
                                             break;
-                                        case "font-style":
+                                        case 'font-style':
                                             switch (value) {
-                                                case "italic":
+                                                case 'italic':
                                                     o.italics = true;
                                                     break;
                                             }
                                             break;
-                                        case "color":
+                                        case 'color':
                                             o.color = parseColor(value);
                                             break;
-                                        case "background-color":
+                                        case 'background-color':
                                             o.background = parseColor(value);
                                             break;
                                     }
@@ -683,16 +683,16 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             styles = styles ? _.clone(styles) : [];
                             var classes = [];
                             if (element.getAttribute) {
-                                var nodeStyle = element.getAttribute("style");
+                                var nodeStyle = element.getAttribute('style');
                                 if (nodeStyle) {
-                                    nodeStyle.split(";").forEach(function(nodeStyle) {
+                                    nodeStyle.split(';').forEach(function(nodeStyle) {
                                         var tmp = nodeStyle.replace(/\s/g, '');
                                         styles.push(tmp);
                                     });
                                 }
-                                var nodeClass = element.getAttribute("class");
+                                var nodeClass = element.getAttribute('class');
                                 if (nodeClass) {
-                                    classes = nodeClass.toLowerCase().split(" ");
+                                    classes = nodeClass.toLowerCase().split(' ');
                                     classes.forEach(function(nodeClass) {
                                         if (typeof(classStyles[nodeClass]) != 'undefined') {
                                             classStyles[nodeClass].forEach(function(style) {
@@ -710,37 +710,40 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             }
                             var nodeName = element.nodeName.toLowerCase();
                             switch (nodeName) {
-                                case "h1":
-                                case "h2":
-                                case "h3":
-                                case "h4":
-                                case "h5":
-                                case "h6":
-                                    if (lineNumberMode === "outside" &&
+                                case 'h1':
+                                case 'h2':
+                                case 'h3':
+                                case 'h4':
+                                case 'h5':
+                                case 'h6':
+                                    if (lineNumberMode === 'outside' &&
                                             element.childNodes.length > 0 &&
                                             element.childNodes[0].getAttribute) {
                                         // A heading may have multiple lines, so handle line by line separated by line number elements
-                                        var outerStack = create("stack");
-                                        var currentCol;
+                                        var outerStack = create('stack');
+                                        var currentCol, currentText;
                                         _.forEach(element.childNodes, function (node) {
                                             if (node.getAttribute && node.getAttribute('data-line-number')) {
                                                 if (currentCol) {
                                                     ComputeStyle(currentCol, elementStyles[nodeName]);
                                                     outerStack.stack.push(currentCol);
                                                 }
+                                                currentText = create('text');
                                                 currentCol = {
                                                     columns: [
                                                         getLineNumberObject({
                                                             lineNumber: node.getAttribute('data-line-number')
                                                         }),
+                                                        currentText,
                                                     ],
                                                     margin: [0, 2, 0, 0],
                                                 };
-                                            } else if (node.textContent) {
-                                                var HeaderText = {
-                                                    text: node.textContent,
-                                                };
-                                                currentCol.columns.push(HeaderText);
+                                            } else {
+                                                var parsedText = ParseElement([], node, create('text'), styles, diff_mode);
+                                                // append the parsed text to the currentText
+                                                _.forEach(parsedText.text, function (text) {
+                                                    currentText.text.push(text);
+                                                });
                                             }
                                         });
                                         ComputeStyle(currentCol, elementStyles[nodeName]);
@@ -751,30 +754,30 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         }
                                         alreadyConverted.push(outerStack);
                                     } else {
-                                        currentParagraph = create("text");
+                                        currentParagraph = create('text');
                                         currentParagraph.marginBottom = 4;
                                         currentParagraph.marginTop = 10;
                                         currentParagraph = parseChildren(alreadyConverted, element, currentParagraph, styles.concat(elementStyles[nodeName]), diff_mode);
                                         alreadyConverted.push(currentParagraph);
                                     }
                                     break;
-                                case "a":
-                                case "b":
-                                case "strong":
-                                case "u":
-                                case "em":
-                                case "i":
-                                case "ins":
-                                case "del":
-                                case "strike":
+                                case 'a':
+                                case 'b':
+                                case 'strong':
+                                case 'u':
+                                case 'em':
+                                case 'i':
+                                case 'ins':
+                                case 'del':
+                                case 'strike':
                                     currentParagraph = parseChildren(alreadyConverted, element, currentParagraph, styles.concat(elementStyles[nodeName]), diff_mode);
                                     break;
-                                case "table":
-                                    var t = create("table", {
+                                case 'table':
+                                    var t = create('table', {
                                         widths: [],
                                         body: []
                                     });
-                                    var border = element.getAttribute("border");
+                                    var border = element.getAttribute('border');
                                     var isBorder = false;
                                     if (border) {
                                         isBorder = (parseInt(border) === 1);
@@ -782,58 +785,58 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         t.layout = 'noBorders';
                                     }
                                     currentParagraph = parseChildren(t.table.body, element, currentParagraph, styles, diff_mode);
-                                    var widths = element.getAttribute("widths");
+                                    var widths = element.getAttribute('widths');
                                     if (!widths) {
                                         if (t.table.body.length !== 0) {
                                             if (t.table.body[0].length !== 0)
                                                 for (var k = 0; k < t.table.body[0].length; k++)
-                                                    t.table.widths.push("*");
+                                                    t.table.widths.push('*');
                                         }
                                     } else {
-                                        var w = widths.split(",");
+                                        var w = widths.split(',');
                                         for (var ko = 0; ko < w.length; ko++) t.table.widths.push(w[ko]);
                                     }
                                     alreadyConverted.push(t);
                                     break;
-                                case "tbody":
+                                case 'tbody':
                                     currentParagraph = parseChildren(alreadyConverted, element, currentParagraph, styles, diff_mode);
                                     break;
-                                case "tr":
+                                case 'tr':
                                     var row = [];
                                     currentParagraph = parseChildren(row, element, currentParagraph, styles, diff_mode);
                                     alreadyConverted.push(row);
                                     break;
-                                case "td":
-                                    currentParagraph = create("text");
-                                    var st = create("stack");
+                                case 'td':
+                                    currentParagraph = create('text');
+                                    var st = create('stack');
                                     st.stack.push(currentParagraph);
-                                    var rspan = element.getAttribute("rowspan");
+                                    var rspan = element.getAttribute('rowspan');
                                     if (rspan)
                                         st.rowSpan = parseInt(rspan);
-                                    var cspan = element.getAttribute("colspan");
+                                    var cspan = element.getAttribute('colspan');
                                     if (cspan)
                                         st.colSpan = parseInt(cspan);
                                     currentParagraph = parseChildren(st.stack, element, currentParagraph, styles, diff_mode);
                                     alreadyConverted.push(st);
                                     break;
-                                case "span":
-                                    if (element.getAttribute("data-line-number")) {
-                                        if (lineNumberMode === "inline") {
+                                case 'span':
+                                    if (element.getAttribute('data-line-number')) {
+                                        if (lineNumberMode === 'inline') {
                                             if (diff_mode !== DIFF_MODE_INSERT) {
-                                                var lineNumberInline = element.getAttribute("data-line-number"),
+                                                var lineNumberInline = element.getAttribute('data-line-number'),
                                                     lineNumberObjInline = {
                                                         text: lineNumberInline,
-                                                        color: "gray",
+                                                        color: 'gray',
                                                         fontSize: 5
                                                     };
                                                 currentParagraph.text.push(lineNumberObjInline);
                                             }
-                                        } else if (lineNumberMode === "outside") {
+                                        } else if (lineNumberMode === 'outside') {
                                             var lineNumberOutline;
                                             if (diff_mode === DIFF_MODE_INSERT) {
-                                                lineNumberOutline = "";
+                                                lineNumberOutline = '';
                                             } else {
-                                                lineNumberOutline = element.getAttribute("data-line-number");
+                                                lineNumberOutline = element.getAttribute('data-line-number');
                                             }
                                             var col = {
                                                 columns: [
@@ -842,7 +845,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                                     }),
                                                 ]
                                             };
-                                            currentParagraph = create("text");
+                                            currentParagraph = create('text');
                                             currentParagraph.lineHeight = 1.25;
                                             col.columns.push(currentParagraph);
                                             alreadyConverted.push(col);
@@ -852,7 +855,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         currentParagraph = parseChildren(alreadyConverted, element, currentParagraph, styles, diff_mode);
                                     }
                                     break;
-                                case "br":
+                                case 'br':
                                     var brParent = element.parentNode;
                                     var brParentNodeName = brParent.nodeName;
                                     //in case of no or inline-line-numbers and the ignore os-line-breaks.
@@ -860,10 +863,10 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                                 hasClass(element, 'os-line-break')) {
                                         break;
                                     } else {
-                                        currentParagraph = create("text");
-                                        if (lineNumberMode === "outside" &&
-                                                brParentNodeName !== "LI" &&
-                                                element.parentNode.parentNode.nodeName !== "LI") {
+                                        currentParagraph = create('text');
+                                        if (lineNumberMode === 'outside' &&
+                                                brParentNodeName !== 'LI' &&
+                                                element.parentNode.parentNode.nodeName !== 'LI') {
                                             if (brParentNodeName === 'INS' || brParentNodeName === 'DEL') {
 
                                                 var hasPrevSiblingALineNumber = function (element) {
@@ -896,11 +899,11 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         alreadyConverted.push(currentParagraph);
                                     }
                                     break;
-                                case "li":
-                                case "div":
-                                    currentParagraph = create("text");
+                                case 'li':
+                                case 'div':
+                                    currentParagraph = create('text');
                                     currentParagraph.lineHeight = 1.25;
-                                    var stackDiv = create("stack");
+                                    var stackDiv = create('stack');
                                     if (_.indexOf(classes, 'os-split-before') > -1) {
                                         stackDiv.listType = 'none';
                                     }
@@ -912,9 +915,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     currentParagraph = parseChildren(stackDiv.stack, element, currentParagraph, [], diff_mode);
                                     alreadyConverted.push(stackDiv);
                                     break;
-                                case "p":
+                                case 'p':
                                     var pObjectToPush; //determine what to push later
-                                    currentParagraph = create("text");
+                                    currentParagraph = create('text');
                                     // If this element is inside a list (happens if copied from word), do not set spaces
                                     // and margins. Just leave the paragraph there..
                                     if (!isInsideAList(element)) {
@@ -927,19 +930,19 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         }
                                     }
                                     currentParagraph.lineHeight = 1.25;
-                                    var stackP = create("stack");
+                                    var stackP = create('stack');
                                     stackP.stack.push(currentParagraph);
                                     ComputeStyle(stackP, styles);
                                     currentParagraph = parseChildren(stackP.stack, element, currentParagraph, [], diff_mode);
                                     pObjectToPush = stackP; //usually we want to push stackP
-                                    if (lineNumberMode === "outside") {
+                                    if (lineNumberMode === 'outside') {
                                         if (element.childNodes.length > 0) { //if we hit = 0, the code would fail
                                             // add empty line number column for inline diff or pragraph diff mode
-                                            if (element.childNodes[0].tagName === "INS" ||
-                                                element.childNodes[0].tagName === "DEL") {
+                                            if (element.childNodes[0].tagName === 'INS' ||
+                                                element.childNodes[0].tagName === 'DEL') {
                                                 var pLineNumberPlaceholder = {
                                                     width: 20,
-                                                    text: "",
+                                                    text: '',
                                                     fontSize: 8,
                                                     margin: [0, 2, 0, 0]
                                                 };
@@ -955,7 +958,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     }
                                     alreadyConverted.push(pObjectToPush);
                                     break;
-                                case "img":
+                                case 'img':
                                     var path = element.getAttribute('src');
                                     var height = images[path].height;
                                     var width = images[path].width;
@@ -989,8 +992,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         height: height,
                                     });
                                     break;
-                                case "ul":
-                                case "ol":
+                                case 'ul':
+                                case 'ol':
                                     var list = create(nodeName);
                                     if (nodeName == 'ol') {
                                         var start = element.getAttribute('start');
@@ -999,7 +1002,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         }
                                     }
                                     ComputeStyle(list, styles);
-                                    if (lineNumberMode === "outside") {
+                                    if (lineNumberMode === 'outside') {
                                         var lines = extractLineNumbers(element);
                                         currentParagraph = parseChildren(list[nodeName], element, currentParagraph, styles, diff_mode);
                                         if (lines.length > 0) {
@@ -1028,7 +1031,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     }
                                     break;
                                 default:
-                                    var defaultText = create("text", element.textContent.replace(/\n/g, ""));
+                                    var defaultText = create('text', element.textContent.replace(/\n/g, ''));
                                     ComputeStyle(defaultText, styles);
                                     if (!currentParagraph) {
                                         currentParagraph = {};
@@ -1047,8 +1050,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                          */
                         ParseHtml = function(converted, htmlText) {
                             var html = HTMLValidizer.validize(htmlText);
-                            html = $(html.replace(/\t/g, "").replace(/\n/g, ""));
-                            var emptyParagraph = create("text");
+                            html = $(html.replace(/\t/g, '').replace(/\n/g, ''));
+                            var emptyParagraph = create('text');
                             slice(html).forEach(function(element) {
                                 ParseElement(converted, element, null, [], DIFF_MODE_NORMAL);
                             });
@@ -1067,7 +1070,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                     },
                                     {
                                         text: line.lineNumber,
-                                        color: "gray",
+                                        color: 'gray',
                                         fontSize: standardFontsize - 2,
                                         decoration: '',
                                     },
@@ -1082,8 +1085,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 },
                 /**
                  * Creates containerelements for pdfMake
-                 * e.g create("text":"MyText") result in { text: "MyText" }
-                 * or complex objects create("stack", [{text:"MyText"}, {text:"MyText2"}])
+                 * e.g create('text':'MyText') result in { text: 'MyText' }
+                 * or complex objects create('stack', [{text:'MyText'}, {text:'MyText2'}])
                  *for units / paragraphs of text
                  *
                  * @function
@@ -1160,8 +1163,8 @@ angular.module('OpenSlidesApp.core.pdf', [])
 
         /*
          * Returns a map from urls to arrays of font types used by PdfMake.
-         * E.g. if the font "regular" and bold" have the urls "fonts/myFont.ttf",
-         * the map fould be "fonts/myFont.ttf": ["OSFont-regular.ttf", "OSFont-bold.ttf"]
+         * E.g. if the font 'regular' and 'bold' have the urls 'fonts/myFont.ttf',
+         * the map fould be 'fonts/myFont.ttf': ['OSFont-regular.ttf', 'OSFont-bold.ttf']
          */
         var getUrlMapping = function () {
             var urlMap = {};

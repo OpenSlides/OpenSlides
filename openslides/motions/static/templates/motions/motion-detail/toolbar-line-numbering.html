@@ -1,0 +1,53 @@
+<!-- line number mode for resonsive size medium/large (button group) -->
+<div class="btn-group hidden-sm hidden-xs" data-toggle="buttons">
+            <span class="btn btn-sm btn-default disabled">
+                <i class="fa fa-list-ol" aria-hidden="true"></i>
+                <translate>Line numbering</translate>:
+            </span>
+    <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'none')}"
+           ng-click="setLineNumberMode('none')">
+        <input type="radio" name="lineNumberMode" value="none" ng-model="lineNumberMode"
+               ng-checked="lineNumberMode == 'none'">
+        <translate>none</translate>
+    </label>
+    <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'inline')}"
+           ng-click="setLineNumberMode('inline')">
+        <input type="radio" name="lineNumberMode" value="inline" ng-model="lineNumberMode"
+               ng-checked="lineNumberMode == 'inline'">
+        <translate>inline</translate>
+    </label>
+    <label class="btn btn-sm btn-default" ng-class="{active: (lineNumberMode == 'outside')}"
+           ng-click="setLineNumberMode('outside')">
+        <input type="radio" name="lineNumberMode" value="outside" ng-model="lineNumberMode"
+               ng-checked="lineNumberMode == 'outside'">
+        <translate>outside</translate>
+    </label>
+</div>
+<!-- line number mode for resonsive size small/extra small (dropdown) -->
+<div class="dropdown hidden-md hidden-lg" uib-dropdown>
+    <button type="button" class="btn btn-default btn-sm" id="dropdownLineMode" uib-dropdown-toggle>
+        <i class="fa fa-list-ol" aria-hidden="true"></i>
+        <translate>Line numbering</translate>
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownLineMode">
+        <li>
+            <a href="" ng-click="setLineNumberMode('none')">
+                <i class="fa fa-check" ng-if="lineNumberMode == 'none'"></i>
+                <translate>none</translate>
+            </a>
+        </li>
+        <li>
+            <a href="" ng-click="setLineNumberMode('inline')">
+                <i class="fa fa-check" ng-if="lineNumberMode == 'inline'"></i>
+                <translate>inline</translate>
+            </a>
+        </li>
+        <li>
+            <a href="" ng-click="setLineNumberMode('outside')">
+                <i class="fa fa-check" ng-if="lineNumberMode == 'outside'"></i>
+                <translate>outside</translate>
+            </a>
+        </li>
+    </ul>
+</div>

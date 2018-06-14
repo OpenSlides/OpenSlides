@@ -134,6 +134,28 @@ class MotionCommentsJSONSerializerField(Field):
         return data
 
 
+class AmendmentParagraphsJSONSerializerField(Field):
+    """
+    Serializer for motions's amendment_paragraphs JSONField.
+    """
+    def to_representation(self, obj):
+        """
+        Returns the value of the field.
+        """
+        return obj
+
+    def to_internal_value(self, data):
+        """
+        Checks that data is a list of strings.
+        """
+        if type(data) is not list:
+            raise ValidationError({'detail': 'Data must be a list.'})
+        for paragraph in data:
+            if type(paragraph) is not str and paragraph is not None:
+                raise ValidationError({'detail': 'Paragraph must be either a string or null/None.'})
+        return data
+
+
 class MotionLogSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionLog objects.
@@ -250,6 +272,8 @@ class MotionPollSerializer(ModelSerializer):
 
 
 class MotionVersionSerializer(ModelSerializer):
+    amendment_paragraphs = AmendmentParagraphsJSONSerializerField(required=False)
+
     """
     Serializer for motion.models.MotionVersion objects.
     """
@@ -261,6 +285,7 @@ class MotionVersionSerializer(ModelSerializer):
             'creation_time',
             'title',
             'text',
+            'amendment_paragraphs',
             'reason',)
 
 
@@ -315,8 +340,9 @@ class MotionSerializer(ModelSerializer):
     polls = MotionPollSerializer(many=True, read_only=True)
     reason = CharField(allow_blank=True, required=False, write_only=True)
     state_required_permission_to_see = SerializerMethodField()
-    text = CharField(write_only=True)
+    text = CharField(write_only=True, allow_blank=True)
     title = CharField(max_length=255, write_only=True)
+    amendment_paragraphs = AmendmentParagraphsJSONSerializerField(required=False, write_only=True)
     versions = MotionVersionSerializer(many=True, read_only=True)
     workflow_id = IntegerField(
         min_value=1,
@@ -334,6 +360,7 @@ class MotionSerializer(ModelSerializer):
             'identifier',
             'title',
             'text',
+            'amendment_paragraphs',
             'reason',
             'versions',
             'active_version',
@@ -360,12 +387,25 @@ class MotionSerializer(ModelSerializer):
     def validate(self, data):
         if 'text'in data:
             data['text'] = validate_html(data['text'])
+
         if 'reason' in data:
             data['reason'] = validate_html(data['reason'])
+
         validated_comments = dict()
         for id, comment in data.get('comments', {}).items():
             validated_comments[id] = validate_html(comment)
         data['comments'] = validated_comments
+
+        if 'amendment_paragraphs' in data:
+            data['amendment_paragraphs'] = list(map(lambda entry: validate_html(entry) if type(entry) is str else None,
+                                                    data['amendment_paragraphs']))
+            data['text'] = ''
+        else:
+            if 'text' in data and len(data['text']) == 0:
+                raise ValidationError({
+                    'detail': _('This field may not be blank.')
+                })
+
         return data
 
     @transaction.atomic
@@ -379,6 +419,7 @@ class MotionSerializer(ModelSerializer):
         motion = Motion()
         motion.title = validated_data['title']
         motion.text = validated_data['text']
+        motion.amendment_paragraphs = validated_data.get('amendment_paragraphs')
         motion.reason = validated_data.get('reason', '')
         motion.identifier = validated_data.get('identifier')
         motion.category = validated_data.get('category')
@@ -418,7 +459,7 @@ class MotionSerializer(ModelSerializer):
             version = motion.get_last_version()
 
         # Title, text, reason.
-        for key in ('title', 'text', 'reason'):
+        for key in ('title', 'text', 'amendment_paragraphs', 'reason'):
             if key in validated_data.keys():
                 setattr(version, key, validated_data[key])
 

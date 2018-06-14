@@ -131,6 +131,7 @@ class MotionViewSet(ModelViewSet):
                 # For creating amendments.
                 whitelist.extend([
                     'parent_id',
+                    'amendment_paragraphs',
                     'category_id',      # This will be set to the matching
                     'motion_block_id',  # values from parent_motion.
                 ])
