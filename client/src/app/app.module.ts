@@ -7,16 +7,17 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './users/login.component';
 import { UsersComponent } from './users/users.component';
-import { AppRoutingModule } from './/app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
 import { ProjectorComponent } from './projector/projector.component';
+import { ProjectorContainerComponent } from './projector/projector-container.component';
 import { MotionsComponent } from './motions/motions.component';
 import { AgendaComponent } from './agenda/agenda.component';
 import { SiteComponent } from './site/site.component';
-import { StartComponent } from './start/start.component';
-import { AlertComponent } from './_directives/alert/alert.component';
-import { AlertService } from './_services/alert.service';
+import { StartComponent } from './site/start.component';
+import { AlertComponent } from './site/alert.component';
+import { AlertService } from './site/alert.service';
 
 //add font-awesome icons to library.
 //will blow up the code.
@@ -28,6 +29,7 @@ library.add(fas);
     LoginComponent,
     UsersComponent,
     ProjectorComponent,
+    ProjectorContainerComponent,
     MotionsComponent,
     AgendaComponent,
     SiteComponent,

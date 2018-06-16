@@ -3,6 +3,14 @@
         "target": "http://localhost:8000",
         "secure": false
     },
+    "/users/logout": {
+        "target": "http://localhost:8000",
+        "secure": false
+    },
+    "/users/whoami": {
+        "target": "http://localhost:8000",
+        "secure": false
+    },
     "/rest": {
         "target": "http://localhost:8000",
         "secure": false

@@ -1,20 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseComponent } from '../base.component';
-import { Title } from '@angular/platform-browser';
+import { TitleService } from '../core/title.service';
 
 @Component({
-  selector: 'app-motions',
-  templateUrl: './motions.component.html',
-  styleUrls: ['./motions.component.css']
+    selector: 'app-motions',
+    templateUrl: './motions.component.html',
+    styleUrls: ['./motions.component.css']
 })
-export class MotionsComponent extends BaseComponent implements OnInit {
+export class MotionsComponent implements OnInit {
 
-  constructor(titleService: Title) { 
-    super(titleService) 
-  }
+    constructor(private titleService: TitleService) { 
+    }
 
-  ngOnInit() {
-    super.setTitle("Motions");
-  }
+    ngOnInit() {
+        this.titleService.setTitle("Motions");
+    }
 
 }
