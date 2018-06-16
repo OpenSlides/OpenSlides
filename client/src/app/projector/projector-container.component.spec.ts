@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProjectorComponent } from './projector.component';
+import { ProjectorContainerComponent } from './projector-container.component';
 
-describe('ProjectorComponent', () => {
-    let component: ProjectorComponent;
-    let fixture: ComponentFixture<ProjectorComponent>;
+describe('ProjectorContainerComponent', () => {
+    let component: ProjectorContainerComponent;
+    let fixture: ComponentFixture<ProjectorContainerComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ ProjectorComponent ]
+            declarations: [ ProjectorContainerComponent ]
         })
         .compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ProjectorComponent);
+        fixture = TestBed.createComponent(ProjectorContainerComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
