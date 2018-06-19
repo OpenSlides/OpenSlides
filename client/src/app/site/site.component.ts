@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { AuthService } from 'app/core/services/auth.service';
 
 @Component({
     selector: 'app-site',
@@ -6,8 +9,13 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./site.component.css']
 })
 export class SiteComponent implements OnInit {
+    constructor(private authService: AuthService, private router: Router) {}
 
-  constructor() { }
+    ngOnInit() {}
 
-  ngOnInit() { }
+    logOutButton() {
+        console.log('logout');
+        this.authService.logout().subscribe();
+        this.router.navigate(['/login']);
+    }
 }
