@@ -1,4 +1,11 @@
-<h1>The actual OpenSldies Content!</h1>
-<nav>A nav will be here</nav>
+<h1> The actual OpenSlides Content! </h1>
+<nav>
+  <a routerLink="/" routerLinkActive="active"> Home </a>
+  <a routerLink="/agenda" routerLinkActive="active"> Agenda </a>
+  <a routerLink="/motions" routerLinkActive="active"> Motions </a>
+</nav>
 <router-outlet></router-outlet>
-<footer>Footer</footer>
+<footer>
+  Footer
+  <button (click)="logOutButton()">LogOut</button>
+</footer>

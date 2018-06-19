@@ -1,37 +1,35 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { ProjectorComponent } from "./projector/projector.component";
-import { ProjectorContainerComponent } from "./projector/projector-container.component";
-import { StartComponent } from "./site/start.component";
-import { AgendaComponent } from "./agenda/agenda.component";
-import { MotionsComponent } from "./motions/motions.component";
-import { SiteComponent } from "./site/site.component";
-import { LoginComponent } from './users/login.component';
+import { LoginComponent } from './site/login/login.component';
+import { ProjectorComponent } from './projector/projector.component';
+import { ProjectorContainerComponent } from './projector/projector-container/projector-container.component';
+import { SiteComponent } from './site/site.component';
+import { StartComponent } from './site/start/start.component';
+import { AgendaComponent } from './site/agenda/agenda.component';
+import { MotionsComponent } from './site/motions/motions.component';
 
-import { RouterAuthGuard } from "./core/router-auth-guard.service";
+import { AuthGuard } from './core/services/auth-guard.service';
 
 const routes: Routes = [
     { path: 'projector/:id', component: ProjectorComponent },
-    //{ path: 'projector', redirect: 'projector/1' }, // Test this
     { path: 'real-projector/:id', component: ProjectorContainerComponent },
-    //{ path: 'real-projector', redirect: 'real-projector/1' }, // this too
+    { path: 'login', component: LoginComponent },
     {
         path: '',
         component: SiteComponent,
-        canActivate: [RouterAuthGuard],
+        canActivate: [AuthGuard],
         children: [
             { path: '', component: StartComponent },
-            { path: 'login', component: LoginComponent },
             { path: 'agenda', component: AgendaComponent },
-            { path: 'motions', component: MotionsComponent },
+            { path: 'motions', component: MotionsComponent }
         ]
     },
-    { path: '**', redirectTo: '' },
+    { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
