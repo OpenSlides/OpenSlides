@@ -14,6 +14,8 @@ Motions:
    and list views for amendments) [#3637].
  - New feature to customize workflows and states [#3772].
  - New config options to show logos on the right side in PDF [#3768].
+ - New table of contents with page numbers and categories in PDF [#3766].
+ - Updated pdfMake to 0.1.37 [#3766].
 
 
 Version 2.2 (2018-06-06)
@@ -173,7 +175,7 @@ Agenda:
    as a slide or an overlay.
  - Manage speakers on the current list of speakers view.
  - List of speakers for hidden items is always visible.
- 
+
 Core:
  - Added support for multiple projectors.
  - Added control for the resolution of the projectors.
@@ -222,7 +224,7 @@ Core:
  - Moved full-text search to client-side (removed the server-side search engine Whoosh).
  - Made a lot of code clean up, improvements and bug fixes in client and
    backend.
- 
+
 Motions:
  - Added adjustable line numbering mode (outside, inside, none) for each
    motion text.
@@ -247,7 +249,7 @@ Motions:
  - Add new personal settings to remove all whitespaces from motion identifier.
  - Add new personal settings to allow amendments of amendments.
  - Added inline editing for comments.
- 
+
 Elections:
  - Added options to calculate percentages on different bases.
  - Added calculation for required majority.
@@ -255,7 +257,7 @@ Elections:
  - Removed unused assignment config to publish winner election results only.
  - Number of ballots printed can now be set in config.
  - Added inline edit field for a specific hint on ballot papers.
- 
+
 Users:
  - Added new matrix-interface for managing groups and their permissions.
  - Added autoupdate on permission change (permission added).
@@ -267,13 +269,13 @@ Users:
  - Allowed to import/export initial user password.
  - Added more multiselect actions.
  - Added QR code in users access pdf.
- 
+
 Mediafiles:
  - Allowed to project uploaded images (png, jpg, gif) and video files
    (e. g. mp4, wmv, flv, quicktime, ogg).
  - Allowed to hide uploaded files in overview list for non authorized users.
  - Enabled removing of files from filesystem on model instance delete.
- 
+
 Other:
  - Added Russian translation (Thanks to Andreas Engler).
  - Added command to create example data.
@@ -563,7 +565,7 @@ Agenda:
  - New duration field for each item (with total time calculation for end time of event).
  - Better drag'n'drop sorting of agenda items (with nestedSortable jQuery plugin).
 Motions:
- - Integrated CKEditor to use allowed HTML formatting in motion text/reason. 
+ - Integrated CKEditor to use allowed HTML formatting in motion text/reason.
    With server-side whitelist filtering of HTML tags (with bleach) and HTML support
    for reportlab in motion pdf.
  - New motion API.

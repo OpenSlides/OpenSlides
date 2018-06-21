@@ -460,6 +460,10 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 return motion.identifier ? motion.identifier : '';
             };
 
+            var getId = function() {
+                return motion.id;
+            };
+
             var getCategory = function() {
                 return motion.category;
             };
@@ -476,6 +480,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         getContent: getContent,
                         getTitle: getTitle,
                         getIdentifier: getIdentifier,
+                        getId: getId,
                         getCategory: getCategory,
                         getImageMap: getImageMap,
                     });
@@ -833,8 +838,9 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
         * Constructor
         * @function
         * @param {object} allMotions - A sorted array of all motions to parse
+        * @param {string} sorting - The way the catalog has been sorted. Necessary for ToC
         */
-        var createInstance = function(allMotions) {
+        var createInstance = function(allMotions, sorting) {
 
             var title = PDFLayout.createTitle(
                 Config.translate(Config.get('motions_export_title').value)
@@ -853,84 +859,130 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             };
 
             var createTOContent = function() {
-                var heading = {
-                    text: gettextCatalog.getString("Table of contents"),
-                    style: "heading2"
+                var toc = [];
+                var exportCategory = (sorting === 'identifier' || sorting === 'category.prefix');
+                var uniqueCategories = getUniqueCategories();
+                var tocTitle = {
+                    text: gettextCatalog.getString('Table of contents'),
+                    style: 'heading2'
                 };
 
-                var toc = [];
-                angular.forEach(allMotions, function(motion) {
-                    var identifier = motion.getIdentifier() ? motion.getIdentifier() : '';
-                    toc.push(
-                        {
-                            columns: [
-                                {
-                                    text: identifier,
-                                    style: 'tableofcontent',
-                                    width: 70
-                                },
-                                {
-                                    text: motion.getTitle(),
-                                    style: 'tableofcontent'
-                                }
-                            ]
-                        }
-                    );
+                // all motions need a page ID. We use the motion identifier for that
+                _.forEach(allMotions, function (motion) {
+                    motion.getContent()[0].id = ''+motion.getId();
                 });
 
+                if (exportCategory && uniqueCategories) {
+                    // own table per category
+                    var catTocBody = [];
+                    _.forEach(uniqueCategories, function (category) {
+                        // push the name of the category
+                        // make a table for correct alignment
+                        catTocBody.push({
+                            table: {
+                                body: [
+                                    [
+                                        {
+                                            text: category.prefix + ' - ' + category.name,
+                                            style: 'tocCategoryTitle'
+                                        }
+                                    ],
+                                ]
+                            },
+                            layout: 'noBorders',
+                        });
+
+                        var tocBody = [];
+                        _.forEach(allMotions, function (motion) {
+                            if (motion.getCategory() && category.name === motion.getCategory().name) {
+                                tocBody.push(tocLine(motion, 'tocCategoryEntry'));
+                            }
+                        });
+                        catTocBody.push(tocTable(tocBody));
+                    });
+
+                    //handle thouse without category
+                    var uncatTocBody = [];
+                    _.forEach(allMotions, function (motion) {
+                        if (!motion.getCategory()) {
+                            uncatTocBody.push(tocLine(motion, 'tocEntry'));
+                        }
+                    });
+
+                    // only push this array if there is at least one entry
+                    if (uncatTocBody.length > 0) {
+                        catTocBody.push(tocTable(uncatTocBody));
+                    }
+
+                    toc.push(catTocBody);
+                } else {
+                    // all categories in the same table
+                    var tocBody = [];
+                    _.forEach(allMotions, function (motion) {
+                        tocBody.push(tocLine(motion, 'tocEntry'));
+                    });
+                    toc.push(tocTable(tocBody));
+                }
+
                 return [
-                    heading,
+                    tocTitle,
                     toc,
                     PDFLayout.addPageBreak()
                 ];
             };
 
-            // function to create the table of catergories (if any)
-            var createTOCategories = function() {
+            // creates a new table of contents table body
+            var tocTable = function (tocBody) {
+                return {
+                    table: {
+                        widths: ['auto', '*', 'auto'],
+                        body: tocBody
+                    },
+                    layout: 'noBorders',
+                    style: 'tocCategorySection'
+                };
+            };
+
+            // generates a line in the toc as list-object
+            var tocLine = function (motion, style) {
+                var firstColumn = "";
+                if (motion.getIdentifier()) {
+                    firstColumn = motion.getIdentifier();
+                }
+                return [
+                    {
+                        text: firstColumn,
+                        style: style
+                    },
+                    {
+                        text: motion.getTitle(),
+                        style: 'tocEntry'
+                    },
+                    {
+                        pageReference: ''+motion.getId(),
+                        style: 'tocEntry',
+                        alignment: 'right'
+                    },
+                ];
+            };
+
+            // returns a list of unique category names
+            // necessary to create a ToC with categories
+            // if a motions without category is found,
+            // a corresponding entry should be added aswell
+            var getUniqueCategories = function() {
                 var categories = [];
                 _.forEach(allMotions, function (motion) {
-                    var category = motion.getCategory();
-                    if (category) {
-                        categories.push(category);
-                    }
-                });
-                var sortKey = Config.get('motions_export_category_sorting').value;
-                categories = _.orderBy(_.uniqBy(categories, 'id'), [sortKey]);
-                if (categories.length > 1) {
-                    var heading = {
-                        text: gettextCatalog.getString('Categories'),
-                        style: 'heading2',
-                    };
-
-                    var toc = [];
-                    angular.forEach(categories, function(cat) {
-                        toc.push(
+                    if (motion.getCategory()) {
+                        categories.push(
                             {
-                                columns: [
-                                    {
-                                        text: cat.prefix,
-                                        style: 'tableofcontent',
-                                        width: 50
-                                    },
-                                    {
-                                        text: cat.name,
-                                        style: 'tableofcontent'
-                                    }
-                                ]
+                                name: motion.getCategory().name,
+                                prefix: motion.getCategory().prefix
                             }
                         );
-                    });
-
-                    return [
-                        heading,
-                        toc,
-                        PDFLayout.addPageBreak()
-                    ];
-                } else {
-                    // if there are no categories, return "empty string"
-                    // pdfmake takes "null" literally and throws an error
-                    return "";
-                }
+                    }
+                });
+                return _.uniqBy(categories, 'name');
             };
 
             // returns the pure content of the motion, parseable by pdfmake
@@ -948,7 +1000,6 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     content.push(
                         title,
                         createPreamble(),
-                        createTOCategories(),
                         createTOContent()
                     );
                 }
@@ -1253,7 +1304,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         if (singleMotion) {
                             documentProviderPromise = PdfMakeDocumentProvider.createInstance(motionContentProviderArray[0]);
                         } else {
-                            var motionCatalogContentProvider = MotionCatalogContentProvider.createInstance(motionContentProviderArray);
+                            var motionCatalogContentProvider = MotionCatalogContentProvider.createInstance(motionContentProviderArray, params.column);
                             documentProviderPromise = PdfMakeDocumentProvider.createInstance(motionCatalogContentProvider);
                         }
                         documentProviderPromise.then(function (documentProvider) {

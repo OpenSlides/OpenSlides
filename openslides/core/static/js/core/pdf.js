@@ -360,9 +360,23 @@ angular.module('OpenSlidesApp.core.pdf', [])
                             fontSize: 12,
                             margin: [15,5]
                         },
-                        tableofcontent: {
+                        tocEntry: {
                             fontSize: 12,
-                            margin: [0,3]
+                            margin: [0,0,0,0],
+                            bold: false
+                        },
+                        tocCategoryEntry: {
+                            fontSize: 12,
+                            margin: [10,0,0,0],
+                            bold: false
+                        },
+                        tocCategoryTitle: {
+                            fontSize: 12,
+                            margin: [0,0,0,0],
+                            bold: true,
+                        },
+                        tocCategorySection: {
+                            margin: [0,0,0,10],
                         },
                         listParent: {
                             fontSize: 12,

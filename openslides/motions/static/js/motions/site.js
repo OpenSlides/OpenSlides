@@ -1454,7 +1454,7 @@ angular.module('OpenSlidesApp.motions.site', [
         };
         // Export dialog
         $scope.openExportDialog = function (motions) {
-            ngDialog.open(MotionExportForm.getDialog(motions));
+            ngDialog.open(MotionExportForm.getDialog(motions, $scope.sort));
         };
         $scope.pdfExport = function (motions) {
             MotionPdfExport.export(motions);
