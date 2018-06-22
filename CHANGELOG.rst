@@ -13,6 +13,7 @@ Motions:
  - New representation of amendments (paragraph based creation, new diff
    and list views for amendments) [#3637].
  - New feature to customize workflows and states [#3772].
+ - New config options to show logos on the right side in PDF [#3768].
 
 
 Version 2.2 (2018-06-06)

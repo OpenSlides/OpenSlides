@@ -176,20 +176,22 @@ angular.module('OpenSlidesApp.core.pdf', [])
         //images shall contain the the logos as URL: base64Str, just like the converter
         var createInstance = function(contentProvider, noFooter) {
             // Logo urls
-            var logoHeaderUrl = Config.get('logo_pdf_header').value.path,
-                logoFooterUrl = Config.get('logo_pdf_footer').value.path;
+            var logoHeaderLeftUrl = Config.get('logo_pdf_header_L').value.path,
+                logoHeaderRightUrl = Config.get('logo_pdf_header_R').value.path,
+                logoFooterLeftUrl = Config.get('logo_pdf_footer_L').value.path,
+                logoFooterRightUrl = Config.get('logo_pdf_footer_R').value.path;
             var imageMap = contentProvider.getImageMap ? contentProvider.getImageMap() : {};
 
             // PDF header
             var getHeader = function() {
                 var columns = [];
 
-                if (logoHeaderUrl) {
-                    if (logoHeaderUrl.indexOf('/') === 0) {
-                        logoHeaderUrl = logoHeaderUrl.substr(1); // remove trailing /
+                if (logoHeaderLeftUrl) {
+                    if (logoHeaderLeftUrl.indexOf('/') === 0) {
+                        logoHeaderLeftUrl = logoHeaderLeftUrl.substr(1); // remove trailing /
                     }
                     columns.push({
-                        image: logoHeaderUrl,
+                        image: logoHeaderLeftUrl,
                         fit: [180, 40],
                         width: '20%'
                     });
@@ -207,9 +209,21 @@ angular.module('OpenSlidesApp.core.pdf', [])
                 columns.push({
                     text: text,
                     fontSize: 10,
-                    alignment: 'right',
+                    alignment: logoHeaderRightUrl ? 'left' : 'right',
                     margin: [0, 10, 0, 0],
                 });
+
+                if (logoHeaderRightUrl) {
+                    if (logoHeaderRightUrl.indexOf('/') === 0) {
+                        logoHeaderRightUrl = logoHeaderRightUrl.substr(1); // remove trailing /
+                    }
+                    columns.push({
+                        image: logoHeaderRightUrl,
+                        fit: [180, 40],
+                        width: '20%'
+                    });
+                }
+
                 return {
                     color: '#555',
                     fontSize: 9,
@@ -226,23 +240,59 @@ angular.module('OpenSlidesApp.core.pdf', [])
             var getFooter = function() {
                 var columns = [];
 
-                if (logoFooterUrl) {
-                    if (logoFooterUrl.indexOf('/') === 0) {
-                        logoFooterUrl = logoFooterUrl.substr(1); // remove trailing /
+                // if there is a single logo, give it a lot of space
+                var logoContainerWidth;
+                var logoConteinerSize;
+                if (logoFooterLeftUrl && logoFooterRightUrl) {
+                    logoContainerWidth = '20%';
+                    logoConteinerSize = [180, 40];
+                } else {
+                    logoContainerWidth = '80%';
+                    logoConteinerSize = [400, 50];
+                }
+
+                // the position of the page number depends on the logos
+                var pageNumberPosition;
+                if (logoFooterLeftUrl && logoFooterRightUrl) {
+                    pageNumberPosition = 'center';
+                } else if (logoFooterLeftUrl && (!logoFooterRightUrl)) {
+                    pageNumberPosition = 'right';
+                } else if (logoFooterRightUrl && (!logoFooterLeftUrl)) {
+                    pageNumberPosition = 'left';
+                } else {
+                    pageNumberPosition = Config.get('general_export_pdf_pagenumber_alignment').value;
+                }
+
+                if (logoFooterLeftUrl) {
+                    if (logoFooterLeftUrl.indexOf('/') === 0) {
+                        logoFooterLeftUrl = logoFooterLeftUrl.substr(1); // remove trailing /
                     }
                     columns.push({
-                        image: logoFooterUrl,
-                        fit: [400,50],
-                        width: '80%'
+                        image: logoFooterLeftUrl,
+                        fit: logoConteinerSize,
+                        width: logoContainerWidth,
+                        alignment: 'left',
                     });
                 }
                 columns.push({
                     text: '{{currentPage}} / {{pageCount}}',
                     color: '#555',
                     fontSize: 9,
-                    alignment: Config.get('general_export_pdf_pagenumber_alignment').value,
+                    alignment: pageNumberPosition,
                     margin: [0, 15, 0, 0],
                 });
+
+                if (logoFooterRightUrl) {
+                    if (logoFooterRightUrl.indexOf('/') === 0) {
+                        logoFooterRightUrl = logoFooterRightUrl.substr(1); // remove trailing /
+                    }
+                    columns.push({
+                        image: logoFooterRightUrl,
+                        fit: logoConteinerSize,
+                        width: logoContainerWidth,
+                        alignment: 'right',
+                    });
+                }
                 return {
                     margin: [75, 0, 75, 10],
                     columns: columns,
@@ -358,8 +408,10 @@ angular.module('OpenSlidesApp.core.pdf', [])
 
             return $q(function (resolve, reject) {
                 var imageSources = [
-                    logoHeaderUrl,
-                    logoFooterUrl
+                    logoHeaderLeftUrl,
+                    logoHeaderRightUrl,
+                    logoFooterLeftUrl,
+                    logoFooterRightUrl,
                 ];
                 ImageConverter.toBase64(imageSources).then(function (_imageMap) {
                     _.forEach(_imageMap, function (data, path) {

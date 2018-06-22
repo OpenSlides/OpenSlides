@@ -256,8 +256,10 @@ def get_config_variables():
             'logo_projector_main',
             'logo_projector_header',
             'logo_web_header',
-            'logo_pdf_header',
-            'logo_pdf_footer',
+            'logo_pdf_header_L',
+            'logo_pdf_header_R',
+            'logo_pdf_footer_L',
+            'logo_pdf_footer_R',
             'logo_pdf_ballot_paper'],
         weight=300,
         group='Logo',
@@ -295,9 +297,9 @@ def get_config_variables():
 
     # PDF logos
     yield ConfigVariable(
-        name='logo_pdf_header',
+        name='logo_pdf_header_L',
         default_value={
-            'display_name': 'PDF header logo',
+            'display_name': 'PDF header logo (Left)',
             'path': ''},
         input_type='static',
         weight=310,
@@ -305,12 +307,32 @@ def get_config_variables():
         hidden=True)
 
     yield ConfigVariable(
-        name='logo_pdf_footer',
+        name='logo_pdf_header_R',
         default_value={
-            'display_name': 'PDF footer logo',
+            'display_name': 'PDF header logo (Right)',
             'path': ''},
         input_type='static',
         weight=311,
+        group='Logo',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='logo_pdf_footer_L',
+        default_value={
+            'display_name': 'PDF footer logo (Left)',
+            'path': ''},
+        input_type='static',
+        weight=312,
+        group='Logo',
+        hidden=True)
+
+    yield ConfigVariable(
+        name='logo_pdf_footer_R',
+        default_value={
+            'display_name': 'PDF footer logo (Right)',
+            'path': ''},
+        input_type='static',
+        weight=313,
         group='Logo',
         hidden=True)
 
@@ -320,7 +342,7 @@ def get_config_variables():
             'display_name': 'PDF ballot paper logo',
             'path': ''},
         input_type='static',
-        weight=312,
+        weight=314,
         group='Logo',
         hidden=True)
 
