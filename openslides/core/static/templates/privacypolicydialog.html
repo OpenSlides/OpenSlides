@@ -1,0 +1,9 @@
+<h1 translate>Privacy policy</h1>
+<div ng-if="privacyPolicy" ng-bind-html="privacyPolicy | translate"></div>
+<div ng-if="!privacyPolicy" translate>
+  The event manager hasn't set up a privacy policy yet.
+</div>
+
+<button ng-click="closeThisDialog()" class="btn btn-default spacer-top" translate>
+  Close
+</button>

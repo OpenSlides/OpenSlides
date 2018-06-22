@@ -173,6 +173,7 @@ class WebclientJavaScriptView(TestCase):
     @patch('openslides.core.config.config')
     @patch('django.contrib.auth.models.Permission.objects.all')
     def test_permissions_as_constant(self, mock_permissions_all, mock_config):
+        mock_config.__getitem__.return_value = ''
         self.view_instance = views.WebclientJavaScriptView()
         self.view_instance.request = self.request
         response = self.view_instance.get(realm='site')
