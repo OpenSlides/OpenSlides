@@ -1,11 +1,30 @@
+// angular modules
 import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // <-- NgModel lives here
+import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+
+// MaterialUI modules
+import {
+    MatButtonModule,
+    MatCheckboxModule,
+    MatToolbarModule,
+    MatCardModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatSidenavModule
+} from '@angular/material';
+import { MatListModule } from '@angular/material/list';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatMenuModule } from '@angular/material/menu';
+
+// FontAwesome modules
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
+// App components and services
 import { AppComponent } from './app.component';
 import { LoginComponent } from './site/login/login.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -44,6 +63,17 @@ library.add(fas);
             headerName: 'X-CSRFToken'
         }),
         FormsModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatToolbarModule,
+        MatCardModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        MatSidenavModule,
+        MatListModule,
+        MatExpansionModule,
+        MatMenuModule,
         FontAwesomeModule,
         AppRoutingModule
     ],

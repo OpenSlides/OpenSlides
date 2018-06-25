@@ -41,7 +41,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
     //Todo: This serves as a prototype and need enhancement,
     //like saving a "logged in state" and real checking the server
     //if logIn was fine
-    onSubmit() {
+    formLogin(): void {
         this.authService.login(this.user).subscribe(res => {
             if (res.status === 400) {
                 //TODO, add more errors here, use
