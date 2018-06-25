@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
 import { AuthService } from 'app/core/services/auth.service';
 
@@ -9,9 +10,25 @@ import { AuthService } from 'app/core/services/auth.service';
     styleUrls: ['./site.component.css']
 })
 export class SiteComponent implements OnInit {
-    constructor(private authService: AuthService, private router: Router) {}
+    isMobile = false;
 
-    ngOnInit() {}
+    constructor(
+        private authService: AuthService,
+        private router: Router,
+        private breakpointObserver: BreakpointObserver
+    ) {}
+
+    ngOnInit() {
+        this.breakpointObserver
+            .observe([Breakpoints.Small, Breakpoints.HandsetPortrait])
+            .subscribe((state: BreakpointState) => {
+                if (state.matches) {
+                    this.isMobile = true;
+                } else {
+                    this.isMobile = false;
+                }
+            });
+    }
 
     logOutButton() {
         console.log('logout');

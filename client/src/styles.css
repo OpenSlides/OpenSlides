@@ -1,1 +1,41 @@
-@import '~bootstrap/dist/css/bootstrap.min.css';
+/*use a 'theme' for MaterialUI. TODO We will need to build an OpenSlides-Theme*/
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+html,
+body {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    height: 100% !important;
+}
+
+body {
+    background: #fafafa;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/**the plus button in Motion, Agenda, etc*/
+.generic-plus-button {
+    bottom: -30px;
+}
+
+/**title of an app page*/
+.app-name {
+    margin-left: 20px;
+}
+
+/**content of an app page*/
+.app-content {
+    margin: 20px;
+    margin-top: 50px;
+}
+
+/**use to push content to the right side*/
+.spacer {
+    flex: 1 1 auto;
+}

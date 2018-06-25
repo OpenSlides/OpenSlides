@@ -1,0 +1,9 @@
+mat-sidenav-container {
+    height: 100%;
+}
+
+.projector-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}

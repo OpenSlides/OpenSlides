@@ -1,33 +1,29 @@
-<div class="ngdialog-content" role="document">
-  <form (ngSubmit)="onSubmit()" ngNativeValidate class="ng-valid ng-dirty ng-valid-parse">
-    <div class="modal-header">
-      <img src="/assets/img/openslides-logo.png" alt="OpenSlides" class="login-logo center-block">
-    </div>
-    <div class="modal-body loginForm">
-      {{info}}
-      <!-- Instead of the original approach, user alert component -->
-      <app-alert [alert]="alert"></app-alert>
-
-      <div class="input-group form-group">
-        <div class="input-group-addon">
-          <fa-icon icon="user"></fa-icon>
-        </div>
-        <input [(ngModel)]="user.username" os-focus-me="" type="text" class="form-control input-lg ng-valid ng-not-empty ng-dirty ng-valid-parse ng-touched"
-          placeholder="Username" name="username">
-      </div>
-      <div class="input-group form-group">
-        <div class="input-group-addon">
-          <fa-icon icon="key"></fa-icon>
-        </div>
-        <input [(ngModel)]="user.password" type="password" class="form-control
-          input-lg ng-valid ng-not-empty ng-dirty
-          ng-valid-parse ng-touched" placeholder="Passwort" name="password">
-      </div>
-      <div class="form-group">
-        <button type="submit" class="btn btn-primary" translate="">
-          <span class="ng-scope">Anmelden</span>
-        </button>
-      </div>
-    </div>
-  </form>
-</div>
+<mat-card class="login-card">
+  <mat-card-header>
+    <mat-card-title>OpenSides 3 - Login</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form class="login-full-widht">
+      <table class="example-full-width" cellspacing="0">
+        <tr>
+          <td>
+            <mat-form-field class="login-full-widht">
+              <input matInput placeholder="Username" [(ngModel)]="user.username" name="username" required>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Password" [(ngModel)]="user.password" type="password" name="password" required>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </form>
+    <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="formLogin()" color="primary">Login</button>
+  </mat-card-actions>
+</mat-card>
