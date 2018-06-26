@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError, transaction
+from django.db.models.deletion import ProtectedError
 from django.http import Http404
 from django.http.request import QueryDict
 from django.utils.translation import ugettext as _
@@ -17,6 +18,7 @@ from ..utils.autoupdate import inform_changed_data
 from ..utils.collection import CollectionElement
 from ..utils.exceptions import OpenSlidesError
 from ..utils.rest_api import (
+    CreateModelMixin,
     DestroyModelMixin,
     GenericViewSet,
     ModelViewSet,
@@ -45,7 +47,7 @@ from .models import (
     Submitter,
     Workflow,
 )
-from .serializers import MotionPollSerializer
+from .serializers import MotionPollSerializer, StateSerializer
 
 
 # Viewsets for the REST API
@@ -868,7 +870,23 @@ class MotionBlockViewSet(ModelViewSet):
         return Response({'detail': _('Followed recommendations successfully.')})
 
 
-class WorkflowViewSet(ModelViewSet):
+class ProtectedErrorMessageMixin:
+    def getProtectedErrorMessage(self, name, error):
+        # The protected objects can just be motions..
+        motions = ['"' + str(m) + '"' for m in error.protected_objects.all()]
+        count = len(motions)
+        motions_verbose = ', '.join(motions[:3])
+        if count > 3:
+            motions_verbose += ', ...'
+
+        if count == 1:
+            msg = _('This {} is assigned to motion {}.').format(name, motions_verbose)
+        else:
+            msg = _('This {} is assigned to motions {}.').format(name, motions_verbose)
+        return msg + ' ' + _('Please remove all assignments before deletion.')
+
+
+class WorkflowViewSet(ModelViewSet, ProtectedErrorMessageMixin):
     """
     API endpoint for workflows.
 
@@ -891,6 +909,56 @@ class WorkflowViewSet(ModelViewSet):
                       has_perm(self.request.user, 'motions.can_manage'))
         else:
             result = False
+        return result
+
+    def create(self, *args, **kwargs):
+        try:
+            response = super().create(*args, **kwargs)
+        except WorkflowError as e:
+            raise ValidationError({'detail': e.args[0]})
+        return response
+
+    def destroy(self, *args, **kwargs):
+        """
+        Customized view endpoint to delete a motion poll.
+        """
+        try:
+            result = super().destroy(*args, **kwargs)
+        except ProtectedError as e:
+            msg = self.getProtectedErrorMessage('workflow', e)
+            raise ValidationError({'detail': msg})
+        return result
+
+
+class StateViewSet(CreateModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet,
+                   ProtectedErrorMessageMixin):
+    """
+    API endpoint for workflow states.
+
+    There are the following views: create, update, partial_update and destroy.
+    """
+    queryset = State.objects.all()
+    serializer_class = StateSerializer
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        return (has_perm(self.request.user, 'motions.can_see') and
+                has_perm(self.request.user, 'motions.can_manage'))
+
+    def destroy(self, *args, **kwargs):
+        """
+        Customized view endpoint to delete a motion poll.
+        """
+        state = self.get_object()
+        if state.workflow.first_state.pk == state.pk:  # is this the first state of the workflow?
+            raise ValidationError({'detail': _('You cannot delete the first state of the workflow.')})
+        try:
+            result = super().destroy(*args, **kwargs)
+        except ProtectedError as e:
+            msg = self.getProtectedErrorMessage('workflow', e)
+            raise ValidationError({'detail': msg})
         return result
 
 

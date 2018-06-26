@@ -1,0 +1,28 @@
+<h1 ng-if="state" translate>Edit state</h1>
+<h1 ng-if="!state" translate>Create new state</h1>
+<div uib-alert ng-show="alert.show" class="alert-danger" ng-click="alert={}" close="alert={}">
+  {{ alert.msg }}
+</div>
+
+<form name="stateForm" ng-submit="save()">
+  <label for="name" translate>
+    Name
+  </label>
+  <div>
+    <input class="form-control" id="name" type="text" ng-model="newName">
+  </div>
+  <label for="actionword" class="spacer-top" translate>
+    Action word
+  </label>
+  <div>
+    <input class="form-control" id="actionword" type="text" ng-model="actionWord">
+  </div>
+  <div class="spacer-top-lg">
+    <button type="submit" ng-disabled="newName == ''" class="btn btn-primary" translate>
+      Save
+    </button>
+    <button ng-click="closeThisDialog()" class="btn btn-default" translate>
+      Cancel
+    </button>
+  </div>
+</form>

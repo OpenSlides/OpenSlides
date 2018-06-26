@@ -19,10 +19,10 @@
   <p translate>
     All your changes are saved immediately. Changes you make are only effective once you (or the users concerned) reload the page.
   </p>
-  <table id="groups-table" class="table table-bordered">
+  <table id="multi-table" class="table table-bordered">
     <thead>
       <tr>
-        <th class="perm-head">
+        <th class="info-head">
           <h4 translate>Permissions</h4>
         <th ng-repeat="group in groups" ng-mouseover="group.hover=true" ng-mouseleave="group.hover=false">
           <span class="optional">
@@ -49,7 +49,7 @@
             </a>
           </div>
       <tbody ng-repeat="app in apps" os-perms="users.can_manage">
-          <tr class="pointer" ng-click="app.app_visible=!app.app_visible">
+          <tr class="pointer bg-grey" ng-click="app.app_visible=!app.app_visible">
             <td>
               <b>{{ app.app_name | translate}}</b>
               <i class="fa" ng-class="app.app_visible ? 'fa-minus-square' : 'fa-plus-square'">
