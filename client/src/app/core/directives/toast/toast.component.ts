@@ -3,6 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { Alert, AlertType } from 'app/core/models/alert';
 import { ToastService } from 'app/core/services/toast.service';
 
+/**TODO Drafted for now. Since the UI is not done yet, this might be replaced or disappear entirely.
+ * Furtermore, Material UI does not support these kinds of alerts
+ */
+
 @Component({
     selector: 'app-toast',
     templateUrl: './toast.component.html',
