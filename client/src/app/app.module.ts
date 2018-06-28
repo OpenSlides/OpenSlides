@@ -36,6 +36,7 @@ import { SiteComponent } from './site/site.component';
 import { StartComponent } from './site/start/start.component';
 import { ToastComponent } from './core/directives/toast/toast.component';
 import { ToastService } from './core/services/toast.service';
+import { WebsocketService } from './core/services/websocket.service';
 import { ProjectorContainerComponent } from './projector-container/projector-container.component';
 import { AlertComponent } from './core/directives/alert/alert.component';
 
@@ -79,7 +80,7 @@ library.add(fas);
         FontAwesomeModule,
         AppRoutingModule
     ],
-    providers: [Title, ToastService],
+    providers: [Title, ToastService, WebsocketService],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

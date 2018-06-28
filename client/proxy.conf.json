@@ -14,5 +14,10 @@
     "/rest": {
         "target": "http://localhost:8000",
         "secure": false
+    },
+    "/ws/site": {
+        "target": "ws://localhost:8000",
+        "secure": false,
+        "ws": true
     }
 }
