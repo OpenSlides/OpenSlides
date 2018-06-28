@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
 import { AuthService } from 'app/core/services/auth.service';
+import { WebsocketService } from 'app/core/services/websocket.service';
+import { Subject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-site',
@@ -14,6 +17,7 @@ export class SiteComponent implements OnInit {
 
     constructor(
         private authService: AuthService,
+        private websocketService: WebsocketService,
         private router: Router,
         private breakpointObserver: BreakpointObserver
     ) {}
@@ -28,6 +32,19 @@ export class SiteComponent implements OnInit {
                     this.isMobile = false;
                 }
             });
+
+        // connect to a the websocket
+        const socket = this.websocketService.connect();
+
+        // subscribe to the socket
+        socket.subscribe(response => {
+            console.log('log : ', response); // will contain all the config variables
+        });
+
+        // basically everything needed for AutoUpdate
+        socket.next(val => {
+            console.log('socket.next: ', val);
+        });
     }
 
     logOutButton() {
