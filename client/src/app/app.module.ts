@@ -13,7 +13,8 @@ import {
     MatCardModule,
     MatInputModule,
     MatProgressSpinnerModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatSnackBarModule
 } from '@angular/material';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -28,14 +29,14 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './site/login/login.component';
 import { AppRoutingModule } from './app-routing.module';
-import { ProjectorComponent } from './projector/projector.component';
+import { ProjectorComponent } from './projector-container/projector/projector.component';
 import { MotionsComponent } from './site/motions/motions.component';
 import { AgendaComponent } from './site/agenda/agenda.component';
 import { SiteComponent } from './site/site.component';
 import { StartComponent } from './site/start/start.component';
 import { ToastComponent } from './core/directives/toast/toast.component';
 import { ToastService } from './core/services/toast.service';
-import { ProjectorContainerComponent } from './projector/projector-container/projector-container.component';
+import { ProjectorContainerComponent } from './projector-container/projector-container.component';
 import { AlertComponent } from './core/directives/alert/alert.component';
 
 //add font-awesome icons to library.
@@ -74,6 +75,7 @@ library.add(fas);
         MatListModule,
         MatExpansionModule,
         MatMenuModule,
+        MatSnackBarModule,
         FontAwesomeModule,
         AppRoutingModule
     ],

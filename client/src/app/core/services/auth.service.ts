@@ -33,8 +33,8 @@ export class AuthService {
 
     // Initialize the service by querying the server
     // Not sure if this makes sense, since a service is not supposed to init()
-    init(): Observable<any> {
-        return this.http.get('/users/whoami/', httpOptions).pipe(
+    init(): Observable<User | any> {
+        return this.http.get<User>('/users/whoami/', httpOptions).pipe(
             tap(val => {
                 console.log('auth-init-whami : ', val);
             }),
@@ -43,8 +43,8 @@ export class AuthService {
     }
 
     //loggins a users. expects a user model
-    login(user: User): Observable<any> {
-        return this.http.post('/users/login/', user, httpOptions).pipe(
+    login(user: User): Observable<User | any> {
+        return this.http.post<User>('/users/login/', user, httpOptions).pipe(
             tap(val => {
                 this.isLoggedIn = true;
                 //Set the session cookie in local storrage.
@@ -56,11 +56,11 @@ export class AuthService {
 
     //logout the user
     //TODO not yet used
-    logout(): Observable<any> {
+    logout(): Observable<User | any> {
         this.isLoggedIn = false;
         localStorage.removeItem('username');
 
-        return this.http.post('/users/logout/', {}, httpOptions);
+        return this.http.post<User>('/users/logout/', {}, httpOptions);
     }
 
     //very generic error handling function.
