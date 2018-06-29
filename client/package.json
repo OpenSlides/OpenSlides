@@ -8,6 +8,7 @@
         "test": "ng test",
         "lint": "ng lint",
         "e2e": "ng e2e",
+        "extract": "ngx-translate-extract -i ./src -o ./src/assets/i18n/{en,de,fr}.json --clean --sort --format-indentation '    ' --format namespaced-json",
         "format:fix": "pretty-quick --staged",
         "precommit": "run-s format:fix lint"
     },
@@ -27,6 +28,8 @@
         "@fortawesome/angular-fontawesome": "0.1.0-10",
         "@fortawesome/fontawesome-svg-core": "^1.2.0",
         "@fortawesome/free-solid-svg-icons": "^5.1.0",
+        "@ngx-translate/core": "^10.0.2",
+        "@ngx-translate/http-loader": "^3.0.1",
         "core-js": "^2.5.4",
         "rxjs": "^6.2.1",
         "zone.js": "^0.8.26"
@@ -36,6 +39,7 @@
         "@angular/cli": "~6.0.8",
         "@angular/compiler-cli": "^6.0.6",
         "@angular/language-service": "^6.0.6",
+        "@biesbjerg/ngx-translate-extract": "^2.3.4",
         "@types/jasmine": "~2.8.6",
         "@types/jasminewd2": "~2.0.3",
         "@types/node": "~8.9.4",

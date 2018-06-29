@@ -3,7 +3,7 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HttpClientXsrfModule } from '@angular/common/http';
 
 // MaterialUI modules
 import {
@@ -39,6 +39,14 @@ import { ToastService } from './core/services/toast.service';
 import { WebsocketService } from './core/services/websocket.service';
 import { ProjectorContainerComponent } from './projector-container/projector-container.component';
 import { AlertComponent } from './core/directives/alert/alert.component';
+
+//translation module. TODO: Potetially a SharedModule and own files
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { PruningTranslationLoader } from './core/pruning-loader';
+
+export function HttpLoaderFactory(http: HttpClient) {
+    return new PruningTranslationLoader(http);
+}
 
 //add font-awesome icons to library.
 //will blow up the code.
@@ -78,6 +86,13 @@ library.add(fas);
         MatMenuModule,
         MatSnackBarModule,
         FontAwesomeModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
         AppRoutingModule
     ],
     providers: [Title, ToastService, WebsocketService],

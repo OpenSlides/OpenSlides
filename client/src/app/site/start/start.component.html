@@ -1,10 +1,9 @@
 <mat-toolbar color='primary'>
-
-  <!-- TODO translate -->
-  <span class='app-name'>Home</span>
-
+    <span class='app-name' translate>Home</span>
 </mat-toolbar>
 
-<div class="app-content">
-  [Welcome to OpenSlide]
+<div class="app-content" translate>
+    <span>{{'Welcome to OpenSlides' | translate}}</span>
+    <br/>
+    <p translate [translateParams]="{user: 'Tim'}">Hello user</p>
 </div>
