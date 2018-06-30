@@ -16,7 +16,7 @@ from django.db.models import Model
 from ..core.config import config
 from ..core.models import Projector
 from .auth import anonymous_is_enabled, has_perm, user_to_collection_user
-from .cache import restricted_data_cache, websocket_user_cache
+from .cache import restricted_data_cache, websocket_user_cache, change_id_cache
 from .collection import AutoupdateFormat  # noqa
 from .collection import (
     ChannelMessageFormat,
@@ -477,6 +477,7 @@ def send_autoupdate(collection_elements: Iterable[CollectionElement]) -> None:
     Does nothing if collection_elements is empty.
     """
     if collection_elements:
+        change_id_cache.add_elements((e.collection_string, e.id) for e in collection_elements)
         send_or_wait(
             Channel('autoupdate.send_data_projector').send,
             to_channel_message(collection_elements))

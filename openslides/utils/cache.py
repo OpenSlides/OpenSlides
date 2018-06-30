@@ -12,6 +12,7 @@ from typing import (  # noqa
     Set,
     Type,
     Union,
+    Tuple,
 )
 
 from channels import Group
@@ -440,6 +441,10 @@ class RestrictedDataCache:
         redis = get_redis_connection()
         return [json.loads(element.decode()) for element in redis.hvals(self.get_cache_key(user_id))]
 
+    def get_element(self, user_id: int, collection_string: str, id: int) -> Dict[str, Any]:
+        redis = get_redis_connection()
+        return redis.hget(self.get_cache_key(user_id), "{}/{}".format(collection_string, id)).decode()
+
     def get_cache_key(self, user_id: int) -> str:
         """
         Returns the cache key for a user.
@@ -473,6 +478,74 @@ class DummyRestrictedDataCache:
     def get_data(self, user_id: int) -> List[object]:
         pass
 
+    def get_element(self, user_id: int, collection_string: str, id: int) -> Dict[str, Any]:
+        pass
+
+
+class ChangeIDCache:
+    """
+    Saves the changed object together with an ingresing number
+    """
+
+    base_cache_key = 'change_id_cache'
+    change_id_key = 'change_id'
+
+    def add_elements(self, elements: Iterable[Tuple[str, int]]) -> None:
+        """
+        Add an element to the cache.
+        """
+        redis = get_redis_connection()
+        change_id = self.get_change_id()
+        for element in elements:
+            redis.zadd(self.get_cache_key(), change_id, "{}:{}".format(element[0], element[1]))
+
+    def get_elements(self, change_id: int) -> List[str]:
+        """
+        Returns all changed elements after the change_id as element-id.
+        """
+        redis = get_redis_connection()
+        return [e.decode() for e in redis.zrangebyscore(self.get_cache_key(), change_id + 1, "+inf")]
+
+    def get_elements_full_data(self, change_id: int) -> List[Dict[str, Any]]:
+        """
+        Returns all changed elements after the change_id as full_data.
+        """
+        # TODO: Rewrite with lua
+        out = []  # type: List[Dict[str, Any]]
+        for element in self.get_elements(change_id):
+            collection_string, id = element.rsplit(':', 1)
+            out.append(full_data_cache.get_element(collection_string, int(id)))
+        return out
+
+    def get_elements_restricted_data(self, user_id: int, change_id: int) -> List[object]:
+        """
+        Returns all changed elements after the change_id as restricted_data.
+
+        Raises a runtime error, if the cache does not exist for the user.
+        """
+        if not restricted_data_cache.exists_for_user(user_id):
+            raise RuntimeError("Cache for user {} does not exist.".format(user_id))
+
+        # TODO: Rewrite with lua
+        out = []  # type: List[object]
+        for element in self.get_elements(change_id):
+            collection_string, id = element.rsplit(':', 1)
+            out.append(restricted_data_cache.get_element(user_id, collection_string, int(id)))
+        return out
+
+    def get_cache_key(self) -> str:
+        """
+        Returns the cache key for the cache.
+        """
+        return cache.make_key(self.base_cache_key)
+
+    def get_change_id(self) -> int:
+        """
+        Returns a new change id
+        """
+        redis = get_redis_connection()
+        return redis.incr(cache.make_key(self.change_id_key))
+
 
 def use_redis_cache() -> bool:
     """
@@ -500,6 +573,7 @@ if use_redis_cache():
     else:
         restricted_data_cache = RestrictedDataCache()
     full_data_cache = FullDataCache()  # type: Union[FullDataCache, DummyFullDataCache]
+    change_id_cache = ChangeIDCache()
 else:
     websocket_user_cache = DjangoCacheWebsocketUserCache()
     restricted_data_cache = DummyRestrictedDataCache()
