@@ -1778,6 +1778,26 @@ angular.module('OpenSlidesApp.users.site', [
             $scope.closeThisDialog();
             $state.go('home');
         };
+        // quick fix, that we cannot change the state to the main privacy
+        // policy view. Display it in a dialog..
+        $scope.openPrivacyPolicyDialog = function () {
+            ngDialog.open({
+                template: 'static/templates/privacypolicydialog.html',
+                className: 'ngdialog-theme-default wide-form',
+                controller: 'PrivacyPolicyDialogCtrl',
+                showClose: true,
+                closeByEscape: true,
+                closeByDocument: true,
+            });
+        };
+    }
+])
+
+.controller('PrivacyPolicyDialogCtrl', [
+    '$scope',
+    'PrivacyPolicy',
+    function ($scope, PrivacyPolicy) {
+        $scope.privacyPolicy = PrivacyPolicy;
     }
 ])
 

@@ -115,7 +115,13 @@ class CoreAppConfig(AppConfig):
             'name': 'OpenSlidesConfigVariables',
             'value': config_groups}
 
-        return [client_settings, config_variables]
+        # Send the privacy policy to the client. A user should view them, even he is
+        # not logged in (so does not have the config values yet).
+        privacy_policy = {
+            'name': 'PrivacyPolicy',
+            'value': config['general_event_privacy_policy']}
+
+        return [client_settings, config_variables, privacy_policy]
 
 
 def call_save_default_values(**kwargs):

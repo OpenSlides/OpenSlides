@@ -35,3 +35,6 @@ openslides_*
 
 # Mypy cache for typechecking
 .mypy_cache
+
+# Development of a new client. Easier to switch branches with this entry
+client/*
