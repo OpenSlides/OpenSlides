@@ -43,9 +43,14 @@ export class AuthService {
     }
 
     //loggins a users. expects a user model
-    login(user: User): Observable<User | any> {
+    login(username: string, password: string): Observable<User | any> {
+        const user: any = {
+            username: username,
+            password: password
+        };
         return this.http.post<User>('/users/login/', user, httpOptions).pipe(
             tap(val => {
+                localStorage.setItem('username', val.username);
                 this.isLoggedIn = true;
                 //Set the session cookie in local storrage.
                 //TODO needs validation
