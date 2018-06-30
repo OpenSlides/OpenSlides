@@ -1,0 +1,77 @@
+<mat-sidenav-container autosize>
+    <mat-sidenav #sideNav [mode]="isMobile ? 'push' : 'side'" [opened]='!isMobile' disableClose='!isMobile'>
+        <mat-toolbar class='nav-toolbar' color='primary'>
+
+            <!-- logo -->
+            <mat-toolbar-row>
+                <img src='/assets/img/openslides-logo-dark.png' alt='OpenSlides-logo'>
+            </mat-toolbar-row>
+        </mat-toolbar>
+
+        <!-- User Menu -->
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <!-- TODO use an operator service or get from whoami -->
+                UserName
+            </mat-expansion-panel-header>
+            <mat-action-row>
+                <button (click)='logOutButton()' mat-button>Logout</button>
+            </mat-action-row>
+        </mat-expansion-panel>
+
+        <!-- navigation -->
+        <mat-nav-list>
+            <a mat-list-item routerLink='/' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+                <fa-icon icon='home'></fa-icon>
+                <span translate>Home</span>
+            </a>
+            <a mat-list-item routerLink='/agenda' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+                <fa-icon icon='calendar'></fa-icon>
+                <span translate>Agenda</span>
+            </a>
+            <a mat-list-item routerLink='/motions' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+                <fa-icon icon='file-alt'></fa-icon>
+                <span translate>Motions</span>
+            </a>
+        </mat-nav-list>
+
+    </mat-sidenav>
+
+    <!-- the first toolbar row is (still) a global element
+  the second one shall be handled by the apps  -->
+    <mat-toolbar color='primary'>
+
+        <!-- show/hide menu button -->
+        <!-- <button mat-icon-button (click)='sideNav.toggle()'> -->
+        <button mat-icon-button *ngIf="isMobile" (click)='sideNav.toggle()'>
+            <fa-icon icon='bars'></fa-icon>
+        </button>
+
+        <!-- glob search and generic menu on the right -->
+        <span class='spacer'></span>
+        <button mat-icon-button (click)='sideNav.toggle()'>
+            <fa-icon icon='search'></fa-icon>
+        </button>
+        <button mat-icon-button (click)='sideNav.toggle()'>
+            <fa-icon icon='ellipsis-v'></fa-icon>
+        </button>
+        <button mat-icon-button [matMenuTriggerFor]="languageMenu">
+            <fa-icon icon='language'></fa-icon>
+        </button>
+
+        <!-- TODO: Could use translate.getLangs() to fetch available languages-->
+        <mat-menu #languageMenu="matMenu">
+            <button mat-menu-item (click)='selectLang("en")' translate>English</button>
+            <button mat-menu-item (click)='selectLang("de")' translate>German</button>
+            <button mat-menu-item (click)='selectLang("fr")' translate>French</button>
+        </mat-menu>
+    </mat-toolbar>
+
+    <!-- continue with <mat-toolbar> in the app-->
+    <router-outlet></router-outlet>
+
+    <!-- the global projector button -->
+    <button class='projector-button' mat-fab>
+        <fa-icon icon='video'></fa-icon>
+    </button>
+</mat-sidenav-container>
