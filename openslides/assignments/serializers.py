@@ -111,6 +111,8 @@ class AssignmentAllPollSerializer(ModelSerializer):
             'description',
             'published',
             'options',
+            'votesabstain',
+            'votesno',
             'votesvalid',
             'votesinvalid',
             'votescast',
@@ -160,6 +162,8 @@ class AssignmentAllPollSerializer(ModelSerializer):
         # Update remaining writeable fields.
         instance.description = validated_data.get('description', instance.description)
         instance.published = validated_data.get('published', instance.published)
+        instance.votesabstain = validated_data.get('votesabstain', instance.votesabstain)
+        instance.votesno = validated_data.get('votesno', instance.votesno)
         instance.votesvalid = validated_data.get('votesvalid', instance.votesvalid)
         instance.votesinvalid = validated_data.get('votesinvalid', instance.votesinvalid)
         instance.votescast = validated_data.get('votescast', instance.votescast)
@@ -182,6 +186,8 @@ class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
             'description',
             'published',
             'options',
+            'votesabstain',
+            'votesno',
             'votesvalid',
             'votesinvalid',
             'votescast',

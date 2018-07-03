@@ -63,7 +63,17 @@
             </div>
           </div>
 
-      <!-- total votes (valid/invalid/casts) -->
+      <!-- total votes (abstain/no/valid/invalid/casts) -->
+      <tr class="total" ng-if="poll.has_votes && poll.pollmethod === 'votes' && poll.getVote('votesabstain').value !== null">
+        <td>
+          <translate>Abstain</translate>
+        <td ng-init="vote = poll.getVote('votesabstain')">
+          {{ vote.value }} {{ vote.percentStr }}
+      <tr class="total" ng-if="poll.has_votes && poll.pollmethod === 'votes' && poll.getVote('votesno').value !== null">
+        <td>
+          <translate>No</translate>
+        <td ng-init="vote = poll.getVote('votesno')">
+          {{ vote.value }} {{ vote.percentStr }}
       <tr class="total" ng-if="poll.has_votes && poll.getVote('votesvalid').value !== null">
         <td>
           <translate>Valid ballots</translate>

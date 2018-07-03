@@ -195,10 +195,6 @@
                   {{ option.candidate.get_full_name() }}
                 </a>
             </ul>
-            <strong translate>Election method</strong><br>
-            <span ng-if="poll.pollmethod == 'votes'" translate>One vote per candidate</span>
-            <span ng-if="poll.pollmethod == 'yna'" translate>Yes/No/Abstain per candidate</span>
-            <span ng-if="poll.pollmethod == 'yn'" translate>Yes/No per candidate</span>
           </div>
 
           <!-- Settings for majority calculations -->
@@ -254,6 +250,18 @@
                 </span>
 
             <!-- total votes (valid/invalid/casts) -->
+            <tr ng-if="poll.pollmethod === 'votes'">
+              <td>
+                <translate>Abstain</translate>
+              <td>
+                {{ poll.getVote('votesabstain').value }}
+                {{ poll.getVote('votesabstain').percentStr }}
+            <tr ng-if="poll.pollmethod === 'votes'">
+              <td>
+                <translate>No</translate>
+              <td>
+                {{ poll.getVote('votesno').value }}
+                {{ poll.getVote('votesno').percentStr }}
             <tr>
               <td>
                 <translate>Valid ballots</translate>
@@ -273,6 +281,11 @@
                 {{ poll.getVote('votescast').value }}
                 {{ poll.getVote('votescast').percentStr }}
           </table>
+
+          <strong translate>Election method</strong><br>
+          <span ng-if="poll.pollmethod == 'votes'" translate>One vote per candidate</span>
+          <span ng-if="poll.pollmethod == 'yna'" translate>Yes/No/Abstain per candidate</span>
+          <span ng-if="poll.pollmethod == 'yn'" translate>Yes/No per candidate</span>
         </div>
       </div>
     </uib-tab>

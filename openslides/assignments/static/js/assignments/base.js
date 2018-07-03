@@ -214,7 +214,9 @@ angular.module('OpenSlidesApp.assignments', [])
                                 if (_.findIndex(this.options, predicate) !== -1) {
                                     base = void 0;
                                 } else {
-                                    if (typeof base === 'undefined' && type !== 'votescast' && type !== 'votesinvalid' && type !== 'votesvalid') {
+                                    if (typeof base === 'undefined' && type !== 'votesabstain' &&
+                                        type !== 'votesno' && type !== 'votescast' &&
+                                        type !== 'votesinvalid' && type !== 'votesvalid') {
                                         base = _.reduce(this.options, function (sum, option) {
                                             return sum + option.votes[0].weight;
                                         }, 0);
@@ -240,6 +242,12 @@ angular.module('OpenSlidesApp.assignments', [])
                         config = Config.get('assignments_poll_100_percent_base').value;
 
                     switch (type) {
+                        case 'votesabstain':
+                            vote = this.votesabstain;
+                            break;
+                        case 'votesno':
+                            vote = this.votesno;
+                            break;
                         case 'votesinvalid':
                             vote = this.votesinvalid;
                             break;

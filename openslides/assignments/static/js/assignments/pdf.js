@@ -67,7 +67,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                     var candidatesText = gettextCatalog.getString("Candidates") + ": ";
                     var userList = [];
 
-                    angular.forEach(candidates, function(assignmentsRelatedUser) {
+                    _.forEach(candidates, function(assignmentsRelatedUser) {
                         userList.push({
                                 text: assignmentsRelatedUser.user.get_full_name(),
                                 margin: [0, 0, 0, 10],
@@ -114,30 +114,30 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 
             //creates the voting string for the result table and differentiates between special values
             var parseVoteValue = function(voteObject, printLabel) {
-                var voteVal = "";
+                var voteVal = '';
                 if (voteObject) {
                     if (printLabel) {
-                        voteVal += voteObject.label + ": ";
+                        voteVal += voteObject.label + ': ';
                     }
                     voteVal += voteObject.value;
 
                     if (voteObject.percentStr) {
-                        voteVal += " " + voteObject.percentStr;
+                        voteVal += ' ' + voteObject.percentStr;
                     }
                 }
-                voteVal += "\n";
+                voteVal += '\n';
                 return voteVal;
             };
 
             // creates the election result table
             var createPollResultTable = function() {
                 var resultBody = [];
-                angular.forEach(assignment.polls, function(poll, pollIndex) {
+                _.forEach(assignment.polls, function(poll, pollIndex) {
                     if (poll.published) {
                         var pollTableBody = [];
 
                         resultBody.push({
-                            text: gettextCatalog.getString("Ballot") + " " + (pollIndex+1),
+                            text: gettextCatalog.getString('Ballot') + ' ' + (pollIndex+1),
                             bold: true,
                             style: 'textItem',
                             margin: [0, 15, 0, 0]
@@ -145,16 +145,16 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
 
                         pollTableBody.push([
                             {
-                                text: gettextCatalog.getString("Candidates"),
+                                text: gettextCatalog.getString('Candidates'),
                                 style: 'tableHeader',
                             },
                             {
-                                text: gettextCatalog.getString("Votes"),
+                                text: gettextCatalog.getString('Votes'),
                                 style: 'tableHeader',
                             }
                         ]);
 
-                        angular.forEach(poll.options, function(pollOption, optionIndex) {
+                        _.forEach(poll.options, function(pollOption, optionIndex) {
                             var candidateName = pollOption.candidate.get_full_name();
                             var votes = pollOption.getVotes(); // 0 = yes, 1 = no, 2 = abstain
                             var tableLine = [];
@@ -169,7 +169,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                                 );
                             } else {
                                 var resultBlock = [];
-                                angular.forEach(votes, function(vote) {
+                                _.forEach(votes, function(vote) {
                                     resultBlock.push(parseVoteValue(vote, true));
                                 });
                                 tableLine.push({
@@ -181,44 +181,26 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                             pollTableBody.push(tableLine);
                         });
 
-                        if (poll.votesvalid) {
-                            pollTableBody.push([
-                                {
-                                    text: gettextCatalog.getString("Valid ballots"),
-                                    style: 'tableConclude'
-                                },
-                                {
-                                    text: parseVoteValue(poll.getVote('votesvalid'), false),
-                                    style: 'tableConclude'
-                                },
-                            ]);
-                        }
+                        var pushConcludeRow = function (title, fieldName) {
+                            if (poll[fieldName]) {
+                                pollTableBody.push([
+                                    {
+                                        text: gettextCatalog.getString(title),
+                                        style: 'tableConclude'
+                                    },
+                                    {
+                                        text: parseVoteValue(poll.getVote(fieldName), false),
+                                        style: 'tableConclude'
+                                    },
+                                ]);
+                            }
+                        };
 
-                        if (poll.votesinvalid) {
-                            pollTableBody.push([
-                                {
-                                    text: gettextCatalog.getString("Invalid ballots"),
-                                    style: 'tableConclude'
-                                },
-                                {
-                                    text: parseVoteValue(poll.getVote('votesinvalid'), false),
-                                    style: 'tableConclude'
-                                },
-                            ]);
-                        }
-
-                        if (poll.votescast) {
-                            pollTableBody.push([
-                                {
-                                    text: gettextCatalog.getString("Casted ballots"),
-                                    style: 'tableConclude'
-                                },
-                                {
-                                    text: parseVoteValue(poll.getVote('votescast'), false),
-                                    style: 'tableConclude'
-                                },
-                            ]);
-                        }
+                        pushConcludeRow('Abstain', 'votesabstain');
+                        pushConcludeRow('No', 'votesno');
+                        pushConcludeRow('Valid ballots', 'votesvalid');
+                        pushConcludeRow('Invalid ballots', 'votesinvalid');
+                        pushConcludeRow('Casted ballots', 'votescast');
 
                         var resultTableJsonSting = {
                             table: {
@@ -236,7 +218,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 // add the legend to the result body
                 if (assignment.polls.length > 0 && isElectedSemaphore) {
                     resultBody.push({
-                        text: "* = " + gettextCatalog.getString("is elected"),
+                        text: '* = ' + gettextCatalog.getString('is elected'),
                         margin: [0, 5, 0, 0],
                     });
                 }
@@ -366,12 +348,17 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 var candidateBallotList = [];
 
                 if (poll.pollmethod == 'votes') {
-                    angular.forEach(candidates, function(option) {
+                    _.forEach(candidates, function(option) {
                         var candidate = option.candidate.get_full_name();
                         candidateBallotList.push(PDFLayout.createBallotEntry(candidate));
                     });
+                    // Add 'no' option
+                    var no = gettextCatalog.getString('No');
+                    var ballotEntry = PDFLayout.createBallotEntry(no);
+                    ballotEntry.margin[1] = 25; // top margin
+                    candidateBallotList.push(ballotEntry);
                 } else {
-                    angular.forEach(candidates, function(option) {
+                    _.forEach(candidates, function(option) {
                         var candidate;
                         if (option.candidate) {
                             candidate = option.candidate.get_full_name();
@@ -565,7 +552,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 };
 
                 var toc = [];
-                angular.forEach(assignmentTitles, function(title) {
+                _.forEach(assignmentTitles, function(title) {
                     toc.push({
                         text: title,
                         style: "tableofcontent"
@@ -656,7 +643,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             createBallotPdf: function (assignment, pollId) {
                 var thePoll;
                 var pollNumber;
-                angular.forEach(assignment.polls, function(poll, pollIndex) {
+                _.forEach(assignment.polls, function(poll, pollIndex) {
                     if (poll.id == pollId) {
                         thePoll = poll;
                         pollNumber = pollIndex+1;
