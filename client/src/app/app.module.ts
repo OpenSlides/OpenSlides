@@ -37,6 +37,7 @@ import { StartComponent } from './site/start/start.component';
 import { ToastComponent } from './core/directives/toast/toast.component';
 import { ToastService } from './core/services/toast.service';
 import { WebsocketService } from './core/services/websocket.service';
+import { DS } from './core/services/DS.service';
 import { ProjectorContainerComponent } from './projector-container/projector-container.component';
 import { AlertComponent } from './core/directives/alert/alert.component';
 
@@ -95,7 +96,7 @@ library.add(fas);
         }),
         AppRoutingModule
     ],
-    providers: [Title, ToastService, WebsocketService],
+    providers: [Title, ToastService, WebsocketService, DS],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

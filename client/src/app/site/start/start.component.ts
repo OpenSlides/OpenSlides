@@ -12,8 +12,11 @@ import { DS } from 'app/core/services/DS.service';
     styleUrls: ['./start.component.css']
 })
 export class StartComponent extends BaseComponent implements OnInit {
-    constructor(titleService: Title) {
+    private dS: DS;
+
+    constructor(titleService: Title, dS: DS) {
         super(titleService);
+        this.dS = dS;
     }
 
     ngOnInit() {
@@ -22,19 +25,29 @@ export class StartComponent extends BaseComponent implements OnInit {
 
     test() {
         // This can be a basic unit test ;)
-        console.log(User.get(1));
-        const user1: User = new User(1);
-        user1.username = 'testuser';
-        const user2: User = new User(2);
-        user2.username = 'testuser2';
+        // console.log(User.get(1));
+        const user1: User = new User(32, 'testuser');
+        const user2: User = new User(42, 'testuser 2');
 
-        DS.injectMany(User.getCollectionString(), [user1, user2]);
-        console.log(User.getAll());
-        console.log(User.filter(user => user.id === 1));
+        console.log(`User1 | ID ${user1.id}, Name: ${user1.username}`);
+        console.log(`User2 | ID ${user2.id}, Name: ${user2.username}`);
 
-        DS.eject(User.getCollectionString(), user1.id);
-        console.log(User.getAll());
-        console.log(User.filter(user => user.id === 1));
-        console.log(User.filter(user => user.id === 2));
+        this.dS.inject(user1);
+        this.dS.inject(user2);
+        console.log('All users = ', this.dS.getAll('users/user'));
+
+        console.log('try to get user with ID 1:');
+        const user1fromStore = this.dS.get('users/user', 1);
+        console.log('the user: ', user1fromStore);
+
+        console.log('inject many:');
+        this.dS.injectMany([user1, user2]);
+
+        console.log('eject user 1');
+        this.dS.eject('users/user', user1.id);
+        console.log(this.dS.getAll('users/user'));
+
+        // console.log(User.filter(user => user.id === 1));
+        // console.log(User.filter(user => user.id === 2));
     }
 }
