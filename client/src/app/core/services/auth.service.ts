@@ -48,12 +48,10 @@ export class AuthService {
             username: username,
             password: password
         };
-        return this.http.post<User>('/users/login/', user, httpOptions).pipe(
+        return this.http.post<any>('/users/login/', user, httpOptions).pipe(
             tap(val => {
                 localStorage.setItem('username', val.username);
                 this.isLoggedIn = true;
-                //Set the session cookie in local storrage.
-                //TODO needs validation
             }),
             catchError(this.handleError())
         );

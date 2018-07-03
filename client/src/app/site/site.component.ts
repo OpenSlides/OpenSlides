@@ -9,6 +9,12 @@ import { tap } from 'rxjs/operators';
 
 import { TranslateService } from '@ngx-translate/core'; //showcase
 
+//into own service
+import { DS } from 'app/core/services/DS.service';
+import { User } from 'app/core/models/user';
+import { Group } from 'app/core/models/group';
+import { BaseModel } from '../core/models/baseModel';
+
 @Component({
     selector: 'app-site',
     templateUrl: './site.component.html',
@@ -22,7 +28,8 @@ export class SiteComponent implements OnInit {
         private websocketService: WebsocketService,
         private router: Router,
         private breakpointObserver: BreakpointObserver,
-        private translate: TranslateService
+        private translate: TranslateService,
+        private dS: DS
     ) {}
 
     ngOnInit() {
@@ -42,6 +49,7 @@ export class SiteComponent implements OnInit {
         // subscribe to the socket
         socket.subscribe(response => {
             console.log('log : ', response); // will contain all the config variables
+            this.storeResponse(response);
         });
 
         // basically everything needed for AutoUpdate
@@ -52,6 +60,27 @@ export class SiteComponent implements OnInit {
         //get a translation via code: use the translation service
         this.translate.get('Motions').subscribe((res: string) => {
             console.log(res);
+        });
+    }
+
+    //test. will move to an own service later
+    //create models out of socket answer
+    storeResponse(socketResponse): void {
+        socketResponse.forEach(model => {
+            switch (model.collection) {
+                case 'users/group': {
+                    this.dS.inject(BaseModel.fromJSON(model.data, Group));
+                    break;
+                }
+                case 'users/user': {
+                    this.dS.inject(BaseModel.fromJSON(model.data, User));
+                    break;
+                }
+                default: {
+                    console.log('collection: "' + model.collection + '" is not yet parsed');
+                    break;
+                }
+            }
         });
     }
 
