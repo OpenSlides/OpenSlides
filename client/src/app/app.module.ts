@@ -34,10 +34,7 @@ import { MotionsComponent } from './site/motions/motions.component';
 import { AgendaComponent } from './site/agenda/agenda.component';
 import { SiteComponent } from './site/site.component';
 import { StartComponent } from './site/start/start.component';
-import { ToastComponent } from './core/directives/toast/toast.component';
-import { ToastService } from './core/services/toast.service';
 import { WebsocketService } from './core/services/websocket.service';
-import { DS } from './core/services/DS.service';
 import { ProjectorContainerComponent } from './projector-container/projector-container.component';
 import { AlertComponent } from './core/directives/alert/alert.component';
 
@@ -62,7 +59,6 @@ library.add(fas);
         AgendaComponent,
         SiteComponent,
         StartComponent,
-        ToastComponent,
         ProjectorContainerComponent,
         AlertComponent
     ],
@@ -96,7 +92,7 @@ library.add(fas);
         }),
         AppRoutingModule
     ],
-    providers: [Title, ToastService, WebsocketService, DS],
+    providers: [Title, WebsocketService],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

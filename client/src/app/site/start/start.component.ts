@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { BaseComponent } from 'app/base.component';
 
+import { TranslateService } from '@ngx-translate/core'; //showcase
+
 // for testing the DS and BaseModel
-import { User } from 'app/core/models/user';
-import { DS } from 'app/core/services/DS.service';
+import { User } from 'app/core/models/users/user';
+import { Group } from 'app/core/models/users/group';
 
 @Component({
     selector: 'app-start',
@@ -12,42 +14,49 @@ import { DS } from 'app/core/services/DS.service';
     styleUrls: ['./start.component.css']
 })
 export class StartComponent extends BaseComponent implements OnInit {
-    private dS: DS;
-
-    constructor(titleService: Title, dS: DS) {
+    constructor(titleService: Title, private translate: TranslateService) {
         super(titleService);
-        this.dS = dS;
     }
 
     ngOnInit() {
         super.setTitle('Start page');
     }
 
-    test() {
-        // This can be a basic unit test ;)
-        // console.log(User.get(1));
-        const user1: User = new User(32, 'testuser');
-        const user2: User = new User(42, 'testuser 2');
-
-        console.log(`User1 | ID ${user1.id}, Name: ${user1.username}`);
-        console.log(`User2 | ID ${user2.id}, Name: ${user2.username}`);
-
-        this.dS.inject(user1);
-        this.dS.inject(user2);
-        console.log('All users = ', this.dS.getAll('users/user'));
+    //quick testing of some data store functions
+    DataStoreTest() {
+        console.log('add a user to dataStore');
+        this.DS.add(new User(100));
+        console.log('add three users to dataStore');
+        this.DS.add(new User(200), new User(201), new User(202));
+        console.log('use the spread operator "..." to add an array');
+        const userArray = [];
+        for (let i = 300; i < 400; i++) {
+            userArray.push(new User(i));
+        }
+        this.DS.add(...userArray);
 
         console.log('try to get user with ID 1:');
-        const user1fromStore = this.dS.get('users/user', 1);
+        const user1fromStore = this.DS.get(User, 1);
         console.log('the user: ', user1fromStore);
 
-        console.log('inject many:');
-        this.dS.injectMany([user1, user2]);
+        console.log('remove a single user:');
+        this.DS.remove(User, 100);
+        console.log('remove more users');
+        this.DS.remove(User, 200, 201, 202);
+        console.log('remove an array of users');
+        this.DS.remove(User, ...[321, 363, 399]);
 
-        console.log('eject user 1');
-        this.dS.eject('users/user', user1.id);
-        console.log(this.dS.getAll('users/user'));
+        console.log('test filter: ');
+        console.log(this.DS.filter(User, user => user.id === 1));
+    }
 
-        // console.log(User.filter(user => user.id === 1));
-        // console.log(User.filter(user => user.id === 2));
+    giveDataStore() {
+        this.DS.printWhole();
+    }
+
+    // shows how to use synchronous translations:
+    TranslateTest() {
+        console.log('lets translate the word "motion" in the current in the current lang');
+        console.log('Motions in ' + this.translate.currentLang + ' is ' + this.translate.instant('Motions'));
     }
 }

@@ -1,11 +1,11 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { DS } from './DS.service';
+import { DataStoreService } from './DS.service';
 
 describe('DS', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [DS]
+            providers: [DataStoreService]
         });
     });
 

@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angul
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
-import { User } from 'app/core/models/user';
+import { User } from 'app/core/models/users/user';
 
 const httpOptions = {
     withCredentials: true,

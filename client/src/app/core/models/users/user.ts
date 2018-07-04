@@ -1,9 +1,9 @@
-import { BaseModel } from './baseModel';
+import { BaseModel } from 'app/core/models/baseModel';
 
 // import { DS } from 'app/core/services/DS.service';
 
 export class User extends BaseModel {
-    //TODO potentially make them private and use getters and setters
+    static collectionString = 'users/user';
     id: number;
     username: string;
     title: string;
@@ -40,8 +40,7 @@ export class User extends BaseModel {
         is_active?: boolean,
         default_password?: string
     ) {
-        super();
-        this.id = id;
+        super(id);
         this.username = username;
         this.title = title;
         this.first_name = first_name;
@@ -59,15 +58,7 @@ export class User extends BaseModel {
         this.default_password = default_password;
     }
 
-    getCollectionString(): string {
-        return 'users/user';
+    public getCollectionString(): string {
+        return User.collectionString;
     }
-
-    // // convert an serialized version of the User to an instance of the class
-    // static fromJSON(jsonString: {}): User {
-    //     // create an instance of the User class
-    //     let user = Object.create(User.prototype);
-    //     // copy all the fields from the json object
-    //     return Object.assign(user, jsonString);
-    // }
 }
