@@ -41,6 +41,7 @@ import { AlertComponent } from './core/directives/alert/alert.component';
 //translation module. TODO: Potetially a SharedModule and own files
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { PruningTranslationLoader } from './core/pruning-loader';
+import { OsPermsDirective } from './core/directives/os-perms.directive';
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new PruningTranslationLoader(http);
@@ -60,7 +61,8 @@ library.add(fas);
         SiteComponent,
         StartComponent,
         ProjectorContainerComponent,
-        AlertComponent
+        AlertComponent,
+        OsPermsDirective
     ],
     imports: [
         BrowserModule,

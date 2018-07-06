@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
 import { AuthService } from 'app/core/services/auth.service';
+import { AutoupdateService } from 'app/core/services/autoupdate.service';
+import { OperatorService } from 'app/core/services/operator.service';
 import { Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -15,10 +17,13 @@ import { BaseComponent } from 'app/base.component';
     styleUrls: ['./site.component.css']
 })
 export class SiteComponent extends BaseComponent implements OnInit {
+    username = this.operator.username;
     isMobile = false;
 
     constructor(
         private authService: AuthService,
+        private autoupdateService: AutoupdateService,
+        private operator: OperatorService,
         private router: Router,
         private breakpointObserver: BreakpointObserver,
         private translate: TranslateService
@@ -39,7 +44,18 @@ export class SiteComponent extends BaseComponent implements OnInit {
 
         //get a translation via code: use the translation service
         this.translate.get('Motions').subscribe((res: string) => {
-            console.log(res);
+            console.log('translation of motions in the target language: ' + res);
+        });
+
+        //start autoupdate if the user is logged in:
+        this.operator.whoAmI().subscribe(resp => {
+            if (resp.user) {
+                this.autoupdateService.startAutoupdate();
+            } else {
+                //if whoami is not sucsessfull, forward to login again
+                this.operator.clear();
+                this.router.navigate(['/login']);
+            }
         });
     }
 

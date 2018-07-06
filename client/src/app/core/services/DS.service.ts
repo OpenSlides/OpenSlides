@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, of, BehaviorSubject } from 'rxjs';
+import { tap, map } from 'rxjs/operators';
 
 import { ImproperlyConfiguredError } from 'app/core/exceptions';
 import { BaseModel, ModelId } from 'app/core/models/baseModel';
@@ -28,6 +28,8 @@ const httpOptions = {
 export class DataStoreService {
     // needs to be static cause becauseusing dependency injection, services are unique for a scope.
     private static store: Storrage = {};
+    // observe datastore to enable dynamic changes in models and view
+    private static dataStoreSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
     constructor(private http: HttpClient) {}
 
@@ -58,7 +60,7 @@ export class DataStoreService {
     }
 
     // TODO: type for callback function
-    // example: this.DS.filder(User, myUser => myUser.first_name === "Max")
+    // example: this.DS.filter(User, myUser => myUser.first_name === "Max")
     filter(Type, callback): BaseModel[] {
         let filterCollection = [];
         const typeCollection = this.get(Type);
@@ -86,7 +88,7 @@ export class DataStoreService {
                 DataStoreService.store[collectionString] = {};
             }
             DataStoreService.store[collectionString][model.id] = model;
-            // console.log('add model ', model, ' into Datastore');
+            this.setObservable(model);
         });
     }
 
@@ -131,5 +133,13 @@ export class DataStoreService {
                 this.remove(model, model.id);
             })
         );
+    }
+
+    public getObservable(): Observable<any> {
+        return DataStoreService.dataStoreSubject.asObservable();
+    }
+
+    private setObservable(value) {
+        DataStoreService.dataStoreSubject.next(value);
     }
 }
