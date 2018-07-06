@@ -11,8 +11,8 @@
         <!-- User Menu -->
         <mat-expansion-panel>
             <mat-expansion-panel-header>
-                <!-- TODO use an operator service or get from whoami -->
-                UserName
+                <!-- Get the username from operator -->
+                {{username}}
             </mat-expansion-panel-header>
             <mat-action-row>
                 <button (click)='logOutButton()' mat-button>Logout</button>

@@ -34,13 +34,18 @@ export class AutoupdateService extends BaseComponent {
 
     constructor(private websocketService: WebsocketService) {
         super();
+    }
+
+    // initialte autpupdate Service
+    startAutoupdate(): void {
+        console.log('start autoupdate');
         this.socket = this.websocketService.connect();
         this.socket.subscribe(response => {
             this.storeResponse(response);
         });
     }
 
-    //create models out of socket answer
+    // create models out of socket answer
     storeResponse(socketResponse): void {
         socketResponse.forEach(model => {
             switch (model.collection) {

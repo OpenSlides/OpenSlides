@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angul
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
-import { User } from 'app/core/models/users/user';
+import { OperatorService } from 'app/core/services/operator.service';
 
 const httpOptions = {
     withCredentials: true,
@@ -16,54 +16,27 @@ const httpOptions = {
     providedIn: 'root'
 })
 export class AuthService {
-    isLoggedIn: boolean;
-
-    // store the URL so we can redirect after logging in
     redirectUrl: string;
 
-    constructor(private http: HttpClient) {
-        //check for the cookie in local storrage
-        //TODO checks for username now since django does not seem to return a cookie
-        if (localStorage.getItem('username')) {
-            this.isLoggedIn = true;
-        } else {
-            this.isLoggedIn = false;
-        }
-    }
-
-    // Initialize the service by querying the server
-    // Not sure if this makes sense, since a service is not supposed to init()
-    init(): Observable<User | any> {
-        return this.http.get<User>('/users/whoami/', httpOptions).pipe(
-            tap(val => {
-                console.log('auth-init-whami : ', val);
-            }),
-            catchError(this.handleError())
-        );
-    }
+    constructor(private http: HttpClient, private operator: OperatorService) {}
 
     //loggins a users. expects a user model
-    login(username: string, password: string): Observable<User | any> {
+    login(username: string, password: string): Observable<any> {
         const user: any = {
             username: username,
             password: password
         };
         return this.http.post<any>('/users/login/', user, httpOptions).pipe(
-            tap(val => {
-                localStorage.setItem('username', val.username);
-                this.isLoggedIn = true;
-            }),
+            tap(resp => this.operator.storeUser(resp.user)),
             catchError(this.handleError())
         );
     }
 
     //logout the user
     //TODO not yet used
-    logout(): Observable<User | any> {
-        this.isLoggedIn = false;
-        localStorage.removeItem('username');
-
-        return this.http.post<User>('/users/logout/', {}, httpOptions);
+    logout(): Observable<any> {
+        this.operator.clear();
+        return this.http.post<any>('/users/logout/', {}, httpOptions);
     }
 
     //very generic error handling function.

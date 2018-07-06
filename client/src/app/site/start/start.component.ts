@@ -5,6 +5,7 @@ import { BaseComponent } from 'app/base.component';
 import { TranslateService } from '@ngx-translate/core'; //showcase
 
 // for testing the DS and BaseModel
+import { OperatorService } from 'app/core/services/operator.service';
 import { User } from 'app/core/models/users/user';
 import { Group } from 'app/core/models/users/group';
 
@@ -14,12 +15,15 @@ import { Group } from 'app/core/models/users/group';
     styleUrls: ['./start.component.css']
 })
 export class StartComponent extends BaseComponent implements OnInit {
-    constructor(titleService: Title, private translate: TranslateService) {
+    //useage of translation with variables in code and view
+    username = { user: this.operator.username };
+
+    constructor(titleService: Title, private translate: TranslateService, private operator: OperatorService) {
         super(titleService);
     }
 
     ngOnInit() {
-        super.setTitle('Start page');
+        super.setTitle('Start page'); //TODO translate
     }
 
     //quick testing of some data store functions
