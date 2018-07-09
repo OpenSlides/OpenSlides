@@ -62,7 +62,7 @@ class UserViewSet(ModelViewSet):
         elif self.action == 'metadata':
             result = has_perm(self.request.user, 'users.can_see_name')
         elif self.action in ('update', 'partial_update'):
-            result = self.request.user.is_authenticated()
+            result = self.request.user.is_authenticated
         elif self.action in ('create', 'destroy', 'reset_password', 'mass_import', 'mass_invite_email'):
             result = (has_perm(self.request.user, 'users.can_see_name') and
                       has_perm(self.request.user, 'users.can_see_extra_data') and
@@ -93,6 +93,9 @@ class UserViewSet(ModelViewSet):
             # The user does not have all permissions so he may only update himself.
             if str(request.user.pk) != self.kwargs['pk']:
                 self.permission_denied(request)
+
+            # This is a hack to make request.data mutable. Otherwise fields can not be deleted.
+            request.data._mutable = True
             # Remove fields that the user is not allowed to change.
             # The list() is required because we want to use del inside the loop.
             for key in list(request.data.keys()):
@@ -266,7 +269,7 @@ class GroupViewSet(ModelViewSet):
         elif self.action == 'metadata':
             # Every authenticated user can see the metadata.
             # Anonymous users can do so if they are enabled.
-            result = self.request.user.is_authenticated() or anonymous_is_enabled()
+            result = self.request.user.is_authenticated or anonymous_is_enabled()
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             # Users with all app permissions can edit groups.
             result = (has_perm(self.request.user, 'users.can_see_name') and
@@ -365,7 +368,7 @@ class PersonalNoteViewSet(ModelViewSet):
             # Every authenticated user can see metadata and create personal
             # notes for himself and can manipulate only his own personal notes.
             # See self.perform_create(), self.update() and self.destroy().
-            result = self.request.user.is_authenticated()
+            result = self.request.user.is_authenticated
         else:
             result = False
         return result
@@ -458,7 +461,7 @@ class UserLogoutView(APIView):
     http_method_names = ['post']
 
     def post(self, *args, **kwargs):
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             raise ValidationError({'detail': _('You are not authenticated.')})
         auth_logout(self.request)
         return super().post(*args, **kwargs)

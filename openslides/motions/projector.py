@@ -1,5 +1,4 @@
 import re
-
 from typing import Generator, Type
 
 from ..core.config import config

@@ -15,7 +15,7 @@ Installation and start of the development version
 a. Check requirements
 '''''''''''''''''''''
 
-Make sure that you have installed `Python (>= 3.4) <https://www.python.org/>`_,
+Make sure that you have installed `Python (>= 3.5) <https://www.python.org/>`_,
 `Node.js (>=4.x) <https://nodejs.org/>`_, `Yarn <https://yarnpkg.com/>`_ and
 `Git <http://git-scm.com/>`_ on your system. You also need build-essential
 packages and header files and a static library for Python.

@@ -20,7 +20,7 @@ def add_permission_to_groups_based_on_existing_permission(
 
     def function(apps: Any, schema_editor: Any) -> None:
         content_type = ContentType.objects.filter(model=model, app_label=app_label)
-        base_perm = Permission.objects.filter(codename=codename, content_type=content_type)
+        base_perm = Permission.objects.filter(codename=codename, content_type__in=content_type)
 
         if len(base_perm) is 1 and len(content_type) is 1:
             # get the actual content type and base permission

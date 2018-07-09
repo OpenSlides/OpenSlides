@@ -107,6 +107,10 @@ class MotionViewSet(ModelViewSet):
         """
         Customized view endpoint to create a new motion.
         """
+        # This is a hack to make request.data mutable. Otherwise fields can not be deleted.
+        if isinstance(request.data, QueryDict):
+            request.data._mutable = True
+
         # Check if parent motion exists.
         if request.data.get('parent_id') is not None:
             try:
@@ -183,7 +187,7 @@ class MotionViewSet(ModelViewSet):
                 continue  # Do not add users that do not exist
 
         # Add the request user, if he is authenticated and no submitters were given:
-        if len(submitters) == 0 and request.user.is_authenticated():
+        if len(submitters) == 0 and request.user.is_authenticated:
             submitters.append(request.user)
 
         # create all submitters
@@ -211,6 +215,10 @@ class MotionViewSet(ModelViewSet):
         self.check_view_permissions()). Also check manage permission or
         submitter and state.
         """
+        # This is a hack to make request.data mutable. Otherwise fields can not be deleted.
+        if isinstance(request.data, QueryDict):
+            request.data._mutable = True
+
         # Get motion.
         motion = self.get_object()
 

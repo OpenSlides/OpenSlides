@@ -4,31 +4,6 @@ from unittest.mock import MagicMock, patch
 from openslides.motions.views import MotionViewSet
 
 
-class MotionViewSetCreate(TestCase):
-    """
-    Tests create view of MotionViewSet.
-    """
-    def setUp(self):
-        self.request = MagicMock()
-        self.request.data.get.return_value = None
-        self.request.user.is_authenticated.return_value = False
-        self.view_instance = MotionViewSet()
-        self.view_instance.request = self.request
-        self.view_instance.format_kwarg = MagicMock()
-        self.view_instance.get_serializer = get_serializer_mock = MagicMock()
-        get_serializer_mock.return_value = self.mock_serializer = MagicMock()
-
-    @patch('openslides.motions.views.inform_changed_data')
-    @patch('openslides.motions.views.has_perm')
-    @patch('openslides.motions.views.config')
-    def test_simple_create(self, mock_config, mock_has_perm, mock_icd):
-        mock_has_perm.return_value = True
-
-        self.view_instance.create(self.request)
-
-        self.mock_serializer.save.assert_called_with(request_user=self.request.user)
-
-
 class MotionViewSetUpdate(TestCase):
     """
     Tests update view of MotionViewSet.
