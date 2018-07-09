@@ -11,9 +11,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from mypy_extensions import TypedDict
 
-from .. import __license__ as license
-from .. import __url__ as url
-from .. import __version__ as version
+from .. import __license__ as license, __url__ as url, __version__ as version
 from ..utils import views as utils_views
 from ..utils.auth import anonymous_is_enabled, has_perm
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data

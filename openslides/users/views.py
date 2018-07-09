@@ -1,10 +1,13 @@
 import smtplib
 from typing import List  # noqa
 
+from asgiref.sync import async_to_sync
 from django.conf import settings
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout as auth_logout
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import (
+    login as auth_login,
+    logout as auth_logout,
+    update_session_auth_hash,
+)
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.password_validation import validate_password
 from django.core import mail
@@ -15,13 +18,17 @@ from django.utils.translation import ugettext as _
 
 from ..core.config import config
 from ..core.signals import permission_change
-from ..utils.auth import anonymous_is_enabled, has_perm
+from ..utils.auth import (
+    anonymous_is_enabled,
+    has_perm,
+    user_to_collection_user,
+)
 from ..utils.autoupdate import (
     inform_changed_data,
     inform_data_collection_element_list,
 )
-from ..utils.cache import restricted_data_cache
-from ..utils.collection import CollectionElement
+from ..utils.cache import element_cache
+from ..utils.collection import Collection, CollectionElement
 from ..utils.rest_api import (
     ModelViewSet,
     Response,
@@ -103,7 +110,7 @@ class UserViewSet(ModelViewSet):
                     del request.data[key]
         response = super().update(request, *args, **kwargs)
         # Maybe some group assignments have changed. Better delete the restricted user cache
-        restricted_data_cache.del_user(user.id)
+        async_to_sync(element_cache.del_user)(user_to_collection_user(user))
         return response
 
     def destroy(self, request, *args, **kwargs):
@@ -303,7 +310,7 @@ class GroupViewSet(ModelViewSet):
 
             # Delete the user chaches of all affected users
             for user in group.user_set.all():
-                restricted_data_cache.del_user(user.id)
+                async_to_sync(element_cache.del_user)(user_to_collection_user(user))
 
             def diff(full, part):
                 """
@@ -321,8 +328,8 @@ class GroupViewSet(ModelViewSet):
                 collection_elements = []  # type: List[CollectionElement]
                 signal_results = permission_change.send(None, permissions=new_permissions, action='added')
                 for receiver, signal_collections in signal_results:
-                    for collection in signal_collections:
-                        collection_elements.extend(collection.element_generator())
+                    for cachable in signal_collections:
+                        collection_elements.extend(Collection(cachable.get_collection_string()).element_generator())
                 inform_data_collection_element_list(collection_elements)
 
             # TODO: Some permissions are deleted.

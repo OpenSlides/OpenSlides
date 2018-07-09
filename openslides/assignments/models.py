@@ -4,8 +4,7 @@ from typing import Any, Dict, List, Optional  # noqa
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
-from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_noop
+from django.utils.translation import ugettext as _, ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
 from openslides.core.config import config

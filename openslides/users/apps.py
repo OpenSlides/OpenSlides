@@ -2,7 +2,6 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.contrib.auth.signals import user_logged_in
 
-from ..utils.collection import Collection
 from ..utils.projector import register_projector_elements
 
 
@@ -45,11 +44,11 @@ class UsersAppConfig(AppConfig):
 
     def get_startup_elements(self):
         """
-        Yields all collections required on startup i. e. opening the websocket
+        Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        for model in ('User', 'Group', 'PersonalNote'):
-            yield Collection(self.get_model(model).get_collection_string())
+        for model_name in ('User', 'Group', 'PersonalNote'):
+            yield self.get_model(model_name)
 
     def get_angular_constants(self):
         from django.contrib.auth.models import Permission

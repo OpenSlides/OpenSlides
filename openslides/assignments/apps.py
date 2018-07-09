@@ -3,7 +3,6 @@ from typing import Dict, List, Union  # noqa
 from django.apps import AppConfig
 from mypy_extensions import TypedDict
 
-from ..utils.collection import Collection
 from ..utils.projector import register_projector_elements
 
 
@@ -41,10 +40,10 @@ class AssignmentsAppConfig(AppConfig):
 
     def get_startup_elements(self):
         """
-        Yields all collections required on startup i. e. opening the websocket
+        Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        yield Collection(self.get_model('Assignment').get_collection_string())
+        yield self.get_model('Assignment')
 
     def get_angular_constants(self):
         assignment = self.get_model('Assignment')

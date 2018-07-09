@@ -2,11 +2,11 @@ import smtplib
 from random import choice
 
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import Group as DjangoGroup
-from django.contrib.auth.models import GroupManager as _GroupManager
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
+    Group as DjangoGroup,
+    GroupManager as _GroupManager,
     Permission,
     PermissionsMixin,
 )
@@ -285,6 +285,15 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
                 return True
 
         return False
+
+    @property
+    def session_auth_hash(self):
+        """
+        Returns the session auth hash of a user as attribute.
+
+        Needed for the django rest framework.
+        """
+        return self.get_session_auth_hash()
 
 
 class GroupManager(_GroupManager):

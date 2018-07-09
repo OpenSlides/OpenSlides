@@ -148,13 +148,12 @@ You should use a webserver like Apache HTTP Server or nginx to serve the
 static and media files as proxy server in front of your OpenSlides
 interface server. You also should use a database like PostgreSQL and Redis
 as channels backend, cache backend and session engine. Finally you should
-start some WSGI workers and one or more interface servers (Daphne or Geiss).
+start one or more interface servers (Daphne).
 
 Please see the respective section in the `DEVELOPMENT.rst
 <https://github.com/OpenSlides/OpenSlides/blob/master/DEVELOPMENT.rst>`_ and:
 
 * https://channels.readthedocs.io/en/latest/deploying.html
-* https://github.com/ostcar/geiss
 * https://docs.djangoproject.com/en/1.10/topics/cache/
 * https://github.com/sebleier/django-redis-cache
 * https://docs.djangoproject.com/en/1.10/ref/settings/#databases

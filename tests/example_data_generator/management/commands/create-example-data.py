@@ -12,6 +12,7 @@ from openslides.motions.models import Motion
 from openslides.topics.models import Topic
 from openslides.users.models import Group, User
 
+
 MOTION_NUMBER_OF_PARAGRAPHS = 4
 
 LOREM_IPSUM = [
