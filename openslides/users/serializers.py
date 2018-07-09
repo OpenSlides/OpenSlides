@@ -1,7 +1,6 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Permission
-from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext as _, ugettext_lazy
 
 from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
@@ -12,6 +11,7 @@ from ..utils.rest_api import (
     ValidationError,
 )
 from .models import Group, PersonalNote, User
+
 
 USERCANSEESERIALIZER_FIELDS = (
     'id',
@@ -52,7 +52,7 @@ class UserFullSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = USERCANSEEEXTRASERIALIZER_FIELDS + ('default_password',)
+        fields = USERCANSEEEXTRASERIALIZER_FIELDS + ('default_password', 'session_auth_hash')
         read_only_fields = ('last_email_send',)
 
     def validate(self, data):

@@ -5,17 +5,16 @@ from django.http import Http404
 from rest_framework import status  # noqa
 from rest_framework.decorators import detail_route, list_route  # noqa
 from rest_framework.metadata import SimpleMetadata  # noqa
-from rest_framework.mixins import ListModelMixin as _ListModelMixin
-from rest_framework.mixins import RetrieveModelMixin as _RetrieveModelMixin
 from rest_framework.mixins import (  # noqa
     CreateModelMixin,
     DestroyModelMixin,
+    ListModelMixin as _ListModelMixin,
+    RetrieveModelMixin as _RetrieveModelMixin,
     UpdateModelMixin,
 )
 from rest_framework.relations import MANY_RELATION_KWARGS
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
-from rest_framework.serializers import ModelSerializer as _ModelSerializer
 from rest_framework.serializers import (  # noqa
     CharField,
     DictField,
@@ -26,19 +25,23 @@ from rest_framework.serializers import (  # noqa
     ListField,
     ListSerializer,
     ManyRelatedField,
+    ModelSerializer as _ModelSerializer,
     PrimaryKeyRelatedField,
     RelatedField,
     Serializer,
     SerializerMethodField,
     ValidationError,
 )
-from rest_framework.viewsets import GenericViewSet as _GenericViewSet  # noqa
-from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
-from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
+from rest_framework.viewsets import (  # noqa
+    GenericViewSet as _GenericViewSet,
+    ModelViewSet as _ModelViewSet,
+    ViewSet as _ViewSet,
+)
 
 from .access_permissions import BaseAccessPermissions
 from .auth import user_to_collection_user
 from .collection import Collection, CollectionElement
+
 
 router = DefaultRouter()
 

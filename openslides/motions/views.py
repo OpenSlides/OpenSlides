@@ -8,8 +8,7 @@ from django.db import IntegrityError, transaction
 from django.db.models.deletion import ProtectedError
 from django.http import Http404
 from django.http.request import QueryDict
-from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_noop
+from django.utils.translation import ugettext as _, ugettext_noop
 from rest_framework import status
 
 from ..core.config import config

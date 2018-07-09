@@ -79,59 +79,38 @@ DATABASES = {
 use_redis = False
 
 if use_redis:
-    # Redis configuration for django-redis-session. Keep this synchronized to
-    # the caching settings
+    # Django Channels
 
+    # https://channels.readthedocs.io/en/latest/topics/channel_layers.html#configuration
+
+    CHANNEL_LAYERS['default']['BACKEND'] = 'channels_redis.core.RedisChannelLayer'
+    CHANNEL_LAYERS['default']['CONFIG'] = {"capacity": 100000}
+
+    # Collection Cache
+
+    # Can be:
+    # a Redis URI — "redis://host:6379/0?encoding=utf-8";
+    # a (host, port) tuple — ('localhost', 6379);
+    # or a unix domain socket path string — "/path/to/redis.sock".
+    REDIS_ADDRESS = "redis://127.0.0.1"
+
+    # When use_redis is True, the restricted data cache caches the data individuel
+    # for each user. This requires a lot of memory if there are a lot of active
+    # users.
+    RESTRICTED_DATA_CACHE = True
+
+    # Session backend
+
+    # Redis configuration for django-redis-sessions.
+    # https://github.com/martinrusev/django-redis-sessions
+
+    SESSION_ENGINE = 'redis_sessions.session'
     SESSION_REDIS = {
         'host': '127.0.0.1',
         'post': 6379,
         'db': 0,
     }
 
-    # Django Channels
-
-    # Unless you have only a small assembly uncomment the following lines to
-    # activate Redis as backend for Django Channels and Cache. You have to install
-    # a Redis server and the python packages asgi_redis and django-redis.
-
-    # https://channels.readthedocs.io/en/latest/backends.html#redis
-
-    CHANNEL_LAYERS['default']['BACKEND'] = 'asgi_redis.RedisChannelLayer'
-    CHANNEL_LAYERS['default']['CONFIG']['prefix'] = 'asgi:'
-
-
-    # Caching
-
-    # Django uses a inmemory cache at default. This supports only one thread. If
-    # you use more then one thread another caching backend is required. We recommand
-    # django-redis: https://niwinz.github.io/django-redis/latest/#_user_guide
-
-    CACHES = {
-       "default": {
-           "BACKEND": "django_redis.cache.RedisCache",
-           "LOCATION": "redis://127.0.0.1:6379/0",
-           "OPTIONS": {
-               "CLIENT_CLASS": "django_redis.client.DefaultClient",
-           },
-           "KEY_PREFIX": "openslides-cache",
-       }
-    }
-
-    # Session backend
-
-    # Per default django uses the database as session backend. This can be slow.
-    # One possibility is to use the cache session backend with redis as cache backend
-    # Another possibility is to use a native redis session backend. For example:
-    # https://github.com/martinrusev/django-redis-sessions
-
-    # SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-    SESSION_ENGINE = 'redis_sessions.session'
-
-
-# When use_redis is True, the restricted data cache caches the data individuel
-# for each user. This requires a lot of memory if there are a lot of active
-# users. If use_redis is False, this setting has no effect.
-DISABLE_USER_CACHE = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/

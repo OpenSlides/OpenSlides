@@ -1,6 +1,12 @@
 import re
+from typing import TYPE_CHECKING, Dict, Optional, Tuple, Union
 
 import roman
+
+
+if TYPE_CHECKING:
+    # Dummy import Collection for mypy, can be fixed with python 3.7
+    from .collection import Collection, CollectionElement  # noqa
 
 CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_1 = re.compile('(.)([A-Z][a-z]+)')
 CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_2 = re.compile('([a-z0-9])([A-Z])')
@@ -29,3 +35,43 @@ def to_roman(number: int) -> str:
         return roman.toRoman(number)
     except (roman.NotIntegerError, roman.OutOfRangeError):
         return str(number)
+
+
+def get_element_id(collection_string: str, id: int) -> str:
+    """
+    Returns a combined string from the collection_string and an id.
+    """
+    return "{}:{}".format(collection_string, id)
+
+
+def split_element_id(element_id: Union[str, bytes]) -> Tuple[str, int]:
+    """
+    Splits a combined element_id into the collection_string and the id.
+    """
+    if isinstance(element_id, bytes):
+        element_id = element_id.decode()
+    collection_str, id = element_id.rsplit(":", 1)
+    return (collection_str, int(id))
+
+
+def get_user_id(user: Optional['CollectionElement']) -> int:
+    """
+    Returns the user id for an CollectionElement user.
+
+    Returns 0 for anonymous.
+    """
+    if user is None:
+        user_id = 0
+    else:
+        user_id = user.id
+    return user_id
+
+
+def str_dict_to_bytes(str_dict: Dict[str, str]) -> Dict[bytes, bytes]:
+    """
+    Converts the key and the value of a dict from str to bytes.
+    """
+    out = {}
+    for key, value in str_dict.items():
+        out[key.encode()] = value.encode()
+    return out

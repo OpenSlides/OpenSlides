@@ -1,7 +1,6 @@
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 
-from ..utils.collection import Collection
 from ..utils.projector import register_projector_elements
 
 
@@ -60,8 +59,8 @@ class MotionsAppConfig(AppConfig):
 
     def get_startup_elements(self):
         """
-        Yields all collections required on startup i. e. opening the websocket
+        Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        for model in ('Category', 'Motion', 'MotionBlock', 'Workflow', 'MotionChangeRecommendation'):
-            yield Collection(self.get_model(model).get_collection_string())
+        for model_name in ('Category', 'Motion', 'MotionBlock', 'Workflow', 'MotionChangeRecommendation'):
+            yield self.get_model(model_name)
