@@ -1,19 +1,40 @@
 import { Directive, Input, ElementRef, TemplateRef, ViewContainerRef, OnInit } from '@angular/core';
+
 import { OperatorService } from 'app/core/services/operator.service';
-import { BaseComponent } from 'app/base.component';
+import { OpenSlidesComponent } from '../../openslides.component';
 import { Group } from 'app/core/models/users/group';
 
+/**
+ * Directive to check if the {@link OperatorService} has the correct permissions to access certain functions
+ *
+ * Successor of os-perms in OpenSlides 2.2
+ * @example <div *appOsPerms=".." ..> ... < /div>
+ */
 @Directive({
     selector: '[appOsPerms]'
 })
-export class OsPermsDirective extends BaseComponent {
+export class OsPermsDirective extends OpenSlidesComponent {
+    /**
+     * Holds the {@link OperatorService} permissions
+     */
     private userPermissions: string[];
+
+    /**
+     * Holds the required permissions the access a feature
+     */
     private permissions;
 
+    /**
+     * Constructs the direcctive once. Observes the operator for it's groups so the directvice can perform changes
+     * dynamically
+     *
+     * @param template inner part of the HTML container
+     * @param viewContainer outer part of the HTML container (for example a `<div>`)
+     * @param operator OperatorService
+     */
     constructor(
-        private element: ElementRef,
         private template: TemplateRef<any>,
-        private viewContainer: ViewContainerRef, //TODO private operator. OperatorService
+        private viewContainer: ViewContainerRef,
         private operator: OperatorService
     ) {
         super();
@@ -30,6 +51,10 @@ export class OsPermsDirective extends BaseComponent {
         });
     }
 
+    /**
+     * Comes directly from the view.
+     * The value defines the requires permissions.
+     */
     @Input()
     set appOsPerms(value) {
         this.permissions = value;
@@ -37,6 +62,10 @@ export class OsPermsDirective extends BaseComponent {
         this.updateView();
     }
 
+    /**
+     * Updates the local `userPermissions[]` by the permissions found in the operators groups
+     * Will just set, but not remove them.
+     */
     private readUserPermissions(): void {
         const opGroups = this.operator.getGroups();
         console.log('operator Groups: ', opGroups);
@@ -45,7 +74,9 @@ export class OsPermsDirective extends BaseComponent {
         });
     }
 
-    // hides or shows a contrainer
+    /**
+     * Shows or hides certain content in the view.
+     */
     private updateView(): void {
         if (this.checkPermissions()) {
             // will just render the page normally
@@ -56,7 +87,10 @@ export class OsPermsDirective extends BaseComponent {
         }
     }
 
-    // checks for the required permission
+    /**
+     * Compare the required permissions with the users permissions.
+     * Returns true if the users permissions fit.
+     */
     private checkPermissions(): boolean {
         let isPermitted = false;
         if (this.userPermissions && this.permissions) {

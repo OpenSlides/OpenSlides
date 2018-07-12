@@ -1,9 +1,11 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from 'app/core/models/base-model';
 
-// import { DS } from 'app/core/services/DS.service';
-
+/**
+ * Representation of a user in contrast to the operator.
+ * @ignore
+ */
 export class User extends BaseModel {
-    static collectionString = 'users/user';
+    protected _collectionString: string;
     id: number;
     username: string;
     title: string;
@@ -21,9 +23,8 @@ export class User extends BaseModel {
     is_active: boolean;
     default_password: string;
 
-    //default constructer with every possible optinal parameter for conventient usage
     constructor(
-        id: number,
+        id?: number,
         username?: string,
         title?: string,
         first_name?: string,
@@ -40,7 +41,9 @@ export class User extends BaseModel {
         is_active?: boolean,
         default_password?: string
     ) {
-        super(id);
+        super();
+        this._collectionString = 'users/user';
+        this.id = id;
         this.username = username;
         this.title = title;
         this.first_name = first_name;
@@ -58,7 +61,7 @@ export class User extends BaseModel {
         this.default_password = default_password;
     }
 
-    public getCollectionString(): string {
-        return User.collectionString;
+    getGroups(): BaseModel | BaseModel[] {
+        return this.DS.get('users/group', ...this.groups_id);
     }
 }

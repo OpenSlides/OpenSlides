@@ -1,70 +1,75 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from 'app/core/models/base-model';
 
+/**
+ * Representation of Motion.
+ *
+ * Untouched for now because of heavy maintainance  on server side
+ *
+ * @ignore
+ */
 export class Motion extends BaseModel {
-    static collectionString = 'motions/motion';
+    protected _collectionString: string;
     id: number;
-    active_version: number;
-    agenda_item_id: number;
-    attachments_id: number[];
-    category_id: number;
-    comments: Object;
     identifier: string;
-    log_messages: Object[];
+    versions: Object[];
+    active_version: number;
+    parent_id: number;
+    category_id: number;
     motion_block_id: number;
     origin: string;
-    parent_id: number;
-    polls: BaseModel[];
-    recommendation_id: number;
-    state_id: number;
-    state_required_permission_to_see: string;
     submitters: Object[];
     supporters_id: number[];
+    comments: Object;
+    state_id: number;
+    state_required_permission_to_see: string;
+    recommendation_id: number;
     tags_id: number[];
-    versions: Object[];
+    attachments_id: number[];
+    polls: BaseModel[];
+    agenda_item_id: number;
+    log_messages: Object[];
 
     constructor(
-        id: number,
-        active_version?: number,
-        agenda_item_id?: number,
-        attachments_id?: number[],
-        category_id?: number,
-        comments?: Object,
+        id?: number,
         identifier?: string,
-        log_messages?: Object[],
+        versions?: Object[],
+        active_version?: number,
+        parent_id?: number,
+        category_id?: number,
         motion_block_id?: number,
         origin?: string,
-        parent_id?: number,
-        polls?: BaseModel[],
-        recommendation_id?: number,
-        state_id?: number,
-        state_required_permission_to_see?: string,
         submitters?: Object[],
         supporters_id?: number[],
+        comments?: Object,
+        state_id?: number,
+        state_required_permission_to_see?: string,
+        recommendation_id?: number,
         tags_id?: number[],
-        versions?: Object[]
+        attachments_id?: number[],
+        polls?: BaseModel[],
+        agenda_item_id?: number,
+        log_messages?: Object[]
     ) {
-        super(id);
-        this.active_version = active_version;
-        this.agenda_item_id = agenda_item_id;
-        this.attachments_id = attachments_id;
-        this.category_id = category_id;
-        this.comments = comments;
+        super();
+        this._collectionString = 'motions/motion';
+        this.id = id;
         this.identifier = identifier;
-        this.log_messages = log_messages;
+        this.versions = versions;
+        this.active_version = active_version;
+        this.parent_id = parent_id;
+        this.category_id = category_id;
         this.motion_block_id = motion_block_id;
         this.origin = origin;
-        this.parent_id = parent_id;
-        this.polls = polls;
-        this.recommendation_id = recommendation_id;
-        this.state_id = state_id;
-        this.state_required_permission_to_see = state_required_permission_to_see;
         this.submitters = submitters;
         this.supporters_id = supporters_id;
+        this.comments = comments;
+        this.state_id = state_id;
+        this.state_required_permission_to_see = state_required_permission_to_see;
+        this.recommendation_id = recommendation_id;
         this.tags_id = tags_id;
-        this.versions = versions;
-    }
-
-    public getCollectionString(): string {
-        return Motion.collectionString;
+        this.attachments_id = attachments_id;
+        this.polls = polls;
+        this.agenda_item_id = agenda_item_id;
+        this.log_messages = log_messages;
     }
 }

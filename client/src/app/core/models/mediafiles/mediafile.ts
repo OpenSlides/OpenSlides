@@ -1,37 +1,50 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from 'app/core/models/base-model';
+import { File } from './file';
 
+/**
+ * Representation of MediaFile. Has the nested property "File"
+ * @ignore
+ */
 export class Mediafile extends BaseModel {
-    static collectionString = 'mediafiles/mediafile';
+    protected _collectionString: string;
     id: number;
+    title: string;
+    mediafile: File;
+    media_url_prefix: string;
+    uploader_id: number;
     filesize: string;
     hidden: boolean;
-    media_url_prefix: string;
-    mediafile: Object;
     timestamp: string;
-    title: string;
-    uploader_id: number;
 
     constructor(
-        id: number,
+        id?: number,
+        title?: string,
+        mediafile?: File,
+        media_url_prefix?: string,
+        uploader_id?: number,
         filesize?: string,
         hidden?: boolean,
-        media_url_prefix?: string,
-        mediafile?: Object,
-        timestamp?: string,
-        title?: string,
-        uploader_id?: number
+        timestamp?: string
     ) {
-        super(id);
+        super();
+        this._collectionString = 'mediafiles/mediafile';
+        this.id = id;
+        this.title = title;
+        this.mediafile = mediafile;
+        this.media_url_prefix = media_url_prefix;
+        this.uploader_id = uploader_id;
         this.filesize = filesize;
         this.hidden = hidden;
-        this.media_url_prefix = media_url_prefix;
-        this.mediafile = mediafile;
         this.timestamp = timestamp;
-        this.title = title;
-        this.uploader_id = uploader_id;
     }
 
-    public getCollectionString(): string {
-        return Mediafile.collectionString;
+    deserialize(input: any): this {
+        Object.assign(this, input);
+        this.mediafile = new File().deserialize(input.mediafile);
+        return this;
+    }
+
+    getUploader(): BaseModel | BaseModel[] {
+        return this.DS.get('users/user', this.uploader_id);
     }
 }

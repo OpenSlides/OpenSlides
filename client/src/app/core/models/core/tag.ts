@@ -1,16 +1,18 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from 'app/core/models/base-model';
 
+/**
+ * Representation of a tag.
+ * @ignore
+ */
 export class Tag extends BaseModel {
-    static collectionString = 'core/tag';
+    protected _collectionString: string;
     id: number;
     name: string;
 
-    constructor(id: number, name?: string) {
-        super(id);
+    constructor(id?: number, name?: string) {
+        super();
+        this._collectionString = 'core/tag';
+        this.id = id;
         this.name = name;
-    }
-
-    public getCollectionString(): string {
-        return Tag.collectionString;
     }
 }

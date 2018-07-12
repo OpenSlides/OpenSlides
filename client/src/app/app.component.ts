@@ -1,16 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AutoupdateService } from 'app/core/services/autoupdate.service';
-// import { AuthService } from 'app/core/services/auth.service';
 import { OperatorService } from 'app/core/services/operator.service';
 
+/**
+ * Angular's global App Component
+ */
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
-// export class AppComponent implements OnInit {
 export class AppComponent {
+    /**
+     * Initialises the operator, the auto update (and therefore a websocket) feature and the translation unit.
+     * @param operator
+     * @param autoupdate
+     * @param translate
+     */
     constructor(
         private operator: OperatorService,
         private autoupdate: AutoupdateService,

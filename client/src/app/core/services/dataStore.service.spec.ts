@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { DataStoreService } from './DS.service';
+import { DataStoreService } from './dataStore.service';
 
 describe('DS', () => {
     beforeEach(() => {
@@ -8,9 +8,4 @@ describe('DS', () => {
             providers: [DataStoreService]
         });
     });
-
-    /*it('should be created', inject([DSService], (DS: DSService) => {
-        expect(DS).toBeTruthy();
-    }));*/
-    // just a static use
 });

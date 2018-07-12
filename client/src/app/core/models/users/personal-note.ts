@@ -1,18 +1,24 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from 'app/core/models/base-model';
 
+/**
+ * Representation of users personal note.
+ * @ignore
+ */
 export class PersonalNote extends BaseModel {
-    static collectionString = 'users/personal-note';
+    protected _collectionString: string;
     id: number;
-    notes: Object;
     user_id: number;
+    notes: Object;
 
-    constructor(id: number, notes?: Object, user_id?: number) {
-        super(id);
-        this.notes = notes;
+    constructor(id?: number, user_id?: number, notes?: Object) {
+        super();
+        this._collectionString = 'users/personal-note';
+        this.id = id;
         this.user_id = user_id;
+        this.notes = notes;
     }
 
-    public getCollectionString(): string {
-        return PersonalNote.collectionString;
+    getUser(): BaseModel | BaseModel[] {
+        return this.DS.get('users/user', this.user_id);
     }
 }

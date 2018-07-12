@@ -4,47 +4,62 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 import { OperatorService } from 'app/core/services/operator.service';
+import { OpenSlidesComponent } from '../../openslides.component';
 
-const httpOptions = {
-    withCredentials: true,
-    headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-    })
-};
-
+/**
+ * Authenticates an OpenSlides user with username and password
+ */
 @Injectable({
     providedIn: 'root'
 })
-export class AuthService {
+export class AuthService extends OpenSlidesComponent {
+    /**
+     * if the user tries to access a certain URL without being authenticated, the URL will be stored here
+     */
     redirectUrl: string;
 
-    constructor(private http: HttpClient, private operator: OperatorService) {}
+    /**
+     * Initializes the httpClient and the {@link OperatorService}.
+     *
+     * Calls `super()` from the parent class.
+     * @param http HttpClient
+     * @param operator who is using OpenSlides
+     */
+    constructor(private http: HttpClient, private operator: OperatorService) {
+        super();
+    }
 
-    //loggins a users. expects a user model
+    /**
+     * Try to log in a user.
+     *
+     * Returns an observable 'user' with the correct login information or an error.
+     * The user will then be stored in the {@link OperatorService},
+     * errors will be forwarded to the parents error function.
+     *
+     * @param username
+     * @param password
+     */
     login(username: string, password: string): Observable<any> {
         const user: any = {
             username: username,
             password: password
         };
-        return this.http.post<any>('/users/login/', user, httpOptions).pipe(
+        return this.http.post<any>('/users/login/', user).pipe(
             tap(resp => this.operator.storeUser(resp.user)),
             catchError(this.handleError())
         );
     }
 
+    /**
+     * Logout function for both the client and the server.
+     *
+     * Will clear the current {@link OperatorService} and
+     * send a `post`-requiest to `/users/logout/'`
+     */
     //logout the user
     //TODO not yet used
     logout(): Observable<any> {
         this.operator.clear();
-        return this.http.post<any>('/users/logout/', {}, httpOptions);
-    }
-
-    //very generic error handling function.
-    //implicitly returns an observable that will display an error message
-    private handleError<T>() {
-        return (error: any): Observable<T> => {
-            console.error(error);
-            return of(error);
-        };
+        return this.http.post<any>('/users/logout/', {});
     }
 }

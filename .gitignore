@@ -43,6 +43,7 @@ openslides_*
 client/dist
 client/tmp
 client/out-tsc
+client/documentation
 
 # dependencies
 client/node_modules

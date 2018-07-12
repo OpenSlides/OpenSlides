@@ -1,40 +1,42 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from 'app/core/models/base-model';
 
+/**
+ * Representation of a projector. Has the nested property "projectiondefaults"
+ * @ignore
+ */
 export class Projector extends BaseModel {
-    static collectionString = 'core/projector';
+    protected _collectionString: string;
     id: number;
-    blank: boolean;
     elements: Object;
-    height: number;
-    name: string;
-    projectiondefaults: BaseModel[];
     scale: number;
     scroll: number;
+    name: string;
+    blank: boolean;
     width: number;
+    height: number;
+    projectiondefaults: Object[];
 
     constructor(
-        id: number,
-        blank?: boolean,
+        id?: number,
         elements?: Object,
-        height?: number,
-        name?: string,
-        projectiondefaults?: BaseModel[],
         scale?: number,
         scroll?: number,
-        width?: number
+        name?: string,
+        blank?: boolean,
+        width?: number,
+        height?: number,
+        projectiondefaults?: Object[]
     ) {
-        super(id);
-        this.blank = blank;
+        super();
+        this._collectionString = 'core/projector';
+        this.id = id;
         this.elements = elements;
-        this.height = height;
-        this.name = name;
-        this.projectiondefaults = projectiondefaults;
         this.scale = scale;
         this.scroll = scroll;
+        this.name = name;
+        this.blank = blank;
         this.width = width;
-    }
-
-    public getCollectionString(): string {
-        return Projector.collectionString;
+        this.height = height;
+        this.projectiondefaults = projectiondefaults;
     }
 }

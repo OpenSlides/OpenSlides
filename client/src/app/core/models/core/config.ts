@@ -1,18 +1,20 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from '../base-model';
 
+/**
+ * Representation of a config variable
+ * @ignore
+ */
 export class Config extends BaseModel {
-    static collectionString = 'core/config';
+    protected _collectionString: string;
     id: number;
     key: string;
     value: Object;
 
-    constructor(id: number, key?: string, value?: Object) {
-        super(id);
+    constructor(id?: number, key?: string, value?: Object) {
+        super();
+        this._collectionString = 'core/config';
+        this.id = id;
         this.key = key;
         this.value = value;
-    }
-
-    public getCollectionString(): string {
-        return Config.collectionString;
     }
 }

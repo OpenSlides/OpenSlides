@@ -1,40 +1,42 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from 'app/core/models/base-model';
 
+/**
+ * Representation of a motion change recommendation.
+ * @ignore
+ */
 export class MotionChangeReco extends BaseModel {
-    static collectionString = 'motions/motion-change-recommendation';
+    protected _collectionString: string;
     id: number;
-    creation_time: string;
+    motion_version_id: number;
+    rejected: boolean;
+    type: number;
+    other_description: string;
     line_from: number;
     line_to: number;
-    motion_version_id: number;
-    other_description: string;
-    rejected: boolean;
     text: string;
-    type: number;
+    creation_time: string;
 
     constructor(
-        id: number,
-        creation_time?: string,
+        id?: number,
+        motion_version_id?: number,
+        rejected?: boolean,
+        type?: number,
+        other_description?: string,
         line_from?: number,
         line_to?: number,
-        motion_version_id?: number,
-        other_description?: string,
-        rejected?: boolean,
         text?: string,
-        type?: number
+        creation_time?: string
     ) {
-        super(id);
-        this.creation_time = creation_time;
+        super();
+        this._collectionString = 'motions/motion-change-recommendation';
+        this.id = id;
+        this.motion_version_id = motion_version_id;
+        this.rejected = rejected;
+        this.type = type;
+        this.other_description = other_description;
         this.line_from = line_from;
         this.line_to = line_to;
-        this.motion_version_id = motion_version_id;
-        this.other_description = other_description;
-        this.rejected = rejected;
         this.text = text;
-        this.type = type;
-    }
-
-    public getCollectionString(): string {
-        return MotionChangeReco.collectionString;
+        this.creation_time = creation_time;
     }
 }

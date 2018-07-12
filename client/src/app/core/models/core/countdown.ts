@@ -1,21 +1,24 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from 'app/core/models/base-model';
 
+/**
+ * Representation of a countdown
+ * @ignore
+ */
 export class Countdown extends BaseModel {
-    static collectionString = 'core/countdown';
+    protected _collectionString: string;
     id: number;
-    countdown_time: number;
-    default_time: number;
     description: string;
+    default_time: number;
+    countdown_time: number;
+    running: boolean;
 
-    constructor(id: number, countdown_time?: number, default_time?: number, description?: string) {
-        super(id);
+    constructor(id?: number, countdown_time?: number, default_time?: number, description?: string, running?: boolean) {
+        super();
+        this._collectionString = 'core/countdown';
         this.id = id;
-        this.countdown_time = countdown_time;
-        this.default_time = default_time;
         this.description = description;
-    }
-
-    public getCollectionString(): string {
-        return Countdown.collectionString;
+        this.default_time = default_time;
+        this.countdown_time = countdown_time;
+        this.running = running;
     }
 }
