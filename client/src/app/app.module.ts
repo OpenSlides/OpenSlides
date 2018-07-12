@@ -3,7 +3,7 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient, HttpClientXsrfModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // MaterialUI modules
 import {
@@ -34,15 +34,26 @@ import { MotionsComponent } from './site/motions/motions.component';
 import { AgendaComponent } from './site/agenda/agenda.component';
 import { SiteComponent } from './site/site.component';
 import { StartComponent } from './site/start/start.component';
-import { WebsocketService } from './core/services/websocket.service';
+import { AddHeaderInterceptor } from './core/http-interceptor';
 import { ProjectorContainerComponent } from './projector-container/projector-container.component';
-import { AlertComponent } from './core/directives/alert/alert.component';
 
-//translation module. TODO: Potetially a SharedModule and own files
+// Root Services
+import { AuthGuard } from './core/services/auth-guard.service';
+import { AuthService } from './core/services/auth.service';
+import { AutoupdateService } from './core/services/autoupdate.service';
+import { DataStoreService } from './core/services/dataStore.service';
+import { OperatorService } from './core/services/operator.service';
+import { WebsocketService } from './core/services/websocket.service';
+
+// translation module.
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { PruningTranslationLoader } from './core/pruning-loader';
 import { OsPermsDirective } from './core/directives/os-perms.directive';
 
+/**
+ * For the translation module. Loads a Custom 'translation loader' and provides it as loader.
+ * @param http Just the HttpClient to load stuff
+ */
 export function HttpLoaderFactory(http: HttpClient) {
     return new PruningTranslationLoader(http);
 }
@@ -61,7 +72,6 @@ library.add(fas);
         SiteComponent,
         StartComponent,
         ProjectorContainerComponent,
-        AlertComponent,
         OsPermsDirective
     ],
     imports: [
@@ -94,7 +104,20 @@ library.add(fas);
         }),
         AppRoutingModule
     ],
-    providers: [Title, WebsocketService],
+    providers: [
+        Title,
+        AuthGuard,
+        AuthService,
+        AutoupdateService,
+        DataStoreService,
+        OperatorService,
+        WebsocketService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AddHeaderInterceptor,
+            multi: true
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

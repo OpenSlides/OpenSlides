@@ -1,19 +1,20 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from 'app/core/models/base-model';
 
+/**
+ * Representation of user group.
+ * @ignore
+ */
 export class Group extends BaseModel {
-    static collectionString = 'users/group';
+    protected _collectionString: string;
     id: number;
     name: string;
-    permissions: string[]; //TODO permissions could be an own model?
+    permissions: string[];
 
-    constructor(id: number, name?: string, permissions?: string[]) {
-        super(id);
+    constructor(id?: number, name?: string, permissions?: string[]) {
+        super();
+        this._collectionString = 'users/group';
         this.id = id;
         this.name = name;
         this.permissions = permissions;
-    }
-
-    public getCollectionString(): string {
-        return Group.collectionString;
     }
 }

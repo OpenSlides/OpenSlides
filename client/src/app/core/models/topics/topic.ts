@@ -1,22 +1,32 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from 'app/core/models/base-model';
 
+/**
+ * Representation of a topic.
+ * @ignore
+ */
 export class Topic extends BaseModel {
-    static collectionString = 'topics/topic';
+    protected _collectionString: string;
     id: number;
-    agenda_item_id: number;
-    attachments_id: number[];
-    text: string;
     title: string;
+    text: string;
+    attachments_id: number[];
+    agenda_item_id: number;
 
-    constructor(id: number, agenda_item_id?: number, attachments_id?: number[], text?: string, title?: string) {
-        super(id);
-        this.agenda_item_id = agenda_item_id;
-        this.attachments_id = attachments_id;
-        this.text = text;
+    constructor(id?: number, title?: string, text?: string, attachments_id?: number[], agenda_item_id?: number) {
+        super();
+        this._collectionString = 'topics/topic';
+        this.id = id;
         this.title = title;
+        this.text = text;
+        this.attachments_id = attachments_id;
+        this.agenda_item_id = agenda_item_id;
     }
 
-    public getCollectionString(): string {
-        return Topic.collectionString;
+    getAttachments(): BaseModel | BaseModel[] {
+        return this.DS.get('mediafiles/mediafile', ...this.attachments_id);
+    }
+
+    getAgenda(): BaseModel | BaseModel[] {
+        return this.DS.get('agenda/item', this.agenda_item_id);
     }
 }

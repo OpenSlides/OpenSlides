@@ -1,54 +1,84 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from 'app/core/models/base-model';
+import { Speaker } from './speaker';
+import { ContentObject } from './content-object';
 
+/**
+ * Representations of agenda Item
+ * @ignore
+ */
 export class Item extends BaseModel {
-    static collectionString = 'agenda/item';
+    protected _collectionString: string;
     id: number;
-    closed: boolean;
-    comment: string;
-    content_object: Object;
-    duration: number; //time?
-    is_hidden: boolean;
     item_number: string;
-    list_view_title: string;
-    parent_id: number;
-    speaker_list_closed: boolean;
-    speakers: BaseModel[]; //we should not know users just yet
     title: string;
+    list_view_title: string;
+    comment: string;
+    closed: boolean;
     type: number;
+    is_hidden: boolean;
+    duration: number;
+    speakers: Speaker[];
+    speaker_list_closed: boolean;
+    content_object: ContentObject;
     weight: number;
+    parent_id: number;
 
     constructor(
-        id: number,
-        closed?: boolean,
-        comment?: string,
-        content_object?: Object,
-        duration?: number,
-        is_hidden?: boolean,
+        id?: number,
         item_number?: string,
-        list_view_title?: string,
-        parent_id?: number,
-        speaker_list_closed?: boolean,
-        speakers?: BaseModel[],
         title?: string,
+        list_view_title?: string,
+        comment?: string,
+        closed?: boolean,
         type?: number,
-        weight?: number
+        is_hidden?: boolean,
+        duration?: number,
+        speakers?: Speaker[],
+        speaker_list_closed?: boolean,
+        content_object?: ContentObject,
+        weight?: number,
+        parent_id?: number
     ) {
-        super(id);
-        this.comment = comment;
-        this.content_object = content_object;
-        this.duration = duration;
-        this.is_hidden = is_hidden;
+        super();
+        this._collectionString = 'agenda/item';
+        this.id = id;
         this.item_number = item_number;
-        this.list_view_title = list_view_title;
-        this.parent_id = parent_id;
-        this.speaker_list_closed = speaker_list_closed;
-        this.speakers = speakers;
         this.title = title;
+        this.list_view_title = list_view_title;
+        this.comment = comment;
+        this.closed = closed;
         this.type = type;
+        this.is_hidden = is_hidden;
+        this.duration = duration;
+        this.speakers = speakers;
+        this.speaker_list_closed = speaker_list_closed;
+        this.content_object = content_object;
         this.weight = weight;
+        this.parent_id = parent_id;
     }
 
-    public getCollectionString(): string {
-        return Item.collectionString;
+    getSpeakersAsUser(): BaseModel | BaseModel[] {
+        const speakerIds = [];
+        this.speakers.forEach(speaker => {
+            speakerIds.push(speaker.user_id);
+        });
+        return this.DS.get('users/user', ...speakerIds);
+    }
+
+    getContentObject(): BaseModel | BaseModel[] {
+        return this.DS.get(this.content_object.collection, this.content_object.id);
+    }
+
+    deserialize(input: any): this {
+        Object.assign(this, input);
+        this.content_object = new ContentObject().deserialize(input.content_object);
+
+        if (input.speakers instanceof Array) {
+            this.speakers = [];
+            input.speakers.forEach(speakerData => {
+                this.speakers.push(new Speaker().deserialize(speakerData));
+            });
+        }
+        return this;
     }
 }

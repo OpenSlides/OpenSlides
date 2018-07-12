@@ -1,28 +1,35 @@
 import { Injector } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { DataStoreService } from 'app/core/services/DS.service';
+import { OpenSlidesComponent } from './openslides.component';
 
-// provides functions that might be used by a lot of components
-export abstract class BaseComponent {
-    protected injector: Injector;
-    protected dataStore: DataStoreService;
+/**
+ * Provides functionalities that will be used by most components
+ * currently able to set the title with the suffix ' - OpenSlides 3'
+ *
+ * A BaseComponent is an OpenSlides Component.
+ * Components in the 'Side'- or 'projector' Folder are BaseComponents
+ */
+export abstract class BaseComponent extends OpenSlidesComponent {
+    /**
+     * To manipulate the browser title bar, adds the Suffix "OpenSlides 3"
+     *
+     * Might be a config variable later at some point
+     */
     private titleSuffix = ' - OpenSlides 3';
 
+    /**
+     * Child constructor that implements the titleServices and calls Super from OpenSlidesComponent
+     */
     constructor(protected titleService?: Title) {
-        // throws a warning even tho it is the new syntax. Ignored for now.
-        this.injector = Injector.create([{ provide: DataStoreService, useClass: DataStoreService, deps: [] }]);
+        super();
     }
 
-    setTitle(prefix: string) {
+    /**
+     * Set the title in web browser using angulars TitleService
+     * @param prefix The title prefix. Should be translated here.
+     * TODO Might translate the prefix here?
+     */
+    setTitle(prefix: string): void {
         this.titleService.setTitle(prefix + this.titleSuffix);
-    }
-
-    // static injection of DataStore (ds) in all child instancces of BaseComponent
-    // use this.DS[...]
-    get DS(): DataStoreService {
-        if (this.dataStore == null) {
-            this.dataStore = this.injector.get(DataStoreService);
-        }
-        return this.dataStore;
     }
 }

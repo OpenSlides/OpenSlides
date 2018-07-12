@@ -1,41 +1,78 @@
-import { BaseModel } from 'app/core/models/baseModel';
+import { BaseModel } from '../base-model';
+import { AssignmentUser } from './assignment-user';
+import { Poll } from './poll';
 
+/**
+ * Representation of an assignment.
+ * @ignore
+ */
 export class Assignment extends BaseModel {
-    static collectionString = 'assignments/assignment';
+    protected _collectionString: string;
     id: number;
-    agenda_item_id: number;
+    title: string;
     description: string;
     open_posts: number;
     phase: number;
+    assignment_related_users: AssignmentUser[];
     poll_description_default: number;
-    polls: Object[];
+    polls: Poll[];
+    agenda_item_id: number;
     tags_id: number[];
-    title: string;
 
     constructor(
-        id: number,
-        agenda_item_id?: number,
+        id?: number,
+        title?: string,
         description?: string,
         open_posts?: number,
         phase?: number,
+        assignment_related_users?: AssignmentUser[],
         poll_description_default?: number,
-        polls?: Object[],
-        tags_id?: number[],
-        title?: string
+        polls?: Poll[],
+        agenda_item_id?: number,
+        tags_id?: number[]
     ) {
-        super(id);
+        super();
+        this._collectionString = 'assignments/assignment';
         this.id = id;
-        this.agenda_item_id = agenda_item_id;
+        this.title = title;
         this.description = description;
         this.open_posts = open_posts;
         this.phase = phase;
+        this.assignment_related_users = assignment_related_users || []; //TODO Array
         this.poll_description_default = poll_description_default;
-        this.polls = polls;
+        this.polls = polls || Array(); // TODO Array
+        this.agenda_item_id = agenda_item_id;
         this.tags_id = tags_id;
-        this.title = title;
     }
 
-    public getCollectionString(): string {
-        return Assignment.collectionString;
+    getAssignmentReleatedUsers(): BaseModel | BaseModel[] {
+        const userIds = [];
+        this.assignment_related_users.forEach(user => {
+            userIds.push(user.user_id);
+        });
+        return this.DS.get('users/user', ...userIds);
+    }
+
+    getTags(): BaseModel | BaseModel[] {
+        return this.DS.get('core/tag', ...this.tags_id);
+    }
+
+    deserialize(input: any): this {
+        Object.assign(this, input);
+
+        if (input.assignment_related_users instanceof Array) {
+            this.assignment_related_users = [];
+            input.assignment_related_users.forEach(assignmentUserData => {
+                this.assignment_related_users.push(new AssignmentUser().deserialize(assignmentUserData));
+            });
+        }
+
+        if (input.polls instanceof Array) {
+            this.polls = [];
+            input.polls.forEach(pollData => {
+                this.polls.push(new Poll().deserialize(pollData));
+            });
+        }
+        return this;
     }
 }

@@ -1,23 +1,25 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, BehaviorSubject } from 'rxjs';
-import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { tap, catchError, share } from 'rxjs/operators';
-import { BaseComponent } from 'app/base.component';
+import { OpenSlidesComponent } from 'app/openslides.component';
 import { Group } from 'app/core/models/users/group';
 
-// TODO: Dry
-const httpOptions = {
-    withCredentials: true,
-    headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-    })
-};
-
+/**
+ * The operator represents the user who is using OpenSlides.
+ *
+ * Information is mostly redundant to user but has different purposes.
+ * Changes in operator can be observed, directives do so on order to show
+ * or hide certain information.
+ *
+ * Could extend User?
+ *
+ * The operator is an {@link OpenSlidesComponent}.
+ */
 @Injectable({
     providedIn: 'root'
 })
-export class OperatorService extends BaseComponent {
-    // default variables
+export class OperatorService extends OpenSlidesComponent {
     about_me: string;
     comment: string;
     default_password: string;
@@ -35,11 +37,23 @@ export class OperatorService extends BaseComponent {
     title: string;
     username: string;
     logged_in: boolean;
-    // subject
+
+    /**
+     * The subject that can be observed by other instances using observing functions.
+     */
     private operatorSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-    // real groups, once they arrived in datastore
+
+    /**
+     * Representation of the {@link Group}s that the operator has (in contrast the the `groups_id`-Array)
+     *
+     * The operator observes the dataStore (compare {@link OpenSlidesComponent} in Order to know it's groups)
+     */
     private groups: Group[] = new Array();
 
+    /**
+     * Recreates the operator from localStorage if it's found and starts to observe the dataStore.
+     * @param http HttpClient
+     */
     constructor(private http: HttpClient) {
         super();
 
@@ -56,9 +70,11 @@ export class OperatorService extends BaseComponent {
         this.observeDataStore();
     }
 
-    // calls 'whoami' to find out the operator
+    /**
+     * calls `/users/whoami` to find out the real operator
+     */
     public whoAmI(): Observable<any> {
-        return this.http.get<any>('/users/whoami/', httpOptions).pipe(
+        return this.http.get<any>('/users/whoami/').pipe(
             tap(whoami => {
                 if (whoami && whoami.user) {
                     this.storeUser(whoami.user);
@@ -68,6 +84,10 @@ export class OperatorService extends BaseComponent {
         );
     }
 
+    /**
+     * Store the user Information in the operator, the localStorage and update the Observable
+     * @param user usually a http response that represents a user.
+     */
     public storeUser(user: any): void {
         // store in file
         this.about_me = user.about_me;
@@ -87,11 +107,18 @@ export class OperatorService extends BaseComponent {
         this.title = user.title;
         this.username = user.username;
         // also store in localstorrage
-        this.updateLocalStorrage();
+        this.updateLocalStorage();
         // update mode to inform observers
-        this.updateMode();
+        this.setObservable(this.getUpdateObject());
     }
 
+    /**
+     * Removes all stored information about the Operator.
+     *
+     * The Opposite of StoreUser. Usually a `logout()`-function.
+     * Also removes the operator from localStorrage and
+     * updates the observable.
+     */
     public clear() {
         this.about_me = null;
         this.comment = null;
@@ -109,19 +136,25 @@ export class OperatorService extends BaseComponent {
         this.structure_level = null;
         this.title = null;
         this.username = null;
-        this.updateMode();
+        this.setObservable(this.getUpdateObject());
         localStorage.removeItem('operator');
     }
 
-    private updateLocalStorrage(): void {
+    /**
+     * Saves the operator in the localStorage for easier and faster re-login
+     *
+     * This is a mere comfort feature, even if the operator can be recreated
+     * it has to pass `this.whoAmI()` during page access.
+     */
+    private updateLocalStorage(): void {
         localStorage.setItem('operator', JSON.stringify(this.getUpdateObject()));
-        console.log('update local storrage: groups: ', this.groups_id);
     }
 
-    private updateMode(): void {
-        this.setObservable(this.getUpdateObject());
-    }
-
+    /**
+     * Returns the current operator.
+     *
+     * Used to save the operator in localStorage or inform observers.
+     */
     private getUpdateObject(): any {
         return {
             about_me: this.about_me,
@@ -144,10 +177,12 @@ export class OperatorService extends BaseComponent {
         };
     }
 
-    // observe dataStore to set groups once they are there
-    // TODO logic to remove groups / user from certain groups
+    /**
+     * Observe dataStore to set groups once they are loaded.
+     *
+     * TODO logic to remove groups / user from certain groups. Currently is is only set and was never removed
+     */
     private observeDataStore(): void {
-        console.log('Operator observes DataStore');
         this.DS.getObservable().subscribe(newModel => {
             if (newModel instanceof Group) {
                 this.addGroup(newModel);
@@ -155,9 +190,15 @@ export class OperatorService extends BaseComponent {
         });
     }
 
-    // read out the Groups from the DataStore by the operators 'groups_id'
-    // requires that the DataStore has been setup (websocket.service)
-    // requires that the whoAmI did return a valid operator
+    /**
+     * Read out the Groups from the DataStore by the operators 'groups_id'
+     *
+     * requires that the DataStore has been setup (websocket.service)
+     * requires that the whoAmI did return a valid operator
+     *
+     * This is the normal behavior after a fresh login, everythin else can
+     * be done by observers.
+     */
     public readGroupsFromStore(): void {
         this.DS.filter(Group, myGroup => {
             if (this.groups_id.includes(myGroup.id)) {
@@ -166,33 +207,40 @@ export class OperatorService extends BaseComponent {
         });
     }
 
+    /**
+     * Returns the behaviorSubject as an observable.
+     *
+     * Services an components can use it to get informed when something changes in
+     * the operator
+     */
     public getObservable() {
         return this.operatorSubject.asObservable();
     }
 
+    /**
+     * Inform all observers about changes
+     * @param value
+     */
     private setObservable(value) {
         this.operatorSubject.next(value);
     }
 
+    /**
+     * Getter for the (real) {@link Group}s
+     */
     public getGroups() {
         return this.groups;
     }
 
-    // if the operator has the corresponding ID, set the group
+    /**
+     * if the operator has the corresponding ID, set the group
+     * @param newGroup potential group that the operator has.
+     */
     private addGroup(newGroup: Group): void {
-        if (this.groups_id.includes(newGroup.id)) {
+        if (this.groups_id.includes(newGroup.id as number)) {
             this.groups.push(newGroup);
             // inform the observers about new groups (appOsPerms)
-            console.log('pushed a group into operator');
             this.setObservable(newGroup);
         }
-    }
-
-    // TODO Dry
-    private handleError<T>() {
-        return (error: any): Observable<T> => {
-            console.error(error);
-            return of(error);
-        };
     }
 }
