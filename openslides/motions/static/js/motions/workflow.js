@@ -37,10 +37,11 @@ angular.module('OpenSlidesApp.motions.workflow', [])
     'MotionState',
     'workflowId',
     'ngDialog',
+    'gettext',
     'gettextCatalog',
     'ErrorMessage',
     function ($scope, $sessionStorage, permissions, Workflow, MotionState, workflowId,
-        ngDialog, gettextCatalog, ErrorMessage) {
+        ngDialog, gettext, gettextCatalog, ErrorMessage) {
         $scope.permissions = permissions;
         $scope.alert = {};
 
@@ -56,29 +57,29 @@ angular.module('OpenSlidesApp.motions.workflow', [])
 
         $scope.booleanMembers = [
             {name: 'allow_support',
-             displayName: 'Allow support',},
+             displayName: gettext('Allow support'),},
             {name: 'allow_create_poll',
-             displayName: 'Allow create poll',},
+             displayName: gettext('Allow create poll'),},
             {name: 'allow_submitter_edit',
-             displayName: 'Allow submitter edit',},
+             displayName: gettext('Allow submitter edit'),},
             {name: 'versioning',
-             displayName: 'Versioning',},
+             displayName: gettext('Versioning'),},
             {name: 'leave_old_version_active',
-             displayName: 'Leave old version active',},
+             displayName: gettext('Leave old version active'),},
             {name: 'dont_set_identifier',
-             displayName: 'Set identifier',
+             displayName: gettext('Set identifier'),
              inverse: true,},
             {name: 'show_state_extension_field',
-             displayName: 'Show state extension field',},
+             displayName: gettext('Show state extension field'),},
             {name: 'show_recommendation_extension_field',
-             displayName: 'Show recommendation extension field',}
+             displayName: gettext('Show recommendation extension field'),}
         ];
         $scope.cssClasses = {
-            'danger': 'Red',
-            'success': 'Green',
-            'warning': 'Yellow',
-            'default': 'Grey',
-            'primary': 'Blue',
+            'danger': gettext('Red'),
+            'success': gettext('Green'),
+            'warning': gettext('Yellow'),
+            'default': gettext('Grey'),
+            'primary': gettext('Blue'),
         };
         $scope.getPermissionDisplayName = function (permission) {
             if (permission) {

@@ -135,7 +135,7 @@
           <span uib-dropdown>
             <span id="dropdownCssClass{{ state.id }}" class="pointer" uib-dropdown-toggle>
               <span class="label" ng-class="'label-' + state.css_class">
-                {{ cssClasses[state.css_class] }}
+                {{ cssClasses[state.css_class] | translate }}
               </span>
               <i class="fa fa-cog" ng-if="tdHover"></i>
             </span>
@@ -183,7 +183,7 @@
           <b translate>Next states</b>
         </td>
         <td ng-repeat="state in workflow.states" ng-mouseover="tdHover=true" ng-mouseleave="tdHover=false">
-          <span ng-if="state.getNextStates().length === 0" class="text-muted" translate>
+          <span ng-if="state.getNextStates().length === 0" class="text-muted">
             &mdash;
           </span>
           <div class="no-overflow">
