@@ -101,11 +101,42 @@ class WorkflowSerializer(ModelSerializer):
     Serializer for motion.models.Workflow objects.
     """
     states = StateSerializer(many=True, read_only=True)
-    first_state = PrimaryKeyRelatedField(read_only=True)
+    # The first_state is checked in the update() method
+    first_state = PrimaryKeyRelatedField(queryset=State.objects.all(), required=False)
 
     class Meta:
         model = Workflow
         fields = ('id', 'name', 'states', 'first_state',)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        """
+        Customized create method. Creating a new workflow does always create a
+        new state which is used as first state.
+        """
+        workflow = super().create(validated_data)
+        first_state = State.objects.create(
+            name='new',
+            action_word='new',
+            workflow=workflow,
+            allow_create_poll=True,
+            allow_support=True,
+            allow_submitter_edit=True
+        )
+        workflow.first_state = first_state
+        workflow.save()
+        return workflow
+
+    @transaction.atomic
+    def update(self, workflow, validated_data):
+        """
+        Check, if the first state is in the right workflow.
+        """
+        first_state = validated_data.get('first_state')
+        if first_state is not None:
+            if workflow.pk != first_state.workflow.pk:
+                raise ValidationError({'detail': 'You cannot select a state which is not in the workflow as the first state.'})
+        return super().update(workflow, validated_data)
 
 
 class MotionCommentsJSONSerializerField(Field):

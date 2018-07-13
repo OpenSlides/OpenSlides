@@ -1,0 +1,29 @@
+<h1 ng-if="workflow" translate>Edit name</h1>
+<h1 ng-if="!workflow" translate>Create new workflow</h1>
+<div uib-alert ng-show="alert.show" class="alert-danger" ng-click="alert={}" close="alert={}">
+  {{ alert.msg }}
+</div>
+
+<form name="workflowForm" ng-submit="save()">
+<label for="name_1">
+  <span ng-if="workflow" translate>
+    Please enter a new workflow name:
+  </span>
+  <span ng-if="!workflow" translate>
+    Please enter a name for the new workflow:
+  </span>
+</label>
+<div>
+  <div>
+    <input class="form-control" id="name_1" type="text" ng-model="newName">
+  </div>
+  <div class="spacer-top-lg">
+    <button type="submit" ng-disabled="newName == ''" class="btn btn-primary" translate>
+      Save
+    </button>
+    <button ng-click="closeThisDialog()" class="btn btn-default" translate>
+      Cancel
+    </button>
+  </div>
+</div>
+</form>

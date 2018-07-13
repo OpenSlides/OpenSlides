@@ -83,7 +83,7 @@ class Motion(RESTModelMixin, models.Model):
     state = models.ForeignKey(
         'State',
         related_name='+',
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,  # Do not let the user delete states, that are used for motions
         null=True)  # TODO: Check whether null=True is necessary.
     """
     The related state object.
@@ -1196,7 +1196,7 @@ class State(RESTModelMixin, models.Model):
     name = models.CharField(max_length=255)
     """A string representing the state."""
 
-    action_word = models.CharField(max_length=255)
+    action_word = models.CharField(max_length=255, blank=True)
     """An alternative string to be used for a button to switch to this state."""
 
     recommendation_label = models.CharField(max_length=255, null=True)
@@ -1208,7 +1208,7 @@ class State(RESTModelMixin, models.Model):
         related_name='states')
     """A many-to-one relation to a workflow."""
 
-    next_states = models.ManyToManyField('self', symmetrical=False)
+    next_states = models.ManyToManyField('self', symmetrical=False, blank=True)
     """A many-to-many relation to all states, that can be choosen from this state."""
 
     css_class = models.CharField(max_length=255, default='primary')
@@ -1338,7 +1338,8 @@ class Workflow(RESTModelMixin, models.Model):
         State,
         on_delete=models.SET_NULL,
         related_name='+',
-        null=True)
+        null=True,
+        blank=True)
     """A one-to-one relation to a state, the starting point for the workflow."""
 
     class Meta:

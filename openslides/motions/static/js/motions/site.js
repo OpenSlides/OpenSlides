@@ -10,6 +10,7 @@ angular.module('OpenSlidesApp.motions.site', [
     'OpenSlidesApp.motions.docx',
     'OpenSlidesApp.motions.pdf',
     'OpenSlidesApp.motions.csv',
+    'OpenSlidesApp.motions.workflow',
 ])
 
 .config([
@@ -188,6 +189,24 @@ angular.module('OpenSlidesApp.motions.site', [
                         });
                     }
                 ],
+            })
+            // Workflows and states
+            .state('motions.workflow', {
+                url: '/workflow',
+                abstract: true,
+                template: '<ui-view/>',
+                data: {
+                    title: gettext('Workflows'),
+                    basePerm: 'motions.can_manage',
+                },
+            })
+            .state('motions.workflow.list', {})
+            .state('motions.workflow.detail', {
+                resolve: {
+                    workflowId: ['$stateParams', function($stateParams) {
+                        return $stateParams.id;
+                    }],
+                }
             });
     }
 ])
@@ -2216,8 +2235,21 @@ angular.module('OpenSlidesApp.motions.site', [
             $scope.model.motion_block_id = parentMotion.motion_block_id;
             Motion.bindOne($scope.model.parent_id, $scope, 'parent');
         }
-        // ... preselect default workflow
-        $scope.model.workflow_id = Config.get('motions_workflow').value;
+        // ... preselect default workflow if exist
+        var workflow = Workflow.get(Config.get('motions_workflow').value);
+        if (!workflow) {
+            workflow = _.first(Workflow.getAll());
+        }
+        if (workflow) {
+            $scope.model.workflow_id = workflow.id;
+        } else {
+            $scope.alert = {
+                type: 'danger',
+                msg: gettextCatalog.getString('No workflows exists. You will not ' +
+                    'be able to create a motion.'),
+                show: true,
+            };
+        }
 
         // get all form fields
         $scope.formFields = MotionForm.getFormFields(true, isParagraphBasedAmendment);

@@ -41,9 +41,9 @@
           <strong>{{ category.name }}</strong>
           <div class="hoverActions" ng-class="{'hiddenDiv': !category.hover}">
             <!-- sort -->
-            <a ui-sref="motions.category.sort({ id: category.id })" translate>Sort</a> |
+            <a ui-sref="motions.category.sort({ id: category.id })" translate>Sort</a> &middot;
             <!-- edit -->
-            <a href="" ng-click="editOrCreate(category)" translate>Edit</a> |
+            <a href="" ng-click="editOrCreate(category)" translate>Edit</a> &middot;
             <!-- delete -->
             <a href="" class="text-danger"
               ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>

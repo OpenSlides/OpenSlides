@@ -10,19 +10,16 @@ angular.module('OpenSlidesApp.motions', [
     'OpenSlidesApp.users',
 ])
 
-.factory('WorkflowState', [
+.factory('MotionState', [
     'DS',
     function (DS) {
         return DS.defineResource({
-            name: 'motions/workflowstate',
+            name: 'motions/state',
             methods: {
                 getNextStates: function () {
-                    // TODO: Use filter with params with operator 'in'.
-                    var states = [];
-                    _.forEach(this.next_states_id, function (stateId) {
-                        states.push(DS.get('motions/workflowstate', stateId));
+                    return _.map(this.next_states_id, function (stateId) {
+                        return DS.get('motions/state', stateId);
                     });
-                    return states;
                 },
                 getRecommendations: function () {
                     var params = {
@@ -35,22 +32,34 @@ angular.module('OpenSlidesApp.motions', [
                             }
                         }
                     };
-                    return DS.filter('motions/workflowstate', params);
+                    return DS.filter('motions/state', params);
                 }
-            }
+            },
+            relations: {
+                hasOne: {
+                    'motions/workflow': {
+                        localField: 'workflow',
+                        localKey: 'workflow_id',
+                    }
+                }
+            },
         });
     }
 ])
 
 .factory('Workflow', [
     'DS',
-    'WorkflowState',
-    function (DS, WorkflowState) {
+    function (DS) {
         return DS.defineResource({
             name: 'motions/workflow',
+            methods: {
+                getFirstState: function () {
+                    return DS.get('motions/state', this.first_state);
+                },
+            },
             relations: {
                 hasMany: {
-                    'motions/workflowstate': {
+                    'motions/state': {
                         localField: 'states',
                         foreignKey: 'workflow_id',
                     }
@@ -1212,7 +1221,7 @@ angular.module('OpenSlidesApp.motions', [
                     },
                 },
                 hasOne: {
-                    'motions/workflowstate': [
+                    'motions/state': [
                         {
                             localField: 'state',
                             localKey: 'state_id',
@@ -1523,9 +1532,10 @@ angular.module('OpenSlidesApp.motions', [
     'Motion',
     'Category',
     'Workflow',
+    'MotionState',
     'MotionChangeRecommendation',
     'Submitter',
-    function(Motion, Category, Workflow, MotionChangeRecommendation, Submitter) {}
+    function(Motion, Category, Workflow, MotionState, MotionChangeRecommendation, Submitter) {}
 ])
 
 

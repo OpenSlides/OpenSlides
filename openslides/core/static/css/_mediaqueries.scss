@@ -30,15 +30,18 @@
 
     #nav .navbar li a { padding: 24px 5px; }
 
-    #groups-table .perm-head {
+    #multi-table .info-head {
         width: 200px;
+        &.small {
+            width: 250px;
+        }
     }
 
-    /* hide text in groups-table earlier */
-    #groups-table .optional { display: none; }
+    /* hide text in multi-table earlier */
+    #multi-table .optional { display: none; }
 
     /* show replacement elements, if any */
-    #groups-table .optional-show { display: block !important; }
+    #multi-table .optional-show { display: block !important; }
 
     /* hide searchbar input */
     #nav .searchbar input { display: none !important; }
@@ -99,8 +102,11 @@
         width: 100%;
     }
 
-    #groups-table .perm-head {
+    #multi-table .info-head {
         width: 150px;
+        &.small {
+            width: 100px;
+        }
     }
 
     .personalNoteFixed {

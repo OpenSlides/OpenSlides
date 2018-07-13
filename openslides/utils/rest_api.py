@@ -7,7 +7,11 @@ from rest_framework.decorators import detail_route, list_route  # noqa
 from rest_framework.metadata import SimpleMetadata  # noqa
 from rest_framework.mixins import ListModelMixin as _ListModelMixin
 from rest_framework.mixins import RetrieveModelMixin as _RetrieveModelMixin
-from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin  # noqa
+from rest_framework.mixins import (  # noqa
+    CreateModelMixin,
+    DestroyModelMixin,
+    UpdateModelMixin,
+)
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.serializers import ModelSerializer as _ModelSerializer

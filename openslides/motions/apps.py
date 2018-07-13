@@ -29,6 +29,7 @@ class MotionsAppConfig(AppConfig):
             MotionBlockViewSet,
             MotionPollViewSet,
             MotionChangeRecommendationViewSet,
+            StateViewSet,
             WorkflowViewSet,
         )
 
@@ -55,6 +56,7 @@ class MotionsAppConfig(AppConfig):
         router.register(self.get_model('MotionChangeRecommendation').get_collection_string(),
                         MotionChangeRecommendationViewSet)
         router.register(self.get_model('MotionPoll').get_collection_string(), MotionPollViewSet)
+        router.register(self.get_model('State').get_collection_string(), StateViewSet)
 
     def get_startup_elements(self):
         """
