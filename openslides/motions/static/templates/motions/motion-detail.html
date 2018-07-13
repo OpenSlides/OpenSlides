@@ -555,6 +555,15 @@
           <div ng-bind-html="motion.getTextByMode('agreed', version, highlight) | trusted"
                class="motion-text motion-text-changed line-numbers-{{ lineNumberMode }}"></div>
 
+          <div style="text-align: right;" ng-if="(change_recommendations | filter:{motion_version_id:version}:true).length > 0">
+            <button class="btn btn-default"
+                    ng-bootbox-confirm="{{ 'Do you want to copy the final version to the modified final version field?' | translate }}"
+                    ng-bootbox-confirm-action="viewChangeRecommendations.copyToModifiedFinalVersion(motion, version)">
+              <i class="fa fa-file-text"></i>
+              <translate>Copy to modified final version</translate>
+            </button>
+          </div>
+
           <div style="text-align: right;" ng-if="motion.state.versioning && (change_recommendations | filter:{motion_version_id:version}:true).length > 0">
             <button class="btn btn-default"
                     ng-bootbox-confirm="{{ 'Do you want to create a new version of this motion based on this changes?' | translate }}"
@@ -564,6 +573,10 @@
             </button>
           </div>
         </div>
+
+        <!-- modified agreed view -->
+        <ng-include src="'static/templates/motions/motion-detail/view-modified-agreed.html'"></ng-include>
+
       </div>
     </div>
 

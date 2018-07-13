@@ -322,7 +322,8 @@ angular.module('OpenSlidesApp.motions', [
                     if (titleChange) {
                         if (changeRecommendationMode === "changed") {
                             title = titleChange.text;
-                        } else if (changeRecommendationMode === 'agreed' && !titleChange.rejected) {
+                        } else if ((changeRecommendationMode === 'agreed' ||
+                                changeRecommendationMode === 'modified_agreed') && !titleChange.rejected) {
                             title = titleChange.text;
                         } else {
                             title = this.getTitle();
@@ -348,6 +349,12 @@ angular.module('OpenSlidesApp.motions', [
                         html = this.getVersion(versionId).text;
 
                     return lineNumberingService.insertLineNumbers(html, lineLength, highlight, callback);
+                },
+                getModifiedFinalVersionWithLineBreaks: function (versionId) {
+                    var lineLength = Config.get('motions_line_length').value,
+                        html = this.getVersion(versionId).modified_final_version;
+
+                    return lineNumberingService.insertLineNumbers(html, lineLength);
                 },
                 getTextBetweenChanges: function (versionId, change1, change2, highlight) {
                     var line_from = (change1 ? change1.line_to : 1),
@@ -490,7 +497,7 @@ angular.module('OpenSlidesApp.motions', [
                 },
                 getTextByMode: function(mode, versionId, highlight, lineBreaks) {
                     /*
-                     * @param mode ['original', 'diff', 'changed', 'agreed']
+                     * @param mode ['original', 'diff', 'changed', 'agreed', 'modified_agreed']
                      * @param versionId [if undefined, active_version will be used]
                      * @param highlight [the line number to highlight]
                      * @param lineBreaks [if line numbers / breaks should be included in the result]
@@ -546,6 +553,17 @@ angular.module('OpenSlidesApp.motions', [
                             break;
                         case 'agreed':
                             text = this.getTextWithAgreedChanges(versionId, highlight, lineBreaks);
+                            break;
+                        case 'modified_agreed':
+                            text = this.getModifiedFinalVersion(versionId);
+                            if (text) {
+                                // Insert line numbers
+                                var lineLength = Config.get('motions_line_length').value;
+                                text = lineNumberingService.insertLineNumbers(text, lineLength);
+                            } else {
+                                // Use the agreed version as fallback
+                                text = this.getTextByMode('agreed', versionId, highlight, lineBreaks);
+                            }
                             break;
                     }
                     return text;
@@ -854,6 +872,17 @@ angular.module('OpenSlidesApp.motions', [
                 },
                 setTextStrippingLineBreaks: function (text) {
                     this.text = lineNumberingService.stripLineNumbers(text);
+                },
+                setModifiedFinalVersionStrippingLineBreaks: function (html) {
+                    this.modified_final_version = lineNumberingService.stripLineNumbers(html);
+                },
+                // Copies to final version to the modified_final_version field
+                copyModifiedFinalVersionStrippingLineBreaks: function () {
+                    var finalVersion = this.getTextByMode('agreed');
+                    this.setModifiedFinalVersionStrippingLineBreaks(finalVersion);
+                },
+                getModifiedFinalVersion: function (versionId) {
+                    return this.getVersion(versionId).modified_final_version;
                 },
                 getReason: function (versionId) {
                     return this.getVersion(versionId).reason;
@@ -1457,6 +1486,7 @@ angular.module('OpenSlidesApp.motions', [
                         // Properties that are guaranteed to be constant
                         this._change_object = {
                             "type": "recommendation",
+                            "other_description": recommendation.other_description,
                             "id": "recommendation-" + recommendation.id,
                             "original": recommendation,
                             "saveStatus": function () {

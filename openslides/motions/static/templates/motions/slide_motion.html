@@ -140,6 +140,12 @@
           class="motion-text motion-text-changed line-numbers-{{ config('motions_default_line_numbering') }}"></div>
       </div>
 
+      <!-- Modified agreed View -->
+      <div ng-if="mode == 'modified_agreed'">
+        <div ng-bind-html="motion.getTextByMode('modified_agreed', null, line) | trusted"
+          class="motion-text motion-text-changed line-numbers-{{ config('motions_default_line_numbering') }}"></div>
+      </div>
+
       <!-- Reason -->
       <div ng-if="motion.getReason() && !config('motions_disable_reason_on_projector')">
         <h3 translate>Reason</h3>

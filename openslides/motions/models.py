@@ -214,9 +214,10 @@ class Motion(RESTModelMixin, models.Model):
             * Else the given version is used.
 
         To create and use a new version object, you have to set it via the
-        use_version argument. You have to set the title, text/amendment_paragraphs and reason into
-        this version object before giving it to this save method. The properties
-        motion.title, motion.text, motion.amendment_paragraphs and motion.reason will be ignored.
+        use_version argument. You have to set the title, text/amendment_paragraphs,
+        modified final version and reason into this version object before giving it
+        to this save method. The properties motion.title, motion.text,
+        motion.amendment_paragraphs, motion.modified_final_version and motion.reason will be ignored.
 
         text and amendment_paragraphs are mutually exclusive; if both are given,
         amendment_paragraphs takes precedence.
@@ -264,8 +265,8 @@ class Motion(RESTModelMixin, models.Model):
             return
         elif use_version is None:
             use_version = self.get_last_version()
-            # Save title, text, amendment paragraphs and reason into the version object.
-            for attr in ['title', 'text', 'amendment_paragraphs', 'reason']:
+            # Save title, text, amendment paragraphs, modified final version and reason into the version object.
+            for attr in ['title', 'text', 'amendment_paragraphs', 'modified_final_version', 'reason']:
                 _attr = '_%s' % attr
                 data = getattr(self, _attr, None)
                 if data is not None:
@@ -318,7 +319,8 @@ class Motion(RESTModelMixin, models.Model):
         """
         Compare the version with the last version of the motion.
 
-        Returns True if the version data (title, text, reason) is different,
+        Returns True if the version data (title, text, amendment_paragraphs,
+        modified_final_version, reason) is different,
         else returns False.
         """
         if not self.versions.exists():
@@ -326,7 +328,7 @@ class Motion(RESTModelMixin, models.Model):
             return True
 
         last_version = self.get_last_version()
-        for attr in ['title', 'text', 'amendment_paragraphs', 'reason']:
+        for attr in ['title', 'text', 'amendment_paragraphs', 'modified_final_version', 'reason']:
             if getattr(last_version, attr) != getattr(version, attr):
                 return True
         return False
@@ -494,6 +496,32 @@ class Motion(RESTModelMixin, models.Model):
     Is saved in a MotionVersion object.
     """
 
+    def get_modified_final_version(self):
+        """
+        Get the modified_final_version of the motion.
+
+        Simular to get_title().
+        """
+        try:
+            return self._modified_final_version
+        except AttributeError:
+            return self.get_active_version().modified_final_version
+
+    def set_modified_final_version(self, modified_final_version):
+        """
+        Set the modified_final_version of the motion.
+
+        Simular to set_title().
+        """
+        self._modified_final_version = modified_final_version
+
+    modified_final_version = property(get_modified_final_version, set_modified_final_version)
+    """
+    The modified_final_version for the motion.
+
+    Is saved in a MotionVersion object.
+    """
+
     def get_reason(self):
         """
         Get the reason of the motion.
@@ -525,8 +553,9 @@ class Motion(RESTModelMixin, models.Model):
         Return a version object, not saved in the database.
 
         The version data of the new version object is populated with the data
-        set via motion.title, motion.text, motion.amendment_paragraphs and motion.reason if these data are
-        not given as keyword arguments. If the data is not set in the motion
+        set via motion.title, motion.text, motion.amendment_paragraphs,
+        motion.modified_final_version and motion.reason if these data are not
+        given as keyword arguments. If the data is not set in the motion
         attributes, it is populated with the data from the last version
         object if such object exists.
         """
@@ -539,7 +568,7 @@ class Motion(RESTModelMixin, models.Model):
             last_version = self.get_last_version()
         else:
             last_version = None
-        for attr in ['title', 'text', 'amendment_paragraphs', 'reason']:
+        for attr in ['title', 'text', 'amendment_paragraphs', 'modified_final_version', 'reason']:
             if attr in kwargs:
                 continue
             _attr = '_%s' % attr
@@ -839,6 +868,9 @@ class MotionVersion(RESTModelMixin, models.Model):
     If the entry is a string, this is the new text of the paragraph.
     amendment_paragraphs and text are mutually exclusive.
     """
+
+    modified_final_version = models.TextField(null=True, blank=True)
+    """A field to copy in the final version of the motion and edit it there."""
 
     reason = models.TextField(null=True, blank=True)
     """The reason for a motion."""
