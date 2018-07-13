@@ -2119,7 +2119,8 @@ angular.module('OpenSlidesApp.core.site', [
         gettext('List of speakers overlay');
         gettext('Projector logo');
         gettext('Projector header image');
-        gettext('PDF header logo');
+        gettext('PDF header logo (Left)');
+        gettext('PDF header logo (Right)');
         gettext('PDF footer logo');
         gettext('Web interface header logo');
         gettext('PDF ballot paper logo');
