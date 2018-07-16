@@ -54,7 +54,7 @@ angular.module('OpenSlidesApp.motions', [
             name: 'motions/workflow',
             methods: {
                 getFirstState: function () {
-                    return DS.get('motions/state', this.first_state);
+                    return DS.get('motions/state', this.first_state_id);
                 },
             },
             relations: {
