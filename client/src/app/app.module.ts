@@ -1,54 +1,18 @@
 // angular modules
-import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HttpClientXsrfModule } from '@angular/common/http';
 
-// MaterialUI modules
-import {
-    MatButtonModule,
-    MatCheckboxModule,
-    MatToolbarModule,
-    MatCardModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatSidenavModule,
-    MatSnackBarModule
-} from '@angular/material';
-import { MatListModule } from '@angular/material/list';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatMenuModule } from '@angular/material/menu';
-
-// FontAwesome modules
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-
-// App components and services
-import { AppComponent } from './app.component';
-import { LoginComponent } from './site/login/login.component';
+// Elementary App Components
 import { AppRoutingModule } from './app-routing.module';
-import { ProjectorComponent } from './projector-container/projector/projector.component';
-import { MotionsComponent } from './site/motions/motions.component';
-import { AgendaComponent } from './site/agenda/agenda.component';
-import { SiteComponent } from './site/site.component';
-import { StartComponent } from './site/start/start.component';
-import { AddHeaderInterceptor } from './core/http-interceptor';
-import { ProjectorContainerComponent } from './projector-container/projector-container.component';
-
-// Root Services
-import { AuthGuard } from './core/services/auth-guard.service';
-import { AuthService } from './core/services/auth.service';
-import { AutoupdateService } from './core/services/autoupdate.service';
-import { DataStoreService } from './core/services/dataStore.service';
-import { OperatorService } from './core/services/operator.service';
-import { WebsocketService } from './core/services/websocket.service';
+import { AppComponent } from './app.component';
+import { CoreModule } from './core/core.module';
 
 // translation module.
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { PruningTranslationLoader } from './core/pruning-loader';
-import { OsPermsDirective } from './core/directives/os-perms.directive';
+import { LoginModule } from './site/login/login.module';
 
 /**
  * For the translation module. Loads a Custom 'translation loader' and provides it as loader.
@@ -57,23 +21,11 @@ import { OsPermsDirective } from './core/directives/os-perms.directive';
 export function HttpLoaderFactory(http: HttpClient) {
     return new PruningTranslationLoader(http);
 }
-
-//add font-awesome icons to library.
-//will blow up the code.
-library.add(fas);
-
+/**
+ * Global App Module. Keep it as clean as possible.
+ */
 @NgModule({
-    declarations: [
-        AppComponent,
-        LoginComponent,
-        ProjectorComponent,
-        MotionsComponent,
-        AgendaComponent,
-        SiteComponent,
-        StartComponent,
-        ProjectorContainerComponent,
-        OsPermsDirective
-    ],
+    declarations: [AppComponent],
     imports: [
         BrowserModule,
         HttpClientModule,
@@ -81,20 +33,7 @@ library.add(fas);
             cookieName: 'OpenSlidesCsrfToken',
             headerName: 'X-CSRFToken'
         }),
-        FormsModule,
-        BrowserAnimationsModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatToolbarModule,
-        MatCardModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        MatSidenavModule,
-        MatListModule,
-        MatExpansionModule,
-        MatMenuModule,
-        MatSnackBarModule,
-        FontAwesomeModule,
+        BrowserAnimationsModule, //TODO
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
@@ -102,21 +41,9 @@ library.add(fas);
                 deps: [HttpClient]
             }
         }),
-        AppRoutingModule
-    ],
-    providers: [
-        Title,
-        AuthGuard,
-        AuthService,
-        AutoupdateService,
-        DataStoreService,
-        OperatorService,
-        WebsocketService,
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AddHeaderInterceptor,
-            multi: true
-        }
+        AppRoutingModule,
+        CoreModule,
+        LoginModule
     ],
     bootstrap: [AppComponent]
 })

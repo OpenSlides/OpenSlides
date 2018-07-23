@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AutoupdateService } from 'app/core/services/autoupdate.service';
-import { OperatorService } from 'app/core/services/operator.service';
 
 /**
  * Angular's global App Component
@@ -18,11 +16,7 @@ export class AppComponent {
      * @param autoupdate
      * @param translate
      */
-    constructor(
-        private operator: OperatorService,
-        private autoupdate: AutoupdateService,
-        private translate: TranslateService
-    ) {
+    constructor(private translate: TranslateService) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'fr']);
         // this language will be used as a fallback when a translation isn't found in the current language

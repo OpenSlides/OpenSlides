@@ -4,7 +4,7 @@ import { Observable, of, BehaviorSubject } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 
 import { ImproperlyConfiguredError } from 'app/core/exceptions';
-import { BaseModel, ModelId } from 'app/core/models/base-model';
+import { BaseModel, ModelId } from 'app/shared/models/base.model';
 
 /**
  * represents a collection on the Django server, uses an ID to access a {@link BaseModel}.
