@@ -6,8 +6,7 @@ import { TranslateService } from '@ngx-translate/core'; //showcase
 
 // for testing the DS and BaseModel
 import { OperatorService } from 'app/core/services/operator.service';
-import { User } from 'app/core/models/users/user';
-import { Group } from 'app/core/models/users/group';
+import { User } from 'app/shared/models/users/user';
 
 @Component({
     selector: 'app-start',

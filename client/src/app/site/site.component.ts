@@ -5,8 +5,6 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
 import { AuthService } from 'app/core/services/auth.service';
 import { AutoupdateService } from 'app/core/services/autoupdate.service';
 import { OperatorService } from 'app/core/services/operator.service';
-import { Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 import { TranslateService } from '@ngx-translate/core'; //showcase
 import { BaseComponent } from 'app/base.component';

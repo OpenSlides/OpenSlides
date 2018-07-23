@@ -3,24 +3,24 @@ import { Injectable } from '@angular/core';
 import { OpenSlidesComponent } from 'app/openslides.component';
 import { WebsocketService } from './websocket.service';
 // the Models
-import { Item } from 'app/core/models/agenda/item';
-import { Assignment } from 'app/core/models/assignments/assignment';
-import { ChatMessage } from 'app/core/models/core/chat-message';
-import { Config } from 'app/core/models/core/config';
-import { Countdown } from 'app/core/models/core/countdown';
-import { ProjectorMessage } from 'app/core/models/core/projector-message';
-import { Projector } from 'app/core/models/core/projector';
-import { Tag } from 'app/core/models/core/tag';
-import { Mediafile } from 'app/core/models/mediafiles/mediafile';
-import { Category } from 'app/core/models/motions/category';
-import { MotionBlock } from 'app/core/models/motions/motion-block';
-import { MotionChangeReco } from 'app/core/models/motions/motion-change-reco';
-import { Motion } from 'app/core/models/motions/motion';
-import { Workflow } from 'app/core/models/motions/workflow';
-import { Topic } from 'app/core/models/topics/topic';
-import { Group } from 'app/core/models/users/group';
-import { PersonalNote } from 'app/core/models/users/personal-note';
-import { User } from 'app/core/models/users/user';
+import { Item } from 'app/shared/models/agenda/item';
+import { Assignment } from 'app/shared/models/assignments/assignment';
+import { ChatMessage } from 'app/shared/models/core/chat-message';
+import { Config } from 'app/shared/models/core/config';
+import { Countdown } from 'app/shared/models/core/countdown';
+import { ProjectorMessage } from 'app/shared/models/core/projector-message';
+import { Projector } from 'app/shared/models/core/projector';
+import { Tag } from 'app/shared/models/core/tag';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { Category } from 'app/shared/models/motions/category';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { MotionChangeReco } from 'app/shared/models/motions/motion-change-reco';
+import { Motion } from 'app/shared/models/motions/motion';
+import { Workflow } from 'app/shared/models/motions/workflow';
+import { Topic } from 'app/shared/models/topics/topic';
+import { Group } from 'app/shared/models/users/group';
+import { PersonalNote } from 'app/shared/models/users/personal-note';
+import { User } from 'app/shared/models/users/user';
 
 /**
  * Handles the initial update and automatic updates using the {@link WebsocketService}

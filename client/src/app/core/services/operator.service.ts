@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { tap, catchError, share } from 'rxjs/operators';
 import { OpenSlidesComponent } from 'app/openslides.component';
-import { Group } from 'app/core/models/users/group';
+import { Group } from 'app/shared/models/users/group';
 
 /**
  * The operator represents the user who is using OpenSlides.
