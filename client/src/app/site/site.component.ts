@@ -12,7 +12,7 @@ import { BaseComponent } from 'app/base.component';
 @Component({
     selector: 'app-site',
     templateUrl: './site.component.html',
-    styleUrls: ['./site.component.css']
+    styleUrls: ['./site.component.scss']
 })
 export class SiteComponent extends BaseComponent implements OnInit {
     username = this.operator.username;
