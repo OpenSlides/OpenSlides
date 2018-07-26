@@ -1,5 +1,22 @@
-/*use a 'theme' for MaterialUI. TODO We will need to build an OpenSlides-Theme*/
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+/** Import brand theme and (new) component themes */
+@import './assets/styles/openslides-theme';
+@import './app/site/site.component.scss-theme';
+
+@mixin openslides-components-theme($theme) {
+    @include app-site-theme($theme);
+    /** More components are added here */
+}
+
+@include angular-material-theme($openslides-theme);
+@include openslides-components-theme($openslides-theme);
+
+* {
+    font-family: Arial, Helvetica, sans-serif !important;
+}
 
 html,
 body {

@@ -1,3 +1,19 @@
-<p>
-  settings-list works!
-</p>
+<mat-toolbar color='primary'>
+    <span class='app-name' translate>Settings</span>
+</mat-toolbar>
+
+<div *appOsPerms="['core.can_manage_config']" class="app-content">
+
+    <mat-accordion>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Title
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <p> CONTENT </p>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+</div>
