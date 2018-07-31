@@ -9,4 +9,8 @@ export class AssignmentListComponent implements OnInit {
     constructor() {}
 
     ngOnInit() {}
+
+    downloadAssignmentButton(): void {
+        console.log('Hello World');
+    }
 }

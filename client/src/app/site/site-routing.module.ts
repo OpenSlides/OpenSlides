@@ -19,10 +19,19 @@ const routes: Routes = [
         children: [
             { path: '', component: StartComponent },
             { path: 'agenda', loadChildren: './agenda/agenda.module#AgendaModule' },
-            { path: 'assignments', loadChildren: './assignments/assignments.module#AssignmentsModule' },
-            { path: 'mediafiles', loadChildren: './mediafiles/mediafiles.module#MediafilesModule' },
+            {
+                path: 'assignments',
+                loadChildren: './assignments/assignments.module#AssignmentsModule'
+            },
+            {
+                path: 'mediafiles',
+                loadChildren: './mediafiles/mediafiles.module#MediafilesModule'
+            },
             { path: 'motions', loadChildren: './motions/motions.module#MotionsModule' },
-            { path: 'settings', loadChildren: './settings/settings.module#SettingsModule' },
+            {
+                path: 'settings',
+                loadChildren: './settings/settings.module#SettingsModule'
+            },
             { path: 'users', loadChildren: './users/users.module#UsersModule' }
         ]
     }

@@ -9,6 +9,11 @@
     $background: map-get($theme, background);
 
     app-site {
+        /** adjust the color of the main container to our theme */
+        .main-container {
+            background-color: mat-color($background, background);
+        }
+
         /** change the nav-toolbar to the darker nuance of the current theme*/
         .nav-toolbar {
             background-color: mat-color($primary, darker);
@@ -17,26 +22,24 @@
         /** make the .user-menu expansion panel look like the nav-toolbar above */
         .user-menu {
             background-color: mat-color($primary, darker);
-            color: mat-color($primary, default-contrast);
+            color: mat-color($background, raised-button);
             min-height: 64px;
 
             .mat-expansion-indicator:after {
-                color: mat-color($primary, default-contrast);
+                color: mat-color($background, raised-button);
             }
         }
 
-        /** style and allign the nav icons the icons*/
+        /** style and align the nav icons the icons*/
         .main-nav {
             .ng-fa-icon {
-                color: mat-color($primary, lighter-contrast);
+                color: mat-color($foreground, icon);
                 min-width: 20px; //puts the text to the right on the same leve
                 margin-right: 10px; // the distance from the icon to the text
             }
             span {
-                color: mat-color($primary, lighter-contrast);
+                color: mat-color($foreground, text);
             }
-
-            // color: mat-color($primary, default-contrast);
         }
     }
 }

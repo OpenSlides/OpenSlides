@@ -31,14 +31,37 @@ body {
 }
 
 body {
-    background: #fafafa;
+    // background: #e8eaed;
     margin: 0 auto;
     padding: 0;
+}
+
+router-outlet ~ * {
+    position: absolute;
+    height: 100%;
+    width: 100%;
 }
 
 /**the plus button in Motion, Agenda, etc*/
 .generic-plus-button {
     bottom: -30px;
+    z-index: 100;
+}
+
+.test-thing {
+    bottom: -30px;
+    z-index: 100;
+}
+
+.os-card {
+    max-width: 90%;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card-plus-distance {
+    margin-top: 40px;
 }
 
 /**title of an app page*/
@@ -55,4 +78,9 @@ body {
 /**use to push content to the right side*/
 .spacer {
     flex: 1 1 auto;
+}
+
+/** helper classes for animation */
+.on-transition-fade {
+    z-index: 100;
 }

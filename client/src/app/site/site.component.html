@@ -1,5 +1,5 @@
-<mat-sidenav-container autosize>
-    <mat-sidenav #sideNav [mode]="isMobile ? 'push' : 'side'" [opened]='!isMobile' disableClose='!isMobile'>
+<mat-sidenav-container autosize class='main-container'>
+    <mat-sidenav #sideNav [mode]="isMobile ? 'push' : 'side'" [opened]='!isMobile' disableClose='!isMobile' class="side-panel">
         <mat-toolbar class='nav-toolbar'>
 
             <!-- logo -->
@@ -21,55 +21,36 @@
 
         <!-- navigation -->
         <mat-nav-list class='main-nav'>
-            
-                <a *appOsPerms="['core.can_see_frontpage']" mat-list-item routerLink='/' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
-                    <fa-icon icon='home'></fa-icon>
-
-                    <span translate>Home</span>
-                </a>
-            
-            
-                <a *appOsPerms="['agenda.can_see']" mat-list-item routerLink='/agenda' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
-                    <fa-icon icon='calendar'></fa-icon>
-
-                    <span translate>Agenda</span>
-                </a>
-            
-            
-                <a *appOsPerms="['motions.can_see']" mat-list-item routerLink='/motions' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
-                    <fa-icon icon='file-alt'></fa-icon>
-
-                    <span translate>Motions</span>
-                </a>
-            
-            
-                <a *appOsPerms="['assignments.can_see']" mat-list-item routerLink='/assignments' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
-                    <fa-icon icon='chart-pie'></fa-icon>
-
-                    <span translate>Assignments</span>
-                </a>
-            
-            
-                <a *appOsPerms="['users.can_see_name']" mat-list-item routerLink='/users' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
-                    <fa-icon icon='user'></fa-icon>
-
-                    <span translate>Participants</span>
-                </a>
-            
-            
-                <a *appOsPerms="['mediafiles.can_see']" mat-list-item routerLink='/mediafiles' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
-                    <fa-icon icon='paperclip'></fa-icon>
-
-                    <span translate>Files</span>
-                </a>
-            
-            
-                <a *appOsPerms="['core.can_manage_config']" mat-list-item routerLink='/settings' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
-                    <fa-icon icon='cog'></fa-icon>
-
-                    <span translate>Settings</span>
-                </a>
-            
+            <a [@navItemAnim] *appOsPerms="['core.can_see_frontpage']" mat-list-item routerLink='/' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+                <fa-icon icon='home'></fa-icon>
+                <span translate>Home</span>
+            </a>
+            <a [@navItemAnim] *appOsPerms="['agenda.can_see']" mat-list-item routerLink='/agenda' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+                <fa-icon icon='calendar'></fa-icon>
+                <span translate>Agenda</span>
+            </a>
+            <a [@navItemAnim] *appOsPerms="['motions.can_see']" mat-list-item routerLink='/motions' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+                <fa-icon icon='file-alt'></fa-icon>
+                <span translate>Motions</span>
+            </a>
+            <a [@navItemAnim] *appOsPerms="['assignments.can_see']" mat-list-item routerLink='/assignments' routerLinkActive='active'
+                (click)='isMobile ? sideNav.toggle() : null'>
+                <fa-icon icon='chart-pie'></fa-icon>
+                <span translate>Assignments</span>
+            </a>
+            <a [@navItemAnim] *appOsPerms="['users.can_see_name']" mat-list-item routerLink='/users' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+                <fa-icon icon='user'></fa-icon>
+                <span translate>Participants</span>
+            </a>
+            <a [@navItemAnim] *appOsPerms="['mediafiles.can_see']" mat-list-item routerLink='/mediafiles' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+                <fa-icon icon='paperclip'></fa-icon>
+                <span translate>Files</span>
+            </a>
+            <a [@navItemAnim] *appOsPerms="['core.can_manage_config']" mat-list-item routerLink='/settings' routerLinkActive='active'
+                (click)='isMobile ? sideNav.toggle() : null'>
+                <fa-icon icon='cog'></fa-icon>
+                <span translate>Settings</span>
+            </a>
         </mat-nav-list>
 
     </mat-sidenav>
@@ -105,7 +86,9 @@
     </mat-toolbar>
 
     <!-- continue with <mat-toolbar> in the app-->
-    <router-outlet></router-outlet>
+    <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
+        <router-outlet #o="outlet"></router-outlet>
+    </main>
 
     <!-- the global projector button -->
     <button class='projector-button' mat-fab>

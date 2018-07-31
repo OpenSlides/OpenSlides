@@ -33,7 +33,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             cookieName: 'OpenSlidesCsrfToken',
             headerName: 'X-CSRFToken'
         }),
-        BrowserAnimationsModule, //TODO
+        BrowserAnimationsModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

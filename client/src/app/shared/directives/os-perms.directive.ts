@@ -3,6 +3,7 @@ import { Directive, Input, ElementRef, TemplateRef, ViewContainerRef, OnInit } f
 import { OperatorService } from 'app/core/services/operator.service';
 import { OpenSlidesComponent } from 'app/openslides.component';
 import { Group } from 'app/shared/models/users/group';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Directive to check if the {@link OperatorService} has the correct permissions to access certain functions
@@ -25,7 +26,7 @@ export class OsPermsDirective extends OpenSlidesComponent {
     private permissions;
 
     /**
-     * Constructs the direcctive once. Observes the operator for it's groups so the directvice can perform changes
+     * Constructs the directive once. Observes the operator for it's groups so the directive can perform changes
      * dynamically
      *
      * @param template inner part of the HTML container
@@ -42,9 +43,7 @@ export class OsPermsDirective extends OpenSlidesComponent {
 
         // observe groups of operator, so the directive can actively react to changes
         this.operator.getObservable().subscribe(content => {
-            console.log('os-perms did monitor changes in observer: ', content);
             if (content instanceof Group && this.permissions !== '') {
-                console.log('content was a Group');
                 this.userPermissions = [...this.userPermissions, ...content.permissions];
                 this.updateView();
             }
@@ -68,7 +67,6 @@ export class OsPermsDirective extends OpenSlidesComponent {
      */
     private readUserPermissions(): void {
         const opGroups = this.operator.getGroups();
-        console.log('operator Groups: ', opGroups);
         opGroups.forEach(group => {
             this.userPermissions = [...this.userPermissions, ...group.permissions];
         });
@@ -80,6 +78,7 @@ export class OsPermsDirective extends OpenSlidesComponent {
     private updateView(): void {
         if (this.checkPermissions()) {
             // will just render the page normally
+            console.log('do show: ', this.template, ' - ', this.viewContainer);
             this.viewContainer.createEmbeddedView(this.template);
         } else {
             // will remove the content of the container

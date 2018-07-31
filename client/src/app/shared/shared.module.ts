@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // MaterialUI modules
 import {
@@ -27,6 +27,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 // directives
 import { OsPermsDirective } from './directives/os-perms.directive';
+import { DomChangeDirective } from './directives/dom-change.directive';
 
 library.add(fas);
 
@@ -43,6 +44,7 @@ library.add(fas);
     imports: [
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
         MatButtonModule,
         MatCheckboxModule,
         MatToolbarModule,
@@ -58,6 +60,7 @@ library.add(fas);
     ],
     exports: [
         FormsModule,
+        ReactiveFormsModule,
         MatButtonModule,
         MatCheckboxModule,
         MatToolbarModule,
@@ -73,6 +76,6 @@ library.add(fas);
         TranslateModule,
         OsPermsDirective
     ],
-    declarations: [OsPermsDirective]
+    declarations: [OsPermsDirective, DomChangeDirective]
 })
 export class SharedModule {}
