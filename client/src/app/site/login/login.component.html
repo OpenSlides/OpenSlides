@@ -1,29 +1,28 @@
-<mat-card class="login-card">
-    <mat-card-header>
-        <mat-card-title>OpenSides 3 - Login</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-        <form class="login-full-widht">
-            <table class="example-full-width" cellspacing="0">
-                <tr>
-                    <td>
-                        <mat-form-field class="login-full-widht">
-                            <input matInput placeholder="Username" [(ngModel)]="username" name="username" required>
-                        </mat-form-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Password" [(ngModel)]="password" type="password" name="password" required>
-                        </mat-form-field>
-                    </td>
-                </tr>
-            </table>
-        </form>
-        <!-- <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner> -->
-    </mat-card-content>
-    <mat-card-actions>
-        <button mat-raised-button (click)="formLogin()" color="primary">Login</button>
-    </mat-card-actions>
-</mat-card>
+<!-- The actual form -->
+<mat-toolbar class="login-logo-bar" color="primary">
+    <img src='/assets/img/openslides-logo-h-dark-transparent.svg' alt='OpenSlides-logo'>
+</mat-toolbar>
+<div class="form-wrapper">
+
+    <mat-spinner *ngIf="inProcess"></mat-spinner>
+    <form [formGroup]="loginForm" class="login-form" (ngSubmit)="formLogin()">
+        <mat-form-field>
+            <input matInput required placeholder="User name" formControlName="username" [errorStateMatcher]="parentErrorStateMatcher">
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+            <input matInput required placeholder="Password" formControlName="password" [type]="!hide ? 'password' : 'text'" [errorStateMatcher]="parentErrorStateMatcher">
+            <fa-icon matSuffix [icon]="!hide ? 'eye-slash' : 'eye'" (click)="hide = !hide"></fa-icon>
+            <mat-error>{{loginErrorMsg}}</mat-error>
+        </mat-form-field>
+
+        <!-- forgot password button -->
+        <br>
+        <button class='forgot-password-button' mat-button>Forgot Password?</button>
+
+        <!-- login button -->
+        <br>
+        <button mat-raised-button color="primary" class='login-button' type="submit">Login</button>
+    </form>
+
+</div>

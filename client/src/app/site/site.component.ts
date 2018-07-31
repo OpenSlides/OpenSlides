@@ -8,15 +8,20 @@ import { OperatorService } from 'app/core/services/operator.service';
 
 import { TranslateService } from '@ngx-translate/core'; //showcase
 import { BaseComponent } from 'app/base.component';
+import { pageTransition, navItemAnim } from 'app/shared/animations';
 
 @Component({
     selector: 'app-site',
+    animations: [pageTransition, navItemAnim],
     templateUrl: './site.component.html',
     styleUrls: ['./site.component.scss']
 })
 export class SiteComponent extends BaseComponent implements OnInit {
     username = this.operator.username;
     isMobile = false;
+
+    //test
+    state = 'hidden';
 
     constructor(
         private authService: AuthService,
@@ -70,5 +75,9 @@ export class SiteComponent extends BaseComponent implements OnInit {
         console.log('logout');
         this.authService.logout().subscribe();
         this.router.navigate(['/login']);
+    }
+
+    changeState() {
+        this.state = this.state === 'hidden' ? 'show' : 'hidden';
     }
 }

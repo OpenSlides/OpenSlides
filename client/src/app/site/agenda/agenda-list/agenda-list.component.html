@@ -1,27 +1,29 @@
 <mat-toolbar color='primary'>
 
-    <button class='generic-plus-button' mat-fab>
+    <button class='generic-plus-button on-transition-fade' mat-fab>
         <fa-icon icon='plus'></fa-icon>
     </button>
 
-    <span class='app-name' translate>Agenda</span>
+    <span class='app-name on-transition-fade' translate>Agenda</span>
 
     <!-- download button on the right -->
     <span class='spacer'></span>
-    <button mat-icon-button (click)='downloadAgendaButton()'>
+    <button class='on-transition-fade' mat-icon-button (click)='downloadAgendaButton()'>
         <fa-icon icon='download'></fa-icon>
     </button>
 
 </mat-toolbar>
 
-<div class="app-content">
-    Agenda Works
-    <br/>
-    <div>
-        everyone should see this
+<mat-card class="os-card card-plus-distance">
+    <div class="app-content">
+        Agenda Works
+        <br/>
+        <div>
+            everyone should see this
+        </div>
+        <br/>
+        <div *appOsPerms="['agenda.can_see']">
+            Only permitted users should see this
+        </div>
     </div>
-    <br/>
-    <div *appOsPerms="['agenda.can_see']">
-        Only permitted users should see this
-    </div>
-</div>
+</mat-card>

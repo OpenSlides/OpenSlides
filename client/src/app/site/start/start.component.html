@@ -1,15 +1,17 @@
 <mat-toolbar color='primary'>
-    <span class='app-name' translate>Home</span>
+    <span class='app-name on-transition-fade' translate>Home</span>
 </mat-toolbar>
 
-<div class="app-content" translate>
-    <span>{{'Welcome to OpenSlides' | translate}}</span>
-    <br/>
-    <!-- <p translate [translateParams]="{user: 'Tim'}">Hello user</p> -->
-    <p>{{'Hello user' | translate:username}}</p>
-    <button type="button" (click)="DataStoreTest()">DataStoreTest</button>
-    <br/>
-    <button type="button" (click)="TranslateTest()">Translate in console</button>
-    <br/>
-    <button type="button" (click)="giveDataStore()">print the dataStore</button>
-</div>
+<mat-card class="os-card">
+    <div class="app-content" translate>
+        <span>{{'Welcome to OpenSlides' | translate}}</span>
+        <br/>
+        <!-- <p translate [translateParams]="{user: 'Tim'}">Hello user</p> -->
+        <p>{{'Hello user' | translate:username}}</p>
+        <button type="button" (click)="DataStoreTest()">DataStoreTest</button>
+        <br/>
+        <button type="button" (click)="TranslateTest()">Translate in console</button>
+        <br/>
+        <button type="button" (click)="giveDataStore()">print the dataStore</button>
+    </div>
+</mat-card>
