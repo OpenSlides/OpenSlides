@@ -38,7 +38,18 @@
                 margin-right: 10px; // the distance from the icon to the text
             }
             span {
+                font-weight: bold;
                 color: mat-color($foreground, text);
+            }
+        }
+
+        /** style the active link */
+        .active {
+            .ng-fa-icon {
+                color: mat-color($primary);
+            }
+            span {
+                color: mat-color($primary);
             }
         }
     }
