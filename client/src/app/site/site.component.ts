@@ -9,6 +9,9 @@ import { OperatorService } from 'app/core/services/operator.service';
 import { TranslateService } from '@ngx-translate/core'; //showcase
 import { BaseComponent } from 'app/base.component';
 import { pageTransition, navItemAnim } from 'app/shared/animations';
+import { MatDialog } from '@angular/material';
+import { LegalnoticeDialogComponent } from '../shared/components/legal-notice/legal-notice.dialog.component';
+import { PrivacyPolicyDialogComponent } from '../shared/components/privacy-policy/privacy-policy.dialog.component';
 
 @Component({
     selector: 'app-site',
@@ -17,23 +20,42 @@ import { pageTransition, navItemAnim } from 'app/shared/animations';
     styleUrls: ['./site.component.scss']
 })
 export class SiteComponent extends BaseComponent implements OnInit {
+    /**
+     * Get the username from the operator (should be known already)
+     */
     username = this.operator.username;
+
+    /**
+     * True if Viewport equals mobile or small resolution. Set by breakpointObserver.
+     */
     isMobile = false;
 
-    //test
-    state = 'hidden';
-
+    /**
+     * Constructor
+     *
+     * @param authService
+     * @param autoupdateService
+     * @param operator
+     * @param router
+     * @param breakpointObserver
+     * @param translate
+     * @param dialog
+     */
     constructor(
         private authService: AuthService,
         private autoupdateService: AutoupdateService,
         private operator: OperatorService,
         private router: Router,
         private breakpointObserver: BreakpointObserver,
-        private translate: TranslateService
+        private translate: TranslateService,
+        public dialog: MatDialog
     ) {
         super();
     }
 
+    /**
+     * Initialize the site component
+     */
     ngOnInit() {
         this.breakpointObserver
             .observe([Breakpoints.Small, Breakpoints.HandsetPortrait])
@@ -62,6 +84,10 @@ export class SiteComponent extends BaseComponent implements OnInit {
         });
     }
 
+    /**
+     * Let the user change the language
+     * @param lang the desired language (en, de, fr, ...)
+     */
     selectLang(lang: string): void {
         console.log('selected langauge: ', lang);
         console.log('get Langs : ', this.translate.getLangs());
@@ -71,13 +97,25 @@ export class SiteComponent extends BaseComponent implements OnInit {
         });
     }
 
+    /**
+     * Function to log out the current user
+     */
     logOutButton() {
-        console.log('logout');
         this.authService.logout().subscribe();
         this.router.navigate(['/login']);
     }
 
-    changeState() {
-        this.state = this.state === 'hidden' ? 'show' : 'hidden';
+    /**
+     * Opens the legal notice as dialog
+     */
+    openLegalNotice() {
+        const dialogRef = this.dialog.open(LegalnoticeDialogComponent);
+    }
+
+    /**
+     * Opens the privacy Policy as dialog
+     */
+    openPrivacyPolicy() {
+        const dialogRef = this.dialog.open(PrivacyPolicyDialogComponent);
     }
 }

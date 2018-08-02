@@ -3,8 +3,8 @@
         <mat-toolbar class='nav-toolbar'>
 
             <!-- logo -->
-            <mat-toolbar-row>
-                <img src='/assets/img/openslides-logo-dark.png' alt='OpenSlides-logo'>
+            <mat-toolbar-row class='os-logo-container'>
+                <!-- <img src='/assets/img/openslides-logo-h-dark-transparent.svg' alt='OpenSlides-logo'> -->
             </mat-toolbar-row>
         </mat-toolbar>
 
@@ -21,7 +21,8 @@
 
         <!-- navigation -->
         <mat-nav-list class='main-nav'>
-            <a [@navItemAnim] *appOsPerms="['core.can_see_frontpage']" mat-list-item routerLink='/' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+            <a [@navItemAnim] *appOsPerms="['core.can_see_frontpage']" mat-list-item routerLink='/' routerLinkActive='active' [routerLinkActiveOptions]="{exact: true}"
+                (click)='isMobile ? sideNav.toggle() : null'>
                 <fa-icon icon='home'></fa-icon>
                 <span translate>Home</span>
             </a>
@@ -53,6 +54,16 @@
             </a>
         </mat-nav-list>
 
+
+        <footer>
+            <!-- TODO Translate -->
+            <button mat-button (click)='openLegalNotice()'>Legal Notice</button>
+            <button mat-button (click)='openPrivacyPolicy()'>Privacy Policy</button>
+            <br>
+            <span align="center">© Copyright by
+                <a href='https://openslides.org/'>OpenSlides</a>
+            </span>
+        </footer>
     </mat-sidenav>
 
     <!-- the first toolbar row is (still) a global element

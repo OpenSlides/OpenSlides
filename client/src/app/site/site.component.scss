@@ -8,6 +8,26 @@ mat-sidenav-container {
     right: 10px;
 }
 
+.os-logo-container {
+    min-width: 240px;
+    background-image: url(/assets/img/openslides-logo-h-dark-transparent.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .side-panel {
     box-shadow: 3px 0px 10px 0px rgba(0, 0, 0, 0.2);
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+
+    span {
+        // width: 100%;
+        display: block;
+        text-align: center;
+        margin-bottom: 5px;
+    }
 }

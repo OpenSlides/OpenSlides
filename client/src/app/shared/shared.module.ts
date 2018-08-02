@@ -13,6 +13,7 @@ import {
     MatSidenavModule,
     MatSnackBarModule
 } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatMenuModule } from '@angular/material/menu';
@@ -28,6 +29,8 @@ import { TranslateModule } from '@ngx-translate/core';
 // directives
 import { OsPermsDirective } from './directives/os-perms.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
+import { LegalnoticeDialogComponent } from './components/legal-notice/legal-notice.dialog.component';
+import { PrivacyPolicyDialogComponent } from './components/privacy-policy/privacy-policy.dialog.component';
 
 library.add(fas);
 
@@ -56,6 +59,7 @@ library.add(fas);
         MatExpansionModule,
         MatMenuModule,
         MatSnackBarModule,
+        MatDialogModule,
         FontAwesomeModule
     ],
     exports: [
@@ -71,11 +75,13 @@ library.add(fas);
         MatListModule,
         MatExpansionModule,
         MatMenuModule,
+        MatDialogModule,
         MatSnackBarModule,
         FontAwesomeModule,
         TranslateModule,
         OsPermsDirective
     ],
-    declarations: [OsPermsDirective, DomChangeDirective]
+    declarations: [OsPermsDirective, DomChangeDirective, LegalnoticeDialogComponent, PrivacyPolicyDialogComponent],
+    entryComponents: [LegalnoticeDialogComponent, PrivacyPolicyDialogComponent]
 })
 export class SharedModule {}
