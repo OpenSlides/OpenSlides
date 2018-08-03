@@ -14,9 +14,40 @@
                 <!-- Get the username from operator -->
                 {{username}}
             </mat-expansion-panel-header>
-            <mat-action-row>
-                <button (click)='logOutButton()' mat-button>Logout</button>
-            </mat-action-row>
+            <mat-nav-list>
+                <!-- <mat-list-item> -->
+
+                <a (click)='logOutButton()' mat-list-item>
+                    <fa-icon icon='user-cog'></fa-icon>
+                    <span translate>Edit Profile</span>
+                </a>
+                <a (click)='logOutButton()' mat-list-item>
+                    <fa-icon icon='key'></fa-icon>
+                    <span translate>Change Password</span>
+                </a>
+                <mat-divider></mat-divider>
+                <a (click)='logOutButton()' mat-list-item>
+                    <fa-icon icon='sign-out-alt'></fa-icon>
+                    <span translate>Logout</span>
+                </a>
+
+                <!-- <button (click)='logOutButton()' mat-button>
+                        <fa-icon icon='user-cog'></fa-icon> Edit Profile</button> -->
+                <!-- </mat-list-item>
+                <mat-list-item>
+                    <button (click)='logOutButton()' mat-button>
+                        <fa-icon icon='key'></fa-icon> Change Password</button>
+                </mat-list-item>
+
+                <mat-list-item>
+                    <button (click)='logOutButton()' mat-button>
+                        <fa-icon icon='sign-out-alt'> </fa-icon>Logout</button>
+                </mat-list-item> -->
+            </mat-nav-list>
+            <!-- TODO translate -->
+
+
+
         </mat-expansion-panel>
 
         <!-- navigation -->
