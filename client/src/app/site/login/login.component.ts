@@ -7,6 +7,7 @@ import { AuthService } from 'app/core/services/auth.service';
 import { OperatorService } from 'app/core/services/operator.service';
 import { ErrorStateMatcher } from '@angular/material';
 import { FormControl, FormGroupDirective, NgForm, FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Custom error states. Might become part of the shared module later.
@@ -64,6 +65,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
     inProcess = false;
 
     /**
+     * Constructor for the login component
      *
      * @param titleService Setting the title
      * @param authService Authenticating the user
@@ -72,13 +74,14 @@ export class LoginComponent extends BaseComponent implements OnInit {
      * @param formBuilder To build the form and validate
      */
     constructor(
-        titleService: Title,
+        protected titleService: Title,
+        protected translate: TranslateService,
         private authService: AuthService,
         private operator: OperatorService,
         private router: Router,
         private formBuilder: FormBuilder
     ) {
-        super(titleService);
+        super(titleService, translate);
         this.createForm();
     }
 
@@ -89,6 +92,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
      * Observes the operator, if a user was already logged in, recreate to user and skip the login
      */
     ngOnInit() {
+        //this is necessary since the HTML document never uses the word "Log In"
+        const loginWord = this.translate.instant('Log In');
         super.setTitle('Log In');
 
         // if there is stored login information, try to login directly.

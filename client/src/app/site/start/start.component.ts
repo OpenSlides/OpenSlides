@@ -17,12 +17,12 @@ export class StartComponent extends BaseComponent implements OnInit {
     //useage of translation with variables in code and view
     username = { user: this.operator.username };
 
-    constructor(titleService: Title, private translate: TranslateService, private operator: OperatorService) {
-        super(titleService);
+    constructor(titleService: Title, protected translate: TranslateService, private operator: OperatorService) {
+        super(titleService, translate);
     }
 
     ngOnInit() {
-        super.setTitle('Start page'); //TODO translate
+        super.setTitle('Home');
     }
 
     //quick testing of some data store functions

@@ -1,11 +1,16 @@
 mat-sidenav-container {
     height: 100%;
+
+    main {
+        flex: 1;
+        position: relative;
+    }
 }
 
 .projector-button {
-    position: absolute;
+    position: fixed;
     bottom: 10px;
-    right: 10px;
+    right: 20px;
 }
 
 .os-logo-container {

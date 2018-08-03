@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { BaseComponent } from 'app/base.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-agenda-list',
@@ -8,12 +9,11 @@ import { BaseComponent } from 'app/base.component';
     styleUrls: ['./agenda-list.component.css']
 })
 export class AgendaListComponent extends BaseComponent implements OnInit {
-    constructor(titleService: Title) {
-        super(titleService);
+    constructor(titleService: Title, protected translate: TranslateService) {
+        super(titleService, translate);
     }
 
     ngOnInit() {
-        //TODO translate
         super.setTitle('Agenda');
     }
 

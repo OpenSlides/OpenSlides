@@ -1,10 +1,21 @@
 {
-    "Agenda": "Agenda",
-    "English": "English",
+    "Agenda": "",
+    "Assignments": "",
+    "Change Password": "",
+    "Edit Profile": "",
+    "English": "",
+    "Files": "",
     "French": "",
-    "German": "German",
+    "German": "",
     "Hello user": "Hello {{user}}",
-    "Home": "Home",
-    "Motions": "Motions",
-    "Welcome to OpenSlides": "Welcome to OpenSlides"
+    "Home": "",
+    "Legal Notice": "",
+    "Log In": "",
+    "Logout": "",
+    "Motions": "",
+    "Participants": "",
+    "Privacy Policy": "",
+    "Settings": "",
+    "Users": "",
+    "Welcome to OpenSlides": ""
 }

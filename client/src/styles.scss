@@ -27,7 +27,6 @@ body {
     right: 0;
     margin: 0;
     padding: 0;
-    overflow: hidden !important;
     height: 100% !important;
 }
 
@@ -39,9 +38,8 @@ body {
 
 router-outlet ~ * {
     position: absolute;
-    height: 100%;
+    height: 100% !important;
     width: 100%;
-    overflow: hidden !important;
 }
 
 /**the plus button in Motion, Agenda, etc*/
