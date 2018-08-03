@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
@@ -29,7 +29,6 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * True if Viewport equals mobile or small resolution. Set by breakpointObserver.
      */
     isMobile = false;
-
     /**
      * Constructor
      *
@@ -47,7 +46,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
         private operator: OperatorService,
         private router: Router,
         private breakpointObserver: BreakpointObserver,
-        private translate: TranslateService,
+        protected translate: TranslateService,
         public dialog: MatDialog
     ) {
         super();

@@ -1,6 +1,6 @@
-import { Injector } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { OpenSlidesComponent } from './openslides.component';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Provides functionalities that will be used by most components
@@ -20,7 +20,7 @@ export abstract class BaseComponent extends OpenSlidesComponent {
     /**
      * Child constructor that implements the titleServices and calls Super from OpenSlidesComponent
      */
-    constructor(protected titleService?: Title) {
+    constructor(protected titleService?: Title, protected translate?: TranslateService) {
         super();
     }
 
@@ -30,6 +30,7 @@ export abstract class BaseComponent extends OpenSlidesComponent {
      * TODO Might translate the prefix here?
      */
     setTitle(prefix: string): void {
-        this.titleService.setTitle(prefix + this.titleSuffix);
+        const translatedPrefix = this.translate.instant(prefix);
+        this.titleService.setTitle(translatedPrefix + this.titleSuffix);
     }
 }

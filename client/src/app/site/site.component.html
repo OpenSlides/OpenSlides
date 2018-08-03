@@ -1,10 +1,8 @@
 <mat-sidenav-container autosize class='main-container'>
     <mat-sidenav #sideNav [mode]="isMobile ? 'push' : 'side'" [opened]='!isMobile' disableClose='!isMobile' class="side-panel">
         <mat-toolbar class='nav-toolbar'>
-
             <!-- logo -->
             <mat-toolbar-row class='os-logo-container'>
-                <!-- <img src='/assets/img/openslides-logo-h-dark-transparent.svg' alt='OpenSlides-logo'> -->
             </mat-toolbar-row>
         </mat-toolbar>
 
@@ -16,7 +14,6 @@
             </mat-expansion-panel-header>
             <mat-nav-list>
                 <!-- <mat-list-item> -->
-
                 <a (click)='logOutButton()' mat-list-item>
                     <fa-icon icon='user-cog'></fa-icon>
                     <span translate>Edit Profile</span>
@@ -30,24 +27,7 @@
                     <fa-icon icon='sign-out-alt'></fa-icon>
                     <span translate>Logout</span>
                 </a>
-
-                <!-- <button (click)='logOutButton()' mat-button>
-                        <fa-icon icon='user-cog'></fa-icon> Edit Profile</button> -->
-                <!-- </mat-list-item>
-                <mat-list-item>
-                    <button (click)='logOutButton()' mat-button>
-                        <fa-icon icon='key'></fa-icon> Change Password</button>
-                </mat-list-item>
-
-                <mat-list-item>
-                    <button (click)='logOutButton()' mat-button>
-                        <fa-icon icon='sign-out-alt'> </fa-icon>Logout</button>
-                </mat-list-item> -->
             </mat-nav-list>
-            <!-- TODO translate -->
-
-
-
         </mat-expansion-panel>
 
         <!-- navigation -->
@@ -87,9 +67,12 @@
 
 
         <footer>
-            <!-- TODO Translate -->
-            <button mat-button (click)='openLegalNotice()'>Legal Notice</button>
-            <button mat-button (click)='openPrivacyPolicy()'>Privacy Policy</button>
+            <button mat-button (click)='openLegalNotice()'>
+                <span translate>Legal Notice</span>
+            </button>
+            <button mat-button (click)='openPrivacyPolicy()'>
+                <span translate>Privacy Policy</span>
+            </button>
             <br>
             <span align="center">© Copyright by
                 <a href='https://openslides.org/'>OpenSlides</a>
@@ -98,11 +81,10 @@
     </mat-sidenav>
 
     <!-- the first toolbar row is (still) a global element
-  the second one shall be handled by the apps  -->
+        the second one shall be handled by the apps  -->
     <mat-toolbar color='primary'>
 
         <!-- show/hide menu button -->
-        <!-- <button mat-icon-button (click)='sideNav.toggle()'> -->
         <button mat-icon-button *ngIf="isMobile" (click)='sideNav.toggle()'>
             <fa-icon icon='bars'></fa-icon>
         </button>

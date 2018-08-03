@@ -1,10 +1,21 @@
 {
     "Agenda": "Tagesordnung",
+    "Assignments": "Wahlen",
+    "Change Password": "Passwort ändern",
+    "Edit Profile": "Profil bearbeiten",
     "English": "Englisch",
-    "French": "",
+    "Files": "Dateien",
+    "French": "Französisch",
     "German": "Deutsch",
     "Hello user": "Hallo {{user}}",
     "Home": "Startseite",
+    "Legal Notice": "Impressum",
+    "Log In": "Anmelden",
+    "Logout": "Abmelden",
     "Motions": "Anträge",
+    "Participants": "Teilnehmer",
+    "Privacy Policy": "Datenschutz",
+    "Settings": "Einstellungen",
+    "Users": "Benutzer",
     "Welcome to OpenSlides": "Willkommen bei OpenSlides"
 }

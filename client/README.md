@@ -44,3 +44,10 @@ A running OpenSlides (2.2 or higher) instance is expected on port 8000.
 
 Start OpenSlides as usual using
 `python manage.py start --no-browser --host 0.0.0.0`
+
+### Translation
+
+We are using ngx-translate for translation purposes.
+Use `npm run extract` to extract strings and update elements an with translation functions.
+
+Language files can be found in `/src/assets/i18n`.
