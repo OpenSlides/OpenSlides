@@ -4,10 +4,13 @@
 
 <mat-card class="os-card">
     <div class="app-content" translate>
-        <span>{{'Welcome to OpenSlides' | translate}}</span>
+
+        <h4> {{welcomeTitle | translate}} </h4>
+        <span> {{welcomeText | translate}} </span>
         <br/>
-        <!-- <p translate [translateParams]="{user: 'Tim'}">Hello user</p> -->
+        <!-- example to translate with parameters -->
         <p>{{'Hello user' | translate:username}}</p>
+
         <button type="button" (click)="DataStoreTest()">DataStoreTest</button>
         <br/>
         <button type="button" (click)="TranslateTest()">Translate in console</button>
