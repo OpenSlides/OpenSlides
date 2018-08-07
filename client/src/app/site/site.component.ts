@@ -29,6 +29,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * True if Viewport equals mobile or small resolution. Set by breakpointObserver.
      */
     isMobile = false;
+
     /**
      * Constructor
      *
@@ -46,7 +47,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
         private operator: OperatorService,
         private router: Router,
         private breakpointObserver: BreakpointObserver,
-        protected translate: TranslateService,
+        public translate: TranslateService,
         public dialog: MatDialog
     ) {
         super();
@@ -87,13 +88,21 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * Let the user change the language
      * @param lang the desired language (en, de, fr, ...)
      */
-    selectLang(lang: string): void {
-        console.log('selected langauge: ', lang);
-        console.log('get Langs : ', this.translate.getLangs());
+    selectLang(selection: string): void {
+        this.translate.use(selection).subscribe();
+    }
 
-        this.translate.use(lang).subscribe(res => {
-            console.log('language changed : ', res);
-        });
+    /**
+     * Get the name of a Language by abbreviation.
+     */
+    getLangName(abbreviation: string): string {
+        if (abbreviation === 'en') {
+            return this.translate.instant('English');
+        } else if (abbreviation === 'de') {
+            return this.translate.instant('German');
+        } else if (abbreviation === 'fr') {
+            return this.translate.instant('French');
+        }
     }
 
     /**

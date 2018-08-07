@@ -97,8 +97,9 @@
         <button mat-icon-button (click)='sideNav.toggle()'>
             <fa-icon icon='ellipsis-v'></fa-icon>
         </button>
-        <button mat-icon-button [matMenuTriggerFor]="languageMenu">
-            <fa-icon icon='language'></fa-icon>
+        <button mat-button [matMenuTriggerFor]="languageMenu">
+            <fa-icon icon='globe-americas'></fa-icon>
+            <span> {{getLangName(this.translate.currentLang)}} </span>
         </button>
 
         <!-- TODO: Could use translate.getLangs() to fetch available languages-->
