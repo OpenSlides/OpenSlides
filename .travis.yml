@@ -4,7 +4,6 @@ cache:
   pip: true
   yarn: true
 python:
-  - "3.4"
   - "3.5"
   - "3.6"
 env:
@@ -21,13 +20,13 @@ install:
   - node_modules/.bin/gulp --production
 script:
   - flake8 openslides tests
-  - if [ "`python --version`" \> "Python 3.5.0" ]; then isort --check-only --recursive openslides tests; fi
+  - isort --check-only --recursive openslides tests
   - python -m mypy openslides/
   - node_modules/.bin/gulp jshint
   - node_modules/.bin/karma start --browsers PhantomJS tests/karma/karma.conf.js
 
   - DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py test tests.unit
-  - coverage report --fail-under=42
+  - coverage report --fail-under=35
 
   - DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py test tests.integration
   - coverage report --fail-under=73

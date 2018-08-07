@@ -650,7 +650,7 @@ class TagViewSet(ModelViewSet):
         elif self.action == 'metadata':
             # Every authenticated user can see the metadata.
             # Anonymous users can do so if they are enabled.
-            result = self.request.user.is_authenticated() or anonymous_is_enabled()
+            result = self.request.user.is_authenticated or anonymous_is_enabled()
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             result = has_perm(self.request.user, 'core.can_manage_tags')
         else:
@@ -678,7 +678,7 @@ class ConfigViewSet(ModelViewSet):
             # Every authenticated user can see the metadata and list or
             # retrieve the config. Anonymous users can do so if they are
             # enabled.
-            result = self.request.user.is_authenticated() or anonymous_is_enabled()
+            result = self.request.user.is_authenticated or anonymous_is_enabled()
         elif self.action in ('partial_update', 'update'):
             # The user needs 'core.can_manage_logos_and_fonts' for all config values
             # starting with 'logo' and 'font'. For all other config values th euser needs
@@ -735,7 +735,7 @@ class ChatMessageViewSet(ModelViewSet):
             # We do not want anonymous users to use the chat even the anonymous
             # group has the permission core.can_use_chat.
             result = (
-                self.request.user.is_authenticated() and
+                self.request.user.is_authenticated and
                 has_perm(self.request.user, 'core.can_use_chat'))
         elif self.action == 'clear':
             result = (

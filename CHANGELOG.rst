@@ -16,6 +16,7 @@ Motions:
  - New config options to show logos on the right side in PDF [#3768].
  - New table of contents with page numbers and categories in PDF [#3766].
  - Updated pdfMake to 0.1.37 [#3766].
+ - Python 3.4 is not supported anymore [#3777].
 
 
 Version 2.2 (2018-06-06)

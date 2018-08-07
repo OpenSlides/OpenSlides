@@ -12,11 +12,11 @@ from rest_framework.mixins import (  # noqa
     DestroyModelMixin,
     UpdateModelMixin,
 )
+from rest_framework.relations import MANY_RELATION_KWARGS
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.serializers import ModelSerializer as _ModelSerializer
 from rest_framework.serializers import (  # noqa
-    MANY_RELATION_KWARGS,
     CharField,
     DictField,
     Field,

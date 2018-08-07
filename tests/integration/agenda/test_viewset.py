@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.translation import ugettext
 from django_redis import get_redis_connection
 from rest_framework import status
