@@ -42,6 +42,7 @@ def move_old_logo_settings(apps, schema_editor):
             logo_pdf_L = ConfigStore.objects.get(key=new_value_key)
         except ConfigStore.DoesNotExist:
             logo_pdf_L = ConfigStore(key=new_value_key)
+            logo_pdf_L.value = {}
 
         # Move the path to the new configentry
         logo_pdf_L.value['path'] = logo_pdf.value.get('path', '')

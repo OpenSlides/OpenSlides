@@ -43,7 +43,7 @@ class MotionSlide(ProjectorElement):
         Keep the motion_syntax syncronized with the MotionStateAndRecommendationParser on the client.
         """
         # get the comments field for state and recommendation
-        motion_syntax = re.compile('\[motion:(\d+)\]')
+        motion_syntax = re.compile(r'\[motion:(\d+)\]')
         fields = config['motions_comments']
         state_field_id = None
         recommendation_field_id = None

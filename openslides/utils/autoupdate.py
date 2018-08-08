@@ -374,7 +374,7 @@ def to_ordered_dict(d: Optional[Dict]) -> Optional[OrderedDict]:
     return result
 
 
-def inform_changed_data(instances: Union[Iterable[Model], Model], information: Dict[str, Any]=None) -> None:
+def inform_changed_data(instances: Union[Iterable[Model], Model], information: Dict[str, Any] = None) -> None:
     """
     Informs the autoupdate system and the caching system about the creation or
     update of an element. This is done via the AutoupdateBundleMiddleware.
@@ -404,7 +404,7 @@ def inform_changed_data(instances: Union[Iterable[Model], Model], information: D
             bundle[key] = collection_element
 
 
-def inform_deleted_data(elements: Iterable[Tuple[str, int]], information: Dict[str, Any]=None) -> None:
+def inform_deleted_data(elements: Iterable[Tuple[str, int]], information: Dict[str, Any] = None) -> None:
     """
     Informs the autoupdate system and the caching system about the deletion of
     elements. This is done via the AutoupdateBundleMiddleware.
@@ -426,7 +426,7 @@ def inform_deleted_data(elements: Iterable[Tuple[str, int]], information: Dict[s
 
 
 def inform_data_collection_element_list(collection_elements: List[CollectionElement],
-                                        information: Dict[str, Any]=None) -> None:
+                                        information: Dict[str, Any] = None) -> None:
     """
     Informs the autoupdate system about some collection elements. This is
     used just to send some data to all users.

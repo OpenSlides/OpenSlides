@@ -1,11 +1,13 @@
 language: python
-sudo: false
+dist: xenial
+sudo: true
 cache:
   pip: true
   yarn: true
 python:
   - "3.5"
   - "3.6"
+  - "3.7"
 env:
   - TRAVIS_NODE_VERSION="10.5"
 before_install:

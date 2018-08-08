@@ -20,7 +20,7 @@ class BaseAccessPermissions:
         """
         return False
 
-    def get_serializer_class(self, user: CollectionElement=None) -> Serializer:
+    def get_serializer_class(self, user: CollectionElement = None) -> Serializer:
         """
         Returns different serializer classes according to users permissions.
 

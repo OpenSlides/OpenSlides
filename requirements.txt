@@ -3,7 +3,9 @@
 
 # Requirements for development and tests in alphabetical order
 coverage
-flake8
+#flake8
+# Use master of flake8 until flake8 3.6 is released that supports python3.7
+git+https://gitlab.com/pycqa/flake8.git
 isort==4.2.5
 mypy
 fakeredis

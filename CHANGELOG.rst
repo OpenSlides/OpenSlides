@@ -17,6 +17,7 @@ Motions:
  - New table of contents with page numbers and categories in PDF [#3766].
  - Updated pdfMake to 0.1.37 [#3766].
  - Python 3.4 is not supported anymore [#3777].
+ - Support Python 3.7.
 
 
 Version 2.2 (2018-06-06)
