@@ -1,7 +1,9 @@
 from collections import OrderedDict
-from typing import Any, Dict, Iterable, Optional, Type  # noqa
+from typing import Any, Dict, Iterable, Optional, Type, Tuple  # noqa
 
+import django
 from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status  # noqa
 from rest_framework.decorators import detail_route, list_route  # noqa
 from rest_framework.metadata import SimpleMetadata  # noqa
@@ -35,6 +37,8 @@ from rest_framework.serializers import (  # noqa
 from rest_framework.viewsets import GenericViewSet as _GenericViewSet  # noqa
 from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
 from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
+from rest_framework.renderers import JSONRenderer
+from rest_framework.utils.encoders import JSONEncoder
 
 from .access_permissions import BaseAccessPermissions
 from .auth import user_to_collection_user
@@ -62,7 +66,7 @@ class IdManyRelatedField(ManyRelatedField):
         super().bind(field_name, parent)
 
 
-class IdPrimaryKeyRelatedField(PrimaryKeyRelatedField):
+class IdPrimaryKeyRelatedField(RelatedField):
     """
     Field, that renames the field name to FIELD_NAME_id.
 
@@ -83,6 +87,24 @@ class IdPrimaryKeyRelatedField(PrimaryKeyRelatedField):
             # IdManyRelatedField class.
             self.source = field_name[:-len(self.field_name_suffix)]
         super().bind(field_name, parent)
+
+    def to_representation(self, value: Any) -> Dict[str, Any]:
+        if isinstance(value, django.contrib.auth.models.Group):
+            # TODO: make sure that request.user.group is our group and not the django group!
+            collection = 'users/group'
+            id = value.id
+        else:
+            collection = value.get_collection_string()
+            id = value.get_rest_pk()
+        return {'collection': collection, 'id': id}
+
+    def to_internal_value(self, data: Any) -> Any:
+        try:
+            return self.get_queryset().get(pk=data)
+        except ObjectDoesNotExist:
+            self.fail('does_not_exist', pk_value=data)
+        except (TypeError, ValueError):
+            self.fail('incorrect_type', data_type=type(data).__name__)
 
     @classmethod
     def many_init(cls, *args: Any, **kwargs: Any) -> IdManyRelatedField:

@@ -18,6 +18,8 @@ from channels import Group
 from channels.sessions import session_for_reply_channel
 from django.conf import settings
 from django.core.cache import cache, caches
+from rest_framework.utils.encoders import JSONEncoder
+
 
 if TYPE_CHECKING:
     # Dummy import Collection for mypy
@@ -237,7 +239,7 @@ class FullDataCache:
             query = model.objects
 
         # Build a dict from the instance id to the full_data
-        mapping = {instance.pk: json.dumps(model.get_access_permissions().get_full_data(instance))
+        mapping = {instance.pk: json.dumps(model.get_access_permissions().get_full_data(instance), cls=JSONEncoder)
                    for instance in query.all()}
 
         if mapping:
@@ -262,7 +264,7 @@ class FullDataCache:
         redis.hset(
             self.get_cache_key(collection_string),
             id,
-            json.dumps(data))
+            json.dumps(data, cls=JSONEncoder))
 
     def del_element(self, collection_string: str, id: int) -> None:
         """
@@ -383,7 +385,7 @@ class RestrictedDataCache:
         redis.hset(
             self.get_cache_key(user_id),
             "{}/{}".format(collection_string, id),
-            json.dumps(data))
+            json.dumps(data, cls=JSONEncoder))
 
     def del_element(self, user_id: int, collection_string: str, id: int) -> None:
         """

@@ -27,7 +27,7 @@ def has_perm(user: Optional[CollectionElement], perm: str) -> bool:
     else:
         # Get all groups of the user and then see, if one group has the required
         # permission. If the user has no groups, then use group 1.
-        group_ids = user.get_full_data()['groups_id'] or [1]
+        group_ids = [group['id'] for group in user.get_full_data()['groups_id']] or [1]
         for group_id in group_ids:
             group = CollectionElement.from_values(group_collection_string, group_id)
             if perm in group.get_full_data()['permissions']:
