@@ -11,7 +11,9 @@ import {
     MatInputModule,
     MatProgressSpinnerModule,
     MatSidenavModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTableModule,
+    MatPaginatorModule
 } from '@angular/material';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
@@ -53,6 +55,8 @@ library.add(fas);
         MatToolbarModule,
         MatCardModule,
         MatInputModule,
+        MatTableModule,
+        MatPaginatorModule,
         MatProgressSpinnerModule,
         MatSidenavModule,
         MatListModule,
@@ -70,6 +74,8 @@ library.add(fas);
         MatToolbarModule,
         MatCardModule,
         MatInputModule,
+        MatTableModule,
+        MatPaginatorModule,
         MatProgressSpinnerModule,
         MatSidenavModule,
         MatListModule,

@@ -21,6 +21,16 @@ export class Workflow extends BaseModel {
         this.first_state = first_state;
     }
 
+    getStateNameById(id: number): string {
+        let stateName = 'NULL';
+        this.states.forEach(state => {
+            if (id === state.id) {
+                stateName = state.name;
+            }
+        });
+        return stateName;
+    }
+
     deserialize(input: any): this {
         Object.assign(this, input);
         if (input.states instanceof Array) {
