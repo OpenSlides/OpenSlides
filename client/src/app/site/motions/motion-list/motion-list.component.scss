@@ -1,0 +1,68 @@
+table {
+    /* margin-top: 40px; */
+    width: 100%;
+    display: flex;
+}
+
+/** identifier */
+.mat-column-identifier {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    text-align: center;
+    flex: 0 0 70px !important;
+
+    span {
+        display: block;
+    }
+}
+
+/** Title */
+.mat-column-title {
+    width: 100%;
+    flex: 5 0 100 !important;
+    padding-left: 10px;
+
+    .motion-list-title {
+        font-weight: bold;
+    }
+
+    .motion-list-from {
+        display: block;
+        margin-top: 5px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 90%;
+    }
+}
+
+/** State */
+.mat-column-state {
+    flex: 0 0 30 !important;
+
+    fa-icon {
+        font-size: 150%;
+    }
+}
+
+/** has to be in the theme also */
+
+/** hide mat header row */
+.mat-header-row {
+    display: none;
+}
+
+/** size of the mat row  */
+.mat-row {
+    height: 60px;
+}
+
+.custom-table-header {
+    /* display: inline-block; */
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    text-align: right;
+    /* vertical-align: middle; */
+    /** has to be in the theme */
+    background: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}

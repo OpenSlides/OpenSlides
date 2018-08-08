@@ -14,128 +14,52 @@
 
 </mat-toolbar>
 
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
-<mat-card class="os-card card-plus-distance">
-    <div class="app-content">
-        Motion Works
-    </div>
-</mat-card>
+<div class='custom-table-header'>
+    <button mat-button>
+        SORIEREN NACH
+    </button>
+    <button mat-button>
+        FILTER
+    </button>
+</div>
+
+<table mat-table [dataSource]="dataSource" matSort>
+    <!-- identifier column -->
+    <ng-container matColumnDef="identifier">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Bezeichner </th>
+        <td mat-cell *matCellDef="let motion">
+            <span>
+                {{motion.identifier}}
+            </span>
+        </td>
+    </ng-container>
+
+    <!-- title column -->
+    <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Titel </th>
+        <td mat-cell *matCellDef="let motion">
+            <span class='motion-list-title'>{{motion.versions[0].title}}</span>
+            <br>
+            <span class='motion-list-from'>
+                <span translate>von</span>
+                {{motion.submitterAsUser.username}}
+            </span>
+        </td>
+    </ng-container>
+
+    <!-- state column -->
+    <ng-container matColumnDef="state">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+        <td mat-cell *matCellDef="let motion">
+            <fa-icon icon={{getStateIcon(motion.stateName)}}></fa-icon>
+            <!-- <span class='motion.list.state'>
+                {{motion.stateName}}
+            </span> -->
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplayMinWidth"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplayMinWidth"></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[20, 40, 60, 80]"></mat-paginator>
