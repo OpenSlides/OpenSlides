@@ -64,6 +64,7 @@ client/node_modules
 !.vscode/extensions.json
 
 # misc
+Compodoc
 client/.sass-cache
 client/connect.lock
 client/coverage

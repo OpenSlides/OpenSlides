@@ -13,7 +13,8 @@ import {
     MatSidenavModule,
     MatSnackBarModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatSortModule
 } from '@angular/material';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
@@ -33,6 +34,7 @@ import { OsPermsDirective } from './directives/os-perms.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
 import { LegalnoticeDialogComponent } from './components/legal-notice/legal-notice.dialog.component';
 import { PrivacyPolicyDialogComponent } from './components/privacy-policy/privacy-policy.dialog.component';
+// import { CdkTableModule } from '@angular/cdk/table';
 
 library.add(fas);
 
@@ -56,6 +58,7 @@ library.add(fas);
         MatCardModule,
         MatInputModule,
         MatTableModule,
+        MatSortModule,
         MatPaginatorModule,
         MatProgressSpinnerModule,
         MatSidenavModule,
@@ -75,6 +78,7 @@ library.add(fas);
         MatCardModule,
         MatInputModule,
         MatTableModule,
+        MatSortModule,
         MatPaginatorModule,
         MatProgressSpinnerModule,
         MatSidenavModule,

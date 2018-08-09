@@ -39,11 +39,11 @@ export class StartComponent extends BaseComponent implements OnInit {
      * Set title and observe DataStore for changes.
      */
     ngOnInit() {
-        //required dummy translation, cause translations for config values were never set
+        // required dummy translation, cause translations for config values were never set
         const welcomeTitleTranslateDummy = this.translate.instant('Welcome to OpenSlides');
         super.setTitle('Home');
 
-        //set welcome title and text
+        // set welcome title and text
         const welcomeTitleConfig = this.DS.filter(
             Config,
             config => config.key === 'general_event_welcome_title'
@@ -63,7 +63,7 @@ export class StartComponent extends BaseComponent implements OnInit {
         }
         console.log(this.DS.filter(Config, config => config.key === 'general_event_welcome_title'));
 
-        //observe title and text in DS
+        // observe title and text in DS
         this.DS.getObservable().subscribe(newModel => {
             if (newModel instanceof Config) {
                 if (newModel.key === 'general_event_welcome_title') {
