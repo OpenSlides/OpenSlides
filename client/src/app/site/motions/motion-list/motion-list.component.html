@@ -14,7 +14,7 @@
 
 </mat-toolbar>
 
-<div class='custom-table-header'>
+<div class='custom-table-header on-transition-fade'>
     <button mat-button>
         SORIEREN NACH
     </button>
@@ -23,43 +23,47 @@
     </button>
 </div>
 
-<table mat-table [dataSource]="dataSource" matSort>
+<mat-table class='on-transition-fade' [dataSource]="dataSource" matSort>
     <!-- identifier column -->
     <ng-container matColumnDef="identifier">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Bezeichner </th>
-        <td mat-cell *matCellDef="let motion">
-            <span>
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Bezeichner </mat-header-cell>
+        <mat-cell *matCellDef="let motion">
+            <div class='innerTable'>
                 {{motion.identifier}}
-            </span>
-        </td>
+            </div>
+        </mat-cell>
     </ng-container>
 
     <!-- title column -->
     <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Titel </th>
-        <td mat-cell *matCellDef="let motion">
-            <span class='motion-list-title'>{{motion.versions[0].title}}</span>
-            <br>
-            <span class='motion-list-from'>
-                <span translate>von</span>
-                {{motion.submitterAsUser.username}}
-            </span>
-        </td>
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Titel </mat-header-cell>
+        <mat-cell *matCellDef="let motion">
+            <div class='innerTable'>
+                <span class='motion-list-title'>{{motion.versions[0].title}}</span>
+                <br>
+                <span class='motion-list-from'>
+                    <span translate>von</span>
+                    {{motion.submitterAsUser.username}}
+                </span>
+            </div>
+        </mat-cell>
     </ng-container>
 
     <!-- state column -->
     <ng-container matColumnDef="state">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
-        <td mat-cell *matCellDef="let motion">
-            <fa-icon icon={{getStateIcon(motion.stateName)}}></fa-icon>
-            <!-- <span class='motion.list.state'>
-                {{motion.stateName}}
-            </span> -->
-        </td>
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+        <mat-cell *matCellDef="let motion">
+            <div class='innerTable'>
+                <fa-icon icon={{getStateIcon(motion.stateName)}}></fa-icon>
+                <!-- <span class='motion.list.state'>
+                    {{motion.stateName}}
+                </span> -->
+            </div>
+        </mat-cell>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplayMinWidth"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnsToDisplayMinWidth"></tr>
-</table>
+    <mat-header-row *matHeaderRowDef="columnsToDisplayMinWidth"></mat-header-row>
+    <mat-row (click)='selectMotion(row)' *matRowDef="let row; columns: columnsToDisplayMinWidth"></mat-row>
+</mat-table>
 
-<mat-paginator [pageSizeOptions]="[20, 40, 60, 80]"></mat-paginator>
+<mat-paginator class="on-transition-fade" [pageSizeOptions]="[20, 40, 60, 80]"></mat-paginator>

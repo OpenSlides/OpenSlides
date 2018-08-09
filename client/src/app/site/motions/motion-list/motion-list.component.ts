@@ -3,28 +3,8 @@ import { Title } from '@angular/platform-browser';
 import { BaseComponent } from 'app/base.component';
 import { TranslateService } from '@ngx-translate/core';
 import { Motion } from '../../../shared/models/motions/motion';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { MatTable, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Workflow } from '../../../shared/models/motions/workflow';
-
-export interface PeriodicElement {
-    state_id: string;
-    identifier: number;
-    weight: number;
-    symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-    { identifier: 1, state_id: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-    { identifier: 2, state_id: 'Helium', weight: 4.0026, symbol: 'He' },
-    { identifier: 3, state_id: 'Lithium', weight: 6.941, symbol: 'Li' },
-    { identifier: 4, state_id: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-    { identifier: 5, state_id: 'Boron', weight: 10.811, symbol: 'B' },
-    { identifier: 6, state_id: 'Carbon', weight: 12.0107, symbol: 'C' },
-    { identifier: 7, state_id: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-    { identifier: 8, state_id: 'Oxygen', weight: 15.9994, symbol: 'O' },
-    { identifier: 9, state_id: 'Fluorine', weight: 18.9984, symbol: 'F' },
-    { identifier: 10, state_id: 'Neon', weight: 20.1797, symbol: 'Ne' }
-];
 
 @Component({
     selector: 'app-motion-list',
@@ -32,34 +12,73 @@ const ELEMENT_DATA: PeriodicElement[] = [
     styleUrls: ['./motion-list.component.scss']
 })
 export class MotionListComponent extends BaseComponent implements OnInit {
+    /**
+     * Store motion workflows (to check the status of the motions)
+     */
     workflowArray: Array<Workflow>;
-    motionArray: Array<Motion>;
-    dataSource: MatTableDataSource<Motion>;
-    // dataSource: MatTableDataSource<any>;
 
+    /**
+     * Store the motions
+     */
+    motionArray: Array<Motion>;
+
+    /**
+     * Will be processed by the mat-table
+     */
+    dataSource: MatTableDataSource<Motion>;
+
+    @ViewChild(MatTable) table: MatTable<Motion>;
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
-    /** which colummns to display in the table */
+    /**
+     * Use for minimal width
+     */
     columnsToDisplayMinWidth = ['identifier', 'title', 'state'];
-    // columnsToDisplayMinWidth = ['title'];
+    /**
+     * Use for maximal width
+     */
     columnsToDisplayFullWidth = ['identifier', 'title', 'meta', 'state'];
 
+    /**
+     * Constructor implements title and translation Module.
+     * @param titleService
+     * @param translate
+     */
     constructor(titleService: Title, protected translate: TranslateService) {
         super(titleService, translate);
     }
 
+    /**
+     * Init function
+     */
     ngOnInit() {
         super.setTitle('Motions');
-
         this.workflowArray = this.DS.get(Workflow) as Workflow[];
         this.motionArray = this.DS.get(Motion) as Motion[];
         this.dataSource = new MatTableDataSource(this.motionArray);
-        // this.dataSource = new MatTableDataSource(ELEMENT_DATA);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+
+        // Observe DataStore for motions. Initially, executes once for every motion.
+        // The alternative approach is to put the observable as DataSource to the table
+        this.DS.getObservable().subscribe(newModel => {
+            if (newModel instanceof Motion) {
+                this.motionArray.push(newModel as Motion);
+                this.dataSource.data = this.motionArray;
+            }
+        });
     }
 
+    selectMotion(motion) {
+        console.log('clicked a row, :', motion);
+    }
+
+    /**
+     * Get the icon to the coresponding Motion Status
+     * TODO Needs to be more accessible (Motion workflow needs adjustment on the server)
+     * @param stateName the name of the state
+     */
     getStateIcon(stateName) {
         if (stateName === 'accepted') {
             return 'thumbs-up';
@@ -70,6 +89,9 @@ export class MotionListComponent extends BaseComponent implements OnInit {
         }
     }
 
+    /**
+     * Download all motions As PDF and DocX
+     */
     downloadMotionsButton() {
         console.log('Download Motions Button');
     }
