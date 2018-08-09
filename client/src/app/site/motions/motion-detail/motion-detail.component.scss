@@ -1,0 +1,47 @@
+span {
+    margin: 0;
+}
+
+.motion-title {
+    padding-left: 20px;
+    line-height: 100%;
+}
+
+.motion-submitter {
+    display: inline;
+    font-weight: bold;
+    font-size: 70%;
+}
+
+mat-panel-title {
+    fa-icon {
+        margin-right: 35px; //on line with text
+    }
+}
+
+.meta-info-panel {
+    padding-top: 25px;
+    h3 {
+        display: block;
+        font-size: 80%;
+        color: gray;
+    }
+
+    .meta-info-panel-body {
+        padding-left: 55px;
+    }
+}
+
+.content-panel {
+    h3 {
+        font-weight: initial;
+        font-size: 100%;
+        display: block;
+    }
+
+    h4 {
+        display: block;
+        font-weight: bold;
+        font-size: 100%;
+    }
+}

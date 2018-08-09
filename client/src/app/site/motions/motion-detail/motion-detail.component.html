@@ -1,0 +1,63 @@
+<mat-toolbar color='primary'>
+
+    <button class='generic-mini-button on-transition-fade' mat-mini-fab>
+        <fa-icon icon='pen'></fa-icon>
+    </button>
+
+    <!-- motion.identifier -->
+    <!-- motion.versions[0].title -->
+    <div class='motion-title on-transition-fade'>
+        <span translate>Motion</span> {{motion.identifier}} {{motion.currentTitle}}
+        <br>
+        <div class='motion-submitter'>
+            <span translate>by</span> {{motion.submitterName}}
+        </div>
+    </div>
+</mat-toolbar>
+
+<mat-accordion multi='true' class='on-transition-fade'>
+    <mat-expansion-panel [expanded]='true' class='meta-info-panel'>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <fa-icon icon='info-circle' [fixedWidth]="true"></fa-icon>
+                <span translate>Meta information</span>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class='meta-info-panel-body'>
+                <h3 translate>Submitters</h3>
+                {{motion.submitterName}}
+                <h3 translate>Supporters</h3>
+                <h3 translate>Status</h3>
+                {{motion.stateName}}
+                <h3 translate>Empfehlung der ABK</h3>
+                <h3 translate>Category</h3>
+                {{motion.category}}
+                <h3 translate>Origin</h3>
+                <h3 translate>Voting</h3>
+        </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]='true'>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <fa-icon icon='file-signature' [fixedWidth]="true"></fa-icon>
+                <span translate>Personal note</span>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        TEST
+    </mat-expansion-panel>
+    <mat-expansion-panel [expanded]='true' class='content-panel'>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <fa-icon icon='align-left' [fixedWidth]="true"></fa-icon>
+                <span translate>Content</span>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <h3 translate>The assembly may decide:</h3>
+        <div [innerHtml]='motion.currentText'></div>
+        
+        <h4 translate class='motion-reason-label'>Reason</h4>
+        <div [innerHtml]='motion.currentReason'></div>
+
+    </mat-expansion-panel>
+</mat-accordion>

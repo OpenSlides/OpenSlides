@@ -28,6 +28,11 @@ mat-table {
         height: 60px;
     }
 
+    mat-row:hover {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.025);
+    }
+
     /** identifier */
     .mat-column-identifier {
         padding-left: 10px;
