@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { BaseComponent } from 'app/base.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -45,7 +46,12 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      * @param titleService
      * @param translate
      */
-    constructor(titleService: Title, protected translate: TranslateService) {
+    constructor(
+        public router: Router,
+        titleService: Title,
+        protected translate: TranslateService,
+        private route: ActivatedRoute
+    ) {
         super(titleService, translate);
     }
 
@@ -72,6 +78,8 @@ export class MotionListComponent extends BaseComponent implements OnInit {
 
     selectMotion(motion) {
         console.log('clicked a row, :', motion);
+
+        this.router.navigate(['./' + motion.id], { relativeTo: this.route });
     }
 
     /**

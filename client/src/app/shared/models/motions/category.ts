@@ -17,4 +17,8 @@ export class Category extends BaseModel {
         this.name = name;
         this.prefix = prefix;
     }
+
+    public toString = (): string => {
+        return this.prefix + ' - ' + this.name;
+    };
 }

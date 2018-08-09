@@ -4,6 +4,8 @@ import { MotionSubmitter } from './motion-submitter';
 import { MotionLog } from './motion-log';
 import { Config } from '../core/config';
 import { Workflow } from './workflow';
+import { User } from '../users/user';
+import { Category } from './category';
 
 /**
  * Representation of Motion.
@@ -79,6 +81,31 @@ export class Motion extends BaseModel {
     }
 
     /**
+     * returns the most current title from versions
+     */
+    get currentTitle() {
+        if (this.versions[0]) {
+            return this.versions[0].title;
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * returns the most current motion text from versions
+     */
+    get currentText() {
+        return this.versions[0].text;
+    }
+
+    /**
+     * returns the most current motion reason text from versions
+     */
+    get currentReason() {
+        return this.versions[0].reason;
+    }
+
+    /**
      * return the submitters as uses objects
      */
     get submitterAsUser() {
@@ -86,14 +113,39 @@ export class Motion extends BaseModel {
         this.submitters.forEach(submitter => {
             submitterIds.push(submitter.user_id);
         });
-        const users = this.DS.get('users/user', ...submitterIds);
+        const users = this.DS.get(User, ...submitterIds);
         return users;
+    }
+
+    /**
+     * returns the name of the first submitter
+     */
+    get submitterName() {
+        const mainSubmitter = this.DS.get(User, this.submitters[0].user_id) as User;
+        if (mainSubmitter) {
+            return mainSubmitter.username;
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * get the category of a motion as object
+     */
+    get category() {
+        if (this.category_id) {
+            const motionCategory = this.DS.get(Category, this.category_id);
+            return motionCategory;
+        } else {
+            return 'none';
+        }
     }
 
     /**
      * return the workflow state
      *
      * Right now only the default workflow is assumes
+     * TODO: Motion workflow needs to be specific on the server
      */
     get stateName() {
         //get the default workflow

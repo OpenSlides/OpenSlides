@@ -16,17 +16,17 @@
 
 <div class='custom-table-header on-transition-fade'>
     <button mat-button>
-        SORIEREN NACH
+        <span translate>SORT</span>
     </button>
     <button mat-button>
-        FILTER
+        <span translate>FILTER</span>
     </button>
 </div>
 
 <mat-table class='on-transition-fade' [dataSource]="dataSource" matSort>
     <!-- identifier column -->
     <ng-container matColumnDef="identifier">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Bezeichner </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Identifier </mat-header-cell>
         <mat-cell *matCellDef="let motion">
             <div class='innerTable'>
                 {{motion.identifier}}
@@ -36,13 +36,13 @@
 
     <!-- title column -->
     <ng-container matColumnDef="title">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Titel </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Title </mat-header-cell>
         <mat-cell *matCellDef="let motion">
             <div class='innerTable'>
                 <span class='motion-list-title'>{{motion.versions[0].title}}</span>
                 <br>
                 <span class='motion-list-from'>
-                    <span translate>von</span>
+                    <span translate>by</span>
                     {{motion.submitterAsUser.username}}
                 </span>
             </div>
@@ -51,13 +51,10 @@
 
     <!-- state column -->
     <ng-container matColumnDef="state">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header> State </mat-header-cell>
         <mat-cell *matCellDef="let motion">
             <div class='innerTable'>
                 <fa-icon icon={{getStateIcon(motion.stateName)}}></fa-icon>
-                <!-- <span class='motion.list.state'>
-                    {{motion.stateName}}
-                </span> -->
             </div>
         </mat-cell>
     </ng-container>

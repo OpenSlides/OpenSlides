@@ -48,6 +48,10 @@ router-outlet ~ * {
     z-index: 100;
 }
 
+.generic-mini-button {
+    bottom: -28px;
+    z-index: 100;
+}
 .os-card {
     max-width: 90%;
     margin-top: 10px;
