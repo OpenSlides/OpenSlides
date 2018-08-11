@@ -253,10 +253,10 @@ class ConfigVariable:
     the value during setup of the database if the admin uses the respective
     command line option.
     """
-    def __init__(self, name: str, default_value: T, input_type: str='string',
-                 label: str=None, help_text: str=None, choices: ChoiceCallableType=None,
-                 hidden: bool=False, weight: int=0, group: str=None, subgroup: str=None,
-                 validators: ValidatorsType=None, on_change: OnChangeType=None) -> None:
+    def __init__(self, name: str, default_value: T, input_type: str = 'string',
+                 label: str = None, help_text: str = None, choices: ChoiceCallableType = None,
+                 hidden: bool = False, weight: int = 0, group: str = None, subgroup: str = None,
+                 validators: ValidatorsType = None, on_change: OnChangeType = None) -> None:
         if input_type not in INPUT_TYPE_MAPPING:
             raise ValueError(_('Invalid value for config attribute input_type.'))
         if input_type == 'choice' and choices is None:

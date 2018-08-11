@@ -60,7 +60,7 @@ def detect_openslides_type() -> str:
     return openslides_type
 
 
-def get_default_settings_dir(openslides_type: str=None) -> str:
+def get_default_settings_dir(openslides_type: str = None) -> str:
     """
     Returns the default settings path according to the OpenSlides type.
 
@@ -91,7 +91,7 @@ def get_local_settings_dir() -> str:
     return os.path.join('personal_data', 'var')
 
 
-def setup_django_settings_module(settings_path: str =None, local_installation: bool=False) -> None:
+def setup_django_settings_module(settings_path: str = None, local_installation: bool = False) -> None:
     """
     Sets the environment variable ENVIRONMENT_VARIABLE, that means
     'DJANGO_SETTINGS_MODULE', to the given settings.
@@ -131,7 +131,7 @@ def setup_django_settings_module(settings_path: str =None, local_installation: b
     os.environ[ENVIRONMENT_VARIABLE] = settings_module_name
 
 
-def get_default_settings_context(user_data_dir: str=None) -> Dict[str, str]:
+def get_default_settings_context(user_data_dir: str = None) -> Dict[str, str]:
     """
     Returns the default context values for the settings template:
     'openslides_user_data_path', 'import_function' and 'debug'.
@@ -227,7 +227,7 @@ def get_win32_portable_user_data_dir() -> str:
     return os.path.join(get_win32_portable_dir(), 'openslides')
 
 
-def write_settings(settings_dir: str=None, settings_filename: str='settings.py', template: str=None, **context: str) -> str:
+def write_settings(settings_dir: str = None, settings_filename: str = 'settings.py', template: str = None, **context: str) -> str:
     """
     Creates the settings file at the given dir using the given values for the
     file template.

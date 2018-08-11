@@ -12,7 +12,7 @@ class MinMaxIntegerField(models.IntegerField):
     IntegerField with options to set a min- and a max-value.
     """
 
-    def __init__(self, min_value: int=None, max_value: int=None, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, min_value: int = None, max_value: int = None, *args: Any, **kwargs: Any) -> None:
         self.min_value, self.max_value = min_value, max_value
         super(MinMaxIntegerField, self).__init__(*args, **kwargs)
 
@@ -67,7 +67,7 @@ class RESTModelMixin:
         """
         return self.pk  # type: ignore
 
-    def save(self, skip_autoupdate: bool=False, information: Dict[str, str]=None, *args: Any, **kwargs: Any) -> Any:
+    def save(self, skip_autoupdate: bool = False, information: Dict[str, str] = None, *args: Any, **kwargs: Any) -> Any:
         """
         Calls Django's save() method and afterwards hits the autoupdate system.
 
@@ -88,7 +88,7 @@ class RESTModelMixin:
             inform_changed_data(self.get_root_rest_element(), information=information)
         return return_value
 
-    def delete(self, skip_autoupdate: bool=False, information: Dict[str, str]=None, *args: Any, **kwargs: Any) -> Any:
+    def delete(self, skip_autoupdate: bool = False, information: Dict[str, str] = None, *args: Any, **kwargs: Any) -> Any:
         """
         Calls Django's delete() method and afterwards hits the autoupdate system.
 

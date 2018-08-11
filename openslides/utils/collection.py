@@ -51,8 +51,8 @@ ChannelMessageFormat = TypedDict(
 
 
 class CollectionElement:
-    def __init__(self, instance: Model=None, deleted: bool=False, collection_string: str=None,
-                 id: int=None, full_data: Dict[str, Any]=None, information: Dict[str, Any]=None) -> None:
+    def __init__(self, instance: Model = None, deleted: bool = False, collection_string: str = None,
+                 id: int = None, full_data: Dict[str, Any] = None, information: Dict[str, Any] = None) -> None:
         """
         Do not use this. Use the methods from_instance() or from_values().
         """
@@ -86,7 +86,7 @@ class CollectionElement:
             self.get_full_data()
 
     @classmethod
-    def from_instance(cls, instance: Model, deleted: bool=False, information: Dict[str, Any]=None) -> 'CollectionElement':
+    def from_instance(cls, instance: Model, deleted: bool = False, information: Dict[str, Any] = None) -> 'CollectionElement':
         """
         Returns a collection element from a database instance.
 
@@ -97,8 +97,8 @@ class CollectionElement:
         return cls(instance=instance, deleted=deleted, information=information)
 
     @classmethod
-    def from_values(cls, collection_string: str, id: int, deleted: bool=False,
-                    full_data: Dict[str, Any]=None, information: Dict[str, Any]=None) -> 'CollectionElement':
+    def from_values(cls, collection_string: str, id: int, deleted: bool = False,
+                    full_data: Dict[str, Any] = None, information: Dict[str, Any] = None) -> 'CollectionElement':
         """
         Returns a collection element from a collection_string and an id.
 
@@ -210,7 +210,7 @@ class Collection:
     Represents all elements of one collection.
     """
 
-    def __init__(self, collection_string: str, full_data: List[Dict[str, Any]]=None) -> None:
+    def __init__(self, collection_string: str, full_data: List[Dict[str, Any]] = None) -> None:
         """
         Initiates a Collection. A collection_string has to be given. If
         full_data (a list of dictionaries) is not given the method
@@ -295,7 +295,7 @@ def get_model_from_collection_string(collection_string: str) -> Type[Model]:
     return model
 
 
-def format_for_autoupdate(collection_string: str, id: int, action: str, data: Dict[str, Any]=None) -> AutoupdateFormat:
+def format_for_autoupdate(collection_string: str, id: int, action: str, data: Dict[str, Any] = None) -> AutoupdateFormat:
     """
     Returns a dict that can be used for autoupdate.
     """
