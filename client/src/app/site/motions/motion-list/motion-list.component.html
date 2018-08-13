@@ -53,7 +53,7 @@
     <ng-container matColumnDef="state">
         <mat-header-cell *matHeaderCellDef mat-sort-header> State </mat-header-cell>
         <mat-cell *matCellDef="let motion">
-            <div class='innerTable'>
+            <div *ngIf='motion.stateName !== "submitted"' class='innerTable'>
                 <fa-icon icon={{getStateIcon(motion.stateName)}}></fa-icon>
             </div>
         </mat-cell>
@@ -63,4 +63,4 @@
     <mat-row (click)='selectMotion(row)' *matRowDef="let row; columns: columnsToDisplayMinWidth"></mat-row>
 </mat-table>
 
-<mat-paginator class="on-transition-fade" [pageSizeOptions]="[20, 40, 60, 80]"></mat-paginator>
+<mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
