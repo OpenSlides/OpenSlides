@@ -144,7 +144,7 @@ export class Motion extends BaseModel {
     /**
      * return the workflow state
      *
-     * Right now only the default workflow is assumes
+     * Right now only the default workflow is assumed
      * TODO: Motion workflow needs to be specific on the server
      */
     get stateName() {
@@ -155,6 +155,37 @@ export class Motion extends BaseModel {
         //get the workflow for out motion
         const selectedWorkflow = this.DS.get(Workflow, workflowId) as Workflow;
         return selectedWorkflow.getStateNameById(this.state_id);
+    }
+
+    /**
+     * Returns the name of the recommendation.
+     *
+     * Right now only the default workflow is assumed
+     * TODO: Motion workflow needs to be specific on the server
+     */
+    get recommendation() {
+        //get the default workflow
+        const motionsWorkflowConfig = this.DS.filter(Config, config => config.key === 'motions_workflow')[0] as Config;
+        const workflowId = +motionsWorkflowConfig.value;
+        const selectedWorkflow = this.DS.get(Workflow, workflowId) as Workflow;
+        const stateName = selectedWorkflow.getStateNameById(this.recommendation_id);
+        if (stateName !== 'NULL') {
+            return stateName;
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * returns the value of 'config.motions_recommendations_by'
+     */
+    get recomBy() {
+        const motionsRecommendationsByConfig = this.DS.filter(
+            Config,
+            config => config.key === 'motions_recommendations_by'
+        )[0] as Config;
+        const recomByString = motionsRecommendationsByConfig.value;
+        return recomByString;
     }
 
     deserialize(input: any): this {

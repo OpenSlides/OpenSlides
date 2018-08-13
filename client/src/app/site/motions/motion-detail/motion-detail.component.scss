@@ -23,6 +23,8 @@ mat-panel-title {
     padding-top: 25px;
     h3 {
         display: block;
+        margin-top: 12px; //distance between heading and text
+        margin-bottom: 3px; //distance between heading and text
         font-size: 80%;
         color: gray;
     }
