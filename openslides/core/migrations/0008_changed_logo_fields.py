@@ -18,6 +18,7 @@ def logos_available_default_to_database(apps, schema_editor):
     except ConfigStore.DoesNotExist:
         return  # The key is not in the database, nothing to change here
 
+    # Set the default value and save the db entry
     default_value = config.config_variables['logos_available'].default_value
     logos_available.value = default_value
     logos_available.save()
@@ -43,6 +44,10 @@ def move_old_logo_settings(apps, schema_editor):
         except ConfigStore.DoesNotExist:
             logo_pdf_L = ConfigStore(key=new_value_key)
             logo_pdf_L.value = {}
+
+        # Check, if the default was saved into the db. If not, get it and set it to the value
+        if not isinstance(logo_pdf_L.value, dict):
+            logo_pdf_L.value = config.config_variables[new_value_key].default_value
 
         # Move the path to the new configentry
         logo_pdf_L.value['path'] = logo_pdf.value.get('path', '')
