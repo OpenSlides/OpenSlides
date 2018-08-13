@@ -11,10 +11,13 @@
         <!-- example to translate with parameters -->
         <p>{{'Hello user' | translate:username}}</p>
 
-        <button type="button" (click)="DataStoreTest()">DataStoreTest</button>
+        <button mat-button (click)="DataStoreTest()">DataStoreTest</button>
         <br/>
-        <button type="button" (click)="TranslateTest()">Translate in console</button>
+        <button mat-button (click)="TranslateTest()">Translate in console</button>
         <br/>
-        <button type="button" (click)="giveDataStore()">print the dataStore</button>
+        <button mat-button (click)="giveDataStore()">print the dataStore</button>
+        <br/>
+        <input matInput #motionNumber placeholder="Number of Motions to add" value="100">
+        <button mat-button (click)="createMotions(motionNumber.value)">Add Random Motions</button>
     </div>
 </mat-card>
