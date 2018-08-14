@@ -9,6 +9,7 @@ mat-form-field {
         margin-left: auto;
         margin-right: auto;
         width: 90%;
+        max-width: 400px;
     }
 }
 
@@ -26,8 +27,8 @@ mat-form-field {
 }
 
 .form-wrapper {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
 
     mat-spinner {
         position: absolute;
@@ -41,5 +42,5 @@ mat-form-field {
 .login-form {
     padding-top: 60px;
     margin: 0 auto;
-    max-width: 600px;
+    max-width: 400px;
 }

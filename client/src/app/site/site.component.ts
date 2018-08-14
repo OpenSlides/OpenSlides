@@ -10,8 +10,6 @@ import { TranslateService } from '@ngx-translate/core'; //showcase
 import { BaseComponent } from 'app/base.component';
 import { pageTransition, navItemAnim } from 'app/shared/animations';
 import { MatDialog } from '@angular/material';
-import { LegalnoticeDialogComponent } from '../shared/components/legal-notice/legal-notice.dialog.component';
-import { PrivacyPolicyDialogComponent } from '../shared/components/privacy-policy/privacy-policy.dialog.component';
 
 @Component({
     selector: 'app-site',
@@ -111,19 +109,5 @@ export class SiteComponent extends BaseComponent implements OnInit {
     logOutButton() {
         this.authService.logout().subscribe();
         this.router.navigate(['/login']);
-    }
-
-    /**
-     * Opens the legal notice as dialog
-     */
-    openLegalNotice() {
-        const dialogRef = this.dialog.open(LegalnoticeDialogComponent);
-    }
-
-    /**
-     * Opens the privacy Policy as dialog
-     */
-    openPrivacyPolicy() {
-        const dialogRef = this.dialog.open(PrivacyPolicyDialogComponent);
     }
 }

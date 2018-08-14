@@ -4,6 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { SiteComponent } from './site.component';
 
 import { StartComponent } from './start/start.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { LegalNoticeComponent } from './legal-notice/legal-notice.component';
 // import { LoginComponent } from './login/login.component';
 
 /**
@@ -18,6 +20,8 @@ const routes: Routes = [
         component: SiteComponent,
         children: [
             { path: '', component: StartComponent },
+            { path: 'legalnotice', component: LegalNoticeComponent },
+            { path: 'privacypolicy', component: PrivacyPolicyComponent },
             { path: 'agenda', loadChildren: './agenda/agenda.module#AgendaModule' },
             {
                 path: 'assignments',
