@@ -472,6 +472,54 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             });
         };
 
+        obj.copyToModifiedFinalVersion = function (motion, version) {
+            if (!motion.isAllowed('update')) {
+                throw 'No permission to update motion';
+            }
+
+            motion.copyModifiedFinalVersionStrippingLineBreaks();
+
+            Motion.inject(motion);
+            // save change motion object on server
+            Motion.save(motion, {method: 'PATCH'}).then(null, function (error) {
+                // save error: revert all changes by restore
+                // (refresh) original motion object from server
+                Motion.refresh(motion);
+                var message = '';
+                for (var e in error.data) {
+                    message += e + ': ' + error.data[e] + ' ';
+                }
+                $scope.alert = {type: 'danger', msg: message, show: true};
+            });
+        };
+
+        obj.deleteModifiedFinalVersion = function (motion, version) {
+            if (!motion.isAllowed('update')) {
+                throw 'No permission to update motion';
+            }
+
+            if (!motion.getModifiedFinalVersion(version)) {
+                return;
+            }
+
+            motion.modified_final_version = '';
+
+            Motion.inject(motion);
+            // save change motion object on server
+            Motion.save(motion, {method: 'PATCH'}).then(function (success) {
+                $scope.viewChangeRecommendations.mode = 'agreed';
+            }, function (error) {
+                // save error: revert all changes by restore
+                // (refresh) original motion object from server
+                Motion.refresh(motion);
+                var message = '';
+                for (var e in error.data) {
+                    message += e + ': ' + error.data[e] + ' ';
+                }
+                $scope.alert = {type: 'danger', msg: message, show: true};
+            });
+        };
+
         obj.newVersionIncludingChanges = function (motion, version) {
             if (!motion.isAllowed('update')) {
                 throw 'No permission to update motion';

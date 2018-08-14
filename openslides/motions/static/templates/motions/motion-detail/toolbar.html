@@ -1,5 +1,5 @@
 <div class="motion-toolbar">
-    <!-- inline editing -->
+    <!-- inline editing for original mode -->
     <div class="pull-right inline-editing-activator"
          ng-if="motion.isAllowed('update') && version == motion.getVersion(-1).id && viewChangeRecommendations.mode == 'original'">
         <button ng-if="!inlineEditing.active && !has_proposed_changes" ng-click="enableMotionInlineEditing()"
@@ -15,6 +15,23 @@
         <button ng-if="has_proposed_changes" class="btn btn-sm btn-default" disabled
                 title="{{ 'Editing the text is not possible anymore once there are change recommendations.' | translate }}">
             <i class="fa fa-pencil-square-o"></i>
+            <translate>Inline editing</translate>
+        </button>
+    </div>
+
+    <!-- inline editing for modified agreed view -->
+    <div class="pull-right inline-editing-activator"
+         ng-if="motion.isAllowed('update') && version == motion.getVersion(-1).id && viewChangeRecommendations.mode == 'modified_agreed'">
+        <button ng-if="!modifiedFinalVersionInlineEditing.active"
+                ng-click="modifiedFinalVersionInlineEditing.enable()"
+                class="btn btn-sm btn-default">
+            <i class="fa fa-pencil-square-o"></i>
+            <translate>Inline editing</translate>
+        </button>
+        <button ng-if="modifiedFinalVersionInlineEditing.active"
+                ng-click="modifiedFinalVersionInlineEditing.disable()"
+                class="btn btn-sm btn-default">
+            <i class="fa fa-times-circle"></i>
             <translate>Inline editing</translate>
         </button>
     </div>
@@ -85,6 +102,14 @@
                        ng-model="viewChangeRecommendations.mode"
                        ng-checked="viewChangeRecommendations.mode == 'agreed'">
                 <translate>Final version</translate>
+            </label>
+            <label class="btn btn-sm btn-default" ng-if="motion.getModifiedFinalVersion()"
+                   ng-class="{active: (viewChangeRecommendations.mode == 'modified_agreed')}"
+                   ng-click="viewChangeRecommendations.mode = 'modified_agreed'">
+                <input type="radio" name="viewChangeRecommendations.mode" value="modified_agreed"
+                       ng-model="viewChangeRecommendations.mode"
+                       ng-checked="viewChangeRecommendations.mode == 'modified_agreed'">
+                <translate>Modified final version</translate>
             </label>
         </div>
 

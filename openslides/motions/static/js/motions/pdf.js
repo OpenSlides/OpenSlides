@@ -252,7 +252,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 }
 
                 // summary of change recommendations (for motion diff version only)
-                if (params.changeRecommendationMode === "diff" && motion.changeRecommendations.length) {
+                if (params.changeRecommendationMode === 'diff' && motion.changeRecommendations.length) {
                     var columnLineNumbers = [];
                     var columnChangeType = [];
                     angular.forEach(_.orderBy(motion.changeRecommendations, ['line_from']), function(change) {

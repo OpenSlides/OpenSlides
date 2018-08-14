@@ -938,7 +938,7 @@ angular.module('OpenSlidesApp.motions.site', [
                                     {name: gettextCatalog.getString('Original version'), value: 'original'},
                                     {name: gettextCatalog.getString('Changed version'), value: 'changed'},
                                     {name: gettextCatalog.getString('Diff version'), value: 'diff'},
-                                    {name: gettextCatalog.getString('Final version'), value: 'agreed'},
+                                    {name: gettextCatalog.getString('Final version'), value: 'modified_agreed'},
                                 ],
                             },
                             hideExpression: "model.format !== 'pdf'",
@@ -952,7 +952,7 @@ angular.module('OpenSlidesApp.motions.site', [
                                     {name: gettextCatalog.getString('Original version'), value: 'original'},
                                     {name: gettextCatalog.getString('Changed version'), value: 'changed'},
                                     {name: gettextCatalog.getString('Diff version'), value: 'diff', disabled: true},
-                                    {name: gettextCatalog.getString('Final version'), value: 'agreed'},
+                                    {name: gettextCatalog.getString('Final version'), value: 'modified_agreed'},
                                 ],
                             },
                             hideExpression: "model.format === 'pdf'",
@@ -1078,6 +1078,11 @@ angular.module('OpenSlidesApp.motions.site', [
             },
             includeComments: {},
         });
+        // Always change the mode from agreed to modified_agreed. If a motion does not have a modified
+        // final version, the agreed will be taken.
+        if ($scope.params.changeRecommendationMode === 'agreed') {
+            $scope.params.changeRecommendationMode = 'modified_agreed';
+        }
         $scope.motions = motions;
         $scope.singleMotion = singleMotion;
 
@@ -1614,10 +1619,16 @@ angular.module('OpenSlidesApp.motions.site', [
             label: 'Diff version'},
             {mode: 'agreed',
             label: 'Final version'},
+            {mode: 'modified_agreed',
+            label: 'Modified final version'},
         ];
-        var motionDefaultTextMode = Config.get('motions_recommendation_text_mode').value;
+        var motionDefaultRecommendationTextMode = Config.get('motions_recommendation_text_mode').value;
+        // Change to the modified final version, if exists
+        if (motionDefaultRecommendationTextMode === 'agreed' && motion.getModifiedFinalVersion()) {
+            motionDefaultRecommendationTextMode = 'modified_agreed';
+        }
         $scope.projectionMode = _.find($scope.projectionModes, function (mode) {
-            return mode.mode == motionDefaultTextMode;
+            return mode.mode == motionDefaultRecommendationTextMode;
         });
         if (motion.isProjected().length) {
             var modeMapping = motion.isProjectedWithMode();
@@ -1919,6 +1930,17 @@ angular.module('OpenSlidesApp.motions.site', [
                     Config.get('motions_allow_disable_versioning').value);
             }
         );
+        $scope.modifiedFinalVersionInlineEditing = MotionInlineEditing.createInstance($scope, motion,
+            'view-modified-agreed-inline-editor', true, Editor.getOptions('inline'),
+            function (obj) {
+                return motion.getModifiedFinalVersionWithLineBreaks($scope.version);
+            },
+            function (obj) {
+                motion.setModifiedFinalVersionStrippingLineBreaks(obj.editor.getData());
+                motion.disable_versioning = (obj.trivialChange &&
+                    Config.get('motions_allow_disable_versioning').value);
+            }
+        );
         // Wrapper functions for $scope.inlineEditing, to warn other users.
         var editingStoppedCallback;
         $scope.enableMotionInlineEditing = function () {
@@ -1978,7 +2000,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // Change recommendation and amendment viewing
         $scope.viewChangeRecommendations = ChangeRecommendationView;
-        $scope.viewChangeRecommendations.initSite($scope, motion, Config.get('motions_recommendation_text_mode').value);
+        $scope.viewChangeRecommendations.initSite($scope, motion, motionDefaultRecommendationTextMode);
 
         // PDF creating functions
         $scope.pdfExport = function () {
@@ -2083,6 +2105,7 @@ angular.module('OpenSlidesApp.motions.site', [
     function ($scope, MotionChangeRecommendation, ChangeRecommendationTextForm, diffService, change, ErrorMessage) {
         $scope.alert = {};
         $scope.model = angular.copy(change);
+        $scope.model._change_object = undefined;
 
         // get all form fields
         $scope.formFields = ChangeRecommendationTextForm.getFormFields(change.line_from, change.line_to);

@@ -317,6 +317,7 @@ class MotionVersionSerializer(ModelSerializer):
             'title',
             'text',
             'amendment_paragraphs',
+            'modified_final_version',
             'reason',)
 
 
@@ -369,6 +370,7 @@ class MotionSerializer(ModelSerializer):
     comments = MotionCommentsJSONSerializerField(required=False)
     log_messages = MotionLogSerializer(many=True, read_only=True)
     polls = MotionPollSerializer(many=True, read_only=True)
+    modified_final_version = CharField(allow_blank=True, required=False, write_only=True)
     reason = CharField(allow_blank=True, required=False, write_only=True)
     state_required_permission_to_see = SerializerMethodField()
     text = CharField(write_only=True, allow_blank=True)
@@ -392,6 +394,7 @@ class MotionSerializer(ModelSerializer):
             'title',
             'text',
             'amendment_paragraphs',
+            'modified_final_version',
             'reason',
             'versions',
             'active_version',
@@ -418,6 +421,9 @@ class MotionSerializer(ModelSerializer):
     def validate(self, data):
         if 'text'in data:
             data['text'] = validate_html(data['text'])
+
+        if 'modified_final_version' in data:
+            data['modified_final_version'] = validate_html(data['modified_final_version'])
 
         if 'reason' in data:
             data['reason'] = validate_html(data['reason'])
@@ -451,6 +457,7 @@ class MotionSerializer(ModelSerializer):
         motion.title = validated_data['title']
         motion.text = validated_data['text']
         motion.amendment_paragraphs = validated_data.get('amendment_paragraphs')
+        motion.modified_final_version = validated_data.get('modified_final_version', '')
         motion.reason = validated_data.get('reason', '')
         motion.identifier = validated_data.get('identifier')
         motion.category = validated_data.get('category')
@@ -489,8 +496,8 @@ class MotionSerializer(ModelSerializer):
         else:
             version = motion.get_last_version()
 
-        # Title, text, reason.
-        for key in ('title', 'text', 'amendment_paragraphs', 'reason'):
+        # Title, text, reason, ...
+        for key in ('title', 'text', 'amendment_paragraphs', 'modified_final_version', 'reason'):
             if key in validated_data.keys():
                 setattr(version, key, validated_data[key])
 

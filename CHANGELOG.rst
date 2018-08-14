@@ -15,9 +15,13 @@ Motions:
  - New feature to customize workflows and states [#3772].
  - New config options to show logos on the right side in PDF [#3768].
  - New table of contents with page numbers and categories in PDF [#3766].
- - Updated pdfMake to 0.1.37 [#3766].
+ - New teporal field "modified final version" where the final version can
+   be edited [#3781].
+
+ Core:
  - Python 3.4 is not supported anymore [#3777].
  - Support Python 3.7.
+ - Updated pdfMake to 0.1.37 [#3766].
 
 
 Version 2.2 (2018-06-06)
