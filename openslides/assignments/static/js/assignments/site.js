@@ -708,7 +708,7 @@ angular.module('OpenSlidesApp.assignments.site', [
 
         // add dynamic form fields
         var options = $filter('orderBy')(assignmentpoll.options, 'weight');
-        options.forEach(function(option) {
+        _.forEach(options, function(option) {
             var defaultValue;
             if (assignmentpoll.pollmethod == 'yna' || assignmentpoll.pollmethod == 'yn') {
                 defaultValue = {};
@@ -783,35 +783,60 @@ angular.module('OpenSlidesApp.assignments.site', [
                 });
             }
         });
-        // add general form fields
-        $scope.formFields.push(
+        if (assignmentpoll.pollmethod == 'votes'){
+            $scope.formFields.push(
                 {
-                    key: 'votesvalid',
+                    key: 'votesabstain',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Valid ballots'),
+                        label: gettextCatalog.getString('Abstain'),
                         type: 'number',
                         min: -2,
                     }
                 },
                 {
-                    key: 'votesinvalid',
+                    key: 'votesno',
                     type: 'input',
                     templateOptions: {
-                        label: gettextCatalog.getString('Invalid ballots'),
-                        type: 'number',
-                        min: -2,
-                    }
-                },
-                {
-                    key: 'votescast',
-                    type: 'input',
-                    templateOptions: {
-                        label: gettextCatalog.getString('Casted ballots'),
+                        label: gettextCatalog.getString('No'),
                         type: 'number',
                         min: -2,
                     }
                 }
+            );
+        }
+        // add general form fields
+        $scope.formFields.push(
+            {
+                template: '<hr class="smallhr">',
+            },
+            {
+                key: 'votesvalid',
+                type: 'input',
+                templateOptions: {
+                    label: gettextCatalog.getString('Valid ballots'),
+                    type: 'number',
+                    min: -2,
+                }
+            },
+            {
+                key: 'votesinvalid',
+                type: 'input',
+                templateOptions: {
+                    label: gettextCatalog.getString('Invalid ballots'),
+                    type: 'number',
+                    min: -2,
+                }
+            },
+            {
+                key: 'votescast',
+                type: 'input',
+                templateOptions: {
+                    label: gettextCatalog.getString('Casted ballots'),
+                    type: 'number',
+                    min: -2,
+                }
+            }
         );
 
         // save assignmentpoll
@@ -820,22 +845,22 @@ angular.module('OpenSlidesApp.assignments.site', [
             if (assignmentpoll.pollmethod == 'yna') {
                 assignmentpoll.options.forEach(function(option) {
                     votes.push({
-                        "Yes": poll['yes_' + option.candidate_id],
-                        "No": poll['no_' + option.candidate_id],
-                        "Abstain": poll['abstain_' + option.candidate_id]
+                        'Yes': poll['yes_' + option.candidate_id],
+                        'No': poll['no_' + option.candidate_id],
+                        'Abstain': poll['abstain_' + option.candidate_id]
                     });
                 });
             } else if (assignmentpoll.pollmethod == 'yn') {
                     assignmentpoll.options.forEach(function(option) {
                         votes.push({
-                            "Yes": poll['yes_' + option.candidate_id],
-                            "No": poll['no_' + option.candidate_id]
+                            'Yes': poll['yes_' + option.candidate_id],
+                            'No': poll['no_' + option.candidate_id]
                             });
                         });
             } else {
                 assignmentpoll.options.forEach(function(option) {
                     votes.push({
-                        "Votes": poll['vote_' + option.candidate_id],
+                        'Votes': poll['vote_' + option.candidate_id],
                     });
                 });
             }
@@ -843,9 +868,11 @@ angular.module('OpenSlidesApp.assignments.site', [
             poll.DSUpdate({
                 assignment_id: poll.assignment_id,
                 votes: votes,
+                votesabstain: poll.votesabstain,
+                votesno: poll.votesno,
                 votesvalid: poll.votesvalid,
                 votesinvalid: poll.votesinvalid,
-                votescast: poll.votescast
+                votescast: poll.votescast,
             })
             .then(function(success) {
                 $scope.alert.show = false;

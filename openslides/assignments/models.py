@@ -19,7 +19,7 @@ from openslides.poll.models import (
 )
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
-from openslides.utils.models import RESTModelMixin
+from openslides.utils.models import MinMaxIntegerField, RESTModelMixin
 
 from .access_permissions import AssignmentAccessPermissions
 
@@ -422,6 +422,11 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,  # type: ignore
     description = models.CharField(
         max_length=79,
         blank=True)
+
+    votesabstain = MinMaxIntegerField(null=True, blank=True, min_value=-2)
+    """ General abstain votes, used for pollmethod 'votes' """
+    votesno = MinMaxIntegerField(null=True, blank=True, min_value=-2)
+    """ General no votes, used for pollmethod 'votes' """
 
     class Meta:
         default_permissions = ()
