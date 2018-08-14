@@ -125,6 +125,7 @@
   </div>
 
   <h3 translate>Election result</h3>
+  <template-hook hook-name="assignmentPollVotingHeader"></template-hook>
   <template-hook hook-name="assignmentPollNewBallotButton">
     <button os-perms="assignments.can_manage" ng-show="assignment.phase !== 2" ng-click="createBallot()"
         class="btn btn-default btn-sm">
