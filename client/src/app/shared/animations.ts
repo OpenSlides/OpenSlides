@@ -1,10 +1,12 @@
-import { trigger, animate, transition, style, query, stagger, group, state } from '@angular/animations';
+import { trigger, animate, transition, style, query, stagger, group, state, sequence } from '@angular/animations';
 
 export const pageTransition = trigger('pageTransition', [
     transition('* => *', [
         /** keep the dom clean - let all items "just" enter */
         query(':enter mat-card', [style({ opacity: 0 })], { optional: true }),
         query(':enter .on-transition-fade', [style({ opacity: 0 })], { optional: true }),
+        query(':enter mat-row', [style({ opacity: 0 })], { optional: true }),
+        query(':enter mat-expansion-panel', [style({ opacity: 0 })], { optional: true }),
 
         /** parallel vanishing */
         group([
@@ -14,6 +16,12 @@ export const pageTransition = trigger('pageTransition', [
             }),
             /** how the material cards are leaving */
             query(':leave mat-card', [style({ opacity: 1 }), animate('0.2s', style({ opacity: 0 }))], {
+                optional: true
+            }),
+            query(':leave mat-row', [style({ opacity: 1 }), animate('0.2s', style({ opacity: 0 }))], {
+                optional: true
+            }),
+            query(':leave mat-expansion-panel', [style({ opacity: 1 }), animate('0.2s', style({ opacity: 0 }))], {
                 optional: true
             })
         ]),
@@ -29,6 +37,24 @@ export const pageTransition = trigger('pageTransition', [
                 ':enter mat-card',
                 /** stagger = "one after another" with a distance of 50ms" */
                 stagger(50, [
+                    style({ transform: 'translateY(50px)' }),
+                    animate('300ms ease-in-out', style({ transform: 'translateY(0px)', opacity: 1 }))
+                ]),
+                { optional: true }
+            ),
+            query(
+                ':enter mat-row',
+                /** stagger = "one after another" with a distance of 50ms" */
+                stagger(30, [
+                    style({ transform: 'translateY(24px)' }),
+                    animate('200ms ease-in-out', style({ transform: 'translateY(0px)', opacity: 1 }))
+                ]),
+                { optional: true }
+            ),
+            query(
+                ':enter mat-expansion-panel',
+                /** stagger = "one after another" with a distance of 50ms" */
+                stagger(100, [
                     style({ transform: 'translateY(50px)' }),
                     animate('300ms ease-in-out', style({ transform: 'translateY(0px)', opacity: 1 }))
                 ]),

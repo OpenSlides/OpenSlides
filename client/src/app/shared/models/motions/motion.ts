@@ -154,7 +154,16 @@ export class Motion extends BaseModel {
         const workflowId = +motionsWorkflowConfig.value;
         //get the workflow for out motion
         const selectedWorkflow = this.DS.get(Workflow, workflowId) as Workflow;
-        return selectedWorkflow.getStateNameById(this.state_id);
+        const stateName = selectedWorkflow.getStateNameById(this.state_id);
+        if (stateName !== 'NULL') {
+            return stateName;
+        } else {
+            return '';
+        }
+    }
+
+    get possibleStates() {
+        return '';
     }
 
     /**

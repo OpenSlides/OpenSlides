@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LegalnoticeDialogComponent } from './legal-notice.dialog.component';
+import { LegalNoticeComponent } from './legal-notice.component';
 
-describe('LegalnoticeDialogComponent', () => {
-    let component: LegalnoticeDialogComponent;
-    let fixture: ComponentFixture<LegalnoticeDialogComponent>;
+describe('LegalNoticeComponent', () => {
+    let component: LegalNoticeComponent;
+    let fixture: ComponentFixture<LegalNoticeComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [LegalnoticeDialogComponent]
+            declarations: [LegalNoticeComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(LegalnoticeDialogComponent);
+        fixture = TestBed.createComponent(LegalNoticeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

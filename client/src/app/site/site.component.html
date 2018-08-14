@@ -72,16 +72,29 @@
                 <fa-icon icon='cog'></fa-icon>
                 <span translate>Settings</span>
             </a>
+            <mat-divider></mat-divider>
+            <a [@navItemAnim] *appOsPerms="['core.can_see_projector']" mat-list-item routerLink='/projector' routerLinkActive='active'
+                (click)='isMobile ? sideNav.toggle() : null'>
+                <fa-icon icon='video'></fa-icon>
+                <span translate>Projector</span>
+            </a>
         </mat-nav-list>
 
 
         <footer>
-            <button mat-button (click)='openLegalNotice()'>
-                <span translate>Legal Notice</span>
+            <button mat-button>
+                <a routerLink='/legalnotice' (click)='isMobile ? sideNav.toggle() : null'>
+                    <span translate>Legal Notice</span>
+                </a>
             </button>
-            <button mat-button (click)='openPrivacyPolicy()'>
+            <button mat-button>
+                <a routerLink='/privacypolicy' (click)='isMobile ? sideNav.toggle() : null'>
+                    <span translate>Privacy Policy</span>
+                </a>
+            </button>
+            <!-- <button mat-button (click)='openPrivacyPolicy()'>
                 <span translate>Privacy Policy</span>
-            </button>
+            </button> -->
             <br>
             <span align="center">© Copyright by
                 <a href='https://openslides.org/'>OpenSlides</a>
@@ -103,16 +116,10 @@
         <button mat-icon-button (click)='sideNav.toggle()'>
             <fa-icon icon='search'></fa-icon>
         </button>
-
     </mat-toolbar>
 
     <!-- continue with <mat-toolbar> in the app-->
     <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
         <router-outlet #o="outlet"></router-outlet>
     </main>
-
-    <!-- the global projector button -->
-    <!-- <button class='projector-button' mat-fab>
-        <fa-icon icon='video'></fa-icon>
-    </button> -->
 </mat-sidenav-container>

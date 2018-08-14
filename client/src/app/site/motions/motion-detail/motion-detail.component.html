@@ -26,25 +26,62 @@
         </mat-expansion-panel-header>
         <div class='meta-info-panel-body'>
 
-            <h3 translate *ngIf="motion.submitterName">Submitters</h3>
-            {{motion.submitterName}}
+            <div *ngIf="motion.submitterName">
+                <h3 translate>Submitters</h3>
+                {{motion.submitterName}}
+            </div>
 
-            <h3 translate *ngIf='motion.supporters_id && motion.supporters_id.length > 0'>Supporters</h3>
+            <div *ngIf='motion.supporters_id && motion.supporters_id.length > 0'>
+                <h3>translate>Supporters</h3>
+                <!-- print all motion supporters -->
+            </div>
 
-            <h3 translate *ngIf='motion.state_id'>Status</h3>
-            {{motion.stateName}}
+            <div *ngIf='motion.state_id'>
+                <h3>
+                    <a [matMenuTriggerFor]="stateMenu">
+                        <span translate>Status</span>
+                        <fa-icon icon='cog'></fa-icon>
+                    </a>
+                </h3>
+                {{motion.stateName}}
+            </div>
 
-            <h3 translate *ngIf='motion.recommendation_id'>{{motion.recomBy}}</h3>
-            <!-- config.get(motions_recommendations_by) -->
-            {{motion.recommendation}}
+            <div *ngIf='motion.recommendation_id'>
+                <h3>
+                    <a [matMenuTriggerFor]="stateMenu">
+                        <span>{{motion.recomBy}}</span>
+                        <fa-icon icon='cog'></fa-icon>
+                    </a>
+                </h3>
+                {{motion.recommendation}}
+            </div>
 
-            <h3 translate *ngIf="motion.category_id">Category</h3>
-            {{motion.category}}
+            <div *ngIf="motion.category_id">
+                <h3>
+                    <a [matMenuTriggerFor]="categoryMenu">
+                        <span translate>Category</span>
+                        <fa-icon icon='cog'></fa-icon>
+                    </a>
+                </h3>
+                {{motion.category}}
+            </div>
 
-            <h3 translate *ngIf="motion.origin">Origin</h3>
-            {{motion.origin}}
+            <div *ngIf="motion.origin">
+                <h3>
+                    <span translate>Origin</span>
+                    <fa-icon icon='cog'></fa-icon>
+                </h3>
+                <span>{{motion.origin}}</span>
 
-            <h3 translate *ngIf='motion.polls && motion.polls.length > 0'>Voting</h3>
+                <br>
+                <mat-form-field>
+                    <input matInput #origin placeholder='Origin' value={{motion.origin}}>
+                </mat-form-field>
+            </div>
+
+            <div *ngIf='motion.polls && motion.polls.length > 0'>
+                <h3 translate>Voting</h3>
+            </div>
         </div>
     </mat-expansion-panel>
     <!-- <mat-expansion-panel [expanded]='true'> -->
@@ -73,3 +110,15 @@
 
     </mat-expansion-panel>
 </mat-accordion>
+
+<!-- dummy values -->
+<mat-menu #stateMenu="matMenu">
+    <button mat-menu-item translate>Accept</button>
+    <button mat-menu-item translate>Reject</button>
+    <button mat-menu-item translate>Do not decice</button>
+</mat-menu>
+
+<mat-menu #categoryMenu="matMenu">
+    <button mat-menu-item translate>B - Bildung</button>
+    <button mat-menu-item translate>T - Test</button>
+</mat-menu>

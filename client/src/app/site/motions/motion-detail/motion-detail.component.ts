@@ -27,6 +27,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
                     if (newModel.id === +params.id) {
                         this.motion = newModel as Motion;
                         console.log('this.motion = ', this.motion);
+                        // console.log('motion state name: ', this.motion.stateName);
                     }
                 }
             });
@@ -35,6 +36,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
 
     ngOnInit() {
         console.log('(init)the motion: ', this.motion);
+        console.log('motion state name: ', this.motion.stateName);
     }
 
     downloadSingleMotionButton() {

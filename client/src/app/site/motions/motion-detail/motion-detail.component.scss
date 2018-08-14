@@ -21,12 +21,36 @@ mat-panel-title {
 
 .meta-info-panel {
     padding-top: 25px;
+
+    a:hover {
+        cursor: pointer;
+    }
+
     h3 {
         display: block;
         margin-top: 12px; //distance between heading and text
         margin-bottom: 3px; //distance between heading and text
         font-size: 80%;
         color: gray;
+
+        fa-icon {
+            margin-left: 5px;
+        }
+    }
+
+    mat-form-field {
+        margin-top: 12px; //distance between heading and text
+    }
+
+    .mat-form-field-label {
+        font-size: 12pt;
+        color: gray;
+    }
+
+    .mat-form-field-label-wrapper {
+        fa-icon {
+            margin-left: 5px;
+        }
     }
 
     .meta-info-panel-body {

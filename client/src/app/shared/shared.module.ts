@@ -32,9 +32,6 @@ import { TranslateModule } from '@ngx-translate/core';
 // directives
 import { OsPermsDirective } from './directives/os-perms.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
-import { LegalnoticeDialogComponent } from './components/legal-notice/legal-notice.dialog.component';
-import { PrivacyPolicyDialogComponent } from './components/privacy-policy/privacy-policy.dialog.component';
-// import { CdkTableModule } from '@angular/cdk/table';
 
 library.add(fas);
 
@@ -91,7 +88,6 @@ library.add(fas);
         TranslateModule,
         OsPermsDirective
     ],
-    declarations: [OsPermsDirective, DomChangeDirective, LegalnoticeDialogComponent, PrivacyPolicyDialogComponent],
-    entryComponents: [LegalnoticeDialogComponent, PrivacyPolicyDialogComponent]
+    declarations: [OsPermsDirective, DomChangeDirective]
 })
 export class SharedModule {}
