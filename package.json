@@ -1,0 +1,35 @@
+{
+  "name": "openslides",
+  "private": true,
+  "scripts": {
+    "prepublish": "bower install && gulp",
+    "karma": "karma start tests/karma/karma.conf.js",
+    "karma:watch": "karma start tests/karma/karma.conf.js --single-run=false"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.5.11",
+    "bower": "^1.8.0",
+    "gulp": "~4.0.0",
+    "gulp-angular-gettext": "^2.2.0",
+    "gulp-angular-templatecache": "^2.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssnano": "^2.1.2",
+    "gulp-if": "^2.0.2",
+    "gulp-inject-string": "^1.1.0",
+    "gulp-jshint": "^2.0.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-uglify": "^2.1.2",
+    "jasmine-core": "^2.6.1",
+    "jshint": "^2.9.4",
+    "karma": "^1.5.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "main-bower-files": "^2.13.1",
+    "sprintf-js": "^1.0.3",
+    "through2": "^2.0.3",
+    "yargs": "^7.1.0"
+  }
+}
