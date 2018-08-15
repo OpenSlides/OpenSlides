@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.urls import reverse
 from django.utils.translation import ugettext
 from django_redis import get_redis_connection
@@ -25,9 +26,9 @@ class RetrieveItem(TestCase):
         config['general_system_enable_anonymous'] = True
         self.item = Topic.objects.create(title='test_title_Idais2pheepeiz5uph1c').agenda_item
 
-    def test_normal_by_anonymous_without_perm_to_see_hidden_items(self):
+    def test_normal_by_anonymous_without_perm_to_see_internal_items(self):
         group = get_user_model().groups.field.related_model.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
-        permission_string = 'agenda.can_see_hidden_items'
+        permission_string = 'agenda.can_see_internal_items'
         app_label, codename = permission_string.split('.')
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
         group.permissions.remove(permission)
@@ -36,12 +37,27 @@ class RetrieveItem(TestCase):
         response = self.client.get(reverse('item-detail', args=[self.item.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_hidden_by_anonymous_without_perm_to_see_hidden_items(self):
+    def test_hidden_by_anonymous_without_manage_perms(self):
+        response = self.client.get(reverse('item-detail', args=[self.item.pk]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_hidden_by_anonymous_with_manage_perms(self):
         group = get_user_model().groups.field.related_model.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
-        permission_string = 'agenda.can_see_hidden_items'
+        permission_string = 'agenda.can_manage'
+        app_label, codename = permission_string.split('.')
+        permission = Permission.objects.get(content_type__app_label=app_label, codename=codename)
+        group.permissions.add(permission)
+        response = self.client.get(reverse('item-detail', args=[self.item.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_internal_by_anonymous_without_perm_to_see_internal_items(self):
+        group = get_user_model().groups.field.related_model.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
+        permission_string = 'agenda.can_see_internal_items'
         app_label, codename = permission_string.split('.')
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
         group.permissions.remove(permission)
+        self.item.type = Item.INTERNAL_ITEM
+        self.item.save()
         response = self.client.get(reverse('item-detail', args=[self.item.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(sorted(response.data.keys()), sorted((
@@ -56,6 +72,7 @@ class RetrieveItem(TestCase):
             'comment',
             'closed',
             'type',
+            'is_internal',
             'is_hidden',
             'duration',
             'weight',
@@ -101,13 +118,15 @@ class TestDBQueries(TestCase):
         * 1 request to get all speakers,
         * 3 requests to get the assignments, motions and topics and
 
+        * 1 request to get an agenda item (why?)
+
         * 2 requests for the motionsversions.
 
         TODO: The last two request for the motionsversions are a bug.
         """
         self.client.force_login(User.objects.get(pk=1))
         get_redis_connection("default").flushall()
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(15):
             self.client.get(reverse('item-list'))
 
     def test_anonymous(self):
@@ -118,12 +137,14 @@ class TestDBQueries(TestCase):
         * 1 request to get all speakers,
         * 3 requests to get the assignments, motions and topics and
 
+        * 1 request to get an agenda item (why?)
+
         * 2 requests for the motionsversions.
 
         TODO: The last two request for the motionsversions are a bug.
         """
         get_redis_connection("default").flushall()
-        with self.assertNumQueries(10):
+        with self.assertNumQueries(11):
             self.client.get(reverse('item-list'))
 
 
@@ -410,8 +431,8 @@ class Numbering(TestCase):
         self.assertEqual(Item.objects.get(pk=self.item_2_1.pk).item_number, 'II.1')
         self.assertEqual(Item.objects.get(pk=self.item_3.pk).item_number, 'III')
 
-    def test_with_hidden_item(self):
-        self.item_2.type = Item.HIDDEN_ITEM
+    def test_with_internal_item(self):
+        self.item_2.type = Item.INTERNAL_ITEM
         self.item_2.save()
 
         response = self.client.post(reverse('item-numbering'))
@@ -422,9 +443,9 @@ class Numbering(TestCase):
         self.assertEqual(Item.objects.get(pk=self.item_2_1.pk).item_number, '')
         self.assertEqual(Item.objects.get(pk=self.item_3.pk).item_number, '2')
 
-    def test_reset_numbering_with_hidden_item(self):
+    def test_reset_numbering_with_internal_item(self):
         self.item_2.item_number = 'test_number_Cieghae6ied5ool4hiem'
-        self.item_2.type = Item.HIDDEN_ITEM
+        self.item_2.type = Item.INTERNAL_ITEM
         self.item_2.save()
         self.item_2_1.item_number = 'test_number_roQueTohg7fe1Is7aemu'
         self.item_2_1.save()

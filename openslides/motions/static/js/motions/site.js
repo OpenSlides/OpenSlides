@@ -442,8 +442,9 @@ angular.module('OpenSlidesApp.motions.site', [
     'Workflow',
     'Agenda',
     'AgendaTree',
-    function ($filter, gettextCatalog, operator, Editor, MotionComment, Category,
-        Config, Mediafile, MotionBlock, Tag, User, Workflow, Agenda, AgendaTree) {
+    'ShowAsAgendaItemField',
+    function ($filter, gettextCatalog, operator, Editor, MotionComment, Category, Config,
+        Mediafile, MotionBlock, Tag, User, Workflow, Agenda, AgendaTree, ShowAsAgendaItemField) {
         return {
             // ngDialog for motion form
             // If motion is given and not null, we're editing an already existing motion
@@ -540,15 +541,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
                 // show as agenda item + parent item
                 if (isCreateForm) {
-                    formFields.push({
-                        key: 'showAsAgendaItem',
-                        type: 'checkbox',
-                        templateOptions: {
-                            label: gettextCatalog.getString('Show as agenda item'),
-                            description: gettextCatalog.getString('If deactivated the motion appears as internal item on agenda.')
-                        },
-                        hide: !(operator.hasPerms('motions.can_manage') && operator.hasPerms('agenda.can_manage'))
-                    });
+                    formFields.push(ShowAsAgendaItemField('motions.can_manage'));
                     formFields.push({
                         key: 'agenda_parent_id',
                         type: 'select-single',
@@ -2223,7 +2216,10 @@ angular.module('OpenSlidesApp.motions.site', [
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
 
-        $scope.model = {};
+        $scope.model = {
+            agenda_type: parseInt(Config.get('agenda_new_items_default_visibility').value),
+        };
+
         $scope.alert = {};
 
         // Check whether this is a new amendment.
@@ -2279,8 +2275,6 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // save motion
         $scope.save = function (motion, gotoDetailView) {
-            motion.agenda_type = motion.showAsAgendaItem ? 1 : 2;
-
             if (isAmendment && motion.paragraphNo !== undefined) {
                 var orig_paragraphs = parentMotion.getTextParagraphs(parentMotion.active_version, false);
                 motion.amendment_paragraphs = orig_paragraphs.map(function (_, idx) {

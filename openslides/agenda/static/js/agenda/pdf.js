@@ -17,23 +17,15 @@ angular.module('OpenSlidesApp.agenda.pdf', ['OpenSlidesApp.core.pdf'])
         // generate the item list with all subitems
         var createItemList = function() {
             var agenda_items = [];
-            angular.forEach(items, function (item) {
-                if (item.is_hidden === false) {
-
-                    var itemIndent = item.parentCount * 20;
+            _.forEach(items, function (item) {
+                if (item.is_public) {
+                    var itemIndent = item.parentCount * 15;
 
                     var itemStyle;
                     if (item.parentCount === 0) {
                         itemStyle = 'listParent';
                     } else {
                         itemStyle = 'listChild';
-                    }
-
-                    var itemNumberWidth;
-                    if (item.item_number === "") {
-                        itemNumberWidth = 0;
-                    } else {
-                        itemNumberWidth = 60;
                     }
 
                     var agendaJsonString = {
@@ -44,7 +36,7 @@ angular.module('OpenSlidesApp.agenda.pdf', ['OpenSlidesApp.core.pdf'])
                                 text: ''
                             },
                             {
-                                width: itemNumberWidth,
+                                width: 60,
                                 text: item.item_number
                             },
                             {

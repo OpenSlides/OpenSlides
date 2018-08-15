@@ -46,7 +46,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             # done in the specific method. See below.
         elif self.action in ('partial_update', 'update'):
             result = (has_perm(self.request.user, 'agenda.can_see') and
-                      has_perm(self.request.user, 'agenda.can_see_hidden_items') and
+                      has_perm(self.request.user, 'agenda.can_see_internal_items') and
                       has_perm(self.request.user, 'agenda.can_manage'))
         elif self.action in ('speak', 'sort_speakers'):
             result = (has_perm(self.request.user, 'agenda.can_see') and
@@ -62,13 +62,14 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         """
         Customized view endpoint to update all children if, the item type has changed.
         """
-        hidden = self.get_object().type == Item.HIDDEN_ITEM
+        old_type = self.get_object().type
 
         result = super().update(*args, **kwargs)
 
         # update all children, if the item type has changed
         item = self.get_object()
-        if hidden != (item.type == Item.HIDDEN_ITEM):
+
+        if old_type != item.type:
             items_to_update = []
 
             # rekursively add children to items_to_update

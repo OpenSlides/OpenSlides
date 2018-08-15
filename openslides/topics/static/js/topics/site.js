@@ -68,7 +68,9 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
     'Mediafile',
     'Agenda',
     'AgendaTree',
-    function ($filter, gettextCatalog, operator, Editor, Mediafile, Agenda, AgendaTree) {
+    'ShowAsAgendaItemField',
+    function ($filter, gettextCatalog, operator, Editor, Mediafile, Agenda,
+        AgendaTree, ShowAsAgendaItemField) {
         return {
             // ngDialog for topic form
             getDialog: function (topic) {
@@ -120,15 +122,7 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
 
                 // show as agenda item + parent item
                 if (isCreateForm) {
-                    formFields.push({
-                        key: 'showAsAgendaItem',
-                        type: 'checkbox',
-                        templateOptions: {
-                            label: gettextCatalog.getString('Show as agenda item'),
-                            description: gettextCatalog.getString('If deactivated it appears as internal item on agenda.')
-                        },
-                        hide: !operator.hasPerms('agenda.can_manage')
-                    });
+                    formFields.push(ShowAsAgendaItemField('agenda.can_manage'));
                     formFields.push({
                         key: 'agenda_parent_id',
                         type: 'select-single',
@@ -187,17 +181,16 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
     'Topic',
     'TopicForm',
     'Agenda',
+    'Config',
     'ErrorMessage',
-    function($scope, $state, Topic, TopicForm, Agenda, ErrorMessage) {
-        $scope.topic = {};
-        $scope.model = {};
-        $scope.model.showAsAgendaItem = true;
+    function($scope, $state, Topic, TopicForm, Agenda, Config, ErrorMessage) {
+        $scope.model = {
+            agenda_type: parseInt(Config.get('agenda_new_items_default_visibility').value),
+        };
         // get all form fields
         $scope.formFields = TopicForm.getFormFields(true);
         // save form
         $scope.save = function (topic) {
-            topic.agenda_type = topic.showAsAgendaItem ? 1 : 2;
-            // The attribute topic.agenda_parent_id is set by the form, see form definition.
             Topic.create(topic).then(
                 function (success) {
                     $scope.closeThisDialog();

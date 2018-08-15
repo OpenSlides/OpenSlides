@@ -53,7 +53,8 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
     'gettextCatalog',
     'Agenda',
     'AgendaTree',
-    function ($http, operator, gettextCatalog, Agenda, AgendaTree) {
+    'ShowAsAgendaItemField',
+    function ($http, operator, gettextCatalog, Agenda, AgendaTree, ShowAsAgendaItemField) {
         return {
             // Get ngDialog configuration.
             getDialog: function (motionBlock) {
@@ -82,15 +83,7 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
 
                 // show as agenda item + parent item
                 if (isCreateForm) {
-                    formFields.push({
-                        key: 'showAsAgendaItem',
-                        type: 'checkbox',
-                        templateOptions: {
-                            label: gettextCatalog.getString('Show as agenda item'),
-                            description: gettextCatalog.getString('If deactivated it appears as internal item on agenda.')
-                        },
-                        hide: !(operator.hasPerms('motions.can_manage') && operator.hasPerms('agenda.can_manage'))
-                    });
+                    formFields.push(ShowAsAgendaItemField('motions.can_manage'));
                     formFields.push({
                         key: 'agenda_parent_id',
                         type: 'select-single',
@@ -197,18 +190,18 @@ angular.module('OpenSlidesApp.motions.motionBlock', [])
     '$scope',
     'MotionBlock',
     'MotionBlockForm',
-    function($scope, MotionBlock, MotionBlockForm) {
+    'Config',
+    function($scope, MotionBlock, MotionBlockForm, Config) {
         // Prepare form.
-        $scope.model = {};
-        $scope.model.showAsAgendaItem = true;
+        $scope.model = {
+            agenda_type: parseInt(Config.get('agenda_new_items_default_visibility').value),
+        };
 
         // Get all form fields.
         $scope.formFields = MotionBlockForm.getFormFields(true);
 
         // Save form.
         $scope.save = function (motionBlock) {
-            motionBlock.agenda_type = motionBlock.showAsAgendaItem ? 1 : 2;
-            // The attribute motionBlock.agenda_parent_id is set by the form, see form definition.
             MotionBlock.create(motionBlock).then(
                 function (success) {
                     $scope.closeThisDialog();

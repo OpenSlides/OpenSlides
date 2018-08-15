@@ -102,7 +102,8 @@ angular.module('OpenSlidesApp.assignments.site', [
     'Assignment',
     'Agenda',
     'AgendaTree',
-    function (gettextCatalog, operator, Editor, Mediafile, Tag, Assignment, Agenda, AgendaTree) {
+    'ShowAsAgendaItemField',
+    function (gettextCatalog, operator, Editor, Mediafile, Tag, Assignment, Agenda, AgendaTree, ShowAsAgendaItemField) {
         return {
             // ngDialog for assignment form
             getDialog: function (assignment) {
@@ -159,15 +160,7 @@ angular.module('OpenSlidesApp.assignments.site', [
 
                 // show as agenda item + parent item
                 if (isCreateForm) {
-                    formFields.push({
-                        key: 'showAsAgendaItem',
-                        type: 'checkbox',
-                        templateOptions: {
-                            label: gettextCatalog.getString('Show as agenda item'),
-                            description: gettextCatalog.getString('If deactivated the election appears as internal item on agenda.')
-                        },
-                        hide: !(operator.hasPerms('assignments.can_manage') && operator.hasPerms('agenda.can_manage'))
-                    });
+                    formFields.push(ShowAsAgendaItemField('assignments.can_manage'));
                     formFields.push({
                         key: 'agenda_parent_id',
                         type: 'select-single',
@@ -623,17 +616,18 @@ angular.module('OpenSlidesApp.assignments.site', [
     'Assignment',
     'AssignmentForm',
     'Agenda',
+    'Config',
     'ErrorMessage',
-    function($scope, $state, Assignment, AssignmentForm, Agenda, ErrorMessage) {
-        $scope.model = {};
+    function($scope, $state, Assignment, AssignmentForm, Agenda, Config, ErrorMessage) {
+        $scope.model = {
+            agenda_type: parseInt(Config.get('agenda_new_items_default_visibility').value),
+        };
         // set default value for open posts form field
         $scope.model.open_posts = 1;
         // get all form fields
         $scope.formFields = AssignmentForm.getFormFields(true);
         // save assignment
         $scope.save = function(assignment, gotoDetailView) {
-            assignment.agenda_type = assignment.showAsAgendaItem ? 1 : 2;
-            // The attribute assignment.agenda_parent_id is set by the form, see form definition.
             Assignment.create(assignment).then(
                 function (success) {
                     if (gotoDetailView) {
