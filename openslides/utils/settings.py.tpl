@@ -79,6 +79,15 @@ DATABASES = {
 use_redis = False
 
 if use_redis:
+    # Redis configuration for django-redis-session. Keep this synchronized to
+    # the caching settings
+
+    SESSION_REDIS = {
+        'host': '127.0.0.1',
+        'post': 6379,
+        'db': 0,
+    }
+
     # Django Channels
 
     # Unless you have only a small assembly uncomment the following lines to
