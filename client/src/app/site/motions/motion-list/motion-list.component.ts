@@ -77,23 +77,24 @@ export class MotionListComponent extends BaseComponent implements OnInit {
     }
 
     selectMotion(motion) {
-        console.log('clicked a row, :', motion);
-
         this.router.navigate(['./' + motion.id], { relativeTo: this.route });
     }
 
     /**
      * Get the icon to the coresponding Motion Status
      * TODO Needs to be more accessible (Motion workflow needs adjustment on the server)
-     * @param stateName the name of the state
+     * @param state the name of the state
      */
-    getStateIcon(stateName) {
+    getStateIcon(state) {
+        const stateName = state.name;
         if (stateName === 'accepted') {
             return 'thumbs-up';
         } else if (stateName === 'rejected') {
             return 'thumbs-down';
         } else if (stateName === 'not decided') {
             return 'question';
+        } else {
+            return '';
         }
     }
 

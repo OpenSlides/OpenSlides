@@ -6,6 +6,7 @@ import { Config } from '../core/config';
 import { Workflow } from './workflow';
 import { User } from '../users/user';
 import { Category } from './category';
+import { WorkflowState } from './workflow-state';
 
 /**
  * Representation of Motion.
@@ -123,7 +124,7 @@ export class Motion extends BaseModel {
     get submitterName() {
         const mainSubmitter = this.DS.get(User, this.submitters[0].user_id) as User;
         if (mainSubmitter) {
-            return mainSubmitter.username;
+            return mainSubmitter;
         } else {
             return '';
         }
@@ -132,13 +133,34 @@ export class Motion extends BaseModel {
     /**
      * get the category of a motion as object
      */
-    get category() {
+    get category(): any {
         if (this.category_id) {
             const motionCategory = this.DS.get(Category, this.category_id);
-            return motionCategory;
+            return motionCategory as Category;
         } else {
             return 'none';
         }
+    }
+
+    /**
+     * Set the category in the motion
+     */
+    set category(newCategory: any) {
+        this.category_id = newCategory.id;
+    }
+
+    /**
+     * Returns the workflow
+     *
+     * TODO this is the default workflow, not yet the coresponding for the motion
+     */
+    get workflow(): Workflow {
+        const motionsWorkflowConfig = this.DS.filter(Config, config => config.key === 'motions_workflow')[0] as Config;
+        //make sure this is a number
+        const workflowId = +motionsWorkflowConfig.value;
+        //get the workflow for our motion
+        const selectedWorkflow = this.DS.get(Workflow, workflowId) as Workflow;
+        return selectedWorkflow;
     }
 
     /**
@@ -147,24 +169,37 @@ export class Motion extends BaseModel {
      * Right now only the default workflow is assumed
      * TODO: Motion workflow needs to be specific on the server
      */
-    get stateName() {
-        //get the default workflow
-        const motionsWorkflowConfig = this.DS.filter(Config, config => config.key === 'motions_workflow')[0] as Config;
-        //make sure this is a number
-        const workflowId = +motionsWorkflowConfig.value;
-        //get the workflow for out motion
-        const selectedWorkflow = this.DS.get(Workflow, workflowId) as Workflow;
-        const stateName = selectedWorkflow.getStateNameById(this.state_id);
-        if (stateName !== 'NULL') {
-            return stateName;
-        } else {
-            return '';
-        }
+    get state() {
+        const workflow = this.workflow;
+        const state = workflow.state_by_id(this.state_id);
+        return state;
     }
 
-    get possibleStates() {
-        return '';
+    /**
+     * returns possible states for the motion
+     */
+    get possible_states(): WorkflowState[] {
+        return this.workflow.states;
     }
+
+    /**
+     * Returns possible "initial" states for a motion.
+     *
+     * Will filter "submitted"
+     */
+    // get initial_states(): WorkflowState[] {
+    //     const states = this.workflow.states;
+
+    //     //find index of 'submitted'
+    //     const submitted = states.findIndex(state => state.name === 'submitted');
+
+    //     //if found a valid index, remove "submitted" from array
+    //     if (typeof submitted === 'number' && submitted >= 0) {
+    //         states.splice(submitted, 1);
+    //     }
+
+    //     return states;
+    // }
 
     /**
      * Returns the name of the recommendation.
@@ -173,13 +208,10 @@ export class Motion extends BaseModel {
      * TODO: Motion workflow needs to be specific on the server
      */
     get recommendation() {
-        //get the default workflow
-        const motionsWorkflowConfig = this.DS.filter(Config, config => config.key === 'motions_workflow')[0] as Config;
-        const workflowId = +motionsWorkflowConfig.value;
-        const selectedWorkflow = this.DS.get(Workflow, workflowId) as Workflow;
-        const stateName = selectedWorkflow.getStateNameById(this.recommendation_id);
-        if (stateName !== 'NULL') {
-            return stateName;
+        // const stateName = this.workflow.getStateNameById(this.recommendation_id);
+        const state = this.workflow.state_by_id(this.recommendation_id);
+        if (state) {
+            return state.recommendation_label;
         } else {
             return '';
         }

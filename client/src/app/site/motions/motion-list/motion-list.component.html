@@ -53,8 +53,8 @@
     <ng-container matColumnDef="state">
         <mat-header-cell *matHeaderCellDef mat-sort-header> State </mat-header-cell>
         <mat-cell *matCellDef="let motion">
-            <div *ngIf='motion.stateName !== "submitted"' class='innerTable'>
-                <fa-icon icon={{getStateIcon(motion.stateName)}}></fa-icon>
+            <div *ngIf='motion.state.name !== "submitted"' class='innerTable'>
+                <fa-icon icon={{getStateIcon(motion.state)}}></fa-icon>
             </div>
         </mat-cell>
     </ng-container>

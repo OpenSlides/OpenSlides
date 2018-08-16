@@ -52,17 +52,33 @@ mat-panel-title {
             margin-left: 5px;
         }
     }
+}
 
-    .meta-info-panel-body {
+.wide-text {
+    width: 95%;
+
+    textarea {
+        height: 200px;
+    }
+}
+
+mat-expansion-panel {
+    .expansion-panel-custom-body {
         padding-left: 55px;
     }
 }
 
 .content-panel {
+    h2 {
+        display: block;
+        font-weight: bold;
+        font-size: 120%;
+    }
+
     h3 {
+        display: block;
         font-weight: initial;
         font-size: 100%;
-        display: block;
     }
 
     h4 {

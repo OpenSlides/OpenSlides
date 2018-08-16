@@ -66,9 +66,9 @@ export class SiteComponent extends BaseComponent implements OnInit {
             });
 
         //get a translation via code: use the translation service
-        this.translate.get('Motions').subscribe((res: string) => {
-            console.log('translation of motions in the target language: ' + res);
-        });
+        // this.translate.get('Motions').subscribe((res: string) => {
+        //     console.log('translation of motions in the target language: ' + res);
+        // });
 
         //start autoupdate if the user is logged in:
         this.operator.whoAmI().subscribe(resp => {

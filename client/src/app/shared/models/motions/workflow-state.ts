@@ -83,4 +83,8 @@ export class WorkflowState implements Deserializable {
         Object.assign(this, input);
         return this;
     }
+
+    public toString = (): string => {
+        return this.name;
+    };
 }

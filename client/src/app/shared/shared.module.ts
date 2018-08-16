@@ -20,6 +20,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 // FontAwesome modules
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -48,6 +50,8 @@ library.add(fas);
     imports: [
         CommonModule,
         FormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
         ReactiveFormsModule,
         MatButtonModule,
         MatCheckboxModule,
@@ -68,6 +72,8 @@ library.add(fas);
     ],
     exports: [
         FormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
         ReactiveFormsModule,
         MatButtonModule,
         MatCheckboxModule,

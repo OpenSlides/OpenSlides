@@ -64,4 +64,39 @@ export class User extends BaseModel {
     getGroups(): BaseModel | BaseModel[] {
         return this.DS.get('users/group', ...this.groups_id);
     }
+
+    //TODO get full_name
+
+    // TODO read config values  for "users_sort_by"
+    get short_name(): string {
+        const title = this.title.trim();
+        const firstName = this.first_name.trim();
+        const lastName = this.last_name.trim();
+        let shortName = '';
+
+        // TODO need DS adjustment first first
+        // if (this.DS.getConfig('users_sort_by').value === 'last_name') {
+        //     if (lastName && firstName) {
+        //         shortName += `${lastName}, ${firstName}`;
+        //     } else {
+        //         shortName += lastName || firstName;
+        //     }
+        // }
+
+        shortName += `${firstName} ${lastName}`;
+
+        if (shortName.trim() === '') {
+            shortName = this.username;
+        }
+
+        if (title) {
+            shortName = `${title} ${shortName}`;
+        }
+
+        return shortName.trim();
+    }
+
+    public toString = (): string => {
+        return this.short_name;
+    };
 }

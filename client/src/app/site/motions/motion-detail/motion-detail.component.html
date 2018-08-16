@@ -1,11 +1,11 @@
 <mat-toolbar color='primary'>
 
-    <button class='generic-mini-button on-transition-fade' mat-mini-fab>
-        <fa-icon icon='pen'></fa-icon>
+    <button (click)='editMotionButton()' class='generic-mini-button on-transition-fade' mat-mini-fab>
+
+        <fa-icon *ngIf="!editMotion" icon='pen'></fa-icon>
+        <fa-icon *ngIf="editMotion" icon='check'></fa-icon>
     </button>
 
-    <!-- motion.identifier -->
-    <!-- motion.versions[0].title -->
     <div class='motion-title on-transition-fade'>
         <span translate>Motion</span> {{motion.identifier}}: {{motion.currentTitle}}
         <br>
@@ -16,37 +16,63 @@
 </mat-toolbar>
 
 <mat-accordion multi='true' class='on-transition-fade'>
-    <!-- <mat-expansion-panel [expanded]='true' class='meta-info-panel'> -->
-    <mat-expansion-panel class='meta-info-panel'>
+
+    <!-- MetaInfo -->
+    <mat-expansion-panel #metaInfoPanel [expanded]='true' class='meta-info-panel'>
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <fa-icon icon='info-circle' [fixedWidth]="true"></fa-icon>
                 <span translate>Meta information</span>
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <div class='meta-info-panel-body'>
 
-            <div *ngIf="motion.submitterName">
+        <!-- Meta info -->
+        <form [formGroup]='metaInfoForm' class='expansion-panel-custom-body' (ngSubmit)='saveMotion()'>
+
+            <!-- Identifier -->
+            <div *ngIf="editMotion">
+                <div *ngIf='!editMotion'>
+                    <h3 translate>Identifier</h3>
+                    {{motion.identifier}}
+                </div>
+                <mat-form-field *ngIf="editMotion">
+                    <input matInput #identifier placeholder='Identifier' [value]='motion.identifier'>
+                </mat-form-field>
+            </div>
+
+            <!-- Submitter -->
+            <div *ngIf="motion.submitterName || editMotion">
                 <h3 translate>Submitters</h3>
                 {{motion.submitterName}}
             </div>
 
-            <div *ngIf='motion.supporters_id && motion.supporters_id.length > 0'>
-                <h3>translate>Supporters</h3>
+            <!-- Supporter -->
+            <div *ngIf='motion.supporters_id && motion.supporters_id.length > 0 || editMotion'>
+                <h3 translate>Supporters</h3>
                 <!-- print all motion supporters -->
             </div>
 
-            <div *ngIf='motion.state_id'>
-                <h3>
-                    <a [matMenuTriggerFor]="stateMenu">
-                        <span translate>Status</span>
-                        <fa-icon icon='cog'></fa-icon>
-                    </a>
-                </h3>
-                {{motion.stateName}}
+            <!-- State -->
+            <div *ngIf='motion.state_id || editMotion'>
+                <div *ngIf='!editMotion'>
+                    <h3 translate>State</h3>
+                    {{motion.state.name}}
+                </div>
+                <mat-form-field *ngIf="editMotion">
+                    <mat-select placeholder='State' formControlName='state'>
+                        <mat-option *ngFor="let state of motion.possible_states" [value]="state">{{state}}</mat-option>
+                        <mat-divider></mat-divider>
+                        <mat-option>
+                            <fa-icon icon='exclamation-triangle'></fa-icon>
+                            Reset State
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
 
-            <div *ngIf='motion.recommendation_id'>
+            <!-- Recommendation -->
+            <!-- TODO make sure this is only shown if the corresponding setting was set -->
+            <div *ngIf='motion.recommendation_id && editMotion'>
                 <h3>
                     <a [matMenuTriggerFor]="stateMenu">
                         <span>{{motion.recomBy}}</span>
@@ -56,35 +82,41 @@
                 {{motion.recommendation}}
             </div>
 
-            <div *ngIf="motion.category_id">
-                <h3>
-                    <a [matMenuTriggerFor]="categoryMenu">
-                        <span translate>Category</span>
-                        <fa-icon icon='cog'></fa-icon>
-                    </a>
-                </h3>
-                {{motion.category}}
-            </div>
-
-            <div *ngIf="motion.origin">
-                <h3>
-                    <span translate>Origin</span>
-                    <fa-icon icon='cog'></fa-icon>
-                </h3>
-                <span>{{motion.origin}}</span>
-
-                <br>
-                <mat-form-field>
-                    <input matInput #origin placeholder='Origin' value={{motion.origin}}>
+            <!-- Category -->
+            <div *ngIf="motion.category_id || editMotion">
+                <div *ngIf='!editMotion'>
+                    <h3 translate> Category</h3>
+                    {{motion.category}}
+                </div>
+                <mat-form-field *ngIf="editMotion">
+                    <mat-select placeholder='Category' formControlName='categoryFormControl'>
+                        <mat-option>None</mat-option>
+                        <mat-divider></mat-divider>
+                        <mat-option *ngFor="let cat of getMotionCategories()" [value]="cat">{{cat}}</mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
 
-            <div *ngIf='motion.polls && motion.polls.length > 0'>
-                <h3 translate>Voting</h3>
+            <!-- Origin -->
+            <div *ngIf="motion.origin || editMotion">
+                <div *ngIf='!editMotion'>
+                    <h3 translate> Origin</h3>
+                    {{motion.origin}}
+                </div>
+                <mat-form-field *ngIf="editMotion">
+                    <input matInput #origin placeholder='Origin' [value]='motion.origin'>
+                </mat-form-field>
             </div>
-        </div>
+
+            <!-- Voting -->
+            <!-- <div *ngIf='motion.polls && motion.polls.length > 0 || editMotion'>
+                <h3 translate>Voting</h3>
+            </div> -->
+        </form>
+        <!-- </div> -->
     </mat-expansion-panel>
-    <!-- <mat-expansion-panel [expanded]='true'> -->
+
+    <!-- Personal Note -->
     <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title>
@@ -94,7 +126,9 @@
         </mat-expansion-panel-header>
         TEST
     </mat-expansion-panel>
-    <mat-expansion-panel [expanded]='true' class='content-panel'>
+
+    <!-- Content -->
+    <mat-expansion-panel #contentPanel [expanded]='true' class='content-panel'>
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <fa-icon icon='align-left' [fixedWidth]="true"></fa-icon>
@@ -102,11 +136,38 @@
             </mat-panel-title>
         </mat-expansion-panel-header>
 
-        <h3 translate>The assembly may decide:</h3>
-        <div [innerHtml]='motion.currentText'></div>
+        <div class='expansion-panel-custom-body'>
+            <!-- Title -->
+            <div *ngIf="motion.currentTitle || editMotion">
+                <div *ngIf='!editMotion'>
+                    <h2>{{motion.currentTitle}}</h2>
+                </div>
+                <mat-form-field *ngIf="editMotion" class='wide-text'>
+                    <input matInput #title placeholder='Title' [value]='motion.currentTitle'>
+                </mat-form-field>
+            </div>
 
-        <h4 *ngIf='motion.currentReason' translate class='motion-reason-label'>Reason</h4>
-        <div [innerHtml]='motion.currentReason'></div>
+            <!-- Text -->
+            <h3 translate>The assembly may decide:</h3>
+            <div *ngIf='!editMotion'>
+                <div [innerHtml]='motion.currentText'></div>
+            </div>
+            <mat-form-field *ngIf="editMotion" class='wide-text'>
+                <textarea matInput #motionText placeholder='Motion Text' [value]='motion.currentText'></textarea>
+            </mat-form-field>
+
+            <!-- Reason -->
+            <div *ngIf="motion.currentReason || editMotion">
+                <div *ngIf='!editMotion'>
+                    <h4 translate>Reason</h4>
+                    <div [innerHtml]='motion.currentReason'></div>
+                </div>
+                <mat-form-field *ngIf="editMotion" class='wide-text'>
+                    <textarea matInput #reason placeholder="Reason" [value]='motion.currentReason'></textarea>
+                </mat-form-field>
+            </div>
+        </div>
+
 
     </mat-expansion-panel>
 </mat-accordion>
@@ -116,9 +177,4 @@
     <button mat-menu-item translate>Accept</button>
     <button mat-menu-item translate>Reject</button>
     <button mat-menu-item translate>Do not decice</button>
-</mat-menu>
-
-<mat-menu #categoryMenu="matMenu">
-    <button mat-menu-item translate>B - Bildung</button>
-    <button mat-menu-item translate>T - Test</button>
 </mat-menu>
