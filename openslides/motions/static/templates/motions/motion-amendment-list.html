@@ -31,18 +31,18 @@
         <span ng-class="{'hiddenDiv': !selectHover}" uib-dropdown>
           <i class="fa fa-cog pointer" uib-dropdown-toggle id="selectDropdown"></i>
           <ul class="dropdown-menu" aria-labelledby="selectDropdown">
+            <li>
+              <a href ng-click="selectLeadMotion(null)" translate>
+                All motions
+              </a>
+            </li>
+            <li class="divider"></li>
             <li ng-repeat="motion in leadMotions">
               <a href ng-click="selectLeadMotion(motion)">
                 <span ng-if="motion.identifier">
                   {{ motion.identifier }} &mdash;
                 </span>
                 {{ motion.getTitle() | limitTo: 35 }}{{ motion.getTitle().length > 35 ? '...' : '' }}
-              </a>
-            </li>
-            <li class="divider" ng-if="amendment.state.getNextStates().length"></li>
-            <li>
-              <a href ng-click="selectLeadMotion(null)" translate>
-                All motions
               </a>
             </li>
           </ul>
@@ -357,10 +357,11 @@
           {{ getTextPreview(amendment.getText(), 400) }}
         </div>
       </div>
+      <!-- last column -->
       <div class="col-xs-4 content" ng-style="{'width': isSelectMode ? 'calc(33.33% - 120px)' : 'calc(33.33% - 70px)'}">
         <div style="width: 90%;">
           <div ng-repeat="(id, field) in noSpecialCommentsFields">
-            <div class="nobr">
+            <div class="nobr" style="overflow: hidden;">
               <i class="fa pointer spacer-right" ng-class="field[amendment.id] ? 'fa-caret-down' : 'fa-caret-right'"
                 ng-click="field[amendment.id] = !field[amendment.id]"
                 ng-if="isTextExpandable(amendment.comments[id], 30)"></i>

@@ -468,6 +468,10 @@ angular.module('OpenSlidesApp.motions.site', [
             },
             // angular-formly fields for motion form
             getFormFields: function (isCreateForm, isParagraphBasedAmendment) {
+                if (!isParagraphBasedAmendment) { // catch null and undefined. Angular formy doesn't like this.
+                    isParagraphBasedAmendment = false;
+                }
+
                 var workflows = Workflow.getAll();
                 var images = Mediafile.getAllImages();
                 var formFields = [];
@@ -1208,7 +1212,14 @@ angular.module('OpenSlidesApp.motions.site', [
             return Motion.lastModified();
         }, function () {
             // get all main motions and order by identifier (after custom ordering)
-            $scope.motions = _.orderBy(Motion.filter({parent_id: undefined}), ['identifier']);
+            var motions;
+            if (Config.get('motions_amendments_main_table').value) {
+                motions = Motion.getAll();
+            } else {
+                motions = Motion.filter({parent_id: undefined});
+            }
+
+            $scope.motions = _.orderBy(motions, ['identifier']);
             _.forEach($scope.motions, function (motion) {
                 MotionComment.populateFields(motion);
                 motion.personalNote = PersonalNoteManager.getNote(motion);
@@ -3229,6 +3240,7 @@ angular.module('OpenSlidesApp.motions.site', [
         // subgroup Amendments
         gettext('Amendments');
         gettext('Activate amendments');
+        gettext('Show amendments together with motions');
         gettext('Prefix for the identifier for amendments');
         gettext('Apply text for new amendments');
         gettext('The title of the motion is always applied.');

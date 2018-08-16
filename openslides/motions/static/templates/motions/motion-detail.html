@@ -79,12 +79,7 @@
           <span class="change-title" ng-if="motion.isAllowed('update') && !title_change_recommendation"></span>
         </span>
 
-        <a ui-sref="motions.motion.detail({id: motion.getParentMotion().id })" ng-if="motion.isAmendment">
-          {{ motion.getTitleWithChanges(viewChangeRecommendations.mode) }}
-        </a>
-        <span ng-if="!motion.isAmendment">
-          {{ motion.getTitleWithChanges(viewChangeRecommendations.mode) }}
-        </span>
+        {{ motion.getTitleWithChanges(viewChangeRecommendations.mode) }}
 
         <i class="fa pointer" ng-class="motion.personalNote.star ? 'fa-star' : 'fa-star-o'"
            ng-if="operator.user"
@@ -102,6 +97,14 @@
             </span>
             <small>
               <translate>Sequential number</translate> {{ motion.getSequentialNumber() }}
+
+              <span ng-if="motion.isAmendment">
+                &middot;
+                <a ui-sref="motions.motion.detail({id: motion.getParentMotion().id })" ng-if="motion.isAmendment">
+                  <translate>Amendment to</translate>
+                  {{ motion.getParentMotion().identifier || motion.getParentMotion().getTitle() }}
+                </a>
+              </span>
             </small>
         </h2>
       </div>
@@ -552,9 +555,6 @@
               </translate>
           </div>
 
-          <div ng-bind-html="motion.getTextByMode('agreed', version, highlight) | trusted"
-               class="motion-text motion-text-changed line-numbers-{{ lineNumberMode }}"></div>
-
           <div style="text-align: right;" ng-if="(change_recommendations | filter:{motion_version_id:version}:true).length > 0">
             <button class="btn btn-default"
                     ng-bootbox-confirm="{{ 'Do you want to copy the final version to the modified final version field?' | translate }}"
@@ -572,6 +572,9 @@
               <translate>New version on these changes</translate>
             </button>
           </div>
+
+          <div ng-bind-html="motion.getTextByMode('agreed', version, highlight) | trusted"
+               class="motion-text motion-text-changed line-numbers-{{ lineNumberMode }}"></div>
         </div>
 
         <!-- modified agreed view -->

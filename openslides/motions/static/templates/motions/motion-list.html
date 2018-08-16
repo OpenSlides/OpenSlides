@@ -5,7 +5,8 @@
         <i class="fa fa-plus fa-lg"></i>
         <translate>New</translate>
       </a>
-      <a ui-sref="motions.motion.allamendments" class="btn btn-default btn-sm">
+      <a ui-sref="motions.motion.allamendments" ng-if="config('motions_amendments_enabled')"
+        class="btn btn-default btn-sm">
         <i class="fa fa-book fa-lg"></i>
         <translate>Amendments</translate>
       </a>

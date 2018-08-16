@@ -111,6 +111,17 @@
     left: 20px;
 }
 
+.motion-text.line-numbers-none li > br {
+    margin-top: 8px;
+    content: " ";
+    display: block;
+    &.os-line-break {
+        margin-top: 0;
+        content: "";
+        display: inline;
+    }
+}
+
 @mixin addChangeRecommendationBtn {
     cursor: pointer;
     content: "\f067";
