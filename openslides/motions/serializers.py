@@ -50,7 +50,7 @@ class MotionBlockSerializer(ModelSerializer):
     """
     Serializer for motion.models.Category objects.
     """
-    agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=2)
+    agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=3)
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
 
     class Meta:
@@ -382,7 +382,7 @@ class MotionSerializer(ModelSerializer):
         required=False,
         validators=[validate_workflow_field],
         write_only=True)
-    agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=2)
+    agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=3)
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
     submitters = SubmitterSerializer(many=True, read_only=True)
 

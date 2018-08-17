@@ -512,7 +512,7 @@ class GroupUpdate(TestCase):
             'agenda.can_be_speaker',
             'agenda.can_manage',
             'agenda.can_see',
-            'agenda.can_see_hidden_items',
+            'agenda.can_see_internal_items',
             'assignments.can_manage',
             'assignments.can_nominate_other',
             'assignments.can_nominate_self',

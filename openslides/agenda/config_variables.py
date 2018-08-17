@@ -59,6 +59,19 @@ def get_config_variables():
         group='Agenda',
         subgroup='General')
 
+    yield ConfigVariable(
+        name='agenda_new_items_default_visibility',
+        default_value='2',
+        input_type='choice',
+        choices=(
+            {'value': '1', 'display_name': 'Public item'},
+            {'value': '2', 'display_name': 'Internal item'},
+            {'value': '3', 'display_name': 'Hidden item'}),
+        label='Default visibility for new agenda items',
+        weight=227,
+        group='Agenda',
+        subgroup='General')
+
     # List of speakers
 
     yield ConfigVariable(

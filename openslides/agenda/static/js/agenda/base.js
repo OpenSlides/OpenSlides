@@ -39,6 +39,11 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
             name: name,
             useClass: jsDataModel,
             verboseName: gettext('Agenda'),
+            computed: {
+                is_public: function () {
+                    return !this.is_internal && !this.is_hidden;
+                },
+            },
             methods: {
                 getResourceName: function () {
                     return name;

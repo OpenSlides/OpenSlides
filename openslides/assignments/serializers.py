@@ -200,7 +200,7 @@ class AssignmentFullSerializer(ModelSerializer):
     """
     assignment_related_users = AssignmentRelatedUserSerializer(many=True, read_only=True)
     polls = AssignmentAllPollSerializer(many=True, read_only=True)
-    agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=2)
+    agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=3)
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
 
     class Meta:

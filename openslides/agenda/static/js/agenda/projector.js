@@ -84,12 +84,14 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
                 Config.lastModified('agenda_hide_internal_items_on_projector');
         }, function () {
             if ($scope.element.id) {
+                // remove hidden items
+                items = _.filter(Agenda.getAll(), function (item) {
+                    return !item.is_hidden;
+                });
                 if (Config.get('agenda_hide_internal_items_on_projector').value) {
-                    items = _.filter(Agenda.getAll(), function (item) {
-                        return item.type === 1;
+                    items = _.filter(items, function (item) {
+                        return item.is_public;
                     });
-                } else {
-                    items = Agenda.getAll();
                 }
                 var tree = AgendaTree.getTree(items);
 
@@ -115,7 +117,7 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
                 });
             } else if ($scope.element.tree) {
                 items = _.filter(Agenda.getAll(), function (item) {
-                    return item.type === 1;
+                    return item.is_public;
                 });
                 $scope.tree = AgendaTree.getTree(items);
             } else {
@@ -124,7 +126,7 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
                     orderBy: 'weight'
                 });
                 items = _.filter(items, function (item) {
-                    return item.type === 1;
+                    return item.is_public;
                 });
                 $scope.tree = AgendaTree.getTree(items);
             }

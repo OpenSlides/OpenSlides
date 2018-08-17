@@ -85,6 +85,30 @@ angular.module('OpenSlidesApp.agenda.site', [
     }
 ])
 
+.factory('ShowAsAgendaItemField', [
+    'operator',
+    'gettext',
+    'gettextCatalog',
+    function (operator, gettext, gettextCatalog) {
+        return function (managePermission) {
+            return {
+                key: 'agenda_type',
+                type: 'select-single',
+                templateOptions: {
+                    label: gettextCatalog.getString('Agenda visibility'),
+                    options: [
+                        {type: 1, displayName: gettext('Public item')},
+                        {type: 2, displayName: gettext('Internal item')},
+                        {type: 3, displayName: gettext('Hidden item')}
+                    ],
+                    ngOptions: 'type.type as (type.displayName | translate) for type in to.options',
+                },
+                hide: !(operator.hasPerms(managePermission) && operator.hasPerms('agenda.can_manage'))
+            };
+        };
+    }
+])
+
 .controller('ItemListCtrl', [
     '$scope',
     '$filter',
@@ -109,6 +133,11 @@ angular.module('OpenSlidesApp.agenda.site', [
     function($scope, $filter, $http, $state, DS, operator, ngDialog, Agenda, TopicForm,
         AgendaTree, Projector, ProjectionDefault, gettextCatalog, gettext, osTableFilter,
         osTablePagination, AgendaCsvExport, AgendaPdfExport, AgendaDocxExport, ErrorMessage) {
+
+        $scope.AGENDA_ITEM = 1;
+        $scope.INTERNAL_ITEM = 2;
+        $scope.HIDDEN_ITEM = 3;
+
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
@@ -143,16 +172,31 @@ angular.module('OpenSlidesApp.agenda.site', [
             $scope.filter.booleanFilters = {
                 closed: {
                     value: undefined,
+                    defaultValue: undefined,
                     displayName: gettext('Closed items'),
                     choiceYes: gettext('Closed items'),
                     choiceNo: gettext('Open items'),
                 },
-                is_hidden: {
-                    value: undefined,
-                    displayName: gettext('Internal items'),
+                // The next filters are just on-off, so no undefined there
+                is_public: {
+                    value: true,
+                    defaultValue: true,
+                    choiceYes: gettext('Public items'),
+                    choiceNo: gettext('No public items'),
+                },
+                is_internal: {
+                    value: true,
+                    defaultValue: true,
                     choiceYes: gettext('Internal items'),
                     choiceNo: gettext('No internal items'),
-                    permission: 'agenda.can_see_hidden_items',
+                    permission: 'agenda.can_see_internal_items',
+                },
+                is_hidden: {
+                    value: false,
+                    defaultValue: false,
+                    choiceYes: gettext('Hidden items'),
+                    choiceNo: gettext('No hidden items'),
+                    permission: 'agenda.can_manage',
                 },
             };
         }
@@ -160,10 +204,23 @@ angular.module('OpenSlidesApp.agenda.site', [
         $scope.filter.propertyFunctionList = [
             function (item) {return item.getListViewTitle();},
         ];
-        $scope.filter.propertyDict = {
-            'speakers' : function (speaker) {
-                return '';
-            },
+        $scope.areFiltersSet = function () {
+            return ($scope.areVisibilityFiltersSet() ||
+                $scope.filter.booleanFilters.closed.value !== $scope.filter.booleanFilters.closed.defaultValue);
+        };
+        $scope.areVisibilityFiltersSet = function () {
+            return ($scope.filter.booleanFilters.is_public.value !== $scope.filter.booleanFilters.is_public.defaultValue ||
+                $scope.filter.booleanFilters.is_internal.value !== $scope.filter.booleanFilters.is_internal.defaultValue ||
+                $scope.filter.booleanFilters.is_hidden.value !== $scope.filter.booleanFilters.is_hidden.defaultValue);
+
+        };
+        $scope.resetFilters = function (isSelectMode) {
+            if (!isSelectMode) {
+                _.forEach($scope.filter.booleanFilters, function (filter) {
+                    filter.value = filter.defaultValue;
+                });
+                $scope.filter.save();
+            }
         };
 
         // Expand all items during searching.
@@ -333,9 +390,31 @@ angular.module('OpenSlidesApp.agenda.site', [
                 });
             }
         };
+        // set type for selected items
+        $scope.setTypeMultiple = function (type) {
+            _.forEach($scope.items, function (item) {
+                if (item.selected) {
+                    item.type = type;
+                    $scope.save(item);
+                }
+            });
+            $scope.isSelectMode = false;
+            $scope.uncheckAll();
+        };
+        // set closed for selected items
+        $scope.setStateMultiple = function (closed) {
+            _.forEach($scope.items, function (item) {
+                if (item.selected) {
+                    item.closed = closed;
+                    $scope.save(item);
+                }
+            });
+            $scope.isSelectMode = false;
+            $scope.uncheckAll();
+        };
         // delete selected items
         $scope.deleteMultiple = function () {
-            angular.forEach($scope.items, function (item) {
+            _.forEach($scope.items, function (item) {
                 if (item.selected) {
                     DS.destroy(item.content_object.collection, item.content_object.id);
                 }
@@ -417,6 +496,20 @@ angular.module('OpenSlidesApp.agenda.site', [
                 }
             });
             return projectorIds;
+        };
+    }
+])
+
+// Filter for the item type that filters the selected items by type. filters
+// are the boolean filters from the ui.
+.filter('itemTypeFilter', [
+    function () {
+        return function (items, filters) {
+            return _.filter(items, function (item) {
+                return (item.is_public && filters.is_public.value) ||
+                    (item.is_internal && filters.is_internal.value) ||
+                    (item.is_hidden && filters.is_hidden.value);
+            });
         };
     }
 ])
@@ -789,6 +882,8 @@ angular.module('OpenSlidesApp.agenda.site', [
         gettext('Couple countdown with the list of speakers');
         gettext('[Begin speech] starts the countdown, [End speech] stops the ' +
                 'countdown.');
+        gettext('Agenda visibility');
+        gettext('Default visibility for new agenda items');
     }
  ]);
 
