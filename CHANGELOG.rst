@@ -20,6 +20,7 @@ Motions:
  - New table of contents with page numbers and categories in PDF [#3766].
  - New teporal field "modified final version" where the final version can
    be edited [#3781].
+ - New config to show amendments also in motions table [#3792]
 
  Core:
  - Python 3.4 is not supported anymore [#3777].

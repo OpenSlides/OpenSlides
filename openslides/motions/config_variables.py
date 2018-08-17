@@ -158,6 +158,15 @@ def get_config_variables():
         subgroup='Amendments')
 
     yield ConfigVariable(
+        name='motions_amendments_main_table',
+        default_value=False,
+        input_type='boolean',
+        label='Show amendments together with motions',
+        weight=337,
+        group='Motions',
+        subgroup='Amendments')
+
+    yield ConfigVariable(
         name='motions_amendments_prefix',
         default_value='-',
         label='Prefix for the identifier for amendments',
