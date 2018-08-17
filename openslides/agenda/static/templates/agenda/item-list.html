@@ -166,11 +166,13 @@
       <!-- set state buttons -->
       <a ng-show="selectedAction == 'setState'"
           ng-click="setStateMultiple(true)" class="btn btn-default btn-sm">
-        <translate>Set closed</translate>
+        <i class="fa fa-check-square-o"></i>
+        <translate>Done</translate>
       </a>
       <a ng-show="selectedAction == 'setState'"
           ng-click="setStateMultiple(false)" class="btn btn-default btn-sm">
-        <translate>Set not closed</translate>
+        <i class="fa fa-square-o"></i>
+        <translate>Open</translate>
       </a>
       <!-- delete button -->
       <a ng-if="selectedAction === 'delete'"
@@ -417,7 +419,7 @@
               <div ng-mouseover="typeHover=true" ng-mouseleave="typeHover=false">
                 <span uib-dropdown>
                   <span id="dropdownType{{ item.id }}" class="pointer"
-                    uib-dropdown-toggle uib-tooltip="{{ 'Set the type' | translate }}"
+                    uib-dropdown-toggle uib-tooltip="{{ 'Change visibility' | translate }}"
                     tooltip-class="nobr">
                     <span ng-if="item.is_public && item.hover">
                       <i class="fa fa-eye"></i>
