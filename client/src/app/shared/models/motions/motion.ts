@@ -37,6 +37,11 @@ export class Motion extends BaseModel {
     agenda_item_id: number;
     log_messages: MotionLog[];
 
+    // read from config
+    workflow_id: number;
+    // by the config above
+    workflow: Workflow;
+
     constructor(
         id?: number,
         identifier?: string,
@@ -79,6 +84,33 @@ export class Motion extends BaseModel {
         this.polls = polls;
         this.agenda_item_id = agenda_item_id;
         this.log_messages = log_messages;
+
+        this.initDataStoreValues();
+    }
+
+    /**
+     * sets the workflow_id and the workflow
+     */
+    initDataStoreValues() {
+        const motionsWorkflowConfig = this.DS.filter(Config, config => config.key === 'motions_workflow')[0] as Config;
+        if (motionsWorkflowConfig) {
+            this.workflow_id = +motionsWorkflowConfig.value;
+        } else {
+            this.DS.getObservable().subscribe(newConfig => {
+                if (newConfig instanceof Config && newConfig.key === 'motions_workflow') {
+                    this.workflow_id = +newConfig.value;
+                }
+            });
+        }
+
+        this.workflow = this.DS.get(Workflow, this.workflow_id) as Workflow;
+        if (!this.workflow.id) {
+            this.DS.getObservable().subscribe(newModel => {
+                if (newModel instanceof Workflow && newModel.id === this.workflow_id) {
+                    this.workflow = newModel;
+                }
+            });
+        }
     }
 
     /**
@@ -150,29 +182,17 @@ export class Motion extends BaseModel {
     }
 
     /**
-     * Returns the workflow
-     *
-     * TODO this is the default workflow, not yet the coresponding for the motion
-     */
-    get workflow(): Workflow {
-        const motionsWorkflowConfig = this.DS.filter(Config, config => config.key === 'motions_workflow')[0] as Config;
-        //make sure this is a number
-        const workflowId = +motionsWorkflowConfig.value;
-        //get the workflow for our motion
-        const selectedWorkflow = this.DS.get(Workflow, workflowId) as Workflow;
-        return selectedWorkflow;
-    }
-
-    /**
      * return the workflow state
      *
-     * Right now only the default workflow is assumed
-     * TODO: Motion workflow needs to be specific on the server
+     * set the workflow via a component
      */
     get state() {
-        const workflow = this.workflow;
-        const state = workflow.state_by_id(this.state_id);
-        return state;
+        if (this.workflow && this.workflow.id) {
+            const state = this.workflow.state_by_id(this.state_id);
+            return state;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -183,32 +203,12 @@ export class Motion extends BaseModel {
     }
 
     /**
-     * Returns possible "initial" states for a motion.
-     *
-     * Will filter "submitted"
-     */
-    // get initial_states(): WorkflowState[] {
-    //     const states = this.workflow.states;
-
-    //     //find index of 'submitted'
-    //     const submitted = states.findIndex(state => state.name === 'submitted');
-
-    //     //if found a valid index, remove "submitted" from array
-    //     if (typeof submitted === 'number' && submitted >= 0) {
-    //         states.splice(submitted, 1);
-    //     }
-
-    //     return states;
-    // }
-
-    /**
      * Returns the name of the recommendation.
      *
      * Right now only the default workflow is assumed
      * TODO: Motion workflow needs to be specific on the server
      */
     get recommendation() {
-        // const stateName = this.workflow.getStateNameById(this.recommendation_id);
         const state = this.workflow.state_by_id(this.recommendation_id);
         if (state) {
             return state.recommendation_label;

@@ -27,16 +27,12 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         this.route.params.subscribe(params => {
             // has the motion of the DataStore was initialized before.
             this.motion = this.DS.get(Motion, params.id) as Motion;
-            if (this.motion) {
-                this.patchForm();
-            }
 
             // Observe motion to get the motion in the parameter and also get the changes
             this.DS.getObservable().subscribe(newModel => {
                 if (newModel instanceof Motion) {
                     if (newModel.id === +params.id) {
                         this.motion = newModel as Motion;
-                        this.patchForm();
                     }
                 }
             });
@@ -68,12 +64,16 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
 
     editMotionButton() {
         this.editMotion ? (this.editMotion = false) : (this.editMotion = true);
+
         if (this.editMotion) {
+            // switch to edit mode
+            this.patchForm();
             this.metaInfoPanel.open();
             this.contentPanel.open();
+        } else {
+            // save button
+            this.saveMotion();
         }
-
-        // console.log('this.motion.possible_states: ', this.motion.possible_states);
     }
 
     ngOnInit() {
