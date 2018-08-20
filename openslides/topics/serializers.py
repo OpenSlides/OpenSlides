@@ -8,7 +8,7 @@ class TopicSerializer(ModelSerializer):
     """
     Serializer for core.models.Topic objects.
     """
-    agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=2)
+    agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=3)
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
     agenda_comment = CharField(write_only=True, required=False, allow_blank=True)
     agenda_duration = IntegerField(write_only=True, required=False, min_value=1)

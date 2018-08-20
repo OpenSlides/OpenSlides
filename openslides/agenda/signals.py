@@ -55,13 +55,13 @@ def listen_to_related_object_post_delete(sender, instance, **kwargs):
 def get_permission_change_data(sender, permissions, **kwargs):
     """
     Yields all necessary collections if 'agenda.can_see' or
-    'agenda.can_see_hidden_items' permissions changes.
+    'agenda.can_see_internal_items' permissions changes.
     """
     agenda_app = apps.get_app_config(app_label='agenda')
     for permission in permissions:
         # There could be only one 'agenda.can_see' and then we want to return data.
         if (permission.content_type.app_label == agenda_app.label
-                and permission.codename in ('can_see', 'can_see_hidden_items')):
+                and permission.codename in ('can_see', 'can_see_internal_items')):
             yield from agenda_app.get_startup_elements()
             break
 

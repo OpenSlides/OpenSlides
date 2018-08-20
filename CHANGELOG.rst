@@ -7,6 +7,9 @@ https://openslides.org/
 Version 2.3 (unreleased)
 ========================
 
+Agenda:
+ - New item type 'hidden'. New visibilty filter in agenda [#3790].
+
 Motions:
  - New feature to scroll the projector to a specific line [#3748].
  - New possibility to sort submitters [#3647].
@@ -17,11 +20,13 @@ Motions:
  - New table of contents with page numbers and categories in PDF [#3766].
  - New teporal field "modified final version" where the final version can
    be edited [#3781].
+ - New config to show amendments also in motions table [#3792]
 
  Core:
  - Python 3.4 is not supported anymore [#3777].
- - Support Python 3.7.
+ - Support Python 3.7 [#3786].
  - Updated pdfMake to 0.1.37 [#3766].
+ - Updated Django to 2.1 [#3777, #3786].
 
 
 Version 2.2 (2018-06-06)

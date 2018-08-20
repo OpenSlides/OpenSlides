@@ -372,7 +372,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                         },
                         tocCategoryTitle: {
                             fontSize: 12,
-                            margin: [0,0,0,0],
+                            margin: [0,0,0,4],
                             bold: true,
                         },
                         tocCategorySection: {
@@ -960,6 +960,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                         // not be empty otherwise it will be removed and the empty line is not displayed
                                         if (element.nextSibling && element.nextSibling.nodeName === 'BR') {
                                             currentParagraph.text.push(create('text', ' '));
+                                        } else if (isInsideAList(element) && lineNumberMode === 'none') {
+                                            // Put a spacer there, if there is one BR in a list
+                                            alreadyConverted.push(create('text', ' '));
                                         }
                                         currentParagraph.lineHeight = 1.25;
                                         alreadyConverted.push(currentParagraph);

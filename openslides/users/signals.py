@@ -33,7 +33,7 @@ def create_builtin_groups_and_admin(**kwargs):
         'agenda.can_manage',
         'agenda.can_manage_list_of_speakers',
         'agenda.can_see',
-        'agenda.can_see_hidden_items',
+        'agenda.can_see_internal_items',
         'assignments.can_manage',
         'assignments.can_nominate_other',
         'assignments.can_nominate_self',
@@ -74,7 +74,7 @@ def create_builtin_groups_and_admin(**kwargs):
     # Default (pk 1)
     base_permissions = (
         permission_dict['agenda.can_see'],
-        permission_dict['agenda.can_see_hidden_items'],
+        permission_dict['agenda.can_see_internal_items'],
         permission_dict['assignments.can_see'],
         permission_dict['core.can_see_frontpage'],
         permission_dict['core.can_see_projector'],
@@ -87,7 +87,7 @@ def create_builtin_groups_and_admin(**kwargs):
     # Delegates (pk 2)
     delegates_permissions = (
         permission_dict['agenda.can_see'],
-        permission_dict['agenda.can_see_hidden_items'],
+        permission_dict['agenda.can_see_internal_items'],
         permission_dict['agenda.can_be_speaker'],
         permission_dict['assignments.can_see'],
         permission_dict['assignments.can_nominate_other'],
@@ -105,7 +105,7 @@ def create_builtin_groups_and_admin(**kwargs):
     # Staff (pk 3)
     staff_permissions = (
         permission_dict['agenda.can_see'],
-        permission_dict['agenda.can_see_hidden_items'],
+        permission_dict['agenda.can_see_internal_items'],
         permission_dict['agenda.can_be_speaker'],
         permission_dict['agenda.can_manage'],
         permission_dict['agenda.can_manage_list_of_speakers'],
@@ -136,7 +136,7 @@ def create_builtin_groups_and_admin(**kwargs):
     # Admin (pk 4)
     admin_permissions = (
         permission_dict['agenda.can_see'],
-        permission_dict['agenda.can_see_hidden_items'],
+        permission_dict['agenda.can_see_internal_items'],
         permission_dict['agenda.can_be_speaker'],
         permission_dict['agenda.can_manage'],
         permission_dict['agenda.can_manage_list_of_speakers'],
@@ -178,7 +178,7 @@ def create_builtin_groups_and_admin(**kwargs):
     # Committees (pk 5)
     committees_permissions = (
         permission_dict['agenda.can_see'],
-        permission_dict['agenda.can_see_hidden_items'],
+        permission_dict['agenda.can_see_internal_items'],
         permission_dict['assignments.can_see'],
         permission_dict['core.can_see_frontpage'],
         permission_dict['core.can_see_projector'],

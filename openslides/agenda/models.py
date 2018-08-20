@@ -33,58 +33,43 @@ class ItemManager(models.Manager):
         """
         return self.get_queryset().prefetch_related('speakers', 'content_object')
 
-    def get_only_agenda_items(self):
+    def get_only_non_public_items(self):
         """
-        Generator, which yields only agenda items. Skips hidden items.
+        Generator, which yields only internal and hidden items, that means only items
+        which type is INTERNAL_ITEM or HIDDEN_ITEM or which are children of hidden items.
         """
-        # Do not execute item.is_hidden() because this would create a lot of db queries
-        root_items, item_children = self.get_root_and_children(only_agenda_items=True)
+        # Do not execute non-hidden items because this would create a lot of db queries
+        root_items, item_children = self.get_root_and_children(only_item_type=None)
 
-        def yield_items(items):
+        def yield_items(items, parent_is_not_public=False):
             """
             Generator that yields a list of items and their children.
             """
             for item in items:
-                yield item
-                yield from yield_items(item_children[item.pk])
-
-        yield from yield_items(root_items)
-
-    def get_only_hidden_items(self):
-        """
-        Generator, which yields only hidden items, that means only items
-        which type is HIDDEN_ITEM or which are children of hidden items.
-        """
-        # Do not execute item.is_hidden() because this would create a lot of db queries
-        root_items, item_children = self.get_root_and_children(only_agenda_items=False)
-
-        def yield_items(items, parent_is_hidden=False):
-            """
-            Generator that yields a list of items and their children.
-            """
-            for item in items:
-                if parent_is_hidden or item.type == item.HIDDEN_ITEM:
-                    item_is_hidden = True
+                if parent_is_not_public or item.type in (item.INTERNAL_ITEM, item.HIDDEN_ITEM):
+                    item_is_not_public = True
                     yield item
                 else:
-                    item_is_hidden = False
-                yield from yield_items(item_children[item.pk], parent_is_hidden=item_is_hidden)
+                    item_is_not_public = False
+                yield from yield_items(
+                        item_children[item.pk],
+                        parent_is_not_public=item_is_not_public)
 
         yield from yield_items(root_items)
 
-    def get_root_and_children(self, only_agenda_items=False):
+    def get_root_and_children(self, only_item_type=None):
         """
         Returns a list with all root items and a dictonary where the key is an
         item pk and the value is a list with all children of the item.
 
-        If only_agenda_items is True, the tree hides items with type
-        HIDDEN_ITEM and all of their children.
+        If only_item_type is given, the tree hides items with other types and
+        all of their children.
         """
         queryset = self.order_by('weight')
         item_children = defaultdict(list)  # type: Dict[int, List[Item]]
         root_items = []
         for item in queryset:
-            if only_agenda_items and item.type == item.HIDDEN_ITEM:
+            if only_item_type is not None and item.type != only_item_type:
                 continue
             if item.parent_id is not None:
                 item_children[item.parent_id].append(item)
@@ -92,19 +77,19 @@ class ItemManager(models.Manager):
                 root_items.append(item)
         return root_items, item_children
 
-    def get_tree(self, only_agenda_items=False, include_content=False):
+    def get_tree(self, only_item_type=None, include_content=False):
         """
         Generator that yields dictonaries. Each dictonary has two keys, id
         and children, where id is the id of one agenda item and children is a
         generator that yields dictonaries like the one discribed.
 
-        If only_agenda_items is True, the tree hides items with type
-        HIDDEN_ITEM and all of their children.
+        If only_item_type is given, the tree hides items with other types and
+        all of their children.
 
         If include_content is True, the yielded dictonaries have no key 'id'
         but a key 'item' with the entire object.
         """
-        root_items, item_children = self.get_root_and_children(only_agenda_items=only_agenda_items)
+        root_items, item_children = self.get_root_and_children(only_item_type=only_item_type)
 
         def get_children(items):
             """
@@ -184,10 +169,10 @@ class ItemManager(models.Manager):
                 walk_tree(tree_element['children'], item_number)
 
         # Start numbering visable agenda items.
-        walk_tree(self.get_tree(only_agenda_items=True, include_content=True))
+        walk_tree(self.get_tree(only_item_type=Item.AGENDA_ITEM, include_content=True))
 
         # Reset number of hidden items.
-        for item in self.get_only_hidden_items():
+        for item in self.get_only_non_public_items():
             item.item_number = ''
             item.save()
 
@@ -200,10 +185,12 @@ class Item(RESTModelMixin, models.Model):
     objects = ItemManager()
 
     AGENDA_ITEM = 1
-    HIDDEN_ITEM = 2
+    INTERNAL_ITEM = 2
+    HIDDEN_ITEM = 3
 
     ITEM_TYPE = (
         (AGENDA_ITEM, ugettext_lazy('Agenda item')),
+        (INTERNAL_ITEM, ugettext_lazy('Internal item')),
         (HIDDEN_ITEM, ugettext_lazy('Hidden item')))
 
     item_number = models.CharField(blank=True, max_length=255)
@@ -281,7 +268,7 @@ class Item(RESTModelMixin, models.Model):
             ('can_see', 'Can see agenda'),
             ('can_manage', 'Can manage agenda'),
             ('can_manage_list_of_speakers', 'Can manage list of speakers'),
-            ('can_see_hidden_items', 'Can see hidden items and time scheduling of agenda'))
+            ('can_see_internal_items', 'Can see internal items and time scheduling of agenda'))
         unique_together = ('content_type', 'object_id')
 
     def __str__(self):
@@ -319,6 +306,16 @@ class Item(RESTModelMixin, models.Model):
         except AttributeError:
             raise NotImplementedError('You have to provide a get_agenda_list_view_title '
                                       'method on your related model.')
+
+    def is_internal(self):
+        """
+        Returns True if the type of this object itself is a internal item or any
+        of its ancestors has such a type.
+
+        Attention! This executes one query for each ancestor of the item.
+        """
+        return (self.type == self.INTERNAL_ITEM or
+                (self.parent is not None and self.parent.is_internal()))
 
     def is_hidden(self):
         """

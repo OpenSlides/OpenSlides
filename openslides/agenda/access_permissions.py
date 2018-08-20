@@ -23,7 +23,8 @@ class ItemAccessPermissions(BaseAccessPermissions):
 
         return ItemSerializer
 
-    # TODO: In the following method we use full_data['is_hidden'] but this can be out of date.
+    # TODO: In the following method we use full_data['is_hidden'] and
+    # full_data['is_internal'] but this can be out of date.
 
     def get_restricted_data(
             self,
@@ -33,8 +34,10 @@ class ItemAccessPermissions(BaseAccessPermissions):
         Returns the restricted serialized data for the instance prepared
         for the user.
 
+        Hidden items can only be seen by managers with can_manage permission.
+
         We remove comments for non admins/managers and a lot of fields of
-        hidden items for users without permission to see hidden items.
+        internal items for users without permission to see internal items.
         """
         def filtered_data(full_data, blocked_keys):
             """
@@ -45,38 +48,45 @@ class ItemAccessPermissions(BaseAccessPermissions):
 
         # Parse data.
         if has_perm(user, 'agenda.can_see'):
-            if has_perm(user, 'agenda.can_manage') and has_perm(user, 'agenda.can_see_hidden_items'):
+            if has_perm(user, 'agenda.can_manage') and has_perm(user, 'agenda.can_see_internal_items'):
                 # Managers with special permission can see everything.
                 data = full_data
-            elif has_perm(user, 'agenda.can_see_hidden_items'):
-                # Non managers with special permission can see everything but comments.
+            elif has_perm(user, 'agenda.can_see_internal_items'):
+                # Non managers with special permission can see everything but
+                # comments and hidden items.
+                data = [full for full in full_data if not full['is_hidden']]  # filter hidden items
                 blocked_keys = ('comment',)
-                data = [filtered_data(full, blocked_keys) for full in full_data]
+                data = [filtered_data(full, blocked_keys) for full in data]  # remove blocked_keys
             else:
-                # Users without special permissin for hidden items.
+                # Users without special permission for internal items.
 
-                # In hidden case managers and non managers see only some fields
-                # so that list of speakers is provided regardless.
-                blocked_keys_hidden_case = set(full_data[0].keys()) - set((
+                # In internal and hidden case managers and non managers see only some fields
+                # so that list of speakers is provided regardless. Hidden items can only be seen by managers.
+                blocked_keys_internal_hidden_case = set(full_data[0].keys()) - set((
                     'id',
                     'title',
                     'speakers',
                     'speaker_list_closed',
                     'content_object'))
 
-                # In non hidden case managers see everything and non managers see
+                # In non internal case managers see everything and non managers see
                 # everything but comments.
                 if has_perm(user, 'agenda.can_manage'):
-                    blocked_keys_non_hidden_case = []  # type: Iterable[str]
+                    blocked_keys_non_internal_hidden_case = []  # type: Iterable[str]
+                    can_see_hidden = True
                 else:
-                    blocked_keys_non_hidden_case = ('comment',)
+                    blocked_keys_non_internal_hidden_case = ('comment',)
+                    can_see_hidden = False
 
                 data = []
                 for full in full_data:
-                    if full['is_hidden']:
-                        data.append(filtered_data(full, blocked_keys_hidden_case))
-                    else:
-                        data.append(filtered_data(full, blocked_keys_non_hidden_case))
+                    if full['is_hidden'] and can_see_hidden:
+                        # Same filtering for internal and hidden items
+                        data.append(filtered_data(full, blocked_keys_internal_hidden_case))
+                    if full['is_internal']:
+                        data.append(filtered_data(full, blocked_keys_internal_hidden_case))
+                    else:  # agenda item
+                        data.append(filtered_data(full, blocked_keys_non_internal_hidden_case))
         else:
             data = []
 
