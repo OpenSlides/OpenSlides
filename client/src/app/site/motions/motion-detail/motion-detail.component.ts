@@ -17,9 +17,8 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
 
     motion: Motion;
     metaInfoForm: FormGroup;
+    contentForm: FormGroup;
     editMotion = false;
-
-    // categoryFormControl: FormControl;
 
     constructor(private route: ActivatedRoute, private formBuilder: FormBuilder) {
         super();
@@ -41,20 +40,39 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
 
     /** Parches the Form with content from the dataStore */
     patchForm() {
-        this.metaInfoForm.patchValue({ categoryFormControl: this.motion.category });
-        this.metaInfoForm.patchValue({ state: this.motion.state });
+        this.metaInfoForm.patchValue({
+            category_id: this.motion.category.id,
+            state_id: this.motion.state.id,
+            recommendation_id: this.motion.recommendation.id,
+            identifier: this.motion.identifier,
+            origin: this.motion.origin
+        });
+        this.contentForm.patchValue({
+            currentTitle: this.motion.currentTitle,
+            currentText: this.motion.currentText,
+            currentReason: this.motion.currentReason
+        });
     }
 
     /** Create the whole Form with empty or default values */
     createForm() {
         this.metaInfoForm = this.formBuilder.group({
-            categoryFormControl: [''],
-            state: ['']
+            identifier: [''],
+            category_id: [''],
+            state_id: [''],
+            recommendation_id: [''],
+            origin: ['']
+        });
+        this.contentForm = this.formBuilder.group({
+            currentTitle: [''],
+            currentText: [''],
+            currentReason: ['']
         });
     }
 
     saveMotion() {
-        console.log('Save motion: ', this.metaInfoForm.value);
+        const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
+        this.motion.patchValues(newMotionValues);
     }
 
     getMotionCategories(): Category[] {

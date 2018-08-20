@@ -89,6 +89,13 @@ export class Motion extends BaseModel {
     }
 
     /**
+     * update the values of the motion with new values
+     */
+    patchValues(update: object) {
+        Object.assign(this, update);
+    }
+
+    /**
      * sets the workflow_id and the workflow
      */
     initDataStoreValues() {
@@ -116,11 +123,17 @@ export class Motion extends BaseModel {
     /**
      * returns the most current title from versions
      */
-    get currentTitle() {
+    get currentTitle(): string {
         if (this.versions[0]) {
             return this.versions[0].title;
         } else {
             return '';
+        }
+    }
+
+    set currentTitle(newTitle: string) {
+        if (this.versions[0]) {
+            this.versions[0].title = newTitle;
         }
     }
 
@@ -131,11 +144,19 @@ export class Motion extends BaseModel {
         return this.versions[0].text;
     }
 
+    set currentText(newText: string) {
+        this.versions[0].text = newText;
+    }
+
     /**
      * returns the most current motion reason text from versions
      */
     get currentReason() {
         return this.versions[0].reason;
+    }
+
+    set currentReason(newReason: string) {
+        this.versions[0].reason = newReason;
     }
 
     /**
@@ -183,8 +204,6 @@ export class Motion extends BaseModel {
 
     /**
      * return the workflow state
-     *
-     * set the workflow via a component
      */
     get state() {
         if (this.workflow && this.workflow.id) {
@@ -205,15 +224,14 @@ export class Motion extends BaseModel {
     /**
      * Returns the name of the recommendation.
      *
-     * Right now only the default workflow is assumed
      * TODO: Motion workflow needs to be specific on the server
      */
     get recommendation() {
-        const state = this.workflow.state_by_id(this.recommendation_id);
-        if (state) {
-            return state.recommendation_label;
+        if (this.workflow && this.workflow.id) {
+            const state = this.workflow.state_by_id(this.recommendation_id);
+            return state;
         } else {
-            return '';
+            return null;
         }
     }
 
