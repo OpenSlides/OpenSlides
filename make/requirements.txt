@@ -1,0 +1,4 @@
+# Requirements for the make scripts
+
+requirements-parser
+PyYAML

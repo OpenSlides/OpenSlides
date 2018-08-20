@@ -5,8 +5,9 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import Permission
 from django.db import migrations, models
 
-from openslides.utils.migrations import \
-    add_permission_to_groups_based_on_existing_permission
+from openslides.utils.migrations import (
+    add_permission_to_groups_based_on_existing_permission,
+)
 
 
 def delete_old_can_see_hidden_permission(apps, schema_editor):

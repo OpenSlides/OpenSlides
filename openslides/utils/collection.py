@@ -10,11 +10,15 @@ from typing import (
     cast,
 )
 
+from asgiref.sync import async_to_sync
 from django.apps import apps
+from django.conf import settings
 from django.db.models import Model
 from mypy_extensions import TypedDict
 
-from .cache import full_data_cache
+from .cache import element_cache
+from .cache_providers import Cachable
+
 
 if TYPE_CHECKING:
     from .access_permissions import BaseAccessPermissions  # noqa
@@ -74,19 +78,12 @@ class CollectionElement:
                 'CollectionElement.from_values() but not CollectionElement() '
                 'directly.')
 
-        if self.is_deleted():
-            # Delete the element from the cache, if self.is_deleted() is True:
-            full_data_cache.del_element(self.collection_string, self.id)
-        else:
-            # The call to get_full_data() has some sideeffects. When the object
-            # was created with from_instance() or the object is not in the cache
-            # then get_full_data() will save the object into the cache.
-            # This will also raise a DoesNotExist error, if the object does
-            # neither exist in the cache nor in the database.
-            self.get_full_data()
+        if not self.deleted:
+            self.get_full_data()  # This raises DoesNotExist, if the element does not exist.
 
     @classmethod
-    def from_instance(cls, instance: Model, deleted: bool = False, information: Dict[str, Any] = None) -> 'CollectionElement':
+    def from_instance(
+            cls, instance: Model, deleted: bool = False, information: Dict[str, Any] = None) -> 'CollectionElement':
         """
         Returns a collection element from a database instance.
 
@@ -175,6 +172,20 @@ class CollectionElement:
         """
         return self.get_model().get_access_permissions()
 
+    def get_element_from_db(self) -> Optional[Dict[str, Any]]:
+        # Hack for django 2.0 and channels 2.1 to stay in the same thread.
+        # This is needed for the tests.
+        try:
+            query = self.get_model().objects.get_full_queryset()
+        except AttributeError:
+            # If the model des not have to method get_full_queryset(), then use
+            # the default queryset from django.
+            query = self.get_model().objects
+        try:
+            return self.get_access_permissions().get_full_data(query.get(pk=self.id))
+        except self.get_model().DoesNotExist:
+            return None
+
     def get_full_data(self) -> Dict[str, Any]:
         """
         Returns the full_data of this collection_element from with all other
@@ -188,14 +199,20 @@ class CollectionElement:
         # else: use the cache.
         if self.full_data is None:
             if self.instance is None:
-                # Make sure the cache exists
-                if not full_data_cache.exists_for_collection(self.collection_string):
-                    # Build the cache if it does not exists.
-                    full_data_cache.build_for_collection(self.collection_string)
-                self.full_data = full_data_cache.get_element(self.collection_string, self.id)
+                # The type of data has to be set for mypy
+                data = None  # type: Optional[Dict[str, Any]]
+                if getattr(settings, 'SKIP_CACHE', False):
+                    # Hack for django 2.0 and channels 2.1 to stay in the same thread.
+                    # This is needed for the tests.
+                    data = self.get_element_from_db()
+                else:
+                    data = async_to_sync(element_cache.get_element_full_data)(self.collection_string, self.id)
+                if data is None:
+                    raise self.get_model().DoesNotExist(
+                        "Collection {} with id {} does not exist".format(self.collection_string, self.id))
+                self.full_data = data
             else:
                 self.full_data = self.get_access_permissions().get_full_data(self.instance)
-                full_data_cache.add_element(self.collection_string, self.id, self.full_data)
         return self.full_data
 
     def is_deleted(self) -> bool:
@@ -205,7 +222,7 @@ class CollectionElement:
         return self.deleted
 
 
-class Collection:
+class Collection(Cachable):
     """
     Represents all elements of one collection.
     """
@@ -242,17 +259,32 @@ class Collection:
                 full_data['id'],
                 full_data=full_data)
 
+    def get_elements_from_db(self) ->Dict[str, List[Dict[str, Any]]]:
+        # Hack for django 2.0 and channels 2.1 to stay in the same thread.
+        # This is needed for the tests.
+        try:
+            query = self.get_model().objects.get_full_queryset()
+        except AttributeError:
+            # If the model des not have to method get_full_queryset(), then use
+            # the default queryset from django.
+            query = self.get_model().objects
+        return {self.collection_string: [self.get_model().get_access_permissions().get_full_data(instance) for instance in query.all()]}
+
     def get_full_data(self) -> List[Dict[str, Any]]:
         """
         Returns a list of dictionaries with full_data of all collection
         elements.
         """
         if self.full_data is None:
-            # Build the cache, if it does not exists.
-            if not full_data_cache.exists_for_collection(self.collection_string):
-                full_data_cache.build_for_collection(self.collection_string)
-
-            self.full_data = full_data_cache.get_data(self.collection_string)
+            # The type of all_full_data has to be set for mypy
+            all_full_data = {}  # type: Dict[str, List[Dict[str, Any]]]
+            if getattr(settings, 'SKIP_CACHE', False):
+                # Hack for django 2.0 and channels 2.1 to stay in the same thread.
+                # This is needed for the tests.
+                all_full_data = self.get_elements_from_db()
+            else:
+                all_full_data = async_to_sync(element_cache.get_all_full_data)()
+            self.full_data = all_full_data[self.collection_string]
         return self.full_data
 
     def as_list_for_user(self, user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
@@ -261,6 +293,27 @@ class Collection:
         the rest api.
         """
         return self.get_access_permissions().get_restricted_data(self.get_full_data(), user)
+
+    def get_collection_string(self) -> str:
+        """
+        Returns the collection_string.
+        """
+        return self.collection_string
+
+    def get_elements(self) -> List[Dict[str, Any]]:
+        """
+        Returns all elements of the Collection as full_data.
+        """
+        return self.get_full_data()
+
+    def restrict_elements(
+            self,
+            user: Optional['CollectionElement'],
+            elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Converts the full_data to restricted data.
+        """
+        return self.get_model().get_access_permissions().get_restricted_data(user, elements)
 
 
 _models_to_collection_string = {}  # type: Dict[str, Type[Model]]
@@ -295,7 +348,8 @@ def get_model_from_collection_string(collection_string: str) -> Type[Model]:
     return model
 
 
-def format_for_autoupdate(collection_string: str, id: int, action: str, data: Dict[str, Any] = None) -> AutoupdateFormat:
+def format_for_autoupdate(
+        collection_string: str, id: int, action: str, data: Dict[str, Any] = None) -> AutoupdateFormat:
     """
     Returns a dict that can be used for autoupdate.
     """

@@ -6,6 +6,7 @@ from openslides.mediafiles.views import protected_serve
 from openslides.utils.plugins import get_all_plugin_urlpatterns
 from openslides.utils.rest_api import router
 
+
 urlpatterns = get_all_plugin_urlpatterns()
 
 urlpatterns += [

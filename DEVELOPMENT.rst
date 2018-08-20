@@ -78,7 +78,7 @@ To get help on the command line options run::
 
 Later you might want to restart the server with one of the following commands.
 
-To start OpenSlides with Daphne and one worker and to avoid opening new browser
+To start OpenSlides with Daphne and to avoid opening new browser
 windows run::
 
     $ python manage.py start --no-browser
@@ -87,15 +87,9 @@ When debugging something email related change the email backend to console::
 
     $ python manage.py start --debug-email
 
-To start OpenSlides with Daphne and four workers (avoid concurrent write
-requests or use PostgreSQL, see below) run::
+To start OpenSlides with Daphne run::
 
     $ python manage.py runserver
-
-To start OpenSlides with Geiss and one worker and to avoid opening new browser
-windows (download Geiss and setup Redis before, see below) run::
-
-    $ python manage.py start --no-browser --use-geiss
 
 Use gulp watch in a second command-line interface::
 
@@ -152,8 +146,7 @@ OpenSlides in big mode
 
 In the so called big mode you should use OpenSlides with Redis, PostgreSQL and a
 webserver like Apache HTTP Server or nginx as proxy server in front of your
-OpenSlides interface server. Optionally you can use `Geiss
-<https://github.com/ostcar/geiss/>`_ as interface server instead of Daphne.
+OpenSlides interface server.
 
 
 1. Install and configure PostgreSQL and Redis
@@ -200,23 +193,12 @@ Populate your new database::
 4. Run OpenSlides
 -----------------
 
-First start e. g. four workers (do not use the `--threads` option, because the threads will not spawn across all cores)::
-
-    $ python manage.py runworker&
-    $ python manage.py runworker&
-    $ python manage.py runworker&
-    $ python manage.py runworker&
-
 To start Daphne as protocol server run::
 
     $ export DJANGO_SETTINGS_MODULE=settings
     $ export PYTHONPATH=personal_data/var/
     $ daphne openslides.asgi:channel_layer
 
-To use Geiss instead of Daphne, just download Geiss and start it::
-
-    $ python manage.py getgeiss
-    $ ./personal_data/var/geiss
 
 5. Use Nginx (optional)
 
@@ -224,7 +206,7 @@ When using Nginx as a proxy for delivering staticfiles the performance of the se
 
     $ python manage.py collectstatic
 
-This is an example configuration for a single Daphne/Geiss listen on port 8000::
+This is an example configuration for a single Daphne listen on port 8000::
 
     server {
          listen 80;
@@ -259,7 +241,7 @@ This is an example configuration for a single Daphne/Geiss listen on port 8000::
          }
      }
 
-Using Nginx as a load balancer is fairly easy. Just start multiple Daphnes/Geiss on different ports, change the `proxy_pass` to `http://openslides/` and add this on top of the Nginx configuration::
+Using Nginx as a load balancer is fairly easy. Just start multiple Daphnes on different ports, change the `proxy_pass` to `http://openslides/` and add this on top of the Nginx configuration::
 
     upstream openslides {
         server localhost:2001;

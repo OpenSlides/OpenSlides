@@ -1,6 +1,5 @@
 from django.apps import AppConfig
 
-from ..utils.collection import Collection
 from ..utils.projector import register_projector_elements
 
 
@@ -48,7 +47,7 @@ class AgendaAppConfig(AppConfig):
 
     def get_startup_elements(self):
         """
-        Yields all collections required on startup i. e. opening the websocket
+        Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        yield Collection(self.get_model('Item').get_collection_string())
+        yield self.get_model('Item')
