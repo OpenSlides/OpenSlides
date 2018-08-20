@@ -1,8 +1,8 @@
+import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.urls import reverse
 from django.utils.translation import ugettext
-from django_redis import get_redis_connection
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -12,9 +12,10 @@ from openslides.core.config import config
 from openslides.core.models import Countdown
 from openslides.motions.models import Motion
 from openslides.topics.models import Topic
-from openslides.users.models import User
 from openslides.utils.collection import CollectionElement
 from openslides.utils.test import TestCase
+
+from ..helpers import count_queries
 
 
 class RetrieveItem(TestCase):
@@ -89,63 +90,29 @@ class RetrieveItem(TestCase):
         self.assertTrue(response.data.get('comment') is None)
 
 
-class TestDBQueries(TestCase):
+@pytest.mark.django_db(transaction=False)
+def test_agenda_item_db_queries():
     """
-    Tests that receiving elements only need the required db queries.
+    Tests that only the following db queries are done:
+    * 1 requests to get the list of all agenda items,
+    * 1 request to get all speakers,
+    * 3 requests to get the assignments, motions and topics and
 
-    Therefore in setup some agenda items are created and received with different
-    user accounts.
+    * 1 request to get an agenda item (why?)
+    * 2 requests for the motionsversions.
+    TODO: The last three request are a bug.
     """
+    for index in range(10):
+        Topic.objects.create(title='topic{}'.format(index))
+    parent = Topic.objects.create(title='parent').agenda_item
+    child = Topic.objects.create(title='child').agenda_item
+    child.parent = parent
+    child.save()
+    Motion.objects.create(title='motion1')
+    Motion.objects.create(title='motion2')
+    Assignment.objects.create(title='assignment', open_posts=5)
 
-    def setUp(self):
-        self.client = APIClient()
-        config['general_system_enable_anonymous'] = True
-        for index in range(10):
-            Topic.objects.create(title='topic{}'.format(index))
-        parent = Topic.objects.create(title='parent').agenda_item
-        child = Topic.objects.create(title='child').agenda_item
-        child.parent = parent
-        child.save()
-        Motion.objects.create(title='motion1')
-        Motion.objects.create(title='motion2')
-        Assignment.objects.create(title='assignment', open_posts=5)
-
-    def test_admin(self):
-        """
-        Tests that only the following db queries are done:
-        * 7 requests to get the session an the request user with its permissions,
-        * 1 requests to get the list of all agenda items,
-        * 1 request to get all speakers,
-        * 3 requests to get the assignments, motions and topics and
-
-        * 1 request to get an agenda item (why?)
-
-        * 2 requests for the motionsversions.
-
-        TODO: The last two request for the motionsversions are a bug.
-        """
-        self.client.force_login(User.objects.get(pk=1))
-        get_redis_connection("default").flushall()
-        with self.assertNumQueries(15):
-            self.client.get(reverse('item-list'))
-
-    def test_anonymous(self):
-        """
-        Tests that only the following db queries are done:
-        * 3 requests to get the permission for anonymous,
-        * 1 requests to get the list of all agenda items,
-        * 1 request to get all speakers,
-        * 3 requests to get the assignments, motions and topics and
-
-        * 1 request to get an agenda item (why?)
-
-        * 2 requests for the motionsversions.
-
-        TODO: The last two request for the motionsversions are a bug.
-        """
-        get_redis_connection("default").flushall()
-        with self.assertNumQueries(11):
-            self.client.get(reverse('item-list'))
+    assert count_queries(Item.get_elements) == 8
 
 
 class ManageSpeaker(TestCase):

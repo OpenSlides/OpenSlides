@@ -1,11 +1,11 @@
-from django_redis import get_redis_connection
+
 
 from openslides.core.config import ConfigVariable, config
 from openslides.core.exceptions import ConfigError, ConfigNotFound
 from openslides.utils.test import TestCase
 
 
-class TestConfigException(Exception):
+class TTestConfigException(Exception):
     pass
 
 
@@ -57,7 +57,6 @@ class HandleConfigTest(TestCase):
     def test_change_config_value(self):
         self.assertEqual(config['string_var'], 'default_string_rien4ooCZieng6ah')
         config['string_var'] = 'other_special_unique_string dauTex9eAiy7jeen'
-        get_redis_connection('default').flushall()
         self.assertEqual(config['string_var'], 'other_special_unique_string dauTex9eAiy7jeen')
 
     def test_missing_cache_(self):
@@ -79,7 +78,7 @@ class HandleConfigTest(TestCase):
         message.
         """
         with self.assertRaisesMessage(
-                TestConfigException,
+                TTestConfigException,
                 'Change callback dhcnfg34dlg06kdg successfully called.'):
             self.set_config_var(
                 key='var_with_callback_ghvnfjd5768gdfkwg0hm2',
@@ -155,7 +154,7 @@ def set_simple_config_collection_disabled_view():
 
 def set_simple_config_collection_with_callback():
     def callback():
-        raise TestConfigException('Change callback dhcnfg34dlg06kdg successfully called.')
+        raise TTestConfigException('Change callback dhcnfg34dlg06kdg successfully called.')
     yield ConfigVariable(
         name='var_with_callback_ghvnfjd5768gdfkwg0hm2',
         default_value='',

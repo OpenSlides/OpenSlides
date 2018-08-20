@@ -7,8 +7,11 @@ from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import IntegrityError, models, transaction
 from django.db.models import Max
 from django.utils import formats, timezone
-from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.utils.translation import (
+    ugettext as _,
+    ugettext_lazy,
+    ugettext_noop,
+)
 from jsonfield import JSONField
 
 from openslides.agenda.models import Item
