@@ -70,8 +70,10 @@ export class MotionListComponent extends BaseComponent implements OnInit {
         // The alternative approach is to put the observable as DataSource to the table
         this.DS.getObservable().subscribe(newModel => {
             if (newModel instanceof Motion) {
-                this.motionArray.push(newModel as Motion);
-                this.dataSource.data = this.motionArray;
+                if (!this.motionArray.includes(newModel)) {
+                    this.motionArray.push(newModel as Motion);
+                    this.dataSource.data = this.motionArray;
+                }
             }
         });
     }

@@ -1,6 +1,6 @@
 <mat-toolbar color='primary'>
 
-    <button class='generic-plus-button on-transition-fade' mat-fab>
+    <button class='generic-plus-button on-transition-fade' routerLink='new' mat-fab>
         <fa-icon icon='plus'></fa-icon>
     </button>
 
@@ -43,7 +43,7 @@
                 <br>
                 <span class='motion-list-from'>
                     <span translate>by</span>
-                    {{motion.submitterAsUser.username}}
+                    {{motion.submitterAsUser}}
                 </span>
             </div>
         </mat-cell>

@@ -66,24 +66,24 @@ export class Motion extends BaseModel {
         super();
         this._collectionString = 'motions/motion';
         this.id = id;
-        this.identifier = identifier;
-        this.versions = versions;
+        this.identifier = identifier || '';
+        this.versions = versions || [new MotionVersion()];
         this.active_version = active_version;
         this.parent_id = parent_id;
         this.category_id = category_id;
         this.motion_block_id = motion_block_id;
-        this.origin = origin;
-        this.submitters = submitters;
+        this.origin = origin || '';
+        this.submitters = submitters || [new MotionSubmitter()];
         this.supporters_id = supporters_id;
         this.comments = comments;
         this.state_id = state_id;
-        this.state_required_permission_to_see = state_required_permission_to_see;
+        this.state_required_permission_to_see = state_required_permission_to_see || '';
         this.recommendation_id = recommendation_id;
         this.tags_id = tags_id;
         this.attachments_id = attachments_id;
         this.polls = polls;
         this.agenda_item_id = agenda_item_id;
-        this.log_messages = log_messages;
+        this.log_messages = log_messages || [new MotionLog()];
 
         this.initDataStoreValues();
     }
@@ -124,7 +124,7 @@ export class Motion extends BaseModel {
      * returns the most current title from versions
      */
     get currentTitle(): string {
-        if (this.versions[0]) {
+        if (this.versions && this.versions[0]) {
             return this.versions[0].title;
         } else {
             return '';
@@ -141,7 +141,11 @@ export class Motion extends BaseModel {
      * returns the most current motion text from versions
      */
     get currentText() {
-        return this.versions[0].text;
+        if (this.versions) {
+            return this.versions[0].text;
+        } else {
+            return null;
+        }
     }
 
     set currentText(newText: string) {
@@ -152,9 +156,17 @@ export class Motion extends BaseModel {
      * returns the most current motion reason text from versions
      */
     get currentReason() {
-        return this.versions[0].reason;
+        if (this.versions) {
+            return this.versions[0].reason;
+        } else {
+            return null;
+        }
     }
 
+    /**
+     * Update the current reason.
+     * TODO: ignores motion versions. Should make a new one.
+     */
     set currentReason(newReason: string) {
         this.versions[0].reason = newReason;
     }
@@ -164,20 +176,24 @@ export class Motion extends BaseModel {
      */
     get submitterAsUser() {
         const submitterIds = [];
-        this.submitters.forEach(submitter => {
-            submitterIds.push(submitter.user_id);
-        });
-        const users = this.DS.get(User, ...submitterIds);
-        return users;
+        if (this.submitters) {
+            this.submitters.forEach(submitter => {
+                submitterIds.push(submitter.user_id);
+            });
+            const users = this.DS.get(User, ...submitterIds);
+            return users;
+        } else {
+            return null;
+        }
     }
 
     /**
      * returns the name of the first submitter
      */
     get submitterName() {
-        const mainSubmitter = this.DS.get(User, this.submitters[0].user_id) as User;
-        if (mainSubmitter) {
-            return mainSubmitter;
+        const submitters = this.submitterAsUser;
+        if (submitters) {
+            return submitters[0];
         } else {
             return '';
         }
@@ -191,7 +207,7 @@ export class Motion extends BaseModel {
             const motionCategory = this.DS.get(Category, this.category_id);
             return motionCategory as Category;
         } else {
-            return 'none';
+            return '';
         }
     }
 
@@ -205,12 +221,12 @@ export class Motion extends BaseModel {
     /**
      * return the workflow state
      */
-    get state() {
-        if (this.workflow && this.workflow.id) {
+    get state(): any {
+        if (this.state_id && this.workflow && this.workflow.id) {
             const state = this.workflow.state_by_id(this.state_id);
             return state;
         } else {
-            return null;
+            return '';
         }
     }
 
@@ -226,12 +242,12 @@ export class Motion extends BaseModel {
      *
      * TODO: Motion workflow needs to be specific on the server
      */
-    get recommendation() {
-        if (this.workflow && this.workflow.id) {
+    get recommendation(): any {
+        if (this.recommendation_id && this.workflow && this.workflow.id) {
             const state = this.workflow.state_by_id(this.recommendation_id);
             return state;
         } else {
-            return null;
+            return '';
         }
     }
 
@@ -243,8 +259,13 @@ export class Motion extends BaseModel {
             Config,
             config => config.key === 'motions_recommendations_by'
         )[0] as Config;
-        const recomByString = motionsRecommendationsByConfig.value;
-        return recomByString;
+
+        if (motionsRecommendationsByConfig) {
+            const recomByString = motionsRecommendationsByConfig.value;
+            return recomByString;
+        } else {
+            return null;
+        }
     }
 
     deserialize(input: any): this {

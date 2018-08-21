@@ -111,7 +111,8 @@ export class StartComponent extends BaseComponent implements OnInit {
      * function to print datastore
      */
     giveDataStore() {
-        this.DS.printWhole();
+        // this.DS.printWhole();
+        console.log('only the motions: \n', this.DS.get(Motion) as Motion[]);
     }
 
     /**

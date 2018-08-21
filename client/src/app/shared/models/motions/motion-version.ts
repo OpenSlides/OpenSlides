@@ -26,10 +26,10 @@ export class MotionVersion implements Deserializable {
         this.id = id;
         this.version_number = version_number;
         this.creation_time = creation_time;
-        this.title = title;
-        this.text = text;
-        this.amendment_paragraphs = amendment_paragraphs;
-        this.reason = reason;
+        this.title = title || '';
+        this.text = text || '';
+        this.amendment_paragraphs = amendment_paragraphs || '';
+        this.reason = reason || '';
     }
 
     deserialize(input: any): this {

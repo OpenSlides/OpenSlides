@@ -19,26 +19,46 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     metaInfoForm: FormGroup;
     contentForm: FormGroup;
     editMotion = false;
+    newMotion = false;
 
+    /**
+     *
+     * @param route determine if this is a new or an existing motion
+     * @param formBuilder For reactive forms. Form Group and Form Control
+     */
     constructor(private route: ActivatedRoute, private formBuilder: FormBuilder) {
         super();
         this.createForm();
-        this.route.params.subscribe(params => {
-            // has the motion of the DataStore was initialized before.
-            this.motion = this.DS.get(Motion, params.id) as Motion;
 
-            // Observe motion to get the motion in the parameter and also get the changes
-            this.DS.getObservable().subscribe(newModel => {
-                if (newModel instanceof Motion) {
-                    if (newModel.id === +params.id) {
-                        this.motion = newModel as Motion;
+        console.log('route: ', route.snapshot.url[0].path);
+
+        if (route.snapshot.url[0].path === 'new') {
+            this.newMotion = true;
+            this.editMotion = true;
+            this.motion = new Motion();
+        } else {
+            // load existing motion
+            this.route.params.subscribe(params => {
+                console.log('params ', params);
+
+                // has the motion of the DataStore was initialized before.
+                this.motion = this.DS.get(Motion, params.id) as Motion;
+
+                // Observe motion to get the motion in the parameter and also get the changes
+                this.DS.getObservable().subscribe(newModel => {
+                    if (newModel instanceof Motion) {
+                        if (newModel.id === +params.id) {
+                            this.motion = newModel as Motion;
+                        }
                     }
-                }
+                });
             });
-        });
+        }
     }
 
-    /** Parches the Form with content from the dataStore */
+    /**
+     * Async load the values of the motion in the Form.
+     */
     patchForm() {
         this.metaInfoForm.patchValue({
             category_id: this.motion.category.id,
@@ -54,7 +74,11 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         });
     }
 
-    /** Create the whole Form with empty or default values */
+    /**
+     * Creates the forms for the Motion and the MotionVersion
+     *
+     * TODO: Build a custom form validator
+     */
     createForm() {
         this.metaInfoForm = this.formBuilder.group({
             identifier: [''],
@@ -70,35 +94,57 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         });
     }
 
+    /**
+     * Save a motion. Calls the "patchValues" function in the MotionObject
+     *
+     * http:post the motion to the server.
+     * The AutoUpdate-Service should see a change once it arrives and show it
+     * in the list view automatically
+     */
     saveMotion() {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
         this.motion.patchValues(newMotionValues);
+
+        console.log('save motion: this: ', this);
+
+        this.DS.save(this.motion).subscribe(answer => {
+            console.log(answer);
+        });
     }
 
+    /**
+     * return all Categories.
+     */
     getMotionCategories(): Category[] {
         const categories = this.DS.get(Category);
         return categories as Category[];
     }
 
+    /**
+     * Click on the edit button (pen-symbol)
+     */
     editMotionButton() {
         this.editMotion ? (this.editMotion = false) : (this.editMotion = true);
 
         if (this.editMotion) {
-            // switch to edit mode
             this.patchForm();
             this.metaInfoPanel.open();
             this.contentPanel.open();
         } else {
-            // save button
             this.saveMotion();
         }
     }
 
-    ngOnInit() {
-        console.log('(init)the motion: ', this.motion);
-        console.log('motion state name: ', this.motion.state);
-    }
+    /**
+     * Init. Does nothing here.
+     */
+    ngOnInit() {}
 
+    /**
+     * Function to download a motion.
+     *
+     * TODO: does nothing yet.
+     */
     downloadSingleMotionButton() {
         console.log('Download this motion');
     }

@@ -5,7 +5,7 @@ import { MotionDetailComponent } from './motion-detail/motion-detail.component';
 
 const routes: Routes = [
     { path: '', component: MotionListComponent },
-    { path: 'dummy', component: MotionDetailComponent },
+    { path: 'new', component: MotionDetailComponent },
     { path: ':id', component: MotionDetailComponent }
 ];
 

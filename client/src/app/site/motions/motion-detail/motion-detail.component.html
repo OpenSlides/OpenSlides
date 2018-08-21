@@ -1,14 +1,16 @@
 <mat-toolbar color='primary'>
 
-    <button (click)='editMotionButton()' [ngClass]="{'save-button': editMotion}" class='generic-mini-button on-transition-fade save-button' mat-mini-fab>
+    <button (click)='editMotionButton()' [ngClass]="{'save-button': editMotion}" class='generic-mini-button on-transition-fade'
+        mat-mini-fab>
         <fa-icon *ngIf="!editMotion" icon='pen'></fa-icon>
         <fa-icon *ngIf="editMotion" icon='check'></fa-icon>
     </button>
 
     <div class='motion-title on-transition-fade'>
+        <span *ngIf="newMotion">New </span>
         <span translate>Motion</span>
         <span *ngIf="!editMotion"> {{motion.identifier}}</span>
-        <span *ngIf="editMotion"> {{metaInfoForm.get('identifier').value}}</span>
+        <span *ngIf="editMotion && !newMotion"> {{metaInfoForm.get('identifier').value}}</span>
         <span>:</span>
         <span *ngIf="!editMotion"> {{motion.currentTitle}}</span>
         <span *ngIf="editMotion"> {{contentForm.get('currentTitle').value}}</span>
@@ -23,7 +25,7 @@
 
     <!-- MetaInfo -->
     <!-- <mat-expansion-panel #metaInfoPanel [expanded]='true' class='meta-info-panel'> -->
-    <mat-expansion-panel #metaInfoPanel class='meta-info-panel'>
+    <mat-expansion-panel #metaInfoPanel [expanded]='this.editMotion && this.newMotion' class='meta-info-panel'>
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <fa-icon icon='info-circle' [fixedWidth]="true"></fa-icon>
@@ -35,7 +37,8 @@
         <form [formGroup]='metaInfoForm' class='expansion-panel-custom-body' (ngSubmit)='saveMotion()'>
 
             <!-- Identifier -->
-            <div *ngIf="editMotion">
+            <div *ngIf="editMotion && !newMotion">
+                <!-- <div *ngIf="editMotion"> -->
                 <div *ngIf='!editMotion'>
                     <h3 translate>Identifier</h3>
                     {{motion.identifier}}
@@ -92,12 +95,6 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <!-- <h3>
-                    <a [matMenuTriggerFor]="stateMenu">
-                        <span>{{motion.recomBy}}</span>
-                    </a>
-                </h3> -->
-                <!-- {{motion.recommendation}} -->
             </div>
 
             <!-- Category -->
@@ -185,7 +182,7 @@
                     <textarea matInput placeholder="Reason" formControlName='currentReason' [value]='motion.currentReason'></textarea>
                 </mat-form-field>
             </div>
-        </form>
 
+        </form>
     </mat-expansion-panel>
 </mat-accordion>
