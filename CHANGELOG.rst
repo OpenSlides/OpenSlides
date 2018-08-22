@@ -23,14 +23,15 @@ Motions:
  - New table of contents with page numbers and categories in PDF [#3766].
  - New teporal field "modified final version" where the final version can
    be edited [#3781].
- - New config to show amendments also in motions table [#3792]
- - Support to change decimal places for polls with a plugin [#3803]
+ - New config to show amendments also in motions table [#3792].
+ - Support to change decimal places for polls with a plugin [#3803].
 
 Core:
  - Python 3.4 is not supported anymore [#3777].
  - Support Python 3.7 [#3786].
  - Updated pdfMake to 0.1.37 [#3766].
  - Updated Django to 2.1 [#3777, #3786].
+ - Changed behavior of collectstatic management command [#3804].
 
 
 Version 2.2 (2018-06-06)
