@@ -15,7 +15,7 @@ Installation and start of the development version
 a. Check requirements
 '''''''''''''''''''''
 
-Make sure that you have installed `Python (>= 3.5) <https://www.python.org/>`_,
+Make sure that you have installed `Python (>= 3.6) <https://www.python.org/>`_,
 `Node.js (>=4.x) <https://nodejs.org/>`_, `Yarn <https://yarnpkg.com/>`_ and
 `Git <http://git-scm.com/>`_ on your system. You also need build-essential
 packages and header files and a static library for Python.
@@ -99,7 +99,7 @@ Use gulp watch in a second command-line interface::
 Follow the instructions above (Installation on GNU/Linux or Mac OS X) but care
 of the following variations.
 
-To get Python download and run the latest `Python 3.5 32-bit (x86) executable
+To get Python download and run the latest `Python 3.7 32-bit (x86) executable
 installer <https://www.python.org/downloads/windows/>`_. Note that the 32-bit
 installer is required even on a 64-bit Windows system. If you use the 64-bit
 installer, step d. of the instruction might fail unless you installed some

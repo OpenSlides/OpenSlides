@@ -1,5 +1,5 @@
 import locale
-from typing import Type  # noqa
+from typing import Optional, Type
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
@@ -17,7 +17,7 @@ class BaseOption(models.Model):
     which has to be a subclass of BaseVote. Otherwise you have to override the
     get_vote_class method.
     """
-    vote_class = None  # type: Type[BaseVote]
+    vote_class: Optional[Type['BaseVote']] = None
 
     class Meta:
         abstract = True

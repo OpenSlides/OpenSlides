@@ -1,5 +1,5 @@
 import smtplib
-from typing import List  # noqa
+from typing import List
 
 from asgiref.sync import async_to_sync
 from django.conf import settings
@@ -325,7 +325,7 @@ class GroupViewSet(ModelViewSet):
 
             # Some permissions are added.
             if len(new_permissions) > 0:
-                collection_elements = []  # type: List[CollectionElement]
+                collection_elements: List[CollectionElement] = []
                 signal_results = permission_change.send(None, permissions=new_permissions, action='added')
                 for receiver, signal_collections in signal_results:
                     for cachable in signal_collections:

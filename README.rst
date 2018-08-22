@@ -26,7 +26,7 @@ Installation
 a. Check requirements
 '''''''''''''''''''''
 
-Make sure that you have installed `Python (>= 3.5) <https://www.python.org/>`_
+Make sure that you have installed `Python (>= 3.6) <https://www.python.org/>`_
 on your system.
 
 Additional you need build-essential packages, header files and a static

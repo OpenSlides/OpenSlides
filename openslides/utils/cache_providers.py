@@ -1,5 +1,4 @@
 from collections import defaultdict
-from typing import Set  # noqa
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -8,6 +7,7 @@ from typing import (
     Iterable,
     List,
     Optional,
+    Set,
     Tuple,
     Union,
 )
@@ -108,7 +108,7 @@ class RedisCacheProvider(BaseCacheProvider):
     """
     Cache provider that loads and saves the data to redis.
     """
-    redis_pool = None  # type: Optional[aioredis.RedisConnection]
+    redis_pool: Optional[aioredis.RedisConnection] = None
 
     def __init__(self, redis: str) -> None:
         self.redis_address = redis
@@ -232,8 +232,8 @@ class RedisCacheProvider(BaseCacheProvider):
         """
         # TODO: rewrite with lua to get all elements with one request
         redis = await self.get_connection()
-        changed_elements = defaultdict(list)  # type: Dict[str, List[bytes]]
-        deleted_elements = []  # type: List[str]
+        changed_elements: Dict[str, List[bytes]] = defaultdict(list)
+        deleted_elements: List[str] = []
         for element_id in await redis.zrangebyscore(self.get_change_id_cache_key(), min=change_id):
             if element_id.startswith(b'_config'):
                 continue
@@ -335,9 +335,9 @@ class MemmoryCacheProvider(BaseCacheProvider):
         self.clear_cache()
 
     def clear_cache(self) -> None:
-        self.full_data = {}  # type: Dict[str, str]
-        self.restricted_data = {}  # type: Dict[int, Dict[str, str]]
-        self.change_id_data = {}  # type: Dict[int, Set[str]]
+        self.full_data: Dict[str, str] = {}
+        self.restricted_data: Dict[int, Dict[str, str]] = {}
+        self.change_id_data: Dict[int, Set[str]] = {}
 
     async def reset_full_cache(self, data: Dict[str, str]) -> None:
         self.full_data = data
@@ -392,8 +392,8 @@ class MemmoryCacheProvider(BaseCacheProvider):
 
     async def get_data_since(
             self, change_id: int, user_id: Optional[int] = None) -> Tuple[Dict[str, List[bytes]], List[str]]:
-        changed_elements = defaultdict(list)  # type: Dict[str, List[bytes]]
-        deleted_elements = []  # type: List[str]
+        changed_elements: Dict[str, List[bytes]] = defaultdict(list)
+        deleted_elements: List[str] = []
         if user_id is None:
             cache_dict = self.full_data
         else:
@@ -495,7 +495,7 @@ def get_all_cachables() -> List[Cachable]:
     """
     Returns all element of OpenSlides.
     """
-    out = []  # type: List[Cachable]
+    out: List[Cachable] = []
     for app in apps.get_app_configs():
         try:
             # Get the method get_startup_elements() from an app.

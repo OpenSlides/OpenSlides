@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from operator import attrgetter
-from typing import Any, List  # noqa
+from typing import Any, List
 
 from django.apps import AppConfig
 from django.conf import settings
@@ -93,7 +93,7 @@ class CoreAppConfig(AppConfig):
             'value': client_settings_dict}
 
         # Config variables
-        config_groups = []  # type: List[Any]  # TODO: Replace Any by correct type
+        config_groups: List[Any] = []
         for config_variable in sorted(config.config_variables.values(), key=attrgetter('weight')):
             if config_variable.is_hidden():
                 # Skip hidden config variables. Do not even check groups and subgroups.

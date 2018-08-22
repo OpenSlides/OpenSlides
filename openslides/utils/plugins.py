@@ -146,7 +146,7 @@ def get_all_plugin_urlpatterns() -> List[Any]:
     Helper function to return all urlpatterns of all plugins listed in
     settings.INSTALLED_PLUGINS.
     """
-    urlpatterns = []  # type: List[Any]
+    urlpatterns: List[Any] = []
     for plugin in settings.INSTALLED_PLUGINS:
         plugin_urlpatterns = get_plugin_urlpatterns(plugin)
         if plugin_urlpatterns:

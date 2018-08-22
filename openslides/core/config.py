@@ -46,10 +46,10 @@ class ConfigHandler:
     def __init__(self) -> None:
         # Dict, that keeps all ConfigVariable objects. Has to be set at statup.
         # See the ready() method in openslides.core.apps.
-        self.config_variables = {}  # type: Dict[str, ConfigVariable]
+        self.config_variables: Dict[str, ConfigVariable] = {}
 
         # Index to get the database id from a given config key
-        self.key_to_id = None  # type: Optional[Dict[str, int]]
+        self.key_to_id: Optional[Dict[str, int]] = None
 
     def __getitem__(self, key: str) -> Any:
         """

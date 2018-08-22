@@ -73,7 +73,7 @@ class ElementCache:
         self.use_restricted_data_cache = use_restricted_data_cache
         self.cache_provider = cache_provider_class(redis)
         self.cachable_provider = cachable_provider
-        self._cachables = None  # type: Optional[Dict[str, Cachable]]
+        self._cachables: Optional[Dict[str, Cachable]] = None
 
         # Start time is used as first change_id if there is non in redis
         if start_time is None:
@@ -81,7 +81,7 @@ class ElementCache:
         self.start_time = start_time
 
         # Contains Futures to controll, that only one client updates the restricted_data.
-        self.restricted_data_cache_updater = {}  # type: Dict[int, asyncio.Future]
+        self.restricted_data_cache_updater: Dict[int, asyncio.Future] = {}
 
     @property
     def cachables(self) -> Dict[str, Cachable]:
@@ -109,7 +109,7 @@ class ElementCache:
         """
         Build or rebuild the full_data cache.
         """
-        db_data = {}  # type: Dict[str, List[Dict[str, Any]]]
+        db_data = {}
         for collection_string, cachable in self.cachables.items():
             db_data[collection_string] = await database_sync_to_async(cachable.get_elements)()
         await self.save_full_data(db_data)
@@ -262,7 +262,7 @@ class ElementCache:
         # If this succeeds, there is noone else currently updating the cache.
         # TODO: Make a timeout. Else this could block forever
         if await self.cache_provider.set_lock_restricted_data(get_user_id(user)):
-            future = asyncio.Future()  # type: asyncio.Future
+            future: asyncio.Future = asyncio.Future()
             self.restricted_data_cache_updater[get_user_id(user)] = future
             # Get change_id for this user
             value = await self.cache_provider.get_change_id_user(get_user_id(user))
@@ -318,7 +318,7 @@ class ElementCache:
 
         await self.update_restricted_data(user)
 
-        out = defaultdict(list)  # type: Dict[str, List[Dict[str, Any]]]
+        out: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
         restricted_data = await self.cache_provider.get_all_data(get_user_id(user))
         for element_id, data in restricted_data.items():
             if element_id.decode().startswith('_config'):

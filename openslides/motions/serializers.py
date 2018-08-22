@@ -1,4 +1,4 @@
-from typing import Dict  # noqa
+from typing import Dict
 
 from django.db import transaction
 from django.utils.translation import ugettext as _
@@ -233,7 +233,7 @@ class MotionPollSerializer(ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         # The following dictionary is just a cache for several votes.
-        self._votes_dicts = {}  # type: Dict[int, Dict[int, int]]
+        self._votes_dicts: Dict[int, Dict[int, int]] = {}
         return super().__init__(*args, **kwargs)
 
     def get_yes(self, obj):

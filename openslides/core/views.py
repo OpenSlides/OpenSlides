@@ -1,7 +1,7 @@
 import json
 import uuid
 from textwrap import dedent
-from typing import Any, Dict, List, cast  # noqa
+from typing import Any, Dict, List, cast
 
 from django.apps import apps
 from django.conf import settings
@@ -91,7 +91,7 @@ class WebclientJavaScriptView(utils_views.View):
     AngularJS app for the requested realm (site or projector). Also code
     for plugins is appended. The result is not uglified.
     """
-    cache = {}  # type: Dict[str, str]
+    cache: Dict[str, str] = {}
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -102,8 +102,8 @@ class WebclientJavaScriptView(utils_views.View):
             self.init_cache('projector')
 
     def init_cache(self, realm: str) -> None:
-        angular_modules = []  # type: List[str]
-        js_files = []  # type: List[str]
+        angular_modules: List[str] = []
+        js_files: List[str] = []
         for app_config in apps.get_app_configs():
             # Add the angular app if the module has one.
             if getattr(app_config, 'angular_{}_module'.format(realm), False):
@@ -836,16 +836,16 @@ class VersionView(utils_views.APIView):
     http_method_names = ['get']
 
     def get_context_data(self, **context):
-        Result = TypedDict('Result', {  # noqa
+        Result = TypedDict('Result', {
             'openslides_version': str,
             'openslides_license': str,
             'openslides_url': str,
             'plugins': List[Dict[str, str]]})
-        result = dict(
+        result: Result = dict(
             openslides_version=version,
             openslides_license=license,
             openslides_url=url,
-            plugins=[])  # type: Result
+            plugins=[])
         # Versions of plugins.
         for plugin in settings.INSTALLED_PLUGINS:
             result['plugins'].append({

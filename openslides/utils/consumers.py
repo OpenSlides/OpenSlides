@@ -8,7 +8,6 @@ from ..core.config import config
 from ..core.models import Projector
 from .auth import async_anonymous_is_enabled, has_perm
 from .cache import element_cache, split_element_id
-from .collection import AutoupdateFormat  # noqa
 from .collection import (
     Collection,
     CollectionElement,
@@ -236,7 +235,7 @@ def projector_startup_data(projector_id: int) -> Any:
             projector = Projector.objects.get(pk=config['projector_broadcast'])
 
         # Collect all elements that are on the projector.
-        output = []  # type: List[AutoupdateFormat]
+        output = []
         for requirement in projector.get_all_requirements():
             required_collection_element = CollectionElement.from_instance(requirement)
             output.append(required_collection_element.as_autoupdate_for_projector())

@@ -1,4 +1,4 @@
-from typing import Any, Dict  # noqa
+from typing import Any, Dict
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
@@ -59,7 +59,7 @@ class Topic(RESTModelMixin, models.Model):
     """
     Container for runtime information for agenda app (on create or update of this instance).
     """
-    agenda_item_update_information = {}  # type: Dict[str, Any]
+    agenda_item_update_information: Dict[str, Any] = {}
 
     @property
     def agenda_item(self):

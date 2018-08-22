@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import Any, Dict, List, Optional  # noqa
+from typing import Any, Dict, List
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
@@ -301,14 +301,14 @@ class Assignment(RESTModelMixin, models.Model):
         Returns a table represented as a list with all candidates from all
         related polls and their vote results.
         """
-        vote_results_dict = OrderedDict()  # type: Dict[Any, List[AssignmentVote]]
+        vote_results_dict: Dict[Any, List[AssignmentVote]] = OrderedDict()
 
         polls = self.polls.all()
         if only_published:
             polls = polls.filter(published=True)
 
         # All PollOption-Objects related to this assignment
-        options = []  # type: List[AssignmentOption]
+        options: List[AssignmentOption] = []
         for poll in polls:
             options += poll.get_options()
 
@@ -318,7 +318,7 @@ class Assignment(RESTModelMixin, models.Model):
                 continue
             vote_results_dict[candidate] = []
             for poll in polls:
-                votes = {}  # type: Any
+                votes: Any = {}
                 try:
                     # candidate related to this poll
                     poll_option = poll.get_options().get(candidate=candidate)
@@ -333,7 +333,7 @@ class Assignment(RESTModelMixin, models.Model):
     """
     Container for runtime information for agenda app (on create or update of this instance).
     """
-    agenda_item_update_information = {}  # type: Dict[str, Any]
+    agenda_item_update_information: Dict[str, Any] = {}
 
     def get_agenda_title(self):
         return str(self)

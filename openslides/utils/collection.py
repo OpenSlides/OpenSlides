@@ -21,7 +21,7 @@ from .cache_providers import Cachable
 
 
 if TYPE_CHECKING:
-    from .access_permissions import BaseAccessPermissions  # noqa
+    from .access_permissions import BaseAccessPermissions
 
 
 AutoupdateFormat = TypedDict(
@@ -200,7 +200,7 @@ class CollectionElement:
         if self.full_data is None:
             if self.instance is None:
                 # The type of data has to be set for mypy
-                data = None  # type: Optional[Dict[str, Any]]
+                data: Optional[Dict[str, Any]] = None
                 if getattr(settings, 'SKIP_CACHE', False):
                     # Hack for django 2.0 and channels 2.1 to stay in the same thread.
                     # This is needed for the tests.
@@ -277,7 +277,7 @@ class Collection(Cachable):
         """
         if self.full_data is None:
             # The type of all_full_data has to be set for mypy
-            all_full_data = {}  # type: Dict[str, List[Dict[str, Any]]]
+            all_full_data: Dict[str, List[Dict[str, Any]]] = {}
             if getattr(settings, 'SKIP_CACHE', False):
                 # Hack for django 2.0 and channels 2.1 to stay in the same thread.
                 # This is needed for the tests.
@@ -316,7 +316,7 @@ class Collection(Cachable):
         return self.get_model().get_access_permissions().get_restricted_data(user, elements)
 
 
-_models_to_collection_string = {}  # type: Dict[str, Type[Model]]
+_models_to_collection_string: Dict[str, Type[Model]] = {}
 
 
 def get_model_from_collection_string(collection_string: str) -> Type[Model]:
