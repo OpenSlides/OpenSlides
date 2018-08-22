@@ -165,7 +165,7 @@ class ConfigHandler:
         # Save the new value to the database.
         db_value = ConfigStore.objects.get(key=key)
         db_value.value = value
-        db_value.save(information={'changed_config': key})
+        db_value.save()
 
         # Call on_change callback.
         if config_variable.on_change:

@@ -1,14 +1,4 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Generator,
-    Iterable,
-    List,
-    Optional,
-    Type,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Type
 
 from asgiref.sync import async_to_sync
 from django.apps import apps
@@ -34,46 +24,15 @@ AutoupdateFormat = TypedDict(
 )
 
 
-AutoupdateFormatOld = TypedDict(
-    'AutoupdateFormatOld',
-    {
-        'collection': str,
-        'id': int,
-        'action': 'str',
-        'data': Dict[str, Any],
-    },
-    total=False,
-)
-
-InnerChannelMessageFormat = TypedDict(
-    'InnerChannelMessageFormat',
-    {
-        'collection_string': str,
-        'id': int,
-        'deleted': bool,
-        'information': Dict[str, Any],
-        'full_data': Optional[Dict[str, Any]],
-    }
-)
-
-ChannelMessageFormat = TypedDict(
-    'ChannelMessageFormat',
-    {
-        'elements': List[InnerChannelMessageFormat],
-    }
-)
-
-
 class CollectionElement:
     def __init__(self, instance: Model = None, deleted: bool = False, collection_string: str = None,
-                 id: int = None, full_data: Dict[str, Any] = None, information: Dict[str, Any] = None) -> None:
+                 id: int = None, full_data: Dict[str, Any] = None) -> None:
         """
         Do not use this. Use the methods from_instance() or from_values().
         """
         self.instance = instance
         self.deleted = deleted
         self.full_data = full_data
-        self.information = information or {}
         if instance is not None:
             # Collection element is created via instance
             self.collection_string = instance.get_collection_string()
@@ -93,7 +52,7 @@ class CollectionElement:
 
     @classmethod
     def from_instance(
-            cls, instance: Model, deleted: bool = False, information: Dict[str, Any] = None) -> 'CollectionElement':
+            cls, instance: Model, deleted: bool = False) -> 'CollectionElement':
         """
         Returns a collection element from a database instance.
 
@@ -101,11 +60,11 @@ class CollectionElement:
 
         If deleted is set to True, the element is deleted from the cache.
         """
-        return cls(instance=instance, deleted=deleted, information=information)
+        return cls(instance=instance, deleted=deleted)
 
     @classmethod
     def from_values(cls, collection_string: str, id: int, deleted: bool = False,
-                    full_data: Dict[str, Any] = None, information: Dict[str, Any] = None) -> 'CollectionElement':
+                    full_data: Dict[str, Any] = None) -> 'CollectionElement':
         """
         Returns a collection element from a collection_string and an id.
 
@@ -114,8 +73,7 @@ class CollectionElement:
         With the argument full_data, the content of the CollectionElement can be set.
         It has to be a dict in the format that is used be access_permission.get_full_data().
         """
-        return cls(collection_string=collection_string, id=id, deleted=deleted,
-                   full_data=full_data, information=information)
+        return cls(collection_string=collection_string, id=id, deleted=deleted, full_data=full_data)
 
     def __eq__(self, collection_element: 'CollectionElement') -> bool:  # type: ignore
         """
@@ -126,23 +84,6 @@ class CollectionElement:
         """
         return (self.collection_string == collection_element.collection_string and
                 self.id == collection_element.id)
-
-    def as_autoupdate_for_projector(self) -> AutoupdateFormatOld:
-        """
-        Returns a dict that can be sent through the autoupdate system for the
-        projector.
-        """
-        if not self.is_deleted():
-            restricted_data = self.get_access_permissions().get_projector_data([self.get_full_data()])
-            data = restricted_data[0] if restricted_data else None
-        else:
-            data = None
-
-        return format_for_autoupdate_old(
-            collection_string=self.collection_string,
-            id=self.id,
-            action='deleted' if self.is_deleted() else 'changed',
-            data=data)
 
     def as_dict_for_user(self, user: Optional['CollectionElement']) -> Optional[Dict[str, Any]]:
         """
@@ -329,57 +270,3 @@ def get_model_from_collection_string(collection_string: str) -> Type[Model]:
     except KeyError:
         raise ValueError('Invalid message. A valid collection_string is missing.')
     return model
-
-
-def format_for_autoupdate_old(
-        collection_string: str, id: int, action: str, data: Dict[str, Any] = None) -> AutoupdateFormatOld:
-    """
-    Returns a dict that can be used for autoupdate.
-
-    This is depricated. Use format_for_autoupdate.
-    """
-    if data is None:
-        # If the data is None then the action has to be deleted,
-        # even when it says diffrently. This can happen when the object is not
-        # deleted, but the user has no permission to see it.
-        action = 'deleted'
-
-    output = AutoupdateFormatOld(
-        collection=collection_string,
-        id=id,
-        action=action,
-    )
-
-    if action != 'deleted':
-        data = cast(Dict[str, Any], data)  # In this case data can not be None
-        output['data'] = data
-
-    return output
-
-
-def to_channel_message(elements: Iterable[CollectionElement]) -> ChannelMessageFormat:
-    """
-    Converts a list of collection elements to a dict, that can be send to the
-    channels system.
-    """
-    output = []
-    for element in elements:
-        output.append(InnerChannelMessageFormat(
-            collection_string=element.collection_string,
-            id=element.id,
-            deleted=element.is_deleted(),
-            information=element.information,
-            full_data=element.full_data,
-        ))
-    return ChannelMessageFormat(elements=output)
-
-
-def from_channel_message(message: ChannelMessageFormat) -> List[CollectionElement]:
-    """
-    Converts a list of collection elements back from a dict, that was created
-    via to_channel_message.
-    """
-    elements = []
-    for value in message['elements']:
-        elements.append(CollectionElement.from_values(**value))
-    return elements

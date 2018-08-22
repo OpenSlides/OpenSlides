@@ -99,27 +99,6 @@ class UserAccessPermissions(BaseAccessPermissions):
 
         return data
 
-    def get_projector_data(self, full_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """
-        Returns the restricted serialized data for the instance prepared
-        for the projector. Removes several fields.
-        """
-        from .serializers import USERCANSEESERIALIZER_FIELDS
-
-        def filtered_data(full_data, whitelist):
-            """
-            Returns a new dict like full_data but only with whitelisted keys.
-            """
-            return {key: full_data[key] for key in whitelist}
-
-        # Parse data.
-        litte_data_fields = set(USERCANSEESERIALIZER_FIELDS)
-        litte_data_fields.add('groups_id')
-        litte_data_fields.discard('groups')
-        data = [filtered_data(full, litte_data_fields) for full in full_data]
-
-        return data
-
 
 class GroupAccessPermissions(BaseAccessPermissions):
     """
