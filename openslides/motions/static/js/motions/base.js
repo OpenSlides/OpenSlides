@@ -85,6 +85,14 @@ angular.module('OpenSlidesApp.motions', [
                     }
                 }
             },
+            beforeInject: function (resource, instance) {
+                var attrs = ['yes', 'no', 'abstain', 'votescast', 'votesinvalid', 'votesvalid'];
+                _.forEach(attrs, function (attr) {
+                    if (instance[attr] !== null) {
+                        instance[attr] = parseFloat(instance[attr]);
+                    }
+                });
+            },
             methods: {
                 // Returns percent base. Returns undefined if calculation is not possible in general.
                 getPercentBase: function (config, type) {
@@ -193,6 +201,18 @@ angular.module('OpenSlidesApp.motions', [
                 }
             }
         });
+    }
+])
+
+.provider('MotionPollDecimalPlaces', [
+    function () {
+        this.$get = [function () {
+            return {
+                getPlaces: function (poll, find) {
+                    return 0;
+                },
+            };
+        }];
     }
 ])
 

@@ -18,6 +18,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.serializers import ModelSerializer as _ModelSerializer
 from rest_framework.serializers import (  # noqa
     CharField,
+    DecimalField,
     DictField,
     Field,
     FileField,

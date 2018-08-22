@@ -1,4 +1,4 @@
-from typing import Dict  # noqa
+from typing import Dict, Optional  # noqa
 
 from django.db import transaction
 from django.utils.translation import ugettext as _
@@ -6,6 +6,7 @@ from django.utils.translation import ugettext as _
 from ..poll.serializers import default_votes_validator
 from ..utils.rest_api import (
     CharField,
+    DecimalField,
     DictField,
     Field,
     IntegerField,
@@ -212,7 +213,7 @@ class MotionPollSerializer(ModelSerializer):
     no = SerializerMethodField()
     abstain = SerializerMethodField()
     votes = DictField(
-        child=IntegerField(min_value=-2, allow_null=True),
+        child=DecimalField(max_digits=15, decimal_places=6, min_value=-2, allow_null=True),
         write_only=True)
     has_votes = SerializerMethodField()
 
@@ -238,21 +239,21 @@ class MotionPollSerializer(ModelSerializer):
 
     def get_yes(self, obj):
         try:
-            result = self.get_votes_dict(obj)['Yes']
+            result = str(self.get_votes_dict(obj)['Yes'])  # type: Optional[str]
         except KeyError:
             result = None
         return result
 
     def get_no(self, obj):
         try:
-            result = self.get_votes_dict(obj)['No']
+            result = str(self.get_votes_dict(obj)['No'])  # type: Optional[str]
         except KeyError:
             result = None
         return result
 
     def get_abstain(self, obj):
         try:
-            result = self.get_votes_dict(obj)['Abstain']
+            result = str(self.get_votes_dict(obj)['Abstain'])  # type: Optional[str]
         except KeyError:
             result = None
         return result

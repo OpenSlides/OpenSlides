@@ -49,16 +49,16 @@
           <div ng-init="votes = option.getVotes()">
             <div ng-show="poll.pollmethod == 'yna' || poll.pollmethod == 'yn'">
               <span ng-show="poll.pollmethod == 'yna'">
-                {{ votes[0].label | translate }}: {{ votes[0].value }} {{ votes[0].percentStr }}<br>
-                {{ votes[1].label | translate }}: {{ votes[1].value }} {{ votes[1].percentStr }}<br>
-                {{ votes[2].label | translate }}: {{ votes[2].value }} {{ votes[2].percentStr }}</span>
+                {{ votes[0].label | translate }}: {{ votes[0].value | number:votesPrecision }} {{ votes[0].percentStr }}<br>
+                {{ votes[1].label | translate }}: {{ votes[1].value | number:votesPrecision }} {{ votes[1].percentStr }}<br>
+                {{ votes[2].label | translate }}: {{ votes[2].value | number:votesPrecision }} {{ votes[2].percentStr }}</span>
               <span ng-show="poll.pollmethod == 'yn'">
-                {{ votes[0].label | translate }}: {{ votes[0].value }} {{ votes[0].percentStr }}<br>
-                {{ votes[1].label | translate }}: {{ votes[1].value }} {{ votes[1].percentStr }}</span>
+                {{ votes[0].label | translate }}: {{ votes[0].value | number:votesPrecision }} {{ votes[0].percentStr }}<br>
+                {{ votes[1].label | translate }}: {{ votes[1].value | number:votesPrecision }} {{ votes[1].percentStr }}</span>
             </div>
             <div ng-show="poll.pollmethod == 'votes'">
               <div ng-repeat="vote in votes">
-                {{ vote.value }} {{ vote.percentStr }}
+                {{ vote.value | number:votesPrecision }} {{ vote.percentStr }}
               </div>
             </div>
           </div>
@@ -68,29 +68,29 @@
         <td>
           <translate>Abstain</translate>
         <td ng-init="vote = poll.getVote('votesabstain')">
-          {{ vote.value }} {{ vote.percentStr }}
+          {{ vote.value | number:votesPrecision }} {{ vote.percentStr }}
       <tr class="total" ng-if="poll.has_votes && poll.pollmethod === 'votes' && poll.getVote('votesno').value !== null">
         <td>
           <translate>No</translate>
         <td ng-init="vote = poll.getVote('votesno')">
-          {{ vote.value }} {{ vote.percentStr }}
+          {{ vote.value | number:votesPrecision }} {{ vote.percentStr }}
       <tr class="total" ng-if="poll.has_votes && poll.getVote('votesvalid').value !== null">
         <td>
           <translate>Valid ballots</translate>
         <td ng-init="vote = poll.getVote('votesvalid')">
-          {{ vote.value }} {{ vote.percentStr }}
+          {{ vote.value | number:votesPrecision }} {{ vote.percentStr }}
 
       <tr class="total" ng-if="poll.has_votes && poll.getVote('votesinvalid').value !== null">
         <td>
           <translate>Invalid ballots</translate>
         <td ng-init="vote = poll.getVote('votesinvalid')">
-          {{ vote.value }} {{ vote.percentStr }}
+          {{ vote.value | number:votesPrecision }} {{ vote.percentStr }}
 
       <tr class="total bg-info" ng-if="poll.has_votes && poll.getVote('votescast').value !== null">
         <td>
           <translate>Casted ballots</translate>
         <td ng-init="vote = poll.getVote('votescast')">
-          {{ vote.value }} {{ vote.percentStr }}
+          {{ vote.value | number:votesPrecision }} {{ vote.percentStr }}
       </table>
     </div>
 
