@@ -13,6 +13,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from mypy_extensions import NoReturn
 
+
 DEVELOPMENT_VERSION = 'Development Version'
 UNIX_VERSION = 'Unix Version'
 WINDOWS_VERSION = 'Windows Version'
@@ -325,16 +326,6 @@ def is_local_installation() -> bool:
     This is the case if manage.py is used, or when the --local-installation flag is set.
     """
     return True if '--local-installation' in sys.argv or 'manage.py' in sys.argv[0] else False
-
-
-def get_geiss_path() -> str:
-    """
-    Returns the path and file to the Geiss binary.
-    """
-    from django.conf import settings
-    download_dir = getattr(settings, 'OPENSLIDES_USER_DATA_PATH', '')
-    bin_name = 'geiss.exe' if is_windows() else 'geiss'
-    return os.path.join(download_dir, bin_name)
 
 
 def is_windows() -> bool:

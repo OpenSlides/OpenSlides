@@ -1,9 +1,10 @@
-from typing import Optional, Union
+from typing import Dict, Optional, Union, cast
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.db.models import Model
 
+from .cache import element_cache
 from .collection import CollectionElement
 
 
@@ -46,6 +47,18 @@ def anonymous_is_enabled() -> bool:
     return config['general_system_enable_anonymous']
 
 
+async def async_anonymous_is_enabled() -> bool:
+    """
+    Like anonymous_is_enabled but async.
+    """
+    from ..core.config import config
+    if config.key_to_id is None:
+        await config.build_key_to_id()
+        config.key_to_id = cast(Dict[str, int], config.key_to_id)
+    element = await element_cache.get_element_full_data(config.get_collection_string(), config.key_to_id['general_system_enable_anonymous'])
+    return False if element is None else element['value']
+
+
 AnyUser = Union[Model, CollectionElement, int, AnonymousUser, None]
 
 
@@ -75,7 +88,11 @@ def user_to_collection_user(user: AnyUser) -> Optional[CollectionElement]:
             "Unsupported type for user. Only CollectionElements for users can be"
             "used. Not {}".format(user.collection_string))
     elif isinstance(user, int):
-        user = CollectionElement.from_values(User.get_collection_string(), user)
+        # user 0 means anonymous
+        if user == 0:
+            user = None
+        else:
+            user = CollectionElement.from_values(User.get_collection_string(), user)
     elif isinstance(user, AnonymousUser):
         user = None
     elif isinstance(user, User):

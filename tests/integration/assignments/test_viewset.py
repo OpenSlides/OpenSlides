@@ -1,66 +1,33 @@
+import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from django_redis import get_redis_connection
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.assignments.models import Assignment
-from openslides.core.config import config
-from openslides.users.models import User
 from openslides.utils.test import TestCase
 
+from ..helpers import count_queries
 
-class TestDBQueries(TestCase):
+
+@pytest.mark.django_db(transaction=False)
+def test_assignment_db_queries():
     """
-    Tests that receiving elements only need the required db queries.
+    Tests that only the following db queries are done:
+    * 1 requests to get the list of all assignments,
+    * 1 request to get all related users,
+    * 1 request to get the agenda item,
+    * 1 request to get the polls,
+    * 1 request to get the tags and
 
-    Therefore in setup some assignments are created and received with different
-    user accounts.
+    * 10 request to fetch each related user again.
+
+    TODO: The last request are a bug.
     """
+    for index in range(10):
+        Assignment.objects.create(title='assignment{}'.format(index), open_posts=1)
 
-    def setUp(self):
-        self.client = APIClient()
-        config['general_system_enable_anonymous'] = True
-        config.save_default_values()
-        for index in range(10):
-            Assignment.objects.create(title='motion{}'.format(index), open_posts=1)
-
-    def test_admin(self):
-        """
-        Tests that only the following db queries are done:
-        * 7 requests to get the session an the request user with its permissions,
-        * 1 requests to get the list of all assignments,
-        * 1 request to get all related users,
-        * 1 request to get the agenda item,
-        * 1 request to get the polls,
-        * 1 request to get the tags and
-
-        * 10 request to fetch each related user again.
-
-        TODO: The last request are a bug.
-        """
-        self.client.force_login(User.objects.get(pk=1))
-        get_redis_connection("default").flushall()
-        with self.assertNumQueries(22):
-            self.client.get(reverse('assignment-list'))
-
-    def test_anonymous(self):
-        """
-        Tests that only the following db queries are done:
-        * 3 requests to get the permission for anonymous,
-        * 1 requests to get the list of all assignments,
-        * 1 request to get all related users,
-        * 1 request to get the agenda item,
-        * 1 request to get the polls,
-        * 1 request to get the tags and
-
-        * 10 request to fetch each related user again.
-
-        TODO: The last 10 requests are an bug.
-        """
-        get_redis_connection("default").flushall()
-        with self.assertNumQueries(18):
-            self.client.get(reverse('assignment-list'))
+    assert count_queries(Assignment.get_elements) == 15
 
 
 class CanidatureSelf(TestCase):
@@ -110,7 +77,6 @@ class CanidatureSelf(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
-        get_redis_connection('default').flushall()
 
         response = self.client.post(reverse('assignment-candidature-self', args=[self.assignment.pk]))
 
@@ -157,7 +123,6 @@ class CanidatureSelf(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
-        get_redis_connection('default').flushall()
 
         response = self.client.delete(reverse('assignment-candidature-self', args=[self.assignment.pk]))
 
@@ -238,7 +203,6 @@ class CandidatureOther(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
-        get_redis_connection('default').flushall()
 
         response = self.client.post(
             reverse('assignment-candidature-other', args=[self.assignment.pk]),
@@ -294,7 +258,6 @@ class CandidatureOther(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
-        get_redis_connection('default').flushall()
 
         response = self.client.delete(
             reverse('assignment-candidature-other', args=[self.assignment.pk]),

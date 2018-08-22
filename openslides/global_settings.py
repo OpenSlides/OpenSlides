@@ -2,6 +2,7 @@ import os
 
 from openslides.utils.plugins import collect_plugins
 
+
 MODULE_DIR = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -121,31 +122,14 @@ PASSWORD_HASHERS = [
 MEDIA_URL = '/media/'
 
 
-# Cache
-# https://docs.djangoproject.com/en/1.10/topics/cache/
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'openslides-cache',
-        'OPTIONS': {
-            'MAX_ENTRIES': 10000
-        }
-    }
-}
-
-
 # Django Channels
 # http://channels.readthedocs.io/en/latest/
-# https://github.com/ostcar/geiss
+
+ASGI_APPLICATION = 'openslides.routing.application'
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'asgiref.inmemory.ChannelLayer',
-        'ROUTING': 'openslides.routing.channel_routing',
-        'CONFIG': {
-            'capacity': 1000,
-        },
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
     },
 }
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import subprocess
 import sys
 from typing import Dict  # noqa
 
@@ -14,7 +13,6 @@ from openslides.utils.main import (
     ExceptionArgumentParser,
     UnknownCommand,
     get_default_settings_dir,
-    get_geiss_path,
     get_local_settings_dir,
     is_local_installation,
     open_browser,
@@ -145,10 +143,6 @@ def get_parser():
         '--local-installation',
         action='store_true',
         help='Store settings and user files in a local directory.')
-    subcommand_start.add_argument(
-        '--use-geiss',
-        action='store_true',
-        help='Use Geiss instead of Daphne as ASGI protocol server.')
 
     # Subcommand createsettings
     createsettings_help = 'Creates the settings file.'
@@ -220,56 +214,23 @@ def start(args):
     # Migrate database
     call_command('migrate')
 
-    if args.use_geiss:
-        # Make sure Redis is used.
-        if settings.CHANNEL_LAYERS['default']['BACKEND'] != 'asgi_redis.RedisChannelLayer':
-            raise RuntimeError("You have to use the ASGI Redis backend in the settings to use Geiss.")
+    # Open the browser
+    if not args.no_browser:
+        open_browser(args.host, args.port)
 
-        # Download Geiss and collect the static files.
-        call_command('getgeiss')
-        call_command('collectstatic', interactive=False)
-
-        # Open the browser
-        if not args.no_browser:
-            open_browser(args.host, args.port)
-
-        # Start Geiss in its own thread
-        subprocess.Popen([
-            get_geiss_path(),
-            '--host', args.host,
-            '--port', args.port,
-            '--static', '/static/:{}'.format(settings.STATIC_ROOT),
-            '--static', '/media/:{}'.format(settings.MEDIA_ROOT),
-        ])
-
-        # Start one worker in this thread. There can be only one worker as
-        # long as SQLite3 is used.
-        call_command('runworker')
-
-    else:
-        # Open the browser
-        if not args.no_browser:
-            open_browser(args.host, args.port)
-
-        # Start Daphne and one worker
-        #
-        # Use flag --noreload to tell Django not to reload the server.
-        # Therefor we have to set the keyword noreload to False because Django
-        # parses this directly to the use_reloader keyword.
-        #
-        # Use flag --insecure to serve static files even if DEBUG is False.
-        #
-        # Use flag --nothreading to tell Django Channels to run in single
-        # thread mode with one worker only. Therefor we have to set the keyword
-        # nothreading to False because Django parses this directly to
-        # use_threading keyword.
-        call_command(
-            'runserver',
-            '{}:{}'.format(args.host, args.port),
-            noreload=False,  # Means True, see above.
-            insecure=True,
-            nothreading=False,  # Means True, see above.
-        )
+    # Start Daphne
+    #
+    # Use flag --noreload to tell Django not to reload the server.
+    # Therefor we have to set the keyword noreload to False because Django
+    # parses this directly to the use_reloader keyword.
+    #
+    # Use flag --insecure to serve static files even if DEBUG is False.
+    call_command(
+        'runserver',
+        '{}:{}'.format(args.host, args.port),
+        noreload=False,  # Means True, see above.
+        insecure=True,
+    )
 
 
 def createsettings(args):
