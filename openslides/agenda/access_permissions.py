@@ -83,7 +83,7 @@ class ItemAccessPermissions(BaseAccessPermissions):
                     if full['is_hidden'] and can_see_hidden:
                         # Same filtering for internal and hidden items
                         data.append(filtered_data(full, blocked_keys_internal_hidden_case))
-                    if full['is_internal']:
+                    elif full['is_internal']:
                         data.append(filtered_data(full, blocked_keys_internal_hidden_case))
                     else:  # agenda item
                         data.append(filtered_data(full, blocked_keys_non_internal_hidden_case))

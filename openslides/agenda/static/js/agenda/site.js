@@ -883,7 +883,7 @@ angular.module('OpenSlidesApp.agenda.site', [
         gettext('[Begin speech] starts the countdown, [End speech] stops the ' +
                 'countdown.');
         gettext('Agenda visibility');
-        gettext('Default visibility for new agenda items');
+        gettext('Default visibility for new agenda items (except topics)');
     }
  ]);
 
