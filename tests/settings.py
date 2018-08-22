@@ -43,20 +43,7 @@ DATABASES = {
     }
 }
 
-# Configure session in the cache
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-    }
-}
-
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-
-# When use_redis is True, the restricted data cache caches the data individuel
-# for each user. This requires a lot of memory if there are a lot of active
-# users. If use_redis is False, this setting has no effect.
-DISABLE_USER_CACHE = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/

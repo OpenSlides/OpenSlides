@@ -63,8 +63,11 @@ async def test_normal_connection(communicator):
 
     response = await communicator.receive_json_from()
 
-    # Test, that there is a lot of startup data.
-    assert len(response) > 5
+    type = response.get('type')
+    content = response.get('content')
+    assert type == 'autoupdate'
+    # Test, that both example objects are returned
+    assert len(content) > 10
 
 
 @pytest.mark.asyncio
@@ -78,7 +81,10 @@ async def test_receive_changed_data(communicator):
     response = await communicator.receive_json_from()
 
     id = config.get_key_to_id()['general_event_name']
-    assert response == [
+    type = response.get('type')
+    content = response.get('content')
+    assert type == 'autoupdate'
+    assert content == [
         {'action': 'changed',
          'collection': 'core/config',
          'data': {'id': id, 'key': 'general_event_name', 'value': 'Test Event'},
@@ -122,7 +128,10 @@ async def test_receive_deleted_data(communicator):
     await sync_to_async(inform_deleted_data)([(Collection1().get_collection_string(), 1)])
     response = await communicator.receive_json_from()
 
-    assert response == [{'action': 'deleted', 'collection': Collection1().get_collection_string(), 'id': 1}]
+    type = response.get('type')
+    content = response.get('content')
+    assert type == 'autoupdate'
+    assert content == [{'action': 'deleted', 'collection': Collection1().get_collection_string(), 'id': 1}]
 
 
 @pytest.mark.asyncio
@@ -132,11 +141,12 @@ async def test_send_invalid_notify_not_a_list(communicator):
     # Await the startup data
     await communicator.receive_json_from()
 
-    await communicator.send_json_to({'testmessage': 'foobar, what else.'})
-
+    await communicator.send_json_to({'type': 'notify', 'content': {'testmessage': 'foobar, what else.'}, 'id': 'test_send_invalid_notify_not_a_list'})
     response = await communicator.receive_json_from()
 
-    assert response == {'error': 'invalid message'}
+    assert response['type'] == 'error'
+    assert response['content'] == 'Invalid notify message'
+    assert response['in_response'] == 'test_send_invalid_notify_not_a_list'
 
 
 @pytest.mark.asyncio
@@ -146,11 +156,12 @@ async def test_send_invalid_notify_no_elements(communicator):
     # Await the startup data
     await communicator.receive_json_from()
 
-    await communicator.send_json_to([])
-
+    await communicator.send_json_to({'type': 'notify', 'content': [], 'id': 'test_send_invalid_notify_no_elements'})
     response = await communicator.receive_json_from()
 
-    assert response == {'error': 'invalid message'}
+    assert response['type'] == 'error'
+    assert response['content'] == 'Invalid notify message'
+    assert response['in_response'] == 'test_send_invalid_notify_no_elements'
 
 
 @pytest.mark.asyncio
@@ -160,11 +171,12 @@ async def test_send_invalid_notify_str_in_list(communicator):
     # Await the startup data
     await communicator.receive_json_from()
 
-    await communicator.send_json_to([{}, 'testmessage'])
-
+    await communicator.send_json_to({'type': 'notify', 'content': [{}, 'testmessage'], 'id': 'test_send_invalid_notify_str_in_list'})
     response = await communicator.receive_json_from()
 
-    assert response == {'error': 'invalid message'}
+    assert response['type'] == 'error'
+    assert response['content'] == 'Invalid notify message'
+    assert response['in_response'] == 'test_send_invalid_notify_str_in_list'
 
 
 @pytest.mark.asyncio
@@ -174,12 +186,65 @@ async def test_send_valid_notify(communicator):
     # Await the startup data
     await communicator.receive_json_from()
 
-    await communicator.send_json_to([{'testmessage': 'foobar, what else.'}])
-
+    await communicator.send_json_to({'type': 'notify', 'content': [{'testmessage': 'foobar, what else.'}], 'id': 'test'})
     response = await communicator.receive_json_from()
 
-    assert isinstance(response, list)
-    assert len(response) == 1
-    assert response[0]['testmessage'] == 'foobar, what else.'
-    assert 'senderReplyChannelName' in response[0]
-    assert response[0]['senderUserId'] == 0
+    content = response['content']
+    assert isinstance(content, list)
+    assert len(content) == 1
+    assert content[0]['testmessage'] == 'foobar, what else.'
+    assert 'senderReplyChannelName' in content[0]
+    assert content[0]['senderUserId'] == 0
+
+
+@pytest.mark.asyncio
+async def test_invalid_websocket_message_type(communicator):
+    await set_config('general_system_enable_anonymous', True)
+    await communicator.connect()
+    # Await the startup data
+    await communicator.receive_json_from()
+
+    await communicator.send_json_to([])
+
+    response = await communicator.receive_json_from()
+    assert response['type'] == 'error'
+
+
+@pytest.mark.asyncio
+async def test_invalid_websocket_message_no_id(communicator):
+    await set_config('general_system_enable_anonymous', True)
+    await communicator.connect()
+    # Await the startup data
+    await communicator.receive_json_from()
+
+    await communicator.send_json_to({'type': 'test', 'content': 'foobar'})
+
+    response = await communicator.receive_json_from()
+    assert response['type'] == 'error'
+
+
+@pytest.mark.asyncio
+async def test_invalid_websocket_message_no_content(communicator):
+    await set_config('general_system_enable_anonymous', True)
+    await communicator.connect()
+    # Await the startup data
+    await communicator.receive_json_from()
+
+    await communicator.send_json_to({'type': 'test', 'id': 'test_id'})
+
+    response = await communicator.receive_json_from()
+    assert response['type'] == 'error'
+
+
+@pytest.mark.asyncio
+async def test_send_unknown_type(communicator):
+    await set_config('general_system_enable_anonymous', True)
+    await communicator.connect()
+    # Await the startup data
+    await communicator.receive_json_from()
+
+    await communicator.send_json_to({'type': 'if_you_add_this_type_to_openslides_I_will_be_sad', 'content': True, 'id': 'test_id'})
+
+    response = await communicator.receive_json_from()
+    assert response['type'] == 'error'
+    assert response['in_response'] == 'test_id'
