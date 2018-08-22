@@ -2,7 +2,7 @@ import { Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
-import { DataStoreService } from 'app/core/services/dataStore.service';
+import { DataStoreService } from './core/services/data-store.service';
 
 /**
  * injects the {@link DataStoreService} to all its children and provides a generic function to catch errors

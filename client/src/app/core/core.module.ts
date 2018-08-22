@@ -7,10 +7,11 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthGuard } from './services/auth-guard.service';
 import { AuthService } from './services/auth.service';
 import { AutoupdateService } from './services/autoupdate.service';
-import { DataStoreService } from './services/dataStore.service';
+import { DataStoreService } from './services/data-store.service';
 import { OperatorService } from './services/operator.service';
 import { WebsocketService } from './services/websocket.service';
 import { AddHeaderInterceptor } from './http-interceptor';
+import { DataSendService } from './services/data-send.service';
 
 /** Global Core Module. Contains all global (singleton) services
  *
@@ -23,6 +24,7 @@ import { AddHeaderInterceptor } from './http-interceptor';
         AuthService,
         AutoupdateService,
         DataStoreService,
+        DataSendService,
         OperatorService,
         WebsocketService,
         {

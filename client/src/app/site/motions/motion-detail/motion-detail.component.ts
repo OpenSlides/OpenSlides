@@ -5,8 +5,7 @@ import { Motion } from '../../../shared/models/motions/motion';
 import { Category } from '../../../shared/models/motions/category';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material';
-import { DataStoreService } from '../../../core/services/dataStore.service';
-import { OperatorService } from '../../../core/services/operator.service';
+import { DataSendService } from '../../../core/services/data-send.service';
 
 /**
  * Component for the motion detail view
@@ -16,8 +15,7 @@ import { OperatorService } from '../../../core/services/operator.service';
     templateUrl: './motion-detail.component.html',
     styleUrls: ['./motion-detail.component.scss']
 })
-// export class MotionDetailComponent extends BaseComponent implements OnInit {
-export class MotionDetailComponent implements OnInit {
+export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * MatExpansionPanel for the meta info
      */
@@ -56,8 +54,6 @@ export class MotionDetailComponent implements OnInit {
     /**
      * Constuct the detail view.
      *
-     * TODO: DataStore needs removed and added via the parent.
-     *       Own service for put and post required
      *
      * @param route determine if this is a new or an existing motion
      * @param formBuilder For reactive forms. Form Group and Form Control
@@ -66,11 +62,9 @@ export class MotionDetailComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
-        private operator: OperatorService,
-        private myDataStore: DataStoreService
+        private dataSend: DataSendService
     ) {
-        // TODO: Add super again
-        // super();
+        super();
         this.createForm();
 
         if (route.snapshot.url[0].path === 'new') {
@@ -80,13 +74,11 @@ export class MotionDetailComponent implements OnInit {
         } else {
             // load existing motion
             this.route.params.subscribe(params => {
-                console.log('params ', params);
-
                 // has the motion of the DataStore was initialized before.
-                this.motion = this.myDataStore.get(Motion, params.id) as Motion;
+                this.motion = this.DS.get(Motion, params.id) as Motion;
 
                 // Observe motion to get the motion in the parameter and also get the changes
-                this.myDataStore.getObservable().subscribe(newModel => {
+                this.DS.getObservable().subscribe(newModel => {
                     if (newModel instanceof Motion) {
                         if (newModel.id === +params.id) {
                             this.motion = newModel as Motion;
@@ -150,8 +142,7 @@ export class MotionDetailComponent implements OnInit {
         this.motion.title = this.motion.currentTitle;
         this.motion.text = this.motion.currentText;
 
-        this.myDataStore.save(this.motion).subscribe(answer => {
-            console.log('answer, ', answer);
+        this.dataSend.saveModel(this.motion).subscribe(answer => {
             if (answer && answer.id && this.newMotion) {
                 this.router.navigate(['./motions/' + answer.id]);
             }
@@ -162,7 +153,7 @@ export class MotionDetailComponent implements OnInit {
      * return all Categories.
      */
     getMotionCategories(): Category[] {
-        const categories = this.myDataStore.get(Category);
+        const categories = this.DS.get(Category);
         return categories as Category[];
     }
 
@@ -171,7 +162,6 @@ export class MotionDetailComponent implements OnInit {
      */
     editMotionButton() {
         this.editMotion ? (this.editMotion = false) : (this.editMotion = true);
-
         if (this.editMotion) {
             this.patchForm();
             this.metaInfoPanel.open();
@@ -182,16 +172,16 @@ export class MotionDetailComponent implements OnInit {
     }
 
     /**
+     * Trigger to delete the motion
+     */
+    deleteMotionButton() {
+        this.dataSend.delete(this.motion).subscribe(answer => {
+            this.router.navigate(['./motions/']);
+        });
+    }
+
+    /**
      * Init. Does nothing here.
      */
     ngOnInit() {}
-
-    /**
-     * Function to download a motion.
-     *
-     * TODO: does nothing yet.
-     */
-    downloadSingleMotionButton() {
-        console.log('Download this motion');
-    }
 }
