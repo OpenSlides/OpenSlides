@@ -64,7 +64,6 @@ export class StartComponent extends BaseComponent implements OnInit {
         if (welcomeTextConfig) {
             this.welcomeText = welcomeTextConfig.value as string;
         }
-        console.log(this.DS.filter(Config, config => config.key === 'general_event_welcome_title'));
 
         // observe title and text in DS
         this.DS.getObservable().subscribe(newModel => {

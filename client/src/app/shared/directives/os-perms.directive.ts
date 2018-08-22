@@ -78,7 +78,6 @@ export class OsPermsDirective extends OpenSlidesComponent {
     private updateView(): void {
         if (this.checkPermissions()) {
             // will just render the page normally
-            console.log('do show: ', this.template, ' - ', this.viewContainer);
             this.viewContainer.createEmbeddedView(this.template);
         } else {
             // will remove the content of the container

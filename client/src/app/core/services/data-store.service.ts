@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, of, BehaviorSubject } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 import { ImproperlyConfiguredError } from 'app/core/exceptions';
 import { BaseModel, ModelId } from 'app/shared/models/base.model';
@@ -29,6 +27,12 @@ interface Storage {
  * Use this.DS in an OpenSlides Component to Access the store.
  * Used by a lot of components, classes and services.
  * Changes can be observed
+ *
+ * FIXME: The injector does not init the HttpClient Service.
+ *        Either remove it from DataStore and make an own Service
+ *        fix it somehow
+ *        or just do-not let the OpenSlidesComponent inject DataStore to it's
+ *        children.
  */
 @Injectable({
     providedIn: 'root'
@@ -49,7 +53,7 @@ export class DataStoreService {
      * Empty constructor for dataStore
      * @param http use HttpClient to send models back to the server
      */
-    constructor(private http: HttpClient) {}
+    constructor() {}
 
     /**
      * Read one, multiple or all ID's from dataStore
@@ -145,52 +149,23 @@ export class DataStoreService {
      * @param ...ids An or multiple IDs or a list of IDs of BaseModels. use spread operator ("...") for arrays
      * @example this.DS.remove(User, myUser.id, 3, 4)
      */
-    remove(Type, ...ids: ModelId[]): void {
+    remove(collectionType, ...ids: ModelId[]): void {
+        console.log('remove from DS: collection', collectionType);
+        console.log('remove from DS: collection', ids);
+
+        let collectionString: string;
+        if (typeof collectionType === 'string') {
+            collectionString = collectionType;
+        } else {
+            const tempObject = new collectionType();
+            collectionString = tempObject.collectionString;
+        }
+
         ids.forEach(id => {
-            const tempObject = new Type();
-            if (DataStoreService.store[tempObject.collectionString]) {
-                delete DataStoreService.store[tempObject.collectionString][id];
-                console.log(`did remove "${id}" from Datastore "${tempObject.collectionString}"`);
+            if (DataStoreService.store[collectionString]) {
+                delete DataStoreService.store[collectionString][id];
             }
         });
-    }
-
-    /**
-     * Saves the given model on the server
-     * @param model the BaseModel that shall be removed
-     * @return Observable of BaseModel
-     */
-    save(model: BaseModel): Observable<BaseModel> {
-        if (!model.id) {
-            throw new ImproperlyConfiguredError('The model must have an id!');
-        }
-
-        // TODO not tested
-        return this.http.post<BaseModel>(model.collectionString + '/', model).pipe(
-            tap(response => {
-                console.log('the response: ', response);
-                this.add(model);
-            })
-        );
-    }
-
-    /**
-     * Deletes the given model on the server
-     * @param model the BaseModel that shall be removed
-     * @return Observable of BaseModel
-     */
-    delete(model: BaseModel): Observable<BaseModel> {
-        if (!model.id) {
-            throw new ImproperlyConfiguredError('The model must have an id!');
-        }
-
-        // TODO not tested
-        return this.http.post<BaseModel>(model.collectionString + '/', model).pipe(
-            tap(response => {
-                console.log('the response: ', response);
-                this.remove(model, model.id);
-            })
-        );
     }
 
     /**

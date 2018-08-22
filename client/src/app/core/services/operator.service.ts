@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { tap, catchError, share } from 'rxjs/operators';
 import { OpenSlidesComponent } from 'app/openslides.component';
 import { Group } from 'app/shared/models/users/group';
+import { User } from '../../shared/models/users/user';
 
 /**
  * The operator represents the user who is using OpenSlides.
@@ -38,6 +39,8 @@ export class OperatorService extends OpenSlidesComponent {
     username: string;
     logged_in: boolean;
 
+    private _user: User;
+
     /**
      * The subject that can be observed by other instances using observing functions.
      */
@@ -65,7 +68,7 @@ export class OperatorService extends OpenSlidesComponent {
             }
         }
 
-        // observe the datastore now to avoid race conditions. Ensures to
+        // observe the DataStore now to avoid race conditions. Ensures to
         // find the groups in time
         this.observeDataStore();
     }
@@ -77,7 +80,7 @@ export class OperatorService extends OpenSlidesComponent {
         return this.http.get<any>('/users/whoami/').pipe(
             tap(whoami => {
                 if (whoami && whoami.user) {
-                    this.storeUser(whoami.user);
+                    this.storeUser(whoami.user as User);
                 }
             }),
             catchError(this.handleError())
@@ -87,8 +90,11 @@ export class OperatorService extends OpenSlidesComponent {
     /**
      * Store the user Information in the operator, the localStorage and update the Observable
      * @param user usually a http response that represents a user.
+     *
+     * Todo: Could be refractored to use the actual User Object.
+     *       Operator is older than user, so this is still a traditional JS way
      */
-    public storeUser(user: any): void {
+    public storeUser(user: User): void {
         // store in file
         this.about_me = user.about_me;
         this.comment = user.comment;
@@ -106,6 +112,7 @@ export class OperatorService extends OpenSlidesComponent {
         this.structure_level = user.structure_level;
         this.title = user.title;
         this.username = user.username;
+
         // also store in localstorrage
         this.updateLocalStorage();
         // update mode to inform observers
@@ -187,6 +194,10 @@ export class OperatorService extends OpenSlidesComponent {
             if (newModel instanceof Group) {
                 this.addGroup(newModel);
             }
+
+            if (newModel instanceof User && this.id === newModel.id) {
+                this._user = newModel;
+            }
         });
     }
 
@@ -242,5 +253,12 @@ export class OperatorService extends OpenSlidesComponent {
             // inform the observers about new groups (appOsPerms)
             this.setObservable(newGroup);
         }
+    }
+
+    /**
+     * get the user that corresponds to operator.
+     */
+    get user(): User {
+        return this._user;
     }
 }

@@ -68,7 +68,13 @@ export class AutoupdateService extends OpenSlidesComponent {
     storeResponse(socketResponse): void {
         socketResponse.forEach(jsonObj => {
             const targetClass = this.getClassFromCollectionString(jsonObj.collection);
-            this.DS.add(new targetClass().deserialize(jsonObj.data));
+            if (jsonObj.action === 'deleted') {
+                console.log('storeResponse detect delete');
+
+                this.DS.remove(jsonObj.collection, jsonObj.id);
+            } else {
+                this.DS.add(new targetClass().deserialize(jsonObj.data));
+            }
         });
     }
 

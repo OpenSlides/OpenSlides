@@ -21,14 +21,14 @@ export class Workflow extends BaseModel {
         this.first_state = first_state;
     }
 
-    getStateNameById(id: number): string {
-        let stateName = 'NULL';
+    state_by_id(id: number): WorkflowState {
+        let targetState;
         this.states.forEach(state => {
             if (id === state.id) {
-                stateName = state.name;
+                targetState = state;
             }
         });
-        return stateName;
+        return targetState as WorkflowState;
     }
 
     deserialize(input: any): this {

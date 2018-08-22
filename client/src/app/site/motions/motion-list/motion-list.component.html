@@ -1,6 +1,6 @@
 <mat-toolbar color='primary'>
 
-    <button class='generic-plus-button on-transition-fade' mat-fab>
+    <button class='generic-plus-button on-transition-fade' routerLink='new' mat-fab>
         <fa-icon icon='plus'></fa-icon>
     </button>
 
@@ -43,7 +43,7 @@
                 <br>
                 <span class='motion-list-from'>
                     <span translate>by</span>
-                    {{motion.submitterAsUser.username}}
+                    {{motion.submitterAsUser}}
                 </span>
             </div>
         </mat-cell>
@@ -53,8 +53,8 @@
     <ng-container matColumnDef="state">
         <mat-header-cell *matHeaderCellDef mat-sort-header> State </mat-header-cell>
         <mat-cell *matCellDef="let motion">
-            <div *ngIf='motion.stateName !== "submitted"' class='innerTable'>
-                <fa-icon icon={{getStateIcon(motion.stateName)}}></fa-icon>
+            <div *ngIf='motion.state && motion.state.name !== "submitted"' class='innerTable'>
+                <fa-icon icon={{getStateIcon(motion.state)}}></fa-icon>
             </div>
         </mat-cell>
     </ng-container>
