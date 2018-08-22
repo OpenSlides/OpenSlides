@@ -4,6 +4,14 @@
 
 https://openslides.org/
 
+Version 3.0 (unreleased)
+========================
+
+Core:
+ - Change URL schema [#3798].
+ - Update to channels2
+
+
 Version 2.3 (unreleased)
 ========================
 
@@ -22,7 +30,7 @@ Motions:
    be edited [#3781].
  - New config to show amendments also in motions table [#3792]
 
- Core:
+Core:
  - Python 3.4 is not supported anymore [#3777].
  - Support Python 3.7 [#3786].
  - Updated pdfMake to 0.1.37 [#3766].

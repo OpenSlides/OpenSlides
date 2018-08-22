@@ -214,9 +214,6 @@ This is an example configuration for a single Daphne listen on port 8000::
 
          server_name _;
 
-         location ~* ^/(?!ws|wss|webclient|core/servertime|core/version|users/whoami|users/login|users/logout|users/setpassword|motions/docxtemplate|agenda/docxtemplate|projector|real-projector|static|media|rest).*$ {
-             rewrite ^.*$ /static/templates/index.html;
-         }
          location ~* ^/projector.*$ {
              rewrite ^.*$ /static/templates/projector-container.html;
          }
@@ -228,6 +225,9 @@ This is an example configuration for a single Daphne listen on port 8000::
          }
          location /static {
              alias <your path to>/collected-static;
+         }
+         location ~* ^/(?!ws|wss|media|rest|views).*$ {
+             rewrite ^.*$ /static/templates/index.html;
          }
 
          location / {
