@@ -25,9 +25,6 @@ For Ubuntu 16.04 e. g. follow `Yarn installation instructions
 
     $ sudo apt-get install git nodejs nodejs-legacy npm build-essential python3-dev
 
-*Note: For Ubuntu 14.04 you have to update Node.js before. The distribution
-version is 0.10.25 which is not sufficient.*
-
 
 b. Get OpenSlides source code
 '''''''''''''''''''''''''''''
@@ -166,15 +163,8 @@ Then add database user and database. For Ubuntu 16.04 e. g. run::
     $ sudo -u postgres createdb --owner=openslides openslides
 
 
-2. Install additional packages
-------------------------------
 
-Install some more required Python packages::
-
-    $ pip install -r requirements_big_mode.txt
-
-
-3. Change OpenSlides settings
+2. Change OpenSlides settings
 -----------------------------
 
 Create OpenSlides settings file if it does not exist::
@@ -190,17 +180,20 @@ Populate your new database::
     $ python manage.py migrate
 
 
-4. Run OpenSlides
+3. Run OpenSlides
 -----------------
 
-To start Daphne as protocol server run::
+To start gunicorn with uvicorn as protocol server run::
 
     $ export DJANGO_SETTINGS_MODULE=settings
     $ export PYTHONPATH=personal_data/var/
-    $ daphne openslides.asgi:channel_layer
+    $ gunicorn -w 4 -k uvicorn.workers.UvicornWorker openslides.asgi:application
+
+This example uses 4 instances. The recommendation is to use CPU cores * 2.
 
 
-5. Use Nginx (optional)
+4. Use Nginx (optional)
+-----------------------
 
 When using Nginx as a proxy for delivering staticfiles the performance of the setup will increase very much. For delivering staticfiles you have to collect those::
 
@@ -240,10 +233,3 @@ This is an example configuration for a single Daphne listen on port 8000::
              proxy_set_header X-Scheme $scheme;
          }
      }
-
-Using Nginx as a load balancer is fairly easy. Just start multiple Daphnes on different ports, change the `proxy_pass` to `http://openslides/` and add this on top of the Nginx configuration::
-
-    upstream openslides {
-        server localhost:2001;
-        server localhost:2002;
-    }

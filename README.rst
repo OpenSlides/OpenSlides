@@ -139,22 +139,21 @@ file (usually called settings.py).
 
 The configuration values that have to be altered are:
 
-* CACHES
 * CHANNEL_LAYERS
 * DATABASES
 * SESSION_ENGINE
+* REDIS_ADDRESS
 
 You should use a webserver like Apache HTTP Server or nginx to serve the
 static and media files as proxy server in front of your OpenSlides
 interface server. You also should use a database like PostgreSQL and Redis
 as channels backend, cache backend and session engine. Finally you should
-start one or more interface servers (Daphne).
+use gunicorn with uvicorn as interface server.
 
 Please see the respective section in the `DEVELOPMENT.rst
 <https://github.com/OpenSlides/OpenSlides/blob/master/DEVELOPMENT.rst>`_ and:
 
 * https://channels.readthedocs.io/en/latest/deploying.html
-* https://docs.djangoproject.com/en/1.10/topics/cache/
 * https://github.com/sebleier/django-redis-cache
 * https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
