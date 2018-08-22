@@ -197,7 +197,7 @@ def get_win32_app_data_dir() -> str:
         # TODO: Write other exception
         raise Exception("Could not determine Windows' APPDATA path")
 
-    return buf.value.decode('utf-8')
+    return buf.value  # type: ignore
 
 
 def get_win32_portable_dir() -> str:
