@@ -9,14 +9,14 @@
     <div class='motion-title on-transition-fade'>
         <span *ngIf="newMotion">New </span>
         <span translate>Motion</span>
-        <span *ngIf="!editMotion"> {{motion.identifier}}</span>
+        <span *ngIf="motion && !editMotion"> {{motion.identifier}}</span>
         <span *ngIf="editMotion && !newMotion"> {{metaInfoForm.get('identifier').value}}</span>
         <span>:</span>
-        <span *ngIf="!editMotion"> {{motion.currentTitle}}</span>
+        <span *ngIf="motion && !editMotion"> {{motion.currentTitle}}</span>
         <span *ngIf="editMotion"> {{contentForm.get('currentTitle').value}}</span>
         <br>
-        <div class='motion-submitter'>
-            <span translate>by</span> {{motion.submitterName}}
+        <div *ngIf="motion" class='motion-submitter'>
+            <span translate>by</span> {{motion.submitterAsUser}}
         </div>
     </div>
 </mat-toolbar>
@@ -49,19 +49,19 @@
             </div>
 
             <!-- Submitter -->
-            <div *ngIf="motion.submitterName || editMotion">
+            <div *ngIf="motion && motion.submitters || editMotion">
                 <h3 translate>Submitters</h3>
-                {{motion.submitterName}}
+                {{motion.submitterAsUser}}
             </div>
 
             <!-- Supporter -->
-            <div *ngIf='motion.supporters_id && motion.supporters_id.length > 0 || editMotion'>
+            <div *ngIf='motion && motion.supporters_id && motion.supporters_id.length > 0 || editMotion'>
                 <h3 translate>Supporters</h3>
                 <!-- print all motion supporters -->
             </div>
 
             <!-- State -->
-            <div *ngIf='motion.state_id || editMotion'>
+            <div *ngIf='motion && motion.state_id || editMotion'>
                 <div *ngIf='!editMotion'>
                     <h3 translate>State</h3>
                     {{motion.state.name}}
@@ -80,7 +80,7 @@
 
             <!-- Recommendation -->
             <!-- The suggestion of the work group weather or not a motion should be accepted -->
-            <div *ngIf='motion.recomBy && (motion.recommendation_id || editMotion)'>
+            <div *ngIf='motion && motion.recomBy && (motion.recommendation_id || editMotion)'>
                 <div *ngIf='!editMotion'>
                     <h3>{{motion.recomBy}}</h3>
                     {{motion.recommendation.name}}
@@ -98,7 +98,7 @@
             </div>
 
             <!-- Category -->
-            <div *ngIf="motion.category_id || editMotion">
+            <div *ngIf="motion && motion.category_id || editMotion">
                 <div *ngIf='!editMotion'>
                     <h3 translate> Category</h3>
                     {{motion.category}}
@@ -113,7 +113,7 @@
             </div>
 
             <!-- Origin -->
-            <div *ngIf="motion.origin || editMotion">
+            <div *ngIf="motion && motion.origin || editMotion">
                 <div *ngIf='!editMotion'>
                     <h3 translate> Origin</h3>
                     {{motion.origin}}
@@ -153,7 +153,7 @@
         <form [formGroup]='contentForm' class='expansion-panel-custom-body' (ngSubmit)='saveMotion()'>
 
             <!-- Title -->
-            <div *ngIf="motion.currentTitle || editMotion">
+            <div *ngIf="motion && motion.currentTitle || editMotion">
                 <div *ngIf='!editMotion'>
                     <h2>{{motion.currentTitle}}</h2>
                 </div>
@@ -165,15 +165,15 @@
             <!-- Text -->
             <!-- TODO: this is a config variable. Read it out -->
             <h3 translate>The assembly may decide:</h3>
-            <div *ngIf='!editMotion'>
+            <div *ngIf='motion && !editMotion'>
                 <div [innerHtml]='motion.currentText'></div>
             </div>
-            <mat-form-field *ngIf="editMotion" class='wide-text'>
+            <mat-form-field *ngIf="motion && editMotion" class='wide-text'>
                 <textarea matInput placeholder='Motion Text' formControlName='currentText' [value]='motion.currentText'></textarea>
             </mat-form-field>
 
             <!-- Reason -->
-            <div *ngIf="motion.currentReason || editMotion">
+            <div *ngIf="motion && motion.currentReason || editMotion">
                 <div *ngIf='!editMotion'>
                     <h4 translate>Reason</h4>
                     <div [innerHtml]='motion.currentReason'></div>

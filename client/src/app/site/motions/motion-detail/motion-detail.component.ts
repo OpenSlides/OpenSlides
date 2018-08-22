@@ -1,36 +1,77 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../base.component';
 import { Motion } from '../../../shared/models/motions/motion';
 import { Category } from '../../../shared/models/motions/category';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material';
+import { DataStoreService } from '../../../core/services/dataStore.service';
+import { OperatorService } from '../../../core/services/operator.service';
 
+/**
+ * Component for the motion detail view
+ */
 @Component({
     selector: 'app-motion-detail',
     templateUrl: './motion-detail.component.html',
     styleUrls: ['./motion-detail.component.scss']
 })
-export class MotionDetailComponent extends BaseComponent implements OnInit {
+// export class MotionDetailComponent extends BaseComponent implements OnInit {
+export class MotionDetailComponent implements OnInit {
+    /**
+     * MatExpansionPanel for the meta info
+     */
     @ViewChild('metaInfoPanel') metaInfoPanel: MatExpansionPanel;
+
+    /**
+     * MatExpansionPanel for the content panel
+     */
     @ViewChild('contentPanel') contentPanel: MatExpansionPanel;
 
+    /**
+     * Target motion. Might be new or old
+     */
     motion: Motion;
+
+    /**
+     * Motions meta-info
+     */
     metaInfoForm: FormGroup;
+
+    /**
+     * Motion content. Can be a new version
+     */
     contentForm: FormGroup;
+
+    /**
+     * Determine if the motion is edited
+     */
     editMotion = false;
+
+    /**
+     * Determine if the motion is new
+     */
     newMotion = false;
 
     /**
+     * Constuct the detail view.
+     *
+     * TODO: DataStore needs removed and added via the parent.
+     *       Own service for put and post required
      *
      * @param route determine if this is a new or an existing motion
      * @param formBuilder For reactive forms. Form Group and Form Control
      */
-    constructor(private route: ActivatedRoute, private formBuilder: FormBuilder) {
-        super();
+    constructor(
+        private router: Router,
+        private route: ActivatedRoute,
+        private formBuilder: FormBuilder,
+        private operator: OperatorService,
+        private myDataStore: DataStoreService
+    ) {
+        // TODO: Add super again
+        // super();
         this.createForm();
-
-        console.log('route: ', route.snapshot.url[0].path);
 
         if (route.snapshot.url[0].path === 'new') {
             this.newMotion = true;
@@ -42,10 +83,10 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
                 console.log('params ', params);
 
                 // has the motion of the DataStore was initialized before.
-                this.motion = this.DS.get(Motion, params.id) as Motion;
+                this.motion = this.myDataStore.get(Motion, params.id) as Motion;
 
                 // Observe motion to get the motion in the parameter and also get the changes
-                this.DS.getObservable().subscribe(newModel => {
+                this.myDataStore.getObservable().subscribe(newModel => {
                     if (newModel instanceof Motion) {
                         if (newModel.id === +params.id) {
                             this.motion = newModel as Motion;
@@ -105,10 +146,15 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
         this.motion.patchValues(newMotionValues);
 
-        console.log('save motion: this: ', this);
+        // TODO: This is DRAFT. Reads out Motion version directly. Potentially insecure.
+        this.motion.title = this.motion.currentTitle;
+        this.motion.text = this.motion.currentText;
 
-        this.DS.save(this.motion).subscribe(answer => {
-            console.log(answer);
+        this.myDataStore.save(this.motion).subscribe(answer => {
+            console.log('answer, ', answer);
+            if (answer && answer.id && this.newMotion) {
+                this.router.navigate(['./motions/' + answer.id]);
+            }
         });
     }
 
@@ -116,7 +162,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * return all Categories.
      */
     getMotionCategories(): Category[] {
-        const categories = this.DS.get(Category);
+        const categories = this.myDataStore.get(Category);
         return categories as Category[];
     }
 

@@ -29,6 +29,12 @@ interface Storage {
  * Use this.DS in an OpenSlides Component to Access the store.
  * Used by a lot of components, classes and services.
  * Changes can be observed
+ *
+ * FIXME: The injector does not init the HttpClient Service.
+ *        Either remove it from DataStore and make an own Service
+ *        fix it somehow
+ *        or just do-not let the OpenSlidesComponent inject DataStore to it's
+ *        children.
  */
 @Injectable({
     providedIn: 'root'
@@ -49,7 +55,9 @@ export class DataStoreService {
      * Empty constructor for dataStore
      * @param http use HttpClient to send models back to the server
      */
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) {
+        console.log('constructor of dataStore. http: ', this.http);
+    }
 
     /**
      * Read one, multiple or all ID's from dataStore
@@ -157,21 +165,29 @@ export class DataStoreService {
 
     /**
      * Saves the given model on the server
-     * @param model the BaseModel that shall be removed
+     * @param model the BaseModel that shall be saved
      * @return Observable of BaseModel
      */
     save(model: BaseModel): Observable<BaseModel> {
         if (!model.id) {
-            throw new ImproperlyConfiguredError('The model must have an id!');
+            return this.http.post<BaseModel>('rest/' + model.collectionString + '/', model).pipe(
+                tap(
+                    response => {
+                        console.log('New Model added. Response : ', response);
+                    },
+                    error => console.log('error. ', error)
+                )
+            );
+        } else {
+            return this.http.put<BaseModel>('rest/' + model.collectionString + '/' + model.id, model).pipe(
+                tap(
+                    response => {
+                        console.log('Update model. Response : ', response);
+                    },
+                    error => console.log('error. ', error)
+                )
+            );
         }
-
-        // TODO not tested
-        return this.http.post<BaseModel>(model.collectionString + '/', model).pipe(
-            tap(response => {
-                console.log('the response: ', response);
-                this.add(model);
-            })
-        );
     }
 
     /**

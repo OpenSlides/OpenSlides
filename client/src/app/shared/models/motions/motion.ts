@@ -42,6 +42,10 @@ export class Motion extends BaseModel {
     // by the config above
     workflow: Workflow;
 
+    // for request
+    title: string;
+    text: string;
+
     constructor(
         id?: number,
         identifier?: string,
@@ -73,7 +77,7 @@ export class Motion extends BaseModel {
         this.category_id = category_id;
         this.motion_block_id = motion_block_id;
         this.origin = origin || '';
-        this.submitters = submitters || [new MotionSubmitter()];
+        this.submitters = submitters || [];
         this.supporters_id = supporters_id;
         this.comments = comments;
         this.state_id = state_id;
@@ -83,7 +87,7 @@ export class Motion extends BaseModel {
         this.attachments_id = attachments_id;
         this.polls = polls;
         this.agenda_item_id = agenda_item_id;
-        this.log_messages = log_messages || [new MotionLog()];
+        this.log_messages = log_messages || [];
 
         this.initDataStoreValues();
     }
@@ -118,6 +122,13 @@ export class Motion extends BaseModel {
                 }
             });
         }
+    }
+
+    /** add a new motionSubmitter from user-object */
+    addSubmitter(user: User) {
+        const newSubmitter = new MotionSubmitter(null, user.id);
+        this.submitters.push(newSubmitter);
+        console.log('did addSubmitter. this.submitters: ', this.submitters);
     }
 
     /**
@@ -176,7 +187,7 @@ export class Motion extends BaseModel {
      */
     get submitterAsUser() {
         const submitterIds = [];
-        if (this.submitters) {
+        if (this.submitters && this.submitters.length > 0) {
             this.submitters.forEach(submitter => {
                 submitterIds.push(submitter.user_id);
             });
@@ -184,18 +195,6 @@ export class Motion extends BaseModel {
             return users;
         } else {
             return null;
-        }
-    }
-
-    /**
-     * returns the name of the first submitter
-     */
-    get submitterName() {
-        const submitters = this.submitterAsUser;
-        if (submitters) {
-            return submitters[0];
-        } else {
-            return '';
         }
     }
 

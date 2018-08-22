@@ -1,4 +1,5 @@
 import { Injector } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
 import { DataStoreService } from 'app/core/services/dataStore.service';

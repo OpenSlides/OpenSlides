@@ -7,6 +7,9 @@ import { Motion } from '../../../shared/models/motions/motion';
 import { MatTable, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Workflow } from '../../../shared/models/motions/workflow';
 
+/**
+ * Component that displays all the motions in a Table using DataSource.
+ */
 @Component({
     selector: 'app-motion-list',
     templateUrl: './motion-list.component.html',
@@ -28,14 +31,26 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      */
     dataSource: MatTableDataSource<Motion>;
 
+    /**
+     * The table itself.
+     */
     @ViewChild(MatTable) table: MatTable<Motion>;
+
+    /**
+     * Pagination. Might be turned off to all motions at once.
+     */
     @ViewChild(MatPaginator) paginator: MatPaginator;
+
+    /**
+     * Sort the Table
+     */
     @ViewChild(MatSort) sort: MatSort;
 
     /**
      * Use for minimal width
      */
     columnsToDisplayMinWidth = ['identifier', 'title', 'state'];
+
     /**
      * Use for maximal width
      */
@@ -43,13 +58,16 @@ export class MotionListComponent extends BaseComponent implements OnInit {
 
     /**
      * Constructor implements title and translation Module.
-     * @param titleService
-     * @param translate
+     *
+     * @param titleService Title
+     * @param translate Translation
+     * @param router Router
+     * @param route Current route
      */
     constructor(
-        public router: Router,
-        titleService: Title,
+        protected titleService: Title,
         protected translate: TranslateService,
+        private router: Router,
         private route: ActivatedRoute
     ) {
         super(titleService, translate);
@@ -78,6 +96,11 @@ export class MotionListComponent extends BaseComponent implements OnInit {
         });
     }
 
+    /**
+     * Select a motion from list. Executed via click.
+     *
+     * @param motion The row the user clicked at
+     */
     selectMotion(motion) {
         this.router.navigate(['./' + motion.id], { relativeTo: this.route });
     }
@@ -102,6 +125,8 @@ export class MotionListComponent extends BaseComponent implements OnInit {
 
     /**
      * Download all motions As PDF and DocX
+     *
+     * TODO: Currently does nothing
      */
     downloadMotionsButton() {
         console.log('Download Motions Button');
