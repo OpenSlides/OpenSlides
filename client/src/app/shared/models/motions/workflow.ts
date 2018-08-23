@@ -21,6 +21,25 @@ export class Workflow extends BaseModel {
         this.first_state = first_state;
     }
 
+    /**
+     * Check if the containing @link{WorkflowState}s contain a given ID
+     * @param id The State ID
+     */
+    isStateContained(obj: number | WorkflowState): boolean {
+        let id: number;
+        if (obj instanceof WorkflowState) {
+            id = obj.id;
+        } else {
+            id = obj;
+        }
+
+        return this.states.some(state => {
+            if (state.id === id) {
+                return true;
+            }
+        });
+    }
+
     state_by_id(id: number): WorkflowState {
         let targetState;
         this.states.forEach(state => {

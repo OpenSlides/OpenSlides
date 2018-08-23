@@ -121,6 +121,10 @@ export class MotionListComponent extends BaseComponent implements OnInit {
         }
     }
 
+    isDisplayIcon(state): boolean {
+        return state.name === 'accepted' || state.name === 'rejected' || state.name === 'not decided';
+    }
+
     /**
      * Download all motions As PDF and DocX
      *

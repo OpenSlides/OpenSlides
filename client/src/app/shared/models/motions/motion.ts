@@ -37,9 +37,7 @@ export class Motion extends BaseModel {
     agenda_item_id: number;
     log_messages: MotionLog[];
 
-    // read from config
-    workflow_id: number;
-    // by the config above
+    // dynamic values
     workflow: Workflow;
 
     // for request
@@ -100,31 +98,31 @@ export class Motion extends BaseModel {
     }
 
     /**
-     * sets the workflow_id and the workflow
+     * sets the and the workflow from either dataStore or WebSocket
      */
     initDataStoreValues() {
-        const motionsWorkflowConfig = this.DS.filter(Config, config => config.key === 'motions_workflow')[0] as Config;
-        if (motionsWorkflowConfig) {
-            this.workflow_id = +motionsWorkflowConfig.value;
-        } else {
-            this.DS.getObservable().subscribe(newConfig => {
-                if (newConfig instanceof Config && newConfig.key === 'motions_workflow') {
-                    this.workflow_id = +newConfig.value;
-                }
-            });
-        }
+        // check the containing Workflows in DataStore
+        const allWorkflows = this.DS.get(Workflow) as Workflow[];
+        allWorkflows.forEach(localWorkflow => {
+            if (localWorkflow.isStateContained(this.state_id)) {
+                this.workflow = localWorkflow as Workflow;
+            }
+        });
 
-        this.workflow = this.DS.get(Workflow, this.workflow_id) as Workflow;
-        if (!this.workflow.id) {
-            this.DS.getObservable().subscribe(newModel => {
-                if (newModel instanceof Workflow && newModel.id === this.workflow_id) {
-                    this.workflow = newModel;
+        // observe for new models
+        this.DS.getObservable().subscribe(newModel => {
+            if (newModel instanceof Workflow) {
+                if (newModel.isStateContained(this.state_id)) {
+                    this.workflow = newModel as Workflow;
                 }
-            });
-        }
+            }
+        });
     }
 
-    /** add a new motionSubmitter from user-object */
+    /**
+     * add a new motionSubmitter from user-object
+     * @param user the user
+     */
     addSubmitter(user: User) {
         const newSubmitter = new MotionSubmitter(null, user.id);
         this.submitters.push(newSubmitter);
@@ -142,6 +140,11 @@ export class Motion extends BaseModel {
         }
     }
 
+    /**
+     * Patch the current version
+     *
+     * TODO: Altering the current version should be avoided.
+     */
     set currentTitle(newTitle: string) {
         if (this.versions[0]) {
             this.versions[0].title = newTitle;
@@ -221,9 +224,8 @@ export class Motion extends BaseModel {
      * return the workflow state
      */
     get state(): any {
-        if (this.state_id && this.workflow && this.workflow.id) {
-            const state = this.workflow.state_by_id(this.state_id);
-            return state;
+        if (this.workflow) {
+            return this.workflow.state_by_id(this.state_id);
         } else {
             return '';
         }
@@ -232,8 +234,12 @@ export class Motion extends BaseModel {
     /**
      * returns possible states for the motion
      */
-    get possible_states(): WorkflowState[] {
-        return this.workflow.states;
+    get nextStates(): WorkflowState[] {
+        if (this.workflow && this.state) {
+            return this.state.getNextStates(this.workflow);
+        } else {
+            return null;
+        }
     }
 
     /**
