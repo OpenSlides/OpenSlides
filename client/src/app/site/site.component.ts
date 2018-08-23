@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
 import { AuthService } from 'app/core/services/auth.service';
-import { AutoupdateService } from 'app/core/services/autoupdate.service';
 import { OperatorService } from 'app/core/services/operator.service';
+import { WebsocketService } from 'app/core/services/websocket.service';
 
 import { TranslateService } from '@ngx-translate/core'; //showcase
 import { BaseComponent } from 'app/base.component';
@@ -33,7 +33,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * Constructor
      *
      * @param authService
-     * @param autoupdateService
+     * @param websocketService
      * @param operator
      * @param router
      * @param breakpointObserver
@@ -42,7 +42,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
      */
     constructor(
         private authService: AuthService,
-        private autoupdateService: AutoupdateService,
+        private websocketService: WebsocketService,
         private operator: OperatorService,
         private router: Router,
         public vp: ViewportService,
@@ -66,7 +66,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
         // start autoupdate if the user is logged in:
         this.operator.whoAmI().subscribe(resp => {
             if (resp.user) {
-                this.autoupdateService.startAutoupdate();
+                this.websocketService.connect();
             } else {
                 //if whoami is not sucsessfull, forward to login again
                 this.operator.clear();

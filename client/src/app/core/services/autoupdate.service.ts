@@ -34,25 +34,12 @@ import { User } from 'app/shared/models/users/user';
 })
 export class AutoupdateService extends OpenSlidesComponent {
     /**
-     * Stores the to create the socket created using {@link WebsocketService}.
-     */
-    private socket;
-
-    /**
      * Constructor to create the AutoupdateService. Calls the constructor of the parent class.
      * @param websocketService
      */
     constructor(private websocketService: WebsocketService) {
         super();
-    }
-
-    /**
-     * Function to start the automatic update process
-     * will build up a websocket connection using {@link WebsocketService}
-     */
-    startAutoupdate(): void {
-        this.socket = this.websocketService.connect();
-        this.socket.subscribe(response => {
+        websocketService.getOberservable<any>('autoupdate').subscribe(response => {
             this.storeResponse(response);
         });
     }
@@ -69,8 +56,6 @@ export class AutoupdateService extends OpenSlidesComponent {
         socketResponse.forEach(jsonObj => {
             const targetClass = this.getClassFromCollectionString(jsonObj.collection);
             if (jsonObj.action === 'deleted') {
-                console.log('storeResponse detect delete');
-
                 this.DS.remove(jsonObj.collection, jsonObj.id);
             } else {
                 this.DS.add(new targetClass().deserialize(jsonObj.data));
