@@ -47,7 +47,7 @@ class ItemAccessPermissions(BaseAccessPermissions):
             return {key: full_data[key] for key in whitelist}
 
         # Parse data.
-        if has_perm(user, 'agenda.can_see'):
+        if full_data and has_perm(user, 'agenda.can_see'):
             if has_perm(user, 'agenda.can_manage') and has_perm(user, 'agenda.can_see_internal_items'):
                 # Managers with special permission can see everything.
                 data = full_data
@@ -62,6 +62,7 @@ class ItemAccessPermissions(BaseAccessPermissions):
 
                 # In internal and hidden case managers and non managers see only some fields
                 # so that list of speakers is provided regardless. Hidden items can only be seen by managers.
+                # We know that full_data has at least one entry which can be used to parse the keys.
                 blocked_keys_internal_hidden_case = set(full_data[0].keys()) - set((
                     'id',
                     'title',
