@@ -8,10 +8,14 @@ Version 3.0 (unreleased)
 ========================
 
 Core:
- - Change URL schema [#3798].
- - Update to channels2 [#3796].
- - Drop Python 3.5 support[#3805].
- - Adds a websocket protocol [#3807].
+ - Changed personal settings.py, updated to channels2, complete rework of
+   startup and caching system, dropped support for Geiss [#3796, #3789].
+ - Dropped support for Python 3.5 [#3805].
+ - Added a websocket protocol for server client communication using
+   JSON schema [#3807].
+ - Changed URL schema [#3798].
+ - Enabled docs for using OpenSlides with Gunicorn and Uvicorn in big
+   mode [#3799, #3817].
 
 
 Version 2.3 (unreleased)
