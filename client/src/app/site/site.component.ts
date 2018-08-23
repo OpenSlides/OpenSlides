@@ -1,4 +1,4 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, OnInit, HostBinding, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
@@ -9,7 +9,8 @@ import { OperatorService } from 'app/core/services/operator.service';
 import { TranslateService } from '@ngx-translate/core'; //showcase
 import { BaseComponent } from 'app/base.component';
 import { pageTransition, navItemAnim } from 'app/shared/animations';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSidenav } from '@angular/material';
+import { ViewportService } from '../core/services/viewport.service';
 
 @Component({
     selector: 'app-site',
@@ -19,14 +20,14 @@ import { MatDialog } from '@angular/material';
 })
 export class SiteComponent extends BaseComponent implements OnInit {
     /**
+     * HTML element of the side panel
+     */
+    @ViewChild('sideNav') sideNav: MatSidenav;
+
+    /**
      * Get the username from the operator (should be known already)
      */
     username = this.operator.username;
-
-    /**
-     * True if Viewport equals mobile or small resolution. Set by breakpointObserver.
-     */
-    isMobile = false;
 
     /**
      * Constructor
@@ -44,7 +45,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
         private autoupdateService: AutoupdateService,
         private operator: OperatorService,
         private router: Router,
-        private breakpointObserver: BreakpointObserver,
+        public vp: ViewportService,
         public translate: TranslateService,
         public dialog: MatDialog
     ) {
@@ -55,15 +56,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * Initialize the site component
      */
     ngOnInit() {
-        this.breakpointObserver
-            .observe([Breakpoints.Small, Breakpoints.HandsetPortrait])
-            .subscribe((state: BreakpointState) => {
-                if (state.matches) {
-                    this.isMobile = true;
-                } else {
-                    this.isMobile = false;
-                }
-            });
+        this.vp.checkForChange();
 
         // get a translation via code: use the translation service
         // this.translate.get('Motions').subscribe((res: string) => {
@@ -80,6 +73,15 @@ export class SiteComponent extends BaseComponent implements OnInit {
                 this.router.navigate(['/login']);
             }
         });
+    }
+
+    /**
+     * Closes the sidenav in mobile view
+     */
+    toggleSideNav() {
+        if (this.vp.isMobile) {
+            this.sideNav.toggle();
+        }
     }
 
     /**

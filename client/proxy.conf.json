@@ -1,13 +1,13 @@
 {
-    "/users/login": {
+    "/apps/users/login": {
         "target": "http://localhost:8000",
         "secure": false
     },
-    "/users/logout": {
+    "/apps/users/logout": {
         "target": "http://localhost:8000",
         "secure": false
     },
-    "/users/whoami": {
+    "/apps/users/whoami": {
         "target": "http://localhost:8000",
         "secure": false
     },

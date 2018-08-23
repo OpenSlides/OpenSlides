@@ -5,6 +5,7 @@ import { tap, catchError, share } from 'rxjs/operators';
 import { OpenSlidesComponent } from 'app/openslides.component';
 import { Group } from 'app/shared/models/users/group';
 import { User } from '../../shared/models/users/user';
+import { environment } from 'environments/environment';
 
 /**
  * The operator represents the user who is using OpenSlides.
@@ -74,10 +75,10 @@ export class OperatorService extends OpenSlidesComponent {
     }
 
     /**
-     * calls `/users/whoami` to find out the real operator
+     * calls `/apps/users/whoami` to find out the real operator
      */
     public whoAmI(): Observable<any> {
-        return this.http.get<any>('/users/whoami/').pipe(
+        return this.http.get<any>(environment.urlPrefix + '/users/whoami/').pipe(
             tap(whoami => {
                 if (whoami && whoami.user) {
                     this.storeUser(whoami.user as User);
