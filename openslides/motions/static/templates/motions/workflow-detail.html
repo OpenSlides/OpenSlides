@@ -40,7 +40,7 @@
       <tr>
         <th class="info-head small">
           <h4 translate>Permissions</h4>
-        <th ng-repeat="state in workflow.states" ng-mouseover="thHover=true" ng-mouseleave="thHover=false">
+        <th ng-repeat="state in states" ng-mouseover="thHover=true" ng-mouseleave="thHover=false">
           <span class="optional">
             {{ state.name | translate }}
           </span>
@@ -69,7 +69,7 @@
         <td>
           <b translate>Action word</b>
         </td>
-        <td ng-repeat="state in workflow.states" ng-mouseover="tdHover=true" ng-mouseleave="tdHover=false">
+        <td ng-repeat="state in states" ng-mouseover="tdHover=true" ng-mouseleave="tdHover=false">
           <div class="popover-wrapper">
             <span editable-text="state.newActionWord"
               onaftersave="setMember(state, 'action_word', state.newActionWord)">
@@ -88,7 +88,7 @@
         <td>
           <b translate>Recommendation label</b>
         </td>
-        <td ng-repeat="state in workflow.states" ng-mouseover="tdHover=true" ng-mouseleave="tdHover=false">
+        <td ng-repeat="state in states" ng-mouseover="tdHover=true" ng-mouseleave="tdHover=false">
           <div class="popover-wrapper">
             <span editable-text="state.newRecommendationLabel"
               onaftersave="setMember(state, 'recommendation_label', state.newRecommendationLabel)">
@@ -107,7 +107,7 @@
         <td>
           <b>{{ member.displayName | translate }}</b>
         </td>
-        <td ng-repeat="state in workflow.states" class="pointer"
+        <td ng-repeat="state in states" class="pointer"
           ng-click="changeBooleanMember(state, member.name)">
           <!-- Simulating a checkbox with FontAwesome icons. -->
           <i class="fa"
@@ -118,7 +118,7 @@
         <td>
           <b translate>Label color</b>
         </td>
-        <td ng-repeat="state in workflow.states" ng-mouseover="tdHover=true" ng-mouseleave="tdHover=false">
+        <td ng-repeat="state in states" ng-mouseover="tdHover=true" ng-mouseleave="tdHover=false">
           <span uib-dropdown>
             <span id="dropdownCssClass{{ state.id }}" class="pointer" uib-dropdown-toggle>
               <span class="label" ng-class="'label-' + state.css_class">
@@ -141,7 +141,7 @@
         <td>
           <b translate>Required permission to see</b>
         </td>
-        <td ng-repeat="state in workflow.states" ng-mouseover="tdHover=true" ng-mouseleave="tdHover=false">
+        <td ng-repeat="state in states" ng-mouseover="tdHover=true" ng-mouseleave="tdHover=false">
           <span uib-dropdown>
             <span id="dropdownPermission{{ state.id }}" class="pointer" uib-dropdown-toggle>
               <div class="no-overflow">
@@ -169,7 +169,7 @@
         <td>
           <b translate>Next states</b>
         </td>
-        <td ng-repeat="state in workflow.states" ng-mouseover="tdHover=true" ng-mouseleave="tdHover=false">
+        <td ng-repeat="state in states" ng-mouseover="tdHover=true" ng-mouseleave="tdHover=false">
           <span ng-if="state.getNextStates().length === 0" class="text-muted">
             &mdash;
           </span>
@@ -184,7 +184,7 @@
               <i class="fa fa-cog" ng-if="tdHover"></i>
             </span>
             <ul class="dropdown-menu" aria-labelledby="dropdownNextStates{{ state.id }}">
-              <li ng-repeat="s in workflow.states">
+              <li ng-repeat="s in states">
                 <a href ng-click="clickNextStateEntry(state, s.id)">
                   <i class="fa fa-check" ng-if="state.next_states_id.indexOf(s.id) > -1"></i>
                   {{ s.name | translate }}
