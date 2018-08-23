@@ -206,10 +206,16 @@ angular.module('OpenSlidesApp.motions', [
 
 .provider('MotionPollDecimalPlaces', [
     function () {
-        this.$get = [function () {
+        this.$get = ['$q', function ($q) {
             return {
                 getPlaces: function (poll, find) {
-                    return 0;
+                    if (find) {
+                        return $q(function (resolve) {
+                            resolve(0);
+                        });
+                    } else {
+                        return 0;
+                    }
                 },
             };
         }];
