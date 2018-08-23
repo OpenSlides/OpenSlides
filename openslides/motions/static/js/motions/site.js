@@ -3307,6 +3307,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // misc strings (used dynamically in templates by translate filter)
         gettext('needed');
+        gettext('Amendment');
     }
 ]);
 
