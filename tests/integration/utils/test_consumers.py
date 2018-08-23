@@ -43,17 +43,10 @@ def prepare_element_cache(settings):
 
 
 @pytest.fixture
-def communicator(request, event_loop):
+async def communicator(request, event_loop):
     communicator = WebsocketCommunicator(application, "/ws/site/")
-
-    # This style is needed for python 3.5. Use the generaor style when 3.5 ist dropped
-    def fin():
-        async def afin():
-            await communicator.disconnect()
-        event_loop.run_until_complete(afin())
-
-    request.addfinalizer(fin)
-    return communicator
+    yield communicator
+    await communicator.disconnect()
 
 
 @pytest.mark.asyncio

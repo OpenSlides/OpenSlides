@@ -1,4 +1,4 @@
-from typing import Set  # noqa
+from typing import Set
 
 from django.apps import apps
 from django.utils.translation import ugettext_noop
@@ -126,7 +126,7 @@ def required_users(sender, request_user, **kwargs):
     any motion if request_user can see motions. This function may return an
     empty set.
     """
-    submitters_supporters = set()  # type: Set[int]
+    submitters_supporters: Set[int] = set()
     if has_perm(request_user, 'motions.can_see'):
         for motion_collection_element in Collection(Motion.get_collection_string()).element_generator():
             full_data = motion_collection_element.get_full_data()

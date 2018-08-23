@@ -9,7 +9,7 @@ from .utils import convert_camel_case_to_pseudo_snake_case
 
 if TYPE_CHECKING:
     # Dummy import Collection for mypy, can be fixed with python 3.7
-    from .collection import Collection, CollectionElement  # noqa
+    from .collection import CollectionElement  # noqa
 
 
 class MinMaxIntegerField(models.IntegerField):
@@ -32,7 +32,7 @@ class RESTModelMixin:
     Mixin for Django models which are used in our REST API.
     """
 
-    access_permissions = None  # type: BaseAccessPermissions
+    access_permissions: Optional[BaseAccessPermissions] = None
 
     def get_root_rest_element(self) -> models.Model:
         """

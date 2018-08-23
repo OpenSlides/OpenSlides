@@ -9,7 +9,8 @@ Version 3.0 (unreleased)
 
 Core:
  - Change URL schema [#3798].
- - Update to channels2
+ - Update to channels2 [#3796].
+ - Drop Python 3.5 support[#3805].
 
 
 Version 2.3 (unreleased)

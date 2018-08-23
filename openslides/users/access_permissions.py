@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional
 from django.contrib.auth.models import AnonymousUser
 
 from ..core.signals import user_data_required
-from ..utils.access_permissions import BaseAccessPermissions  # noqa
+from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import anonymous_is_enabled, has_perm
 from ..utils.collection import CollectionElement
 
@@ -172,7 +172,7 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
         """
         # Parse data.
         if user is None:
-            data = []  # type: List[Dict[str, Any]]
+            data: List[Dict[str, Any]] = []
         else:
             for full in full_data:
                 if full['user_id'] == user.id:

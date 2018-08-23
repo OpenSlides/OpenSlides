@@ -1,4 +1,4 @@
-FROM python:3.5
+FROM python:3.7
 RUN apt-get -y update && apt-get -y upgrade
 RUN apt-get install -y libpq-dev supervisor curl vim
 RUN useradd -m openslides

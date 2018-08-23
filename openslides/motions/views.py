@@ -1,5 +1,5 @@
 import re
-from typing import Optional  # noqa
+from typing import Optional
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -113,9 +113,9 @@ class MotionViewSet(ModelViewSet):
         # Check if parent motion exists.
         if request.data.get('parent_id') is not None:
             try:
-                parent_motion = CollectionElement.from_values(
+                parent_motion: Optional[CollectionElement] = CollectionElement.from_values(
                     Motion.get_collection_string(),
-                    request.data['parent_id'])  # type: Optional[CollectionElement]
+                    request.data['parent_id'])
             except Motion.DoesNotExist:
                 raise ValidationError({'detail': _('The parent motion does not exist.')})
         else:

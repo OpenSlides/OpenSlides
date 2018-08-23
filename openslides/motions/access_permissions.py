@@ -2,7 +2,7 @@ from copy import deepcopy
 from typing import Any, Dict, List, Optional
 
 from ..core.config import config
-from ..utils.access_permissions import BaseAccessPermissions  # noqa
+from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import has_perm
 from ..utils.collection import CollectionElement
 

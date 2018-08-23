@@ -1,4 +1,4 @@
-from typing import Any, Dict  # noqa
+from typing import Any, Dict
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -692,7 +692,7 @@ class Motion(RESTModelMixin, models.Model):
     """
     Container for runtime information for agenda app (on create or update of this instance).
     """
-    agenda_item_update_information = {}  # type: Dict[str, Any]
+    agenda_item_update_information: Dict[str, Any] = {}
 
     def get_agenda_title(self):
         """
@@ -1052,7 +1052,7 @@ class MotionBlock(RESTModelMixin, models.Model):
     """
     Container for runtime information for agenda app (on create or update of this instance).
     """
-    agenda_item_update_information = {}  # type: Dict[str, Any]
+    agenda_item_update_information: Dict[str, Any] = {}
 
     @property
     def agenda_item(self):

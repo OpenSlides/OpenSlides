@@ -6,7 +6,7 @@ import roman
 
 if TYPE_CHECKING:
     # Dummy import Collection for mypy, can be fixed with python 3.7
-    from .collection import Collection, CollectionElement  # noqa
+    from .collection import CollectionElement  # noqa
 
 CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_1 = re.compile('(.)([A-Z][a-z]+)')
 CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_2 = re.compile('([a-z0-9])([A-Z])')

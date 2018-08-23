@@ -1,4 +1,4 @@
-from typing import Any, Dict, Iterable, List, Optional  # noqa
+from typing import Any, Dict, Iterable, List, Optional
 
 from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import has_perm
@@ -72,7 +72,7 @@ class ItemAccessPermissions(BaseAccessPermissions):
                 # In non internal case managers see everything and non managers see
                 # everything but comments.
                 if has_perm(user, 'agenda.can_manage'):
-                    blocked_keys_non_internal_hidden_case = []  # type: Iterable[str]
+                    blocked_keys_non_internal_hidden_case: Iterable[str] = []
                     can_see_hidden = True
                 else:
                     blocked_keys_non_internal_hidden_case = ('comment',)

@@ -2,7 +2,7 @@
 
 import os
 import sys
-from typing import Dict  # noqa
+from typing import Dict
 
 import django
 from django.core.management import call_command, execute_from_command_line
@@ -239,7 +239,7 @@ def createsettings(args):
     """
     settings_dir = args.settings_dir
     local_installation = is_local_installation()
-    context = {}  # type: Dict[str, str]
+    context: Dict[str, str] = {}
 
     if local_installation:
         if settings_dir is None:

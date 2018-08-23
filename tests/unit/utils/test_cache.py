@@ -397,7 +397,7 @@ async def test_update_restricted_data_second_worker_on_same_server(element_cache
     """
     element_cache.use_restricted_data_cache = True
     element_cache.cache_provider.restricted_data = {0: {}}
-    future = asyncio.Future()  # type: asyncio.Future
+    future: asyncio.Future = asyncio.Future()
     element_cache.restricted_data_cache_updater[0] = future
     await element_cache.cache_provider.set_lock_restricted_data(0)
     await element_cache.cache_provider.del_lock_restricted_data_after_wait(0, future)

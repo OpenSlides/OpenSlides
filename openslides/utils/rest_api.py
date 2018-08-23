@@ -1,11 +1,11 @@
 from collections import OrderedDict
-from typing import Any, Dict, Iterable, Optional, Type  # noqa
+from typing import Any, Dict, Iterable, Optional, Type
 
 from django.http import Http404
-from rest_framework import status  # noqa
-from rest_framework.decorators import detail_route, list_route  # noqa
-from rest_framework.metadata import SimpleMetadata  # noqa
-from rest_framework.mixins import (  # noqa
+from rest_framework import status
+from rest_framework.decorators import detail_route, list_route
+from rest_framework.metadata import SimpleMetadata
+from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
     ListModelMixin as _ListModelMixin,
@@ -15,7 +15,7 @@ from rest_framework.mixins import (  # noqa
 from rest_framework.relations import MANY_RELATION_KWARGS
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
-from rest_framework.serializers import (  # noqa
+from rest_framework.serializers import (
     CharField,
     DictField,
     Field,
@@ -32,7 +32,7 @@ from rest_framework.serializers import (  # noqa
     SerializerMethodField,
     ValidationError,
 )
-from rest_framework.viewsets import (  # noqa
+from rest_framework.viewsets import (
     GenericViewSet as _GenericViewSet,
     ModelViewSet as _ModelViewSet,
     ViewSet as _ViewSet,
@@ -41,6 +41,12 @@ from rest_framework.viewsets import (  # noqa
 from .access_permissions import BaseAccessPermissions
 from .auth import user_to_collection_user
 from .collection import Collection, CollectionElement
+
+
+__all__ = ['status', 'detail_route', 'list_route', 'SimpleMetadata', 'CreateModelMixin',
+           'DestroyModelMixin', 'UpdateModelMixin', 'CharField', 'DictField', 'FileField',
+           'IntegerField', 'JSONField', 'ListField', 'ListSerializer', 'RelatedField',
+           'SerializerMethodField', 'ValidationError']
 
 
 router = DefaultRouter()
@@ -112,7 +118,7 @@ class PermissionMixin:
     Also connects container to handle access permissions for model and
     viewset.
     """
-    access_permissions = None  # type: Optional[BaseAccessPermissions]
+    access_permissions: Optional[BaseAccessPermissions] = None
 
     def get_permissions(self) -> Iterable[str]:
         """
@@ -165,7 +171,7 @@ class ModelSerializer(_ModelSerializer):
         """
         Returns all fields of the serializer.
         """
-        fields = OrderedDict()  # type: Dict[str, Field]
+        fields: Dict[str, Field] = OrderedDict()
 
         for field_name, field in super().get_fields().items():
             try:

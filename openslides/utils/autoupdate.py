@@ -16,7 +16,7 @@ def to_ordered_dict(d: Optional[Dict]) -> Optional[OrderedDict]:
     Little helper to hash information dict in inform_*_data.
     """
     if isinstance(d, dict):
-        result = OrderedDict([(key, to_ordered_dict(d[key])) for key in sorted(d.keys())])  # type: Optional[OrderedDict]
+        result: Optional[OrderedDict] = OrderedDict([(key, to_ordered_dict(d[key])) for key in sorted(d.keys())])
     else:
         result = d
     return result
@@ -64,7 +64,7 @@ def inform_deleted_data(elements: Iterable[Tuple[str, int]], information: Dict[s
 
     The argument information is added to each collection element.
     """
-    collection_elements = {}  # type: Dict[str, Any]
+    collection_elements: Dict[str, Any] = {}
     for element in elements:
         collection_element = CollectionElement.from_values(
             collection_string=element[0],
@@ -106,7 +106,7 @@ def inform_data_collection_element_list(collection_elements: List[CollectionElem
 """
 Global container for autoupdate bundles
 """
-autoupdate_bundle = {}  # type: Dict[int, Dict[str, CollectionElement]]
+autoupdate_bundle: Dict[int, Dict[str, CollectionElement]] = {}
 
 
 class AutoupdateBundleMiddleware:
@@ -123,7 +123,7 @@ class AutoupdateBundleMiddleware:
 
         response = self.get_response(request)
 
-        bundle = autoupdate_bundle.pop(thread_id)  # type: Dict[str, CollectionElement]
+        bundle: Dict[str, CollectionElement] = autoupdate_bundle.pop(thread_id)
         async_to_sync(send_autoupdate)(bundle.values())
         return response
 
@@ -138,7 +138,7 @@ async def send_autoupdate(collection_elements: Iterable[CollectionElement]) -> N
     Does nothing if collection_elements is empty.
     """
     if collection_elements:
-        cache_elements = {}  # type: Dict[str, Optional[Dict[str, Any]]]
+        cache_elements: Dict[str, Optional[Dict[str, Any]]] = {}
         for element in collection_elements:
             element_id = get_element_id(element.collection_string, element.id)
             if element.is_deleted():

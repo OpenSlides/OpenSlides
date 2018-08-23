@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Dict, List, Set  # noqa
+from typing import Dict, List, Set
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -65,7 +65,7 @@ class ItemManager(models.Manager):
         all of their children.
         """
         queryset = self.order_by('weight')
-        item_children = defaultdict(list)  # type: Dict[int, List[Item]]
+        item_children: Dict[int, List[Item]] = defaultdict(list)
         root_items = []
         for item in queryset:
             if only_item_type is not None and item.type != only_item_type:
@@ -121,7 +121,7 @@ class ItemManager(models.Manager):
                 yield (element['id'], parent, weight)
                 yield from walk_items(element.get('children', []), element['id'])
 
-        touched_items = set()  # type: Set[int]
+        touched_items: Set[int] = set()
         db_items = dict((item.pk, item) for item in Item.objects.all())
         for item_id, parent_id, weight in walk_items(tree):
             # Check that the item is only once in the tree to prevent invalid trees
