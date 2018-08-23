@@ -1,8 +1,10 @@
 from collections import OrderedDict
+from decimal import Decimal
 from typing import Any, Dict, List, Optional  # noqa
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_noop
@@ -19,7 +21,7 @@ from openslides.poll.models import (
 )
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
-from openslides.utils.models import MinMaxIntegerField, RESTModelMixin
+from openslides.utils.models import RESTModelMixin
 
 from .access_permissions import AssignmentAccessPermissions
 
@@ -423,9 +425,11 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,  # type: ignore
         max_length=79,
         blank=True)
 
-    votesabstain = MinMaxIntegerField(null=True, blank=True, min_value=-2)
+    votesabstain = models.DecimalField(null=True, blank=True, validators=[
+        MinValueValidator(Decimal('-2'))], max_digits=15, decimal_places=6)
     """ General abstain votes, used for pollmethod 'votes' """
-    votesno = MinMaxIntegerField(null=True, blank=True, min_value=-2)
+    votesno = models.DecimalField(null=True, blank=True, validators=[
+        MinValueValidator(Decimal('-2'))], max_digits=15, decimal_places=6)
     """ General no votes, used for pollmethod 'votes' """
 
     class Meta:

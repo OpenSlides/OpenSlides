@@ -3,6 +3,7 @@ from django.utils.translation import ugettext as _
 
 from openslides.poll.serializers import default_votes_validator
 from openslides.utils.rest_api import (
+    DecimalField,
     DictField,
     IntegerField,
     ListField,
@@ -98,7 +99,7 @@ class AssignmentAllPollSerializer(ModelSerializer):
     options = AssignmentOptionSerializer(many=True, read_only=True)
     votes = ListField(
         child=DictField(
-            child=IntegerField(min_value=-2)),
+            child=DecimalField(max_digits=15, decimal_places=6, min_value=-2)),
         write_only=True,
         required=False)
     has_votes = SerializerMethodField()

@@ -14,6 +14,12 @@ angular.module('OpenSlidesApp.assignments', [])
         return DS.defineResource({
             name: 'assignments/polloption',
             useClass: jsDataModel,
+            // Change the stringified numbers to floats.
+            beforeInject: function (resource, instance) {
+                _.forEach(instance.votes, function (vote) {
+                    vote.weight = parseFloat(vote.weight);
+                });
+            },
             methods: {
                 getVotes: function () {
                     if (!this.poll.has_votes) {
@@ -154,6 +160,15 @@ angular.module('OpenSlidesApp.assignments', [])
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
+            // Change the stringified numbers to floats.
+            beforeInject: function (resource, instance) {
+                var attrs = ['votescast', 'votesinvalid', 'votesvalid', 'votesabstain', 'votesno'];
+                _.forEach(attrs, function (attr) {
+                    if (instance[attr] !== null) {
+                        instance[attr] = parseFloat(instance[attr]);
+                    }
+                });
+            },
             methods: {
                 getResourceName: function () {
                     return name;
@@ -304,6 +319,18 @@ angular.module('OpenSlidesApp.assignments', [])
                 }
             },
         });
+    }
+])
+
+.provider('AssignmentPollDecimalPlaces', [
+    function () {
+        this.$get = [function () {
+            return {
+                getPlaces: function (poll, find) {
+                    return 0;
+                },
+            };
+        }];
     }
 ])
 

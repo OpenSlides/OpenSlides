@@ -10,6 +10,9 @@ Version 2.3 (unreleased)
 Agenda:
  - New item type 'hidden'. New visibilty filter in agenda [#3790].
 
+Elections:
+ - Support to change decimal places for elections with a plugin [#3803]
+
 Motions:
  - New feature to scroll the projector to a specific line [#3748].
  - New possibility to sort submitters [#3647].
@@ -21,6 +24,7 @@ Motions:
  - New teporal field "modified final version" where the final version can
    be edited [#3781].
  - New config to show amendments also in motions table [#3792]
+ - Support to change decimal places for polls with a plugin [#3803]
 
 Core:
  - Python 3.4 is not supported anymore [#3777].

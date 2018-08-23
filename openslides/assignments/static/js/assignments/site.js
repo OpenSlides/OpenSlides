@@ -218,10 +218,14 @@ angular.module('OpenSlidesApp.assignments.site', [
     'Config',
     'AssignmentPollDetailCtrlCache',
     'AssignmentPoll',
-    function ($scope, MajorityMethodChoices, Config, AssignmentPollDetailCtrlCache, AssignmentPoll) {
+    'AssignmentPollDecimalPlaces',
+    function ($scope, MajorityMethodChoices, Config, AssignmentPollDetailCtrlCache,
+        AssignmentPoll, AssignmentPollDecimalPlaces) {
         // Define choices.
         $scope.methodChoices = MajorityMethodChoices;
         // TODO: Get $scope.baseChoices from config_variables.py without copying them.
+
+        $scope.votesPrecision = AssignmentPollDecimalPlaces.getPlaces($scope.poll);
 
         // Setup empty cache with default values.
         if (typeof AssignmentPollDetailCtrlCache[$scope.poll.id] === 'undefined') {
@@ -689,9 +693,11 @@ angular.module('OpenSlidesApp.assignments.site', [
     'gettextCatalog',
     'AssignmentPoll',
     'assignmentpollId',
+    'AssignmentPollDecimalPlaces',
     'ballot',
     'ErrorMessage',
-    function($scope, $filter, gettextCatalog, AssignmentPoll, assignmentpollId, ballot, ErrorMessage) {
+    function($scope, $filter, gettextCatalog, AssignmentPoll, assignmentpollId,
+        AssignmentPollDecimalPlaces, ballot, ErrorMessage) {
         // set initial values for form model by create deep copy of assignmentpoll object
         // so detail view is not updated while editing poll
         var assignmentpoll = angular.copy(AssignmentPoll.get(assignmentpollId));
@@ -699,6 +705,9 @@ angular.module('OpenSlidesApp.assignments.site', [
         $scope.ballot = ballot;
         $scope.formFields = [];
         $scope.alert = {};
+
+        // For number inputs
+        var step = Math.pow(10, -AssignmentPollDecimalPlaces.getPlaces(assignmentpoll));
 
         // add dynamic form fields
         var options = $filter('orderBy')(assignmentpoll.options, 'weight');
@@ -720,6 +729,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                             label: gettextCatalog.getString('Yes'),
                             type: 'number',
                             min: -2,
+                            step: step,
                             required: true
                         },
                         defaultValue: defaultValue.yes
@@ -733,6 +743,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                             label: gettextCatalog.getString('No'),
                             type: 'number',
                             min: -2,
+                            step: step,
                             required: true
                         },
                         defaultValue: defaultValue.no
@@ -747,6 +758,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                             label: gettextCatalog.getString('Abstain'),
                             type: 'number',
                             min: -2,
+                            step: step,
                             required: true
                         },
                         defaultValue: defaultValue.abstain
@@ -771,6 +783,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                         label: option.candidate.get_full_name(),
                         type: 'number',
                         min: -2,
+                        step: step,
                         required: true,
                     },
                     defaultValue: defaultValue
@@ -785,6 +798,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                     templateOptions: {
                         label: gettextCatalog.getString('Abstain'),
                         type: 'number',
+                        step: step,
                         min: -2,
                     }
                 },
@@ -794,6 +808,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                     templateOptions: {
                         label: gettextCatalog.getString('No'),
                         type: 'number',
+                        step: step,
                         min: -2,
                     }
                 }
@@ -810,6 +825,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                 templateOptions: {
                     label: gettextCatalog.getString('Valid ballots'),
                     type: 'number',
+                    step: step,
                     min: -2,
                 }
             },
@@ -819,6 +835,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                 templateOptions: {
                     label: gettextCatalog.getString('Invalid ballots'),
                     type: 'number',
+                    step: step,
                     min: -2,
                 }
             },
@@ -828,6 +845,7 @@ angular.module('OpenSlidesApp.assignments.site', [
                 templateOptions: {
                     label: gettextCatalog.getString('Casted ballots'),
                     type: 'number',
+                    step: step,
                     min: -2,
                 }
             }

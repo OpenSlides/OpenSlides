@@ -9,7 +9,8 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
     'HTMLValidizer',
     'gettextCatalog',
     'PDFLayout',
-    function($filter, HTMLValidizer, gettextCatalog, PDFLayout) {
+    'AssignmentPollDecimalPlaces',
+    function($filter, HTMLValidizer, gettextCatalog, PDFLayout, AssignmentPollDecimalPlaces) {
 
         var createInstance = function(assignment) {
 
@@ -113,13 +114,13 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
             };
 
             //creates the voting string for the result table and differentiates between special values
-            var parseVoteValue = function(voteObject, printLabel) {
+            var parseVoteValue = function(voteObject, printLabel, precision) {
                 var voteVal = '';
                 if (voteObject) {
                     if (printLabel) {
                         voteVal += voteObject.label + ': ';
                     }
-                    voteVal += voteObject.value;
+                    voteVal += $filter('number')(voteObject.value, precision);
 
                     if (voteObject.percentStr) {
                         voteVal += ' ' + voteObject.percentStr;
@@ -135,6 +136,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 _.forEach(assignment.polls, function(poll, pollIndex) {
                     if (poll.published) {
                         var pollTableBody = [];
+                        var precision = AssignmentPollDecimalPlaces.getPlaces(poll);
 
                         resultBody.push({
                             text: gettextCatalog.getString('Ballot') + ' ' + (pollIndex+1),
@@ -163,14 +165,14 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                             if (poll.pollmethod == 'votes') {
                                 tableLine.push(
                                     {
-                                        text: parseVoteValue(votes[0], false),
+                                        text: parseVoteValue(votes[0], false, precision),
                                         style: PDFLayout.flipTableRowStyle(pollTableBody.length)
                                     }
                                 );
                             } else {
                                 var resultBlock = [];
                                 _.forEach(votes, function(vote) {
-                                    resultBlock.push(parseVoteValue(vote, true));
+                                    resultBlock.push(parseVoteValue(vote, true, precision));
                                 });
                                 tableLine.push({
                                         text: resultBlock,
@@ -189,7 +191,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                                         style: 'tableConclude'
                                     },
                                     {
-                                        text: parseVoteValue(poll.getVote(fieldName), false),
+                                        text: parseVoteValue(poll.getVote(fieldName), false, precision),
                                         style: 'tableConclude'
                                     },
                                 ]);
