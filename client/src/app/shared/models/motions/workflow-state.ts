@@ -1,4 +1,6 @@
 import { Deserializable } from '../deserializable.model';
+import { Workflow } from './workflow';
+import { MotionLog } from './motion-log';
 
 /**
  * Representation of a workflow state
@@ -77,6 +79,20 @@ export class WorkflowState implements Deserializable {
         this.show_recommendation_extension_field = show_recommendation_extension_field;
         this.next_states_id = next_states_id;
         this.workflow_id = workflow_id;
+    }
+
+    /**
+     * return a list of the next possible states.
+     * Also adds the current state.
+     */
+    getNextStates(workflow: Workflow): WorkflowState[] {
+        const nextStates = [];
+        workflow.states.forEach(state => {
+            if (this.next_states_id.includes(state.id)) {
+                nextStates.push(state as WorkflowState);
+            }
+        });
+        return nextStates;
     }
 
     deserialize(input: any): this {

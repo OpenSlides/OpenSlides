@@ -133,6 +133,8 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * http:post the motion to the server.
      * The AutoUpdate-Service should see a change once it arrives and show it
      * in the list view automatically
+     *
+     * TODO: state is not yet saved. Need a special "put" command
      */
     saveMotion() {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
