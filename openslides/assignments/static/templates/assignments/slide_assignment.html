@@ -59,6 +59,9 @@
             <div ng-show="poll.pollmethod == 'votes'">
               <div ng-repeat="vote in votes">
                 {{ vote.value | number:votesPrecision }} {{ vote.percentStr }}
+                <div style="float:right; width:200px;" ng-if="vote.percentNumber >= 0">
+                  <uib-progressbar value="vote.percentNumber" type="success"></uib-progressbar>
+                </div>
               </div>
             </div>
           </div>
