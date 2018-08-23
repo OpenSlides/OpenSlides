@@ -24,22 +24,9 @@
     </h1>
   </div>
   <div class="title">
-    <h3 ng-mouseover="firstStateHover=true" ng-mouseleave="firstStateHover=false">
+    <h3>
       <translate>First state</translate>:
       {{ workflow.getFirstState().name | translate }}
-      <span uib-dropdown>
-        <span id="firstStateDropdown" class="pointer" uib-dropdown-toggle>
-          <i class="fa fa-cog" ng-if="firstStateHover"></i>
-        </span>
-        <ul class="dropdown-menu" aria-labelledby="firstStateDropdown">
-          <li ng-repeat="state in workflow.states">
-            <a href ng-click="setFirstState(state)">
-              <i class="fa fa-check" ng-if="workflow.first_state === state.id"></i>
-              {{ state.name | translate }}
-            </a>
-          </li>
-        </ul>
-      </span>
     </h3>
   </div>
 </div>
@@ -67,7 +54,7 @@
               <i class="fa fa-pencil fa-lg"></i></a>
                 &nbsp;
             <!--delete-->
-            <a href="" class="text-danger" ng-if="state.id !== workflow.first_state"
+            <a href="" class="text-danger" ng-if="state.id !== workflow.first_state_id"
               ng-bootbox-confirm="{{ 'Are you sure you want to delete this entry?' | translate }}<br>
               <b>{{ state.name | translate }}</b>"
               ng-bootbox-confirm-action="delete(state)">

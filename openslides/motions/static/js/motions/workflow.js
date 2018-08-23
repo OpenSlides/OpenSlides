@@ -120,13 +120,6 @@ angular.module('OpenSlidesApp.motions.workflow', [])
             });
         };
 
-        $scope.setFirstState = function (state) {
-            $scope.workflow.first_state = state.id;
-            Workflow.save($scope.workflow).then(null, function (error) {
-                $scope.alert = ErrorMessage.forAlert(error);
-            });
-        };
-
         // Save expand state so the session
         if ($sessionStorage.motionStateTableExpandState) {
             $scope.toggleExpandContent();

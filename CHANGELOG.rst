@@ -15,14 +15,14 @@ Motions:
  - New possibility to sort submitters [#3647].
  - New representation of amendments (paragraph based creation, new diff
    and list views for amendments) [#3637].
- - New feature to customize workflows and states [#3772].
+ - New feature to customize workflows and states [#3772, #3785].
  - New config options to show logos on the right side in PDF [#3768].
  - New table of contents with page numbers and categories in PDF [#3766].
  - New teporal field "modified final version" where the final version can
    be edited [#3781].
  - New config to show amendments also in motions table [#3792]
 
- Core:
+Core:
  - Python 3.4 is not supported anymore [#3777].
  - Support Python 3.7 [#3786].
  - Updated pdfMake to 0.1.37 [#3766].
