@@ -5,6 +5,7 @@ daphne>=2.2,<2.3
 Django>=1.11,<2.2
 djangorestframework>=3.4,<3.9
 jsonfield2>=3.0,<3.1
+jsonschema>=2.6.0<2.7
 mypy_extensions>=0.3,<0.4
 PyPDF2>=1.26,<1.27
 roman>=2.0,<3.1

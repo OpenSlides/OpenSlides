@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { AutoupdateService } from './core/services/autoupdate.service';
+import { NotifyService } from './core/services/notify.service';
 
 /**
  * Angular's global App Component
@@ -12,11 +14,15 @@ import { TranslateService } from '@ngx-translate/core';
 export class AppComponent {
     /**
      * Initialises the operator, the auto update (and therefore a websocket) feature and the translation unit.
-     * @param operator
-     * @param autoupdate
+     * @param autoupdateService
+     * @param notifyService
      * @param translate
      */
-    constructor(private translate: TranslateService) {
+    constructor(
+        private autoupdateService: AutoupdateService,
+        private notifyService: NotifyService,
+        private translate: TranslateService
+    ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'fr']);
         // this language will be used as a fallback when a translation isn't found in the current language

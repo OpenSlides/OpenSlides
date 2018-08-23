@@ -36,6 +36,7 @@ Core:
  - Support Python 3.7 [#3786].
  - Updated pdfMake to 0.1.37 [#3766].
  - Updated Django to 2.1 [#3777, #3786].
+ - Adds a websocket protocol [#3807].
 
 
 Version 2.2 (2018-06-06)
