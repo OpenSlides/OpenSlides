@@ -1,5 +1,5 @@
 <mat-sidenav-container autosize class='main-container'>
-    <mat-sidenav #sideNav [mode]="isMobile ? 'push' : 'side'" [opened]='!isMobile' disableClose='!isMobile' class="side-panel">
+    <mat-sidenav #sideNav [mode]="vp.isMobile ? 'push' : 'side'" [opened]='!vp.isMobile' disableClose='!vp.isMobile' class="side-panel">
         <mat-toolbar class='nav-toolbar'>
             <!-- logo -->
             <mat-toolbar-row class='os-logo-container'>
@@ -42,39 +42,39 @@
         <!-- navigation -->
         <mat-nav-list class='main-nav'>
             <a [@navItemAnim] *appOsPerms="['core.can_see_frontpage']" mat-list-item routerLink='/' routerLinkActive='active' [routerLinkActiveOptions]="{exact: true}"
-                (click)='isMobile ? sideNav.toggle() : null'>
+                (click)='toggleSideNav()'>
                 <fa-icon icon='home'></fa-icon>
                 <span translate>Home</span>
             </a>
-            <a [@navItemAnim] *appOsPerms="['agenda.can_see']" mat-list-item routerLink='/agenda' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+            <a [@navItemAnim] *appOsPerms="['agenda.can_see']" mat-list-item routerLink='/agenda' routerLinkActive='active' (click)='toggleSideNav()'>
                 <fa-icon icon='calendar'></fa-icon>
                 <span translate>Agenda</span>
             </a>
-            <a [@navItemAnim] *appOsPerms="['motions.can_see']" mat-list-item routerLink='/motions' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+            <a [@navItemAnim] *appOsPerms="['motions.can_see']" mat-list-item routerLink='/motions' routerLinkActive='active' (click)='toggleSideNav()'>
                 <fa-icon icon='file-alt'></fa-icon>
                 <span translate>Motions</span>
             </a>
             <a [@navItemAnim] *appOsPerms="['assignments.can_see']" mat-list-item routerLink='/assignments' routerLinkActive='active'
-                (click)='isMobile ? sideNav.toggle() : null'>
+                (click)='vp.isMobile ? sideNav.toggle() : null'>
                 <fa-icon icon='chart-pie'></fa-icon>
                 <span translate>Assignments</span>
             </a>
-            <a [@navItemAnim] *appOsPerms="['users.can_see_name']" mat-list-item routerLink='/users' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+            <a [@navItemAnim] *appOsPerms="['users.can_see_name']" mat-list-item routerLink='/users' routerLinkActive='active' (click)='toggleSideNav()'>
                 <fa-icon icon='user'></fa-icon>
                 <span translate>Participants</span>
             </a>
-            <a [@navItemAnim] *appOsPerms="['mediafiles.can_see']" mat-list-item routerLink='/mediafiles' routerLinkActive='active' (click)='isMobile ? sideNav.toggle() : null'>
+            <a [@navItemAnim] *appOsPerms="['mediafiles.can_see']" mat-list-item routerLink='/mediafiles' routerLinkActive='active' (click)='toggleSideNav()'>
                 <fa-icon icon='paperclip'></fa-icon>
                 <span translate>Files</span>
             </a>
             <a [@navItemAnim] *appOsPerms="['core.can_manage_config']" mat-list-item routerLink='/settings' routerLinkActive='active'
-                (click)='isMobile ? sideNav.toggle() : null'>
+                (click)='toggleSideNav()'>
                 <fa-icon icon='cog'></fa-icon>
                 <span translate>Settings</span>
             </a>
             <mat-divider></mat-divider>
             <a [@navItemAnim] *appOsPerms="['core.can_see_projector']" mat-list-item routerLink='/projector' routerLinkActive='active'
-                (click)='isMobile ? sideNav.toggle() : null'>
+                (click)='toggleSideNav()'>
                 <fa-icon icon='video'></fa-icon>
                 <span translate>Projector</span>
             </a>
@@ -83,18 +83,15 @@
 
         <footer>
             <button mat-button>
-                <a routerLink='/legalnotice' (click)='isMobile ? sideNav.toggle() : null'>
+                <a routerLink='/legalnotice' (click)='toggleSideNav()'>
                     <span translate>Legal Notice</span>
                 </a>
             </button>
             <button mat-button>
-                <a routerLink='/privacypolicy' (click)='isMobile ? sideNav.toggle() : null'>
+                <a routerLink='/privacypolicy' (click)='toggleSideNav()'>
                     <span translate>Privacy Policy</span>
                 </a>
             </button>
-            <!-- <button mat-button (click)='openPrivacyPolicy()'>
-                <span translate>Privacy Policy</span>
-            </button> -->
             <br>
             <span align="center">© Copyright by
                 <a href='https://openslides.org/'>OpenSlides</a>
@@ -107,7 +104,7 @@
     <mat-toolbar color='primary'>
 
         <!-- show/hide menu button -->
-        <button mat-icon-button *ngIf="isMobile" (click)='sideNav.toggle()'>
+        <button mat-icon-button *ngIf="vp.isMobile" (click)='sideNav.toggle()'>
             <fa-icon icon='bars'></fa-icon>
         </button>
 

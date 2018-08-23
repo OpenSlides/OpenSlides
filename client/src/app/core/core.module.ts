@@ -12,6 +12,7 @@ import { OperatorService } from './services/operator.service';
 import { WebsocketService } from './services/websocket.service';
 import { AddHeaderInterceptor } from './http-interceptor';
 import { DataSendService } from './services/data-send.service';
+import { ViewportService } from './services/viewport.service';
 
 /** Global Core Module. Contains all global (singleton) services
  *
@@ -26,6 +27,7 @@ import { DataSendService } from './services/data-send.service';
         DataStoreService,
         DataSendService,
         OperatorService,
+        ViewportService,
         WebsocketService,
         {
             provide: HTTP_INTERCEPTORS,

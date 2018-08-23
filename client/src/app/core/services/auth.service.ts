@@ -5,6 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { OperatorService } from 'app/core/services/operator.service';
 import { OpenSlidesComponent } from '../../openslides.component';
+import { environment } from 'environments/environment';
 
 /**
  * Authenticates an OpenSlides user with username and password
@@ -44,7 +45,7 @@ export class AuthService extends OpenSlidesComponent {
             username: username,
             password: password
         };
-        return this.http.post<any>('/users/login/', user).pipe(
+        return this.http.post<any>(environment.urlPrefix + '/users/login/', user).pipe(
             tap(resp => this.operator.storeUser(resp.user)),
             catchError(this.handleError())
         );
@@ -60,6 +61,6 @@ export class AuthService extends OpenSlidesComponent {
     //TODO not yet used
     logout(): Observable<any> {
         this.operator.clear();
-        return this.http.post<any>('/users/logout/', {});
+        return this.http.post<any>(environment.urlPrefix + '/users/logout/', {});
     }
 }
