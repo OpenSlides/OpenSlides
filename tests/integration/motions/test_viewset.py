@@ -1161,21 +1161,6 @@ class CreateWorkflow(TestCase):
         first_state = workflow.first_state
         self.assertEqual(type(first_state), State)
 
-    def test_creation_with_wrong_first_state(self):
-        response = self.client.post(
-            reverse('workflow-list'),
-            {'name': 'test_name_OoCoo3MeiT9li5Iengu9',
-             'first_state': 1})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_creation_with_not_existing_first_state(self):
-        Workflow.objects.all().delete()
-        response = self.client.post(
-            reverse('workflow-list'),
-            {'name': 'test_name_OoCoo3MeiT9li5Iengu9',
-             'first_state': 49})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
 
 class UpdateWorkflow(TestCase):
     """
@@ -1194,38 +1179,6 @@ class UpdateWorkflow(TestCase):
         workflow = Workflow.objects.get(pk=self.workflow.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(workflow.name, 'test_name_wofi38DiWLT"8d3lwfo3')
-
-    def test_change_first_state_correct(self):
-        first_state = self.workflow.first_state
-        other_workflow_state = self.workflow.states.exclude(pk=first_state.pk).first()
-        response = self.client.patch(
-            reverse('workflow-detail', args=[self.workflow.pk]),
-            {'first_state': other_workflow_state.pk})
-
-        workflow = Workflow.objects.get(pk=self.workflow.id)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(workflow.first_state, other_workflow_state)
-
-    def test_change_first_state_not_existing(self):
-        first_state = self.workflow.first_state
-        response = self.client.patch(
-            reverse('workflow-detail', args=[self.workflow.pk]),
-            {'first_state': 42})
-
-        workflow = Workflow.objects.get(pk=self.workflow.id)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(workflow.first_state, first_state)
-
-    def test_change_first_state_wrong_workflow(self):
-        first_state = self.workflow.first_state
-        other_workflow = Workflow.objects.exclude(pk=self.workflow.pk).first()
-        response = self.client.patch(
-            reverse('workflow-detail', args=[self.workflow.pk]),
-            {'first_state': other_workflow.first_state.pk})
-
-        workflow = Workflow.objects.get(pk=self.workflow.id)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(workflow.first_state, first_state)
 
 
 class DeleteWorkflow(TestCase):

@@ -750,7 +750,8 @@ angular.module('OpenSlidesApp.motions.site', [
     'gettextCatalog',
     function (gettextCatalog) {
         return {
-            getFormFields: function () {
+            getFormFields: function (precision) {
+                var step = Math.pow(10, -precision);
                 return [
                 {
                     key: 'yes',
@@ -758,6 +759,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     templateOptions: {
                         label: gettextCatalog.getString('Yes'),
                         type: 'number',
+                        step: step,
                         required: true
                     }
                 },
@@ -767,6 +769,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     templateOptions: {
                         label: gettextCatalog.getString('No'),
                         type: 'number',
+                        step: step,
                         required: true
                     }
                 },
@@ -776,6 +779,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     templateOptions: {
                         label: gettextCatalog.getString('Abstain'),
                         type: 'number',
+                        step: step,
                         required: true
                     }
                 },
@@ -784,6 +788,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     type: 'input',
                     templateOptions: {
                         label: gettextCatalog.getString('Valid votes'),
+                        step: step,
                         type: 'number'
                     }
                 },
@@ -792,6 +797,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     type: 'input',
                     templateOptions: {
                         label: gettextCatalog.getString('Invalid votes'),
+                        step: step,
                         type: 'number'
                     }
                 },
@@ -800,6 +806,7 @@ angular.module('OpenSlidesApp.motions.site', [
                     type: 'input',
                     templateOptions: {
                         label: gettextCatalog.getString('Votes cast'),
+                        step: step,
                         type: 'number'
                     }
                 }];
@@ -836,6 +843,10 @@ angular.module('OpenSlidesApp.motions.site', [
                 var someMotionsHaveAmendments = _.some(motions, function (motion) {
                     return motion.hasAmendments();
                 });
+                // if amendments amendments are already included. We owudl have them twice, if the option is enabled.
+                if (Config.get('motions_amendments_main_table').value) {
+                    someMotionsHaveAmendments = false;
+                }
                 var getMetaInformationOptions = function (disabled) {
                     if (!disabled) {
                         disabled = {};
@@ -1130,10 +1141,13 @@ angular.module('OpenSlidesApp.motions.site', [
     'MajorityMethodChoices',
     'Config',
     'MotionPollDetailCtrlCache',
-    function ($scope, MajorityMethodChoices, Config, MotionPollDetailCtrlCache) {
+    'MotionPollDecimalPlaces',
+    function ($scope, MajorityMethodChoices, Config, MotionPollDetailCtrlCache, MotionPollDecimalPlaces) {
         // Define choices.
         $scope.methodChoices = MajorityMethodChoices;
         // TODO: Get $scope.baseChoices from config_variables.py without copying them.
+
+        $scope.votesPrecision = MotionPollDecimalPlaces.getPlaces($scope.poll);
 
         // Setup empty cache with default values.
         if (typeof MotionPollDetailCtrlCache[$scope.poll.id] === 'undefined') {
@@ -2517,17 +2531,19 @@ angular.module('OpenSlidesApp.motions.site', [
     'gettextCatalog',
     'MotionPoll',
     'MotionPollForm',
+    'MotionPollDecimalPlaces',
     'motionpollId',
     'voteNumber',
     'ErrorMessage',
-    function ($scope, gettextCatalog, MotionPoll, MotionPollForm, motionpollId,
-        voteNumber, ErrorMessage) {
+    function ($scope, gettextCatalog, MotionPoll, MotionPollForm, MotionPollDecimalPlaces,
+        motionpollId, voteNumber, ErrorMessage) {
         // set initial values for form model by create deep copy of motionpoll object
         // so detail view is not updated while editing poll
         var motionpoll = MotionPoll.get(motionpollId);
         $scope.model = angular.copy(motionpoll);
         $scope.voteNumber = voteNumber;
-        $scope.formFields = MotionPollForm.getFormFields();
+        var precision = MotionPollDecimalPlaces.getPlaces(motionpoll);
+        $scope.formFields = MotionPollForm.getFormFields(precision);
         $scope.alert = {};
 
         // save motionpoll
@@ -3291,6 +3307,7 @@ angular.module('OpenSlidesApp.motions.site', [
 
         // misc strings (used dynamically in templates by translate filter)
         gettext('needed');
+        gettext('Amendment');
     }
 ]);
 

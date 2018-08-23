@@ -1,11 +1,11 @@
 import locale
+from decimal import Decimal
 from typing import Optional, Type
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import ugettext as _
-
-from openslides.utils.models import MinMaxIntegerField
 
 
 class BaseOption(models.Model):
@@ -44,7 +44,8 @@ class BaseVote(models.Model):
     Subclasses have to define an option field. This must be a ForeignKeyField
     to a subclass of BasePoll.
     """
-    weight = models.IntegerField(default=1, null=True)  # Use MinMaxIntegerField
+    weight = models.DecimalField(default=Decimal('1'), null=True, validators=[
+        MinValueValidator(Decimal('-2'))], max_digits=15, decimal_places=6)
     value = models.CharField(max_length=255, null=True)
 
     class Meta:
@@ -72,9 +73,12 @@ class CollectDefaultVotesMixin(models.Model):
     Mixin for a poll to collect the default vote values for valid votes,
     invalid votes and votes cast.
     """
-    votesvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2)
-    votesinvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2)
-    votescast = MinMaxIntegerField(null=True, blank=True, min_value=-2)
+    votesvalid = models.DecimalField(null=True, blank=True, validators=[
+        MinValueValidator(Decimal('-2'))], max_digits=15, decimal_places=6)
+    votesinvalid = models.DecimalField(null=True, blank=True, validators=[
+        MinValueValidator(Decimal('-2'))], max_digits=15, decimal_places=6)
+    votescast = models.DecimalField(null=True, blank=True, validators=[
+        MinValueValidator(Decimal('-2'))], max_digits=15, decimal_places=6)
 
     class Meta:
         abstract = True

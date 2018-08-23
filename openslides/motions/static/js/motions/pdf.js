@@ -17,9 +17,10 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
     'Config',
     'Motion',
     'MotionComment',
+    'MotionPollDecimalPlaces',
     'OpenSlidesSettings',
     function($q, $filter, operator, gettextCatalog, PDFLayout, PdfMakeConverter, ImageConverter,
-        HTMLValidizer, Category, Config, Motion, MotionComment, OpenSlidesSettings) {
+        HTMLValidizer, Category, Config, Motion, MotionComment, MotionPollDecimalPlaces, OpenSlidesSettings) {
         /**
          * Provides the content as JS objects for Motions in pdfMake context
          * @constructor
@@ -185,40 +186,41 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                                 column2.push('');
                                 column3.push('');
                             }
+                            var precision = MotionPollDecimalPlaces.getPlaces(poll);
                             // yes
                             var yes = poll.getVote(poll.yes, 'yes');
                             column1.push(gettextCatalog.getString('Yes') + ':');
-                            column2.push(yes.value);
+                            column2.push($filter('number')(yes.value, precision));
                             column3.push(yes.percentStr);
                             // no
                             var no = poll.getVote(poll.no, 'no');
                             column1.push(gettextCatalog.getString('No') + ':');
-                            column2.push(no.value);
+                            column2.push($filter('number')(no.value, precision));
                             column3.push(no.percentStr);
                             // abstain
                             var abstain = poll.getVote(poll.abstain, 'abstain');
                             column1.push(gettextCatalog.getString('Abstain') + ':');
-                            column2.push(abstain.value);
+                            column2.push($filter('number')(abstain.value, precision));
                             column3.push(abstain.percentStr);
                             // votes valid
                             if (poll.votesvalid) {
                                 var valid = poll.getVote(poll.votesvalid, 'votesvalid');
                                 column1.push(gettextCatalog.getString('Valid votes') + ':');
-                                column2.push(valid.value);
+                                column2.push($filter('number')(valid.value, precision));
                                 column3.push(valid.percentStr);
                             }
                             // votes invalid
                             if (poll.votesvalid) {
                                 var invalid = poll.getVote(poll.votesinvalid, 'votesinvalid');
                                 column1.push(gettextCatalog.getString('Invalid votes') + ':');
-                                column2.push(invalid.value);
+                                column2.push($filter('number')(invalid.value, precision));
                                 column3.push(invalid.percentStr);
                             }
                             // votes cast
                             if (poll.votescast) {
                                 var cast = poll.getVote(poll.votescast, 'votescast');
                                 column1.push(gettextCatalog.getString('Votes cast') + ':');
-                                column2.push(cast.value);
+                                column2.push($filter('number')(cast.value, precision));
                                 column3.push(cast.percentStr);
                             }
                         }

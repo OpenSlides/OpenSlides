@@ -26,7 +26,9 @@ angular.module('OpenSlidesApp.motions.projector', [
     'User',
     'Notify',
     'ProjectorID',
-    function($scope, Config, Motion, MotionChangeRecommendation, ChangeRecommendationView, User, Notify, ProjectorID) {
+    'MotionPollDecimalPlaces',
+    function($scope, Config, Motion, MotionChangeRecommendation, ChangeRecommendationView, User,
+        Notify, ProjectorID, MotionPollDecimalPlaces) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
@@ -67,7 +69,20 @@ angular.module('OpenSlidesApp.motions.projector', [
             $scope.motion = Motion.get(motionId);
             $scope.amendment_diff_paragraphs = $scope.motion.getAmendmentParagraphsLinesDiff();
             $scope.viewChangeRecommendations.setVersion($scope.motion, $scope.motion.active_version);
+            _.forEach($scope.motion.polls, function (poll) {
+                MotionPollDecimalPlaces.getPlaces(poll, true).then(function (decimalPlaces) {
+                    precisionCache[poll.id] = decimalPlaces;
+                });
+            });
         });
+
+        var precisionCache = {};
+        $scope.getPollVotesPrecision = function (poll) {
+            if (!precisionCache[poll.id]) {
+                return 0;
+            }
+            return precisionCache[poll.id];
+        };
 
         // Change recommendation viewing
         $scope.viewChangeRecommendations = ChangeRecommendationView;

@@ -54,7 +54,7 @@ angular.module('OpenSlidesApp.motions', [
             name: 'motions/workflow',
             methods: {
                 getFirstState: function () {
-                    return DS.get('motions/state', this.first_state);
+                    return DS.get('motions/state', this.first_state_id);
                 },
             },
             relations: {
@@ -84,6 +84,14 @@ angular.module('OpenSlidesApp.motions', [
                         localKey: 'motion_id',
                     }
                 }
+            },
+            beforeInject: function (resource, instance) {
+                var attrs = ['yes', 'no', 'abstain', 'votescast', 'votesinvalid', 'votesvalid'];
+                _.forEach(attrs, function (attr) {
+                    if (instance[attr] !== null) {
+                        instance[attr] = parseFloat(instance[attr]);
+                    }
+                });
             },
             methods: {
                 // Returns percent base. Returns undefined if calculation is not possible in general.
@@ -193,6 +201,24 @@ angular.module('OpenSlidesApp.motions', [
                 }
             }
         });
+    }
+])
+
+.provider('MotionPollDecimalPlaces', [
+    function () {
+        this.$get = ['$q', function ($q) {
+            return {
+                getPlaces: function (poll, find) {
+                    if (find) {
+                        return $q(function (resolve) {
+                            resolve(0);
+                        });
+                    } else {
+                        return 0;
+                    }
+                },
+            };
+        }];
     }
 ])
 

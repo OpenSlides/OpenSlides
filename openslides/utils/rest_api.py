@@ -17,6 +17,7 @@ from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.serializers import (
     CharField,
+    DecimalField,
     DictField,
     Field,
     FileField,
@@ -43,9 +44,9 @@ from .auth import user_to_collection_user
 from .collection import Collection, CollectionElement
 
 
-__all__ = ['status', 'detail_route', 'list_route', 'SimpleMetadata', 'CreateModelMixin',
+__all__ = ['detail_route', 'DecimalField', 'list_route', 'SimpleMetadata', 'CreateModelMixin',
            'DestroyModelMixin', 'UpdateModelMixin', 'CharField', 'DictField', 'FileField',
-           'IntegerField', 'JSONField', 'ListField', 'ListSerializer', 'RelatedField',
+           'IntegerField', 'JSONField', 'ListField', 'ListSerializer', 'status', 'RelatedField',
            'SerializerMethodField', 'ValidationError']
 
 

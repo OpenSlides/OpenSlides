@@ -1,16 +1,16 @@
 <!-- Modified agreed view -->
 <div ng-if="viewChangeRecommendations.mode == 'modified_agreed'">
+    <div style="text-align: right;">
+      <button class="btn btn-default btn-danger btn-sm"
+          ng-bootbox-confirm="{{ 'Do you want to delete the final print template?' | translate }}"
+          ng-bootbox-confirm-action="viewChangeRecommendations.deleteModifiedFinalVersion(motion, version)">
+        <i class="fa fa-trash"></i>
+        <translate>Delete final print template</translate>
+      </button>
+    </div>
     <div id="view-modified-agreed-inline-editor" ng-bind-html="motion.getModifiedFinalVersionWithLineBreaks(version) | trusted"
       class="motion-text motion-text-original line-numbers-{{ lineNumberMode }}"
       contenteditable="{{ modifiedFinalVersionInlineEditing.isEditable }}">
-    </div>
-    <div style="text-align: right;">
-      <button class="btn btn-default btn-danger"
-          ng-bootbox-confirm="{{ 'Do you want to delete the modified final version?' | translate }}"
-          ng-bootbox-confirm-action="viewChangeRecommendations.deleteModifiedFinalVersion(motion, version)">
-        <i class="fa fa-trash"></i>
-        <translate>Delete modified final version</translate>
-      </button>
     </div>
     <div class="motion-save-toolbar" ng-class="{ 'visible': modifiedFinalVersionInlineEditing.active && modifiedFinalVersionInlineEditing.changed }">
         <div class="changed-hint" translate>The modified final version have been changed.</div>

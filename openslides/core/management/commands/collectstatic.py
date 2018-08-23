@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.staticfiles.management.commands.collectstatic import (
     Command as CollectStatic,
 )
+from django.contrib.staticfiles.utils import matches_patterns
 from django.core.management.base import CommandError
 from django.db.utils import OperationalError
 
@@ -19,6 +20,8 @@ class Command(CollectStatic):
     js_filename = 'webclient-{}.js'
 
     def handle(self, **options: Any) -> str:
+        if options['link']:
+            raise CommandError("Option 'link' is not supported.")
         try:
             self.view = WebclientJavaScriptView()
         except OperationalError:
@@ -27,24 +30,37 @@ class Command(CollectStatic):
         return super().handle(**options)
 
     def collect(self) -> Dict[str, Any]:
+        result = super().collect()
+
         try:
-            destination_dir = os.path.join(settings.STATICFILES_DIRS[0], 'js')
+            destination_dir = os.path.join(settings.STATIC_ROOT, 'js')
         except IndexError:
             # If the user does not want do have staticfiles, he should not get
             # the webclient files either.
             pass
         else:
-            if not os.path.exists(destination_dir):
-                os.makedirs(destination_dir)
+            if self.dry_run:
+                self.log('Pretending to write WebclientJavaScriptView for all realms.', level=1)
+            else:
+                if not os.path.exists(destination_dir):
+                    os.makedirs(destination_dir)
 
-            for realm in self.realms:
-                filename = self.js_filename.format(realm)
-                content = self.view.get(realm=realm).content
-                path = os.path.join(destination_dir, filename)
-                with open(path, 'wb+') as f:
-                    f.write(content)
-                self.stdout.write("Written WebclientJavaScriptView for realm {} to '{}'".format(
-                    realm,
-                    path))
+                for realm in self.realms:
+                    filename = self.js_filename.format(realm)
+                    # Matches only the basename.
+                    if matches_patterns(filename, self.ignore_patterns):
+                        continue
+                    path = os.path.join(destination_dir, filename)
+                    if matches_patterns(path, self.ignore_patterns):
+                        continue
 
-        return super().collect()
+                    content = self.view.get(realm=realm).content
+                    with open(path, 'wb+') as f:
+                        f.write(content)
+                    message = "Written WebclientJavaScriptView for realm {} to '{}'".format(
+                        realm,
+                        path)
+                    self.log(message, level=1)
+                    result['modified'].append(path)
+
+        return result

@@ -49,7 +49,9 @@ angular.module('OpenSlidesApp.motions.workflow', [])
             return Workflow.lastModified(workflowId);
         }, function () {
             $scope.workflow = Workflow.get(workflowId);
-            _.forEach($scope.workflow.states, function (state) {
+            $scope.states = $scope.workflow.states;
+            $scope.states = _.orderBy($scope.states, 'id');
+            _.forEach($scope.states, function (state) {
                 state.newActionWord = gettextCatalog.getString(state.action_word);
                 state.newRecommendationLabel = gettextCatalog.getString(state.recommendation_label);
             });
@@ -116,13 +118,6 @@ angular.module('OpenSlidesApp.motions.workflow', [])
         };
         $scope.save = function (state) {
             MotionState.save(state).then(null, function (error) {
-                $scope.alert = ErrorMessage.forAlert(error);
-            });
-        };
-
-        $scope.setFirstState = function (state) {
-            $scope.workflow.first_state = state.id;
-            Workflow.save($scope.workflow).then(null, function (error) {
                 $scope.alert = ErrorMessage.forAlert(error);
             });
         };

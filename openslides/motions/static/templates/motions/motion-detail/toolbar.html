@@ -103,13 +103,14 @@
                        ng-checked="viewChangeRecommendations.mode == 'agreed'">
                 <translate>Final version</translate>
             </label>
-            <label class="btn btn-sm btn-default" ng-if="motion.getModifiedFinalVersion()"
+            <label class="btn btn-sm btn-default" os-perms="motions.can_manage"
+                   ng-show="motion.getModifiedFinalVersion()"
                    ng-class="{active: (viewChangeRecommendations.mode == 'modified_agreed')}"
                    ng-click="viewChangeRecommendations.mode = 'modified_agreed'">
                 <input type="radio" name="viewChangeRecommendations.mode" value="modified_agreed"
                        ng-model="viewChangeRecommendations.mode"
                        ng-checked="viewChangeRecommendations.mode == 'modified_agreed'">
-                <translate>Modified final version</translate>
+                <translate>Final print template</translate>
             </label>
         </div>
 
@@ -140,6 +141,11 @@
               <a href="" ng-click="viewChangeRecommendations.mode = 'agreed'">
                 <i class="fa fa-check" ng-if="viewChangeRecommendations.mode == 'agreed'"></i>
                 <translate>Final version</translate>
+              </a>
+            <li os-perms="motions.can_manage">
+              <a href="" ng-click="viewChangeRecommendations.mode = 'modified_agreed'">
+                <i class="fa fa-check" ng-if="viewChangeRecommendations.mode == 'modified_agreed'"></i>
+                <translate>Final print template</translate>
               </a>
           </ul>
         </div>

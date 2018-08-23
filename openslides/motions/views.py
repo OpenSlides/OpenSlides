@@ -918,13 +918,6 @@ class WorkflowViewSet(ModelViewSet, ProtectedErrorMessageMixin):
             result = False
         return result
 
-    def create(self, *args, **kwargs):
-        try:
-            response = super().create(*args, **kwargs)
-        except WorkflowError as e:
-            raise ValidationError({'detail': e.args[0]})
-        return response
-
     def destroy(self, *args, **kwargs):
         """
         Customized view endpoint to delete a motion poll.

@@ -185,7 +185,8 @@ angular.module('OpenSlidesApp.topics.site', ['OpenSlidesApp.topics', 'OpenSlides
     'ErrorMessage',
     function($scope, $state, Topic, TopicForm, Agenda, Config, ErrorMessage) {
         $scope.model = {
-            agenda_type: parseInt(Config.get('agenda_new_items_default_visibility').value),
+            agenda_type: 1,  // Default is a public item. The config field
+                             // 'agenda_new_items_default_visibility' is not used.
         };
         // get all form fields
         $scope.formFields = TopicForm.getFormFields(true);

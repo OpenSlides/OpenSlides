@@ -234,7 +234,7 @@
                 <div ng-init="votes = option.getVotes()">
                   <div ng-repeat="vote in votes">
                     <span ng-if="poll.pollmethod == 'yna' || poll.pollmethod == 'yn'">{{ vote.label }}:</span>
-                    {{ vote.value }} {{ vote.percentStr }}
+                    {{ vote.value | number:votesPrecision }} {{ vote.percentStr }}
                     <div ng-if="vote.percentNumber >= 0">
                       <uib-progressbar ng-if="$index == 0" value="vote.percentNumber" type="success"></uib-progressbar>
                       <uib-progressbar ng-if="$index == 1" value="vote.percentNumber" type="danger"></uib-progressbar>
@@ -244,10 +244,10 @@
                 </div>
               <td ng-hide="method === 'disabled'">
                 <span ng-if="option.majorityReached >= 0" class="text-success" translate>
-                    Quorum ({{ option.getVoteYes() - option.majorityReached }}) reached.
+                    Quorum ({{ (option.getVoteYes() - option.majorityReached) | number:votesPrecision }}) reached.
                 </span>
                 <span ng-if="option.majorityReached < 0" class="text-danger" translate>
-                    Quorum ({{ option.getVoteYes() - option.majorityReached }}) not reached.
+                    Quorum ({{ (option.getVoteYes() - option.majorityReached) | number:votesPrecision }}) not reached.
                 </span>
 
             <!-- total votes (valid/invalid/casts) -->
@@ -255,31 +255,31 @@
               <td>
                 <translate>Abstain</translate>
               <td>
-                {{ poll.getVote('votesabstain').value }}
+                {{ poll.getVote('votesabstain').value | number:votesPrecision }}
                 {{ poll.getVote('votesabstain').percentStr }}
             <tr ng-if="poll.pollmethod === 'votes'">
               <td>
                 <translate>No</translate>
               <td>
-                {{ poll.getVote('votesno').value }}
+                {{ poll.getVote('votesno').value | number:votesPrecision }}
                 {{ poll.getVote('votesno').percentStr }}
             <tr>
               <td>
                 <translate>Valid ballots</translate>
               <td>
-                {{ poll.getVote('votesvalid').value }}
+                {{ poll.getVote('votesvalid').value | number:votesPrecision }}
                 {{ poll.getVote('votesvalid').percentStr }}
             <tr>
               <td>
                 <translate>Invalid ballots</translate>
               <td>
-                {{ poll.getVote('votesinvalid').value }}
+                {{ poll.getVote('votesinvalid').value | number:votesPrecision }}
                 {{ poll.getVote('votesinvalid').percentStr }}
             <tr class="total bg-info">
               <td>
                 <translate>Casted ballots</translate>
               <td>
-                {{ poll.getVote('votescast').value }}
+                {{ poll.getVote('votescast').value | number:votesPrecision }}
                 {{ poll.getVote('votescast').percentStr }}
           </table>
 

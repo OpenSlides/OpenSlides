@@ -11,6 +11,7 @@ Core:
  - Change URL schema [#3798].
  - Update to channels2 [#3796].
  - Drop Python 3.5 support[#3805].
+ - Adds a websocket protocol [#3807].
 
 
 Version 2.3 (unreleased)
@@ -19,24 +20,28 @@ Version 2.3 (unreleased)
 Agenda:
  - New item type 'hidden'. New visibilty filter in agenda [#3790].
 
+Elections:
+ - Support to change decimal places for elections with a plugin [#3803]
+
 Motions:
  - New feature to scroll the projector to a specific line [#3748].
  - New possibility to sort submitters [#3647].
  - New representation of amendments (paragraph based creation, new diff
    and list views for amendments) [#3637].
- - New feature to customize workflows and states [#3772].
+ - New feature to customize workflows and states [#3772, #3785].
  - New config options to show logos on the right side in PDF [#3768].
  - New table of contents with page numbers and categories in PDF [#3766].
  - New teporal field "modified final version" where the final version can
    be edited [#3781].
- - New config to show amendments also in motions table [#3792]
+ - New config to show amendments also in motions table [#3792].
+ - Support to change decimal places for polls with a plugin [#3803].
 
 Core:
  - Python 3.4 is not supported anymore [#3777].
  - Support Python 3.7 [#3786].
  - Updated pdfMake to 0.1.37 [#3766].
  - Updated Django to 2.1 [#3777, #3786].
- - Adds a websocket protocol [#3807].
+ - Changed behavior of collectstatic management command [#3804].
 
 
 Version 2.2 (2018-06-06)

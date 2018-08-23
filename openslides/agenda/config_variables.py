@@ -67,7 +67,7 @@ def get_config_variables():
             {'value': '1', 'display_name': 'Public item'},
             {'value': '2', 'display_name': 'Internal item'},
             {'value': '3', 'display_name': 'Hidden item'}),
-        label='Default visibility for new agenda items',
+        label='Default visibility for new agenda items (except topics)',
         weight=227,
         group='Agenda',
         subgroup='General')
