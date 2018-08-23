@@ -174,7 +174,7 @@
           <div ng-if="!motion.isAmendment && motion.isAllowed('can_see_amendments')">
             <h3 translate>Amendments</h3>
             <a ng-if="motion.hasAmendments()" ui-sref="motions.motion.amendment-list({id: motion.id})">
-              {{ motion.getAmendments().length }} <translate>Amendments</translate><br>
+              {{ motion.getAmendments().length }} {{ (motion.getAmendments().length === 1 ? 'Amendment' : 'Amendments') | translate }}<br>
             </a>
             <button ng-if="motion.isAllowed('can_create_amendment')" ng-click="newAmendment()" class="btn btn-default btn-sm">
               <i class="fa fa-plus"></i>
@@ -556,16 +556,16 @@
           </div>
 
           <div style="text-align: right;" ng-if="(change_recommendations | filter:{motion_version_id:version}:true).length > 0">
-            <button class="btn btn-default"
-                    ng-bootbox-confirm="{{ 'Do you want to copy the final version to the modified final version field?' | translate }}"
+            <button class="btn btn-default btn-sm" os-perms="motions.can_manage"
+                    ng-bootbox-confirm="{{ 'Do you want to copy the final version to the final print template?' | translate }}"
                     ng-bootbox-confirm-action="viewChangeRecommendations.copyToModifiedFinalVersion(motion, version)">
               <i class="fa fa-file-text"></i>
-              <translate>Copy to modified final version</translate>
+              <translate>Create final print template</translate>
             </button>
           </div>
 
           <div style="text-align: right;" ng-if="motion.state.versioning && (change_recommendations | filter:{motion_version_id:version}:true).length > 0">
-            <button class="btn btn-default"
+            <button class="btn btn-default btn-sm"
                     ng-bootbox-confirm="{{ 'Do you want to create a new version of this motion based on this changes?' | translate }}"
                     ng-bootbox-confirm-action="viewChangeRecommendations.newVersionIncludingChanges(motion, version, false)">
               <i class="fa fa-file-text"></i>

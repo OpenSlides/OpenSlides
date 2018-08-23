@@ -962,7 +962,9 @@ angular.module('OpenSlidesApp.core.pdf', [])
                                             currentParagraph.text.push(create('text', ' '));
                                         } else if (isInsideAList(element) && lineNumberMode === 'none') {
                                             // Put a spacer there, if there is one BR in a list
-                                            alreadyConverted.push(create('text', ' '));
+                                            var spacer = create('text', ' ');
+                                            spacer.lineHeight = 0.25;
+                                            alreadyConverted.push(spacer);
                                         }
                                         currentParagraph.lineHeight = 1.25;
                                         alreadyConverted.push(currentParagraph);

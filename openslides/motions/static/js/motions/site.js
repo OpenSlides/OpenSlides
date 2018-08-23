@@ -843,6 +843,10 @@ angular.module('OpenSlidesApp.motions.site', [
                 var someMotionsHaveAmendments = _.some(motions, function (motion) {
                     return motion.hasAmendments();
                 });
+                // if amendments amendments are already included. We owudl have them twice, if the option is enabled.
+                if (Config.get('motions_amendments_main_table').value) {
+                    someMotionsHaveAmendments = false;
+                }
                 var getMetaInformationOptions = function (disabled) {
                     if (!disabled) {
                         disabled = {};
