@@ -22,3 +22,5 @@ export class MotionBlock extends BaseModel {
         return this.DS.get('agenda/item', this.agenda_item_id);
     }
 }
+
+BaseModel.registerCollectionElement('motions/motion-block', MotionBlock);

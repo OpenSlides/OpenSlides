@@ -48,3 +48,5 @@ export class Mediafile extends BaseModel {
         return this.DS.get('users/user', this.uploader_id);
     }
 }
+
+BaseModel.registerCollectionElement('amediafiles/mediafile', Mediafile);

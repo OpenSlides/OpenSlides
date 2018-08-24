@@ -100,3 +100,5 @@ export class User extends BaseModel {
         return this.short_name;
     };
 }
+
+BaseModel.registerCollectionElement('users/user', User);

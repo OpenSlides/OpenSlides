@@ -16,3 +16,5 @@ export class ProjectorMessage extends BaseModel {
         this.message = message;
     }
 }
+
+BaseModel.registerCollectionElement('core/projector-message', ProjectorMessage);

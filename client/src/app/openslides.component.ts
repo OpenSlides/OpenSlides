@@ -30,6 +30,7 @@ export abstract class OpenSlidesComponent {
      */
     get DS(): DataStoreService {
         if (OpenSlidesComponent._DS == null) {
+            // tslint:disable-next-line
             const injector = Injector.create(
                 [
                     {

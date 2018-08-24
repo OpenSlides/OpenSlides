@@ -24,3 +24,5 @@ export class ChatMessage extends BaseModel {
         return this.DS.get('users/user', this.user_id);
     }
 }
+
+BaseModel.registerCollectionElement('core/chat-message', ChatMessage);

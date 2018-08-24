@@ -2,25 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { OpenSlidesComponent } from 'app/openslides.component';
 import { WebsocketService } from './websocket.service';
-// the Models
-import { Item } from 'app/shared/models/agenda/item';
-import { Assignment } from 'app/shared/models/assignments/assignment';
-import { ChatMessage } from 'app/shared/models/core/chat-message';
-import { Config } from 'app/shared/models/core/config';
-import { Countdown } from 'app/shared/models/core/countdown';
-import { ProjectorMessage } from 'app/shared/models/core/projector-message';
-import { Projector } from 'app/shared/models/core/projector';
-import { Tag } from 'app/shared/models/core/tag';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { Category } from 'app/shared/models/motions/category';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { MotionChangeReco } from 'app/shared/models/motions/motion-change-reco';
-import { Motion } from 'app/shared/models/motions/motion';
-import { Workflow } from 'app/shared/models/motions/workflow';
-import { Topic } from 'app/shared/models/topics/topic';
-import { Group } from 'app/shared/models/users/group';
-import { PersonalNote } from 'app/shared/models/users/personal-note';
-import { User } from 'app/shared/models/users/user';
+
+import { CollectionStringModelMapperService } from './collectionStringModelMapper.service';
 
 /**
  * Handles the initial update and automatic updates using the {@link WebsocketService}
@@ -47,85 +30,43 @@ export class AutoupdateService extends OpenSlidesComponent {
     /**
      * Handle the answer of incoming data via {@link WebsocketService}.
      *
+     * Bundles the data per action and collection. THis speeds up the caching in the DataStore.
+     *
      * Detects the Class of an incomming model, creates a new empty object and assigns
      * the data to it using the deserialize function.
      *
      * Saves models in DataStore.
      */
     storeResponse(socketResponse): void {
-        socketResponse.forEach(jsonObj => {
-            const targetClass = this.getClassFromCollectionString(jsonObj.collection);
-            if (jsonObj.action === 'deleted') {
-                this.DS.remove(jsonObj.collection, jsonObj.id);
-            } else {
-                this.DS.add(new targetClass().deserialize(jsonObj.data));
-            }
-        });
-    }
+        // Reorganize the autoupdate: groupy by action, then by collection. The final
+        // entries are the single autoupdate objects.
+        const autoupdate = {
+            changed: {},
+            deleted: {}
+        };
 
-    /**
-     * helper function to return the correct class from a collection string
-     */
-    getClassFromCollectionString(collection: string): any {
-        switch (collection) {
-            case 'core/projector': {
-                return Projector;
+        // Reorganize them.
+        socketResponse.forEach(obj => {
+            if (!autoupdate[obj.action][obj.collection]) {
+                autoupdate[obj.action][obj.collection] = [];
             }
-            case 'core/chat-message': {
-                return ChatMessage;
+            autoupdate[obj.action][obj.collection].push(obj);
+        });
+
+        // Delete the removed objects from the DataStore
+        Object.keys(autoupdate.deleted).forEach(collection => {
+            this.DS.remove(collection, ...autoupdate.deleted[collection].map(_obj => _obj.id));
+        });
+
+        // Add the objects to the DataStore.
+        Object.keys(autoupdate.changed).forEach(collection => {
+            const targetClass = CollectionStringModelMapperService.getCollectionStringType(collection);
+            if (!targetClass) {
+                // TODO: throw an error later..
+                /*throw new Error*/ console.log(`Unregistered resource ${collection}`);
+                return;
             }
-            case 'core/tag': {
-                return Tag;
-            }
-            case 'core/projector-message': {
-                return ProjectorMessage;
-            }
-            case 'core/countdown': {
-                return Countdown;
-            }
-            case 'core/config': {
-                return Config;
-            }
-            case 'users/user': {
-                return User;
-            }
-            case 'users/group': {
-                return Group;
-            }
-            case 'users/personal-note': {
-                return PersonalNote;
-            }
-            case 'agenda/item': {
-                return Item;
-            }
-            case 'topics/topic': {
-                return Topic;
-            }
-            case 'motions/category': {
-                return Category;
-            }
-            case 'motions/motion': {
-                return Motion;
-            }
-            case 'motions/motion-block': {
-                return MotionBlock;
-            }
-            case 'motions/workflow': {
-                return Workflow;
-            }
-            case 'motions/motion-change-recommendation': {
-                return MotionChangeReco;
-            }
-            case 'assignments/assignment': {
-                return Assignment;
-            }
-            case 'mediafiles/mediafile': {
-                return Mediafile;
-            }
-            default: {
-                console.error('No rule for ', collection);
-                break;
-            }
-        }
+            this.DS.add(...autoupdate.changed[collection].map(_obj => new targetClass().deserialize(_obj.data)));
+        });
     }
 }

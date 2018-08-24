@@ -40,3 +40,5 @@ export class Projector extends BaseModel {
         this.projectiondefaults = projectiondefaults;
     }
 }
+
+BaseModel.registerCollectionElement('core/projector', Projector);
