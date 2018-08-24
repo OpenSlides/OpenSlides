@@ -1,6 +1,5 @@
-import { Component, OnInit, HostBinding, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
 import { AuthService } from 'app/core/services/auth.service';
 import { OperatorService } from 'app/core/services/operator.service';
@@ -11,6 +10,7 @@ import { BaseComponent } from 'app/base.component';
 import { pageTransition, navItemAnim } from 'app/shared/animations';
 import { MatDialog, MatSidenav } from '@angular/material';
 import { ViewportService } from '../core/services/viewport.service';
+import { CacheService } from '../core/services/cache.service';
 
 @Component({
     selector: 'app-site',
@@ -47,7 +47,8 @@ export class SiteComponent extends BaseComponent implements OnInit {
         private router: Router,
         public vp: ViewportService,
         public translate: TranslateService,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        private cacheService: CacheService
     ) {
         super();
     }
@@ -66,12 +67,27 @@ export class SiteComponent extends BaseComponent implements OnInit {
         // start autoupdate if the user is logged in:
         this.operator.whoAmI().subscribe(resp => {
             if (resp.user) {
-                this.websocketService.connect();
+                this.cacheService.get<number>('lastUserLoggedIn').subscribe((id: number) => {
+                    if (resp.user_id !== id) {
+                        this.DS.clear((value: boolean) => {
+                            this.setupDataStoreAndWebSocket();
+                        });
+                        this.cacheService.set('lastUserLoggedIn', resp.user_id);
+                    } else {
+                        this.setupDataStoreAndWebSocket();
+                    }
+                });
             } else {
                 //if whoami is not sucsessfull, forward to login again
                 this.operator.clear();
                 this.router.navigate(['/login']);
             }
+        });
+    }
+
+    private setupDataStoreAndWebSocket() {
+        this.DS.initFromCache().then((changeId: number) => {
+            this.websocketService.connect(changeId);
         });
     }
 

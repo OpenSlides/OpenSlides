@@ -22,3 +22,5 @@ export class Category extends BaseModel {
         return this.prefix + ' - ' + this.name;
     };
 }
+
+BaseModel.registerCollectionElement('motions/category', Category);

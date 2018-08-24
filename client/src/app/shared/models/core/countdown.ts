@@ -22,3 +22,5 @@ export class Countdown extends BaseModel {
         this.running = running;
     }
 }
+
+BaseModel.registerCollectionElement('core/countdown', Countdown);

@@ -76,3 +76,5 @@ export class Assignment extends BaseModel {
         return this;
     }
 }
+
+BaseModel.registerCollectionElement('assignments/assignment', Assignment);

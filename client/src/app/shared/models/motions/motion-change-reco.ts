@@ -40,3 +40,5 @@ export class MotionChangeReco extends BaseModel {
         this.creation_time = creation_time;
     }
 }
+
+BaseModel.registerCollectionElement('motions/motion-change-recommendation', MotionChangeReco);

@@ -61,3 +61,5 @@ export class Workflow extends BaseModel {
         return this;
     }
 }
+
+BaseModel.registerCollectionElement('motions/workflow', Workflow);
