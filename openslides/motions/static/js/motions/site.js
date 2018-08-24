@@ -852,10 +852,17 @@ angular.module('OpenSlidesApp.motions.site', [
                         disabled = {};
                     }
                     var options = [
-                        {name: gettextCatalog.getString('State'), id: 'state', disabled: disabled.state},
                         {name: gettextCatalog.getString('Submitters'), id: 'submitters', disabled: disabled.submitters},
+                        {name: gettextCatalog.getString('State'), id: 'state', disabled: disabled.state},
                         {name: gettextCatalog.getString('Voting result'), id: 'votingresult', disabled: disabled.votingResult}
                     ];
+                    if (_.some(motions, function (motion) { return motion.category; })) {
+                        options.push({
+                            name: gettextCatalog.getString('Category'),
+                            id: 'category',
+                            disabled: disabled.category,
+                        });
+                    }
                     if (_.some(motions, function (motion) { return motion.motionBlock; })) {
                         options.push({
                             name: gettextCatalog.getString('Motion block'),

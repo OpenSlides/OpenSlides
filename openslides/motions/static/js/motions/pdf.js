@@ -135,7 +135,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                 }
 
                 // category
-                if (motion.category) {
+                if (params.include.category && motion.category) {
                     metaTableBody.push([
                         {
                             text: gettextCatalog.getString('Category') + ':',
@@ -321,6 +321,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                         margin: [0, 0, 0, 20],
                         layout: '{{motion-placeholder-to-insert-functions-here}}'
                     };
+                    params.include.metatable = true;
                     return metaTable;
                 } else {
                     return {};
@@ -329,11 +330,13 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
 
             // motion title
             var motionTitle = function() {
-                if (params.include.text && !motion.isParagraphBasedAmendment()) {
+                if (params.include.metatable && params.include.text && !motion.isParagraphBasedAmendment()) {
                     return [{
                         text: titlePlain,
                         style: 'heading3'
                     }];
+                } else {
+                    return {};
                 }
             };
 
