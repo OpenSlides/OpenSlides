@@ -15,7 +15,7 @@ with open('requirements_production.txt') as requirements_production:
     install_requires = requirements_production.readlines()
 
 with open('requirements_big_mode.txt') as requirements_big_mode:
-    extras_requires = requirements_production.readlines()
+    extras_requires = requirements_big_mode.readlines()
 
 setup(
     name='openslides',
