@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../base.component';
 import { Motion } from '../../../shared/models/motions/motion';
 import { Category } from '../../../shared/models/motions/category';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material';
 import { DataSendService } from '../../../core/services/data-send.service';
 
@@ -30,6 +30,11 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * Target motion. Might be new or old
      */
     motion: Motion;
+
+    /**
+     * Copy of the motion that the user might edit
+     */
+    motionCopy: Motion;
 
     /**
      * Motions meta-info
@@ -70,7 +75,10 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         if (route.snapshot.url[0].path === 'new') {
             this.newMotion = true;
             this.editMotion = true;
+
+            // Both are (temporarily) necessary until submitter and supporters are implemented
             this.motion = new Motion();
+            this.motionCopy = new Motion();
         } else {
             // load existing motion
             this.route.params.subscribe(params => {
@@ -92,18 +100,21 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Async load the values of the motion in the Form.
      */
-    patchForm() {
+    patchForm(formMotion: Motion) {
+        console.log('Motion: ', this.motion);
+        console.log('category_id: ', formMotion);
+
         this.metaInfoForm.patchValue({
-            category_id: this.motion.category.id,
-            state_id: this.motion.state.id,
-            recommendation_id: this.motion.recommendation.id,
-            identifier: this.motion.identifier,
-            origin: this.motion.origin
+            category_id: formMotion.category.id,
+            state_id: formMotion.state.id,
+            recommendation_id: formMotion.recommendation.id,
+            identifier: formMotion.identifier,
+            origin: formMotion.origin
         });
         this.contentForm.patchValue({
-            currentTitle: this.motion.currentTitle,
-            currentText: this.motion.currentText,
-            currentReason: this.motion.currentReason
+            currentTitle: formMotion.currentTitle,
+            currentText: formMotion.currentText,
+            currentReason: formMotion.currentReason
         });
     }
 
@@ -121,8 +132,8 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
             origin: ['']
         });
         this.contentForm = this.formBuilder.group({
-            currentTitle: [''],
-            currentText: [''],
+            currentTitle: ['', Validators.required],
+            currentText: ['', Validators.required],
             currentReason: ['']
         });
     }
@@ -138,13 +149,14 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      */
     saveMotion() {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
-        this.motion.patchValues(newMotionValues);
+        this.motionCopy.patchValues(newMotionValues);
 
         // TODO: This is DRAFT. Reads out Motion version directly. Potentially insecure.
-        this.motion.title = this.motion.currentTitle;
-        this.motion.text = this.motion.currentText;
+        this.motionCopy.title = this.motionCopy.currentTitle;
+        this.motionCopy.text = this.motionCopy.currentText;
 
-        this.dataSend.saveModel(this.motion).subscribe(answer => {
+        // TODO: send to normal motion to verify
+        this.dataSend.saveModel(this.motionCopy).subscribe(answer => {
             if (answer && answer.id && this.newMotion) {
                 this.router.navigate(['./motions/' + answer.id]);
             }
@@ -165,7 +177,10 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     editMotionButton() {
         this.editMotion ? (this.editMotion = false) : (this.editMotion = true);
         if (this.editMotion) {
-            this.patchForm();
+            // copy the motion
+            this.motionCopy = new Motion();
+            this.motionCopy.patchValues(this.motion);
+            this.patchForm(this.motionCopy);
             this.metaInfoPanel.open();
             this.contentPanel.open();
         } else {
