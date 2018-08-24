@@ -3,6 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 import { ImproperlyConfiguredError } from 'app/core/exceptions';
 import { BaseModel, ModelId } from 'app/shared/models/base.model';
+import { CacheService } from './cache.service';
 
 /**
  * represents a collection on the Django server, uses an ID to access a {@link BaseModel}.
@@ -53,7 +54,9 @@ export class DataStoreService {
      * Empty constructor for dataStore
      * @param http use HttpClient to send models back to the server
      */
-    constructor() {}
+    constructor(private cacheService: CacheService) {
+        cacheService.test();
+    }
 
     /**
      * Read one, multiple or all ID's from dataStore

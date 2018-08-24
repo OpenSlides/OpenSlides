@@ -1,8 +1,9 @@
 import { Injector } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
 import { DataStoreService } from './core/services/data-store.service';
+import { CacheService } from './core/services/cache.service';
+import { RootInjector } from './core/rootInjector';
 
 /**
  * injects the {@link DataStoreService} to all its children and provides a generic function to catch errors
@@ -10,14 +11,9 @@ import { DataStoreService } from './core/services/data-store.service';
  */
 export abstract class OpenSlidesComponent {
     /**
-     * To inject the {@link DataStoreService} into the children of OpenSlidesComponent
-     */
-    protected injector: Injector;
-
-    /**
      * The dataStore Service
      */
-    protected dataStore: DataStoreService;
+    private static _DS: DataStoreService;
 
     /**
      * Empty constructor
@@ -25,9 +21,7 @@ export abstract class OpenSlidesComponent {
      * Static injection of {@link DataStoreService} in all child instances of OpenSlidesComponent
      * Throws a warning even tho it is the new syntax. Ignored for now.
      */
-    constructor() {
-        this.injector = Injector.create([{ provide: DataStoreService, useClass: DataStoreService, deps: [] }]);
-    }
+    constructor() {}
 
     /**
      * getter to access the {@link DataStoreService}
@@ -35,10 +29,20 @@ export abstract class OpenSlidesComponent {
      * @return access to dataStoreService
      */
     get DS(): DataStoreService {
-        if (this.dataStore == null) {
-            this.dataStore = this.injector.get(DataStoreService);
+        if (OpenSlidesComponent._DS == null) {
+            const injector = Injector.create(
+                [
+                    {
+                        provide: DataStoreService,
+                        useClass: DataStoreService,
+                        deps: [CacheService]
+                    }
+                ],
+                RootInjector.injector
+            );
+            OpenSlidesComponent._DS = injector.get(DataStoreService);
         }
-        return this.dataStore;
+        return OpenSlidesComponent._DS;
     }
 
     /**
