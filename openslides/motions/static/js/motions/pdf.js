@@ -35,6 +35,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                     text: true,
                     reason: true,
                     state: true,
+                    category: true,
                     submitters: true,
                     votingresult: true,
                     motionBlock: true,

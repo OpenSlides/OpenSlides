@@ -854,8 +854,14 @@ angular.module('OpenSlidesApp.motions.site', [
                     var options = [
                         {name: gettextCatalog.getString('Submitters'), id: 'submitters', disabled: disabled.submitters},
                         {name: gettextCatalog.getString('State'), id: 'state', disabled: disabled.state},
-                        {name: gettextCatalog.getString('Voting result'), id: 'votingresult', disabled: disabled.votingResult}
                     ];
+                    if (Config.get('motions_recommendations_by').value) {
+                        options.push({
+                            name: gettextCatalog.getString('Recommendation'),
+                            id: 'recommendation',
+                            disabled: disabled.recommendation
+                        });
+                    }
                     if (_.some(motions, function (motion) { return motion.category; })) {
                         options.push({
                             name: gettextCatalog.getString('Category'),
@@ -877,13 +883,11 @@ angular.module('OpenSlidesApp.motions.site', [
                             disabled: disabled.origin,
                         });
                     }
-                    if (Config.get('motions_recommendations_by').value) {
-                        options.push({
-                            name: gettextCatalog.getString('Recommendation'),
-                            id: 'recommendation',
-                            disabled: disabled.recommendation
-                        });
-                    }
+                    options.push({
+                        name: gettextCatalog.getString('Voting result'),
+                        id: 'votingresult',
+                        disabled: disabled.votingResult
+                    });
                     return options;
                 };
                 if (!singleMotion) {
@@ -1085,6 +1089,7 @@ angular.module('OpenSlidesApp.motions.site', [
                 text: true,
                 reason: true,
                 state: true,
+                category: true,
                 submitters: true,
                 votingresult: true,
                 motionBlock: true,
