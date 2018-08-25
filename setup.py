@@ -11,10 +11,10 @@ from openslides import __url__ as openslides_url
 with open('README.rst') as readme:
     long_description = readme.read()
 
-with open('requirements_production.txt') as requirements_production:
+with open('requirements/production.txt') as requirements_production:
     install_requires = requirements_production.readlines()
 
-with open('requirements_big_mode.txt') as requirements_big_mode:
+with open('requirements/big_mode.txt') as requirements_big_mode:
     extras_requires = requirements_big_mode.readlines()
 
 setup(

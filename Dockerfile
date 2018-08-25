@@ -18,7 +18,7 @@ RUN node_modules/.bin/gulp --production
 
 # INSTALL PYTHON DEPENDENCIES
 USER root
-RUN pip install -r /app/requirements_big_mode.txt
+RUN pip install .[big_mode]
 
 ## Clean up
 RUN apt-get remove -y python3-pip wget curl

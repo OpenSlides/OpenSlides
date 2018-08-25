@@ -15,7 +15,8 @@ before_install:
   - export PATH="$HOME/.yarn/bin:$PATH"
 install:
   - pip install --upgrade setuptools pip
-  - pip install --upgrade --requirement requirements.txt
+  - pip install --upgrade --requirement requirements/development.txt
+  - pip install --upgrade .[big_mode]
   - pip freeze
   - yarn
   - node_modules/.bin/gulp --production
