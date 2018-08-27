@@ -1,0 +1,38 @@
+<mat-toolbar color='primary'>
+
+    <button class='generic-plus-button on-transition-fade' routerLink='new' mat-fab>
+        <fa-icon icon='plus'></fa-icon>
+    </button>
+
+    <span class='app-name on-transition-fade' translate>Category</span>
+
+
+    <!-- <button class='on-transition-fade' mat-icon-button (click)='downloadMotionsButton()'> -->
+    <span class='spacer'></span>
+    <button class='on-transition-fade' mat-icon-button [matMenuTriggerFor]="motionExtraMenu">
+        <fa-icon icon='ellipsis-v'></fa-icon>
+    </button>
+    <mat-menu #motionExtraMenu="matMenu">
+        <!-- TODO the functions for the buttons -->
+        <button mat-menu-item translate><fa-icon icon='download'></fa-icon> Export As...</button>
+        <button mat-menu-item routerLink='category' translate>Categories</button>
+    </mat-menu>
+
+</mat-toolbar>
+
+<mat-table class='on-transition-fade' [dataSource]="dataSource" matSort>
+    <!-- name column -->
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+        <mat-cell *matCellDef="let category"> {{category.name}} </mat-cell>
+    </ng-container>
+
+    <!-- prefix column -->
+    <ng-container matColumnDef="prefix">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Prefix </mat-header-cell>
+        <mat-cell *matCellDef="let category"> {{category.prefix}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="['name', 'prefix']"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: ['name', 'prefix']"></mat-row>
+</mat-table>
