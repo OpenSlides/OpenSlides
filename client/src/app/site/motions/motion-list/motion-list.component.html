@@ -6,11 +6,17 @@
 
     <span class='app-name on-transition-fade' translate>Motions</span>
 
-    <!-- download button on the right -->
+  
+    <!-- <button class='on-transition-fade' mat-icon-button (click)='downloadMotionsButton()'> -->
     <span class='spacer'></span>
-    <button class='on-transition-fade' mat-icon-button (click)='downloadMotionsButton()'>
-        <fa-icon icon='download'></fa-icon>
+    <button class='on-transition-fade' mat-icon-button [matMenuTriggerFor]="motionExtraMenu">
+        <fa-icon icon='ellipsis-v'></fa-icon>
     </button>
+    <mat-menu #motionExtraMenu="matMenu">
+        <!-- TODO the functions for the buttons -->
+        <button mat-menu-item translate><fa-icon icon='download'></fa-icon> Export As...</button>
+        <button mat-menu-item routerLink='category' translate>Categories</button>
+    </mat-menu>
 
 </mat-toolbar>
 
