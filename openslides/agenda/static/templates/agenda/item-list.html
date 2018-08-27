@@ -73,10 +73,12 @@
         <translate>Select ...</translate>
       </button>
       <!-- sort button -->
-      <a ui-sref="agenda.item.sort" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
-        <i class="fa fa-sitemap fa-lg"></i>
-        <translate>Sort ...</translate>
-      </a>
+      <span os-perms="agenda.can_see_internal_items">
+        <a ui-sref="agenda.item.sort" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
+          <i class="fa fa-sitemap fa-lg"></i>
+          <translate>Sort ...</translate>
+        </a>
+      </span>
       <!-- auto numbering button -->
       <span ng-if="config('agenda_enable_numbering')">
         <button os-perms="agenda.can_manage" class="btn btn-default btn-sm"
