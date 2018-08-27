@@ -44,14 +44,14 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             result = has_perm(self.request.user, 'agenda.can_see')
             # For manage_speaker and tree requests the rest of the check is
             # done in the specific method. See below.
-        elif self.action in ('partial_update', 'update'):
+        elif self.action in ('partial_update', 'update', 'sort'):
             result = (has_perm(self.request.user, 'agenda.can_see') and
                       has_perm(self.request.user, 'agenda.can_see_internal_items') and
                       has_perm(self.request.user, 'agenda.can_manage'))
         elif self.action in ('speak', 'sort_speakers'):
             result = (has_perm(self.request.user, 'agenda.can_see') and
                       has_perm(self.request.user, 'agenda.can_manage_list_of_speakers'))
-        elif self.action in ('numbering', 'sort'):
+        elif self.action in ('numbering'):
             result = (has_perm(self.request.user, 'agenda.can_see') and
                       has_perm(self.request.user, 'agenda.can_manage'))
         else:
