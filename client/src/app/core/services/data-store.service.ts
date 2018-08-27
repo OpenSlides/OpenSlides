@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 
-import { ImproperlyConfiguredError } from 'app/core/exceptions';
 import { BaseModel, ModelId } from 'app/shared/models/base.model';
 import { CacheService } from './cache.service';
+import { CollectionStringModelMapperService } from './collectionStringModelMapper.service';
 
 /**
  * represents a collection on the Django server, uses an ID to access a {@link BaseModel}.
@@ -12,6 +12,13 @@ import { CacheService } from './cache.service';
  */
 interface Collection {
     [id: number]: BaseModel;
+}
+
+/**
+ * Represents a serialized collection.
+ */
+interface SerializedCollection {
+    [id: number]: string;
 }
 
 /**
@@ -24,38 +31,112 @@ interface Storage {
 }
 
 /**
+ * A storage of serialized collection elements.
+ */
+interface SerializedStorage {
+    [collectionString: string]: SerializedCollection;
+}
+
+/**
  * All mighty DataStore that comes with all OpenSlides components.
  * Use this.DS in an OpenSlides Component to Access the store.
  * Used by a lot of components, classes and services.
  * Changes can be observed
- *
- * FIXME: The injector does not init the HttpClient Service.
- *        Either remove it from DataStore and make an own Service
- *        fix it somehow
- *        or just do-not let the OpenSlidesComponent inject DataStore to it's
- *        children.
  */
 @Injectable({
     providedIn: 'root'
 })
 export class DataStoreService {
-    /**
-     * Dependency injection, services are singletons 'per scope' and not per app anymore.
-     * There will be multiple DataStores, all of them should share the same storage object
+    private static cachePrefix = 'DS:';
+
+    private static wasInstantiated = false;
+
+    /** We will store the data twice: One as instances of the actual models in the _store
+     * and one serialized version in the _serializedStore for the cache. Both should be updated in
+     * all cases equal!
      */
-    private static store: Storage = {};
+    private modelStore: Storage = {};
+    private JsonStore: SerializedStorage = {};
 
     /**
      * Observable subject with changes to enable dynamic changes in models and views
      */
-    private static dataStoreSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+    private dataStoreSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+
+    /**
+     * The maximal change id from this DataStore.
+     */
+    private maxChangeId = 0;
 
     /**
      * Empty constructor for dataStore
-     * @param http use HttpClient to send models back to the server
+     * @param cacheService use CacheService to cache the DataStore.
      */
     constructor(private cacheService: CacheService) {
-        cacheService.test();
+        if (DataStoreService.wasInstantiated) {
+            throw new Error('The Datastore should just be instantiated once!');
+        }
+        DataStoreService.wasInstantiated = true;
+    }
+
+    /**
+     * Gets the DataStore from cache and instantiate all models out of the serialized version.
+     */
+    public initFromCache(): Promise<number> {
+        // This promise will be resolved with the maximal change id of the cache.
+        return new Promise<number>(resolve => {
+            this.cacheService
+                .get<SerializedStorage>(DataStoreService.cachePrefix + 'DS')
+                .subscribe((store: SerializedStorage) => {
+                    if (store != null) {
+                        // There is a store. Deserialize it
+                        this.JsonStore = store;
+                        this.modelStore = this.deserializeJsonStore(this.JsonStore);
+                        // Get the maxChangeId from the cache
+                        this.cacheService
+                            .get<number>(DataStoreService.cachePrefix + 'maxChangeId')
+                            .subscribe((maxChangeId: number) => {
+                                if (maxChangeId == null) {
+                                    maxChangeId = 0;
+                                }
+                                this.maxChangeId = maxChangeId;
+                                resolve(maxChangeId);
+                            });
+                    } else {
+                        // No store here, so get all data from the server.
+                        resolve(0);
+                    }
+                });
+        });
+    }
+
+    /**
+     * Deserialze the given serializedStorage and returns a Storage.
+     */
+    private deserializeJsonStore(serializedStore: SerializedStorage): Storage {
+        const storage: Storage = {};
+        Object.keys(serializedStore).forEach(collectionString => {
+            storage[collectionString] = {} as Collection;
+            const target = CollectionStringModelMapperService.getCollectionStringType(collectionString);
+            Object.keys(serializedStore[collectionString]).forEach(id => {
+                const data = JSON.parse(serializedStore[collectionString][id]);
+                storage[collectionString][id] = new target().deserialize(data);
+            });
+        });
+        return storage;
+    }
+
+    /**
+     * Clears the complete DataStore and Cache.
+     * @param callback
+     */
+    public clear(callback?: (value: boolean) => void): void {
+        this.modelStore = {};
+        this.JsonStore = {};
+        this.maxChangeId = 0;
+        this.cacheService.remove(DataStoreService.cachePrefix + 'DS', () => {
+            this.cacheService.remove(DataStoreService.cachePrefix + 'maxChangeId', callback);
+        });
     }
 
     /**
@@ -78,7 +159,7 @@ export class DataStoreService {
             collectionString = tempObject.collectionString;
         }
 
-        const collection: Collection = DataStoreService.store[collectionString];
+        const collection: Collection = this.modelStore[collectionString];
 
         const models = [];
         if (!collection) {
@@ -100,7 +181,7 @@ export class DataStoreService {
      * Prints the whole dataStore
      */
     printWhole(): void {
-        console.log('Everything in DataStore: ', DataStoreService.store);
+        console.log('Everything in DataStore: ', this.modelStore);
     }
 
     /**
@@ -130,20 +211,28 @@ export class DataStoreService {
      * @example this.DS.add((new User(2), new User(3)))
      * @example this.DS.add(...arrayWithUsers)
      */
-    add(...models: BaseModel[]): void {
+    public add(...models: BaseModel[]): void {
+        const maxChangeId = 0;
         models.forEach(model => {
             const collectionString = model.collectionString;
             if (!model.id) {
-                throw new ImproperlyConfiguredError('The model must have an id!');
+                throw new Error('The model must have an id!');
             } else if (collectionString === 'invalid-collection-string') {
-                throw new ImproperlyConfiguredError('Cannot save a BaseModel');
+                throw new Error('Cannot save a BaseModel');
             }
-            if (typeof DataStoreService.store[collectionString] === 'undefined') {
-                DataStoreService.store[collectionString] = {};
+            if (this.modelStore[collectionString] === undefined) {
+                this.modelStore[collectionString] = {};
             }
-            DataStoreService.store[collectionString][model.id] = model;
+            this.modelStore[collectionString][model.id] = model;
+
+            if (this.JsonStore[collectionString] === undefined) {
+                this.JsonStore[collectionString] = {};
+            }
+            this.JsonStore[collectionString][model.id] = JSON.stringify(model);
+            // if (model.changeId > maxChangeId) {maxChangeId = model.maxChangeId;}
             this.setObservable(model);
         });
+        this.storeToCache(maxChangeId);
     }
 
     /**
@@ -152,10 +241,7 @@ export class DataStoreService {
      * @param ...ids An or multiple IDs or a list of IDs of BaseModels. use spread operator ("...") for arrays
      * @example this.DS.remove(User, myUser.id, 3, 4)
      */
-    remove(collectionType, ...ids: ModelId[]): void {
-        console.log('remove from DS: collection', collectionType);
-        console.log('remove from DS: collection', ids);
-
+    public remove(collectionType, ...ids: ModelId[]): void {
         let collectionString: string;
         if (typeof collectionType === 'string') {
             collectionString = collectionType;
@@ -164,11 +250,30 @@ export class DataStoreService {
             collectionString = tempObject.collectionString;
         }
 
+        const maxChangeId = 0;
         ids.forEach(id => {
-            if (DataStoreService.store[collectionString]) {
-                delete DataStoreService.store[collectionString][id];
+            if (this.modelStore[collectionString]) {
+                // get changeId from store
+                // if (model.changeId > maxChangeId) {maxChangeId = model.maxChangeId;}
+                delete this.modelStore[collectionString][id];
+            }
+            if (this.JsonStore[collectionString]) {
+                delete this.JsonStore[collectionString][id];
             }
         });
+        this.storeToCache(maxChangeId);
+    }
+
+    /**
+     * Updates the cache by inserting the serialized DataStore. Also changes the chageId, if it's larger
+     * @param maxChangeId
+     */
+    private storeToCache(maxChangeId: number) {
+        this.cacheService.set(DataStoreService.cachePrefix + 'DS', this.JsonStore);
+        if (maxChangeId > this.maxChangeId) {
+            this.maxChangeId = maxChangeId;
+            this.cacheService.set(DataStoreService.cachePrefix + 'maxChangeId', maxChangeId);
+        }
     }
 
     /**
@@ -176,7 +281,7 @@ export class DataStoreService {
      * @return an observable behaviorSubject
      */
     public getObservable(): Observable<any> {
-        return DataStoreService.dataStoreSubject.asObservable();
+        return this.dataStoreSubject.asObservable();
     }
 
     /**
@@ -184,6 +289,6 @@ export class DataStoreService {
      * @param value the change that have been made
      */
     private setObservable(value): void {
-        DataStoreService.dataStoreSubject.next(value);
+        this.dataStoreSubject.next(value);
     }
 }

@@ -30,3 +30,5 @@ export class Topic extends BaseModel {
         return this.DS.get('agenda/item', this.agenda_item_id);
     }
 }
+
+BaseModel.registerCollectionElement('topics/topic', Topic);

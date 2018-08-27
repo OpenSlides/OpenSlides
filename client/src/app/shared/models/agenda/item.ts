@@ -82,3 +82,5 @@ export class Item extends BaseModel {
         return this;
     }
 }
+
+BaseModel.registerCollectionElement('agenda/item', Item);

@@ -18,3 +18,5 @@ export class Group extends BaseModel {
         this.permissions = permissions;
     }
 }
+
+BaseModel.registerCollectionElement('users/group', Group);

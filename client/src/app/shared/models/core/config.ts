@@ -18,3 +18,5 @@ export class Config extends BaseModel {
         this.value = value;
     }
 }
+
+BaseModel.registerCollectionElement('core/config', Config);

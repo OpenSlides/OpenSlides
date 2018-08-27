@@ -22,3 +22,5 @@ export class PersonalNote extends BaseModel {
         return this.DS.get('users/user', this.user_id);
     }
 }
+
+BaseModel.registerCollectionElement('users/personal-note', PersonalNote);

@@ -300,3 +300,5 @@ export class Motion extends BaseModel {
         return this;
     }
 }
+
+BaseModel.registerCollectionElement('motions/motion', Motion);
