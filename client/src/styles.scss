@@ -36,12 +36,6 @@ body {
     padding: 0;
 }
 
-router-outlet ~ * {
-    position: absolute;
-    height: 100% !important;
-    width: 100%;
-}
-
 /**the plus button in Motion, Agenda, etc*/
 .generic-plus-button {
     bottom: -30px;

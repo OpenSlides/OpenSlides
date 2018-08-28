@@ -35,6 +35,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { OsPermsDirective } from './directives/os-perms.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
 import { HeadBarComponent } from './components/head-bar/head-bar.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 library.add(fas);
 
@@ -96,8 +97,9 @@ library.add(fas);
         TranslateModule,
         OsPermsDirective,
         DomChangeDirective,
+        FooterComponent,
         HeadBarComponent
     ],
-    declarations: [OsPermsDirective, DomChangeDirective, HeadBarComponent]
+    declarations: [OsPermsDirective, DomChangeDirective, HeadBarComponent, FooterComponent]
 })
 export class SharedModule {}

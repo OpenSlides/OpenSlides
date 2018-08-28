@@ -15,15 +15,48 @@ export const pageTransition = trigger('pageTransition', [
                 optional: true
             }),
             /** how the material cards are leaving */
-            query(':leave mat-card', [style({ opacity: 1 }), animate('0.2s', style({ opacity: 0 }))], {
-                optional: true
-            }),
-            query(':leave mat-row', [style({ opacity: 1 }), animate('0.2s', style({ opacity: 0 }))], {
-                optional: true
-            }),
-            query(':leave mat-expansion-panel', [style({ opacity: 1 }), animate('0.2s', style({ opacity: 0 }))], {
-                optional: true
-            })
+            query(
+                ':leave mat-card',
+                [
+                    style({ transform: 'translateY(0%)', opacity: 1 }),
+                    animate(
+                        '200ms ease-in-out',
+                        style({
+                            transform: 'translateY(0%)',
+                            opacity: 0
+                        })
+                    )
+                ],
+                { optional: true }
+            ),
+            query(
+                ':leave mat-row',
+                [
+                    style({ transform: 'translateY(0%)', opacity: 1 }),
+                    animate(
+                        '200s ease-in-out',
+                        style({
+                            transform: 'translateY(0%)',
+                            opacity: 0
+                        })
+                    )
+                ],
+                { optional: true }
+            ),
+            query(
+                ':leave mat-expansion-panel',
+                [
+                    style({ transform: 'translateY(0%)', opacity: 1 }),
+                    animate(
+                        '200ms ease-in-out',
+                        style({
+                            transform: 'translateY(0%)',
+                            opacity: 0
+                        })
+                    )
+                ],
+                { optional: true }
+            )
         ]),
 
         /** parallel appearing */

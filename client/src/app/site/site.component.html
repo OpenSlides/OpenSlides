@@ -58,8 +58,7 @@
                 <fa-icon icon='file-alt'></fa-icon>
                 <span translate>Motions</span>
             </a>
-            <a [@navItemAnim] *appOsPerms="'assignments.can_see'" mat-list-item routerLink='/assignments' routerLinkActive='active'
-                (click)='vp.isMobile ? sideNav.toggle() : null'>
+            <a [@navItemAnim] *appOsPerms="'assignments.can_see'" mat-list-item routerLink='/assignments' routerLinkActive='active' (click)='vp.isMobile ? sideNav.toggle() : null'>
                 <fa-icon icon='chart-pie'></fa-icon>
                 <span translate>Assignments</span>
             </a>
@@ -71,8 +70,7 @@
                 <fa-icon icon='paperclip'></fa-icon>
                 <span translate>Files</span>
             </a>
-            <a [@navItemAnim] *appOsPerms="'core.can_manage_config'" mat-list-item routerLink='/settings' routerLinkActive='active'
-                (click)='toggleSideNav()'>
+            <a [@navItemAnim] *appOsPerms="'core.can_manage_config'" mat-list-item routerLink='/settings' routerLinkActive='active' (click)='toggleSideNav()'>
                 <fa-icon icon='cog'></fa-icon>
                 <span translate>Settings</span>
             </a>
@@ -102,25 +100,30 @@
             </span>
         </footer>
     </mat-sidenav>
-
-    <!-- the first toolbar row is (still) a global element
+    <div class="content">
+        <header>
+            <!-- the first toolbar row is (still) a global element
         the second one shall be handled by the apps  -->
-    <mat-toolbar color='primary'>
+            <mat-toolbar color='primary'>
 
-        <!-- show/hide menu button -->
-        <button mat-icon-button *ngIf="vp.isMobile" (click)='sideNav.toggle()'>
-            <fa-icon icon='bars'></fa-icon>
-        </button>
+                <!-- show/hide menu button -->
+                <button mat-icon-button *ngIf="vp.isMobile" (click)='sideNav.toggle()'>
+                    <fa-icon icon='bars'></fa-icon>
+                </button>
 
-        <!-- glob search and generic menu on the right -->
-        <span class='spacer'></span>
-        <button mat-icon-button (click)='sideNav.toggle()'>
-            <fa-icon icon='search'></fa-icon>
-        </button>
-    </mat-toolbar>
+                <!-- glob search and generic menu on the right -->
+                <span class='spacer'></span>
+                <button mat-icon-button (click)='sideNav.toggle()'>
+                    <fa-icon icon='search'></fa-icon>
+                </button>
+            </mat-toolbar>
+        </header>
 
-    <!-- continue with <mat-toolbar> in the app-->
-    <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
-        <router-outlet #o="outlet"></router-outlet>
-    </main>
+        <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
+            <router-outlet #o="outlet"></router-outlet>
+        </main>
+        <footer class="page-footer">
+            <app-footer></app-footer>
+        </footer>
+    </div>
 </mat-sidenav-container>
