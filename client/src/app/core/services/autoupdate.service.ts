@@ -69,4 +69,15 @@ export class AutoupdateService extends OpenSlidesComponent {
             this.DS.add(...autoupdate.changed[collection].map(_obj => new targetClass().deserialize(_obj.data)));
         });
     }
+
+    /**
+     * Sends a WebSocket request to the Server with the maxChangeId of the DataStore.
+     * The server should return an autoupdate with all new data.
+     *
+     * TODO: Wait for changeIds to be implemented on the server.
+     */
+    public requestChanges() {
+        console.log('requesting changed objects');
+        // this.websocketService.send('changeIdRequest', this.DS.maxChangeId);
+    }
 }

@@ -3,7 +3,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-import { RootInjector } from 'app/core/rootInjector';
+import { AppComponent } from 'app/app.component';
 
 if (environment.production) {
     enableProdMode();
@@ -12,6 +12,6 @@ if (environment.production) {
 platformBrowserDynamic()
     .bootstrapModule(AppModule)
     .then((moduleRef: NgModuleRef<AppModule>) => {
-        RootInjector.injector = moduleRef.injector;
+        AppComponent.bootstrapDone(moduleRef);
     })
     .catch(err => console.log(err));

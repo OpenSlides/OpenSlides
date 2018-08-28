@@ -18,11 +18,14 @@
 
         <!-- forgot password button -->
         <br>
-        <button class='forgot-password-button' mat-button>Forgot Password?</button>
+        <button type="button" class='forgot-password-button' (click)="resetPassword()" mat-button>Forgot Password?</button>
 
         <!-- login button -->
         <br>
-        <button mat-raised-button color="primary" class='login-button' type="submit">Login</button>
+        <!-- TODO: Next to each other...-->
+        <button mat-raised-button color="primary" class='login-button' type="submit" translate>Login</button>
+        <button mat-raised-button *ngIf="areGuestsEnabled()" color="primary" class='login-button'
+            type="button" (click)="guestLogin()" translate>Login as Guest</button>
     </form>
 
 </div>
