@@ -1,12 +1,6 @@
-<mat-toolbar color='primary'>
+<app-head-bar appName="Files" plusButton=true [menuList]=extraMenu (plusButtonClicked)=onPlusButton() (ellipsisMenuItem)=onEllipsisItem($event)>
+</app-head-bar>
 
-    <button class='generic-plus-button on-transition-fade' mat-fab>
-        <fa-icon icon='plus'></fa-icon>
-    </button>
-
-    <span class='app-name on-transition-fade' translate>Files</span>
-
-</mat-toolbar>
 
 <mat-card class="os-card card-plus-distance">
     mediafile-list works!

@@ -1,18 +1,4 @@
-<mat-toolbar color='primary'>
-
-    <button class='generic-plus-button on-transition-fade' mat-fab>
-        <fa-icon icon='plus'></fa-icon>
-    </button>
-
-    <span class='app-name on-transition-fade' translate>Agenda</span>
-
-    <!-- download button on the right -->
-    <span class='spacer'></span>
-    <button class='on-transition-fade' mat-icon-button (click)='downloadAgendaButton()'>
-        <fa-icon icon='download'></fa-icon>
-    </button>
-
-</mat-toolbar>
+<app-head-bar appName="Agenda" plusButton=true (plusButtonClicked)=onPlusButton()></app-head-bar>
 
 <mat-card class="os-card card-plus-distance">
     <div class="app-content">
