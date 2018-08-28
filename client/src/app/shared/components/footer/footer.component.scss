@@ -1,0 +1,25 @@
+.footer-link,
+.footer-right {
+    font-size: 12px;
+}
+
+.footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    margin-bottom: 0px;
+    overflow: hidden;
+    flex: 1;
+    z-index: -99;
+    mat-toolbar,
+    mat-toolbar-row {
+        z-index: inherit;
+    }
+}
+
+.footer-right {
+    a {
+        color: white;
+    }
+}

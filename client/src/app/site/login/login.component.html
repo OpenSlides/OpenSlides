@@ -24,8 +24,12 @@
         <br>
         <!-- TODO: Next to each other...-->
         <button mat-raised-button color="primary" class='login-button' type="submit" translate>Login</button>
-        <button mat-raised-button *ngIf="areGuestsEnabled()" color="primary" class='login-button'
-            type="button" (click)="guestLogin()" translate>Login as Guest</button>
+        <button mat-raised-button *ngIf="areGuestsEnabled()" color="primary" class='login-button' type="button" (click)="guestLogin()" translate>Login as Guest</button>
     </form>
 
 </div>
+
+</main>
+<footer class="page-footer">
+    <app-footer></app-footer>
+</footer>
