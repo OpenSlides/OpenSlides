@@ -10,14 +10,14 @@ import { CollectionStringModelMapperService } from './collectionStringModelMappe
  *
  * Part of {@link DataStoreService}
  */
-interface Collection {
+interface ModelCollection {
     [id: number]: BaseModel;
 }
 
 /**
  * Represents a serialized collection.
  */
-interface SerializedCollection {
+interface JsonCollection {
     [id: number]: string;
 }
 
@@ -26,15 +26,15 @@ interface SerializedCollection {
  *
  * {@link DataStoreService}
  */
-interface Storage {
-    [collectionString: string]: Collection;
+interface ModelStorage {
+    [collectionString: string]: ModelCollection;
 }
 
 /**
  * A storage of serialized collection elements.
  */
-interface SerializedStorage {
-    [collectionString: string]: SerializedCollection;
+interface JsonStorage {
+    [collectionString: string]: JsonCollection;
 }
 
 /**
@@ -49,14 +49,17 @@ interface SerializedStorage {
 export class DataStoreService {
     private static cachePrefix = 'DS:';
 
+    /**
+     * Make sure, that the Datastore only be instantiated once.
+     */
     private static wasInstantiated = false;
 
     /** We will store the data twice: One as instances of the actual models in the _store
      * and one serialized version in the _serializedStore for the cache. Both should be updated in
      * all cases equal!
      */
-    private modelStore: Storage = {};
-    private JsonStore: SerializedStorage = {};
+    private modelStore: ModelStorage = {};
+    private JsonStore: JsonStorage = {};
 
     /**
      * Observable subject with changes to enable dynamic changes in models and views
@@ -66,7 +69,14 @@ export class DataStoreService {
     /**
      * The maximal change id from this DataStore.
      */
-    private maxChangeId = 0;
+    private _maxChangeId = 0;
+
+    /**
+     * returns the maxChangeId of the DataStore.
+     */
+    public get maxChangeId(): number {
+        return this._maxChangeId;
+    }
 
     /**
      * Empty constructor for dataStore
@@ -85,43 +95,43 @@ export class DataStoreService {
     public initFromCache(): Promise<number> {
         // This promise will be resolved with the maximal change id of the cache.
         return new Promise<number>(resolve => {
-            this.cacheService
-                .get<SerializedStorage>(DataStoreService.cachePrefix + 'DS')
-                .subscribe((store: SerializedStorage) => {
-                    if (store != null) {
-                        // There is a store. Deserialize it
-                        this.JsonStore = store;
-                        this.modelStore = this.deserializeJsonStore(this.JsonStore);
-                        // Get the maxChangeId from the cache
-                        this.cacheService
-                            .get<number>(DataStoreService.cachePrefix + 'maxChangeId')
-                            .subscribe((maxChangeId: number) => {
-                                if (maxChangeId == null) {
-                                    maxChangeId = 0;
-                                }
-                                this.maxChangeId = maxChangeId;
-                                resolve(maxChangeId);
-                            });
-                    } else {
-                        // No store here, so get all data from the server.
-                        resolve(0);
-                    }
-                });
+            this.cacheService.get<JsonStorage>(DataStoreService.cachePrefix + 'DS').subscribe((store: JsonStorage) => {
+                if (store != null) {
+                    // There is a store. Deserialize it
+                    this.JsonStore = store;
+                    this.modelStore = this.deserializeJsonStore(this.JsonStore);
+                    // Get the maxChangeId from the cache
+                    this.cacheService
+                        .get<number>(DataStoreService.cachePrefix + 'maxChangeId')
+                        .subscribe((maxChangeId: number) => {
+                            if (maxChangeId == null) {
+                                maxChangeId = 0;
+                            }
+                            this._maxChangeId = maxChangeId;
+                            resolve(maxChangeId);
+                        });
+                } else {
+                    // No store here, so get all data from the server.
+                    resolve(0);
+                }
+            });
         });
     }
 
     /**
      * Deserialze the given serializedStorage and returns a Storage.
      */
-    private deserializeJsonStore(serializedStore: SerializedStorage): Storage {
-        const storage: Storage = {};
+    private deserializeJsonStore(serializedStore: JsonStorage): ModelStorage {
+        const storage: ModelStorage = {};
         Object.keys(serializedStore).forEach(collectionString => {
-            storage[collectionString] = {} as Collection;
+            storage[collectionString] = {} as ModelCollection;
             const target = CollectionStringModelMapperService.getCollectionStringType(collectionString);
-            Object.keys(serializedStore[collectionString]).forEach(id => {
-                const data = JSON.parse(serializedStore[collectionString][id]);
-                storage[collectionString][id] = new target().deserialize(data);
-            });
+            if (target) {
+                Object.keys(serializedStore[collectionString]).forEach(id => {
+                    const data = JSON.parse(serializedStore[collectionString][id]);
+                    storage[collectionString][id] = new target().deserialize(data);
+                });
+            }
         });
         return storage;
     }
@@ -133,7 +143,7 @@ export class DataStoreService {
     public clear(callback?: (value: boolean) => void): void {
         this.modelStore = {};
         this.JsonStore = {};
-        this.maxChangeId = 0;
+        this._maxChangeId = 0;
         this.cacheService.remove(DataStoreService.cachePrefix + 'DS', () => {
             this.cacheService.remove(DataStoreService.cachePrefix + 'maxChangeId', callback);
         });
@@ -159,7 +169,7 @@ export class DataStoreService {
             collectionString = tempObject.collectionString;
         }
 
-        const collection: Collection = this.modelStore[collectionString];
+        const collection: ModelCollection = this.modelStore[collectionString];
 
         const models = [];
         if (!collection) {
@@ -270,8 +280,8 @@ export class DataStoreService {
      */
     private storeToCache(maxChangeId: number) {
         this.cacheService.set(DataStoreService.cachePrefix + 'DS', this.JsonStore);
-        if (maxChangeId > this.maxChangeId) {
-            this.maxChangeId = maxChangeId;
+        if (maxChangeId > this._maxChangeId) {
+            this._maxChangeId = maxChangeId;
             this.cacheService.set(DataStoreService.cachePrefix + 'maxChangeId', maxChangeId);
         }
     }

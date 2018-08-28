@@ -17,18 +17,22 @@
                     <fa-icon icon='globe-americas'></fa-icon>
                     <span> {{getLangName(this.translate.currentLang)}} </span>
                 </a>
-                <a (click)='logOutButton()' mat-list-item>
+                <a *ngIf="isLoggedIn" (click)='editProfile()' mat-list-item>
                     <fa-icon icon='user-cog'></fa-icon>
                     <span translate>Edit Profile</span>
                 </a>
-                <a (click)='logOutButton()' mat-list-item>
+                <a *ngIf="isLoggedIn" (click)='changePassword()' mat-list-item>
                     <fa-icon icon='key'></fa-icon>
                     <span translate>Change Password</span>
                 </a>
                 <mat-divider></mat-divider>
-                <a (click)='logOutButton()' mat-list-item>
+                <a *ngIf="isLoggedIn" (click)='logout()' mat-list-item>
                     <fa-icon icon='sign-out-alt'></fa-icon>
                     <span translate>Logout</span>
+                </a>
+                <a *ngIf="!isLoggedIn" routerLink='/login' mat-list-item>
+                    <fa-icon icon='sign-out-alt'></fa-icon>
+                    <span translate>Login</span>
                 </a>
             </mat-nav-list>
         </mat-expansion-panel>
@@ -41,39 +45,39 @@
 
         <!-- navigation -->
         <mat-nav-list class='main-nav'>
-            <a [@navItemAnim] *appOsPerms="['core.can_see_frontpage']" mat-list-item routerLink='/' routerLinkActive='active' [routerLinkActiveOptions]="{exact: true}"
+            <a [@navItemAnim] *appOsPerms="'core.can_see_frontpage'" mat-list-item routerLink='/' routerLinkActive='active' [routerLinkActiveOptions]="{exact: true}"
                 (click)='toggleSideNav()'>
                 <fa-icon icon='home'></fa-icon>
                 <span translate>Home</span>
             </a>
-            <a [@navItemAnim] *appOsPerms="['agenda.can_see']" mat-list-item routerLink='/agenda' routerLinkActive='active' (click)='toggleSideNav()'>
+            <a [@navItemAnim] *appOsPerms="'agenda.can_see'" mat-list-item routerLink='/agenda' routerLinkActive='active' (click)='toggleSideNav()'>
                 <fa-icon icon='calendar'></fa-icon>
                 <span translate>Agenda</span>
             </a>
-            <a [@navItemAnim] *appOsPerms="['motions.can_see']" mat-list-item routerLink='/motions' routerLinkActive='active' (click)='toggleSideNav()'>
+            <a [@navItemAnim] *appOsPerms="'motions.can_see'" mat-list-item routerLink='/motions' routerLinkActive='active' (click)='toggleSideNav()'>
                 <fa-icon icon='file-alt'></fa-icon>
                 <span translate>Motions</span>
             </a>
-            <a [@navItemAnim] *appOsPerms="['assignments.can_see']" mat-list-item routerLink='/assignments' routerLinkActive='active'
+            <a [@navItemAnim] *appOsPerms="'assignments.can_see'" mat-list-item routerLink='/assignments' routerLinkActive='active'
                 (click)='vp.isMobile ? sideNav.toggle() : null'>
                 <fa-icon icon='chart-pie'></fa-icon>
                 <span translate>Assignments</span>
             </a>
-            <a [@navItemAnim] *appOsPerms="['users.can_see_name']" mat-list-item routerLink='/users' routerLinkActive='active' (click)='toggleSideNav()'>
+            <a [@navItemAnim] *appOsPerms="'users.can_see_name'" mat-list-item routerLink='/users' routerLinkActive='active' (click)='toggleSideNav()'>
                 <fa-icon icon='user'></fa-icon>
                 <span translate>Participants</span>
             </a>
-            <a [@navItemAnim] *appOsPerms="['mediafiles.can_see']" mat-list-item routerLink='/mediafiles' routerLinkActive='active' (click)='toggleSideNav()'>
+            <a [@navItemAnim] *appOsPerms="'mediafiles.can_see'" mat-list-item routerLink='/mediafiles' routerLinkActive='active' (click)='toggleSideNav()'>
                 <fa-icon icon='paperclip'></fa-icon>
                 <span translate>Files</span>
             </a>
-            <a [@navItemAnim] *appOsPerms="['core.can_manage_config']" mat-list-item routerLink='/settings' routerLinkActive='active'
+            <a [@navItemAnim] *appOsPerms="'core.can_manage_config'" mat-list-item routerLink='/settings' routerLinkActive='active'
                 (click)='toggleSideNav()'>
                 <fa-icon icon='cog'></fa-icon>
                 <span translate>Settings</span>
             </a>
             <mat-divider></mat-divider>
-            <a [@navItemAnim] *appOsPerms="['core.can_see_projector']" mat-list-item routerLink='/projector' routerLinkActive='active'
+            <a [@navItemAnim] *appOsPerms="'core.can_see_projector'" mat-list-item routerLink='/projector' routerLinkActive='active'
                 (click)='toggleSideNav()'>
                 <fa-icon icon='video'></fa-icon>
                 <span translate>Projector</span>

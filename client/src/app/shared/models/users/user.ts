@@ -1,4 +1,5 @@
 import { BaseModel } from '../base.model';
+import { Group } from './group';
 
 /**
  * Representation of a user in contrast to the operator.
@@ -61,11 +62,38 @@ export class User extends BaseModel {
         this.default_password = default_password;
     }
 
-    getGroups(): BaseModel | BaseModel[] {
-        return this.DS.get('users/group', ...this.groups_id);
+    get groups(): Group[] {
+        const groups = this.DS.get('users/group', ...this.groups_id);
+        if (!groups) {
+            return [];
+        } else if (groups instanceof BaseModel) {
+            return [groups] as Group[];
+        } else {
+            return groups as Group[];
+        }
     }
 
-    //TODO get full_name
+    get full_name(): string {
+        let name = this.short_name;
+        const addition: string[] = [];
+
+        // addition: add number and structure level
+        const structure_level = this.structure_level.trim();
+        if (structure_level) {
+            addition.push(structure_level);
+        }
+
+        const number = this.number.trim();
+        if (number) {
+            // TODO Translate
+            addition.push('No.' + ' ' + number);
+        }
+
+        if (addition.length > 0) {
+            name += ' (' + addition.join(' · ') + ')';
+        }
+        return name.trim();
+    }
 
     // TODO read config values  for "users_sort_by"
     get short_name(): string {

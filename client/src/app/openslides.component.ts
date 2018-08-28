@@ -3,7 +3,6 @@ import { Observable, of } from 'rxjs';
 
 import { DataStoreService } from './core/services/data-store.service';
 import { CacheService } from './core/services/cache.service';
-import { RootInjector } from './core/rootInjector';
 
 /**
  * injects the {@link DataStoreService} to all its children and provides a generic function to catch errors
@@ -14,6 +13,8 @@ export abstract class OpenSlidesComponent {
      * The dataStore Service
      */
     private static _DS: DataStoreService;
+
+    public static injector: Injector;
 
     /**
      * Empty constructor
@@ -29,6 +30,9 @@ export abstract class OpenSlidesComponent {
      * @return access to dataStoreService
      */
     get DS(): DataStoreService {
+        if (!OpenSlidesComponent.injector) {
+            throw new Error('OpenSlides is not bootstrapping right. This component should have the Injector.');
+        }
         if (OpenSlidesComponent._DS == null) {
             const injector = Injector.create({
                 providers: [
@@ -38,7 +42,7 @@ export abstract class OpenSlidesComponent {
                         deps: [CacheService]
                     }
                 ],
-                parent: RootInjector.injector
+                parent: OpenSlidesComponent.injector
             });
             OpenSlidesComponent._DS = injector.get(DataStoreService);
         }

@@ -8,13 +8,25 @@ import { User } from '../../shared/models/users/user';
 import { environment } from 'environments/environment';
 
 /**
+ * Permissions on the client are just strings. This makes clear, that
+ * permissions instead of arbitrary strings should be given.
+ */
+export type Permission = string;
+
+/**
+ * Response format of the WHoAMI request.
+ */
+interface WhoAmIResponse {
+    user_id: number;
+    guest_enabled: boolean;
+    user: User;
+}
+
+/**
  * The operator represents the user who is using OpenSlides.
  *
- * Information is mostly redundant to user but has different purposes.
  * Changes in operator can be observed, directives do so on order to show
  * or hide certain information.
- *
- * Could extend User?
  *
  * The operator is an {@link OpenSlidesComponent}.
  */
@@ -22,25 +34,37 @@ import { environment } from 'environments/environment';
     providedIn: 'root'
 })
 export class OperatorService extends OpenSlidesComponent {
-    about_me: string;
-    comment: string;
-    default_password: string;
-    email: string;
-    first_name: string;
-    groups_id: number[];
-    id: number;
-    is_active: boolean;
-    is_committee: boolean;
-    is_present: boolean;
-    last_email_send: string;
-    last_name: string;
-    number: string;
-    structure_level: string;
-    title: string;
-    username: string;
-    logged_in: boolean;
-
+    /**
+     * The operator.
+     */
     private _user: User;
+
+    /**
+     * Get the user that corresponds to operator.
+     */
+    get user(): User {
+        return this._user;
+    }
+
+    /**
+     * Sets the current operator.
+     *
+     * The permissions are updated and the new user published.
+     */
+    set user(user: User) {
+        this._user = user;
+        this.updatePermissions();
+    }
+
+    /**
+     * Save, if quests are enabled.
+     */
+    public guestsEnabled: boolean;
+
+    /**
+     * The permissions of the operator. Updated via {@method updatePermissions}.
+     */
+    private permissions: Permission[] = [];
 
     /**
      * The subject that can be observed by other instances using observing functions.
@@ -48,179 +72,50 @@ export class OperatorService extends OpenSlidesComponent {
     private operatorSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
     /**
-     * Representation of the {@link Group}s that the operator has (in contrast the the `groups_id`-Array)
-     *
-     * The operator observes the dataStore (compare {@link OpenSlidesComponent} in Order to know it's groups)
-     */
-    private groups: Group[] = new Array();
-
-    /**
-     * Recreates the operator from localStorage if it's found and starts to observe the dataStore.
      * @param http HttpClient
      */
     constructor(private http: HttpClient) {
         super();
-
-        // recreate old operator from localStorage.
-        if (localStorage.getItem('operator')) {
-            const oldOperator = JSON.parse(localStorage.getItem('operator'));
-            if (Object.keys(oldOperator).length > 0) {
-                this.storeUser(oldOperator);
-            }
-        }
-
-        // observe the DataStore now to avoid race conditions. Ensures to
-        // find the groups in time
-        this.observeDataStore();
     }
 
     /**
-     * calls `/apps/users/whoami` to find out the real operator
+     * Setup the subscription of the DataStore.Update the user and it's
+     * permissions if the user or groups changes.
      */
-    public whoAmI(): Observable<any> {
-        return this.http.get<any>(environment.urlPrefix + '/users/whoami/').pipe(
-            tap(whoami => {
-                if (whoami && whoami.user) {
-                    this.storeUser(whoami.user as User);
+    public setupSubscription() {
+        this.DS.getObservable().subscribe(newModel => {
+            if (this._user) {
+                if (newModel instanceof Group) {
+                    this.updatePermissions();
+                }
+
+                if (newModel instanceof User && this._user.id === newModel.id) {
+                    this._user = newModel;
+                    this.updatePermissions();
+                }
+            } else if (newModel instanceof Group && newModel.id === 1) {
+                // Group 1 (default) for anonymous changed
+                this.updatePermissions();
+            }
+        });
+    }
+
+    /**
+     * Calls `/apps/users/whoami` to find out the real operator.
+     */
+    public whoAmI(): Observable<WhoAmIResponse> {
+        return this.http.get<WhoAmIResponse>(environment.urlPrefix + '/users/whoami/').pipe(
+            tap((response: WhoAmIResponse) => {
+                if (response && response.user_id) {
+                    this.user = new User().deserialize(response.user);
                 }
             }),
             catchError(this.handleError())
-        );
+        ) as Observable<WhoAmIResponse>;
     }
 
     /**
-     * Store the user Information in the operator, the localStorage and update the Observable
-     * @param user usually a http response that represents a user.
-     *
-     * Todo: Could be refractored to use the actual User Object.
-     *       Operator is older than user, so this is still a traditional JS way
-     */
-    public storeUser(user: User): void {
-        // store in file
-        this.about_me = user.about_me;
-        this.comment = user.comment;
-        this.default_password = user.default_password;
-        this.email = user.email;
-        this.first_name = user.first_name;
-        this.groups_id = user.groups_id;
-        this.id = user.id;
-        this.is_active = user.is_active;
-        this.is_committee = user.is_committee;
-        this.is_present = user.is_present;
-        this.last_email_send = user.last_email_send;
-        this.last_name = user.last_name;
-        this.number = user.number;
-        this.structure_level = user.structure_level;
-        this.title = user.title;
-        this.username = user.username;
-
-        // also store in localstorrage
-        this.updateLocalStorage();
-        // update mode to inform observers
-        this.setObservable(this.getUpdateObject());
-    }
-
-    /**
-     * Removes all stored information about the Operator.
-     *
-     * The Opposite of StoreUser. Usually a `logout()`-function.
-     * Also removes the operator from localStorrage and
-     * updates the observable.
-     */
-    public clear() {
-        this.about_me = null;
-        this.comment = null;
-        this.default_password = null;
-        this.email = null;
-        this.first_name = null;
-        this.groups_id = null;
-        this.id = null;
-        this.is_active = null;
-        this.is_committee = null;
-        this.is_present = null;
-        this.last_email_send = null;
-        this.last_name = null;
-        this.number = null;
-        this.structure_level = null;
-        this.title = null;
-        this.username = null;
-        this.setObservable(this.getUpdateObject());
-        localStorage.removeItem('operator');
-    }
-
-    /**
-     * Saves the operator in the localStorage for easier and faster re-login
-     *
-     * This is a mere comfort feature, even if the operator can be recreated
-     * it has to pass `this.whoAmI()` during page access.
-     */
-    private updateLocalStorage(): void {
-        localStorage.setItem('operator', JSON.stringify(this.getUpdateObject()));
-    }
-
-    /**
-     * Returns the current operator.
-     *
-     * Used to save the operator in localStorage or inform observers.
-     */
-    private getUpdateObject(): any {
-        return {
-            about_me: this.about_me,
-            comment: this.comment,
-            default_password: this.default_password,
-            email: this.email,
-            first_name: this.first_name,
-            groups_id: this.groups_id,
-            id: this.id,
-            is_active: this.is_active,
-            is_committee: this.is_committee,
-            is_present: this.is_present,
-            last_email_send: this.last_email_send,
-            last_name: this.last_name,
-            number: this.number,
-            structure_level: this.structure_level,
-            title: this.title,
-            username: this.username,
-            logged_in: this.logged_in
-        };
-    }
-
-    /**
-     * Observe dataStore to set groups once they are loaded.
-     *
-     * TODO logic to remove groups / user from certain groups. Currently is is only set and was never removed
-     */
-    private observeDataStore(): void {
-        this.DS.getObservable().subscribe(newModel => {
-            if (newModel instanceof Group) {
-                this.addGroup(newModel);
-            }
-
-            if (newModel instanceof User && this.id === newModel.id) {
-                this._user = newModel;
-            }
-        });
-    }
-
-    /**
-     * Read out the Groups from the DataStore by the operators 'groups_id'
-     *
-     * requires that the DataStore has been setup (websocket.service)
-     * requires that the whoAmI did return a valid operator
-     *
-     * This is the normal behavior after a fresh login, everythin else can
-     * be done by observers.
-     */
-    public readGroupsFromStore(): void {
-        this.DS.filter(Group, myGroup => {
-            if (this.groups_id.includes(myGroup.id)) {
-                this.addGroup(myGroup);
-            }
-        });
-    }
-
-    /**
-     * Returns the behaviorSubject as an observable.
+     * Returns the operatorSubject as an observable.
      *
      * Services an components can use it to get informed when something changes in
      * the operator
@@ -230,36 +125,35 @@ export class OperatorService extends OpenSlidesComponent {
     }
 
     /**
-     * Inform all observers about changes
-     * @param value
+     * Checks, if the operator has at least one of the given permissions.
+     * @param permissions The permissions to check, if at least one matches.
      */
-    private setObservable(value) {
-        this.operatorSubject.next(value);
+    public hasPerms(...permissions: Permission[]): boolean {
+        return permissions.some(permisison => {
+            return this.permissions.includes(permisison);
+        });
     }
 
     /**
-     * Getter for the (real) {@link Group}s
+     * Update the operators permissions and publish the operator afterwards.
      */
-    public getGroups() {
-        return this.groups;
-    }
-
-    /**
-     * if the operator has the corresponding ID, set the group
-     * @param newGroup potential group that the operator has.
-     */
-    private addGroup(newGroup: Group): void {
-        if (this.groups_id.includes(newGroup.id as number)) {
-            this.groups.push(newGroup);
-            // inform the observers about new groups (appOsPerms)
-            this.setObservable(newGroup);
+    private updatePermissions(): void {
+        this.permissions = [];
+        if (!this.user) {
+            const defaultGroup = this.DS.get('users/group', 1) as Group;
+            if (defaultGroup && defaultGroup.permissions instanceof Array) {
+                this.permissions = defaultGroup.permissions;
+            }
+        } else {
+            const permissionSet = new Set();
+            this.user.groups.forEach(group => {
+                group.permissions.forEach(permission => {
+                    permissionSet.add(permission);
+                });
+            });
+            this.permissions = Array.from(permissionSet.values());
         }
-    }
-
-    /**
-     * get the user that corresponds to operator.
-     */
-    get user(): User {
-        return this._user;
+        // publish changes in the operator.
+        this.operatorSubject.next(this.user);
     }
 }

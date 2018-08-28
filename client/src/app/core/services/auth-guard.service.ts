@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild } from '@angular/router';
 
-import { AuthService } from './auth.service';
 import { OperatorService } from './operator.service';
 
 /**
@@ -10,35 +9,40 @@ import { OperatorService } from './operator.service';
 @Injectable({
     providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class AuthGuard implements CanActivate, CanActivateChild {
     /**
-     * Initialises the authentication, the operator and the Router
-     * @param authService
      * @param operator
-     * @param router
      */
-    constructor(private authService: AuthService, private operator: OperatorService, private router: Router) {}
+    constructor(private operator: OperatorService) {}
 
     /**
-     * Checks of the operator has n id.
-     * If so, forward to the desired target.
+     * Checks of the operator has the required permission to see the state.
      *
-     * If not, forward to login.
-     *
-     * TODO: Test if this works for guests and on Projector
+     * One can set extra data to the state with `data: {basePerm: '<perm>'}` or
+     * `data: {basePerm: ['<perm1>', '<perm2>']}` to lock the access to users
+     * only with the given permission(s).
      *
      * @param route required by `canActivate()`
      * @param state the state (URL) that the user want to access
      */
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): any {
-        const url: string = state.url;
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+        const basePerm: string | string[] = route.data.basePerm;
 
-        if (this.operator.id) {
+        if (!basePerm) {
             return true;
+        } else if (basePerm instanceof Array) {
+            return this.operator.hasPerms(...basePerm);
         } else {
-            this.authService.redirectUrl = url;
-            this.router.navigate(['/login']);
-            return false;
+            return this.operator.hasPerms(basePerm);
         }
+    }
+
+    /**
+     * Calls {@method canActivate}. Should have the same logic.
+     * @param route
+     * @param state
+     */
+    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+        return this.canActivate(route, state);
     }
 }

@@ -20,7 +20,6 @@ import { MotionSubmitter } from '../../shared/models/motions/motion-submitter';
 export class StartComponent extends BaseComponent implements OnInit {
     welcomeTitle: string;
     welcomeText: string;
-    username = { user: this.operator.username };
 
     /**
      * Constructor of the StartComponent
