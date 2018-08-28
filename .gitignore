@@ -6,7 +6,7 @@
 *~
 
 # Virtual Environment
-.virtualenv/*
+.virtualenv*/*
 .venv/*
 
 # Javascript tools and libraries
@@ -60,10 +60,6 @@ client/node_modules
 
 # IDE - VSCode
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 
 # misc
 Compodoc
@@ -75,6 +71,7 @@ client/npm-debug.log
 client/yarn-error.log
 client/testem.log
 client/typings
+client/yarn.lock
 
 # System Files
 client/.DS_Store
