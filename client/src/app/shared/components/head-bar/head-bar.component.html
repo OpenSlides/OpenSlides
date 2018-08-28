@@ -1,0 +1,22 @@
+<mat-toolbar color='primary'>
+    <button *ngIf="plusButton" class='generic-plus-button on-transition-fade' (click)=clickPlusButton() mat-fab>
+        <fa-icon icon='plus'></fa-icon>
+    </button>
+
+    <span class='app-name on-transition-fade'>
+        {{ appName | translate }}
+    </span>
+
+    <span class='spacer'></span>
+
+    <button *ngIf="menuList" class='on-transition-fade' [matMenuTriggerFor]="ellipsisMenu" mat-icon-button>
+        <fa-icon icon='ellipsis-v'></fa-icon>
+    </button>
+</mat-toolbar>
+
+<mat-menu #ellipsisMenu="matMenu">
+    <button mat-menu-item *ngFor="let item of menuList" (click)=clickMenu(item)>
+        <fa-icon *ngIf="item.icon" [icon]='item.icon'></fa-icon>
+        {{item.text | translate}}
+    </button>
+</mat-menu>

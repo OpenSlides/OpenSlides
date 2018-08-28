@@ -34,6 +34,7 @@ import { TranslateModule } from '@ngx-translate/core';
 // directives
 import { OsPermsDirective } from './directives/os-perms.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
+import { HeadBarComponent } from './components/head-bar/head-bar.component';
 
 library.add(fas);
 
@@ -68,6 +69,7 @@ library.add(fas);
         MatMenuModule,
         MatSnackBarModule,
         MatDialogModule,
+        TranslateModule.forChild(),
         FontAwesomeModule
     ],
     exports: [
@@ -92,8 +94,10 @@ library.add(fas);
         MatSnackBarModule,
         FontAwesomeModule,
         TranslateModule,
-        OsPermsDirective
+        OsPermsDirective,
+        DomChangeDirective,
+        HeadBarComponent
     ],
-    declarations: [OsPermsDirective, DomChangeDirective]
+    declarations: [OsPermsDirective, DomChangeDirective, HeadBarComponent]
 })
 export class SharedModule {}

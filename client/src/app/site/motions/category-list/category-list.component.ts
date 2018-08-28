@@ -1,11 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Category } from '../../../shared/models/motions/category';
 import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
-import { BaseComponent } from '../../../base.component';
 import { MatSort, MatTable, MatTableDataSource } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
 
+import { BaseComponent } from '../../../base.component';
+import { Category } from '../../../shared/models/motions/category';
+
+/**
+ * List view for the categories.
+ *
+ * TODO: Creation of new Categories
+ */
 @Component({
     selector: 'app-category-list',
     templateUrl: './category-list.component.html',
@@ -32,10 +37,20 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
      */
     @ViewChild(MatSort) sort: MatSort;
 
-    constructor(protected titleService: Title, protected translate: TranslateService, private router: Router) {
+    /**
+     * The usual component constructor
+     * @param titleService
+     * @param translate
+     */
+    constructor(protected titleService: Title, protected translate: TranslateService) {
         super(titleService, translate);
     }
 
+    /**
+     * Init function.
+     *
+     * Sets the title and gets/observes categories from DataStore
+     */
     ngOnInit() {
         super.setTitle('Category');
         this.categoryArray = this.DS.get(Category) as Category[];
@@ -50,5 +65,14 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
                 this.dataSource.data = this.categoryArray;
             }
         });
+    }
+
+    /**
+     * Add a new Category.
+     *
+     * TODO: Not yet implemented
+     */
+    onPlusButton() {
+        console.log('Add New Category');
     }
 }

@@ -1,6 +1,25 @@
 import { Injectable } from '@angular/core';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
+/**
+ * Viewport Service
+ *
+ * Uses breakpoint observers to determine the size of the users/operators viewport size (the device)
+ *
+ * ## Example:
+ *
+ * Provide the service via constructor and just use it like
+ *
+ * ```html
+ * <div *ngIf="!vp.isMobile">Will only be shown of not mobile</div>
+ * ```
+ * or
+ * ```ts
+ * if (this.vp.isMobile) {
+ *     ...
+ * }
+ * ```
+ */
 @Injectable({
     providedIn: 'root'
 })
@@ -10,8 +29,17 @@ export class ViewportService {
      */
     private _isMobile = false;
 
+    /**
+     * Get the BreakpointObserver
+     *
+     * @param breakpointObserver
+     */
     constructor(private breakpointObserver: BreakpointObserver) {}
 
+    /**
+     * Needs to be called (exactly) once.
+     * Will observe breakpoints and updates the _isMobile variable
+     */
     checkForChange() {
         this.breakpointObserver
             .observe([Breakpoints.Small, Breakpoints.HandsetPortrait])

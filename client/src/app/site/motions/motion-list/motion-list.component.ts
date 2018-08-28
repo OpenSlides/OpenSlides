@@ -57,6 +57,21 @@ export class MotionListComponent extends BaseComponent implements OnInit {
     columnsToDisplayFullWidth = ['identifier', 'title', 'meta', 'state'];
 
     /**
+     * content of the ellipsis menu
+     */
+    motionMenuList = [
+        {
+            text: 'Download',
+            icon: 'download',
+            action: 'downloadMotions'
+        },
+        {
+            text: 'Categories',
+            action: 'toCategories'
+        }
+    ];
+
+    /**
      * Constructor implements title and translation Module.
      *
      * @param titleService Title
@@ -121,8 +136,26 @@ export class MotionListComponent extends BaseComponent implements OnInit {
         }
     }
 
+    /**
+     * Determines if an icon should be shown in the list view
+     * @param state
+     */
     isDisplayIcon(state): boolean {
         return state.name === 'accepted' || state.name === 'rejected' || state.name === 'not decided';
+    }
+
+    /**
+     * Handler for the plus button
+     */
+    onPlusButton() {
+        this.router.navigate(['./new'], { relativeTo: this.route });
+    }
+
+    /**
+     * navigate to 'motion/category'
+     */
+    toCategories() {
+        this.router.navigate(['./category'], { relativeTo: this.route });
     }
 
     /**
@@ -130,7 +163,18 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      *
      * TODO: Currently does nothing
      */
-    downloadMotionsButton() {
+    downloadMotions() {
         console.log('Download Motions Button');
+    }
+
+    /**
+     * handler function for clicking on items in the ellipsis menu.
+     *
+     * @param event clicked entry from ellipsis menu
+     */
+    onEllipsisItem(event: any) {
+        if (event.action) {
+            this[event.action]();
+        }
     }
 }
