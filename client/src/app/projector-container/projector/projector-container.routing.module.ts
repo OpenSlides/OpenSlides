@@ -1,4 +1,4 @@
-import { NgModule, Component } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ProjectorContainerComponent } from '../projector-container.component';
 import { ProjectorComponent } from './projector.component';

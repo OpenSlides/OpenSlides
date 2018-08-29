@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { tap, catchError, share } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { OpenSlidesComponent } from 'app/openslides.component';
 import { Group } from 'app/shared/models/users/group';
 import { User } from '../../shared/models/users/user';
@@ -42,7 +42,7 @@ export class OperatorService extends OpenSlidesComponent {
     /**
      * Get the user that corresponds to operator.
      */
-    get user(): User {
+    public get user(): User {
         return this._user;
     }
 
@@ -51,7 +51,7 @@ export class OperatorService extends OpenSlidesComponent {
      *
      * The permissions are updated and the new user published.
      */
-    set user(user: User) {
+    public set user(user: User) {
         this._user = user;
         this.updatePermissions();
     }
@@ -74,7 +74,7 @@ export class OperatorService extends OpenSlidesComponent {
     /**
      * @param http HttpClient
      */
-    constructor(private http: HttpClient) {
+    public constructor(private http: HttpClient) {
         super();
     }
 

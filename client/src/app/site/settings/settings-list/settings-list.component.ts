@@ -19,14 +19,14 @@ export class SettingsListComponent extends BaseComponent implements OnInit {
      * @param titleService
      * @param translate
      */
-    constructor(titleService: Title, protected translate: TranslateService) {
+    public constructor(titleService: Title, protected translate: TranslateService) {
         super(titleService, translate);
     }
 
     /**
      * Init function. Sets the title
      */
-    ngOnInit() {
+    public ngOnInit() {
         super.setTitle('Settings');
     }
 }

@@ -6,17 +6,17 @@ import { BaseModel } from '../base.model';
  */
 export class Projector extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    elements: Object;
-    scale: number;
-    scroll: number;
-    name: string;
-    blank: boolean;
-    width: number;
-    height: number;
-    projectiondefaults: Object[];
+    public id: number;
+    public elements: Object;
+    public scale: number;
+    public scroll: number;
+    public name: string;
+    public blank: boolean;
+    public width: number;
+    public height: number;
+    public projectiondefaults: Object[];
 
-    constructor(
+    public constructor(
         id?: number,
         elements?: Object,
         scale?: number,

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 import { OperatorService } from 'app/core/services/operator.service';
@@ -31,7 +31,11 @@ export class AuthService extends OpenSlidesComponent {
      * @param http HttpClient
      * @param operator who is using OpenSlides
      */
-    constructor(private http: HttpClient, private operator: OperatorService, private OpenSlides: OpenSlidesService) {
+    public constructor(
+        private http: HttpClient,
+        private operator: OperatorService,
+        private OpenSlides: OpenSlidesService
+    ) {
         super();
     }
 

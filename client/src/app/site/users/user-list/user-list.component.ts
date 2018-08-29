@@ -19,14 +19,14 @@ export class UserListComponent extends BaseComponent implements OnInit {
      * @param titleService
      * @param translate
      */
-    constructor(titleService: Title, protected translate: TranslateService) {
+    public constructor(titleService: Title, protected translate: TranslateService) {
         super(titleService, translate);
     }
 
     /**
      * Init function, sets the title
      */
-    ngOnInit() {
+    public ngOnInit() {
         super.setTitle('Users');
     }
 }

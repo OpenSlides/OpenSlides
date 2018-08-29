@@ -38,7 +38,7 @@ import { ViewportService } from './services/viewport.service';
 })
 export class CoreModule {
     /** make sure CoreModule is imported only by one NgModule, the AppModule */
-    constructor(
+    public constructor(
         @Optional()
         @SkipSelf()
         parentModule: CoreModule

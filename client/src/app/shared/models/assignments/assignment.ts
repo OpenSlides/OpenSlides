@@ -8,18 +8,18 @@ import { Poll } from './poll';
  */
 export class Assignment extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    title: string;
-    description: string;
-    open_posts: number;
-    phase: number;
-    assignment_related_users: AssignmentUser[];
-    poll_description_default: number;
-    polls: Poll[];
-    agenda_item_id: number;
-    tags_id: number[];
+    public id: number;
+    public title: string;
+    public description: string;
+    public open_posts: number;
+    public phase: number;
+    public assignment_related_users: AssignmentUser[];
+    public poll_description_default: number;
+    public polls: Poll[];
+    public agenda_item_id: number;
+    public tags_id: number[];
 
-    constructor(
+    public constructor(
         id?: number,
         title?: string,
         description?: string,
@@ -38,14 +38,14 @@ export class Assignment extends BaseModel {
         this.description = description;
         this.open_posts = open_posts;
         this.phase = phase;
-        this.assignment_related_users = assignment_related_users || []; //TODO Array
+        this.assignment_related_users = assignment_related_users || []; // TODO Array
         this.poll_description_default = poll_description_default;
         this.polls = polls || Array(); // TODO Array
         this.agenda_item_id = agenda_item_id;
         this.tags_id = tags_id;
     }
 
-    getAssignmentReleatedUsers(): BaseModel | BaseModel[] {
+    public getAssignmentReleatedUsers(): BaseModel | BaseModel[] {
         const userIds = [];
         this.assignment_related_users.forEach(user => {
             userIds.push(user.user_id);
@@ -53,11 +53,11 @@ export class Assignment extends BaseModel {
         return this.DS.get('users/user', ...userIds);
     }
 
-    getTags(): BaseModel | BaseModel[] {
+    public getTags(): BaseModel | BaseModel[] {
         return this.DS.get('core/tag', ...this.tags_id);
     }
 
-    deserialize(input: any): this {
+    public deserialize(input: any): this {
         Object.assign(this, input);
 
         if (input.assignment_related_users instanceof Array) {

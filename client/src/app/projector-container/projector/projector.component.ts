@@ -8,11 +8,11 @@ import { Title } from '@angular/platform-browser';
     styleUrls: ['./projector.component.css']
 })
 export class ProjectorComponent extends BaseComponent implements OnInit {
-    constructor(protected titleService: Title) {
+    public constructor(protected titleService: Title) {
         super(titleService);
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         super.setTitle('Projector');
     }
 }

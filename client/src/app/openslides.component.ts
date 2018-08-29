@@ -22,14 +22,14 @@ export abstract class OpenSlidesComponent {
      * Static injection of {@link DataStoreService} in all child instances of OpenSlidesComponent
      * Throws a warning even tho it is the new syntax. Ignored for now.
      */
-    constructor() {}
+    public constructor() {}
 
     /**
      * getter to access the {@link DataStoreService}
      * @example this.DS.get(User)
      * @return access to dataStoreService
      */
-    get DS(): DataStoreService {
+    public get DS(): DataStoreService {
         if (!OpenSlidesComponent.injector) {
             throw new Error('OpenSlides is not bootstrapping right. This component should have the Injector.');
         }
@@ -54,7 +54,7 @@ export abstract class OpenSlidesComponent {
      * TODO: could have more features
      * @return an observable error
      */
-    handleError<T>() {
+    public handleError<T>() {
         return (error: any): Observable<T> => {
             console.error(error);
             return of(error);

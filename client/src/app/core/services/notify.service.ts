@@ -4,7 +4,7 @@ import { OpenSlidesComponent } from 'app/openslides.component';
 import { WebsocketService } from './websocket.service';
 
 interface NotifyFormat {
-    id: number; //Dummy
+    id: number; // Dummy
 }
 
 /**
@@ -18,7 +18,7 @@ export class NotifyService extends OpenSlidesComponent {
      * Constructor to create the NotifyService. Registers itself to the WebsocketService.
      * @param websocketService
      */
-    constructor(private websocketService: WebsocketService) {
+    public constructor(private websocketService: WebsocketService) {
         super();
         websocketService.getOberservable<any>('notify').subscribe(notify => {
             this.receive(notify);

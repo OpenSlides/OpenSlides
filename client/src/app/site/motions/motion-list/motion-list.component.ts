@@ -19,47 +19,47 @@ export class MotionListComponent extends BaseComponent implements OnInit {
     /**
      * Store motion workflows (to check the status of the motions)
      */
-    workflowArray: Array<Workflow>;
+    public workflowArray: Array<Workflow>;
 
     /**
      * Store the motions
      */
-    motionArray: Array<Motion>;
+    public motionArray: Array<Motion>;
 
     /**
      * Will be processed by the mat-table
      */
-    dataSource: MatTableDataSource<Motion>;
+    public dataSource: MatTableDataSource<Motion>;
 
     /**
      * The table itself.
      */
-    @ViewChild(MatTable) table: MatTable<Motion>;
+    @ViewChild(MatTable) public table: MatTable<Motion>;
 
     /**
      * Pagination. Might be turned off to all motions at once.
      */
-    @ViewChild(MatPaginator) paginator: MatPaginator;
+    @ViewChild(MatPaginator) public paginator: MatPaginator;
 
     /**
      * Sort the Table
      */
-    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(MatSort) public sort: MatSort;
 
     /**
      * Use for minimal width
      */
-    columnsToDisplayMinWidth = ['identifier', 'title', 'state'];
+    public columnsToDisplayMinWidth = ['identifier', 'title', 'state'];
 
     /**
      * Use for maximal width
      */
-    columnsToDisplayFullWidth = ['identifier', 'title', 'meta', 'state'];
+    public columnsToDisplayFullWidth = ['identifier', 'title', 'meta', 'state'];
 
     /**
      * content of the ellipsis menu
      */
-    motionMenuList = [
+    public motionMenuList = [
         {
             text: 'Download',
             icon: 'download',
@@ -79,7 +79,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      * @param router Router
      * @param route Current route
      */
-    constructor(
+    public constructor(
         protected titleService: Title,
         protected translate: TranslateService,
         private router: Router,
@@ -91,7 +91,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
     /**
      * Init function
      */
-    ngOnInit() {
+    public ngOnInit() {
         super.setTitle('Motions');
         this.workflowArray = this.DS.get(Workflow) as Workflow[];
         this.motionArray = this.DS.get(Motion) as Motion[];
@@ -114,7 +114,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      *
      * @param motion The row the user clicked at
      */
-    selectMotion(motion) {
+    public selectMotion(motion) {
         this.router.navigate(['./' + motion.id], { relativeTo: this.route });
     }
 
@@ -123,7 +123,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      * TODO Needs to be more accessible (Motion workflow needs adjustment on the server)
      * @param state the name of the state
      */
-    getStateIcon(state) {
+    public getStateIcon(state) {
         const stateName = state.name;
         if (stateName === 'accepted') {
             return 'thumbs-up';
@@ -140,21 +140,21 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      * Determines if an icon should be shown in the list view
      * @param state
      */
-    isDisplayIcon(state): boolean {
+    public isDisplayIcon(state): boolean {
         return state.name === 'accepted' || state.name === 'rejected' || state.name === 'not decided';
     }
 
     /**
      * Handler for the plus button
      */
-    onPlusButton() {
+    public onPlusButton() {
         this.router.navigate(['./new'], { relativeTo: this.route });
     }
 
     /**
      * navigate to 'motion/category'
      */
-    toCategories() {
+    public toCategories() {
         this.router.navigate(['./category'], { relativeTo: this.route });
     }
 
@@ -163,7 +163,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      *
      * TODO: Currently does nothing
      */
-    downloadMotions() {
+    public downloadMotions() {
         console.log('Download Motions Button');
     }
 
@@ -172,7 +172,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      *
      * @param event clicked entry from ellipsis menu
      */
-    onEllipsisItem(event: any) {
+    public onEllipsisItem(event: any) {
         if (event.action) {
             this[event.action]();
         }

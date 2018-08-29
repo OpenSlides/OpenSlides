@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./projector-container.component.css']
 })
 export class ProjectorContainerComponent implements OnInit {
-    constructor() {}
+    public constructor() {}
 
-    ngOnInit() {}
+    public ngOnInit() {}
 }

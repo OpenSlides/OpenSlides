@@ -5,11 +5,11 @@ import { Deserializable } from '../deserializable.model';
  * @ignore
  */
 export class AssignmentUser implements Deserializable {
-    id: number;
-    user_id: number;
-    elected: boolean;
-    assignment_id: number;
-    weight: number;
+    public id: number;
+    public user_id: number;
+    public elected: boolean;
+    public assignment_id: number;
+    public weight: number;
 
     /**
      * Needs to be completely optional because assignment has (yet) the optional parameter 'assignment_related_users'
@@ -19,7 +19,7 @@ export class AssignmentUser implements Deserializable {
      * @param assignment_id
      * @param weight
      */
-    constructor(id?: number, user_id?: number, elected?: boolean, assignment_id?: number, weight?: number) {
+    public constructor(id?: number, user_id?: number, elected?: boolean, assignment_id?: number, weight?: number) {
         this.id = id;
         this.user_id = user_id;
         this.elected = elected;
@@ -27,7 +27,7 @@ export class AssignmentUser implements Deserializable {
         this.weight = weight;
     }
 
-    deserialize(input: any): this {
+    public deserialize(input: any): this {
         Object.assign(this, input);
         return this;
     }
