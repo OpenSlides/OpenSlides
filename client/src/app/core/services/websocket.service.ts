@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subject, of } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -29,19 +29,6 @@ interface WebsocketMessage {
 })
 export class WebsocketService {
     /**
-     * Constructor that handles the router
-     * @param router the URL Router
-     */
-    constructor(
-        private router: Router,
-        private matSnackBar: MatSnackBar,
-        private zone: NgZone,
-        public translate: TranslateService
-    ) {
-        this.reconnectSubject = new Subject<void>();
-    }
-
-    /**
      * The reference to the snackbar entry that is shown, if the connection is lost.
      */
     private connectionErrorNotice: MatSnackBarRef<SimpleSnackBar>;
@@ -60,6 +47,19 @@ export class WebsocketService {
      * Subjects for types of websocket messages. A subscriber can get an Observable by {@function getOberservable}.
      */
     private subjects: { [type: string]: Subject<any> } = {};
+
+    /**
+     * Constructor that handles the router
+     * @param router the URL Router
+     */
+    public constructor(
+        private router: Router,
+        private matSnackBar: MatSnackBar,
+        private zone: NgZone,
+        public translate: TranslateService
+    ) {
+        this.reconnectSubject = new Subject<void>();
+    }
 
     /**
      * Creates a new WebSocket connection and handles incomming events.
@@ -195,7 +195,7 @@ export class WebsocketService {
      * Delegates to socket-path for either the side or projector websocket.
      */
     private getWebSocketPath(queryParams: QueryParams = {}): string {
-        //currentRoute does not end with '/'
+        // currentRoute does not end with '/'
         const currentRoute = this.router.url;
         let path: string;
         if (currentRoute.includes('/projector') || currentRoute.includes('/real-projector')) {

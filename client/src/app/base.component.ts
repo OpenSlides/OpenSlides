@@ -20,7 +20,7 @@ export abstract class BaseComponent extends OpenSlidesComponent {
     /**
      * Child constructor that implements the titleServices and calls Super from OpenSlidesComponent
      */
-    constructor(protected titleService?: Title, protected translate?: TranslateService) {
+    public constructor(protected titleService?: Title, protected translate?: TranslateService) {
         super();
     }
 
@@ -29,7 +29,7 @@ export abstract class BaseComponent extends OpenSlidesComponent {
      * @param prefix The title prefix. Should be translated here.
      * TODO Might translate the prefix here?
      */
-    setTitle(prefix: string): void {
+    public setTitle(prefix: string): void {
         const translatedPrefix = this.translate.instant(prefix);
         this.titleService.setTitle(translatedPrefix + this.titleSuffix);
     }

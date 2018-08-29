@@ -13,7 +13,7 @@ export class AddHeaderInterceptor implements HttpInterceptor {
      * @param req Will clone the request and intercept it with our desired headers
      * @param next HttpHandler will catch the response and forwards it to the original instance
      */
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const clonedRequest = req.clone({
             withCredentials: true,
             headers: req.headers.set('Content-Type', 'application/json')

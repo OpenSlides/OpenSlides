@@ -20,7 +20,7 @@ export class AutoupdateService extends OpenSlidesComponent {
      * Constructor to create the AutoupdateService. Calls the constructor of the parent class.
      * @param websocketService
      */
-    constructor(private websocketService: WebsocketService) {
+    public constructor(websocketService: WebsocketService) {
         super();
         websocketService.getOberservable<any>('autoupdate').subscribe(response => {
             this.storeResponse(response);
@@ -37,7 +37,7 @@ export class AutoupdateService extends OpenSlidesComponent {
      *
      * Saves models in DataStore.
      */
-    storeResponse(socketResponse): void {
+    public storeResponse(socketResponse): void {
         // Reorganize the autoupdate: groupy by action, then by collection. The final
         // entries are the single autoupdate objects.
         const autoupdate = {

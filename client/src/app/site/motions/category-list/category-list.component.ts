@@ -20,29 +20,29 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
     /**
      * Store the categories
      */
-    categoryArray: Array<Category>;
+    public categoryArray: Array<Category>;
 
     /**
      * Will be processed by the mat-table
      */
-    dataSource: MatTableDataSource<Category>;
+    public dataSource: MatTableDataSource<Category>;
 
     /**
      * The table itself.
      */
-    @ViewChild(MatTable) table: MatTable<Category>;
+    @ViewChild(MatTable) public table: MatTable<Category>;
 
     /**
      * Sort the Table
      */
-    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(MatSort) public sort: MatSort;
 
     /**
      * The usual component constructor
      * @param titleService
      * @param translate
      */
-    constructor(protected titleService: Title, protected translate: TranslateService) {
+    public constructor(protected titleService: Title, protected translate: TranslateService) {
         super(titleService, translate);
     }
 
@@ -51,7 +51,7 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
      *
      * Sets the title and gets/observes categories from DataStore
      */
-    ngOnInit() {
+    public ngOnInit() {
         super.setTitle('Category');
         this.categoryArray = this.DS.get(Category) as Category[];
         this.dataSource = new MatTableDataSource(this.categoryArray);
@@ -72,7 +72,7 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
      *
      * TODO: Not yet implemented
      */
-    onPlusButton() {
+    public onPlusButton() {
         console.log('Add New Category');
     }
 }

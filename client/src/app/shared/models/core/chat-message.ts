@@ -6,12 +6,12 @@ import { BaseModel } from '../base.model';
  */
 export class ChatMessage extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    message: string;
-    timestamp: string; // TODO: Type for timestamp
-    user_id: number;
+    public id: number;
+    public message: string;
+    public timestamp: string; // TODO: Type for timestamp
+    public user_id: number;
 
-    constructor(id?: number, message?: string, timestamp?: string, user_id?: number) {
+    public constructor(id?: number, message?: string, timestamp?: string, user_id?: number) {
         super();
         this._collectionString = 'core/chat-message';
         this.id = id;
@@ -20,7 +20,7 @@ export class ChatMessage extends BaseModel {
         this.user_id = user_id;
     }
 
-    getUser(): BaseModel | BaseModel[] {
+    public getUser(): BaseModel | BaseModel[] {
         return this.DS.get('users/user', this.user_id);
     }
 }

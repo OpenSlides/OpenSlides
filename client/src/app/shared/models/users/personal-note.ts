@@ -6,11 +6,11 @@ import { BaseModel } from '../base.model';
  */
 export class PersonalNote extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    user_id: number;
-    notes: Object;
+    public id: number;
+    public user_id: number;
+    public notes: Object;
 
-    constructor(id?: number, user_id?: number, notes?: Object) {
+    public constructor(id?: number, user_id?: number, notes?: Object) {
         super();
         this._collectionString = 'users/personal-note';
         this.id = id;
@@ -18,7 +18,7 @@ export class PersonalNote extends BaseModel {
         this.notes = notes;
     }
 
-    getUser(): BaseModel | BaseModel[] {
+    public getUser(): BaseModel | BaseModel[] {
         return this.DS.get('users/user', this.user_id);
     }
 }

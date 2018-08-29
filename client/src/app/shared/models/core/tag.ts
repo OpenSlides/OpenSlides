@@ -6,10 +6,10 @@ import { BaseModel } from '../base.model';
  */
 export class Tag extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    name: string;
+    public id: number;
+    public name: string;
 
-    constructor(id?: number, name?: string) {
+    public constructor(id?: number, name?: string) {
         super();
         this._collectionString = 'core/tag';
         this.id = id;

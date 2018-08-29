@@ -7,24 +7,24 @@ import { Group } from './group';
  */
 export class User extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    username: string;
-    title: string;
-    first_name: string;
-    last_name: string;
-    structure_level: string;
-    number: string;
-    about_me: string;
-    groups_id: number[];
-    is_present: boolean;
-    is_committee: boolean;
-    email: string;
-    last_email_send?: string;
-    comment: string;
-    is_active: boolean;
-    default_password: string;
+    public id: number;
+    public username: string;
+    public title: string;
+    public first_name: string;
+    public last_name: string;
+    public structure_level: string;
+    public number: string;
+    public about_me: string;
+    public groups_id: number[];
+    public is_present: boolean;
+    public is_committee: boolean;
+    public email: string;
+    public last_email_send?: string;
+    public comment: string;
+    public is_active: boolean;
+    public default_password: string;
 
-    constructor(
+    public constructor(
         id?: number,
         username?: string,
         title?: string,
@@ -62,7 +62,7 @@ export class User extends BaseModel {
         this.default_password = default_password;
     }
 
-    get groups(): Group[] {
+    public get groups(): Group[] {
         const groups = this.DS.get('users/group', ...this.groups_id);
         if (!groups) {
             return [];
@@ -73,7 +73,7 @@ export class User extends BaseModel {
         }
     }
 
-    get full_name(): string {
+    public get full_name(): string {
         let name = this.short_name;
         const addition: string[] = [];
 
@@ -96,7 +96,7 @@ export class User extends BaseModel {
     }
 
     // TODO read config values  for "users_sort_by"
-    get short_name(): string {
+    public get short_name(): string {
         const title = this.title.trim();
         const firstName = this.first_name.trim();
         const lastName = this.last_name.trim();

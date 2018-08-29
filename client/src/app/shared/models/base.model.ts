@@ -16,6 +16,15 @@ export interface ModelConstructor {
  */
 export abstract class BaseModel extends OpenSlidesComponent implements Deserializable {
     /**
+     * Register the collection string to the type.
+     * @param collectionString
+     * @param type
+     */
+    public static registerCollectionElement(collectionString: string, type: any) {
+        CollectionStringModelMapperService.registerCollectionElement(collectionString, type);
+    }
+
+    /**
      * force children of BaseModel to have a collectionString.
      *
      * Has a getter but no setter.
@@ -25,7 +34,7 @@ export abstract class BaseModel extends OpenSlidesComponent implements Deseriali
     /**
      * force children of BaseModel to have an id
      */
-    abstract id: ModelId;
+    public abstract id: ModelId;
 
     /**
      * constructor that calls super from parent class
@@ -34,16 +43,12 @@ export abstract class BaseModel extends OpenSlidesComponent implements Deseriali
         super();
     }
 
-    public static registerCollectionElement(collectionString: string, type: any) {
-        CollectionStringModelMapperService.registerCollectionElement(collectionString, type);
-    }
-
     /**
      * returns the collectionString.
      *
      * The server and the dataStore use it to identify the collection.
      */
-    get collectionString(): string {
+    public get collectionString(): string {
         return this._collectionString;
     }
 
@@ -52,7 +57,7 @@ export abstract class BaseModel extends OpenSlidesComponent implements Deseriali
      * Inherited to children, can be overwritten for special use cases
      * @param input JSON data for deserialization.
      */
-    deserialize(input: any): this {
+    public deserialize(input: any): this {
         Object.assign(this, input);
         return this;
     }

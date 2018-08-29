@@ -6,15 +6,15 @@ import { Deserializable } from '../deserializable.model';
  * @ignore
  */
 export class MotionVersion implements Deserializable {
-    id: number;
-    version_number: number;
-    creation_time: string;
-    title: string;
-    text: string;
-    amendment_paragraphs: string;
-    reason: string;
+    public id: number;
+    public version_number: number;
+    public creation_time: string;
+    public title: string;
+    public text: string;
+    public amendment_paragraphs: string;
+    public reason: string;
 
-    constructor(
+    public constructor(
         id?: number,
         version_number?: number,
         creation_time?: string,
@@ -32,7 +32,7 @@ export class MotionVersion implements Deserializable {
         this.reason = reason || '';
     }
 
-    deserialize(input: any): this {
+    public deserialize(input: any): this {
         Object.assign(this, input);
         return this;
     }

@@ -1,7 +1,5 @@
-import { Component, Injector, NgModuleRef } from '@angular/core';
+import { Component, NgModuleRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AutoupdateService } from './core/services/autoupdate.service';
-import { NotifyService } from './core/services/notify.service';
 import { OperatorService } from './core/services/operator.service';
 import { Subject } from 'rxjs';
 import { AppModule } from './app.module';
@@ -37,10 +35,8 @@ export class AppComponent {
      * @param notifyService
      * @param translate
      */
-    constructor(
-        private autoupdateService: AutoupdateService,
-        private notifyService: NotifyService,
-        private translate: TranslateService,
+    public constructor(
+        translate: TranslateService,
         private operator: OperatorService,
         private OpenSlides: OpenSlidesService
     ) {

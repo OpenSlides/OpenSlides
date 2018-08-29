@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -17,20 +17,10 @@ import { BaseComponent } from '../../../base.component';
 })
 export class MediafileListComponent extends BaseComponent implements OnInit {
     /**
-     * Constructor
-     *
-     * @param titleService
-     * @param translate
-     */
-    constructor(titleService: Title, protected translate: TranslateService) {
-        super(titleService, translate);
-    }
-
-    /**
      * Define the content of the ellipsis menu.
      * Give it to the HeadBar to display them.
      */
-    extraMenu = [
+    public extraMenu = [
         {
             text: 'Download',
             icon: 'download',
@@ -39,17 +29,27 @@ export class MediafileListComponent extends BaseComponent implements OnInit {
     ];
 
     /**
+     * Constructor
+     *
+     * @param titleService
+     * @param translate
+     */
+    public constructor(titleService: Title, protected translate: TranslateService) {
+        super(titleService, translate);
+    }
+
+    /**
      * Init.
      * Set the title
      */
-    ngOnInit() {
+    public ngOnInit() {
         super.setTitle('Files');
     }
 
     /**
      * Click on the plus button delegated from head-bar
      */
-    onPlusButton() {
+    public onPlusButton() {
         console.log('clicked plus (mediafile)');
     }
 
@@ -59,7 +59,7 @@ export class MediafileListComponent extends BaseComponent implements OnInit {
      *
      * TODO: Not yet implemented, might not even be required
      */
-    deleteAllFiles() {
+    public deleteAllFiles() {
         console.log('do download');
     }
 
@@ -68,7 +68,7 @@ export class MediafileListComponent extends BaseComponent implements OnInit {
      *
      * @param event clicked entry from ellipsis menu
      */
-    onEllipsisItem(event: any) {
+    public onEllipsisItem(event: any) {
         if (event.action) {
             this[event.action]();
         }

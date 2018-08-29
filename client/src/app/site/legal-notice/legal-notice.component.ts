@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./legal-notice.component.scss']
 })
 export class LegalNoticeComponent implements OnInit {
-    constructor() {}
+    public constructor() {}
 
-    ngOnInit() {}
+    public ngOnInit() {}
 }

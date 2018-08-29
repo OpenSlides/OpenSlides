@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 import { BaseModel, ModelId } from 'app/shared/models/base.model';
 import { CacheService } from './cache.service';
@@ -82,7 +82,7 @@ export class DataStoreService {
      * Empty constructor for dataStore
      * @param cacheService use CacheService to cache the DataStore.
      */
-    constructor(private cacheService: CacheService) {
+    public constructor(private cacheService: CacheService) {
         if (DataStoreService.wasInstantiated) {
             throw new Error('The Datastore should just be instantiated once!');
         }
@@ -159,12 +159,12 @@ export class DataStoreService {
      * @example: this.DS.get(User, ...[1,2,3,4,5])
      * @example: this.DS.get(/core/countdown, 1)
      */
-    get(collectionType, ...ids: ModelId[]): BaseModel[] | BaseModel {
+    public get(collectionType, ...ids: ModelId[]): BaseModel[] | BaseModel {
         let collectionString: string;
         if (typeof collectionType === 'string') {
             collectionString = collectionType;
         } else {
-            //get the collection string by making an empty object
+            // get the collection string by making an empty object
             const tempObject = new collectionType();
             collectionString = tempObject.collectionString;
         }
@@ -190,7 +190,7 @@ export class DataStoreService {
     /**
      * Prints the whole dataStore
      */
-    printWhole(): void {
+    public printWhole(): void {
         console.log('Everything in DataStore: ', this.modelStore);
     }
 
@@ -201,7 +201,7 @@ export class DataStoreService {
      * @return The BaseModel-list corresponding to the filter function
      * @example this.DS.filter(User, myUser => myUser.first_name === "Max")
      */
-    filter(Type, callback): BaseModel[] {
+    public filter(Type, callback): BaseModel[] {
         // TODO: type for callback function
         let filterCollection = [];
         const typeCollection = this.get(Type);

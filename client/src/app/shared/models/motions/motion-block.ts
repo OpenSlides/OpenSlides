@@ -6,11 +6,11 @@ import { BaseModel } from '../base.model';
  */
 export class MotionBlock extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    title: string;
-    agenda_item_id: number;
+    public id: number;
+    public title: string;
+    public agenda_item_id: number;
 
-    constructor(id?: number, title?: string, agenda_item_id?: number) {
+    public constructor(id?: number, title?: string, agenda_item_id?: number) {
         super();
         this._collectionString = 'motions/motion-block';
         this.id = id;
@@ -18,7 +18,7 @@ export class MotionBlock extends BaseModel {
         this.agenda_item_id = agenda_item_id;
     }
 
-    getAgenda(): BaseModel | BaseModel[] {
+    public getAgenda(): BaseModel | BaseModel[] {
         return this.DS.get('agenda/item', this.agenda_item_id);
     }
 }

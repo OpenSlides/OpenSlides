@@ -7,12 +7,12 @@ import { Deserializable } from '../deserializable.model';
  * @ignore
  */
 export class PollOption implements Deserializable {
-    id: number;
-    candidate_id: number;
-    is_elected: boolean;
-    votes: number[];
-    poll_id: number;
-    weight: number;
+    public id: number;
+    public candidate_id: number;
+    public is_elected: boolean;
+    public votes: number[];
+    public poll_id: number;
+    public weight: number;
 
     /**
      * Needs to be completely optional because poll has (yet) the optional parameter 'poll-options'
@@ -23,7 +23,7 @@ export class PollOption implements Deserializable {
      * @param poll_id
      * @param weight
      */
-    constructor(
+    public constructor(
         id?: number,
         candidate_id?: number,
         is_elected?: boolean,
@@ -39,7 +39,7 @@ export class PollOption implements Deserializable {
         this.weight = weight;
     }
 
-    deserialize(input: any): this {
+    public deserialize(input: any): this {
         Object.assign(this, input);
         return this;
     }

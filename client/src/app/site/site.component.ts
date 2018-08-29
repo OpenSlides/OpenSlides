@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { AuthService } from 'app/core/services/auth.service';
 import { OperatorService } from 'app/core/services/operator.service';
 
-import { TranslateService } from '@ngx-translate/core'; //showcase
+import { TranslateService } from '@ngx-translate/core';
 import { BaseComponent } from 'app/base.component';
 import { pageTransition, navItemAnim } from 'app/shared/animations';
 import { MatDialog, MatSidenav } from '@angular/material';
@@ -20,7 +19,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
     /**
      * HTML element of the side panel
      */
-    @ViewChild('sideNav') sideNav: MatSidenav;
+    @ViewChild('sideNav') public sideNav: MatSidenav;
 
     /**
      * Get the username from the operator (should be known already)
@@ -41,9 +40,9 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * @param translate
      * @param dialog
      */
-    constructor(
+    public constructor(
         private authService: AuthService,
-        private operator: OperatorService,
+        operator: OperatorService,
         public vp: ViewportService,
         public translate: TranslateService,
         public dialog: MatDialog
@@ -63,7 +62,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
     /**
      * Initialize the site component
      */
-    ngOnInit() {
+    public ngOnInit() {
         this.vp.checkForChange();
 
         // get a translation via code: use the translation service
@@ -75,7 +74,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
     /**
      * Closes the sidenav in mobile view
      */
-    toggleSideNav() {
+    public toggleSideNav() {
         if (this.vp.isMobile) {
             this.sideNav.toggle();
         }
@@ -85,14 +84,14 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * Let the user change the language
      * @param lang the desired language (en, de, fr, ...)
      */
-    selectLang(selection: string): void {
+    public selectLang(selection: string): void {
         this.translate.use(selection).subscribe();
     }
 
     /**
      * Get the name of a Language by abbreviation.
      */
-    getLangName(abbreviation: string): string {
+    public getLangName(abbreviation: string): string {
         if (abbreviation === 'en') {
             return this.translate.instant('English');
         } else if (abbreviation === 'de') {
@@ -103,15 +102,15 @@ export class SiteComponent extends BaseComponent implements OnInit {
     }
 
     // TODO: Implement this
-    editProfile() {}
+    public editProfile() {}
 
     // TODO: Implement this
-    changePassword() {}
+    public changePassword() {}
 
     /**
      * Function to log out the current user
      */
-    logout() {
+    public logout() {
         this.authService.logout();
     }
 }

@@ -6,16 +6,16 @@ import { Deserializable } from '../deserializable.model';
  * @ignore
  */
 export class Poll implements Deserializable {
-    id: number;
-    pollmethod: string;
-    description: string;
-    published: boolean;
-    options: PollOption[];
-    votesvalid: number;
-    votesinvalid: number;
-    votescast: number;
-    has_votes: boolean;
-    assignment_id: number;
+    public id: number;
+    public pollmethod: string;
+    public description: string;
+    public published: boolean;
+    public options: PollOption[];
+    public votesvalid: number;
+    public votesinvalid: number;
+    public votescast: number;
+    public has_votes: boolean;
+    public assignment_id: number;
 
     /**
      * Needs to be completely optional because assignment has (yet) the optional parameter 'polls'
@@ -30,7 +30,7 @@ export class Poll implements Deserializable {
      * @param has_votes
      * @param assignment_id
      */
-    constructor(
+    public constructor(
         id?: number,
         pollmethod?: string,
         description?: string,
@@ -46,7 +46,7 @@ export class Poll implements Deserializable {
         this.pollmethod = pollmethod;
         this.description = description;
         this.published = published;
-        this.options = options || Array(new PollOption()); //TODO Array
+        this.options = options || Array(new PollOption()); // TODO Array
         this.votesvalid = votesvalid;
         this.votesinvalid = votesinvalid;
         this.votescast = votescast;
@@ -54,7 +54,7 @@ export class Poll implements Deserializable {
         this.assignment_id = assignment_id;
     }
 
-    deserialize(input: any): this {
+    public deserialize(input: any): this {
         Object.assign(this, input);
 
         if (input.options instanceof Array) {

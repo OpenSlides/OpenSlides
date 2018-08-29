@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     /**
      * @param operator
      */
-    constructor(private operator: OperatorService) {}
+    public constructor(private operator: OperatorService) {}
 
     /**
      * Checks of the operator has the required permission to see the state.
@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
      * @param route required by `canActivate()`
      * @param state the state (URL) that the user want to access
      */
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         const basePerm: string | string[] = route.data.basePerm;
 
         if (!basePerm) {
@@ -42,7 +42,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
      * @param route
      * @param state
      */
-    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    public canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         return this.canActivate(route, state);
     }
 }

@@ -7,12 +7,12 @@ import { WorkflowState } from './workflow-state';
  */
 export class Workflow extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    name: string;
-    states: WorkflowState[];
-    first_state: number;
+    public id: number;
+    public name: string;
+    public states: WorkflowState[];
+    public first_state: number;
 
-    constructor(id?: number, name?: string, states?: WorkflowState[], first_state?: number) {
+    public constructor(id?: number, name?: string, states?: WorkflowState[], first_state?: number) {
         super();
         this._collectionString = 'motions/workflow';
         this.id = id;
@@ -25,7 +25,7 @@ export class Workflow extends BaseModel {
      * Check if the containing @link{WorkflowState}s contain a given ID
      * @param id The State ID
      */
-    isStateContained(obj: number | WorkflowState): boolean {
+    public isStateContained(obj: number | WorkflowState): boolean {
         let id: number;
         if (obj instanceof WorkflowState) {
             id = obj.id;
@@ -40,7 +40,7 @@ export class Workflow extends BaseModel {
         });
     }
 
-    state_by_id(id: number): WorkflowState {
+    public state_by_id(id: number): WorkflowState {
         let targetState;
         this.states.forEach(state => {
             if (id === state.id) {
@@ -50,7 +50,7 @@ export class Workflow extends BaseModel {
         return targetState as WorkflowState;
     }
 
-    deserialize(input: any): this {
+    public deserialize(input: any): this {
         Object.assign(this, input);
         if (input.states instanceof Array) {
             this.states = [];

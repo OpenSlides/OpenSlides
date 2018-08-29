@@ -18,14 +18,14 @@ export class DataSendService {
      *
      * @param http The HTTP Client
      */
-    constructor(private http: HttpClient) {}
+    public constructor(private http: HttpClient) {}
 
     /**
      * Save motion in the server
      *
      * @return Observable from
      */
-    saveModel(model: BaseModel): Observable<BaseModel> {
+    public saveModel(model: BaseModel): Observable<BaseModel> {
         if (!model.id) {
             return this.http.post<BaseModel>('rest/' + model.collectionString + '/', model).pipe(
                 tap(
@@ -56,7 +56,7 @@ export class DataSendService {
      *
      * TODO Not tested
      */
-    delete(model: BaseModel): Observable<BaseModel> {
+    public delete(model: BaseModel): Observable<BaseModel> {
         if (model.id) {
             return this.http.delete<BaseModel>('rest/' + model.collectionString + '/' + model.id).pipe(
                 tap(

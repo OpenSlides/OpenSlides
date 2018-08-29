@@ -6,17 +6,17 @@ import { BaseModel } from '../base.model';
  */
 export class MotionChangeReco extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    motion_version_id: number;
-    rejected: boolean;
-    type: number;
-    other_description: string;
-    line_from: number;
-    line_to: number;
-    text: string;
-    creation_time: string;
+    public id: number;
+    public motion_version_id: number;
+    public rejected: boolean;
+    public type: number;
+    public other_description: string;
+    public line_from: number;
+    public line_to: number;
+    public text: string;
+    public creation_time: string;
 
-    constructor(
+    public constructor(
         id?: number,
         motion_version_id?: number,
         rejected?: boolean,

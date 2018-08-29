@@ -43,7 +43,7 @@ export class CacheService {
      * Constructor to create the CacheService. Needs the localStorage service.
      * @param localStorage
      */
-    constructor(private localStorage: LocalStorage) {}
+    public constructor(private localStorage: LocalStorage) {}
 
     /**
      * Sets the item into the store asynchronously.

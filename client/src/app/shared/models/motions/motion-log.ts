@@ -6,19 +6,19 @@ import { Deserializable } from '../deserializable.model';
  * @ignore
  */
 export class MotionLog implements Deserializable {
-    message_list: string[];
-    person_id: number;
-    time: string;
-    message: string;
+    public message_list: string[];
+    public person_id: number;
+    public time: string;
+    public message: string;
 
-    constructor(message_list?: string[], person_id?: number, time?: string, message?: string) {
+    public constructor(message_list?: string[], person_id?: number, time?: string, message?: string) {
         this.message_list = message_list;
         this.person_id = person_id;
         this.time = time;
         this.message = message;
     }
 
-    deserialize(input: any): this {
+    public deserialize(input: any): this {
         Object.assign(this, input);
         return this;
     }
