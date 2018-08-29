@@ -141,10 +141,9 @@ class WebclientJavaScriptView(utils_views.View):
             except AttributeError:
                 # The app doesn't have this method. Continue to next app.
                 continue
-            for constant in get_angular_constants():
-                value = json.dumps(constant['value'])
-                name = constant['name']
-                angular_constants += ".constant('{}', {})".format(name, value)
+            for key, value in get_angular_constants().items():
+                value = json.dumps(value)
+                angular_constants += ".constant('{}', {})".format(key, value)
 
         # Use JavaScript loadScript function from
         # http://balpha.de/2011/10/jquery-script-insertion-and-its-consequences-for-debugging/
