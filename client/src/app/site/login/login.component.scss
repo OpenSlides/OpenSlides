@@ -2,14 +2,20 @@ mat-form-field {
     width: 100%;
 }
 
-.login-logo-bar {
-    height: 45% !important;
-
-    img {
-        margin-left: auto;
-        margin-right: auto;
-        width: 90%;
-        max-width: 400px;
+header {
+    width: 100%;
+    flex: 1;
+    mat-toolbar {
+        min-height: 200px !important;
+    }
+    .login-logo-bar {
+        img {
+            margin-left: auto;
+            margin-right: auto;
+            width: 90%;
+            height: 90%;
+            max-width: 400px;
+        }
     }
 }
 
@@ -29,7 +35,6 @@ mat-form-field {
 .form-wrapper {
     padding-left: 30px;
     padding-right: 30px;
-
     mat-spinner {
         position: absolute;
         left: 0;
@@ -43,4 +48,8 @@ mat-form-field {
     padding-top: 60px;
     margin: 0 auto;
     max-width: 400px;
+}
+
+footer {
+    bottom: 0; //black magic to keep the toolbar active here
 }

@@ -80,29 +80,11 @@
                 <span translate>Projector</span>
             </a>
         </mat-nav-list>
-
-
-        <footer>
-            <button mat-button>
-                <a routerLink='/legalnotice' (click)='toggleSideNav()'>
-                    <span translate>Legal Notice</span>
-                </a>
-            </button>
-            <button mat-button>
-                <a routerLink='/privacypolicy' (click)='toggleSideNav()'>
-                    <span translate>Privacy Policy</span>
-                </a>
-            </button>
-            <br>
-            <span align="center">© Copyright by
-                <a href='https://openslides.org/'>OpenSlides</a>
-            </span>
-        </footer>
     </mat-sidenav>
     <div class="content">
         <header>
             <!-- the first toolbar row is (still) a global element
-        the second one shall be handled by the apps  -->
+            the second one shall be handled by the apps  -->
             <mat-toolbar color='primary'>
 
                 <!-- show/hide menu button -->
@@ -118,11 +100,13 @@
             </mat-toolbar>
         </header>
 
-        <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
-            <router-outlet #o="outlet"></router-outlet>
-        </main>
-        <footer class="page-footer">
-            <app-footer></app-footer>
-        </footer>
+        <div class="relax">
+            <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
+                <router-outlet #o="outlet"></router-outlet>
+            </main>
+            <footer>
+                <os-footer></os-footer>
+            </footer>
+        </div>
     </div>
 </mat-sidenav-container>

@@ -8,11 +8,11 @@ import { Component, OnInit } from '@angular/core';
  * ### Usage of the selector:
  *
  * ```html
- * <app-footer></app-footer>
+ * <os-footer></os-footer>
  * ```
  */
 @Component({
-    selector: 'app-footer',
+    selector: 'os-footer',
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss']
 })
