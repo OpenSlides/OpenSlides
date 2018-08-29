@@ -1,12 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
+import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * A key value mapping for params, that should be appendet to the url on a new connection.
+ */
 interface QueryParams {
     [key: string]: string;
 }
 
+/**
+ * The generic message format in which messages are send and recieved by the server.
+ */
 interface WebsocketMessage {
     type: string;
     content: any;
@@ -14,9 +21,8 @@ interface WebsocketMessage {
 }
 
 /**
- * Service that handles WebSocket connections.
- *
- * Creates or returns already created WebSockets.
+ * Service that handles WebSocket connections. Other services can register themselfs
+ * with {@method getOberservable} for a specific type of messages. The content will be published.
  */
 @Injectable({
     providedIn: 'root'
@@ -26,12 +32,29 @@ export class WebsocketService {
      * Constructor that handles the router
      * @param router the URL Router
      */
-    constructor(private router: Router) {}
+    constructor(
+        private router: Router,
+        private matSnackBar: MatSnackBar,
+        private zone: NgZone,
+        public translate: TranslateService
+    ) {
+        this.reconnectSubject = new Subject<void>();
+    }
 
     /**
-     * Observable subject that might be `any` for simplicity, `MessageEvent` or something appropriate
+     * The reference to the snackbar entry that is shown, if the connection is lost.
      */
-    private websocketSubject: WebSocketSubject<WebsocketMessage>;
+    private connectionErrorNotice: MatSnackBarRef<SimpleSnackBar>;
+
+    /**
+     * Subjects that will be called, if a reconnect was successful.
+     */
+    private reconnectSubject: Subject<void>;
+
+    /**
+     * The websocket.
+     */
+    private websocket: WebSocket;
 
     /**
      * Subjects for types of websocket messages. A subscriber can get an Observable by {@function getOberservable}.
@@ -39,33 +62,86 @@ export class WebsocketService {
     private subjects: { [type: string]: Subject<any> } = {};
 
     /**
-     * Creates a new WebSocket connection as WebSocketSubject
+     * Creates a new WebSocket connection and handles incomming events.
      *
-     * Can return old Subjects to prevent multiple WebSocket connections.
+     * Uses NgZone to let all callbacks run in the angular context.
      */
-    public connect(changeId?: number): void {
+    public connect(retry = false, changeId?: number): void {
+        if (this.websocket) {
+            return;
+        }
         const queryParams: QueryParams = {};
         // comment-in if changes IDs are supported on server side.
         /*if (changeId !== undefined) {
             queryParams.changeId = changeId.toString();
         }*/
 
+        // Create the websocket
         const socketProtocol = this.getWebSocketProtocol();
         const socketServer = window.location.hostname + ':' + window.location.port;
         const socketPath = this.getWebSocketPath(queryParams);
-        if (!this.websocketSubject) {
-            this.websocketSubject = webSocket(socketProtocol + socketServer + socketPath);
-            // directly subscribe. The messages are distributes below
-            this.websocketSubject.subscribe(message => {
+        this.websocket = new WebSocket(socketProtocol + socketServer + socketPath);
+
+        // connection established. If this connect attept was a retry,
+        // The error notice will be removed and the reconnectSubject is published.
+        this.websocket.onopen = (event: Event) => {
+            this.zone.run(() => {
+                if (retry) {
+                    if (this.connectionErrorNotice) {
+                        this.connectionErrorNotice.dismiss();
+                        this.connectionErrorNotice = null;
+                    }
+                    this.reconnectSubject.next();
+                }
+            });
+        };
+
+        this.websocket.onmessage = (event: MessageEvent) => {
+            this.zone.run(() => {
+                const message: WebsocketMessage = JSON.parse(event.data);
                 const type: string = message.type;
                 if (type === 'error') {
                     console.error('Websocket error', message.content);
                 } else if (this.subjects[type]) {
+                    // Pass the content to the registered subscribers.
                     this.subjects[type].next(message.content);
                 } else {
                     console.log(`Got unknown websocket message type "${type}" with content`, message.content);
                 }
             });
+        };
+
+        this.websocket.onclose = (event: CloseEvent) => {
+            this.zone.run(() => {
+                this.websocket = null;
+                if (event.code !== 1000) {
+                    // 1000 is a normal close, like the close on logout
+                    if (!this.connectionErrorNotice) {
+                        // So here we have a connection failure that wasn't intendet.
+                        this.connectionErrorNotice = this.matSnackBar.open(
+                            this.translate.instant('Offline mode: You can use OpenSlides but changes are not saved.'),
+                            '',
+                            { duration: 0 }
+                        );
+                    }
+
+                    // A random retry timeout between 2000 and 5000 ms.
+                    const timeout = Math.floor(Math.random() * 3000 + 2000);
+                    setTimeout(() => {
+                        this.connect((retry = true));
+                    }, timeout);
+                }
+            });
+        };
+    }
+
+    /**
+     * Closes the websocket connection.
+     */
+    public close(): void {
+        if (this.websocket) {
+            this.websocket.close();
+            this.websocket = null;
         }
     }
 
@@ -81,27 +157,38 @@ export class WebsocketService {
     }
 
     /**
+     * get the reconnect observable. It will be published, if a reconnect was sucessful.
+     */
+    public getReconnectObservable(): Observable<void> {
+        return this.reconnectSubject.asObservable();
+    }
+
+    /**
      * Sends a message to the server with the content and the given type.
      *
      * @param type the message type
      * @param content the actual content
      */
-    public send<T>(type: string, content: T): void {
-        if (!this.websocketSubject) {
+    public send<T>(type: string, content: T, id?: string): void {
+        if (!this.websocket) {
             return;
         }
 
         const message: WebsocketMessage = {
             type: type,
             content: content,
-            id: ''
+            id: id
         };
 
-        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        for (let i = 0; i < 8; i++) {
-            message.id += possible.charAt(Math.floor(Math.random() * possible.length));
+        // create message id if not given. Required by the server.
+        if (!message.id) {
+            message.id = '';
+            const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            for (let i = 0; i < 8; i++) {
+                message.id += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
         }
-        this.websocketSubject.next(message);
+        this.websocket.send(JSON.stringify(message));
     }
 
     /**
@@ -130,8 +217,6 @@ export class WebsocketService {
 
     /**
      * returns the desired websocket protocol
-     *
-     * TODO: HTTPS is not yet tested
      */
     private getWebSocketProtocol(): string {
         if (location.protocol === 'https') {

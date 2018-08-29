@@ -6,6 +6,16 @@ import { catchError, tap } from 'rxjs/operators';
 import { OperatorService } from 'app/core/services/operator.service';
 import { OpenSlidesComponent } from '../../openslides.component';
 import { environment } from 'environments/environment';
+import { User } from '../../shared/models/users/user';
+import { OpenSlidesService } from './openslides.service';
+
+/**
+ * The data returned by a post request to the login route.
+ */
+interface LoginResponse {
+    user_id: number;
+    user: User;
+}
 
 /**
  * Authenticates an OpenSlides user with username and password
@@ -15,18 +25,13 @@ import { environment } from 'environments/environment';
 })
 export class AuthService extends OpenSlidesComponent {
     /**
-     * if the user tries to access a certain URL without being authenticated, the URL will be stored here
-     */
-    redirectUrl: string;
-
-    /**
      * Initializes the httpClient and the {@link OperatorService}.
      *
      * Calls `super()` from the parent class.
      * @param http HttpClient
      * @param operator who is using OpenSlides
      */
-    constructor(private http: HttpClient, private operator: OperatorService) {
+    constructor(private http: HttpClient, private operator: OperatorService, private OpenSlides: OpenSlidesService) {
         super();
     }
 
@@ -40,27 +45,29 @@ export class AuthService extends OpenSlidesComponent {
      * @param username
      * @param password
      */
-    login(username: string, password: string): Observable<any> {
-        const user: any = {
+    public login(username: string, password: string): Observable<LoginResponse> {
+        const user = {
             username: username,
             password: password
         };
-        return this.http.post<any>(environment.urlPrefix + '/users/login/', user).pipe(
-            tap(resp => this.operator.storeUser(resp.user)),
+        return this.http.post<LoginResponse>(environment.urlPrefix + '/users/login/', user).pipe(
+            tap((response: LoginResponse) => {
+                this.operator.user = new User().deserialize(response.user);
+            }),
             catchError(this.handleError())
-        );
+        ) as Observable<LoginResponse>;
     }
 
     /**
      * Logout function for both the client and the server.
      *
      * Will clear the current {@link OperatorService} and
-     * send a `post`-requiest to `/users/logout/'`
+     * send a `post`-request to `/apps/users/logout/'`
      */
-    //logout the user
-    //TODO not yet used
-    logout(): Observable<any> {
-        this.operator.clear();
-        return this.http.post<any>(environment.urlPrefix + '/users/logout/', {});
+    public logout(): void {
+        this.operator.user = null;
+        this.http.post<any>(environment.urlPrefix + '/users/logout/', {}).subscribe(() => {
+            this.OpenSlides.reboot();
+        });
     }
 }

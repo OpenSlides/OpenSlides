@@ -6,6 +6,7 @@ import { SiteComponent } from './site.component';
 import { StartComponent } from './start/start.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { LegalNoticeComponent } from './legal-notice/legal-notice.component';
+import { AuthGuard } from '../core/services/auth-guard.service';
 // import { LoginComponent } from './login/login.component';
 
 /**
@@ -37,7 +38,8 @@ const routes: Routes = [
                 loadChildren: './settings/settings.module#SettingsModule'
             },
             { path: 'users', loadChildren: './users/users.module#UsersModule' }
-        ]
+        ],
+        canActivateChild: [AuthGuard]
     }
 ];
 
