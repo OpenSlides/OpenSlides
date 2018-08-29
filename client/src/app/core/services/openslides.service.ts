@@ -38,7 +38,7 @@ export class OpenSlidesService extends OpenSlidesComponent {
 
         // Handler that gets called, if the websocket connection reconnects after a disconnection.
         // There might have changed something on the server, so we check the operator, if he changed.
-        websocketService.getReconnectObservable().subscribe(() => {
+        websocketService.reconnectEvent.subscribe(() => {
             this.checkOperator();
         });
     }

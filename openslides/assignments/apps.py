@@ -47,14 +47,11 @@ class AssignmentsAppConfig(AppConfig):
 
     def get_angular_constants(self):
         assignment = self.get_model('Assignment')
-        InnerItem = TypedDict('InnerItem', {'value': int, 'display_name': str})
-        Item = TypedDict('Item', {'name': str, 'value': List[InnerItem]})
-        data: Item = {
-            'name': 'AssignmentPhases',
-            'value': []}
+        Item = TypedDict('Item', {'value': int, 'display_name': str})
+        phases: List[Item] = []
         for phase in assignment.PHASES:
-            data['value'].append({
+            phases.append({
                 'value': phase[0],
                 'display_name': phase[1],
             })
-        return [data]
+        return {'AssignmentPhases': phases}

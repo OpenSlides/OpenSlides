@@ -94,17 +94,17 @@ class WebclientJavaScriptView(TestCase):
         response = self.client.get(reverse('core_webclient_javascript', args=['site']))
         content = response.content.decode()
         constants = self.get_angular_constants_from_apps()
-        for constant in constants:
-            self.assertTrue(json.dumps(constant['value']) in content)
+        for key, constant in constants.items():
+            self.assertTrue(json.dumps(constant) in content)
 
     def get_angular_constants_from_apps(self):
-        constants = []
+        constants = {}
         for app in apps.get_app_configs():
             try:
                 get_angular_constants = app.get_angular_constants
             except AttributeError:
                 continue
-            constants.extend(get_angular_constants())
+            constants.update(get_angular_constants())
         return constants
 
 

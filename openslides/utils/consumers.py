@@ -4,6 +4,7 @@ import jsonschema
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from django.apps import apps
 
 from ..core.config import config
 from ..core.models import Projector
@@ -30,7 +31,7 @@ class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
             "type": {
                 "description": "Defines what kind of packages is packed.",
                 "type": "string",
-                "pattern": "notify",  # The server can sent other types
+                "pattern": "notify|constantsRequest",  # The server can sent other types
             },
             "content": {
                 "description": "The content of the package.",
@@ -136,6 +137,19 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
                 )
             else:
                 await self.send_json(type='error', content='Invalid notify message', in_response=id)
+        elif type == 'constantsRequest':
+            angular_constants: Dict[str, Any] = {}
+            for app in apps.get_app_configs():
+                try:
+                    # Each app can deliver values to angular when implementing this method.
+                    # It should return a list with dicts containing the 'name' and 'value'.
+                    get_angular_constants = app.get_angular_constants
+                except AttributeError:
+                    # The app doesn't have this method. Continue to next app.
+                    continue
+                constants = await database_sync_to_async(get_angular_constants)()
+                angular_constants.update(constants)
+            await self.send_json(type='constantsResponse', content=angular_constants, in_response=id)
 
     async def send_notify(self, event: Dict[str, Any]) -> None:
         """

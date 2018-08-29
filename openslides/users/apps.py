@@ -58,7 +58,4 @@ class UsersAppConfig(AppConfig):
             permissions.append({
                 'display_name': permission.name,
                 'value': '.'.join((permission.content_type.app_label, permission.codename,))})
-        permission_settings = {
-            'name': 'permissions',
-            'value': permissions}
-        return [permission_settings]
+        return {'permissions': permissions}

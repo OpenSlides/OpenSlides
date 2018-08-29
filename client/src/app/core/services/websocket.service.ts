@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
@@ -36,7 +36,26 @@ export class WebsocketService {
     /**
      * Subjects that will be called, if a reconnect was successful.
      */
-    private reconnectSubject: Subject<void>;
+    private _reconnectEvent: EventEmitter<void> = new EventEmitter<void>();
+
+    /**
+     * Getter for the reconnect event.
+     */
+    public get reconnectEvent(): EventEmitter<void> {
+        return this._reconnectEvent;
+    }
+
+    /**
+     * Listeners will be nofitied, if the wesocket connection is establiched.
+     */
+    private _connectEvent: EventEmitter<void> = new EventEmitter<void>();
+
+    /**
+     * Getter for the connect event.
+     */
+    public get connectEvent(): EventEmitter<void> {
+        return this._connectEvent;
+    }
 
     /**
      * The websocket.
@@ -57,9 +76,7 @@ export class WebsocketService {
         private matSnackBar: MatSnackBar,
         private zone: NgZone,
         public translate: TranslateService
-    ) {
-        this.reconnectSubject = new Subject<void>();
-    }
+    ) {}
 
     /**
      * Creates a new WebSocket connection and handles incomming events.
@@ -91,8 +108,9 @@ export class WebsocketService {
                         this.connectionErrorNotice.dismiss();
                         this.connectionErrorNotice = null;
                     }
-                    this.reconnectSubject.next();
+                    this._reconnectEvent.emit();
                 }
+                this._connectEvent.emit();
             });
         };
 
@@ -154,13 +172,6 @@ export class WebsocketService {
             this.subjects[type] = new Subject<T>();
         }
         return this.subjects[type].asObservable();
-    }
-
-    /**
-     * get the reconnect observable. It will be published, if a reconnect was sucessful.
-     */
-    public getReconnectObservable(): Observable<void> {
-        return this.reconnectSubject.asObservable();
     }
 
     /**
