@@ -6,11 +6,11 @@ import { BaseModel } from '../base.model';
  */
 export class Category extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    name: string;
-    prefix: string;
+    public id: number;
+    public name: string;
+    public prefix: string;
 
-    constructor(id?: number, name?: string, prefix?: string) {
+    public constructor(id?: number, name?: string, prefix?: string) {
         super();
         this._collectionString = 'motions/category';
         this.id = id;

@@ -18,7 +18,11 @@ export class PruningTranslationLoader implements TranslateLoader {
      * @param prefix Path to the language files. Can be adjusted of needed
      * @param suffix Suffix of the translation files. Usually '.json'.
      */
-    constructor(private http: HttpClient, private prefix: string = '/assets/i18n/', private suffix: string = '.json') {}
+    public constructor(
+        private http: HttpClient,
+        private prefix: string = '/assets/i18n/',
+        private suffix: string = '.json'
+    ) {}
 
     /**
      * Loads a language file, stores the content, give it to the process function.

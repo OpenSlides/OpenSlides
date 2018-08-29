@@ -17,34 +17,34 @@ import { WorkflowState } from './workflow-state';
  */
 export class Motion extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    identifier: string;
-    versions: MotionVersion[];
-    active_version: number;
-    parent_id: number;
-    category_id: number;
-    motion_block_id: number;
-    origin: string;
-    submitters: MotionSubmitter[];
-    supporters_id: number[];
-    comments: Object;
-    state_id: number;
-    state_required_permission_to_see: string;
-    recommendation_id: number;
-    tags_id: number[];
-    attachments_id: number[];
-    polls: BaseModel[];
-    agenda_item_id: number;
-    log_messages: MotionLog[];
+    public id: number;
+    public identifier: string;
+    public versions: MotionVersion[];
+    public active_version: number;
+    public parent_id: number;
+    public category_id: number;
+    public motion_block_id: number;
+    public origin: string;
+    public submitters: MotionSubmitter[];
+    public supporters_id: number[];
+    public comments: Object;
+    public state_id: number;
+    public state_required_permission_to_see: string;
+    public recommendation_id: number;
+    public tags_id: number[];
+    public attachments_id: number[];
+    public polls: BaseModel[];
+    public agenda_item_id: number;
+    public log_messages: MotionLog[];
 
     // dynamic values
-    workflow: Workflow;
+    public workflow: Workflow;
 
     // for request
-    title: string;
-    text: string;
+    public title: string;
+    public text: string;
 
-    constructor(
+    public constructor(
         id?: number,
         identifier?: string,
         versions?: MotionVersion[],
@@ -93,14 +93,14 @@ export class Motion extends BaseModel {
     /**
      * update the values of the motion with new values
      */
-    patchValues(update: object) {
+    public patchValues(update: object) {
         Object.assign(this, update);
     }
 
     /**
      * sets the and the workflow from either dataStore or WebSocket
      */
-    initDataStoreValues() {
+    public initDataStoreValues() {
         // check the containing Workflows in DataStore
         const allWorkflows = this.DS.get(Workflow) as Workflow[];
         allWorkflows.forEach(localWorkflow => {
@@ -123,7 +123,7 @@ export class Motion extends BaseModel {
      * add a new motionSubmitter from user-object
      * @param user the user
      */
-    addSubmitter(user: User) {
+    public addSubmitter(user: User) {
         const newSubmitter = new MotionSubmitter(null, user.id);
         this.submitters.push(newSubmitter);
         console.log('did addSubmitter. this.submitters: ', this.submitters);
@@ -132,7 +132,7 @@ export class Motion extends BaseModel {
     /**
      * returns the most current title from versions
      */
-    get currentTitle(): string {
+    public get currentTitle(): string {
         if (this.versions && this.versions[0]) {
             return this.versions[0].title;
         } else {
@@ -145,7 +145,7 @@ export class Motion extends BaseModel {
      *
      * TODO: Altering the current version should be avoided.
      */
-    set currentTitle(newTitle: string) {
+    public set currentTitle(newTitle: string) {
         if (this.versions[0]) {
             this.versions[0].title = newTitle;
         }
@@ -154,7 +154,7 @@ export class Motion extends BaseModel {
     /**
      * returns the most current motion text from versions
      */
-    get currentText() {
+    public get currentText() {
         if (this.versions) {
             return this.versions[0].text;
         } else {
@@ -162,14 +162,14 @@ export class Motion extends BaseModel {
         }
     }
 
-    set currentText(newText: string) {
+    public set currentText(newText: string) {
         this.versions[0].text = newText;
     }
 
     /**
      * returns the most current motion reason text from versions
      */
-    get currentReason() {
+    public get currentReason() {
         if (this.versions) {
             return this.versions[0].reason;
         } else {
@@ -181,14 +181,14 @@ export class Motion extends BaseModel {
      * Update the current reason.
      * TODO: ignores motion versions. Should make a new one.
      */
-    set currentReason(newReason: string) {
+    public set currentReason(newReason: string) {
         this.versions[0].reason = newReason;
     }
 
     /**
      * return the submitters as uses objects
      */
-    get submitterAsUser() {
+    public get submitterAsUser() {
         const submitterIds = [];
         if (this.submitters && this.submitters.length > 0) {
             this.submitters.forEach(submitter => {
@@ -204,7 +204,7 @@ export class Motion extends BaseModel {
     /**
      * get the category of a motion as object
      */
-    get category(): any {
+    public get category(): any {
         if (this.category_id) {
             const motionCategory = this.DS.get(Category, this.category_id);
             return motionCategory as Category;
@@ -216,14 +216,14 @@ export class Motion extends BaseModel {
     /**
      * Set the category in the motion
      */
-    set category(newCategory: any) {
+    public set category(newCategory: any) {
         this.category_id = newCategory.id;
     }
 
     /**
      * return the workflow state
      */
-    get state(): any {
+    public get state(): any {
         if (this.workflow) {
             return this.workflow.state_by_id(this.state_id);
         } else {
@@ -234,7 +234,7 @@ export class Motion extends BaseModel {
     /**
      * returns possible states for the motion
      */
-    get nextStates(): WorkflowState[] {
+    public get nextStates(): WorkflowState[] {
         if (this.workflow && this.state) {
             return this.state.getNextStates(this.workflow);
         } else {
@@ -247,7 +247,7 @@ export class Motion extends BaseModel {
      *
      * TODO: Motion workflow needs to be specific on the server
      */
-    get recommendation(): any {
+    public get recommendation(): any {
         if (this.recommendation_id && this.workflow && this.workflow.id) {
             const state = this.workflow.state_by_id(this.recommendation_id);
             return state;
@@ -259,7 +259,7 @@ export class Motion extends BaseModel {
     /**
      * returns the value of 'config.motions_recommendations_by'
      */
-    get recomBy() {
+    public get recomBy() {
         const motionsRecommendationsByConfig = this.DS.filter(
             Config,
             config => config.key === 'motions_recommendations_by'
@@ -273,7 +273,7 @@ export class Motion extends BaseModel {
         }
     }
 
-    deserialize(input: any): this {
+    public deserialize(input: any): this {
         Object.assign(this, input);
 
         if (input.versions instanceof Array) {

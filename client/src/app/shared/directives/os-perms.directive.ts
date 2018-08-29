@@ -33,7 +33,7 @@ export class OsPermsDirective extends OpenSlidesComponent {
      * @param viewContainer outer part of the HTML container (for example a `<div>`)
      * @param operator OperatorService
      */
-    constructor(
+    public constructor(
         private template: TemplateRef<any>,
         private viewContainer: ViewContainerRef,
         private operator: OperatorService
@@ -51,7 +51,7 @@ export class OsPermsDirective extends OpenSlidesComponent {
      * The value defines the requires permissions as an array or a single permission.
      */
     @Input()
-    set appOsPerms(value) {
+    public set appOsPerms(value) {
         if (!value) {
             value = [];
         } else if (typeof value === 'string') {

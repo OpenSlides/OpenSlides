@@ -34,13 +34,13 @@ export class ViewportService {
      *
      * @param breakpointObserver
      */
-    constructor(private breakpointObserver: BreakpointObserver) {}
+    public constructor(private breakpointObserver: BreakpointObserver) {}
 
     /**
      * Needs to be called (exactly) once.
      * Will observe breakpoints and updates the _isMobile variable
      */
-    checkForChange() {
+    public checkForChange() {
         this.breakpointObserver
             .observe([Breakpoints.Small, Breakpoints.HandsetPortrait])
             .subscribe((state: BreakpointState) => {
@@ -52,7 +52,7 @@ export class ViewportService {
             });
     }
 
-    get isMobile() {
+    public get isMobile() {
         return this._isMobile;
     }
 }

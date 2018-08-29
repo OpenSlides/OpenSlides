@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { BaseComponent } from 'app/base.component';
 
-import { TranslateService } from '@ngx-translate/core'; //showcase
+import { TranslateService } from '@ngx-translate/core'; // showcase
 
 // for testing the DS and BaseModel
-import { OperatorService } from 'app/core/services/operator.service';
 import { User } from 'app/shared/models/users/user';
 import { Config } from '../../shared/models/core/config';
 import { Motion } from '../../shared/models/motions/motion';
@@ -18,17 +17,16 @@ import { MotionSubmitter } from '../../shared/models/motions/motion-submitter';
     styleUrls: ['./start.component.css']
 })
 export class StartComponent extends BaseComponent implements OnInit {
-    welcomeTitle: string;
-    welcomeText: string;
+    public welcomeTitle: string;
+    public welcomeText: string;
 
     /**
      * Constructor of the StartComponent
      *
      * @param titleService the title serve
      * @param translate to translation module
-     * @param operator operator
      */
-    constructor(titleService: Title, protected translate: TranslateService, private operator: OperatorService) {
+    public constructor(titleService: Title, protected translate: TranslateService) {
         super(titleService, translate);
     }
 
@@ -40,8 +38,9 @@ export class StartComponent extends BaseComponent implements OnInit {
      * And observes DataStore for changes
      * Set title and observe DataStore for changes.
      */
-    ngOnInit() {
+    public ngOnInit() {
         // required dummy translation, cause translations for config values were never set
+        // tslint:disable-next-line
         const welcomeTitleTranslateDummy = this.translate.instant('Welcome to OpenSlides');
         super.setTitle('Home');
 
@@ -79,7 +78,7 @@ export class StartComponent extends BaseComponent implements OnInit {
     /**
      * test data store
      */
-    DataStoreTest() {
+    public DataStoreTest() {
         console.log('add a user to dataStore');
         this.DS.add(new User(100));
         console.log('add three users to dataStore');
@@ -109,14 +108,14 @@ export class StartComponent extends BaseComponent implements OnInit {
     /**
      * function to print datastore
      */
-    giveDataStore() {
+    public giveDataStore() {
         this.DS.printWhole();
     }
 
     /**
      * test translations in component
      */
-    TranslateTest() {
+    public TranslateTest() {
         console.log('lets translate the word "motion" in the current in the current lang');
         console.log('Motions in ' + this.translate.currentLang + ' is ' + this.translate.instant('Motions'));
     }
@@ -124,7 +123,7 @@ export class StartComponent extends BaseComponent implements OnInit {
     /**
      * Adds random generated motions
      */
-    createMotions(requiredMotions: number): void {
+    public createMotions(requiredMotions: number): void {
         console.log('adding ' + requiredMotions + ' Motions.');
         const newMotionsArray = [];
 
@@ -153,7 +152,7 @@ export class StartComponent extends BaseComponent implements OnInit {
         `;
 
         for (let i = 1; i <= requiredMotions; ++i) {
-            //version
+            // version
             const newMotionVersion = new MotionVersion(
                 200 + i,
                 1,
@@ -163,9 +162,9 @@ export class StartComponent extends BaseComponent implements OnInit {
                 null,
                 longMotionText
             );
-            //submitter
+            // submitter
             const newMotionSubmitter = new MotionSubmitter(1, 1, 200 + 1, 0);
-            //motion
+            // motion
             const newMotion = new Motion(
                 200 + i,
                 'GenMo ' + i,

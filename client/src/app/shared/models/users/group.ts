@@ -6,11 +6,11 @@ import { BaseModel } from '../base.model';
  */
 export class Group extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    name: string;
-    permissions: string[];
+    public id: number;
+    public name: string;
+    public permissions: string[];
 
-    constructor(id?: number, name?: string, permissions?: string[]) {
+    public constructor(id?: number, name?: string, permissions?: string[]) {
         super();
         this._collectionString = 'users/group';
         this.id = id;

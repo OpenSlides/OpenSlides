@@ -1,6 +1,5 @@
 import { Deserializable } from '../deserializable.model';
 import { Workflow } from './workflow';
-import { MotionLog } from './motion-log';
 
 /**
  * Representation of a workflow state
@@ -9,22 +8,22 @@ import { MotionLog } from './motion-log';
  * @ignore
  */
 export class WorkflowState implements Deserializable {
-    id: number;
-    name: string;
-    action_word: string;
-    recommendation_label: string;
-    css_class: string;
-    required_permission_to_see: string;
-    allow_support: boolean;
-    allow_create_poll: boolean;
-    allow_submitter_edit: boolean;
-    versioning: boolean;
-    leave_old_version_active: boolean;
-    dont_set_identifier: boolean;
-    show_state_extension_field: boolean;
-    show_recommendation_extension_field: boolean;
-    next_states_id: number[];
-    workflow_id: number;
+    public id: number;
+    public name: string;
+    public action_word: string;
+    public recommendation_label: string;
+    public css_class: string;
+    public required_permission_to_see: string;
+    public allow_support: boolean;
+    public allow_create_poll: boolean;
+    public allow_submitter_edit: boolean;
+    public versioning: boolean;
+    public leave_old_version_active: boolean;
+    public dont_set_identifier: boolean;
+    public show_state_extension_field: boolean;
+    public show_recommendation_extension_field: boolean;
+    public next_states_id: number[];
+    public workflow_id: number;
 
     /**
      * Needs to be completely optional because Workflow has (yet) the optional parameter 'states'
@@ -45,7 +44,7 @@ export class WorkflowState implements Deserializable {
      * @param next_states_id
      * @param workflow_id
      */
-    constructor(
+    public constructor(
         id?: number,
         name?: string,
         action_word?: string,
@@ -85,7 +84,7 @@ export class WorkflowState implements Deserializable {
      * return a list of the next possible states.
      * Also adds the current state.
      */
-    getNextStates(workflow: Workflow): WorkflowState[] {
+    public getNextStates(workflow: Workflow): WorkflowState[] {
         const nextStates = [];
         workflow.states.forEach(state => {
             if (this.next_states_id.includes(state.id)) {
@@ -95,7 +94,7 @@ export class WorkflowState implements Deserializable {
         return nextStates;
     }
 
-    deserialize(input: any): this {
+    public deserialize(input: any): this {
         Object.assign(this, input);
         return this;
     }

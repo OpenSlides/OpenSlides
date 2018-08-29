@@ -54,52 +54,52 @@ export class HeadBarComponent implements OnInit {
     /**
      * Input declaration for the app name
      */
-    @Input() appName: string;
+    @Input() public appName: string;
 
     /**
      * Determine if there should be a plus button.
      */
-    @Input() plusButton: false;
+    @Input() public plusButton: false;
 
     /**
      * If not empty shows a ellipsis menu on the right side
      *
      * The parent needs to provide a menu, i.e `[menuList]=myMenu`.
      */
-    @Input() menuList: any[];
+    @Input() public menuList: any[];
 
     /**
      * Emit a signal to the parent component if the plus button was clicked
      */
-    @Output() plusButtonClicked = new EventEmitter<boolean>();
+    @Output() public plusButtonClicked = new EventEmitter<boolean>();
 
     /**
      * Emit a signal to the parent of an item in the menuList was selected.
      */
-    @Output() ellipsisMenuItem = new EventEmitter<any>();
+    @Output() public ellipsisMenuItem = new EventEmitter<any>();
 
     /**
      * Empty constructor
      */
-    constructor() {}
+    public constructor() {}
 
     /**
      * empty onInit
      */
-    ngOnInit() {}
+    public ngOnInit() {}
 
     /**
      * Emits a signal to the parent if an item in the menu was clicked.
      * @param item
      */
-    clickMenu(item: any) {
+    public clickMenu(item: any) {
         this.ellipsisMenuItem.emit(item);
     }
 
     /**
      * Emits a signal to the parent if
      */
-    clickPlusButton() {
+    public clickPlusButton() {
         this.plusButtonClicked.emit(true);
     }
 }

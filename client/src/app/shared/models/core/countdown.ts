@@ -6,13 +6,19 @@ import { BaseModel } from '../base.model';
  */
 export class Countdown extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    description: string;
-    default_time: number;
-    countdown_time: number;
-    running: boolean;
+    public id: number;
+    public description: string;
+    public default_time: number;
+    public countdown_time: number;
+    public running: boolean;
 
-    constructor(id?: number, countdown_time?: number, default_time?: number, description?: string, running?: boolean) {
+    public constructor(
+        id?: number,
+        countdown_time?: number,
+        default_time?: number,
+        description?: string,
+        running?: boolean
+    ) {
         super();
         this._collectionString = 'core/countdown';
         this.id = id;

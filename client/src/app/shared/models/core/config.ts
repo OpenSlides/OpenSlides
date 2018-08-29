@@ -6,11 +6,11 @@ import { BaseModel } from '../base.model';
  */
 export class Config extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    key: string;
-    value: Object;
+    public id: number;
+    public key: string;
+    public value: Object;
 
-    constructor(id?: number, key?: string, value?: Object) {
+    public constructor(id?: number, key?: string, value?: Object) {
         super();
         this._collectionString = 'core/config';
         this.id = id;

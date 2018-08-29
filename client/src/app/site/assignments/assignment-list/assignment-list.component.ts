@@ -15,19 +15,10 @@ import { Title } from '@angular/platform-browser';
 })
 export class AssignmentListComponent extends BaseComponent implements OnInit {
     /**
-     * Constructor.
-     * @param titleService
-     * @param translate
-     */
-    constructor(titleService: Title, protected translate: TranslateService) {
-        super(titleService, translate);
-    }
-
-    /**
      * Define the content of the ellipsis menu.
      * Give it to the HeadBar to display them.
      */
-    assignmentMenu = [
+    public assignmentMenu = [
         {
             text: 'Download All',
             icon: 'download',
@@ -36,16 +27,25 @@ export class AssignmentListComponent extends BaseComponent implements OnInit {
     ];
 
     /**
+     * Constructor.
+     * @param titleService
+     * @param translate
+     */
+    public constructor(titleService: Title, protected translate: TranslateService) {
+        super(titleService, translate);
+    }
+
+    /**
      * Click on the plus button delegated from head-bar
      */
-    onPlusButton() {
+    public onPlusButton() {
         console.log('create new assignments');
     }
 
     /**
      * Init function. Sets the title.
      */
-    ngOnInit() {
+    public ngOnInit() {
         super.setTitle('Assignments');
     }
 
@@ -53,7 +53,7 @@ export class AssignmentListComponent extends BaseComponent implements OnInit {
      * Function to download the assignment list
      * TODO: Not yet implemented
      */
-    downloadAssignmentButton(): void {
+    public downloadAssignmentButton(): void {
         console.log('Hello World');
     }
 
@@ -62,7 +62,7 @@ export class AssignmentListComponent extends BaseComponent implements OnInit {
      *
      * @param event clicked entry from ellipsis menu
      */
-    onEllipsisItem(event: any) {
+    public onEllipsisItem(event: any) {
         if (event.action) {
             this[event.action]();
         }

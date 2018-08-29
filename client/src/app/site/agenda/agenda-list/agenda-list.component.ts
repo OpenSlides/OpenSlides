@@ -19,7 +19,7 @@ export class AgendaListComponent extends BaseComponent implements OnInit {
      * @param titleService
      * @param translate
      */
-    constructor(titleService: Title, protected translate: TranslateService) {
+    public constructor(titleService: Title, protected translate: TranslateService) {
         super(titleService, translate);
     }
 
@@ -27,7 +27,7 @@ export class AgendaListComponent extends BaseComponent implements OnInit {
      * Init function.
      * Sets the title
      */
-    ngOnInit() {
+    public ngOnInit() {
         super.setTitle('Agenda');
     }
 
@@ -35,7 +35,7 @@ export class AgendaListComponent extends BaseComponent implements OnInit {
      * Handler for the plus button.
      * Comes from the HeadBar Component
      */
-    onPlusButton() {
+    public onPlusButton() {
         console.log('create new motion');
     }
 }

@@ -11,12 +11,6 @@ export class CollectionStringModelMapperService {
     private static collectionStringsTypeMapping: { [collectionString: string]: ModelConstructor } = {};
 
     /**
-     * Constructor to create the NotifyService. Registers itself to the WebsocketService.
-     * @param websocketService
-     */
-    constructor() {}
-
-    /**
      * Registers the type to the collection string
      * @param collectionString
      * @param type
@@ -32,4 +26,10 @@ export class CollectionStringModelMapperService {
     public static getCollectionStringType(collectionString: string): ModelConstructor {
         return CollectionStringModelMapperService.collectionStringsTypeMapping[collectionString];
     }
+
+    /**
+     * Constructor to create the NotifyService. Registers itself to the WebsocketService.
+     * @param websocketService
+     */
+    public constructor() {}
 }

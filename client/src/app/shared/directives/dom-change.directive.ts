@@ -13,7 +13,7 @@ export class DomChangeDirective implements OnDestroy {
 
     @Output() public domChange = new EventEmitter();
 
-    constructor(private elementRef: ElementRef) {
+    public constructor(private elementRef: ElementRef) {
         const element = this.elementRef.nativeElement;
 
         this.changes = new MutationObserver((mutations: MutationRecord[]) => {
@@ -27,7 +27,7 @@ export class DomChangeDirective implements OnDestroy {
         });
     }
 
-    ngOnDestroy(): void {
+    public ngOnDestroy(): void {
         this.changes.disconnect();
     }
 }

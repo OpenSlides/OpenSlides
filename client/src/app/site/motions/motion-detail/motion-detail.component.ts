@@ -19,42 +19,42 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * MatExpansionPanel for the meta info
      */
-    @ViewChild('metaInfoPanel') metaInfoPanel: MatExpansionPanel;
+    @ViewChild('metaInfoPanel') public metaInfoPanel: MatExpansionPanel;
 
     /**
      * MatExpansionPanel for the content panel
      */
-    @ViewChild('contentPanel') contentPanel: MatExpansionPanel;
+    @ViewChild('contentPanel') public contentPanel: MatExpansionPanel;
 
     /**
      * Target motion. Might be new or old
      */
-    motion: Motion;
+    public motion: Motion;
 
     /**
      * Copy of the motion that the user might edit
      */
-    motionCopy: Motion;
+    public motionCopy: Motion;
 
     /**
      * Motions meta-info
      */
-    metaInfoForm: FormGroup;
+    public metaInfoForm: FormGroup;
 
     /**
      * Motion content. Can be a new version
      */
-    contentForm: FormGroup;
+    public contentForm: FormGroup;
 
     /**
      * Determine if the motion is edited
      */
-    editMotion = false;
+    public editMotion = false;
 
     /**
      * Determine if the motion is new
      */
-    newMotion = false;
+    public newMotion = false;
 
     /**
      * Constuct the detail view.
@@ -63,7 +63,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * @param route determine if this is a new or an existing motion
      * @param formBuilder For reactive forms. Form Group and Form Control
      */
-    constructor(
+    public constructor(
         private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
@@ -100,7 +100,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Async load the values of the motion in the Form.
      */
-    patchForm(formMotion: Motion) {
+    public patchForm(formMotion: Motion) {
         console.log('Motion: ', this.motion);
         console.log('category_id: ', formMotion);
 
@@ -123,7 +123,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      *
      * TODO: Build a custom form validator
      */
-    createForm() {
+    public createForm() {
         this.metaInfoForm = this.formBuilder.group({
             identifier: [''],
             category_id: [''],
@@ -147,7 +147,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      *
      * TODO: state is not yet saved. Need a special "put" command
      */
-    saveMotion() {
+    public saveMotion() {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
         this.motionCopy.patchValues(newMotionValues);
 
@@ -166,7 +166,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * return all Categories.
      */
-    getMotionCategories(): Category[] {
+    public getMotionCategories(): Category[] {
         const categories = this.DS.get(Category);
         return categories as Category[];
     }
@@ -174,7 +174,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Click on the edit button (pen-symbol)
      */
-    editMotionButton() {
+    public editMotionButton() {
         this.editMotion ? (this.editMotion = false) : (this.editMotion = true);
         if (this.editMotion) {
             // copy the motion
@@ -191,7 +191,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Trigger to delete the motion
      */
-    deleteMotionButton() {
+    public deleteMotionButton() {
         this.dataSend.delete(this.motion).subscribe(answer => {
             this.router.navigate(['./motions/']);
         });
@@ -200,5 +200,5 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Init. Does nothing here.
      */
-    ngOnInit() {}
+    public ngOnInit() {}
 }

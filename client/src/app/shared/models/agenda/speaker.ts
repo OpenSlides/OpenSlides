@@ -7,13 +7,13 @@ import { Deserializable } from '../deserializable.model';
  * @ignore
  */
 export class Speaker implements Deserializable {
-    id: number;
-    user_id: number;
-    begin_time: string; //TODO this is a time object
-    end_time: string; // TODO this is a time object
-    weight: number;
-    marked: boolean;
-    item_id: number;
+    public id: number;
+    public user_id: number;
+    public begin_time: string; // TODO this is a time object
+    public end_time: string; // TODO this is a time object
+    public weight: number;
+    public marked: boolean;
+    public item_id: number;
 
     /**
      * Needs to be completely optional because agenda has (yet) the optional parameter 'speaker'
@@ -25,7 +25,7 @@ export class Speaker implements Deserializable {
      * @param marked
      * @param item_id
      */
-    constructor(
+    public constructor(
         id?: number,
         user_id?: number,
         begin_time?: string,
@@ -43,7 +43,7 @@ export class Speaker implements Deserializable {
         this.item_id = item_id;
     }
 
-    deserialize(input: any): this {
+    public deserialize(input: any): this {
         Object.assign(this, input);
         return this;
     }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
@@ -16,7 +16,7 @@ import { OpenSlidesService } from '../../core/services/openslides.service';
  * Custom error states. Might become part of the shared module later.
  */
 export class ParentErrorStateMatcher implements ErrorStateMatcher {
-    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    public isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
         const isSubmitted = !!(form && form.submitted);
         const controlTouched = !!(control && (control.dirty || control.touched));
         const controlInvalid = !!(control && control.invalid);
@@ -81,7 +81,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
      * @param router forward to start page
      * @param formBuilder To build the form and validate
      */
-    constructor(
+    public constructor(
         protected titleService: Title,
         protected translate: TranslateService,
         private authService: AuthService,

@@ -27,7 +27,7 @@ export class OpenSlidesService extends OpenSlidesComponent {
      * @param router
      * @param autoupdateService
      */
-    constructor(
+    public constructor(
         private cacheService: CacheService,
         private operator: OperatorService,
         private websocketService: WebsocketService,

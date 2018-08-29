@@ -8,22 +8,22 @@ import { ContentObject } from './content-object';
  */
 export class Item extends BaseModel {
     protected _collectionString: string;
-    id: number;
-    item_number: string;
-    title: string;
-    list_view_title: string;
-    comment: string;
-    closed: boolean;
-    type: number;
-    is_hidden: boolean;
-    duration: number;
-    speakers: Speaker[];
-    speaker_list_closed: boolean;
-    content_object: ContentObject;
-    weight: number;
-    parent_id: number;
+    public id: number;
+    public item_number: string;
+    public title: string;
+    public list_view_title: string;
+    public comment: string;
+    public closed: boolean;
+    public type: number;
+    public is_hidden: boolean;
+    public duration: number;
+    public speakers: Speaker[];
+    public speaker_list_closed: boolean;
+    public content_object: ContentObject;
+    public weight: number;
+    public parent_id: number;
 
-    constructor(
+    public constructor(
         id?: number,
         item_number?: string,
         title?: string,
@@ -57,7 +57,7 @@ export class Item extends BaseModel {
         this.parent_id = parent_id;
     }
 
-    getSpeakersAsUser(): BaseModel | BaseModel[] {
+    public getSpeakersAsUser(): BaseModel | BaseModel[] {
         const speakerIds = [];
         this.speakers.forEach(speaker => {
             speakerIds.push(speaker.user_id);
@@ -65,11 +65,11 @@ export class Item extends BaseModel {
         return this.DS.get('users/user', ...speakerIds);
     }
 
-    getContentObject(): BaseModel | BaseModel[] {
+    public getContentObject(): BaseModel | BaseModel[] {
         return this.DS.get(this.content_object.collection, this.content_object.id);
     }
 
-    deserialize(input: any): this {
+    public deserialize(input: any): this {
         Object.assign(this, input);
         this.content_object = new ContentObject().deserialize(input.content_object);
 
