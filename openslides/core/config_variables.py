@@ -299,7 +299,7 @@ def get_config_variables():
     yield ConfigVariable(
         name='logo_pdf_header_L',
         default_value={
-            'display_name': 'PDF header logo (Left)',
+            'display_name': 'PDF header logo (left)',
             'path': ''},
         input_type='static',
         weight=310,
@@ -309,7 +309,7 @@ def get_config_variables():
     yield ConfigVariable(
         name='logo_pdf_header_R',
         default_value={
-            'display_name': 'PDF header logo (Right)',
+            'display_name': 'PDF header logo (right)',
             'path': ''},
         input_type='static',
         weight=311,
@@ -319,7 +319,7 @@ def get_config_variables():
     yield ConfigVariable(
         name='logo_pdf_footer_L',
         default_value={
-            'display_name': 'PDF footer logo (Left)',
+            'display_name': 'PDF footer logo (left)',
             'path': ''},
         input_type='static',
         weight=312,
@@ -329,7 +329,7 @@ def get_config_variables():
     yield ConfigVariable(
         name='logo_pdf_footer_R',
         default_value={
-            'display_name': 'PDF footer logo (Right)',
+            'display_name': 'PDF footer logo (right)',
             'path': ''},
         input_type='static',
         weight=313,
