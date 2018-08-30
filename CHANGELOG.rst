@@ -6,12 +6,11 @@ https://openslides.org/
 
 Version 2.3 (unreleased)
 ========================
+`Release notes <https://github.com/OpenSlides/OpenSlides/wiki/OpenSlides-2.3>`_ ·
+`Milestone <https://github.com/OpenSlides/OpenSlides/milestones/2.3>`_
 
 Agenda:
  - New item type 'hidden'. New visibilty filter in agenda [#3790].
-
-Elections:
- - Support to change decimal places for elections with a plugin [#3803]
 
 Motions:
  - New feature to scroll the projector to a specific line [#3748].
@@ -19,18 +18,21 @@ Motions:
  - New representation of amendments (paragraph based creation, new diff
    and list views for amendments) [#3637].
  - New feature to customize workflows and states [#3772, #3785].
- - New config options to show logos on the right side in PDF [#3768].
  - New table of contents with page numbers and categories in PDF [#3766].
  - New teporal field "modified final version" where the final version can
    be edited [#3781].
+ - New config options to show logos on the right side in PDF [#3768].
  - New config to show amendments also in motions table [#3792].
  - Support to change decimal places for polls with a plugin [#3803].
 
+Elections:
+ - Support to change decimal places for elections with a plugin [#3803]
+
 Core:
- - Python 3.4 is not supported anymore [#3777].
- - Support Python 3.7 [#3786].
- - Updated pdfMake to 0.1.37 [#3766].
  - Updated Django to 2.1 [#3777, #3786].
+ - Support for Python 3.7 [#3786].
+ - Python 3.4 is not supported anymore [#3777].
+ - Updated pdfMake to 0.1.37 [#3766].
  - Changed behavior of collectstatic management command [#3804].
 
 

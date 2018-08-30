@@ -1,7 +1,7 @@
 <!-- Modified agreed view -->
 <div ng-if="viewChangeRecommendations.mode == 'modified_agreed'">
     <div style="text-align: right;">
-      <button class="btn btn-default btn-danger btn-sm"
+      <button class="btn btn-default btn-danger btn-sm" os-perms="motions.can_manage"
           ng-bootbox-confirm="{{ 'Do you want to delete the final print template?' | translate }}"
           ng-bootbox-confirm-action="viewChangeRecommendations.deleteModifiedFinalVersion(motion, version)">
         <i class="fa fa-trash"></i>
