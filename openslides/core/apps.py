@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 
 from django.apps import AppConfig
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import post_migrate
 
 from ..utils.projector import register_projector_elements
@@ -37,6 +38,14 @@ class CoreAppConfig(AppConfig):
             ProjectorViewSet,
             TagViewSet,
         )
+        from ..utils.constants import set_constants, get_constants_from_apps
+
+        # Set constants
+        try:
+            set_constants(get_constants_from_apps())
+        except ImproperlyConfigured:
+            # Database is not loaded. This happens in tests.
+            pass
 
         # Define config variables and projector elements.
         config.update_config_variables(get_config_variables())

@@ -48,6 +48,7 @@ from .models import (
     ProjectorMessage,
     Tag,
 )
+from ..utils.constants import get_constants
 
 
 # Special Django views
@@ -133,17 +134,9 @@ class WebclientJavaScriptView(utils_views.View):
 
         # angular constants
         angular_constants = ''
-        for app in apps.get_app_configs():
-            try:
-                # Each app can deliver values to angular when implementing this method.
-                # It should return a list with dicts containing the 'name' and 'value'.
-                get_angular_constants = app.get_angular_constants
-            except AttributeError:
-                # The app doesn't have this method. Continue to next app.
-                continue
-            for key, value in get_angular_constants().items():
-                value = json.dumps(value)
-                angular_constants += ".constant('{}', {})".format(key, value)
+        for key, value in get_constants().items():
+            value = json.dumps(value)
+            angular_constants += ".constant('{}', {})".format(key, value)
 
         # Use JavaScript loadScript function from
         # http://balpha.de/2011/10/jquery-script-insertion-and-its-consequences-for-debugging/
