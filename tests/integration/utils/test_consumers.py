@@ -241,3 +241,18 @@ async def test_send_unknown_type(communicator):
     response = await communicator.receive_json_from()
     assert response['type'] == 'error'
     assert response['in_response'] == 'test_id'
+
+
+@pytest.mark.asyncio
+async def test_request_constants(communicator, settings):
+    await set_config('general_system_enable_anonymous', True)
+    await communicator.connect()
+    # Await the startup data
+    await communicator.receive_json_from()
+
+    await communicator.send_json_to({'type': 'constants', 'content': '', 'id': 'test_id'})
+
+    response = await communicator.receive_json_from()
+    assert response['type'] == 'constants'
+    # See conftest.py for the content of 'content'
+    assert response['content'] == {'constant1': 'value1', 'constant2': 'value2'}
