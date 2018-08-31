@@ -121,10 +121,6 @@ class CoreAppConfig(AppConfig):
             config_groups[-1]['subgroups'][-1]['items'].append(config_variable.data)
         constants['OpenSlidesConfigVariables'] = config_groups
 
-        # Send the privacy policy to the client. A user should view them, even he is
-        # not logged in (so does not have the config values yet).
-        constants['PrivacyPolicy'] = config['general_event_privacy_policy']
-
         return constants
 
 

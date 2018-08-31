@@ -15,6 +15,7 @@ from .. import __license__ as license, __url__ as url, __version__ as version
 from ..utils import views as utils_views
 from ..utils.auth import anonymous_is_enabled, has_perm
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
+from ..utils.constants import get_constants
 from ..utils.plugins import (
     get_plugin_description,
     get_plugin_license,
@@ -48,7 +49,6 @@ from .models import (
     ProjectorMessage,
     Tag,
 )
-from ..utils.constants import get_constants
 
 
 # Special Django views

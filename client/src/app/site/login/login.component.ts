@@ -73,6 +73,13 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public inProcess = false;
 
     /**
+     * The provacy policy send by the server.
+     *
+     * TODO: give an option to show it during login.
+     */
+    public privacyPolicy: string;
+
+    /**
      * Constructor for the login component
      *
      * @param titleService Setting the title
@@ -106,9 +113,12 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         super.setTitle('Login');
 
         this.http.get<any>(environment.urlPrefix + '/users/login/', {}).subscribe(response => {
-            this.installationNotice = this.matSnackBar.open(response.info_text, this.translate.instant('OK'), {
-                duration: 5000
-            });
+            if (response.info_text) {
+                this.installationNotice = this.matSnackBar.open(response.info_text, this.translate.instant('OK'), {
+                    duration: 5000
+                });
+            }
+            this.privacyPolicy = response.privacy_policy;
         });
     }
 
