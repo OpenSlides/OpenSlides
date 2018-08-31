@@ -20,8 +20,8 @@ install:
   - pip freeze
   - cd client && npm install && cd ..
 script:
+  - cd client && npm run-script lint && cd ..
   - flake8 openslides tests
   - isort --check-only --diff --recursive openslides tests
   - python -m mypy openslides/
-  - pytest --cov --cov-fail-under=70
-  - cd client && npm run-script lint && cd ..
+  - pytest tests/old/ tests/integration/ tests/unit/ --cov --cov-fail-under=75

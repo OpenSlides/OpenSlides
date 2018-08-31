@@ -114,9 +114,9 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
             origin: formMotion.origin
         });
         this.contentForm.patchValue({
-            currentTitle: formMotion.currentTitle,
-            currentText: formMotion.currentText,
-            currentReason: formMotion.currentReason
+            title: formMotion.title,
+            text: formMotion.text,
+            reason: formMotion.reason
         });
     }
 
@@ -134,9 +134,9 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
             origin: ['']
         });
         this.contentForm = this.formBuilder.group({
-            currentTitle: ['', Validators.required],
-            currentText: ['', Validators.required],
-            currentReason: ['']
+            title: ['', Validators.required],
+            text: ['', Validators.required],
+            reason: ['']
         });
     }
 
@@ -152,10 +152,6 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     public saveMotion() {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
         this.motionCopy.patchValues(newMotionValues);
-
-        // TODO: This is DRAFT. Reads out Motion version directly. Potentially insecure.
-        this.motionCopy.title = this.motionCopy.currentTitle;
-        this.motionCopy.text = this.motionCopy.currentText;
 
         // TODO: send to normal motion to verify
         this.dataSend.saveModel(this.motionCopy).subscribe(answer => {

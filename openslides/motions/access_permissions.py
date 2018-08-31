@@ -1,9 +1,8 @@
 from copy import deepcopy
 from typing import Any, Dict, List, Optional
 
-from ..core.config import config
 from ..utils.access_permissions import BaseAccessPermissions
-from ..utils.auth import has_perm
+from ..utils.auth import has_perm, in_some_groups
 from ..utils.collection import CollectionElement
 
 
@@ -32,7 +31,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
         """
         Returns the restricted serialized data for the instance prepared for
         the user. Removes motion if the user has not the permission to see
-        the motion in this state. Removes non public comment fields for
+        the motion in this state. Removes comments sections for
         some unauthorized users. Ensures that a user can only see his own
         personal notes.
         """
@@ -59,21 +58,12 @@ class MotionAccessPermissions(BaseAccessPermissions):
 
                 # Parse single motion.
                 if permission:
-                    if has_perm(user, 'motions.can_see_comments') or not full.get('comments'):
-                        # Provide access to all fields.
-                        motion = full
-                    else:
-                        # Set private comment fields to None.
-                        full_copy = deepcopy(full)
-                        for i, field in config['motions_comments'].items():
-                            if field is None or not field.get('public'):
-                                try:
-                                    full_copy['comments'][i] = None
-                                except IndexError:
-                                    # No data in range. Just do nothing.
-                                    pass
-                        motion = full_copy
-                    data.append(motion)
+                    full_copy = deepcopy(full)
+                    full_copy['comments'] = []
+                    for comment in full['comments']:
+                        if in_some_groups(user, comment['read_groups_id']):
+                            full_copy['comments'].append(comment)
+                    data.append(full_copy)
         else:
             data = []
 
@@ -82,25 +72,13 @@ class MotionAccessPermissions(BaseAccessPermissions):
     def get_projector_data(self, full_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
-        for the projector. Removes several comment fields.
+        for the projector. Removes all comments.
         """
-        # Parse data.
         data = []
         for full in full_data:
-            # Set private comment fields to None.
-            if full.get('comments') is not None:
-                full_copy = deepcopy(full)
-                for i, field in config['motions_comments'].items():
-                    if field is None or not field.get('public'):
-                        try:
-                            full_copy['comments'][i] = None
-                        except IndexError:
-                            # No data in range. Just do nothing.
-                            pass
-                data.append(full_copy)
-            else:
-                data.append(full)
-
+            full_copy = deepcopy(full)
+            full_copy['comments'] = []
+            data.append(full_copy)
         return data
 
 
@@ -121,6 +99,43 @@ class MotionChangeRecommendationAccessPermissions(BaseAccessPermissions):
         from .serializers import MotionChangeRecommendationSerializer
 
         return MotionChangeRecommendationSerializer
+
+
+class MotionCommentSectionAccessPermissions(BaseAccessPermissions):
+    """
+    Access permissions container for MotionCommentSection and MotionCommentSectionViewSet.
+    """
+    def check_permissions(self, user):
+        """
+        Returns True if the user has read access model instances.
+        """
+        return has_perm(user, 'motions.can_see')
+
+    def get_serializer_class(self, user=None):
+        """
+        Returns serializer class.
+        """
+        from .serializers import MotionCommentSectionSerializer
+
+        return MotionCommentSectionSerializer
+
+    def get_restricted_data(
+            self,
+            full_data: List[Dict[str, Any]],
+            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
+        """
+        If the user has manage rights, he can see all sections. If not all sections
+        will be removed, when the user is not in at least one of the read_groups.
+        """
+        data: List[Dict[str, Any]] = []
+        if has_perm(user, 'motions.can_manage'):
+            data = full_data
+        else:
+            for full in full_data:
+                read_groups = full.get('read_groups_id', [])
+                if in_some_groups(user, read_groups):
+                    data.append(full)
+        return data
 
 
 class CategoryAccessPermissions(BaseAccessPermissions):

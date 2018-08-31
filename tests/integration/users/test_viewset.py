@@ -480,8 +480,6 @@ class GroupUpdate(TestCase):
             'motions.can_create',
             'motions.can_manage',
             'motions.can_see',
-            'motions.can_manage_comments',
-            'motions.can_see_comments',
             'motions.can_support',
             'users.can_manage',
             'users.can_see_extra_data',

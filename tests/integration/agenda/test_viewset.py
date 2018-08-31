@@ -99,7 +99,6 @@ def test_agenda_item_db_queries():
     * 3 requests to get the assignments, motions and topics and
 
     * 1 request to get an agenda item (why?)
-    * 2 requests for the motionsversions.
     TODO: The last three request are a bug.
     """
     for index in range(10):
@@ -112,7 +111,7 @@ def test_agenda_item_db_queries():
     Motion.objects.create(title='motion2')
     Assignment.objects.create(title='assignment', open_posts=5)
 
-    assert count_queries(Item.get_elements) == 8
+    assert count_queries(Item.get_elements) == 6
 
 
 class ManageSpeaker(TestCase):

@@ -1,11 +1,31 @@
-from typing import Dict, Optional, Union, cast
+from typing import Dict, List, Optional, Union, cast
 
+from django.apps import apps
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Model
 
 from .cache import element_cache
 from .collection import CollectionElement
+
+
+GROUP_DEFAULT_PK = 1  # This is the hard coded pk for the default group.
+
+
+def get_group_model() -> Model:
+    """
+    Return the Group model that is active in this project.
+    """
+    try:
+        return apps.get_model(settings.AUTH_GROUP_MODEL, require_ready=False)
+    except ValueError:
+        raise ImproperlyConfigured("AUTH_GROUP_MODEL must be of the form 'app_label.model_name'")
+    except LookupError:
+        raise ImproperlyConfigured(
+            "AUTH_GROUP_MODEL refers to model '%s' that has not been installed" % settings.AUTH_GROUP_MODEL
+        )
 
 
 def has_perm(user: Optional[CollectionElement], perm: str) -> bool:
@@ -22,13 +42,13 @@ def has_perm(user: Optional[CollectionElement], perm: str) -> bool:
     if user is None and not anonymous_is_enabled():
         has_perm = False
     elif user is None:
-        # Use the permissions from the default group with id 1.
-        default_group = CollectionElement.from_values(group_collection_string, 1)
+        # Use the permissions from the default group.
+        default_group = CollectionElement.from_values(group_collection_string, GROUP_DEFAULT_PK)
         has_perm = perm in default_group.get_full_data()['permissions']
     else:
         # Get all groups of the user and then see, if one group has the required
-        # permission. If the user has no groups, then use group 1.
-        group_ids = user.get_full_data()['groups_id'] or [1]
+        # permission. If the user has no groups, then use the default group.
+        group_ids = user.get_full_data()['groups_id'] or [GROUP_DEFAULT_PK]
         for group_id in group_ids:
             group = CollectionElement.from_values(group_collection_string, group_id)
             if perm in group.get_full_data()['permissions']:
@@ -37,6 +57,38 @@ def has_perm(user: Optional[CollectionElement], perm: str) -> bool:
         else:
             has_perm = False
     return has_perm
+
+
+def in_some_groups(user: Optional[CollectionElement], groups: List[int]) -> bool:
+    """
+    Checks that user is in at least one given group. Groups can be given as a list
+    of ids or group instances.
+
+    User can be a CollectionElement of a user or None.
+    """
+
+    if len(groups) == 0:
+        return False  # early end here, if no groups are given.
+
+    # Convert user to right type
+    # TODO: Remove this and make use, that user has always the right type
+    user = user_to_collection_user(user)
+    if user is None and not anonymous_is_enabled():
+        in_some_groups = False
+    elif user is None:
+        # Use the permissions from the default group.
+        in_some_groups = GROUP_DEFAULT_PK in groups
+    else:
+        # Get all groups of the user and then see, if one group has the required
+        # permission. If the user has no groups, then use the default group.
+        group_ids = user.get_full_data()['groups_id'] or [GROUP_DEFAULT_PK]
+        for group_id in group_ids:
+            if group_id in groups:
+                in_some_groups = True
+                break
+        else:
+            in_some_groups = False
+    return in_some_groups
 
 
 def anonymous_is_enabled() -> bool:

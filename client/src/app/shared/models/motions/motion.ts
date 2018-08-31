@@ -1,5 +1,4 @@
 import { BaseModel } from '../base.model';
-import { MotionVersion } from './motion-version';
 import { MotionSubmitter } from './motion-submitter';
 import { MotionLog } from './motion-log';
 import { Config } from '../core/config';
@@ -19,18 +18,23 @@ export class Motion extends BaseModel {
     protected _collectionString: string;
     public id: number;
     public identifier: string;
-    public versions: MotionVersion[];
-    public active_version: number;
+    public title: string;
+    public text: string;
+    public reason: string;
+    public amendment_paragraphs: string;
+    public modified_final_version: string;
     public parent_id: number;
     public category_id: number;
     public motion_block_id: number;
     public origin: string;
     public submitters: MotionSubmitter[];
     public supporters_id: number[];
-    public comments: Object;
+    public comments: Object[];
     public state_id: number;
+    public state_extension: string;
     public state_required_permission_to_see: string;
     public recommendation_id: number;
+    public recommendation_extension: string;
     public tags_id: number[];
     public attachments_id: number[];
     public polls: BaseModel[];
@@ -40,15 +44,14 @@ export class Motion extends BaseModel {
     // dynamic values
     public workflow: Workflow;
 
-    // for request
-    public title: string;
-    public text: string;
-
     public constructor(input?: any) {
         super();
         this._collectionString = 'motions/motion';
         this.identifier = '';
-        this.versions = [new MotionVersion()];
+        this.title = '';
+        this.text = '';
+        this.reason = '';
+        this.modified_final_version = '';
         this.origin = '';
         this.submitters = [];
         this.supporters_id = [];
@@ -99,62 +102,6 @@ export class Motion extends BaseModel {
         newSubmitter.user_id = user.id;
         this.submitters.push(newSubmitter);
         console.log('did addSubmitter. this.submitters: ', this.submitters);
-    }
-
-    /**
-     * returns the most current title from versions
-     */
-    public get currentTitle(): string {
-        if (this.versions && this.versions[0]) {
-            return this.versions[0].title;
-        } else {
-            return '';
-        }
-    }
-
-    /**
-     * Patch the current version
-     *
-     * TODO: Altering the current version should be avoided.
-     */
-    public set currentTitle(newTitle: string) {
-        if (this.versions[0]) {
-            this.versions[0].title = newTitle;
-        }
-    }
-
-    /**
-     * returns the most current motion text from versions
-     */
-    public get currentText() {
-        if (this.versions) {
-            return this.versions[0].text;
-        } else {
-            return null;
-        }
-    }
-
-    public set currentText(newText: string) {
-        this.versions[0].text = newText;
-    }
-
-    /**
-     * returns the most current motion reason text from versions
-     */
-    public get currentReason() {
-        if (this.versions) {
-            return this.versions[0].reason;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Update the current reason.
-     * TODO: ignores motion versions. Should make a new one.
-     */
-    public set currentReason(newReason: string) {
-        this.versions[0].reason = newReason;
     }
 
     /**
@@ -238,13 +185,6 @@ export class Motion extends BaseModel {
 
     public deserialize(input: any): void {
         Object.assign(this, input);
-
-        if (input.versions instanceof Array) {
-            this.versions = [];
-            input.versions.forEach(motionVersionData => {
-                this.versions.push(new MotionVersion(motionVersionData));
-            });
-        }
 
         if (input.submitters instanceof Array) {
             this.submitters = [];

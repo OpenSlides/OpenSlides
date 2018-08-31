@@ -12,8 +12,8 @@
         <span *ngIf="motion && !editMotion"> {{motion.identifier}}</span>
         <span *ngIf="editMotion && !newMotion"> {{metaInfoForm.get('identifier').value}}</span>
         <span>:</span>
-        <span *ngIf="motion && !editMotion"> {{motion.currentTitle}}</span>
-        <span *ngIf="editMotion"> {{contentForm.get('currentTitle').value}}</span>
+        <span *ngIf="motion && !editMotion"> {{motion.title}}</span>
+        <span *ngIf="editMotion"> {{contentForm.get('title').value}}</span>
         <br>
         <div *ngIf="motion" class='motion-submitter'>
             <span translate>by</span> {{motion.submitterAsUser}}
@@ -223,12 +223,12 @@
     <form [formGroup]='contentForm' (ngSubmit)='saveMotion()'>
 
         <!-- Title -->
-        <div *ngIf="motion && motion.currentTitle || editMotion">
+        <div *ngIf="motion && motion.title || editMotion">
             <div *ngIf='!editMotion'>
-                <h2>{{motion.currentTitle}}</h2>
+                <h2>{{motion.title}}</h2>
             </div>
             <mat-form-field *ngIf="editMotion" class="wide-form">
-                <input matInput placeholder='Title' formControlName='currentTitle' [value]='motionCopy.currentTitle'>
+                <input matInput placeholder='Title' formControlName='title' [value]='motionCopy.title'>
             </mat-form-field>
 
         </div>
@@ -237,21 +237,21 @@
         <!-- TODO: this is a config variable. Read it out -->
         <h3 translate>The assembly may decide:</h3>
         <div *ngIf='motion && !editMotion'>
-            <div [innerHtml]='motion.currentText'></div>
+            <div [innerHtml]='motion.text'></div>
         </div>
         <mat-form-field *ngIf="motion && editMotion" class="wide-form">
-            <textarea matInput placeholder='Motion Text' formControlName='currentText' [value]='motionCopy.currentText'></textarea>
+            <textarea matInput placeholder='Motion Text' formControlName='text' [value]='motionCopy.text'></textarea>
         </mat-form-field>
 
 
         <!-- Reason -->
-        <div *ngIf="motion && motion.currentReason || editMotion">
+        <div *ngIf="motion && motion.reason || editMotion">
             <div *ngIf='!editMotion'>
                 <h4 translate>Reason</h4>
-                <div [innerHtml]='motion.currentReason'></div>
+                <div [innerHtml]='motion.reason'></div>
             </div>
             <mat-form-field *ngIf="editMotion" class="wide-form">
-                <textarea matInput placeholder="Reason" formControlName='currentReason' [value]='motionCopy.currentReason'></textarea>
+                <textarea matInput placeholder="Reason" formControlName='reason' [value]='motionCopy.reason'></textarea>
             </mat-form-field>
         </div>
 
