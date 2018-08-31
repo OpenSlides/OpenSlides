@@ -15,9 +15,11 @@ interface Constants {
  * Get constants from the server.
  *
  * @example
- *  this.constantsService.get('OpenSlidesSettings').subscribe(constant => {
- *      console.log(constant);
- *  });
+ * ```ts
+ * this.constantsService.get('OpenSlidesSettings').subscribe(constant => {
+ *     console.log(constant);
+ * });
+ * ```
  */
 @Injectable({
     providedIn: 'root'
@@ -50,7 +52,7 @@ export class ConstantsService extends OpenSlidesComponent {
         super();
 
         // The hook for recieving constants.
-        websocketService.getOberservable<Constants>('constantsResponse').subscribe(constants => {
+        websocketService.getOberservable<Constants>('constants').subscribe(constants => {
             this.constants = constants;
             if (this.pending) {
                 // send constants to subscribers that await constants.
@@ -64,7 +66,7 @@ export class ConstantsService extends OpenSlidesComponent {
         // We can request constants, if the websocket connection opens.
         websocketService.connectEvent.subscribe(() => {
             if (!this.websocketOpen && this.pending) {
-                this.websocketService.send('constantsRequest', {});
+                this.websocketService.send('constants', {});
             }
             this.websocketOpen = true;
         });
@@ -83,7 +85,7 @@ export class ConstantsService extends OpenSlidesComponent {
                 this.pending = true;
                 // if the connection is open, we directly can send the request.
                 if (this.websocketOpen) {
-                    this.websocketService.send('constantsRequest', {});
+                    this.websocketService.send('constants', {});
                 }
             }
             if (!this.pendingSubject[key]) {

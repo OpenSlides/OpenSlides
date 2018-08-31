@@ -453,6 +453,8 @@ class UserLoginView(APIView):
                                 password='<strong>admin</strong>')
                     else:
                         context['info_text'] = ''
+            # Add the privacy policy, so the client can display it even, it is not logged in.
+            context['privacy_policy'] = config['general_event_privacy_policy']
         else:
             # self.request.method == 'POST'
             context['user_id'] = self.user.pk
