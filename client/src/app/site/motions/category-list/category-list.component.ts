@@ -53,7 +53,7 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
      */
     public ngOnInit() {
         super.setTitle('Category');
-        this.categoryArray = this.DS.get(Category) as Category[];
+        this.categoryArray = this.DS.getAll<Category>(Category);
         this.dataSource = new MatTableDataSource(this.categoryArray);
         this.dataSource.sort = this.sort;
 
@@ -61,7 +61,7 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
         // The alternative approach is to put the observable as DataSource to the table
         this.DS.getObservable().subscribe(newModel => {
             if (newModel instanceof Category) {
-                this.categoryArray = this.DS.get(Category) as Category[];
+                this.categoryArray = this.DS.getAll<Category>(Category);
                 this.dataSource.data = this.categoryArray;
             }
         });

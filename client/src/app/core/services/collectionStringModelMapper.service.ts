@@ -23,8 +23,20 @@ export class CollectionStringModelMapperService {
      * Returns the constructor of the requested collection or undefined, if it is not registered.
      * @param collectionString the requested collection
      */
-    public static getCollectionStringType(collectionString: string): ModelConstructor {
+    public static getModelConstructor(collectionString: string): ModelConstructor {
         return CollectionStringModelMapperService.collectionStringsTypeMapping[collectionString];
+    }
+
+    /**
+     * Returns the collection string of a given ModelConstructor or undefined, if it is not registered.
+     * @param ctor
+     */
+    public static getCollectionString(ctor: ModelConstructor): string {
+        return Object.keys(CollectionStringModelMapperService.collectionStringsTypeMapping).find(
+            (collectionString: string) => {
+                return ctor === CollectionStringModelMapperService.collectionStringsTypeMapping[collectionString];
+            }
+        );
     }
 
     /**

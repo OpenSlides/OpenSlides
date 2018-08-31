@@ -167,8 +167,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * return all Categories.
      */
     public getMotionCategories(): Category[] {
-        const categories = this.DS.get(Category);
-        return categories as Category[];
+        return this.DS.getAll<Category>(Category);
     }
 
     /**
