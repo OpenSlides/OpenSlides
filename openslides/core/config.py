@@ -236,7 +236,6 @@ OnChangeType = Callable[[], None]
 ConfigVariableDict = TypedDict('ConfigVariableDict', {
     'key': str,
     'default_value': Any,
-    'value': Any,
     'input_type': str,
     'label': str,
     'help_text': str,
@@ -303,7 +302,6 @@ class ConfigVariable:
         return ConfigVariableDict(
             key=self.name,
             default_value=self.default_value,
-            value=config[self.name],
             input_type=self.input_type,
             label=self.label,
             help_text=self.help_text,

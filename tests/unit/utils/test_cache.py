@@ -29,53 +29,13 @@ def sort_dict(encoded_dict: Dict[str, List[Dict[str, Any]]]) -> Dict[str, List[D
 
 @pytest.fixture
 def element_cache():
-    return ElementCache(
+    element_cache = ElementCache(
         'test_redis',
         cache_provider_class=TTestCacheProvider,
         cachable_provider=get_cachable_provider(),
         start_time=0)
-
-
-@pytest.mark.asyncio
-async def test_save_full_data(element_cache):
-    input_data = {
-        'app/collection1': [
-            {'id': 1, 'value': 'value1'},
-            {'id': 2, 'value': 'value2'}],
-        'app/collection2': [
-            {'id': 1, 'key': 'value1'},
-            {'id': 2, 'key': 'value2'}]}
-    calculated_data = {
-        'app/collection1:1': '{"id": 1, "value": "value1"}',
-        'app/collection1:2': '{"id": 2, "value": "value2"}',
-        'app/collection2:1': '{"id": 1, "key": "value1"}',
-        'app/collection2:2': '{"id": 2, "key": "value2"}'}
-
-    await element_cache.save_full_data(input_data)
-
-    assert decode_dict(element_cache.cache_provider.full_data) == decode_dict(calculated_data)
-
-
-@pytest.mark.asyncio
-async def test_build_full_data(element_cache):
-    result = await element_cache.build_full_data()
-
-    assert result == example_data()
-    assert decode_dict(element_cache.cache_provider.full_data) == decode_dict({
-        'app/collection1:1': '{"id": 1, "value": "value1"}',
-        'app/collection1:2': '{"id": 2, "value": "value2"}',
-        'app/collection2:1': '{"id": 1, "key": "value1"}',
-        'app/collection2:2': '{"id": 2, "key": "value2"}'})
-
-
-@pytest.mark.asyncio
-async def test_exists_full_data(element_cache):
-    """
-    Test that the return value of exists_full_data is the the same as from the
-    cache_provider.
-    """
-    element_cache.cache_provider.full_data = 'test_value'
-    assert await element_cache.exists_full_data()
+    element_cache.ensure_cache()
+    return element_cache
 
 
 @pytest.mark.asyncio
@@ -245,7 +205,7 @@ async def test_get_element_full_data_full_redis(element_cache):
 
 
 @pytest.mark.asyncio
-async def test_exist_restricted_data(element_cache):
+async def test_exists_restricted_data(element_cache):
     element_cache.use_restricted_data_cache = True
     element_cache.cache_provider.restricted_data = {0: {
         'app/collection1:1': '{"id": 1, "value": "value1"}',
@@ -259,7 +219,7 @@ async def test_exist_restricted_data(element_cache):
 
 
 @pytest.mark.asyncio
-async def test_exist_restricted_data_do_not_use_restricted_data(element_cache):
+async def test_exists_restricted_data_do_not_use_restricted_data(element_cache):
     element_cache.use_restricted_data_cache = False
     element_cache.cache_provider.restricted_data = {0: {
         'app/collection1:1': '{"id": 1, "value": "value1"}',
@@ -308,7 +268,7 @@ async def test_update_restricted_data(element_cache):
         'app/collection2:2': '{"id": 2, "key": "restricted_value2"}',
         '_config:change_id': '0'})
     # Make sure the lock is deleted
-    assert not await element_cache.cache_provider.get_lock_restricted_data(0)
+    assert not await element_cache.cache_provider.get_lock("restricted_data_0")
     # And the future is done
     assert element_cache.restricted_data_cache_updater[0].done()
 
@@ -379,8 +339,8 @@ async def test_update_restricted_data_second_worker_on_different_server(element_
     """
     element_cache.use_restricted_data_cache = True
     element_cache.cache_provider.restricted_data = {0: {}}
-    await element_cache.cache_provider.set_lock_restricted_data(0)
-    await element_cache.cache_provider.del_lock_restricted_data_after_wait(0)
+    await element_cache.cache_provider.set_lock("restricted_data_0")
+    await element_cache.cache_provider.del_lock_after_wait("restricted_data_0")
 
     await element_cache.update_restricted_data(None)
 
@@ -399,8 +359,8 @@ async def test_update_restricted_data_second_worker_on_same_server(element_cache
     element_cache.cache_provider.restricted_data = {0: {}}
     future: asyncio.Future = asyncio.Future()
     element_cache.restricted_data_cache_updater[0] = future
-    await element_cache.cache_provider.set_lock_restricted_data(0)
-    await element_cache.cache_provider.del_lock_restricted_data_after_wait(0, future)
+    await element_cache.cache_provider.set_lock("restricted_data_0")
+    await element_cache.cache_provider.del_lock_after_wait("restricted_data_0", future)
 
     await element_cache.update_restricted_data(None)
 

@@ -50,9 +50,6 @@ async def set_config(key, value):
     """
     Set a config variable in the element_cache without hitting the database.
     """
-    if not await element_cache.exists_full_data():
-        # Encure that the cache exists and the default values of the config are in it.
-        await element_cache.build_full_data()
     collection_string = config.get_collection_string()
     config_id = config.key_to_id[key]  # type: ignore
     full_data = {'id': config_id, 'key': key, 'value': value}

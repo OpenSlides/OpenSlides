@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.assignments.models import Assignment
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.test import TestCase
 
 from ..helpers import count_queries
@@ -77,6 +78,7 @@ class CanidatureSelf(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
+        inform_changed_data(admin)
 
         response = self.client.post(reverse('assignment-candidature-self', args=[self.assignment.pk]))
 
@@ -123,6 +125,7 @@ class CanidatureSelf(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
+        inform_changed_data(admin)
 
         response = self.client.delete(reverse('assignment-candidature-self', args=[self.assignment.pk]))
 
@@ -203,6 +206,7 @@ class CandidatureOther(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
+        inform_changed_data(admin)
 
         response = self.client.post(
             reverse('assignment-candidature-other', args=[self.assignment.pk]),
@@ -258,6 +262,7 @@ class CandidatureOther(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
+        inform_changed_data(admin)
 
         response = self.client.delete(
             reverse('assignment-candidature-other', args=[self.assignment.pk]),

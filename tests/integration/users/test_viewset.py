@@ -7,6 +7,7 @@ from rest_framework.test import APIClient
 from openslides.core.config import config
 from openslides.users.models import Group, PersonalNote, User
 from openslides.users.serializers import UserFullSerializer
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.test import TestCase
 
 from ..helpers import count_queries
@@ -62,6 +63,7 @@ class UserGetTest(TestCase):
         app_label, codename = permission_string.split('.')
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
         group.permissions.remove(permission)
+        inform_changed_data(group)
         config['general_system_enable_anonymous'] = True
         guest_client = APIClient()
 

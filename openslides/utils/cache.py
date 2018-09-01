@@ -2,6 +2,7 @@ import asyncio
 import json
 from collections import defaultdict
 from datetime import datetime
+from time import sleep
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -13,8 +14,7 @@ from typing import (
     Type,
 )
 
-from asgiref.sync import sync_to_async
-from channels.db import database_sync_to_async
+from asgiref.sync import async_to_sync, sync_to_async
 from django.conf import settings
 
 from .cache_providers import (
@@ -83,6 +83,9 @@ class ElementCache:
         # Contains Futures to controll, that only one client updates the restricted_data.
         self.restricted_data_cache_updater: Dict[int, asyncio.Future] = {}
 
+        # Tells if self.ensure_cache was called.
+        self.ensured = False
+
     @property
     def cachables(self) -> Dict[str, Cachable]:
         """
@@ -93,33 +96,35 @@ class ElementCache:
             self._cachables = {cachable.get_collection_string(): cachable for cachable in self.cachable_provider()}
         return self._cachables
 
-    async def save_full_data(self, db_data: Dict[str, List[Dict[str, Any]]]) -> None:
+    def ensure_cache(self, reset: bool = False) -> None:
         """
-        Saves the full data.
-        """
-        mapping = {}
-        for collection_string, elements in db_data.items():
-            for element in elements:
-                mapping.update(
-                    {get_element_id(collection_string, element['id']):
-                     json.dumps(element)})
-        await self.cache_provider.reset_full_cache(mapping)
+        Makes sure that the cache exist.
 
-    async def build_full_data(self) -> Dict[str, List[Dict[str, Any]]]:
-        """
-        Build or rebuild the full_data cache.
-        """
-        db_data = {}
-        for collection_string, cachable in self.cachables.items():
-            db_data[collection_string] = await database_sync_to_async(cachable.get_elements)()
-        await self.save_full_data(db_data)
-        return db_data
+        Builds the cache if not. If reset is True, it will be reset in any case.
 
-    async def exists_full_data(self) -> bool:
+        This method is sync, so it can be run when OpenSlides starts.
         """
-        Returns True, if the full_data_cache exists.
-        """
-        return await self.cache_provider.data_exists()
+        cache_exists = async_to_sync(self.cache_provider.data_exists)()
+
+        if reset or not cache_exists:
+            lock_name = 'ensure_cache'
+            # Set a lock so only one process builds the cache
+            if async_to_sync(self.cache_provider.set_lock)(lock_name):
+                try:
+                    mapping = {}
+                    for collection_string, cachable in self.cachables.items():
+                        for element in cachable.get_elements():
+                            mapping.update(
+                                {get_element_id(collection_string, element['id']):
+                                 json.dumps(element)})
+                    async_to_sync(self.cache_provider.reset_full_cache)(mapping)
+                finally:
+                    async_to_sync(self.cache_provider.del_lock)(lock_name)
+            else:
+                while async_to_sync(self.cache_provider.get_lock)(lock_name):
+                    sleep(0.01)
+
+        self.ensured = True
 
     async def change_elements(
             self, elements: Dict[str, Optional[Dict[str, Any]]]) -> int:
@@ -131,9 +136,6 @@ class ElementCache:
 
         Returns the new generated change_id.
         """
-        if not await self.exists_full_data():
-            await self.build_full_data()
-
         deleted_elements = []
         changed_elements = []
         for element_id, data in elements.items():
@@ -164,14 +166,11 @@ class ElementCache:
         The returned value is a dict where the key is the collection_string and
         the value is a list of data.
         """
-        if not await self.exists_full_data():
-            out = await self.build_full_data()
-        else:
-            out = defaultdict(list)
-            full_data = await self.cache_provider.get_all_data()
-            for element_id, data in full_data.items():
-                collection_string, __ = split_element_id(element_id)
-                out[collection_string].append(json.loads(data.decode()))
+        out: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+        full_data = await self.cache_provider.get_all_data()
+        for element_id, data in full_data.items():
+            collection_string, __ = split_element_id(element_id)
+            out[collection_string].append(json.loads(data.decode()))
         return dict(out)
 
     async def get_full_data(
@@ -203,10 +202,6 @@ class ElementCache:
                 "Catch this exception and rerun the method with change_id=0."
                 .format(change_id, lowest_change_id))
 
-        if not await self.exists_full_data():
-            # If the cache does not exist, create it.
-            await self.build_full_data()
-
         raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(change_id)
         return (
             {collection_string: [json.loads(value.decode()) for value in value_list]
@@ -221,9 +216,6 @@ class ElementCache:
 
         Returns None if the element does not exist.
         """
-        if not await self.exists_full_data():
-            await self.build_full_data()
-
         element = await self.cache_provider.get_element(get_element_id(collection_string, id))
 
         if element is None:
@@ -261,7 +253,8 @@ class ElementCache:
         # Try to write a special key.
         # If this succeeds, there is noone else currently updating the cache.
         # TODO: Make a timeout. Else this could block forever
-        if await self.cache_provider.set_lock_restricted_data(get_user_id(user)):
+        lock_name = "restricted_data_{}".format(get_user_id(user))
+        if await self.cache_provider.set_lock(lock_name):
             future: asyncio.Future = asyncio.Future()
             self.restricted_data_cache_updater[get_user_id(user)] = future
             # Get change_id for this user
@@ -293,7 +286,7 @@ class ElementCache:
                 mapping['_config:change_id'] = str(change_id)
                 await self.cache_provider.update_restricted_data(get_user_id(user), mapping)
             # Unset the lock
-            await self.cache_provider.del_lock_restricted_data(get_user_id(user))
+            await self.cache_provider.del_lock(lock_name)
             future.set_result(1)
         else:
             # Wait until the update if finshed
@@ -301,7 +294,7 @@ class ElementCache:
                 # The active worker is on the same asgi server, we can use the future
                 await self.restricted_data_cache_updater[get_user_id(user)]
             else:
-                while await self.cache_provider.get_lock_restricted_data(get_user_id(user)):
+                while await self.cache_provider.get_lock(lock_name):
                     await asyncio.sleep(0.01)
 
     async def get_all_restricted_data(self, user: Optional['CollectionElement']) -> Dict[str, List[Dict[str, Any]]]:
@@ -412,6 +405,7 @@ def load_element_cache(redis_addr: str = '', restricted_data: bool = True) -> El
     return ElementCache(redis=redis_addr, use_restricted_data_cache=restricted_data)
 
 
+# Set the element_cache
 redis_address = getattr(settings, 'REDIS_ADDRESS', '')
 use_restricted_data = getattr(settings, 'RESTRICTED_DATA_CACHE', True)
 element_cache = load_element_cache(redis_addr=redis_address, restricted_data=use_restricted_data)

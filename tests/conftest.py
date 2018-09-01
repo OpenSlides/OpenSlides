@@ -3,6 +3,8 @@ from django.test import TestCase, TransactionTestCase
 from pytest_django.django_compat import is_django_unittest
 from pytest_django.plugin import validate_django_db
 
+from openslides.utils.cache import element_cache
+
 
 def pytest_collection_modifyitems(items):
     """
@@ -57,3 +59,13 @@ def constants(request):
     else:
         # Else: Use fake constants
         set_constants({'constant1': 'value1', 'constant2': 'value2'})
+
+
+@pytest.fixture(autouse=True)
+def reset_cache(request):
+    """
+    Resetts the cache for every test
+    """
+    if 'django_db' in request.node.keywords or is_django_unittest(request):
+        # When the db is created, use the original cachables
+        element_cache.ensure_cache(reset=True)

@@ -42,7 +42,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
     }
 }
-
+REDIS_ADDRESS = "redis://127.0.0.1"
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 # Internationalization
@@ -75,7 +75,3 @@ MOTION_IDENTIFIER_MIN_DIGITS = 1
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.MD5PasswordHasher',
 ]
-
-# At least in Django 2.1 and Channels 2.1 the django transactions can not be shared between
-# threads. So we have to skip the asyncio-cache.
-SKIP_CACHE = True

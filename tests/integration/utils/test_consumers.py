@@ -24,22 +24,22 @@ from ..helpers import TConfig, TUser, set_config
 
 
 @pytest.fixture(autouse=True)
-def prepare_element_cache(settings):
+async def prepare_element_cache(settings):
     """
     Resets the element cache.
 
     Uses a cacheable_provider for tests with example data.
     """
-    settings.SKIP_CACHE = False
-    element_cache.cache_provider.clear_cache()
+    await element_cache.cache_provider.clear_cache()
     orig_cachable_provider = element_cache.cachable_provider
     element_cache.cachable_provider = get_cachable_provider([Collection1(), Collection2(), TConfig(), TUser()])
     element_cache._cachables = None
+    await sync_to_async(element_cache.ensure_cache)()
     yield
     # Reset the cachable_provider
     element_cache.cachable_provider = orig_cachable_provider
     element_cache._cachables = None
-    element_cache.cache_provider.clear_cache()
+    await element_cache.cache_provider.clear_cache()
 
 
 @pytest.fixture
