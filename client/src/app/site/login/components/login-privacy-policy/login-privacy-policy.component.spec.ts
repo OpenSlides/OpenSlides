@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginPrivacyPolicyComponent } from './login-privacy-policy.component';
+import { E2EImportsModule } from '../../../../../e2e-imports.module';
 
 describe('LoginPrivacyPolicyComponent', () => {
     let component: LoginPrivacyPolicyComponent;
@@ -8,7 +9,7 @@ describe('LoginPrivacyPolicyComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [LoginPrivacyPolicyComponent]
+            imports: [E2EImportsModule]
         }).compileComponents();
     }));
 

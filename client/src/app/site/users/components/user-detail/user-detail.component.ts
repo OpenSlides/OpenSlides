@@ -64,7 +64,7 @@ export class UserDetailComponent implements OnInit {
         private op: OperatorService
     ) {
         this.user = new ViewUser();
-        if (route.snapshot.url[0].path === 'new') {
+        if (route.snapshot.url[0] && route.snapshot.url[0].path === 'new') {
             this.newUser = true;
             this.setEditMode(true);
         } else {

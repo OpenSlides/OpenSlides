@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AgendaListComponent } from './agenda-list.component';
+import { E2EImportsModule } from '../../../../e2e-imports.module';
 
 describe('AgendaListComponent', () => {
     let component: AgendaListComponent;
@@ -8,6 +9,7 @@ describe('AgendaListComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [E2EImportsModule],
             declarations: [AgendaListComponent]
         }).compileComponents();
     }));

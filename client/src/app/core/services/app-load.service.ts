@@ -56,6 +56,4 @@ export class AppLoadService {
             }
         });
     }
-
-    private registerModels(models?: { collectionString: string; model: ModelConstructor<BaseModel> }[]): void {}
 }

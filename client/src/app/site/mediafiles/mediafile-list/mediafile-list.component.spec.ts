@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MediafileListComponent } from './mediafile-list.component';
+import { E2EImportsModule } from '../../../../e2e-imports.module';
 
 describe('MediafileListComponent', () => {
     let component: MediafileListComponent;
@@ -8,6 +9,7 @@ describe('MediafileListComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [E2EImportsModule],
             declarations: [MediafileListComponent]
         }).compileComponents();
     }));
