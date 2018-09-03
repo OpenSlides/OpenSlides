@@ -1,11 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatExpansionPanel } from '@angular/material';
+
 import { BaseComponent } from '../../../base.component';
 import { Motion } from '../../../shared/models/motions/motion';
 import { Category } from '../../../shared/models/motions/category';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatExpansionPanel } from '@angular/material';
 import { DataSendService } from '../../../core/services/data-send.service';
+import { ViewportService } from '../../../core/services/viewport.service';
 
 /**
  * Component for the motion detail view
@@ -59,11 +61,14 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Constuct the detail view.
      *
-     *
+     * @param vp the viewport service
+     * @param router to navigate back to the motion list and to an existing motion
      * @param route determine if this is a new or an existing motion
      * @param formBuilder For reactive forms. Form Group and Form Control
+     * @param dataSend To send changes of the motion
      */
     public constructor(
+        public vp: ViewportService,
         private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
@@ -180,8 +185,11 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
             this.motionCopy = new Motion();
             this.motionCopy.patchValues(this.motion);
             this.patchForm(this.motionCopy);
-            this.metaInfoPanel.open();
-            this.contentPanel.open();
+
+            if (this.vp.isMobile) {
+                this.metaInfoPanel.open();
+                this.contentPanel.open();
+            }
         } else {
             this.saveMotion();
         }
