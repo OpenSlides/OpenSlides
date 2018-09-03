@@ -8,7 +8,7 @@
         "test": "ng test",
         "lint": "ng lint",
         "e2e": "ng e2e",
-        "compodoc": "./node_modules/.bin/compodoc --hideGenerator -p src/tsconfig.app.json -n 'OpenSlides Documentation' -d ../Compodoc -s -w -t -o",
+        "compodoc": "./node_modules/.bin/compodoc --hideGenerator -p src/tsconfig.app.json -n 'OpenSlides Documentation' -d ../Compodoc -s -w -t -o --port",
         "extract": "ngx-translate-extract -i ./src -o ./src/assets/i18n/{en,de,fr}.json --clean --sort --format-indentation '    ' --format namespaced-json",
         "format:fix": "pretty-quick --staged",
         "precommit": "run-s format:fix lint"
