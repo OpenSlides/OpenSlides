@@ -3,7 +3,7 @@ import { BaseComponent } from 'app/base.component';
 import { Title } from '@angular/platform-browser';
 
 @Component({
-    selector: 'app-projector',
+    selector: 'os-projector',
     templateUrl: './projector.component.html',
     styleUrls: ['./projector.component.css']
 })

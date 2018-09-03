@@ -6,7 +6,7 @@ import { Directive, Output, EventEmitter, ElementRef, OnDestroy } from '@angular
  * @example (appDomChange)="onChange($event)"
  */
 @Directive({
-    selector: '[appDomChange]'
+    selector: '[osDomChange]'
 })
 export class DomChangeDirective implements OnDestroy {
     private changes: MutationObserver;

@@ -32,7 +32,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { TranslateModule } from '@ngx-translate/core';
 
 // directives
-import { OsPermsDirective } from './directives/os-perms.directive';
+import { PermsDirective } from './directives/perms.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
 import { HeadBarComponent } from './components/head-bar/head-bar.component';
 
@@ -94,10 +94,10 @@ library.add(fas);
         MatSnackBarModule,
         FontAwesomeModule,
         TranslateModule,
-        OsPermsDirective,
+        PermsDirective,
         DomChangeDirective,
         HeadBarComponent
     ],
-    declarations: [OsPermsDirective, DomChangeDirective, HeadBarComponent]
+    declarations: [PermsDirective, DomChangeDirective, HeadBarComponent]
 })
 export class SharedModule {}

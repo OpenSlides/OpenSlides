@@ -1,7 +1,7 @@
 @import '~@angular/material/theming';
 
 /** Custom component theme. Only lives in a specific scope */
-@mixin app-site-theme($theme) {
+@mixin os-site-theme($theme) {
     $primary: map-get($theme, primary);
     $accent: map-get($theme, accent);
     $warn: map-get($theme, accent);
@@ -9,7 +9,7 @@
     $background: map-get($theme, background);
 
     /** the name of the selector */
-    app-site {
+    os-site {
         mat-sidenav-container {
             /** nav panel on the left */
             mat-sidenav {

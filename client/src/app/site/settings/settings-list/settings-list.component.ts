@@ -9,7 +9,7 @@ import { BaseComponent } from '../../../base.component';
  * TODO: Not yet implemented
  */
 @Component({
-    selector: 'app-settings-list',
+    selector: 'os-settings-list',
     templateUrl: './settings-list.component.html',
     styleUrls: ['./settings-list.component.css']
 })

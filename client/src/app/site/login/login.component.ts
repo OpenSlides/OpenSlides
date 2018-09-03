@@ -37,7 +37,7 @@ export class ParentErrorStateMatcher implements ErrorStateMatcher {
  * Handles user (and potentially guest) login
  */
 @Component({
-    selector: 'app-login',
+    selector: 'os-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })

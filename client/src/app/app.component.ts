@@ -10,7 +10,7 @@ import { OpenSlidesService } from './core/services/openslides.service';
  * Angular's global App Component
  */
 @Component({
-    selector: 'app-root',
+    selector: 'os-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
