@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'app-projector-container',
+    selector: 'os-projector-container',
     templateUrl: './projector-container.component.html',
     styleUrls: ['./projector-container.component.css']
 })

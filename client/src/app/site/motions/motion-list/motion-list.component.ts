@@ -11,7 +11,7 @@ import { Workflow } from '../../../shared/models/motions/workflow';
  * Component that displays all the motions in a Table using DataSource.
  */
 @Component({
-    selector: 'app-motion-list',
+    selector: 'os-motion-list',
     templateUrl: './motion-list.component.html',
     styleUrls: ['./motion-list.component.scss']
 })
