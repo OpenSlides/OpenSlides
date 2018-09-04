@@ -12,7 +12,7 @@ import { Category } from '../../../shared/models/motions/category';
  * TODO: Creation of new Categories
  */
 @Component({
-    selector: 'app-category-list',
+    selector: 'os-category-list',
     templateUrl: './category-list.component.html',
     styleUrls: ['./category-list.component.scss']
 })

@@ -1,8 +1,8 @@
 {
     "extends": "../tslint.json",
     "rules": {
-        "directive-selector": [true, "attribute", "app", "camelCase"],
-        "component-selector": [true, "element", "app", "kebab-case"],
+        "directive-selector": [true, "attribute", "os", "camelCase"],
+        "component-selector": [true, "element", "os", "kebab-case"],
         "member-access": [true, "check-accessor", "check-constructor", "check-parameter-property"],
         "comment-format": [true, "check-space"],
         "curly": true,

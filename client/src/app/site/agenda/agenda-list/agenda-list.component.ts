@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
  * TODO: Not yet implemented
  */
 @Component({
-    selector: 'app-agenda-list',
+    selector: 'os-agenda-list',
     templateUrl: './agenda-list.component.html',
     styleUrls: ['./agenda-list.component.css']
 })

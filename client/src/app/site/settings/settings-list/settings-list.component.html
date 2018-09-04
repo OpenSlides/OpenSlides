@@ -1,7 +1,8 @@
-<app-head-bar appName="Settings"></app-head-bar>
+<os-head-bar appName="Settings">
+</os-head-bar>
 
 <mat-card class="os-card">
-    <div *appOsPerms="'core.can_manage_config'" class="app-content">
+    <div *osPerms="'core.can_manage_config'" class="app-content">
 
         <mat-accordion>
             <mat-expansion-panel>

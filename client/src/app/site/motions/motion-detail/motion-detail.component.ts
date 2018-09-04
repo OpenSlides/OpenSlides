@@ -11,7 +11,7 @@ import { DataSendService } from '../../../core/services/data-send.service';
  * Component for the motion detail view
  */
 @Component({
-    selector: 'app-motion-detail',
+    selector: 'os-motion-detail',
     templateUrl: './motion-detail.component.html',
     styleUrls: ['./motion-detail.component.scss']
 })

@@ -10,7 +10,7 @@ import { MatDialog, MatSidenav } from '@angular/material';
 import { ViewportService } from '../core/services/viewport.service';
 
 @Component({
-    selector: 'app-site',
+    selector: 'os-site',
     animations: [pageTransition, navItemAnim],
     templateUrl: './site.component.html',
     styleUrls: ['./site.component.scss']
