@@ -227,7 +227,7 @@ export class DataStoreService {
     public filter<T extends BaseModel>(
         collectionType: ModelConstructor | string,
         callback: (model: T) => boolean
-    ): BaseModel[] {
+    ): T[] {
         return this.getAll<T>(collectionType).filter(callback);
     }
 
