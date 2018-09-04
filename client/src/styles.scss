@@ -1,11 +1,9 @@
 @import '~@angular/material/theming';
-
 @include mat-core();
 
 /** Import brand theme and (new) component themes */
 @import './assets/styles/openslides-theme';
 @import './app/site/site.component.scss-theme';
-
 @mixin openslides-components-theme($theme) {
     @include os-site-theme($theme);
     /** More components are added here */
@@ -13,33 +11,14 @@
 
 @include angular-material-theme($openslides-theme);
 @include openslides-components-theme($openslides-theme);
-
 * {
     font-family: Arial, Helvetica, sans-serif !important;
-}
-
-html,
-body {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding: 0;
-    height: 100% !important;
 }
 
 body {
     // background: #e8eaed;
     margin: 0 auto;
     padding: 0;
-}
-
-router-outlet ~ * {
-    position: absolute;
-    height: 100% !important;
-    width: 100%;
 }
 
 /**the plus button in Motion, Agenda, etc*/
@@ -52,6 +31,7 @@ router-outlet ~ * {
     bottom: -28px;
     z-index: 100;
 }
+
 .os-card {
     max-width: 90%;
     margin-top: 10px;
@@ -82,4 +62,12 @@ router-outlet ~ * {
 /** helper classes for animation */
 .on-transition-fade {
     z-index: 100;
+}
+
+footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
 }
