@@ -63,6 +63,7 @@ client/node_modules
 
 # misc
 Compodoc
+Compodocmodules
 client/.sass-cache
 client/connect.lock
 client/coverage
