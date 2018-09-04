@@ -27,13 +27,7 @@ mat-panel-title {
     }
 }
 
-.meta-info-panel {
-    padding-top: 25px;
-
-    a:hover {
-        cursor: pointer;
-    }
-
+.meta-info-block {
     h3 {
         display: block;
         margin-top: 12px; //distance between heading and text
@@ -62,11 +56,21 @@ mat-panel-title {
     }
 }
 
-.wide-text {
-    width: 95%;
-
+.wide-form {
     textarea {
-        height: 200px;
+        height: 25vh;
+    }
+
+    ::ng-deep {
+        width: 100%;
+    }
+}
+
+.meta-info-panel {
+    padding-top: 25px;
+
+    a:hover {
+        cursor: pointer;
     }
 }
 
@@ -93,5 +97,63 @@ mat-expansion-panel {
         display: block;
         font-weight: bold;
         font-size: 100%;
+    }
+}
+
+.desktop-view {
+    .desktop-left {
+        width: 30%;
+        float: left;
+
+        .meta-info-desktop {
+            padding: 40px 20px 10px 20px;
+        }
+
+        .personal-note {
+            mat-card {
+                padding: 0px;
+                margin: 20px;
+                min-width: 10hv;
+                min-width: 200px;
+
+                .mat-card-header-text {
+                    width: 100%;
+                }
+
+                mat-card-header {
+                    display: inherit;
+                    padding: 15px;
+                    margin: 0;
+                    background-color: #eee;
+
+                    .title-right {
+                        float: right;
+                        fa-icon {
+                            padding-left: 10px;
+                        }
+                    }
+
+                    mat-card-title {
+                        font-weight: bold;
+                        display: inline;
+                    }
+                }
+
+                mat-card-content {
+                    padding: 30px 15px 15px 15px;
+                }
+            }
+        }
+    }
+
+    .desktop-right {
+        display: grid;
+
+        min-width: 70%;
+
+        mat-card {
+            display: inline;
+            margin: 20px;
+        }
     }
 }
