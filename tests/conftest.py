@@ -1,4 +1,6 @@
+import pytest
 from django.test import TestCase, TransactionTestCase
+from pytest_django.django_compat import is_django_unittest
 from pytest_django.plugin import validate_django_db
 
 
@@ -38,3 +40,20 @@ def pytest_collection_modifyitems(items):
         return 0
 
     items.sort(key=weight_test_case)
+
+
+@pytest.fixture(autouse=True)
+def constants(request):
+    """
+    Resets the constants on every test.
+
+    Uses fake constants, if the db is not in use.
+    """
+    from openslides.utils.constants import set_constants, get_constants_from_apps
+
+    if 'django_db' in request.node.keywords or is_django_unittest(request):
+        # When the db is created, use the original constants
+        set_constants(get_constants_from_apps())
+    else:
+        # Else: Use fake constants
+        set_constants({'constant1': 'value1', 'constant2': 'value2'})
