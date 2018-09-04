@@ -11,15 +11,13 @@ export class MotionLog implements Deserializable {
     public time: string;
     public message: string;
 
-    public constructor(message_list?: string[], person_id?: number, time?: string, message?: string) {
-        this.message_list = message_list;
-        this.person_id = person_id;
-        this.time = time;
-        this.message = message;
+    public constructor(input?: any) {
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
-    public deserialize(input: any): this {
+    public deserialize(input: any): void {
         Object.assign(this, input);
-        return this;
     }
 }

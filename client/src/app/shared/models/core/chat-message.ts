@@ -1,4 +1,5 @@
 import { BaseModel } from '../base.model';
+import { User } from '../users/user';
 
 /**
  * Representation of chat messages.
@@ -11,17 +12,16 @@ export class ChatMessage extends BaseModel {
     public timestamp: string; // TODO: Type for timestamp
     public user_id: number;
 
-    public constructor(id?: number, message?: string, timestamp?: string, user_id?: number) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'core/chat-message';
-        this.id = id;
-        this.message = message;
-        this.timestamp = timestamp;
-        this.user_id = user_id;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
-    public getUser(): BaseModel | BaseModel[] {
-        return this.DS.get('users/user', this.user_id);
+    public getUser(): User {
+        return this.DS.get<User>('users/user', this.user_id);
     }
 }
 

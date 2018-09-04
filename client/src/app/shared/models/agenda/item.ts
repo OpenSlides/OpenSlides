@@ -28,38 +28,12 @@ export class Item extends BaseModel {
     public weight: number;
     public parent_id: number;
 
-    public constructor(
-        id?: number,
-        item_number?: string,
-        title?: string,
-        list_view_title?: string,
-        comment?: string,
-        closed?: boolean,
-        type?: number,
-        is_hidden?: boolean,
-        duration?: number,
-        speakers?: Speaker[],
-        speaker_list_closed?: boolean,
-        content_object?: ContentObject,
-        weight?: number,
-        parent_id?: number
-    ) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'agenda/item';
-        this.id = id;
-        this.item_number = item_number;
-        this.title = title;
-        this.list_view_title = list_view_title;
-        this.comment = comment;
-        this.closed = closed;
-        this.type = type;
-        this.is_hidden = is_hidden;
-        this.duration = duration;
-        this.speakers = speakers;
-        this.speaker_list_closed = speaker_list_closed;
-        this.content_object = content_object;
-        this.weight = weight;
-        this.parent_id = parent_id;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
     public getSpeakers(): User[] {
@@ -75,15 +49,14 @@ export class Item extends BaseModel {
         return this.DS.get<BaseModel>(this.content_object.collection, this.content_object.id);
     }
 
-    public deserialize(input: any): this {
+    public deserialize(input: any): void {
         Object.assign(this, input);
 
         if (input.speakers instanceof Array) {
             this.speakers = input.speakers.map(speakerData => {
-                return new Speaker().deserialize(speakerData);
+                return new Speaker(speakerData);
             });
         }
-        return this;
     }
 }
 

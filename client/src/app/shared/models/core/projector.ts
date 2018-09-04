@@ -16,28 +16,12 @@ export class Projector extends BaseModel {
     public height: number;
     public projectiondefaults: Object[];
 
-    public constructor(
-        id?: number,
-        elements?: Object,
-        scale?: number,
-        scroll?: number,
-        name?: string,
-        blank?: boolean,
-        width?: number,
-        height?: number,
-        projectiondefaults?: Object[]
-    ) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'core/projector';
-        this.id = id;
-        this.elements = elements;
-        this.scale = scale;
-        this.scroll = scroll;
-        this.name = name;
-        this.blank = blank;
-        this.width = width;
-        this.height = height;
-        this.projectiondefaults = projectiondefaults;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 }
 

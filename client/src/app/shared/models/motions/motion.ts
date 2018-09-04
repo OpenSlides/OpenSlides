@@ -44,49 +44,20 @@ export class Motion extends BaseModel {
     public title: string;
     public text: string;
 
-    public constructor(
-        id?: number,
-        identifier?: string,
-        versions?: MotionVersion[],
-        active_version?: number,
-        parent_id?: number,
-        category_id?: number,
-        motion_block_id?: number,
-        origin?: string,
-        submitters?: MotionSubmitter[],
-        supporters_id?: number[],
-        comments?: Object,
-        state_id?: number,
-        state_required_permission_to_see?: string,
-        recommendation_id?: number,
-        tags_id?: number[],
-        attachments_id?: number[],
-        polls?: BaseModel[],
-        agenda_item_id?: number,
-        log_messages?: MotionLog[]
-    ) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'motions/motion';
-        this.id = id;
-        this.identifier = identifier || '';
-        this.versions = versions || [new MotionVersion()];
-        this.active_version = active_version;
-        this.parent_id = parent_id;
-        this.category_id = category_id;
-        this.motion_block_id = motion_block_id;
-        this.origin = origin || '';
-        this.submitters = submitters || [];
-        this.supporters_id = supporters_id;
-        this.comments = comments;
-        this.state_id = state_id;
-        this.state_required_permission_to_see = state_required_permission_to_see || '';
-        this.recommendation_id = recommendation_id;
-        this.tags_id = tags_id;
-        this.attachments_id = attachments_id;
-        this.polls = polls;
-        this.agenda_item_id = agenda_item_id;
-        this.log_messages = log_messages || [];
+        this.identifier = '';
+        this.versions = [new MotionVersion()];
+        this.origin = '';
+        this.submitters = [];
+        this.supporters_id = [];
+        this.state_required_permission_to_see = '';
+        this.log_messages = [];
 
+        if (input) {
+            this.deserialize(input);
+        }
         this.initDataStoreValues();
     }
 
@@ -124,7 +95,8 @@ export class Motion extends BaseModel {
      * @param user the user
      */
     public addSubmitter(user: User) {
-        const newSubmitter = new MotionSubmitter(null, user.id);
+        const newSubmitter = new MotionSubmitter();
+        newSubmitter.user_id = user.id;
         this.submitters.push(newSubmitter);
         console.log('did addSubmitter. this.submitters: ', this.submitters);
     }
@@ -264,31 +236,29 @@ export class Motion extends BaseModel {
         }
     }
 
-    public deserialize(input: any): this {
+    public deserialize(input: any): void {
         Object.assign(this, input);
 
         if (input.versions instanceof Array) {
             this.versions = [];
             input.versions.forEach(motionVersionData => {
-                this.versions.push(new MotionVersion().deserialize(motionVersionData));
+                this.versions.push(new MotionVersion(motionVersionData));
             });
         }
 
         if (input.submitters instanceof Array) {
             this.submitters = [];
             input.submitters.forEach(SubmitterData => {
-                this.submitters.push(new MotionSubmitter().deserialize(SubmitterData));
+                this.submitters.push(new MotionSubmitter(SubmitterData));
             });
         }
 
         if (input.log_messages instanceof Array) {
             this.log_messages = [];
             input.log_messages.forEach(logData => {
-                this.log_messages.push(new MotionLog().deserialize(logData));
+                this.log_messages.push(new MotionLog(logData));
             });
         }
-
-        return this;
     }
 }
 

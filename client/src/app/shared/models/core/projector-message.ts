@@ -9,11 +9,12 @@ export class ProjectorMessage extends BaseModel {
     public id: number;
     public message: string;
 
-    public constructor(id?: number, message?: string) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'core/projector-message';
-        this.id = id;
-        this.message = message;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 }
 

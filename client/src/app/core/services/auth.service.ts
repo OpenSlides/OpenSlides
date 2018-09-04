@@ -56,7 +56,7 @@ export class AuthService extends OpenSlidesComponent {
         };
         return this.http.post<LoginResponse>(environment.urlPrefix + '/users/login/', user).pipe(
             tap((response: LoginResponse) => {
-                this.operator.user = new User().deserialize(response.user);
+                this.operator.user = new User(response.user);
             }),
             catchError(this.handleError())
         ) as Observable<LoginResponse>;

@@ -106,13 +106,10 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * Async load the values of the motion in the Form.
      */
     public patchForm(formMotion: Motion) {
-        console.log('Motion: ', this.motion);
-        console.log('category_id: ', formMotion);
-
         this.metaInfoForm.patchValue({
-            category_id: formMotion.category.id,
-            state_id: formMotion.state.id,
-            recommendation_id: formMotion.recommendation.id,
+            category_id: formMotion.category_id,
+            state_id: formMotion.state_id,
+            recommendation_id: formMotion.recommendation_id,
             identifier: formMotion.identifier,
             origin: formMotion.origin
         });
