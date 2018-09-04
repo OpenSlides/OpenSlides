@@ -3,11 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material';
 
-import { BaseComponent } from '../../../base.component';
-import { Motion } from '../../../shared/models/motions/motion';
-import { Category } from '../../../shared/models/motions/category';
-import { DataSendService } from '../../../core/services/data-send.service';
-import { ViewportService } from '../../../core/services/viewport.service';
+import { BaseComponent } from '../../../../base.component';
+import { Category } from '../../../../shared/models/motions/category';
+import { ViewportService } from '../../../../core/services/viewport.service';
+import { MotionRepositoryService } from '../../services/motion-repository.service';
+import { ViewMotion } from '../../models/view-motion';
 
 /**
  * Component for the motion detail view
@@ -20,23 +20,15 @@ import { ViewportService } from '../../../core/services/viewport.service';
 export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * MatExpansionPanel for the meta info
+     * Only relevant in mobile view
      */
     @ViewChild('metaInfoPanel') public metaInfoPanel: MatExpansionPanel;
 
     /**
      * MatExpansionPanel for the content panel
+     * Only relevant in mobile view
      */
     @ViewChild('contentPanel') public contentPanel: MatExpansionPanel;
-
-    /**
-     * Target motion. Might be new or old
-     */
-    public motion: Motion;
-
-    /**
-     * Copy of the motion that the user might edit
-     */
-    public motionCopy: Motion;
 
     /**
      * Motions meta-info
@@ -59,20 +51,30 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     public newMotion = false;
 
     /**
+     * Target motion. Might be new or old
+     */
+    public motion: ViewMotion;
+
+    /**
+     * Copy of the motion that the user might edit
+     */
+    public motionCopy: ViewMotion;
+
+    /**
      * Constuct the detail view.
      *
      * @param vp the viewport service
      * @param router to navigate back to the motion list and to an existing motion
      * @param route determine if this is a new or an existing motion
      * @param formBuilder For reactive forms. Form Group and Form Control
-     * @param dataSend To send changes of the motion
+     * @param repo: Motion Repository
      */
     public constructor(
         public vp: ViewportService,
         private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
-        private dataSend: DataSendService
+        private repo: MotionRepositoryService
     ) {
         super();
         this.createForm();
@@ -82,21 +84,14 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
             this.editMotion = true;
 
             // Both are (temporarily) necessary until submitter and supporters are implemented
-            this.motion = new Motion();
-            this.motionCopy = new Motion();
+            // TODO new Motion and ViewMotion
+            this.motion = new ViewMotion();
+            this.motionCopy = new ViewMotion();
         } else {
             // load existing motion
             this.route.params.subscribe(params => {
-                // has the motion of the DataStore was initialized before.
-                this.motion = this.DS.get(Motion, params.id);
-
-                // Observe motion to get the motion in the parameter and also get the changes
-                this.DS.changeObservable.subscribe(newModel => {
-                    if (newModel instanceof Motion) {
-                        if (newModel.id === +params.id) {
-                            this.motion = newModel as Motion;
-                        }
-                    }
+                this.repo.getViewMotionObservable(params.id).subscribe(newViewMotion => {
+                    this.motion = newViewMotion;
                 });
             });
         }
@@ -105,11 +100,11 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Async load the values of the motion in the Form.
      */
-    public patchForm(formMotion: Motion): void {
+    public patchForm(formMotion: ViewMotion): void {
         this.metaInfoForm.patchValue({
-            category_id: formMotion.category_id,
-            state_id: formMotion.state_id,
-            recommendation_id: formMotion.recommendation_id,
+            category_id: formMotion.categoryId,
+            state_id: formMotion.stateId,
+            recommendation_id: formMotion.recommendationId,
             identifier: formMotion.identifier,
             origin: formMotion.origin
         });
@@ -148,21 +143,22 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * in the list view automatically
      *
      * TODO: state is not yet saved. Need a special "put" command
+     *
+     * TODO: Repo should handle
      */
     public saveMotion(): void {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
-        this.motionCopy.patchValues(newMotionValues);
-
-        // TODO: send to normal motion to verify
-        this.dataSend.saveModel(this.motionCopy).subscribe(answer => {
-            if (answer && answer.id && this.newMotion) {
-                this.router.navigate(['./motions/' + answer.id]);
-            }
-        });
+        if (this.newMotion) {
+            this.repo.saveMotion(newMotionValues).subscribe(response => {
+                this.router.navigate(['./motions/' + response.id]);
+            });
+        } else {
+            this.repo.saveMotion(newMotionValues, this.motionCopy).subscribe();
+        }
     }
 
     /**
-     * return all Categories.
+     * return all Categories
      */
     public getMotionCategories(): Category[] {
         return this.DS.getAll(Category);
@@ -175,10 +171,8 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         this.editMotion ? (this.editMotion = false) : (this.editMotion = true);
         if (this.editMotion) {
             // copy the motion
-            this.motionCopy = new Motion();
-            this.motionCopy.patchValues(this.motion);
+            this.motionCopy = this.motion.copy();
             this.patchForm(this.motionCopy);
-
             if (this.vp.isMobile) {
                 this.metaInfoPanel.open();
                 this.contentPanel.open();
@@ -189,10 +183,25 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     }
 
     /**
+     * Cancel the editing process
+     *
+     * If a new motion was created, return to the list.
+     */
+    public cancelEditMotionButton(): void {
+        if (this.newMotion) {
+            this.router.navigate(['./motions/']);
+        } else {
+            this.editMotion = false;
+        }
+    }
+
+    /**
      * Trigger to delete the motion
+     *
+     * TODO: Repo should handle
      */
     public deleteMotionButton(): void {
-        this.dataSend.delete(this.motion).subscribe(answer => {
+        this.repo.deleteMotion(this.motion).subscribe(answer => {
             this.router.navigate(['./motions/']);
         });
     }

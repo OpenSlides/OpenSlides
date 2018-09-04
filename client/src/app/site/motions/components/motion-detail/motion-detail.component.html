@@ -16,16 +16,26 @@
         <span *ngIf="editMotion"> {{contentForm.get('title').value}}</span>
         <br>
         <div *ngIf="motion" class='motion-submitter'>
-            <span translate>by</span> {{motion.submitterAsUser}}
+            <span translate>by</span> {{motion.submitters}}
         </div>
     </div>
     <span class='spacer'></span>
 
-    <button class='on-transition-fade' mat-icon-button [matMenuTriggerFor]="motionExtraMenu">
-        <fa-icon icon='ellipsis-v'></fa-icon>
-    </button>
+    <!-- Button on the right-->
+    <div *ngIf="editMotion">
+        <button (click)='cancelEditMotionButton()' class='on-transition-fade' mat-icon-button>
+            <fa-icon icon='times'></fa-icon>
+        </button>
+    </div>
+    <div *ngIf="!editMotion">
+        <button class='on-transition-fade' mat-icon-button [matMenuTriggerFor]="motionExtraMenu">
+            <fa-icon icon='ellipsis-v'></fa-icon>
+        </button>
+    </div>
+
+
     <mat-menu #motionExtraMenu="matMenu">
-        <!-- TODO the functions for the buttons -->
+        <!-- TODO: the functions for the buttons -->
         <button mat-menu-item translate>Export As...</button>
         <button mat-menu-item translate>Project</button>
         <mat-divider></mat-divider>
@@ -137,24 +147,24 @@
         <!-- Submitter -->
         <div *ngIf="motion && motion.submitters || editMotion">
             <h3 translate>Submitters</h3>
-            {{motion.submitterAsUser}}
+            {{motion.submitters}}
         </div>
 
         <!-- Supporter -->
-        <div *ngIf='motion && motion.supporters_id && motion.supporters_id.length > 0 || editMotion'>
+        <div *ngIf='motion && motion.hasSupporters() || editMotion'>
             <h3 translate>Supporters</h3>
             <!-- print all motion supporters -->
         </div>
 
         <!-- State -->
-        <div *ngIf='!newMotion && motion && motion.workflow && motion.state_id || editMotion'>
+        <div *ngIf='!newMotion && motion && motion.workflow && motion.state || editMotion'>
             <div *ngIf='!editMotion'>
                 <h3 translate>State</h3>
                 {{motion.state}}
             </div>
             <mat-form-field *ngIf="editMotion && !newMotion">
                 <mat-select placeholder='State' formControlName='state_id'>
-                    <mat-option [value]="motionCopy.state.id">{{motionCopy.state}}</mat-option>
+                    <mat-option [value]="motionCopy.stateId">{{motionCopy.state}}</mat-option>
                     <mat-divider></mat-divider>
                     <mat-option *ngFor="let state of motionCopy.nextStates" [value]="state.id">{{state}}</mat-option>
                     <mat-divider></mat-divider>
@@ -167,10 +177,10 @@
 
         <!-- Recommendation -->
         <!-- The suggestion of the work group weather or not a motion should be accepted -->
-        <div *ngIf='motion && motion.recomBy && (motion.recommendation_id || editMotion)'>
+        <div *ngIf='motion && motion.recommender && (motion.recommendationId || editMotion)'>
             <div *ngIf='!editMotion'>
-                <h3>{{motion.recomBy}}</h3>
-                {{motion.recommendation.name}}
+                <h3>{{motion.recommender}}</h3>
+                {{motion.recommendation}}
             </div>
             <mat-form-field *ngIf="motion && editMotion">
                 <mat-select placeholder='Recommendation' formControlName='recommendation_id'>
@@ -187,7 +197,7 @@
         </div>
 
         <!-- Category -->
-        <div *ngIf="motion && motion.category_id || editMotion">
+        <div *ngIf="motion && motion.categoryId || editMotion">
             <div *ngIf='!editMotion'>
                 <h3 translate> Category</h3>
                 {{motion.category}}

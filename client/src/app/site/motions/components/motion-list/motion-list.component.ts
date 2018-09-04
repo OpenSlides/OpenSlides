@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { BaseComponent } from 'app/base.component';
-import { TranslateService } from '@ngx-translate/core';
-import { Motion } from '../../../shared/models/motions/motion';
 import { MatTable, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { Workflow } from '../../../shared/models/motions/workflow';
-import { WorkflowState } from '../../../shared/models/motions/workflow-state';
+
+import { TranslateService } from '@ngx-translate/core';
+
+import { BaseComponent } from '../../../../base.component';
+import { MotionRepositoryService } from '../../services/motion-repository.service';
+import { ViewMotion } from '../../models/view-motion';
+import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -18,24 +20,16 @@ import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 })
 export class MotionListComponent extends BaseComponent implements OnInit {
     /**
-     * Store motion workflows (to check the status of the motions)
-     */
-    public workflowArray: Array<Workflow>;
-
-    /**
-     * Store the motions
-     */
-    public motionArray: Array<Motion>;
-
-    /**
      * Will be processed by the mat-table
+     *
+     * Will represent the object that comes from the repository
      */
-    public dataSource: MatTableDataSource<Motion>;
+    public dataSource: MatTableDataSource<ViewMotion>;
 
     /**
      * The table itself.
      */
-    @ViewChild(MatTable) public table: MatTable<Motion>;
+    @ViewChild(MatTable) public table: MatTable<ViewMotion>;
 
     /**
      * Pagination. Might be turned off to all motions at once.
@@ -54,6 +48,8 @@ export class MotionListComponent extends BaseComponent implements OnInit {
 
     /**
      * Use for maximal width
+     *
+     * TODO: Needs vp.desktop check
      */
     public columnsToDisplayFullWidth = ['identifier', 'title', 'meta', 'state'];
 
@@ -79,12 +75,14 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      * @param translate Translation
      * @param router Router
      * @param route Current route
+     * @param repo Motion Repository
      */
     public constructor(
         protected titleService: Title,
         protected translate: TranslateService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private repo: MotionRepositoryService
     ) {
         super(titleService, translate);
     }
@@ -94,19 +92,13 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      */
     public ngOnInit(): void {
         super.setTitle('Motions');
-        this.workflowArray = this.DS.getAll(Workflow);
-        this.motionArray = this.DS.getAll(Motion);
-        this.dataSource = new MatTableDataSource(this.motionArray);
+
+        this.dataSource = new MatTableDataSource();
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
 
-        // Observe DataStore for motions. Initially, executes once for every motion.
-        // The alternative approach is to put the observable as DataSource to the table
-        this.DS.changeObservable.subscribe(newModel => {
-            if (newModel instanceof Motion) {
-                this.motionArray = this.DS.getAll(Motion);
-                this.dataSource.data = this.motionArray;
-            }
+        this.repo.getViewMotionListObservable().subscribe(newMotions => {
+            this.dataSource.data = newMotions;
         });
     }
 
@@ -115,12 +107,12 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      *
      * @param motion The row the user clicked at
      */
-    public selectMotion(motion: Motion): void {
+    public selectMotion(motion: ViewMotion): void {
         this.router.navigate(['./' + motion.id], { relativeTo: this.route });
     }
 
     /**
-     * Get the icon to the coresponding Motion Status
+     * Get the icon to the corresponding Motion Status
      * TODO Needs to be more accessible (Motion workflow needs adjustment on the server)
      * @param state the name of the state
      */
@@ -142,7 +134,11 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      * @param state
      */
     public isDisplayIcon(state: WorkflowState): boolean {
-        return state.name === 'accepted' || state.name === 'rejected' || state.name === 'not decided';
+        if (state) {
+            return state.name === 'accepted' || state.name === 'rejected' || state.name === 'not decided';
+        } else {
+            return false;
+        }
     }
 
     /**

@@ -37,7 +37,7 @@ export class DataSendService {
                 )
             );
         } else {
-            return this.http.put<BaseModel>('rest/' + model.collectionString + '/' + model.id, model).pipe(
+            return this.http.patch<BaseModel>('rest/' + model.collectionString + '/' + model.id, model).pipe(
                 tap(
                     response => {
                         console.log('Update model. Response : ', response);

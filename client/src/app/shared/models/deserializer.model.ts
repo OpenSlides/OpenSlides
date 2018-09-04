@@ -11,6 +11,7 @@ export abstract class Deserializer implements Deserializable {
      */
     protected constructor(input?: any) {
         if (input) {
+            this.changeNullValuesToUndef(input);
             this.deserialize(input);
         }
     }
@@ -21,5 +22,17 @@ export abstract class Deserializer implements Deserializable {
      */
     public deserialize(input: any): void {
         Object.assign(this, input);
+    }
+
+    /**
+     * Prevent to send literally "null" if should be send
+     * @param input object to deserialize
+     */
+    public changeNullValuesToUndef(input: any): void {
+        Object.keys(input).forEach(key => {
+            if (input[key] === null) {
+                input[key] = undefined;
+            }
+        });
     }
 }

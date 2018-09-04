@@ -39,8 +39,21 @@ export abstract class BaseModel extends OpenSlidesComponent implements Deseriali
         this._collectionString = collectionString;
 
         if (input) {
+            this.changeNullValuesToUndef(input);
             this.deserialize(input);
         }
+    }
+
+    /**
+     * Prevent to send literally "null" if should be send
+     * @param input object to deserialize
+     */
+    public changeNullValuesToUndef(input: any): void {
+        Object.keys(input).forEach(key => {
+            if (input[key] === null) {
+                input[key] = undefined;
+            }
+        });
     }
 
     /**
