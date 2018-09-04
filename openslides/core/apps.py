@@ -1,9 +1,10 @@
 from collections import OrderedDict
 from operator import attrgetter
-from typing import Any, List
+from typing import Any, Dict, List
 
 from django.apps import AppConfig
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import post_migrate
 
 from ..utils.projector import register_projector_elements
@@ -37,6 +38,14 @@ class CoreAppConfig(AppConfig):
             ProjectorViewSet,
             TagViewSet,
         )
+        from ..utils.constants import set_constants, get_constants_from_apps
+
+        # Set constants
+        try:
+            set_constants(get_constants_from_apps())
+        except ImproperlyConfigured:
+            # Database is not loaded. This happens in tests.
+            pass
 
         # Define config variables and projector elements.
         config.update_config_variables(get_config_variables())
@@ -74,6 +83,8 @@ class CoreAppConfig(AppConfig):
     def get_angular_constants(self):
         from .config import config
 
+        constants: Dict[str, Any] = {}
+
         # Client settings
         client_settings_keys = [
             'MOTION_IDENTIFIER_MIN_DIGITS',
@@ -88,9 +99,7 @@ class CoreAppConfig(AppConfig):
                 # Settings key does not exist. Do nothing. The client will
                 # treat this as undefined.
                 pass
-        client_settings = {
-            'name': 'OpenSlidesSettings',
-            'value': client_settings_dict}
+        constants['OpenSlidesSettings'] = client_settings_dict
 
         # Config variables
         config_groups: List[Any] = []
@@ -110,17 +119,9 @@ class CoreAppConfig(AppConfig):
                     items=[]))
             # Add the config variable to the current group and subgroup.
             config_groups[-1]['subgroups'][-1]['items'].append(config_variable.data)
-        config_variables = {
-            'name': 'OpenSlidesConfigVariables',
-            'value': config_groups}
+        constants['OpenSlidesConfigVariables'] = config_groups
 
-        # Send the privacy policy to the client. A user should view them, even he is
-        # not logged in (so does not have the config values yet).
-        privacy_policy = {
-            'name': 'PrivacyPolicy',
-            'value': config['general_event_privacy_policy']}
-
-        return [client_settings, config_variables, privacy_policy]
+        return constants
 
 
 def call_save_default_values(**kwargs):

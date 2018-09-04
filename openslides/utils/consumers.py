@@ -15,6 +15,7 @@ from .collection import (
     format_for_autoupdate,
     from_channel_message,
 )
+from .constants import get_constants
 
 
 class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
@@ -30,7 +31,7 @@ class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
             "type": {
                 "description": "Defines what kind of packages is packed.",
                 "type": "string",
-                "pattern": "notify",  # The server can sent other types
+                "pattern": "notify|constants",  # The server can sent other types
             },
             "content": {
                 "description": "The content of the package.",
@@ -136,6 +137,10 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
                 )
             else:
                 await self.send_json(type='error', content='Invalid notify message', in_response=id)
+
+        elif type == 'constants':
+            # Return all constants to the client.
+            await self.send_json(type='constants', content=get_constants(), in_response=id)
 
     async def send_notify(self, event: Dict[str, Any]) -> None:
         """

@@ -284,8 +284,8 @@ class Collection(Cachable):
                 all_full_data = self.get_elements_from_db()
             else:
                 all_full_data = async_to_sync(element_cache.get_all_full_data)()
-            self.full_data = all_full_data[self.collection_string]
-        return self.full_data
+            self.full_data = all_full_data.get(self.collection_string, [])
+        return self.full_data  # type: ignore
 
     def as_list_for_user(self, user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
         """

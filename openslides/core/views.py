@@ -15,6 +15,7 @@ from .. import __license__ as license, __url__ as url, __version__ as version
 from ..utils import views as utils_views
 from ..utils.auth import anonymous_is_enabled, has_perm
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
+from ..utils.constants import get_constants
 from ..utils.plugins import (
     get_plugin_description,
     get_plugin_license,
@@ -133,18 +134,9 @@ class WebclientJavaScriptView(utils_views.View):
 
         # angular constants
         angular_constants = ''
-        for app in apps.get_app_configs():
-            try:
-                # Each app can deliver values to angular when implementing this method.
-                # It should return a list with dicts containing the 'name' and 'value'.
-                get_angular_constants = app.get_angular_constants
-            except AttributeError:
-                # The app doesn't have this method. Continue to next app.
-                continue
-            for constant in get_angular_constants():
-                value = json.dumps(constant['value'])
-                name = constant['name']
-                angular_constants += ".constant('{}', {})".format(name, value)
+        for key, value in get_constants().items():
+            value = json.dumps(value)
+            angular_constants += ".constant('{}', {})".format(key, value)
 
         # Use JavaScript loadScript function from
         # http://balpha.de/2011/10/jquery-script-insertion-and-its-consequences-for-debugging/

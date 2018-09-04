@@ -7,13 +7,13 @@ import { OpenSlidesComponent } from 'app/openslides.component';
  * Directive to check if the {@link OperatorService} has the correct permissions to access certain functions
  *
  * Successor of os-perms in OpenSlides 2.2
- * @example <div *appOsPerms="'perm'" ..> ... < /div>
- * @example <div *appOsPerms="['perm1', 'perm2']" ..> ... < /div>
+ * @example <div *osPerms="'perm'" ..> ... < /div>
+ * @example <div *osPerms="['perm1', 'perm2']" ..> ... < /div>
  */
 @Directive({
-    selector: '[appOsPerms]'
+    selector: '[osPerms]'
 })
-export class OsPermsDirective extends OpenSlidesComponent {
+export class PermsDirective extends OpenSlidesComponent {
     /**
      * Holds the required permissions the access a feature
      */
@@ -51,7 +51,7 @@ export class OsPermsDirective extends OpenSlidesComponent {
      * The value defines the requires permissions as an array or a single permission.
      */
     @Input()
-    public set appOsPerms(value) {
+    public set osPerms(value) {
         if (!value) {
             value = [];
         } else if (typeof value === 'string') {

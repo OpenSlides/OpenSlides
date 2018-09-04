@@ -5,7 +5,7 @@
 @import './assets/styles/openslides-theme';
 @import './app/site/site.component.scss-theme';
 @mixin openslides-components-theme($theme) {
-    @include app-site-theme($theme);
+    @include os-site-theme($theme);
     /** More components are added here */
 }
 

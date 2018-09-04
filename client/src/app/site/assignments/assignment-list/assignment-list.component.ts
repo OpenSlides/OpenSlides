@@ -9,7 +9,7 @@ import { Title } from '@angular/platform-browser';
  * TODO: not yet implemented
  */
 @Component({
-    selector: 'app-assignment-list',
+    selector: 'os-assignment-list',
     templateUrl: './assignment-list.component.html',
     styleUrls: ['./assignment-list.component.css']
 })

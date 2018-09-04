@@ -14,13 +14,13 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
  * ### Usage of the selector:
  *
  * ```html
- * <app-head-bar
+ * <os-head-bar
  *   appName="Files"
  *   PlusButton=true
  *   [menuList]=myMenu
  *   (plusButtonClicked)=onPlusButton()
  *   (ellipsisMenuItem)=onEllipsisItem($event)>
- * </app-head-bar>
+ * </os-head-bar>
  * ```
  *
  * ### Declaration of a menu provided as `[menuList]=myMenu`:
@@ -46,7 +46,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
  * ```
  */
 @Component({
-    selector: 'app-head-bar',
+    selector: 'os-head-bar',
     templateUrl: './head-bar.component.html',
     styleUrls: ['./head-bar.component.scss']
 })

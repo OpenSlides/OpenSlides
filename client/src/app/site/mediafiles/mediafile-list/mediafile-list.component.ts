@@ -11,7 +11,7 @@ import { BaseComponent } from '../../../base.component';
  * Not yet implemented
  */
 @Component({
-    selector: 'app-mediafile-list',
+    selector: 'os-mediafile-list',
     templateUrl: './mediafile-list.component.html',
     styleUrls: ['./mediafile-list.component.css']
 })

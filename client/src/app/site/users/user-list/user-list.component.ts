@@ -9,7 +9,7 @@ import { BaseComponent } from '../../../base.component';
  * TODO: Not yet implemented
  */
 @Component({
-    selector: 'app-user-list',
+    selector: 'os-user-list',
     templateUrl: './user-list.component.html',
     styleUrls: ['./user-list.component.css']
 })
