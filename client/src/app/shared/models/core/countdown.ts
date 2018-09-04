@@ -12,20 +12,12 @@ export class Countdown extends BaseModel {
     public countdown_time: number;
     public running: boolean;
 
-    public constructor(
-        id?: number,
-        countdown_time?: number,
-        default_time?: number,
-        description?: string,
-        running?: boolean
-    ) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'core/countdown';
-        this.id = id;
-        this.description = description;
-        this.default_time = default_time;
-        this.countdown_time = countdown_time;
-        this.running = running;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 }
 

@@ -57,8 +57,7 @@ export abstract class BaseModel extends OpenSlidesComponent implements Deseriali
      * Inherited to children, can be overwritten for special use cases
      * @param input JSON data for deserialization.
      */
-    public deserialize(input: any): this {
+    public deserialize(input: any): void {
         Object.assign(this, input);
-        return this;
     }
 }

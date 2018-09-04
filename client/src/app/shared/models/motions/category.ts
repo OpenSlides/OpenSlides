@@ -10,12 +10,12 @@ export class Category extends BaseModel {
     public name: string;
     public prefix: string;
 
-    public constructor(id?: number, name?: string, prefix?: string) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'motions/category';
-        this.id = id;
-        this.name = name;
-        this.prefix = prefix;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
     public toString = (): string => {

@@ -153,32 +153,30 @@ export class StartComponent extends BaseComponent implements OnInit {
 
         for (let i = 1; i <= requiredMotions; ++i) {
             // version
-            const newMotionVersion = new MotionVersion(
-                200 + i,
-                1,
-                'now',
-                'GenMo ' + i,
-                longMotionText,
-                null,
-                longMotionText
-            );
+            const newMotionVersion = new MotionVersion({
+                id: 200 + i,
+                version_number: 1,
+                create_time: 'now',
+                title: 'GenMo ' + i,
+                text: longMotionText,
+                reason: longMotionText
+            });
             // submitter
-            const newMotionSubmitter = new MotionSubmitter(1, 1, 200 + 1, 0);
+            const newMotionSubmitter = new MotionSubmitter({
+                id: 1,
+                user_id: 1,
+                motion_id: 200 + i,
+                weight: 0
+            });
             // motion
-            const newMotion = new Motion(
-                200 + i,
-                'GenMo ' + i,
-                [newMotionVersion],
-                null,
-                null,
-                null,
-                null,
-                'Generated',
-                [newMotionSubmitter],
-                null,
-                null,
-                1
-            );
+            const newMotion = new Motion({
+                id: 200 + i,
+                identifier: 'GenMo ' + i,
+                versions: [newMotionVersion],
+                origin: 'Generated',
+                submitters: [newMotionSubmitter],
+                state_id: 1
+            });
             newMotionsArray.push(newMotion);
         }
         this.DS.add(...newMotionsArray);

@@ -14,14 +14,12 @@ export class Topic extends BaseModel {
     public attachments_id: number[];
     public agenda_item_id: number;
 
-    public constructor(id?: number, title?: string, text?: string, attachments_id?: number[], agenda_item_id?: number) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'topics/topic';
-        this.id = id;
-        this.title = title;
-        this.text = text;
-        this.attachments_id = attachments_id;
-        this.agenda_item_id = agenda_item_id;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
     public getAttachments(): Mediafile[] {

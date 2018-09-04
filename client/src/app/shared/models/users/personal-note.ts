@@ -1,4 +1,5 @@
 import { BaseModel } from '../base.model';
+import { User } from './user';
 
 /**
  * Representation of users personal note.
@@ -10,16 +11,16 @@ export class PersonalNote extends BaseModel {
     public user_id: number;
     public notes: Object;
 
-    public constructor(id?: number, user_id?: number, notes?: Object) {
+    public constructor(input: any) {
         super();
         this._collectionString = 'users/personal-note';
-        this.id = id;
-        this.user_id = user_id;
-        this.notes = notes;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
-    public getUser(): BaseModel | BaseModel[] {
-        return this.DS.get('users/user', this.user_id);
+    public getUser(): User {
+        return this.DS.get<User>('users/user', this.user_id);
     }
 }
 

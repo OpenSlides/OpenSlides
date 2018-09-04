@@ -16,31 +16,15 @@ export class PollOption implements Deserializable {
 
     /**
      * Needs to be completely optional because poll has (yet) the optional parameter 'poll-options'
-     * @param id
-     * @param candidate_id
-     * @param is_elected
-     * @param votes
-     * @param poll_id
-     * @param weight
+     * @param input
      */
-    public constructor(
-        id?: number,
-        candidate_id?: number,
-        is_elected?: boolean,
-        votes?: number[],
-        poll_id?: number,
-        weight?: number
-    ) {
-        this.id = id;
-        this.candidate_id = candidate_id;
-        this.is_elected = is_elected;
-        this.votes = votes;
-        this.poll_id = poll_id;
-        this.weight = weight;
+    public constructor(input?: any) {
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
-    public deserialize(input: any): this {
+    public deserialize(input: any): void {
         Object.assign(this, input);
-        return this;
     }
 }

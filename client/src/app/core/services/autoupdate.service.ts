@@ -66,7 +66,7 @@ export class AutoupdateService extends OpenSlidesComponent {
                 /*throw new Error*/ console.log(`Unregistered resource ${collection}`);
                 return;
             }
-            this.DS.add(...autoupdate.changed[collection].map(_obj => new targetClass().deserialize(_obj.data)));
+            this.DS.add(...autoupdate.changed[collection].map(_obj => new targetClass(_obj.data)));
         });
     }
 

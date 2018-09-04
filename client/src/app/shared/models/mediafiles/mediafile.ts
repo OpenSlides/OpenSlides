@@ -16,31 +16,17 @@ export class Mediafile extends BaseModel {
     public hidden: boolean;
     public timestamp: string;
 
-    public constructor(
-        id?: number,
-        title?: string,
-        mediafile?: File,
-        media_url_prefix?: string,
-        uploader_id?: number,
-        filesize?: string,
-        hidden?: boolean,
-        timestamp?: string
-    ) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'mediafiles/mediafile';
-        this.id = id;
-        this.title = title;
-        this.mediafile = mediafile;
-        this.media_url_prefix = media_url_prefix;
-        this.uploader_id = uploader_id;
-        this.filesize = filesize;
-        this.hidden = hidden;
-        this.timestamp = timestamp;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
     public deserialize(input: any): this {
         Object.assign(this, input);
-        this.mediafile = new File().deserialize(input.mediafile);
+        this.mediafile = new File(input.mediafile);
         return this;
     }
 
