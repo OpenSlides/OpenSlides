@@ -1,21 +1,56 @@
 {
     "Agenda": "Tagesordnung",
     "Assignments": "Wahlen",
+    "Category": "",
     "Change Password": "Passwort ändern",
+    "Content": "",
+    "Cookies": "",
+    "Copyright by": "Copyright by",
+    "Database": "",
+    "DeleteMotion": "",
+    "Deleting Files": "",
     "Edit Profile": "Profil bearbeiten",
     "English": "Englisch",
+    "Export As": {
+        "0": {
+            "0": {
+                "0": ""
+            }
+        }
+    },
+    "FILTER": "",
     "Files": "Dateien",
     "French": "Französisch",
     "German": "Deutsch",
-    "Hello user": "Hallo {{user}}",
     "Home": "Startseite",
+    "Identifier": "",
     "Legal Notice": "Impressum",
-    "Log In": "Anmelden",
+    "Logfiles": "",
+    "Login": "",
+    "Login as Guest": "",
     "Logout": "Abmelden",
+    "Meta information": "",
+    "Motion": "",
     "Motions": "Anträge",
+    "OK": "",
+    "Offline mode: You can use OpenSlides but changes are not saved": {
+        "0": ""
+    },
+    "Origin": "",
     "Participants": "Teilnehmer",
+    "Personal note": "",
     "Privacy Policy": "Datenschutz",
+    "Project": "",
+    "Projector": "",
+    "Reason": "",
+    "Reset State": "",
+    "Reset recommendation": "",
+    "SORT": "",
     "Settings": "Einstellungen",
-    "Users": "Benutzer",
-    "Welcome to OpenSlides": "Willkommen bei OpenSlides"
+    "State": "",
+    "Submitters": "",
+    "Supporters": "",
+    "The assembly may decide:": "",
+    "Welcome to OpenSlides": "Willkommen bei OpenSlides",
+    "by": ""
 }

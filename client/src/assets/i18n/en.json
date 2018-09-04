@@ -1,21 +1,56 @@
 {
     "Agenda": "",
     "Assignments": "",
+    "Category": "",
     "Change Password": "",
+    "Content": "",
+    "Cookies": "",
+    "Copyright by": "",
+    "Database": "",
+    "DeleteMotion": "",
+    "Deleting Files": "",
     "Edit Profile": "",
     "English": "",
+    "Export As": {
+        "0": {
+            "0": {
+                "0": ""
+            }
+        }
+    },
+    "FILTER": "",
     "Files": "",
     "French": "",
     "German": "",
-    "Hello user": "Hello {{user}}",
     "Home": "",
+    "Identifier": "",
     "Legal Notice": "",
-    "Log In": "",
+    "Logfiles": "",
+    "Login": "",
+    "Login as Guest": "",
     "Logout": "",
+    "Meta information": "",
+    "Motion": "",
     "Motions": "",
+    "OK": "",
+    "Offline mode: You can use OpenSlides but changes are not saved": {
+        "0": ""
+    },
+    "Origin": "",
     "Participants": "",
+    "Personal note": "",
     "Privacy Policy": "",
+    "Project": "",
+    "Projector": "",
+    "Reason": "",
+    "Reset State": "",
+    "Reset recommendation": "",
+    "SORT": "",
     "Settings": "",
-    "Users": "",
-    "Welcome to OpenSlides": ""
+    "State": "",
+    "Submitters": "",
+    "Supporters": "",
+    "The assembly may decide:": "",
+    "Welcome to OpenSlides": "",
+    "by": ""
 }
