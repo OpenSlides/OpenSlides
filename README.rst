@@ -72,7 +72,7 @@ compressed tar archive and run::
     $ pip install openslides-x.y.tar.gz
 
 This will install all required Python packages (see
-``requirements_production.txt``).
+``requirements/production.txt``).
 
 
 d. Start OpenSlides
@@ -163,7 +163,7 @@ Used software
 
 OpenSlides uses the following projects or parts of them:
 
-* Several Python packages (see ``requirements_production.txt``).
+* Several Python packages (see ``requirements/production.txt`` and ``requirements/big_mode.txt``).
 
 * Several JavaScript packages (see ``bower.json``)
 
