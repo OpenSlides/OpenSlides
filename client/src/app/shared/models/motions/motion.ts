@@ -102,7 +102,7 @@ export class Motion extends BaseModel {
      */
     public initDataStoreValues() {
         // check the containing Workflows in DataStore
-        const allWorkflows = this.DS.get(Workflow) as Workflow[];
+        const allWorkflows = this.DS.getAll<Workflow>(Workflow);
         allWorkflows.forEach(localWorkflow => {
             if (localWorkflow.isStateContained(this.state_id)) {
                 this.workflow = localWorkflow as Workflow;
@@ -189,34 +189,25 @@ export class Motion extends BaseModel {
      * return the submitters as uses objects
      */
     public get submitterAsUser() {
-        const submitterIds = [];
-        if (this.submitters && this.submitters.length > 0) {
-            this.submitters.forEach(submitter => {
-                submitterIds.push(submitter.user_id);
-            });
-            const users = this.DS.get(User, ...submitterIds);
-            return users;
-        } else {
-            return null;
-        }
+        const submitterIds: number[] = this.submitters
+            .sort((a: MotionSubmitter, b: MotionSubmitter) => {
+                return a.weight - b.weight;
+            })
+            .map((submitter: MotionSubmitter) => submitter.user_id);
+        return this.DS.getMany<User>('users/user', submitterIds);
     }
 
     /**
      * get the category of a motion as object
      */
-    public get category(): any {
-        if (this.category_id) {
-            const motionCategory = this.DS.get(Category, this.category_id);
-            return motionCategory as Category;
-        } else {
-            return '';
-        }
+    public get category(): Category {
+        return this.DS.get<Category>(Category, this.category_id);
     }
 
     /**
      * Set the category in the motion
      */
-    public set category(newCategory: any) {
+    public set category(newCategory: Category) {
         this.category_id = newCategory.id;
     }
 
@@ -260,7 +251,7 @@ export class Motion extends BaseModel {
      * returns the value of 'config.motions_recommendations_by'
      */
     public get recomBy() {
-        const motionsRecommendationsByConfig = this.DS.filter(
+        const motionsRecommendationsByConfig = this.DS.filter<Config>(
             Config,
             config => config.key === 'motions_recommendations_by'
         )[0] as Config;

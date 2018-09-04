@@ -63,14 +63,7 @@ export class User extends BaseModel {
     }
 
     public get groups(): Group[] {
-        const groups = this.DS.get('users/group', ...this.groups_id);
-        if (!groups) {
-            return [];
-        } else if (groups instanceof BaseModel) {
-            return [groups] as Group[];
-        } else {
-            return groups as Group[];
-        }
+        return this.DS.getMany<Group>(Group, this.groups_id);
     }
 
     public get full_name(): string {

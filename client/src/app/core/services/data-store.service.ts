@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 
-import { BaseModel, ModelId } from 'app/shared/models/base.model';
+import { BaseModel, ModelId, ModelConstructor } from 'app/shared/models/base.model';
 import { CacheService } from './cache.service';
 import { CollectionStringModelMapperService } from './collectionStringModelMapper.service';
 
@@ -125,7 +125,7 @@ export class DataStoreService {
         const storage: ModelStorage = {};
         Object.keys(serializedStore).forEach(collectionString => {
             storage[collectionString] = {} as ModelCollection;
-            const target = CollectionStringModelMapperService.getCollectionStringType(collectionString);
+            const target = CollectionStringModelMapperService.getModelConstructor(collectionString);
             if (target) {
                 Object.keys(serializedStore[collectionString]).forEach(id => {
                     const data = JSON.parse(serializedStore[collectionString][id]);
@@ -149,69 +149,86 @@ export class DataStoreService {
         });
     }
 
-    /**
-     * Read one, multiple or all ID's from dataStore
-     * @param collectionType The desired BaseModel or collectionString to be read from the dataStore
-     * @param ids An or multiple IDs or a list of IDs of BaseModel
-     * @return The BaseModel-list corresponding to the given ID(s)
-     * @example: this.DS.get(User) returns all users
-     * @example: this.DS.get(User, 1)
-     * @example: this.DS.get(User, ...[1,2,3,4,5])
-     * @example: this.DS.get(/core/countdown, 1)
-     */
-    public get(collectionType, ...ids: ModelId[]): BaseModel[] | BaseModel {
-        let collectionString: string;
+    private getCollectionString(collectionType: ModelConstructor | string): string {
         if (typeof collectionType === 'string') {
-            collectionString = collectionType;
+            return collectionType;
         } else {
-            // get the collection string by making an empty object
-            const tempObject = new collectionType();
-            collectionString = tempObject.collectionString;
+            return CollectionStringModelMapperService.getCollectionString(collectionType);
         }
+    }
+
+    /**
+     * Read one model based on the collection and id from the DataStore.
+     *
+     * @param collectionType The desired BaseModel or collectionString to be read from the dataStore
+     * @param ids One ID of the BaseModel
+     * @return The given BaseModel-subclass instance
+     * @example: this.DS.get(User, 1)
+     * @example: this.DS.get('core/countdown', 2)
+     */
+    public get<T extends BaseModel>(collectionType: ModelConstructor | string, id: ModelId): T {
+        const collectionString = this.getCollectionString(collectionType);
 
         const collection: ModelCollection = this.modelStore[collectionString];
-
-        const models = [];
         if (!collection) {
-            return models;
-        }
-
-        if (ids.length === 0) {
-            return Object.values(collection);
+            return;
         } else {
-            ids.forEach(id => {
-                const model: BaseModel = collection[id];
-                models.push(model);
-            });
+            return collection[id];
         }
-        return models.length === 1 ? models[0] : models;
     }
 
     /**
-     * Prints the whole dataStore
+     * Read multiple ID's from dataStore
+     * @param collectionType The desired BaseModel or collectionString to be read from the dataStore
+     * @param ids Multiple IDs as a list of IDs of BaseModel
+     * @return The BaseModel-list corresponding to the given ID(s)
+     * @example: this.DS.get(User, [1,2,3,4,5])
      */
-    public printWhole(): void {
-        console.log('Everything in DataStore: ', this.modelStore);
+    public getMany<T extends BaseModel>(collectionType: ModelConstructor | string, ids: ModelId[]): T[] {
+        const collectionString = this.getCollectionString(collectionType);
+
+        const collection: ModelCollection = this.modelStore[collectionString];
+        if (!collection) {
+            return [];
+        }
+        const models = ids
+            .map(id => {
+                return collection[id];
+            })
+            .filter(model => !!model); // remove non valid models.
+        return models;
     }
 
     /**
-     * Filters the dataStore by type
-     * @param Type The desired BaseModel type to be read from the dataStore
+     * Get all models of the given collection from the DataStore.
+     * @param collectionType The desired BaseModel or collectionString to be read from the dataStore
+     * @return The BaseModel-list of all instances of T
+     * @example: this.DS.get(User)
+     */
+    public getAll<T extends BaseModel>(collectionType: ModelConstructor | string): T[] {
+        const collectionString = this.getCollectionString(collectionType);
+
+        const collection: ModelCollection = this.modelStore[collectionString];
+        if (!collection) {
+            return [];
+        } else {
+            return Object.values(collection);
+        }
+    }
+
+    /**
+     * Filters the dataStore by type.
+     *
+     * @param collectionType The desired BaseModel type to be read from the dataStore
      * @param callback a filter function
      * @return The BaseModel-list corresponding to the filter function
-     * @example this.DS.filter(User, myUser => myUser.first_name === "Max")
+     * @example this.DS.filter<User>(User, myUser => myUser.first_name === "Max")
      */
-    public filter(Type, callback): BaseModel[] {
-        // TODO: type for callback function
-        let filterCollection = [];
-        const typeCollection = this.get(Type);
-
-        if (Array.isArray(typeCollection)) {
-            filterCollection = [...filterCollection, ...typeCollection];
-        } else {
-            filterCollection.push(typeCollection);
-        }
-        return filterCollection.filter(callback);
+    public filter<T extends BaseModel>(
+        collectionType: ModelConstructor | string,
+        callback: (model: T) => boolean
+    ): BaseModel[] {
+        return this.getAll<T>(collectionType).filter(callback);
     }
 
     /**
@@ -300,5 +317,13 @@ export class DataStoreService {
      */
     private setObservable(value): void {
         this.dataStoreSubject.next(value);
+    }
+
+    /**
+     * Prints the whole dataStore
+     * @deprecated Shouldn't be used, will be removed later
+     */
+    public printWhole(): void {
+        console.log('Everything in DataStore: ', this.modelStore);
     }
 }

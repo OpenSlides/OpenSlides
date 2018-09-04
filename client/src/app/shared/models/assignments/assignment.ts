@@ -1,6 +1,8 @@
 import { BaseModel } from '../base.model';
 import { AssignmentUser } from './assignment-user';
 import { Poll } from './poll';
+import { Tag } from '../core/tag';
+import { User } from '../users/user';
 
 /**
  * Representation of an assignment.
@@ -50,11 +52,11 @@ export class Assignment extends BaseModel {
         this.assignment_related_users.forEach(user => {
             userIds.push(user.user_id);
         });
-        return this.DS.get('users/user', ...userIds);
+        return this.DS.getMany<User>('users/user', userIds);
     }
 
     public getTags(): BaseModel | BaseModel[] {
-        return this.DS.get('core/tag', ...this.tags_id);
+        return this.DS.getMany<Tag>('core/tag', this.tags_id);
     }
 
     public deserialize(input: any): this {

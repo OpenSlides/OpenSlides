@@ -1,6 +1,11 @@
 import { BaseModel } from '../base.model';
 import { Speaker } from './speaker';
-import { ContentObject } from './content-object';
+import { User } from '../users/user';
+
+interface ContentObject {
+    id: number;
+    collection: string;
+}
 
 /**
  * Representations of agenda Item
@@ -19,7 +24,7 @@ export class Item extends BaseModel {
     public duration: number;
     public speakers: Speaker[];
     public speaker_list_closed: boolean;
-    public content_object: ContentObject;
+    private content_object: ContentObject;
     public weight: number;
     public parent_id: number;
 
@@ -57,26 +62,25 @@ export class Item extends BaseModel {
         this.parent_id = parent_id;
     }
 
-    public getSpeakersAsUser(): BaseModel | BaseModel[] {
-        const speakerIds = [];
-        this.speakers.forEach(speaker => {
-            speakerIds.push(speaker.user_id);
-        });
-        return this.DS.get('users/user', ...speakerIds);
+    public getSpeakers(): User[] {
+        const speakerIds: number[] = this.speakers
+            .sort((a: Speaker, b: Speaker) => {
+                return a.weight - b.weight;
+            })
+            .map((speaker: Speaker) => speaker.user_id);
+        return this.DS.getMany<User>('users/user', speakerIds);
     }
 
-    public getContentObject(): BaseModel | BaseModel[] {
-        return this.DS.get(this.content_object.collection, this.content_object.id);
+    public get contentObject(): BaseModel {
+        return this.DS.get<BaseModel>(this.content_object.collection, this.content_object.id);
     }
 
     public deserialize(input: any): this {
         Object.assign(this, input);
-        this.content_object = new ContentObject().deserialize(input.content_object);
 
         if (input.speakers instanceof Array) {
-            this.speakers = [];
-            input.speakers.forEach(speakerData => {
-                this.speakers.push(new Speaker().deserialize(speakerData));
+            this.speakers = input.speakers.map(speakerData => {
+                return new Speaker().deserialize(speakerData);
             });
         }
         return this;

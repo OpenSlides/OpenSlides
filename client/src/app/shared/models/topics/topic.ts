@@ -1,4 +1,6 @@
 import { BaseModel } from '../base.model';
+import { Mediafile } from '../mediafiles/mediafile';
+import { Item } from '../agenda/item';
 
 /**
  * Representation of a topic.
@@ -22,12 +24,12 @@ export class Topic extends BaseModel {
         this.agenda_item_id = agenda_item_id;
     }
 
-    public getAttachments(): BaseModel | BaseModel[] {
-        return this.DS.get('mediafiles/mediafile', ...this.attachments_id);
+    public getAttachments(): Mediafile[] {
+        return this.DS.getMany<Mediafile>('mediafiles/mediafile', this.attachments_id);
     }
 
-    public getAgenda(): BaseModel | BaseModel[] {
-        return this.DS.get('agenda/item', this.agenda_item_id);
+    public getAgenda(): Item {
+        return this.DS.get<Item>('agenda/item', this.agenda_item_id);
     }
 }
 

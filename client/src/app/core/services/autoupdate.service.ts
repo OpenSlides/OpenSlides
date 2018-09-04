@@ -60,7 +60,7 @@ export class AutoupdateService extends OpenSlidesComponent {
 
         // Add the objects to the DataStore.
         Object.keys(autoupdate.changed).forEach(collection => {
-            const targetClass = CollectionStringModelMapperService.getCollectionStringType(collection);
+            const targetClass = CollectionStringModelMapperService.getModelConstructor(collection);
             if (!targetClass) {
                 // TODO: throw an error later..
                 /*throw new Error*/ console.log(`Unregistered resource ${collection}`);

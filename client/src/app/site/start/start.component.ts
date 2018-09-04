@@ -45,7 +45,7 @@ export class StartComponent extends BaseComponent implements OnInit {
         super.setTitle('Home');
 
         // set welcome title and text
-        const welcomeTitleConfig = this.DS.filter(
+        const welcomeTitleConfig = this.DS.filter<Config>(
             Config,
             config => config.key === 'general_event_welcome_title'
         )[0] as Config;
@@ -54,7 +54,7 @@ export class StartComponent extends BaseComponent implements OnInit {
             this.welcomeTitle = welcomeTitleConfig.value as string;
         }
 
-        const welcomeTextConfig = this.DS.filter(
+        const welcomeTextConfig = this.DS.filter<Config>(
             Config,
             config => config.key === 'general_event_welcome_text'
         )[0] as Config;

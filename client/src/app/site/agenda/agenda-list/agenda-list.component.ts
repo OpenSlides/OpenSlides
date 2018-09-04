@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { BaseComponent } from 'app/base.component';
 import { TranslateService } from '@ngx-translate/core';
+import { Item } from '../../../shared/models/agenda/item';
+import { Topic } from '../../../shared/models/topics/topic';
 
 /**
  * List view for the agenda.
@@ -29,6 +31,10 @@ export class AgendaListComponent extends BaseComponent implements OnInit {
      */
     public ngOnInit() {
         super.setTitle('Agenda');
+        // tslint:disable-next-line
+        const i: Item = new Item(); // Needed, that the Item.ts is loaded. Can be removed, if something else creates/uses items.
+        // tslint:disable-next-line
+        const t: Topic = new Topic(); // Needed, that the Topic.ts is loaded. Can be removed, if something else creates/uses topics.
     }
 
     /**

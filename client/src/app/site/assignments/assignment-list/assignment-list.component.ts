@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../base.component';
 import { TranslateService } from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
+import { Assignment } from '../../../shared/models/assignments/assignment';
 
 /**
  * Listview for the assignments
@@ -47,6 +48,9 @@ export class AssignmentListComponent extends BaseComponent implements OnInit {
      */
     public ngOnInit() {
         super.setTitle('Assignments');
+
+        // tslint:disable-next-line
+        const a: Assignment = new Assignment(); // Needed, that the Assignment.ts is loaded. Can be removed, if something else creates/uses assignments.
     }
 
     /**
