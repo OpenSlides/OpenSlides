@@ -11,12 +11,12 @@ export class Group extends BaseModel {
     public name: string;
     public permissions: string[];
 
-    public constructor(id?: number, name?: string, permissions?: string[]) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'users/group';
-        this.id = id;
-        this.name = name;
-        this.permissions = permissions;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
     public get users() {

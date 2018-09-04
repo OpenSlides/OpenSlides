@@ -80,18 +80,18 @@ export class StartComponent extends BaseComponent implements OnInit {
      */
     public DataStoreTest() {
         console.log('add a user to dataStore');
-        this.DS.add(new User(100));
+        this.DS.add(new User({ id: 100 }));
         console.log('add three users to dataStore');
-        this.DS.add(new User(200), new User(201), new User(202));
+        this.DS.add(new User({ id: 200 }), new User({ id: 201 }), new User({ id: 202 }));
         console.log('use the spread operator "..." to add an array');
         const userArray = [];
         for (let i = 300; i < 400; i++) {
-            userArray.push(new User(i));
+            userArray.push(new User({ id: i }));
         }
         this.DS.add(...userArray);
 
         console.log('try to get user with ID 1:');
-        const user1fromStore = this.DS.get(User, 1);
+        const user1fromStore = this.DS.get<User>(User, 1);
         console.log('the user: ', user1fromStore);
 
         console.log('remove a single user:');
@@ -102,7 +102,7 @@ export class StartComponent extends BaseComponent implements OnInit {
         this.DS.remove(User, ...[321, 363, 399]);
 
         console.log('test filter: ');
-        console.log(this.DS.filter(User, user => user.id === 1));
+        console.log(this.DS.filter<User>(User, user => user.id === 1));
     }
 
     /**
@@ -153,32 +153,30 @@ export class StartComponent extends BaseComponent implements OnInit {
 
         for (let i = 1; i <= requiredMotions; ++i) {
             // version
-            const newMotionVersion = new MotionVersion(
-                200 + i,
-                1,
-                'now',
-                'GenMo ' + i,
-                longMotionText,
-                null,
-                longMotionText
-            );
+            const newMotionVersion = new MotionVersion({
+                id: 200 + i,
+                version_number: 1,
+                create_time: 'now',
+                title: 'GenMo ' + i,
+                text: longMotionText,
+                reason: longMotionText
+            });
             // submitter
-            const newMotionSubmitter = new MotionSubmitter(1, 1, 200 + 1, 0);
+            const newMotionSubmitter = new MotionSubmitter({
+                id: 1,
+                user_id: 1,
+                motion_id: 200 + i,
+                weight: 0
+            });
             // motion
-            const newMotion = new Motion(
-                200 + i,
-                'GenMo ' + i,
-                [newMotionVersion],
-                null,
-                null,
-                null,
-                null,
-                'Generated',
-                [newMotionSubmitter],
-                null,
-                null,
-                1
-            );
+            const newMotion = new Motion({
+                id: 200 + i,
+                identifier: 'GenMo ' + i,
+                versions: [newMotionVersion],
+                origin: 'Generated',
+                submitters: [newMotionSubmitter],
+                state_id: 1
+            });
             newMotionsArray.push(newMotion);
         }
         this.DS.add(...newMotionsArray);

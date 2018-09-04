@@ -13,13 +13,13 @@ export class File implements Deserializable {
      * @param name The name of the file
      * @param type The tape (jpg, png, pdf)
      */
-    public constructor(name?: string, type?: string) {
-        this.name = name;
-        this.type = type;
+    public constructor(input?: any) {
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
-    public deserialize(input: any): this {
+    public deserialize(input: any): void {
         Object.assign(this, input);
-        return this;
     }
 }

@@ -10,12 +10,12 @@ export class Config extends BaseModel {
     public key: string;
     public value: Object;
 
-    public constructor(id?: number, key?: string, value?: Object) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'core/config';
-        this.id = id;
-        this.key = key;
-        this.value = value;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 }
 

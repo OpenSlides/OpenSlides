@@ -129,7 +129,7 @@ export class DataStoreService {
             if (target) {
                 Object.keys(serializedStore[collectionString]).forEach(id => {
                     const data = JSON.parse(serializedStore[collectionString][id]);
-                    storage[collectionString][id] = new target().deserialize(data);
+                    storage[collectionString][id] = new target(data);
                 });
             }
         });

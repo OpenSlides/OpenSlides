@@ -107,7 +107,7 @@ export class OperatorService extends OpenSlidesComponent {
         return this.http.get<WhoAmIResponse>(environment.urlPrefix + '/users/whoami/').pipe(
             tap((response: WhoAmIResponse) => {
                 if (response && response.user_id) {
-                    this.user = new User().deserialize(response.user);
+                    this.user = new User(response.user);
                 }
             }),
             catchError(this.handleError())

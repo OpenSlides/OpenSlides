@@ -9,11 +9,12 @@ export class Tag extends BaseModel {
     public id: number;
     public name: string;
 
-    public constructor(id?: number, name?: string) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'core/tag';
-        this.id = id;
-        this.name = name;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 }
 

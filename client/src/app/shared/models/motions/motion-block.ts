@@ -10,12 +10,12 @@ export class MotionBlock extends BaseModel {
     public title: string;
     public agenda_item_id: number;
 
-    public constructor(id?: number, title?: string, agenda_item_id?: number) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'motions/motion-block';
-        this.id = id;
-        this.title = title;
-        this.agenda_item_id = agenda_item_id;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
     public getAgenda(): BaseModel | BaseModel[] {

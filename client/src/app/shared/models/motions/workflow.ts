@@ -12,13 +12,12 @@ export class Workflow extends BaseModel {
     public states: WorkflowState[];
     public first_state: number;
 
-    public constructor(id?: number, name?: string, states?: WorkflowState[], first_state?: number) {
+    public constructor(input?: any) {
         super();
         this._collectionString = 'motions/workflow';
-        this.id = id;
-        this.name = name;
-        this.states = states;
-        this.first_state = first_state;
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
     /**
@@ -50,15 +49,14 @@ export class Workflow extends BaseModel {
         return targetState as WorkflowState;
     }
 
-    public deserialize(input: any): this {
+    public deserialize(input: any): void {
         Object.assign(this, input);
         if (input.states instanceof Array) {
             this.states = [];
             input.states.forEach(workflowStateData => {
-                this.states.push(new WorkflowState().deserialize(workflowStateData));
+                this.states.push(new WorkflowState(workflowStateData));
             });
         }
-        return this;
     }
 }
 
