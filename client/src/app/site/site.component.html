@@ -101,11 +101,13 @@
             </mat-toolbar>
         </header>
 
-        <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
-            <router-outlet #o="outlet"></router-outlet>
-        </main>
-        <footer>
-            <app-footer></app-footer>
-        </footer>
+        <div class="relax">
+            <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
+                <router-outlet #o="outlet"></router-outlet>
+            </main>
+            <footer>
+                <app-footer></app-footer>
+            </footer>
+        </div>
     </div>
 </mat-sidenav-container>
