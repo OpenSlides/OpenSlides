@@ -369,8 +369,7 @@ class MotionSerializer(ModelSerializer):
     workflow_id = IntegerField(
         min_value=1,
         required=False,
-        validators=[validate_workflow_field],
-        write_only=True)
+        validators=[validate_workflow_field])
     agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=3)
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
     submitters = SubmitterSerializer(many=True, read_only=True)
@@ -475,7 +474,7 @@ class MotionSerializer(ModelSerializer):
 
         # Workflow.
         workflow_id = validated_data.get('workflow_id')
-        if workflow_id is not None and workflow_id != motion.workflow:
+        if workflow_id is not None and workflow_id != motion.workflow_id:
             motion.reset_state(workflow_id)
 
         # Decide if a new version is saved to the database.

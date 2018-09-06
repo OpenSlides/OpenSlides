@@ -30,6 +30,7 @@ def test_motion_db_queries():
     """
     Tests that only the following db queries are done:
     * 1 requests to get the list of all motions,
+    * 1 request to get the associated workflow
     * 1 request to get the motion versions,
     * 1 request to get the agenda item,
     * 1 request to get the motion log,
@@ -45,7 +46,7 @@ def test_motion_db_queries():
             password='password')
     # TODO: Create some polls etc.
 
-    assert count_queries(Motion.get_elements) == 9
+    assert count_queries(Motion.get_elements) == 10
 
 
 @pytest.mark.django_db(transaction=False)
@@ -436,7 +437,7 @@ class UpdateMotion(TestCase):
         motion = Motion.objects.get()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(motion.title, 'test_title_aeng7ahChie3waiR8xoh')
-        self.assertEqual(motion.workflow, 2)
+        self.assertEqual(motion.workflow_id, 2)
 
     def test_patch_supporters(self):
         supporter = get_user_model().objects.create_user(
