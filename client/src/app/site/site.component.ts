@@ -44,14 +44,14 @@ export class SiteComponent extends BaseComponent implements OnInit {
      */
     public constructor(
         private authService: AuthService,
-        operator: OperatorService,
+        public operator: OperatorService,
         public vp: ViewportService,
         public translate: TranslateService,
         public dialog: MatDialog
     ) {
         super();
 
-        operator.getObservable().subscribe(user => {
+        this.operator.getObservable().subscribe(user => {
             if (user) {
                 this.username = user.full_name;
             } else {
