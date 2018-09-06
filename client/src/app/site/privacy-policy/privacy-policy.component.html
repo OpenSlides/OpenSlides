@@ -2,26 +2,10 @@
     <span class='app-name on-transition-fade' translate>Privacy Policy</span>
 </mat-toolbar>
 
-<mat-card class="os-card on-transition-fade">
-    <div>
-        OpenSlides speichert nur so viele personenbezogene Daten wie unbedingt nötig sind, um Besuchern Informationen und Dienste
-        zuverlässig und sicher anbieten zu können. Eine Auswertung der Dienste-Protokolle erfolgt nur von uns selbst und
-        auch nur, um mögliche Fehler, Einbruchsversuche oder technisches Verhalten der Server auf unseren Server zu analysieren.
-        Eine Weitergabe von Teilen der erhobenen Daten erfolgt ausschließlich gemäß gesetzlicher Verpflichtung z.B. an Strafverfolgungs-
-        oder Steuerbehörden. Nachfolgend wird genau aufgeschlüsselt, bei welcher Gelegenheit welche Daten wie lange gespeichert
-        sind. Zudem wird beschrieben, welche Schritte erforderlich sind um Daten zu löschen.
-        <h3 translate>Cookies</h3>
-        Beim Besuch der Website wird ein sogenanntes Cookie angelegt. Dieses Cookie wird ausschließlich dazu verwendet, um auf der
-        Website eingeloggt zu bleiben. Ein sogenanntes "Tracking Cookie" wird nicht verwendet.
-        <h3 translate>Logfiles</h3>
-        Zu OpenSlides gehören verschiedene Unter-Services. Diese loggen folgende Informationen: Quell-IP-Adresse, Zeitstempel, genutztes
-        Betriebssystem, verwendeter Web-Browser, Referer-URL, E-Mail-Adresse und besuchte Seite.
-        <h3 translate>Database</h3>
-        Als Mitglied werden folgende Daten von Ihnen gespeichert: Titel, Vorname, Nachname, EMail, Gliederungsebene, Teilnehmernummer,
-        Gruppenzugehörigkeit, Initiales Passwort im Klartext, Vergebenes Passwort als kryptografischer Hashwert und ein Kommentar
-        für interne Notizen. Diese Informationen werden mit den Aktionen innerhalb von OpenSlides in Verbindung gebracht.
-        Diese Informationen werden nicht an Dritte weiter gegeben und sind auch nicht für diese zugänglich.
-        <h3 translate>Deleting Files</h3>
-        Die Daten dieser OpenSlides-Demo-Instanz werden nächtlich automatisch gelöscht.
+<mat-card class='os-card on-transition-fade'>
+    <button mat-raised-button color="primary" (click)="goBack()" type="button" translate>Back</button>
+    <div *ngIf='privacyPolicy' [innerHtml]='privacyPolicy'></div>
+    <div *ngIf='!privacyPolicy' translate>
+        The event manager hasn't set up a privacy policy yet.
     </div>
 </mat-card>

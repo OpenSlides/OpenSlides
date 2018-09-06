@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { OpenSlidesService } from '../../core/services/openslides.service';
+import { LoginDataService } from '../../core/services/login-data.service';
 
 /**
  * Custom error states. Might become part of the shared module later.
@@ -73,13 +74,6 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public inProcess = false;
 
     /**
-     * The provacy policy send by the server.
-     *
-     * TODO: give an option to show it during login.
-     */
-    public privacyPolicy: string;
-
-    /**
      * Constructor for the login component
      *
      * @param titleService Setting the title
@@ -97,7 +91,8 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private http: HttpClient,
         private matSnackBar: MatSnackBar,
-        private OpenSlides: OpenSlidesService
+        private OpenSlides: OpenSlidesService,
+        private loginDataService: LoginDataService
     ) {
         super(titleService, translate);
         this.createForm();
@@ -112,13 +107,15 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         super.setTitle('Login');
 
+        // Get the login data. Save information to the login data service
         this.http.get<any>(environment.urlPrefix + '/users/login/', {}).subscribe(response => {
             if (response.info_text) {
                 this.installationNotice = this.matSnackBar.open(response.info_text, this.translate.instant('OK'), {
                     duration: 5000
                 });
             }
-            this.privacyPolicy = response.privacy_policy;
+            this.loginDataService.setPrivacyPolicy(response.privacy_policy);
+            this.loginDataService.setLegalNotice(response.legal_notice);
         });
     }
 

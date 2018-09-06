@@ -33,7 +33,9 @@ export class ConfigService extends OpenSlidesComponent {
      */
     public constructor() {
         super();
+    }
 
+    public setupSubscription() {
         this.DS.changeObservable.subscribe(data => {
             // on changes notify the observers for specific keys.
             if (data instanceof Config && this.configSubjects[data.key]) {

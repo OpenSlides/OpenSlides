@@ -5,6 +5,8 @@ import { Subject } from 'rxjs';
 import { AppModule } from './app.module';
 import { OpenSlidesComponent } from './openslides.component';
 import { OpenSlidesService } from './core/services/openslides.service';
+import { LoginDataService } from './core/services/login-data.service';
+import { ConfigService } from './core/services/config.service';
 
 /**
  * Angular's global App Component
@@ -38,7 +40,9 @@ export class AppComponent {
     public constructor(
         translate: TranslateService,
         private operator: OperatorService,
-        private OpenSlides: OpenSlidesService
+        private OpenSlides: OpenSlidesService,
+        private configService: ConfigService,
+        private loginDataService: LoginDataService
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'fr']);
@@ -61,6 +65,8 @@ export class AppComponent {
 
         // Setup the operator after the root injector is known.
         this.operator.setupSubscription();
+        this.configService.setupSubscription();
+        this.loginDataService.setupSubscription();
 
         this.OpenSlides.bootup(); // Yeah!
     }
