@@ -12,7 +12,7 @@ export class ProjectorComponent extends BaseComponent implements OnInit {
         super(titleService);
     }
 
-    public ngOnInit() {
+    public ngOnInit(): void {
         super.setTitle('Projector');
     }
 }

@@ -26,7 +26,7 @@ export class SettingsListComponent extends BaseComponent implements OnInit {
     /**
      * Init function. Sets the title
      */
-    public ngOnInit() {
+    public ngOnInit(): void {
         super.setTitle('Settings');
     }
 }

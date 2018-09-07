@@ -305,17 +305,9 @@ export class DataStoreService {
      *
      * @param Type   The desired BaseModel type to be read from the dataStore
      * @param ...ids An or multiple IDs or a list of IDs of BaseModels. use spread operator ("...") for arrays
-     * @example this.DS.remove(User, myUser.id, 3, 4)
+     * @example this.DS.remove('users/user', myUser.id, 3, 4)
      */
-    public remove(collectionType, ...ids: number[]): void {
-        let collectionString: string;
-        if (typeof collectionType === 'string') {
-            collectionString = collectionType;
-        } else {
-            const tempObject = new collectionType();
-            collectionString = tempObject.collectionString;
-        }
-
+    public remove(collectionString: string, ...ids: number[]): void {
         const maxChangeId = 0;
         ids.forEach(id => {
             if (this.modelStore[collectionString]) {
@@ -338,7 +330,7 @@ export class DataStoreService {
      * Updates the cache by inserting the serialized DataStore. Also changes the chageId, if it's larger
      * @param maxChangeId
      */
-    private storeToCache(maxChangeId: number) {
+    private storeToCache(maxChangeId: number): void {
         this.cacheService.set(DataStoreService.cachePrefix + 'DS', this.JsonStore);
         if (maxChangeId > this._maxChangeId) {
             this._maxChangeId = maxChangeId;

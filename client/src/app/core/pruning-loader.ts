@@ -37,7 +37,7 @@ export class PruningTranslationLoader implements TranslateLoader {
      * Falls back to the default language or simply copy the content of the key.
      * @param any the content of any language file.
      */
-    private process(object: any) {
+    private process(object: any): any {
         const newObject = {};
         for (const key in object) {
             if (object.hasOwnProperty(key)) {

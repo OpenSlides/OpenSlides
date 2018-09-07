@@ -67,14 +67,14 @@ export class Motion extends BaseModel {
     /**
      * update the values of the motion with new values
      */
-    public patchValues(update: object) {
+    public patchValues(update: object): void {
         Object.assign(this, update);
     }
 
     /**
      * sets the and the workflow from either dataStore or WebSocket
      */
-    public initDataStoreValues() {
+    public initDataStoreValues(): void {
         // check the containing Workflows in DataStore
         const allWorkflows = this.DS.getAll(Workflow);
         allWorkflows.forEach(localWorkflow => {
@@ -97,7 +97,7 @@ export class Motion extends BaseModel {
      * add a new motionSubmitter from user-object
      * @param user the user
      */
-    public addSubmitter(user: User) {
+    public addSubmitter(user: User): void {
         const newSubmitter = new MotionSubmitter();
         newSubmitter.user_id = user.id;
         this.submitters.push(newSubmitter);
@@ -107,7 +107,7 @@ export class Motion extends BaseModel {
     /**
      * return the submitters as uses objects
      */
-    public get submitterAsUser() {
+    public get submitterAsUser(): User[] {
         const submitterIds: number[] = this.submitters
             .sort((a: MotionSubmitter, b: MotionSubmitter) => {
                 return a.weight - b.weight;
@@ -133,11 +133,11 @@ export class Motion extends BaseModel {
     /**
      * return the workflow state
      */
-    public get state(): any {
+    public get state(): WorkflowState {
         if (this.workflow) {
             return this.workflow.state_by_id(this.state_id);
         } else {
-            return '';
+            return null;
         }
     }
 
@@ -157,29 +157,29 @@ export class Motion extends BaseModel {
      *
      * TODO: Motion workflow needs to be specific on the server
      */
-    public get recommendation(): any {
+    public get recommendation(): WorkflowState {
         if (this.recommendation_id && this.workflow && this.workflow.id) {
             const state = this.workflow.state_by_id(this.recommendation_id);
             return state;
         } else {
-            return '';
+            return null;
         }
     }
 
     /**
      * returns the value of 'config.motions_recommendations_by'
      */
-    public get recomBy() {
+    public get recomBy(): string {
         const motionsRecommendationsByConfig = this.DS.filter<Config>(
             Config,
             config => config.key === 'motions_recommendations_by'
         )[0] as Config;
 
         if (motionsRecommendationsByConfig) {
-            const recomByString = motionsRecommendationsByConfig.value;
+            const recomByString: string = motionsRecommendationsByConfig.value as string;
             return recomByString;
         } else {
-            return null;
+            return '';
         }
     }
 

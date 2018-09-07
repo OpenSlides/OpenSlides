@@ -15,7 +15,7 @@ export abstract class BaseModel extends OpenSlidesComponent implements Deseriali
      * @param collectionString
      * @param type
      */
-    public static registerCollectionElement(collectionString: string, type: any) {
+    public static registerCollectionElement(collectionString: string, type: any): void {
         CollectionStringModelMapperService.registerCollectionElement(collectionString, type);
     }
 

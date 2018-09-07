@@ -12,7 +12,7 @@ export class LegalNoticeComponent implements OnInit {
 
     public constructor(private configService: ConfigService, private translate: TranslateService) {}
 
-    public ngOnInit() {
+    public ngOnInit(): void {
         this.configService.get('general_event_legal_notice').subscribe(value => {
             if (value) {
                 this.legalNotice = this.translate.instant(value);

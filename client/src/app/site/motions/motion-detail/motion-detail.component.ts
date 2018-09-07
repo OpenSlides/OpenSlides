@@ -105,7 +105,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Async load the values of the motion in the Form.
      */
-    public patchForm(formMotion: Motion) {
+    public patchForm(formMotion: Motion): void {
         this.metaInfoForm.patchValue({
             category_id: formMotion.category_id,
             state_id: formMotion.state_id,
@@ -125,7 +125,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      *
      * TODO: Build a custom form validator
      */
-    public createForm() {
+    public createForm(): void {
         this.metaInfoForm = this.formBuilder.group({
             identifier: [''],
             category_id: [''],
@@ -149,7 +149,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      *
      * TODO: state is not yet saved. Need a special "put" command
      */
-    public saveMotion() {
+    public saveMotion(): void {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
         this.motionCopy.patchValues(newMotionValues);
 
@@ -171,7 +171,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Click on the edit button (pen-symbol)
      */
-    public editMotionButton() {
+    public editMotionButton(): void {
         this.editMotion ? (this.editMotion = false) : (this.editMotion = true);
         if (this.editMotion) {
             // copy the motion
@@ -191,7 +191,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Trigger to delete the motion
      */
-    public deleteMotionButton() {
+    public deleteMotionButton(): void {
         this.dataSend.delete(this.motion).subscribe(answer => {
             this.router.navigate(['./motions/']);
         });
@@ -200,5 +200,5 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Init. Does nothing here.
      */
-    public ngOnInit() {}
+    public ngOnInit(): void {}
 }

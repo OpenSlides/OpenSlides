@@ -37,7 +37,7 @@ export class AutoupdateService extends OpenSlidesComponent {
      *
      * Saves models in DataStore.
      */
-    public storeResponse(socketResponse): void {
+    public storeResponse(socketResponse: any): void {
         // Reorganize the autoupdate: groupy by action, then by collection. The final
         // entries are the single autoupdate objects.
         const autoupdate = {
@@ -76,7 +76,7 @@ export class AutoupdateService extends OpenSlidesComponent {
      *
      * TODO: Wait for changeIds to be implemented on the server.
      */
-    public requestChanges() {
+    public requestChanges(): void {
         console.log('requesting changed objects');
         // this.websocketService.send('changeIdRequest', this.DS.maxChangeId);
     }

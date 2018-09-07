@@ -15,7 +15,7 @@ export class CollectionStringModelMapperService {
      * @param collectionString
      * @param type
      */
-    public static registerCollectionElement(collectionString: string, type: ModelConstructor<BaseModel>) {
+    public static registerCollectionElement(collectionString: string, type: ModelConstructor<BaseModel>): void {
         CollectionStringModelMapperService.collectionStringsTypeMapping[collectionString] = type;
     }
 

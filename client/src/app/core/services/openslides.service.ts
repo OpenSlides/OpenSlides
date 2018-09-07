@@ -84,7 +84,7 @@ export class OpenSlidesService extends OpenSlidesComponent {
     /**
      * Init DS from cache and after this start the websocket service.
      */
-    private setupDataStoreAndWebSocket() {
+    private setupDataStoreAndWebSocket(): void {
         this.DS.initFromCache().then((changeId: number) => {
             this.websocketService.connect(
                 false,

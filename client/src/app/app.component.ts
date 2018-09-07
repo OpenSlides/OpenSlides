@@ -25,7 +25,7 @@ export class AppComponent {
      * the bootstrapped module.
      * @param moduleRef Reference to the bootstrapped AppModule
      */
-    public static bootstrapDone(moduleRef: NgModuleRef<AppModule>) {
+    public static bootstrapDone(moduleRef: NgModuleRef<AppModule>): void {
         AppComponent.bootstrapDoneSubject.next(moduleRef);
     }
 

@@ -8,5 +8,5 @@ import { Component, OnInit } from '@angular/core';
 export class ProjectorContainerComponent implements OnInit {
     public constructor() {}
 
-    public ngOnInit() {}
+    public ngOnInit(): void {}
 }

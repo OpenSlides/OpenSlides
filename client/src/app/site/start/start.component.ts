@@ -37,7 +37,7 @@ export class StartComponent extends BaseComponent implements OnInit {
      * And observes DataStore for changes
      * Set title and observe DataStore for changes.
      */
-    public ngOnInit() {
+    public ngOnInit(): void {
         // required dummy translation, cause translations for config values were never set
         // tslint:disable-next-line
         const welcomeTitleTranslateDummy = this.translate.instant('Welcome to OpenSlides');
@@ -77,7 +77,7 @@ export class StartComponent extends BaseComponent implements OnInit {
     /**
      * test data store
      */
-    public DataStoreTest() {
+    public DataStoreTest(): void {
         console.log('add a user to dataStore');
         this.DS.add(new User({ id: 100 }));
         console.log('add three users to dataStore');
@@ -107,14 +107,14 @@ export class StartComponent extends BaseComponent implements OnInit {
     /**
      * function to print datastore
      */
-    public giveDataStore() {
+    public giveDataStore(): void {
         this.DS.printWhole();
     }
 
     /**
      * test translations in component
      */
-    public TranslateTest() {
+    public TranslateTest(): void {
         console.log('lets translate the word "motion" in the current in the current lang');
         console.log('Motions in ' + this.translate.currentLang + ' is ' + this.translate.instant('Motions'));
     }
