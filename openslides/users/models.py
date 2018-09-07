@@ -21,6 +21,7 @@ from ..core.config import config
 from ..core.models import Projector
 from ..utils.collection import CollectionElement
 from ..utils.models import RESTModelMixin
+from . import GROUP_ADMIN_PK
 from .access_permissions import (
     GroupAccessPermissions,
     PersonalNoteAccessPermissions,
@@ -60,24 +61,15 @@ class UserManager(BaseUserManager):
         """
         Creates an user with the username 'admin'. If such a user already
         exists, resets it. The password is (re)set to 'admin'. The user
-        becomes member of the group 'Staff'. The two important permissions
-        'users.can_see_name' and 'users.can_manage' are added to this group,
-        so that the admin can manage all other permissions.
+        becomes member of the group 'Admin'.
         """
-        query_can_see_name = Q(content_type__app_label='users') & Q(codename='can_see_name')
-        query_can_manage = Q(content_type__app_label='users') & Q(codename='can_manage')
-
-        admin_group, _ = Group.objects.get_or_create(name='Admin')
-        admin_group.permissions.add(Permission.objects.get(query_can_see_name))
-        admin_group.permissions.add(Permission.objects.get(query_can_manage))
-
         admin, created = self.get_or_create(
             username='admin',
             defaults={'last_name': 'Administrator'})
         admin.default_password = 'admin'
         admin.password = make_password(admin.default_password)
         admin.save()
-        admin.groups.add(admin_group)
+        admin.groups.add(GROUP_ADMIN_PK)
         return created
 
     def generate_username(self, first_name, last_name):

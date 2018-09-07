@@ -17,6 +17,10 @@ Core:
  - Enabled docs for using OpenSlides with Gunicorn and Uvicorn in big
    mode [#3799, #3817].
 
+User:
+ - Added new admin group which grants all permissions. All existing groups are
+   reset during migration [#3859].
+
 
 Version 2.3 (unreleased)
 ========================
