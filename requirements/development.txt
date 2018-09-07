@@ -4,7 +4,7 @@ coverage
 git+https://gitlab.com/pycqa/flake8.git
 isort
 mypy
-pytest>=3.7.2
+pytest>=3.6,<3.7
 pytest-django
 pytest-asyncio
 pytest-cov
