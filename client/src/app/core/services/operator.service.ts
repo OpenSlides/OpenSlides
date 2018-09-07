@@ -83,7 +83,7 @@ export class OperatorService extends OpenSlidesComponent {
      * permissions if the user or groups changes.
      */
     public setupSubscription() {
-        this.DS.getObservable().subscribe(newModel => {
+        this.DS.changeObservable.subscribe(newModel => {
             if (this._user) {
                 if (newModel instanceof Group) {
                     this.updatePermissions();

@@ -64,7 +64,7 @@ export class StartComponent extends BaseComponent implements OnInit {
         }
 
         // observe title and text in DS
-        this.DS.getObservable().subscribe(newModel => {
+        this.DS.changeObservable.subscribe(newModel => {
             if (newModel instanceof Config) {
                 if (newModel.key === 'general_event_welcome_title') {
                     this.welcomeTitle = newModel.value as string;

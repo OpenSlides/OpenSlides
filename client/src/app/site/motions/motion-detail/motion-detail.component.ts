@@ -91,7 +91,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
                 this.motion = this.DS.get(Motion, params.id) as Motion;
 
                 // Observe motion to get the motion in the parameter and also get the changes
-                this.DS.getObservable().subscribe(newModel => {
+                this.DS.changeObservable.subscribe(newModel => {
                     if (newModel instanceof Motion) {
                         if (newModel.id === +params.id) {
                             this.motion = newModel as Motion;

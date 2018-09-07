@@ -1,9 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
-import { BaseModel, ModelId, ModelConstructor } from 'app/shared/models/base.model';
+import { BaseModel, ModelConstructor } from 'app/shared/models/base.model';
 import { CacheService } from './cache.service';
 import { CollectionStringModelMapperService } from './collectionStringModelMapper.service';
+
+/**
+ * Represents information about a deleted model.
+ *
+ * As the model doesn't exist anymore, just the former id and collection is known.
+ */
+export interface DeletedInformation {
+    collection: string;
+    id: number;
+}
 
 /**
  * represents a collection on the Django server, uses an ID to access a {@link BaseModel}.
@@ -62,9 +72,32 @@ export class DataStoreService {
     private JsonStore: JsonStorage = {};
 
     /**
-     * Observable subject with changes to enable dynamic changes in models and views
+     * Observable subject for changed models in the datastore.
      */
-    private dataStoreSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+    private changedSubject: Subject<BaseModel> = new Subject<BaseModel>();
+
+    /**
+     * Observe the datastore for changes.
+     *
+     * @return an observable for changed models
+     */
+    public get changeObservable(): Observable<BaseModel> {
+        return this.changedSubject.asObservable();
+    }
+
+    /**
+     * Observable subject for changed models in the datastore.
+     */
+    private deletedSubject: Subject<DeletedInformation> = new Subject<DeletedInformation>();
+
+    /**
+     * Observe the datastore for deletions.
+     *
+     * @return an observable for deleted objects.
+     */
+    public get deletedObservable(): Observable<DeletedInformation> {
+        return this.deletedSubject.asObservable();
+    }
 
     /**
      * The maximal change id from this DataStore.
@@ -166,14 +199,14 @@ export class DataStoreService {
      * @example: this.DS.get(User, 1)
      * @example: this.DS.get('core/countdown', 2)
      */
-    public get<T extends BaseModel>(collectionType: ModelConstructor | string, id: ModelId): T {
+    public get<T extends BaseModel>(collectionType: ModelConstructor | string, id: number): T {
         const collectionString = this.getCollectionString(collectionType);
 
         const collection: ModelCollection = this.modelStore[collectionString];
         if (!collection) {
             return;
         } else {
-            return collection[id];
+            return collection[id] as T;
         }
     }
 
@@ -184,7 +217,7 @@ export class DataStoreService {
      * @return The BaseModel-list corresponding to the given ID(s)
      * @example: this.DS.get(User, [1,2,3,4,5])
      */
-    public getMany<T extends BaseModel>(collectionType: ModelConstructor | string, ids: ModelId[]): T[] {
+    public getMany<T extends BaseModel>(collectionType: ModelConstructor | string, ids: number[]): T[] {
         const collectionString = this.getCollectionString(collectionType);
 
         const collection: ModelCollection = this.modelStore[collectionString];
@@ -196,7 +229,7 @@ export class DataStoreService {
                 return collection[id];
             })
             .filter(model => !!model); // remove non valid models.
-        return models;
+        return models as T[];
     }
 
     /**
@@ -257,7 +290,7 @@ export class DataStoreService {
             }
             this.JsonStore[collectionString][model.id] = JSON.stringify(model);
             // if (model.changeId > maxChangeId) {maxChangeId = model.maxChangeId;}
-            this.setObservable(model);
+            this.changedSubject.next(model);
         });
         this.storeToCache(maxChangeId);
     }
@@ -268,7 +301,7 @@ export class DataStoreService {
      * @param ...ids An or multiple IDs or a list of IDs of BaseModels. use spread operator ("...") for arrays
      * @example this.DS.remove(User, myUser.id, 3, 4)
      */
-    public remove(collectionType, ...ids: ModelId[]): void {
+    public remove(collectionType, ...ids: number[]): void {
         let collectionString: string;
         if (typeof collectionType === 'string') {
             collectionString = collectionType;
@@ -287,6 +320,10 @@ export class DataStoreService {
             if (this.JsonStore[collectionString]) {
                 delete this.JsonStore[collectionString][id];
             }
+            this.deletedSubject.next({
+                collection: collectionString,
+                id: id
+            });
         });
         this.storeToCache(maxChangeId);
     }
@@ -301,22 +338,6 @@ export class DataStoreService {
             this._maxChangeId = maxChangeId;
             this.cacheService.set(DataStoreService.cachePrefix + 'maxChangeId', maxChangeId);
         }
-    }
-
-    /**
-     * Observe the dataStore for changes.
-     * @return an observable behaviorSubject
-     */
-    public getObservable(): Observable<any> {
-        return this.dataStoreSubject.asObservable();
-    }
-
-    /**
-     * Informs the observers for changes
-     * @param value the change that have been made
-     */
-    private setObservable(value): void {
-        this.dataStoreSubject.next(value);
     }
 
     /**

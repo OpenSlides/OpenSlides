@@ -81,7 +81,7 @@ export class Motion extends BaseModel {
         });
 
         // observe for new models
-        this.DS.getObservable().subscribe(newModel => {
+        this.DS.changeObservable.subscribe(newModel => {
             if (newModel instanceof Workflow) {
                 if (newModel.isStateContained(this.state_id)) {
                     this.workflow = newModel as Workflow;
