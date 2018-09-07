@@ -6,6 +6,7 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import post_migrate
+from django.db.utils import OperationalError
 
 from ..utils.projector import register_projector_elements
 
@@ -43,8 +44,8 @@ class CoreAppConfig(AppConfig):
         # Set constants
         try:
             set_constants(get_constants_from_apps())
-        except ImproperlyConfigured:
-            # Database is not loaded. This happens in tests.
+        except (ImproperlyConfigured, OperationalError):
+            # Database is not loaded. This happens in tests and migrations.
             pass
 
         # Define config variables and projector elements.

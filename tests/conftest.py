@@ -9,7 +9,7 @@ def pytest_collection_modifyitems(items):
     Helper until https://github.com/pytest-dev/pytest-django/issues/214 is fixed.
     """
     def get_marker_transaction(test):
-        marker = test.get_marker('django_db')
+        marker = test.get_closest_marker('django_db')
         if marker:
             validate_django_db(marker)
             return marker.kwargs['transaction']
