@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -14,7 +15,8 @@ import {
     MatSnackBarModule,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    MatTabsModule
 } from '@angular/material';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
@@ -36,8 +38,8 @@ import { PermsDirective } from './directives/perms.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
 import { HeadBarComponent } from './components/head-bar/head-bar.component';
 import { FooterComponent } from './components/footer/footer.component';
-
-import { RouterModule } from '@angular/router';
+import { LegalNoticeContentComponent } from './components/legal-notice-content/legal-notice-content.component';
+import { PrivacyPolicyContentComponent } from './components/privacy-policy-content/privacy-policy-content.component';
 
 library.add(fas);
 
@@ -70,10 +72,10 @@ library.add(fas);
         MatListModule,
         MatExpansionModule,
         MatMenuModule,
-        MatSnackBarModule,
         MatDialogModule,
-        TranslateModule.forChild(),
+        MatSnackBarModule,
         FontAwesomeModule,
+        TranslateModule.forChild(),
         RouterModule
     ],
     exports: [
@@ -96,13 +98,23 @@ library.add(fas);
         MatMenuModule,
         MatDialogModule,
         MatSnackBarModule,
+        MatTabsModule,
         FontAwesomeModule,
         TranslateModule,
         PermsDirective,
         DomChangeDirective,
         FooterComponent,
-        HeadBarComponent
+        HeadBarComponent,
+        LegalNoticeContentComponent,
+        PrivacyPolicyContentComponent
     ],
-    declarations: [PermsDirective, DomChangeDirective, HeadBarComponent, FooterComponent]
+    declarations: [
+        PermsDirective,
+        DomChangeDirective,
+        HeadBarComponent,
+        FooterComponent,
+        LegalNoticeContentComponent,
+        PrivacyPolicyContentComponent
+    ]
 })
 export class SharedModule {}

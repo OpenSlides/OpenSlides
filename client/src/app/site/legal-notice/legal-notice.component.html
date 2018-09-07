@@ -1,29 +1,3 @@
-<mat-toolbar color='primary'>
-    <span class='app-name on-transition-fade' translate>Legal Notice</span>
-</mat-toolbar>
+<os-head-bar appName="Legal Notice"></os-head-bar>
 
-<mat-card class="os-card on-transition-fade">
-    <div>
-        <button mat-raised-button color="primary" (click)="goBack()" type="button" translate>Back</button>
-        <div class='legal-notice-text' [innerHtml]='legalNotice'></div>
-        <mat-divider></mat-divider>
-        <div *ngIf="versionInfo" class='version-text'>
-            <a [attr.href]="versionInfo.openslides_url" target="_blank">
-                OpenSlides {{ versionInfo.openslides_version }}
-            </a>
-            (<span translate>License</span>: {{ versionInfo.openslides_license }})
-
-            <div *ngIf="versionInfo.plugins.length">
-                <div translate>Installed plugins</div>:
-                <div *ngFor="let plugin of versionInfo.plugins">
-                    <a [attr.href]="plugin.url" target="_blank">
-                        {{ plugin.verbose_name }} {{ plugin.version }}
-                    </a>
-                    <div *ngIf="plugin.license">
-                        (<span translate>License</span>: {{ plugin.license }})
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</mat-card>
+<os-legal-notice-content></os-legal-notice-content>

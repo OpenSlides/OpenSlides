@@ -1,16 +1,24 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './site/login/login.component';
-import { LegalNoticeComponent } from './site/legal-notice/legal-notice.component';
-import { PrivacyPolicyComponent } from './site/privacy-policy/privacy-policy.component';
+
+import { LoginComponent } from './site/login/components/login-wrapper/login.component';
+import { LoginMaskComponent } from './site/login/components/login-mask/login-mask.component';
+import { LoginInfoComponent } from './site/login/components/login-info/login-info.component';
 
 /**
  * Global app routing
  */
 const routes: Routes = [
-    { path: 'login', component: LoginComponent },
-    { path: 'legalnotice', component: LegalNoticeComponent },
-    { path: 'privacypolicy', component: PrivacyPolicyComponent },
+    {
+        path: 'login',
+        component: LoginComponent,
+        children: [
+            { path: '', component: LoginMaskComponent },
+            { path: 'legalnotice', component: LoginInfoComponent },
+            { path: 'privacypolicy', component: LoginInfoComponent }
+        ]
+    },
+
     { path: 'projector', loadChildren: './projector-container/projector-container.module#ProjectorContainerModule' },
     { path: '', loadChildren: './site/site.module#SiteModule' },
     { path: '**', redirectTo: '' }

@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Title } from '@angular/platform-browser';
 
 import { BaseComponent } from 'app/base.component';
 import { AuthService } from 'app/core/services/auth.service';
@@ -10,8 +9,8 @@ import { FormControl, FormGroupDirective, NgForm, FormGroup, Validators, FormBui
 import { TranslateService } from '@ngx-translate/core';
 import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
-import { OpenSlidesService } from '../../core/services/openslides.service';
-import { LoginDataService } from '../../core/services/login-data.service';
+import { OpenSlidesService } from '../../../../core/services/openslides.service';
+import { LoginDataService } from '../../../../core/services/login-data.service';
 
 /**
  * Custom error states. Might become part of the shared module later.
@@ -33,16 +32,16 @@ export class ParentErrorStateMatcher implements ErrorStateMatcher {
 }
 
 /**
- * Login component.
+ * Login mask component.
  *
- * Handles user (and potentially guest) login
+ * Handles user and guest login
  */
 @Component({
-    selector: 'os-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+    selector: 'os-login-mask',
+    templateUrl: './login-mask.component.html',
+    styleUrls: ['./login-mask.component.scss']
 })
-export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
+export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestroy {
     /**
      * Show or hide password and change the indicator accordingly
      */
@@ -76,14 +75,16 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     /**
      * Constructor for the login component
      *
-     * @param titleService Setting the title
      * @param authService Authenticating the user
      * @param operator The representation of the current user
      * @param router forward to start page
      * @param formBuilder To build the form and validate
+     * @param http used to get information before the login
+     * @param matSnackBar Display information
+     * @param OpenSlides The Service for OpenSlides
+     * @param loginDataService provide information about the legal notice and privacy policy
      */
     public constructor(
-        protected titleService: Title,
         protected translate: TranslateService,
         private authService: AuthService,
         private operator: OperatorService,
@@ -94,7 +95,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         private OpenSlides: OpenSlidesService,
         private loginDataService: LoginDataService
     ) {
-        super(titleService, translate);
+        super();
         this.createForm();
     }
 
@@ -105,8 +106,6 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
      * Observes the operator, if a user was already logged in, recreate to user and skip the login
      */
     public ngOnInit(): void {
-        super.setTitle('Login');
-
         // Get the login data. Save information to the login data service
         this.http.get<any>(environment.urlPrefix + '/users/login/', {}).subscribe(response => {
             if (response.info_text) {

@@ -1,11 +1,3 @@
-<mat-toolbar color='primary'>
-    <span class='app-name on-transition-fade' translate>Privacy Policy</span>
-</mat-toolbar>
+<os-head-bar appName="Privacy Policy"></os-head-bar>
 
-<mat-card class='os-card on-transition-fade'>
-    <button mat-raised-button color="primary" (click)="goBack()" type="button" translate>Back</button>
-    <div *ngIf='privacyPolicy' [innerHtml]='privacyPolicy'></div>
-    <div *ngIf='!privacyPolicy' translate>
-        The event manager hasn't set up a privacy policy yet.
-    </div>
-</mat-card>
+<os-privacy-policy-content></os-privacy-policy-content>

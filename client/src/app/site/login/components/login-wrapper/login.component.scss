@@ -1,0 +1,16 @@
+header {
+    width: 100%;
+    flex: 1;
+    mat-toolbar {
+        min-height: 200px !important;
+    }
+    .login-logo-bar {
+        img {
+            margin-left: auto;
+            margin-right: auto;
+            width: 90%;
+            height: 90%;
+            max-width: 400px;
+        }
+    }
+}
