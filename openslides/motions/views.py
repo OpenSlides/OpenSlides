@@ -557,7 +557,7 @@ class MotionViewSet(ModelViewSet):
                 recommendation_state_id = int(recommendation_state)
             except ValueError:
                 raise ValidationError({'detail': _('Invalid data. Recommendation must be an integer.')})
-            recommendable_states = State.objects.filter(workflow=motion.workflow, recommendation_label__isnull=False)
+            recommendable_states = State.objects.filter(workflow=motion.workflow_id, recommendation_label__isnull=False)
             if recommendation_state_id not in [item.id for item in recommendable_states]:
                 raise ValidationError(
                     {'detail': _('You can not set the recommendation to {recommendation_state_id}.').format(

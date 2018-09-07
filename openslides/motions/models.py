@@ -50,6 +50,7 @@ class MotionManager(models.Manager):
         return (self.get_queryset()
                 .select_related('active_version', 'state')
                 .prefetch_related(
+                    'state__workflow',
                     'versions',
                     'agenda_items',
                     'log_messages',
@@ -629,11 +630,10 @@ class Motion(RESTModelMixin, models.Model):
             raise WorkflowError('You can not create a poll in state %s.' % self.state.name)
 
     @property
-    def workflow(self):
+    def workflow_id(self):
         """
         Returns the id of the workflow of the motion.
         """
-        # TODO: Rename to workflow_id
         return self.state.workflow.pk
 
     def set_state(self, state):
