@@ -1,18 +1,19 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material';
 
 import { BaseComponent } from '../../../../base.component';
 import { Category } from '../../../../shared/models/motions/category';
 import { ViewportService } from '../../../../core/services/viewport.service';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
-import { ViewMotion } from '../../models/view-motion';
+import { LineNumbering, ViewMotion } from '../../models/view-motion';
 import { User } from '../../../../shared/models/users/user';
 import { DataStoreService } from '../../../../core/services/data-store.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Motion } from '../../../../shared/models/motions/motion';
 import { BehaviorSubject } from 'rxjs';
+import { SafeHtml } from '@angular/platform-browser';
 
 /**
  * Component for the motion detail view
@@ -215,8 +216,13 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * get the formated motion text from the repository.
      */
-    public getFormatedText(): string {
-        return this.repo.formatMotion(this.motion.id, this.motion.lnMode, this.motion.crMode);
+    public getFormattedText(): SafeHtml {
+        return this.repo.formatMotion(
+            this.motion.id,
+            this.motion.crMode,
+            this.motion.lineLength,
+            this.motion.highlightedLine
+        );
     }
 
     /**
@@ -264,8 +270,29 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * Sets the motions line numbering mode
      * @param mode Needs to fot to the enum defined in ViewMotion
      */
-    public setLineNumberingMode(mode: number): void {
+    public setLineNumberingMode(mode: LineNumbering): void {
         this.motion.lnMode = mode;
+    }
+
+    /**
+     * Returns true if no line numbers are to be shown.
+     */
+    public isLineNumberingNone(): boolean {
+        return this.motion.lnMode === LineNumbering.None;
+    }
+
+    /**
+     * Returns true if the line numbers are to be shown within the text with no line breaks.
+     */
+    public isLineNumberingInline(): boolean {
+        return this.motion.lnMode === LineNumbering.Inside;
+    }
+
+    /**
+     * Returns true if the line numbers are to be shown to the left of the text.
+     */
+    public isLineNumberingOutside(): boolean {
+        return this.motion.lnMode === LineNumbering.Outside;
     }
 
     /**

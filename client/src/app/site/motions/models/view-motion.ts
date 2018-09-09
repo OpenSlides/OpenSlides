@@ -6,7 +6,7 @@ import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { BaseModel } from '../../../shared/models/base/base-model';
 import { BaseViewModel } from '../../base/base-view-model';
 
-enum LineNumbering {
+export enum LineNumbering {
     None,
     Inside,
     Outside
@@ -45,6 +45,18 @@ export class ViewMotion extends BaseViewModel {
      * Needs to be accessed from outside
      */
     public crMode: ChangeReco;
+
+    /**
+     * Indicates the maximum line length as defined in the configuration.
+     * Needs to be accessed from outside
+     */
+    public lineLength: number;
+
+    /**
+     * Indicates the currently highlighted line, if any.
+     * Needs to be accessed from outside
+     */
+    public highlightedLine: number;
 
     public get motion(): Motion {
         return this._motion;
@@ -179,6 +191,9 @@ export class ViewMotion extends BaseViewModel {
         // TODO: Should be set using a a config variable
         this.lnMode = LineNumbering.None;
         this.crMode = ChangeReco.Original;
+        this.lineLength = 80;
+
+        this.highlightedLine = null;
     }
 
     public getTitle(): string {
