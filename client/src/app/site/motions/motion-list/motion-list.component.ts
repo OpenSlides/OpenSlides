@@ -93,8 +93,8 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      */
     public ngOnInit() {
         super.setTitle('Motions');
-        this.workflowArray = this.DS.getAll<Workflow>(Workflow);
-        this.motionArray = this.DS.getAll<Motion>(Motion);
+        this.workflowArray = this.DS.getAll(Workflow);
+        this.motionArray = this.DS.getAll(Motion);
         this.dataSource = new MatTableDataSource(this.motionArray);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -103,7 +103,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
         // The alternative approach is to put the observable as DataSource to the table
         this.DS.changeObservable.subscribe(newModel => {
             if (newModel instanceof Motion) {
-                this.motionArray = this.DS.getAll<Motion>(Motion);
+                this.motionArray = this.DS.getAll(Motion);
                 this.dataSource.data = this.motionArray;
             }
         });

@@ -1,4 +1,5 @@
 import { BaseModel } from '../base.model';
+import { Item } from '../agenda/item';
 
 /**
  * Representation of a motion block.
@@ -19,7 +20,7 @@ export class MotionBlock extends BaseModel {
     }
 
     public getAgenda(): BaseModel | BaseModel[] {
-        return this.DS.get('agenda/item', this.agenda_item_id);
+        return this.DS.get<Item>('agenda/item', this.agenda_item_id);
     }
 }
 
