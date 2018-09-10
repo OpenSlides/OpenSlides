@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Reusable footer Apps.
@@ -18,12 +19,28 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FooterComponent implements OnInit {
     /**
-     * Empty constructor
+     * Indicates to location of the legal notice
      */
-    public constructor() {}
+    public legalNoticeUrl = '/legalnotice';
 
     /**
-     * empty onInit
+     * Indicated the location of the privacy policy
      */
-    public ngOnInit() {}
+    public privacyPolicyUrl = '/privacypolicy';
+
+    /**
+     * Empty constructor
+     */
+    public constructor(private route: ActivatedRoute) {}
+
+    /**
+     * If on login page, redirect the legal notice and privacy policy not to /URL
+     * but to /login/URL
+     */
+    public ngOnInit() {
+        if (this.route.snapshot.url[0] && this.route.snapshot.url[0].path === 'login') {
+            this.legalNoticeUrl = '/login/legalnotice';
+            this.privacyPolicyUrl = '/login/privacypolicy';
+        }
+    }
 }

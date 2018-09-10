@@ -1,0 +1,10 @@
+<main>
+    <mat-toolbar color="primary" translate>
+        {{pageTitle}}
+    </mat-toolbar>
+
+    <os-legal-notice-content *ngIf="component == 'legalnotice'"></os-legal-notice-content>
+    <os-privacy-policy-content *ngIf="component == 'privacypolicy'"></os-privacy-policy-content>
+
+    <button mat-raised-button color="accent" routerLink="/login" routerLinkActive="router-link-active" translate>Login</button>
+</main>
