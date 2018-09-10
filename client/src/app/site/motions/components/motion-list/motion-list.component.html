@@ -26,11 +26,11 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header> Title </mat-header-cell>
         <mat-cell *matCellDef="let motion">
             <div class='innerTable'>
-                <span class='motion-list-title'>{{motion.versions[0].title}}</span>
+                <span class='motion-list-title'>{{motion.title}}</span>
                 <br>
                 <span class='motion-list-from'>
                     <span translate>by</span>
-                    {{motion.submitterAsUser}}
+                    {{motion.submitters}}
                 </span>
             </div>
         </mat-cell>

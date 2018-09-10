@@ -34,7 +34,7 @@ export class Workflow extends BaseModel {
         });
     }
 
-    public state_by_id(id: number): WorkflowState {
+    public getStateById(id: number): WorkflowState {
         let targetState;
         this.states.forEach(state => {
             if (id === state.id) {

@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { MatSort, MatTable, MatTableDataSource } from '@angular/material';
+
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseComponent } from '../../../base.component';
-import { Category } from '../../../shared/models/motions/category';
+import { BaseComponent } from '../../../../base.component';
+import { Category } from '../../../../shared/models/motions/category';
 
 /**
  * List view for the categories.
