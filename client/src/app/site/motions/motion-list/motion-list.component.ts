@@ -101,7 +101,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
 
         // Observe DataStore for motions. Initially, executes once for every motion.
         // The alternative approach is to put the observable as DataSource to the table
-        this.DS.getObservable().subscribe(newModel => {
+        this.DS.changeObservable.subscribe(newModel => {
             if (newModel instanceof Motion) {
                 this.motionArray = this.DS.getAll<Motion>(Motion);
                 this.dataSource.data = this.motionArray;

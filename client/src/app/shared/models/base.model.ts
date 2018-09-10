@@ -2,11 +2,6 @@ import { OpenSlidesComponent } from 'app/openslides.component';
 import { Deserializable } from './deserializable.model';
 import { CollectionStringModelMapperService } from '../../core/services/collectionStringModelMapper.service';
 
-/**
- * Define that an ID might be a number or a string.
- */
-export type ModelId = number | string;
-
 export interface ModelConstructor {
     new (...args: any[]): BaseModel;
 }
@@ -34,7 +29,7 @@ export abstract class BaseModel extends OpenSlidesComponent implements Deseriali
     /**
      * force children of BaseModel to have an id
      */
-    public abstract id: ModelId;
+    public abstract id: number;
 
     /**
      * constructor that calls super from parent class
