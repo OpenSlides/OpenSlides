@@ -1,4 +1,8 @@
 {
+    "/apps/core/version": {
+        "target": "http://localhost:8000",
+        "secure": false
+    },
     "/apps/users/login": {
         "target": "http://localhost:8000",
         "secure": false

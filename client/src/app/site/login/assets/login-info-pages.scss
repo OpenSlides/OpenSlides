@@ -1,0 +1,15 @@
+.title-center {
+    margin: 0 auto;
+}
+
+mat-toolbar {
+    text-align: center;
+    display: grid;
+}
+
+button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+}
