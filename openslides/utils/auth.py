@@ -15,6 +15,9 @@ def has_perm(user: Optional[CollectionElement], perm: str) -> bool:
     User can be a CollectionElement of a user or None.
     """
     group_collection_string = 'users/group'  # This is the hard coded collection string for openslides.users.models.Group
+    GROUP_DEFAULT_PK = 1  # This is the hard coded pk for the default group.
+    GROUP_ADMIN_PK = 2  # This is the hard coded pk for the admin group.
+    # TODO: Remove hard coded values and get them from users app via settings.
 
     # Convert user to right type
     # TODO: Remove this and make use, that user has always the right type
@@ -23,12 +26,15 @@ def has_perm(user: Optional[CollectionElement], perm: str) -> bool:
         has_perm = False
     elif user is None:
         # Use the permissions from the default group with id 1.
-        default_group = CollectionElement.from_values(group_collection_string, 1)
+        default_group = CollectionElement.from_values(group_collection_string, GROUP_DEFAULT_PK)
         has_perm = perm in default_group.get_full_data()['permissions']
+    elif GROUP_ADMIN_PK in user.get_full_data()['groups_id']:
+        # User in admin group (pk 2) grants all permissions.
+        has_perm = True
     else:
         # Get all groups of the user and then see, if one group has the required
         # permission. If the user has no groups, then use group 1.
-        group_ids = user.get_full_data()['groups_id'] or [1]
+        group_ids = user.get_full_data()['groups_id'] or [GROUP_DEFAULT_PK]
         for group_id in group_ids:
             group = CollectionElement.from_values(group_collection_string, group_id)
             if perm in group.get_full_data()['permissions']:

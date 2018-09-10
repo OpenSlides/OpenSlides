@@ -188,16 +188,22 @@ angular.module('OpenSlidesApp.core', [
             },
             // Returns true if the operator has at least one perm of the perms-list.
             hasPerms: function(perms) {
-                if (typeof perms === 'string') {
-                    perms = perms.split(' ');
+                var hasPerms;
+                if (operator.user && _.indexOf(operator.user.groups_id, 2) > -1) {  // Hard coded value for admin group
+                  hasPerms = true;
+                } else {
+                    if (typeof perms === 'string') {
+                        perms = perms.split(' ');
+                    }
+                    hasPerms = _.intersection(perms, operator.perms).length > 0;
                 }
-                return _.intersection(perms, operator.perms).length > 0;
+                return hasPerms;
             },
             reloadPerms: function () {
                 if (operator.user) {
                     operator.perms = operator.user.getPerms();
                 } else {
-                    var defaultGroup = Group.get(1);
+                    var defaultGroup = Group.get(1);  // Hard coded value for default group
                     operator.perms = defaultGroup ? defaultGroup.permissions : [];
                 }
             },
@@ -351,7 +357,7 @@ angular.module('OpenSlidesApp.core', [
             Languages.setCurrentLanguage($sessionStorage.language);
         } else {
             Languages.setCurrentLanguage(Languages.getBrowserLanguage());
-        }   
+        }
         // Set this to true for debug. Helps to find untranslated strings by
         // adding "[MISSING]:".
         gettextCatalog.debug = false;
