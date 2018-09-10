@@ -140,7 +140,7 @@ export class OperatorService extends OpenSlidesComponent {
     private updatePermissions(): void {
         this.permissions = [];
         if (!this.user) {
-            const defaultGroup = this.DS.get('users/group', 1) as Group;
+            const defaultGroup = this.DS.get<Group>('users/group', 1);
             if (defaultGroup && defaultGroup.permissions instanceof Array) {
                 this.permissions = defaultGroup.permissions;
             }

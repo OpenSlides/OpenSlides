@@ -88,7 +88,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
             // load existing motion
             this.route.params.subscribe(params => {
                 // has the motion of the DataStore was initialized before.
-                this.motion = this.DS.get(Motion, params.id) as Motion;
+                this.motion = this.DS.get(Motion, params.id);
 
                 // Observe motion to get the motion in the parameter and also get the changes
                 this.DS.changeObservable.subscribe(newModel => {
@@ -165,7 +165,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * return all Categories.
      */
     public getMotionCategories(): Category[] {
-        return this.DS.getAll<Category>(Category);
+        return this.DS.getAll(Category);
     }
 
     /**

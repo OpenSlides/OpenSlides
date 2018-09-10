@@ -182,7 +182,7 @@ export class DataStoreService {
         });
     }
 
-    private getCollectionString(collectionType: ModelConstructor | string): string {
+    private getCollectionString<T extends BaseModel>(collectionType: ModelConstructor<T> | string): string {
         if (typeof collectionType === 'string') {
             return collectionType;
         } else {
@@ -197,10 +197,10 @@ export class DataStoreService {
      * @param ids One ID of the BaseModel
      * @return The given BaseModel-subclass instance
      * @example: this.DS.get(User, 1)
-     * @example: this.DS.get('core/countdown', 2)
+     * @example: this.DS.get<Countdown>('core/countdown', 2)
      */
-    public get<T extends BaseModel>(collectionType: ModelConstructor | string, id: number): T {
-        const collectionString = this.getCollectionString(collectionType);
+    public get<T extends BaseModel>(collectionType: ModelConstructor<T> | string, id: number): T {
+        const collectionString = this.getCollectionString<T>(collectionType);
 
         const collection: ModelCollection = this.modelStore[collectionString];
         if (!collection) {
@@ -211,14 +211,16 @@ export class DataStoreService {
     }
 
     /**
-     * Read multiple ID's from dataStore
+     * Read multiple ID's from dataStore.
+     *
      * @param collectionType The desired BaseModel or collectionString to be read from the dataStore
      * @param ids Multiple IDs as a list of IDs of BaseModel
      * @return The BaseModel-list corresponding to the given ID(s)
-     * @example: this.DS.get(User, [1,2,3,4,5])
+     * @example: this.DS.getMany(User, [1,2,3,4,5])
+     * @example: this.DS.getMany<User>('users/user', [1,2,3,4,5])
      */
-    public getMany<T extends BaseModel>(collectionType: ModelConstructor | string, ids: number[]): T[] {
-        const collectionString = this.getCollectionString(collectionType);
+    public getMany<T extends BaseModel>(collectionType: ModelConstructor<T> | string, ids: number[]): T[] {
+        const collectionString = this.getCollectionString<T>(collectionType);
 
         const collection: ModelCollection = this.modelStore[collectionString];
         if (!collection) {
@@ -234,12 +236,14 @@ export class DataStoreService {
 
     /**
      * Get all models of the given collection from the DataStore.
+     *
      * @param collectionType The desired BaseModel or collectionString to be read from the dataStore
      * @return The BaseModel-list of all instances of T
-     * @example: this.DS.get(User)
+     * @example: this.DS.getAll(User)
+     * @example: this.DS.getAll<User>('users/user')
      */
-    public getAll<T extends BaseModel>(collectionType: ModelConstructor | string): T[] {
-        const collectionString = this.getCollectionString(collectionType);
+    public getAll<T extends BaseModel>(collectionType: ModelConstructor<T> | string): T[] {
+        const collectionString = this.getCollectionString<T>(collectionType);
 
         const collection: ModelCollection = this.modelStore[collectionString];
         if (!collection) {
@@ -258,14 +262,15 @@ export class DataStoreService {
      * @example this.DS.filter<User>(User, myUser => myUser.first_name === "Max")
      */
     public filter<T extends BaseModel>(
-        collectionType: ModelConstructor | string,
+        collectionType: ModelConstructor<T> | string,
         callback: (model: T) => boolean
     ): T[] {
         return this.getAll<T>(collectionType).filter(callback);
     }
 
     /**
-     * Add one or multiple models to dataStore
+     * Add one or multiple models to dataStore.
+     *
      * @param ...models The model(s) that shall be add use spread operator ("...")
      * @example this.DS.add(new User(1))
      * @example this.DS.add((new User(2), new User(3)))
@@ -296,7 +301,8 @@ export class DataStoreService {
     }
 
     /**
-     * removes one or multiple models from dataStore
+     * removes one or multiple models from dataStore.
+     *
      * @param Type   The desired BaseModel type to be read from the dataStore
      * @param ...ids An or multiple IDs or a list of IDs of BaseModels. use spread operator ("...") for arrays
      * @example this.DS.remove(User, myUser.id, 3, 4)

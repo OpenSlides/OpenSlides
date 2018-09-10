@@ -34,7 +34,7 @@ export class User extends BaseModel {
     }
 
     public get groups(): Group[] {
-        return this.DS.getMany<Group>(Group, this.groups_id);
+        return this.DS.getMany(Group, this.groups_id);
     }
 
     public get full_name(): string {

@@ -76,7 +76,7 @@ export class Motion extends BaseModel {
      */
     public initDataStoreValues() {
         // check the containing Workflows in DataStore
-        const allWorkflows = this.DS.getAll<Workflow>(Workflow);
+        const allWorkflows = this.DS.getAll(Workflow);
         allWorkflows.forEach(localWorkflow => {
             if (localWorkflow.isStateContained(this.state_id)) {
                 this.workflow = localWorkflow as Workflow;

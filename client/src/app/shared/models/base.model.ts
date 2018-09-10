@@ -2,8 +2,8 @@ import { OpenSlidesComponent } from 'app/openslides.component';
 import { Deserializable } from './deserializable.model';
 import { CollectionStringModelMapperService } from '../../core/services/collectionStringModelMapper.service';
 
-export interface ModelConstructor {
-    new (...args: any[]): BaseModel;
+export interface ModelConstructor<T extends BaseModel> {
+    new (...args: any[]): T;
 }
 
 /**
