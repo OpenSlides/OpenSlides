@@ -40,7 +40,7 @@ export class ViewportService {
      * Needs to be called (exactly) once.
      * Will observe breakpoints and updates the _isMobile variable
      */
-    public checkForChange() {
+    public checkForChange(): void {
         this.breakpointObserver
             .observe([Breakpoints.Small, Breakpoints.HandsetPortrait])
             .subscribe((state: BreakpointState) => {
@@ -52,7 +52,7 @@ export class ViewportService {
             });
     }
 
-    public get isMobile() {
+    public get isMobile(): boolean {
         return this._isMobile;
     }
 }

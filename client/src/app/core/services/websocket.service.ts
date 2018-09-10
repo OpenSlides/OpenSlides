@@ -83,7 +83,7 @@ export class WebsocketService {
      *
      * Uses NgZone to let all callbacks run in the angular context.
      */
-    public connect(retry = false, changeId?: number): void {
+    public connect(retry: boolean = false, changeId?: number): void {
         if (this.websocket) {
             return;
         }

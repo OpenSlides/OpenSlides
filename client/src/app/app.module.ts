@@ -18,7 +18,7 @@ import { LoginModule } from './site/login/login.module';
  * For the translation module. Loads a Custom 'translation loader' and provides it as loader.
  * @param http Just the HttpClient to load stuff
  */
-export function HttpLoaderFactory(http: HttpClient) {
+export function HttpLoaderFactory(http: HttpClient): PruningTranslationLoader {
     return new PruningTranslationLoader(http);
 }
 /**

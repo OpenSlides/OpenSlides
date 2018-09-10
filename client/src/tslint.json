@@ -15,6 +15,14 @@
                 "order": ["static-field", "static-method", "instance-field", "constructor", "instance-method"]
             }
         ],
-        "no-unused-variable": true
+        "no-unused-variable": true,
+        "typedef": [
+            true,
+            "call-signature",
+            "property-declaration",
+            "parameter",
+            "object-destructuring",
+            "array-destructuring"
+        ]
     }
 }

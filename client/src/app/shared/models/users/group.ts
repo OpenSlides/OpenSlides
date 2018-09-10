@@ -19,7 +19,7 @@ export class Group extends BaseModel {
         }
     }
 
-    public get users() {
+    public get users(): User[] {
         // We have to use the string version to avoid circular dependencies.
         return this.DS.filter<User>('users/user', user => {
             return user.groups_id.includes(this.id);

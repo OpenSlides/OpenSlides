@@ -42,14 +42,14 @@ export class MediafileListComponent extends BaseComponent implements OnInit {
      * Init.
      * Set the title
      */
-    public ngOnInit() {
+    public ngOnInit(): void {
         super.setTitle('Files');
     }
 
     /**
      * Click on the plus button delegated from head-bar
      */
-    public onPlusButton() {
+    public onPlusButton(): void {
         console.log('clicked plus (mediafile)');
     }
 
@@ -59,7 +59,7 @@ export class MediafileListComponent extends BaseComponent implements OnInit {
      *
      * TODO: Not yet implemented, might not even be required
      */
-    public deleteAllFiles() {
+    public deleteAllFiles(): void {
         console.log('do download');
     }
 
@@ -68,7 +68,7 @@ export class MediafileListComponent extends BaseComponent implements OnInit {
      *
      * @param event clicked entry from ellipsis menu
      */
-    public onEllipsisItem(event: any) {
+    public onEllipsisItem(event: any): void {
         if (event.action) {
             this[event.action]();
         }

@@ -51,7 +51,7 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
      *
      * Sets the title and gets/observes categories from DataStore
      */
-    public ngOnInit() {
+    public ngOnInit(): void {
         super.setTitle('Category');
         this.categoryArray = this.DS.getAll(Category);
         this.dataSource = new MatTableDataSource(this.categoryArray);
@@ -72,7 +72,7 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
      *
      * TODO: Not yet implemented
      */
-    public onPlusButton() {
+    public onPlusButton(): void {
         console.log('Add New Category');
     }
 }

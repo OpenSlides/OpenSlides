@@ -26,7 +26,7 @@ export class UserListComponent extends BaseComponent implements OnInit {
     /**
      * Init function, sets the title
      */
-    public ngOnInit() {
+    public ngOnInit(): void {
         super.setTitle('Users');
     }
 }

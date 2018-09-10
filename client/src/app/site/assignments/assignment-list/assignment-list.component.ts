@@ -39,14 +39,14 @@ export class AssignmentListComponent extends BaseComponent implements OnInit {
     /**
      * Click on the plus button delegated from head-bar
      */
-    public onPlusButton() {
+    public onPlusButton(): void {
         console.log('create new assignments');
     }
 
     /**
      * Init function. Sets the title.
      */
-    public ngOnInit() {
+    public ngOnInit(): void {
         super.setTitle('Assignments');
 
         // tslint:disable-next-line
@@ -66,7 +66,7 @@ export class AssignmentListComponent extends BaseComponent implements OnInit {
      *
      * @param event clicked entry from ellipsis menu
      */
-    public onEllipsisItem(event: any) {
+    public onEllipsisItem(event: any): void {
         if (event.action) {
             this[event.action]();
         }

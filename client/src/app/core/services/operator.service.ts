@@ -69,7 +69,7 @@ export class OperatorService extends OpenSlidesComponent {
     /**
      * The subject that can be observed by other instances using observing functions.
      */
-    private operatorSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+    private operatorSubject: BehaviorSubject<User> = new BehaviorSubject<User>(null);
 
     /**
      * @param http HttpClient
@@ -82,7 +82,7 @@ export class OperatorService extends OpenSlidesComponent {
      * Setup the subscription of the DataStore.Update the user and it's
      * permissions if the user or groups changes.
      */
-    public setupSubscription() {
+    public setupSubscription(): void {
         this.DS.changeObservable.subscribe(newModel => {
             if (this._user) {
                 if (newModel instanceof Group) {
@@ -120,7 +120,7 @@ export class OperatorService extends OpenSlidesComponent {
      * Services an components can use it to get informed when something changes in
      * the operator
      */
-    public getObservable() {
+    public getObservable(): Observable<User> {
         return this.operatorSubject.asObservable();
     }
 

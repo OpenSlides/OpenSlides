@@ -54,7 +54,7 @@ export abstract class OpenSlidesComponent {
      * TODO: could have more features
      * @return an observable error
      */
-    public handleError<T>() {
+    public handleError<T>(): (error: any) => Observable<T> {
         return (error: any): Observable<T> => {
             console.error(error);
             return of(error);

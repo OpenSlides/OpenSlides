@@ -29,7 +29,7 @@ export class AgendaListComponent extends BaseComponent implements OnInit {
      * Init function.
      * Sets the title
      */
-    public ngOnInit() {
+    public ngOnInit(): void {
         super.setTitle('Agenda');
         // tslint:disable-next-line
         const i: Item = new Item(); // Needed, that the Item.ts is loaded. Can be removed, if something else creates/uses items.
@@ -41,7 +41,7 @@ export class AgendaListComponent extends BaseComponent implements OnInit {
      * Handler for the plus button.
      * Comes from the HeadBar Component
      */
-    public onPlusButton() {
+    public onPlusButton(): void {
         console.log('create new motion');
     }
 }

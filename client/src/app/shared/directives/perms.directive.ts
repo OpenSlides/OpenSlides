@@ -51,7 +51,7 @@ export class PermsDirective extends OpenSlidesComponent {
      * The value defines the requires permissions as an array or a single permission.
      */
     @Input()
-    public set osPerms(value) {
+    public set osPerms(value: string | string[]) {
         if (!value) {
             value = [];
         } else if (typeof value === 'string') {

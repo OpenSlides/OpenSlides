@@ -64,7 +64,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
     /**
      * Initialize the site component
      */
-    public ngOnInit() {
+    public ngOnInit(): void {
         this.vp.checkForChange();
 
         // get a translation via code: use the translation service
@@ -81,7 +81,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
     /**
      * Closes the sidenav in mobile view
      */
-    public toggleSideNav() {
+    public toggleSideNav(): void {
         if (this.vp.isMobile) {
             this.sideNav.toggle();
         }
@@ -109,15 +109,15 @@ export class SiteComponent extends BaseComponent implements OnInit {
     }
 
     // TODO: Implement this
-    public editProfile() {}
+    public editProfile(): void {}
 
     // TODO: Implement this
-    public changePassword() {}
+    public changePassword(): void {}
 
     /**
      * Function to log out the current user
      */
-    public logout() {
+    public logout(): void {
         this.authService.logout();
     }
 }

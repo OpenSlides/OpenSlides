@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Motion } from '../../../shared/models/motions/motion';
 import { MatTable, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Workflow } from '../../../shared/models/motions/workflow';
+import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -91,7 +92,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
     /**
      * Init function
      */
-    public ngOnInit() {
+    public ngOnInit(): void {
         super.setTitle('Motions');
         this.workflowArray = this.DS.getAll(Workflow);
         this.motionArray = this.DS.getAll(Motion);
@@ -114,7 +115,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      *
      * @param motion The row the user clicked at
      */
-    public selectMotion(motion) {
+    public selectMotion(motion: Motion): void {
         this.router.navigate(['./' + motion.id], { relativeTo: this.route });
     }
 
@@ -123,7 +124,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      * TODO Needs to be more accessible (Motion workflow needs adjustment on the server)
      * @param state the name of the state
      */
-    public getStateIcon(state) {
+    public getStateIcon(state: WorkflowState): string {
         const stateName = state.name;
         if (stateName === 'accepted') {
             return 'thumbs-up';
@@ -140,21 +141,21 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      * Determines if an icon should be shown in the list view
      * @param state
      */
-    public isDisplayIcon(state): boolean {
+    public isDisplayIcon(state: WorkflowState): boolean {
         return state.name === 'accepted' || state.name === 'rejected' || state.name === 'not decided';
     }
 
     /**
      * Handler for the plus button
      */
-    public onPlusButton() {
+    public onPlusButton(): void {
         this.router.navigate(['./new'], { relativeTo: this.route });
     }
 
     /**
      * navigate to 'motion/category'
      */
-    public toCategories() {
+    public toCategories(): void {
         this.router.navigate(['./category'], { relativeTo: this.route });
     }
 
@@ -163,7 +164,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      *
      * TODO: Currently does nothing
      */
-    public downloadMotions() {
+    public downloadMotions(): void {
         console.log('Download Motions Button');
     }
 
@@ -172,7 +173,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      *
      * @param event clicked entry from ellipsis menu
      */
-    public onEllipsisItem(event: any) {
+    public onEllipsisItem(event: any): void {
         if (event.action) {
             this[event.action]();
         }

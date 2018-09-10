@@ -86,20 +86,20 @@ export class HeadBarComponent implements OnInit {
     /**
      * empty onInit
      */
-    public ngOnInit() {}
+    public ngOnInit(): void {}
 
     /**
      * Emits a signal to the parent if an item in the menu was clicked.
      * @param item
      */
-    public clickMenu(item: any) {
+    public clickMenu(item: any): void {
         this.ellipsisMenuItem.emit(item);
     }
 
     /**
      * Emits a signal to the parent if
      */
-    public clickPlusButton() {
+    public clickPlusButton(): void {
         this.plusButtonClicked.emit(true);
     }
 }
