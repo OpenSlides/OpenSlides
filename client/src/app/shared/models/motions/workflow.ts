@@ -6,18 +6,13 @@ import { WorkflowState } from './workflow-state';
  * @ignore
  */
 export class Workflow extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public name: string;
     public states: WorkflowState[];
     public first_state: number;
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'motions/workflow';
-        if (input) {
-            this.deserialize(input);
-        }
+        super('motions/workflow', input);
     }
 
     /**

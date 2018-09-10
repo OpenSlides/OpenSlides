@@ -1,10 +1,10 @@
-import { Deserializable } from '../deserializable.model';
+import { Deserializer } from '../deserializer.model';
 
 /**
  * Content of the 'assignment_related_users' property
  * @ignore
  */
-export class AssignmentUser implements Deserializable {
+export class AssignmentUser extends Deserializer {
     public id: number;
     public user_id: number;
     public elected: boolean;
@@ -16,12 +16,6 @@ export class AssignmentUser implements Deserializable {
      * @param input
      */
     public constructor(input?: any) {
-        if (input) {
-            this.deserialize(input);
-        }
-    }
-
-    public deserialize(input: any): void {
-        Object.assign(this, input);
+        super(input);
     }
 }

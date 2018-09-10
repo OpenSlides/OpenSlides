@@ -5,7 +5,6 @@ import { BaseModel } from '../base.model';
  * @ignore
  */
 export class Countdown extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public description: string;
     public default_time: number;
@@ -13,11 +12,7 @@ export class Countdown extends BaseModel {
     public running: boolean;
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'core/countdown';
-        if (input) {
-            this.deserialize(input);
-        }
+        super('core/countdown');
     }
 }
 

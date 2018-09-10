@@ -6,17 +6,12 @@ import { User } from './user';
  * @ignore
  */
 export class PersonalNote extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public user_id: number;
     public notes: Object;
 
     public constructor(input: any) {
-        super();
-        this._collectionString = 'users/personal-note';
-        if (input) {
-            this.deserialize(input);
-        }
+        super('users/personal-note', input);
     }
 
     public getUser(): User {

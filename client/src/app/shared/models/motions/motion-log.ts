@@ -1,23 +1,17 @@
-import { Deserializable } from '../deserializable.model';
+import { Deserializer } from '../deserializer.model';
 
 /**
- * Representation of a Motion Version.
+ * Representation of a Motion Log.
  *
  * @ignore
  */
-export class MotionLog implements Deserializable {
+export class MotionLog extends Deserializer {
     public message_list: string[];
     public person_id: number;
     public time: string;
     public message: string;
 
     public constructor(input?: any) {
-        if (input) {
-            this.deserialize(input);
-        }
-    }
-
-    public deserialize(input: any): void {
-        Object.assign(this, input);
+        super(input);
     }
 }

@@ -12,7 +12,6 @@ interface ContentObject {
  * @ignore
  */
 export class Item extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public item_number: string;
     public title: string;
@@ -29,11 +28,7 @@ export class Item extends BaseModel {
     public parent_id: number;
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'agenda/item';
-        if (input) {
-            this.deserialize(input);
-        }
+        super('agenda/item', input);
     }
 
     public getSpeakers(): User[] {

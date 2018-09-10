@@ -5,7 +5,6 @@ import { BaseModel } from '../base.model';
  * @ignore
  */
 export class MotionChangeReco extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public motion_version_id: number;
     public rejected: boolean;
@@ -17,11 +16,7 @@ export class MotionChangeReco extends BaseModel {
     public creation_time: string;
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'motions/motion-change-recommendation';
-        if (input) {
-            this.deserialize(input);
-        }
+        super('motions/motion-change-recommendation', input);
     }
 }
 

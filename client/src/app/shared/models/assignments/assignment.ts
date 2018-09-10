@@ -9,7 +9,6 @@ import { User } from '../users/user';
  * @ignore
  */
 export class Assignment extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public title: string;
     public description: string;
@@ -22,14 +21,7 @@ export class Assignment extends BaseModel {
     public tags_id: number[];
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'assignments/assignment';
-        this.assignment_related_users = []; // TODO Array
-        this.polls = Array(); // TODO Array
-
-        if (input) {
-            this.deserialize(input);
-        }
+        super('assignments/assignment', input);
     }
 
     public getAssignmentReleatedUsers(): BaseModel | BaseModel[] {
@@ -47,15 +39,15 @@ export class Assignment extends BaseModel {
     public deserialize(input: any): void {
         Object.assign(this, input);
 
+        this.assignment_related_users = [];
         if (input.assignment_related_users instanceof Array) {
-            this.assignment_related_users = [];
             input.assignment_related_users.forEach(assignmentUserData => {
                 this.assignment_related_users.push(new AssignmentUser(assignmentUserData));
             });
         }
 
+        this.polls = [];
         if (input.polls instanceof Array) {
-            this.polls = [];
             input.polls.forEach(pollData => {
                 this.polls.push(new Poll(pollData));
             });

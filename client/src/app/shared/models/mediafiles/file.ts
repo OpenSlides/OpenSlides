@@ -1,10 +1,10 @@
-import { Deserializable } from '../deserializable.model';
+import { Deserializer } from '../deserializer.model';
 
 /**
  * The name and the type of a mediaFile.
  * @ignore
  */
-export class File implements Deserializable {
+export class File extends Deserializer {
     public name: string;
     public type: string;
 
@@ -14,12 +14,6 @@ export class File implements Deserializable {
      * @param type The tape (jpg, png, pdf)
      */
     public constructor(input?: any) {
-        if (input) {
-            this.deserialize(input);
-        }
-    }
-
-    public deserialize(input: any): void {
-        Object.assign(this, input);
+        super(input);
     }
 }

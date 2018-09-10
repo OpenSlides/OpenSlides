@@ -5,16 +5,11 @@ import { BaseModel } from '../base.model';
  * @ignore
  */
 export class ProjectorMessage extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public message: string;
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'core/projector-message';
-        if (input) {
-            this.deserialize(input);
-        }
+        super('core/projector-message', input);
     }
 }
 

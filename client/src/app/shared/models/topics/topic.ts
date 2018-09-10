@@ -7,7 +7,6 @@ import { Item } from '../agenda/item';
  * @ignore
  */
 export class Topic extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public title: string;
     public text: string;
@@ -15,11 +14,7 @@ export class Topic extends BaseModel {
     public agenda_item_id: number;
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'topics/topic';
-        if (input) {
-            this.deserialize(input);
-        }
+        super('topics/topic', input);
     }
 
     public getAttachments(): Mediafile[] {

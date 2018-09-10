@@ -6,17 +6,12 @@ import { User } from './user';
  * @ignore
  */
 export class Group extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public name: string;
     public permissions: string[];
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'users/group';
-        if (input) {
-            this.deserialize(input);
-        }
+        super('users/group', input);
     }
 
     public get users(): User[] {
