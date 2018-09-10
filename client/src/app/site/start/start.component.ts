@@ -8,7 +8,6 @@ import { TranslateService } from '@ngx-translate/core'; // showcase
 import { User } from 'app/shared/models/users/user';
 import { Config } from '../../shared/models/core/config';
 import { Motion } from '../../shared/models/motions/motion';
-import { MotionVersion } from '../../shared/models/motions/motion-version';
 import { MotionSubmitter } from '../../shared/models/motions/motion-submitter';
 
 @Component({
@@ -152,15 +151,6 @@ export class StartComponent extends BaseComponent implements OnInit {
         `;
 
         for (let i = 1; i <= requiredMotions; ++i) {
-            // version
-            const newMotionVersion = new MotionVersion({
-                id: 200 + i,
-                version_number: 1,
-                create_time: 'now',
-                title: 'GenMo ' + i,
-                text: longMotionText,
-                reason: longMotionText
-            });
             // submitter
             const newMotionSubmitter = new MotionSubmitter({
                 id: 1,
@@ -172,7 +162,9 @@ export class StartComponent extends BaseComponent implements OnInit {
             const newMotion = new Motion({
                 id: 200 + i,
                 identifier: 'GenMo ' + i,
-                versions: [newMotionVersion],
+                title: 'title',
+                text: longMotionText,
+                reason: longMotionText,
                 origin: 'Generated',
                 submitters: [newMotionSubmitter],
                 state_id: 1

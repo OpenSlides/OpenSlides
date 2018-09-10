@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from openslides.motions.models import MotionChangeRecommendation, MotionVersion
+from openslides.motions.models import Motion, MotionChangeRecommendation
 
 
 class MotionChangeRecommendationTest(TestCase):
@@ -8,12 +8,12 @@ class MotionChangeRecommendationTest(TestCase):
         """
         Tests that a change recommendation directly before another one can be created
         """
-        version = MotionVersion()
+        motion = Motion()
         existing_recommendation = MotionChangeRecommendation()
         existing_recommendation.line_from = 5
         existing_recommendation.line_to = 7
         existing_recommendation.rejected = False
-        existing_recommendation.motion_version = version
+        existing_recommendation.motion = motion
         other_recommendations = [existing_recommendation]
 
         new_recommendation1 = MotionChangeRecommendation()

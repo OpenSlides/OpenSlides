@@ -2,23 +2,24 @@ import json
 
 import pytest
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Permission
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.core.config import config
-from openslides.core.models import ConfigStore, Tag
+from openslides.core.models import Tag
 from openslides.motions.models import (
     Category,
     Motion,
     MotionBlock,
+    MotionComment,
+    MotionCommentSection,
     MotionLog,
     State,
     Submitter,
     Workflow,
 )
-from openslides.users.models import Group
+from openslides.utils.auth import get_group_model
 from openslides.utils.collection import CollectionElement
 from openslides.utils.test import TestCase
 
@@ -31,22 +32,39 @@ def test_motion_db_queries():
     Tests that only the following db queries are done:
     * 1 requests to get the list of all motions,
     * 1 request to get the associated workflow
-    * 1 request to get the motion versions,
+    * 1 request for all motion comments
+    * 1 request for all motion comment sections required for the comments
+    * 1 request for all users required for the read_groups of the sections
     * 1 request to get the agenda item,
     * 1 request to get the motion log,
     * 1 request to get the polls,
     * 1 request to get the attachments,
     * 1 request to get the tags,
     * 2 requests to get the submitters and supporters.
+
+    Two comment sections are created and for each motions two comments.
     """
+    section1 = MotionCommentSection.objects.create(name='test_section')
+    section2 = MotionCommentSection.objects.create(name='test_section')
+
     for index in range(10):
-        Motion.objects.create(title='motion{}'.format(index))
+        motion = Motion.objects.create(title='motion{}'.format(index))
+
+        MotionComment.objects.create(
+            comment='test_comment',
+            motion=motion,
+            section=section1)
+        MotionComment.objects.create(
+            comment='test_comment2',
+            motion=motion,
+            section=section2)
+
         get_user_model().objects.create_user(
             username='user_{}'.format(index),
             password='password')
     # TODO: Create some polls etc.
 
-    assert count_queries(Motion.get_elements) == 10
+    assert count_queries(Motion.get_elements) == 12
 
 
 @pytest.mark.django_db(transaction=False)
@@ -169,45 +187,6 @@ class CreateMotion(TestCase):
         motion = Motion.objects.get()
         self.assertEqual(motion.tags.get().name, 'test_tag_iRee3kiecoos4rorohth')
 
-    def test_with_multiple_comments(self):
-        comments = {
-            '1': 'comemnt1_sdpoiuffo3%7dwDwW)',
-            '2': 'comment2_iusd_D/TdskDWH(5DWas46WAd078'}
-        response = self.client.post(
-            reverse('motion-list'),
-            {'title': 'title_test_sfdAaufd56HR7sd5FDq7av',
-             'text': 'text_test_fiuhefF86()ew1Ef346AF6W',
-             'comments': comments},
-            format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        motion = Motion.objects.get()
-        self.assertEqual(motion.comments, comments)
-
-    def test_wrong_comment_format(self):
-        comments = [
-            'comemnt1_wpcjlwgj$§ks)skj2LdmwKDWSLw6',
-            'comment2_dq2Wd)Jwdlmm:,w82DjwQWSSiwjd']
-        response = self.client.post(
-            reverse('motion-list'),
-            {'title': 'title_test_sfdAaufd56HR7sd5FDq7av',
-             'text': 'text_test_fiuhefF86()ew1Ef346AF6W',
-             'comments': comments},
-            format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'comments': {'detail': 'Data must be a dict.'}})
-
-    def test_wrong_comment_id(self):
-        comment = {
-            'string': 'comemnt1_wpcjlwgj$§ks)skj2LdmwKDWSLw6'}
-        response = self.client.post(
-            reverse('motion-list'),
-            {'title': 'title_test_sfdAaufd56HR7sd5FDq7av',
-             'text': 'text_test_fiuhefF86()ew1Ef346AF6W',
-             'comments': comment},
-            format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'comments': {'detail': 'Id must be an int.'}})
-
     def test_with_workflow(self):
         """
         Test to create a motion with a specific workflow.
@@ -227,7 +206,7 @@ class CreateMotion(TestCase):
         """
         self.admin = get_user_model().objects.get(username='admin')
         self.admin.groups.add(2)
-        self.admin.groups.remove(3)
+        self.admin.groups.remove(4)
 
         response = self.client.post(
             reverse('motion-list'),
@@ -235,35 +214,6 @@ class CreateMotion(TestCase):
              'text': 'test_text_eHohS8ohr5ahshoah8Oh'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-    def test_non_admin_with_comment_data(self):
-        """
-        Test to create a motion by a non staff user that has permission to
-        manage motion comments and sends some additional fields.
-        """
-        self.admin = get_user_model().objects.get(username='admin')
-        self.admin.groups.add(2)
-        self.admin.groups.remove(4)
-        group_delegate = self.admin.groups.get()
-        group_delegate.permissions.add(Permission.objects.get(
-            content_type__app_label='motions',
-            codename='can_manage_comments',
-        ))
-        group_delegate.permissions.add(Permission.objects.get(
-            content_type__app_label='motions',
-            codename='can_see_comments',
-        ))
-
-        response = self.client.post(
-            reverse('motion-list'),
-            {'title': 'test_title_peiJozae0luew9EeL8bo',
-             'text': 'test_text_eHohS8ohr5ahshoah8Oh',
-             'comments': {'1': 'comment_for_field_one__xiek1Euhae9xah2wuuraaaa'}},
-            format='json',
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Motion.objects.get().comments, {'1': 'comment_for_field_one__xiek1Euhae9xah2wuuraaaa'})
 
     def test_amendment_motion(self):
         """
@@ -383,7 +333,7 @@ class RetrieveMotion(TestCase):
     def test_user_without_can_see_user_permission_to_see_motion_and_submitter_data(self):
         admin = get_user_model().objects.get(username='admin')
         Submitter.objects.add(admin, self.motion)
-        group = Group.objects.get(pk=1)  # Group with pk 1 is for anonymous and default users.
+        group = get_group_model().objects.get(pk=1)  # Group with pk 1 is for anonymous and default users.
         permission_string = 'users.can_see_name'
         app_label, codename = permission_string.split('.')
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
@@ -491,56 +441,6 @@ class UpdateMotion(TestCase):
         self.assertEqual(motion.title, 'new_title_ohph1aedie5Du8sai2ye')
         self.assertEqual(motion.supporters.count(), 0)
 
-    def test_with_new_version(self):
-        self.motion.set_state(State.objects.get(name='permitted'))
-        self.motion.save()
-        response = self.client.patch(
-            reverse('motion-detail', args=[self.motion.pk]),
-            {'text': 'test_text_aeb1iaghahChong5od3a'})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        motion = Motion.objects.get()
-        self.assertEqual(motion.versions.count(), 2)
-
-    def test_without_new_version(self):
-        self.motion.set_state(State.objects.get(name='permitted'))
-        self.motion.save()
-        response = self.client.patch(
-            reverse('motion-detail', args=[self.motion.pk]),
-            {'text': 'test_text_aeThaeroneiroo7Iophu',
-             'disable_versioning': True})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        motion = Motion.objects.get()
-        self.assertEqual(motion.versions.count(), 1)
-
-    def test_update_comment_creates_log_entry(self):
-        field_name = 'comment_field_name_texl2i7%sookqerpl29a'
-        config['motions_comments'] = {
-            '1': {
-                'name': field_name,
-                'public': False
-            }
-        }
-
-        # Update Config cache
-        CollectionElement.from_instance(
-            ConfigStore.objects.get(key='motions_comments')
-        )
-
-        response = self.client.patch(
-            reverse('motion-detail', args=[self.motion.pk]),
-            {'title': 'title_test_sfdAaufd56HR7sd5FDq7av',
-             'text': 'text_test_fiuhefF86()ew1Ef346AF6W',
-             'comments': {'1': 'comment1_sdpoiuffo3%7dwDwW)'}
-             },
-            format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        motion_logs = MotionLog.objects.filter(motion=self.motion)
-        self.assertEqual(motion_logs.count(), 2)
-
-        motion_log = motion_logs.order_by('-time').first()
-        self.assertTrue(field_name in motion_log.message_list[0])
-
 
 class DeleteMotion(TestCase):
     """
@@ -564,7 +464,7 @@ class DeleteMotion(TestCase):
 
     def make_admin_delegate(self):
         group_admin = self.admin.groups.get(name='Admin')
-        group_delegates = Group.objects.get(name='Delegates')
+        group_delegates = get_group_model().objects.get(name='Delegates')
         self.admin.groups.remove(group_admin)
         self.admin.groups.add(group_delegates)
         CollectionElement.from_instance(self.admin)
@@ -592,51 +492,6 @@ class DeleteMotion(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         motions = Motion.objects.count()
         self.assertEqual(motions, 0)
-
-
-class ManageVersion(TestCase):
-    """
-    Tests permitting and deleting versions.
-    """
-    def setUp(self):
-        self.client = APIClient()
-        self.client.login(username='admin', password='admin')
-        self.motion = Motion(
-            title='test_title_InieJ5HieZieg1Meid7K',
-            text='test_text_daePhougho7EenguWe4g')
-        self.motion.save()
-        self.version_2 = self.motion.get_new_version(title='new_title_fee7tef0seechazeefiW')
-        self.motion.save(use_version=self.version_2)
-
-    def test_permit(self):
-        self.assertEqual(Motion.objects.get(pk=self.motion.pk).active_version.version_number, 2)
-        response = self.client.put(
-            reverse('motion-manage-version', args=[self.motion.pk]),
-            {'version_number': '1'})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'detail': 'Version 1 permitted successfully.'})
-        self.assertEqual(Motion.objects.get(pk=self.motion.pk).active_version.version_number, 1)
-
-    def test_permit_invalid_version(self):
-        response = self.client.put(
-            reverse('motion-manage-version', args=[self.motion.pk]),
-            {'version_number': '3'})
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_delete(self):
-        response = self.client.delete(
-            reverse('motion-manage-version', args=[self.motion.pk]),
-            {'version_number': '1'})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'detail': 'Version 1 deleted successfully.'})
-        self.assertEqual(Motion.objects.get(pk=self.motion.pk).versions.count(), 1)
-
-    def test_delete_active_version(self):
-        response = self.client.delete(
-            reverse('motion-manage-version', args=[self.motion.pk]),
-            {'version_number': '2'})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'detail': 'You can not delete the active version of a motion.'})
 
 
 class ManageSubmitters(TestCase):
@@ -751,6 +606,506 @@ class ManageSubmitters(TestCase):
         self.assertEqual(self.motion.submitters.count(), 0)
 
 
+class ManageComments(TestCase):
+    """
+    Tests the manage_comment view.
+
+    Tests creation/updating and deletion of motion comments.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+
+        self.admin = get_user_model().objects.get()
+        self.group_in = get_group_model().objects.get(pk=4)
+        self.group_out = get_group_model().objects.get(pk=2)  # The admin should not be in this group
+
+        self.motion = Motion(
+            title='test_title_SlqfMw(waso0saWMPqcZ',
+            text='test_text_f30skclqS9wWF=xdfaSL')
+        self.motion.save()
+
+        self.section_no_groups = MotionCommentSection(name='test_name_gj4F§(fj"(edm"§F3f3fs')
+        self.section_no_groups.save()
+
+        self.section_read = MotionCommentSection(name='test_name_2wv30(d2S&kvelkakl39')
+        self.section_read.save()
+        self.section_read.read_groups.add(self.group_in, self.group_out)  # Group out for testing multiple groups
+        self.section_read.write_groups.add(self.group_out)
+
+        self.section_read_write = MotionCommentSection(name='test_name_a3m9sd0(Mw2%slkrv30,')
+        self.section_read_write.save()
+        self.section_read_write.read_groups.add(self.group_in)
+        self.section_read_write.write_groups.add(self.group_in)
+
+    def test_retrieve_comment(self):
+        comment = MotionComment(
+            motion=self.motion,
+            section=self.section_read_write,
+            comment='test_comment_gwic37Csc&3lf3eo2')
+        comment.save()
+
+        response = self.client.get(reverse('motion-detail', args=[self.motion.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue('comments' in response.data)
+        comments = response.data['comments']
+        self.assertTrue(isinstance(comments, list))
+        self.assertEqual(len(comments), 1)
+        self.assertEqual(comments[0]['comment'], 'test_comment_gwic37Csc&3lf3eo2')
+
+    def test_retrieve_comment_no_read_permission(self):
+        comment = MotionComment(
+            motion=self.motion,
+            section=self.section_no_groups,
+            comment='test_comment_fgkj3C7veo3ijWE(j2DJ')
+        comment.save()
+
+        response = self.client.get(reverse('motion-detail', args=[self.motion.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue('comments' in response.data)
+        comments = response.data['comments']
+        self.assertTrue(isinstance(comments, list))
+        self.assertEqual(len(comments), 0)
+
+    def test_wrong_data_type(self):
+        response = self.client.post(
+            reverse('motion-manage-comments', args=[self.motion.pk]),
+            None,
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data['detail'],
+            'You have to provide a section_id of type int.')
+
+    def test_wrong_comment_data_type(self):
+        response = self.client.post(
+            reverse('motion-manage-comments', args=[self.motion.pk]),
+            {
+                'section_id': self.section_read_write.id,
+                'comment': [32, 'no_correct_data']
+            },
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data['detail'],
+            'The comment should be a string.')
+
+    def test_non_existing_section(self):
+        response = self.client.post(
+            reverse('motion-manage-comments', args=[self.motion.pk]),
+            {
+                'section_id': 42,
+            },
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data['detail'],
+            'A comment section with id 42 does not exist')
+
+    def test_create_comment(self):
+        response = self.client.post(
+            reverse('motion-manage-comments', args=[self.motion.pk]),
+            {
+                'section_id': self.section_read_write.pk,
+                'comment': 'test_comment_fk3jrnfwsdg%fj=feijf'
+            },
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(MotionComment.objects.count(), 1)
+        comment = MotionComment.objects.get()
+        self.assertEqual(comment.comment, 'test_comment_fk3jrnfwsdg%fj=feijf')
+
+        # Check for a log entry
+        motion_logs = MotionLog.objects.filter(motion=self.motion)
+        self.assertEqual(motion_logs.count(), 1)
+        comment_log = motion_logs.get()
+        self.assertTrue(self.section_read_write.name in comment_log.message_list[0])
+
+    def test_update_comment(self):
+        comment = MotionComment(
+            motion=self.motion,
+            section=self.section_read_write,
+            comment='test_comment_fji387fqwdf&ff=)Fe3j')
+        comment.save()
+
+        response = self.client.post(
+            reverse('motion-manage-comments', args=[self.motion.pk]),
+            {
+                'section_id': self.section_read_write.pk,
+                'comment': 'test_comment_fk3jrnfwsdg%fj=feijf'
+            },
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        comment = MotionComment.objects.get()
+        self.assertEqual(comment.comment, 'test_comment_fk3jrnfwsdg%fj=feijf')
+
+        # Check for a log entry
+        motion_logs = MotionLog.objects.filter(motion=self.motion)
+        self.assertEqual(motion_logs.count(), 1)
+        comment_log = motion_logs.get()
+        self.assertTrue(self.section_read_write.name in comment_log.message_list[0])
+
+    def test_delete_comment(self):
+        comment = MotionComment(
+            motion=self.motion,
+            section=self.section_read_write,
+            comment='test_comment_5CJ"8f23jd3j2,r93keZ')
+        comment.save()
+
+        response = self.client.delete(
+            reverse('motion-manage-comments', args=[self.motion.pk]),
+            {
+                'section_id': self.section_read_write.pk
+            },
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(MotionComment.objects.count(), 0)
+
+        # Check for a log entry
+        motion_logs = MotionLog.objects.filter(motion=self.motion)
+        self.assertEqual(motion_logs.count(), 1)
+        comment_log = motion_logs.get()
+        self.assertTrue(self.section_read_write.name in comment_log.message_list[0])
+
+    def test_delete_not_existing_comment(self):
+        """
+        This should fail silently; no error, if the user wants to delete
+        a not existing comment.
+        """
+        response = self.client.delete(
+            reverse('motion-manage-comments', args=[self.motion.pk]),
+            {
+                'section_id': self.section_read_write.pk
+            },
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(MotionComment.objects.count(), 0)
+
+        # Check that no log entry was created
+        motion_logs = MotionLog.objects.filter(motion=self.motion)
+        self.assertEqual(motion_logs.count(), 0)
+
+    def test_create_comment_no_write_permission(self):
+        response = self.client.post(
+            reverse('motion-manage-comments', args=[self.motion.pk]),
+            {
+                'section_id': self.section_read.pk,
+                'comment': 'test_comment_f38jfwqfj830fj4j(FU3'
+            },
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(MotionComment.objects.count(), 0)
+        self.assertEqual(
+            response.data['detail'],
+            'You are not allowed to see or write to the comment section.')
+
+    def test_update_comment_no_write_permission(self):
+        comment = MotionComment(
+            motion=self.motion,
+            section=self.section_read,
+            comment='test_comment_jg38dwiej2D832(D§dk)')
+        comment.save()
+
+        response = self.client.post(
+            reverse('motion-manage-comments', args=[self.motion.pk]),
+            {
+                'section_id': self.section_read.pk,
+                'comment': 'test_comment_fk3jrnfwsdg%fj=feijf'
+            },
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        comment = MotionComment.objects.get()
+        self.assertEqual(comment.comment, 'test_comment_jg38dwiej2D832(D§dk)')
+
+    def test_delete_comment_no_write_permission(self):
+        comment = MotionComment(
+            motion=self.motion,
+            section=self.section_read,
+            comment='test_comment_fej(NF§kfePOF383o8DN')
+        comment.save()
+
+        response = self.client.delete(
+            reverse('motion-manage-comments', args=[self.motion.pk]),
+            {
+                'section_id': self.section_read.pk
+            },
+            format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(MotionComment.objects.count(), 1)
+        comment = MotionComment.objects.get()
+        self.assertEqual(comment.comment, 'test_comment_fej(NF§kfePOF383o8DN')
+
+
+class TestMotionCommentSection(TestCase):
+    """
+    Tests creating, updating and deletion of comment sections.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+
+        self.admin = get_user_model().objects.get()
+        self.group_in = get_group_model().objects.get(pk=4)
+        self.group_out = get_group_model().objects.get(pk=2)  # The admin should not be in this group
+
+    def test_retrieve(self):
+        """
+        Checks, if the sections can be seen by a manager.
+        """
+        section = MotionCommentSection(name='test_name_f3jOF3m8fp.<qiqmf32=')
+        section.save()
+
+        response = self.client.get(reverse('motioncommentsection-list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(isinstance(response.data, list))
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], 'test_name_f3jOF3m8fp.<qiqmf32=')
+
+    def test_retrieve_non_manager_with_read_permission(self):
+        """
+        Checks, if the sections can be seen by a non manager, but he is in
+        one of the read_groups.
+        """
+        self.admin.groups.remove(self.group_in)  # group_in has motions.can_manage permission
+        self.admin.groups.add(self.group_out)  # group_out does not.
+
+        section = MotionCommentSection(name='test_name_f3mMD28LMcm29Coelwcm')
+        section.save()
+        section.read_groups.add(self.group_out, self.group_in)
+
+        response = self.client.get(reverse('motioncommentsection-list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], 'test_name_f3mMD28LMcm29Coelwcm')
+
+    def test_retrieve_non_manager_no_read_permission(self):
+        """
+        Checks, if sections are removed, if the user is a non manager and is in
+        any of the read_groups.
+        """
+        self.admin.groups.remove(self.group_in)
+
+        section = MotionCommentSection(name='test_name_f3jOF3m8fp.<qiqmf32=')
+        section.save()
+        section.read_groups.add(self.group_out)
+
+        response = self.client.get(reverse('motioncommentsection-list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(isinstance(response.data, list))
+        self.assertEqual(len(response.data), 0)
+
+    def test_create(self):
+        """
+        Create a section just with a name.
+        """
+        response = self.client.post(
+            reverse('motioncommentsection-list'),
+            {'name': 'test_name_ekjfen3n)F§zn83f§Fge'})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(MotionCommentSection.objects.count(), 1)
+        self.assertEqual(
+            MotionCommentSection.objects.get().name,
+            'test_name_ekjfen3n)F§zn83f§Fge')
+
+    def test_create_no_permission(self):
+        """
+        Try to create a section without can_manage permissions.
+        """
+        self.admin.groups.remove(self.group_in)
+
+        response = self.client.post(
+            reverse('motioncommentsection-list'),
+            {'name': 'test_name_wfl3jlkcmlq23ucn7eiq'})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(MotionCommentSection.objects.count(), 0)
+
+    def test_create_no_name(self):
+        """
+        Create a section without a name. This should fail, because a name is required.
+        """
+        response = self.client.post(reverse('motioncommentsection-list'), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(MotionCommentSection.objects.count(), 0)
+        self.assertEqual(response.data['name'][0], 'This field is required.')
+
+    def test_create_with_groups(self):
+        """
+        Create a section with name and both groups.
+        """
+        response = self.client.post(
+            reverse('motioncommentsection-list'),
+            {
+                'name': 'test_name_fg4kmFn73FhFk327f/3h',
+                'read_groups_id': [2, 3],
+                'write_groups_id': [3, 4],
+            })
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(MotionCommentSection.objects.count(), 1)
+        comment = MotionCommentSection.objects.get()
+        self.assertEqual(
+            comment.name,
+            'test_name_fg4kmFn73FhFk327f/3h')
+        self.assertEqual(
+            list(comment.read_groups.values_list('pk', flat=True)),
+            [2, 3])
+        self.assertEqual(
+            list(comment.write_groups.values_list('pk', flat=True)),
+            [3, 4])
+
+    def test_create_with_one_group(self):
+        """
+        Create a section with a name and write_groups.
+        """
+        response = self.client.post(
+            reverse('motioncommentsection-list'),
+            {
+                'name': 'test_name_ekjfen3n)F§zn83f§Fge',
+                'write_groups_id': [1, 3],
+            })
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(MotionCommentSection.objects.count(), 1)
+        comment = MotionCommentSection.objects.get()
+        self.assertEqual(
+            comment.name,
+            'test_name_ekjfen3n)F§zn83f§Fge')
+        self.assertEqual(comment.read_groups.count(), 0)
+        self.assertEqual(
+            list(comment.write_groups.values_list('pk', flat=True)),
+            [1, 3])
+
+    def test_create_with_non_existing_group(self):
+        """
+        Create a section with some non existing groups. This should fail.
+        """
+        response = self.client.post(
+            reverse('motioncommentsection-list'),
+            {
+                'name': 'test_name_4gnUVnF§29FnH3287fhG',
+                'write_groups_id': [42, 1, 8],
+            })
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(MotionCommentSection.objects.count(), 0)
+        self.assertEqual(
+            response.data['write_groups_id'][0],
+            'Invalid pk "42" - object does not exist.')
+
+    def test_update(self):
+        """
+        Update a section name.
+        """
+        section = MotionCommentSection(name='test_name_dlfgNDf37ND(g3fNf43g')
+        section.save()
+
+        response = self.client.put(
+            reverse('motioncommentsection-detail', args=[section.pk]),
+            {'name': 'test_name_ekjfen3n)F§zn83f§Fge'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(MotionCommentSection.objects.count(), 1)
+        self.assertEqual(
+            MotionCommentSection.objects.get().name,
+            'test_name_ekjfen3n)F§zn83f§Fge')
+
+    def test_update_groups(self):
+        """
+        Update one of the groups.
+        """
+        section = MotionCommentSection(name='test_name_f3jFq3hShf/(fh2qlPOp')
+        section.save()
+        section.read_groups.add(2)
+        section.write_groups.add(3)
+
+        response = self.client.patch(
+            reverse('motioncommentsection-detail', args=[section.pk]),
+            {
+                'name': 'test_name_gkk3FhfhpmQMhC,Y378c',
+                'read_groups_id': [2, 4],
+            })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(MotionCommentSection.objects.count(), 1)
+        comment = MotionCommentSection.objects.get()
+        self.assertEqual(comment.name, 'test_name_gkk3FhfhpmQMhC,Y378c')
+        self.assertEqual(
+            list(comment.read_groups.values_list('pk', flat=True)),
+            [2, 4])
+        self.assertEqual(
+            list(comment.write_groups.values_list('pk', flat=True)),
+            [3])
+
+    def test_update_no_permission(self):
+        """
+        Try to update a section without can_manage permissions.
+        """
+        self.admin.groups.remove(self.group_in)
+
+        section = MotionCommentSection(name='test_name_wl2oxmmhe/2kd92lwPSi')
+        section.save()
+
+        response = self.client.patch(
+            reverse('motioncommentsection-list'),
+            {'name': 'test_name_2slmDMwmqqcmC92mcklw'})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(MotionCommentSection.objects.count(), 1)
+        self.assertEqual(
+            MotionCommentSection.objects.get().name,
+            'test_name_wl2oxmmhe/2kd92lwPSi')
+
+    def test_delete(self):
+        """
+        Delete a section.
+        """
+        section = MotionCommentSection(name='test_name_ecMCq;ymwuZZ723kD)2k')
+        section.save()
+
+        response = self.client.delete(reverse('motioncommentsection-detail', args=[section.pk]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(MotionCommentSection.objects.count(), 0)
+
+    def test_delete_non_existing_section(self):
+        """
+        Delete a non existing section.
+        """
+        response = self.client.delete(reverse('motioncommentsection-detail', args=[2]))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(MotionCommentSection.objects.count(), 0)
+
+    def test_delete_with_existing_comments(self):
+        """
+        Delete a section with existing comments. This should fail, because sections
+        are protected.
+        """
+        section = MotionCommentSection(name='test_name_ecMCq;ymwuZZ723kD)2k')
+        section.save()
+
+        motion = Motion(
+            title='test_title_SlqfMw(waso0saWMPqcZ',
+            text='test_text_f30skclqS9wWF=xdfaSL')
+        motion.save()
+
+        comment = MotionComment(
+            comment='test_comment_dlkMD23m)(D9020m0/Zd',
+            motion=motion,
+            section=section)
+        comment.save()
+
+        response = self.client.delete(reverse('motioncommentsection-detail', args=[section.pk]))
+        self.assertTrue('test_title_SlqfMw(waso0saWMPqcZ' in response.data['detail'])
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(MotionCommentSection.objects.count(), 1)
+
+    def test_delete_no_permission(self):
+        """
+        Try to delete a section without can_manage permissions
+        """
+        self.admin.groups.remove(self.group_in)
+
+        section = MotionCommentSection(name='test_name_wl2oxmmhe/2kd92lwPSi')
+        section.save()
+
+        response = self.client.delete(reverse('motioncommentsection-detail', args=[section.pk]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(MotionCommentSection.objects.count(), 1)
+
+
 class CreateMotionChangeRecommendation(TestCase):
     """
     Tests motion change recommendation creation.
@@ -772,7 +1127,7 @@ class CreateMotionChangeRecommendation(TestCase):
             reverse('motionchangerecommendation-list'),
             {'line_from': '5',
              'line_to': '7',
-             'motion_version_id': '1',
+             'motion_id': '1',
              'text': '<p>New test</p>',
              'type': '0'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -785,7 +1140,7 @@ class CreateMotionChangeRecommendation(TestCase):
             reverse('motionchangerecommendation-list'),
             {'line_from': '5',
              'line_to': '7',
-             'motion_version_id': '1',
+             'motion_id': '1',
              'text': '<p>New test</p>',
              'type': '0'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -794,7 +1149,7 @@ class CreateMotionChangeRecommendation(TestCase):
             reverse('motionchangerecommendation-list'),
             {'line_from': '3',
              'line_to': '6',
-             'motion_version_id': '1',
+             'motion_id': '1',
              'text': '<p>New test</p>',
              'type': '0'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -813,7 +1168,7 @@ class CreateMotionChangeRecommendation(TestCase):
             reverse('motionchangerecommendation-list'),
             {'line_from': '5',
              'line_to': '7',
-             'motion_version_id': '1',
+             'motion_id': '1',
              'text': '<p>New test</p>',
              'type': '0'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -822,7 +1177,7 @@ class CreateMotionChangeRecommendation(TestCase):
             reverse('motionchangerecommendation-list'),
             {'line_from': '3',
              'line_to': '6',
-             'motion_version_id': '2',
+             'motion_id': '2',
              'text': '<p>New test</p>',
              'type': '0'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

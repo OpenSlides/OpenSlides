@@ -27,7 +27,6 @@ INPUT_TYPE_MAPPING = {
     'integer': int,
     'boolean': bool,
     'choice': str,
-    'comments': dict,
     'colorpicker': str,
     'datetimepicker': int,
     'majorityMethod': str,
@@ -132,31 +131,6 @@ class ConfigHandler:
                 validator(value)
             except DjangoValidationError as e:
                 raise ConfigError(e.messages[0])
-
-        if config_variable.input_type == 'comments':
-            if not isinstance(value, dict):
-                raise ConfigError(_('motions_comments has to be a dict.'))
-            valuecopy = dict()
-            for id, commentsfield in value.items():
-                try:
-                    id = int(id)
-                except ValueError:
-                    raise ConfigError(_('Each id has to be an int.'))
-
-                if id < 1:
-                    raise ConfigError(_('Each id has to be greater then 0.'))
-                # Deleted commentsfields are saved as None to block the used ids
-                if commentsfield is not None:
-                    if not isinstance(commentsfield, dict):
-                        raise ConfigError(_('Each commentsfield in motions_comments has to be a dict.'))
-                    if commentsfield.get('name') is None or commentsfield.get('public') is None:
-                        raise ConfigError(_('A name and a public property have to be given.'))
-                    if not isinstance(commentsfield['name'], str):
-                        raise ConfigError(_('name has to be string.'))
-                    if not isinstance(commentsfield['public'], bool):
-                        raise ConfigError(_('public property has to be bool.'))
-                valuecopy[id] = commentsfield
-            value = valuecopy
 
         if config_variable.input_type == 'static':
             if not isinstance(value, dict):

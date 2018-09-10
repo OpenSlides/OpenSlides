@@ -1,18 +1,17 @@
 import re
-from typing import Optional
+from typing import List, Optional
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError, transaction
 from django.db.models.deletion import ProtectedError
-from django.http import Http404
 from django.http.request import QueryDict
 from django.utils.translation import ugettext as _, ugettext_noop
 from rest_framework import status
 
 from ..core.config import config
-from ..utils.auth import has_perm
+from ..utils.auth import has_perm, in_some_groups
 from ..utils.autoupdate import inform_changed_data
 from ..utils.collection import CollectionElement
 from ..utils.exceptions import OpenSlidesError
@@ -32,6 +31,7 @@ from .access_permissions import (
     MotionAccessPermissions,
     MotionBlockAccessPermissions,
     MotionChangeRecommendationAccessPermissions,
+    MotionCommentSectionAccessPermissions,
     WorkflowAccessPermissions,
 )
 from .exceptions import WorkflowError
@@ -40,8 +40,9 @@ from .models import (
     Motion,
     MotionBlock,
     MotionChangeRecommendation,
+    MotionComment,
+    MotionCommentSection,
     MotionPoll,
-    MotionVersion,
     State,
     Submitter,
     Workflow,
@@ -56,7 +57,7 @@ class MotionViewSet(ModelViewSet):
     API endpoint for motions.
 
     There are the following views: metadata, list, retrieve, create,
-    partial_update, update, destroy, manage_version, support, set_state and
+    partial_update, update, destroy, support, set_state and
     create_poll.
     """
     access_permissions = MotionAccessPermissions()
@@ -77,7 +78,7 @@ class MotionViewSet(ModelViewSet):
                       has_perm(self.request.user, 'motions.can_create') and
                       (not config['motions_stop_submitting'] or
                        has_perm(self.request.user, 'motions.can_manage')))
-        elif self.action in ('manage_version', 'set_state', 'set_recommendation',
+        elif self.action in ('set_state', 'manage_comments', 'set_recommendation',
                              'follow_recommendation', 'create_poll', 'manage_submitters',
                              'sort_submitters'):
             result = (has_perm(self.request.user, 'motions.can_see') and
@@ -130,7 +131,6 @@ class MotionViewSet(ModelViewSet):
                 'title',
                 'text',
                 'reason',
-                'comments',  # This is checked later.
             ]
             if parent_motion is not None:
                 # For creating amendments.
@@ -145,16 +145,6 @@ class MotionViewSet(ModelViewSet):
             for key in keys:
                 if key not in whitelist:
                     del request.data[key]
-
-        # Check permission to send comment data.
-        if (not has_perm(request.user, 'motions.can_see_comments') or
-                not has_perm(request.user, 'motions.can_manage_comments')):
-            try:
-                # Ignore comments data if user is not allowed to send comments.
-                del request.data['comments']
-            except KeyError:
-                # No comments here. Just do nothing.
-                pass
 
         # Validate data and create motion.
         serializer = self.get_serializer(data=request.data)
@@ -223,9 +213,7 @@ class MotionViewSet(ModelViewSet):
 
         # Check permissions.
         if (not has_perm(request.user, 'motions.can_manage') and
-                not (motion.is_submitter(request.user) and motion.state.allow_submitter_edit) and
-                not (has_perm(request.user, 'motions.can_see_comments') and
-                     has_perm(request.user, 'motions.can_manage_comments'))):
+                not (motion.is_submitter(request.user) and motion.state.allow_submitter_edit)):
             self.permission_denied(request)
 
         # Check permission to send only some data.
@@ -233,9 +221,7 @@ class MotionViewSet(ModelViewSet):
             # Remove fields that the user is not allowed to change.
             # The list() is required because we want to use del inside the loop.
             keys = list(request.data.keys())
-            whitelist = [
-                'comments',  # This is checked later.
-            ]
+            whitelist: List[str] = []
             # Add title, text and reason to the whitelist only, if the user is the submitter.
             if motion.is_submitter(request.user) and motion.state.allow_submitter_edit:
                 whitelist.extend((
@@ -247,69 +233,21 @@ class MotionViewSet(ModelViewSet):
                 if key not in whitelist:
                     del request.data[key]
 
-        # Check comments
-        # "normal" comments only can be changed if the user has can_see_comments and
-        # can_manage_comments.
-        # "special" comments (for state and recommendation) can only be changed, if
-        # the user has the can_manage permission
-        if 'comments' in request.data:
-            request_comments = {}  # Here, all valid comments are saved.
-            for id, value in request.data['comments'].items():
-                field = config['motions_comments'].get(id)
-                if field:
-                    is_special_comment = field.get('forRecommendation') or field.get('forState')
-                    if (is_special_comment and has_perm(request.user, 'motions.can_manage')) or (
-                        not is_special_comment and has_perm(request.user, 'motions.can_see_comments') and
-                            has_perm(request.user, 'motions.can_manage_comments')):
-                        # The user has the required permission for at least one case
-                        # Save the comment!
-                        request_comments[id] = value
-
-            # two possibilities here: Either the comments dict is empty: then delete it, so
-            # the serializer will skip it. If we leave it empty, everything will be deleted :(
-            # Second, just special or normal comments are in the comments dict. Fill the original
-            # data, so it won't be delete.
-
-            if len(request_comments) == 0:
-                del request.data['comments']
-            else:
-                if motion.comments:
-                    for id, value in motion.comments.items():
-                        if id not in request_comments:
-                            # populate missing comments with original ones.
-                            request_comments[id] = value
-                request.data['comments'] = request_comments
-
-        # get changed comment fields
-        changed_comment_fields = []
-        comments = request.data.get('comments', {})
-        for id, value in comments.items():
-            if not motion.comments or motion.comments.get(id) != value:
-                field = config['motions_comments'].get(id)
-                if field:
-                    name = field['name']
-                    changed_comment_fields.append(name)
-
         # Validate data and update motion.
         serializer = self.get_serializer(
             motion,
             data=request.data,
             partial=kwargs.get('partial', False))
         serializer.is_valid(raise_exception=True)
-        updated_motion = serializer.save(disable_versioning=request.data.get('disable_versioning'))
+        updated_motion = serializer.save()
 
         # Write the log message, check removal of supporters and initiate response.
-        # TODO: Log if a version was updated.
+        # TODO: Log if a motion was updated.
         updated_motion.write_log([ugettext_noop('Motion updated')], request.user)
         if (config['motions_remove_supporters'] and updated_motion.state.allow_support and
                 not has_perm(request.user, 'motions.can_manage')):
             updated_motion.supporters.clear()
             updated_motion.write_log([ugettext_noop('All supporters removed')], request.user)
-
-        if len(changed_comment_fields) > 0:
-            updated_motion.write_log(
-                [ugettext_noop('Comment {} updated').format(', '.join(changed_comment_fields))],
-                request.user)
 
         # Send new supporters via autoupdate because users
         # without permission to see users may not have them but can get it now.
@@ -318,48 +256,66 @@ class MotionViewSet(ModelViewSet):
 
         return Response(serializer.data)
 
-    @detail_route(methods=['put', 'delete'])
-    def manage_version(self, request, pk=None):
+    @detail_route(methods=['POST', 'DELETE'])
+    def manage_comments(self, request, pk=None):
         """
-        Special view endpoint to permit and delete a version of a motion.
-
-        Send PUT {'version_number': <number>} to permit and DELETE
-        {'version_number': <number>} to delete a version. Deleting the
-        active version is not allowed. Only managers can use this view.
+        Create, update and delete motin comments.
+        Send a post request with {'section_id': <id>, 'comment': '<comment>'} to create
+        a new comment or update an existing comment.
+        Send a delete request with just {'section_id': <id>} to delete the comment.
+        For ever request, the user must have read and write permission for the given field.
         """
-        # Retrieve motion and version.
         motion = self.get_object()
-        version_number = request.data.get('version_number')
+
+        # Get the comment section
+        section_id = request.data.get('section_id')
+        if not section_id or not isinstance(section_id, int):
+            raise ValidationError({'detail': _('You have to provide a section_id of type int.')})
+
         try:
-            version = motion.versions.get(version_number=version_number)
-        except MotionVersion.DoesNotExist:
-            raise Http404('Version %s not found.' % version_number)
+            section = MotionCommentSection.objects.get(pk=section_id)
+        except MotionCommentSection.DoesNotExist:
+            raise ValidationError({'detail': _('A comment section with id {} does not exist').format(section_id)})
 
-        # Permit or delete version.
-        if request.method == 'PUT':
-            # Permit version.
-            motion.active_version = version
-            motion.save(update_fields=['active_version'])
-            motion.write_log(
-                message_list=[ugettext_noop('Version'),
-                              ' %d ' % version.version_number,
-                              ugettext_noop('permitted')],
-                person=self.request.user)
-            message = _('Version %d permitted successfully.') % version.version_number
-        else:
-            # Delete version.
-            # request.method == 'DELETE'
-            if version == motion.active_version:
-                raise ValidationError({'detail': _('You can not delete the active version of a motion.')})
-            version.delete()
-            motion.write_log(
-                message_list=[ugettext_noop('Version'),
-                              ' %d ' % version.version_number,
-                              ugettext_noop('deleted')],
-                person=self.request.user)
-            message = _('Version %d deleted successfully.') % version.version_number
+        # the request user needs to see and write to the comment section
+        if (not in_some_groups(request.user, list(section.read_groups.values_list('pk', flat=True))) or
+                not in_some_groups(request.user, list(section.write_groups.values_list('pk', flat=True)))):
+            raise ValidationError({'detail': _('You are not allowed to see or write to the comment section.')})
 
-        # Initiate response.
+        if request.method == 'POST':  # Create or update
+            # validate comment
+            comment_value = request.data.get('comment', '')
+            if not isinstance(comment_value, str):
+                raise ValidationError({'detail': _('The comment should be a string.')})
+
+            comment, created = MotionComment.objects.get_or_create(
+                    motion=motion,
+                    section=section,
+                    defaults={
+                        'comment': comment_value})
+            if not created:
+                comment.comment = comment_value
+                comment.save()
+
+            # write log
+            motion.write_log(
+                [ugettext_noop('Comment {} updated').format(section.name)],
+                request.user)
+            message = _('Comment {} updated').format(section.name)
+        else:  # DELETE
+            try:
+                comment = MotionComment.objects.get(motion=motion, section=section)
+            except MotionComment.DoesNotExist:
+                # Be silent about not existing comments, but do not create a log entry.
+                pass
+            else:
+                comment.delete()
+
+                motion.write_log(
+                    [ugettext_noop('Comment {} deleted').format(section.name)],
+                    request.user)
+            message = _('Comment {} deleted').format(section.name)
+
         return Response({'detail': message})
 
     @detail_route(methods=['POST', 'DELETE'])
@@ -588,17 +544,13 @@ class MotionViewSet(ModelViewSet):
         motion.set_state(motion.recommendation)
 
         # Set the special state comment.
-        extension = request.data.get('recommendationExtension')
+        extension = request.data.get('state_extension')
         if extension is not None:
-            # Find the special "state" comment field.
-            for id, field in config['motions_comments'].items():
-                if isinstance(field, dict) and 'forState' in field and field['forState'] is True:
-                    motion.comments[id] = extension
-                    break
+            motion.state_extension = extension
 
         # Save and write log.
         motion.save(
-            update_fields=['state', 'identifier', 'identifier_number', 'comments'],
+            update_fields=['state', 'identifier', 'identifier_number', 'state_extension'],
             skip_autoupdate=True)
         motion.write_log(
             message_list=[ugettext_noop('State set to'), ' ', motion.state.name],
@@ -698,6 +650,51 @@ class MotionChangeRecommendationViewSet(ModelViewSet):
             return super().create(request, *args, **kwargs)
         except DjangoValidationError as err:
             return Response({'detail': err.message}, status=400)
+
+
+class MotionCommentSectionViewSet(ModelViewSet):
+    """
+    API endpoint for motion comment fields.
+    """
+    access_permissions = MotionCommentSectionAccessPermissions()
+    queryset = MotionCommentSection.objects.all()
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action in ('create', 'destroy', 'update', 'partial_update'):
+            result = (has_perm(self.request.user, 'motions.can_see') and
+                      has_perm(self.request.user, 'motions.can_manage'))
+        else:
+            result = False
+        return result
+
+    def destroy(self, *args, **kwargs):
+        """
+        Customized view endpoint to delete a motion comment section. Will return
+        an error for the user, if still comments for this section exist.
+        """
+        try:
+            result = super().destroy(*args, **kwargs)
+        except ProtectedError as e:
+            # The protected objects can just be motion comments.
+            motions = ['"' + str(comment.motion) + '"' for comment in e.protected_objects.all()]
+            count = len(motions)
+            motions_verbose = ', '.join(motions[:3])
+            if count > 3:
+                motions_verbose += ', ...'
+
+            if count == 1:
+                msg = _('This section has still comments in motion {}.').format(motions_verbose)
+            else:
+                msg = _('This section has still comments in motions {}.').format(motions_verbose)
+
+            msg += ' ' + _('Please remove all comments before deletion.')
+            raise ValidationError({'detail': msg})
+        return result
 
 
 class CategoryViewSet(ModelViewSet):
@@ -920,7 +917,7 @@ class WorkflowViewSet(ModelViewSet, ProtectedErrorMessageMixin):
 
     def destroy(self, *args, **kwargs):
         """
-        Customized view endpoint to delete a motion poll.
+        Customized view endpoint to delete a workflow.
         """
         try:
             result = super().destroy(*args, **kwargs)
@@ -949,7 +946,7 @@ class StateViewSet(CreateModelMixin, UpdateModelMixin, DestroyModelMixin, Generi
 
     def destroy(self, *args, **kwargs):
         """
-        Customized view endpoint to delete a motion poll.
+        Customized view endpoint to delete a state.
         """
         state = self.get_object()
         if state.workflow.first_state.pk == state.pk:  # is this the first state of the workflow?
