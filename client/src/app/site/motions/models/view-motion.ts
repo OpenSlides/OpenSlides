@@ -4,6 +4,8 @@ import { User } from '../../../shared/models/users/user';
 import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { BaseModel } from '../../../shared/models/base.model';
+import { BaseViewModel } from '../../base-view-model';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Motion class for the View
@@ -12,7 +14,7 @@ import { BaseModel } from '../../../shared/models/base.model';
  * Provides "safe" access to variables and functions in {@link Motion}
  * @ignore
  */
-export class ViewMotion {
+export class ViewMotion extends BaseViewModel {
     private _motion: Motion;
     private _category: Category;
     private _submitters: User[];
@@ -70,7 +72,7 @@ export class ViewMotion {
 
     public get categoryId(): number {
         if (this._motion && this._motion.category_id) {
-            return this.category.id;
+            return this._motion.category_id;
         } else {
             return null;
         }
@@ -147,12 +149,18 @@ export class ViewMotion {
         workflow?: Workflow,
         state?: WorkflowState
     ) {
+        super();
+
         this._motion = motion;
         this._category = category;
         this._submitters = submitters;
         this._supporters = supporters;
         this._workflow = workflow;
         this._state = state;
+    }
+
+    public getTitle(translate?: TranslateService): string {
+        return this.title;
     }
 
     /**

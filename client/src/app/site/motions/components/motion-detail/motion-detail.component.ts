@@ -90,7 +90,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         } else {
             // load existing motion
             this.route.params.subscribe(params => {
-                this.repo.getViewMotionObservable(params.id).subscribe(newViewMotion => {
+                this.repo.getViewModelObservable(params.id).subscribe(newViewMotion => {
                     this.motion = newViewMotion;
                 });
             });

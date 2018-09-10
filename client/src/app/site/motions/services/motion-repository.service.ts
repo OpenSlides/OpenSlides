@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 
 import { DataSendService } from '../../../core/services/data-send.service';
-import { OpenSlidesComponent } from '../../../openslides.component';
 import { Motion } from '../../../shared/models/motions/motion';
 import { User } from '../../../shared/models/users/user';
 import { Category } from '../../../shared/models/motions/category';
 import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { ViewMotion } from '../models/view-motion';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
+import { BaseRepository } from '../../base-repository';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -23,22 +23,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
-export class MotionRepositoryService extends OpenSlidesComponent {
-    /**
-     * Stores all the viewMotion in an object
-     */
-    private viewMotionStore: { [motionId: number]: ViewMotion } = {};
-
-    /**
-     * Stores subjects to viewMotions in a list
-     */
-    private viewMotionSubjects: { [motionId: number]: BehaviorSubject<ViewMotion> } = {};
-
-    /**
-     * Observable subject for the whole list
-     */
-    private viewMotionListSubject: BehaviorSubject<ViewMotion[]> = new BehaviorSubject<ViewMotion[]>(null);
-
+export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> {
     /**
      * Creates a MotionRepository
      *
@@ -47,46 +32,7 @@ export class MotionRepositoryService extends OpenSlidesComponent {
      * @param DataSend
      */
     public constructor(private dataSend: DataSendService) {
-        super();
-
-        this.populateViewMotions();
-
-        // Could be raise in error if the root injector is not known
-        this.DS.changeObservable.subscribe(model => {
-            if (model instanceof Motion) {
-                // Add new and updated motions to the viewMotionStore
-                this.AddViewMotion(model);
-                this.updateObservables(model.id);
-            } else if (model instanceof Category || model instanceof User || model instanceof Workflow) {
-                // if an domain object we need was added or changed, update ViewMotionStore
-                this.getViewMotionList().forEach(viewMotion => {
-                    viewMotion.updateValues(model);
-                });
-                this.updateObservables(model.id);
-            }
-        });
-
-        // Watch the Observables for deleting
-        this.DS.deletedObservable.subscribe(model => {
-            if (model.collection === 'motions/motion') {
-                delete this.viewMotionStore[model.id];
-                this.updateObservables(model.id);
-            }
-        });
-    }
-
-    /**
-     * called from the constructor.
-     *
-     * Populate the local viewMotionStore with ViewMotion Objects.
-     * Does nothing if the database was not created yet.
-     */
-    private populateViewMotions(): void {
-        this.DS.getAll<Motion>(Motion).forEach(motion => {
-            this.AddViewMotion(motion);
-            this.updateViewMotionObservable(motion.id);
-        });
-        this.updateViewMotionListObservable();
+        super(Motion, [Category, User, Workflow]);
     }
 
     /**
@@ -97,7 +43,7 @@ export class MotionRepositoryService extends OpenSlidesComponent {
      *
      * @param motion blank motion domain object
      */
-    private AddViewMotion(motion: Motion): void {
+    protected createViewModel(motion: Motion): ViewMotion {
         const category = this.DS.get(Category, motion.category_id);
         const submitters = this.DS.getMany(User, motion.submitterIds);
         const supporters = this.DS.getMany(User, motion.supporters_id);
@@ -106,7 +52,7 @@ export class MotionRepositoryService extends OpenSlidesComponent {
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
         }
-        this.viewMotionStore[motion.id] = new ViewMotion(motion, category, submitters, supporters, workflow, state);
+        return new ViewMotion(motion, category, submitters, supporters, workflow, state);
     }
 
     /**
@@ -133,23 +79,6 @@ export class MotionRepositoryService extends OpenSlidesComponent {
     }
 
     /**
-     * returns the current observable MotionView
-     */
-    public getViewMotionObservable(id: number): Observable<ViewMotion> {
-        if (!this.viewMotionSubjects[id]) {
-            this.updateViewMotionObservable(id);
-        }
-        return this.viewMotionSubjects[id].asObservable();
-    }
-
-    /**
-     * return the Observable of the whole store
-     */
-    public getViewMotionListObservable(): Observable<ViewMotion[]> {
-        return this.viewMotionListSubject.asObservable();
-    }
-
-    /**
      * Deleting a motion.
      *
      * Extract the motion out of the motionView and delegate
@@ -158,37 +87,5 @@ export class MotionRepositoryService extends OpenSlidesComponent {
      */
     public deleteMotion(viewMotion: ViewMotion): Observable<any> {
         return this.dataSend.delete(viewMotion.motion);
-    }
-
-    /**
-     * Updates the ViewMotion observable using a ViewMotion corresponding to the id
-     */
-    private updateViewMotionObservable(id: number): void {
-        if (!this.viewMotionSubjects[id]) {
-            this.viewMotionSubjects[id] = new BehaviorSubject<ViewMotion>(null);
-        }
-        this.viewMotionSubjects[id].next(this.viewMotionStore[id]);
-    }
-
-    /**
-     * helper function to return the viewMotions as array
-     */
-    private getViewMotionList(): ViewMotion[] {
-        return Object.values(this.viewMotionStore);
-    }
-
-    /**
-     * update the observable of the list
-     */
-    private updateViewMotionListObservable(): void {
-        this.viewMotionListSubject.next(this.getViewMotionList());
-    }
-
-    /**
-     * Triggers both the observable update routines
-     */
-    private updateObservables(id: number): void {
-        this.updateViewMotionListObservable();
-        this.updateViewMotionObservable(id);
     }
 }

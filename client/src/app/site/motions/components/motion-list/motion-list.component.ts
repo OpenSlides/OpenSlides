@@ -97,7 +97,7 @@ export class MotionListComponent extends BaseComponent implements OnInit {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
 
-        this.repo.getViewMotionListObservable().subscribe(newMotions => {
+        this.repo.getViewModelListObservable().subscribe(newMotions => {
             this.dataSource.data = newMotions;
         });
     }
