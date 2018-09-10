@@ -6,17 +6,12 @@ import { Item } from '../agenda/item';
  * @ignore
  */
 export class MotionBlock extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public title: string;
     public agenda_item_id: number;
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'motions/motion-block';
-        if (input) {
-            this.deserialize(input);
-        }
+        super('motions/motion-block', input);
     }
 
     public getAgenda(): BaseModel | BaseModel[] {

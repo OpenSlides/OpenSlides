@@ -6,7 +6,6 @@ import { Group } from './group';
  * @ignore
  */
 export class User extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public username: string;
     public title: string;
@@ -25,12 +24,7 @@ export class User extends BaseModel {
     public default_password: string;
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'users/user';
-
-        if (input) {
-            this.deserialize(input);
-        }
+        super('users/user', input);
     }
 
     public get groups(): Group[] {

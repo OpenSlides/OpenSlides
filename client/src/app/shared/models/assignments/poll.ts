@@ -1,11 +1,11 @@
 import { PollOption } from './poll-option';
-import { Deserializable } from '../deserializable.model';
+import { Deserializer } from '../deserializer.model';
 
 /**
  * Content of the 'polls' property of assignments
  * @ignore
  */
-export class Poll implements Deserializable {
+export class Poll extends Deserializer {
     public id: number;
     public pollmethod: string;
     public description: string;
@@ -22,17 +22,14 @@ export class Poll implements Deserializable {
      * @param input
      */
     public constructor(input?: any) {
-        this.options = [new PollOption()];
-        if (input) {
-            this.deserialize(input);
-        }
+        super(input);
     }
 
     public deserialize(input: any): void {
         Object.assign(this, input);
 
+        this.options = [];
         if (input.options instanceof Array) {
-            this.options = [];
             input.options.forEach(pollOptionData => {
                 this.options.push(new PollOption(pollOptionData));
             });

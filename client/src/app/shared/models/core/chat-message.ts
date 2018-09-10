@@ -6,18 +6,13 @@ import { User } from '../users/user';
  * @ignore
  */
 export class ChatMessage extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public message: string;
     public timestamp: string; // TODO: Type for timestamp
     public user_id: number;
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'core/chat-message';
-        if (input) {
-            this.deserialize(input);
-        }
+        super('core/chat-message', input);
     }
 
     public getUser(): User {

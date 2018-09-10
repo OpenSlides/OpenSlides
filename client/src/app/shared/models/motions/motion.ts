@@ -6,6 +6,7 @@ import { Workflow } from './workflow';
 import { User } from '../users/user';
 import { Category } from './category';
 import { WorkflowState } from './workflow-state';
+import { MotionComment } from './motion-comment';
 
 /**
  * Representation of Motion.
@@ -15,7 +16,6 @@ import { WorkflowState } from './workflow-state';
  * @ignore
  */
 export class Motion extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public identifier: string;
     public title: string;
@@ -29,7 +29,7 @@ export class Motion extends BaseModel {
     public origin: string;
     public submitters: MotionSubmitter[];
     public supporters_id: number[];
-    public comments: Object[];
+    public comments: MotionComment[];
     public state_id: number;
     public state_extension: string;
     public state_required_permission_to_see: string;
@@ -45,22 +45,7 @@ export class Motion extends BaseModel {
     public workflow: Workflow;
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'motions/motion';
-        this.identifier = '';
-        this.title = '';
-        this.text = '';
-        this.reason = '';
-        this.modified_final_version = '';
-        this.origin = '';
-        this.submitters = [];
-        this.supporters_id = [];
-        this.state_required_permission_to_see = '';
-        this.log_messages = [];
-
-        if (input) {
-            this.deserialize(input);
-        }
+        super('motions/motion', input);
         this.initDataStoreValues();
     }
 
@@ -186,17 +171,24 @@ export class Motion extends BaseModel {
     public deserialize(input: any): void {
         Object.assign(this, input);
 
+        this.submitters = [];
         if (input.submitters instanceof Array) {
-            this.submitters = [];
             input.submitters.forEach(SubmitterData => {
                 this.submitters.push(new MotionSubmitter(SubmitterData));
             });
         }
 
+        this.log_messages = [];
         if (input.log_messages instanceof Array) {
-            this.log_messages = [];
             input.log_messages.forEach(logData => {
                 this.log_messages.push(new MotionLog(logData));
+            });
+        }
+
+        this.comments = [];
+        if (input.comments instanceof Array) {
+            input.comments.forEach(commentData => {
+                this.comments.push(new MotionComment(commentData));
             });
         }
     }

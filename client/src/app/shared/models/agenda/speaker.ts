@@ -1,4 +1,4 @@
-import { Deserializable } from '../deserializable.model';
+import { Deserializer } from '../deserializer.model';
 
 /**
  * Representation of a speaker in an agenda item
@@ -6,7 +6,7 @@ import { Deserializable } from '../deserializable.model';
  * Part of the 'speakers' list.
  * @ignore
  */
-export class Speaker implements Deserializable {
+export class Speaker extends Deserializer {
     public id: number;
     public user_id: number;
     public begin_time: string; // TODO this is a time object
@@ -20,12 +20,6 @@ export class Speaker implements Deserializable {
      * @param input
      */
     public constructor(input?: any) {
-        if (input) {
-            this.deserialize(input);
-        }
-    }
-
-    public deserialize(input: any): void {
-        Object.assign(this, input);
+        super(input);
     }
 }

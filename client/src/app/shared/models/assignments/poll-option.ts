@@ -1,4 +1,4 @@
-import { Deserializable } from '../deserializable.model';
+import { Deserializer } from '../deserializer.model';
 
 /**
  * Representation of a poll option
@@ -6,7 +6,7 @@ import { Deserializable } from '../deserializable.model';
  * part of the 'polls-options'-array in poll
  * @ignore
  */
-export class PollOption implements Deserializable {
+export class PollOption extends Deserializer {
     public id: number;
     public candidate_id: number;
     public is_elected: boolean;
@@ -19,12 +19,6 @@ export class PollOption implements Deserializable {
      * @param input
      */
     public constructor(input?: any) {
-        if (input) {
-            this.deserialize(input);
-        }
-    }
-
-    public deserialize(input: any): void {
-        Object.assign(this, input);
+        super(input);
     }
 }

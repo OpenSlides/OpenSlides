@@ -5,7 +5,6 @@ import { BaseModel } from '../base.model';
  * @ignore
  */
 export class Projector extends BaseModel {
-    protected _collectionString: string;
     public id: number;
     public elements: Object;
     public scale: number;
@@ -17,11 +16,7 @@ export class Projector extends BaseModel {
     public projectiondefaults: Object[];
 
     public constructor(input?: any) {
-        super();
-        this._collectionString = 'core/projector';
-        if (input) {
-            this.deserialize(input);
-        }
+        super('core/projector', input);
     }
 }
 

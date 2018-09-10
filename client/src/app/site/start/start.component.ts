@@ -94,11 +94,11 @@ export class StartComponent extends BaseComponent implements OnInit {
         console.log('the user: ', user1fromStore);
 
         console.log('remove a single user:');
-        // this.DS.remove(User, 100);
+        this.DS.remove('users/user', 100);
         console.log('remove more users');
-        // this.DS.remove(User, 200, 201, 202);
+        this.DS.remove('users/user', 200, 201, 202);
         console.log('remove an array of users');
-        // this.DS.remove(User, ...[321, 363, 399]);
+        this.DS.remove('users/user', ...[321, 363, 399]);
 
         console.log('test filter: ');
         console.log(this.DS.filter<User>(User, user => user.id === 1));

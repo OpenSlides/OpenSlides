@@ -1,4 +1,4 @@
-import { Deserializable } from '../deserializable.model';
+import { Deserializer } from '../deserializer.model';
 import { Workflow } from './workflow';
 
 /**
@@ -7,7 +7,7 @@ import { Workflow } from './workflow';
  * Part of the 'states'-array in motion/workflow
  * @ignore
  */
-export class WorkflowState implements Deserializable {
+export class WorkflowState extends Deserializer {
     public id: number;
     public name: string;
     public action_word: string;
@@ -17,8 +17,6 @@ export class WorkflowState implements Deserializable {
     public allow_support: boolean;
     public allow_create_poll: boolean;
     public allow_submitter_edit: boolean;
-    public versioning: boolean;
-    public leave_old_version_active: boolean;
     public dont_set_identifier: boolean;
     public show_state_extension_field: boolean;
     public show_recommendation_extension_field: boolean;
@@ -30,9 +28,7 @@ export class WorkflowState implements Deserializable {
      * @param input If given, it will be deserialized
      */
     public constructor(input?: any) {
-        if (input) {
-            this.deserialize(input);
-        }
+        super(input);
     }
 
     /**
@@ -47,10 +43,6 @@ export class WorkflowState implements Deserializable {
             }
         });
         return nextStates;
-    }
-
-    public deserialize(input: any): void {
-        Object.assign(this, input);
     }
 
     public toString = (): string => {

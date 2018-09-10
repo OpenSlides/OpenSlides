@@ -24,7 +24,7 @@ export abstract class BaseModel extends OpenSlidesComponent implements Deseriali
      *
      * Has a getter but no setter.
      */
-    protected abstract _collectionString: string;
+    protected _collectionString: string;
 
     /**
      * force children of BaseModel to have an id
@@ -34,8 +34,13 @@ export abstract class BaseModel extends OpenSlidesComponent implements Deseriali
     /**
      * constructor that calls super from parent class
      */
-    protected constructor() {
+    protected constructor(collectionString: string, input?: any) {
         super();
+        this._collectionString = collectionString;
+
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
     /**
