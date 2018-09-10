@@ -14,16 +14,13 @@ class AssignmentsAppConfig(AppConfig):
 
     def ready(self):
         # Import all required stuff.
-        from ..core.config import config
         from ..core.signals import permission_change, user_data_required
         from ..utils.rest_api import router
-        from .config_variables import get_config_variables
         from .projector import get_projector_elements
         from .signals import get_permission_change_data, required_users
         from .views import AssignmentViewSet, AssignmentPollViewSet
 
-        # Define config variables and projector elements.
-        config.update_config_variables(get_config_variables())
+        # Define projector elements.
         register_projector_elements(get_projector_elements())
 
         # Connect signals.
@@ -37,6 +34,10 @@ class AssignmentsAppConfig(AppConfig):
         # Register viewsets.
         router.register(self.get_model('Assignment').get_collection_string(), AssignmentViewSet)
         router.register('assignments/poll', AssignmentPollViewSet)
+
+    def get_config_variables(self):
+        from .config_variables import get_config_variables
+        return get_config_variables()
 
     def get_startup_elements(self):
         """

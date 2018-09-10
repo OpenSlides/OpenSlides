@@ -12,10 +12,8 @@ class MotionsAppConfig(AppConfig):
 
     def ready(self):
         # Import all required stuff.
-        from openslides.core.config import config
         from openslides.core.signals import permission_change, user_data_required
         from openslides.utils.rest_api import router
-        from .config_variables import get_config_variables
         from .projector import get_projector_elements
         from .signals import (
             create_builtin_workflows,
@@ -33,8 +31,7 @@ class MotionsAppConfig(AppConfig):
             WorkflowViewSet,
         )
 
-        # Define config variables and projector elements.
-        config.update_config_variables(get_config_variables())
+        # Define projector elements.
         register_projector_elements(get_projector_elements())
 
         # Connect signals.
@@ -58,6 +55,10 @@ class MotionsAppConfig(AppConfig):
                         MotionChangeRecommendationViewSet)
         router.register(self.get_model('MotionPoll').get_collection_string(), MotionPollViewSet)
         router.register(self.get_model('State').get_collection_string(), StateViewSet)
+
+    def get_config_variables(self):
+        from .config_variables import get_config_variables
+        return get_config_variables()
 
     def get_startup_elements(self):
         """

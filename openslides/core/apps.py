@@ -21,7 +21,6 @@ class CoreAppConfig(AppConfig):
         # Import all required stuff.
         from .config import config
         from ..utils.rest_api import router
-        from .config_variables import get_config_variables
         from .projector import get_projector_elements
         from .signals import (
             delete_django_app_permissions,
@@ -41,6 +40,9 @@ class CoreAppConfig(AppConfig):
         )
         from ..utils.constants import set_constants, get_constants_from_apps
 
+        # Collect all config variables before getting the constants.
+        config.collect_config_variables_from_apps()
+
         # Set constants
         try:
             set_constants(get_constants_from_apps())
@@ -48,8 +50,7 @@ class CoreAppConfig(AppConfig):
             # Database is not loaded. This happens in tests and migrations.
             pass
 
-        # Define config variables and projector elements.
-        config.update_config_variables(get_config_variables())
+        # Define projector elements.
         register_projector_elements(get_projector_elements())
 
         # Connect signals.
@@ -72,6 +73,10 @@ class CoreAppConfig(AppConfig):
         router.register(self.get_model('ConfigStore').get_collection_string(), ConfigViewSet, 'config')
         router.register(self.get_model('ProjectorMessage').get_collection_string(), ProjectorMessageViewSet)
         router.register(self.get_model('Countdown').get_collection_string(), CountdownViewSet)
+
+    def get_config_variables(self):
+        from .config_variables import get_config_variables
+        return get_config_variables()
 
     def get_startup_elements(self):
         """
