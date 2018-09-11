@@ -73,6 +73,7 @@ client/yarn-error.log
 client/testem.log
 client/typings
 client/yarn.lock
+package-lock.json
 
 # System Files
 client/.DS_Store
