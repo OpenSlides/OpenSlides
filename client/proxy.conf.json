@@ -1,25 +1,17 @@
 {
-    "/apps/core/version": {
+    "/apps/": {
         "target": "http://localhost:8000",
         "secure": false
     },
-    "/apps/users/login": {
+    "/media/": {
         "target": "http://localhost:8000",
         "secure": false
     },
-    "/apps/users/logout": {
+    "/rest/": {
         "target": "http://localhost:8000",
         "secure": false
     },
-    "/apps/users/whoami": {
-        "target": "http://localhost:8000",
-        "secure": false
-    },
-    "/rest": {
-        "target": "http://localhost:8000",
-        "secure": false
-    },
-    "/ws/site": {
+    "/ws/site/": {
         "target": "ws://localhost:8000",
         "secure": false,
         "ws": true

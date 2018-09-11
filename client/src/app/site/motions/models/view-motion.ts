@@ -4,7 +4,7 @@ import { User } from '../../../shared/models/users/user';
 import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { BaseModel } from '../../../shared/models/base/base-model';
-import { BaseViewModel } from '../../base-view-model';
+import { BaseViewModel } from '../../base/base-view-model';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
@@ -27,43 +27,23 @@ export class ViewMotion extends BaseViewModel {
     }
 
     public get id(): number {
-        if (this.motion) {
-            return this.motion.id;
-        } else {
-            return null;
-        }
+        return this.motion ? this.motion.id : null;
     }
 
     public get identifier(): string {
-        if (this.motion) {
-            return this.motion.identifier;
-        } else {
-            return null;
-        }
+        return this.motion ? this.motion.identifier : null;
     }
 
     public get title(): string {
-        if (this.motion) {
-            return this.motion.title;
-        } else {
-            return null;
-        }
+        return this.motion ? this.motion.title : null;
     }
 
     public get text(): string {
-        if (this.motion) {
-            return this.motion.text;
-        } else {
-            return null;
-        }
+        return this.motion ? this.motion.text : null;
     }
 
     public get reason(): string {
-        if (this.motion) {
-            return this.motion.reason;
-        } else {
-            return null;
-        }
+        return this.motion ? this.motion.reason : null;
     }
 
     public get category(): Category {
@@ -71,11 +51,7 @@ export class ViewMotion extends BaseViewModel {
     }
 
     public get categoryId(): number {
-        if (this._motion && this._motion.category_id) {
-            return this._motion.category_id;
-        } else {
-            return null;
-        }
+        return this.motion && this.category ? this.motion.category_id : null;
     }
 
     public get submitters(): User[] {
@@ -95,15 +71,11 @@ export class ViewMotion extends BaseViewModel {
     }
 
     public get stateId(): number {
-        if (this._motion && this._motion.state_id) {
-            return this._motion.state_id;
-        } else {
-            return null;
-        }
+        return this.motion && this.motion.state_id ? this.motion.state_id : null;
     }
 
     public get recommendationId(): number {
-        return this._motion.recommendation_id;
+        return this.motion && this.motion.recommendation_id ? this.motion.recommendation_id : null;
     }
 
     /**
@@ -118,27 +90,15 @@ export class ViewMotion extends BaseViewModel {
     }
 
     public get recommendation(): WorkflowState {
-        if (this.recommendationId && this.workflow) {
-            return this.workflow.getStateById(this.recommendationId);
-        } else {
-            return null;
-        }
+        return this.recommendationId && this.workflow ? this.workflow.getStateById(this.recommendationId) : null;
     }
 
     public get origin(): string {
-        if (this.motion) {
-            return this.motion.origin;
-        } else {
-            return null;
-        }
+        return this.motion ? this.motion.origin : null;
     }
 
     public get nextStates(): WorkflowState[] {
-        if (this.state && this.workflow) {
-            return this.state.getNextStates(this.workflow);
-        } else {
-            return null;
-        }
+        return this.state && this.workflow ? this.state.getNextStates(this.workflow) : null;
     }
 
     public constructor(

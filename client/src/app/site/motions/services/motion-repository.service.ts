@@ -8,7 +8,7 @@ import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { ViewMotion } from '../models/view-motion';
 import { Observable } from 'rxjs';
-import { BaseRepository } from '../../base-repository';
+import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
 
 /**

@@ -48,6 +48,10 @@ export class User extends ProjectableBaseModel {
         return name.trim();
     }
 
+    public containsGroupId(id: number): boolean {
+        return this.groups_id.some(groupId => groupId === id);
+    }
+
     // TODO read config values  for "users_sort_by"
     public get short_name(): string {
         const title = this.title.trim();

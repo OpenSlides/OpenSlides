@@ -15,24 +15,7 @@
     line-height: normal;
 }
 
-mat-table {
-    width: 100%;
-
-    /** hide mat header row */
-    .mat-header-row {
-        display: none;
-    }
-
-    /** size of the mat row  */
-    mat-row {
-        height: 60px;
-    }
-
-    mat-row:hover {
-        cursor: pointer;
-        background-color: rgba(0, 0, 0, 0.025);
-    }
-
+.os-listview-table {
     /** identifier */
     .mat-column-identifier {
         padding-left: 10px;

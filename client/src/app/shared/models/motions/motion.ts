@@ -85,7 +85,7 @@ export class Motion extends AgendaBaseModel {
     }
 
     public getDetailStateURL(): string {
-        return 'TODO';
+        return `/motions/${this.id}`;
     }
 
     public deserialize(input: any): void {

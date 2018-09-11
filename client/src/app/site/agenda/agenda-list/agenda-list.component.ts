@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { BaseComponent } from 'app/base.component';
 import { TranslateService } from '@ngx-translate/core';
-import { Item } from '../../../shared/models/agenda/item';
-import { Topic } from '../../../shared/models/topics/topic';
+import { ViewItem } from '../models/view-item';
+import { ListViewBaseComponent } from '../../base/list-view-base';
+import { AgendaRepositoryService } from '../services/agenda-repository.service';
+import { Router } from '@angular/router';
 
 /**
  * List view for the agenda.
@@ -15,26 +16,43 @@ import { Topic } from '../../../shared/models/topics/topic';
     templateUrl: './agenda-list.component.html',
     styleUrls: ['./agenda-list.component.css']
 })
-export class AgendaListComponent extends BaseComponent implements OnInit {
+export class AgendaListComponent extends ListViewBaseComponent<ViewItem> implements OnInit {
     /**
      * The usual constructor for components
      * @param titleService
      * @param translate
      */
-    public constructor(titleService: Title, protected translate: TranslateService) {
+    public constructor(
+        titleService: Title,
+        translate: TranslateService,
+        private router: Router,
+        private repo: AgendaRepositoryService
+    ) {
         super(titleService, translate);
     }
 
     /**
      * Init function.
-     * Sets the title
+     * Sets the title, initializes the table and calls the repository.
      */
     public ngOnInit(): void {
         super.setTitle('Agenda');
-        // tslint:disable-next-line
-        const i: Item = new Item(); // Needed, that the Item.ts is loaded. Can be removed, if something else creates/uses items.
-        // tslint:disable-next-line
-        const t: Topic = new Topic(); // Needed, that the Topic.ts is loaded. Can be removed, if something else creates/uses topics.
+        this.initTable();
+        this.repo.getViewModelListObservable().subscribe(newAgendaItem => {
+            this.dataSource.data = newAgendaItem;
+        });
+    }
+
+    /**
+     * Handler for click events on agenda item rows
+     * Links to the content object if any
+     */
+    public selectAgendaItem(item: ViewItem): void {
+        if (item.contentObject) {
+            this.router.navigate([item.contentObject.getDetailStateURL()]);
+        } else {
+            console.error(`The selected item ${item} has no content object`);
+        }
     }
 
     /**
