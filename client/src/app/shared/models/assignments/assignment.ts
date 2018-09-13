@@ -1,12 +1,12 @@
-import { BaseModel } from '../base.model';
 import { AssignmentUser } from './assignment-user';
 import { Poll } from './poll';
+import { AgendaBaseModel } from '../base/agenda-base-model';
 
 /**
  * Representation of an assignment.
  * @ignore
  */
-export class Assignment extends BaseModel {
+export class Assignment extends AgendaBaseModel {
     public id: number;
     public title: string;
     public description: string;
@@ -19,7 +19,7 @@ export class Assignment extends BaseModel {
     public tags_id: number[];
 
     public constructor(input?: any) {
-        super('assignments/assignment', input);
+        super('assignments/assignment', 'Assignment', input);
     }
 
     public get candidateIds(): number[] {
@@ -48,9 +48,13 @@ export class Assignment extends BaseModel {
         }
     }
 
-    public toString(): string {
+    public getTitle(): string {
         return this.title;
+    }
+
+    public getDetailStateURL(): string {
+        return 'TODO';
     }
 }
 
-BaseModel.registerCollectionElement('assignments/assignment', Assignment);
+AgendaBaseModel.registerCollectionElement('assignments/assignment', Assignment);

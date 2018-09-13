@@ -1,4 +1,4 @@
-import { BaseModel } from '../base.model';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of a motion change recommendation.
@@ -19,8 +19,8 @@ export class MotionChangeReco extends BaseModel {
         super('motions/motion-change-recommendation', input);
     }
 
-    public toString(): string {
-        return this.text;
+    public getTitle(): string {
+        return 'Changerecommendation';
     }
 }
 

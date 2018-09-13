@@ -1,10 +1,10 @@
-import { BaseModel } from '../base.model';
+import { ProjectableBaseModel } from '../base/projectable-base-model';
 
 /**
  * Representation of a user in contrast to the operator.
  * @ignore
  */
-export class User extends BaseModel {
+export class User extends ProjectableBaseModel {
     public id: number;
     public username: string;
     public title: string;
@@ -77,9 +77,13 @@ export class User extends BaseModel {
         return shortName.trim();
     }
 
-    public toString(): string {
+    public getTitle(): string {
+        return this.full_name;
+    }
+
+    public getListViewTitle(): string {
         return this.short_name;
     }
 }
 
-BaseModel.registerCollectionElement('users/user', User);
+ProjectableBaseModel.registerCollectionElement('users/user', User);

@@ -1,10 +1,10 @@
-import { BaseModel } from '../base.model';
+import { ProjectableBaseModel } from '../base/projectable-base-model';
 
 /**
  * Representation of a countdown
  * @ignore
  */
-export class Countdown extends BaseModel {
+export class Countdown extends ProjectableBaseModel {
     public id: number;
     public description: string;
     public default_time: number;
@@ -15,9 +15,9 @@ export class Countdown extends BaseModel {
         super('core/countdown');
     }
 
-    public toString(): string {
+    public getTitle(): string {
         return this.description;
     }
 }
 
-BaseModel.registerCollectionElement('core/countdown', Countdown);
+ProjectableBaseModel.registerCollectionElement('core/countdown', Countdown);

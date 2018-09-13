@@ -1,10 +1,10 @@
-import { BaseModel } from '../base.model';
+import { AgendaBaseModel } from '../base/agenda-base-model';
 
 /**
  * Representation of a topic.
  * @ignore
  */
-export class Topic extends BaseModel {
+export class Topic extends AgendaBaseModel {
     public id: number;
     public title: string;
     public text: string;
@@ -12,12 +12,21 @@ export class Topic extends BaseModel {
     public agenda_item_id: number;
 
     public constructor(input?: any) {
-        super('topics/topic', input);
+        super('topics/topic', 'Topic', input);
     }
 
-    public toString(): string {
+    public getTitle(): string {
         return this.title;
+    }
+
+    public getAgendaTitleWithType(): string {
+        // Do not append ' (Topic)' to the title.
+        return this.getAgendaTitle();
+    }
+
+    public getDetailStateURL(): string {
+        return 'TODO';
     }
 }
 
-BaseModel.registerCollectionElement('topics/topic', Topic);
+AgendaBaseModel.registerCollectionElement('topics/topic', Topic);

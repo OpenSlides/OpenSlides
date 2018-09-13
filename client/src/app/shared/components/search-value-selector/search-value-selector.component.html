@@ -2,7 +2,7 @@
     <mat-select [formControl]="formControl" placeholder="{{listname}}" multiple="{{multiple}}" #thisSelector>
         <ngx-mat-select-search [formControl]="filterControl"></ngx-mat-select-search>
         <mat-option *ngFor="let selectedItem of filteredItems | async" [value]="selectedItem">
-            {{selectedItem.toString()}}
+            {{selectedItem.getTitle(translate)}}
         </mat-option>
     </mat-select>
 </mat-form-field>

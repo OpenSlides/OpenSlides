@@ -1,39 +1,19 @@
-import { TranslateService } from '@ngx-translate/core';
-import { BaseModel } from '../shared/models/base.model';
+import { BaseModel } from '../shared/models/base/base-model';
+import { Displayable } from '../shared/models/base/displayable';
 
 /**
  * Base class for view models. alls view models should have titles.
  */
-export abstract class BaseViewModel {
+export abstract class BaseViewModel implements Displayable {
     public abstract updateValues(update: BaseModel): void;
 
-    /**
-     * Should return the title for the detail view.
-     * @param translate
-     */
-    public abstract getTitle(translate: TranslateService): string;
+    public abstract getTitle(): string;
 
-    /**
-     * Should return the title for the list view.
-     * @param translate
-     */
-    public getListTitle(translate: TranslateService): string {
-        return this.getTitle(translate);
+    public getListTitle(): string {
+        return this.getTitle();
     }
 
-    /**
-     * Should return the title for the projector.
-     * @param translate
-     */
-    public getProjector(translate: TranslateService): string {
-        return this.getTitle(translate);
-    }
-
-    /**
-     * Should return the title for the agenda list view.
-     * @param translate
-     */
-    public getAgendaTitle(translate: TranslateService): string {
-        return this.getTitle(translate);
+    public toString(): string {
+        return this.getTitle();
     }
 }

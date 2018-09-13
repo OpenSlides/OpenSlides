@@ -436,26 +436,30 @@ class Motion(RESTModelMixin, models.Model):
 
     def get_agenda_title(self):
         """
-        Return a simple title string for the agenda.
+        Return the title string for the agenda.
 
-        Returns only the motion title so that you have only agenda item number
-        and title in the agenda.
-        """
-        return str(self)
-
-    def get_agenda_list_view_title(self):
-        """
-        Return a title string for the agenda list view.
-
-        Returns only the motion title so that you have agenda item number,
-        title and motion identifier in the agenda.
+        If the identifier is given, the title consists of the motion verbose name
+        and the identifier.
         Note: It has to be the same return value like in JavaScript.
         """
         if self.identifier:
-            string = '%s %s' % (_(self._meta.verbose_name), self.identifier)
+            title = '%s %s' % (_(self._meta.verbose_name), self.identifier)
         else:
-            string = '%s (%s)' % (_(self._meta.verbose_name), self.title)
-        return string
+            title = self.title
+        return title
+
+    def get_agenda_title_with_type(self):
+        """
+        Return a title for the agenda with the type or the modified title if the
+        identifier is set..
+
+        Note: It has to be the same return value like in JavaScript.
+        """
+        if self.identifier:
+            title = '%s %s' % (_(self._meta.verbose_name), self.identifier)
+        else:
+            title = '%s (%s)' % (self.title, _(self._meta.verbose_name))
+        return title
 
     @property
     def agenda_item(self):
@@ -781,6 +785,7 @@ class MotionBlock(RESTModelMixin, models.Model):
     agenda_items = GenericRelation(Item, related_name='topics')
 
     class Meta:
+        verbose_name = ugettext_noop('Motion block')
         default_permissions = ()
 
     def __str__(self):
@@ -821,8 +826,8 @@ class MotionBlock(RESTModelMixin, models.Model):
     def get_agenda_title(self):
         return self.title
 
-    def get_agenda_list_view_title(self):
-        return self.title
+    def get_agenda_title_with_type(self):
+        return '%s (%s)' % (self.get_agenda_title(), _(self._meta.verbose_name))
 
 
 class MotionLog(RESTModelMixin, models.Model):

@@ -2,8 +2,9 @@ import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { MatSelect } from '@angular/material';
-import { SelectorItem } from './search-value-selector.interfaces';
 import { takeUntil } from 'rxjs/operators';
+import { Displayable } from '../../models/base/displayable';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Reusable Searchable Value Selector
@@ -27,17 +28,6 @@ import { takeUntil } from 'rxjs/operators';
  * </os-search-value-selector>
  * ```
  *
- * ### Declaration of a Selector provided as `[InputListValues]=myListValues`:
- *
- * Every Class that enherits of BaseModel implements the SelectorItem Interface and can
- * therefore be used directly in the Selector Component.
- *
- * ```ts
- * import { SelectorItem } from '../../shared/components/search-value-selector/search-value-selector.interfaces';
- *
- * const myListValues: SelectorItem[];
- * myListValues = this.DS.get(User);
- * ```
  */
 
 @Component({
@@ -60,7 +50,7 @@ export class SearchValueSelectorComponent implements OnInit {
     /**
      * List of the filtered content, when entering somithing in the search bar
      */
-    public filteredItems: ReplaySubject<SelectorItem[]> = new ReplaySubject<SelectorItem[]>(1);
+    public filteredItems: ReplaySubject<Displayable[]> = new ReplaySubject<Displayable[]>(1);
 
     /**
      * Decide if this should be a single or multi-select-field
@@ -72,7 +62,7 @@ export class SearchValueSelectorComponent implements OnInit {
      * The Input List Values
      */
     @Input()
-    public InputListValues: SelectorItem[];
+    public InputListValues: Displayable[];
 
     /**
      * Placeholder of the List
@@ -115,7 +105,7 @@ export class SearchValueSelectorComponent implements OnInit {
     /**
      * Empty constructor
      */
-    public constructor() {}
+    public constructor(public translate: TranslateService) {}
 
     /**
      * onInit with filter ans subscription on filter
@@ -164,7 +154,7 @@ export class SearchValueSelectorComponent implements OnInit {
      * places, but can't reflect the changes in both places. Until this can be done this will be unused code
      * @param item the selected item to be removed
      */
-    public remove(item: SelectorItem): void {
+    public remove(item: Displayable): void {
         const myArr = this.thisSelector.value;
         const index = myArr.indexOf(item, 0);
         // my model was the form according to fix

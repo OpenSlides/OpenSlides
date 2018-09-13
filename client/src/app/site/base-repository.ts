@@ -1,7 +1,7 @@
 import { OpenSlidesComponent } from '../openslides.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BaseViewModel } from './base-view-model';
-import { BaseModel, ModelConstructor } from '../shared/models/base.model';
+import { BaseModel, ModelConstructor } from '../shared/models/base/base-model';
 import { CollectionStringModelMapperService } from '../core/services/collectionStringModelMapper.service';
 import { DataStoreService } from '../core/services/data-store.service';
 

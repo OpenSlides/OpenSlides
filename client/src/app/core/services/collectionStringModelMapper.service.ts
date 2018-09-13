@@ -1,4 +1,4 @@
-import { ModelConstructor, BaseModel } from '../../shared/models/base.model';
+import { ModelConstructor, BaseModel } from '../../shared/models/base/base-model';
 
 /**
  * Registeres the mapping of collection strings <--> actual types. Every Model should register itself here.

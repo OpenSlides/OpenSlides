@@ -153,8 +153,8 @@
             </div>
             <div *ngIf="!editMotion || !newMotion">
                 <h3 translate>Submitters</h3>
-                <ul *ngFor="let submitters of motion.submitters">
-                    <li>{{submitters}}</li>
+                <ul *ngFor="let submitter of motion.submitters">
+                    <li>{{submitter.full_name}}</li>
                 </ul>
             </div>
         </div>
@@ -169,8 +169,8 @@
             </div>
             <div *ngIf="!editMotion && motion.hasSupporters()">
                 <h3 translate>Supporters</h3>
-                <ul *ngFor="let supporters of motion.supporters">
-                    <li>{{supporters}}</li>
+                <ul *ngFor="let supporter of motion.supporters">
+                    <li>{{supporter.full_name}}</li>
                 </ul>
             </div>
         </div>

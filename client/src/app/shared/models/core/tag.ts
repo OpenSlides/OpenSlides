@@ -1,4 +1,4 @@
-import { BaseModel } from '../base.model';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of a tag.
@@ -12,7 +12,7 @@ export class Tag extends BaseModel {
         super('core/tag', input);
     }
 
-    public toString(): string {
+    public getTitle(): string {
         return this.name;
     }
 }

@@ -69,7 +69,7 @@ class RetrieveItem(TestCase):
             'content_object',)))
         forbidden_keys = (
             'item_number',
-            'list_view_title',
+            'title_with_type',
             'comment',
             'closed',
             'type',

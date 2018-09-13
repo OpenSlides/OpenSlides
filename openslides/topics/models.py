@@ -78,7 +78,13 @@ class Topic(RESTModelMixin, models.Model):
         return self.agenda_item.pk
 
     def get_agenda_title(self):
+        """
+        Returns the title for the agenda.
+        """
         return self.title
 
-    def get_agenda_list_view_title(self):
-        return self.title
+    def get_agenda_title_with_type(self):
+        """
+        Returns the agenda title. Topicy should not get a type postfix.
+        """
+        return self.get_agenda_title()

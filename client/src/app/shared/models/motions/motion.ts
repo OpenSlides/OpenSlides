@@ -1,9 +1,9 @@
-import { BaseModel } from '../base.model';
 import { MotionSubmitter } from './motion-submitter';
 import { MotionLog } from './motion-log';
 import { Category } from './category';
 import { MotionComment } from './motion-comment';
 import { Workflow } from './workflow';
+import { AgendaBaseModel } from '../base/agenda-base-model';
 
 /**
  * Representation of Motion.
@@ -12,7 +12,7 @@ import { Workflow } from './workflow';
  *
  * @ignore
  */
-export class Motion extends BaseModel {
+export class Motion extends AgendaBaseModel {
     public id: number;
     public identifier: string;
     public title: string;
@@ -36,12 +36,12 @@ export class Motion extends BaseModel {
     public recommendation_extension: string;
     public tags_id: number[];
     public attachments_id: number[];
-    public polls: BaseModel[];
+    public polls: Object[];
     public agenda_item_id: number;
     public log_messages: MotionLog[];
 
     public constructor(input?: any) {
-        super('motions/motion', input);
+        super('motions/motion', 'Motion', input);
     }
 
     /**
@@ -62,11 +62,30 @@ export class Motion extends BaseModel {
             .map((submitter: MotionSubmitter) => submitter.user_id);
     }
 
-    /**
-     * returns the Motion name
-     */
-    public toString(): string {
+    public getTitle(): string {
         return this.title;
+    }
+
+    public getAgendaTitle(): string {
+        // if the identifier is set, the title will be 'Motion <identifier>'.
+        if (this.identifier) {
+            return 'Motion ' + this.identifier;
+        } else {
+            return this.getTitle();
+        }
+    }
+
+    public getAgendaTitleWithType(): string {
+        // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
+        if (this.identifier) {
+            return 'Motion ' + this.identifier;
+        } else {
+            return this.getTitle() + ' (' + this.verboseName + ')';
+        }
+    }
+
+    public getDetailStateURL(): string {
+        return 'TODO';
     }
 
     public deserialize(input: any): void {
@@ -91,6 +110,6 @@ export class Motion extends BaseModel {
 /**
  * Hack to get them loaded at last
  */
-BaseModel.registerCollectionElement('motions/motion', Motion);
-BaseModel.registerCollectionElement('motions/category', Category);
-BaseModel.registerCollectionElement('motions/workflow', Workflow);
+AgendaBaseModel.registerCollectionElement('motions/motion', Motion);
+AgendaBaseModel.registerCollectionElement('motions/category', Category);
+AgendaBaseModel.registerCollectionElement('motions/workflow', Workflow);

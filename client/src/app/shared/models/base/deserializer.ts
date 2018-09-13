@@ -1,4 +1,4 @@
-import { Deserializable } from './deserializable.model';
+import { Deserializable } from './deserializable';
 
 /**
  * Abstract base class for a basic implementation of Deserializable.

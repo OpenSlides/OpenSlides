@@ -1,4 +1,4 @@
-import { Deserializer } from '../deserializer.model';
+import { Deserializer } from '../base/deserializer';
 
 /**
  * Representation of a speaker in an agenda item

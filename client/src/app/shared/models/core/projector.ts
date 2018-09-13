@@ -1,4 +1,4 @@
-import { BaseModel } from '../base.model';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of a projector. Has the nested property "projectiondefaults"
@@ -19,7 +19,7 @@ export class Projector extends BaseModel {
         super('core/projector', input);
     }
 
-    public toString(): string {
+    public getTitle(): string {
         return this.name;
     }
 }
