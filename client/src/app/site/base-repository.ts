@@ -68,6 +68,28 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         });
     }
 
+    /**
+     * Saves the update to an existing model. So called "update"-function
+     * @param update the update that should be created
+     * @param viewModel the view model that the update is based on
+     */
+    public abstract save(update: M, viewModel: V): Observable<M>;
+
+    /**
+     * Deletes a given Model
+     * @param update the update that should be created
+     * @param viewModel the view model that the update is based on
+     */
+    public abstract delete(viewModel: V): Observable<M>;
+
+    /**
+     * Creates a new model
+     * @param update the update that should be created
+     * @param viewModel the view model that the update is based on
+     * TODO: remove the viewModel
+     */
+    public abstract create(update: M, viewModel: V): Observable<M>;
+
     protected abstract createViewModel(model: M): V;
 
     /**

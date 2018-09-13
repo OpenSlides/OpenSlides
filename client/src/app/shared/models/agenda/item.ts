@@ -53,6 +53,10 @@ export class Item extends BaseModel {
             });
         }
     }
+
+    public toString(): string {
+        return this.title;
+    }
 }
 
 BaseModel.registerCollectionElement('agenda/item', Item);

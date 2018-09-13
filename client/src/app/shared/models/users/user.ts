@@ -82,9 +82,9 @@ export class User extends BaseModel {
         return shortName.trim();
     }
 
-    public toString = (): string => {
+    public toString(): string {
         return this.short_name;
-    };
+    }
 }
 
 BaseModel.registerCollectionElement('users/user', User);

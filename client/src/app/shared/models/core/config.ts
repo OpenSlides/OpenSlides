@@ -12,6 +12,10 @@ export class Config extends BaseModel {
     public constructor(input?: any) {
         super('core/config', input);
     }
+
+    public toString(): string {
+        return this.key;
+    }
 }
 
 BaseModel.registerCollectionElement('core/config', Config);

@@ -4,11 +4,8 @@
     "Category": "",
     "Change Password": "",
     "Content": "",
-    "Cookies": "",
     "Copyright by": "",
-    "Database": "",
     "DeleteMotion": "",
-    "Deleting Files": "",
     "Edit Profile": "",
     "English": "",
     "Export As": {
@@ -24,8 +21,9 @@
     "German": "",
     "Home": "",
     "Identifier": "",
+    "Installed plugins": "",
     "Legal Notice": "",
-    "Logfiles": "",
+    "License": "",
     "Login": "",
     "Login as Guest": "",
     "Logout": "",
@@ -38,6 +36,7 @@
     },
     "Origin": "",
     "Participants": "",
+    "Personal Note": "",
     "Personal note": "",
     "Privacy Policy": "",
     "Project": "",
@@ -46,11 +45,15 @@
     "Reset State": "",
     "Reset recommendation": "",
     "SORT": "",
+    "Selected Values": "",
     "Settings": "",
     "State": "",
     "Submitters": "",
     "Supporters": "",
     "The assembly may decide:": "",
+    "The event manager hasn't set up a privacy policy yet": {
+        "0": ""
+    },
     "Welcome to OpenSlides": "",
     "by": ""
 }

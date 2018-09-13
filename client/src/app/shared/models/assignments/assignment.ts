@@ -53,6 +53,10 @@ export class Assignment extends BaseModel {
             });
         }
     }
+
+    public toString(): string {
+        return this.title;
+    }
 }
 
 BaseModel.registerCollectionElement('assignments/assignment', Assignment);

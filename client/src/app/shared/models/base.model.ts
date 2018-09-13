@@ -1,6 +1,7 @@
 import { OpenSlidesComponent } from 'app/openslides.component';
 import { Deserializable } from './deserializable.model';
 import { CollectionStringModelMapperService } from '../../core/services/collectionStringModelMapper.service';
+import { SelectorItem } from '../components/search-value-selector/search-value-selector.interfaces';
 
 export interface ModelConstructor<T extends BaseModel> {
     new (...args: any[]): T;
@@ -9,7 +10,7 @@ export interface ModelConstructor<T extends BaseModel> {
 /**
  * Abstract parent class to set rules and functions for all models.
  */
-export abstract class BaseModel extends OpenSlidesComponent implements Deserializable {
+export abstract class BaseModel extends OpenSlidesComponent implements Deserializable, SelectorItem {
     /**
      * Register the collection string to the type.
      * @param collectionString
@@ -55,6 +56,10 @@ export abstract class BaseModel extends OpenSlidesComponent implements Deseriali
             }
         });
     }
+    /**
+     * force children to have a toString() method
+     */
+    public abstract toString(): string;
 
     /**
      * returns the collectionString.

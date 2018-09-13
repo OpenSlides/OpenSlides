@@ -146,14 +146,33 @@
 
         <!-- Submitter -->
         <div *ngIf="motion && motion.submitters || editMotion">
-            <h3 translate>Submitters</h3>
-            {{motion.submitters}}
+            <div *ngIf="editMotion && newMotion">
+                <div *ngIf="motion && editMotion">
+                    <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('submitters')" multiple="true" listname="Submitter" [InputListValues]="getAllUsers()"></os-search-value-selector>
+                </div>
+            </div>
+            <div *ngIf="!editMotion || !newMotion">
+                <h3 translate>Submitters</h3>
+                <ul *ngFor="let submitters of motion.submitters">
+                    <li>{{submitters}}</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Supporter -->
         <div *ngIf='motion && motion.hasSupporters() || editMotion'>
-            <h3 translate>Supporters</h3>
             <!-- print all motion supporters -->
+            <div *ngIf="editMotion">
+                <div *ngIf="motion && editMotion">
+                    <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('supporters_id')" multiple="true" listname="Supporter" [InputListValues]="getAllUsers()"></os-search-value-selector>
+                </div>
+            </div>
+            <div *ngIf="!editMotion && motion.hasSupporters()">
+                <h3 translate>Supporters</h3>
+                <ul *ngFor="let supporters of motion.supporters">
+                    <li>{{supporters}}</li>
+                </ul>
+            </div>
         </div>
 
         <!-- State -->
@@ -202,13 +221,9 @@
                 <h3 translate> Category</h3>
                 {{motion.category}}
             </div>
-            <mat-form-field *ngIf="motion && editMotion">
-                <mat-select placeholder='Category' formControlName='category_id'>
-                    <mat-option>None</mat-option>
-                    <mat-divider></mat-divider>
-                    <mat-option *ngFor="let cat of getMotionCategories()" [value]="cat.id">{{cat}}</mat-option>
-                </mat-select>
-            </mat-form-field>
+            <div *ngIf="editMotion">
+                <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('category_id')" multiple="false" listname="Category" [InputListValues]="getMotionCategories()"></os-search-value-selector>
+            </div>
         </div>
 
         <!-- Origin -->

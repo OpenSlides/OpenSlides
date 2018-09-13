@@ -11,6 +11,10 @@ export class ProjectorMessage extends BaseModel {
     public constructor(input?: any) {
         super('core/projector-message', input);
     }
+
+    public toString(): string {
+        return this.message;
+    }
 }
 
 BaseModel.registerCollectionElement('core/projector-message', ProjectorMessage);

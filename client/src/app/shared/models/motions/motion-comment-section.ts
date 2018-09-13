@@ -13,6 +13,10 @@ export class MotionCommentSection extends BaseModel {
     public constructor(input?: any) {
         super('motions/motion-comment-section', input);
     }
+
+    public toString(): string {
+        return this.name;
+    }
 }
 
 BaseModel.registerCollectionElement('motions/motion-comment-section', MotionCommentSection);

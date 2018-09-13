@@ -1,0 +1,18 @@
+<mat-form-field [formGroup]="form">
+    <mat-select [formControl]="formControl" placeholder="{{listname}}" multiple="{{multiple}}" #thisSelector>
+        <ngx-mat-select-search [formControl]="filterControl"></ngx-mat-select-search>
+        <mat-option *ngFor="let selectedItem of filteredItems | async" [value]="selectedItem">
+            {{selectedItem.toString()}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+<div *ngIf="dispSelected">
+    <p>
+        <span translate>Selected Values</span>:
+    </p>
+    <mat-chip-list #chipList>
+        <mat-chip *ngFor="let selectedItem of thisSelector?.value" (removed)="remove(selectedItem)">{{selectedItem.name}}
+            <fa-icon matSuffix icon="times" (click)="remove(selectedItem)"></fa-icon>
+        </mat-chip>
+    </mat-chip-list>
+</div>

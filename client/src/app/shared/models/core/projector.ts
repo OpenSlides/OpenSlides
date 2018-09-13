@@ -18,6 +18,10 @@ export class Projector extends BaseModel {
     public constructor(input?: any) {
         super('core/projector', input);
     }
+
+    public toString(): string {
+        return this.name;
+    }
 }
 
 BaseModel.registerCollectionElement('core/projector', Projector);

@@ -18,6 +18,9 @@ import {
     MatSortModule,
     MatTabsModule
 } from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatChipsModule } from '@angular/material';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -40,6 +43,7 @@ import { HeadBarComponent } from './components/head-bar/head-bar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { LegalNoticeContentComponent } from './components/legal-notice-content/legal-notice-content.component';
 import { PrivacyPolicyContentComponent } from './components/privacy-policy-content/privacy-policy-content.component';
+import { SearchValueSelectorComponent } from './components/search-value-selector/search-value-selector.component';
 
 library.add(fas);
 
@@ -59,6 +63,7 @@ library.add(fas);
         MatFormFieldModule,
         MatSelectModule,
         ReactiveFormsModule,
+        MatAutocompleteModule,
         MatButtonModule,
         MatCheckboxModule,
         MatToolbarModule,
@@ -76,10 +81,13 @@ library.add(fas);
         MatSnackBarModule,
         FontAwesomeModule,
         TranslateModule.forChild(),
-        RouterModule
+        RouterModule,
+        MatChipsModule,
+        NgxMatSelectSearchModule
     ],
     exports: [
         FormsModule,
+        MatAutocompleteModule,
         MatFormFieldModule,
         MatSelectModule,
         ReactiveFormsModule,
@@ -99,12 +107,14 @@ library.add(fas);
         MatDialogModule,
         MatSnackBarModule,
         MatTabsModule,
+        NgxMatSelectSearchModule,
         FontAwesomeModule,
         TranslateModule,
         PermsDirective,
         DomChangeDirective,
         FooterComponent,
         HeadBarComponent,
+        SearchValueSelectorComponent,
         LegalNoticeContentComponent,
         PrivacyPolicyContentComponent
     ],
@@ -114,7 +124,8 @@ library.add(fas);
         HeadBarComponent,
         FooterComponent,
         LegalNoticeContentComponent,
-        PrivacyPolicyContentComponent
+        PrivacyPolicyContentComponent,
+        SearchValueSelectorComponent
     ]
 })
 export class SharedModule {}
