@@ -3,7 +3,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { BaseViewModel } from './base-view-model';
 import { BaseModel, ModelConstructor } from '../shared/models/base.model';
 import { CollectionStringModelMapperService } from '../core/services/collectionStringModelMapper.service';
-import { DataStoreService } from '../core/services/data-store.service';
 
 export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel> extends OpenSlidesComponent {
     /**
@@ -28,7 +27,6 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      * If one of those changes, the view models will be updated.
      */
     public constructor(
-        protected DS: DataStoreService,
         protected baseModelCtor: ModelConstructor<M>,
         protected depsModelCtors: ModelConstructor<BaseModel>[]
     ) {

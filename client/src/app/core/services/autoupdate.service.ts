@@ -4,7 +4,6 @@ import { OpenSlidesComponent } from 'app/openslides.component';
 import { WebsocketService } from './websocket.service';
 
 import { CollectionStringModelMapperService } from './collectionStringModelMapper.service';
-import { DataStoreService } from './data-store.service';
 
 /**
  * Handles the initial update and automatic updates using the {@link WebsocketService}
@@ -21,7 +20,7 @@ export class AutoupdateService extends OpenSlidesComponent {
      * Constructor to create the AutoupdateService. Calls the constructor of the parent class.
      * @param websocketService
      */
-    public constructor(websocketService: WebsocketService, private DS: DataStoreService) {
+    public constructor(websocketService: WebsocketService) {
         super();
         websocketService.getOberservable<any>('autoupdate').subscribe(response => {
             this.storeResponse(response);

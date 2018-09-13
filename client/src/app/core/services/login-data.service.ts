@@ -43,7 +43,13 @@ export class LoginDataService extends OpenSlidesComponent {
      */
     public constructor(private configService: ConfigService) {
         super();
+    }
 
+    /**
+     * Should be called, when the data store is set up. Updates the values when the
+     * corresponding config variables change.
+     */
+    public setupSubscription(): void {
         this.configService.get('general_event_privacy_policy').subscribe(value => {
             this.setPrivacyPolicy(value);
         });

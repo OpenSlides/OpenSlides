@@ -14,6 +14,10 @@ export class MotionBlock extends BaseModel {
         super('motions/motion-block', input);
     }
 
+    public getAgenda(): BaseModel | BaseModel[] {
+        return this.DS.get<Item>('agenda/item', this.agenda_item_id);
+    }
+
     public toString(): string {
         return this.title;
     }
