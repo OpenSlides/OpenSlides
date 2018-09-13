@@ -38,8 +38,6 @@ export class OpenSlidesService extends OpenSlidesComponent {
     ) {
         super();
 
-        console.log('OS ctor');
-
         // Handler that gets called, if the websocket connection reconnects after a disconnection.
         // There might have changed something on the server, so we check the operator, if he changed.
         websocketService.reconnectEvent.subscribe(() => {

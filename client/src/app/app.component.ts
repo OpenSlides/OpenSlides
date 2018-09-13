@@ -25,7 +25,6 @@ export class AppComponent {
         configService: ConfigService,
         loginDataService: LoginDataService
     ) {
-        console.log('app ctor');
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'fr']);
         // this language will be used as a fallback when a translation isn't found in the current language
