@@ -25,6 +25,7 @@ export class Motion extends BaseModel {
     public motion_block_id: number;
     public origin: string;
     public submitters: MotionSubmitter[];
+    public submitters_id: number[];
     public supporters_id: number[];
     public comments: MotionComment[];
     public workflow_id: number;
@@ -61,14 +62,15 @@ export class Motion extends BaseModel {
             .map((submitter: MotionSubmitter) => submitter.user_id);
     }
 
+    /**
+     * returns the Motion name
+     */
+    public toString(): string {
+        return this.title;
+    }
+
     public deserialize(input: any): void {
         Object.assign(this, input);
-
-        if (input.submitters instanceof Array) {
-            input.submitters.forEach(SubmitterData => {
-                this.submitters.push(new MotionSubmitter(SubmitterData));
-            });
-        }
 
         this.log_messages = [];
         if (input.log_messages instanceof Array) {

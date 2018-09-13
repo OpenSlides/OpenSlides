@@ -11,6 +11,10 @@ export class Tag extends BaseModel {
     public constructor(input?: any) {
         super('core/tag', input);
     }
+
+    public toString(): string {
+        return this.name;
+    }
 }
 
 BaseModel.registerCollectionElement('core/tag', Tag);

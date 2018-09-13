@@ -28,6 +28,10 @@ export class Mediafile extends BaseModel {
     public getUploader(): User {
         return this.DS.get<User>('users/user', this.uploader_id);
     }
+
+    public toString(): string {
+        return this.title;
+    }
 }
 
 BaseModel.registerCollectionElement('amediafiles/mediafile', Mediafile);

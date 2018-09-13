@@ -42,7 +42,6 @@ export class StartComponent extends BaseComponent implements OnInit {
         // tslint:disable-next-line
         const welcomeTitleTranslateDummy = this.translate.instant('Welcome to OpenSlides');
         super.setTitle('Home');
-
         // set welcome title and text
         const welcomeTitleConfig = this.DS.filter<Config>(
             Config,

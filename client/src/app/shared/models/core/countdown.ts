@@ -14,6 +14,10 @@ export class Countdown extends BaseModel {
     public constructor(input?: any) {
         super('core/countdown');
     }
+
+    public toString(): string {
+        return this.description;
+    }
 }
 
 BaseModel.registerCollectionElement('core/countdown', Countdown);

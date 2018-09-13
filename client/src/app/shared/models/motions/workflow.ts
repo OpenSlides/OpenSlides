@@ -53,6 +53,10 @@ export class Workflow extends BaseModel {
             });
         }
     }
+
+    public toString(): string {
+        return this.name;
+    }
 }
 
 BaseModel.registerCollectionElement('motions/workflow', Workflow);

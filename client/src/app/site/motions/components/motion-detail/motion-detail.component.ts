@@ -8,6 +8,7 @@ import { Category } from '../../../../shared/models/motions/category';
 import { ViewportService } from '../../../../core/services/viewport.service';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
+import { User } from '../../../../shared/models/users/user';
 
 /**
  * Component for the motion detail view
@@ -22,13 +23,15 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * MatExpansionPanel for the meta info
      * Only relevant in mobile view
      */
-    @ViewChild('metaInfoPanel') public metaInfoPanel: MatExpansionPanel;
+    @ViewChild('metaInfoPanel')
+    public metaInfoPanel: MatExpansionPanel;
 
     /**
      * MatExpansionPanel for the content panel
      * Only relevant in mobile view
      */
-    @ViewChild('contentPanel') public contentPanel: MatExpansionPanel;
+    @ViewChild('contentPanel')
+    public contentPanel: MatExpansionPanel;
 
     /**
      * Motions meta-info
@@ -103,6 +106,8 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     public patchForm(formMotion: ViewMotion): void {
         this.metaInfoForm.patchValue({
             category_id: formMotion.categoryId,
+            supporters_id: formMotion.supporters,
+            submitters: formMotion.submitters,
             state_id: formMotion.stateId,
             recommendation_id: formMotion.recommendationId,
             identifier: formMotion.identifier,
@@ -126,6 +131,8 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
             category_id: [''],
             state_id: [''],
             recommendation_id: [''],
+            submitters: [''],
+            supporters_id: [''],
             origin: ['']
         });
         this.contentForm = this.formBuilder.group({
@@ -149,11 +156,11 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     public saveMotion(): void {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
         if (this.newMotion) {
-            this.repo.saveMotion(newMotionValues).subscribe(response => {
+            this.repo.create(newMotionValues).subscribe(response => {
                 this.router.navigate(['./motions/' + response.id]);
             });
         } else {
-            this.repo.saveMotion(newMotionValues, this.motionCopy).subscribe();
+            this.repo.save(newMotionValues, this.motionCopy).subscribe();
         }
     }
 
@@ -201,9 +208,16 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * TODO: Repo should handle
      */
     public deleteMotionButton(): void {
-        this.repo.deleteMotion(this.motion).subscribe(answer => {
+        this.repo.delete(this.motion).subscribe(answer => {
             this.router.navigate(['./motions/']);
         });
+    }
+
+    /**
+     * returns all Possible supporters
+     */
+    public getAllUsers(): User[] {
+        return this.DS.getAll(User);
     }
 
     /**

@@ -20,6 +20,10 @@ export class Group extends BaseModel {
             return user.groups_id.includes(this.id);
         });
     }
+
+    public toString(): string {
+        return this.name;
+    }
 }
 
 BaseModel.registerCollectionElement('users/group', Group);

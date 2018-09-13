@@ -18,6 +18,10 @@ export class MotionChangeReco extends BaseModel {
     public constructor(input?: any) {
         super('motions/motion-change-recommendation', input);
     }
+
+    public toString(): string {
+        return this.text;
+    }
 }
 
 BaseModel.registerCollectionElement('motions/motion-change-recommendation', MotionChangeReco);

@@ -13,9 +13,9 @@ export class Category extends BaseModel {
         super('motions/category', input);
     }
 
-    public toString = (): string => {
+    public toString(): string {
         return this.prefix + ' - ' + this.name;
-    };
+    }
 }
 
 BaseModel.registerCollectionElement('motions/category', Category);

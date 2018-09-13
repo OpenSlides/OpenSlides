@@ -18,6 +18,10 @@ export class ChatMessage extends BaseModel {
     public getUser(): User {
         return this.DS.get<User>('users/user', this.user_id);
     }
+
+    public toString(): string {
+        return this.message;
+    }
 }
 
 BaseModel.registerCollectionElement('core/chat-message', ChatMessage);
