@@ -1,8 +1,6 @@
 import { BaseModel } from '../base.model';
 import { AssignmentUser } from './assignment-user';
 import { Poll } from './poll';
-import { Tag } from '../core/tag';
-import { User } from '../users/user';
 
 /**
  * Representation of an assignment.
@@ -24,16 +22,12 @@ export class Assignment extends BaseModel {
         super('assignments/assignment', input);
     }
 
-    public getAssignmentReleatedUsers(): BaseModel | BaseModel[] {
-        const userIds = [];
-        this.assignment_related_users.forEach(user => {
-            userIds.push(user.user_id);
-        });
-        return this.DS.getMany<User>('users/user', userIds);
-    }
-
-    public getTags(): BaseModel | BaseModel[] {
-        return this.DS.getMany<Tag>('core/tag', this.tags_id);
+    public get candidateIds(): number[] {
+        return this.assignment_related_users
+            .sort((a: AssignmentUser, b: AssignmentUser) => {
+                return a.weight - b.weight;
+            })
+            .map((candidate: AssignmentUser) => candidate.user_id);
     }
 
     public deserialize(input: any): void {

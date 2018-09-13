@@ -6,6 +6,7 @@ import { WebsocketService } from './websocket.service';
 import { OperatorService } from './operator.service';
 import { CacheService } from './cache.service';
 import { AutoupdateService } from './autoupdate.service';
+import { DataStoreService } from './data-store.service';
 
 /**
  * Handles the bootup/showdown of this application.
@@ -32,15 +33,20 @@ export class OpenSlidesService extends OpenSlidesComponent {
         private operator: OperatorService,
         private websocketService: WebsocketService,
         private router: Router,
-        private autoupdateService: AutoupdateService
+        private autoupdateService: AutoupdateService,
+        private DS: DataStoreService
     ) {
         super();
+
+        console.log('OS ctor');
 
         // Handler that gets called, if the websocket connection reconnects after a disconnection.
         // There might have changed something on the server, so we check the operator, if he changed.
         websocketService.reconnectEvent.subscribe(() => {
             this.checkOperator();
         });
+
+        this.bootup();
     }
 
     /**

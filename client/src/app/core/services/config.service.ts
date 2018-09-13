@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { OpenSlidesComponent } from 'app/openslides.component';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Config } from '../../shared/models/core/config';
+import { DataStoreService } from './data-store.service';
 
 /**
  * Handler for config variables.
@@ -31,11 +32,9 @@ export class ConfigService extends OpenSlidesComponent {
     /**
      * Listen for changes of config variables.
      */
-    public constructor() {
+    public constructor(private DS: DataStoreService) {
         super();
-    }
 
-    public setupSubscription(): void {
         this.DS.changeObservable.subscribe(data => {
             // on changes notify the observers for specific keys.
             if (data instanceof Config && this.configSubjects[data.key]) {

@@ -1,5 +1,4 @@
 import { BaseModel } from '../base.model';
-import { Group } from './group';
 
 /**
  * Representation of a user in contrast to the operator.
@@ -25,10 +24,6 @@ export class User extends BaseModel {
 
     public constructor(input?: any) {
         super('users/user', input);
-    }
-
-    public get groups(): Group[] {
-        return this.DS.getMany(Group, this.groups_id);
     }
 
     public get full_name(): string {
