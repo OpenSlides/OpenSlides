@@ -1,5 +1,6 @@
 import { BaseModel } from '../base.model';
 import { File } from './file';
+import { User } from '../users/user';
 
 /**
  * Representation of MediaFile. Has the nested property "File"
@@ -22,6 +23,10 @@ export class Mediafile extends BaseModel {
     public deserialize(input: any): void {
         Object.assign(this, input);
         this.mediafile = new File(input.mediafile);
+    }
+
+    public getUploader(): User {
+        return this.DS.get<User>('users/user', this.uploader_id);
     }
 
     public toString(): string {

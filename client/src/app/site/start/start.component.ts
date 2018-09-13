@@ -9,7 +9,6 @@ import { User } from 'app/shared/models/users/user';
 import { Config } from '../../shared/models/core/config';
 import { Motion } from '../../shared/models/motions/motion';
 import { MotionSubmitter } from '../../shared/models/motions/motion-submitter';
-import { DataStoreService } from '../../core/services/data-store.service';
 
 @Component({
     selector: 'os-start',
@@ -26,7 +25,7 @@ export class StartComponent extends BaseComponent implements OnInit {
      * @param titleService the title serve
      * @param translate to translation module
      */
-    public constructor(titleService: Title, protected translate: TranslateService, private DS: DataStoreService) {
+    public constructor(titleService: Title, protected translate: TranslateService) {
         super(titleService, translate);
     }
 

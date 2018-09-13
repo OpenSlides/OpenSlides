@@ -6,7 +6,6 @@ import { OpenSlidesComponent } from 'app/openslides.component';
 import { Group } from 'app/shared/models/users/group';
 import { User } from '../../shared/models/users/user';
 import { environment } from 'environments/environment';
-import { DataStoreService } from './data-store.service';
 
 /**
  * Permissions on the client are just strings. This makes clear, that
@@ -75,9 +74,15 @@ export class OperatorService extends OpenSlidesComponent {
     /**
      * @param http HttpClient
      */
-    public constructor(private http: HttpClient, private DS: DataStoreService) {
+    public constructor(private http: HttpClient) {
         super();
+    }
 
+    /**
+     * Setup the subscription of the DataStore.Update the user and it's
+     * permissions if the user or groups changes.
+     */
+    public setupSubscription(): void {
         this.DS.changeObservable.subscribe(newModel => {
             if (this._user) {
                 if (newModel instanceof Group) {
@@ -141,7 +146,7 @@ export class OperatorService extends OpenSlidesComponent {
             }
         } else {
             const permissionSet = new Set();
-            this.DS.getMany(Group, this.user.groups_id).forEach(group => {
+            this.user.groups.forEach(group => {
                 group.permissions.forEach(permission => {
                     permissionSet.add(permission);
                 });

@@ -6,7 +6,6 @@ import { WebsocketService } from './websocket.service';
 import { OperatorService } from './operator.service';
 import { CacheService } from './cache.service';
 import { AutoupdateService } from './autoupdate.service';
-import { DataStoreService } from './data-store.service';
 
 /**
  * Handles the bootup/showdown of this application.
@@ -33,8 +32,7 @@ export class OpenSlidesService extends OpenSlidesComponent {
         private operator: OperatorService,
         private websocketService: WebsocketService,
         private router: Router,
-        private autoupdateService: AutoupdateService,
-        private DS: DataStoreService
+        private autoupdateService: AutoupdateService
     ) {
         super();
 
@@ -43,8 +41,6 @@ export class OpenSlidesService extends OpenSlidesComponent {
         websocketService.reconnectEvent.subscribe(() => {
             this.checkOperator();
         });
-
-        this.bootup();
     }
 
     /**
