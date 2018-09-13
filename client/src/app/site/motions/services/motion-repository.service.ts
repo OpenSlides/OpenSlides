@@ -9,6 +9,7 @@ import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { ViewMotion } from '../models/view-motion';
 import { Observable } from 'rxjs';
 import { BaseRepository } from '../../base-repository';
+import { DataStoreService } from '../../../core/services/data-store.service';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -31,8 +32,8 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * Handles CRUD using an observer to the DataStore
      * @param DataSend
      */
-    public constructor(private dataSend: DataSendService) {
-        super(Motion, [Category, User, Workflow]);
+    public constructor(DS: DataStoreService, private dataSend: DataSendService) {
+        super(DS, Motion, [Category, User, Workflow]);
     }
 
     /**

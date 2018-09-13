@@ -9,6 +9,7 @@ import { ViewportService } from '../../../../core/services/viewport.service';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
 import { User } from '../../../../shared/models/users/user';
+import { DataStoreService } from '../../../../core/services/data-store.service';
 
 /**
  * Component for the motion detail view
@@ -77,7 +78,8 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
-        private repo: MotionRepositoryService
+        private repo: MotionRepositoryService,
+        private DS: DataStoreService
     ) {
         super();
         this.createForm();

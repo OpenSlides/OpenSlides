@@ -14,10 +14,6 @@ export class PersonalNote extends BaseModel {
         super('users/personal-note', input);
     }
 
-    public getUser(): User {
-        return this.DS.get<User>('users/user', this.user_id);
-    }
-
     public toString(): string {
         return this.notes.toString();
     }

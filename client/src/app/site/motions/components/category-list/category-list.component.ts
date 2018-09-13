@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { BaseComponent } from '../../../../base.component';
 import { Category } from '../../../../shared/models/motions/category';
+import { DataStoreService } from '../../../../core/services/data-store.service';
 
 /**
  * List view for the categories.
@@ -31,19 +32,25 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
     /**
      * The table itself.
      */
-    @ViewChild(MatTable) public table: MatTable<Category>;
+    @ViewChild(MatTable)
+    public table: MatTable<Category>;
 
     /**
      * Sort the Table
      */
-    @ViewChild(MatSort) public sort: MatSort;
+    @ViewChild(MatSort)
+    public sort: MatSort;
 
     /**
      * The usual component constructor
      * @param titleService
      * @param translate
      */
-    public constructor(protected titleService: Title, protected translate: TranslateService) {
+    public constructor(
+        protected titleService: Title,
+        protected translate: TranslateService,
+        protected DS: DataStoreService
+    ) {
         super(titleService, translate);
     }
 

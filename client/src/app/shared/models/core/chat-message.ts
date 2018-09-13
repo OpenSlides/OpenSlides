@@ -1,5 +1,4 @@
 import { BaseModel } from '../base.model';
-import { User } from '../users/user';
 
 /**
  * Representation of chat messages.
@@ -13,10 +12,6 @@ export class ChatMessage extends BaseModel {
 
     public constructor(input?: any) {
         super('core/chat-message', input);
-    }
-
-    public getUser(): User {
-        return this.DS.get<User>('users/user', this.user_id);
     }
 
     public toString(): string {
