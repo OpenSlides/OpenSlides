@@ -1,10 +1,10 @@
-import { BaseModel } from '../base.model';
+import { ProjectableBaseModel } from '../base/projectable-base-model';
 
 /**
  * Representation of a projector message.
  * @ignore
  */
-export class ProjectorMessage extends BaseModel {
+export class ProjectorMessage extends ProjectableBaseModel {
     public id: number;
     public message: string;
 
@@ -12,9 +12,9 @@ export class ProjectorMessage extends BaseModel {
         super('core/projector-message', input);
     }
 
-    public toString(): string {
-        return this.message;
+    public getTitle(): string {
+        return 'Projectormessage';
     }
 }
 
-BaseModel.registerCollectionElement('core/projector-message', ProjectorMessage);
+ProjectableBaseModel.registerCollectionElement('core/projector-message', ProjectorMessage);

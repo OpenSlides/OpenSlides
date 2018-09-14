@@ -1,4 +1,4 @@
-import { BaseModel } from '../base.model';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of chat messages.
@@ -14,8 +14,8 @@ export class ChatMessage extends BaseModel {
         super('core/chat-message', input);
     }
 
-    public toString(): string {
-        return this.message;
+    public getTitle(): string {
+        return 'Chatmessage';
     }
 }
 

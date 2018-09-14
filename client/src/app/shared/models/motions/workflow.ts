@@ -1,4 +1,4 @@
-import { BaseModel } from '../base.model';
+import { BaseModel } from '../base/base-model';
 import { WorkflowState } from './workflow-state';
 
 /**
@@ -54,7 +54,7 @@ export class Workflow extends BaseModel {
         }
     }
 
-    public toString(): string {
+    public getTitle(): string {
         return this.name;
     }
 }

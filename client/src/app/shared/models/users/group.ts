@@ -1,4 +1,4 @@
-import { BaseModel } from '../base.model';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of user group.
@@ -13,7 +13,7 @@ export class Group extends BaseModel {
         super('users/group', input);
     }
 
-    public toString(): string {
+    public getTitle(): string {
         return this.name;
     }
 }

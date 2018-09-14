@@ -1,5 +1,4 @@
-import { BaseModel } from '../base.model';
-import { User } from './user';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of users personal note.
@@ -14,8 +13,8 @@ export class PersonalNote extends BaseModel {
         super('users/personal-note', input);
     }
 
-    public toString(): string {
-        return this.notes.toString();
+    public getTitle(): string {
+        return 'Personal note';
     }
 }
 

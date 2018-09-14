@@ -1,11 +1,11 @@
-import { BaseModel } from '../base.model';
 import { File } from './file';
+import { ProjectableBaseModel } from '../base/projectable-base-model';
 
 /**
  * Representation of MediaFile. Has the nested property "File"
  * @ignore
  */
-export class Mediafile extends BaseModel {
+export class Mediafile extends ProjectableBaseModel {
     public id: number;
     public title: string;
     public mediafile: File;
@@ -24,9 +24,9 @@ export class Mediafile extends BaseModel {
         this.mediafile = new File(input.mediafile);
     }
 
-    public toString(): string {
+    public getTitle(): string {
         return this.title;
     }
 }
 
-BaseModel.registerCollectionElement('amediafiles/mediafile', Mediafile);
+ProjectableBaseModel.registerCollectionElement('amediafiles/mediafile', Mediafile);

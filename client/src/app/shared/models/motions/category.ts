@@ -1,4 +1,4 @@
-import { BaseModel } from '../base.model';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of a motion category. Has the nested property "File"
@@ -13,7 +13,7 @@ export class Category extends BaseModel {
         super('motions/category', input);
     }
 
-    public toString(): string {
+    public getTitle(): string {
         return this.prefix + ' - ' + this.name;
     }
 }

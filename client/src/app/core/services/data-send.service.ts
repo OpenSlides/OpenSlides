@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BaseModel } from '../../shared/models/base.model';
+import { BaseModel } from '../../shared/models/base/base-model';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 

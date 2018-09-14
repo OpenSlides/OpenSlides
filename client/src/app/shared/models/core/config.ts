@@ -1,4 +1,4 @@
-import { BaseModel } from '../base.model';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of a config variable
@@ -13,7 +13,7 @@ export class Config extends BaseModel {
         super('core/config', input);
     }
 
-    public toString(): string {
+    public getTitle(): string {
         return this.key;
     }
 }

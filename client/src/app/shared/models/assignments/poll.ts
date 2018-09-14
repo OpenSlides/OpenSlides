@@ -1,5 +1,5 @@
 import { PollOption } from './poll-option';
-import { Deserializer } from '../deserializer.model';
+import { Deserializer } from '../base/deserializer';
 
 /**
  * Content of the 'polls' property of assignments

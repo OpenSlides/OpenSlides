@@ -1,4 +1,4 @@
-import { Deserializer } from '../deserializer.model';
+import { Deserializer } from '../base/deserializer';
 
 /**
  * The name and the type of a mediaFile.

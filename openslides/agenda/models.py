@@ -296,14 +296,14 @@ class Item(RESTModelMixin, models.Model):
                                       'method on your related model.')
 
     @property
-    def list_view_title(self):
+    def title_with_type(self):
         """
-        Return get_agenda_list_view_title() from the content_object.
+        Return get_agenda_title_with_type() from the content_object.
         """
         try:
-            return self.content_object.get_agenda_list_view_title()
+            return self.content_object.get_agenda_title_with_type()
         except AttributeError:
-            raise NotImplementedError('You have to provide a get_agenda_list_view_title '
+            raise NotImplementedError('You have to provide a get_agenda_title_with_type '
                                       'method on your related model.')
 
     def is_internal(self):

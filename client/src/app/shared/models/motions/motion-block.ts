@@ -1,22 +1,25 @@
-import { BaseModel } from '../base.model';
-import { Item } from '../agenda/item';
+import { AgendaBaseModel } from '../base/agenda-base-model';
 
 /**
  * Representation of a motion block.
  * @ignore
  */
-export class MotionBlock extends BaseModel {
+export class MotionBlock extends AgendaBaseModel {
     public id: number;
     public title: string;
     public agenda_item_id: number;
 
     public constructor(input?: any) {
-        super('motions/motion-block', input);
+        super('motions/motion-block', 'Motion block', input);
     }
 
-    public toString(): string {
+    public getTitle(): string {
         return this.title;
+    }
+
+    public getDetailStateURL(): string {
+        return 'TODO';
     }
 }
 
-BaseModel.registerCollectionElement('motions/motion-block', MotionBlock);
+AgendaBaseModel.registerCollectionElement('motions/motion-block', MotionBlock);

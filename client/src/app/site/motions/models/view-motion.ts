@@ -3,7 +3,7 @@ import { Category } from '../../../shared/models/motions/category';
 import { User } from '../../../shared/models/users/user';
 import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
-import { BaseModel } from '../../../shared/models/base.model';
+import { BaseModel } from '../../../shared/models/base/base-model';
 import { BaseViewModel } from '../../base-view-model';
 import { TranslateService } from '@ngx-translate/core';
 

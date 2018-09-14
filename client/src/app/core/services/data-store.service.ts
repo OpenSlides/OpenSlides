@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
-import { BaseModel, ModelConstructor } from 'app/shared/models/base.model';
+import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { CacheService } from './cache.service';
 import { CollectionStringModelMapperService } from './collectionStringModelMapper.service';
 

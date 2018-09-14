@@ -1,4 +1,4 @@
-import { Deserializer } from '../deserializer.model';
+import { Deserializer } from '../base/deserializer';
 
 /**
  * Content of the 'assignment_related_users' property
