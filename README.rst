@@ -176,7 +176,7 @@ OpenSlides uses the following projects or parts of them:
   * `angular-ckeditor <https://github.com/lemonde/angular-ckeditor>`_, License: MIT
   * `angular-file-saver <https://github.com/alferov/angular-file-saver>`_, License: MIT
   * `angular-formly <http://formly-js.github.io/angular-formly/>`_, License: MIT
-  * `angular-formly-templates-bootstrap <http://formly-js.github.io/angular-formly-templates-bootstrap/>`_, License: MIT
+  * `angular-formly-templates-bootstrap <https://github.com/formly-js/angular-formly-templates-bootstrap>`_, License: MIT
   * `angular-gettext <http://angular-gettext.rocketeer.be/>`_, License: MIT
   * `angular-messages <http://angularjs.org>`_, License: MIT
   * `angular-pdf <http://github.com/sayanee/angularjs-pdf>`_, License: MIT
@@ -186,7 +186,7 @@ OpenSlides uses the following projects or parts of them:
   * `angular-ui-router <http://angular-ui.github.io/ui-router/>`_, License: MIT
   * `angular-ui-router-title <https://github.com/nonplus/angular-ui-router-title>`_, License: MIT
   * `angular-ui-tree <https://github.com/angular-ui-tree/angular-ui-tree>`_, License: MIT
-  * `angular-xeditable <http://vitalets.github.io/angular-xeditable>`_, License: MIT
+  * `angular-xeditable <https://github.com/vitalets/angular-xeditable>`_, License: MIT
   * `angularjs-scroll-glue <https://github.com/Luegg/angularjs-scroll-glue>`_, License: MIT
   * `angularjs-slider <https://github.com/angular-slider/angularjs-slider>`_, License: MIT
   * `api-check <https://github.com/kentcdodds/api-check>`_, License: MIT
@@ -194,11 +194,9 @@ OpenSlides uses the following projects or parts of them:
   * `bootstrap <http://getbootstrap.com>`_, License: MIT
   * `bootstrap <http://getbootstrap.com>`_, License: MIT
   * `bootstrap-css-only <https://getbootstrap.com/>`_, License: MIT
-  * `bootstrap-css-only <http://getbootstrap.com>`_, License: MIT
   * `bootstrap-ui-datetime-picker <https://github.com/Gillardo/bootstrap-ui-datetime-picker>`_, License: MIT
-  * `chosen <https://harvesthq.github.io/chosen/>`_, License: https://github.com/harvesthq/chosen/blob/master/LICENSE.md
-  * `chosen-js <https://harvesthq.github.io/chosen/>`_, License: MIT
-  * `ckeditor <http://ckeditor.com>`_, License: (GPL-2.0 OR LGPL-2.1 OR MPL-1.1)
+  * `chosen <https://harvesthq.github.io/chosen/>`_, License: MIT
+  * `ckeditor <https://ckeditor.com/ckeditor-4/>`_, License: (GPL-2.0 OR LGPL-2.1 OR MPL-1.1)
   * `docxtemplater <https://github.com/open-xml-templating/docxtemplater>`_, License: MIT
   * `file-saver.js <https://github.com/Teleborder/FileSaver.js>`_, License: LICENSE.md
   * `font-awesome-bower <https://github.com/tdg5/font-awesome-bower>`_, License: MIT
