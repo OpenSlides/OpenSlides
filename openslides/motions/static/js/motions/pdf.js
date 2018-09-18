@@ -1321,9 +1321,7 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
             },
             export: function (motions, params, singleMotion) {
                 params = params || {};
-                _.defaults(params, {
-                    filename: gettextCatalog.getString('motions') + '.pdf',
-                });
+                params.filename = gettextCatalog.getString('motions') + '.pdf';
                 this.getDocumentProvider(motions, params, singleMotion).then(
                     function (documentProvider) {
                         PdfCreate.download(documentProvider, params.filename);
