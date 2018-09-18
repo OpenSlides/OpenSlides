@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
-"PO-Revision-Date: 2018-08-30 12:48+0000\n"
+"PO-Revision-Date: 2018-09-18 08:04+0000\n"
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/openslides/openslides/language/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -751,8 +751,8 @@ msgid "Change recommendation"
 msgstr "Änderungsempfehlung"
 
 #: motions/static/js/motions/site.js:955 motions/static/js/motions/site.js:969
-#: motions/static/templates/motions/motion-detail/toolbar.html:121
-#: motions/static/templates/motions/motion-detail/toolbar.html:76
+#: motions/static/templates/motions/motion-detail/toolbar.html:122
+#: motions/static/templates/motions/motion-detail/toolbar.html:77
 msgid "Change recommendations"
 msgstr "Änderungsempfehlungen"
 
@@ -761,8 +761,8 @@ msgid "Change visibility"
 msgstr "Sichtbarkeit ändern"
 
 #: motions/static/js/motions/site.js:958 motions/static/js/motions/site.js:972
-#: motions/static/templates/motions/motion-detail/toolbar.html:133
-#: motions/static/templates/motions/motion-detail/toolbar.html:91
+#: motions/static/templates/motions/motion-detail/toolbar.html:134
+#: motions/static/templates/motions/motion-detail/toolbar.html:92
 msgid "Changed version"
 msgstr "Geänderte Fassung"
 
@@ -773,10 +773,6 @@ msgstr "Chat"
 #: motions/static/js/motions/site.js:3284
 msgid "Choose 0 to disable the supporting system."
 msgstr "Zum Deaktivieren des Unterstützersystems '0' eingeben."
-
-#: motions/static/templates/motions/amendment-paragraph-choose-form.html:1
-msgid "Choose the paragraph to amend!"
-msgstr "Bitte einen zu ändernden Absatz auswählen!"
 
 #: core/static/js/core/site.js:130 core/static/js/core/site.js:131
 msgid "Clear"
@@ -1088,8 +1084,8 @@ msgid "Didn't get an email"
 msgstr "Bekam keine E-Mail"
 
 #: motions/static/js/motions/site.js:959 motions/static/js/motions/site.js:973
-#: motions/static/templates/motions/motion-detail/toolbar.html:138
-#: motions/static/templates/motions/motion-detail/toolbar.html:97
+#: motions/static/templates/motions/motion-detail/toolbar.html:139
+#: motions/static/templates/motions/motion-detail/toolbar.html:98
 msgid "Diff version"
 msgstr "Änderungsdarstellung"
 
@@ -1506,14 +1502,14 @@ msgstr "Dateien"
 msgid "Filter"
 msgstr "Filter"
 
-#: motions/static/templates/motions/motion-detail/toolbar.html:113
-#: motions/static/templates/motions/motion-detail/toolbar.html:148
+#: motions/static/templates/motions/motion-detail/toolbar.html:114
+#: motions/static/templates/motions/motion-detail/toolbar.html:149
 msgid "Final print template"
 msgstr "Beschluss-Druckvorlage"
 
 #: motions/static/js/motions/site.js:960 motions/static/js/motions/site.js:974
-#: motions/static/templates/motions/motion-detail/toolbar.html:104
-#: motions/static/templates/motions/motion-detail/toolbar.html:143
+#: motions/static/templates/motions/motion-detail/toolbar.html:105
+#: motions/static/templates/motions/motion-detail/toolbar.html:144
 msgid "Final version"
 msgstr "Beschlussfassung"
 
@@ -1594,6 +1590,10 @@ msgstr "PDF-Dokumente und ZIP-Archiv werden erstellt"
 #: users/static/templates/users/user-import.html:84
 msgid "Given name"
 msgstr "Vorname"
+
+#: motions/static/templates/motions/motion-detail/toolbar.html:52
+msgid "Go to line"
+msgstr "Springe zur Zeile"
 
 #: users/static/js/users/site.js:612
 msgid "Got an email"
@@ -2579,8 +2579,8 @@ msgid "Original size"
 msgstr "Originalgröße"
 
 #: motions/static/js/motions/site.js:957 motions/static/js/motions/site.js:971
-#: motions/static/templates/motions/motion-detail/toolbar.html:128
-#: motions/static/templates/motions/motion-detail/toolbar.html:83
+#: motions/static/templates/motions/motion-detail/toolbar.html:129
+#: motions/static/templates/motions/motion-detail/toolbar.html:84
 msgid "Original version"
 msgstr "Originalfassung"
 
@@ -2729,6 +2729,10 @@ msgstr "Persönliche Notiz gesetzt"
 #: assignments/static/templates/assignments/assignment-list.html:130
 msgid "Phase"
 msgstr "Phase"
+
+#: motions/static/templates/motions/amendment-paragraph-choose-form.html:1
+msgid "Please choose the paragraph to amend"
+msgstr "Bitte einen zu ändernden Absatz auswählen"
 
 #: users/static/templates/users/group-edit.html:12
 msgid "Please enter a name for the new group:"
@@ -3408,9 +3412,9 @@ msgstr "Vollständigen Antragstext anzeigen"
 msgid "Show extended fields"
 msgstr "Erweiterte Felder anzeigen"
 
-#: motions/static/templates/motions/motion-detail/toolbar.html:59
-msgid "Show highlighted line also on projector."
-msgstr "Hervorgehobene Zeile auch auf dem Projektor anzeigen."
+#: motions/static/templates/motions/motion-detail/toolbar.html:60
+msgid "Show highlighted line also on projector"
+msgstr "hervorgehobene Zeile auch auf dem Projektor anzeigen"
 
 #: motions/static/templates/motions/motion-detail.html:642
 msgid "Show history"
@@ -3669,6 +3673,10 @@ msgstr "Die Löschung war erfolgreich."
 msgid "The event manager hasn't set up a privacy policy yet."
 msgstr "Der Veranstalter hat noch keine Datenschutzerklärung hinterlegt."
 
+#: motions/static/templates/motions/motion-detail/view-modified-agreed.html:16
+msgid "The final print template have been changed."
+msgstr "Die Beschluss-Druckvorlage wurde geändert."
+
 #: agenda/static/templates/agenda/list-of-speakers-partial-management.html:26
 msgid "The list of speakers is empty."
 msgstr "Die Redeliste ist leer."
@@ -3678,10 +3686,6 @@ msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
 "enabled. Min: 40"
 msgstr "Die maximale Zeichenanzahl pro Zeile. Relevant, wenn die Zeilennummerierung eingeschaltet ist. Minimum: 40."
-
-#: motions/static/templates/motions/motion-detail/view-modified-agreed.html:16
-msgid "The modified final version have been changed."
-msgstr "Die modifizierte Beschlussfassung wurde geändert."
 
 #: motions/static/templates/motions/motion-detail/personal-note.html:34
 msgid "The personal note has been changed."
@@ -4162,7 +4166,7 @@ msgstr "Wahlen"
 msgid "files"
 msgstr "Dateien"
 
-#: motions/static/templates/motions/motion-detail/toolbar.html:53
+#: motions/static/templates/motions/motion-detail/toolbar.html:54
 msgid "go"
 msgstr "gehe zu"
 

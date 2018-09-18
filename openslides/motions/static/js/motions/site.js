@@ -1650,7 +1650,7 @@ angular.module('OpenSlidesApp.motions.site', [
             {mode: 'agreed',
             label: 'Final version'},
             {mode: 'modified_agreed',
-            label: 'Modified final version'},
+            label: 'Final print template'},
         ];
         var motionDefaultRecommendationTextMode = Config.get('motions_recommendation_text_mode').value;
         // Change to the modified final version, if exists
