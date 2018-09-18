@@ -16,8 +16,11 @@
 </mat-toolbar>
 
 <mat-menu #ellipsisMenu="matMenu">
-    <button mat-menu-item *ngFor="let item of menuList" (click)=clickMenu(item)>
-        <fa-icon *ngIf="item.icon" [icon]='item.icon'></fa-icon>
-        {{item.text | translate}}
-    </button>
+
+    <ng-container *ngFor="let item of menuList">
+        <button mat-menu-item *ngIf="opHasPerm(item.perm)" (click)=clickMenu(item)>
+            <fa-icon *ngIf="item.icon" [icon]='item.icon'></fa-icon>
+            {{item.text | translate}}
+        </button>
+    </ng-container>
 </mat-menu>

@@ -29,7 +29,7 @@ export class DataSendService {
             tap(
                 response => {
                     // TODO: Message, Notify, Etc
-                    console.log('New Model added. Response :\n', response);
+                    console.log('New Model added. Response ::\n', response);
                 },
                 error => console.error('createModel has returned an Error:\n', error)
             )
@@ -56,7 +56,7 @@ export class DataSendService {
             tap(
                 response => {
                     // TODO: Message, Notify, Etc
-                    console.log('Update model. Response :\n', response);
+                    console.log('Update model. Response ::\n', response);
                 },
                 error => console.error('updateModel has returned an Error:\n', error)
             )
