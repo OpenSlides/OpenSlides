@@ -29,4 +29,4 @@ export class Mediafile extends ProjectableBaseModel {
     }
 }
 
-ProjectableBaseModel.registerCollectionElement('amediafiles/mediafile', Mediafile);
+ProjectableBaseModel.registerCollectionElement('mediafiles/mediafile', Mediafile);

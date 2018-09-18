@@ -39,6 +39,25 @@ body {
     margin-right: auto;
 }
 
+.os-listview-table {
+    width: 100%;
+
+    /** hide mat header row */
+    .mat-header-row {
+        display: none;
+    }
+
+    /** size of the mat row  */
+    mat-row {
+        height: 60px;
+    }
+
+    mat-row:hover {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.025);
+    }
+}
+
 .card-plus-distance {
     margin-top: 40px;
 }

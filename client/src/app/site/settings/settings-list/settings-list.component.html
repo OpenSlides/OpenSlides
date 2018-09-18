@@ -1,20 +1,19 @@
-<os-head-bar appName="Settings">
-</os-head-bar>
+<os-head-bar appName="Settings"></os-head-bar>
 
-<mat-card class="os-card">
-    <div *osPerms="'core.can_manage_config'" class="app-content">
 
-        <mat-accordion>
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Title
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
+<mat-table class='os-listview-table on-transition-fade' [dataSource]="dataSource" matSort>
+    <!-- name column -->
+    <ng-container matColumnDef="key">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Key </mat-header-cell>
+        <mat-cell *matCellDef="let config"> {{config.key}} </mat-cell>
+    </ng-container>
 
-                <p> CONTENT </p>
-            </mat-expansion-panel>
-        </mat-accordion>
+    <!-- prefix column -->
+    <ng-container matColumnDef="value">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Value </mat-header-cell>
+        <mat-cell *matCellDef="let config"> {{config.value}}</mat-cell>
+    </ng-container>
 
-    </div>
-</mat-card>
+    <mat-header-row *matHeaderRowDef="['key', 'value']"></mat-header-row>
+    <mat-row (click)='selectConfig(row)' *matRowDef="let row; columns: ['key', 'value']"></mat-row>
+</mat-table>

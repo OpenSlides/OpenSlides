@@ -1,4 +1,5 @@
-<os-head-bar appName="Motions" plusButton=true (plusButtonClicked)=onPlusButton() [menuList]=motionMenuList (ellipsisMenuItem)=onEllipsisItem($event)>
+<os-head-bar appName="Motions" plusButton=true (plusButtonClicked)=onPlusButton() [menuList]=motionMenuList
+    (ellipsisMenuItem)=onEllipsisItem($event)>
 </os-head-bar>
 
 <div class='custom-table-header on-transition-fade'>
@@ -10,7 +11,7 @@
     </button>
 </div>
 
-<mat-table class='on-transition-fade' [dataSource]="dataSource" matSort>
+<mat-table class='os-listview-table on-transition-fade' [dataSource]="dataSource" matSort>
     <!-- identifier column -->
     <ng-container matColumnDef="identifier">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Identifier </mat-header-cell>

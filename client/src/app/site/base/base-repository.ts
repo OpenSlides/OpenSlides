@@ -1,9 +1,9 @@
-import { OpenSlidesComponent } from '../openslides.component';
+import { OpenSlidesComponent } from '../../openslides.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BaseViewModel } from './base-view-model';
-import { BaseModel, ModelConstructor } from '../shared/models/base/base-model';
-import { CollectionStringModelMapperService } from '../core/services/collectionStringModelMapper.service';
-import { DataStoreService } from '../core/services/data-store.service';
+import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
+import { CollectionStringModelMapperService } from '../../core/services/collectionStringModelMapper.service';
+import { DataStoreService } from '../../core/services/data-store.service';
 
 export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel> extends OpenSlidesComponent {
     /**
@@ -30,7 +30,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     public constructor(
         protected DS: DataStoreService,
         protected baseModelCtor: ModelConstructor<M>,
-        protected depsModelCtors: ModelConstructor<BaseModel>[]
+        protected depsModelCtors?: ModelConstructor<BaseModel>[]
     ) {
         super();
 
@@ -47,7 +47,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
                 // Add new and updated motions to the viewModelStore
                 this.viewModelStore[model.id] = this.createViewModel(model as M);
                 this.updateAllObservables(model.id);
-            } else {
+            } else if (this.depsModelCtors) {
                 const dependencyChanged: boolean = this.depsModelCtors.some(ctor => {
                     return model instanceof ctor;
                 });
@@ -92,6 +92,13 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      */
     public abstract create(update: M, viewModel: V): Observable<M>;
 
+    /**
+     * Creates a view model out of a base model.
+     *
+     * Should read all necessary objects from the datastore
+     * that the viewmodel needs
+     * @param model
+     */
     protected abstract createViewModel(model: M): V;
 
     /**

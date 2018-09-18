@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseComponent } from '../../../base.component';
 import { TranslateService } from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
-import { Assignment } from '../../../shared/models/assignments/assignment';
+import { ViewAssignment } from '../models/view-assignment';
+import { ListViewBaseComponent } from '../../base/list-view-base';
+import { AssignmentRepositoryService } from '../services/assignment-repository.service';
 
 /**
  * Listview for the assignments
  *
- * TODO: not yet implemented
  */
 @Component({
     selector: 'os-assignment-list',
     templateUrl: './assignment-list.component.html',
     styleUrls: ['./assignment-list.component.css']
 })
-export class AssignmentListComponent extends BaseComponent implements OnInit {
+export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignment> implements OnInit {
     /**
      * Define the content of the ellipsis menu.
      * Give it to the HeadBar to display them.
@@ -29,11 +29,25 @@ export class AssignmentListComponent extends BaseComponent implements OnInit {
 
     /**
      * Constructor.
+     *
+     * @param repo the repository
      * @param titleService
      * @param translate
      */
-    public constructor(titleService: Title, protected translate: TranslateService) {
+    public constructor(private repo: AssignmentRepositoryService, titleService: Title, translate: TranslateService) {
         super(titleService, translate);
+    }
+
+    /**
+     * Init function.
+     * Sets the title, inits the table and calls the repo.
+     */
+    public ngOnInit(): void {
+        super.setTitle('Assignments');
+        this.initTable();
+        this.repo.getViewModelListObservable().subscribe(newAssignments => {
+            this.dataSource.data = newAssignments;
+        });
     }
 
     /**
@@ -44,13 +58,11 @@ export class AssignmentListComponent extends BaseComponent implements OnInit {
     }
 
     /**
-     * Init function. Sets the title.
+     * Select an row in the table
+     * @param assignment
      */
-    public ngOnInit(): void {
-        super.setTitle('Assignments');
-
-        // tslint:disable-next-line
-        const a: Assignment = new Assignment(); // Needed, that the Assignment.ts is loaded. Can be removed, if something else creates/uses assignments.
+    public selectAssignment(assignment: ViewAssignment): void {
+        console.log('select assignment list: ', assignment);
     }
 
     /**
@@ -59,16 +71,5 @@ export class AssignmentListComponent extends BaseComponent implements OnInit {
      */
     public downloadAssignmentButton(): void {
         console.log('Hello World');
-    }
-
-    /**
-     * handler function for clicking on items in the ellipsis menu.
-     *
-     * @param event clicked entry from ellipsis menu
-     */
-    public onEllipsisItem(event: any): void {
-        if (event.action) {
-            this[event.action]();
-        }
     }
 }

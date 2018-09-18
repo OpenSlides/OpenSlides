@@ -1,14 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { MatTable, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseComponent } from '../../../../base.component';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
 import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
+import { ListViewBaseComponent } from '../../../base/list-view-base';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -18,29 +17,7 @@ import { WorkflowState } from '../../../../shared/models/motions/workflow-state'
     templateUrl: './motion-list.component.html',
     styleUrls: ['./motion-list.component.scss']
 })
-export class MotionListComponent extends BaseComponent implements OnInit {
-    /**
-     * Will be processed by the mat-table
-     *
-     * Will represent the object that comes from the repository
-     */
-    public dataSource: MatTableDataSource<ViewMotion>;
-
-    /**
-     * The table itself.
-     */
-    @ViewChild(MatTable) public table: MatTable<ViewMotion>;
-
-    /**
-     * Pagination. Might be turned off to all motions at once.
-     */
-    @ViewChild(MatPaginator) public paginator: MatPaginator;
-
-    /**
-     * Sort the Table
-     */
-    @ViewChild(MatSort) public sort: MatSort;
-
+export class MotionListComponent extends ListViewBaseComponent<ViewMotion> implements OnInit {
     /**
      * Use for minimal width
      */
@@ -78,8 +55,8 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      * @param repo Motion Repository
      */
     public constructor(
-        protected titleService: Title,
-        protected translate: TranslateService,
+        titleService: Title,
+        translate: TranslateService,
         private router: Router,
         private route: ActivatedRoute,
         private repo: MotionRepositoryService
@@ -88,15 +65,13 @@ export class MotionListComponent extends BaseComponent implements OnInit {
     }
 
     /**
-     * Init function
+     * Init function.
+     *
+     * Sets the title, inits the table and calls the repository
      */
     public ngOnInit(): void {
         super.setTitle('Motions');
-
-        this.dataSource = new MatTableDataSource();
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-
+        this.initTable();
         this.repo.getViewModelListObservable().subscribe(newMotions => {
             this.dataSource.data = newMotions;
         });
@@ -162,16 +137,5 @@ export class MotionListComponent extends BaseComponent implements OnInit {
      */
     public downloadMotions(): void {
         console.log('Download Motions Button');
-    }
-
-    /**
-     * handler function for clicking on items in the ellipsis menu.
-     *
-     * @param event clicked entry from ellipsis menu
-     */
-    public onEllipsisItem(event: any): void {
-        if (event.action) {
-            this[event.action]();
-        }
     }
 }

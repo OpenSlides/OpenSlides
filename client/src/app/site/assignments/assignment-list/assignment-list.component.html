@@ -1,21 +1,32 @@
-<!-- <mat-toolbar color='primary'>
-
-    <button class='generic-plus-button on-transition-fade' mat-fab>
-        <fa-icon icon='plus'></fa-icon>
-    </button>
-
-    <span class='app-name on-transition-fade' translate>Assignments</span>
-
-    <span class='spacer'></span>
-    <button class='on-transition-fade' mat-icon-button (click)='downloadAssignmentButton()'>
-        <fa-icon icon='download'></fa-icon>
-    </button>
-
-</mat-toolbar> -->
-
-<os-head-bar appName="Assignments" plusButton=true [menuList]=assignmentMenu (plusButtonClicked)=onPlusButton() (ellipsisMenuItem)=onEllipsisItem($event)>
+<os-head-bar appName="Assignments" plusButton=true [menuList]=assignmentMenu (plusButtonClicked)=onPlusButton()
+    (ellipsisMenuItem)=onEllipsisItem($event)>
 </os-head-bar>
 
-<mat-card class="os-card card-plus-distance">
-    assignment-list works!
-</mat-card>
+<mat-table class='os-listview-table on-transition-fade' [dataSource]="dataSource" matSort>
+    <!-- name column -->
+    <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Title </mat-header-cell>
+        <mat-cell *matCellDef="let assignment"> {{assignment.getTitle()}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="phase">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Phase </mat-header-cell>
+        <mat-cell *matCellDef="let assignment">
+            <mat-chip-list>
+                <mat-chip color="primary" selected>{{assignment.phase}} </mat-chip>
+            </mat-chip-list>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="candidates">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Candidates </mat-header-cell>
+        <mat-cell *matCellDef="let assignment">
+            <mat-chip-list>
+                <mat-chip color="accent" selected>{{assignment.candidateAmount}}</mat-chip>
+            </mat-chip-list>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="['title', 'phase', 'candidates']"></mat-header-row>
+    <mat-row (click)='selectAssignment(row)' *matRowDef="let row; columns: ['title', 'phase', 'candidates']"></mat-row>
+</mat-table>
+
+<mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
