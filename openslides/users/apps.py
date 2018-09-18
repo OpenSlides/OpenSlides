@@ -13,16 +13,13 @@ class UsersAppConfig(AppConfig):
 
     def ready(self):
         # Import all required stuff.
-        from ..core.config import config
         from ..core.signals import post_permission_creation, permission_change
         from ..utils.rest_api import router
-        from .config_variables import get_config_variables
         from .projector import get_projector_elements
         from .signals import create_builtin_groups_and_admin, get_permission_change_data
         from .views import GroupViewSet, PersonalNoteViewSet, UserViewSet
 
-        # Define config variables and projector elements.
-        config.update_config_variables(get_config_variables())
+        # Define projector elements.
         register_projector_elements(get_projector_elements())
 
         # Connect signals.
@@ -41,6 +38,10 @@ class UsersAppConfig(AppConfig):
         router.register(self.get_model('User').get_collection_string(), UserViewSet)
         router.register(self.get_model('Group').get_collection_string(), GroupViewSet)
         router.register(self.get_model('PersonalNote').get_collection_string(), PersonalNoteViewSet)
+
+    def get_config_variables(self):
+        from .config_variables import get_config_variables
+        return get_config_variables()
 
     def get_startup_elements(self):
         """

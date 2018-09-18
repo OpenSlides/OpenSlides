@@ -10,6 +10,7 @@ from typing import (
 )
 
 from asgiref.sync import async_to_sync
+from django.apps import apps
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import ugettext as _
 from mypy_extensions import TypedDict
@@ -169,6 +170,17 @@ class ConfigHandler:
         # Call on_change callback.
         if config_variable.on_change:
             config_variable.on_change()
+
+    def collect_config_variables_from_apps(self) -> None:
+        for app in apps.get_app_configs():
+            try:
+                # Each app can deliver config variables when implementing the
+                # get_config_variables method.
+                get_config_variables = app.get_config_variables
+            except AttributeError:
+                # The app doesn't have this method. Continue to next app.
+                continue
+            self.update_config_variables(get_config_variables())
 
     def update_config_variables(self, items: Iterable['ConfigVariable']) -> None:
         """

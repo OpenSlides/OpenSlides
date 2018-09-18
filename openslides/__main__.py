@@ -9,6 +9,7 @@ from django.core.management import call_command, execute_from_command_line
 
 import openslides
 from openslides.utils.arguments import arguments
+from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.main import (
     ExceptionArgumentParser,
     UnknownCommand,
@@ -187,6 +188,8 @@ def start(args):
     """
     Starts OpenSlides: Runs migrations and runs runserver.
     """
+    raise OpenSlidesError('The start command does not work anymore. ' +
+                          'Please use `createsettings`, `migrate` and `runserver`.')
     settings_dir = args.settings_dir
     settings_filename = args.settings_filename
     local_installation = is_local_installation()

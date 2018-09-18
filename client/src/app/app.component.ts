@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { OperatorService } from './core/services/operator.service';
 import { LoginDataService } from './core/services/login-data.service';
 import { ConfigService } from './core/services/config.service';
+import { ConstantsService } from './core/services/constants.service';
 
 /**
  * Angular's global App Component
@@ -23,7 +24,8 @@ export class AppComponent {
         translate: TranslateService,
         operator: OperatorService,
         configService: ConfigService,
-        loginDataService: LoginDataService
+        loginDataService: LoginDataService,
+        constantsService: ConstantsService // Needs to be started, so it can register itself to the WebsocketService
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'fr']);

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { BaseComponent } from '../../../base.component';
+import { ConstantsService } from '../../../core/services/constants.service';
 
 /**
  * List view for the global settings
@@ -19,7 +20,11 @@ export class SettingsListComponent extends BaseComponent implements OnInit {
      * @param titleService
      * @param translate
      */
-    public constructor(titleService: Title, protected translate: TranslateService) {
+    public constructor(
+        titleService: Title,
+        protected translate: TranslateService,
+        private constantsService: ConstantsService
+    ) {
         super(titleService, translate);
     }
 
@@ -28,5 +33,9 @@ export class SettingsListComponent extends BaseComponent implements OnInit {
      */
     public ngOnInit(): void {
         super.setTitle('Settings');
+
+        this.constantsService.get('OpenSlidesConfigVariables').subscribe(data => {
+            console.log(data);
+        });
     }
 }
