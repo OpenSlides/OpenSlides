@@ -94,7 +94,7 @@
       <!-- Text -->
       <!-- Original view -->
       <div ng-if="mode == 'original'">
-        <div id="view-original-inline-editor" ng-bind-html="motion.getTextWithLineBreaks(null, line) | trusted"
+        <div id="view-original-inline-editor" ng-bind-html="motion.getTextWithLineBreaks(null, highlight) | trusted"
           class="motion-text motion-text-original line-numbers-{{ config('motions_default_line_numbering') }}"
           contenteditable="false"></div>
       </div>
@@ -130,19 +130,19 @@
 
       <!-- Changed View -->
       <div ng-if="mode == 'changed'">
-        <div ng-bind-html="motion.getTextByMode('changed', null, line) | trusted"
+        <div ng-bind-html="motion.getTextByMode('changed', null, highlight) | trusted"
           class="motion-text motion-text-changed line-numbers-{{ config('motions_default_line_numbering') }}"></div>
       </div>
 
       <!-- Agreed View -->
       <div ng-if="mode == 'agreed'">
-        <div ng-bind-html="motion.getTextByMode('agreed', null, line) | trusted"
+        <div ng-bind-html="motion.getTextByMode('agreed', null, highlight) | trusted"
           class="motion-text motion-text-changed line-numbers-{{ config('motions_default_line_numbering') }}"></div>
       </div>
 
       <!-- Modified agreed View -->
       <div ng-if="mode == 'modified_agreed'">
-        <div ng-bind-html="motion.getTextByMode('modified_agreed', null, line) | trusted"
+        <div ng-bind-html="motion.getTextByMode('modified_agreed', null, highlight) | trusted"
           class="motion-text motion-text-changed line-numbers-{{ config('motions_default_line_numbering') }}"></div>
       </div>
 

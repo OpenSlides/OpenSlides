@@ -19,6 +19,7 @@ angular.module('OpenSlidesApp.motions.projector', [
 
 .controller('SlideMotionCtrl', [
     '$scope',
+    '$timeout',
     'Config',
     'Motion',
     'MotionChangeRecommendation',
@@ -27,8 +28,8 @@ angular.module('OpenSlidesApp.motions.projector', [
     'Notify',
     'ProjectorID',
     'MotionPollDecimalPlaces',
-    function($scope, Config, Motion, MotionChangeRecommendation, ChangeRecommendationView, User,
-        Notify, ProjectorID, MotionPollDecimalPlaces) {
+    function($scope, $timeout, Config, Motion, MotionChangeRecommendation,
+        ChangeRecommendationView, User, Notify, ProjectorID, MotionPollDecimalPlaces) {
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
@@ -42,6 +43,10 @@ angular.module('OpenSlidesApp.motions.projector', [
             if (!line) {
                 return;
             }
+            $scope.highlight = line;
+            $timeout(function () {
+                $scope.highlight = 0;
+            }, 4000);
 
             var scrollTop = null;
             $('.line-number-' + line).each(function() {
