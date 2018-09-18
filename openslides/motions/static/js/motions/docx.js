@@ -185,7 +185,6 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
                 converter = Html2DocxConverter.createInstance();
                 params = _.clone(params || {}); // Clone this to avoid sideeffects.
                 _.defaults(params, {
-                    filename: gettextCatalog.getString('motions') + '.docx',
                     changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
                     include: {
                         text: true,
@@ -194,6 +193,7 @@ angular.module('OpenSlidesApp.motions.docx', ['OpenSlidesApp.core.docx'])
                     },
                     includeComments: {},
                 });
+                params.filename = gettextCatalog.getString('motions') + '.docx';
                 if (!_.includes(['original', 'changed', 'agreed'], params.changeRecommendationMode)) {
                     params.changeRecommendationMode = 'original';
                 }

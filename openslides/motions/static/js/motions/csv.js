@@ -39,7 +39,6 @@ angular.module('OpenSlidesApp.motions.csv', [])
                     params = {};
                 }
                 _.defaults(params, {
-                    filename: gettextCatalog.getString('motions') + '.csv',
                     changeRecommendationMode: Config.get('motions_recommendation_text_mode').value,
                     include: {
                         text: true,
@@ -51,6 +50,7 @@ angular.module('OpenSlidesApp.motions.csv', [])
                         recommendation: true,
                     },
                 });
+                params.filename = gettextCatalog.getString('motions') + '.csv';
                 if (!_.includes(['original', 'changed', 'agreed'], params.changeRecommendationMode)) {
                     params.changeRecommendationMode = 'original';
                 }
