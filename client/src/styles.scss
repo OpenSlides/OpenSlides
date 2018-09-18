@@ -26,11 +26,34 @@ body {
     z-index: 100;
 }
 
+.save-button {
+    // needs to be important or will be overwritten locally
+    background-color: rgb(77, 243, 86) !important;
+}
+
+.red-warning-text {
+    color: red;
+}
+
+.icon-text-distance {
+    margin-left: 5px;
+}
+
 .os-card {
     max-width: 90%;
     margin-top: 10px;
     margin-left: auto;
     margin-right: auto;
+}
+
+//custom table header for search button, filtering and more. Used in ListViews
+.custom-table-header {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    text-align: right;
+    background: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .os-listview-table {

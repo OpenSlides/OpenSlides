@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AuthService } from 'app/core/services/auth.service';
 import { OperatorService } from 'app/core/services/operator.service';
@@ -21,7 +22,8 @@ export class SiteComponent extends BaseComponent implements OnInit {
     /**
      * HTML element of the side panel
      */
-    @ViewChild('sideNav') public sideNav: MatSidenav;
+    @ViewChild('sideNav')
+    public sideNav: MatSidenav;
 
     /**
      * Get the username from the operator (should be known already)
@@ -37,6 +39,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * Constructor
      *
      * @param authService
+     * @param router
      * @param operator
      * @param vp
      * @param translate
@@ -44,6 +47,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
      */
     public constructor(
         private authService: AuthService,
+        private router: Router,
         public operator: OperatorService,
         public vp: ViewportService,
         public translate: TranslateService,
@@ -109,7 +113,11 @@ export class SiteComponent extends BaseComponent implements OnInit {
     }
 
     // TODO: Implement this
-    public editProfile(): void {}
+    public editProfile(): void {
+        if (this.operator.user) {
+            this.router.navigate([`./users/${this.operator.user.id}`]);
+        }
+    }
 
     // TODO: Implement this
     public changePassword(): void {}

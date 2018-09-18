@@ -15,7 +15,8 @@ import {
     MatSnackBarModule,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    MatTooltipModule
 } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material';
@@ -79,6 +80,7 @@ library.add(fas);
         MatDialogModule,
         MatSnackBarModule,
         MatChipsModule,
+        MatTooltipModule,
         FontAwesomeModule,
         TranslateModule.forChild(),
         RouterModule,
@@ -106,6 +108,7 @@ library.add(fas);
         MatDialogModule,
         MatSnackBarModule,
         MatChipsModule,
+        MatTooltipModule,
         NgxMatSelectSearchModule,
         FontAwesomeModule,
         TranslateModule,

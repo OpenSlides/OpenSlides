@@ -121,11 +121,11 @@ export class OperatorService extends OpenSlidesComponent {
 
     /**
      * Checks, if the operator has at least one of the given permissions.
-     * @param permissions The permissions to check, if at least one matches.
+     * @param checkPerms The permissions to check, if at least one matches.
      */
-    public hasPerms(...permissions: Permission[]): boolean {
-        return permissions.some(permisison => {
-            return this.permissions.includes(permisison);
+    public hasPerms(...checkPerms: Permission[]): boolean {
+        return checkPerms.some(permission => {
+            return this.permissions.includes(permission);
         });
     }
 

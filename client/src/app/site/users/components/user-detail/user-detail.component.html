@@ -1,0 +1,152 @@
+<mat-toolbar color='primary'>
+
+    <button *osPerms="'users.can_manage';or:ownPage" (click)='editUserButton()' [ngClass]="{'save-button': editUser}"
+        class='generic-mini-button on-transition-fade' mat-mini-fab>
+        <fa-icon *ngIf='!editUser' icon='pen'></fa-icon>
+        <fa-icon *ngIf='editUser' icon='check'></fa-icon>
+    </button>
+
+    <div class="on-transition-fade">
+        <div *ngIf='editUser'>
+            {{personalInfoForm.get('title').value}}
+            {{personalInfoForm.get('first_name').value}}
+            {{personalInfoForm.get('last_name').value}}
+        </div>
+
+        <div *ngIf='!editUser'>
+            {{user.fullName}}
+        </div>
+    </div>
+
+    <span class='spacer'></span>
+
+    <!-- Button on the right-->
+    <div *ngIf="editUser">
+        <button (click)='cancelEditMotionButton()' class='on-transition-fade' color="warn" mat-raised-button>
+            <span translate>Abort</span>
+            <fa-icon class="icon-text-distance" icon='times'></fa-icon>
+        </button>
+    </div>
+    <div *ngIf="!editUser">
+        <button class='on-transition-fade' mat-icon-button [matMenuTriggerFor]="userExtraMenu">
+            <fa-icon icon='ellipsis-v'></fa-icon>
+        </button>
+    </div>
+
+    <mat-menu #userExtraMenu="matMenu">
+        <button mat-menu-item class="red-warning-text" (click)='deleteUserButton()' translate>Delete User</button>
+    </mat-menu>
+
+</mat-toolbar>
+
+<mat-card class="os-card" *osPerms="'users.can_see_name'">
+    <form [ngClass]="{'mat-form-field-enabled': editUser}" [formGroup]='personalInfoForm' (ngSubmit)='saveUser()' *ngIf="user">
+        <!-- <h3 translate>Personal Data</h3> -->
+        <div *ngIf='isAllowed("seeName")'>
+            <!-- Title -->
+            <mat-form-field class='form30 distance force-min-with' *ngIf='user.title || editUser && isAllowed("manage")'>
+                <input type='text' matInput placeholder='{{"Title" | translate}}' formControlName='title' [value]='user.title'>
+            </mat-form-field>
+
+            <!-- First name -->
+            <mat-form-field class='form30 distance force-min-with' *ngIf='user.firstName || editUser && isAllowed("manage")'>
+                <input type='text' matInput placeholder='{{"First Name" | translate}}' formControlName='first_name'
+                    [value]='user.firstName'>
+            </mat-form-field>
+
+            <!-- Last name -->
+            <mat-form-field class='form30  force-min-with' *ngIf='user.lastName || editUser && isAllowed("manage")'>
+                <input type='text' matInput placeholder='{{"Last Name" | translate}}' formControlName='last_name'
+                    [value]='user.lastName'>
+            </mat-form-field>
+        </div>
+
+        <div *ngIf='isAllowed("seePersonal")'>
+            <!-- E-Mail -->
+            <mat-form-field class='form100' *ngIf="user.email || editUser">
+                <input type='email' matInput placeholder='{{"EMail" | translate}}' name="email" formControlName='email'
+                    [value]='user.email'>
+                <mat-error *ngIf="personalInfoForm.get('email').hasError('email')">
+                    Please enter a valid email address
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div>
+            <!-- Strcuture Level -->
+            <mat-form-field class='form70 distance' *ngIf='user.structureLevel || editUser && isAllowed("manage")'>
+                <input type='text' matInput placeholder='{{"Structure Level" | translate}}' formControlName='structure_level'
+                    [value]='user.structureLevel'>
+            </mat-form-field>
+
+            <!-- Partizipant Number -->
+            <mat-form-field class='form20 force-min-with' *ngIf='user.participantNumber || editUser && isAllowed("manage")'>
+                <input type='text' matInput placeholder='{{"Participant Number" | translate}}' formControlName='number'
+                    [value]='user.participantNumber'>
+            </mat-form-field>
+        </div>
+
+        <div>
+            <!-- Groups -->
+            <mat-form-field class='form100' *ngIf="user.groups && user.groups.length > 0 || editUser">
+                <mat-select placeholder='{{"Groups" | translate}}' formControlName='groups_id' multiple>
+                    <mat-option *ngFor="let group of groups" [value]="group.id">{{group}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div *ngIf='isAllowed("manage")'>
+            <!-- Initial Password -->
+            <mat-form-field class='form100'>
+                <input matInput placeholder='{{"Initial Password" | translate}}' formControlName='default_password'
+                    [value]='user.initialPassword'>
+                <mat-hint align="end">Generate</mat-hint>
+                <button type="button" mat-button matSuffix mat-icon-button [disabled]='!newUser' (click)='generatePassword()'>
+                    <fa-icon icon='magic'></fa-icon>
+                </button>
+            </mat-form-field>
+        </div>
+
+        <div *ngIf='isAllowed("seePersonal")'>
+            <!-- About me -->
+            <!-- TODO: Needs Rich Text Editor -->
+            <mat-form-field class='form100' *ngIf="user.about || editUser">
+                <textarea formControlName='about_me' matInput placeholder='{{"About Me" | translate}}' [value]='user.about'></textarea>
+            </mat-form-field>
+        </div>
+
+        <div *ngIf='isAllowed("seePersonal")'>
+            <!-- username -->
+            <mat-form-field class='form100' *ngIf="user.username || editUser">
+                <input type='text' matInput placeholder='{{"Username" | translate}}' formControlName='username' [value]='user.username'>
+            </mat-form-field>
+        </div>
+
+        <div *ngIf='isAllowed("seeExtra")'>
+            <!-- Comment -->
+            <mat-form-field class='form100' *ngIf="user.comment || editUser">
+                <input matInput placeholder='{{"Comment"| translate}}' formControlName='comment' [value]='user.comment'>
+                <mat-hint translate>Only for internal notes.</mat-hint>
+            </mat-form-field>
+        </div>
+
+        <div *ngIf='isAllowed("seeExtra")'>
+            <!-- Present? -->
+            <mat-checkbox formControlName='is_present' matTooltip='{{"Designates whether this user is in the room." | translate}} '
+                [value]='user.isPresent'>
+                <span translate>Is Present</span>
+            </mat-checkbox>
+            <!-- Active? -->
+            <mat-checkbox *osPerms="'users.can_see_extra_data'" formControlName='is_active' matTooltip='{{"Designates whether this user should be treated as active. Unselect this instead of deleting the account." | translate}}'
+                [value]='user.isActive'>
+                <span translate>Is Active</span>
+            </mat-checkbox>
+            <!-- Commitee? -->
+            <mat-checkbox formControlName='is_committee' matTooltip='{{"Designates whether this user should be treated as a committee." | translate}}'
+                [value]='user.isCommittee'>
+                <span translate>Is a committee</span>
+            </mat-checkbox>
+        </div>
+    </form>
+
+</mat-card>

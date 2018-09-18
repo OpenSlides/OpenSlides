@@ -66,7 +66,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * TODO: Remove the viewMotion and make it actually distignuishable from save()
      */
     public create(motion: Motion): Observable<any> {
-        return this.dataSend.saveModel(motion);
+        return this.dataSend.createModel(motion);
     }
 
     /**
@@ -81,7 +81,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     public update(update: Partial<Motion>, viewMotion: ViewMotion): Observable<any> {
         const motion = viewMotion.motion;
         motion.patchValues(update);
-        return this.dataSend.saveModel(motion);
+        return this.dataSend.updateModel(motion, 'patch');
     }
 
     /**

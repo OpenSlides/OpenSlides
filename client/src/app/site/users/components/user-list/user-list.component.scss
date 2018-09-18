@@ -1,0 +1,32 @@
+.groupsCell {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+
+    fa-icon {
+        font-size: 80%;
+    }
+}
+
+.os-listview-table {
+    .mat-column-name {
+        flex: 1 0 200px;
+    }
+
+    .mat-column-group {
+        flex: 2 0 60px;
+    }
+
+    .mat-column-presence {
+        flex: 0 0 60px;
+
+        fa-icon {
+            font-size: 100%;
+            margin-right: 5px;
+        }
+
+        div {
+            display: inherit;
+        }
+    }
+}

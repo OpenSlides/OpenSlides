@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
-import { ViewUser } from '../models/view-user';
-import { UserRepositoryService } from '../services/user-repository.service';
-import { ListViewBaseComponent } from '../../base/list-view-base';
+import { ViewUser } from '../../models/view-user';
+import { UserRepositoryService } from '../../services/user-repository.service';
+import { ListViewBaseComponent } from '../../../base/list-view-base';
+import { Router, ActivatedRoute } from '@angular/router';
 
 /**
  * Component for the user list view.
@@ -13,7 +14,7 @@ import { ListViewBaseComponent } from '../../base/list-view-base';
 @Component({
     selector: 'os-user-list',
     templateUrl: './user-list.component.html',
-    styleUrls: ['./user-list.component.css']
+    styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent extends ListViewBaseComponent<ViewUser> implements OnInit {
     /**
@@ -46,7 +47,9 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     public constructor(
         private repo: UserRepositoryService,
         protected titleService: Title,
-        protected translate: TranslateService
+        protected translate: TranslateService,
+        private router: Router,
+        private route: ActivatedRoute
     ) {
         super(titleService, translate);
     }
@@ -86,13 +89,13 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * @param row selected row
      */
     public selectUser(row: ViewUser): void {
-        console.log('clicked the row for user: ', row);
+        this.router.navigate([`./${row.id}`], { relativeTo: this.route });
     }
 
     /**
      * Handles the click on the plus button
      */
     public onPlusButton(): void {
-        console.log('new User');
+        this.router.navigate(['./new'], { relativeTo: this.route });
     }
 }

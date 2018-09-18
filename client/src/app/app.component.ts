@@ -15,7 +15,12 @@ import { ConstantsService } from './core/services/constants.service';
 })
 export class AppComponent {
     /**
-     * Initialises the translation unit.
+     * Master-component of all apps.
+     *
+     * Inits the translation service, the operator, the login data and the constants.
+     *
+     * Handles the altering of Array.toString()
+     *
      * @param autoupdateService
      * @param notifyService
      * @param translate
@@ -35,5 +40,36 @@ export class AppComponent {
         const browserLang = translate.getBrowserLang();
         // try to use the browser language if it is available. If not, uses english.
         translate.use(translate.getLangs().includes(browserLang) ? browserLang : 'en');
+        // change default JS functions
+        this.overloadArrayToString();
+    }
+
+    /**
+     * Function to alter the normal Array.toString - function
+     *
+     * Will add a whitespace after a comma and shorten the output to
+     * three strings.
+     *
+     * TODO: There might be a better place for overloading functions than app.component
+     * TODO: Overloading can be extended to more functions.
+     */
+    private overloadArrayToString(): void {
+        Array.prototype.toString = function(): string {
+            let string = '';
+            const iterations = Math.min(this.length, 3);
+
+            for (let i = 0; i <= iterations; i++) {
+                if (i < iterations) {
+                    string += this[i];
+                }
+
+                if (i < iterations - 1) {
+                    string += ', ';
+                } else if (i === iterations && this.length > iterations) {
+                    string += ', ...';
+                }
+            }
+            return string;
+        };
     }
 }

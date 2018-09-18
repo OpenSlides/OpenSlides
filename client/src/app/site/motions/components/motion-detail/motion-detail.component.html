@@ -23,8 +23,9 @@
 
     <!-- Button on the right-->
     <div *ngIf="editMotion">
-        <button (click)='cancelEditMotionButton()' class='on-transition-fade' mat-icon-button>
-            <fa-icon icon='times'></fa-icon>
+        <button (click)='cancelEditMotionButton()' class='on-transition-fade' color="warn" mat-raised-button>
+            <span translate>Abort</span>
+            <fa-icon class="icon-text-distance" icon='times'></fa-icon>
         </button>
     </div>
     <div *ngIf="!editMotion">
@@ -39,7 +40,7 @@
         <button mat-menu-item translate>Export As...</button>
         <button mat-menu-item translate>Project</button>
         <mat-divider></mat-divider>
-        <button mat-menu-item class='deleteMotionButton' (click)='deleteMotionButton()' translate>DeleteMotion</button>
+        <button mat-menu-item class='red-warning-text' (click)='deleteMotionButton()' translate>DeleteMotion</button>
     </mat-menu>
 </mat-toolbar>
 

@@ -40,7 +40,7 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         if (this.osInDataStore(viewCategory)) {
             return this.update(update, viewCategory);
         } else {
-            return this.dataSend.saveModel(viewCategory.category);
+            return this.dataSend.createModel(viewCategory.category);
         }
     }
 
@@ -52,7 +52,7 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
             updateCategory = new Category();
         }
         updateCategory.patchValues(update);
-        return this.dataSend.saveModel(updateCategory);
+        return this.dataSend.updateModel(updateCategory, 'put');
     }
 
     public delete(viewCategory: ViewCategory): Observable<any> {
