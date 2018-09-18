@@ -4,32 +4,14 @@ import { Router } from '@angular/router';
 import { BaseComponent } from 'app/base.component';
 import { AuthService } from 'app/core/services/auth.service';
 import { OperatorService } from 'app/core/services/operator.service';
-import { ErrorStateMatcher, MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
-import { FormControl, FormGroupDirective, NgForm, FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { OpenSlidesService } from '../../../../core/services/openslides.service';
 import { LoginDataService } from '../../../../core/services/login-data.service';
-
-/**
- * Custom error states. Might become part of the shared module later.
- */
-export class ParentErrorStateMatcher implements ErrorStateMatcher {
-    public isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-        const isSubmitted = !!(form && form.submitted);
-        const controlTouched = !!(control && (control.dirty || control.touched));
-        const controlInvalid = !!(control && control.invalid);
-        const parentInvalid = !!(
-            control &&
-            control.parent &&
-            control.parent.invalid &&
-            (control.parent.dirty || control.parent.touched)
-        );
-
-        return isSubmitted || (controlTouched && (controlInvalid || parentInvalid));
-    }
-}
+import { ParentErrorStateMatcher } from '../../../../shared/parent-error-state-matcher';
 
 /**
  * Login mask component.

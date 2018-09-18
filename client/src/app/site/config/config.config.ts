@@ -1,7 +1,7 @@
 import { AppConfig } from '../base/app-config';
 import { Config } from '../../shared/models/core/config';
 
-export const SettingsAppConfig: AppConfig = {
+export const ConfigAppConfig: AppConfig = {
     name: 'settings',
     models: [{ collectionString: 'core/config', model: Config }],
     mainMenuEntries: [

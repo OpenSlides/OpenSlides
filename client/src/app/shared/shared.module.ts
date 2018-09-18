@@ -16,7 +16,10 @@ import {
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    DateAdapter
 } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material';
@@ -46,6 +49,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { LegalNoticeContentComponent } from './components/legal-notice-content/legal-notice-content.component';
 import { PrivacyPolicyContentComponent } from './components/privacy-policy-content/privacy-policy-content.component';
 import { SearchValueSelectorComponent } from './components/search-value-selector/search-value-selector.component';
+import { OpenSlidesDateAdapter } from './date-adapter';
 
 library.add(fas);
 
@@ -69,6 +73,8 @@ library.add(fas);
         MatButtonModule,
         MatCheckboxModule,
         MatToolbarModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
         MatCardModule,
         MatInputModule,
         MatTableModule,
@@ -98,6 +104,7 @@ library.add(fas);
         MatCheckboxModule,
         MatToolbarModule,
         MatCardModule,
+        MatDatepickerModule,
         MatInputModule,
         MatTableModule,
         MatSortModule,
@@ -130,6 +137,7 @@ library.add(fas);
         LegalNoticeContentComponent,
         PrivacyPolicyContentComponent,
         SearchValueSelectorComponent
-    ]
+    ],
+    providers: [{ provide: DateAdapter, useClass: OpenSlidesDateAdapter }]
 })
 export class SharedModule {}

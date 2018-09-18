@@ -1,10 +1,10 @@
-import { SettingsModule } from './settings.module';
+import { ConfigModule } from './config.module';
 
 describe('SettingsModule', () => {
-    let settingsModule: SettingsModule;
+    let settingsModule: ConfigModule;
 
     beforeEach(() => {
-        settingsModule = new SettingsModule();
+        settingsModule = new ConfigModule();
     });
 
     it('should create an instance', () => {

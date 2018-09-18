@@ -1,0 +1,26 @@
+<os-head-bar appName="Settings"></os-head-bar>
+
+<mat-accordion>
+    <ng-container *ngFor="let group of this.configs">
+        <mat-expansion-panel displayMode="flat">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{ group.name | translate }}
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div *ngFor="let subgroup of group.subgroups">
+                <mat-card>
+                    <mat-card-title>{{ subgroup.name | translate }}</mat-card-title>
+                    <mat-card-content>
+                        <div *ngFor="let item of subgroup.items">
+                            <os-config-field [item]="item.config"></os-config-field>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div *ngFor="let item of group.items">
+                <os-config-field [item]="item.config"></os-config-field>
+            </div>
+        </mat-expansion-panel>
+    </ng-container>
+</mat-accordion>
