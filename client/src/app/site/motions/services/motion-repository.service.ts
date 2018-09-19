@@ -66,7 +66,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * TODO: Remove the viewMotion and make it actually distignuishable from save()
      */
     public create(update: any, viewMotion?: ViewMotion): Observable<any> {
-        return this.save(update, viewMotion);
+        return this.update(update, viewMotion);
     }
 
     /**
@@ -78,7 +78,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param update the form data containing the update values
      * @param viewMotion The View Motion. If not present, a new motion will be created
      */
-    public save(update: any, viewMotion?: ViewMotion): Observable<any> {
+    public update(update: any, viewMotion?: ViewMotion): Observable<any> {
         let updateMotion: Motion;
         if (viewMotion) {
             // implies that an existing motion was updated
@@ -109,6 +109,13 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
             });
         }
         update.supporters_id = supporterIds;
+        // category_id: Category -> category_id: number;
+        const category = update.category_id as Category;
+        update.category_id = undefined;
+        if (category) {
+            update.category_id = category.id;
+        }
+        // Update the Motion
         updateMotion.patchValues(update);
         return this.dataSend.saveModel(updateMotion);
     }

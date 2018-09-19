@@ -75,7 +75,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      * @param update the update that should be created
      * @param viewModel the view model that the update is based on
      */
-    public abstract save(update: M, viewModel: V): Observable<M>;
+    public abstract update(update: M, viewModel: V): Observable<M>;
 
     /**
      * Deletes a given Model

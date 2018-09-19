@@ -49,7 +49,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
      *
      * TODO: used over not-yet-existing detail view
      */
-    public save(item: Item, viewUser: ViewItem): Observable<Item> {
+    public update(item: Item, viewUser: ViewItem): Observable<Item> {
         return null;
     }
 

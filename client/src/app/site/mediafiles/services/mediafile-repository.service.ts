@@ -27,7 +27,7 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
      *
      * TODO: used over not-yet-existing detail view
      */
-    public save(file: Mediafile, viewFile: ViewMediafile): Observable<Mediafile> {
+    public update(file: Mediafile, viewFile: ViewMediafile): Observable<Mediafile> {
         return null;
     }
 

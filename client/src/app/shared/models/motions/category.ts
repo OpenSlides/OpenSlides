@@ -16,6 +16,13 @@ export class Category extends BaseModel {
     public getTitle(): string {
         return this.prefix + ' - ' + this.name;
     }
+
+    /**
+     * update the values of the motion with new values
+     */
+    public patchValues(update: object): void {
+        Object.assign(this, update);
+    }
 }
 
 BaseModel.registerCollectionElement('motions/category', Category);

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ReplaySubject, Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { MatSelect } from '@angular/material';
 import { takeUntil } from 'rxjs/operators';
 import { Displayable } from '../../models/base/displayable';
@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
  * ```html
  * <os-search-value-selector
  *   ngDefaultControl
- *   multiple="true"
+ *   [multiple]="true"
  *   placeholder="Placeholder"
  *   [InputListValues]="myListValues",
  *   [form]="myform_name",
@@ -50,7 +50,7 @@ export class SearchValueSelectorComponent implements OnInit {
     /**
      * List of the filtered content, when entering somithing in the search bar
      */
-    public filteredItems: ReplaySubject<Displayable[]> = new ReplaySubject<Displayable[]>(1);
+    public filteredItems: BehaviorSubject<Displayable[]>;
 
     /**
      * Decide if this should be a single or multi-select-field
@@ -62,7 +62,7 @@ export class SearchValueSelectorComponent implements OnInit {
      * The Input List Values
      */
     @Input()
-    public InputListValues: Displayable[];
+    public InputListValues: BehaviorSubject<Displayable[]>;
 
     /**
      * Placeholder of the List
@@ -111,13 +111,11 @@ export class SearchValueSelectorComponent implements OnInit {
      * onInit with filter ans subscription on filter
      */
     public ngOnInit(): void {
-        // load the initial item list
-        this.filteredItems.next(this.InputListValues.slice());
+        this.filteredItems = this.InputListValues;
         // listen to value changes
         this.filterControl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
             this.filterItems();
         });
-        // this.multiSelect.stateChanges.subscribe(fn => console.log('ive changed'));
     }
 
     /**
@@ -130,14 +128,14 @@ export class SearchValueSelectorComponent implements OnInit {
         // get the search keyword
         let search = this.filterControl.value;
         if (!search) {
-            this.filteredItems.next(this.InputListValues.slice());
+            this.filteredItems.next(this.InputListValues.getValue());
             return;
         } else {
             search = search.toLowerCase();
         }
         // filter the values
         this.filteredItems.next(
-            this.InputListValues.filter(
+            this.InputListValues.getValue().filter(
                 selectedItem =>
                     selectedItem
                         .toString()

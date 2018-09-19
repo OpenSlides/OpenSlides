@@ -27,7 +27,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
      *
      * TODO: used over not-yet-existing detail view
      */
-    public save(config: Config, viewConfig: ViewConfig): Observable<Config> {
+    public update(config: Config, viewConfig: ViewConfig): Observable<Config> {
         return null;
     }
 
