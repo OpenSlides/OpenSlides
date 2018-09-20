@@ -18,5 +18,3 @@ export class MotionCommentSection extends BaseModel<MotionCommentSection> {
         return this.name;
     }
 }
-
-BaseModel.registerCollectionElement('motions/motion-comment-section', MotionCommentSection);

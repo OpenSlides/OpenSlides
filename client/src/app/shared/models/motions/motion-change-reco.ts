@@ -23,5 +23,3 @@ export class MotionChangeReco extends BaseModel<MotionChangeReco> {
         return 'Changerecommendation';
     }
 }
-
-BaseModel.registerCollectionElement('motions/motion-change-recommendation', MotionChangeReco);

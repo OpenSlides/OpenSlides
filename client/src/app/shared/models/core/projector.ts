@@ -23,5 +23,3 @@ export class Projector extends BaseModel<Projector> {
         return this.name;
     }
 }
-
-BaseModel.registerCollectionElement('core/projector', Projector);

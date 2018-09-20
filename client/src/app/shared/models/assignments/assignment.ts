@@ -56,5 +56,3 @@ export class Assignment extends AgendaBaseModel {
         return 'TODO';
     }
 }
-
-AgendaBaseModel.registerCollectionElement('assignments/assignment', Assignment);

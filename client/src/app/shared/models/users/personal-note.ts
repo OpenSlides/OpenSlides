@@ -17,5 +17,3 @@ export class PersonalNote extends BaseModel<PersonalNote> {
         return 'Personal note';
     }
 }
-
-BaseModel.registerCollectionElement('users/personal-note', PersonalNote);

@@ -17,5 +17,3 @@ export class Config extends BaseModel {
         return this.key;
     }
 }
-
-BaseModel.registerCollectionElement('core/config', Config);

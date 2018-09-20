@@ -45,35 +45,13 @@
 
         <!-- navigation -->
         <mat-nav-list class='main-nav'>
-            <a [@navItemAnim] *osPerms="'core.can_see_frontpage'" mat-list-item routerLink='/' routerLinkActive='active' [routerLinkActiveOptions]="{exact: true}"
-                (click)='toggleSideNav()'>
-                <fa-icon icon='home'></fa-icon>
-                <span translate>Home</span>
-            </a>
-            <a [@navItemAnim] *osPerms="'agenda.can_see'" mat-list-item routerLink='/agenda' routerLinkActive='active' (click)='toggleSideNav()'>
-                <fa-icon icon='calendar'></fa-icon>
-                <span translate>Agenda</span>
-            </a>
-            <a [@navItemAnim] *osPerms="'motions.can_see'" mat-list-item routerLink='/motions' routerLinkActive='active' (click)='toggleSideNav()'>
-                <fa-icon icon='file-alt'></fa-icon>
-                <span translate>Motions</span>
-            </a>
-            <a [@navItemAnim] *osPerms="'assignments.can_see'" mat-list-item routerLink='/assignments' routerLinkActive='active' (click)='vp.isMobile ? sideNav.toggle() : null'>
-                <fa-icon icon='chart-pie'></fa-icon>
-                <span translate>Assignments</span>
-            </a>
-            <a [@navItemAnim] *osPerms="'users.can_see_name'" mat-list-item routerLink='/users' routerLinkActive='active' (click)='toggleSideNav()'>
-                <fa-icon icon='user'></fa-icon>
-                <span translate>Participants</span>
-            </a>
-            <a [@navItemAnim] *osPerms="'mediafiles.can_see'" mat-list-item routerLink='/mediafiles' routerLinkActive='active' (click)='toggleSideNav()'>
-                <fa-icon icon='paperclip'></fa-icon>
-                <span translate>Files</span>
-            </a>
-            <a [@navItemAnim] *osPerms="'core.can_manage_config'" mat-list-item routerLink='/settings' routerLinkActive='active' (click)='toggleSideNav()'>
-                <fa-icon icon='cog'></fa-icon>
-                <span translate>Settings</span>
-            </a>
+            <span *ngFor="let entry of mainMenuService.entries">
+                <a [@navItemAnim]  *osPerms="entry.permission" mat-list-item (click)='toggleSideNav()'
+                    [routerLink]='entry.route' routerLinkActive='active' [routerLinkActiveOptions]="{exact: true}">
+                    <fa-icon [icon]='entry.icon'></fa-icon>
+                    {{ entry.displayName | translate}}
+                </a>
+            </span>
             <mat-divider></mat-divider>
             <a [@navItemAnim] *osPerms="'core.can_see_projector'" mat-list-item routerLink='/projector' routerLinkActive='active' (click)='toggleSideNav()'>
                 <fa-icon icon='video'></fa-icon>

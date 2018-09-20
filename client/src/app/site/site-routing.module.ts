@@ -3,9 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { SiteComponent } from './site.component';
 
-import { StartComponent } from './start/start.component';
-import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
-import { LegalNoticeComponent } from './legal-notice/legal-notice.component';
 import { AuthGuard } from '../core/services/auth-guard.service';
 
 /**
@@ -20,15 +17,7 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                component: StartComponent
-            },
-            {
-                path: 'legalnotice',
-                component: LegalNoticeComponent
-            },
-            {
-                path: 'privacypolicy',
-                component: PrivacyPolicyComponent
+                loadChildren: './common/common.module#CommonModule'
             },
             {
                 path: 'agenda',

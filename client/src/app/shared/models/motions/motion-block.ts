@@ -21,5 +21,3 @@ export class MotionBlock extends AgendaBaseModel {
         return 'TODO';
     }
 }
-
-AgendaBaseModel.registerCollectionElement('motions/motion-block', MotionBlock);

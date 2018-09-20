@@ -1,6 +1,5 @@
 import { OpenSlidesComponent } from 'app/openslides.component';
 import { Deserializable } from './deserializable';
-import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 import { Displayable } from './displayable';
 import { Identifiable } from './identifiable';
 
@@ -14,15 +13,6 @@ export interface ModelConstructor<T extends BaseModel<T>> {
  */
 export abstract class BaseModel<T = object> extends OpenSlidesComponent
     implements Deserializable, Displayable, Identifiable {
-    /**
-     * Register the collection string to the type.
-     * @param collectionString
-     * @param type
-     */
-    public static registerCollectionElement(collectionString: string, type: any): void {
-        CollectionStringModelMapperService.registerCollectionElement(collectionString, type);
-    }
-
     /**
      * force children of BaseModel to have a collectionString.
      *
