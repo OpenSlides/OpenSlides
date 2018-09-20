@@ -27,7 +27,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
      *
      * TODO: used over not-yet-existing detail view
      */
-    public update(config: Config, viewConfig: ViewConfig): Observable<Config> {
+    public update(config: Partial<Config>, viewConfig: ViewConfig): Observable<Config> {
         return null;
     }
 
@@ -47,7 +47,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
      *
      * Function exists solely to correctly implement {@link BaseRepository}
      */
-    public create(config: Config, viewConfig: ViewConfig): Observable<Config> {
+    public create(config: Config): Observable<Config> {
         return null;
     }
 

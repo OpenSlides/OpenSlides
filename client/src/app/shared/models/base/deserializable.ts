@@ -13,5 +13,5 @@ export interface Deserializable {
      * should be used to assign JSON values to the object itself.
      * @param input
      */
-    deserialize(input: any): void;
+    deserialize(input: object): void;
 }

@@ -34,26 +34,17 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         return new ViewCategory(category);
     }
 
-    public create(update: object, viewCategory?: ViewCategory): Observable<any> {
-        const categories = this.DS.getAll(Category);
-        const categoryIds: number[] = [];
-        if (update instanceof Category) {
-            viewCategory = new ViewCategory(update);
-        }
-        if (update instanceof ViewCategory) {
-            viewCategory = update;
-        }
-        categories.forEach(category => {
-            categoryIds.push(category.id);
-        });
-        if (viewCategory.id in categoryIds) {
+    public create(update: Category, viewCategory?: ViewCategory): Observable<any> {
+        console.log('update: ', update);
+        console.log('viewCategory: ', viewCategory);
+        if (this.osInDataStore(viewCategory)) {
             return this.update(update, viewCategory);
         } else {
             return this.dataSend.saveModel(viewCategory.category);
         }
     }
 
-    public update(update: object, viewCategory?: ViewCategory): Observable<any> {
+    public update(update: Category, viewCategory?: ViewCategory): Observable<any> {
         let updateCategory: Category;
         if (viewCategory) {
             updateCategory = viewCategory.category;

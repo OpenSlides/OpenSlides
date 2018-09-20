@@ -28,7 +28,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
      *
      * TODO: used over not-yet-existing detail view
      */
-    public update(user: User, viewUser: ViewUser): Observable<User> {
+    public update(user: Partial<User>, viewUser: ViewUser): Observable<User> {
         return null;
     }
 
@@ -46,7 +46,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
      *
      * TODO: used over not-yet-existing detail view
      */
-    public create(user: User, viewFile: ViewUser): Observable<User> {
+    public create(user: User): Observable<User> {
         return null;
     }
 

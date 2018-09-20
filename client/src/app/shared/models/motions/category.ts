@@ -4,7 +4,7 @@ import { BaseModel } from '../base/base-model';
  * Representation of a motion category. Has the nested property "File"
  * @ignore
  */
-export class Category extends BaseModel {
+export class Category extends BaseModel<Category> {
     public id: number;
     public name: string;
     public prefix: string;
@@ -15,13 +15,6 @@ export class Category extends BaseModel {
 
     public getTitle(): string {
         return this.prefix + ' - ' + this.name;
-    }
-
-    /**
-     * update the values of the motion with new values
-     */
-    public patchValues(update: object): void {
-        Object.assign(this, update);
     }
 }
 

@@ -1,7 +1,7 @@
 import { BaseModel } from './base-model';
 import { Projectable } from './projectable';
 
-export abstract class ProjectableBaseModel extends BaseModel implements Projectable {
+export abstract class ProjectableBaseModel extends BaseModel<ProjectableBaseModel> implements Projectable {
     protected constructor(collectionString: string, input?: any) {
         super(collectionString, input);
     }

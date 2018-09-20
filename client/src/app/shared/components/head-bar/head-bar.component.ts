@@ -19,7 +19,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
  *   plusButton=true
  *   [menuList]=myMenu
  *   (plusButtonClicked)=onPlusButton()
- *   (ellipsisMenuItem)=onEllipsisItem($event)
+ *   (ellipsisMenuItem)=onEllipsisItem($event)>
  * </os-head-bar>
  * ```
  *

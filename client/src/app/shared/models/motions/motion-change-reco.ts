@@ -4,7 +4,7 @@ import { BaseModel } from '../base/base-model';
  * Representation of a motion change recommendation.
  * @ignore
  */
-export class MotionChangeReco extends BaseModel {
+export class MotionChangeReco extends BaseModel<MotionChangeReco> {
     public id: number;
     public motion_version_id: number;
     public rejected: boolean;

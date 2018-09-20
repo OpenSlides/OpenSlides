@@ -6,7 +6,6 @@ import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { BaseModel } from '../../../shared/models/base/base-model';
 import { BaseViewModel } from '../../base/base-view-model';
 import { TranslateService } from '@ngx-translate/core';
-
 /**
  * Motion class for the View
  *
@@ -58,8 +57,16 @@ export class ViewMotion extends BaseViewModel {
         return this._submitters;
     }
 
+    public get submitterIds(): number[] {
+        return this.motion ? this.motion.submitters_id : null;
+    }
+
     public get supporters(): User[] {
         return this._supporters;
+    }
+
+    public get supporterIds(): number[] {
+        return this.motion ? this.motion.supporters_id : null;
     }
 
     public get workflow(): Workflow {
@@ -101,6 +108,32 @@ export class ViewMotion extends BaseViewModel {
         return this.state && this.workflow ? this.state.getNextStates(this.workflow) : null;
     }
 
+    public set supporters(users: User[]) {
+        const userIDArr: number[] = [];
+        users.forEach(user => {
+            userIDArr.push(user.id);
+        });
+        this._supporters = users;
+        this._motion.supporters_id = userIDArr;
+    }
+
+    public set submitters(users: User[]) {
+        // For the newer backend with weight:
+        // const submitterArr: MotionSubmitter[] = []
+        // users.forEach(user => {
+        //      const motionSub = new MotionSubmitter();
+        //     submitterArr.push(motionSub);
+        // });
+        // this._motion.submitters = submitterArr;
+        this._submitters = users;
+        const submitterIDArr: number[] = [];
+        // for the older backend:
+        users.forEach(user => {
+            submitterIDArr.push(user.id);
+        });
+        this._motion.submitters_id = submitterIDArr;
+    }
+
     public constructor(
         motion?: Motion,
         category?: Category,
@@ -129,16 +162,30 @@ export class ViewMotion extends BaseViewModel {
      */
     public updateValues(update: BaseModel): void {
         if (update instanceof Workflow) {
-            if (this.motion && update.id === this.motion.workflow_id) {
-                this._workflow = update as Workflow;
-            }
+            this.updateWorkflow(update as Workflow);
         } else if (update instanceof Category) {
-            if (this.motion && update.id === this.motion.category_id) {
-                this._category = update as Category;
-            }
+            this.updateCategory(update as Category);
         }
         // TODO: There is no way (yet) to add Submitters to a motion
         //       Thus, this feature could not be tested
+    }
+
+    /**
+     * Updates the Category
+     */
+    public updateCategory(update: Category): void {
+        if (this.motion && update.id === this.motion.category_id) {
+            this._category = update as Category;
+        }
+    }
+
+    /**
+     * updates the Workflow
+     */
+    public updateWorkflow(update: Workflow): void {
+        if (this.motion && update.id === this.motion.workflow_id) {
+            this._workflow = update as Workflow;
+        }
     }
 
     public hasSupporters(): boolean {

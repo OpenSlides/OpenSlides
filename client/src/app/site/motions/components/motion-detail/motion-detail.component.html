@@ -148,7 +148,8 @@
         <div *ngIf="motion && motion.submitters || editMotion">
             <div *ngIf="editMotion && newMotion">
                 <div *ngIf="motion && editMotion">
-                    <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('submitters')" [multiple]="true" listname="Submitter" [InputListValues]="this.submitterObserver"></os-search-value-selector>
+                    <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('submitters_id')"
+                        [multiple]="true" listname="Submitter" [InputListValues]="this.submitterObserver"></os-search-value-selector>
                 </div>
             </div>
             <div *ngIf="!editMotion || !newMotion">
@@ -164,7 +165,8 @@
             <!-- print all motion supporters -->
             <div *ngIf="editMotion">
                 <div *ngIf="motion && editMotion">
-                    <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('supporters_id')" [multiple]="true" listname="Supporter" [InputListValues]="this.supporterObserver"></os-search-value-selector>
+                    <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('supporters_id')"
+                        [multiple]="true" listname="Supporter" [InputListValues]="this.supporterObserver"></os-search-value-selector>
                 </div>
             </div>
             <div *ngIf="!editMotion && motion.hasSupporters()">
@@ -222,7 +224,8 @@
                 {{motion.category}}
             </div>
             <div *ngIf="editMotion">
-                <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('category_id')" [multiple]="false" listname="Category" [InputListValues]="this.categoryObserver"></os-search-value-selector>
+                <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('category_id')"
+                    [multiple]="false" listname="Category" [InputListValues]="this.categoryObserver"></os-search-value-selector>
             </div>
         </div>
 

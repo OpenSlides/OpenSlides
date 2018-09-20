@@ -1,5 +1,4 @@
 import { BaseViewModel } from '../../base/base-view-model';
-import { BaseModel } from '../../../shared/models/base/base-model';
 import { Config } from '../../../shared/models/core/config';
 
 export class ViewConfig extends BaseViewModel {
@@ -30,9 +29,7 @@ export class ViewConfig extends BaseViewModel {
         return this.key;
     }
 
-    public updateValues(update: BaseModel): void {
-        if (update instanceof Config && this.id === update.id) {
-            this._config = update;
-        }
+    public updateValues(update: Config): void {
+        this._config = update;
     }
 }

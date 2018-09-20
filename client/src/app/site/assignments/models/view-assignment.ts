@@ -10,6 +10,10 @@ export class ViewAssignment extends BaseViewModel {
     private _agendaItem: Item;
     private _tags: Tag[];
 
+    public get id(): number {
+        return this._assignment ? this._assignment.id : null;
+    }
+
     public get assignment(): Assignment {
         return this._assignment;
     }

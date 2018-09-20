@@ -1,11 +1,14 @@
 import { BaseViewModel } from '../../base/base-view-model';
 import { Mediafile } from '../../../shared/models/mediafiles/mediafile';
 import { User } from '../../../shared/models/users/user';
-import { BaseModel } from '../../../shared/models/base/base-model';
 
 export class ViewMediafile extends BaseViewModel {
     private _mediafile: Mediafile;
     private _uploader: User;
+
+    public get id(): number {
+        return this._mediafile ? this._mediafile.id : null;
+    }
 
     public get mediafile(): Mediafile {
         return this._mediafile;
@@ -49,11 +52,9 @@ export class ViewMediafile extends BaseViewModel {
         return this.title;
     }
 
-    public updateValues(update: BaseModel): void {
-        if (update instanceof Mediafile) {
-            if (this.mediafile.id === update.id) {
-                this._mediafile = update;
-            }
+    public updateValues(update: Mediafile): void {
+        if (this.mediafile.id === update.id) {
+            this._mediafile = update;
         }
     }
 }

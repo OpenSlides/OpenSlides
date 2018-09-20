@@ -7,6 +7,10 @@ export class ViewUser extends BaseViewModel {
     private _user: User;
     private _groups: Group[];
 
+    public get id(): number {
+        return this._user ? this._user.id : null;
+    }
+
     public get user(): User {
         return this._user;
     }
@@ -47,22 +51,30 @@ export class ViewUser extends BaseViewModel {
         console.log('replace group - not yet implemented, ', newGroup);
     }
 
+    public updateValues(update: BaseModel): void {
+        if (update instanceof Group) {
+            this.updateGroup(update as Group);
+        }
+        if (update instanceof User) {
+            this.updateUser(update as User);
+        }
+    }
+
+    public updateGroup(update: Group): void {
+        if (this.user && this.user.groups_id) {
+            if (this.user.containsGroupId(update.id)) {
+                this.replaceGroup(update);
+            }
+        }
+    }
     /**
      * Updates values. Triggered through observables.
      *
      * @param update a new User or Group
      */
-    public updateValues(update: BaseModel): void {
-        if (update instanceof User) {
-            if (this.user.id === update.id) {
-                this._user = update;
-            }
-        } else if (update instanceof Group) {
-            if (this.user && this.user.groups_id) {
-                if (this.user.containsGroupId(update.id)) {
-                    this.replaceGroup(update);
-                }
-            }
+    public updateUser(update: User): void {
+        if (this.user.id === update.id) {
+            this._user = update;
         }
     }
 }

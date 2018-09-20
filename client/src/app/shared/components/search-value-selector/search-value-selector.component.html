@@ -2,10 +2,10 @@
     <mat-select [formControl]="formControl" [placeholder]="listname" [multiple]="multiple" #thisSelector>
         <ngx-mat-select-search [formControl]="filterControl"></ngx-mat-select-search>
         <div *ngIf="!multiple">
-            <mat-option><span translate>None</span></mat-option>
+            <mat-option [value]="null"><span translate>None</span></mat-option>
             <mat-divider></mat-divider>
         </div>
-        <mat-option *ngFor="let selectedItem of filteredItems | async" [value]="selectedItem">
+        <mat-option *ngFor="let selectedItem of filteredItems | async" [value]="selectedItem.id">
             {{selectedItem.getTitle(translate)}}
         </mat-option>
     </mat-select>

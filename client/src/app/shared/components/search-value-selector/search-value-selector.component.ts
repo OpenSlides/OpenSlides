@@ -1,10 +1,13 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject, ReplaySubject, BehaviorSubject } from 'rxjs';
 import { MatSelect } from '@angular/material';
 import { takeUntil } from 'rxjs/operators';
 import { Displayable } from '../../models/base/displayable';
 import { TranslateService } from '@ngx-translate/core';
+import { Identifiable } from '../../models/base/identifiable';
+
+type Selectable = Displayable & Identifiable;
 
 /**
  * Reusable Searchable Value Selector
@@ -37,7 +40,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class SearchValueSelectorComponent implements OnInit {
     /**
-     * ngModel variable - Depricated with Angular 7
+     * ngModel variable - Deprecated with Angular 7
      * DO NOT USE: READ AT remove() FUNCTION!
      */
     public myModel = [];
@@ -48,9 +51,9 @@ export class SearchValueSelectorComponent implements OnInit {
     public filterControl = new FormControl();
 
     /**
-     * List of the filtered content, when entering somithing in the search bar
+     * List of the filtered content, when entering something in the search bar
      */
-    public filteredItems: BehaviorSubject<Displayable[]>;
+    public filteredItems: ReplaySubject<Selectable[]> = new ReplaySubject<Selectable[]>(1);
 
     /**
      * Decide if this should be a single or multi-select-field
@@ -62,7 +65,7 @@ export class SearchValueSelectorComponent implements OnInit {
      * The Input List Values
      */
     @Input()
-    public InputListValues: BehaviorSubject<Displayable[]>;
+    public InputListValues: BehaviorSubject<Selectable[]>;
 
     /**
      * Placeholder of the List
@@ -111,7 +114,7 @@ export class SearchValueSelectorComponent implements OnInit {
      * onInit with filter ans subscription on filter
      */
     public ngOnInit(): void {
-        this.filteredItems = this.InputListValues;
+        this.filteredItems.next(this.InputListValues.getValue());
         // listen to value changes
         this.filterControl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
             this.filterItems();
@@ -152,7 +155,7 @@ export class SearchValueSelectorComponent implements OnInit {
      * places, but can't reflect the changes in both places. Until this can be done this will be unused code
      * @param item the selected item to be removed
      */
-    public remove(item: Displayable): void {
+    public remove(item: Selectable): void {
         const myArr = this.thisSelector.value;
         const index = myArr.indexOf(item, 0);
         // my model was the form according to fix

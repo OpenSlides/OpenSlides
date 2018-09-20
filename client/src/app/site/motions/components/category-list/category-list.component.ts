@@ -87,9 +87,9 @@ export class CategoryListComponent extends BaseComponent implements OnInit, OnDe
      */
     private saveCategory(viewCategory: ViewCategory): void {
         if (this.repo.osInDataStore(viewCategory)) {
-            this.repo.create(viewCategory).subscribe();
+            this.repo.update(viewCategory.category).subscribe();
         } else {
-            this.repo.update(viewCategory).subscribe();
+            this.repo.create(viewCategory.category, viewCategory).subscribe();
         }
         viewCategory.edit = false;
     }
