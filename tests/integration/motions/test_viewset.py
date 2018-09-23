@@ -20,7 +20,7 @@ from openslides.motions.models import (
     Workflow,
 )
 from openslides.utils.auth import get_group_model
-from openslides.utils.collection import CollectionElement
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.test import TestCase
 
 from ..helpers import count_queries
@@ -207,6 +207,7 @@ class CreateMotion(TestCase):
         self.admin = get_user_model().objects.get(username='admin')
         self.admin.groups.add(2)
         self.admin.groups.remove(4)
+        inform_changed_data(self.admin)
 
         response = self.client.post(
             reverse('motion-list'),
@@ -258,6 +259,7 @@ class CreateMotion(TestCase):
         self.admin = get_user_model().objects.get(username='admin')
         self.admin.groups.add(2)
         self.admin.groups.remove(4)
+        inform_changed_data(self.admin)
 
         response = self.client.post(
             reverse('motion-list'),
@@ -306,6 +308,7 @@ class RetrieveMotion(TestCase):
         state.save()
         # The cache has to be cleared, see:
         # https://github.com/OpenSlides/OpenSlides/issues/3396
+        inform_changed_data(self.motion)
 
         response = guest_client.get(reverse('motion-detail', args=[self.motion.pk]))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -340,6 +343,7 @@ class RetrieveMotion(TestCase):
         group.permissions.remove(permission)
         config['general_system_enable_anonymous'] = True
         guest_client = APIClient()
+        inform_changed_data(group)
 
         response_1 = guest_client.get(reverse('motion-detail', args=[self.motion.pk]))
         self.assertEqual(response_1.status_code, status.HTTP_200_OK)
@@ -431,6 +435,7 @@ class UpdateMotion(TestCase):
         self.motion.supporters.add(supporter)
         config['motions_remove_supporters'] = True
         self.assertEqual(self.motion.supporters.count(), 1)
+        inform_changed_data((admin, self.motion))
 
         response = self.client.patch(
             reverse('motion-detail', args=[self.motion.pk]),
@@ -467,7 +472,7 @@ class DeleteMotion(TestCase):
         group_delegates = get_group_model().objects.get(name='Delegates')
         self.admin.groups.remove(group_admin)
         self.admin.groups.add(group_delegates)
-        CollectionElement.from_instance(self.admin)
+        inform_changed_data(self.admin)
 
     def put_motion_in_complex_workflow(self):
         workflow = Workflow.objects.get(name='Complex Workflow')
@@ -551,7 +556,7 @@ class ManageSubmitters(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
-        CollectionElement.from_instance(admin)
+        inform_changed_data(admin)
 
         response = self.client.post(
             reverse('motion-manage-submitters', args=[self.motion.pk]),
@@ -884,6 +889,7 @@ class TestMotionCommentSection(TestCase):
         any of the read_groups.
         """
         self.admin.groups.remove(self.group_in)
+        inform_changed_data(self.admin)
 
         section = MotionCommentSection(name='test_name_f3jOF3m8fp.<qiqmf32=')
         section.save()
@@ -912,6 +918,7 @@ class TestMotionCommentSection(TestCase):
         Try to create a section without can_manage permissions.
         """
         self.admin.groups.remove(self.group_in)
+        inform_changed_data(self.admin)
 
         response = self.client.post(
             reverse('motioncommentsection-list'),
@@ -1097,6 +1104,7 @@ class TestMotionCommentSection(TestCase):
         Try to delete a section without can_manage permissions
         """
         self.admin.groups.remove(self.group_in)
+        inform_changed_data(self.admin)
 
         section = MotionCommentSection(name='test_name_wl2oxmmhe/2kd92lwPSi')
         section.save()
@@ -1190,6 +1198,7 @@ class SupportMotion(TestCase):
     def setUp(self):
         self.admin = get_user_model().objects.get(username='admin')
         self.admin.groups.add(2)
+        inform_changed_data(self.admin)
         self.client.login(username='admin', password='admin')
         self.motion = Motion(
             title='test_title_chee7ahCha6bingaew4e',

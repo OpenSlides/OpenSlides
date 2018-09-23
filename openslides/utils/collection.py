@@ -12,7 +12,6 @@ from typing import (
 
 from asgiref.sync import async_to_sync
 from django.apps import apps
-from django.conf import settings
 from django.db.models import Model
 from mypy_extensions import TypedDict
 
@@ -201,12 +200,7 @@ class CollectionElement:
             if self.instance is None:
                 # The type of data has to be set for mypy
                 data: Optional[Dict[str, Any]] = None
-                if getattr(settings, 'SKIP_CACHE', False):
-                    # Hack for django 2.0 and channels 2.1 to stay in the same thread.
-                    # This is needed for the tests.
-                    data = self.get_element_from_db()
-                else:
-                    data = async_to_sync(element_cache.get_element_full_data)(self.collection_string, self.id)
+                data = async_to_sync(element_cache.get_element_full_data)(self.collection_string, self.id)
                 if data is None:
                     raise self.get_model().DoesNotExist(
                         "Collection {} with id {} does not exist".format(self.collection_string, self.id))
@@ -278,12 +272,7 @@ class Collection(Cachable):
         if self.full_data is None:
             # The type of all_full_data has to be set for mypy
             all_full_data: Dict[str, List[Dict[str, Any]]] = {}
-            if getattr(settings, 'SKIP_CACHE', False):
-                # Hack for django 2.0 and channels 2.1 to stay in the same thread.
-                # This is needed for the tests.
-                all_full_data = self.get_elements_from_db()
-            else:
-                all_full_data = async_to_sync(element_cache.get_all_full_data)()
+            all_full_data = async_to_sync(element_cache.get_all_full_data)()
             self.full_data = all_full_data.get(self.collection_string, [])
         return self.full_data  # type: ignore
 

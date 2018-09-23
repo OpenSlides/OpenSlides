@@ -4,7 +4,6 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from django.conf import settings
 from django.db.models import Model
 
 from .cache import element_cache, get_element_id
@@ -146,12 +145,7 @@ async def send_autoupdate(collection_elements: Iterable[CollectionElement]) -> N
             else:
                 cache_elements[element_id] = element.get_full_data()
 
-        if not getattr(settings, 'SKIP_CACHE', False):
-            # Hack for django 2.0 and channels 2.1 to stay in the same thread.
-            # This is needed for the tests.
-            change_id = await element_cache.change_elements(cache_elements)
-        else:
-            change_id = 1
+        change_id = await element_cache.change_elements(cache_elements)
 
         channel_layer = get_channel_layer()
         # TODO: don't await. They can be send in parallel

@@ -21,6 +21,7 @@ class CoreAppConfig(AppConfig):
         # Import all required stuff.
         from .config import config
         from ..utils.rest_api import router
+        from ..utils.cache import element_cache
         from .projector import get_projector_elements
         from .signals import (
             delete_django_app_permissions,
@@ -73,6 +74,13 @@ class CoreAppConfig(AppConfig):
         router.register(self.get_model('ConfigStore').get_collection_string(), ConfigViewSet, 'config')
         router.register(self.get_model('ProjectorMessage').get_collection_string(), ProjectorMessageViewSet)
         router.register(self.get_model('Countdown').get_collection_string(), CountdownViewSet)
+
+        # Sets the cache
+        try:
+            element_cache.ensure_cache()
+        except (ImproperlyConfigured, OperationalError):
+            # This happens in the tests or in migrations. Do nothing
+            pass
 
     def get_config_variables(self):
         from .config_variables import get_config_variables

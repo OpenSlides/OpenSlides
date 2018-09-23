@@ -1,7 +1,7 @@
 
 
 from openslides.core.config import ConfigVariable, config
-from openslides.core.exceptions import ConfigError, ConfigNotFound
+from openslides.core.exceptions import ConfigError
 from openslides.utils.test import TestCase
 
 
@@ -32,17 +32,6 @@ class HandleConfigTest(TestCase):
     def set_config_var(self, key, value):
         config[key] = value
 
-    def test_get_config_default_value(self):
-        self.assertEqual(config['string_var'], 'default_string_rien4ooCZieng6ah')
-        self.assertTrue(config['bool_var'])
-        self.assertEqual(config['integer_var'], 3)
-        self.assertEqual(config['choices_var'], '1')
-        self.assertEqual(config['none_config_var'], None)
-        with self.assertRaisesMessage(
-                ConfigNotFound,
-                'The config variable unknown_config_var was not found.'):
-            self.get_config_var('unknown_config_var')
-
     def test_get_multiple_config_var_error(self):
         with self.assertRaisesMessage(
                 ConfigError,
@@ -53,14 +42,6 @@ class HandleConfigTest(TestCase):
         self.assertRaises(TypeError, ConfigVariable)
         self.assertRaises(TypeError, ConfigVariable, name='foo')
         self.assertRaises(TypeError, ConfigVariable, default_value='foo')
-
-    def test_change_config_value(self):
-        self.assertEqual(config['string_var'], 'default_string_rien4ooCZieng6ah')
-        config['string_var'] = 'other_special_unique_string dauTex9eAiy7jeen'
-        self.assertEqual(config['string_var'], 'other_special_unique_string dauTex9eAiy7jeen')
-
-    def test_missing_cache_(self):
-        self.assertEqual(config['string_var'], 'default_string_rien4ooCZieng6ah')
 
     def test_config_exists(self):
         self.assertTrue(config.exists('string_var'))

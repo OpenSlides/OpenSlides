@@ -12,6 +12,8 @@ from openslides.core.config import config
 from openslides.core.models import Countdown
 from openslides.motions.models import Motion
 from openslides.topics.models import Topic
+from openslides.users.models import Group
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.collection import CollectionElement
 from openslides.utils.test import TestCase
 
@@ -43,20 +45,22 @@ class RetrieveItem(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_hidden_by_anonymous_with_manage_perms(self):
-        group = get_user_model().groups.field.related_model.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
+        group = Group.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
         permission_string = 'agenda.can_manage'
         app_label, codename = permission_string.split('.')
         permission = Permission.objects.get(content_type__app_label=app_label, codename=codename)
         group.permissions.add(permission)
+        inform_changed_data(group)
         response = self.client.get(reverse('item-detail', args=[self.item.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_internal_by_anonymous_without_perm_to_see_internal_items(self):
-        group = get_user_model().groups.field.related_model.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
+        group = Group.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
         permission_string = 'agenda.can_see_internal_items'
         app_label, codename = permission_string.split('.')
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
         group.permissions.remove(permission)
+        inform_changed_data(group)
         self.item.type = Item.INTERNAL_ITEM
         self.item.save()
         response = self.client.get(reverse('item-detail', args=[self.item.pk]))
@@ -194,6 +198,7 @@ class ManageSpeaker(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
+        inform_changed_data(admin)
         CollectionElement.from_instance(admin)
 
         response = self.client.post(
@@ -231,7 +236,7 @@ class ManageSpeaker(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
-        CollectionElement.from_instance(admin)
+        inform_changed_data(admin)
         speaker = Speaker.objects.add(self.user, self.item)
 
         response = self.client.delete(
@@ -259,7 +264,7 @@ class ManageSpeaker(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
-        CollectionElement.from_instance(admin)
+        inform_changed_data(admin)
         Speaker.objects.add(self.user, self.item)
 
         response = self.client.patch(
