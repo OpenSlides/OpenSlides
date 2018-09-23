@@ -170,7 +170,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         """
         change_id = event['change_id']
         output = []
-        changed_elements, deleted_elements = await element_cache.get_restricted_data(self.scope['user'], change_id)
+        changed_elements, deleted_elements = await element_cache.get_restricted_data(self.scope['user'], change_id, max_change_id=change_id)
         for collection_string, elements in changed_elements.items():
             for element in elements:
                 output.append(format_for_autoupdate(
