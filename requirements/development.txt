@@ -3,8 +3,8 @@ coverage
 # Use master of flake8 until flake8 3.6 is released that supports python3.7
 git+https://gitlab.com/pycqa/flake8.git
 isort
-mypy<=0.620
-pytest>=3.6,<3.7
+mypy
+pytest
 pytest-django
 pytest-asyncio
 pytest-cov
