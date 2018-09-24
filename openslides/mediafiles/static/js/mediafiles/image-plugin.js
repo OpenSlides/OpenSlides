@@ -27,7 +27,7 @@ angular.module('OpenSlidesApp.mediafiles.image-plugin', [
                                 CKEDITOR.dialog.getCurrent().disableButton('ok');
 
                                 // Load the main plugin template and paste it into the container
-                                var template = $templateCache.get('static/templates/mediafiles/image-plugin.html');
+                                var template = $templateCache.get('mediafiles/static/templates/mediafiles/image-plugin.html');
                                 if (!template) {
                                     throw 'Template for image plugin not found!';
                                 }
@@ -67,6 +67,9 @@ angular.module('OpenSlidesApp.mediafiles.image-plugin', [
                                         CKEDITOR.tools.imagebrowser.updateImageSize(scale);
                                     }
                                 });
+
+                                // Hack: call the resize event, so the dom does an update.
+                                CKEDITOR.tools.callFunction(224, {});
                             }
                         });
                         // React on double clicks in the textarea. If an image was selected, open this dialog.
