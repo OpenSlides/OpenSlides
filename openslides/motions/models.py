@@ -30,9 +30,35 @@ from .access_permissions import (
     MotionBlockAccessPermissions,
     MotionChangeRecommendationAccessPermissions,
     MotionCommentSectionAccessPermissions,
+    StatuteParagraphAccessPermissions,
     WorkflowAccessPermissions,
 )
 from .exceptions import WorkflowError
+
+
+class StatuteParagraph(RESTModelMixin, models.Model):
+    """
+    Model for parts of the statute
+    """
+    access_permissions = StatuteParagraphAccessPermissions()
+
+    title = models.CharField(max_length=255)
+    """Title of the statute paragraph."""
+
+    text = models.TextField()
+    """Content of the statute paragraph."""
+
+    weight = models.IntegerField(default=10000)
+    """
+    A weight field to sort statute paragraphs.
+    """
+
+    class Meta:
+        default_permissions = ()
+        ordering = ['weight', 'title']
+
+    def __str__(self):
+        return self.title
 
 
 class MotionManager(models.Manager):
@@ -134,6 +160,21 @@ class Motion(RESTModelMixin, models.Model):
     Needed to find the next free motion identifier.
     """
 
+    weight = models.IntegerField(default=10000)
+    """
+    A weight field to sort motions.
+    """
+
+    sort_parent = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='children')
+    """
+    A parent field for multi-depth sorting of motions.
+    """
+
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_NULL,
@@ -173,6 +214,19 @@ class Motion(RESTModelMixin, models.Model):
     Field for amendments to reference to the motion that should be altered.
 
     Null if the motion is not an amendment.
+    """
+
+    statute_paragraph = models.ForeignKey(
+        StatuteParagraph,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='motions')
+    """
+    Field to reference to a statute paragraph if this motion is a
+    statute-amendment.
+
+    Null if the motion is not a statute-amendment.
     """
 
     tags = models.ManyToManyField(Tag, blank=True)

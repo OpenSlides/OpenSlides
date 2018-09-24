@@ -28,6 +28,7 @@ from .models import (
     MotionLog,
     MotionPoll,
     State,
+    StatuteParagraph,
     Submitter,
     Workflow,
 )
@@ -39,6 +40,15 @@ def validate_workflow_field(value):
     """
     if not Workflow.objects.filter(pk=value).exists():
         raise ValidationError({'detail': _('Workflow %(pk)d does not exist.') % {'pk': value}})
+
+
+class StatuteParagraphSerializer(ModelSerializer):
+    """
+    Serializer for motion.models.StatuteParagraph objects.
+    """
+    class Meta:
+        model = StatuteParagraph
+        fields = ('id', 'title', 'text', 'weight')
 
 
 class CategorySerializer(ModelSerializer):
@@ -404,7 +414,9 @@ class MotionSerializer(ModelSerializer):
             'agenda_item_id',
             'agenda_type',
             'agenda_parent_id',
-            'log_messages',)
+            'log_messages',
+            'sort_parent',
+            'weight',)
         read_only_fields = ('state', 'recommendation',)  # Some other fields are also read_only. See definitions above.
 
     def validate(self, data):

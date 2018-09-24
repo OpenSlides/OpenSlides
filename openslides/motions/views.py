@@ -24,6 +24,7 @@ from ..utils.rest_api import (
     UpdateModelMixin,
     ValidationError,
     detail_route,
+    list_route,
 )
 from ..utils.views import BinaryTemplateView
 from .access_permissions import (
@@ -32,6 +33,7 @@ from .access_permissions import (
     MotionBlockAccessPermissions,
     MotionChangeRecommendationAccessPermissions,
     MotionCommentSectionAccessPermissions,
+    StatuteParagraphAccessPermissions,
     WorkflowAccessPermissions,
 )
 from .exceptions import WorkflowError
@@ -44,6 +46,7 @@ from .models import (
     MotionCommentSection,
     MotionPoll,
     State,
+    StatuteParagraph,
     Submitter,
     Workflow,
 )
@@ -78,7 +81,7 @@ class MotionViewSet(ModelViewSet):
                       has_perm(self.request.user, 'motions.can_create') and
                       (not config['motions_stop_submitting'] or
                        has_perm(self.request.user, 'motions.can_manage')))
-        elif self.action in ('set_state', 'manage_comments', 'set_recommendation',
+        elif self.action in ('set_state', 'sort', 'manage_comments', 'set_recommendation',
                              'follow_recommendation', 'create_poll', 'manage_submitters',
                              'sort_submitters'):
             result = (has_perm(self.request.user, 'motions.can_see') and
@@ -255,6 +258,38 @@ class MotionViewSet(ModelViewSet):
         inform_changed_data(new_users)
 
         return Response(serializer.data)
+
+    @list_route(methods=['post'])
+    def sort(self, request):
+        """
+        Sort motions. Also checks sort_parent field to prevent hierarchical loops.
+
+        Note: This view is not tested! Maybe needs to be refactored. Add documentation
+        abou the data to be send.
+        """
+        raise ValidationError({'detail': _('This view needs testing and refactoring!')})
+        nodes = request.data.get('nodes', [])
+        sort_parent_id = request.data.get('sort_parent_id')
+        motions = []
+        with transaction.atomic():
+            for index, node in enumerate(nodes):
+                motion = Motion.objects.get(pk=node['id'])
+                motion.sort_parent_id = sort_parent_id
+                motion.weight = index
+                motion.save(skip_autoupdate=True)
+                motions.append(motion)
+
+                # Now check consistency. TODO: Try to use less DB queries.
+                motion = Motion.objects.get(pk=node['id'])
+                ancestor = motion.sort_parent
+                while ancestor is not None:
+                    if ancestor == motion:
+                        raise ValidationError({'detail': _(
+                            'There must not be a hierarchical loop.')})
+                    ancestor = ancestor.sort_parent
+
+        inform_changed_data(motions)
+        return Response({'detail': _('The motions has been sorted.')})
 
     @detail_route(methods=['POST', 'DELETE'])
     def manage_comments(self, request, pk=None):
@@ -694,6 +729,30 @@ class MotionCommentSectionViewSet(ModelViewSet):
 
             msg += ' ' + _('Please remove all comments before deletion.')
             raise ValidationError({'detail': msg})
+        return result
+
+
+class StatuteParagraphViewSet(ModelViewSet):
+    """
+    API endpoint for statute paragraphs.
+
+    There are the following views: list, retrieve, create,
+    partial_update, update and destroy.
+    """
+    access_permissions = StatuteParagraphAccessPermissions()
+    queryset = StatuteParagraph.objects.all()
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        if self.action in ('list', 'retrieve'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
+            result = (has_perm(self.request.user, 'motions.can_see') and
+                      has_perm(self.request.user, 'motions.can_manage'))
+        else:
+            result = False
         return result
 
 

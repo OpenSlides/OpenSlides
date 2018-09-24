@@ -17,6 +17,9 @@ Core:
  - Enabled docs for using OpenSlides with Gunicorn and Uvicorn in big
    mode [#3799, #3817].
 
+Motions:
+ - Option to customly sort motions [#3894].
+ - Added support for adding a statute [#3894].
 
 Version 2.3 (unreleased)
 ========================

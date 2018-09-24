@@ -22,6 +22,7 @@ class MotionsAppConfig(AppConfig):
         )
         from .views import (
             CategoryViewSet,
+            StatuteParagraphViewSet,
             MotionViewSet,
             MotionCommentSectionViewSet,
             MotionBlockViewSet,
@@ -47,6 +48,7 @@ class MotionsAppConfig(AppConfig):
 
         # Register viewsets.
         router.register(self.get_model('Category').get_collection_string(), CategoryViewSet)
+        router.register(self.get_model('StatuteParagraph').get_collection_string(), StatuteParagraphViewSet)
         router.register(self.get_model('Motion').get_collection_string(), MotionViewSet)
         router.register(self.get_model('MotionBlock').get_collection_string(), MotionBlockViewSet)
         router.register(self.get_model('MotionCommentSection').get_collection_string(), MotionCommentSectionViewSet)
@@ -65,6 +67,6 @@ class MotionsAppConfig(AppConfig):
         Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        for model_name in ('Category', 'Motion', 'MotionBlock', 'Workflow',
-                           'MotionChangeRecommendation', 'MotionCommentSection'):
+        for model_name in ('Category', 'StatuteParagraph', 'Motion', 'MotionBlock',
+                           'Workflow', 'MotionChangeRecommendation', 'MotionCommentSection'):
             yield self.get_model(model_name)
