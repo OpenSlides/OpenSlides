@@ -45,13 +45,6 @@ export class Motion extends AgendaBaseModel {
     }
 
     /**
-     * update the values of the motion with new values
-     */
-    public patchValues(update: object): void {
-        Object.assign(this, update);
-    }
-
-    /**
      * returns the motion submitters userIDs
      */
     public get submitterIds(): number[] {

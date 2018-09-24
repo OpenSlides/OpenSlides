@@ -2,15 +2,18 @@ import { OpenSlidesComponent } from 'app/openslides.component';
 import { Deserializable } from './deserializable';
 import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 import { Displayable } from './displayable';
+import { Identifiable } from './identifiable';
 
-export interface ModelConstructor<T extends BaseModel> {
+export interface ModelConstructor<T extends BaseModel<T>> {
     new (...args: any[]): T;
 }
 
 /**
  * Abstract parent class to set rules and functions for all models.
+ * When inherit from this class, give the subclass as the type. E.g. `class Motion extends BaseModel<Motion>`
  */
-export abstract class BaseModel extends OpenSlidesComponent implements Deserializable, Displayable {
+export abstract class BaseModel<T = object> extends OpenSlidesComponent
+    implements Deserializable, Displayable, Identifiable {
     /**
      * Register the collection string to the type.
      * @param collectionString
@@ -55,6 +58,10 @@ export abstract class BaseModel extends OpenSlidesComponent implements Deseriali
                 input[key] = undefined;
             }
         });
+    }
+
+    public patchValues(update: Partial<T>): void {
+        Object.assign(this, update);
     }
 
     public abstract getTitle(): string;

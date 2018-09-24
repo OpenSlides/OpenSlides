@@ -4,7 +4,7 @@ import { BaseModel } from '../base/base-model';
  * Representation of chat messages.
  * @ignore
  */
-export class ChatMessage extends BaseModel {
+export class ChatMessage extends BaseModel<ChatMessage> {
     public id: number;
     public message: string;
     public timestamp: string; // TODO: Type for timestamp

@@ -4,7 +4,7 @@ import { BaseModel } from '../base/base-model';
  * Representation of a projector. Has the nested property "projectiondefaults"
  * @ignore
  */
-export class Projector extends BaseModel {
+export class Projector extends BaseModel<Projector> {
     public id: number;
     public elements: Object;
     public scale: number;

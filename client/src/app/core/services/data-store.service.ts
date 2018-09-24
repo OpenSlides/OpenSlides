@@ -182,7 +182,7 @@ export class DataStoreService {
         });
     }
 
-    private getCollectionString<T extends BaseModel>(collectionType: ModelConstructor<T> | string): string {
+    private getCollectionString<T extends BaseModel<T>>(collectionType: ModelConstructor<T> | string): string {
         if (typeof collectionType === 'string') {
             return collectionType;
         } else {
@@ -199,7 +199,7 @@ export class DataStoreService {
      * @example: this.DS.get(User, 1)
      * @example: this.DS.get<Countdown>('core/countdown', 2)
      */
-    public get<T extends BaseModel>(collectionType: ModelConstructor<T> | string, id: number): T {
+    public get<T extends BaseModel<T>>(collectionType: ModelConstructor<T> | string, id: number): T {
         const collectionString = this.getCollectionString<T>(collectionType);
 
         const collection: ModelCollection = this.modelStore[collectionString];
@@ -219,7 +219,7 @@ export class DataStoreService {
      * @example: this.DS.getMany(User, [1,2,3,4,5])
      * @example: this.DS.getMany<User>('users/user', [1,2,3,4,5])
      */
-    public getMany<T extends BaseModel>(collectionType: ModelConstructor<T> | string, ids: number[]): T[] {
+    public getMany<T extends BaseModel<T>>(collectionType: ModelConstructor<T> | string, ids: number[]): T[] {
         const collectionString = this.getCollectionString<T>(collectionType);
 
         const collection: ModelCollection = this.modelStore[collectionString];
@@ -242,7 +242,7 @@ export class DataStoreService {
      * @example: this.DS.getAll(User)
      * @example: this.DS.getAll<User>('users/user')
      */
-    public getAll<T extends BaseModel>(collectionType: ModelConstructor<T> | string): T[] {
+    public getAll<T extends BaseModel<T>>(collectionType: ModelConstructor<T> | string): T[] {
         const collectionString = this.getCollectionString<T>(collectionType);
 
         const collection: ModelCollection = this.modelStore[collectionString];
@@ -261,7 +261,7 @@ export class DataStoreService {
      * @return The BaseModel-list corresponding to the filter function
      * @example this.DS.filter<User>(User, myUser => myUser.first_name === "Max")
      */
-    public filter<T extends BaseModel>(
+    public filter<T extends BaseModel<T>>(
         collectionType: ModelConstructor<T> | string,
         callback: (model: T) => boolean
     ): T[] {

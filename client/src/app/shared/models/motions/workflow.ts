@@ -5,7 +5,7 @@ import { WorkflowState } from './workflow-state';
  * Representation of a motion workflow. Has the nested property 'states'
  * @ignore
  */
-export class Workflow extends BaseModel {
+export class Workflow extends BaseModel<Workflow> {
     public id: number;
     public name: string;
     public states: WorkflowState[];

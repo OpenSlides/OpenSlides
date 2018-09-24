@@ -25,7 +25,7 @@ export class AssignmentRepositoryService extends BaseRepository<ViewAssignment, 
         super(DS, Assignment, [User, Item, Tag]);
     }
 
-    public save(assignment: Assignment, viewAssignment: ViewAssignment): Observable<Assignment> {
+    public update(assignment: Partial<Assignment>, viewAssignment: ViewAssignment): Observable<Assignment> {
         return null;
     }
 
@@ -33,7 +33,7 @@ export class AssignmentRepositoryService extends BaseRepository<ViewAssignment, 
         return null;
     }
 
-    public create(assignment: Assignment, viewAssignment: ViewAssignment): Observable<Assignment> {
+    public create(assignment: Assignment): Observable<Assignment> {
         return null;
     }
 

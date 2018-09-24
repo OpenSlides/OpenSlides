@@ -10,6 +10,9 @@ import { MotionRepositoryService } from '../../services/motion-repository.servic
 import { ViewMotion } from '../../models/view-motion';
 import { User } from '../../../../shared/models/users/user';
 import { DataStoreService } from '../../../../core/services/data-store.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Motion } from '../../../../shared/models/motions/motion';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Component for the motion detail view
@@ -65,6 +68,21 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     public motionCopy: ViewMotion;
 
     /**
+     * Subject for the Categories
+     */
+    public categoryObserver: BehaviorSubject<Array<Category>>;
+
+    /**
+     * Subject for the Submitters
+     */
+    public submitterObserver: BehaviorSubject<Array<User>>;
+
+    /**
+     * Subject for the Supporters
+     */
+    public supporterObserver: BehaviorSubject<Array<User>>;
+
+    /**
      * Constuct the detail view.
      *
      * @param vp the viewport service
@@ -72,6 +90,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * @param route determine if this is a new or an existing motion
      * @param formBuilder For reactive forms. Form Group and Form Control
      * @param repo: Motion Repository
+     * @param translate: Translation Service
      */
     public constructor(
         public vp: ViewportService,
@@ -79,7 +98,8 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private repo: MotionRepositoryService,
-        private DS: DataStoreService
+        private DS: DataStoreService,
+        protected translate: TranslateService
     ) {
         super();
         this.createForm();
@@ -100,6 +120,21 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
                 });
             });
         }
+        // Initial Filling of the Subjects
+        this.submitterObserver = new BehaviorSubject(DS.getAll(User));
+        this.supporterObserver = new BehaviorSubject(DS.getAll(User));
+        this.categoryObserver = new BehaviorSubject(DS.getAll(Category));
+
+        // Make sure the subjects are updated, when a new Model for the type arrives
+        this.DS.changeObservable.subscribe(newModel => {
+            if (newModel instanceof User) {
+                this.submitterObserver.next(DS.getAll(User));
+                this.supporterObserver.next(DS.getAll(User));
+            }
+            if (newModel instanceof Category) {
+                this.categoryObserver.next(DS.getAll(Category));
+            }
+        });
     }
 
     /**
@@ -108,8 +143,8 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     public patchForm(formMotion: ViewMotion): void {
         this.metaInfoForm.patchValue({
             category_id: formMotion.categoryId,
-            supporters_id: formMotion.supporters,
-            submitters: formMotion.submitters,
+            supporters_id: formMotion.supporterIds,
+            submitters_id: formMotion.submitterIds,
             state_id: formMotion.stateId,
             recommendation_id: formMotion.recommendationId,
             identifier: formMotion.identifier,
@@ -133,7 +168,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
             category_id: [''],
             state_id: [''],
             recommendation_id: [''],
-            submitters: [''],
+            submitters_id: [''],
             supporters_id: [''],
             origin: ['']
         });
@@ -157,20 +192,16 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      */
     public saveMotion(): void {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
+        const fromForm = new Motion();
+        fromForm.deserialize(newMotionValues);
+
         if (this.newMotion) {
-            this.repo.create(newMotionValues).subscribe(response => {
+            this.repo.create(fromForm).subscribe(response => {
                 this.router.navigate(['./motions/' + response.id]);
             });
         } else {
-            this.repo.save(newMotionValues, this.motionCopy).subscribe();
+            this.repo.update(fromForm, this.motionCopy).subscribe();
         }
-    }
-
-    /**
-     * return all Categories
-     */
-    public getMotionCategories(): Category[] {
-        return this.DS.getAll(Category);
     }
 
     /**
@@ -213,13 +244,6 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         this.repo.delete(this.motion).subscribe(answer => {
             this.router.navigate(['./motions/']);
         });
-    }
-
-    /**
-     * returns all Possible supporters
-     */
-    public getAllUsers(): User[] {
-        return this.DS.getAll(User);
     }
 
     /**

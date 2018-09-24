@@ -1,6 +1,5 @@
 import { BaseViewModel } from '../../base/base-view-model';
 import { Item } from '../../../shared/models/agenda/item';
-import { BaseModel } from '../../../shared/models/base/base-model';
 import { AgendaBaseModel } from '../../../shared/models/base/agenda-base-model';
 
 export class ViewItem extends BaseViewModel {
@@ -46,8 +45,8 @@ export class ViewItem extends BaseViewModel {
         }
     }
 
-    public updateValues(update: BaseModel): void {
-        if (update instanceof Item && this.id === update.id) {
+    public updateValues(update: Item): void {
+        if (this.id === update.id) {
             this._item = update;
         }
     }

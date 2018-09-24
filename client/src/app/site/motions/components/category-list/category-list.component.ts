@@ -1,59 +1,98 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { MatSort, MatTable, MatTableDataSource } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseComponent } from '../../../../base.component';
 import { Category } from '../../../../shared/models/motions/category';
-import { DataStoreService } from '../../../../core/services/data-store.service';
+import { CategoryRepositoryService } from '../../services/category-repository.service';
+import { ViewCategory } from '../../models/view-category';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 /**
  * List view for the categories.
- *
- * TODO: Creation of new Categories
  */
 @Component({
     selector: 'os-category-list',
     templateUrl: './category-list.component.html',
     styleUrls: ['./category-list.component.scss']
 })
-export class CategoryListComponent extends BaseComponent implements OnInit {
+export class CategoryListComponent extends BaseComponent implements OnInit, OnDestroy {
     /**
-     * Store the categories
+     * States the edit mode
      */
-    public categoryArray: Array<Category>;
+    public editMode = false;
 
     /**
-     * Will be processed by the mat-table
+     * Source of the Data
      */
-    public dataSource: MatTableDataSource<Category>;
+    public dataSource: Array<ViewCategory>;
 
     /**
-     * The table itself.
+     * The current focussed formgroup
      */
-    @ViewChild(MatTable)
-    public table: MatTable<Category>;
-
-    /**
-     * Sort the Table
-     */
-    @ViewChild(MatSort)
-    public sort: MatSort;
+    public formGroup: FormGroup;
 
     /**
      * The usual component constructor
      * @param titleService
      * @param translate
+     * @param repo
+     * @param formBuilder
      */
     public constructor(
         protected titleService: Title,
         protected translate: TranslateService,
-        protected DS: DataStoreService
+        private repo: CategoryRepositoryService,
+        private formBuilder: FormBuilder
     ) {
         super(titleService, translate);
+        this.formGroup = this.formBuilder.group({
+            name: ['', Validators.required],
+            prefix: ['', Validators.required]
+        });
     }
 
+    /**
+     * On Destroy Function
+     *
+     * Saves the edits
+     */
+    public ngOnDestroy(): void {
+        this.dataSource.forEach(viewCategory => {
+            if (viewCategory.edit && viewCategory.opened) {
+                const nameControl = this.formGroup.get('name');
+                const prefixControl = this.formGroup.get('prefix');
+                const nameValue = nameControl.value;
+                const prefixValue = prefixControl.value;
+                viewCategory.name = nameValue;
+                viewCategory.prefix = prefixValue;
+                this.saveCategory(viewCategory);
+            }
+        });
+    }
+
+    /**
+     * Event on Key Down in form
+     */
+    public keyDownFunction(event: KeyboardEvent, viewCategory: ViewCategory): void {
+        if (event.keyCode === 13) {
+            this.onSaveButton(viewCategory);
+        }
+    }
+
+    /**
+     * Stores the Datamodel in the repo
+     * @param viewCategory
+     */
+    private saveCategory(viewCategory: ViewCategory): void {
+        if (this.repo.osInDataStore(viewCategory)) {
+            this.repo.update(viewCategory.category).subscribe();
+        } else {
+            this.repo.create(viewCategory.category, viewCategory).subscribe();
+        }
+        viewCategory.edit = false;
+    }
     /**
      * Init function.
      *
@@ -61,26 +100,127 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
      */
     public ngOnInit(): void {
         super.setTitle('Category');
-        this.categoryArray = this.DS.getAll(Category);
-        this.dataSource = new MatTableDataSource(this.categoryArray);
-        this.dataSource.sort = this.sort;
+        this.repo.getViewModelListObservable().subscribe(newViewCategories => {
+            this.dataSource = newViewCategories;
+        });
+        this.sortDataSource();
+    }
 
-        // Observe DataStore for motions. Initially, executes once for every motion.
-        // The alternative approach is to put the observable as DataSource to the table
-        this.DS.changeObservable.subscribe(newModel => {
-            if (newModel instanceof Category) {
-                this.categoryArray = this.DS.getAll(Category);
-                this.dataSource.data = this.categoryArray;
+    /**
+     * Add a new Category.
+     */
+    public onPlusButton(): void {
+        let noNewOnes = true;
+        this.dataSource.forEach(viewCategory => {
+            if (viewCategory.id === undefined) {
+                noNewOnes = false;
+            }
+        });
+        if (noNewOnes) {
+            const newCategory = new Category();
+            newCategory.id = undefined;
+            newCategory.name = this.translate.instant('Name');
+            newCategory.prefix = this.translate.instant('Prefix');
+            const newViewCategory = new ViewCategory(newCategory);
+            newViewCategory.opened = true;
+            this.dataSource.reverse();
+            this.dataSource.push(newViewCategory);
+            this.dataSource.reverse();
+            this.editMode = true;
+        }
+    }
+
+    /**
+     * Executed on edit button
+     * @param viewCategory
+     */
+    public onEditButton(viewCategory: ViewCategory): void {
+        viewCategory.edit = true;
+        viewCategory.synced = false;
+        this.editMode = true;
+        const nameControl = this.formGroup.get('name');
+        const prefixControl = this.formGroup.get('prefix');
+        nameControl.setValue(viewCategory.name);
+        prefixControl.setValue(viewCategory.prefix);
+    }
+
+    /**
+     * Saves the categories
+     */
+    public onSaveButton(viewCategory: ViewCategory): void {
+        if (this.formGroup.controls.name.valid && this.formGroup.controls.prefix.valid) {
+            this.editMode = false;
+            const nameControl = this.formGroup.get('name');
+            const prefixControl = this.formGroup.get('prefix');
+            const nameValue = nameControl.value;
+            const prefixValue = prefixControl.value;
+            if (
+                viewCategory.id === undefined ||
+                nameValue !== viewCategory.name ||
+                prefixValue !== viewCategory.prefix
+            ) {
+                viewCategory.prefix = prefixValue;
+                viewCategory.name = nameValue;
+                this.saveCategory(viewCategory);
+            }
+        }
+        this.sortDataSource();
+    }
+
+    /**
+     * sorts the datasource by prefix alphabetically
+     */
+    protected sortDataSource(): void {
+        this.dataSource.sort((viewCategory1, viewCategory2) => {
+            if (viewCategory1.prefix > viewCategory2.prefix) {
+                return 1;
+            }
+            if (viewCategory1.prefix < viewCategory2.prefix) {
+                return -1;
             }
         });
     }
 
     /**
-     * Add a new Category.
-     *
-     * TODO: Not yet implemented
+     * executed on cancel button
+     * @param viewCategory
      */
-    public onPlusButton(): void {
-        console.log('Add New Category');
+    public onCancelButton(viewCategory: ViewCategory): void {
+        viewCategory.edit = false;
+        this.editMode = false;
+    }
+
+    /**
+     * is executed, when the delete button is pressed
+     */
+    public onDeleteButton(viewCategory: ViewCategory): void {
+        if (this.repo.osInDataStore(viewCategory) && viewCategory.id !== undefined) {
+            this.repo.delete(viewCategory).subscribe();
+        }
+        const index = this.dataSource.indexOf(viewCategory, 0);
+        if (index > -1) {
+            this.dataSource.splice(index, 1);
+        }
+        // if no category is there, we setill have to be able to create one
+        if (this.dataSource.length < 1) {
+            this.editMode = false;
+        }
+    }
+
+    /**
+     * Is executed when a mat-extension-panel is opened or closed
+     * @param open true if opened, false if being closed
+     * @param category the category in the panel
+     */
+    public panelOpening(open: boolean, category: ViewCategory): void {
+        category.opened = open as boolean;
+        if (category.edit === true) {
+            this.onSaveButton(category);
+            this.onCancelButton(category);
+        }
+        if (!open) {
+            category.edit = false;
+            this.editMode = false;
+        }
     }
 }

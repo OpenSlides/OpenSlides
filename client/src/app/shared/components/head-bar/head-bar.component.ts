@@ -16,7 +16,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
  * ```html
  * <os-head-bar
  *   appName="Files"
- *   PlusButton=true
+ *   plusButton=true
  *   [menuList]=myMenu
  *   (plusButtonClicked)=onPlusButton()
  *   (ellipsisMenuItem)=onEllipsisItem($event)>
@@ -54,29 +54,34 @@ export class HeadBarComponent implements OnInit {
     /**
      * Input declaration for the app name
      */
-    @Input() public appName: string;
+    @Input()
+    public appName: string;
 
     /**
      * Determine if there should be a plus button.
      */
-    @Input() public plusButton: false;
+    @Input()
+    public plusButton: false;
 
     /**
      * If not empty shows a ellipsis menu on the right side
      *
      * The parent needs to provide a menu, i.e `[menuList]=myMenu`.
      */
-    @Input() public menuList: any[];
+    @Input()
+    public menuList: any[];
 
     /**
      * Emit a signal to the parent component if the plus button was clicked
      */
-    @Output() public plusButtonClicked = new EventEmitter<boolean>();
+    @Output()
+    public plusButtonClicked = new EventEmitter<boolean>();
 
     /**
      * Emit a signal to the parent of an item in the menuList was selected.
      */
-    @Output() public ellipsisMenuItem = new EventEmitter<any>();
+    @Output()
+    public ellipsisMenuItem = new EventEmitter<any>();
 
     /**
      * Empty constructor

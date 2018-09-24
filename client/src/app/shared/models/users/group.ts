@@ -4,7 +4,7 @@ import { BaseModel } from '../base/base-model';
  * Representation of user group.
  * @ignore
  */
-export class Group extends BaseModel {
+export class Group extends BaseModel<Group> {
     public id: number;
     public name: string;
     public permissions: string[];

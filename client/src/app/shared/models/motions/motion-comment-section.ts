@@ -4,7 +4,7 @@ import { BaseModel } from '../base/base-model';
  * Representation of a motion category. Has the nested property "File"
  * @ignore
  */
-export class MotionCommentSection extends BaseModel {
+export class MotionCommentSection extends BaseModel<MotionCommentSection> {
     public id: number;
     public name: string;
     public read_groups_id: number[];
