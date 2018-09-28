@@ -7,6 +7,17 @@ span {
     line-height: 100%;
 }
 
+.motion-content {
+    display: flow-root;
+}
+
+.motion-text-controls {
+    float: right;
+    button {
+        font-size: 115%;
+    }
+}
+
 .motion-submitter {
     display: inline;
     font-weight: bold;

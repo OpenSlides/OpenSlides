@@ -168,8 +168,8 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
             category_id: [''],
             state_id: [''],
             recommendation_id: [''],
-            submitters_id: [''],
-            supporters_id: [''],
+            submitters_id: [],
+            supporters_id: [],
             origin: ['']
         });
         this.contentForm = this.formBuilder.group({
@@ -197,28 +197,42 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
 
         if (this.newMotion) {
             this.repo.create(fromForm).subscribe(response => {
-                this.router.navigate(['./motions/' + response.id]);
+                if (response.id) {
+                    this.router.navigate(['./motions/' + response.id]);
+                }
             });
         } else {
-            this.repo.update(fromForm, this.motionCopy).subscribe();
+            this.repo.update(fromForm, this.motionCopy).subscribe(response => {
+                // if the motion was successfully updated, change the edit mode.
+                // TODO: Show errors if there appear here
+                if (response.id) {
+                    this.editMotion = false;
+                }
+            });
         }
+    }
+
+    /**
+     * get the formated motion text from the repository.
+     */
+    public getFormatedText(): string {
+        return this.repo.formatMotion(this.motion.id, this.motion.lnMode, this.motion.crMode);
     }
 
     /**
      * Click on the edit button (pen-symbol)
      */
     public editMotionButton(): void {
-        this.editMotion ? (this.editMotion = false) : (this.editMotion = true);
         if (this.editMotion) {
-            // copy the motion
+            this.saveMotion();
+        } else {
+            this.editMotion = true;
             this.motionCopy = this.motion.copy();
             this.patchForm(this.motionCopy);
             if (this.vp.isMobile) {
                 this.metaInfoPanel.open();
                 this.contentPanel.open();
             }
-        } else {
-            this.saveMotion();
         }
     }
 
@@ -244,6 +258,22 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         this.repo.delete(this.motion).subscribe(answer => {
             this.router.navigate(['./motions/']);
         });
+    }
+
+    /**
+     * Sets the motions line numbering mode
+     * @param mode Needs to fot to the enum defined in ViewMotion
+     */
+    public setLineNumberingMode(mode: number): void {
+        this.motion.lnMode = mode;
+    }
+
+    /**
+     * Sets the motions change reco mode
+     * @param mode Needs to fot to the enum defined in ViewMotion
+     */
+    public setChangeRecoMode(mode: number): void {
+        this.motion.crMode = mode;
     }
 
     /**
