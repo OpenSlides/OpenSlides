@@ -2,6 +2,15 @@
     (ellipsisMenuItem)=onEllipsisItem($event)>
 </os-head-bar>
 
+<div class='custom-table-header on-transition-fade'>
+    <button mat-button>
+        <span translate>SORT</span>
+    </button>
+    <button mat-button>
+        <span translate>FILTER</span>
+    </button>
+</div>
+
 <mat-table class='os-listview-table on-transition-fade' [dataSource]="dataSource" matSort>
     <!-- name column -->
     <ng-container matColumnDef="name">
@@ -12,12 +21,30 @@
     <!-- prefix column -->
     <ng-container matColumnDef="group">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Group </mat-header-cell>
-        <mat-cell *matCellDef="let user"> {{user.groups}} {{user.structureLevel}} </mat-cell>
+        <mat-cell *matCellDef="let user">
+            <div class='groupsCell'>
+                <span *ngIf="user.groups.length > 0">
+                    <fa-icon icon="users"></fa-icon>
+                    {{user.groups}}
+                </span>
+                <br *ngIf="user.groups && user.structureLevel">
+                <span *ngIf="user.structureLevel">
+                    <fa-icon icon="flag"></fa-icon>
+                    {{user.structureLevel}}
+                </span>
+            </div>
+        </mat-cell>
     </ng-container>
 
+    <!-- Presence column -->
     <ng-container matColumnDef="presence">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Presence </mat-header-cell>
-        <mat-cell *matCellDef="let user"> {{user.isActive}} </mat-cell>
+        <mat-cell *matCellDef="let user">
+            <div *ngIf="user.isActive">
+                <fa-icon icon="check-square"></fa-icon>
+                <span translate>Present</span>
+            </div>
+        </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="['name', 'group', 'presence']"></mat-header-row>

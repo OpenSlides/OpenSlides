@@ -26,6 +26,20 @@ export class PermsDirective extends OpenSlidesComponent {
     private lastPermissionCheckResult = false;
 
     /**
+     * Alternative to the permissions. Used in special case where a combination
+     * with *ngIf would be required.
+     *
+     * # Example:
+     *
+     * The div will render if the permission `user.can_manage` is set
+     * or if `this.ownPage` is `true`
+     * ```html
+     * <div *osPerms="'users.can_manage';or:ownPage"> something </div>
+     * ```
+     */
+    private alternative: boolean;
+
+    /**
      * Constructs the directive once. Observes the operator for it's groups so the
      * directive can perform changes dynamically
      *
@@ -62,13 +76,23 @@ export class PermsDirective extends OpenSlidesComponent {
     }
 
     /**
+     * Comes from the view.
+     * `;or:` turns into osPermsOr during runtime.
+     */
+    @Input('osPermsOr')
+    public set osPermsAlt(value: boolean) {
+        this.alternative = value;
+        this.updateView();
+    }
+
+    /**
      * Shows or hides certain content in the view.
      */
     private updateView(): void {
         const hasPerms = this.checkPermissions();
         const permsChanged = hasPerms !== this.lastPermissionCheckResult;
 
-        if (hasPerms && permsChanged) {
+        if ((hasPerms && permsChanged) || this.alternative) {
             // clean up and add the template
             this.viewContainer.clear();
             this.viewContainer.createEmbeddedView(this.template);

@@ -60,6 +60,9 @@ export abstract class BaseModel<T = object> extends OpenSlidesComponent
         });
     }
 
+    /**
+     * update the values of the base model with new values
+     */
     public patchValues(update: Partial<T>): void {
         Object.assign(this, update);
     }

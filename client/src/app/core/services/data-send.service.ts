@@ -21,31 +21,46 @@ export class DataSendService {
     public constructor(private http: HttpClient) {}
 
     /**
-     * Save motion in the server
-     *
-     * @return Observable from
+     * Sends a post request with the model to the server.
+     * Usually for new Models
      */
-    public saveModel(model: BaseModel): Observable<BaseModel> {
-        if (!model.id) {
-            return this.http.post<BaseModel>('rest/' + model.collectionString + '/', model).pipe(
-                tap(
-                    response => {
-                        // TODO: Message, Notify, Etc
-                        console.log('New Model added. Response : ', response);
-                    },
-                    error => console.log('error. ', error)
-                )
-            );
-        } else {
-            return this.http.patch<BaseModel>('rest/' + model.collectionString + '/' + model.id, model).pipe(
-                tap(
-                    response => {
-                        console.log('Update model. Response : ', response);
-                    },
-                    error => console.log('error. ', error)
-                )
-            );
+    public createModel(model: BaseModel): Observable<BaseModel> {
+        return this.http.post<BaseModel>('rest/' + model.collectionString + '/', model).pipe(
+            tap(
+                response => {
+                    // TODO: Message, Notify, Etc
+                    console.log('New Model added. Response :\n', response);
+                },
+                error => console.error('createModel has returned an Error:\n', error)
+            )
+        );
+    }
+
+    /**
+     * Function to change a model on the server.
+     *
+     * @param model the base model that is meant to be changed
+     * @param method the required http method. might be put or patch
+     */
+    public updateModel(model: BaseModel, method: 'put' | 'patch'): Observable<BaseModel> {
+        const restPath = `rest/${model.collectionString}/${model.id}`;
+        let httpMethod;
+
+        if (method === 'patch') {
+            httpMethod = this.http.patch<BaseModel>(restPath, model);
+        } else if (method === 'put') {
+            httpMethod = this.http.put<BaseModel>(restPath, model);
         }
+
+        return httpMethod.pipe(
+            tap(
+                response => {
+                    // TODO: Message, Notify, Etc
+                    console.log('Update model. Response :\n', response);
+                },
+                error => console.error('updateModel has returned an Error:\n', error)
+            )
+        );
     }
 
     /**
