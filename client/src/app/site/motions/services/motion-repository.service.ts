@@ -66,6 +66,9 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * TODO: Remove the viewMotion and make it actually distignuishable from save()
      */
     public create(motion: Motion): Observable<any> {
+        if (!motion.supporters_id) {
+            delete motion.supporters_id;
+        }
         return this.dataSend.createModel(motion);
     }
 
@@ -93,5 +96,57 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      */
     public delete(viewMotion: ViewMotion): Observable<any> {
         return this.dataSend.delete(viewMotion.motion);
+    }
+
+    /**
+     * Format the motion text using the line numbering and change
+     * reco algorithm.
+     *
+     * TODO: Call DiffView and LineNumbering Service here.
+     *
+     * Can be called from detail view and exporter
+     * @param id Motion ID - will be pulled from the repository
+     * @param lnMode indicator for the line numbering mode
+     * @param crMode indicator for the change reco mode
+     */
+    public formatMotion(id: number, lnMode: number, crMode: number): string {
+        const targetMotion = this.getViewModel(id);
+
+        if (targetMotion && targetMotion.text) {
+            let motionText = targetMotion.text;
+
+            // TODO : Use Line numbering service here
+            switch (lnMode) {
+                case 0: // no line numbers
+                    break;
+                case 1: // line number inside
+                    motionText = 'Get line numbers outside';
+                    break;
+                case 2: // line number outside
+                    motionText = 'Get line numbers inside';
+                    break;
+            }
+
+            // TODO : Use Diff Service here.
+            //        this will(currently) append the previous changes.
+            //        update
+            switch (crMode) {
+                case 0: // Original
+                    break;
+                case 1: // Changed Version
+                    motionText += ' and get changed version';
+                    break;
+                case 2: // Diff Version
+                    motionText += ' and get diff version';
+                    break;
+                case 3: // Final Version
+                    motionText += ' and final version';
+                    break;
+            }
+
+            return motionText;
+        } else {
+            return null;
+        }
     }
 }

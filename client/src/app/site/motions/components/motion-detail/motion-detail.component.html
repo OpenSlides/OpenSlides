@@ -249,7 +249,17 @@
 </ng-template>
 
 <ng-template #contentTemplate>
-    <form [formGroup]='contentForm' (ngSubmit)='saveMotion()'>
+    <form class="motion-content" [formGroup]='contentForm' (ngSubmit)='saveMotion()'>
+
+        <!-- Line Number and Diff buttons-->
+        <div class="motion-text-controls">
+            <button type="button" mat-icon-button [matMenuTriggerFor]="lineNumberingMenu">
+                <fa-icon icon="list-ol" [fixedWidth]="true"></fa-icon>
+            </button>
+            <button type="button" mat-icon-button [matMenuTriggerFor]="changeRecoMenu">
+                <fa-icon icon="edit" [fixedWidth]="true"></fa-icon>
+            </button>
+        </div>
 
         <!-- Title -->
         <div *ngIf="motion && motion.title || editMotion">
@@ -266,7 +276,7 @@
         <!-- TODO: this is a config variable. Read it out -->
         <h3 translate>The assembly may decide:</h3>
         <div *ngIf='motion && !editMotion'>
-            <div [innerHtml]='motion.text'></div>
+            <div [innerHtml]='getFormatedText()'></div>
         </div>
         <mat-form-field *ngIf="motion && editMotion" class="wide-form">
             <textarea matInput placeholder='Motion Text' formControlName='text' [value]='motionCopy.text'></textarea>
@@ -286,3 +296,18 @@
 
     </form>
 </ng-template>
+
+<!-- Line number Menu -->
+<mat-menu #lineNumberingMenu="matMenu">
+    <button mat-menu-item translate (click)=setLineNumberingMode(0)>None</button>
+    <button mat-menu-item translate (click)=setLineNumberingMode(1)>Inline</button>
+    <button mat-menu-item translate (click)=setLineNumberingMode(2)>Outside</button>
+</mat-menu>
+
+<!-- Diff View Menu -->
+<mat-menu #changeRecoMenu="matMenu">
+    <button mat-menu-item translate (click)=setChangeRecoMode(0)>Original version</button>
+    <button mat-menu-item translate (click)=setChangeRecoMode(1)>Changed version</button>
+    <button mat-menu-item translate (click)=setChangeRecoMode(2)>Diff version</button>
+    <button mat-menu-item translate (click)=setChangeRecoMode(3)>Final version</button>
+</mat-menu>

@@ -6,6 +6,20 @@ import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { BaseModel } from '../../../shared/models/base/base-model';
 import { BaseViewModel } from '../../base/base-view-model';
 import { TranslateService } from '@ngx-translate/core';
+
+enum LineNumbering {
+    None,
+    Inside,
+    Outside
+}
+
+enum ChangeReco {
+    Original,
+    Change,
+    Diff,
+    Final
+}
+
 /**
  * Motion class for the View
  *
@@ -20,6 +34,18 @@ export class ViewMotion extends BaseViewModel {
     private _supporters: User[];
     private _workflow: Workflow;
     private _state: WorkflowState;
+
+    /**
+     * Indicates the LineNumbering Mode.
+     * Needs to be accessed from outside
+     */
+    public lnMode: LineNumbering;
+
+    /**
+     * Indicates the Change reco Mode.
+     * Needs to be accessed from outside
+     */
+    public crMode: ChangeReco;
 
     public get motion(): Motion {
         return this._motion;
@@ -150,6 +176,10 @@ export class ViewMotion extends BaseViewModel {
         this._supporters = supporters;
         this._workflow = workflow;
         this._state = state;
+
+        // TODO: Should be set using a a config variable
+        this.lnMode = LineNumbering.None;
+        this.crMode = ChangeReco.Original;
     }
 
     public getTitle(translate?: TranslateService): string {
