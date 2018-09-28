@@ -28,5 +28,3 @@ export class Mediafile extends ProjectableBaseModel {
         return this.title;
     }
 }
-
-ProjectableBaseModel.registerCollectionElement('mediafiles/mediafile', Mediafile);

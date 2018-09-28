@@ -19,5 +19,3 @@ export class Countdown extends ProjectableBaseModel {
         return this.description;
     }
 }
-
-ProjectableBaseModel.registerCollectionElement('core/countdown', Countdown);

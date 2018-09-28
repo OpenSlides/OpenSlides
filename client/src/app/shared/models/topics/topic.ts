@@ -28,5 +28,3 @@ export class Topic extends AgendaBaseModel {
         return 'TODO';
     }
 }
-
-AgendaBaseModel.registerCollectionElement('topics/topic', Topic);

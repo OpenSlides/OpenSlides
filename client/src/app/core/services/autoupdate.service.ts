@@ -21,7 +21,11 @@ export class AutoupdateService extends OpenSlidesComponent {
      * Constructor to create the AutoupdateService. Calls the constructor of the parent class.
      * @param websocketService
      */
-    public constructor(websocketService: WebsocketService, private DS: DataStoreService) {
+    public constructor(
+        websocketService: WebsocketService,
+        private DS: DataStoreService,
+        private modelMapper: CollectionStringModelMapperService
+    ) {
         super();
         websocketService.getOberservable<any>('autoupdate').subscribe(response => {
             this.storeResponse(response);
@@ -61,7 +65,7 @@ export class AutoupdateService extends OpenSlidesComponent {
 
         // Add the objects to the DataStore.
         Object.keys(autoupdate.changed).forEach(collection => {
-            const targetClass = CollectionStringModelMapperService.getModelConstructor(collection);
+            const targetClass = this.modelMapper.getModelConstructor(collection);
             if (!targetClass) {
                 // TODO: throw an error later..
                 /*throw new Error*/ console.log(`Unregistered resource ${collection}`);

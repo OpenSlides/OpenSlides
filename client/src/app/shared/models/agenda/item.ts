@@ -56,5 +56,3 @@ export class Item extends ProjectableBaseModel {
         return this.getListTitle();
     }
 }
-
-ProjectableBaseModel.registerCollectionElement('agenda/item', Item);

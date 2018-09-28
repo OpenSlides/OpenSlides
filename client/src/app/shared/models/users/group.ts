@@ -17,5 +17,3 @@ export class Group extends BaseModel<Group> {
         return this.name;
     }
 }
-
-BaseModel.registerCollectionElement('users/group', Group);

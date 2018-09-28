@@ -18,5 +18,3 @@ export class ChatMessage extends BaseModel<ChatMessage> {
         return 'Chatmessage';
     }
 }
-
-BaseModel.registerCollectionElement('core/chat-message', ChatMessage);

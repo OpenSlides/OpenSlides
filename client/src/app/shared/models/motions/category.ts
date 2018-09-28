@@ -17,5 +17,3 @@ export class Category extends BaseModel<Category> {
         return this.prefix + ' - ' + this.name;
     }
 }
-
-BaseModel.registerCollectionElement('motions/category', Category);

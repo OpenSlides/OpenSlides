@@ -89,5 +89,3 @@ export class User extends ProjectableBaseModel {
         return this.short_name;
     }
 }
-
-ProjectableBaseModel.registerCollectionElement('users/user', User);

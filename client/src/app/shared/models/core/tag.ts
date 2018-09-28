@@ -16,5 +16,3 @@ export class Tag extends BaseModel<Tag> {
         return this.name;
     }
 }
-
-BaseModel.registerCollectionElement('core/tag', Tag);

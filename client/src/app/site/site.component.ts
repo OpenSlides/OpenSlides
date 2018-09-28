@@ -9,8 +9,7 @@ import { BaseComponent } from 'app/base.component';
 import { pageTransition, navItemAnim } from 'app/shared/animations';
 import { MatDialog, MatSidenav } from '@angular/material';
 import { ViewportService } from '../core/services/viewport.service';
-import { Projector } from '../shared/models/core/projector';
-import { Tag } from '../shared/models/core/tag';
+import { MainMenuService } from '../core/services/main-menu.service';
 
 @Component({
     selector: 'os-site',
@@ -51,7 +50,8 @@ export class SiteComponent extends BaseComponent implements OnInit {
         public operator: OperatorService,
         public vp: ViewportService,
         public translate: TranslateService,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        public mainMenuService: MainMenuService // used in the component
     ) {
         super();
 
@@ -75,11 +75,6 @@ export class SiteComponent extends BaseComponent implements OnInit {
         // this.translate.get('Motions').subscribe((res: string) => {
         //      console.log('translation of motions in the target language: ' + res);
         //  });
-
-        // tslint:disable-next-line
-        const p: Projector = new Projector(); // Needed, that the Projector.ts is loaded. Can be removed, if something else creates/uses projectors.
-        // tslint:disable-next-line
-        const t: Tag = new Tag(); // Needed, that the Tag.ts is loaded. Can be removed, if something else creates/uses tags.
     }
 
     /**

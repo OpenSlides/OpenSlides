@@ -1,8 +1,6 @@
 import { MotionSubmitter } from './motion-submitter';
 import { MotionLog } from './motion-log';
-import { Category } from './category';
 import { MotionComment } from './motion-comment';
-import { Workflow } from './workflow';
 import { AgendaBaseModel } from '../base/agenda-base-model';
 
 /**
@@ -99,10 +97,3 @@ export class Motion extends AgendaBaseModel {
         }
     }
 }
-
-/**
- * Hack to get them loaded at last
- */
-AgendaBaseModel.registerCollectionElement('motions/motion', Motion);
-AgendaBaseModel.registerCollectionElement('motions/category', Category);
-AgendaBaseModel.registerCollectionElement('motions/workflow', Workflow);

@@ -115,7 +115,7 @@ export class DataStoreService {
      * Empty constructor for dataStore
      * @param cacheService use CacheService to cache the DataStore.
      */
-    public constructor(private cacheService: CacheService) {
+    public constructor(private cacheService: CacheService, private modelMapper: CollectionStringModelMapperService) {
         if (DataStoreService.wasInstantiated) {
             throw new Error('The Datastore should just be instantiated once!');
         }
@@ -158,7 +158,7 @@ export class DataStoreService {
         const storage: ModelStorage = {};
         Object.keys(serializedStore).forEach(collectionString => {
             storage[collectionString] = {} as ModelCollection;
-            const target = CollectionStringModelMapperService.getModelConstructor(collectionString);
+            const target = this.modelMapper.getModelConstructor(collectionString);
             if (target) {
                 Object.keys(serializedStore[collectionString]).forEach(id => {
                     const data = JSON.parse(serializedStore[collectionString][id]);
@@ -186,7 +186,7 @@ export class DataStoreService {
         if (typeof collectionType === 'string') {
             return collectionType;
         } else {
-            return CollectionStringModelMapperService.getCollectionString(collectionType);
+            return this.modelMapper.getCollectionString(collectionType);
         }
     }
 

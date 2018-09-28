@@ -16,5 +16,3 @@ export class ProjectorMessage extends ProjectableBaseModel {
         return 'Projectormessage';
     }
 }
-
-ProjectableBaseModel.registerCollectionElement('core/projector-message', ProjectorMessage);

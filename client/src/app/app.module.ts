@@ -1,7 +1,7 @@
 // angular modules
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { HttpClientModule, HttpClient, HttpClientXsrfModule } from '@angular/common/http';
 
 // Elementary App Components
@@ -13,6 +13,7 @@ import { CoreModule } from './core/core.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { PruningTranslationLoader } from './core/pruning-loader';
 import { LoginModule } from './site/login/login.module';
+import { AppLoadService } from './core/services/app-load.service';
 
 /**
  * For the translation module. Loads a Custom 'translation loader' and provides it as loader.
@@ -21,6 +22,15 @@ import { LoginModule } from './site/login/login.module';
 export function HttpLoaderFactory(http: HttpClient): PruningTranslationLoader {
     return new PruningTranslationLoader(http);
 }
+
+/**
+ * Returns a function that returns a promis that will be resolved, if all apps are loaded.
+ * @param appLoadService The service that loads the apps.
+ */
+export function AppLoaderFactory(appLoadService: AppLoadService): () => Promise<void> {
+    return () => appLoadService.loadApps();
+}
+
 /**
  * Global App Module. Keep it as clean as possible.
  */
@@ -45,6 +55,7 @@ export function HttpLoaderFactory(http: HttpClient): PruningTranslationLoader {
         CoreModule,
         LoginModule
     ],
+    providers: [{ provide: APP_INITIALIZER, useFactory: AppLoaderFactory, deps: [AppLoadService], multi: true }],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

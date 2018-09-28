@@ -5,11 +5,10 @@ import { BaseComponent } from 'app/base.component';
 import { TranslateService } from '@ngx-translate/core'; // showcase
 
 // for testing the DS and BaseModel
-import { User } from 'app/shared/models/users/user';
-import { Config } from '../../shared/models/core/config';
-import { Motion } from '../../shared/models/motions/motion';
-import { MotionSubmitter } from '../../shared/models/motions/motion-submitter';
-import { DataStoreService } from '../../core/services/data-store.service';
+import { Config } from '../../../../shared/models/core/config';
+import { Motion } from '../../../../shared/models/motions/motion';
+import { MotionSubmitter } from '../../../../shared/models/motions/motion-submitter';
+import { DataStoreService } from '../../../../core/services/data-store.service';
 
 @Component({
     selector: 'os-start',
@@ -72,36 +71,6 @@ export class StartComponent extends BaseComponent implements OnInit {
                 }
             }
         });
-    }
-
-    /**
-     * test data store
-     */
-    public DataStoreTest(): void {
-        console.log('add a user to dataStore');
-        this.DS.add(new User({ id: 100 }));
-        console.log('add three users to dataStore');
-        this.DS.add(new User({ id: 200 }), new User({ id: 201 }), new User({ id: 202 }));
-        console.log('use the spread operator "..." to add an array');
-        const userArray = [];
-        for (let i = 300; i < 400; i++) {
-            userArray.push(new User({ id: i }));
-        }
-        this.DS.add(...userArray);
-
-        console.log('try to get user with ID 1:');
-        const user1fromStore = this.DS.get<User>(User, 1);
-        console.log('the user: ', user1fromStore);
-
-        console.log('remove a single user:');
-        this.DS.remove('users/user', 100);
-        console.log('remove more users');
-        this.DS.remove('users/user', 200, 201, 202);
-        console.log('remove an array of users');
-        this.DS.remove('users/user', ...[321, 363, 399]);
-
-        console.log('test filter: ');
-        console.log(this.DS.filter<User>(User, user => user.id === 1));
     }
 
     /**
