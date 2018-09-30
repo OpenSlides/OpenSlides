@@ -1,0 +1,9 @@
+.wide-form {
+    textarea {
+        height: 100px;
+    }
+
+    ::ng-deep {
+        width: 100%;
+    }
+}

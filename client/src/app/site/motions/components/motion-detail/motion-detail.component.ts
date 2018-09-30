@@ -1,19 +1,27 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatExpansionPanel } from '@angular/material';
+import { MatDialog, MatExpansionPanel } from '@angular/material';
 
 import { BaseComponent } from '../../../../base.component';
 import { Category } from '../../../../shared/models/motions/category';
 import { ViewportService } from '../../../../core/services/viewport.service';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
-import { LineNumbering, ViewMotion } from '../../models/view-motion';
+import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../../models/view-motion';
 import { User } from '../../../../shared/models/users/user';
 import { DataStoreService } from '../../../../core/services/data-store.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Motion } from '../../../../shared/models/motions/motion';
 import { BehaviorSubject } from 'rxjs';
-import { SafeHtml } from '@angular/platform-browser';
+import { LineRange } from '../../services/diff.service';
+import {
+    MotionChangeRecommendationComponent,
+    MotionChangeRecommendationComponentData
+} from '../motion-change-recommendation/motion-change-recommendation.component';
+import { ChangeRecommendationRepositoryService } from '../../services/change-recommendation-repository.service';
+import { ViewChangeReco } from '../../models/view-change-reco';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ViewUnifiedChange } from '../../models/view-unified-change';
 
 /**
  * Component for the motion detail view
@@ -69,6 +77,16 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     public motionCopy: ViewMotion;
 
     /**
+     * All change recommendations to this motion
+     */
+    public changeRecommendations: ViewChangeReco[];
+
+    /**
+     * All change recommendations AND amendments, sorted by line number.
+     */
+    public allChangingObjects: ViewUnifiedChange[];
+
+    /**
      * Subject for the Categories
      */
     public categoryObserver: BehaviorSubject<Array<Category>>;
@@ -84,13 +102,22 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     public supporterObserver: BehaviorSubject<Array<User>>;
 
     /**
+     * Value for os-motion-detail-diff: when this is set, that component scrolls to the given change
+     */
+    public scrollToChange: ViewUnifiedChange = null;
+
+    /**
      * Constuct the detail view.
      *
      * @param vp the viewport service
      * @param router to navigate back to the motion list and to an existing motion
      * @param route determine if this is a new or an existing motion
      * @param formBuilder For reactive forms. Form Group and Form Control
+     * @param dialogService For opening dialogs
      * @param repo: Motion Repository
+     * @param changeRecoRepo: Change Recommendation Repository
+     * @param DS: The DataStoreService
+     * @param sanitizer: For making HTML SafeHTML
      * @param translate: Translation Service
      */
     public constructor(
@@ -98,8 +125,11 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
+        private dialogService: MatDialog,
         private repo: MotionRepositoryService,
+        private changeRecoRepo: ChangeRecommendationRepositoryService,
         private DS: DataStoreService,
+        private sanitizer: DomSanitizer,
         protected translate: TranslateService
     ) {
         super();
@@ -119,6 +149,12 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
                 this.repo.getViewModelObservable(params.id).subscribe(newViewMotion => {
                     this.motion = newViewMotion;
                 });
+                this.changeRecoRepo
+                    .getChangeRecosOfMotionObservable(parseInt(params.id, 10))
+                    .subscribe((recos: ViewChangeReco[]) => {
+                        this.changeRecommendations = recos;
+                        this.recalcUnifiedChanges();
+                    });
             });
         }
         // Initial Filling of the Subjects
@@ -134,6 +170,24 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
             }
             if (newModel instanceof Category) {
                 this.categoryObserver.next(DS.getAll(Category));
+            }
+        });
+    }
+
+    /**
+     * Merges amendments and change recommendations and sorts them by the line numbers.
+     * Called each time one of these arrays changes.
+     */
+    private recalcUnifiedChanges(): void {
+        // @TODO implement amendments
+        this.allChangingObjects = this.changeRecommendations;
+        this.allChangingObjects.sort((a: ViewUnifiedChange, b: ViewUnifiedChange) => {
+            if (a.getLineFrom() < b.getLineFrom()) {
+                return -1;
+            } else if (a.getLineFrom() > b.getLineFrom()) {
+                return 1;
+            } else {
+                return 0;
             }
         });
     }
@@ -216,13 +270,23 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * get the formated motion text from the repository.
      */
-    public getFormattedText(): SafeHtml {
+    public getFormattedTextPlain(): string {
+        // Prevent this.allChangingObjects to be reordered from within formatMotion
+        const changes: ViewUnifiedChange[] = Object.assign([], this.allChangingObjects);
         return this.repo.formatMotion(
             this.motion.id,
             this.motion.crMode,
+            changes,
             this.motion.lineLength,
             this.motion.highlightedLine
         );
+    }
+
+    /**
+     * get the formated motion text from the repository, as SafeHTML for [innerHTML]
+     */
+    public getFormattedText(): SafeHtml {
+        return this.sanitizer.bypassSecurityTrustHtml(this.getFormattedTextPlain());
     }
 
     /**
@@ -270,7 +334,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * Sets the motions line numbering mode
      * @param mode Needs to fot to the enum defined in ViewMotion
      */
-    public setLineNumberingMode(mode: LineNumbering): void {
+    public setLineNumberingMode(mode: LineNumberingMode): void {
         this.motion.lnMode = mode;
     }
 
@@ -278,21 +342,21 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * Returns true if no line numbers are to be shown.
      */
     public isLineNumberingNone(): boolean {
-        return this.motion.lnMode === LineNumbering.None;
+        return this.motion.lnMode === LineNumberingMode.None;
     }
 
     /**
      * Returns true if the line numbers are to be shown within the text with no line breaks.
      */
     public isLineNumberingInline(): boolean {
-        return this.motion.lnMode === LineNumbering.Inside;
+        return this.motion.lnMode === LineNumberingMode.Inside;
     }
 
     /**
      * Returns true if the line numbers are to be shown to the left of the text.
      */
     public isLineNumberingOutside(): boolean {
-        return this.motion.lnMode === LineNumbering.Outside;
+        return this.motion.lnMode === LineNumberingMode.Outside;
     }
 
     /**
@@ -301,6 +365,48 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      */
     public setChangeRecoMode(mode: number): void {
         this.motion.crMode = mode;
+    }
+
+    /**
+     * Returns true if the original version (including change recommendation annotation) is to be shown
+     */
+    public isRecoModeOriginal(): boolean {
+        return this.motion.crMode === ChangeRecoMode.Original;
+    }
+
+    /**
+     * Returns true if the diff version is to be shown
+     */
+    public isRecoModeDiff(): boolean {
+        return this.motion.crMode === ChangeRecoMode.Diff;
+    }
+
+    /**
+     * In the original version, a line number range has been selected in order to create a new change recommendation
+     *
+     * @param lineRange
+     */
+    public createChangeRecommendation(lineRange: LineRange): void {
+        const data: MotionChangeRecommendationComponentData = {
+            editChangeRecommendation: false,
+            newChangeRecommendation: true,
+            lineRange: lineRange,
+            changeRecommendation: this.repo.createChangeRecommendationTemplate(this.motion.id, lineRange)
+        };
+        this.dialogService.open(MotionChangeRecommendationComponent, {
+            height: '400px',
+            width: '600px',
+            data: data
+        });
+    }
+
+    /**
+     * In the original version, a change-recommendation-annotation has been clicked
+     * -> Go to the diff view and scroll to the change recommendation
+     */
+    public gotoChangeRecommendation(changeRecommendation: ViewChangeReco): void {
+        this.scrollToChange = changeRecommendation;
+        this.setChangeRecoMode(ChangeRecoMode.Diff);
     }
 
     /**

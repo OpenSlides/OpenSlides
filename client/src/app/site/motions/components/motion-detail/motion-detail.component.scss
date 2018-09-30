@@ -166,12 +166,14 @@ mat-expansion-panel {
 // which doesn't have the [ngcontent]-attributes necessary for regular styles.
 // An alternative approach (in case ::ng-deep gets removed) might be to change the view encapsulation.
 :host ::ng-deep .motion-text {
-    ins {
+    ins,
+    .insert {
         color: green;
         text-decoration: underline;
     }
 
-    del {
+    del,
+    .delete {
         color: red;
         text-decoration: line-through;
     }
@@ -211,6 +213,20 @@ mat-expansion-panel {
                 color: gray;
                 font-size: 12px;
                 font-weight: normal;
+            }
+
+            &.selectable:hover:before,
+            &.selected:before {
+                position: absolute;
+                top: 4px;
+                left: 20px;
+                display: inline-block;
+                cursor: pointer;
+                content: '';
+                width: 16px;
+                height: 16px;
+                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="%23337ab7"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+                background-size: 16px 16px;
             }
         }
     }

@@ -50,7 +50,7 @@
     <mat-accordion multi='true' class='on-transition-fade'>
 
         <!-- MetaInfo Panel-->
-        <mat-expansion-panel #metaInfoPanel [expanded]='this.editMotion && this.newMotion' class='meta-info-block meta-info-panel'>
+        <mat-expansion-panel #metaInfoPanel [expanded]="this.editReco && this.newReco" class='meta-info-block meta-info-panel'>
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <mat-icon>info</mat-icon>
@@ -275,12 +275,27 @@
         <!-- Text -->
         <!-- TODO: this is a config variable. Read it out -->
         <h3 translate>The assembly may decide:</h3>
-        <div *ngIf='motion && !editMotion' class="motion-text"
-             [class.line-numbers-none]="isLineNumberingNone()"
-             [class.line-numbers-inline]="isLineNumberingInline()"
-             [class.line-numbers-outside]="isLineNumberingOutside()">
-            <div [innerHtml]="getFormattedText()"></div>
-        </div>
+        <ng-container *ngIf='motion && !editMotion'>
+            <div *ngIf="!isRecoModeDiff()" class="motion-text"
+                 [class.line-numbers-none]="isLineNumberingNone()"
+                 [class.line-numbers-inline]="isLineNumberingInline()"
+                 [class.line-numbers-outside]="isLineNumberingOutside()">
+                <os-motion-detail-original-change-recommendations
+                        *ngIf="isLineNumberingOutside() && isRecoModeOriginal()"
+                        [html]="getFormattedTextPlain()"
+                        [changeRecommendations]="changeRecommendations"
+                        (createChangeRecommendation)="createChangeRecommendation($event)"
+                        (gotoChangeRecommendation)="gotoChangeRecommendation($event)"
+                ></os-motion-detail-original-change-recommendations>
+                <div *ngIf="!isLineNumberingOutside() || !isRecoModeOriginal()" [innerHTML]="getFormattedText()"></div>
+            </div>
+            <os-motion-detail-diff *ngIf="isRecoModeDiff()"
+                                   [motion]="motion"
+                                   [changes]="allChangingObjects"
+                                   [scrollToChange]="scrollToChange"
+                                   (createChangeRecommendation)="createChangeRecommendation($event)"
+            ></os-motion-detail-diff>
+        </ng-container>
         <mat-form-field *ngIf="motion && editMotion" class="wide-form">
             <textarea matInput placeholder='Motion Text' formControlName='text' [value]='motionCopy.text'></textarea>
         </mat-form-field>

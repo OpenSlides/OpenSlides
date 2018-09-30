@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LinenumberingService } from './linenumbering.service';
+import { ViewMotion } from '../models/view-motion';
+import { ViewUnifiedChange } from '../models/view-unified-change';
 
 const ELEMENT_NODE = 1;
 const TEXT_NODE = 3;
@@ -99,7 +101,7 @@ interface ExtractedContent {
 /**
  * An object specifying a range of line numbers.
  */
-interface LineRange {
+export interface LineRange {
     /**
      * The first line number to be included.
      */
@@ -173,10 +175,16 @@ interface LineRange {
     providedIn: 'root'
 })
 export class DiffService {
+    // @TODO Decide on a more sophisticated implementation
     private diffCache = {
-        get: (key: string) => undefined,
-        put: (key: string, val: any) => undefined
-    }; // @TODO
+        _cache: {},
+        get: (key: string): any => {
+            return this.diffCache._cache[key] === undefined ? null : this.diffCache._cache[key];
+        },
+        put: (key: string, val: any): void => {
+            this.diffCache._cache[key] = val;
+        }
+    };
 
     /**
      * Creates the DiffService.
@@ -1982,5 +1990,42 @@ export class DiffService {
 
         this.diffCache.put(cacheKey, diff);
         return diff;
+    }
+
+    /**
+     * Applies all given changes to the motion and returns the (line-numbered) text
+     *
+     * @param {ViewMotion} motion
+     * @param {ViewUnifiedChange[]} changes
+     * @param {number} lineLength
+     * @param {number} highlightLine
+     */
+    public getTextWithChanges(
+        motion: ViewMotion,
+        changes: ViewUnifiedChange[],
+        lineLength: number,
+        highlightLine: number
+    ): string {
+        let html = motion.text;
+
+        // Changes need to be applied from the bottom up, to prevent conflicts with changing line numbers.
+        changes.sort((change1: ViewUnifiedChange, change2: ViewUnifiedChange) => {
+            if (change1.getLineFrom() < change2.getLineFrom()) {
+                return 1;
+            } else if (change1.getLineFrom() > change2.getLineFrom()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+
+        changes.forEach((change: ViewUnifiedChange) => {
+            html = this.lineNumberingService.insertLineNumbers(html, lineLength, null, null, 1);
+            html = this.replaceLines(html, change.getChangeNewText(), change.getLineFrom(), change.getLineTo());
+        });
+
+        html = this.lineNumberingService.insertLineNumbers(html, lineLength, highlightLine, null, 1);
+
+        return html;
     }
 }

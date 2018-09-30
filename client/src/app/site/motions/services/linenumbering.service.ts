@@ -90,14 +90,19 @@ interface SectionHeading {
 })
 export class LinenumberingService {
     /**
-     * @TODO
+     * @TODO Decide on a more sophisticated implementation
      * This is just a stub for a caching system. The original code from Angular1 was:
      * var lineNumberCache = $cacheFactory('linenumbering.service');
      * This should be replaced by a real cache once we have decided on a caching service for OpenSlides 3
      */
     private lineNumberCache = {
-        get: (key: string) => undefined,
-        put: (key: string, val: any) => undefined
+        _cache: {},
+        get: (key: string): any => {
+            return this.lineNumberCache._cache[key] === undefined ? null : this.lineNumberCache._cache[key];
+        },
+        put: (key: string, val: any): void => {
+            this.lineNumberCache._cache[key] = val;
+        }
     };
 
     // Counts the number of characters in the current line, beyond singe nodes.

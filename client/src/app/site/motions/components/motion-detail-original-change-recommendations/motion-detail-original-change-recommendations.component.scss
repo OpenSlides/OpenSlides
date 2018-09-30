@@ -1,0 +1,38 @@
+.change-recommendation-list {
+    position: absolute;
+    top: 0;
+    left: -25px;
+    width: 4px;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+
+    & > li {
+        position: absolute;
+        width: 4px;
+        left: 0;
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+
+        &.insert {
+            background-color: #00aa00;
+        }
+
+        &.delete {
+            background-color: #aa0000;
+        }
+
+        &.replace {
+            background-color: #0333ff;
+        }
+
+        &.other {
+            background-color: #777777;
+        }
+    }
+
+    .tooltip {
+        display: none;
+    }
+}

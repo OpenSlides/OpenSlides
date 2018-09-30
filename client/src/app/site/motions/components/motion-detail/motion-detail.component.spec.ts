@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MotionDetailComponent } from './motion-detail.component';
 import { E2EImportsModule } from '../../../../../e2e-imports.module';
+import { MotionsModule } from '../../motions.module';
 
 describe('MotionDetailComponent', () => {
     let component: MotionDetailComponent;
@@ -9,8 +10,8 @@ describe('MotionDetailComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            declarations: [MotionDetailComponent]
+            imports: [E2EImportsModule, MotionsModule],
+            declarations: []
         }).compileComponents();
     }));
 
