@@ -13,6 +13,7 @@ import { WebsocketService } from './services/websocket.service';
 import { AddHeaderInterceptor } from './http-interceptor';
 import { DataSendService } from './services/data-send.service';
 import { ViewportService } from './services/viewport.service';
+import { PromptDialogComponent } from '../shared/components/prompt-dialog/prompt-dialog.component';
 
 /** Global Core Module. Contains all global (singleton) services
  *
@@ -34,7 +35,8 @@ import { ViewportService } from './services/viewport.service';
             useClass: AddHeaderInterceptor,
             multi: true
         }
-    ]
+    ],
+    entryComponents: [PromptDialogComponent]
 })
 export class CoreModule {
     /** make sure CoreModule is imported only by one NgModule, the AppModule */

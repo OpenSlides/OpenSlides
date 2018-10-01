@@ -42,6 +42,10 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         {
             text: 'Categories',
             action: 'toCategories'
+        },
+        {
+            text: 'Motion comment sections',
+            action: 'toMotionCommentSections'
         }
     ];
 
@@ -128,6 +132,13 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      */
     public toCategories(): void {
         this.router.navigate(['./category'], { relativeTo: this.route });
+    }
+
+    /**
+     * navigate to 'motion/comment-section'
+     */
+    public toMotionCommentSections(): void {
+        this.router.navigate(['./comment-section'], { relativeTo: this.route });
     }
 
     /**

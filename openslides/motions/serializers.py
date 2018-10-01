@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as _
 
 from ..poll.serializers import default_votes_validator
 from ..utils.auth import get_group_model
+from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
     CharField,
     DecimalField,
@@ -313,6 +314,12 @@ class MotionCommentSectionSerializer(ModelSerializer):
             'name',
             'read_groups',
             'write_groups',)
+
+    def create(self, validated_data):
+        """ Call inform_changed_data on creation, so the cache includes the groups. """
+        section = super().create(validated_data)
+        inform_changed_data(section)
+        return section
 
 
 class MotionCommentSerializer(ModelSerializer):
