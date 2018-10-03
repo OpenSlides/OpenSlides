@@ -10,6 +10,8 @@ import { ViewMotion } from '../models/view-motion';
 import { Observable } from 'rxjs';
 import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
+import { LinenumberingService } from './linenumbering.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -30,9 +32,16 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      *
      * Converts existing and incoming motions to ViewMotions
      * Handles CRUD using an observer to the DataStore
-     * @param DataSend
+     * @param DS
+     * @param dataSend
+     * @param lineNumbering
      */
-    public constructor(DS: DataStoreService, private dataSend: DataSendService) {
+    public constructor(
+        DS: DataStoreService,
+        private dataSend: DataSendService,
+        private readonly lineNumbering: LinenumberingService,
+        private readonly sanitizer: DomSanitizer
+    ) {
         super(DS, Motion, [Category, User, Workflow]);
     }
 
@@ -102,30 +111,20 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * Format the motion text using the line numbering and change
      * reco algorithm.
      *
-     * TODO: Call DiffView and LineNumbering Service here.
+     * TODO: Call DiffView Service here.
      *
      * Can be called from detail view and exporter
      * @param id Motion ID - will be pulled from the repository
-     * @param lnMode indicator for the line numbering mode
      * @param crMode indicator for the change reco mode
+     * @param lineLength the current line
+     * @param highlightLine the currently highlighted line (default: none)
      */
-    public formatMotion(id: number, lnMode: number, crMode: number): string {
+    public formatMotion(id: number, crMode: number, lineLength: number, highlightLine?: number): SafeHtml {
         const targetMotion = this.getViewModel(id);
 
         if (targetMotion && targetMotion.text) {
             let motionText = targetMotion.text;
-
-            // TODO : Use Line numbering service here
-            switch (lnMode) {
-                case 0: // no line numbers
-                    break;
-                case 1: // line number inside
-                    motionText = 'Get line numbers outside';
-                    break;
-                case 2: // line number outside
-                    motionText = 'Get line numbers inside';
-                    break;
-            }
+            motionText = this.lineNumbering.insertLineNumbers(motionText, lineLength, highlightLine);
 
             // TODO : Use Diff Service here.
             //        this will(currently) append the previous changes.
@@ -144,7 +143,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                     break;
             }
 
-            return motionText;
+            return this.sanitizer.bypassSecurityTrustHtml(motionText);
         } else {
             return null;
         }
