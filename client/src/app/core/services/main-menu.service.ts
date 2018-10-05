@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 /**
  * This represents one entry in the main menu
@@ -42,6 +43,12 @@ export class MainMenuService {
     private _entries: MainMenuEntry[] = [];
 
     /**
+     * Observed by the site component.
+     * If a new value appears the sideNavContainer gets toggled
+     */
+    public toggleMenuSubject = new Subject<void>();
+
+    /**
      * Make the entries public.
      */
     public get entries(): MainMenuEntry[] {
@@ -57,5 +64,12 @@ export class MainMenuService {
     public registerEntries(entries: MainMenuEntry[]): void {
         this._entries.push(...entries);
         this._entries = this._entries.sort((a, b) => a.weight - b.weight);
+    }
+
+    /**
+     * Emit signal to toggle the main Menu
+     */
+    public toggleMenu(): void {
+        this.toggleMenuSubject.next();
     }
 }

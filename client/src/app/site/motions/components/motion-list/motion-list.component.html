@@ -1,5 +1,15 @@
-<os-head-bar appName="Motions" plusButton=true (plusButtonClicked)=onPlusButton() [menuList]=motionMenuList
-    (ellipsisMenuItem)=onEllipsisItem($event)>
+<os-head-bar plusButton=true (plusButtonClicked)=onPlusButton()>
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 translate>Motions</h2>
+    </div>
+
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="motionListMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
 </os-head-bar>
 
 <div class='custom-table-header on-transition-fade'>
@@ -52,3 +62,27 @@
 </mat-table>
 
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+
+<mat-menu #motionListMenu="matMenu">
+
+    <button mat-menu-item (click)="downloadMotions()">
+        <mat-icon>archive</mat-icon>
+        <span translate>Export ...</span>
+    </button>
+
+    <button mat-menu-item routerLink="category">
+        <mat-icon>device_hub</mat-icon>
+        <span translate>Categories</span>
+    </button>
+
+    <button mat-menu-item routerLink="comment-section">
+        <mat-icon>speaker_notes</mat-icon>
+        <span translate>Comments</span>
+    </button>
+
+    <button mat-menu-item routerLink="statute-paragraphs">
+        <mat-icon>account_balance</mat-icon>
+        <span translate>Statute paragrpahs</span>
+    </button>
+
+</mat-menu>

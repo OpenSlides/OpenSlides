@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { MatTableDataSource } from '@angular/material';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { GroupRepositoryService } from '../../services/group-repository.service';
 import { ViewGroup } from '../../models/view-group';
@@ -43,6 +43,9 @@ export class GroupListComponent extends BaseComponent implements OnInit {
      */
     public selectedGroup: ViewGroup;
 
+    @ViewChild('groupForm')
+    public groupForm: FormGroup;
+
     /**
      * Constructor
      *
@@ -55,25 +58,42 @@ export class GroupListComponent extends BaseComponent implements OnInit {
         super(titleService, translate);
     }
 
+    public setEditMode(mode: boolean, newGroup: boolean = true): void {
+        this.editGroup = mode;
+        this.newGroup = newGroup;
+
+        if (!mode) {
+            this.cancelEditing();
+        }
+    }
+
+    public saveGroup(): void {
+        if (this.editGroup && this.newGroup) {
+            this.submitNewGroup();
+        } else if (this.editGroup && !this.newGroup) {
+            this.submitEditedGroup();
+        }
+    }
+
     /**
-     * Trigger for the new Group button
+     * Select group in head bar
      */
-    public newGroupButton(): void {
-        this.editGroup = false;
-        this.newGroup = !this.newGroup;
+    public selectGroup(group: ViewGroup): void {
+        this.selectedGroup = group;
+        this.setEditMode(true, false);
+        this.groupForm.setValue({ name: this.selectedGroup.name });
     }
 
     /**
      * Saves a newly created group.
      * @param form form data given by the group
      */
-    public submitNewGroup(form: FormGroup): void {
-        if (form.value) {
-            this.repo.create(form.value).subscribe(response => {
+    public submitNewGroup(): void {
+        if (this.groupForm.value && this.groupForm.valid) {
+            this.repo.create(this.groupForm.value).subscribe(response => {
                 if (response) {
-                    form.reset();
-                    // commenting the next line would allow to create multiple groups without reopening the form
-                    this.newGroup = false;
+                    this.groupForm.reset();
+                    this.cancelEditing();
                 }
             });
         }
@@ -83,9 +103,9 @@ export class GroupListComponent extends BaseComponent implements OnInit {
      * Saves an edited group.
      * @param form form data given by the group
      */
-    public submitEditedGroup(form: FormGroup): void {
-        if (form.value) {
-            const updateData = new Group({ name: form.value.name });
+    public submitEditedGroup(): void {
+        if (this.groupForm.value && this.groupForm.valid) {
+            const updateData = new Group({ name: this.groupForm.value.name });
 
             this.repo.update(updateData, this.selectedGroup).subscribe(response => {
                 if (response) {
@@ -106,16 +126,9 @@ export class GroupListComponent extends BaseComponent implements OnInit {
      * Cancel the editing
      */
     public cancelEditing(): void {
-        this.editGroup = false;
-    }
-
-    /**
-     * Select group in head bar
-     */
-    public selectGroup(group: ViewGroup): void {
         this.newGroup = false;
-        this.selectedGroup = group;
-        this.editGroup = true;
+        this.editGroup = false;
+        this.groupForm.reset();
     }
 
     /**
@@ -182,6 +195,7 @@ export class GroupListComponent extends BaseComponent implements OnInit {
      */
     public ngOnInit(): void {
         super.setTitle('Groups');
+        this.groupForm = new FormGroup({ name: new FormControl('', Validators.required) });
         this.repo.getViewModelListObservable().subscribe(newViewGroups => {
             if (newViewGroups) {
                 this.groups = newViewGroups;

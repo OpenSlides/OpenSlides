@@ -31,30 +31,6 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     public columnsToDisplayFullWidth = ['identifier', 'title', 'meta', 'state'];
 
     /**
-     * content of the ellipsis menu
-     */
-    public motionMenuList = [
-        {
-            text: 'Download',
-            icon: 'save_alt',
-            action: 'downloadMotions'
-        },
-        {
-            text: 'Categories',
-            action: 'toCategories'
-        },
-        {
-            text: 'Motion comment sections',
-            action: 'toMotionCommentSections'
-        },
-        {
-            text: 'Statute paragrpahs',
-            action: 'toStatuteParagraphs',
-            perm: 'motions.can_manage'
-        }
-    ];
-
-    /**
      * Constructor implements title and translation Module.
      *
      * @param titleService Title
@@ -130,27 +106,6 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      */
     public onPlusButton(): void {
         this.router.navigate(['./new'], { relativeTo: this.route });
-    }
-
-    /**
-     * navigate to 'motion/category'
-     */
-    public toCategories(): void {
-        this.router.navigate(['./category'], { relativeTo: this.route });
-    }
-
-    /**
-     * navigate to 'motion/comment-section'
-     */
-    public toMotionCommentSections(): void {
-        this.router.navigate(['./comment-section'], { relativeTo: this.route });
-    }
-
-    /**
-     * navigate to 'motion/statute-paragraphs'
-     */
-    public toStatuteParagraphs(): void {
-        this.router.navigate(['./statute-paragraphs'], { relativeTo: this.route });
     }
 
     /**

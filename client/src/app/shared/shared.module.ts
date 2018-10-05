@@ -40,6 +40,7 @@ import { TranslateModule } from '@ngx-translate/core';
 // directives
 import { PermsDirective } from './directives/perms.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
+import { AutofocusDirective } from './directives/autofocus.directive';
 
 // components
 import { HeadBarComponent } from './components/head-bar/head-bar.component';
@@ -127,6 +128,7 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
         TranslateModule,
         PermsDirective,
         DomChangeDirective,
+        AutofocusDirective,
         FooterComponent,
         HeadBarComponent,
         SearchValueSelectorComponent,
@@ -137,6 +139,7 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
     declarations: [
         PermsDirective,
         DomChangeDirective,
+        AutofocusDirective,
         HeadBarComponent,
         FooterComponent,
         LegalNoticeContentComponent,

@@ -86,7 +86,7 @@ export class ViewMotion extends BaseViewModel {
         return this._category;
     }
 
-    public get categoryId(): number {
+    public get category_id(): number {
         return this.motion && this.category ? this.motion.category_id : null;
     }
 
@@ -94,7 +94,7 @@ export class ViewMotion extends BaseViewModel {
         return this._submitters;
     }
 
-    public get submitterIds(): number[] {
+    public get submitters_id(): number[] {
         return this.motion ? this.motion.submitters_id : null;
     }
 
@@ -102,7 +102,7 @@ export class ViewMotion extends BaseViewModel {
         return this._supporters;
     }
 
-    public get supporterIds(): number[] {
+    public get supporters_id(): number[] {
         return this.motion ? this.motion.supporters_id : null;
     }
 
@@ -114,11 +114,11 @@ export class ViewMotion extends BaseViewModel {
         return this._state;
     }
 
-    public get stateId(): number {
+    public get state_id(): number {
         return this.motion && this.motion.state_id ? this.motion.state_id : null;
     }
 
-    public get recommendationId(): number {
+    public get recommendation_id(): number {
         return this.motion && this.motion.recommendation_id ? this.motion.recommendation_id : null;
     }
 
@@ -134,7 +134,7 @@ export class ViewMotion extends BaseViewModel {
     }
 
     public get recommendation(): WorkflowState {
-        return this.recommendationId && this.workflow ? this.workflow.getStateById(this.recommendationId) : null;
+        return this.recommendation_id && this.workflow ? this.workflow.getStateById(this.recommendation_id) : null;
     }
 
     public get origin(): string {

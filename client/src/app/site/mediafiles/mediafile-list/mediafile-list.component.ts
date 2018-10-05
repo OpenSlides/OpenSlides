@@ -18,18 +18,6 @@ import { ListViewBaseComponent } from '../../base/list-view-base';
 })
 export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile> implements OnInit {
     /**
-     * Define the content of the ellipsis menu.
-     * Give it to the HeadBar to display them.
-     */
-    public extraMenu = [
-        {
-            text: 'Download',
-            icon: 'save_alt',
-            action: 'downloadAllFiles'
-        }
-    ];
-
-    /**
      * Constructor
      *
      * @param repo the repository for files

@@ -1,48 +1,66 @@
-<mat-toolbar color='primary'>
+<os-head-bar [nav]="false" [backButton]=true [allowEdit]="opCanEdit()" [editMode]="editMotion" (editEvent)="setEditMode($event)"
+    (saveEvent)="saveMotion()">
 
-    <button (click)='editMotionButton()' [ngClass]="{'save-button': editMotion}" class='generic-mini-button on-transition-fade'
-        mat-mini-fab>
-        <mat-icon *ngIf="!editMotion">add</mat-icon>
-        <mat-icon *ngIf="editMotion">check</mat-icon>
-    </button>
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 *ngIf="motion && !newMotion">
+            <span translate>Motion</span>
+            <!-- Whitespace between "Motion" and identifier -->
+            <span>&nbsp;</span>
+            <span *ngIf="!editMotion">{{ motion.identifier }}</span>
+            <span *ngIf="editMotion">{{ metaInfoForm.get("identifier").value }}</span>
+        </h2>
+        <h2 *ngIf="newMotion" translate>
+            New motion
+        </h2>
+    </div>
 
-    <div class='motion-title on-transition-fade'>
-        <span *ngIf="newMotion">New </span>
-        <span translate>Motion</span>
-        <span *ngIf="motion && !editMotion"> {{motion.identifier}}</span>
-        <span *ngIf="editMotion && !newMotion"> {{metaInfoForm.get('identifier').value}}</span>
-        <span>:</span>
-        <span *ngIf="motion && !editMotion"> {{motion.title}}</span>
-        <span *ngIf="editMotion"> {{contentForm.get('title').value}}</span>
-        <br>
-        <div *ngIf="motion && !newMotion" class='motion-submitter'>
-            <span translate>by</span> {{motion.submitters}}
+    <!-- Back and forth buttons-->
+    <div *ngIf="!editMotion" class="extra-controls-slot on-transition-fade">
+        <div *ngIf="previousMotion">
+            <button mat-button (click)="navigateToMotion(previousMotion)">
+                <mat-icon>navigate_before</mat-icon>
+                <span>{{ previousMotion.identifier }}</span>
+            </button>
+        </div>
+        <div *ngIf="nextMotion">
+            <button mat-button (click)="navigateToMotion(nextMotion)">
+                <span>{{ nextMotion.identifier }}</span>
+                <mat-icon>navigate_next</mat-icon>
+            </button>
         </div>
     </div>
-    <span class='spacer'></span>
 
-    <!-- Button on the right-->
-    <div *ngIf="editMotion">
-        <button (click)='cancelEditMotionButton()' class='on-transition-fade' color="warn" mat-raised-button>
-            <span translate>Cancel</span>
-            <mat-icon class="icon-text-distance">cancel</mat-icon>
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="motionExtraMenu">
+            <mat-icon>more_vert</mat-icon>
         </button>
     </div>
-    <div *ngIf="!editMotion">
-        <button class='on-transition-fade' mat-icon-button [matMenuTriggerFor]="motionExtraMenu">
-            <mat-icon icon>more_vert</mat-icon>
-        </button>
-    </div>
-
 
     <mat-menu #motionExtraMenu="matMenu">
-        <!-- TODO: the functions for the buttons -->
-        <button mat-menu-item translate>Export As...</button>
-        <button mat-menu-item translate>Project</button>
+        <button mat-menu-item>
+            <mat-icon>picture_as_pdf</mat-icon>
+            <span translate>PDF</span>
+        </button>
+        <button mat-menu-item>
+            <!-- possible icons: screen_share, cast, videocam -->
+            <mat-icon>videocam</mat-icon>
+            <span translate>Project</span>
+        </button>
         <mat-divider></mat-divider>
-        <button mat-menu-item class='red-warning-text' (click)='deleteMotionButton()' translate>DeleteMotion</button>
+        <button mat-menu-item class='red-warning-text' (click)='deleteMotionButton()'>
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete</span>
+        </button>
     </mat-menu>
-</mat-toolbar>
+</os-head-bar>
+
+<!-- Title -->
+<div *ngIf="motion" class="motion-title on-transition-fade">
+    <h2 *ngIf="!editMotion">{{ motion.title }}</h2>
+    <h2 *ngIf="editMotion">{{ contentForm.get("title").value }}</h2>
+</div>
 
 <ng-container *ngIf="vp.isMobile ; then mobileView; else desktopView"></ng-container>
 
@@ -50,7 +68,8 @@
     <mat-accordion multi='true' class='on-transition-fade'>
 
         <!-- MetaInfo Panel-->
-        <mat-expansion-panel #metaInfoPanel [expanded]="this.editReco && this.newReco" class='meta-info-block meta-info-panel'>
+        <mat-expansion-panel #metaInfoPanel [expanded]="this.editMotion" class='meta-info-block meta-info-panel'>
+            <!-- <mat-expansion-panel #metaInfoPanel [expanded]="this.editReco && this.newReco" class='meta-info-block meta-info-panel'> -->
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <mat-icon>info</mat-icon>
@@ -76,7 +95,7 @@
         </mat-expansion-panel>
 
         <!-- Content -->
-        <mat-expansion-panel #contentPanel [expanded]='true' class='content-panel'>
+        <mat-expansion-panel #contentPanel [expanded]='true'>
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <mat-icon>format_align_left</mat-icon>
@@ -123,7 +142,7 @@
         <div class="desktop-right ">
 
             <!-- Content -->
-            <mat-card class="content-panel">
+            <mat-card>
                 <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
             </mat-card>
         </div>
@@ -186,7 +205,7 @@
             </div>
             <mat-form-field *ngIf="editMotion && !newMotion">
                 <mat-select placeholder='State' formControlName='state_id'>
-                    <mat-option [value]="motionCopy.stateId">{{motionCopy.state}}</mat-option>
+                    <mat-option [value]="motionCopy.state_id">{{motionCopy.state}}</mat-option>
                     <mat-divider></mat-divider>
                     <mat-option *ngFor="let state of motionCopy.nextStates" [value]="state.id">{{state}}</mat-option>
                     <mat-divider></mat-divider>
@@ -199,7 +218,7 @@
 
         <!-- Recommendation -->
         <!-- The suggestion of the work group weather or not a motion should be accepted -->
-        <div *ngIf='motion && motion.recommender && (motion.recommendationId || editMotion)'>
+        <div *ngIf='motion && motion.recommender && (motion.recommendation_id || editMotion)'>
             <div *ngIf='!editMotion'>
                 <h3>{{motion.recommender}}</h3>
                 {{motion.recommendation}}
@@ -219,7 +238,7 @@
         </div>
 
         <!-- Category -->
-        <div *ngIf="motion && motion.categoryId || editMotion">
+        <div *ngIf="motion && motion.category_id || editMotion">
             <div *ngIf='!editMotion'>
                 <h3 translate>Category</h3>
                 {{motion.category}}
@@ -264,37 +283,27 @@
         <!-- Title -->
         <div *ngIf="motion && motion.title || editMotion">
             <div *ngIf='!editMotion'>
-                <h2>{{motion.title}}</h2>
+                <h4>{{motion.title}}</h4>
             </div>
             <mat-form-field *ngIf="editMotion" class="wide-form">
-                <input matInput placeholder='Title' formControlName='title' [value]='motionCopy.title'>
+                <input matInput osAutofocus placeholder='Title' formControlName='title' [value]='motionCopy.title'>
             </mat-form-field>
 
         </div>
 
         <!-- Text -->
         <!-- TODO: this is a config variable. Read it out -->
-        <h3 translate>The assembly may decide:</h3>
+        <span class="text-prefix-label" translate>The assembly may decide:</span>
         <ng-container *ngIf='motion && !editMotion'>
-            <div *ngIf="!isRecoModeDiff()" class="motion-text"
-                 [class.line-numbers-none]="isLineNumberingNone()"
-                 [class.line-numbers-inline]="isLineNumberingInline()"
-                 [class.line-numbers-outside]="isLineNumberingOutside()">
-                <os-motion-detail-original-change-recommendations
-                        *ngIf="isLineNumberingOutside() && isRecoModeOriginal()"
-                        [html]="getFormattedTextPlain()"
-                        [changeRecommendations]="changeRecommendations"
-                        (createChangeRecommendation)="createChangeRecommendation($event)"
-                        (gotoChangeRecommendation)="gotoChangeRecommendation($event)"
-                ></os-motion-detail-original-change-recommendations>
+            <div *ngIf="!isRecoModeDiff()" class="motion-text" [class.line-numbers-none]="isLineNumberingNone()"
+                [class.line-numbers-inline]="isLineNumberingInline()" [class.line-numbers-outside]="isLineNumberingOutside()">
+                <os-motion-detail-original-change-recommendations *ngIf="isLineNumberingOutside() && isRecoModeOriginal()"
+                    [html]="getFormattedTextPlain()" [changeRecommendations]="changeRecommendations"
+                    (createChangeRecommendation)="createChangeRecommendation($event)" (gotoChangeRecommendation)="gotoChangeRecommendation($event)"></os-motion-detail-original-change-recommendations>
                 <div *ngIf="!isLineNumberingOutside() || !isRecoModeOriginal()" [innerHTML]="getFormattedText()"></div>
             </div>
-            <os-motion-detail-diff *ngIf="isRecoModeDiff()"
-                                   [motion]="motion"
-                                   [changes]="allChangingObjects"
-                                   [scrollToChange]="scrollToChange"
-                                   (createChangeRecommendation)="createChangeRecommendation($event)"
-            ></os-motion-detail-diff>
+            <os-motion-detail-diff *ngIf="isRecoModeDiff()" [motion]="motion" [changes]="allChangingObjects"
+                [scrollToChange]="scrollToChange" (createChangeRecommendation)="createChangeRecommendation($event)"></os-motion-detail-diff>
         </ng-container>
         <mat-form-field *ngIf="motion && editMotion" class="wide-form">
             <textarea matInput placeholder='Motion Text' formControlName='text' [value]='motionCopy.text'></textarea>
@@ -303,8 +312,8 @@
 
         <!-- Reason -->
         <div *ngIf="motion && motion.reason || editMotion">
-            <div *ngIf='!editMotion'>
-                <h4 translate>Reason</h4>
+            <h5 translate>Reason</h5>
+            <div class="motion-text" *ngIf='!editMotion'>
                 <div [innerHtml]='motion.reason'></div>
             </div>
             <mat-form-field *ngIf="editMotion" class="wide-form">

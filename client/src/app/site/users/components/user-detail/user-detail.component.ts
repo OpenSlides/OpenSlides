@@ -129,7 +129,7 @@ export class UserDetailComponent implements OnInit {
     public loadViewUser(id: number): void {
         this.repo.getViewModelObservable(id).subscribe(newViewUser => {
             // repo sometimes delivers undefined values
-            // also ensures edition cannot be interrupted by autpupdate
+            // also ensures edition cannot be interrupted by autoupdate
             if (newViewUser && !this.editUser) {
                 this.user = newViewUser;
                 // personalInfoForm is undefined during 'new' and directly after reloading
@@ -162,9 +162,10 @@ export class UserDetailComponent implements OnInit {
             default_password: ['']
         });
 
-        // per default disable the whole form:
-
-        this.patchFormValues();
+        // patch the form only for existing users
+        if (!this.newUser) {
+            this.patchFormValues();
+        }
     }
 
     /**
@@ -172,13 +173,11 @@ export class UserDetailComponent implements OnInit {
      * And allows async reading
      */
     public patchFormValues(): void {
-        this.personalInfoForm.patchValue({
-            username: this.user.username,
-            groups_id: this.user.groupIds,
-            title: this.user.title,
-            first_name: this.user.firstName,
-            last_name: this.user.lastName
+        const personalInfoPatch = {};
+        Object.keys(this.personalInfoForm.controls).forEach(ctrl => {
+            personalInfoPatch[ctrl] = this.user[ctrl];
         });
+        this.personalInfoForm.patchValue(personalInfoPatch);
     }
 
     /**
@@ -238,13 +237,10 @@ export class UserDetailComponent implements OnInit {
      * Handler for the generate Password button.
      * Generates a password using 8 pseudo-random letters
      * from the `characters` const.
-     *
-     * Removed the letter 'O' from the alphabet cause it's easy to confuse
-     * with the number '0'.
      */
     public generatePassword(): void {
         let pw = '';
-        const characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const characters = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         const amount = 8;
         for (let i = 0; i < amount; i++) {
             pw += characters.charAt(Math.floor(Math.random() * characters.length));
@@ -263,8 +259,6 @@ export class UserDetailComponent implements OnInit {
                 response => {
                     this.newUser = false;
                     this.router.navigate([`./users/${response.id}`]);
-                    // this.setEditMode(false);
-                    // this.loadViewUser(response.id);
                 },
                 error => console.error('Creation of the user failed: ', error.error)
             );
@@ -286,25 +280,10 @@ export class UserDetailComponent implements OnInit {
     public setEditMode(edit: boolean): void {
         this.editUser = edit;
         this.makeFormEditable(edit);
-    }
 
-    /**
-     * click on the edit button
-     */
-    public editUserButton(): void {
-        if (this.editUser) {
-            this.saveUser();
-        } else {
-            this.setEditMode(true);
-        }
-    }
-
-    public cancelEditMotionButton(): void {
-        if (this.newUser) {
+        // case: abort creation of a new user
+        if (this.newUser && !edit) {
             this.router.navigate(['./users/']);
-        } else {
-            this.setEditMode(false);
-            this.loadViewUser(this.user.id);
         }
     }
 
