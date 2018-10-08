@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LegalNoticeComponent } from './legal-notice.component';
+import { E2EImportsModule } from '../../../../../e2e-imports.module';
 
 describe('LegalNoticeComponent', () => {
     let component: LegalNoticeComponent;
@@ -8,6 +9,7 @@ describe('LegalNoticeComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [E2EImportsModule],
             declarations: [LegalNoticeComponent]
         }).compileComponents();
     }));

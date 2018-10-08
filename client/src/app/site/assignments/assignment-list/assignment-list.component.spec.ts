@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AssignmentListComponent } from './assignment-list.component';
+import { E2EImportsModule } from '../../../../e2e-imports.module';
 
 describe('AssignmentListComponent', () => {
     let component: AssignmentListComponent;
@@ -8,6 +9,7 @@ describe('AssignmentListComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [E2EImportsModule],
             declarations: [AssignmentListComponent]
         }).compileComponents();
     }));

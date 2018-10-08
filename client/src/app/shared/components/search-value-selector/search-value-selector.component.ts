@@ -7,7 +7,7 @@ import { Displayable } from '../../models/base/displayable';
 import { TranslateService } from '@ngx-translate/core';
 import { Identifiable } from '../../models/base/identifiable';
 
-type Selectable = Displayable & Identifiable;
+export type Selectable = Displayable & Identifiable;
 
 /**
  * Reusable Searchable Value Selector

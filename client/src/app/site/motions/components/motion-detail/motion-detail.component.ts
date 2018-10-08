@@ -104,7 +104,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         super();
         this.createForm();
 
-        if (route.snapshot.url[0].path === 'new') {
+        if (route.snapshot.url[0] && route.snapshot.url[0].path === 'new') {
             this.newMotion = true;
             this.editMotion = true;
 

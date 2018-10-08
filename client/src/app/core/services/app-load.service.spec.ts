@@ -1,12 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { NotifyService } from './notify.service';
-describe('NotifyService', () => {
+import { AppLoadService } from './app-load.service';
+import { E2EImportsModule } from '../../../e2e-imports.module';
+
+describe('AppLoadService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [NotifyService]
+            imports: [E2EImportsModule],
+            providers: [AppLoadService]
         });
     });
-    it('should be created', inject([NotifyService], (service: NotifyService) => {
+    it('should be created', inject([AppLoadService], (service: AppLoadService) => {
         expect(service).toBeTruthy();
     }));
 });

@@ -39,6 +39,8 @@ import { TranslateModule } from '@ngx-translate/core';
 // directives
 import { PermsDirective } from './directives/perms.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
+
+// components
 import { HeadBarComponent } from './components/head-bar/head-bar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { LegalNoticeContentComponent } from './components/legal-notice-content/legal-notice-content.component';

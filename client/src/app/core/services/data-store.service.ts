@@ -59,11 +59,6 @@ interface JsonStorage {
 export class DataStoreService {
     private static cachePrefix = 'DS:';
 
-    /**
-     * Make sure, that the Datastore only be instantiated once.
-     */
-    private static wasInstantiated = false;
-
     /** We will store the data twice: One as instances of the actual models in the _store
      * and one serialized version in the _serializedStore for the cache. Both should be updated in
      * all cases equal!
@@ -115,12 +110,7 @@ export class DataStoreService {
      * Empty constructor for dataStore
      * @param cacheService use CacheService to cache the DataStore.
      */
-    public constructor(private cacheService: CacheService, private modelMapper: CollectionStringModelMapperService) {
-        if (DataStoreService.wasInstantiated) {
-            throw new Error('The Datastore should just be instantiated once!');
-        }
-        DataStoreService.wasInstantiated = true;
-    }
+    public constructor(private cacheService: CacheService, private modelMapper: CollectionStringModelMapperService) {}
 
     /**
      * Gets the DataStore from cache and instantiate all models out of the serialized version.

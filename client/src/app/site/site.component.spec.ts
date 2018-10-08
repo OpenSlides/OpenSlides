@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SiteComponent } from './site.component';
+import { E2EImportsModule } from '../../e2e-imports.module';
 
 describe('SiteComponent', () => {
     let component: SiteComponent;
@@ -8,6 +9,7 @@ describe('SiteComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [E2EImportsModule],
             declarations: [SiteComponent]
         }).compileComponents();
     }));

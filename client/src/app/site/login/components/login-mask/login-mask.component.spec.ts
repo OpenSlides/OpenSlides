@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginMaskComponent } from './login-mask.component';
+import { E2EImportsModule } from '../../../../../e2e-imports.module';
 
 describe('LoginMaskComponent', () => {
     let component: LoginMaskComponent;
@@ -8,7 +9,7 @@ describe('LoginMaskComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [LoginMaskComponent]
+            imports: [E2EImportsModule]
         }).compileComponents();
     }));
 
@@ -21,4 +22,10 @@ describe('LoginMaskComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    // TODO: mock HTTPClient
+    /*it('should have an forget password button', async(() => {
+        const compiled = fixture.debugElement.nativeElement;
+        expect(compiled.querySelector('.forgot-password-button').textContent).toContain('Forgot Password?');
+    }));*/
 });

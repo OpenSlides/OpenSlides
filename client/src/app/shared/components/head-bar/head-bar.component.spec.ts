@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HeadBarComponent } from './head-bar.component';
+import { E2EImportsModule } from '../../../../e2e-imports.module';
 
 describe('HeadBarComponent', () => {
     let component: HeadBarComponent;
@@ -8,7 +9,7 @@ describe('HeadBarComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [HeadBarComponent]
+            imports: [E2EImportsModule]
         }).compileComponents();
     }));
 

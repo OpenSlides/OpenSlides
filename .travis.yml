@@ -1,27 +1,70 @@
-language: python
 dist: xenial
 sudo: true
-cache:
-  pip: true
-  yarn: true
-python:
-  - "3.6"
-  - "3.7"
-env:
-  - TRAVIS_NODE_VERSION="10.5"
-before_install:
-  - nvm install $TRAVIS_NODE_VERSION
-  - curl -o- -L https://yarnpkg.com/install.sh | bash
-  - export PATH="$HOME/.yarn/bin:$PATH"
-install:
-  - pip install --upgrade setuptools pip
-  - pip install --upgrade --requirement requirements/development.txt
-  - pip install --upgrade .[big_mode]
-  - pip freeze
-  - cd client && npm install && cd ..
-script:
-  - cd client && npm run-script lint && cd ..
-  - flake8 openslides tests
-  - isort --check-only --diff --recursive openslides tests
-  - python -m mypy openslides/
-  - pytest tests/old/ tests/integration/ tests/unit/ --cov --cov-fail-under=75
+
+matrix:
+  include:
+    - language: python
+      cache:
+        pip: true
+      python:
+        - "3.6"
+      env:
+        - TRAVIS_NODE_VERSION="10.5"
+      install:
+        - python --version
+        - pip install --upgrade setuptools pip
+        - pip install --upgrade --requirement requirements/development.txt
+        - pip install --upgrade .[big_mode]
+        - pip freeze
+      script:
+        - flake8 openslides tests
+        - isort --check-only --diff --recursive openslides tests
+        - python -m mypy openslides/
+        - pytest tests/old/ tests/integration/ tests/unit/ --cov --cov-fail-under=75
+
+    - language: python
+      cache:
+        pip: true
+      python:
+        - "3.7"
+      env:
+        - TRAVIS_NODE_VERSION="10.5"
+      install:
+        - python --version
+        - pip install --upgrade setuptools pip
+        - pip install --upgrade --requirement requirements/development.txt
+        - pip install --upgrade .[big_mode]
+        - pip freeze
+      script:
+        - flake8 openslides tests
+        - isort --check-only --diff --recursive openslides tests
+        - python -m mypy openslides/
+        - pytest tests/old/ tests/integration/ tests/unit/ --cov --cov-fail-under=75
+
+    - language: node_js
+      node_js:
+        - "9"
+      apt:
+        sources:
+          - google-chrome
+        packages:
+          - google-chrome-stable
+      cache:
+        yarn: true
+        directories:
+          - $HOME/.yarn-cache
+          - node_modules
+      before_install:
+        - sh -e /etc/init.d/xvfb start
+        - export CHROME_BIN=/usr/bin/google-chrome
+        - export DISPLAY=:99.0
+        - curl -o- -L https://yarnpkg.com/install.sh | bash
+        - export PATH="$HOME/.yarn/bin:$PATH"
+        - yarn global add @angular/cli
+        - ng --version
+        - cd client
+      install:
+        - yarn install
+      script:
+        - yarn run lint
+        - yarn run test --watch=false
