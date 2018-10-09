@@ -6,7 +6,7 @@ import { AppConfig } from '../../site/base/app-config';
 import { CollectionStringModelMapperService } from './collectionStringModelMapper.service';
 import { MediafileAppConfig } from '../../site/mediafiles/mediafile.config';
 import { MotionsAppConfig } from '../../site/motions/motions.config';
-import { SettingsAppConfig } from '../../site/settings/settings.config';
+import { ConfigAppConfig } from '../../site/config/config.config';
 import { AgendaAppConfig } from '../../site/agenda/agenda.config';
 import { AssignmentsAppConfig } from '../../site/assignments/assignments.config';
 import { UsersAppConfig } from '../../site/users/users.config';
@@ -17,7 +17,7 @@ import { MainMenuService } from './main-menu.service';
  */
 const appConfigs: AppConfig[] = [
     CommonAppConfig,
-    SettingsAppConfig,
+    ConfigAppConfig,
     AgendaAppConfig,
     AssignmentsAppConfig,
     MotionsAppConfig,

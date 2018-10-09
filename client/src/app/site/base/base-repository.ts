@@ -33,9 +33,12 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         protected depsModelCtors?: ModelConstructor<BaseModel>[]
     ) {
         super();
+        this.setup();
+    }
 
+    protected setup(): void {
         // Populate the local viewModelStore with ViewModel Objects.
-        this.DS.getAll(baseModelCtor).forEach((model: M) => {
+        this.DS.getAll(this.baseModelCtor).forEach((model: M) => {
             this.viewModelStore[model.id] = this.createViewModel(model);
             this.updateViewModelObservable(model.id);
         });
@@ -63,7 +66,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
 
         // Watch the Observables for deleting
         this.DS.deletedObservable.subscribe(model => {
-            if (model.collection === CollectionStringModelMapperService.getCollectionString(baseModelCtor)) {
+            if (model.collection === CollectionStringModelMapperService.getCollectionString(this.baseModelCtor)) {
                 delete this.viewModelStore[model.id];
                 this.updateAllObservables(model.id);
             }
