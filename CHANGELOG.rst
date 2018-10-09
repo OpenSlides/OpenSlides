@@ -23,6 +23,9 @@ Core:
 Motions:
  - Option to customly sort motions [#3894].
  - Added support for adding a statute [#3894].
+ - Added new permission to manage metadata, i. e. set motion state, set and
+   follow recommendation, manage submitters and supporters, change motion
+   category, motion block and origin and manage motion polls [#3913].
 
 User:
  - Added new admin group which grants all permissions. Users of existing group

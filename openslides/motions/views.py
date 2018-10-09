@@ -74,16 +74,19 @@ class MotionViewSet(ModelViewSet):
             result = self.get_access_permissions().check_permissions(self.request.user)
         elif self.action in ('metadata', 'partial_update', 'update', 'destroy'):
             result = has_perm(self.request.user, 'motions.can_see')
-            # For partial_update, update and delete requests the rest of the check is
+            # For partial_update, update and destroy requests the rest of the check is
             # done in the update method. See below.
         elif self.action == 'create':
             result = (has_perm(self.request.user, 'motions.can_see') and
                       has_perm(self.request.user, 'motions.can_create') and
                       (not config['motions_stop_submitting'] or
                        has_perm(self.request.user, 'motions.can_manage')))
-        elif self.action in ('set_state', 'sort', 'manage_comments', 'set_recommendation',
-                             'follow_recommendation', 'create_poll', 'manage_submitters',
-                             'sort_submitters'):
+        elif self.action in ('set_state', 'set_recommendation',
+                             'follow_recommendation', 'manage_submitters',
+                             'sort_submitters', 'create_poll'):
+            result = (has_perm(self.request.user, 'motions.can_see') and
+                      has_perm(self.request.user, 'motions.can_manage_metadata'))
+        elif self.action in ('sort', 'manage_comments'):
             result = (has_perm(self.request.user, 'motions.can_see') and
                       has_perm(self.request.user, 'motions.can_manage'))
         elif self.action == 'support':
@@ -150,6 +153,8 @@ class MotionViewSet(ModelViewSet):
                     del request.data[key]
 
         # Validate data and create motion.
+        # Attention: Even user without permission can_manage_metadata is allowed
+        # to create a new motion and set such metadata like category, motion block and origin.
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         motion = serializer.save(request_user=request.user)
@@ -221,6 +226,7 @@ class MotionViewSet(ModelViewSet):
 
         # Check permissions.
         if (not has_perm(request.user, 'motions.can_manage') and
+                not has_perm(request.user, 'motions.can_manage_metadata') and
                 not (motion.is_submitter(request.user) and motion.state.allow_submitter_edit)):
             self.permission_denied(request)
 
@@ -237,6 +243,15 @@ class MotionViewSet(ModelViewSet):
                     'text',
                     'reason',
                 ))
+
+            if has_perm(request.user, 'motions.can_manage_metadata'):
+                whitelist.extend((
+                    'category_id',
+                    'motion_block_id',
+                    'origin',
+                    'supporters_id',
+                ))
+
             for key in keys:
                 if key not in whitelist:
                     del request.data[key]
@@ -301,10 +316,12 @@ class MotionViewSet(ModelViewSet):
     def manage_comments(self, request, pk=None):
         """
         Create, update and delete motion comments.
-        Send a post request with {'section_id': <id>, 'comment': '<comment>'} to create
-        a new comment or update an existing comment.
-        Send a delete request with just {'section_id': <id>} to delete the comment.
-        For ever request, the user must have read and write permission for the given field.
+
+        Send a POST request with {'section_id': <id>, 'comment': '<comment>'}
+        to create a new comment or update an existing comment.
+
+        Send a DELETE request with just {'section_id': <id>} to delete the comment.
+        For every request, the user must have read and write permission for the given field.
         """
         motion = self.get_object()
 
@@ -637,7 +654,7 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
         Returns True if the user has required permissions.
         """
         return (has_perm(self.request.user, 'motions.can_see') and
-                has_perm(self.request.user, 'motions.can_manage'))
+                has_perm(self.request.user, 'motions.can_manage_metadata'))
 
     def update(self, *args, **kwargs):
         """

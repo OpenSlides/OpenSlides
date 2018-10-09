@@ -249,6 +249,7 @@ class Motion(RESTModelMixin, models.Model):
             ('can_see', 'Can see motions'),
             ('can_create', 'Can create motions'),
             ('can_support', 'Can support motions'),
+            ('can_manage_metadata', 'Can manage motion metadata'),
             ('can_manage', 'Can manage motions'),
         )
         ordering = ('identifier', )
