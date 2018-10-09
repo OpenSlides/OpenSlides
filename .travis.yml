@@ -8,8 +8,6 @@ matrix:
         pip: true
       python:
         - "3.6"
-      env:
-        - TRAVIS_NODE_VERSION="10.5"
       install:
         - python --version
         - pip install --upgrade setuptools pip
@@ -20,15 +18,13 @@ matrix:
         - flake8 openslides tests
         - isort --check-only --diff --recursive openslides tests
         - python -m mypy openslides/
-        - pytest tests/old/ tests/integration/ tests/unit/ --cov --cov-fail-under=75
+        - pytest tests/old/ tests/integration/ tests/unit/ --cov --cov-fail-under=76
 
     - language: python
       cache:
         pip: true
       python:
         - "3.7"
-      env:
-        - TRAVIS_NODE_VERSION="10.5"
       install:
         - python --version
         - pip install --upgrade setuptools pip
@@ -39,7 +35,7 @@ matrix:
         - flake8 openslides tests
         - isort --check-only --diff --recursive openslides tests
         - python -m mypy openslides/
-        - pytest tests/old/ tests/integration/ tests/unit/ --cov --cov-fail-under=75
+        - pytest tests/old/ tests/integration/ tests/unit/ --cov --cov-fail-under=76
 
     - language: node_js
       node_js:

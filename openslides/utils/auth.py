@@ -12,6 +12,7 @@ from .collection import CollectionElement
 
 
 GROUP_DEFAULT_PK = 1  # This is the hard coded pk for the default group.
+GROUP_ADMIN_PK = 2  # This is the hard coded pk for the admin group.
 
 
 def get_group_model() -> Model:
@@ -45,6 +46,9 @@ def has_perm(user: Optional[CollectionElement], perm: str) -> bool:
         # Use the permissions from the default group.
         default_group = CollectionElement.from_values(group_collection_string, GROUP_DEFAULT_PK)
         has_perm = perm in default_group.get_full_data()['permissions']
+    elif GROUP_ADMIN_PK in user.get_full_data()['groups_id']:
+        # User in admin group (pk 2) grants all permissions.
+        has_perm = True
     else:
         # Get all groups of the user and then see, if one group has the required
         # permission. If the user has no groups, then use the default group.
@@ -62,7 +66,8 @@ def has_perm(user: Optional[CollectionElement], perm: str) -> bool:
 def in_some_groups(user: Optional[CollectionElement], groups: List[int]) -> bool:
     """
     Checks that user is in at least one given group. Groups can be given as a list
-    of ids or group instances.
+    of ids or group instances. If the user is in the admin group (pk = 2) the result
+    is always true.
 
     User can be a CollectionElement of a user or None.
     """
@@ -78,6 +83,9 @@ def in_some_groups(user: Optional[CollectionElement], groups: List[int]) -> bool
     elif user is None:
         # Use the permissions from the default group.
         in_some_groups = GROUP_DEFAULT_PK in groups
+    elif GROUP_ADMIN_PK in user.get_full_data()['groups_id']:
+        # User in admin group (pk 2) grants all permissions.
+        in_some_groups = True
     else:
         # Get all groups of the user and then see, if one group has the required
         # permission. If the user has no groups, then use the default group.

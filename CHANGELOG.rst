@@ -21,6 +21,10 @@ Motions:
  - Option to customly sort motions [#3894].
  - Added support for adding a statute [#3894].
 
+User:
+ - Added new admin group which grants all permissions. Users of existing group
+   'Admin' or 'Staff' are move to the new group during migration [#3859].
+
 Version 2.3 (unreleased)
 ========================
 

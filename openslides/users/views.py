@@ -19,6 +19,8 @@ from django.utils.translation import ugettext as _
 from ..core.config import config
 from ..core.signals import permission_change
 from ..utils.auth import (
+    GROUP_ADMIN_PK,
+    GROUP_DEFAULT_PK,
     anonymous_is_enabled,
     has_perm,
     user_to_collection_user,
@@ -338,10 +340,10 @@ class GroupViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         """
-        Protects builtin groups 'Default' (pk=1) from being deleted.
+        Protects builtin groups 'Default' (pk=1) and 'Admin' (pk=2) from being deleted.
         """
         instance = self.get_object()
-        if instance.pk == 1:
+        if instance.pk in (GROUP_DEFAULT_PK, GROUP_ADMIN_PK):
             self.permission_denied(request)
         # The list() is required to evaluate the query
         affected_users_ids = list(instance.user_set.values_list('pk', flat=True))
