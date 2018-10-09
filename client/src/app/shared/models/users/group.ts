@@ -11,6 +11,10 @@ export class Group extends BaseModel<Group> {
 
     public constructor(input?: any) {
         super('users/group', input);
+        if (!input) {
+            // permissions are required for new groups
+            this.permissions = [];
+        }
     }
 
     public getTitle(): string {

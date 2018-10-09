@@ -24,7 +24,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         {
             text: 'Groups',
             icon: 'users',
-            action: 'toGroups'
+            action: 'toGroups',
+            perm: 'users.can_manage'
         },
         {
             text: 'Import',
@@ -81,7 +82,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * TODO: implement
      */
     public toGroups(): void {
-        console.log('to Groups');
+        this.router.navigate(['./groups'], { relativeTo: this.route });
     }
 
     /**

@@ -46,9 +46,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     }
 
     /**
-     * @ignore
-     *
-     * TODO: used over not-yet-existing detail view
+     * Deletes a given user
      */
     public delete(viewUser: ViewUser): Observable<any> {
         return this.dataSend.delete(viewUser.user);
@@ -65,7 +63,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         // collectionString of userData is still empty
         newUser.patchValues(userData);
 
-        // if the username is not presend, delete.
+        // if the username is not present, delete.
         // The server will generate a one
         if (!newUser.username) {
             delete newUser.username;

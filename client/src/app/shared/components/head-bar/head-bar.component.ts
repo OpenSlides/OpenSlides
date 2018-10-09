@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { OperatorService } from '../../../core/services/operator.service';
 
 /**
  * Reusable head bar component for Apps.
@@ -86,7 +87,7 @@ export class HeadBarComponent implements OnInit {
     /**
      * Empty constructor
      */
-    public constructor() {}
+    public constructor(private op: OperatorService) {}
 
     /**
      * empty onInit
@@ -106,5 +107,23 @@ export class HeadBarComponent implements OnInit {
      */
     public clickPlusButton(): void {
         this.plusButtonClicked.emit(true);
+    }
+
+    /**
+     * Determine if the operator has the correct permission to use a button in the menu
+     * @param perm
+     */
+    public opHasPerm(perm: string): boolean {
+        // return false if the operator is not yet loaded
+        if (this.op) {
+            // if no permission was required, return true
+            if (!perm) {
+                return true;
+            } else {
+                return this.op.hasPerms(perm);
+            }
+        } else {
+            return false;
+        }
     }
 }
