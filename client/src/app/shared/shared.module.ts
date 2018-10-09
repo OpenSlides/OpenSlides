@@ -50,6 +50,7 @@ import { LegalNoticeContentComponent } from './components/legal-notice-content/l
 import { PrivacyPolicyContentComponent } from './components/privacy-policy-content/privacy-policy-content.component';
 import { SearchValueSelectorComponent } from './components/search-value-selector/search-value-selector.component';
 import { OpenSlidesDateAdapter } from './date-adapter';
+import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 
 library.add(fas);
 
@@ -127,7 +128,8 @@ library.add(fas);
         HeadBarComponent,
         SearchValueSelectorComponent,
         LegalNoticeContentComponent,
-        PrivacyPolicyContentComponent
+        PrivacyPolicyContentComponent,
+        PromptDialogComponent
     ],
     declarations: [
         PermsDirective,
@@ -136,7 +138,8 @@ library.add(fas);
         FooterComponent,
         LegalNoticeContentComponent,
         PrivacyPolicyContentComponent,
-        SearchValueSelectorComponent
+        SearchValueSelectorComponent,
+        PromptDialogComponent
     ],
     providers: [{ provide: DateAdapter, useClass: OpenSlidesDateAdapter }]
 })

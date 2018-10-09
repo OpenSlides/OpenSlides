@@ -23,7 +23,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         AppModule,
         CommonModule,
         SharedModule,
-
         HttpClientModule,
         TranslateModule.forRoot({
             loader: {
