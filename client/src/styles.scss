@@ -4,6 +4,7 @@
 /** Import brand theme and (new) component themes */
 @import './assets/styles/openslides-theme';
 @import './app/site/site.component.scss-theme';
+@import '../node_modules/roboto-fontface/css/roboto/roboto-fontface.css';
 @mixin openslides-components-theme($theme) {
     @include os-site-theme($theme);
     /** More components are added here */
@@ -12,7 +13,7 @@
 @include angular-material-theme($openslides-theme);
 @include openslides-components-theme($openslides-theme);
 * {
-    font-family: Arial, Helvetica, sans-serif !important;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
 }
 
 body {
