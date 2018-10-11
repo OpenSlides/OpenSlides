@@ -34,6 +34,7 @@
         "@ngx-translate/http-loader": "^3.0.1",
         "core-js": "^2.5.4",
         "ngx-mat-select-search": "^1.4.0",
+        "roboto-fontface": "^0.10.0",
         "rxjs": "^6.3.3",
         "uuid": "^3.3.2",
         "zone.js": "^0.8.26"
