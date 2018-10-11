@@ -9,7 +9,7 @@ export const AgendaAppConfig: AppConfig = {
         {
             route: '/agenda',
             displayName: 'Agenda',
-            icon: 'calendar',
+            icon: 'today', // 'calendar_today' aligns wrong!
             weight: 200,
             permission: 'agenda.can_see'
         }

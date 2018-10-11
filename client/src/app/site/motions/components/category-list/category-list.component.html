@@ -2,7 +2,7 @@
 </os-head-bar>
 <div class='custom-table-header on-transition-fade'>
         <button mat-button>
-            <fa-icon icon="search"></fa-icon>
+            <mat-icon>search</mat-icon>
         </button>
     </div>
 <mat-accordion class="os-card">
@@ -40,18 +40,18 @@
         <mat-action-row>
             <button *ngIf="!category.edit" mat-button class='on-transition-fade' (click)=onEditButton(category)
                 mat-icon-button>
-                <fa-icon icon='pen'></fa-icon>
+                <mat-icon>add</mat-icon>
             </button>
             <button *ngIf="category.edit" mat-button class='on-transition-fade' (click)=onCancelButton(category)
                 mat-icon-button>
-                <fa-icon icon='times'></fa-icon>
+                <mat-icon>close</mat-icon>
             </button>
             <button *ngIf="category.edit" mat-button class='on-transition-fade' (click)=onSaveButton(category)
                 mat-icon-button>
-                <fa-icon icon='save'></fa-icon>
+                <mat-icon>save</mat-icon>
             </button>
             <button mat-button class='on-transition-fade' (click)=onDeleteButton(category) mat-icon-button>
-                <fa-icon icon='trash'></fa-icon>
+                <mat-icon>delete</mat-icon>
             </button>
         </mat-action-row>
     </mat-expansion-panel>

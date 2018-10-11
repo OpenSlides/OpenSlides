@@ -14,7 +14,7 @@
             /** nav panel on the left */
             mat-sidenav {
                 /** rules for icons in the whole site-view */
-                .ng-fa-icon {
+                mat-icon {
                     min-width: 20px; //puts the text to the right on the same level
                     margin-right: 10px; // the distance from the icon to the text
                 }
@@ -47,7 +47,7 @@
                 border-top-color: rgba(255, 255, 255, 0.25);
             }
 
-            fa-icon {
+            mat-icon {
                 color: mat-color($background, raised-button);
             }
 
@@ -62,7 +62,7 @@
 
         /** style and align the nav icons the icons*/
         .main-nav {
-            fa-icon {
+            mat-icon {
                 color: mat-color($foreground, icon);
             }
             span {
@@ -73,7 +73,7 @@
 
         /** style the active link */
         .active {
-            .ng-fa-icon {
+            mat-icon {
                 color: mat-color($primary);
             }
             span {

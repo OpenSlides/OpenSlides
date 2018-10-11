@@ -2,8 +2,8 @@
 
     <button *osPerms="'users.can_manage';or:ownPage" (click)='editUserButton()' [ngClass]="{'save-button': editUser}"
         class='generic-mini-button on-transition-fade' mat-mini-fab>
-        <fa-icon *ngIf='!editUser' icon='pen'></fa-icon>
-        <fa-icon *ngIf='editUser' icon='check'></fa-icon>
+        <mat-icon *ngIf='!editUser'>add</mat-icon>
+        <mat-icon *ngIf='editUser'>check</mat-icon>
     </button>
 
     <div class="on-transition-fade">
@@ -23,13 +23,13 @@
     <!-- Button on the right-->
     <div *ngIf="editUser">
         <button (click)='cancelEditMotionButton()' class='on-transition-fade' color="warn" mat-raised-button>
-            <span translate>Abort</span>
-            <fa-icon class="icon-text-distance" icon='times'></fa-icon>
+            <span translate>Cancel</span>
+            <mat-icon class="icon-text-distance">cancel</mat-icon>
         </button>
     </div>
     <div *ngIf="!editUser">
         <button class='on-transition-fade' mat-icon-button [matMenuTriggerFor]="userExtraMenu">
-            <fa-icon icon='ellipsis-v'></fa-icon>
+            <mat-icon>more_vert</mat-icon>
         </button>
     </div>
 
@@ -102,7 +102,7 @@
                     [value]='user.initialPassword'>
                 <mat-hint align="end">Generate</mat-hint>
                 <button type="button" mat-button matSuffix mat-icon-button [disabled]='!newUser' (click)='generatePassword()'>
-                    <fa-icon icon='magic'></fa-icon>
+                    <mat-icon>sync_problem</mat-icon>
                 </button>
             </mat-form-field>
         </div>

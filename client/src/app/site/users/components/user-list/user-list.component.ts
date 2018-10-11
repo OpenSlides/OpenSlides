@@ -23,18 +23,18 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     public userMenuList = [
         {
             text: 'Groups',
-            icon: 'users',
+            icon: 'people',
             action: 'toGroups',
             perm: 'users.can_manage'
         },
         {
             text: 'Import',
-            icon: 'download',
+            icon: 'save_alt',
             action: 'toGroups'
         },
         {
             text: 'Export',
-            icon: 'file-export',
+            icon: 'archive',
             action: 'toGroups'
         }
     ];

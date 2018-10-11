@@ -8,7 +8,8 @@
         <mat-form-field>
             <input matInput required placeholder="Password" formControlName="password" [type]="!hide ? 'password' : 'text'"
                 [errorStateMatcher]="parentErrorStateMatcher">
-            <fa-icon matSuffix [icon]="!hide ? 'eye-slash' : 'eye'" (click)="hide = !hide"></fa-icon>
+                <mat-icon matSuffix (click)="hide = !hide">{{ hide ? "visibility_off" : "visibility_on" }}</mat-icon>
+
             <mat-error>{{loginErrorMsg}}</mat-error>
         </mat-form-field>
 

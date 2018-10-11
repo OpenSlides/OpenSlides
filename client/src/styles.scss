@@ -12,8 +12,12 @@
 
 @include angular-material-theme($openslides-theme);
 @include openslides-components-theme($openslides-theme);
+
 * {
     font-family: Roboto, Arial, Helvetica, sans-serif;
+}
+mat-icon {
+    font-family: MaterialIcons-Regular;
 }
 
 body {

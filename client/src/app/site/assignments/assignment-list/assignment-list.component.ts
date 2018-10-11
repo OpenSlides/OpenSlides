@@ -22,7 +22,7 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
     public assignmentMenu = [
         {
             text: 'Download All',
-            icon: 'download',
+            icon: 'save_alt',
             action: 'downloadAssignmentButton'
         }
     ];

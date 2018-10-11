@@ -29,7 +29,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
  * myMenu = [
  *   {
  *     text: 'Download All',
- *     icon: 'download',
+ *     icon: 'save_alt',
  *     action: 'downloadAllFiles'
  *   },
  * ];

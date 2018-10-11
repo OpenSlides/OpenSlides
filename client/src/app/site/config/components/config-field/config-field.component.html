@@ -21,7 +21,7 @@
         <mat-label translate>{{ configItem.label }}</mat-label>
         <mat-hint *ngIf="configItem.helpText" translate>{{ configItem.helpText }}</mat-hint>
         <span matSuffix>
-            <fa-icon pull="right" class="text-success" *ngIf="updateSuccessIcon" icon='check-circle'></fa-icon>
+            <mat-icon pull="right" class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
         </span>
         <mat-error *ngIf="error">
             {{ error }}

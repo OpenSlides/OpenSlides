@@ -24,12 +24,12 @@
         <mat-cell *matCellDef="let user">
             <div class='groupsCell'>
                 <span *ngIf="user.groups.length > 0">
-                    <fa-icon icon="users"></fa-icon>
+                    <mat-icon>people</mat-icon>
                     {{user.groups}}
                 </span>
                 <br *ngIf="user.groups && user.structureLevel">
                 <span *ngIf="user.structureLevel">
-                    <fa-icon icon="flag"></fa-icon>
+                    <mat-icon>flag</mat-icon>
                     {{user.structureLevel}}
                 </span>
             </div>
@@ -41,7 +41,7 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header> Presence </mat-header-cell>
         <mat-cell *matCellDef="let user">
             <div *ngIf="user.isActive">
-                <fa-icon icon="check-square"></fa-icon>
+                <mat-icon>check_box</mat-icon>
                 <span translate>Present</span>
             </div>
         </mat-cell>

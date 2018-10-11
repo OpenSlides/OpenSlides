@@ -42,7 +42,7 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header> State </mat-header-cell>
         <mat-cell *matCellDef="let motion">
             <div *ngIf='isDisplayIcon(motion.state) && motion.state' class='innerTable'>
-                <fa-icon icon={{getStateIcon(motion.state)}}></fa-icon>
+                <mat-icon>{{getStateIcon(motion.state)}}></mat-icon>
             </div>
         </mat-cell>
     </ng-container>

@@ -1,8 +1,8 @@
 <mat-toolbar color='primary'>
     <button *osPerms="'users.can_manage'" (click)='newGroupButton()' class='generic-mini-button on-transition-fade'
         mat-mini-fab>
-        <fa-icon *ngIf="!newGroup" icon='plus'></fa-icon>
-        <fa-icon *ngIf="newGroup" icon='times'></fa-icon>
+        <mat-icon *ngIf="!newGroup">add</mat-icon>
+        <mat-icon *ngIf="newGroup">cancel</mat-icon>
     </button>
 
     <div class="on-transition-fade">
@@ -19,7 +19,7 @@
         </mat-form-field>
 
         <button type="submit" mat-mini-fab color="primary">
-            <fa-icon icon="save"></fa-icon>
+            <mat-icon>save</mat-icon>
         </button>
     </form>
 </div>
@@ -31,15 +31,15 @@
         </mat-form-field>
 
         <button type="submit" mat-mini-fab color="primary">
-            <fa-icon icon="save"></fa-icon>
+            <mat-icon>save</mat-icon>>
         </button>
 
         <button type="button" mat-mini-fab color="warn" (click)="deleteSelectedGroup()" [disabled]="isProtected(selectedGroup)">
-            <fa-icon icon="trash"></fa-icon>
+            <mat-icon>delete</mat-icon>
         </button>
 
         <button type="button" mat-mini-fab color="primary" (click)="cancelEditing()">
-            <fa-icon icon="times"></fa-icon>
+            <mat-icon>cancel</mat-icon>
         </button>
     </form>
 </div>

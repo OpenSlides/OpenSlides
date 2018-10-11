@@ -38,14 +38,14 @@
                         {{ section.name }}
                     </div>
                     <div class="read">
-                        <fa-icon icon="eye"></fa-icon>
+                        <mat-icon>visibility</mat-icon>
                         {{ section.read_groups }}
                         <ng-container *ngIf="section.read_groups.length === 0">
                             &ndash;
                         </ng-container>
                     </div>
                     <div class="write">
-                        <fa-icon icon="pen"></fa-icon>
+                        <mat-icon>add</mat-icon>
                         {{ section.write_groups }}
                         <ng-container *ngIf="section.write_groups.length === 0">
                             &ndash;
@@ -90,18 +90,18 @@
         <mat-action-row>
             <button *ngIf="editId !== section.id" mat-button class="on-transition-fade" (click)="onEditButton(section)"
                 mat-icon-button>
-                <fa-icon icon='pen'></fa-icon>
+                <mat-icon>add</mat-icon>
             </button>
             <button *ngIf="editId === section.id" mat-button class="on-transition-fade" (click)="editId = null"
                 mat-icon-button>
-                <fa-icon icon='times'></fa-icon>
+                <mat-icon>cancel</mat-icon>
             </button>
             <button *ngIf="editId === section.id" mat-button class="on-transition-fade" (click)="onSaveButton(section)"
                 mat-icon-button>
-                <fa-icon icon='save'></fa-icon>
+                <mat-icon>save</mat-icon>
             </button>
             <button mat-button class='on-transition-fade' (click)=onDeleteButton(section) mat-icon-button>
-                <fa-icon icon='trash'></fa-icon>
+                <mat-icon>delete</mat-icon>
             </button>
         </mat-action-row>
     </mat-expansion-panel>

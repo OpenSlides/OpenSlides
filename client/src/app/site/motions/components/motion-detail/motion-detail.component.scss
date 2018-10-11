@@ -25,7 +25,7 @@ span {
 }
 
 mat-panel-title {
-    fa-icon {
+    mat-icon {
         margin-right: 35px; //on line with text
     }
 }
@@ -38,7 +38,7 @@ mat-panel-title {
         font-size: 80%;
         color: gray;
 
-        fa-icon {
+        mat-icon {
             margin-left: 5px;
         }
     }
@@ -53,7 +53,7 @@ mat-panel-title {
     }
 
     .mat-form-field-label-wrapper {
-        fa-icon {
+        mat-icon {
             margin-left: 5px;
         }
     }
@@ -131,7 +131,7 @@ mat-expansion-panel {
 
                     .title-right {
                         float: right;
-                        fa-icon {
+                        mat-icon {
                             padding-left: 10px;
                         }
                     }
