@@ -74,7 +74,9 @@
                         </mat-header-cell>
                         <mat-cell *matCellDef="let perm">
                             <div class="inner-table">
-                                <mat-checkbox [checked]="group.hasPermission(perm.value)" (change)='togglePerm(group, perm.value)'></mat-checkbox>
+                                <mat-checkbox *ngIf="group.id !== 2" [checked]="group.hasPermission(perm.value)"
+                                (change)='togglePerm(group, perm.value)'></mat-checkbox>
+                                <mat-checkbox *ngIf="group.id === 2" [checked]="true" [disabled]="true"></mat-checkbox>
                             </div>
                         </mat-cell>
                     </ng-container>

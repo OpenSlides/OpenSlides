@@ -89,11 +89,7 @@ export class UserDetailComponent implements OnInit {
      * sets the ownPage variable if the operator owns the page
      */
     public opOwnsPage(userId: number): boolean {
-        if (this.op.user && this.op.user.id === userId) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.op.user && this.op.user.id === userId;
     }
 
     /**
@@ -326,9 +322,9 @@ export class UserDetailComponent implements OnInit {
      */
     public ngOnInit(): void {
         this.makeFormEditable(this.editUser);
-        this.groups = this.DS.getAll(Group);
+        this.groups = this.DS.filter(Group, group => group.id !== 1);
         this.DS.changeObservable.subscribe(model => {
-            if (model instanceof Group) {
+            if (model instanceof Group && model.id !== 1) {
                 this.groups.push(model as Group);
             }
         });

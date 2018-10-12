@@ -18,7 +18,7 @@
 <mat-menu #ellipsisMenu="matMenu">
 
     <ng-container *ngFor="let item of menuList">
-        <button mat-menu-item *ngIf="opHasPerm(item.perm)" (click)=clickMenu(item)>
+        <button mat-menu-item *osPerms="item.perm" (click)=clickMenu(item)>
             <fa-icon *ngIf="item.icon" [icon]='item.icon'></fa-icon>
             {{item.text | translate}}
         </button>

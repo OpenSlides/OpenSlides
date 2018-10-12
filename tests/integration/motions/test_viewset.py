@@ -27,6 +27,12 @@ from openslides.utils.test import TestCase
 from ..helpers import count_queries
 
 
+GROUP_DEFAULT_PK = 1
+GROUP_ADMIN_PK = 2
+GROUP_DELEGATE_PK = 3
+GROUP_STAFF_PK = 4
+
+
 @pytest.mark.django_db(transaction=False)
 def test_motion_db_queries():
     """
@@ -138,8 +144,8 @@ class TestStatuteParagraphs(TestCase):
 
     def test_create_non_admin(self):
         self.admin = get_user_model().objects.get(username='admin')
-        self.admin.groups.add(2)
-        self.admin.groups.remove(4)
+        self.admin.groups.add(GROUP_DELEGATE_PK)
+        self.admin.groups.remove(GROUP_ADMIN_PK)
         inform_changed_data(self.admin)
 
         response = self.client.post(
@@ -171,8 +177,8 @@ class TestStatuteParagraphs(TestCase):
 
     def test_update_non_admin(self):
         self.admin = get_user_model().objects.get(username='admin')
-        self.admin.groups.add(2)
-        self.admin.groups.remove(4)
+        self.admin.groups.add(GROUP_DELEGATE_PK)
+        self.admin.groups.remove(GROUP_ADMIN_PK)
         inform_changed_data(self.admin)
 
         self.create_statute_paragraph()
@@ -191,8 +197,8 @@ class TestStatuteParagraphs(TestCase):
 
     def test_delete_non_admin(self):
         self.admin = get_user_model().objects.get(username='admin')
-        self.admin.groups.add(2)
-        self.admin.groups.remove(4)
+        self.admin.groups.add(GROUP_DELEGATE_PK)
+        self.admin.groups.remove(GROUP_ADMIN_PK)
         inform_changed_data(self.admin)
 
         self.create_statute_paragraph()
@@ -315,8 +321,8 @@ class CreateMotion(TestCase):
         Test to create a motion by a delegate, non staff user.
         """
         self.admin = get_user_model().objects.get(username='admin')
-        self.admin.groups.add(2)
-        self.admin.groups.remove(4)
+        self.admin.groups.add(GROUP_DELEGATE_PK)
+        self.admin.groups.remove(GROUP_ADMIN_PK)
         inform_changed_data(self.admin)
 
         response = self.client.post(
@@ -367,8 +373,8 @@ class CreateMotion(TestCase):
         parent_motion.save()
 
         self.admin = get_user_model().objects.get(username='admin')
-        self.admin.groups.add(2)
-        self.admin.groups.remove(4)
+        self.admin.groups.add(GROUP_DELEGATE_PK)
+        self.admin.groups.remove(GROUP_ADMIN_PK)
         inform_changed_data(self.admin)
 
         response = self.client.post(
@@ -446,7 +452,7 @@ class RetrieveMotion(TestCase):
     def test_user_without_can_see_user_permission_to_see_motion_and_submitter_data(self):
         admin = get_user_model().objects.get(username='admin')
         Submitter.objects.add(admin, self.motion)
-        group = get_group_model().objects.get(pk=1)  # Group with pk 1 is for anonymous and default users.
+        group = get_group_model().objects.get(pk=GROUP_DEFAULT_PK)  # Group with pk 1 is for anonymous and default users.
         permission_string = 'users.can_see_name'
         app_label, codename = permission_string.split('.')
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
@@ -578,10 +584,8 @@ class DeleteMotion(TestCase):
         self.assertEqual(motions, 0)
 
     def make_admin_delegate(self):
-        group_admin = self.admin.groups.get(name='Admin')
-        group_delegates = get_group_model().objects.get(name='Delegates')
-        self.admin.groups.remove(group_admin)
-        self.admin.groups.add(group_delegates)
+        self.admin.groups.remove(GROUP_ADMIN_PK)
+        self.admin.groups.add(GROUP_DELEGATE_PK)
         inform_changed_data(self.admin)
 
     def put_motion_in_complex_workflow(self):
@@ -662,10 +666,8 @@ class ManageSubmitters(TestCase):
 
     def test_add_without_permission(self):
         admin = get_user_model().objects.get(username='admin')
-        group_admin = admin.groups.get(name='Admin')
-        group_delegates = type(group_admin).objects.get(name='Delegates')
-        admin.groups.add(group_delegates)
-        admin.groups.remove(group_admin)
+        admin.groups.add(GROUP_DELEGATE_PK)
+        admin.groups.remove(GROUP_ADMIN_PK)
         inform_changed_data(admin)
 
         response = self.client.post(
@@ -732,8 +734,14 @@ class ManageComments(TestCase):
         self.client.login(username='admin', password='admin')
 
         self.admin = get_user_model().objects.get()
-        self.group_in = get_group_model().objects.get(pk=4)
-        self.group_out = get_group_model().objects.get(pk=2)  # The admin should not be in this group
+        self.group_out = get_group_model().objects.get(pk=GROUP_DELEGATE_PK)  # The admin should not be in this group
+
+        # Put the admin into the staff group, becaust in the admin group, he has all permissions for
+        # every single comment section.
+        self.admin.groups.add(GROUP_STAFF_PK)
+        self.admin.groups.remove(GROUP_ADMIN_PK)
+        inform_changed_data(self.admin)
+        self.group_in = get_group_model().objects.get(pk=GROUP_STAFF_PK)
 
         self.motion = Motion(
             title='test_title_SlqfMw(waso0saWMPqcZ',
@@ -960,8 +968,11 @@ class TestMotionCommentSection(TestCase):
         self.client.login(username='admin', password='admin')
 
         self.admin = get_user_model().objects.get()
-        self.group_in = get_group_model().objects.get(pk=4)
-        self.group_out = get_group_model().objects.get(pk=2)  # The admin should not be in this group
+        self.admin.groups.add(GROUP_STAFF_PK)  # Put the admin in a groiup with limited permissions for testing.
+        self.admin.groups.remove(GROUP_ADMIN_PK)
+        inform_changed_data(self.admin)
+        self.group_in = get_group_model().objects.get(pk=GROUP_STAFF_PK)
+        self.group_out = get_group_model().objects.get(pk=GROUP_DELEGATE_PK)  # The admin should not be in this group
 
     def test_retrieve(self):
         """
@@ -1307,7 +1318,7 @@ class SupportMotion(TestCase):
     """
     def setUp(self):
         self.admin = get_user_model().objects.get(username='admin')
-        self.admin.groups.add(2)
+        self.admin.groups.add(GROUP_DELEGATE_PK)
         inform_changed_data(self.admin)
         self.client.login(username='admin', password='admin')
         self.motion = Motion(
