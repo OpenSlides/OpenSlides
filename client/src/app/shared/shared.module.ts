@@ -19,7 +19,8 @@ import {
     MatTooltipModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    DateAdapter
+    DateAdapter,
+    MatIconModule
 } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material';
@@ -30,11 +31,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-
-// FontAwesome modules
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { fas } from '@fortawesome/free-solid-svg-icons';
 
 // ngx-translate
 import { TranslateModule } from '@ngx-translate/core';
@@ -51,8 +47,6 @@ import { PrivacyPolicyContentComponent } from './components/privacy-policy-conte
 import { SearchValueSelectorComponent } from './components/search-value-selector/search-value-selector.component';
 import { OpenSlidesDateAdapter } from './date-adapter';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
-
-library.add(fas);
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -90,7 +84,10 @@ library.add(fas);
         MatSnackBarModule,
         MatChipsModule,
         MatTooltipModule,
-        FontAwesomeModule,
+        // TODO: there is an error with missing icons
+        // we either wait or include a fixed version manually (dirty)
+        // https://github.com/google/material-design-icons/issues/786
+        MatIconModule,
         TranslateModule.forChild(),
         RouterModule,
         NgxMatSelectSearchModule
@@ -119,8 +116,8 @@ library.add(fas);
         MatSnackBarModule,
         MatChipsModule,
         MatTooltipModule,
+        MatIconModule,
         NgxMatSelectSearchModule,
-        FontAwesomeModule,
         TranslateModule,
         PermsDirective,
         DomChangeDirective,

@@ -14,7 +14,7 @@ export const UsersAppConfig: AppConfig = {
         {
             route: '/users',
             displayName: 'Participants',
-            icon: 'user',
+            icon: 'people',
             weight: 500,
             permission: 'users.can_see_name'
         }

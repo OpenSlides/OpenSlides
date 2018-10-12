@@ -22,7 +22,7 @@ export const MotionsAppConfig: AppConfig = {
         {
             route: '/motions',
             displayName: 'Motions',
-            icon: 'file-alt',
+            icon: 'assignment',
             weight: 300,
             permission: 'motions.can_see'
         }

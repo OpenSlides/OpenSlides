@@ -2,8 +2,8 @@
 
     <button (click)='editMotionButton()' [ngClass]="{'save-button': editMotion}" class='generic-mini-button on-transition-fade'
         mat-mini-fab>
-        <fa-icon *ngIf="!editMotion" icon='pen'></fa-icon>
-        <fa-icon *ngIf="editMotion" icon='check'></fa-icon>
+        <mat-icon *ngIf="!editMotion">add</mat-icon>
+        <mat-icon *ngIf="editMotion">check</mat-icon>
     </button>
 
     <div class='motion-title on-transition-fade'>
@@ -24,13 +24,13 @@
     <!-- Button on the right-->
     <div *ngIf="editMotion">
         <button (click)='cancelEditMotionButton()' class='on-transition-fade' color="warn" mat-raised-button>
-            <span translate>Abort</span>
-            <fa-icon class="icon-text-distance" icon='times'></fa-icon>
+            <span translate>Cancel</span>
+            <mat-icon class="icon-text-distance">cancel</mat-icon>
         </button>
     </div>
     <div *ngIf="!editMotion">
         <button class='on-transition-fade' mat-icon-button [matMenuTriggerFor]="motionExtraMenu">
-            <fa-icon icon='ellipsis-v'></fa-icon>
+            <mat-icon icon>more_vert</mat-icon>
         </button>
     </div>
 
@@ -53,7 +53,7 @@
         <mat-expansion-panel #metaInfoPanel [expanded]='this.editMotion && this.newMotion' class='meta-info-block meta-info-panel'>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    <fa-icon icon='info-circle' [fixedWidth]="true"></fa-icon>
+                    <mat-icon>info</mat-icon>
                     <span translate>Meta information</span>
                 </mat-panel-title>
             </mat-expansion-panel-header>
@@ -68,7 +68,7 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    <fa-icon icon='file-signature' [fixedWidth]="true"></fa-icon>
+                    <mat-icon icon>speaker_notes</mat-icon>
                     <span translate>Personal note</span>
                 </mat-panel-title>
             </mat-expansion-panel-header>
@@ -79,7 +79,7 @@
         <mat-expansion-panel #contentPanel [expanded]='true' class='content-panel'>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    <fa-icon icon='align-left' [fixedWidth]="true"></fa-icon>
+                    <mat-icon>format_align_left</mat-icon>
                     <span translate>Content</span>
                 </mat-panel-title>
             </mat-expansion-panel-header>
@@ -107,8 +107,8 @@
                         <mat-card-title>
                             <span translate>Personal Note</span>
                             <div class="title-right">
-                                <fa-icon icon="pen" [fixedWidth]=" true"></fa-icon>
-                                <fa-icon icon="ellipsis-v" [fixedWidth]="true"></fa-icon>
+                                <mat-icon>add</mat-icon>
+                                <mat-icon>more_vert</mat-icon>
                             </div>
 
                         </mat-card-title>
@@ -191,7 +191,7 @@
                     <mat-option *ngFor="let state of motionCopy.nextStates" [value]="state.id">{{state}}</mat-option>
                     <mat-divider></mat-divider>
                     <mat-option>
-                        <fa-icon icon='exclamation-triangle'></fa-icon><span translate>Reset State</span>
+                        <mat-icon>replay</mat-icon><span translate>Reset State</span>
                     </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -211,7 +211,7 @@
 
                     <!-- TODO has no effect -->
                     <mat-option>
-                        <fa-icon icon='exclamation-triangle'></fa-icon>
+                        <mat-icon>replay</mat-icon>
                         <span translate>Reset recommendation</span>
                     </mat-option>
                 </mat-select>
@@ -254,10 +254,10 @@
         <!-- Line Number and Diff buttons-->
         <div class="motion-text-controls">
             <button type="button" mat-icon-button [matMenuTriggerFor]="lineNumberingMenu">
-                <fa-icon icon="list-ol" [fixedWidth]="true"></fa-icon>
+                <mat-icon>format_list_numbered</mat-icon>
             </button>
             <button type="button" mat-icon-button [matMenuTriggerFor]="changeRecoMenu">
-                <fa-icon icon="edit" [fixedWidth]="true"></fa-icon>
+                <mat-icon>rate_review</mat-icon>
             </button>
         </div>
 

@@ -8,7 +8,7 @@ export const ConfigAppConfig: AppConfig = {
         {
             route: '/settings',
             displayName: 'Settings',
-            icon: 'cog',
+            icon: 'settings',
             weight: 700,
             permission: 'core.can_manage_config'
         }

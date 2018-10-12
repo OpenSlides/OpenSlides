@@ -36,7 +36,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     public motionMenuList = [
         {
             text: 'Download',
-            icon: 'download',
+            icon: 'save_alt',
             action: 'downloadMotions'
         },
         {
@@ -98,11 +98,11 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     public getStateIcon(state: WorkflowState): string {
         const stateName = state.name;
         if (stateName === 'accepted') {
-            return 'thumbs-up';
+            return 'thumb_up';
         } else if (stateName === 'rejected') {
-            return 'thumbs-down';
+            return 'thumb_down';
         } else if (stateName === 'not decided') {
-            return 'question';
+            return 'help';
         } else {
             return '';
         }

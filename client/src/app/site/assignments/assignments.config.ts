@@ -8,7 +8,7 @@ export const AssignmentsAppConfig: AppConfig = {
         {
             route: '/assignments',
             displayName: 'Elections',
-            icon: 'chart-pie',
+            icon: 'poll', // TODO not yet available: 'how_to_vote',
             weight: 400,
             permission: 'assignments.can_see'
         }

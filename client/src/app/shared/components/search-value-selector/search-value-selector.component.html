@@ -16,7 +16,7 @@
     </p>
     <mat-chip-list #chipList>
         <mat-chip *ngFor="let selectedItem of thisSelector?.value" (removed)="remove(selectedItem)">{{selectedItem.name}}
-            <fa-icon matSuffix icon="times" (click)="remove(selectedItem)"></fa-icon>
+            <mat-icon (click)="remove(selectedItem)">cancel</mat-icon>
         </mat-chip>
     </mat-chip-list>
 </div>

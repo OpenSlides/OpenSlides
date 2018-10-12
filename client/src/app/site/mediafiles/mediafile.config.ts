@@ -8,7 +8,7 @@ export const MediafileAppConfig: AppConfig = {
         {
             route: '/mediafiles',
             displayName: 'Files',
-            icon: 'paperclip',
+            icon: 'attach_file',
             weight: 600,
             permission: 'mediafiles.can_see'
         }

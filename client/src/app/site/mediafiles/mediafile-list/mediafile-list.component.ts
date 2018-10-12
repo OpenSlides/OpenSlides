@@ -24,7 +24,7 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
     public extraMenu = [
         {
             text: 'Download',
-            icon: 'download',
+            icon: 'save_alt',
             action: 'downloadAllFiles'
         }
     ];
