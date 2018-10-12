@@ -5,6 +5,7 @@ import { Workflow } from '../../shared/models/motions/workflow';
 import { MotionCommentSection } from '../../shared/models/motions/motion-comment-section';
 import { MotionChangeReco } from '../../shared/models/motions/motion-change-reco';
 import { MotionBlock } from '../../shared/models/motions/motion-block';
+import { StatuteParagraph } from '../../shared/models/motions/statute-paragraph';
 
 export const MotionsAppConfig: AppConfig = {
     name: 'motions',
@@ -14,7 +15,8 @@ export const MotionsAppConfig: AppConfig = {
         { collectionString: 'motions/workflow', model: Workflow },
         { collectionString: 'motions/motion-comment-section', model: MotionCommentSection },
         { collectionString: 'motions/motion-change-recommendation', model: MotionChangeReco },
-        { collectionString: 'motions/motion-block', model: MotionBlock }
+        { collectionString: 'motions/motion-block', model: MotionBlock },
+        { collectionString: 'motions/statute-paragraph', model: StatuteParagraph }
     ],
     mainMenuEntries: [
         {
