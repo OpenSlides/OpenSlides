@@ -1,5 +1,4 @@
 import { Category } from '../../../shared/models/motions/category';
-import { TranslateService } from '@ngx-translate/core';
 import { BaseViewModel } from '../../base/base-view-model';
 
 /**
@@ -77,7 +76,7 @@ export class ViewCategory extends BaseViewModel {
         this._opened = false;
     }
 
-    public getTitle(translate?: TranslateService): string {
+    public getTitle(): string {
         return this.name;
     }
 

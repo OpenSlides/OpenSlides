@@ -5,7 +5,6 @@ import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { BaseModel } from '../../../shared/models/base/base-model';
 import { BaseViewModel } from '../../base/base-view-model';
-import { TranslateService } from '@ngx-translate/core';
 
 enum LineNumbering {
     None,
@@ -182,7 +181,7 @@ export class ViewMotion extends BaseViewModel {
         this.crMode = ChangeReco.Original;
     }
 
-    public getTitle(translate?: TranslateService): string {
+    public getTitle(): string {
         return this.title;
     }
 

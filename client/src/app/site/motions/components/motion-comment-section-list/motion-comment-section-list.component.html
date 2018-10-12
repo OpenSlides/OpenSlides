@@ -58,7 +58,7 @@
             <span translate>Edit section details:</span>
             <p>
                 <mat-form-field>
-                    <input formControlName="name" matInput placeholder="{{'Name' | translate}}">
+                    <input formControlName="name" matInput placeholder="{{'Name' | translate}}" required>
                     <mat-hint *ngIf="!updateForm.controls.name.valid">
                         <span translate>Required</span>
                     </mat-hint>

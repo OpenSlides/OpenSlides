@@ -1,4 +1,3 @@
-import { TranslateService } from '@ngx-translate/core';
 import { BaseViewModel } from '../../base/base-view-model';
 import { MotionCommentSection } from '../../../shared/models/motions/motion-comment-section';
 import { Group } from '../../../shared/models/users/group';
@@ -16,9 +15,6 @@ export class ViewMotionCommentSection extends BaseViewModel {
 
     private _read_groups: Group[];
     private _write_groups: Group[];
-
-    public edit = false;
-    public open = false;
 
     public get section(): MotionCommentSection {
         return this._section;
@@ -59,7 +55,7 @@ export class ViewMotionCommentSection extends BaseViewModel {
         this._write_groups = write_groups;
     }
 
-    public getTitle(translate?: TranslateService): string {
+    public getTitle(): string {
         return this.name;
     }
 

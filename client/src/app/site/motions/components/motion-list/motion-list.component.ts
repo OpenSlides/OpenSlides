@@ -46,6 +46,11 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         {
             text: 'Motion comment sections',
             action: 'toMotionCommentSections'
+        },
+        {
+            text: 'Statute paragrpahs',
+            action: 'toStatuteParagraphs',
+            perm: 'motions.can_manage'
         }
     ];
 
@@ -139,6 +144,13 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      */
     public toMotionCommentSections(): void {
         this.router.navigate(['./comment-section'], { relativeTo: this.route });
+    }
+
+    /**
+     * navigate to 'motion/statute-paragraphs'
+     */
+    public toStatuteParagraphs(): void {
+        this.router.navigate(['./statute-paragraphs'], { relativeTo: this.route });
     }
 
     /**
