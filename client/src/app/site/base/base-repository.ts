@@ -4,6 +4,9 @@ import { BaseViewModel } from './base-view-model';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { CollectionStringModelMapperService } from '../../core/services/collectionStringModelMapper.service';
 import { DataStoreService } from '../../core/services/data-store.service';
+import { PromptService } from '../../core/services/prompt.service';
+import { TranslateService } from '@ngx-translate/core';
+import { DialogClosedError } from '../../shared/dialog-closed-error';
 
 export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel> extends OpenSlidesComponent {
     /**
@@ -29,6 +32,9 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      */
     public constructor(
         protected DS: DataStoreService,
+        protected collectionStringModelMapperService: CollectionStringModelMapperService,
+        protected translate: TranslateService,
+        protected promptService: PromptService,
         protected baseModelCtor: ModelConstructor<M>,
         protected depsModelCtors?: ModelConstructor<BaseModel>[]
     ) {
@@ -66,7 +72,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
 
         // Watch the Observables for deleting
         this.DS.deletedObservable.subscribe(model => {
-            if (model.collection === CollectionStringModelMapperService.getCollectionString(this.baseModelCtor)) {
+            if (model.collection === this.collectionStringModelMapperService.getCollectionString(this.baseModelCtor)) {
                 delete this.viewModelStore[model.id];
                 this.updateAllObservables(model.id);
             }
@@ -82,16 +88,28 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
 
     /**
      * Deletes a given Model
-     * @param update the update that should be created
      * @param viewModel the view model that the update is based on
      */
-    public abstract delete(viewModel: V): Observable<M>;
+    protected abstract actualDelete(viewModel: V): Observable<void>;
+
+    /**
+     * Deletes a given Model. Prompts the user to acknowledge the deletion.
+     * Raises a DialogClosedError, if the dialog was closed by clicking cancel
+     * or other types of closing. Nothing should happen then.
+     * @param viewModel the view model that the update is based on
+     */
+    public async delete(viewModel: V): Promise<void> {
+        const content = this.translate.instant('Delete') + ` ${viewModel.getTitle()}?`;
+        if (await this.promptService.open('Are you sure?', content)) {
+            return await this.actualDelete(viewModel).toPromise();
+        } else {
+            throw new DialogClosedError();
+        }
+    }
 
     /**
      * Creates a new model
      * @param update the update that should be created
-     * @param viewModel the view model that the update is based on
-     * TODO: remove the viewModel
      */
     public abstract create(update: M): Observable<M>;
 

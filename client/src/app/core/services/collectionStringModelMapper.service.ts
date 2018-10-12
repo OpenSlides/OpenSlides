@@ -12,20 +12,7 @@ export class CollectionStringModelMapperService {
      * Mapps collection strings to model constructors. Accessed by {@method registerCollectionElement} and
      * {@method getCollectionStringType}.
      */
-    private static collectionStringsTypeMapping: { [collectionString: string]: ModelConstructor<BaseModel> } = {};
-
-    /**
-     * Returns the collection string of a given ModelConstructor or undefined, if it is not registered.
-     * @param ctor
-     * @deprecated Should inject this service and don't use the static functions.
-     */
-    public static getCollectionString(ctor: ModelConstructor<BaseModel>): string {
-        return Object.keys(CollectionStringModelMapperService.collectionStringsTypeMapping).find(
-            (collectionString: string) => {
-                return ctor === CollectionStringModelMapperService.collectionStringsTypeMapping[collectionString];
-            }
-        );
-    }
+    private collectionStringsTypeMapping: { [collectionString: string]: ModelConstructor<BaseModel> } = {};
 
     /**
      * Constructor to create the NotifyService. Registers itself to the WebsocketService.
@@ -39,7 +26,7 @@ export class CollectionStringModelMapperService {
      * @param type
      */
     public registerCollectionElement(collectionString: string, type: ModelConstructor<BaseModel>): void {
-        CollectionStringModelMapperService.collectionStringsTypeMapping[collectionString] = type;
+        this.collectionStringsTypeMapping[collectionString] = type;
     }
 
     /**
@@ -47,7 +34,7 @@ export class CollectionStringModelMapperService {
      * @param collectionString the requested collection
      */
     public getModelConstructor(collectionString: string): ModelConstructor<BaseModel> {
-        return CollectionStringModelMapperService.collectionStringsTypeMapping[collectionString];
+        return this.collectionStringsTypeMapping[collectionString];
     }
 
     /**
@@ -55,10 +42,8 @@ export class CollectionStringModelMapperService {
      * @param ctor
      */
     public getCollectionString(ctor: ModelConstructor<BaseModel>): string {
-        return Object.keys(CollectionStringModelMapperService.collectionStringsTypeMapping).find(
-            (collectionString: string) => {
-                return ctor === CollectionStringModelMapperService.collectionStringsTypeMapping[collectionString];
-            }
-        );
+        return Object.keys(this.collectionStringsTypeMapping).find((collectionString: string) => {
+            return ctor === this.collectionStringsTypeMapping[collectionString];
+        });
     }
 }

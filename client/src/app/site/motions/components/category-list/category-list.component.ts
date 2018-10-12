@@ -8,6 +8,7 @@ import { Category } from '../../../../shared/models/motions/category';
 import { CategoryRepositoryService } from '../../services/category-repository.service';
 import { ViewCategory } from '../../models/view-category';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 /**
  * List view for the categories.
@@ -193,9 +194,15 @@ export class CategoryListComponent extends BaseComponent implements OnInit, OnDe
     /**
      * is executed, when the delete button is pressed
      */
-    public onDeleteButton(viewCategory: ViewCategory): void {
+    public async onDeleteButton(viewCategory: ViewCategory): Promise<void> {
         if (this.repo.osInDataStore(viewCategory) && viewCategory.id !== undefined) {
-            this.repo.delete(viewCategory).subscribe();
+            try {
+                await this.repo.delete(viewCategory);
+            } catch (e) {
+                if (e instanceof HttpErrorResponse) {
+                    // Todo: Error handling
+                }
+            }
         }
         const index = this.dataSource.indexOf(viewCategory, 0);
         if (index > -1) {

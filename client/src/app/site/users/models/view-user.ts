@@ -39,6 +39,10 @@ export class ViewUser extends BaseViewModel {
         return this.user ? this.user.full_name : null;
     }
 
+    public get shortName(): string {
+        return this.user ? this.user.short_name : null;
+    }
+
     public get email(): string {
         return this.user ? this.user.email : null;
     }

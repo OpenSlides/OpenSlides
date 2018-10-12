@@ -13,6 +13,7 @@ import { DataStoreService } from '../../../../core/services/data-store.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Motion } from '../../../../shared/models/motions/motion';
 import { BehaviorSubject } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 /**
  * Component for the motion detail view
@@ -254,10 +255,15 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      *
      * TODO: Repo should handle
      */
-    public deleteMotionButton(): void {
-        this.repo.delete(this.motion).subscribe(answer => {
+    public async deleteMotionButton(): Promise<void> {
+        try {
+            await this.repo.delete(this.motion);
             this.router.navigate(['./motions/']);
-        });
+        } catch (e) {
+            if (e instanceof HttpErrorResponse) {
+                // Todo: Error handling
+            }
+        }
     }
 
     /**

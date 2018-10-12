@@ -7,6 +7,9 @@ import { Group } from '../../../shared/models/users/group';
 import { Observable } from 'rxjs';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { DataSendService } from '../../../core/services/data-send.service';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
+import { TranslateService } from '@ngx-translate/core';
+import { PromptService } from '../../../core/services/prompt.service';
 
 /**
  * Repository service for users
@@ -20,8 +23,14 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     /**
      * Constructor calls the parent constructor
      */
-    public constructor(DS: DataStoreService, private dataSend: DataSendService) {
-        super(DS, User, [Group]);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        translate: TranslateService,
+        promptService: PromptService,
+        private dataSend: DataSendService
+    ) {
+        super(DS, mapperService, translate, promptService, User, [Group]);
     }
 
     /**
@@ -48,7 +57,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     /**
      * Deletes a given user
      */
-    public delete(viewUser: ViewUser): Observable<any> {
+    protected actualDelete(viewUser: ViewUser): Observable<any> {
         return this.dataSend.delete(viewUser.user);
     }
 

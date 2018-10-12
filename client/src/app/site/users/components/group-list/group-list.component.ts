@@ -4,10 +4,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatTableDataSource } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 
-import { GroupRepositoryService } from '../../services/group-repository.service';
+import { GroupRepositoryService, AppPermission } from '../../services/group-repository.service';
 import { ViewGroup } from '../../models/view-group';
 import { Group } from '../../../../shared/models/users/group';
 import { BaseComponent } from '../../../../base.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 /**
  * Component for the Group-List and permission matrix
@@ -51,7 +52,7 @@ export class GroupListComponent extends BaseComponent implements OnInit {
      * @param DS The Data Store
      * @param constants Constants
      */
-    public constructor(titleService: Title, translate: TranslateService, public repo: GroupRepositoryService) {
+    public constructor(titleService: Title, translate: TranslateService, private repo: GroupRepositoryService) {
         super(titleService, translate);
     }
 
@@ -98,8 +99,15 @@ export class GroupListComponent extends BaseComponent implements OnInit {
     /**
      * Deletes the selected Group
      */
-    public deleteSelectedGroup(): void {
-        this.repo.delete(this.selectedGroup).subscribe(response => this.cancelEditing());
+    public async deleteSelectedGroup(): Promise<void> {
+        try {
+            await this.repo.delete(this.selectedGroup);
+            this.cancelEditing();
+        } catch (e) {
+            if (e instanceof HttpErrorResponse) {
+                // Todo: Error handling
+            }
+        }
     }
 
     /**
@@ -149,11 +157,18 @@ export class GroupListComponent extends BaseComponent implements OnInit {
     }
 
     /**
+     * Returns all app permissions.
+     */
+    public getAppPermissions(): AppPermission[] {
+        return this.repo.appPermissions;
+    }
+
+    /**
      * Converts a permission string into MatTableDataSource
      * @param permissions
      */
-    public getTableDataSource(permissions: string[]): MatTableDataSource<any> {
-        const dataSource = new MatTableDataSource();
+    public getTableDataSource(permissions: string[]): MatTableDataSource<string> {
+        const dataSource = new MatTableDataSource<string>();
         dataSource.data = permissions;
         return dataSource;
     }

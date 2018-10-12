@@ -6,6 +6,9 @@ import { BaseRepository } from '../../base/base-repository';
 import { ViewMotionCommentSection } from '../models/view-motion-comment-section';
 import { MotionCommentSection } from '../../../shared/models/motions/motion-comment-section';
 import { Group } from '../../../shared/models/users/group';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
+import { TranslateService } from '@ngx-translate/core';
+import { PromptService } from '../../../core/services/prompt.service';
 
 /**
  * Repository Services for Categories
@@ -30,8 +33,14 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
      * Handles CRUD using an observer to the DataStore
      * @param DataSend
      */
-    public constructor(protected DS: DataStoreService, private dataSend: DataSendService) {
-        super(DS, MotionCommentSection, [Group]);
+    public constructor(
+        protected DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        translate: TranslateService,
+        promptService: PromptService,
+        private dataSend: DataSendService
+    ) {
+        super(DS, mapperService, translate, promptService, MotionCommentSection, [Group]);
     }
 
     protected createViewModel(section: MotionCommentSection): ViewMotionCommentSection {
@@ -55,7 +64,7 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
         return this.dataSend.updateModel(updateSection, 'put');
     }
 
-    public delete(viewSection: ViewMotionCommentSection): Observable<any> {
+    protected actualDelete(viewSection: ViewMotionCommentSection): Observable<any> {
         return this.dataSend.delete(viewSection.section);
     }
 }

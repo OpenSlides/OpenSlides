@@ -8,10 +8,10 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MotionCommentSection } from '../../../../shared/models/motions/motion-comment-section';
 import { ViewMotionCommentSection } from '../../models/view-motion-comment-section';
 import { MotionCommentSectionRepositoryService } from '../../services/motion-comment-section-repository.service';
-import { PromptService } from '../../../../core/services/prompt.service';
 import { BehaviorSubject } from 'rxjs';
 import { Group } from '../../../../shared/models/users/group';
 import { DataStoreService } from '../../../../core/services/data-store.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 /**
  * List view for the categories.
@@ -53,7 +53,6 @@ export class MotionCommentSectionListComponent extends BaseComponent implements 
         protected translate: TranslateService,
         private repo: MotionCommentSectionRepositoryService,
         private formBuilder: FormBuilder,
-        private promptService: PromptService,
         private DS: DataStoreService
     ) {
         super(titleService, translate);
@@ -149,11 +148,13 @@ export class MotionCommentSectionListComponent extends BaseComponent implements 
      * is executed, when the delete button is pressed
      */
     public async onDeleteButton(viewSection: ViewMotionCommentSection): Promise<any> {
-        const content = this.translate.instant('Delete') + ` ${viewSection.name}?`;
-        if (await this.promptService.open('Are you sure?', content)) {
-            this.repo.delete(viewSection).subscribe(resp => {
-                this.openId = this.editId = null;
-            });
+        try {
+            await this.repo.delete(viewSection);
+            this.openId = this.editId = null;
+        } catch (e) {
+            if (e instanceof HttpErrorResponse) {
+                // Todo: Error handling
+            }
         }
     }
 

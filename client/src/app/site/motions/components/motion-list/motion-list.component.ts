@@ -41,11 +41,13 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         },
         {
             text: 'Categories',
-            action: 'toCategories'
+            action: 'toCategories',
+            perm: 'motions.can_manage'
         },
         {
             text: 'Motion comment sections',
-            action: 'toMotionCommentSections'
+            action: 'toMotionCommentSections',
+            perm: 'motions.can_manage'
         }
     ];
 

@@ -10,6 +10,9 @@ import { ViewMotion } from '../models/view-motion';
 import { Observable } from 'rxjs';
 import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
+import { PromptService } from '../../../core/services/prompt.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -32,8 +35,14 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * Handles CRUD using an observer to the DataStore
      * @param DataSend
      */
-    public constructor(DS: DataStoreService, private dataSend: DataSendService) {
-        super(DS, Motion, [Category, User, Workflow]);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        translate: TranslateService,
+        promptService: PromptService,
+        private dataSend: DataSendService
+    ) {
+        super(DS, mapperService, translate, promptService, Motion, [Category, User, Workflow]);
     }
 
     /**
@@ -94,7 +103,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * to {@link DataSendService}
      * @param viewMotion
      */
-    public delete(viewMotion: ViewMotion): Observable<any> {
+    protected actualDelete(viewMotion: ViewMotion): Observable<any> {
         return this.dataSend.delete(viewMotion.motion);
     }
 

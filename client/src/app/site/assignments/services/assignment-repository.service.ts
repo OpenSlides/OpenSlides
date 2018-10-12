@@ -7,6 +7,9 @@ import { Item } from '../../../shared/models/agenda/item';
 import { Observable } from 'rxjs';
 import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
+import { TranslateService } from '@ngx-translate/core';
+import { PromptService } from '../../../core/services/prompt.service';
 
 /**
  * Repository Service for Assignments.
@@ -21,15 +24,20 @@ export class AssignmentRepositoryService extends BaseRepository<ViewAssignment, 
      * Constructor for the Assignment Repository.
      *
      */
-    public constructor(DS: DataStoreService) {
-        super(DS, Assignment, [User, Item, Tag]);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        translate: TranslateService,
+        promptService: PromptService
+    ) {
+        super(DS, mapperService, translate, promptService, Assignment, [User, Item, Tag]);
     }
 
     public update(assignment: Partial<Assignment>, viewAssignment: ViewAssignment): Observable<Assignment> {
         return null;
     }
 
-    public delete(viewAssignment: ViewAssignment): Observable<Assignment> {
+    protected actualDelete(viewAssignment: ViewAssignment): Observable<void> {
         return null;
     }
 

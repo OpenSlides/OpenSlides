@@ -5,6 +5,9 @@ import { DataSendService } from '../../../core/services/data-send.service';
 import { Observable } from 'rxjs';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { BaseRepository } from '../../base/base-repository';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
+import { TranslateService } from '@ngx-translate/core';
+import { PromptService } from '../../../core/services/prompt.service';
 
 /**
  * Repository Services for Categories
@@ -26,8 +29,14 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      * Handles CRUD using an observer to the DataStore
      * @param DataSend
      */
-    public constructor(protected DS: DataStoreService, private dataSend: DataSendService) {
-        super(DS, Category);
+    public constructor(
+        protected DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        translate: TranslateService,
+        promptService: PromptService,
+        private dataSend: DataSendService
+    ) {
+        super(DS, mapperService, translate, promptService, Category);
     }
 
     protected createViewModel(category: Category): ViewCategory {
@@ -55,7 +64,7 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         return this.dataSend.updateModel(updateCategory, 'put');
     }
 
-    public delete(viewCategory: ViewCategory): Observable<any> {
+    protected actualDelete(viewCategory: ViewCategory): Observable<any> {
         const category = viewCategory.category;
         return this.dataSend.delete(category);
     }

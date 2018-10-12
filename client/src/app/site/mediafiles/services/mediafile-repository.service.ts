@@ -6,6 +6,9 @@ import { Mediafile } from '../../../shared/models/mediafiles/mediafile';
 import { User } from '../../../shared/models/users/user';
 import { Observable } from 'rxjs';
 import { DataStoreService } from '../../../core/services/data-store.service';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
+import { TranslateService } from '@ngx-translate/core';
+import { PromptService } from '../../../core/services/prompt.service';
 
 /**
  * Repository for files
@@ -18,8 +21,13 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
      * Consturctor for the file repo
      * @param DS the DataStore
      */
-    public constructor(DS: DataStoreService) {
-        super(DS, Mediafile, [User]);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        translate: TranslateService,
+        promptService: PromptService
+    ) {
+        super(DS, mapperService, translate, promptService, Mediafile, [User]);
     }
 
     /**
@@ -36,7 +44,7 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
      *
      * TODO: used over not-yet-existing detail view
      */
-    public delete(file: ViewMediafile): Observable<Mediafile> {
+    protected actualDelete(file: ViewMediafile): Observable<void> {
         return null;
     }
 

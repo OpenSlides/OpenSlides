@@ -7,6 +7,9 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { ConstantsService } from '../../../core/services/constants.service';
 import { HttpClient } from '@angular/common/http';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
+import { TranslateService } from '@ngx-translate/core';
+import { PromptService } from '../../../core/services/prompt.service';
 
 /**
  * Holds a single config item.
@@ -85,8 +88,15 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
     /**
      * Constructor for ConfigRepositoryService. Requests the constants from the server and creates the config group structure.
      */
-    public constructor(DS: DataStoreService, private constantsService: ConstantsService, private http: HttpClient) {
-        super(DS, Config);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        translate: TranslateService,
+        promptService: PromptService,
+        private constantsService: ConstantsService,
+        private http: HttpClient
+    ) {
+        super(DS, mapperService, translate, promptService, Config);
 
         this.constantsService.get('OpenSlidesConfigVariables').subscribe(constant => {
             this.createConfigStructure(constant);
@@ -192,12 +202,22 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
     }
 
     /**
-     * This particular function should never be necessary since the creation of config
+     * This particular function should never be necessary since the deletion of config
      * values is not planed.
      *
      * Function exists solely to correctly implement {@link BaseRepository}
      */
-    public delete(config: ViewConfig): Observable<Config> {
+    protected actualDelete(config: ViewConfig): Observable<void> {
+        throw new Error('Config variables cannot be deleted');
+    }
+
+    /**
+     * This particular function should never be necessary since the deletion of config
+     * values is not planed.
+     *
+     * Function exists solely to correctly implement {@link BaseRepository}
+     */
+    public async delete(config: ViewConfig): Promise<void> {
         throw new Error('Config variables cannot be deleted');
     }
 

@@ -7,11 +7,14 @@ import { Group } from '../../../shared/models/users/group';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { DataSendService } from '../../../core/services/data-send.service';
 import { ConstantsService } from '../../../core/services/constants.service';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
+import { TranslateService } from '@ngx-translate/core';
+import { PromptService } from '../../../core/services/prompt.service';
 
 /**
  * Set rules to define the shape of an app permission
  */
-interface AppPermission {
+export interface AppPermission {
     name: string;
     permissions: string[];
 }
@@ -35,8 +38,15 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
      * @param DS Store
      * @param dataSend Sending Data
      */
-    public constructor(DS: DataStoreService, private dataSend: DataSendService, private constants: ConstantsService) {
-        super(DS, Group);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        translate: TranslateService,
+        promptService: PromptService,
+        private dataSend: DataSendService,
+        private constants: ConstantsService
+    ) {
+        super(DS, mapperService, translate, promptService, Group);
         this.sortPermsPerApp();
     }
 
@@ -130,7 +140,7 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
     /**
      * Deletes a given group
      */
-    public delete(viewGroup: ViewGroup): Observable<any> {
+    protected actualDelete(viewGroup: ViewGroup): Observable<any> {
         return this.dataSend.delete(viewGroup.group);
     }
 

@@ -7,6 +7,7 @@ import { UserRepositoryService } from '../../services/user-repository.service';
 import { Group } from '../../../../shared/models/users/group';
 import { DataStoreService } from '../../../../core/services/data-store.service';
 import { OperatorService } from '../../../../core/services/operator.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 /**
  * Users detail component for both new and existing users
@@ -311,10 +312,15 @@ export class UserDetailComponent implements OnInit {
     /**
      * click on the delete user button
      */
-    public deleteUserButton(): void {
-        this.repo.delete(this.user).subscribe(response => {
+    public async deleteUserButton(): Promise<void> {
+        try {
+            await this.repo.delete(this.user);
             this.router.navigate(['./users/']);
-        });
+        } catch (e) {
+            if (e instanceof HttpErrorResponse) {
+                // Todo: Error handling
+            }
+        }
     }
 
     /**

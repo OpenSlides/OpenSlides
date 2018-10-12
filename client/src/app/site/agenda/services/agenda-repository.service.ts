@@ -7,6 +7,9 @@ import { Item } from '../../../shared/models/agenda/item';
 import { ViewItem } from '../models/view-item';
 import { AgendaBaseModel } from '../../../shared/models/base/agenda-base-model';
 import { BaseModel } from '../../../shared/models/base/base-model';
+import { TranslateService } from '@ngx-translate/core';
+import { PromptService } from '../../../core/services/prompt.service';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 
 /**
  * Repository service for users
@@ -17,8 +20,13 @@ import { BaseModel } from '../../../shared/models/base/base-model';
     providedIn: 'root'
 })
 export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
-    public constructor(DS: DataStoreService) {
-        super(DS, Item);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        translate: TranslateService,
+        promptService: PromptService
+    ) {
+        super(DS, mapperService, translate, promptService, Item);
     }
 
     /**
@@ -58,7 +66,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
      *
      * TODO: used over not-yet-existing detail view
      */
-    public delete(item: ViewItem): Observable<Item> {
+    protected actualDelete(item: ViewItem): Observable<void> {
         return null;
     }
 
