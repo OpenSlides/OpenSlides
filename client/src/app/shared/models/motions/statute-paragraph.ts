@@ -18,5 +18,3 @@ export class StatuteParagraph extends BaseModel<StatuteParagraph> {
         return this.title;
     }
 }
-
-BaseModel.registerCollectionElement('motions/statute-paragraph', StatuteParagraph);
