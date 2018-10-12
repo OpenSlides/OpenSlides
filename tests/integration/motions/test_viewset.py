@@ -16,6 +16,7 @@ from openslides.motions.models import (
     MotionCommentSection,
     MotionLog,
     State,
+    StatuteParagraph,
     Submitter,
     Workflow,
 )
@@ -80,6 +81,20 @@ def test_category_db_queries():
 
 
 @pytest.mark.django_db(transaction=False)
+def test_statute_paragraph_db_queries():
+    """
+    Tests that only the following db queries are done:
+    * 1 requests to get the list of all statute paragraphs.
+    """
+    for index in range(10):
+        StatuteParagraph.objects.create(
+            title='statute_paragraph{}'.format(index),
+            text='text{}'.format(index))
+
+    assert count_queries(StatuteParagraph.get_elements) == 1
+
+
+@pytest.mark.django_db(transaction=False)
 def test_workflow_db_queries():
     """
     Tests that only the following db queries are done:
@@ -89,6 +104,101 @@ def test_workflow_db_queries():
     """
 
     assert count_queries(Workflow.get_elements) == 3
+
+
+class TestStatuteParagraphs(TestCase):
+    """
+    Tests all CRUD operations of statute paragraphs.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+
+    def create_statute_paragraph(self):
+        self.title = 'test_title_fiWs82D0D)2kje3KDm2s'
+        self.text = 'test_text_3jfjoDqm,S;cmor3DJwk'
+        self.cp = StatuteParagraph.objects.create(
+            title=self.title,
+            text=self.text)
+
+    def test_create_simple(self):
+        response = self.client.post(
+            reverse('statuteparagraph-list'),
+            {'title': 'test_title_f3FM328cq)tzdU238df2',
+             'text': 'test_text_2fb)BEjwdI38=kfemiRkcOW'})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        cp = StatuteParagraph.objects.get()
+        self.assertEqual(cp.title, 'test_title_f3FM328cq)tzdU238df2')
+        self.assertEqual(cp.text, 'test_text_2fb)BEjwdI38=kfemiRkcOW')
+
+    def test_create_without_data(self):
+        response = self.client.post(reverse('statuteparagraph-list'), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'title': ['This field is required.'], 'text': ['This field is required.']})
+
+    def test_create_non_admin(self):
+        self.admin = get_user_model().objects.get(username='admin')
+        self.admin.groups.add(2)
+        self.admin.groups.remove(4)
+        inform_changed_data(self.admin)
+
+        response = self.client.post(
+            reverse('statuteparagraph-list'),
+            {'title': 'test_title_f3(Dj2jdP39fjW2kdcwe',
+             'text': 'test_text_vlC)=fwWmcwcpWMvnuw('})
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_retrieve_simple(self):
+        self.create_statute_paragraph()
+        response = self.client.get(reverse('statuteparagraph-detail', args=[self.cp.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(sorted(response.data.keys()), sorted((
+            'id',
+            'title',
+            'text',
+            'weight',)))
+
+    def test_update_simple(self):
+        self.create_statute_paragraph()
+        response = self.client.patch(
+            reverse('statuteparagraph-detail', args=[self.cp.pk]),
+            {'text': 'test_text_ke(czr/cwk1Sl2seeFwE'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        cp = StatuteParagraph.objects.get()
+        self.assertEqual(cp.title, self.title)
+        self.assertEqual(cp.text, 'test_text_ke(czr/cwk1Sl2seeFwE')
+
+    def test_update_non_admin(self):
+        self.admin = get_user_model().objects.get(username='admin')
+        self.admin.groups.add(2)
+        self.admin.groups.remove(4)
+        inform_changed_data(self.admin)
+
+        self.create_statute_paragraph()
+        response = self.client.patch(
+            reverse('statuteparagraph-detail', args=[self.cp.pk]),
+            {'text': 'test_text_ke(czr/cwk1Sl2seeFwE'})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        cp = StatuteParagraph.objects.get()
+        self.assertEqual(cp.text, self.text)
+
+    def test_delete_simple(self):
+        self.create_statute_paragraph()
+        response = self.client.delete(reverse('statuteparagraph-detail', args=[self.cp.pk]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(StatuteParagraph.objects.count(), 0)
+
+    def test_delete_non_admin(self):
+        self.admin = get_user_model().objects.get(username='admin')
+        self.admin.groups.add(2)
+        self.admin.groups.remove(4)
+        inform_changed_data(self.admin)
+
+        self.create_statute_paragraph()
+        response = self.client.delete(reverse('statuteparagraph-detail', args=[self.cp.pk]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(StatuteParagraph.objects.count(), 1)
 
 
 class CreateMotion(TestCase):

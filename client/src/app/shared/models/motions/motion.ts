@@ -37,6 +37,8 @@ export class Motion extends AgendaBaseModel {
     public polls: Object[];
     public agenda_item_id: number;
     public log_messages: MotionLog[];
+    public weight: number;
+    public sort_parent_id: number;
 
     public constructor(input?: any) {
         super('motions/motion', 'Motion', input);

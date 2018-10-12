@@ -138,6 +138,25 @@ class MotionCommentSectionAccessPermissions(BaseAccessPermissions):
         return data
 
 
+class StatuteParagraphAccessPermissions(BaseAccessPermissions):
+    """
+    Access permissions container for StatuteParagraph and StatuteParagraphViewSet.
+    """
+    def check_permissions(self, user):
+        """
+        Returns True if the user has read access model instances.
+        """
+        return has_perm(user, 'motions.can_see')
+
+    def get_serializer_class(self, user=None):
+        """
+        Returns serializer class.
+        """
+        from .serializers import StatuteParagraphSerializer
+
+        return StatuteParagraphSerializer
+
+
 class CategoryAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Category and CategoryViewSet.
