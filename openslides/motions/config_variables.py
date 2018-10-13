@@ -107,15 +107,6 @@ def get_config_variables():
         subgroup='General')
 
     yield ConfigVariable(
-        name='motions_allow_disable_versioning',
-        default_value=False,
-        input_type='boolean',
-        label='Allow to disable versioning',
-        weight=329,
-        group='Motions',
-        subgroup='General')
-
-    yield ConfigVariable(
         name='motions_stop_submitting',
         default_value=False,
         input_type='boolean',
@@ -209,17 +200,6 @@ def get_config_variables():
         weight=350,
         group='Motions',
         subgroup='Supporters')
-
-    # Comments
-
-    yield ConfigVariable(
-        name='motions_comments',
-        default_value={},
-        input_type='comments',
-        label='Comment fields for motions',
-        weight=353,
-        group='Motions',
-        subgroup='Comments')
 
     # Voting and ballot papers
 

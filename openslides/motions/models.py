@@ -1,4 +1,4 @@
-from typing import Any, Dict  # noqa
+from typing import Any, Dict
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -7,8 +7,7 @@ from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import IntegrityError, models, transaction
 from django.db.models import Max
 from django.utils import formats, timezone
-from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext as _, ugettext_noop
 from jsonfield import JSONField
 
 from openslides.agenda.models import Item
@@ -30,9 +29,36 @@ from .access_permissions import (
     MotionAccessPermissions,
     MotionBlockAccessPermissions,
     MotionChangeRecommendationAccessPermissions,
+    MotionCommentSectionAccessPermissions,
+    StatuteParagraphAccessPermissions,
     WorkflowAccessPermissions,
 )
 from .exceptions import WorkflowError
+
+
+class StatuteParagraph(RESTModelMixin, models.Model):
+    """
+    Model for parts of the statute
+    """
+    access_permissions = StatuteParagraphAccessPermissions()
+
+    title = models.CharField(max_length=255)
+    """Title of the statute paragraph."""
+
+    text = models.TextField()
+    """Content of the statute paragraph."""
+
+    weight = models.IntegerField(default=10000)
+    """
+    A weight field to sort statute paragraphs.
+    """
+
+    class Meta:
+        default_permissions = ()
+        ordering = ['weight', 'title']
+
+    def __str__(self):
+        return self.title
 
 
 class MotionManager(models.Manager):
@@ -45,9 +71,12 @@ class MotionManager(models.Manager):
         join and prefetch all related models.
         """
         return (self.get_queryset()
-                .select_related('active_version', 'state')
+                .select_related('state')
                 .prefetch_related(
-                    'versions',
+                    'state__workflow',
+                    'comments',
+                    'comments__section',
+                    'comments__section__read_groups',
                     'agenda_items',
                     'log_messages',
                     'polls',
@@ -67,18 +96,26 @@ class Motion(RESTModelMixin, models.Model):
 
     objects = MotionManager()
 
-    active_version = models.ForeignKey(
-        'MotionVersion',
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name="active_version")
-    """
-    Points to a specific version.
+    title = models.CharField(max_length=255)
+    """The title of a motion."""
 
-    Used be the permitted-version-system to deside which version is the active
-    version. Could also be used to only choose a specific version as a default
-    version. Like the sighted versions on Wikipedia.
+    text = models.TextField()
+    """The text of a motion."""
+
+    amendment_paragraphs = JSONField(null=True)
     """
+    If paragraph-based, diff-enabled amendment style is used, this field stores an array of strings or null values.
+    Each entry corresponds to a paragraph of the text of the original motion.
+    If the entry is null, then the paragraph remains unchanged.
+    If the entry is a string, this is the new text of the paragraph.
+    amendment_paragraphs and text are mutually exclusive.
+    """
+
+    modified_final_version = models.TextField(null=True, blank=True)
+    """A field to copy in the final version of the motion and edit it there."""
+
+    reason = models.TextField(null=True, blank=True)
+    """The reason for a motion."""
 
     state = models.ForeignKey(
         'State',
@@ -91,6 +128,11 @@ class Motion(RESTModelMixin, models.Model):
     This attribute is to get the current state of the motion.
     """
 
+    state_extension = models.TextField(blank=True, null=True)
+    """
+    A text field fo additional information about the state.
+    """
+
     recommendation = models.ForeignKey(
         'State',
         related_name='+',
@@ -98,6 +140,11 @@ class Motion(RESTModelMixin, models.Model):
         null=True)
     """
     The recommendation of a person or committee for this motion.
+    """
+
+    recommendation_extension = models.TextField(blank=True, null=True)
+    """
+    A text field fo additional information about the recommendation.
     """
 
     identifier = models.CharField(max_length=255, null=True, blank=True,
@@ -111,6 +158,21 @@ class Motion(RESTModelMixin, models.Model):
     Counts the number of the motion in one category.
 
     Needed to find the next free motion identifier.
+    """
+
+    weight = models.IntegerField(default=10000)
+    """
+    A weight field to sort motions.
+    """
+
+    sort_parent = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='children')
+    """
+    A parent field for multi-depth sorting of motions.
     """
 
     category = models.ForeignKey(
@@ -154,6 +216,19 @@ class Motion(RESTModelMixin, models.Model):
     Null if the motion is not an amendment.
     """
 
+    statute_paragraph = models.ForeignKey(
+        StatuteParagraph,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='motions')
+    """
+    Field to reference to a statute paragraph if this motion is a
+    statute-amendment.
+
+    Null if the motion is not a statute-amendment.
+    """
+
     tags = models.ManyToManyField(Tag, blank=True)
     """
     Tags to categorise motions.
@@ -162,11 +237,6 @@ class Motion(RESTModelMixin, models.Model):
     supporters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_supporters', blank=True)
     """
     Users who support this motion.
-    """
-
-    comments = JSONField(null=True)
-    """
-    Configurable fields for comments.
     """
 
     # In theory there could be one then more agenda_item. But we support only
@@ -179,8 +249,6 @@ class Motion(RESTModelMixin, models.Model):
             ('can_see', 'Can see motions'),
             ('can_create', 'Can create motions'),
             ('can_support', 'Can support motions'),
-            ('can_see_comments', 'Can see comments'),
-            ('can_manage_comments', 'Can manage comments'),
             ('can_manage', 'Can manage motions'),
         )
         ordering = ('identifier', )
@@ -193,34 +261,13 @@ class Motion(RESTModelMixin, models.Model):
         return self.title
 
     # TODO: Use transaction
-    def save(self, use_version=None, skip_autoupdate=False, *args, **kwargs):
+    def save(self, skip_autoupdate=False, *args, **kwargs):
         """
         Save the motion.
 
         1. Set the state of a new motion to the default state.
         2. Ensure that the identifier is not an empty string.
         3. Save the motion object.
-        4. Save the version data.
-        5. Set the active version for the motion if a new version object was saved.
-
-        The version data is *not* saved, if
-            1. the django-feature 'update_fields' is used or
-            2. the argument use_version is False (differ to None).
-
-        The argument use_version is choose the version object into which the
-        version data is saved.
-            * If use_version is False, no version data is saved.
-            * If use_version is None, the last version is used.
-            * Else the given version is used.
-
-        To create and use a new version object, you have to set it via the
-        use_version argument. You have to set the title, text/amendment_paragraphs,
-        modified final version and reason into this version object before giving it
-        to this save method. The properties motion.title, motion.text,
-        motion.amendment_paragraphs, motion.modified_final_version and motion.reason will be ignored.
-
-        text and amendment_paragraphs are mutually exclusive; if both are given,
-        amendment_paragraphs takes precedence.
         """
         if not self.state:
             self.reset_state()
@@ -252,55 +299,6 @@ class Motion(RESTModelMixin, models.Model):
                 # Save was successful. End loop.
                 break
 
-        if 'update_fields' in kwargs:
-            # Do not save the version data if only some motion fields are updated.
-            if not skip_autoupdate:
-                inform_changed_data(self)
-            return
-
-        if use_version is False:
-            # We do not need to save the version.
-            if not skip_autoupdate:
-                inform_changed_data(self)
-            return
-        elif use_version is None:
-            use_version = self.get_last_version()
-            # Save title, text, amendment paragraphs, modified final version and reason into the version object.
-            for attr in ['title', 'text', 'amendment_paragraphs', 'modified_final_version', 'reason']:
-                _attr = '_%s' % attr
-                data = getattr(self, _attr, None)
-                if data is not None:
-                    setattr(use_version, attr, data)
-                    delattr(self, _attr)
-
-        # If version is not in the database, test if it has new data and set
-        # the version_number.
-        if use_version.id is None:
-            if not self.version_data_changed(use_version):
-                # We do not need to save the version.
-                if not skip_autoupdate:
-                    inform_changed_data(self)
-                return
-            version_number = self.versions.aggregate(Max('version_number'))['version_number__max'] or 0
-            use_version.version_number = version_number + 1
-
-        # Necessary line if the version was set before the motion got an id.
-        use_version.motion = use_version.motion
-
-        # Always skip autoupdate. Maybe we run it later in this method.
-        use_version.save(skip_autoupdate=True)
-
-        # Set the active version of this motion. This has to be done after the
-        # version is saved in the database.
-        # TODO: Move parts of these last lines of code outside the save method
-        # when other versions than the last one should be edited later on.
-        if self.active_version is None or not self.state.leave_old_version_active:
-            # TODO: Don't call this if it was not a new version
-            self.active_version = use_version
-            # Always skip autoupdate. Maybe we run it later in this method.
-            self.save(update_fields=['active_version'], skip_autoupdate=True)
-
-        # Finally run autoupdate if it is not skipped by caller.
         if not skip_autoupdate:
             inform_changed_data(self)
 
@@ -314,24 +312,6 @@ class Motion(RESTModelMixin, models.Model):
             name='motions/motion',
             id=self.pk)
         return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
-
-    def version_data_changed(self, version):
-        """
-        Compare the version with the last version of the motion.
-
-        Returns True if the version data (title, text, amendment_paragraphs,
-        modified_final_version, reason) is different,
-        else returns False.
-        """
-        if not self.versions.exists():
-            # If there is no version in the database, the data has always changed.
-            return True
-
-        last_version = self.get_last_version()
-        for attr in ['title', 'text', 'amendment_paragraphs', 'modified_final_version', 'reason']:
-            if getattr(last_version, attr) != getattr(version, attr):
-                return True
-        return False
 
     def set_identifier(self):
         """
@@ -417,188 +397,6 @@ class Motion(RESTModelMixin, models.Model):
             result = '0' * (settings.MOTION_IDENTIFIER_MIN_DIGITS - len(str(number))) + result
         return result
 
-    def get_title(self):
-        """
-        Get the title of the motion.
-
-        The title is taken from motion.version.
-        """
-        try:
-            return self._title
-        except AttributeError:
-            return self.get_active_version().title
-
-    def set_title(self, title):
-        """
-        Set the title of the motion.
-
-        The title will be saved in the version object, when motion.save() is
-        called.
-        """
-        self._title = title
-
-    title = property(get_title, set_title)
-    """
-    The title of the motion.
-
-    Is saved in a MotionVersion object.
-    """
-
-    def get_text(self):
-        """
-        Get the text of the motion.
-
-        Simular to get_title().
-        """
-        try:
-            return self._text
-        except AttributeError:
-            return self.get_active_version().text
-
-    def set_text(self, text):
-        """
-        Set the text of the motion.
-
-        Simular to set_title().
-        """
-        self._text = text
-
-    text = property(get_text, set_text)
-    """
-    The text of a motion.
-
-    Is saved in a MotionVersion object.
-    """
-
-    def get_amendment_paragraphs(self):
-        """
-        Get the paragraphs of the amendment.
-        Returns an array of entries that are either null (paragraph is not changed)
-        or a string (the new version of this paragraph).
-        """
-        try:
-            return self._amendment_paragraphs
-        except AttributeError:
-            return self.get_active_version().amendment_paragraphs
-
-    def set_amendment_paragraphs(self, text):
-        """
-        Set the paragraphs of the amendment.
-        Has to be an array of entries that are either null (paragraph is not changed)
-        or a string (the new version of this paragraph).
-        """
-        self._amendment_paragraphs = text
-
-    amendment_paragraphs = property(get_amendment_paragraphs, set_amendment_paragraphs)
-    """
-    The paragraphs of the amendment.
-
-    Is saved in a MotionVersion object.
-    """
-
-    def get_modified_final_version(self):
-        """
-        Get the modified_final_version of the motion.
-
-        Simular to get_title().
-        """
-        try:
-            return self._modified_final_version
-        except AttributeError:
-            return self.get_active_version().modified_final_version
-
-    def set_modified_final_version(self, modified_final_version):
-        """
-        Set the modified_final_version of the motion.
-
-        Simular to set_title().
-        """
-        self._modified_final_version = modified_final_version
-
-    modified_final_version = property(get_modified_final_version, set_modified_final_version)
-    """
-    The modified_final_version for the motion.
-
-    Is saved in a MotionVersion object.
-    """
-
-    def get_reason(self):
-        """
-        Get the reason of the motion.
-
-        Simular to get_title().
-        """
-        try:
-            return self._reason
-        except AttributeError:
-            return self.get_active_version().reason
-
-    def set_reason(self, reason):
-        """
-        Set the reason of the motion.
-
-        Simular to set_title().
-        """
-        self._reason = reason
-
-    reason = property(get_reason, set_reason)
-    """
-    The reason for the motion.
-
-    Is saved in a MotionVersion object.
-    """
-
-    def get_new_version(self, **kwargs):
-        """
-        Return a version object, not saved in the database.
-
-        The version data of the new version object is populated with the data
-        set via motion.title, motion.text, motion.amendment_paragraphs,
-        motion.modified_final_version and motion.reason if these data are not
-        given as keyword arguments. If the data is not set in the motion
-        attributes, it is populated with the data from the last version
-        object if such object exists.
-        """
-        if self.pk is None:
-            # Do not reference the MotionVersion object to an unsaved motion
-            new_version = MotionVersion(**kwargs)
-        else:
-            new_version = MotionVersion(motion=self, **kwargs)
-        if self.versions.exists():
-            last_version = self.get_last_version()
-        else:
-            last_version = None
-        for attr in ['title', 'text', 'amendment_paragraphs', 'modified_final_version', 'reason']:
-            if attr in kwargs:
-                continue
-            _attr = '_%s' % attr
-            data = getattr(self, _attr, None)
-            if data is None and last_version is not None:
-                data = getattr(last_version, attr)
-            if data is not None:
-                setattr(new_version, attr, data)
-        return new_version
-
-    def get_active_version(self):
-        """
-        Returns the active version of the motion.
-
-        If no active version is set by now, the last_version is used.
-        """
-        if self.active_version:
-            return self.active_version
-        else:
-            return self.get_last_version()
-
-    def get_last_version(self):
-        """
-        Return the newest version of the motion.
-        """
-        try:
-            return self.versions.order_by('-version_number')[0]
-        except IndexError:
-            return self.get_new_version()
-
     def is_submitter(self, user):
         """
         Returns True if user is a submitter of this motion, else False.
@@ -626,11 +424,10 @@ class Motion(RESTModelMixin, models.Model):
             raise WorkflowError('You can not create a poll in state %s.' % self.state.name)
 
     @property
-    def workflow(self):
+    def workflow_id(self):
         """
         Returns the id of the workflow of the motion.
         """
-        # TODO: Rename to workflow_id
         return self.state.workflow.pk
 
     def set_state(self, state):
@@ -689,30 +486,34 @@ class Motion(RESTModelMixin, models.Model):
     """
     Container for runtime information for agenda app (on create or update of this instance).
     """
-    agenda_item_update_information = {}  # type: Dict[str, Any]
+    agenda_item_update_information: Dict[str, Any] = {}
 
     def get_agenda_title(self):
         """
-        Return a simple title string for the agenda.
+        Return the title string for the agenda.
 
-        Returns only the motion title so that you have only agenda item number
-        and title in the agenda.
-        """
-        return str(self)
-
-    def get_agenda_list_view_title(self):
-        """
-        Return a title string for the agenda list view.
-
-        Returns only the motion title so that you have agenda item number,
-        title and motion identifier in the agenda.
+        If the identifier is given, the title consists of the motion verbose name
+        and the identifier.
         Note: It has to be the same return value like in JavaScript.
         """
         if self.identifier:
-            string = '%s %s' % (_(self._meta.verbose_name), self.identifier)
+            title = '%s %s' % (_(self._meta.verbose_name), self.identifier)
         else:
-            string = '%s (%s)' % (_(self._meta.verbose_name), self.title)
-        return string
+            title = self.title
+        return title
+
+    def get_agenda_title_with_type(self):
+        """
+        Return a title for the agenda with the type or the modified title if the
+        identifier is set..
+
+        Note: It has to be the same return value like in JavaScript.
+        """
+        if self.identifier:
+            title = '%s %s' % (_(self._meta.verbose_name), self.identifier)
+        else:
+            title = '%s (%s)' % (self.title, _(self._meta.verbose_name))
+        return title
 
     @property
     def agenda_item(self):
@@ -772,6 +573,76 @@ class Motion(RESTModelMixin, models.Model):
         Returns a list of all paragraph-based amendments to this motion
         """
         return list(filter(lambda amend: amend.is_paragraph_based_amendment(), self.amendments.all()))
+
+
+class MotionCommentSection(RESTModelMixin, models.Model):
+    """
+    The model for comment sections for motions. Each comment is related to one section, so
+    each motions has the ability to have comments from the same section.
+    """
+    access_permissions = MotionCommentSectionAccessPermissions()
+
+    name = models.CharField(max_length=255)
+    """
+    The name of the section.
+    """
+
+    read_groups = models.ManyToManyField(
+        settings.AUTH_GROUP_MODEL,
+        blank=True,
+        related_name='read_comments')
+    """
+    These groups have read-access to the section.
+    """
+
+    write_groups = models.ManyToManyField(
+        settings.AUTH_GROUP_MODEL,
+        blank=True,
+        related_name='write_comments')
+    """
+    These groups have write-access to the section.
+    """
+
+    class Meta:
+        default_permissions = ()
+
+
+class MotionComment(RESTModelMixin, models.Model):
+    """
+    Represents a motion comment. A comment is always related to a motion and a comment
+    section. The section determinates the title of the category.
+    """
+
+    comment = models.TextField()
+    """
+    The comment.
+    """
+
+    motion = models.ForeignKey(
+        Motion,
+        on_delete=models.CASCADE,
+        related_name='comments')
+    """
+    The motion where this comment belongs to.
+    """
+
+    section = models.ForeignKey(
+        MotionCommentSection,
+        on_delete=models.PROTECT,
+        related_name='comments')
+    """
+    The section of the comment.
+    """
+
+    class Meta:
+        default_permissions = ()
+        unique_together = ('motion', 'section')
+
+    def get_root_rest_element(self):
+        """
+        Returns the motion to this instance which is the root REST element.
+        """
+        return self.motion
 
 
 class SubmitterManager(models.Manager):
@@ -837,68 +708,6 @@ class Submitter(RESTModelMixin, models.Model):
         return self.motion
 
 
-class MotionVersion(RESTModelMixin, models.Model):
-    """
-    A MotionVersion object saves some date of the motion.
-    """
-
-    motion = models.ForeignKey(
-        Motion,
-        on_delete=models.CASCADE,
-        related_name='versions')
-    """The motion to which the version belongs."""
-
-    version_number = models.PositiveIntegerField(default=1)
-    """An id for this version in realation to a motion.
-
-    Is unique for each motion.
-    """
-
-    title = models.CharField(max_length=255)
-    """The title of a motion."""
-
-    text = models.TextField()
-    """The text of a motion."""
-
-    amendment_paragraphs = JSONField(null=True)
-    """
-    If paragraph-based, diff-enabled amendment style is used, this field stores an array of strings or null values.
-    Each entry corresponds to a paragraph of the text of the original motion.
-    If the entry is null, then the paragraph remains unchanged.
-    If the entry is a string, this is the new text of the paragraph.
-    amendment_paragraphs and text are mutually exclusive.
-    """
-
-    modified_final_version = models.TextField(null=True, blank=True)
-    """A field to copy in the final version of the motion and edit it there."""
-
-    reason = models.TextField(null=True, blank=True)
-    """The reason for a motion."""
-
-    creation_time = models.DateTimeField(auto_now=True)
-    """Time when the version was saved."""
-
-    class Meta:
-        default_permissions = ()
-        unique_together = ("motion", "version_number")
-
-    def __str__(self):
-        """Return a string, representing this object."""
-        counter = self.version_number or ugettext_lazy('new')
-        return "Motion %s, Version %s" % (self.motion_id, counter)
-
-    @property
-    def active(self):
-        """Return True, if the version is the active version of a motion. Else: False."""
-        return self.active_version.exists()
-
-    def get_root_rest_element(self):
-        """
-        Returns the motion to this instance which is the root REST element.
-        """
-        return self.motion
-
-
 class MotionChangeRecommendationManager(models.Manager):
     """
     Customized model manager to support our get_full_queryset method.
@@ -913,18 +722,18 @@ class MotionChangeRecommendationManager(models.Manager):
 
 class MotionChangeRecommendation(RESTModelMixin, models.Model):
     """
-    A MotionChangeRecommendation object saves change recommendations for a specific MotionVersion
+    A MotionChangeRecommendation object saves change recommendations for a specific Motion
     """
 
     access_permissions = MotionChangeRecommendationAccessPermissions()
 
     objects = MotionChangeRecommendationManager()
 
-    motion_version = models.ForeignKey(
-        MotionVersion,
+    motion = models.ForeignKey(
+        Motion,
         on_delete=models.CASCADE,
         related_name='change_recommendations')
-    """The motion version to which the change recommendation belongs."""
+    """The motion to which the change recommendation belongs."""
 
     rejected = models.BooleanField(default=False)
     """If true, this change recommendation has been rejected"""
@@ -942,7 +751,7 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
     """The number or the last affected line (inclusive)"""
 
     text = models.TextField(blank=True)
-    """The replacement for the section of the original text specified by version, line_from and line_to"""
+    """The replacement for the section of the original text specified by motion, line_from and line_to"""
 
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -963,7 +772,7 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
 
     def save(self, *args, **kwargs):
         recommendations = (MotionChangeRecommendation.objects
-                           .filter(motion_version=self.motion_version)
+                           .filter(motion=self.motion)
                            .exclude(pk=self.pk))
 
         if self.collides_with_other_recommendation(recommendations):
@@ -977,7 +786,7 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
 
     def __str__(self):
         """Return a string, representing this object."""
-        return "Recommendation for Version %s, line %s - %s" % (self.motion_version_id, self.line_from, self.line_to)
+        return "Recommendation for Motion %s, line %s - %s" % (self.motion_id, self.line_from, self.line_to)
 
 
 class Category(RESTModelMixin, models.Model):
@@ -1030,6 +839,7 @@ class MotionBlock(RESTModelMixin, models.Model):
     agenda_items = GenericRelation(Item, related_name='topics')
 
     class Meta:
+        verbose_name = ugettext_noop('Motion block')
         default_permissions = ()
 
     def __str__(self):
@@ -1049,7 +859,7 @@ class MotionBlock(RESTModelMixin, models.Model):
     """
     Container for runtime information for agenda app (on create or update of this instance).
     """
-    agenda_item_update_information = {}  # type: Dict[str, Any]
+    agenda_item_update_information: Dict[str, Any] = {}
 
     @property
     def agenda_item(self):
@@ -1070,8 +880,8 @@ class MotionBlock(RESTModelMixin, models.Model):
     def get_agenda_title(self):
         return self.title
 
-    def get_agenda_list_view_title(self):
-        return self.title
+    def get_agenda_title_with_type(self):
+        return '%s (%s)' % (self.get_agenda_title(), _(self._meta.verbose_name))
 
 
 class MotionLog(RESTModelMixin, models.Model):
@@ -1268,16 +1078,6 @@ class State(RESTModelMixin, models.Model):
 
     allow_submitter_edit = models.BooleanField(default=False)
     """If true, the submitter can edit the motion in this state."""
-
-    versioning = models.BooleanField(default=False)
-    """
-    If true, editing the motion will create a new version by default.
-    This behavior can be changed by the form and view, e. g. via the
-    MotionDisableVersioningMixin.
-    """
-
-    leave_old_version_active = models.BooleanField(default=False)
-    """If true, new versions are not automaticly set active."""
 
     dont_set_identifier = models.BooleanField(default=False)
     """

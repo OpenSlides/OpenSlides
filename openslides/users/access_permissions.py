@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional
 from django.contrib.auth.models import AnonymousUser
 
 from ..core.signals import user_data_required
-from ..utils.access_permissions import BaseAccessPermissions  # noqa
+from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import anonymous_is_enabled, has_perm
 from ..utils.collection import CollectionElement
 
@@ -43,16 +43,20 @@ class UserAccessPermissions(BaseAccessPermissions):
             """
             return {key: full_data[key] for key in whitelist}
 
-        # We have four sets of data to be sent:
-        # * full data i. e. all fields,
-        # * many data i. e. all fields but not the default password,
-        # * little data i. e. all fields but not the default password, comments and active status,
+        # We have five sets of data to be sent:
+        # * full data i. e. all fields (including session_auth_hash),
+        # * all data i. e. all fields but not session_auth_hash,
+        # * many data i. e. all fields but not the default password and session_auth_hash,
+        # * little data i. e. all fields but not the default password, session_auth_hash, comments and active status,
         # * no data.
 
-        # Prepare field set for users with "many" data and with "little" data.
-        many_data_fields = set(USERCANSEEEXTRASERIALIZER_FIELDS)
-        many_data_fields.add('groups_id')
-        many_data_fields.discard('groups')
+        # Prepare field set for users with "all" data, "many" data and with "little" data.
+        all_data_fields = set(USERCANSEEEXTRASERIALIZER_FIELDS)
+        all_data_fields.add('groups_id')
+        all_data_fields.discard('groups')
+        all_data_fields.add('default_password')
+        many_data_fields = all_data_fields.copy()
+        many_data_fields.discard('default_password')
         litte_data_fields = set(USERCANSEESERIALIZER_FIELDS)
         litte_data_fields.add('groups_id')
         litte_data_fields.discard('groups')
@@ -61,7 +65,7 @@ class UserAccessPermissions(BaseAccessPermissions):
         if has_perm(user, 'users.can_see_name'):
             if has_perm(user, 'users.can_see_extra_data'):
                 if has_perm(user, 'users.can_manage'):
-                    data = full_data
+                    data = [filtered_data(full, all_data_fields) for full in full_data]
                 else:
                     data = [filtered_data(full, many_data_fields) for full in full_data]
             else:
@@ -168,7 +172,7 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
         """
         # Parse data.
         if user is None:
-            data = []  # type: List[Dict[str, Any]]
+            data: List[Dict[str, Any]] = []
         else:
             for full in full_data:
                 if full['user_id'] == user.id:

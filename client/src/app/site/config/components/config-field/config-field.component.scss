@@ -1,0 +1,26 @@
+/* Full width form fields */
+.mat-form-field {
+    width: 100%;
+}
+
+/* limit the color bar of color inputs */
+input[type='color'] {
+    max-width: 100px;
+}
+
+/* Spacing between config entries */
+.config-form-group {
+    margin-bottom: 15px;
+}
+
+/* Custom hint and error classes for the checkbox. Same values as .mat-hint and -mat-error */
+.hint,
+.error {
+    font-size: 75%;
+}
+.hint {
+    color: rgba(0, 0, 0, 0.54);
+}
+.error {
+    color: #f44336;
+}

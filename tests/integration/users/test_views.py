@@ -1,12 +1,13 @@
 import json
 
+from django.urls import reverse
 from rest_framework.test import APIClient
 
 from openslides.utils.test import TestCase
 
 
 class TestWhoAmIView(TestCase):
-    url = '/users/whoami/'
+    url = reverse('user_whoami')
 
     def test_get_anonymous(self):
         response = self.client.get(self.url)
@@ -32,7 +33,7 @@ class TestWhoAmIView(TestCase):
 
 
 class TestUserLogoutView(TestCase):
-    url = '/users/logout/'
+    url = reverse('user_logout')
 
     def test_get(self):
         response = self.client.get(self.url)
@@ -55,7 +56,7 @@ class TestUserLogoutView(TestCase):
 
 
 class TestUserLoginView(TestCase):
-    url = '/users/login/'
+    url = reverse('user_login')
 
     def setUp(self):
         self.client = APIClient()

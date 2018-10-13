@@ -1,9 +1,9 @@
 from argparse import Namespace
-from typing import Any, Union  # noqa
+from typing import Any, Optional
 
 
 class OpenSlidesArguments():
-    args = None  # type: Union[None, Namespace]
+    args: Optional[Namespace] = None
 
     def __getitem__(self, key: str) -> Any:
         if not self.args:

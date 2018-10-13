@@ -15,7 +15,7 @@ Installation and start of the development version
 a. Check requirements
 '''''''''''''''''''''
 
-Make sure that you have installed `Python (>= 3.5) <https://www.python.org/>`_,
+Make sure that you have installed `Python (>= 3.6) <https://www.python.org/>`_,
 `Node.js (>=4.x) <https://nodejs.org/>`_, `Yarn <https://yarnpkg.com/>`_ and
 `Git <http://git-scm.com/>`_ on your system. You also need build-essential
 packages and header files and a static library for Python.
@@ -24,9 +24,6 @@ For Ubuntu 16.04 e. g. follow `Yarn installation instructions
 <https://yarnpkg.com/en/docs/install>`_ and run::
 
     $ sudo apt-get install git nodejs nodejs-legacy npm build-essential python3-dev
-
-*Note: For Ubuntu 14.04 you have to update Node.js before. The distribution
-version is 0.10.25 which is not sufficient.*
 
 
 b. Get OpenSlides source code
@@ -78,7 +75,7 @@ To get help on the command line options run::
 
 Later you might want to restart the server with one of the following commands.
 
-To start OpenSlides with Daphne and one worker and to avoid opening new browser
+To start OpenSlides with Daphne and to avoid opening new browser
 windows run::
 
     $ python manage.py start --no-browser
@@ -87,15 +84,9 @@ When debugging something email related change the email backend to console::
 
     $ python manage.py start --debug-email
 
-To start OpenSlides with Daphne and four workers (avoid concurrent write
-requests or use PostgreSQL, see below) run::
+To start OpenSlides with Daphne run::
 
     $ python manage.py runserver
-
-To start OpenSlides with Geiss and one worker and to avoid opening new browser
-windows (download Geiss and setup Redis before, see below) run::
-
-    $ python manage.py start --no-browser --use-geiss
 
 Use gulp watch in a second command-line interface::
 
@@ -108,7 +99,7 @@ Use gulp watch in a second command-line interface::
 Follow the instructions above (Installation on GNU/Linux or Mac OS X) but care
 of the following variations.
 
-To get Python download and run the latest `Python 3.5 32-bit (x86) executable
+To get Python download and run the latest `Python 3.7 32-bit (x86) executable
 installer <https://www.python.org/downloads/windows/>`_. Note that the 32-bit
 installer is required even on a 64-bit Windows system. If you use the 64-bit
 installer, step d. of the instruction might fail unless you installed some
@@ -152,8 +143,7 @@ OpenSlides in big mode
 
 In the so called big mode you should use OpenSlides with Redis, PostgreSQL and a
 webserver like Apache HTTP Server or nginx as proxy server in front of your
-OpenSlides interface server. Optionally you can use `Geiss
-<https://github.com/ostcar/geiss/>`_ as interface server instead of Daphne.
+OpenSlides interface server.
 
 
 1. Install and configure PostgreSQL and Redis
@@ -173,15 +163,8 @@ Then add database user and database. For Ubuntu 16.04 e. g. run::
     $ sudo -u postgres createdb --owner=openslides openslides
 
 
-2. Install additional packages
-------------------------------
 
-Install some more required Python packages::
-
-    $ pip install -r requirements_big_mode.txt
-
-
-3. Change OpenSlides settings
+2. Change OpenSlides settings
 -----------------------------
 
 Create OpenSlides settings file if it does not exist::
@@ -197,34 +180,26 @@ Populate your new database::
     $ python manage.py migrate
 
 
-4. Run OpenSlides
+3. Run OpenSlides
 -----------------
 
-First start e. g. four workers (do not use the `--threads` option, because the threads will not spawn across all cores)::
-
-    $ python manage.py runworker&
-    $ python manage.py runworker&
-    $ python manage.py runworker&
-    $ python manage.py runworker&
-
-To start Daphne as protocol server run::
+To start gunicorn with uvicorn as protocol server run::
 
     $ export DJANGO_SETTINGS_MODULE=settings
     $ export PYTHONPATH=personal_data/var/
-    $ daphne openslides.asgi:channel_layer
+    $ gunicorn -w 4 -k uvicorn.workers.UvicornWorker openslides.asgi:application
 
-To use Geiss instead of Daphne, just download Geiss and start it::
+This example uses 4 instances. The recommendation is to use CPU cores * 2.
 
-    $ python manage.py getgeiss
-    $ ./personal_data/var/geiss
 
-5. Use Nginx (optional)
+4. Use Nginx (optional)
+-----------------------
 
 When using Nginx as a proxy for delivering staticfiles the performance of the setup will increase very much. For delivering staticfiles you have to collect those::
 
     $ python manage.py collectstatic
 
-This is an example configuration for a single Daphne/Geiss listen on port 8000::
+This is an example configuration for a single Daphne listen on port 8000::
 
     server {
          listen 80;
@@ -232,9 +207,6 @@ This is an example configuration for a single Daphne/Geiss listen on port 8000::
 
          server_name _;
 
-         location ~* ^/(?!ws|wss|webclient|core/servertime|core/version|users/whoami|users/login|users/logout|users/setpassword|motions/docxtemplate|agenda/docxtemplate|projector|real-projector|static|media|rest).*$ {
-             rewrite ^.*$ /static/templates/index.html;
-         }
          location ~* ^/projector.*$ {
              rewrite ^.*$ /static/templates/projector-container.html;
          }
@@ -247,6 +219,9 @@ This is an example configuration for a single Daphne/Geiss listen on port 8000::
          location /static {
              alias <your path to>/collected-static;
          }
+         location ~* ^/(?!ws|wss|media|rest|views).*$ {
+             rewrite ^.*$ /static/templates/index.html;
+         }
 
          location / {
              proxy_pass http://localhost:8000;
@@ -258,10 +233,3 @@ This is an example configuration for a single Daphne/Geiss listen on port 8000::
              proxy_set_header X-Scheme $scheme;
          }
      }
-
-Using Nginx as a load balancer is fairly easy. Just start multiple Daphnes/Geiss on different ports, change the `proxy_pass` to `http://openslides/` and add this on top of the Nginx configuration::
-
-    upstream openslides {
-        server localhost:2001;
-        server localhost:2002;
-    }

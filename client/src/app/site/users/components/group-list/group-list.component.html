@@ -1,0 +1,90 @@
+<mat-toolbar color='primary'>
+    <button *osPerms="'users.can_manage'" (click)='newGroupButton()' class='generic-mini-button on-transition-fade'
+        mat-mini-fab>
+        <mat-icon *ngIf="!newGroup">add</mat-icon>
+        <mat-icon *ngIf="newGroup">cancel</mat-icon>
+    </button>
+
+    <div class="on-transition-fade">
+        <span translate>Groups</span>
+    </div>
+
+    <span class='spacer'></span>
+</mat-toolbar>
+
+<div class="on-transition-fade new-group-form" *ngIf="newGroup">
+    <form #newGroupForm="ngForm" (ngSubmit)="submitNewGroup(newGroupForm.form)" (keydown)="keyDownFunction($event)">
+        <mat-form-field>
+            <input type="text" matInput name="name" ngModel #nameField="ngModel" placeholder="{{ 'New group name' | translate}}">
+        </mat-form-field>
+
+        <button type="submit" mat-mini-fab color="primary">
+            <mat-icon>save</mat-icon>
+        </button>
+    </form>
+</div>
+
+<div class="on-transition-fade new-group-form" *ngIf="editGroup">
+    <form #editGroupForm="ngForm" (ngSubmit)="submitEditedGroup(editGroupForm.form)">
+        <mat-form-field>
+            <input type="text" matInput name="name" [(ngModel)]="selectedGroup.name" #nameField="ngModel" placeholder="{{ 'Edit group name' | translate}}">
+        </mat-form-field>
+
+        <button type="submit" mat-mini-fab color="primary">
+            <mat-icon>save</mat-icon>>
+        </button>
+
+        <button type="button" mat-mini-fab color="warn" (click)="deleteSelectedGroup()" [disabled]="isProtected(selectedGroup)">
+            <mat-icon>delete</mat-icon>
+        </button>
+
+        <button type="button" mat-mini-fab color="primary" (click)="cancelEditing()">
+            <mat-icon>cancel</mat-icon>
+        </button>
+    </form>
+</div>
+
+<div class="hint-text on-transition-fade">
+    <span translate>All your changes are saved immediately.</span>
+</div>
+
+<mat-accordion *ngFor="let app of repo.appPermissions">
+    <mat-expansion-panel class="mat-elevation-z0" [expanded]=true>
+        <mat-expansion-panel-header>
+            <mat-panel-title translate>
+                {{ app.name }}
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="scrollable-perm-matrix">
+            <table mat-table class='on-transition-fade' [dataSource]="getTableDataSource(app.permissions)">
+                <ng-container matColumnDef="perm" sticky>
+                    <mat-header-cell *matHeaderCellDef translate> Permissions </mat-header-cell>
+                    <mat-cell *matCellDef="let perm" translate>
+                        {{ perm.display_name }}
+                    </mat-cell>
+                </ng-container>
+
+                <div *ngFor=" let group of groups; trackBy: trackGroupArray">
+                    <ng-container [matColumnDef]="group.name">
+                        <mat-header-cell class="group-head-table-cell" *matHeaderCellDef (click)="selectGroup(group)">
+                            <div class="inner-table" translate>
+                                {{ group.name }}
+                            </div>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let perm">
+                            <div class="inner-table">
+                                <mat-checkbox *ngIf="group.id !== 2" [checked]="group.hasPermission(perm.value)"
+                                (change)='togglePerm(group, perm.value)'></mat-checkbox>
+                                <mat-checkbox *ngIf="group.id === 2" [checked]="true" [disabled]="true"></mat-checkbox>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+                </div>
+
+                <mat-header-row *matHeaderRowDef="headerRowDef"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: headerRowDef"></mat-row>
+            </table>
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>

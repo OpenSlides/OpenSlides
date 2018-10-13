@@ -1,7 +1,7 @@
 import json
 import uuid
 from textwrap import dedent
-from typing import Any, Dict, List, cast  # noqa
+from typing import Any, Dict, List, cast
 
 from django.apps import apps
 from django.conf import settings
@@ -11,12 +11,11 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from mypy_extensions import TypedDict
 
-from .. import __license__ as license
-from .. import __url__ as url
-from .. import __version__ as version
+from .. import __license__ as license, __url__ as url, __version__ as version
 from ..utils import views as utils_views
 from ..utils.auth import anonymous_is_enabled, has_perm
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
+from ..utils.constants import get_constants
 from ..utils.plugins import (
     get_plugin_description,
     get_plugin_license,
@@ -93,7 +92,7 @@ class WebclientJavaScriptView(utils_views.View):
     AngularJS app for the requested realm (site or projector). Also code
     for plugins is appended. The result is not uglified.
     """
-    cache = {}  # type: Dict[str, str]
+    cache: Dict[str, str] = {}
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -104,8 +103,8 @@ class WebclientJavaScriptView(utils_views.View):
             self.init_cache('projector')
 
     def init_cache(self, realm: str) -> None:
-        angular_modules = []  # type: List[str]
-        js_files = []  # type: List[str]
+        angular_modules: List[str] = []
+        js_files: List[str] = []
         for app_config in apps.get_app_configs():
             # Add the angular app if the module has one.
             if getattr(app_config, 'angular_{}_module'.format(realm), False):
@@ -135,18 +134,9 @@ class WebclientJavaScriptView(utils_views.View):
 
         # angular constants
         angular_constants = ''
-        for app in apps.get_app_configs():
-            try:
-                # Each app can deliver values to angular when implementing this method.
-                # It should return a list with dicts containing the 'name' and 'value'.
-                get_angular_constants = app.get_angular_constants
-            except AttributeError:
-                # The app doesn't have this method. Continue to next app.
-                continue
-            for constant in get_angular_constants():
-                value = json.dumps(constant['value'])
-                name = constant['name']
-                angular_constants += ".constant('{}', {})".format(name, value)
+        for key, value in get_constants().items():
+            value = json.dumps(value)
+            angular_constants += ".constant('{}', {})".format(key, value)
 
         # Use JavaScript loadScript function from
         # http://balpha.de/2011/10/jquery-script-insertion-and-its-consequences-for-debugging/
@@ -838,16 +828,16 @@ class VersionView(utils_views.APIView):
     http_method_names = ['get']
 
     def get_context_data(self, **context):
-        Result = TypedDict('Result', {  # noqa
+        Result = TypedDict('Result', {
             'openslides_version': str,
             'openslides_license': str,
             'openslides_url': str,
             'plugins': List[Dict[str, str]]})
-        result = dict(
+        result: Result = dict(
             openslides_version=version,
             openslides_license=license,
             openslides_url=url,
-            plugins=[])  # type: Result
+            plugins=[])
         # Versions of plugins.
         for plugin in settings.INSTALLED_PLUGINS:
             result['plugins'].append({

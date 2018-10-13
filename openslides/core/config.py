@@ -1,12 +1,25 @@
-from typing import Any, Callable, Dict, Iterable, Optional, TypeVar, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    Optional,
+    TypeVar,
+    Union,
+    cast,
+)
 
+from asgiref.sync import async_to_sync
+from django.apps import apps
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import ugettext as _
 from mypy_extensions import TypedDict
 
+from ..utils.cache import element_cache
 from ..utils.collection import CollectionElement
 from .exceptions import ConfigError, ConfigNotFound
 from .models import ConfigStore
+
 
 INPUT_TYPE_MAPPING = {
     'string': str,
@@ -15,7 +28,6 @@ INPUT_TYPE_MAPPING = {
     'integer': int,
     'boolean': bool,
     'choice': str,
-    'comments': dict,
     'colorpicker': str,
     'datetimepicker': int,
     'majorityMethod': str,
@@ -34,24 +46,45 @@ class ConfigHandler:
     def __init__(self) -> None:
         # Dict, that keeps all ConfigVariable objects. Has to be set at statup.
         # See the ready() method in openslides.core.apps.
-        self.config_variables = {}  # type: Dict[str, ConfigVariable]
+        self.config_variables: Dict[str, ConfigVariable] = {}
 
         # Index to get the database id from a given config key
-        self.key_to_id = {}  # type: Dict[str, int]
+        self.key_to_id: Optional[Dict[str, int]] = None
 
     def __getitem__(self, key: str) -> Any:
         """
         Returns the value of the config variable.
         """
-        # Build the key_to_id dict
-        self.save_default_values()
-
         if not self.exists(key):
             raise ConfigNotFound(_('The config variable {} was not found.').format(key))
 
         return CollectionElement.from_values(
             self.get_collection_string(),
-            self.key_to_id[key]).get_full_data()['value']
+            self.get_key_to_id()[key]).get_full_data()['value']
+
+    def get_key_to_id(self) -> Dict[str, int]:
+        """
+        Returns the key_to_id dict. Builds it, if it does not exist.
+        """
+        if self.key_to_id is None:
+            async_to_sync(self.build_key_to_id)()
+            self.key_to_id = cast(Dict[str, int], self.key_to_id)
+        return self.key_to_id
+
+    async def build_key_to_id(self) -> None:
+        """
+        Build the key_to_id dict.
+
+        Recreates it, if it does not exists.
+
+        This uses the element_cache. It expects, that the config values are in the database
+        before this is called.
+        """
+        self.key_to_id = {}
+        all_data = await element_cache.get_all_full_data()
+        elements = all_data[self.get_collection_string()]
+        for element in elements:
+            self.key_to_id[element['key']] = element['id']
 
     def exists(self, key: str) -> bool:
         """
@@ -100,31 +133,6 @@ class ConfigHandler:
             except DjangoValidationError as e:
                 raise ConfigError(e.messages[0])
 
-        if config_variable.input_type == 'comments':
-            if not isinstance(value, dict):
-                raise ConfigError(_('motions_comments has to be a dict.'))
-            valuecopy = dict()
-            for id, commentsfield in value.items():
-                try:
-                    id = int(id)
-                except ValueError:
-                    raise ConfigError(_('Each id has to be an int.'))
-
-                if id < 1:
-                    raise ConfigError(_('Each id has to be greater then 0.'))
-                # Deleted commentsfields are saved as None to block the used ids
-                if commentsfield is not None:
-                    if not isinstance(commentsfield, dict):
-                        raise ConfigError(_('Each commentsfield in motions_comments has to be a dict.'))
-                    if commentsfield.get('name') is None or commentsfield.get('public') is None:
-                        raise ConfigError(_('A name and a public property have to be given.'))
-                    if not isinstance(commentsfield['name'], str):
-                        raise ConfigError(_('name has to be string.'))
-                    if not isinstance(commentsfield['public'], bool):
-                        raise ConfigError(_('public property has to be bool.'))
-                valuecopy[id] = commentsfield
-            value = valuecopy
-
         if config_variable.input_type == 'static':
             if not isinstance(value, dict):
                 raise ConfigError(_('This has to be a dict.'))
@@ -163,6 +171,17 @@ class ConfigHandler:
         if config_variable.on_change:
             config_variable.on_change()
 
+    def collect_config_variables_from_apps(self) -> None:
+        for app in apps.get_app_configs():
+            try:
+                # Each app can deliver config variables when implementing the
+                # get_config_variables method.
+                get_config_variables = app.get_config_variables
+            except AttributeError:
+                # The app doesn't have this method. Continue to next app.
+                continue
+            self.update_config_variables(get_config_variables())
+
     def update_config_variables(self, items: Iterable['ConfigVariable']) -> None:
         """
         Updates the config_variables dict.
@@ -183,19 +202,17 @@ class ConfigHandler:
         Saves the default values to the database.
 
         Does also build the dictonary key_to_id.
-
-        Does nothing on a second run.
         """
-        if not self.key_to_id:
-            for item in self.config_variables.values():
-                try:
-                    db_value = ConfigStore.objects.get(key=item.name)
-                except ConfigStore.DoesNotExist:
-                    db_value = ConfigStore()
-                    db_value.key = item.name
-                    db_value.value = item.default_value
-                    db_value.save(skip_autoupdate=True)
-                self.key_to_id[item.name] = db_value.pk
+        self.key_to_id = {}
+        for item in self.config_variables.values():
+            try:
+                db_value = ConfigStore.objects.get(key=item.name)
+            except ConfigStore.DoesNotExist:
+                db_value = ConfigStore()
+                db_value.key = item.name
+                db_value.value = item.default_value
+                db_value.save(skip_autoupdate=True)
+            self.key_to_id[db_value.key] = db_value.id
 
     def get_collection_string(self) -> str:
         """
@@ -219,7 +236,6 @@ OnChangeType = Callable[[], None]
 ConfigVariableDict = TypedDict('ConfigVariableDict', {
     'key': str,
     'default_value': Any,
-    'value': Any,
     'input_type': str,
     'label': str,
     'help_text': str,
@@ -286,7 +302,6 @@ class ConfigVariable:
         return ConfigVariableDict(
             key=self.name,
             default_value=self.default_value,
-            value=config[self.name],
             input_type=self.input_type,
             label=self.label,
             help_text=self.help_text,

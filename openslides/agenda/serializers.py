@@ -45,7 +45,7 @@ class ItemSerializer(ModelSerializer):
             'id',
             'item_number',
             'title',
-            'list_view_title',
+            'title_with_type',
             'comment',
             'closed',
             'type',

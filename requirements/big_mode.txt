@@ -1,0 +1,9 @@
+# Requirements for Redis and PostgreSQL support
+channels-redis>=2.2,<2.3
+django-redis-sessions>=0.6.1,<0.7
+psycopg2-binary>=2.7.3.2,<2.8
+aioredis>=1.1.0,<1.2
+
+# Requirements for fast asgi server
+gunicorn>=19.9<20
+uvicorn>=0.3.2<1.1

@@ -1,4 +1,4 @@
-from typing import Any, Set  # noqa
+from typing import Any, Set
 
 from django.apps import apps
 
@@ -24,7 +24,7 @@ def required_users(sender, request_user, **kwargs):
     options) in any assignment if request_user can see assignments. This
     function may return an empty set.
     """
-    candidates = set()  # type: Set[Any]  # TODO: Replace Any
+    candidates: Set[Any] = set()
     if has_perm(request_user, 'assignments.can_see'):
         for assignment_collection_element in Collection(Assignment.get_collection_string()).element_generator():
             full_data = assignment_collection_element.get_full_data()

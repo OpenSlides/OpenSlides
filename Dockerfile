@@ -1,6 +1,7 @@
-FROM python:3.5
-RUN apt-get -y update && apt-get -y upgrade
-RUN apt-get install -y libpq-dev supervisor curl vim
+FROM python:3.7-slim
+RUN apt-get -y update && \
+  apt-get -y upgrade && \
+  apt-get install -y libpq-dev supervisor curl wget xz-utils bzip2 git gcc
 RUN useradd -m openslides
 
 ## BUILD JS STUFF
@@ -18,7 +19,7 @@ RUN node_modules/.bin/gulp --production
 
 # INSTALL PYTHON DEPENDENCIES
 USER root
-RUN pip install -r /app/requirements_big_mode.txt
+RUN pip install .[big_mode]
 
 ## Clean up
 RUN apt-get remove -y python3-pip wget curl

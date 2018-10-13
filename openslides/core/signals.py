@@ -8,6 +8,7 @@ from ..utils.auth import has_perm
 from ..utils.collection import Collection
 from .models import ChatMessage
 
+
 # This signal is send when the migrate command is done. That means it is sent
 # after post_migrate sending and creating all Permission objects. Don't use it
 # for other things than dealing with Permission objects.
@@ -38,18 +39,18 @@ def delete_django_app_permissions(sender, **kwargs):
 
 def get_permission_change_data(sender, permissions, **kwargs):
     """
-    Yields all necessary collections if the respective permissions change.
+    Yields all necessary Cachables if the respective permissions change.
     """
     core_app = apps.get_app_config(app_label='core')
     for permission in permissions:
         if permission.content_type.app_label == core_app.label:
             if permission.codename == 'can_see_projector':
-                yield Collection(core_app.get_model('Projector').get_collection_string())
+                yield core_app.get_model('Projector')
             elif permission.codename == 'can_manage_projector':
-                yield Collection(core_app.get_model('ProjectorMessage').get_collection_string())
-                yield Collection(core_app.get_model('Countdown').get_collection_string())
+                yield core_app.get_model('ProjectorMessage')
+                yield core_app.get_model('Countdown')
             elif permission.codename == 'can_use_chat':
-                yield Collection(core_app.get_model('ChatMessage').get_collection_string())
+                yield core_app.get_model('ChatMessage')
 
 
 def required_users(sender, request_user, **kwargs):

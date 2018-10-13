@@ -4,6 +4,28 @@
 
 https://openslides.org/
 
+Version 3.0 (unreleased)
+========================
+
+Core:
+ - Changed personal settings.py, updated to channels2, complete rework of
+   startup and caching system, dropped support for Geiss [#3796, #3789].
+ - Dropped support for Python 3.5 [#3805].
+ - Added a websocket protocol for server client communication using
+   JSON schema [#3807].
+ - Changed URL schema [#3798].
+ - Enabled docs for using OpenSlides with Gunicorn and Uvicorn in big
+   mode [#3799, #3817].
+
+Motions:
+ - Option to customly sort motions [#3894].
+ - Added support for adding a statute [#3894].
+
+User:
+ - Added new admin group which grants all permissions. Users of existing group
+   'Admin' or 'Staff' are move to the new group during migration [#3859].
+
+
 Version 2.3 (2018-09-20)
 ========================
 `Release notes <https://github.com/OpenSlides/OpenSlides/wiki/OpenSlides-2.3>`_ ·

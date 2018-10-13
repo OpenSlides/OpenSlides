@@ -1,5 +1,3 @@
-from django_redis import get_redis_connection
-
 from openslides.core.config import config
 from openslides.motions.exceptions import WorkflowError
 from openslides.motions.models import Motion, State, Workflow
@@ -13,48 +11,6 @@ class ModelTest(TestCase):
         self.test_user = User.objects.create(username='blub')
         # Use the simple workflow
         self.workflow = Workflow.objects.get(pk=1)
-
-    def test_create_new_version(self):
-        motion = self.motion
-        self.assertEqual(motion.versions.count(), 1)
-
-        # new data, but no new version
-        motion.title = 'new title'
-        motion.save()
-        self.assertEqual(motion.versions.count(), 1)
-
-        # new data and new version
-        motion.text = 'new text'
-        motion.save(use_version=motion.get_new_version())
-        self.assertEqual(motion.versions.count(), 2)
-        self.assertEqual(motion.title, 'new title')
-        self.assertEqual(motion.text, 'new text')
-
-    def test_version_data(self):
-        motion = Motion()
-        self.assertEqual(motion.title, '')
-        with self.assertRaises(AttributeError):
-            self._title
-
-        motion.title = 'title'
-        self.assertEqual(motion._title, 'title')
-
-        motion.text = 'text'
-        self.assertEqual(motion._text, 'text')
-
-        motion.reason = 'reason'
-        self.assertEqual(motion._reason, 'reason')
-
-    def test_version(self):
-        motion = self.motion
-
-        motion.title = 'v2'
-        motion.save(use_version=motion.get_new_version())
-        motion.title = 'v3'
-        motion.save(use_version=motion.get_new_version())
-        with self.assertRaises(AttributeError):
-            self._title
-        self.assertEqual(motion.title, 'v3')
 
     def test_supporter(self):
         self.assertFalse(self.motion.is_supporter(self.test_user))
@@ -99,40 +55,8 @@ class ModelTest(TestCase):
         Motion.objects.create(title='foo', text='bar', identifier='')
         Motion.objects.create(title='foo2', text='bar2', identifier='')
 
-    def test_do_not_create_new_version_when_permit_old_version(self):
-        motion = Motion()
-        motion.title = 'foo'
-        motion.text = 'bar'
-        motion.save()
-        first_version = motion.get_last_version()
-
-        motion = Motion.objects.get(pk=motion.pk)
-        motion.title = 'New Title'
-        motion.save(use_version=motion.get_new_version())
-        new_version = motion.get_last_version()
-        self.assertEqual(motion.versions.count(), 2)
-
-        motion.active_version = new_version
-        motion.save()
-        self.assertEqual(motion.versions.count(), 2)
-
-        motion.active_version = first_version
-        motion.save(use_version=False)
-        self.assertEqual(motion.versions.count(), 2)
-
-    def test_unicode_with_no_active_version(self):
-        motion = Motion.objects.create(
-            title='test_title_Koowoh1ISheemeey1air',
-            text='test_text_zieFohph0doChi1Uiyoh',
-            identifier='test_identifier_VohT1hu9uhiSh6ooVBFS')
-        motion.active_version = None
-        motion.save(update_fields=['active_version'])
-        # motion.__unicode__() raised an AttributeError
-        self.assertEqual(str(motion), 'test_title_Koowoh1ISheemeey1air')
-
     def test_is_amendment(self):
         config['motions_amendments_enabled'] = True
-        get_redis_connection('default').flushall()
         amendment = Motion.objects.create(title='amendment', parent=self.motion)
 
         self.assertTrue(amendment.is_amendment())
@@ -153,7 +77,6 @@ class ModelTest(TestCase):
         If the config is set to manually, the method does nothing.
         """
         config['motions_identifier'] = 'manually'
-        get_redis_connection("default").flushall()
         motion = Motion()
 
         motion.set_identifier()
@@ -169,7 +92,6 @@ class ModelTest(TestCase):
         config['motions_amendments_enabled'] = True
         self.motion.identifier = 'Parent identifier'
         self.motion.save()
-        get_redis_connection("default").flushall()
         motion = Motion(parent=self.motion)
 
         motion.set_identifier()
@@ -184,7 +106,6 @@ class ModelTest(TestCase):
         config['motions_amendments_enabled'] = True
         self.motion.identifier = 'Parent identifier'
         self.motion.save()
-        get_redis_connection("default").flushall()
         Motion.objects.create(title='Amendment1', parent=self.motion)
         motion = Motion(parent=self.motion)
 

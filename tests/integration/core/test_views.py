@@ -5,9 +5,11 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from openslides import __license__ as license
-from openslides import __url__ as url
-from openslides import __version__ as version
+from openslides import (
+    __license__ as license,
+    __url__ as url,
+    __version__ as version,
+)
 from openslides.core.config import ConfigVariable, config
 from openslides.core.models import Projector
 from openslides.topics.models import Topic
@@ -92,17 +94,17 @@ class WebclientJavaScriptView(TestCase):
         response = self.client.get(reverse('core_webclient_javascript', args=['site']))
         content = response.content.decode()
         constants = self.get_angular_constants_from_apps()
-        for constant in constants:
-            self.assertTrue(json.dumps(constant['value']) in content)
+        for key, constant in constants.items():
+            self.assertTrue(json.dumps(constant) in content)
 
     def get_angular_constants_from_apps(self):
-        constants = []
+        constants = {}
         for app in apps.get_app_configs():
             try:
                 get_angular_constants = app.get_angular_constants
             except AttributeError:
                 continue
-            constants.extend(get_angular_constants())
+            constants.update(get_angular_constants())
         return constants
 
 
@@ -114,7 +116,7 @@ class ConfigViewSet(TestCase):
         # Save the old value of the config object and add the test values
         # TODO: Can be changed to setUpClass when Django 1.8 is no longer supported
         self._config_values = config.config_variables.copy()
-        config.key_to_id = {}
+        config.key_to_id = None
         config.update_config_variables(set_simple_config_view_integration_config_test())
         config.save_default_values()
 

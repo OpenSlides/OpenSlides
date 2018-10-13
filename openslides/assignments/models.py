@@ -1,13 +1,12 @@
 from collections import OrderedDict
 from decimal import Decimal
-from typing import Any, Dict, List, Optional  # noqa
+from typing import Any, Dict, List
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_noop
+from django.utils.translation import ugettext as _, ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
 from openslides.core.config import config
@@ -304,14 +303,14 @@ class Assignment(RESTModelMixin, models.Model):
         Returns a table represented as a list with all candidates from all
         related polls and their vote results.
         """
-        vote_results_dict = OrderedDict()  # type: Dict[Any, List[AssignmentVote]]
+        vote_results_dict: Dict[Any, List[AssignmentVote]] = OrderedDict()
 
         polls = self.polls.all()
         if only_published:
             polls = polls.filter(published=True)
 
         # All PollOption-Objects related to this assignment
-        options = []  # type: List[AssignmentOption]
+        options: List[AssignmentOption] = []
         for poll in polls:
             options += poll.get_options()
 
@@ -321,7 +320,7 @@ class Assignment(RESTModelMixin, models.Model):
                 continue
             vote_results_dict[candidate] = []
             for poll in polls:
-                votes = {}  # type: Any
+                votes: Any = {}
                 try:
                     # candidate related to this poll
                     poll_option = poll.get_options().get(candidate=candidate)
@@ -336,19 +335,20 @@ class Assignment(RESTModelMixin, models.Model):
     """
     Container for runtime information for agenda app (on create or update of this instance).
     """
-    agenda_item_update_information = {}  # type: Dict[str, Any]
+    agenda_item_update_information: Dict[str, Any] = {}
 
     def get_agenda_title(self):
+        """
+        Returns the title for the agenda.
+        """
         return str(self)
 
-    def get_agenda_list_view_title(self):
+    def get_agenda_title_with_type(self):
         """
-        Return a title string for the agenda list view.
-
-        Contains agenda item number, title and assignment verbose name.
+        Return a title for the agenda with the appended assignment verbose name.
         Note: It has to be the same return value like in JavaScript.
         """
-        return '%s (%s)' % (self.title, _(self._meta.verbose_name))
+        return '%s (%s)' % (self.get_agenda_title(), _(self._meta.verbose_name))
 
     @property
     def agenda_item(self):

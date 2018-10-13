@@ -1,0 +1,313 @@
+<mat-toolbar color='primary'>
+
+    <button (click)='editMotionButton()' [ngClass]="{'save-button': editMotion}" class='generic-mini-button on-transition-fade'
+        mat-mini-fab>
+        <mat-icon *ngIf="!editMotion">add</mat-icon>
+        <mat-icon *ngIf="editMotion">check</mat-icon>
+    </button>
+
+    <div class='motion-title on-transition-fade'>
+        <span *ngIf="newMotion">New </span>
+        <span translate>Motion</span>
+        <span *ngIf="motion && !editMotion"> {{motion.identifier}}</span>
+        <span *ngIf="editMotion && !newMotion"> {{metaInfoForm.get('identifier').value}}</span>
+        <span>:</span>
+        <span *ngIf="motion && !editMotion"> {{motion.title}}</span>
+        <span *ngIf="editMotion"> {{contentForm.get('title').value}}</span>
+        <br>
+        <div *ngIf="motion && !newMotion" class='motion-submitter'>
+            <span translate>by</span> {{motion.submitters}}
+        </div>
+    </div>
+    <span class='spacer'></span>
+
+    <!-- Button on the right-->
+    <div *ngIf="editMotion">
+        <button (click)='cancelEditMotionButton()' class='on-transition-fade' color="warn" mat-raised-button>
+            <span translate>Cancel</span>
+            <mat-icon class="icon-text-distance">cancel</mat-icon>
+        </button>
+    </div>
+    <div *ngIf="!editMotion">
+        <button class='on-transition-fade' mat-icon-button [matMenuTriggerFor]="motionExtraMenu">
+            <mat-icon icon>more_vert</mat-icon>
+        </button>
+    </div>
+
+
+    <mat-menu #motionExtraMenu="matMenu">
+        <!-- TODO: the functions for the buttons -->
+        <button mat-menu-item translate>Export As...</button>
+        <button mat-menu-item translate>Project</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item class='red-warning-text' (click)='deleteMotionButton()' translate>DeleteMotion</button>
+    </mat-menu>
+</mat-toolbar>
+
+<ng-container *ngIf="vp.isMobile ; then mobileView; else desktopView"></ng-container>
+
+<ng-template #mobileView>
+    <mat-accordion multi='true' class='on-transition-fade'>
+
+        <!-- MetaInfo Panel-->
+        <mat-expansion-panel #metaInfoPanel [expanded]='this.editMotion && this.newMotion' class='meta-info-block meta-info-panel'>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <mat-icon>info</mat-icon>
+                    <span translate>Meta information</span>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <!-- Meta info -->
+            <div class="expansion-panel-custom-body">
+                <ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container>
+            </div>
+        </mat-expansion-panel>
+
+        <!-- Personal Note -->
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <mat-icon icon>speaker_notes</mat-icon>
+                    <span translate>Personal note</span>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            TEST
+        </mat-expansion-panel>
+
+        <!-- Content -->
+        <mat-expansion-panel #contentPanel [expanded]='true' class='content-panel'>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <mat-icon>format_align_left</mat-icon>
+                    <span translate>Content</span>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="expansion-panel-custom-body">
+                <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</ng-template>
+
+<ng-template #desktopView>
+    <div class="desktop-view">
+        <div class="desktop-left on-transition-fade">
+
+            <!-- Meta Info -->
+            <div class="meta-info-block meta-info-desktop">
+                <ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container>
+            </div>
+
+            <!-- Personal Note -->
+            <div class="personal-note">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>
+                            <span translate>Personal Note</span>
+                            <div class="title-right">
+                                <mat-icon>add</mat-icon>
+                                <mat-icon>more_vert</mat-icon>
+                            </div>
+
+                        </mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        Hier könnte ihre Werbung stehen. 1 2 3 4 5 6 Hier könnte ihre Werbung stehen. 1 2 3 4 5 6
+                    </mat-card-content>
+                </mat-card>
+            </div>
+
+        </div>
+        <div class="desktop-right ">
+
+            <!-- Content -->
+            <mat-card class="content-panel">
+                <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+            </mat-card>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #metaInfoTemplate>
+    <form [formGroup]='metaInfoForm' (ngSubmit)='saveMotion()'>
+
+        <!-- Identifier -->
+        <div *ngIf="editMotion && !newMotion">
+            <!-- <div *ngIf="editMotion"> -->
+            <div *ngIf='!editMotion'>
+                <h3 translate>Identifier</h3>
+                {{motion.identifier}}
+            </div>
+            <mat-form-field *ngIf="editMotion">
+                <input matInput placeholder='Identifier' formControlName='identifier' [value]='motionCopy.identifier'>
+            </mat-form-field>
+        </div>
+
+        <!-- Submitter -->
+        <div *ngIf="motion && motion.submitters || editMotion">
+            <div *ngIf="editMotion && newMotion">
+                <div *ngIf="motion && editMotion">
+                    <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('submitters_id')"
+                        [multiple]="true" listname="Submitter" [InputListValues]="this.submitterObserver"></os-search-value-selector>
+                </div>
+            </div>
+            <div *ngIf="!editMotion || !newMotion">
+                <h3 translate>Submitters</h3>
+                <ul *ngFor="let submitter of motion.submitters">
+                    <li>{{submitter.full_name}}</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Supporter -->
+        <div *ngIf='motion && motion.hasSupporters() || editMotion'>
+            <!-- print all motion supporters -->
+            <div *ngIf="editMotion">
+                <div *ngIf="motion && editMotion">
+                    <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('supporters_id')"
+                        [multiple]="true" listname="Supporter" [InputListValues]="this.supporterObserver"></os-search-value-selector>
+                </div>
+            </div>
+            <div *ngIf="!editMotion && motion.hasSupporters()">
+                <h3 translate>Supporters</h3>
+                <ul *ngFor="let supporter of motion.supporters">
+                    <li>{{supporter.full_name}}</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- State -->
+        <div *ngIf='!newMotion && motion && motion.workflow && motion.state || editMotion'>
+            <div *ngIf='!editMotion'>
+                <h3 translate>State</h3>
+                {{motion.state}}
+            </div>
+            <mat-form-field *ngIf="editMotion && !newMotion">
+                <mat-select placeholder='State' formControlName='state_id'>
+                    <mat-option [value]="motionCopy.stateId">{{motionCopy.state}}</mat-option>
+                    <mat-divider></mat-divider>
+                    <mat-option *ngFor="let state of motionCopy.nextStates" [value]="state.id">{{state}}</mat-option>
+                    <mat-divider></mat-divider>
+                    <mat-option>
+                        <mat-icon>replay</mat-icon><span translate>Reset State</span>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <!-- Recommendation -->
+        <!-- The suggestion of the work group weather or not a motion should be accepted -->
+        <div *ngIf='motion && motion.recommender && (motion.recommendationId || editMotion)'>
+            <div *ngIf='!editMotion'>
+                <h3>{{motion.recommender}}</h3>
+                {{motion.recommendation}}
+            </div>
+            <mat-form-field *ngIf="motion && editMotion">
+                <mat-select placeholder='Recommendation' formControlName='recommendation_id'>
+                    <mat-option *ngFor="let state of motionCopy.nextStates" [value]="state.id">{{state}}</mat-option>
+                    <mat-divider></mat-divider>
+
+                    <!-- TODO has no effect -->
+                    <mat-option>
+                        <mat-icon>replay</mat-icon>
+                        <span translate>Reset recommendation</span>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <!-- Category -->
+        <div *ngIf="motion && motion.categoryId || editMotion">
+            <div *ngIf='!editMotion'>
+                <h3 translate>Category</h3>
+                {{motion.category}}
+            </div>
+            <div *ngIf="editMotion">
+                <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('category_id')"
+                    [multiple]="false" listname="Category" [InputListValues]="this.categoryObserver"></os-search-value-selector>
+            </div>
+        </div>
+
+        <!-- Origin -->
+        <div *ngIf="motion && motion.origin || editMotion">
+            <div *ngIf='!editMotion'>
+                <h3 translate> Origin</h3>
+                {{motion.origin}}
+            </div>
+            <mat-form-field *ngIf="editMotion">
+                <input matInput placeholder='Origin' formControlName='origin' [value]='motionCopy.origin'>
+            </mat-form-field>
+        </div>
+
+        <!-- Voting -->
+        <!-- <div *ngIf='motion.polls && motion.polls.length > 0 || editMotion'>
+                <h3 translate>Voting</h3>
+            </div> -->
+    </form>
+</ng-template>
+
+<ng-template #contentTemplate>
+    <form class="motion-content" [formGroup]='contentForm' (ngSubmit)='saveMotion()'>
+
+        <!-- Line Number and Diff buttons-->
+        <div class="motion-text-controls">
+            <button type="button" mat-icon-button [matMenuTriggerFor]="lineNumberingMenu">
+                <mat-icon>format_list_numbered</mat-icon>
+            </button>
+            <button type="button" mat-icon-button [matMenuTriggerFor]="changeRecoMenu">
+                <mat-icon>rate_review</mat-icon>
+            </button>
+        </div>
+
+        <!-- Title -->
+        <div *ngIf="motion && motion.title || editMotion">
+            <div *ngIf='!editMotion'>
+                <h2>{{motion.title}}</h2>
+            </div>
+            <mat-form-field *ngIf="editMotion" class="wide-form">
+                <input matInput placeholder='Title' formControlName='title' [value]='motionCopy.title'>
+            </mat-form-field>
+
+        </div>
+
+        <!-- Text -->
+        <!-- TODO: this is a config variable. Read it out -->
+        <h3 translate>The assembly may decide:</h3>
+        <div *ngIf='motion && !editMotion'>
+            <div [innerHtml]='getFormatedText()'></div>
+        </div>
+        <mat-form-field *ngIf="motion && editMotion" class="wide-form">
+            <textarea matInput placeholder='Motion Text' formControlName='text' [value]='motionCopy.text'></textarea>
+        </mat-form-field>
+
+
+        <!-- Reason -->
+        <div *ngIf="motion && motion.reason || editMotion">
+            <div *ngIf='!editMotion'>
+                <h4 translate>Reason</h4>
+                <div [innerHtml]='motion.reason'></div>
+            </div>
+            <mat-form-field *ngIf="editMotion" class="wide-form">
+                <textarea matInput placeholder="Reason" formControlName='reason' [value]='motionCopy.reason'></textarea>
+            </mat-form-field>
+        </div>
+
+    </form>
+</ng-template>
+
+<!-- Line number Menu -->
+<mat-menu #lineNumberingMenu="matMenu">
+    <button mat-menu-item translate (click)=setLineNumberingMode(0)>None</button>
+    <button mat-menu-item translate (click)=setLineNumberingMode(1)>Inline</button>
+    <button mat-menu-item translate (click)=setLineNumberingMode(2)>Outside</button>
+</mat-menu>
+
+<!-- Diff View Menu -->
+<mat-menu #changeRecoMenu="matMenu">
+    <button mat-menu-item translate (click)=setChangeRecoMode(0)>Original version</button>
+    <button mat-menu-item translate (click)=setChangeRecoMode(1)>Changed version</button>
+    <button mat-menu-item translate (click)=setChangeRecoMode(2)>Diff version</button>
+    <button mat-menu-item translate (click)=setChangeRecoMode(3)>Final version</button>
+</mat-menu>

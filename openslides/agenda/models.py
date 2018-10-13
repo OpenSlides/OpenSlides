@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Dict, List, Set  # noqa
+from typing import Dict, List, Set
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -7,8 +7,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
 from django.utils import timezone
-from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext as _, ugettext_lazy
 
 from openslides.core.config import config
 from openslides.core.models import Countdown, Projector
@@ -66,7 +65,7 @@ class ItemManager(models.Manager):
         all of their children.
         """
         queryset = self.order_by('weight')
-        item_children = defaultdict(list)  # type: Dict[int, List[Item]]
+        item_children: Dict[int, List[Item]] = defaultdict(list)
         root_items = []
         for item in queryset:
             if only_item_type is not None and item.type != only_item_type:
@@ -122,7 +121,7 @@ class ItemManager(models.Manager):
                 yield (element['id'], parent, weight)
                 yield from walk_items(element.get('children', []), element['id'])
 
-        touched_items = set()  # type: Set[int]
+        touched_items: Set[int] = set()
         db_items = dict((item.pk, item) for item in Item.objects.all())
         for item_id, parent_id, weight in walk_items(tree):
             # Check that the item is only once in the tree to prevent invalid trees
@@ -297,14 +296,14 @@ class Item(RESTModelMixin, models.Model):
                                       'method on your related model.')
 
     @property
-    def list_view_title(self):
+    def title_with_type(self):
         """
-        Return get_agenda_list_view_title() from the content_object.
+        Return get_agenda_title_with_type() from the content_object.
         """
         try:
-            return self.content_object.get_agenda_list_view_title()
+            return self.content_object.get_agenda_title_with_type()
         except AttributeError:
-            raise NotImplementedError('You have to provide a get_agenda_list_view_title '
+            raise NotImplementedError('You have to provide a get_agenda_title_with_type '
                                       'method on your related model.')
 
     def is_internal(self):

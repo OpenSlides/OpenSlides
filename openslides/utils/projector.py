@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generator, Iterable, List, Type
+from typing import Any, Dict, Generator, Iterable, List, Optional, Type
 
 from .collection import CollectionElement
 
@@ -11,7 +11,7 @@ class ProjectorElement:
     subclassing from this base class with different names. The name attribute
     has to be set.
     """
-    name = None  # type: str
+    name: Optional[str] = None
 
     def check_and_update_data(self, projector_object: Any, config_entry: Any) -> Any:
         """
@@ -84,7 +84,7 @@ class ProjectorElement:
         return output
 
 
-projector_elements = {}  # type: Dict[str, ProjectorElement]
+projector_elements: Dict[str, ProjectorElement] = {}
 
 
 def register_projector_elements(elements: Generator[Type[ProjectorElement], None, None]) -> None:
@@ -95,7 +95,7 @@ def register_projector_elements(elements: Generator[Type[ProjectorElement], None
     """
     for Element in elements:
         element = Element()
-        projector_elements[element.name] = element
+        projector_elements[element.name] = element  # type: ignore
 
 
 def get_all_projector_elements() -> Dict[str, ProjectorElement]:

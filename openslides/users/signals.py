@@ -2,6 +2,7 @@ from django.apps import apps
 from django.contrib.auth.models import Permission
 from django.db.models import Q
 
+from ..utils.auth import GROUP_ADMIN_PK, GROUP_DEFAULT_PK
 from ..utils.autoupdate import inform_changed_data
 from .models import Group, User
 
@@ -53,8 +54,6 @@ def create_builtin_groups_and_admin(**kwargs):
         'motions.can_create',
         'motions.can_manage',
         'motions.can_see',
-        'motions.can_see_comments',
-        'motions.can_manage_comments',
         'motions.can_support',
         'users.can_manage',
         'users.can_see_extra_data',
@@ -71,7 +70,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_string = '.'.join((permission.content_type.app_label, permission.codename))
         permission_dict[permission_string] = permission
 
-    # Default (pk 1)
+    # Default (pk 1 == GROUP_DEFAULT_PK)
     base_permissions = (
         permission_dict['agenda.can_see'],
         permission_dict['agenda.can_see_internal_items'],
@@ -81,10 +80,13 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['mediafiles.can_see'],
         permission_dict['motions.can_see'],
         permission_dict['users.can_see_name'], )
-    group_default = Group.objects.create(name='Default')
+    group_default = Group.objects.create(pk=GROUP_DEFAULT_PK, name='Default')
     group_default.permissions.add(*base_permissions)
 
-    # Delegates (pk 2)
+    # Admin (pk 2 == GROUP_ADMIN_PK)
+    group_admin = Group.objects.create(pk=GROUP_ADMIN_PK, name='Admin')
+
+    # Delegates (pk 3)
     delegates_permissions = (
         permission_dict['agenda.can_see'],
         permission_dict['agenda.can_see_internal_items'],
@@ -99,10 +101,10 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['motions.can_create'],
         permission_dict['motions.can_support'],
         permission_dict['users.can_see_name'], )
-    group_delegates = Group.objects.create(name='Delegates')
+    group_delegates = Group.objects.create(pk=3, name='Delegates')
     group_delegates.permissions.add(*delegates_permissions)
 
-    # Staff (pk 3)
+    # Staff (pk 4)
     staff_permissions = (
         permission_dict['agenda.can_see'],
         permission_dict['agenda.can_see_internal_items'],
@@ -124,48 +126,12 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['motions.can_see'],
         permission_dict['motions.can_create'],
         permission_dict['motions.can_manage'],
-        permission_dict['motions.can_see_comments'],
-        permission_dict['motions.can_manage_comments'],
         permission_dict['users.can_see_name'],
         permission_dict['users.can_manage'],
         permission_dict['users.can_see_extra_data'],
         permission_dict['mediafiles.can_see_hidden'],)
-    group_staff = Group.objects.create(name='Staff')
+    group_staff = Group.objects.create(pk=4, name='Staff')
     group_staff.permissions.add(*staff_permissions)
-
-    # Admin (pk 4)
-    admin_permissions = (
-        permission_dict['agenda.can_see'],
-        permission_dict['agenda.can_see_internal_items'],
-        permission_dict['agenda.can_be_speaker'],
-        permission_dict['agenda.can_manage'],
-        permission_dict['agenda.can_manage_list_of_speakers'],
-        permission_dict['assignments.can_see'],
-        permission_dict['assignments.can_manage'],
-        permission_dict['assignments.can_nominate_other'],
-        permission_dict['assignments.can_nominate_self'],
-        permission_dict['core.can_see_frontpage'],
-        permission_dict['core.can_see_projector'],
-        permission_dict['core.can_manage_config'],
-        permission_dict['core.can_manage_logos_and_fonts'],
-        permission_dict['core.can_manage_projector'],
-        permission_dict['core.can_manage_tags'],
-        permission_dict['core.can_use_chat'],
-        permission_dict['core.can_manage_chat'],
-        permission_dict['mediafiles.can_see'],
-        permission_dict['mediafiles.can_manage'],
-        permission_dict['mediafiles.can_upload'],
-        permission_dict['motions.can_see'],
-        permission_dict['motions.can_create'],
-        permission_dict['motions.can_manage'],
-        permission_dict['motions.can_see_comments'],
-        permission_dict['motions.can_manage_comments'],
-        permission_dict['users.can_see_name'],
-        permission_dict['users.can_manage'],
-        permission_dict['users.can_see_extra_data'],
-        permission_dict['mediafiles.can_see_hidden'],)
-    group_admin = Group.objects.create(name='Admin')
-    group_admin.permissions.add(*admin_permissions)
 
     # Add users.can_see_name permission to staff/admin
     # group to ensure proper management possibilities
@@ -187,7 +153,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['motions.can_create'],
         permission_dict['motions.can_support'],
         permission_dict['users.can_see_name'], )
-    group_committee = Group.objects.create(name='Committees')
+    group_committee = Group.objects.create(pk=5, name='Committees')
     group_committee.permissions.add(*committees_permissions)
 
     # Create or reset admin user
@@ -196,4 +162,4 @@ def create_builtin_groups_and_admin(**kwargs):
     # After each group was created, the permissions (many to many fields) where
     # added to the group. So we have to update the cache by calling
     # inform_changed_data().
-    inform_changed_data((group_default, group_delegates, group_staff, group_admin, group_committee))
+    inform_changed_data((group_default, group_admin, group_delegates, group_staff, group_committee))

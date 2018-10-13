@@ -1,24 +1,9 @@
-from channels.tests import ChannelTestCase as TestCase
-from django_redis import get_redis_connection
-
 from openslides.topics.models import Topic
 from openslides.utils import collection
+from openslides.utils.test import TestCase
 
 
 class TestCollectionElementCache(TestCase):
-    def test_clean_cache(self):
-        """
-        Tests that the data is retrieved from the database.
-        """
-        topic = Topic.objects.create(title='test topic')
-        get_redis_connection("default").flushall()
-
-        with self.assertNumQueries(3):
-            collection_element = collection.CollectionElement.from_values('topics/topic', 1)
-            instance = collection_element.get_full_data()
-
-        self.assertEqual(topic.title, instance['title'])
-
     def test_with_cache(self):
         """
         Tests that no db query is used when the valie is in the cache.
@@ -44,25 +29,10 @@ class TestCollectionElementCache(TestCase):
 
 
 class TestCollectionCache(TestCase):
-    def test_clean_cache(self):
-        """
-        Tests that the instances are retrieved from the database.
-        """
-        Topic.objects.create(title='test topic1')
-        Topic.objects.create(title='test topic2')
-        Topic.objects.create(title='test topic3')
-        topic_collection = collection.Collection('topics/topic')
-        get_redis_connection("default").flushall()
-
-        with self.assertNumQueries(3):
-            instance_list = list(topic_collection.get_full_data())
-        self.assertEqual(len(instance_list), 3)
-
     def test_with_cache(self):
         """
         Tests that no db query is used when the list is received twice.
         """
-        get_redis_connection("default").flushall()
         Topic.objects.create(title='test topic1')
         Topic.objects.create(title='test topic2')
         Topic.objects.create(title='test topic3')

@@ -1,22 +1,21 @@
 from collections import OrderedDict
-from typing import Any, Dict, Iterable, Optional, Type  # noqa
+from typing import Any, Dict, Iterable, Optional, Type
 
 from django.http import Http404
-from rest_framework import status  # noqa
-from rest_framework.decorators import detail_route, list_route  # noqa
-from rest_framework.metadata import SimpleMetadata  # noqa
-from rest_framework.mixins import ListModelMixin as _ListModelMixin
-from rest_framework.mixins import RetrieveModelMixin as _RetrieveModelMixin
-from rest_framework.mixins import (  # noqa
+from rest_framework import status
+from rest_framework.decorators import detail_route, list_route
+from rest_framework.metadata import SimpleMetadata
+from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
+    ListModelMixin as _ListModelMixin,
+    RetrieveModelMixin as _RetrieveModelMixin,
     UpdateModelMixin,
 )
 from rest_framework.relations import MANY_RELATION_KWARGS
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
-from rest_framework.serializers import ModelSerializer as _ModelSerializer
-from rest_framework.serializers import (  # noqa
+from rest_framework.serializers import (
     CharField,
     DecimalField,
     DictField,
@@ -27,19 +26,29 @@ from rest_framework.serializers import (  # noqa
     ListField,
     ListSerializer,
     ManyRelatedField,
+    ModelSerializer as _ModelSerializer,
     PrimaryKeyRelatedField,
     RelatedField,
     Serializer,
     SerializerMethodField,
     ValidationError,
 )
-from rest_framework.viewsets import GenericViewSet as _GenericViewSet  # noqa
-from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
-from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
+from rest_framework.viewsets import (
+    GenericViewSet as _GenericViewSet,
+    ModelViewSet as _ModelViewSet,
+    ViewSet as _ViewSet,
+)
 
 from .access_permissions import BaseAccessPermissions
 from .auth import user_to_collection_user
 from .collection import Collection, CollectionElement
+
+
+__all__ = ['detail_route', 'DecimalField', 'list_route', 'SimpleMetadata', 'CreateModelMixin',
+           'DestroyModelMixin', 'UpdateModelMixin', 'CharField', 'DictField', 'FileField',
+           'IntegerField', 'JSONField', 'ListField', 'ListSerializer', 'status', 'RelatedField',
+           'SerializerMethodField', 'ValidationError']
+
 
 router = DefaultRouter()
 
@@ -110,7 +119,7 @@ class PermissionMixin:
     Also connects container to handle access permissions for model and
     viewset.
     """
-    access_permissions = None  # type: Optional[BaseAccessPermissions]
+    access_permissions: Optional[BaseAccessPermissions] = None
 
     def get_permissions(self) -> Iterable[str]:
         """
@@ -163,7 +172,7 @@ class ModelSerializer(_ModelSerializer):
         """
         Returns all fields of the serializer.
         """
-        fields = OrderedDict()  # type: Dict[str, Field]
+        fields: Dict[str, Field] = OrderedDict()
 
         for field_name, field in super().get_fields().items():
             try:

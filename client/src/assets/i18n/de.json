@@ -1,0 +1,95 @@
+{
+    "Cancel": "",
+    "About Me": "",
+    "Category": "",
+    "Change Password": "Passwort ändern",
+    "Changed version": "",
+    "Comment": "",
+    "Content": "",
+    "Copyright by": "Copyright by",
+    "Delete User": "",
+    "DeleteMotion": "",
+    "Designates whether this user is in the room": {
+        "0": ""
+    },
+    "Designates whether this user should be treated as a committee": {
+        "0": ""
+    },
+    "Designates whether this user should be treated as active": {
+        " Unselect this instead of deleting the account": {
+            "0": ""
+        }
+    },
+    "Diff version": "",
+    "EMail": "",
+    "Edit Profile": "Profil bearbeiten",
+    "Edit category details:": "",
+    "English": "Englisch",
+    "Export As": {
+        "0": {
+            "0": {
+                "0": ""
+            }
+        }
+    },
+    "FILTER": "",
+    "Final version": "",
+    "First Name": "",
+    "French": "Französisch",
+    "German": "Deutsch",
+    "Groups": "",
+    "Identifier": "",
+    "Initial Password": "",
+    "Inline": "",
+    "Installed plugins": "",
+    "Is Active": "",
+    "Is Present": "",
+    "Is a committee": "",
+    "Last Name": "",
+    "Legal Notice": "Impressum",
+    "License": "",
+    "Login": "",
+    "Login as Guest": "",
+    "Logout": "Abmelden",
+    "Meta information": "",
+    "Motion": "",
+    "Motions": "Anträge",
+    "Name": "",
+    "None": "",
+    "OK": "",
+    "Offline mode: You can use OpenSlides but changes are not saved": {
+        "0": ""
+    },
+    "Only for internal notes": {
+        "0": ""
+    },
+    "Origin": "",
+    "Original version": "",
+    "Outside": "",
+    "Participant Number": "",
+    "Personal Note": "",
+    "Personal note": "",
+    "Prefix": "",
+    "Present": "",
+    "Privacy Policy": "Datenschutz",
+    "Project": "",
+    "Projector": "",
+    "Reason": "",
+    "Required": "",
+    "Reset State": "",
+    "Reset recommendation": "",
+    "SORT": "",
+    "Selected Values": "",
+    "State": "",
+    "Structure Level": "",
+    "Submitters": "",
+    "Supporters": "",
+    "The assembly may decide:": "",
+    "The event manager hasn't set up a privacy policy yet": {
+        "0": ""
+    },
+    "Title": "",
+    "Username": "",
+    "Welcome to OpenSlides": "Willkommen bei OpenSlides",
+    "by": ""
+}

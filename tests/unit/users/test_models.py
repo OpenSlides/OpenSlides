@@ -123,19 +123,15 @@ class UserManagerGeneratePassword(TestCase):
 class UserManagerCreateOrResetAdminUser(TestCase):
     def test_add_admin_group(self, mock_group, mock_permission):
         """
-        Tests that the Group with name='Staff' is added to the admin.
+        Tests that the Group with pk=2 (Admin group) is added to the admin.
         """
         admin_user = MagicMock()
         manager = UserManager()
         manager.get_or_create = MagicMock(return_value=(admin_user, False))
 
-        staff_group = MagicMock(name="Staff")
-        mock_group.objects.get_or_create = MagicMock(return_value=(staff_group, True))
-        mock_permission.get = MagicMock()
-
         manager.create_or_reset_admin_user()
 
-        admin_user.groups.add.assert_called_once_with(staff_group)
+        admin_user.groups.add.assert_called_once_with(2)  # the admin should be added to the admin group with pk=2
 
     def test_password_set_to_admin(self, mock_group, mock_permission):
         """
@@ -200,24 +196,3 @@ class UserManagerCreateOrResetAdminUser(TestCase):
             admin_user.last_name,
             'Administrator',
             "The last_name of a new created admin should be 'Administrator'.")
-
-    def test_get_permissions(self, mock_group, mock_permission):
-        """
-        Tests if two permissions are get
-        """
-        admin_user = MagicMock()
-        manager = UserManager()
-        manager.get_or_create = MagicMock(return_value=(admin_user, True))
-
-        staff_group = MagicMock(name="Staff")
-        mock_group.objects.get_or_create = MagicMock(return_value=(staff_group, True))
-
-        permission_mock = MagicMock(name="test permission")
-        mock_permission.objects.get = MagicMock(return_value=permission_mock)
-
-        manager.create_or_reset_admin_user()
-
-        self.assertEqual(
-            mock_permission.objects.get.call_count,
-            2,
-            "Permission.get should be called two times")

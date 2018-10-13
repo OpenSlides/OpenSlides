@@ -1,0 +1,162 @@
+span {
+    margin: 0;
+}
+
+.motion-title {
+    padding-left: 20px;
+    line-height: 100%;
+}
+
+.motion-content {
+    display: flow-root;
+}
+
+.motion-text-controls {
+    float: right;
+    button {
+        font-size: 115%;
+    }
+}
+
+.motion-submitter {
+    display: inline;
+    font-weight: bold;
+    font-size: 70%;
+}
+
+mat-panel-title {
+    mat-icon {
+        margin-right: 35px; //on line with text
+    }
+}
+
+.meta-info-block {
+    h3 {
+        display: block;
+        margin-top: 12px; //distance between heading and text
+        margin-bottom: 3px; //distance between heading and text
+        font-size: 80%;
+        color: gray;
+
+        mat-icon {
+            margin-left: 5px;
+        }
+    }
+
+    mat-form-field {
+        margin-top: 12px; //distance between heading and text
+    }
+
+    .mat-form-field-label {
+        font-size: 12pt;
+        color: gray;
+    }
+
+    .mat-form-field-label-wrapper {
+        mat-icon {
+            margin-left: 5px;
+        }
+    }
+}
+
+.wide-form {
+    textarea {
+        height: 25vh;
+    }
+
+    ::ng-deep {
+        width: 100%;
+    }
+}
+
+.meta-info-panel {
+    padding-top: 25px;
+
+    a:hover {
+        cursor: pointer;
+    }
+}
+
+mat-expansion-panel {
+    .expansion-panel-custom-body {
+        padding-left: 55px;
+    }
+}
+
+.content-panel {
+    h2 {
+        display: block;
+        font-weight: bold;
+        font-size: 120%;
+    }
+
+    h3 {
+        display: block;
+        font-weight: initial;
+        font-size: 100%;
+    }
+
+    h4 {
+        display: block;
+        font-weight: bold;
+        font-size: 100%;
+    }
+}
+
+.desktop-view {
+    .desktop-left {
+        width: 30%;
+        float: left;
+
+        .meta-info-desktop {
+            padding: 40px 20px 10px 20px;
+        }
+
+        .personal-note {
+            mat-card {
+                padding: 0px;
+                margin: 20px;
+                min-width: 10hv;
+                min-width: 200px;
+
+                .mat-card-header-text {
+                    width: 100%;
+                }
+
+                mat-card-header {
+                    display: inherit;
+                    padding: 15px;
+                    margin: 0;
+                    background-color: #eee;
+
+                    .title-right {
+                        float: right;
+                        mat-icon {
+                            padding-left: 10px;
+                        }
+                    }
+
+                    mat-card-title {
+                        font-weight: bold;
+                        display: inline;
+                    }
+                }
+
+                mat-card-content {
+                    padding: 30px 15px 15px 15px;
+                }
+            }
+        }
+    }
+
+    .desktop-right {
+        display: grid;
+
+        min-width: 70%;
+
+        mat-card {
+            display: inline;
+            margin: 20px;
+        }
+    }
+}

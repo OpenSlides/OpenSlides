@@ -1,0 +1,95 @@
+{
+    "Cancel": "",
+    "About Me": "",
+    "Category": "",
+    "Change Password": "",
+    "Changed version": "",
+    "Comment": "",
+    "Content": "",
+    "Copyright by": "",
+    "Delete User": "",
+    "DeleteMotion": "",
+    "Designates whether this user is in the room": {
+        "0": ""
+    },
+    "Designates whether this user should be treated as a committee": {
+        "0": ""
+    },
+    "Designates whether this user should be treated as active": {
+        " Unselect this instead of deleting the account": {
+            "0": ""
+        }
+    },
+    "Diff version": "",
+    "EMail": "",
+    "Edit Profile": "",
+    "Edit category details:": "",
+    "English": "",
+    "Export As": {
+        "0": {
+            "0": {
+                "0": ""
+            }
+        }
+    },
+    "FILTER": "",
+    "Final version": "",
+    "First Name": "",
+    "French": "",
+    "German": "",
+    "Groups": "",
+    "Identifier": "",
+    "Initial Password": "",
+    "Inline": "",
+    "Installed plugins": "",
+    "Is Active": "",
+    "Is Present": "",
+    "Is a committee": "",
+    "Last Name": "",
+    "Legal Notice": "",
+    "License": "",
+    "Login": "",
+    "Login as Guest": "",
+    "Logout": "",
+    "Meta information": "",
+    "Motion": "",
+    "Motions": "",
+    "Name": "",
+    "None": "",
+    "OK": "",
+    "Offline mode: You can use OpenSlides but changes are not saved": {
+        "0": ""
+    },
+    "Only for internal notes": {
+        "0": ""
+    },
+    "Origin": "",
+    "Original version": "",
+    "Outside": "",
+    "Participant Number": "",
+    "Personal Note": "",
+    "Personal note": "",
+    "Prefix": "",
+    "Present": "",
+    "Privacy Policy": "",
+    "Project": "",
+    "Projector": "",
+    "Reason": "",
+    "Required": "",
+    "Reset State": "",
+    "Reset recommendation": "",
+    "SORT": "",
+    "Selected Values": "",
+    "State": "",
+    "Structure Level": "",
+    "Submitters": "",
+    "Supporters": "",
+    "The assembly may decide:": "",
+    "The event manager hasn't set up a privacy policy yet": {
+        "0": ""
+    },
+    "Title": "",
+    "Username": "",
+    "Welcome to OpenSlides": "",
+    "by": ""
+}

@@ -1,10 +1,15 @@
-from typing import Any, Dict
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
-from .access_permissions import BaseAccessPermissions  # noqa
+from .access_permissions import BaseAccessPermissions
 from .utils import convert_camel_case_to_pseudo_snake_case
+
+
+if TYPE_CHECKING:
+    # Dummy import Collection for mypy, can be fixed with python 3.7
+    from .collection import CollectionElement  # noqa
 
 
 class MinMaxIntegerField(models.IntegerField):
@@ -27,7 +32,7 @@ class RESTModelMixin:
     Mixin for Django models which are used in our REST API.
     """
 
-    access_permissions = None  # type: BaseAccessPermissions
+    access_permissions: Optional[BaseAccessPermissions] = None
 
     def get_root_rest_element(self) -> models.Model:
         """
@@ -117,3 +122,29 @@ class RESTModelMixin:
             else:
                 inform_deleted_data([(self.get_collection_string(), instance_pk)], information=information)
         return return_value
+
+    @classmethod
+    def get_elements(cls) -> List[Dict[str, Any]]:
+        """
+        Returns all elements as full_data.
+        """
+        # Get the query to receive all data from the database.
+        try:
+            query = cls.objects.get_full_queryset()  # type: ignore
+        except AttributeError:
+            # If the model des not have to method get_full_queryset(), then use
+            # the default queryset from django.
+            query = cls.objects  # type: ignore
+
+        # Build a dict from the instance id to the full_data
+        return [cls.get_access_permissions().get_full_data(instance) for instance in query.all()]
+
+    @classmethod
+    def restrict_elements(
+            cls,
+            user: Optional['CollectionElement'],
+            elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Converts a list of elements from full_data to restricted_data.
+        """
+        return cls.get_access_permissions().get_restricted_data(elements, user)

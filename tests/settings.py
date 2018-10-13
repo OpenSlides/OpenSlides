@@ -6,6 +6,7 @@ import os
 
 from openslides.global_settings import *  # noqa
 
+
 # Path to the directory for user specific data files
 
 OPENSLIDES_USER_DATA_PATH = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
@@ -41,11 +42,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
     }
 }
-
-# When use_redis is True, the restricted data cache caches the data individuel
-# for each user. This requires a lot of memory if there are a lot of active
-# users. If use_redis is False, this setting has no effect.
-DISABLE_USER_CACHE = False
+REDIS_ADDRESS = "redis://127.0.0.1"
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
@@ -72,20 +70,8 @@ MOTION_IDENTIFIER_MIN_DIGITS = 1
 
 # Special settings only for testing
 
-TEST_RUNNER = 'openslides.utils.test.OpenSlidesDiscoverRunner'
-
 # Use a faster password hasher.
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.MD5PasswordHasher',
 ]
-
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/0",
-        "OPTIONS": {
-            "REDIS_CLIENT_CLASS": "fakeredis.FakeStrictRedis",
-        }
-    }
-}

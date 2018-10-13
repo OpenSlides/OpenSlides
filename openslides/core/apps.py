@@ -1,12 +1,13 @@
 from collections import OrderedDict
 from operator import attrgetter
-from typing import Any, List  # noqa
+from typing import Any, Dict, List
 
 from django.apps import AppConfig
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import post_migrate
+from django.db.utils import OperationalError
 
-from ..utils.collection import Collection
 from ..utils.projector import register_projector_elements
 
 
@@ -20,7 +21,7 @@ class CoreAppConfig(AppConfig):
         # Import all required stuff.
         from .config import config
         from ..utils.rest_api import router
-        from .config_variables import get_config_variables
+        from ..utils.cache import element_cache
         from .projector import get_projector_elements
         from .signals import (
             delete_django_app_permissions,
@@ -38,9 +39,19 @@ class CoreAppConfig(AppConfig):
             ProjectorViewSet,
             TagViewSet,
         )
+        from ..utils.constants import set_constants, get_constants_from_apps
 
-        # Define config variables and projector elements.
-        config.update_config_variables(get_config_variables())
+        # Collect all config variables before getting the constants.
+        config.collect_config_variables_from_apps()
+
+        # Set constants
+        try:
+            set_constants(get_constants_from_apps())
+        except (ImproperlyConfigured, OperationalError):
+            # Database is not loaded. This happens in tests and migrations.
+            pass
+
+        # Define projector elements.
         register_projector_elements(get_projector_elements())
 
         # Connect signals.
@@ -64,16 +75,29 @@ class CoreAppConfig(AppConfig):
         router.register(self.get_model('ProjectorMessage').get_collection_string(), ProjectorMessageViewSet)
         router.register(self.get_model('Countdown').get_collection_string(), CountdownViewSet)
 
+        # Sets the cache
+        try:
+            element_cache.ensure_cache()
+        except (ImproperlyConfigured, OperationalError):
+            # This happens in the tests or in migrations. Do nothing
+            pass
+
+    def get_config_variables(self):
+        from .config_variables import get_config_variables
+        return get_config_variables()
+
     def get_startup_elements(self):
         """
-        Yields all collections required on startup i. e. opening the websocket
+        Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        for model in ('Projector', 'ChatMessage', 'Tag', 'ProjectorMessage', 'Countdown', 'ConfigStore'):
-            yield Collection(self.get_model(model).get_collection_string())
+        for model_name in ('Projector', 'ChatMessage', 'Tag', 'ProjectorMessage', 'Countdown', 'ConfigStore'):
+            yield self.get_model(model_name)
 
     def get_angular_constants(self):
         from .config import config
+
+        constants: Dict[str, Any] = {}
 
         # Client settings
         client_settings_keys = [
@@ -89,12 +113,10 @@ class CoreAppConfig(AppConfig):
                 # Settings key does not exist. Do nothing. The client will
                 # treat this as undefined.
                 pass
-        client_settings = {
-            'name': 'OpenSlidesSettings',
-            'value': client_settings_dict}
+        constants['OpenSlidesSettings'] = client_settings_dict
 
         # Config variables
-        config_groups = []  # type: List[Any]  # TODO: Replace Any by correct type
+        config_groups: List[Any] = []
         for config_variable in sorted(config.config_variables.values(), key=attrgetter('weight')):
             if config_variable.is_hidden():
                 # Skip hidden config variables. Do not even check groups and subgroups.
@@ -111,17 +133,9 @@ class CoreAppConfig(AppConfig):
                     items=[]))
             # Add the config variable to the current group and subgroup.
             config_groups[-1]['subgroups'][-1]['items'].append(config_variable.data)
-        config_variables = {
-            'name': 'OpenSlidesConfigVariables',
-            'value': config_groups}
+        constants['OpenSlidesConfigVariables'] = config_groups
 
-        # Send the privacy policy to the client. A user should view them, even he is
-        # not logged in (so does not have the config values yet).
-        privacy_policy = {
-            'name': 'PrivacyPolicy',
-            'value': config['general_event_privacy_policy']}
-
-        return [client_settings, config_variables, privacy_policy]
+        return constants
 
 
 def call_save_default_values(**kwargs):
