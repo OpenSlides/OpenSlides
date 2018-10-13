@@ -26,7 +26,6 @@ from ..utils.rest_api import (
     detail_route,
     list_route,
 )
-from ..utils.views import BinaryTemplateView
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
@@ -1016,12 +1015,3 @@ class StateViewSet(CreateModelMixin, UpdateModelMixin, DestroyModelMixin, Generi
             msg = self.getProtectedErrorMessage('workflow', e)
             raise ValidationError({'detail': msg})
         return result
-
-
-# Special views
-
-class MotionDocxTemplateView(BinaryTemplateView):
-    """
-    Returns the template for motions docx export
-    """
-    template_name = 'templates/docx/motions.docx'

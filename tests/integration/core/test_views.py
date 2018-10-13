@@ -1,6 +1,5 @@
 import json
 
-from django.apps import apps
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -83,29 +82,6 @@ class VersionView(TestCase):
                  'version': 'unknown',
                  'license': 'MIT',
                  'url': ''}]})
-
-
-class WebclientJavaScriptView(TestCase):
-    """
-    Tests the generation of the JavaScript startup code.
-    """
-    def test_angular_constants(self):
-        self.client.login(username='admin', password='admin')
-        response = self.client.get(reverse('core_webclient_javascript', args=['site']))
-        content = response.content.decode()
-        constants = self.get_angular_constants_from_apps()
-        for key, constant in constants.items():
-            self.assertTrue(json.dumps(constant) in content)
-
-    def get_angular_constants_from_apps(self):
-        constants = {}
-        for app in apps.get_app_configs():
-            try:
-                get_angular_constants = app.get_angular_constants
-            except AttributeError:
-                continue
-            constants.update(get_angular_constants())
-        return constants
 
 
 class ConfigViewSet(TestCase):

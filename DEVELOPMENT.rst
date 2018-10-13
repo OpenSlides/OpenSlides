@@ -43,31 +43,18 @@ See step 1. b. in the installation section in the `README.rst
 <https://github.com/OpenSlides/OpenSlides/blob/master/README.rst>`_.
 
 
-d. Install dependencies
-'''''''''''''''''''''''
+d. Finish the server
+''''''''''''''''''''
 
 Install all required Python packages::
 
     $ pip install --requirement requirements.txt
 
-Install all Node.js and Bower packages and run several JavaScript build tasks::
+Create a settings file, run migrations and start the server::
 
-    $ yarn
-
-Optional: To enhance performance run Gulp in production mode::
-
-    $ node_modules/.bin/gulp --production
-
-
-e. Start OpenSlides
-'''''''''''''''''''
-
-Use the command-line interface::
-
-    $ python manage.py start
-
-See step 1. d. in the installation section in the `README.rst
-<https://github.com/OpenSlides/OpenSlides/blob/master/README.rst>`_.
+    $ python manage.py createsettings
+    $ python manage.py migrate
+    $ python manage.py runserver
 
 To get help on the command line options run::
 
@@ -84,13 +71,25 @@ When debugging something email related change the email backend to console::
 
     $ python manage.py start --debug-email
 
-To start OpenSlides with Daphne run::
+e. Setup and start the client
+'''''''''''''''''''''''''''''
 
-    $ python manage.py runserver
+Go in the client's directory in a second command-line interface::
 
-Use gulp watch in a second command-line interface::
+    $ cd client/
 
-    $ node_modules/.bin/gulp watch
+Install all dependencies and start the development server::
+
+    $ npm install
+    $ yarn start
+
+Now the client is available under ``localhost:4200``.
+
+If you do not need to work with the client, you can build the client and let it be delivered by the server directly::
+
+    $ yarn build
+
+The client's address is now ``localhost:8000``.
 
 
 2. Installation on Windows
@@ -127,16 +126,20 @@ To run some server tests see `.travis.yml
 <https://github.com/OpenSlides/OpenSlides/blob/master/.travis.yml>`_.
 
 
-b. Running AngularJS test cases
-'''''''''''''''''''''''''''''''
+b. Client tests and commands
+''''''''''''''''''''''''''''
 
-Run client tests by starting karma::
+Change to the client's directory to run every client related command. Run client tests::
 
-    $ yarn run karma
+    $ yarn test
 
-Watch for file changes and run the tests automatically after each change::
+Fix the code format and lint it with::
 
-    $ yarn run karma:watch
+    $ yarn pretty-quick && yarn lint
+
+To extract translations run::
+
+    $ yarn extract
 
 OpenSlides in big mode
 ======================
@@ -207,23 +210,7 @@ This is an example configuration for a single Daphne listen on port 8000::
 
          server_name _;
 
-         location ~* ^/projector.*$ {
-             rewrite ^.*$ /static/templates/projector-container.html;
-         }
-         location ~* ^/real-projector.*$ {
-             rewrite ^.*$ /static/templates/projector.html;
-         }
-         location ~* ^/webclient.*$ {
-             rewrite ^/webclient/(site|projector).*$ /static/js/webclient-$1.js;
-         }
-         location /static {
-             alias <your path to>/collected-static;
-         }
-         location ~* ^/(?!ws|wss|media|rest|views).*$ {
-             rewrite ^.*$ /static/templates/index.html;
-         }
-
-         location / {
+         location ~* ^/(ws|wss|media|rest|apps).*$ {
              proxy_pass http://localhost:8000;
              proxy_http_version 1.1;
              proxy_set_header Upgrade $http_upgrade;
@@ -231,5 +218,8 @@ This is an example configuration for a single Daphne listen on port 8000::
              proxy_set_header Host $http_host;
              proxy_set_header X-Real-IP $remote_addr;
              proxy_set_header X-Scheme $scheme;
+         }
+         location / {
+             alias <your path to>/collected-static;
          }
      }

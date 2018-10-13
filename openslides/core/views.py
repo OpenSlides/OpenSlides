@@ -1,21 +1,23 @@
-import json
+import os
 import uuid
-from textwrap import dedent
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List
 
-from django.apps import apps
 from django.conf import settings
+from django.contrib.staticfiles import finders
+from django.contrib.staticfiles.views import serve
 from django.db.models import F
 from django.http import Http404, HttpResponse
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
+from django.views import static
+from django.views.generic.base import View
 from mypy_extensions import TypedDict
 
 from .. import __license__ as license, __url__ as url, __version__ as version
 from ..utils import views as utils_views
+from ..utils.arguments import arguments
 from ..utils.auth import anonymous_is_enabled, has_perm
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
-from ..utils.constants import get_constants
 from ..utils.plugins import (
     get_plugin_description,
     get_plugin_license,
@@ -53,132 +55,38 @@ from .models import (
 
 # Special Django views
 
-class IndexView(utils_views.CSRFMixin, utils_views.TemplateView):
+class IndexView(View):
     """
-    The primary view for OpenSlides using AngularJS.
-
-    The default base template is 'openslides/core/static/templates/index.html'.
-    You can override it by simply adding a custom 'templates/index.html' file
-    to the custom staticfiles directory. See STATICFILES_DIRS in settings.py.
+    The primary view for the OpenSlides client. Serves static files. If a file
+    does not exist or a directory is requested, the index.html is delivered instead.
     """
-    template_name = 'templates/index.html'
 
-
-class ProjectorView(utils_views.TemplateView):
-    """
-    The primary view for OpenSlides projector using AngularJS.
-
-    The projector container template is 'openslides/core/static/templates/projector-container.html'.
-    This container is for controlling the projector resolution.
-    """
-    template_name = 'templates/projector-container.html'
-
-
-class RealProjectorView(utils_views.TemplateView):
-    """
-    The original view without resolutioncontrol for OpenSlides projector using AngularJS.
-
-    The default base template is 'openslides/core/static/templates/projector.html'.
-    You can override it by simply adding a custom 'templates/projector.html'
-    file to the custom staticfiles directory. See STATICFILES_DIRS in
-    settings.py.
-    """
-    template_name = 'templates/projector.html'
-
-
-class WebclientJavaScriptView(utils_views.View):
-    """
-    This view returns JavaScript code for the main entry point in the
-    AngularJS app for the requested realm (site or projector). Also code
-    for plugins is appended. The result is not uglified.
-    """
     cache: Dict[str, str] = {}
+    """
+    Saves the path to the index.html.
+
+    May be extended later to cache every template.
+    """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
 
-        if 'site' not in self.cache:
-            self.init_cache('site')
-        if 'projector' not in self.cache:
-            self.init_cache('projector')
+        no_caching = arguments.get('no_template_caching', False)
+        if 'index' not in self.cache or no_caching:
+            self.cache['index'] = finders.find('index.html')
 
-    def init_cache(self, realm: str) -> None:
-        angular_modules: List[str] = []
-        js_files: List[str] = []
-        for app_config in apps.get_app_configs():
-            # Add the angular app if the module has one.
-            if getattr(app_config, 'angular_{}_module'.format(realm), False):
-                angular_modules.append('OpenSlidesApp.{app_name}.{realm}'.format(
-                    app_name=app_config.label,
-                    realm=realm))
+        self.index_document_root, self.index_path = os.path.split(self.cache['index'])
 
-            # Add all JavaScript files that the module needs. Our core apps
-            # are delivered by an extra file js/openslides.js which can be
-            # created via gulp.
-            core_apps = (
-                'openslides.core',
-                'openslides.agenda',
-                'openslides.motions',
-                'openslides.assignments',
-                'openslides.users',
-                'openslides.mediafiles',
-            )
-            if app_config.name not in core_apps:
-                try:
-                    app_js_files = app_config.js_files
-                except AttributeError:
-                    # The app needs no JavaScript files.
-                    pass
-                else:
-                    js_files.extend(app_js_files)
-
-        # angular constants
-        angular_constants = ''
-        for key, value in get_constants().items():
-            value = json.dumps(value)
-            angular_constants += ".constant('{}', {})".format(key, value)
-
-        # Use JavaScript loadScript function from
-        # http://balpha.de/2011/10/jquery-script-insertion-and-its-consequences-for-debugging/
-        # jQuery is required.
-        content = dedent(
-            """
-            (function () {
-                var loadScript = function (path) {
-                    var result = $.Deferred(),
-                        script = document.createElement("script");
-                    script.async = "async";
-                    script.type = "text/javascript";
-                    script.src = path;
-                    script.onload = script.onreadystatechange = function(_, isAbort) {
-                        if (!script.readyState || /loaded|complete/.test(script.readyState)) {
-                            if (isAbort)
-                                result.reject();
-                            else
-                                result.resolve();
-                        }
-                    };
-                    script.onerror = function () { result.reject(); };
-                    $("head")[0].appendChild(script);
-                    return result.promise();
-                };
-            """ +
-            """
-                angular.module('OpenSlidesApp.{realm}', {angular_modules}){angular_constants};
-                var deferres = [];
-                {js_files}.forEach( function(js_file) {{ deferres.push(loadScript(js_file)); }} );
-                $.when.apply(this,deferres).done( function() {{
-                    angular.bootstrap(document,['OpenSlidesApp.{realm}']);
-                }} );
-            """.format(realm=realm, angular_modules=angular_modules, angular_constants=angular_constants, js_files=js_files) +
-            """
-            }());
-            """).replace('\n', '')
-        self.cache[realm] = content
-
-    def get(self, *args: Any, **kwargs: Any) -> HttpResponse:
-        realm = cast(str, kwargs.get('realm'))  # Result is 'site' or 'projector'
-        return HttpResponse(self.cache[realm], content_type='application/javascript')
+    def get(self, request, path, **kwargs) -> HttpResponse:
+        """
+        Tries to serve the requested file. If it is not found or a directory is
+        requested, the index.html is delivered.
+        """
+        try:
+            response = serve(request, path, **kwargs)
+        except Http404:
+            response = static.serve(request, self.index_path, document_root=self.index_document_root, **kwargs)
+        return response
 
 
 # Viewsets for the REST API
