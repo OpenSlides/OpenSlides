@@ -6,7 +6,7 @@
 *~
 
 # Virtual Environment
-.virtualenv/*
+.virtualenv*/*
 .venv/*
 
 # Javascript tools and libraries
@@ -30,6 +30,7 @@ debug/*
 # Unit test and coverage reports
 .coverage
 tests/file/*
+.pytest_cache
 
 # Plugin development
 openslides_*
@@ -37,5 +38,43 @@ openslides_*
 # Mypy cache for typechecking
 .mypy_cache
 
-# Development of a new client. Easier to switch branches with this entry
-client/*
+# OpenSlides 3 Client
+
+# compiled output
+client/dist
+client/tmp
+client/out-tsc
+client/documentation
+
+# dependencies
+client/node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+
+# misc
+Compodoc
+Compodocmodules
+client/.sass-cache
+client/connect.lock
+client/coverage
+client/libpeerconnection.log
+client/npm-debug.log
+client/yarn-error.log
+client/testem.log
+client/typings
+client/yarn.lock
+package-lock.json
+
+# System Files
+client/.DS_Store
+client/Thumbs.db

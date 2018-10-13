@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional
 
-from ..utils.access_permissions import BaseAccessPermissions  # noqa
+from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import has_perm
 from ..utils.collection import CollectionElement
 

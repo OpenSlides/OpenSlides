@@ -1,0 +1,54 @@
+<os-head-bar appName="Users" plusButton=true (plusButtonClicked)=onPlusButton() [menuList]=userMenuList
+    (ellipsisMenuItem)=onEllipsisItem($event)>
+</os-head-bar>
+
+<div class='custom-table-header on-transition-fade'>
+    <button mat-button>
+        <span translate>SORT</span>
+    </button>
+    <button mat-button>
+        <span translate>FILTER</span>
+    </button>
+</div>
+
+<mat-table class='os-listview-table on-transition-fade' [dataSource]="dataSource" matSort>
+    <!-- name column -->
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+        <mat-cell *matCellDef="let user"> {{user.fullName}} </mat-cell>
+    </ng-container>
+
+    <!-- prefix column -->
+    <ng-container matColumnDef="group">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Group </mat-header-cell>
+        <mat-cell *matCellDef="let user">
+            <div class='groupsCell'>
+                <span *ngIf="user.groups.length > 0">
+                    <mat-icon>people</mat-icon>
+                    {{user.groups}}
+                </span>
+                <br *ngIf="user.groups && user.structureLevel">
+                <span *ngIf="user.structureLevel">
+                    <mat-icon>flag</mat-icon>
+                    {{user.structureLevel}}
+                </span>
+            </div>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Presence column -->
+    <ng-container matColumnDef="presence">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Presence </mat-header-cell>
+        <mat-cell *matCellDef="let user">
+            <div *ngIf="user.isActive">
+                <mat-icon>check_box</mat-icon>
+                <span translate>Present</span>
+            </div>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="['name', 'group', 'presence']"></mat-header-row>
+    <mat-row (click)='selectUser(row)' *matRowDef="let row; columns: ['name', 'group', 'presence']"></mat-row>
+</mat-table>
+
+<mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>

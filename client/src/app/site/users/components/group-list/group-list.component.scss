@@ -1,0 +1,39 @@
+table {
+    width: 100%;
+
+    .mat-cell {
+        min-width: 80px;
+    }
+
+    .mat-column-perm {
+        min-width: 130px;
+    }
+
+    .inner-table {
+        width: 100%;
+        text-align: center;
+    }
+
+    .group-head-table-cell {
+        cursor: pointer;
+    }
+}
+
+.hint-text {
+    padding-top: 30px;
+    padding-left: 25px;
+    background-color: #ffffff; // put in theme later
+}
+
+.new-group-form {
+    text-align: center;
+    padding-top: 10px;
+    background-color: #ffffff; // put in theme later
+    button {
+        margin-left: 10px;
+    }
+}
+
+.scrollable-perm-matrix {
+    overflow: auto;
+}

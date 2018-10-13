@@ -1,5 +1,5 @@
 import base64
-from typing import Any, Dict, List  # noqa
+from typing import Any, Dict, List, Optional
 
 from django.contrib.staticfiles import finders
 from django.core.exceptions import ImproperlyConfigured
@@ -28,7 +28,7 @@ class APIView(_APIView):
     The Django Rest framework APIView with improvements for OpenSlides.
     """
 
-    http_method_names = []  # type: List[str]
+    http_method_names: List[str] = []
     """
     The allowed actions have to be explicitly defined.
 
@@ -60,8 +60,8 @@ class TemplateView(View):
     is not allowed to change. So the State has to be saved in this dict. Search for 'Borg design
     pattern' for more information.
     """
-    template_name = None  # type: str
-    state = {}  # type: Dict[str, str]
+    template_name: Optional[str] = None
+    state: Dict[str, str] = {}
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -78,7 +78,7 @@ class TemplateView(View):
             return template.read()
 
     def get(self, *args: Any, **kwargs: Any) -> HttpResponse:
-        return HttpResponse(self.state[self.template_name])
+        return HttpResponse(self.state[self.template_name])  # type: ignore
 
 
 class BinaryTemplateView(TemplateView):

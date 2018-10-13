@@ -117,11 +117,11 @@ angular.module('OpenSlidesApp.core', [
                 $timeout(runRetryConnectCallbacks, getTimeoutTime());
             };
             socket.onmessage = function (event) {
-                var dataList = [];
+                var data;
                 try {
-                    dataList = JSON.parse(event.data);
+                    data = JSON.parse(event.data);
                     _.forEach(Autoupdate.messageReceivers, function (receiver) {
-                        receiver(dataList);
+                        receiver(data);
                     });
                 } catch(err) {
                     console.error(err);
@@ -133,10 +133,23 @@ angular.module('OpenSlidesApp.core', [
                 ErrorMessage.clearConnectionError();
             };
         };
-        Autoupdate.send = function (message) {
-            if (socket) {
-                socket.send(JSON.stringify(message));
+        Autoupdate.send = function (type, content) {
+            if (!socket) {
+                return;
             }
+
+            var message = {
+                type: type,
+                content: content,
+                id: '',
+            };
+
+            // Generate random id
+            var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            for (var i = 0; i < 8; i++) {
+                message.id += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            socket.send(JSON.stringify(message));
         };
         Autoupdate.closeConnection = function () {
             if (socket) {
@@ -369,7 +382,12 @@ angular.module('OpenSlidesApp.core', [
     'dsEject',
     function (DS, autoupdate, dsEject) {
         // Handler for normal autoupdate messages.
-        autoupdate.onMessage(function(dataList) {
+        autoupdate.onMessage(function(data) {
+            if (data.type !== 'autoupdate') {
+                return;
+            }
+
+            var dataList = data.content;
             var dataListByCollection = _.groupBy(dataList, 'collection');
             _.forEach(dataListByCollection, function (list, key) {
                 var changedElements = [];
@@ -379,22 +397,19 @@ angular.module('OpenSlidesApp.core', [
                     // Uncomment this line for debugging to log all autoupdates:
                     // console.log("Received object: " + data.collection + ", " + data.id);
 
-                    // Now handle autoupdate message but do not handle notify messages.
-                    if (data.collection !== 'notify') {
-                        // remove (=eject) object from local DS store
-                        var instance = DS.get(data.collection, data.id);
-                        if (instance) {
-                            dsEject(data.collection, instance);
-                        }
-                        // check if object changed or deleted
-                        if (data.action === 'changed') {
-                            changedElements.push(data.data);
-                        } else if (data.action === 'deleted') {
-                            deletedElements.push(data.id);
-                        } else {
-                            console.error('Error: Undefined action for received object' +
-                                '(' + data.collection + ', ' + data.id + ')');
-                        }
+                    // remove (=eject) object from local DS store
+                    var instance = DS.get(data.collection, data.id);
+                    if (instance) {
+                        dsEject(data.collection, instance);
+                    }
+                    // check if object changed or deleted
+                    if (data.action === 'changed') {
+                        changedElements.push(data.data);
+                    } else if (data.action === 'deleted') {
+                        deletedElements.push(data.id);
+                    } else {
+                        console.error('Error: Undefined action for received object' +
+                            '(' + data.collection + ', ' + data.id + ')');
                     }
                 });
                 // add (=inject) all given objects into local DS store
@@ -418,7 +433,12 @@ angular.module('OpenSlidesApp.core', [
         var anonymousTrackId;
 
         // Handler for notify messages.
-        autoupdate.onMessage(function(dataList) {
+        autoupdate.onMessage(function(data) {
+            if (data.type !== 'notify') {
+                return;
+            }
+
+            var dataList = data.content;
             var dataListByCollection = _.groupBy(dataList, 'collection');
             _.forEach(dataListByCollection.notify, function (notifyItem) {
                 // Check, if this current user (or anonymous instance) has send this notify.
@@ -505,12 +525,24 @@ angular.module('OpenSlidesApp.core', [
                         }
                         notifyItem.anonymousTrackId = anonymousTrackId;
                     }
-                    autoupdate.send([notifyItem]);
+                    autoupdate.send('notify', [notifyItem]);
                 } else {
                     throw 'eventName should only consist of [a-zA-Z0-9_-]';
                 }
             },
         };
+    }
+])
+
+.run([
+    'autoupdate',
+    function (autoupdate) {
+        // Handler for normal autoupdate messages.
+        autoupdate.onMessage(function (data) {
+            if (data.type === 'error') {
+                console.error("Websocket error", data.content);
+            }
+        });
     }
 ])
 

@@ -1,5 +1,6 @@
 import bleach
 
+
 allowed_tags = [
     'a', 'img',  # links and images
     'br', 'p', 'span', 'blockquote',  # text layout

@@ -1,0 +1,45 @@
+.projector-button {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+}
+
+.os-logo-container {
+    min-width: 240px;
+    background-image: url(/assets/img/openslides-logo-h-dark-transparent.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.side-panel {
+    box-shadow: 3px 0px 10px 0px rgba(0, 0, 0, 0.2);
+}
+
+.content {
+    min-height: 100%;
+    position: relative;
+}
+
+mat-sidenav-container {
+    height: 100vh;
+    width: 100%;
+}
+
+.relax {
+    position: initial;
+    padding-bottom: 70px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+    z-index: 50;
+    flex: 1;
+    > *:not(router-outlet) {
+        flex: 1;
+        display: block;
+    }
+}

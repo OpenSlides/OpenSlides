@@ -1,0 +1,28 @@
+{
+    "extends": "../tslint.json",
+    "rules": {
+        "directive-selector": [true, "attribute", "os", "camelCase"],
+        "component-selector": [true, "element", "os", "kebab-case"],
+        "member-access": [true, "check-accessor", "check-constructor", "check-parameter-property"],
+        "comment-format": [true, "check-space"],
+        "curly": true,
+        "no-string-literal": true,
+        "jsdoc-format": true,
+        "no-trailing-whitespace": true,
+        "member-ordering": [
+            true,
+            {
+                "order": ["static-field", "static-method", "instance-field", "constructor", "instance-method"]
+            }
+        ],
+        "no-unused-variable": true,
+        "typedef": [
+            true,
+            "call-signature",
+            "property-declaration",
+            "parameter",
+            "object-destructuring",
+            "array-destructuring"
+        ]
+    }
+}

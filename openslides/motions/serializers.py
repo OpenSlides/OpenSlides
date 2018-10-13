@@ -1,17 +1,19 @@
-from typing import Dict, Optional  # noqa
+from typing import Dict, Optional
 
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
 from ..poll.serializers import default_votes_validator
+from ..utils.auth import get_group_model
+from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
     CharField,
     DecimalField,
     DictField,
     Field,
+    IdPrimaryKeyRelatedField,
     IntegerField,
     ModelSerializer,
-    PrimaryKeyRelatedField,
     SerializerMethodField,
     ValidationError,
 )
@@ -21,10 +23,12 @@ from .models import (
     Motion,
     MotionBlock,
     MotionChangeRecommendation,
+    MotionComment,
+    MotionCommentSection,
     MotionLog,
     MotionPoll,
-    MotionVersion,
     State,
+    StatuteParagraph,
     Submitter,
     Workflow,
 )
@@ -36,6 +40,15 @@ def validate_workflow_field(value):
     """
     if not Workflow.objects.filter(pk=value).exists():
         raise ValidationError({'detail': _('Workflow %(pk)d does not exist.') % {'pk': value}})
+
+
+class StatuteParagraphSerializer(ModelSerializer):
+    """
+    Serializer for motion.models.StatuteParagraph objects.
+    """
+    class Meta:
+        model = StatuteParagraph
+        fields = ('id', 'title', 'text', 'weight')
 
 
 class CategorySerializer(ModelSerializer):
@@ -88,8 +101,6 @@ class StateSerializer(ModelSerializer):
             'allow_support',
             'allow_create_poll',
             'allow_submitter_edit',
-            'versioning',
-            'leave_old_version_active',
             'dont_set_identifier',
             'show_state_extension_field',
             'show_recommendation_extension_field',
@@ -126,32 +137,6 @@ class WorkflowSerializer(ModelSerializer):
         workflow.first_state = first_state
         workflow.save()
         return workflow
-
-
-class MotionCommentsJSONSerializerField(Field):
-    """
-    Serializer for motions's comments JSONField.
-    """
-    def to_representation(self, obj):
-        """
-        Returns the value of the field.
-        """
-        return obj
-
-    def to_internal_value(self, data):
-        """
-        Checks that data is a list of strings.
-        """
-        if type(data) is not dict:
-            raise ValidationError({'detail': 'Data must be a dict.'})
-        for id, comment in data.items():
-            try:
-                id = int(id)
-            except ValueError:
-                raise ValidationError({'detail': 'Id must be an int.'})
-            if type(comment) is not str:
-                raise ValidationError({'detail': 'Comment must be a string.'})
-        return data
 
 
 class AmendmentParagraphsJSONSerializerField(Field):
@@ -222,26 +207,26 @@ class MotionPollSerializer(ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         # The following dictionary is just a cache for several votes.
-        self._votes_dicts = {}  # type: Dict[int, Dict[int, int]]
+        self._votes_dicts: Dict[int, Dict[int, int]] = {}
         return super().__init__(*args, **kwargs)
 
     def get_yes(self, obj):
         try:
-            result = str(self.get_votes_dict(obj)['Yes'])  # type: Optional[str]
+            result: Optional[str] = str(self.get_votes_dict(obj)['Yes'])
         except KeyError:
             result = None
         return result
 
     def get_no(self, obj):
         try:
-            result = str(self.get_votes_dict(obj)['No'])  # type: Optional[str]
+            result: Optional[str] = str(self.get_votes_dict(obj)['No'])
         except KeyError:
             result = None
         return result
 
     def get_abstain(self, obj):
         try:
-            result = str(self.get_votes_dict(obj)['Abstain'])  # type: Optional[str]
+            result: Optional[str] = str(self.get_votes_dict(obj)['Abstain'])
         except KeyError:
             result = None
         return result
@@ -291,25 +276,6 @@ class MotionPollSerializer(ModelSerializer):
         return instance
 
 
-class MotionVersionSerializer(ModelSerializer):
-    amendment_paragraphs = AmendmentParagraphsJSONSerializerField(required=False)
-
-    """
-    Serializer for motion.models.MotionVersion objects.
-    """
-    class Meta:
-        model = MotionVersion
-        fields = (
-            'id',
-            'version_number',
-            'creation_time',
-            'title',
-            'text',
-            'amendment_paragraphs',
-            'modified_final_version',
-            'reason',)
-
-
 class MotionChangeRecommendationSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionChangeRecommendation objects.
@@ -318,7 +284,7 @@ class MotionChangeRecommendationSerializer(ModelSerializer):
         model = MotionChangeRecommendation
         fields = (
             'id',
-            'motion_version',
+            'motion',
             'rejected',
             'type',
             'other_description',
@@ -335,6 +301,53 @@ class MotionChangeRecommendationSerializer(ModelSerializer):
         if 'text' in data and not self.is_title_cr(data):
             data['text'] = validate_html(data['text'])
         return data
+
+
+class MotionCommentSectionSerializer(ModelSerializer):
+    """
+    Serializer for motion.models.MotionCommentSection objects.
+    """
+    read_groups = IdPrimaryKeyRelatedField(
+        many=True,
+        required=False,
+        queryset=get_group_model().objects.all())
+
+    write_groups = IdPrimaryKeyRelatedField(
+        many=True,
+        required=False,
+        queryset=get_group_model().objects.all())
+
+    class Meta:
+        model = MotionCommentSection
+        fields = (
+            'id',
+            'name',
+            'read_groups',
+            'write_groups',)
+
+    def create(self, validated_data):
+        """ Call inform_changed_data on creation, so the cache includes the groups. """
+        section = super().create(validated_data)
+        inform_changed_data(section)
+        return section
+
+
+class MotionCommentSerializer(ModelSerializer):
+    """
+    Serializer for motion.models.MotionComment objects.
+    """
+    read_groups_id = SerializerMethodField()
+
+    class Meta:
+        model = MotionComment
+        fields = (
+            'id',
+            'comment',
+            'section',
+            'read_groups_id',)
+
+    def get_read_groups_id(self, comment):
+        return [group.id for group in comment.section.read_groups.all()]
 
 
 class SubmitterSerializer(ModelSerializer):
@@ -355,22 +368,19 @@ class MotionSerializer(ModelSerializer):
     """
     Serializer for motion.models.Motion objects.
     """
-    active_version = PrimaryKeyRelatedField(read_only=True)
-    comments = MotionCommentsJSONSerializerField(required=False)
+    comments = MotionCommentSerializer(many=True, read_only=True)
     log_messages = MotionLogSerializer(many=True, read_only=True)
     polls = MotionPollSerializer(many=True, read_only=True)
-    modified_final_version = CharField(allow_blank=True, required=False, write_only=True)
-    reason = CharField(allow_blank=True, required=False, write_only=True)
+    modified_final_version = CharField(allow_blank=True, required=False)
+    reason = CharField(allow_blank=True, required=False)
     state_required_permission_to_see = SerializerMethodField()
-    text = CharField(write_only=True, allow_blank=True)
-    title = CharField(max_length=255, write_only=True)
-    amendment_paragraphs = AmendmentParagraphsJSONSerializerField(required=False, write_only=True)
-    versions = MotionVersionSerializer(many=True, read_only=True)
+    text = CharField(allow_blank=True)
+    title = CharField(max_length=255)
+    amendment_paragraphs = AmendmentParagraphsJSONSerializerField(required=False)
     workflow_id = IntegerField(
         min_value=1,
         required=False,
-        validators=[validate_workflow_field],
-        write_only=True)
+        validators=[validate_workflow_field])
     agenda_type = IntegerField(write_only=True, required=False, min_value=1, max_value=3)
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
     submitters = SubmitterSerializer(many=True, read_only=True)
@@ -385,26 +395,28 @@ class MotionSerializer(ModelSerializer):
             'amendment_paragraphs',
             'modified_final_version',
             'reason',
-            'versions',
-            'active_version',
             'parent',
             'category',
+            'comments',
             'motion_block',
             'origin',
             'submitters',
             'supporters',
-            'comments',
             'state',
+            'state_extension',
             'state_required_permission_to_see',
             'workflow_id',
             'recommendation',
+            'recommendation_extension',
             'tags',
             'attachments',
             'polls',
             'agenda_item_id',
             'agenda_type',
             'agenda_parent_id',
-            'log_messages',)
+            'log_messages',
+            'sort_parent',
+            'weight',)
         read_only_fields = ('state', 'recommendation',)  # Some other fields are also read_only. See definitions above.
 
     def validate(self, data):
@@ -416,11 +428,6 @@ class MotionSerializer(ModelSerializer):
 
         if 'reason' in data:
             data['reason'] = validate_html(data['reason'])
-
-        validated_comments = dict()
-        for id, comment in data.get('comments', {}).items():
-            validated_comments[id] = validate_html(comment)
-        data['comments'] = validated_comments
 
         if 'amendment_paragraphs' in data:
             data['amendment_paragraphs'] = list(map(lambda entry: validate_html(entry) if type(entry) is str else None,
@@ -452,7 +459,6 @@ class MotionSerializer(ModelSerializer):
         motion.category = validated_data.get('category')
         motion.motion_block = validated_data.get('motion_block')
         motion.origin = validated_data.get('origin', '')
-        motion.comments = validated_data.get('comments')
         motion.parent = validated_data.get('parent')
         motion.reset_state(validated_data.get('workflow_id'))
         motion.agenda_item_update_information['type'] = validated_data.get('agenda_type')
@@ -468,38 +474,17 @@ class MotionSerializer(ModelSerializer):
         """
         Customized method to update a motion.
         """
-        # Identifier, category, motion_block, origin and comments.
-        for key in ('identifier', 'category', 'motion_block', 'origin', 'comments'):
-            if key in validated_data.keys():
-                setattr(motion, key, validated_data[key])
+        workflow_id = None
+        if 'workflow_id' in validated_data:
+            workflow_id = validated_data.pop('workflow_id')
 
-        # Workflow.
-        workflow_id = validated_data.get('workflow_id')
-        if workflow_id is not None and workflow_id != motion.workflow:
+        result = super().update(motion, validated_data)
+
+        if workflow_id is not None and workflow_id != motion.workflow_id:
             motion.reset_state(workflow_id)
+            motion.save()
 
-        # Decide if a new version is saved to the database.
-        if (motion.state.versioning and
-                not validated_data.get('disable_versioning', False)):  # TODO
-            version = motion.get_new_version()
-        else:
-            version = motion.get_last_version()
-
-        # Title, text, reason, ...
-        for key in ('title', 'text', 'amendment_paragraphs', 'modified_final_version', 'reason'):
-            if key in validated_data.keys():
-                setattr(version, key, validated_data[key])
-
-        motion.save(use_version=version)
-
-        # Submitters, supporters, attachments and tags
-        for key in ('submitters', 'supporters', 'attachments', 'tags'):
-            if key in validated_data.keys():
-                attr = getattr(motion, key)
-                attr.clear()
-                attr.add(*validated_data[key])
-
-        return motion
+        return result
 
     def get_state_required_permission_to_see(self, motion):
         """

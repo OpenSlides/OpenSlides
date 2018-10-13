@@ -1,4 +1,4 @@
-from typing import Any, Dict  # noqa
+from typing import Any, Dict
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
@@ -59,7 +59,7 @@ class Topic(RESTModelMixin, models.Model):
     """
     Container for runtime information for agenda app (on create or update of this instance).
     """
-    agenda_item_update_information = {}  # type: Dict[str, Any]
+    agenda_item_update_information: Dict[str, Any] = {}
 
     @property
     def agenda_item(self):
@@ -78,7 +78,13 @@ class Topic(RESTModelMixin, models.Model):
         return self.agenda_item.pk
 
     def get_agenda_title(self):
+        """
+        Returns the title for the agenda.
+        """
         return self.title
 
-    def get_agenda_list_view_title(self):
-        return self.title
+    def get_agenda_title_with_type(self):
+        """
+        Returns the agenda title. Topicy should not get a type postfix.
+        """
+        return self.get_agenda_title()

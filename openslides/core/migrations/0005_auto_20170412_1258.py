@@ -4,8 +4,9 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 
-from openslides.utils.migrations import \
-    add_permission_to_groups_based_on_existing_permission
+from openslides.utils.migrations import (
+    add_permission_to_groups_based_on_existing_permission,
+)
 
 
 class Migration(migrations.Migration):

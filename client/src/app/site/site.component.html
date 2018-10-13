@@ -1,0 +1,89 @@
+<mat-sidenav-container autosize class='main-container'>
+    <mat-sidenav #sideNav [mode]="vp.isMobile ? 'push' : 'side'" [opened]='!vp.isMobile' disableClose='!vp.isMobile' class="side-panel">
+        <mat-toolbar class='nav-toolbar'>
+            <!-- logo -->
+            <mat-toolbar-row class='os-logo-container'>
+            </mat-toolbar-row>
+        </mat-toolbar>
+
+        <!-- User Menu -->
+        <mat-expansion-panel class='user-menu mat-elevation-z0'>
+            <mat-expansion-panel-header>
+                <!-- Get the username from operator -->
+                {{username}}
+            </mat-expansion-panel-header>
+            <mat-nav-list>
+                <a mat-list-item [matMenuTriggerFor]="languageMenu">
+                    <mat-icon>language</mat-icon>
+                    <span> {{getLangName(this.translate.currentLang)}} </span>
+                </a>
+                <a *ngIf="isLoggedIn" (click)='editProfile()' mat-list-item>
+                    <mat-icon>person</mat-icon>
+                    <span translate>Edit Profile</span>
+                </a>
+                <a *ngIf="isLoggedIn" (click)='changePassword()' mat-list-item>
+                    <mat-icon>vpn_key</mat-icon>
+                    <span translate>Change Password</span>
+                </a>
+                <mat-divider></mat-divider>
+                <a *ngIf="isLoggedIn" (click)='logout()' mat-list-item>
+                    <mat-icon>exit_to_app</mat-icon>
+                    <span translate>Logout</span>
+                </a>
+                <a *ngIf="!isLoggedIn" routerLink='/login' mat-list-item>
+                    <mat-icon>exit_to_app</mat-icon>
+                    <span translate>Login</span>
+                </a>
+            </mat-nav-list>
+        </mat-expansion-panel>
+        <!-- TODO: Could use translate.getLangs() to fetch available languages-->
+        <mat-menu #languageMenu="matMenu">
+            <button mat-menu-item (click)='selectLang("en")' translate>English</button>
+            <button mat-menu-item (click)='selectLang("de")' translate>German</button>
+            <button mat-menu-item (click)='selectLang("fr")' translate>French</button>
+        </mat-menu>
+
+        <!-- navigation -->
+        <mat-nav-list class='main-nav'>
+            <span *ngFor="let entry of mainMenuService.entries">
+                <a [@navItemAnim] *osPerms="entry.permission" mat-list-item (click)='toggleSideNav()'
+                    [routerLink]='entry.route' routerLinkActive='active' [routerLinkActiveOptions]="{exact: true}">
+                    <mat-icon>{{entry.icon}}</mat-icon>{{ entry.displayName | translate}}
+                </a>
+            </span>
+            <mat-divider></mat-divider>
+            <a [@navItemAnim] *osPerms="'core.can_see_projector'" mat-list-item routerLink='/projector' routerLinkActive='active' (click)='toggleSideNav()'>
+                <mat-icon>videocam</mat-icon>
+                <span translate>Projector</span>
+            </a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <div class="content">
+        <header>
+            <!-- the first toolbar row is (still) a global element
+            the second one shall be handled by the apps  -->
+            <mat-toolbar color='primary'>
+
+                <!-- show/hide menu button -->
+                <button mat-icon-button *ngIf="vp.isMobile" (click)='sideNav.toggle()'>
+                    <mat-icon>menu</mat-icon>
+                </button>
+
+                <!-- glob search and generic menu on the right -->
+                <span class='spacer'></span>
+                <button mat-icon-button (click)='sideNav.toggle()'>
+                    <mat-icon>search</mat-icon>
+                </button>
+            </mat-toolbar>
+        </header>
+
+        <div class="relax">
+            <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
+                <router-outlet #o="outlet"></router-outlet>
+            </main>
+            <footer>
+                <os-footer></os-footer>
+            </footer>
+        </div>
+    </div>
+</mat-sidenav-container>

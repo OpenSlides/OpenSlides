@@ -1,0 +1,122 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+/** Import brand theme and (new) component themes */
+@import './assets/styles/openslides-theme';
+@import './app/site/site.component.scss-theme';
+@import '../node_modules/roboto-fontface/css/roboto/roboto-fontface.css';
+@mixin openslides-components-theme($theme) {
+    @include os-site-theme($theme);
+    /** More components are added here */
+}
+
+@include angular-material-theme($openslides-theme);
+@include openslides-components-theme($openslides-theme);
+
+* {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+}
+mat-icon {
+    font-family: MaterialIcons-Regular;
+}
+
+body {
+    // background: #e8eaed;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.generic-mini-button {
+    bottom: -28px;
+    z-index: 100;
+}
+
+.save-button {
+    // needs to be important or will be overwritten locally
+    background-color: rgb(77, 243, 86) !important;
+}
+
+.text-success {
+    color: rgb(77, 243, 86);
+}
+
+.red-warning-text {
+    color: red;
+}
+
+.icon-text-distance {
+    margin-left: 5px;
+}
+
+.os-card {
+    max-width: 90%;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+//custom table header for search button, filtering and more. Used in ListViews
+.custom-table-header {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    text-align: right;
+    background: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.os-listview-table {
+    width: 100%;
+
+    /** hide mat header row */
+    .mat-header-row {
+        display: none;
+    }
+
+    /** size of the mat row  */
+    mat-row {
+        height: 60px;
+    }
+
+    mat-row:hover {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.025);
+    }
+}
+
+.card-plus-distance {
+    margin-top: 40px;
+}
+
+/**title of an app page*/
+.app-name {
+    margin-left: 20px;
+}
+
+/**content of an app page*/
+.app-content {
+    margin: 20px;
+    margin-top: 50px;
+}
+
+/**use to push content to the right side*/
+.spacer {
+    flex: 1 1 auto;
+}
+
+/** helper classes for animation */
+.on-transition-fade {
+    z-index: 100;
+}
+
+footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+mat-expansion-panel {
+    border-radius: 0 !important;
+}

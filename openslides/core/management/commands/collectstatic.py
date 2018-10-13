@@ -2,8 +2,9 @@ import os
 from typing import Any, Dict
 
 from django.conf import settings
-from django.contrib.staticfiles.management.commands.collectstatic import \
-    Command as CollectStatic
+from django.contrib.staticfiles.management.commands.collectstatic import (
+    Command as CollectStatic,
+)
 from django.contrib.staticfiles.utils import matches_patterns
 from django.core.management.base import CommandError
 from django.db.utils import OperationalError

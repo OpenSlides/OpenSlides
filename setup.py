@@ -11,8 +11,11 @@ from openslides import __url__ as openslides_url
 with open('README.rst') as readme:
     long_description = readme.read()
 
-with open('requirements_production.txt') as requirements_production:
+with open('requirements/production.txt') as requirements_production:
     install_requires = requirements_production.readlines()
+
+with open('requirements/big_mode.txt') as requirements_big_mode:
+    extras_requires = requirements_big_mode.readlines()
 
 setup(
     name='openslides',
@@ -33,10 +36,10 @@ setup(
         'Framework :: Django',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7', ],
     packages=find_packages(exclude=['tests', 'tests.*']),
     include_package_data=True,
     install_requires=install_requires,
+    extras_require={'big_mode': extras_requires},
     entry_points={'console_scripts': ['openslides = openslides.__main__:main']})

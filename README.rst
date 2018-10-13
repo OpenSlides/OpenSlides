@@ -26,7 +26,7 @@ Installation
 a. Check requirements
 '''''''''''''''''''''
 
-Make sure that you have installed `Python (>= 3.5) <https://www.python.org/>`_
+Make sure that you have installed `Python (>= 3.6) <https://www.python.org/>`_
 on your system.
 
 Additional you need build-essential packages, header files and a static
@@ -72,7 +72,7 @@ compressed tar archive and run::
     $ pip install openslides-x.y.tar.gz
 
 This will install all required Python packages (see
-``requirements_production.txt``).
+``requirements/production.txt``).
 
 
 d. Start OpenSlides
@@ -139,23 +139,21 @@ file (usually called settings.py).
 
 The configuration values that have to be altered are:
 
-* CACHES
 * CHANNEL_LAYERS
 * DATABASES
 * SESSION_ENGINE
+* REDIS_ADDRESS
 
 You should use a webserver like Apache HTTP Server or nginx to serve the
 static and media files as proxy server in front of your OpenSlides
 interface server. You also should use a database like PostgreSQL and Redis
 as channels backend, cache backend and session engine. Finally you should
-start some WSGI workers and one or more interface servers (Daphne or Geiss).
+use gunicorn with uvicorn as interface server.
 
 Please see the respective section in the `DEVELOPMENT.rst
 <https://github.com/OpenSlides/OpenSlides/blob/master/DEVELOPMENT.rst>`_ and:
 
 * https://channels.readthedocs.io/en/latest/deploying.html
-* https://github.com/ostcar/geiss
-* https://docs.djangoproject.com/en/1.10/topics/cache/
 * https://github.com/sebleier/django-redis-cache
 * https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
@@ -165,7 +163,7 @@ Used software
 
 OpenSlides uses the following projects or parts of them:
 
-* Several Python packages (see ``requirements_production.txt``).
+* Several Python packages (see ``requirements/production.txt`` and ``requirements/big_mode.txt``).
 
 * Several JavaScript packages (see ``bower.json``)
 

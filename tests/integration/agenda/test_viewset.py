@@ -1,8 +1,8 @@
+import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.urls import reverse
 from django.utils.translation import ugettext
-from django_redis import get_redis_connection
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -12,9 +12,12 @@ from openslides.core.config import config
 from openslides.core.models import Countdown
 from openslides.motions.models import Motion
 from openslides.topics.models import Topic
-from openslides.users.models import User
+from openslides.users.models import Group
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.collection import CollectionElement
 from openslides.utils.test import TestCase
+
+from ..helpers import count_queries
 
 
 class RetrieveItem(TestCase):
@@ -42,20 +45,22 @@ class RetrieveItem(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_hidden_by_anonymous_with_manage_perms(self):
-        group = get_user_model().groups.field.related_model.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
+        group = Group.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
         permission_string = 'agenda.can_manage'
         app_label, codename = permission_string.split('.')
         permission = Permission.objects.get(content_type__app_label=app_label, codename=codename)
         group.permissions.add(permission)
+        inform_changed_data(group)
         response = self.client.get(reverse('item-detail', args=[self.item.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_internal_by_anonymous_without_perm_to_see_internal_items(self):
-        group = get_user_model().groups.field.related_model.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
+        group = Group.objects.get(pk=1)  # Group with pk 1 is for anonymous users.
         permission_string = 'agenda.can_see_internal_items'
         app_label, codename = permission_string.split('.')
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
         group.permissions.remove(permission)
+        inform_changed_data(group)
         self.item.type = Item.INTERNAL_ITEM
         self.item.save()
         response = self.client.get(reverse('item-detail', args=[self.item.pk]))
@@ -68,7 +73,7 @@ class RetrieveItem(TestCase):
             'content_object',)))
         forbidden_keys = (
             'item_number',
-            'list_view_title',
+            'title_with_type',
             'comment',
             'closed',
             'type',
@@ -89,63 +94,28 @@ class RetrieveItem(TestCase):
         self.assertTrue(response.data.get('comment') is None)
 
 
-class TestDBQueries(TestCase):
+@pytest.mark.django_db(transaction=False)
+def test_agenda_item_db_queries():
     """
-    Tests that receiving elements only need the required db queries.
+    Tests that only the following db queries are done:
+    * 1 requests to get the list of all agenda items,
+    * 1 request to get all speakers,
+    * 3 requests to get the assignments, motions and topics and
 
-    Therefore in setup some agenda items are created and received with different
-    user accounts.
+    * 1 request to get an agenda item (why?)
+    TODO: The last three request are a bug.
     """
+    for index in range(10):
+        Topic.objects.create(title='topic{}'.format(index))
+    parent = Topic.objects.create(title='parent').agenda_item
+    child = Topic.objects.create(title='child').agenda_item
+    child.parent = parent
+    child.save()
+    Motion.objects.create(title='motion1')
+    Motion.objects.create(title='motion2')
+    Assignment.objects.create(title='assignment', open_posts=5)
 
-    def setUp(self):
-        self.client = APIClient()
-        config['general_system_enable_anonymous'] = True
-        for index in range(10):
-            Topic.objects.create(title='topic{}'.format(index))
-        parent = Topic.objects.create(title='parent').agenda_item
-        child = Topic.objects.create(title='child').agenda_item
-        child.parent = parent
-        child.save()
-        Motion.objects.create(title='motion1')
-        Motion.objects.create(title='motion2')
-        Assignment.objects.create(title='assignment', open_posts=5)
-
-    def test_admin(self):
-        """
-        Tests that only the following db queries are done:
-        * 7 requests to get the session an the request user with its permissions,
-        * 1 requests to get the list of all agenda items,
-        * 1 request to get all speakers,
-        * 3 requests to get the assignments, motions and topics and
-
-        * 1 request to get an agenda item (why?)
-
-        * 2 requests for the motionsversions.
-
-        TODO: The last two request for the motionsversions are a bug.
-        """
-        self.client.force_login(User.objects.get(pk=1))
-        get_redis_connection("default").flushall()
-        with self.assertNumQueries(15):
-            self.client.get(reverse('item-list'))
-
-    def test_anonymous(self):
-        """
-        Tests that only the following db queries are done:
-        * 3 requests to get the permission for anonymous,
-        * 1 requests to get the list of all agenda items,
-        * 1 request to get all speakers,
-        * 3 requests to get the assignments, motions and topics and
-
-        * 1 request to get an agenda item (why?)
-
-        * 2 requests for the motionsversions.
-
-        TODO: The last two request for the motionsversions are a bug.
-        """
-        get_redis_connection("default").flushall()
-        with self.assertNumQueries(11):
-            self.client.get(reverse('item-list'))
+    assert count_queries(Item.get_elements) == 6
 
 
 class ManageSpeaker(TestCase):
@@ -228,6 +198,7 @@ class ManageSpeaker(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
+        inform_changed_data(admin)
         CollectionElement.from_instance(admin)
 
         response = self.client.post(
@@ -265,7 +236,7 @@ class ManageSpeaker(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
-        CollectionElement.from_instance(admin)
+        inform_changed_data(admin)
         speaker = Speaker.objects.add(self.user, self.item)
 
         response = self.client.delete(
@@ -293,7 +264,7 @@ class ManageSpeaker(TestCase):
         group_delegates = type(group_admin).objects.get(name='Delegates')
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
-        CollectionElement.from_instance(admin)
+        inform_changed_data(admin)
         Speaker.objects.add(self.user, self.item)
 
         response = self.client.patch(

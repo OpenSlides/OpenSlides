@@ -1,0 +1,66 @@
+<form class="config-form-group" [formGroup]="form" *ngIf="configItem.inputType !== 'boolean'">
+    <mat-form-field>
+
+        <!-- Decides which input-type to take (i.e) date, select, textarea, input) -->
+        <ng-container [ngSwitch]="configItem.inputType">
+            <ng-container *ngSwitchCase="'datetimepicker'">
+                <ng-container *ngTemplateOutlet="date"></ng-container>
+            </ng-container>
+            <ng-container *ngSwitchCase="'choice'">
+                <ng-container *ngTemplateOutlet="select"></ng-container>
+            </ng-container>
+            <ng-container *ngSwitchCase="'markupText'">
+                <ng-container *ngTemplateOutlet="textarea"></ng-container>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+                <ng-container *ngTemplateOutlet="input"></ng-container>
+            </ng-container>
+        </ng-container>
+
+        <!-- required for all kinds of input -->
+        <mat-label translate>{{ configItem.label }}</mat-label>
+        <mat-hint *ngIf="configItem.helpText" translate>{{ configItem.helpText }}</mat-hint>
+        <span matSuffix>
+            <mat-icon pull="right" class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
+        </span>
+        <mat-error *ngIf="error">
+            {{ error }}
+        </mat-error>
+
+        <!-- templates for exchangeable inputs. Add more here if necessary -->
+        <ng-template #date ngProjectAs="[matInput]">
+            <input matInput formControlName="value" [matDatepicker]="picker" [errorStateMatcher]="matcher">
+            <mat-datepicker-toggle matPrefix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </ng-template>
+
+        <ng-template #select ngProjectAs="mat-select">
+            <mat-select formControlName="value" [errorStateMatcher]="matcher">
+                <mat-option *ngFor="let choice of configItem.choices" [value]="choice.value">
+                    {{ choice.display_name | translate }}
+                </mat-option>
+            </mat-select>
+        </ng-template>
+
+        <ng-template #textarea ngProjectAs="[matInput]">
+            <textarea matInput formControlName="value" [value]="configItem.value" [errorStateMatcher]="matcher"></textarea>
+        </ng-template>
+
+        <ng-template #input ngProjectAs="[matInput]">
+            <input matInput formControlName="value" [value]="configItem.value" [errorStateMatcher]="matcher"
+            [type]="formType(configItem.inputType)">
+        </ng-template>
+
+    </mat-form-field>
+</form>
+<div class="config-form-group" *ngIf="configItem.inputType === 'boolean'">
+    <mat-checkbox [checked]="configItem.value" (change)="onChange($event.checked)">
+        {{ configItem.label | translate }}
+    </mat-checkbox>
+    <div class="hint" *ngIf="configItem.helpText && !error">
+        {{ configItem.helpText | translate }}
+    </div>
+    <div class="error" *ngIf="error">
+        {{ error }}
+    </div>
+</div>

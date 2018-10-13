@@ -1,92 +1,42 @@
+import pytest
 from django.core import mail
 from django.urls import reverse
-from django_redis import get_redis_connection
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.core.config import config
 from openslides.users.models import Group, PersonalNote, User
 from openslides.users.serializers import UserFullSerializer
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.test import TestCase
 
+from ..helpers import count_queries
 
-class TestUserDBQueries(TestCase):
+
+@pytest.mark.django_db(transaction=False)
+def test_user_db_queries():
     """
-    Tests that receiving elements only need the required db queries.
-
-    Therefore in setup some objects are created and received with different
-    user accounts.
+    Tests that only the following db queries are done:
+    * 2 requests to get the list of all users and
+    * 1 requests to get the list of all groups.
     """
+    for index in range(10):
+        User.objects.create(username='user{}'.format(index))
 
-    def setUp(self):
-        self.client = APIClient()
-        config['general_system_enable_anonymous'] = True
-        config.save_default_values()
-        for index in range(10):
-            User.objects.create(username='user{}'.format(index))
-
-    def test_admin(self):
-        """
-        Tests that only the following db queries are done:
-        * 2 requests to get the session and the request user with its permissions,
-        * 2 requests to get the list of all users and
-        * 1 requests to get the list of all groups.
-        """
-        self.client.force_login(User.objects.get(pk=1))
-        get_redis_connection('default').flushall()
-        with self.assertNumQueries(7):
-            self.client.get(reverse('user-list'))
-
-    def test_anonymous(self):
-        """
-        Tests that only the following db queries are done:
-        * 3 requests to get the permission for anonymous,
-        * 1 requests to get the list of all users and
-        * 2 request to get all groups (needed by the user serializer).
-        """
-        get_redis_connection('default').flushall()
-        with self.assertNumQueries(6):
-            self.client.get(reverse('user-list'))
+    assert count_queries(User.get_elements) == 3
 
 
-class TestGroupDBQueries(TestCase):
+@pytest.mark.django_db(transaction=False)
+def test_group_db_queries():
     """
-    Tests that receiving elements only need the required db queries.
-
-    Therefore in setup some objects are created and received with different
-    user accounts.
+    Tests that only the following db queries are done:
+    * 1 request to get the list of all groups.
+    * 1 request to get the permissions
     """
+    for index in range(10):
+        Group.objects.create(name='group{}'.format(index))
 
-    def setUp(self):
-        self.client = APIClient()
-        config['general_system_enable_anonymous'] = True
-        config.save_default_values()
-        for index in range(10):
-            Group.objects.create(name='group{}'.format(index))
-
-    def test_admin(self):
-        """
-        Tests that only the following db queries are done:
-        * 6 requests to get the session an the request user with its permissions and
-        * 1 request to get the list of all groups.
-
-        The data of the groups where loaded when the admin was authenticated. So
-        only the list of all groups has be fetched from the db.
-        """
-        self.client.force_login(User.objects.get(pk=1))
-        get_redis_connection('default').flushall()
-        with self.assertNumQueries(7):
-            self.client.get(reverse('group-list'))
-
-    def test_anonymous(self):
-        """
-        Tests that only the following db queries are done:
-        * 1 requests to find out if anonymous is enabled
-        * 2 request to get the list of all groups and
-        """
-        get_redis_connection('default').flushall()
-        with self.assertNumQueries(3):
-            self.client.get(reverse('group-list'))
+    assert count_queries(Group.get_elements) == 2
 
 
 class UserGetTest(TestCase):
@@ -98,7 +48,7 @@ class UserGetTest(TestCase):
         It is invalid, that a user is in the group with the pk 1. But if the
         database is invalid, the user should nevertheless be received.
         """
-        admin = User.objects.get(pk=1)
+        admin = User.objects.get(username='admin')
         group1 = Group.objects.get(pk=1)
         admin.groups.add(group1)
         self.client.login(username='admin', password='admin')
@@ -113,6 +63,7 @@ class UserGetTest(TestCase):
         app_label, codename = permission_string.split('.')
         permission = group.permissions.get(content_type__app_label=app_label, codename=codename)
         group.permissions.remove(permission)
+        inform_changed_data(group)
         config['general_system_enable_anonymous'] = True
         guest_client = APIClient()
 
@@ -178,7 +129,7 @@ class UserUpdate(TestCase):
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
         # This is the builtin user 'Administrator' with username 'admin'. The pk is valid.
-        user_pk = 1
+        user_pk = User.objects.get(username='admin').pk
 
         response = admin_client.patch(
             reverse('user-detail', args=[user_pk]),
@@ -198,14 +149,14 @@ class UserUpdate(TestCase):
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
         # This is the builtin user 'Administrator'. The pk is valid.
-        user_pk = 1
+        user_pk = User.objects.get(username='admin').pk
 
         response = admin_client.put(
             reverse('user-detail', args=[user_pk]),
             {'last_name': 'New name Ohy4eeyei5'})
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(User.objects.get(pk=1).username, 'New name Ohy4eeyei5')
+        self.assertEqual(User.objects.get(pk=user_pk).username, 'New name Ohy4eeyei5')
 
     def test_update_deactivate_yourselfself(self):
         """
@@ -214,7 +165,7 @@ class UserUpdate(TestCase):
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
         # This is the builtin user 'Administrator'. The pk is valid.
-        user_pk = 1
+        user_pk = User.objects.get(username='admin').pk
 
         response = admin_client.patch(
             reverse('user-detail', args=[user_pk]),
@@ -531,8 +482,6 @@ class GroupUpdate(TestCase):
             'motions.can_create',
             'motions.can_manage',
             'motions.can_see',
-            'motions.can_manage_comments',
-            'motions.can_see_comments',
             'motions.can_support',
             'users.can_manage',
             'users.can_see_extra_data',
@@ -581,7 +530,7 @@ class PersonalNoteTest(TestCase):
     Tests for PersonalNote model.
     """
     def test_anonymous_without_personal_notes(self):
-        admin = User.objects.get(pk=1)
+        admin = User.objects.get(username='admin')
         personal_note = PersonalNote.objects.create(user=admin, notes='["admin_personal_note_OoGh8choro0oosh0roob"]')
         config['general_system_enable_anonymous'] = True
         guest_client = APIClient()

@@ -1,0 +1,45 @@
+/** css hacks https://codepen.io/edge0703/pen/iHJuA */
+.innerTable {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}
+
+.os-listview-table {
+    /** identifier */
+    .mat-column-identifier {
+        padding-left: 10px;
+        padding-right: 30px;
+        flex: 0 0 40px;
+        line-height: 60px; // set the text in the vertical middle, since vertical-align will not work
+        display: initial; // reset display
+        text-align: center; // center text
+    }
+
+    /** Title */
+    .mat-column-title {
+        width: 100%;
+        flex: 1 0 200px;
+        padding-left: 10px;
+
+        .motion-list-title {
+            font-weight: bold;
+        }
+
+        .motion-list-from {
+            margin-top: 5px;
+            color: rgba(0, 0, 0, 0.5);
+            font-size: 90%;
+        }
+    }
+
+    /** State */
+    .mat-column-state {
+        flex: 0 0 30px;
+        text-align: center;
+
+        mat-icon {
+            font-size: 150%;
+        }
+    }
+}

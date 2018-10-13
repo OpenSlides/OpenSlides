@@ -1,506 +1,411 @@
+import asyncio
 import json
 from collections import defaultdict
-from typing import (  # noqa
+from datetime import datetime
+from time import sleep
+from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
     Dict,
-    Generator,
-    Iterable,
     List,
     Optional,
-    Set,
+    Tuple,
     Type,
-    Union,
 )
 
-from channels import Group
-from channels.sessions import session_for_reply_channel
+from asgiref.sync import async_to_sync, sync_to_async
 from django.conf import settings
-from django.core.cache import cache, caches
+
+from .cache_providers import (
+    BaseCacheProvider,
+    Cachable,
+    MemmoryCacheProvider,
+    RedisCacheProvider,
+    get_all_cachables,
+    no_redis_dependency,
+)
+from .utils import get_element_id, get_user_id, split_element_id
+
 
 if TYPE_CHECKING:
-    # Dummy import Collection for mypy
-    from .collection import Collection  # noqa
-
-UserCacheDataType = Dict[int, Set[str]]
+    # Dummy import Collection for mypy, can be fixed with python 3.7
+    from .collection import CollectionElement  # noqa
 
 
-class BaseWebsocketUserCache:
+class ElementCache:
     """
-    Caches the reply channel names of all open websocket connections. The id of
-    the user that that opened the connection is used as reference.
+    Cache for the CollectionElements.
 
-    This is the Base cache that has to be overriden.
-    """
-    cache_key = 'current_websocket_users'
+    Saves the full_data and if enabled the restricted data.
 
-    def add(self, user_id: int, channel_name: str) -> None:
-        """
-        Adds a channel name to an user id.
-        """
-        raise NotImplementedError()
+    There is one redis Hash (simular to python dict) for the full_data and one
+    Hash for every user.
 
-    def remove(self, user_id: int, channel_name: str) -> None:
-        """
-        Removes one channel name from the cache.
-        """
-        raise NotImplementedError()
+    The key of the Hashes is COLLECTIONSTRING:ID where COLLECTIONSTRING is the
+    collection_string of a collection and id the id of an element.
 
-    def get_all(self) -> UserCacheDataType:
-        """
-        Returns all data using a dict where the key is a user id and the value
-        is a set of channel_names.
-        """
-        raise NotImplementedError()
+    All elements have to be in the cache. If one element is missing, the cache
+    is invalid, but this can not be detected. When a plugin with a new
+    collection is added to OpenSlides, then the cache has to be rebuild manualy.
 
-    def save_data(self, data: UserCacheDataType) -> None:
-        """
-        Saves the full data set (like created with build_data) to the cache.
-        """
-        raise NotImplementedError()
+    There is an sorted set in redis with the change id as score. The values are
+    COLLETIONSTRING:ID for the elements that have been changed with that change
+    id. With this key it is possible, to get all elements as full_data or as
+    restricted_data that are newer then a specific change id.
 
-    def build_data(self) -> UserCacheDataType:
-        """
-        Creates all the data, saves it to the cache and returns it.
-        """
-        websocket_user_ids = defaultdict(set)  # type: UserCacheDataType
-        for channel_name in Group('site').channel_layer.group_channels('site'):
-            session = session_for_reply_channel(channel_name)
-            user_id = session.get('user_id', None)
-            websocket_user_ids[user_id or 0].add(channel_name)
-        self.save_data(websocket_user_ids)
-        return websocket_user_ids
-
-    def get_cache_key(self) -> str:
-        """
-        Returns the cache key.
-        """
-        return self.cache_key
-
-
-class RedisWebsocketUserCache(BaseWebsocketUserCache):
-    """
-    Implementation of the WebsocketUserCache that uses redis.
-
-    This uses one cache key to store all connected user ids in a set and
-    for each user another set to save the channel names.
+    All method of this class are async. You either have to call them with
+    await in an async environment or use asgiref.sync.async_to_sync().
     """
 
-    def add(self, user_id: int, channel_name: str) -> None:
+    def __init__(
+            self,
+            redis: str,
+            use_restricted_data_cache: bool = False,
+            cache_provider_class: Type[BaseCacheProvider] = RedisCacheProvider,
+            cachable_provider: Callable[[], List[Cachable]] = get_all_cachables,
+            start_time: int = None) -> None:
         """
-        Adds a channel name to an user id.
+        Initializes the cache.
+
+        When restricted_data_cache is false, no restricted data is saved.
         """
-        redis = get_redis_connection()
-        pipe = redis.pipeline()
-        pipe.sadd(self.get_cache_key(), user_id)
-        pipe.sadd(self.get_user_cache_key(user_id), channel_name)
-        pipe.execute()
+        self.use_restricted_data_cache = use_restricted_data_cache
+        self.cache_provider = cache_provider_class(redis)
+        self.cachable_provider = cachable_provider
+        self._cachables: Optional[Dict[str, Cachable]] = None
 
-    def remove(self, user_id: int, channel_name: str) -> None:
+        # Start time is used as first change_id if there is non in redis
+        if start_time is None:
+            start_time = int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())
+        self.start_time = start_time
+
+        # Contains Futures to controll, that only one client updates the restricted_data.
+        self.restricted_data_cache_updater: Dict[int, asyncio.Future] = {}
+
+        # Tells if self.ensure_cache was called.
+        self.ensured = False
+
+    @property
+    def cachables(self) -> Dict[str, Cachable]:
         """
-        Removes one channel name from the cache.
+        Returns all Cachables as a dict where the key is the collection_string of the cachable.
         """
-        redis = get_redis_connection()
-        redis.srem(self.get_user_cache_key(user_id), channel_name)
+        # This method is neccessary to lazy load the cachables
+        if self._cachables is None:
+            self._cachables = {cachable.get_collection_string(): cachable for cachable in self.cachable_provider()}
+        return self._cachables
 
-    def get_all(self) -> UserCacheDataType:
+    def ensure_cache(self, reset: bool = False) -> None:
         """
-        Returns all data using a dict where the key is a user id and the value
-        is a set of channel_names.
+        Makes sure that the cache exist.
+
+        Builds the cache if not. If reset is True, it will be reset in any case.
+
+        This method is sync, so it can be run when OpenSlides starts.
         """
-        redis = get_redis_connection()
-        user_ids = redis.smembers(self.get_cache_key())  # type: Optional[List[str]]
-        if user_ids is None:
-            websocket_user_ids = self.build_data()
-        else:
-            websocket_user_ids = dict()
-            for redis_user_id in user_ids:
-                # Redis returns the id as string. So we have to convert it
-                user_id = int(redis_user_id)
-                channel_names = redis.smembers(self.get_user_cache_key(user_id))  # type: Optional[List[str]]
-                if channel_names is not None:
-                    # If channel name is empty, then we can assume, that the user
-                    # has no active connection.
-                    websocket_user_ids[user_id] = set(channel_names)
-        return websocket_user_ids
+        cache_exists = async_to_sync(self.cache_provider.data_exists)()
 
-    def save_data(self, data: UserCacheDataType) -> None:
+        if reset or not cache_exists:
+            lock_name = 'ensure_cache'
+            # Set a lock so only one process builds the cache
+            if async_to_sync(self.cache_provider.set_lock)(lock_name):
+                try:
+                    mapping = {}
+                    for collection_string, cachable in self.cachables.items():
+                        for element in cachable.get_elements():
+                            mapping.update(
+                                {get_element_id(collection_string, element['id']):
+                                 json.dumps(element)})
+                    async_to_sync(self.cache_provider.reset_full_cache)(mapping)
+                finally:
+                    async_to_sync(self.cache_provider.del_lock)(lock_name)
+            else:
+                while async_to_sync(self.cache_provider.get_lock)(lock_name):
+                    sleep(0.01)
+
+        self.ensured = True
+
+    async def change_elements(
+            self, elements: Dict[str, Optional[Dict[str, Any]]]) -> int:
         """
-        Saves the full data set (like created with the method build_data()) to
-        the cache.
+        Changes elements in the cache.
+
+        elements is a list of the changed elements as dict. When the value is None,
+        it is interpreded as deleted. The key has to be an element_id.
+
+        Returns the new generated change_id.
         """
-        redis = get_redis_connection()
-        pipe = redis.pipeline()
+        deleted_elements = []
+        changed_elements = []
+        for element_id, data in elements.items():
+            if data:
+                # The arguments for redis.hset is pairs of key value
+                changed_elements.append(element_id)
+                changed_elements.append(json.dumps(data))
+            else:
+                deleted_elements.append(element_id)
 
-        # Save all user ids
-        pipe.delete(self.get_cache_key())
-        pipe.sadd(self.get_cache_key(), *data.keys())
+        if changed_elements:
+            await self.cache_provider.add_elements(changed_elements)
+        if deleted_elements:
+            await self.cache_provider.del_elements(deleted_elements)
 
-        for user_id, channel_names in data.items():
-            pipe.delete(self.get_user_cache_key(user_id))
-            pipe.sadd(self.get_user_cache_key(user_id), *channel_names)
-        pipe.execute()
+        # TODO: The provider has to define the new change_id with lua. In other
+        #       case it is possible, that two changes get the same id (which
+        #       would not be a big problem).
+        change_id = await self.get_next_change_id()
 
-    def get_cache_key(self) -> str:
+        await self.cache_provider.add_changed_elements(change_id, elements.keys())
+        return change_id
+
+    async def get_all_full_data(self) -> Dict[str, List[Dict[str, Any]]]:
         """
-        Returns the cache key.
+        Returns all full_data. If it does not exist, it is created.
+
+        The returned value is a dict where the key is the collection_string and
+        the value is a list of data.
         """
-        return cache.make_key(self.cache_key)
+        out: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+        full_data = await self.cache_provider.get_all_data()
+        for element_id, data in full_data.items():
+            collection_string, __ = split_element_id(element_id)
+            out[collection_string].append(json.loads(data.decode()))
+        return dict(out)
 
-    def get_user_cache_key(self, user_id: int) -> str:
+    async def get_full_data(
+            self, change_id: int = 0) -> Tuple[Dict[str, List[Dict[str, Any]]], List[str]]:
         """
-        Returns a cache key to save the channel names for a specific user.
+        Returns all full_data since change_id. If it does not exist, it is created.
+
+        Returns two values inside a tuple. The first value is a dict where the
+        key is the collection_string and the value is a list of data. The second
+        is a list of element_ids with deleted elements.
+
+        Only returns elements with the change_id or newer. When change_id is 0,
+        all elements are returned.
+
+        Raises a RuntimeError when the lowest change_id in redis is higher then
+        the requested change_id. In this case the method has to be rerun with
+        change_id=0. This is importend because there could be deleted elements
+        that the cache does not know about.
         """
-        return cache.make_key('{}:{}'.format(self.cache_key, user_id))
+        if change_id == 0:
+            return (await self.get_all_full_data(), [])
 
+        lowest_change_id = await self.get_lowest_change_id()
+        if change_id < lowest_change_id:
+            # When change_id is lower then the lowest change_id in redis, we can
+            # not inform the user about deleted elements.
+            raise RuntimeError(
+                "change_id {} is lower then the lowest change_id in redis {}. "
+                "Catch this exception and rerun the method with change_id=0."
+                .format(change_id, lowest_change_id))
 
-class DjangoCacheWebsocketUserCache(BaseWebsocketUserCache):
-    """
-    Implementation of the WebsocketUserCache that uses the django cache.
+        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(change_id)
+        return (
+            {collection_string: [json.loads(value.decode()) for value in value_list]
+             for collection_string, value_list in raw_changed_elements.items()},
+            deleted_elements)
 
-    If you use this with the inmemory cache, then you should only use one
-    worker.
-
-    This uses only one cache key to save a dict where the key is the user id and
-    the value is a set of channel names.
-    """
-
-    def add(self, user_id: int, channel_name: str) -> None:
+    async def get_element_full_data(self, collection_string: str, id: int) -> Optional[Dict[str, Any]]:
         """
-        Adds a channel name for a user using the django cache.
+        Returns one element as full data.
+
+        If the cache is empty, it is created.
+
+        Returns None if the element does not exist.
         """
-        websocket_user_ids = cache.get(self.get_cache_key())
-        if websocket_user_ids is None:
-            websocket_user_ids = dict()
+        element = await self.cache_provider.get_element(get_element_id(collection_string, id))
 
-        if user_id in websocket_user_ids:
-            websocket_user_ids[user_id].add(channel_name)
-        else:
-            websocket_user_ids[user_id] = set([channel_name])
-        cache.set(self.get_cache_key(), websocket_user_ids)
-
-    def remove(self, user_id: int, channel_name: str) -> None:
-        """
-        Removes one channel name from the django cache.
-        """
-        websocket_user_ids = cache.get(self.get_cache_key())
-        if websocket_user_ids is not None and user_id in websocket_user_ids:
-            websocket_user_ids[user_id].discard(channel_name)
-            cache.set(self.get_cache_key(), websocket_user_ids)
-
-    def get_all(self) -> UserCacheDataType:
-        """
-        Returns the data using the django cache.
-        """
-        websocket_user_ids = cache.get(self.get_cache_key())
-        if websocket_user_ids is None:
-            return self.build_data()
-        return websocket_user_ids
-
-    def save_data(self, data: UserCacheDataType) -> None:
-        """
-        Saves the data using the django cache.
-        """
-        cache.set(self.get_cache_key(), data)
-
-
-class FullDataCache:
-    """
-    Caches all data as full data.
-
-    Helps to get all data from one collection.
-    """
-
-    base_cache_key = 'full_data_cache'
-
-    def build_for_collection(self, collection_string: str) -> None:
-        """
-        Build the cache for collection from a django model.
-
-        Rebuilds the cache for that collection, if it already exists.
-        """
-        redis = get_redis_connection()
-        pipe = redis.pipeline()
-
-        # Clear the cache for collection
-        pipe.delete(self.get_cache_key(collection_string))
-
-        # Save all elements
-        from .collection import get_model_from_collection_string
-        model = get_model_from_collection_string(collection_string)
-        try:
-            query = model.objects.get_full_queryset()
-        except AttributeError:
-            # If the model des not have to method get_full_queryset(), then use
-            # the default queryset from django.
-            query = model.objects
-
-        # Build a dict from the instance id to the full_data
-        mapping = {instance.pk: json.dumps(model.get_access_permissions().get_full_data(instance))
-                   for instance in query.all()}
-
-        if mapping:
-            # Save the dict into a redis map, if there is at least one value
-            pipe.hmset(
-                self.get_cache_key(collection_string),
-                mapping)
-
-        pipe.execute()
-
-    def add_element(self, collection_string: str, id: int, data: Dict[str, Any]) -> None:
-        """
-        Adds one element to the cache. If the cache does not exists for the collection,
-        it is created.
-        """
-        redis = get_redis_connection()
-
-        # If the cache does not exist for the collection, then create it first.
-        if not self.exists_for_collection(collection_string):
-            self.build_for_collection(collection_string)
-
-        redis.hset(
-            self.get_cache_key(collection_string),
-            id,
-            json.dumps(data))
-
-    def del_element(self, collection_string: str, id: int) -> None:
-        """
-        Removes one element from the cache.
-
-        Does nothing if the cache does not exist.
-        """
-        redis = get_redis_connection()
-        redis.hdel(
-            self.get_cache_key(collection_string),
-            id)
-
-    def exists_for_collection(self, collection_string: str) -> bool:
-        """
-        Returns True if the cache for the collection exists, else False.
-        """
-        redis = get_redis_connection()
-        return redis.exists(self.get_cache_key(collection_string))
-
-    def get_data(self, collection_string: str) -> List[Dict[str, Any]]:
-        """
-        Returns all data for the collection.
-        """
-        redis = get_redis_connection()
-        return [json.loads(element.decode()) for element in redis.hvals(self.get_cache_key(collection_string))]
-
-    def get_element(self, collection_string: str, id: int) -> Dict[str, Any]:
-        """
-        Returns one element from the collection.
-
-        Raises model.DoesNotExist if the element is not in the cache.
-        """
-        redis = get_redis_connection()
-        element = redis.hget(self.get_cache_key(collection_string), id)
         if element is None:
-            from .collection import get_model_from_collection_string
-            model = get_model_from_collection_string(collection_string)
-            raise model.DoesNotExist(collection_string, id)
+            return None
         return json.loads(element.decode())
 
-    def get_cache_key(self, collection_string: str) -> str:
+    async def exists_restricted_data(self, user: Optional['CollectionElement']) -> bool:
         """
-        Returns the cache key for a collection.
+        Returns True, if the restricted_data exists for the user.
         """
-        return cache.make_key('{}:{}'.format(self.base_cache_key, collection_string))
+        if not self.use_restricted_data_cache:
+            return False
+
+        return await self.cache_provider.data_exists(get_user_id(user))
+
+    async def del_user(self, user: Optional['CollectionElement']) -> None:
+        """
+        Removes one user from the resticted_data_cache.
+        """
+        await self.cache_provider.del_restricted_data(get_user_id(user))
+
+    async def update_restricted_data(
+            self, user: Optional['CollectionElement']) -> None:
+        """
+        Updates the restricted data for an user from the full_data_cache.
+        """
+        # TODO: When elements are changed at the same time then this method run
+        #       this could make the cache invalid.
+        #       This could be fixed when get_full_data would be used with a
+        #       max change_id.
+        if not self.use_restricted_data_cache:
+            # If the restricted_data_cache is not used, there is nothing to do
+            return
+
+        # Try to write a special key.
+        # If this succeeds, there is noone else currently updating the cache.
+        # TODO: Make a timeout. Else this could block forever
+        lock_name = "restricted_data_{}".format(get_user_id(user))
+        if await self.cache_provider.set_lock(lock_name):
+            future: asyncio.Future = asyncio.Future()
+            self.restricted_data_cache_updater[get_user_id(user)] = future
+            # Get change_id for this user
+            value = await self.cache_provider.get_change_id_user(get_user_id(user))
+            # If the change id is not in the cache yet, use -1 to get all data since 0
+            user_change_id = int(value) if value else -1
+            change_id = await self.get_current_change_id()
+            if change_id > user_change_id:
+                try:
+                    full_data_elements, deleted_elements = await self.get_full_data(user_change_id + 1)
+                except RuntimeError:
+                    # The user_change_id is lower then the lowest change_id in the cache.
+                    # The whole restricted_data for that user has to be recreated.
+                    full_data_elements = await self.get_all_full_data()
+                    await self.cache_provider.del_restricted_data(get_user_id(user))
+                else:
+                    # Remove deleted elements
+                    if deleted_elements:
+                        await self.cache_provider.del_elements(deleted_elements, get_user_id(user))
+
+                mapping = {}
+                for collection_string, full_data in full_data_elements.items():
+                    restricter = self.cachables[collection_string].restrict_elements
+                    elements = await sync_to_async(restricter)(user, full_data)
+                    for element in elements:
+                        mapping.update(
+                            {get_element_id(collection_string, element['id']):
+                             json.dumps(element)})
+                mapping['_config:change_id'] = str(change_id)
+                await self.cache_provider.update_restricted_data(get_user_id(user), mapping)
+            # Unset the lock
+            await self.cache_provider.del_lock(lock_name)
+            future.set_result(1)
+        else:
+            # Wait until the update if finshed
+            if get_user_id(user) in self.restricted_data_cache_updater:
+                # The active worker is on the same asgi server, we can use the future
+                await self.restricted_data_cache_updater[get_user_id(user)]
+            else:
+                while await self.cache_provider.get_lock(lock_name):
+                    await asyncio.sleep(0.01)
+
+    async def get_all_restricted_data(self, user: Optional['CollectionElement']) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Like get_all_full_data but with restricted_data for an user.
+        """
+        if not self.use_restricted_data_cache:
+            all_restricted_data = {}
+            for collection_string, full_data in (await self.get_all_full_data()).items():
+                restricter = self.cachables[collection_string].restrict_elements
+                elements = await sync_to_async(restricter)(user, full_data)
+                all_restricted_data[collection_string] = elements
+            return all_restricted_data
+
+        await self.update_restricted_data(user)
+
+        out: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+        restricted_data = await self.cache_provider.get_all_data(get_user_id(user))
+        for element_id, data in restricted_data.items():
+            if element_id.decode().startswith('_config'):
+                continue
+            collection_string, __ = split_element_id(element_id)
+            out[collection_string].append(json.loads(data.decode()))
+        return dict(out)
+
+    async def get_restricted_data(
+            self,
+            user: Optional['CollectionElement'],
+            change_id: int = 0) -> Tuple[Dict[str, List[Dict[str, Any]]], List[str]]:
+        """
+        Like get_full_data but with restricted_data for an user.
+        """
+        if change_id == 0:
+            # Return all data
+            return (await self.get_all_restricted_data(user), [])
+
+        if not self.use_restricted_data_cache:
+            changed_elements, deleted_elements = await self.get_full_data(change_id)
+            restricted_data = {}
+            for collection_string, full_data in changed_elements.items():
+                restricter = self.cachables[collection_string].restrict_elements
+                elements = await sync_to_async(restricter)(user, full_data)
+                restricted_data[collection_string] = elements
+            return restricted_data, deleted_elements
+
+        lowest_change_id = await self.get_lowest_change_id()
+        if change_id < lowest_change_id:
+            # When change_id is lower then the lowest change_id in redis, we can
+            # not inform the user about deleted elements.
+            raise RuntimeError(
+                "change_id {} is lower then the lowest change_id in redis {}. "
+                "Catch this exception and rerun the method with change_id=0."
+                .format(change_id, lowest_change_id))
+
+        # If another coroutine or another daphne server also updates the restricted
+        # data, this waits until it is done.
+        await self.update_restricted_data(user)
+
+        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(change_id, get_user_id(user))
+        return (
+            {collection_string: [json.loads(value.decode()) for value in value_list]
+             for collection_string, value_list in raw_changed_elements.items()},
+            deleted_elements)
+
+    async def get_current_change_id(self) -> int:
+        """
+        Returns the current change id.
+
+        Returns start_time if there is no change id yet.
+        """
+        value = await self.cache_provider.get_current_change_id()
+        if not value:
+            return self.start_time
+        # Return the score (second element) of the first (and only) element
+        return value[0][1]
+
+    async def get_next_change_id(self) -> int:
+        """
+        Returns the next change_id.
+
+        Returns the start time in seconds + 1, if there is no change_id in yet.
+        """
+        current_id = await self.get_current_change_id()
+        return current_id + 1
+
+    async def get_lowest_change_id(self) -> int:
+        """
+        Returns the lowest change id.
+
+        Raises a RuntimeError if there is no change_id.
+        """
+        value = await self.cache_provider.get_lowest_change_id()
+        if not value:
+            raise RuntimeError('There is no known change_id.')
+        # Return the score (second element) of the first (and only) element
+        return value
 
 
-class DummyFullDataCache:
+def load_element_cache(redis_addr: str = '', restricted_data: bool = True) -> ElementCache:
     """
-    Dummy FullDataCache that does nothing.
+    Generates an element cache instance.
     """
-    def build_for_collection(self, collection_string: str) -> None:
-        pass
+    if not redis_addr:
+        return ElementCache(redis='', cache_provider_class=MemmoryCacheProvider)
 
-    def add_element(self, collection_string: str, id: int, data: Dict[str, Any]) -> None:
-        pass
-
-    def del_element(self, collection_string: str, id: int) -> None:
-        pass
-
-    def exists_for_collection(self, collection_string: str) -> bool:
-        return False
-
-    def get_data(self, collection_string: str) -> List[Dict[str, Any]]:
-        from .collection import get_model_from_collection_string
-        model = get_model_from_collection_string(collection_string)
-        try:
-            query = model.objects.get_full_queryset()
-        except AttributeError:
-            # If the model des not have to method get_full_queryset(), then use
-            # the default queryset from django.
-            query = model.objects
-
-        return [model.get_access_permissions().get_full_data(instance)
-                for instance in query.all()]
-
-    def get_element(self, collection_string: str, id: int) -> Dict[str, Any]:
-        from .collection import get_model_from_collection_string
-        model = get_model_from_collection_string(collection_string)
-        try:
-            query = model.objects.get_full_queryset()
-        except AttributeError:
-            # If the model des not have to method get_full_queryset(), then use
-            # the default queryset from django.
-            query = model.objects
-
-        return model.get_access_permissions().get_full_data(query.get(pk=id))
+    if no_redis_dependency:
+        raise ImportError("OpenSlides is configured to use redis as cache backend, but aioredis is not installed.")
+    return ElementCache(redis=redis_addr, use_restricted_data_cache=restricted_data)
 
 
-class RestrictedDataCache:
-    """
-    Caches all data for a specific users.
-
-    Helps to get all data from all collections for a specific user.
-
-    The cached values are expected to be formatted for outout via websocket.
-    """
-
-    base_cache_key = 'restricted_user_cache'
-
-    def update_element(self, user_id: int, collection_string: str, id: int, data: object) -> None:
-        """
-        Adds on element to the cache only if the cache exists for the user.
-
-        Note: This method is not atomic. So in very rare cases it is possible
-        that the restricted date cache can become corrupt. The best solution would be to
-        use a lua script instead. See also #3427.
-        """
-        if self.exists_for_user(user_id):
-            self.add_element(user_id, collection_string, id, data)
-
-    def add_element(self, user_id: int, collection_string: str, id: int, data: object) -> None:
-        """
-        Adds one element to the cache. If the cache does not exists for the user,
-        it is created.
-        """
-        redis = get_redis_connection()
-        redis.hset(
-            self.get_cache_key(user_id),
-            "{}/{}".format(collection_string, id),
-            json.dumps(data))
-
-    def del_element(self, user_id: int, collection_string: str, id: int) -> None:
-        """
-        Removes one element from the cache.
-
-        Does nothing if the cache does not exist.
-        """
-        redis = get_redis_connection()
-        redis.hdel(
-            self.get_cache_key(user_id),
-            "{}/{}".format(collection_string, id))
-
-    def del_user(self, user_id: int) -> None:
-        """
-        Removes all elements for one user from the cache.
-        """
-        redis = get_redis_connection()
-        redis.delete(self.get_cache_key(user_id))
-
-    def del_all(self) -> None:
-        """
-        Deletes all elements from the cache.
-
-        This method uses the redis command SCAN. See
-        https://redis.io/commands/scan#scan-guarantees for its limitations. If
-        an element is added to the cache while del_all() is in process, it is
-        possible, that it is not deleted.
-        """
-        redis = get_redis_connection()
-
-        # Get all keys that start with self.base_cache_key and delete them
-        match = cache.make_key('{}:*'.format(self.base_cache_key))
-        cursor = 0
-        while True:
-            cursor, keys = redis.scan(cursor, match)
-            for key in keys:
-                redis.delete(key)
-            if cursor == 0:
-                return
-
-    def exists_for_user(self, user_id: int) -> bool:
-        """
-        Returns True if the cache for the user exists, else False.
-        """
-        redis = get_redis_connection()
-        return redis.exists(self.get_cache_key(user_id))
-
-    def get_data(self, user_id: int) -> List[object]:
-        """
-        Returns all data for the user.
-
-        The returned value is a list of the elements.
-        """
-        redis = get_redis_connection()
-        return [json.loads(element.decode()) for element in redis.hvals(self.get_cache_key(user_id))]
-
-    def get_cache_key(self, user_id: int) -> str:
-        """
-        Returns the cache key for a user.
-        """
-        return cache.make_key('{}:{}'.format(self.base_cache_key, user_id))
-
-
-class DummyRestrictedDataCache:
-    """
-    Dummy RestrictedDataCache that does nothing.
-    """
-
-    def update_element(self, user_id: int, collection_string: str, id: int, data: object) -> None:
-        pass
-
-    def add_element(self, user_id: int, collection_string: str, id: int, data: object) -> None:
-        pass
-
-    def del_element(self, user_id: int, collection_string: str, id: int) -> None:
-        pass
-
-    def del_user(self, user_id: int) -> None:
-        pass
-
-    def del_all(self) -> None:
-        pass
-
-    def exists_for_user(self, user_id: int) -> bool:
-        return False
-
-    def get_data(self, user_id: int) -> List[object]:
-        pass
-
-
-def use_redis_cache() -> bool:
-    """
-    Returns True if Redis is used als caching backend.
-    """
-    try:
-        from django_redis.cache import RedisCache
-    except ImportError:
-        return False
-    return isinstance(caches['default'], RedisCache)
-
-
-def get_redis_connection() -> Any:
-    """
-    Returns an object that can be used to talk directly to redis.
-    """
-    from django_redis import get_redis_connection
-    return get_redis_connection("default")
-
-
-if use_redis_cache():
-    websocket_user_cache = RedisWebsocketUserCache()  # type: BaseWebsocketUserCache
-    if settings.DISABLE_USER_CACHE:
-        restricted_data_cache = DummyRestrictedDataCache()  # type: Union[RestrictedDataCache, DummyRestrictedDataCache]
-    else:
-        restricted_data_cache = RestrictedDataCache()
-    full_data_cache = FullDataCache()  # type: Union[FullDataCache, DummyFullDataCache]
-else:
-    websocket_user_cache = DjangoCacheWebsocketUserCache()
-    restricted_data_cache = DummyRestrictedDataCache()
-    full_data_cache = DummyFullDataCache()
+# Set the element_cache
+redis_address = getattr(settings, 'REDIS_ADDRESS', '')
+use_restricted_data = getattr(settings, 'RESTRICTED_DATA_CACHE', True)
+element_cache = load_element_cache(redis_addr=redis_address, restricted_data=use_restricted_data)
