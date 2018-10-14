@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from openslides.core.models import Projector
 from openslides.utils import collection
@@ -42,45 +42,6 @@ class TestCollectionElement(TestCase):
             created_collection_element)
         self.assertEqual(created_collection_element.full_data, {'data': 'value'})
         self.assertEqual(created_collection_element.information, {'some': 'information'})
-
-    def test_as_autoupdate_for_user(self):
-        with patch.object(collection.CollectionElement, 'get_full_data'):
-            collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
-        fake_user = MagicMock()
-        collection_element.get_access_permissions = MagicMock()
-        collection_element.get_access_permissions().get_restricted_data.return_value = ['restricted_data']
-        collection_element.get_full_data = MagicMock()
-
-        self.assertEqual(
-            collection_element.as_autoupdate_for_user(fake_user),
-            {'collection': 'testmodule/model',
-             'id': 42,
-             'action': 'changed',
-             'data': 'restricted_data'})
-
-    def test_as_autoupdate_for_user_no_permission(self):
-        with patch.object(collection.CollectionElement, 'get_full_data'):
-            collection_element = collection.CollectionElement.from_values('testmodule/model', 42)
-        fake_user = MagicMock()
-        collection_element.get_access_permissions = MagicMock()
-        collection_element.get_access_permissions().get_restricted_data.return_value = None
-        collection_element.get_full_data = MagicMock()
-
-        self.assertEqual(
-            collection_element.as_autoupdate_for_user(fake_user),
-            {'collection': 'testmodule/model',
-             'id': 42,
-             'action': 'deleted'})
-
-    def test_as_autoupdate_for_user_deleted(self):
-        collection_element = collection.CollectionElement.from_values('testmodule/model', 42, deleted=True)
-        fake_user = MagicMock()
-
-        self.assertEqual(
-            collection_element.as_autoupdate_for_user(fake_user),
-            {'collection': 'testmodule/model',
-             'id': 42,
-             'action': 'deleted'})
 
     @patch.object(collection.CollectionElement, 'get_full_data')
     def test_equal(self, mock_get_full_data):

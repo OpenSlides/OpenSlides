@@ -26,6 +26,16 @@ if TYPE_CHECKING:
 AutoupdateFormat = TypedDict(
     'AutoupdateFormat',
     {
+        'changed': Dict[str, List[Dict[str, Any]]],
+        'deleted': Dict[str, List[int]],
+        'change_id': int,
+    },
+)
+
+
+AutoupdateFormatOld = TypedDict(
+    'AutoupdateFormatOld',
+    {
         'collection': str,
         'id': int,
         'action': 'str',
@@ -116,24 +126,7 @@ class CollectionElement:
         return (self.collection_string == collection_element.collection_string and
                 self.id == collection_element.id)
 
-    def as_autoupdate_for_user(self, user: Optional['CollectionElement']) -> AutoupdateFormat:
-        """
-        Returns a dict that can be sent through the autoupdate system for a site
-        user.
-        """
-        if not self.is_deleted():
-            restricted_data = self.get_access_permissions().get_restricted_data([self.get_full_data()], user)
-            data = restricted_data[0] if restricted_data else None
-        else:
-            data = None
-
-        return format_for_autoupdate(
-            collection_string=self.collection_string,
-            id=self.id,
-            action='deleted' if self.is_deleted() else 'changed',
-            data=data)
-
-    def as_autoupdate_for_projector(self) -> AutoupdateFormat:
+    def as_autoupdate_for_projector(self) -> AutoupdateFormatOld:
         """
         Returns a dict that can be sent through the autoupdate system for the
         projector.
@@ -144,7 +137,7 @@ class CollectionElement:
         else:
             data = None
 
-        return format_for_autoupdate(
+        return format_for_autoupdate_old(
             collection_string=self.collection_string,
             id=self.id,
             action='deleted' if self.is_deleted() else 'changed',
@@ -337,10 +330,12 @@ def get_model_from_collection_string(collection_string: str) -> Type[Model]:
     return model
 
 
-def format_for_autoupdate(
-        collection_string: str, id: int, action: str, data: Dict[str, Any] = None) -> AutoupdateFormat:
+def format_for_autoupdate_old(
+        collection_string: str, id: int, action: str, data: Dict[str, Any] = None) -> AutoupdateFormatOld:
     """
     Returns a dict that can be used for autoupdate.
+
+    This is depricated. Use format_for_autoupdate.
     """
     if data is None:
         # If the data is None then the action has to be deleted,
@@ -348,7 +343,7 @@ def format_for_autoupdate(
         # deleted, but the user has no permission to see it.
         action = 'deleted'
 
-    output = AutoupdateFormat(
+    output = AutoupdateFormatOld(
         collection=collection_string,
         id=id,
         action=action,
