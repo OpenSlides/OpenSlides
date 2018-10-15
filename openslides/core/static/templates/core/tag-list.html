@@ -29,12 +29,12 @@
 
   <table os-perms="core.can_manage_tags" class="table table-striped table-bordered table-hover">
     <thead>
-      <tr>
-        <th ng-click="toggleSort('name')" class="sortable">
-          <translate>Name</translate>
-          <i class="pull-right fa" ng-show="sortColumn === 'name' && header.sortable != false"
+        <tr>
+          <th ng-click="toggleSort('name')" class="sortable">
+            <translate>Name</translate>
+            <i class="pull-right fa" ng-show="sortColumn === 'name' && header.sortable != false"
               ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-          </i>
+            </i>
     <tbody>
       <tr ng-repeat="tag in tags | filter: filter.search |
           orderBy: sortColumn:reverse">

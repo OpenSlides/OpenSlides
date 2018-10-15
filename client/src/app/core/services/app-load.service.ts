@@ -10,6 +10,7 @@ import { ConfigAppConfig } from '../../site/config/config.config';
 import { AgendaAppConfig } from '../../site/agenda/agenda.config';
 import { AssignmentsAppConfig } from '../../site/assignments/assignments.config';
 import { UsersAppConfig } from '../../site/users/users.config';
+import { TagAppConfig } from '../../site/tags/tag.config';
 import { MainMenuService } from './main-menu.service';
 
 /**
@@ -22,6 +23,7 @@ const appConfigs: AppConfig[] = [
     AssignmentsAppConfig,
     MotionsAppConfig,
     MediafileAppConfig,
+    TagAppConfig,
     UsersAppConfig
 ];
 
