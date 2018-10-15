@@ -15,6 +15,7 @@ import { DiffService, LineRange, ModificationType } from './diff.service';
 import { ViewChangeReco } from '../models/view-change-reco';
 import { MotionChangeReco } from '../../../shared/models/motions/motion-change-reco';
 import { ViewUnifiedChange } from '../models/view-unified-change';
+import { HTTPMethod } from '../../../core/services/http.service';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -97,7 +98,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     public update(update: Partial<Motion>, viewMotion: ViewMotion): Observable<any> {
         const motion = viewMotion.motion;
         motion.patchValues(update);
-        return this.dataSend.updateModel(motion, 'patch');
+        return this.dataSend.updateModel(motion, HTTPMethod.PATCH);
     }
 
     /**
@@ -108,7 +109,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param viewMotion
      */
     public delete(viewMotion: ViewMotion): Observable<any> {
-        return this.dataSend.delete(viewMotion.motion);
+        return this.dataSend.deleteModel(viewMotion.motion);
     }
 
     /**

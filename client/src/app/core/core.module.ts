@@ -14,6 +14,7 @@ import { AddHeaderInterceptor } from './http-interceptor';
 import { DataSendService } from './services/data-send.service';
 import { ViewportService } from './services/viewport.service';
 import { PromptDialogComponent } from '../shared/components/prompt-dialog/prompt-dialog.component';
+import { HttpService } from './services/http.service';
 
 /** Global Core Module. Contains all global (singleton) services
  *
@@ -27,6 +28,7 @@ import { PromptDialogComponent } from '../shared/components/prompt-dialog/prompt
         AutoupdateService,
         DataStoreService,
         DataSendService,
+        HttpService,
         OperatorService,
         ViewportService,
         WebsocketService,

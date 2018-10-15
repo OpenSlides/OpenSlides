@@ -196,7 +196,11 @@ export class ViewMotion extends BaseViewModel {
         this.highlightedLine = null;
     }
 
+    // TODO aware of issues here?
     public getTitle(): string {
+        if (this.category) {
+            return this.category.prefix + ' - ' + this.title;
+        }
         return this.title;
     }
 

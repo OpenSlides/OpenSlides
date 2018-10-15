@@ -56,7 +56,9 @@ export class Motion extends AgendaBaseModel {
     }
 
     public getTitle(): string {
-        return this.title;
+        if (this.identifier) {
+            return this.identifier + ': ' + this.title;
+        }
     }
 
     public getAgendaTitle(): string {

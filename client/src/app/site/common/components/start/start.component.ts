@@ -8,6 +8,9 @@ import { TranslateService } from '@ngx-translate/core'; // showcase
 import { Config } from '../../../../shared/models/core/config';
 import { DataStoreService } from '../../../../core/services/data-store.service';
 
+// for Drag n Drop Test
+import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
+
 @Component({
     selector: 'os-start',
     templateUrl: './start.component.html',

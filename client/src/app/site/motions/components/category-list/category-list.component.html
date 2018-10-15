@@ -23,38 +23,58 @@
     <mat-expansion-panel [ngClass]="{new: category.id === undefined}" *ngFor="let category of this.dataSource" (opened)="panelOpening('true', category)"
         (closed)="panelOpening('false', category)" multiple="false">
         <mat-expansion-panel-header>
-            <mat-panel-title *ngIf="!category.edit">
-                {{category.name}}
+            <mat-panel-title>
+                <div class="header-container">
+                    <div class="header-prefix">
+                        <div *ngIf="!category.edit">
+                            {{category.prefix}}
+                        </div>
+                        <div *ngIf="category.edit">
+                            {{this.formGroup.get('prefix').value}}
+                        </div>
+                    </div>
+                    <div class="header-name">
+                        <div *ngIf="!category.edit">
+                            {{category.name}}
+                        </div>
+                        <div *ngIf="category.edit">
+                            {{this.formGroup.get('name').value}}
+                        </div>
+                    </div>
+                    <div class="header-size">
+                        {{motionsInCategory(category).length}}
+                    </div>
+                </div>
             </mat-panel-title>
-            <mat-panel-title *ngIf="category.edit">
-                {{this.formGroup.get('name').value}}
-            </mat-panel-title>
-            <mat-panel-description *ngIf="!category.edit">
-                {{category.prefix}}
-            </mat-panel-description>
-            <mat-panel-description *ngIf="category.edit">
-                {{this.formGroup.get('prefix').value}}
-            </mat-panel-description>
         </mat-expansion-panel-header>
         <form [formGroup]='this.formGroup' *ngIf="category.edit" (keydown)="keyDownFunction($event, category)">
             <span translate>Edit category details:</span><br>
-            <mat-form-field>
-                <input formControlName="name" matInput placeholder="{{'Name' | translate}}">
-                <small *ngIf="!this.formGroup.controls.name.valid">
-                    <span translate>Required</span>
-                </small>
-            </mat-form-field>
             <mat-form-field>
                 <input formControlName="prefix" matInput placeholder="{{'Prefix' | translate}}">
                 <small *ngIf="!this.formGroup.controls.prefix.valid">
                     <span translate>Required</span>
                 </small>
             </mat-form-field>
+            <mat-form-field>
+                <input formControlName="name" matInput placeholder="{{'Name' | translate}}">
+                <small *ngIf="!this.formGroup.controls.name.valid">
+                    <span translate>Required</span>
+                </small>
+            </mat-form-field>
         </form>
+        <span translate>Motions:</span>
+        <div *ngIf="!category.edit">
+            <ul *ngFor="let motion of motionsInCategory(category)">
+                <li>{{motion}}</li>
+            </ul>
+        </div>
+        <div *ngIf="category.edit">
+            <os-sorting-list [input]="motionsInCategory(category)" #sorter></os-sorting-list>
+        </div>
         <mat-action-row>
             <button *ngIf="!category.edit" mat-button class='on-transition-fade' (click)=onEditButton(category)
                 mat-icon-button>
-                <mat-icon>add</mat-icon>
+                <mat-icon>edit</mat-icon>
             </button>
             <button *ngIf="category.edit" mat-button class='on-transition-fade' (click)=onCancelButton(category)
                 mat-icon-button>

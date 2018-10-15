@@ -7,6 +7,7 @@ import { Group } from '../../../shared/models/users/group';
 import { Observable } from 'rxjs';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { DataSendService } from '../../../core/services/data-send.service';
+import { HTTPMethod } from '../../../core/services/http.service';
 
 /**
  * Repository service for users
@@ -42,14 +43,14 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
             updateUser.username = viewUser.username;
         }
 
-        return this.dataSend.updateModel(updateUser, 'put');
+        return this.dataSend.updateModel(updateUser, HTTPMethod.PUT);
     }
 
     /**
      * Deletes a given user
      */
     public delete(viewUser: ViewUser): Observable<any> {
-        return this.dataSend.delete(viewUser.user);
+        return this.dataSend.deleteModel(viewUser.user);
     }
 
     /**

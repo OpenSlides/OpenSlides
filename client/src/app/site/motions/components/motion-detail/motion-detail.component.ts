@@ -23,6 +23,7 @@ import { ViewChangeReco } from '../../models/view-change-reco';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ViewUnifiedChange } from '../../models/view-unified-change';
 import { OperatorService } from '../../../../core/services/operator.service';
+import { CategoryRepositoryService } from '../../services/category-repository.service';
 
 /**
  * Component for the motion detail view
@@ -145,6 +146,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         private dialogService: MatDialog,
         private repo: MotionRepositoryService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
+        private categoryRepo: CategoryRepositoryService,
         private DS: DataStoreService,
         private sanitizer: DomSanitizer,
         protected translate: TranslateService
@@ -282,6 +284,17 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
                     this.editMotion = false;
                 }
             });
+
+            const motList = this.categoryRepo.getMotionsOfCategory(
+                this.categoryRepo.getCategoryByID(fromForm.category_id)
+            );
+            if (!motList.includes(fromForm)) {
+                motList.push(fromForm);
+                this.categoryRepo.updateCategoryNumbering(
+                    this.categoryRepo.getCategoryByID(fromForm.category_id),
+                    motList
+                );
+            }
         }
     }
 
@@ -316,6 +329,12 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         this.repo.delete(this.motion).subscribe(answer => {
             this.router.navigate(['./motions/']);
         });
+        const motList = this.categoryRepo.getMotionsOfCategory(this.motion.category);
+        const index = motList.indexOf(this.motion.motion, 0);
+        if (index > -1) {
+            motList.splice(index, 1);
+        }
+        this.categoryRepo.updateCategoryNumbering(this.motion.category, motList);
     }
 
     /**

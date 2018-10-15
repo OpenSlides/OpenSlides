@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -8,6 +8,10 @@ import { Category } from '../../../../shared/models/motions/category';
 import { CategoryRepositoryService } from '../../services/category-repository.service';
 import { ViewCategory } from '../../models/view-category';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Motion } from '../../../../shared/models/motions/motion';
+import { SortingListComponent } from '../../../../shared/components/sorting-list/sorting-list.component';
+import { MotionRepositoryService } from '../../services/motion-repository.service';
+import { ViewMotion } from '../../models/view-motion';
 
 /**
  * List view for the categories.
@@ -34,6 +38,12 @@ export class CategoryListComponent extends BaseComponent implements OnInit, OnDe
     public formGroup: FormGroup;
 
     /**
+     * The MultiSelect Component
+     */
+    @ViewChild('sorter')
+    public sortSelector: SortingListComponent;
+
+    /**
      * The usual component constructor
      * @param titleService
      * @param translate
@@ -44,7 +54,8 @@ export class CategoryListComponent extends BaseComponent implements OnInit, OnDe
         protected titleService: Title,
         protected translate: TranslateService,
         private repo: CategoryRepositoryService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private motionRepo: MotionRepositoryService
     ) {
         super(titleService, translate);
         this.formGroup = this.formBuilder.group({
@@ -150,6 +161,7 @@ export class CategoryListComponent extends BaseComponent implements OnInit, OnDe
     public onSaveButton(viewCategory: ViewCategory): void {
         if (this.formGroup.controls.name.valid && this.formGroup.controls.prefix.valid) {
             this.editMode = false;
+            viewCategory.edit = false;
             const nameControl = this.formGroup.get('name');
             const prefixControl = this.formGroup.get('prefix');
             const nameValue = nameControl.value;
@@ -164,6 +176,8 @@ export class CategoryListComponent extends BaseComponent implements OnInit, OnDe
                 this.saveCategory(viewCategory);
             }
         }
+        const motionList = this.sortSelector.array as Motion[];
+        this.repo.updateCategoryNumbering(viewCategory.category, motionList).subscribe();
         this.sortDataSource();
     }
 
@@ -195,13 +209,18 @@ export class CategoryListComponent extends BaseComponent implements OnInit, OnDe
      */
     public onDeleteButton(viewCategory: ViewCategory): void {
         if (this.repo.osInDataStore(viewCategory) && viewCategory.id !== undefined) {
+            const motList = this.motionsInCategory(viewCategory.category);
+            motList.forEach(motion => {
+                motion.category_id = null;
+                this.motionRepo.update(motion, new ViewMotion(motion));
+            });
             this.repo.delete(viewCategory).subscribe();
         }
         const index = this.dataSource.indexOf(viewCategory, 0);
         if (index > -1) {
             this.dataSource.splice(index, 1);
         }
-        // if no category is there, we setill have to be able to create one
+        // if no category is there, we still have to be able to create one
         if (this.dataSource.length < 1) {
             this.editMode = false;
         }
@@ -222,5 +241,18 @@ export class CategoryListComponent extends BaseComponent implements OnInit, OnDe
             category.edit = false;
             this.editMode = false;
         }
+    }
+
+    public motionsInCategory(category: Category): Array<Motion> {
+        const motList = this.repo.getMotionsOfCategory(category);
+        motList.sort((motion1, motion2) => {
+            if (motion1 > motion2) {
+                return 1;
+            }
+            if (motion1 < motion2) {
+                return -1;
+            }
+        });
+        return motList;
     }
 }

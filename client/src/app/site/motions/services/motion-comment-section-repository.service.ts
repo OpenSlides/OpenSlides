@@ -6,6 +6,7 @@ import { BaseRepository } from '../../base/base-repository';
 import { ViewMotionCommentSection } from '../models/view-motion-comment-section';
 import { MotionCommentSection } from '../../../shared/models/motions/motion-comment-section';
 import { Group } from '../../../shared/models/users/group';
+import { HTTPMethod } from 'app/core/services/http.service';
 
 /**
  * Repository Services for Categories
@@ -52,10 +53,10 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
             updateSection = new MotionCommentSection();
         }
         updateSection.patchValues(section);
-        return this.dataSend.updateModel(updateSection, 'put');
+        return this.dataSend.updateModel(updateSection, HTTPMethod.PUT);
     }
 
     public delete(viewSection: ViewMotionCommentSection): Observable<any> {
-        return this.dataSend.delete(viewSection.section);
+        return this.dataSend.deleteModel(viewSection.section);
     }
 }
