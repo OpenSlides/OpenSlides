@@ -60,19 +60,19 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
 
     def update(self, *args, **kwargs):
         """
-        Customized view endpoint to update all children if, the item type has changed.
+        Customized view endpoint to update all children if the item type has changed.
         """
         old_type = self.get_object().type
 
-        result = super().update(*args, **kwargs)
+        response = super().update(*args, **kwargs)
 
-        # update all children, if the item type has changed
+        # Update all children if the item type has changed.
         item = self.get_object()
 
         if old_type != item.type:
             items_to_update = []
 
-            # rekursively add children to items_to_update
+            # Recursively add children to items_to_update.
             def add_item(item):
                 items_to_update.append(item)
                 for child in item.children.all():
@@ -81,7 +81,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             add_item(item)
             inform_changed_data(items_to_update)
 
-        return result
+        return response
 
     @detail_route(methods=['POST', 'PATCH', 'DELETE'])
     def manage_speaker(self, request, pk=None):

@@ -6,13 +6,14 @@ from rest_framework import status
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.metadata import SimpleMetadata
 from rest_framework.mixins import (
-    CreateModelMixin,
+    CreateModelMixin as _CreateModelMixin,
     DestroyModelMixin,
     ListModelMixin as _ListModelMixin,
     RetrieveModelMixin as _RetrieveModelMixin,
-    UpdateModelMixin,
+    UpdateModelMixin as _UpdateModelMixin,
 )
 from rest_framework.relations import MANY_RELATION_KWARGS
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.serializers import (
@@ -33,10 +34,10 @@ from rest_framework.serializers import (
     SerializerMethodField,
     ValidationError,
 )
+from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework.viewsets import (
     GenericViewSet as _GenericViewSet,
     ModelViewSet as _ModelViewSet,
-    ViewSet as _ViewSet,
 )
 
 from .access_permissions import BaseAccessPermissions
@@ -44,8 +45,8 @@ from .auth import user_to_collection_user
 from .collection import Collection, CollectionElement
 
 
-__all__ = ['detail_route', 'DecimalField', 'list_route', 'SimpleMetadata', 'CreateModelMixin',
-           'DestroyModelMixin', 'UpdateModelMixin', 'CharField', 'DictField', 'FileField',
+__all__ = ['detail_route', 'DecimalField', 'list_route', 'SimpleMetadata',
+           'DestroyModelMixin', 'CharField', 'DictField', 'FileField',
            'IntegerField', 'JSONField', 'ListField', 'ListSerializer', 'status', 'RelatedField',
            'SerializerMethodField', 'ValidationError']
 
@@ -237,13 +238,44 @@ class RetrieveModelMixin(_RetrieveModelMixin):
         return response
 
 
+class CreateModelMixin(_CreateModelMixin):
+    """
+    Mixin to override create requests.
+    """
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        """
+        Just remove all response data (except 'id') so nobody may get
+        unrestricted data.
+
+        Special viewsets may override this.
+        """
+        response = super().create(request, *args, **kwargs)
+        response.data = ReturnDict(
+            id=response.data.get('id'),
+            serializer=response.data.serializer  # This kwarg is not send to the client.
+        )
+        return response
+
+
+class UpdateModelMixin(_UpdateModelMixin):
+    """
+    Mixin to override update requests.
+    """
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        """
+        Just remove all response data so nobody may get unrestricted data.
+
+        Special viewsets may override this.
+        """
+        response = super().update(request, *args, **kwargs)
+        response.data = None
+        return response
+
+
 class GenericViewSet(PermissionMixin, _GenericViewSet):
     pass
 
 
-class ModelViewSet(PermissionMixin, ListModelMixin, RetrieveModelMixin, _ModelViewSet):
-    pass
-
-
-class ViewSet(PermissionMixin, _ViewSet):
+class ModelViewSet(PermissionMixin, ListModelMixin, RetrieveModelMixin,
+                   CreateModelMixin, UpdateModelMixin, _ModelViewSet):
     pass
