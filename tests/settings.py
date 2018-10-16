@@ -42,7 +42,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
     }
 }
-REDIS_ADDRESS = "redis://127.0.0.1"
+
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 # Internationalization

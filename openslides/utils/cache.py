@@ -77,7 +77,8 @@ class ElementCache:
 
         # Start time is used as first change_id if there is non in redis
         if start_time is None:
-            start_time = int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds())
+            # Use the miliseconds (rounted) since the 2016-02-29.
+            start_time = int((datetime.utcnow() - datetime(2016, 2, 29)).total_seconds()) * 1000
         self.start_time = start_time
 
         # Contains Futures to controll, that only one client updates the restricted_data.
@@ -151,13 +152,7 @@ class ElementCache:
         if deleted_elements:
             await self.cache_provider.del_elements(deleted_elements)
 
-        # TODO: The provider has to define the new change_id with lua. In other
-        #       case it is possible, that two changes get the same id (which
-        #       would not be a big problem).
-        change_id = await self.get_next_change_id()
-
-        await self.cache_provider.add_changed_elements(change_id, elements.keys())
-        return change_id
+        return await self.cache_provider.add_changed_elements(self.start_time + 1, elements.keys())
 
     async def get_all_full_data(self) -> Dict[str, List[Dict[str, Any]]]:
         """
@@ -174,9 +169,10 @@ class ElementCache:
         return dict(out)
 
     async def get_full_data(
-            self, change_id: int = 0) -> Tuple[Dict[str, List[Dict[str, Any]]], List[str]]:
+            self, change_id: int = 0, max_change_id: int = -1) -> Tuple[Dict[str, List[Dict[str, Any]]], List[str]]:
         """
-        Returns all full_data since change_id. If it does not exist, it is created.
+        Returns all full_data since change_id until max_change_id (including).
+        max_change_id -1 means the highest change_id.
 
         Returns two values inside a tuple. The first value is a dict where the
         key is the collection_string and the value is a list of data. The second
@@ -202,7 +198,7 @@ class ElementCache:
                 "Catch this exception and rerun the method with change_id=0."
                 .format(change_id, lowest_change_id))
 
-        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(change_id)
+        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(change_id, max_change_id=max_change_id)
         return (
             {collection_string: [json.loads(value.decode()) for value in value_list]
              for collection_string, value_list in raw_changed_elements.items()},
@@ -323,7 +319,8 @@ class ElementCache:
     async def get_restricted_data(
             self,
             user: Optional['CollectionElement'],
-            change_id: int = 0) -> Tuple[Dict[str, List[Dict[str, Any]]], List[str]]:
+            change_id: int = 0,
+            max_change_id: int = -1) -> Tuple[Dict[str, List[Dict[str, Any]]], List[str]]:
         """
         Like get_full_data but with restricted_data for an user.
         """
@@ -332,7 +329,7 @@ class ElementCache:
             return (await self.get_all_restricted_data(user), [])
 
         if not self.use_restricted_data_cache:
-            changed_elements, deleted_elements = await self.get_full_data(change_id)
+            changed_elements, deleted_elements = await self.get_full_data(change_id, max_change_id)
             restricted_data = {}
             for collection_string, full_data in changed_elements.items():
                 restricter = self.cachables[collection_string].restrict_elements
@@ -353,7 +350,7 @@ class ElementCache:
         # data, this waits until it is done.
         await self.update_restricted_data(user)
 
-        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(change_id, get_user_id(user))
+        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(change_id, get_user_id(user), max_change_id)
         return (
             {collection_string: [json.loads(value.decode()) for value in value_list]
              for collection_string, value_list in raw_changed_elements.items()},
@@ -370,15 +367,6 @@ class ElementCache:
             return self.start_time
         # Return the score (second element) of the first (and only) element
         return value[0][1]
-
-    async def get_next_change_id(self) -> int:
-        """
-        Returns the next change_id.
-
-        Returns the start time in seconds + 1, if there is no change_id in yet.
-        """
-        current_id = await self.get_current_change_id()
-        return current_id + 1
 
     async def get_lowest_change_id(self) -> int:
         """

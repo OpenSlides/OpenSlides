@@ -18,7 +18,7 @@ matrix:
         - flake8 openslides tests
         - isort --check-only --diff --recursive openslides tests
         - python -m mypy openslides/
-        - pytest tests/old/ tests/integration/ tests/unit/ --cov --cov-fail-under=76
+        - pytest tests/old/ tests/integration/ tests/unit/ --cov --cov-fail-under=75
 
     - language: python
       cache:
@@ -35,7 +35,7 @@ matrix:
         - flake8 openslides tests
         - isort --check-only --diff --recursive openslides tests
         - python -m mypy openslides/
-        - pytest tests/old/ tests/integration/ tests/unit/ --cov --cov-fail-under=76
+        - pytest tests/old/ tests/integration/ tests/unit/ --cov --cov-fail-under=75
 
     - language: node_js
       node_js:
