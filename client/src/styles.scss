@@ -5,6 +5,7 @@
 @import './assets/styles/openslides-theme';
 @import './app/site/site.component.scss-theme';
 @import '../node_modules/roboto-fontface/css/roboto/roboto-fontface.css';
+@import '../node_modules/roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css';
 @mixin openslides-components-theme($theme) {
     @include os-site-theme($theme);
     /** More components are added here */
@@ -18,6 +19,14 @@
 }
 mat-icon {
     font-family: MaterialIcons-Regular;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: Roboto-condensed, Arial, Helvetica, sans-serif;
 }
 
 body {
