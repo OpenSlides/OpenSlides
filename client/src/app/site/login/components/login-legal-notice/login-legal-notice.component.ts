@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
     selector: 'os-login-legal-notice',
     templateUrl: './login-legal-notice.component.html',
-    styleUrls: ['./login-legal-notice.component.scss', '../../assets/login-info-pages.scss']
+    styleUrls: ['../../assets/login-info-pages.scss']
 })
 export class LoginLegalNoticeComponent implements OnInit {
     /**

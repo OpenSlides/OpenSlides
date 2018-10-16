@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
     selector: 'os-login-privacy-policy',
     templateUrl: './login-privacy-policy.component.html',
-    styleUrls: ['./login-privacy-policy.component.scss', '../../assets/login-info-pages.scss']
+    styleUrls: ['../../assets/login-info-pages.scss']
 })
 export class LoginPrivacyPolicyComponent implements OnInit {
     /**

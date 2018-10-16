@@ -7,14 +7,14 @@ import { BaseComponent } from '../../../../base.component';
 /**
  * Login component.
  *
- * Serves as container for the login mask, legal notice and privacy policy
+ * Serves as container for the login mask, reset password (confirm) form, legal notice and privacy policy
  */
 @Component({
-    selector: 'os-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+    selector: 'os-login-wrapper',
+    templateUrl: './login-wrapper.component.html',
+    styleUrls: ['./login-wrapper.component.scss']
 })
-export class LoginComponent extends BaseComponent implements OnInit {
+export class LoginWrapperComponent extends BaseComponent implements OnInit {
     /**
      * Imports the title service and the translate service
      *

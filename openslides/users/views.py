@@ -19,7 +19,6 @@ from django.db import transaction
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.translation import ugettext as _
-from django.template import loader
 
 from ..core.config import config
 from ..core.signals import permission_change
@@ -540,7 +539,7 @@ class PasswordResetView(APIView):
     this address) with a one-use only link.
     """
     http_method_names = ['post']
-    use_https = False  #TODO: Do we use https?
+    use_https = False  # TODO: Do we use https?
 
     def post(self, request, *args, **kwargs):
         """
@@ -555,7 +554,7 @@ class PasswordResetView(APIView):
                 'site_name': site_name,
                 'protocol': 'https' if self.use_https else 'http',
                 'domain': current_site.domain,
-                'path': '/reset-password-confirm/',
+                'path': '/login/reset-password-confirm/',
                 'user_id': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
                 'token': default_token_generator.make_token(user),
                 'username': user.get_username(),
