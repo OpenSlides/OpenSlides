@@ -47,12 +47,6 @@ span {
     font-size: 70%;
 }
 
-mat-panel-title {
-    mat-icon {
-        margin-right: 35px; //on line with text
-    }
-}
-
 .meta-info-block {
     form {
         div + div {
@@ -152,42 +146,6 @@ mat-panel-title {
 
         .meta-info-desktop {
             padding-left: 20px;
-        }
-
-        .personal-note {
-            mat-card {
-                padding: 0px;
-                margin: 20px;
-                min-width: 10hv;
-                min-width: 200px;
-
-                .mat-card-header-text {
-                    width: 100%;
-                }
-
-                mat-card-header {
-                    display: inherit;
-                    padding: 15px;
-                    margin: 0;
-                    background-color: #eee;
-
-                    .title-right {
-                        float: right;
-                        mat-icon {
-                            padding-left: 10px;
-                        }
-                    }
-
-                    mat-card-title {
-                        font-weight: bold;
-                        display: inline;
-                    }
-                }
-
-                mat-card-content {
-                    padding: 30px 15px 15px 15px;
-                }
-            }
         }
     }
 

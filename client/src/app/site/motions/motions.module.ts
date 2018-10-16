@@ -11,6 +11,9 @@ import { StatuteParagraphListComponent } from './components/statute-paragraph-li
 import { MotionChangeRecommendationComponent } from './components/motion-change-recommendation/motion-change-recommendation.component';
 import { MotionDetailOriginalChangeRecommendationsComponent } from './components/motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
 import { MotionDetailDiffComponent } from './components/motion-detail-diff/motion-detail-diff.component';
+import { MotionCommentsComponent } from './components/motion-comments/motion-comments.component';
+import { MetaTextBlockComponent } from './components/meta-text-block/meta-text-block.component';
+import { PersonalNoteComponent } from './components/personal-note/personal-note.component';
 
 @NgModule({
     imports: [CommonModule, MotionsRoutingModule, SharedModule],
@@ -21,10 +24,19 @@ import { MotionDetailDiffComponent } from './components/motion-detail-diff/motio
         MotionCommentSectionListComponent,
         StatuteParagraphListComponent,
         MotionChangeRecommendationComponent,
-        MotionCommentSectionListComponent,
         MotionDetailOriginalChangeRecommendationsComponent,
-        MotionDetailDiffComponent
+        MotionDetailDiffComponent,
+        MotionCommentsComponent,
+        MetaTextBlockComponent,
+        PersonalNoteComponent
     ],
-    entryComponents: [MotionChangeRecommendationComponent]
+    entryComponents: [
+        MotionChangeRecommendationComponent,
+        StatuteParagraphListComponent,
+        MotionCommentsComponent,
+        MotionCommentSectionListComponent,
+        MetaTextBlockComponent,
+        PersonalNoteComponent
+    ]
 })
 export class MotionsModule {}

@@ -108,14 +108,14 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     /**
      * helper function to return one viewModel
      */
-    protected getViewModel(id: number): V {
+    public getViewModel(id: number): V {
         return this.viewModelStore[id];
     }
 
     /**
      * helper function to return the viewModel as array
      */
-    protected getViewModelList(): V[] {
+    public getViewModelList(): V[] {
         return Object.values(this.viewModelStore);
     }
 

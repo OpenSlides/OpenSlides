@@ -57,6 +57,10 @@ export class OperatorService extends OpenSlidesComponent {
         this.updatePermissions();
     }
 
+    public get isAnonymous(): boolean {
+        return !this.user || this.user.id === 0;
+    }
+
     /**
      * Save, if quests are enabled.
      */
@@ -130,6 +134,29 @@ export class OperatorService extends OpenSlidesComponent {
         return checkPerms.some(permission => {
             return this.permissions.includes(permission);
         });
+    }
+
+    /**
+     * Returns true, if the operator is in at least one group or he is in the admin group.
+     * @param groups The groups to check
+     */
+    public isInGroup(...groups: Group[]): boolean {
+        return this.isInGroupIds(...groups.map(group => group.id));
+    }
+
+    /**
+     * Returns true, if the operator is in at least one group or he is in the admin group.
+     * @param groups The group ids to check
+     */
+    public isInGroupIds(...groupIds: number[]): boolean {
+        if (!this.user) {
+            return groupIds.includes(1); // any anonymous is in the default group.
+        }
+        if (this.user.groups_id.includes(2)) {
+            // An admin has all perms and is technically in every group.
+            return true;
+        }
+        return groupIds.some(id => this.user.groups_id.includes(id));
     }
 
     /**
