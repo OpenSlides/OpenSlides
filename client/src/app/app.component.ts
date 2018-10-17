@@ -54,6 +54,7 @@ export class AppComponent {
      * TODO: Overloading can be extended to more functions.
      */
     private overloadArrayToString(): void {
+
         Array.prototype.toString = function(): string {
             let string = '';
             const iterations = Math.min(this.length, 3);
