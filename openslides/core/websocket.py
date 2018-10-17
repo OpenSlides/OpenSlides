@@ -17,18 +17,32 @@ class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
     identifier = "notify"
     schema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "Notify elements.",
-        "description": "Elements that one client can send to one or many other clients.",
-        "type": "array",
-        "items": {
-            "type": "object",
-            "properties": {
-                "projectors": {"type": "array", "items": {"type": "integer"}},
-                "reply_channels": {"type": "array", "items": {"type": "string"}},
-                "users": {"type": "array", "items": {"type": "integer"}},
+        "title": "Notify element.",
+        "description": "Element that one client can send to one or many other clients.",
+        "type": "object",
+        "properties": {
+            "name": {"description": "The name of the notify message", "type": "string"},
+            "content": {"description": "The actual content of this message."},
+            "reply_channels": {
+                "description": "A list of channels to send this message to.",
+                "type": "array",
+                "items": {"type": "string"},
+            },
+            "users": {
+                "anyOf": [
+                    {
+                        "description": "A list of user ids to send this message to.",
+                        "type": "array",
+                        "items": {"type": "integer"},
+                    },
+                    {
+                        "description": "This flag indicates, that this message should be send to all users.",
+                        "enum": [True],
+                    },
+                ]
             },
         },
-        "minItems": 1,
+        "required": ["name", "content"],
     }
 
     async def receive_content(
@@ -39,7 +53,7 @@ class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
             {
                 "type": "send_notify",
                 "incomming": content,
-                "senderReplyChannelName": consumer.channel_name,
+                "senderChannelName": consumer.channel_name,
                 "senderUserId": consumer.scope["user"]["id"],
             },
         )
