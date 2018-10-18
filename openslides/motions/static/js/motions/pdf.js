@@ -191,37 +191,37 @@ angular.module('OpenSlidesApp.motions.pdf', ['OpenSlidesApp.core.pdf'])
                             // yes
                             var yes = poll.getVote(poll.yes, 'yes');
                             column1.push(gettextCatalog.getString('Yes') + ':');
-                            column2.push($filter('number')(yes.value, precision));
+                            column2.push($filter('textOrNumber')(yes.value, precision));
                             column3.push(yes.percentStr);
                             // no
                             var no = poll.getVote(poll.no, 'no');
                             column1.push(gettextCatalog.getString('No') + ':');
-                            column2.push($filter('number')(no.value, precision));
+                            column2.push($filter('textOrNumber')(no.value, precision));
                             column3.push(no.percentStr);
                             // abstain
                             var abstain = poll.getVote(poll.abstain, 'abstain');
                             column1.push(gettextCatalog.getString('Abstain') + ':');
-                            column2.push($filter('number')(abstain.value, precision));
+                            column2.push($filter('textOrNumber')(abstain.value, precision));
                             column3.push(abstain.percentStr);
                             // votes valid
                             if (poll.votesvalid) {
                                 var valid = poll.getVote(poll.votesvalid, 'votesvalid');
                                 column1.push(gettextCatalog.getString('Valid votes') + ':');
-                                column2.push($filter('number')(valid.value, precision));
+                                column2.push($filter('textOrNumber')(valid.value, precision));
                                 column3.push(valid.percentStr);
                             }
                             // votes invalid
                             if (poll.votesvalid) {
                                 var invalid = poll.getVote(poll.votesinvalid, 'votesinvalid');
                                 column1.push(gettextCatalog.getString('Invalid votes') + ':');
-                                column2.push($filter('number')(invalid.value, precision));
+                                column2.push($filter('textOrNumber')(invalid.value, precision));
                                 column3.push(invalid.percentStr);
                             }
                             // votes cast
                             if (poll.votescast) {
                                 var cast = poll.getVote(poll.votescast, 'votescast');
                                 column1.push(gettextCatalog.getString('Votes cast') + ':');
-                                column2.push($filter('number')(cast.value, precision));
+                                column2.push($filter('textOrNumber')(cast.value, precision));
                                 column3.push(cast.percentStr);
                             }
                         }

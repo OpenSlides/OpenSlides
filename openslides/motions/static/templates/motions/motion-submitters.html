@@ -34,7 +34,7 @@
     <select chosen
         ng-model="submitterSelectBox.selected"
         ng-change="addSubmitter(submitterSelectBox.selected)"
-        ng-options="user.id as user.get_full_name() for user in users"
+        ng-options="user.id as user.get_full_name() for user in users | orderBy: 'full_name'"
         search-contains="true"
         placeholder-text-single="'Select or search a participant ...' | translate"
         no-results-text="'No results available ...' | translate"

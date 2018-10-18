@@ -120,7 +120,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                     if (printLabel) {
                         voteVal += voteObject.label + ': ';
                     }
-                    voteVal += $filter('number')(voteObject.value, precision);
+                    voteVal += $filter('textOrNumber')(voteObject.value, precision);
 
                     if (voteObject.percentStr) {
                         voteVal += ' ' + voteObject.percentStr;
@@ -435,18 +435,18 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                 var rowsperpage;
                 var sheetend;
                 if (poll.pollmethod == 'votes') {
-                    if (poll.options.length <= 4) {
+                    if (poll.options.length <= 3) {
                         sheetend = 105;
                         rowsperpage = 4;
-                    } else if (poll.options.length <= 8) {
+                    } else if (poll.options.length <= 5) {
                         sheetend = 140;
                         rowsperpage = 3;
-                    } else if (poll.options.length <= 12) {
+                    } else if (poll.options.length <= 11) {
                         sheetend = 210;
                         rowsperpage = 2;
                     }
                     else { //works untill ~30 people
-                        sheetend = 418;
+                        sheetend = 417;
                         rowsperpage = 1;
                     }
                 } else {
@@ -460,7 +460,7 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                         sheetend = 210;
                         rowsperpage = 2;
                     } else {
-                        sheetend = 418;
+                        sheetend = 417;
                         rowsperpage = 1;
                     }
                 }
@@ -473,10 +473,10 @@ angular.module('OpenSlidesApp.assignments.pdf', ['OpenSlidesApp.core.pdf'])
                             widths: ['50%', '50%'],
                             body: createTableBody(rowsperpage, sheetend),
                             pageBreak: 'after'
-                            },
-                            layout: PDFLayout.getBallotLayoutLines(),
-                            rowsperpage: rowsperpage
-                        });
+                        },
+                        layout: PDFLayout.getBallotLayoutLines(),
+                        rowsperpage: rowsperpage
+                    });
                 }
                 // fill the last page only partially
                 var lastpage_ballots = amount - (fullpages * page_entries);

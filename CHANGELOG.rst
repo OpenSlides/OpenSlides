@@ -4,6 +4,16 @@
 
 https://openslides.org/
 
+Version 2.3.1 (unreleased)
+==========================
+
+Bugfixes:
+ - Fixed image browser in CKEditor plugin to show uploaded images.
+ - Fixed sorting of users in dropdowns for speakers, submitters and candidates.
+ - Fixed election ballot paper layout (more space required for global 'no').
+ - Fixed missing output of special poll values (for motions and elections)
+
+
 Version 2.3 (2018-09-20)
 ========================
 `Release notes <https://github.com/OpenSlides/OpenSlides/wiki/OpenSlides-2.3>`_ ·
