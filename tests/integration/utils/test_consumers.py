@@ -59,8 +59,13 @@ async def test_normal_connection(communicator):
     type = response.get('type')
     content = response.get('content')
     assert type == 'autoupdate'
-    # Test, that both example objects are returned
-    assert len(content) > 10
+    assert 'changed' in content
+    assert 'deleted' in content
+    assert 'change_id' in content
+    assert Collection1().get_collection_string() in content['changed']
+    assert Collection2().get_collection_string() in content['changed']
+    assert TConfig().get_collection_string() in content['changed']
+    assert TUser().get_collection_string() in content['changed']
 
 
 @pytest.mark.asyncio
@@ -77,11 +82,8 @@ async def test_receive_changed_data(communicator):
     type = response.get('type')
     content = response.get('content')
     assert type == 'autoupdate'
-    assert content == [
-        {'action': 'changed',
-         'collection': 'core/config',
-         'data': {'id': id, 'key': 'general_event_name', 'value': 'Test Event'},
-         'id': id}]
+    assert content['changed'] == {
+        'core/config': [{'id': id, 'key': 'general_event_name', 'value': 'Test Event'}]}
 
 
 @pytest.mark.asyncio
@@ -124,7 +126,7 @@ async def test_receive_deleted_data(communicator):
     type = response.get('type')
     content = response.get('content')
     assert type == 'autoupdate'
-    assert content == [{'action': 'deleted', 'collection': Collection1().get_collection_string(), 'id': 1}]
+    assert content['deleted'] == {Collection1().get_collection_string(): [1]}
 
 
 @pytest.mark.asyncio

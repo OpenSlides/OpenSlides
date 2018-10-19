@@ -261,20 +261,15 @@ export class DataStoreService {
     /**
      * Add one or multiple models to dataStore.
      *
-     * @param ...models The model(s) that shall be add use spread operator ("...")
-     * @example this.DS.add(new User(1))
-     * @example this.DS.add((new User(2), new User(3)))
-     * @example this.DS.add(...arrayWithUsers)
+     * @param models BaseModels to add to the store
+     * @param changeId The changeId of this update
+     * @example this.DS.add([new User(1)], changeId)
+     * @example this.DS.add([new User(2), new User(3)], changeId)
+     * @example this.DS.add(arrayWithUsers, changeId)
      */
-    public add(...models: BaseModel[]): void {
-        const maxChangeId = 0;
+    public add(models: BaseModel[], changeId: number): void {
         models.forEach(model => {
             const collectionString = model.collectionString;
-            if (!model.id) {
-                throw new Error('The model must have an id!');
-            } else if (collectionString === 'invalid-collection-string') {
-                throw new Error('Cannot save a BaseModel');
-            }
             if (this.modelStore[collectionString] === undefined) {
                 this.modelStore[collectionString] = {};
             }
@@ -284,25 +279,22 @@ export class DataStoreService {
                 this.JsonStore[collectionString] = {};
             }
             this.JsonStore[collectionString][model.id] = JSON.stringify(model);
-            // if (model.changeId > maxChangeId) {maxChangeId = model.maxChangeId;}
             this.changedSubject.next(model);
         });
-        this.storeToCache(maxChangeId);
+        this.storeToCache(changeId);
     }
 
     /**
      * removes one or multiple models from dataStore.
      *
-     * @param Type   The desired BaseModel type to be read from the dataStore
-     * @param ...ids An or multiple IDs or a list of IDs of BaseModels. use spread operator ("...") for arrays
-     * @example this.DS.remove('users/user', myUser.id, 3, 4)
+     * @param Type The desired BaseModel type to be read from the datastore
+     * @param ids A list of IDs of BaseModels to remove from the datastore
+     * @param changeId The changeId of this update
+     * @example this.DS.remove('users/user', [myUser.id, 3, 4], 38213)
      */
-    public remove(collectionString: string, ...ids: number[]): void {
-        const maxChangeId = 0;
+    public remove(collectionString: string, ids: number[], changeId: number): void {
         ids.forEach(id => {
             if (this.modelStore[collectionString]) {
-                // get changeId from store
-                // if (model.changeId > maxChangeId) {maxChangeId = model.maxChangeId;}
                 delete this.modelStore[collectionString][id];
             }
             if (this.JsonStore[collectionString]) {
@@ -313,18 +305,18 @@ export class DataStoreService {
                 id: id
             });
         });
-        this.storeToCache(maxChangeId);
+        this.storeToCache(changeId);
     }
 
     /**
      * Updates the cache by inserting the serialized DataStore. Also changes the chageId, if it's larger
-     * @param maxChangeId
+     * @param changeId The changeId from the update. If it's the highest change id seen, it will be set into the cache.
      */
-    private storeToCache(maxChangeId: number): void {
+    private storeToCache(changeId: number): void {
         this.cacheService.set(DataStoreService.cachePrefix + 'DS', this.JsonStore);
-        if (maxChangeId > this._maxChangeId) {
-            this._maxChangeId = maxChangeId;
-            this.cacheService.set(DataStoreService.cachePrefix + 'maxChangeId', maxChangeId);
+        if (changeId > this._maxChangeId) {
+            this._maxChangeId = changeId;
+            this.cacheService.set(DataStoreService.cachePrefix + 'maxChangeId', changeId);
         }
     }
 
@@ -334,5 +326,6 @@ export class DataStoreService {
      */
     public printWhole(): void {
         console.log('Everything in DataStore: ', this.modelStore);
+        console.log('changeId', this.maxChangeId);
     }
 }

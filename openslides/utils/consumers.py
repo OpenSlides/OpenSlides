@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import Any, Dict, List, Optional
 
 import jsonschema
@@ -10,9 +11,10 @@ from ..core.models import Projector
 from .auth import async_anonymous_is_enabled, has_perm
 from .cache import element_cache, split_element_id
 from .collection import (
+    AutoupdateFormat,
     Collection,
     CollectionElement,
-    format_for_autoupdate,
+    format_for_autoupdate_old,
     from_channel_message,
 )
 from .constants import get_constants
@@ -169,22 +171,13 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         Send changed or deleted elements to the user.
         """
         change_id = event['change_id']
-        output = []
-        changed_elements, deleted_elements = await element_cache.get_restricted_data(self.scope['user'], change_id, max_change_id=change_id)
-        for collection_string, elements in changed_elements.items():
-            for element in elements:
-                output.append(format_for_autoupdate(
-                    collection_string=collection_string,
-                    id=element['id'],
-                    action='changed',
-                    data=element))
-        for element_id in deleted_elements:
+        changed_elements, deleted_elements_ids = await element_cache.get_restricted_data(self.scope['user'], change_id, max_change_id=change_id)
+
+        deleted_elements: Dict[str, List[int]] = defaultdict(list)
+        for element_id in deleted_elements_ids:
             collection_string, id = split_element_id(element_id)
-            output.append(format_for_autoupdate(
-                collection_string=collection_string,
-                id=id,
-                action='deleted'))
-        await self.send_json(type='autoupdate', content=output)
+            deleted_elements[collection_string].append(id)
+        await self.send_json(type='autoupdate', content=AutoupdateFormat(changed=changed_elements, deleted=deleted_elements, change_id=change_id))
 
 
 class ProjectorConsumer(ProtocollAsyncJsonWebsocketConsumer):
@@ -274,23 +267,21 @@ class ProjectorConsumer(ProtocollAsyncJsonWebsocketConsumer):
             await self.send_json(type='autoupdate', content=output)
 
 
-async def startup_data(user: Optional[CollectionElement], change_id: int = 0) -> List[Any]:
+async def startup_data(user: Optional[CollectionElement], change_id: int = 0) -> AutoupdateFormat:
     """
     Returns all data for startup.
     """
     # TODO: use the change_id argument
-    output = []
-    restricted_data = await element_cache.get_all_restricted_data(user)
-    for collection_string, elements in restricted_data.items():
-        for element in elements:
-            formatted_data = format_for_autoupdate(
-                collection_string=collection_string,
-                id=element['id'],
-                action='changed',
-                data=element)
+    # TODO: This two calls have to be atomic
+    changed_elements, deleted_element_ids = await element_cache.get_restricted_data(user)
+    current_change_id = await element_cache.get_current_change_id()
 
-            output.append(formatted_data)
-    return output
+    deleted_elements: Dict[str, List[int]] = defaultdict(list)
+    for element_id in deleted_element_ids:
+        collection_string, id = split_element_id(element_id)
+        deleted_elements[collection_string].append(id)
+
+    return AutoupdateFormat(changed=changed_elements, deleted=deleted_elements, change_id=current_change_id)
 
 
 def projector_startup_data(projector_id: int) -> Any:
@@ -318,7 +309,7 @@ def projector_startup_data(projector_id: int) -> Any:
         projector_data = (config_collection.get_access_permissions()
                           .get_projector_data(config_collection.get_full_data()))
         for data in projector_data:
-            output.append(format_for_autoupdate(
+            output.append(format_for_autoupdate_old(
                 config_collection.collection_string,
                 data['id'],
                 'changed',

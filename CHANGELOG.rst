@@ -16,6 +16,7 @@ Core:
  - Changed URL schema [#3798].
  - Enabled docs for using OpenSlides with Gunicorn and Uvicorn in big
    mode [#3799, #3817].
+ - Changed format for elements send via autoupdate [#3926].
 
 Motions:
  - Option to customly sort motions [#3894].

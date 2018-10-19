@@ -6,6 +6,27 @@ import { WebsocketService } from './websocket.service';
 import { CollectionStringModelMapperService } from './collectionStringModelMapper.service';
 import { DataStoreService } from './data-store.service';
 
+interface AutoupdateFormat {
+    /**
+     * All changed (and created) items as their full/restricted data grouped by their collection.
+     */
+    changed: {
+        [collectionString: string]: object[];
+    };
+
+    /**
+     * All deleted items (by id) grouped by their collection.
+     */
+    deleted: {
+        [collectionString: string]: number[];
+    };
+
+    /**
+     * The current change id for this autoupdate
+     */
+    change_id: number;
+}
+
 /**
  * Handles the initial update and automatic updates using the {@link WebsocketService}
  * Incoming objects, usually BaseModels, will be saved in the dataStore (`this.DS`)
@@ -27,7 +48,7 @@ export class AutoupdateService extends OpenSlidesComponent {
         private modelMapper: CollectionStringModelMapperService
     ) {
         super();
-        websocketService.getOberservable<any>('autoupdate').subscribe(response => {
+        websocketService.getOberservable<AutoupdateFormat>('autoupdate').subscribe(response => {
             this.storeResponse(response);
         });
     }
@@ -42,36 +63,19 @@ export class AutoupdateService extends OpenSlidesComponent {
      *
      * Saves models in DataStore.
      */
-    public storeResponse(socketResponse: any): void {
-        // Reorganize the autoupdate: groupy by action, then by collection. The final
-        // entries are the single autoupdate objects.
-        const autoupdate = {
-            changed: {},
-            deleted: {}
-        };
-
-        // Reorganize them.
-        socketResponse.forEach(obj => {
-            if (!autoupdate[obj.action][obj.collection]) {
-                autoupdate[obj.action][obj.collection] = [];
-            }
-            autoupdate[obj.action][obj.collection].push(obj);
-        });
-
+    public storeResponse(autoupdate: AutoupdateFormat): void {
         // Delete the removed objects from the DataStore
         Object.keys(autoupdate.deleted).forEach(collection => {
-            this.DS.remove(collection, ...autoupdate.deleted[collection].map(_obj => _obj.id));
+            this.DS.remove(collection, autoupdate.deleted[collection], autoupdate.change_id);
         });
 
         // Add the objects to the DataStore.
         Object.keys(autoupdate.changed).forEach(collection => {
             const targetClass = this.modelMapper.getModelConstructor(collection);
             if (!targetClass) {
-                // TODO: throw an error later..
-                /*throw new Error*/ console.log(`Unregistered resource ${collection}`);
-                return;
+                throw new Error(`Unregistered resource ${collection}`);
             }
-            this.DS.add(...autoupdate.changed[collection].map(_obj => new targetClass(_obj.data)));
+            this.DS.add(autoupdate.changed[collection].map(model => new targetClass(model)), autoupdate.change_id);
         });
     }
 
