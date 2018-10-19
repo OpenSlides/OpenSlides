@@ -2,7 +2,7 @@
     <mat-sidenav #sideNav [mode]="vp.isMobile ? 'push' : 'side'" [opened]='!vp.isMobile' disableClose='!vp.isMobile' class="side-panel">
         <mat-toolbar class='nav-toolbar'>
             <!-- logo -->
-            <mat-toolbar-row class='os-logo-container'>
+            <mat-toolbar-row class='os-logo-container' (click)= navigateToMainPage()>
             </mat-toolbar-row>
         </mat-toolbar>
 

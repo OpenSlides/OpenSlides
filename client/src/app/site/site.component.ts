@@ -123,4 +123,8 @@ export class SiteComponent extends BaseComponent implements OnInit {
     public logout(): void {
         this.authService.logout();
     }
+
+    public navigateToMainPage(): void {
+        this.router.navigate(['/']);
+    }
 }
