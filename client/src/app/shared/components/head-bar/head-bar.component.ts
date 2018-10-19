@@ -1,4 +1,29 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Permission } from '../../../core/services/operator.service';
+
+/**
+ * One entry for the ellipsis menu.
+ */
+export interface EllipsisMenuItem {
+    /**
+     * The text for the menu entry
+     */
+    text: string;
+    /**
+     * An optional icon to display before the text.
+     */
+    icon?: string;
+
+    /**
+     * The action to be performed on click.
+     */
+    action: string;
+
+    /**
+     * An optional permission to see this entry.
+     */
+    perm?: Permission;
+}
 
 /**
  * Reusable head bar component for Apps.
@@ -38,10 +63,10 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
  * This will execute a function with the name provided in the
  * `action` field.
  * ```ts
- * onEllipsisItem(event: any) {
- *   if (event.action) {
- *     this[event.action]();
- *   }
+ * onEllipsisItem(item: EllipsisMenuItem) {
+ *      if (typeof this[item.action] === 'function') {
+ *          this[item.action]();
+ *      }
  * }
  * ```
  */
@@ -69,7 +94,7 @@ export class HeadBarComponent implements OnInit {
      * The parent needs to provide a menu, i.e `[menuList]=myMenu`.
      */
     @Input()
-    public menuList: any[];
+    public menuList: EllipsisMenuItem[];
 
     /**
      * Emit a signal to the parent component if the plus button was clicked
@@ -81,7 +106,7 @@ export class HeadBarComponent implements OnInit {
      * Emit a signal to the parent of an item in the menuList was selected.
      */
     @Output()
-    public ellipsisMenuItem = new EventEmitter<any>();
+    public ellipsisMenuItem = new EventEmitter<EllipsisMenuItem>();
 
     /**
      * Empty constructor
@@ -97,7 +122,7 @@ export class HeadBarComponent implements OnInit {
      * Emits a signal to the parent if an item in the menu was clicked.
      * @param item
      */
-    public clickMenu(item: any): void {
+    public clickMenu(item: EllipsisMenuItem): void {
         this.ellipsisMenuItem.emit(item);
     }
 

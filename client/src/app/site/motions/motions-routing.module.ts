@@ -4,11 +4,13 @@ import { MotionListComponent } from './components/motion-list/motion-list.compon
 import { MotionDetailComponent } from './components/motion-detail/motion-detail.component';
 import { CategoryListComponent } from './components/category-list/category-list.component';
 import { MotionCommentSectionListComponent } from './components/motion-comment-section-list/motion-comment-section-list.component';
+import { StatuteParagraphListComponent } from './components/statute-paragraph-list/statute-paragraph-list.component';
 
 const routes: Routes = [
     { path: '', component: MotionListComponent },
     { path: 'category', component: CategoryListComponent },
     { path: 'comment-section', component: MotionCommentSectionListComponent },
+    { path: 'statute-paragraphs', component: StatuteParagraphListComponent },
     { path: 'new', component: MotionDetailComponent },
     { path: ':id', component: MotionDetailComponent }
 ];

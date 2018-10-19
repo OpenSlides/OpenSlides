@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { MatTableDataSource, MatTable, MatSort, MatPaginator } from '@angular/material';
 import { BaseViewModel } from './base-view-model';
+import { EllipsisMenuItem } from '../../shared/components/head-bar/head-bar.component';
 
 export abstract class ListViewBaseComponent<V extends BaseViewModel> extends BaseComponent {
     /**
@@ -55,9 +56,9 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
      *
      * @param event clicked entry from ellipsis menu
      */
-    public onEllipsisItem(event: any): void {
-        if (event.action) {
-            this[event.action]();
+    public onEllipsisItem(item: EllipsisMenuItem): void {
+        if (typeof this[item.action] === 'function') {
+            this[item.action]();
         }
     }
 }
