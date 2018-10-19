@@ -1,5 +1,6 @@
 from collections import defaultdict
 from typing import Any, Dict, List, Optional
+from urllib.parse import parse_qs
 
 import jsonschema
 from asgiref.sync import sync_to_async
@@ -33,7 +34,7 @@ class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
             "type": {
                 "description": "Defines what kind of packages is packed.",
                 "type": "string",
-                "pattern": "notify|constants",  # The server can sent other types
+                "pattern": "notify|constants|getElements|autoupdate",  # The server can sent other types
             },
             "content": {
                 "description": "The content of the package.",
@@ -90,6 +91,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
     """
     Websocket Consumer for the site.
     """
+
     groups = ['site']
 
     async def connect(self) -> None:
@@ -100,13 +102,33 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
         Sends the startup data to the user.
         """
-        # TODO: add a way to ask for the data since a change_id and send only data that is newer
+        change_id = None
         if not await async_anonymous_is_enabled() and self.scope['user'].id is None:
             await self.close()
-        else:
-            await self.accept()
-            data = await startup_data(self.scope['user'])
+            return
+
+        query_string = parse_qs(self.scope['query_string'])
+        if b'change_id' in query_string:
+            try:
+                change_id = int(query_string[b'change_id'][0])
+            except ValueError:
+                await self.close()  # TODO: Find a way to send an error code
+                return
+
+        if b'autoupdate' in query_string and query_string[b'autoupdate'][0].lower() not in [b'0', b'off', b'false']:
+            # a positive value in autoupdate. Start autoupdate
+            await self.channel_layer.group_add('autoupdate', self.channel_name)
+
+        await self.accept()
+        if change_id is not None:
+            data = await get_element_data(self.scope['user'], change_id)
             await self.send_json(type='autoupdate', content=data)
+
+    async def disconnect(self, close_code: int) -> None:
+        """
+        A user disconnects. Remove it from autoupdate.
+        """
+        await self.channel_layer.group_discard('autoupdate', self.channel_name)
 
     async def receive_content(self, type: str, content: Any, id: str) -> None:
         """
@@ -144,6 +166,26 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
             # Return all constants to the client.
             await self.send_json(type='constants', content=get_constants(), in_response=id)
 
+        elif type == 'getElements':
+            # Return all Elements since a change id
+            if elements_message_is_valid(content):
+                requested_change_id = content.get('change_id', 0)
+                try:
+                    element_data = await get_element_data(self.scope['user'], requested_change_id)
+                except ValueError as error:
+                    await self.send_json(type='error', content=str(error), in_response=id)
+                else:
+                    await self.send_json(type='autoupdate', content=element_data, in_response=id)
+            else:
+                await self.send_json(type='error', content='Invalid getElements message', in_response=id)
+
+        elif type == 'autoupdate':
+            # Turn on or off the autoupdate for the client
+            if content:  # accept any value, that can be interpreted as bool
+                await self.channel_layer.group_add('autoupdate', self.channel_name)
+            else:
+                await self.channel_layer.group_discard('autoupdate', self.channel_name)
+
     async def send_notify(self, event: Dict[str, Any]) -> None:
         """
         Send a notify message to the user.
@@ -177,7 +219,12 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         for element_id in deleted_elements_ids:
             collection_string, id = split_element_id(element_id)
             deleted_elements[collection_string].append(id)
-        await self.send_json(type='autoupdate', content=AutoupdateFormat(changed=changed_elements, deleted=deleted_elements, change_id=change_id))
+        await self.send_json(type='autoupdate', content=AutoupdateFormat(
+            changed=changed_elements,
+            deleted=deleted_elements,
+            from_change_id=change_id,
+            to_change_id=change_id,
+            all_data=False))
 
 
 class ProjectorConsumer(ProtocollAsyncJsonWebsocketConsumer):
@@ -267,21 +314,33 @@ class ProjectorConsumer(ProtocollAsyncJsonWebsocketConsumer):
             await self.send_json(type='autoupdate', content=output)
 
 
-async def startup_data(user: Optional[CollectionElement], change_id: int = 0) -> AutoupdateFormat:
+async def get_element_data(user: Optional[CollectionElement], change_id: int = 0) -> AutoupdateFormat:
     """
     Returns all data for startup.
     """
-    # TODO: use the change_id argument
-    # TODO: This two calls have to be atomic
-    changed_elements, deleted_element_ids = await element_cache.get_restricted_data(user)
     current_change_id = await element_cache.get_current_change_id()
+    if change_id > current_change_id:
+        raise ValueError("Requested change_id is higher this highest change_id.")
+    try:
+        changed_elements, deleted_element_ids = await element_cache.get_restricted_data(user, change_id, current_change_id)
+    except RuntimeError:
+        # The change_id is lower the the lowerst change_id in redis. Return all data
+        changed_elements = await element_cache.get_all_restricted_data(user)
+        all_data = True
+        deleted_elements: Dict[str, List[int]] = {}
+    else:
+        all_data = False
+        deleted_elements = defaultdict(list)
+        for element_id in deleted_element_ids:
+            collection_string, id = split_element_id(element_id)
+            deleted_elements[collection_string].append(id)
 
-    deleted_elements: Dict[str, List[int]] = defaultdict(list)
-    for element_id in deleted_element_ids:
-        collection_string, id = split_element_id(element_id)
-        deleted_elements[collection_string].append(id)
-
-    return AutoupdateFormat(changed=changed_elements, deleted=deleted_elements, change_id=current_change_id)
+    return AutoupdateFormat(
+        changed=changed_elements,
+        deleted=deleted_elements,
+        from_change_id=change_id,
+        to_change_id=current_change_id,
+        all_data=all_data)
 
 
 def projector_startup_data(projector_id: int) -> Any:
@@ -374,6 +433,30 @@ def notify_message_is_valid(message: object) -> bool:
             }
         },
         "minItems": 1,
+    }
+    try:
+        jsonschema.validate(message, schema)
+    except jsonschema.ValidationError:
+        return False
+    else:
+        return True
+
+
+def elements_message_is_valid(message: object) -> bool:
+    """
+    Return True, if the message is a valid getElement message.
+    """
+    schema = {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "titel": "getElement request",
+        "description": "Request from the client to server to get elements.",
+        "type": "object",
+        "properties": {
+            # propertie is not required
+            "change_id": {
+                "type": "integer",
+            }
+        },
     }
     try:
         jsonschema.validate(message, schema)

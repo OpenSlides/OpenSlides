@@ -28,7 +28,9 @@ AutoupdateFormat = TypedDict(
     {
         'changed': Dict[str, List[Dict[str, Any]]],
         'deleted': Dict[str, List[int]],
-        'change_id': int,
+        'from_change_id': int,
+        'to_change_id': int,
+        'all_data': bool,
     },
 )
 
