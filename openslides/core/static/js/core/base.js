@@ -1675,6 +1675,20 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
+// Returns number with decimal places or (if not a number) string (e.g. majority)
+.filter('textOrNumber', [
+    '$filter',
+    function ($filter) {
+        return function(input, votesPrecision) {
+            if(isNaN(input)) {
+                return input;
+            } else {
+                return $filter('number')(input, votesPrecision);
+            }
+        };
+    }
+])
+
 // Make sure that the DS factories are loaded by making them a dependency
 .run([
     'ChatMessage',
