@@ -5,6 +5,7 @@ import { DataStoreService } from '../../../core/services/data-store.service';
 import { BaseRepository } from '../../base/base-repository';
 import { ViewStatuteParagraph } from '../models/view-statute-paragraph';
 import { StatuteParagraph } from '../../../shared/models/motions/statute-paragraph';
+import { HTTPMethod } from 'app/core/services/http.service';
 
 /**
  * Repository Services for statute paragraphs
@@ -41,10 +42,10 @@ export class StatuteParagraphRepositoryService extends BaseRepository<ViewStatut
     ): Observable<any> {
         const updateParagraph = viewStatuteParagraph.statuteParagraph;
         updateParagraph.patchValues(statuteParagraph);
-        return this.dataSend.updateModel(updateParagraph, 'put');
+        return this.dataSend.updateModel(updateParagraph, HTTPMethod.PUT);
     }
 
     public delete(viewStatuteParagraph: ViewStatuteParagraph): Observable<any> {
-        return this.dataSend.delete(viewStatuteParagraph.statuteParagraph);
+        return this.dataSend.deleteModel(viewStatuteParagraph.statuteParagraph);
     }
 }

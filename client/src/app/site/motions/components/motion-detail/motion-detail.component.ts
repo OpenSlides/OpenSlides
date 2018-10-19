@@ -285,15 +285,18 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
                 }
             });
 
-            const motList = this.categoryRepo.getMotionsOfCategory(
-                this.categoryRepo.getCategoryByID(fromForm.category_id)
-            );
-            if (!motList.includes(fromForm)) {
-                motList.push(fromForm);
-                this.categoryRepo.updateCategoryNumbering(
-                    this.categoryRepo.getCategoryByID(fromForm.category_id),
-                    motList
-                );
+            // TODO: Document and evaluate if this actually does what it is supposed to do
+            if (fromForm.category_id) {
+                const catOfFormMotion = this.categoryRepo.getCategoryByID(fromForm.category_id);
+                const motionsWithSameCat = this.categoryRepo.getMotionsOfCategory(catOfFormMotion);
+
+                if (!motionsWithSameCat.includes(fromForm)) {
+                    motionsWithSameCat.push(fromForm);
+                    this.categoryRepo.updateCategoryNumbering(
+                        this.categoryRepo.getCategoryByID(fromForm.category_id),
+                        motionsWithSameCat
+                    );
+                }
             }
         }
     }

@@ -10,9 +10,6 @@ import { BaseViewModel } from '../../base/base-view-model';
  */
 export class ViewCategory extends BaseViewModel {
     private _category: Category;
-    private _edit: boolean;
-    private _synced: boolean;
-    private _opened: boolean;
 
     public get category(): Category {
         return this._category;
@@ -30,36 +27,12 @@ export class ViewCategory extends BaseViewModel {
         return this.category ? this.category.prefix : null;
     }
 
-    public set synced(bol: boolean) {
-        this._synced = bol;
-    }
-
-    public set edit(bol: boolean) {
-        this._edit = bol;
-    }
-
-    public set opened(bol: boolean) {
-        this._opened = bol;
-    }
-
     public set prefix(pref: string) {
         this._category.prefix = pref;
     }
 
     public set name(nam: string) {
         this._category.name = nam;
-    }
-
-    public get opened(): boolean {
-        return this._opened;
-    }
-
-    public get synced(): boolean {
-        return this._synced;
-    }
-
-    public get edit(): boolean {
-        return this._edit;
     }
 
     public constructor(category?: Category, id?: number, prefix?: string, name?: string) {
@@ -71,9 +44,6 @@ export class ViewCategory extends BaseViewModel {
             category.prefix = prefix;
         }
         this._category = category;
-        this._edit = false;
-        this._synced = true;
-        this._opened = false;
     }
 
     public getTitle(): string {

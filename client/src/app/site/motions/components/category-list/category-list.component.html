@@ -13,80 +13,115 @@
     </div>
 
 </os-head-bar>
+<div class="custom-table-header"></div>
 
-<div class='custom-table-header on-transition-fade'>
-    <button mat-button>
-        <mat-icon>search</mat-icon>
-    </button>
-</div>
+<!-- Creating a new category -->
+<mat-card *ngIf="categoryToCreate">
+    <mat-card-title translate>Create new category</mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="createForm" (keydown)="keyDownFunction($event)">
+            <p>
+                <!-- Prefix field -->
+                <mat-form-field>
+                    <input formControlName="prefix" matInput placeholder="{{'Prefix' | translate}}" required>
+                    <mat-hint *ngIf="!createForm.controls.name.valid">
+                        <span translate>Required</span>
+                    </mat-hint>
+                </mat-form-field>
+
+                <!-- Name field -->
+                <mat-form-field>
+                    <input formControlName="name" matInput placeholder="{{'Name' | translate}}" required>
+                    <mat-hint *ngIf="!createForm.controls.name.valid">
+                        <span translate>Required</span>
+                    </mat-hint>
+                </mat-form-field>
+            </p>
+        </form>
+    </mat-card-content>
+
+    <!-- Save and Cancel buttons -->
+    <mat-card-actions>
+        <button mat-button (click)="onCreateButton()" translate>Create</button>
+        <button mat-button (click)="categoryToCreate = null" translate>Abort</button>
+    </mat-card-actions>
+</mat-card>
+
 <mat-accordion class="os-card">
-    <mat-expansion-panel [ngClass]="{new: category.id === undefined}" *ngFor="let category of this.dataSource" (opened)="panelOpening('true', category)"
-        (closed)="panelOpening('false', category)" multiple="false">
+    <mat-expansion-panel *ngFor="let category of this.categories" multiple="false">
+
+        <!-- Header shows Prefix and name -->
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <div class="header-container">
                     <div class="header-prefix">
-                        <div *ngIf="!category.edit">
-                            {{category.prefix}}
+                        <div *ngIf="editId !== category.id">
+                            {{ category.prefix }}
                         </div>
-                        <div *ngIf="category.edit">
-                            {{this.formGroup.get('prefix').value}}
+                        <div *ngIf="editId === category.id">
+                            {{ this.updateForm.get('prefix').value }}
                         </div>
                     </div>
                     <div class="header-name">
-                        <div *ngIf="!category.edit">
-                            {{category.name}}
+                        <div *ngIf="editId !== category.id">
+                            {{ category.name }}
                         </div>
-                        <div *ngIf="category.edit">
-                            {{this.formGroup.get('name').value}}
+                        <div *ngIf="editId === category.id">
+                            {{ this.updateForm.get('name').value }}
                         </div>
                     </div>
                     <div class="header-size">
-                        {{motionsInCategory(category).length}}
+                        {{ motionsInCategory(category).length }}
                     </div>
                 </div>
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <form [formGroup]='this.formGroup' *ngIf="category.edit" (keydown)="keyDownFunction($event, category)">
+
+        <!-- Edit form shows during the edit event -->
+        <form [formGroup]='this.updateForm' *ngIf="editId === category.id" (keydown)="keyDownFunction($event, category)">
             <span translate>Edit category details:</span><br>
             <mat-form-field>
                 <input formControlName="prefix" matInput placeholder="{{'Prefix' | translate}}">
-                <small *ngIf="!this.formGroup.controls.prefix.valid">
+                <mat-hint>
                     <span translate>Required</span>
-                </small>
+                </mat-hint>
             </mat-form-field>
             <mat-form-field>
                 <input formControlName="name" matInput placeholder="{{'Name' | translate}}">
-                <small *ngIf="!this.formGroup.controls.name.valid">
+                <mat-hint>
                     <span translate>Required</span>
-                </small>
+                </mat-hint>
             </mat-form-field>
         </form>
-        <span translate>Motions:</span>
-        <div *ngIf="!category.edit">
-            <ul *ngFor="let motion of motionsInCategory(category)">
-                <li>{{motion}}</li>
-            </ul>
+
+        <!-- Show and sort corresponding motions-->
+        <div *ngIf="motionsInCategory(category).length > 0">
+            <span translate>Motions:</span>
+            <div *ngIf="editId !== category.id">
+                <ul *ngFor="let motion of motionsInCategory(category)">
+                    <li>{{motion}}</li>
+                </ul>
+            </div>
+            <div *ngIf="editId === category.id">
+                <os-sorting-list [input]="motionsInCategory(category)" #sorter></os-sorting-list>
+            </div>
         </div>
-        <div *ngIf="category.edit">
-            <os-sorting-list [input]="motionsInCategory(category)" #sorter></os-sorting-list>
-        </div>
+
+        <!-- Buttons to edit, delete, save ... -->
         <mat-action-row>
-            <button *ngIf="!category.edit" mat-button class='on-transition-fade' (click)=onEditButton(category)
-                mat-icon-button>
+            <button mat-icon-button *ngIf="editId !== category.id" class='on-transition-fade' (click)=onEditButton(category)>
                 <mat-icon>edit</mat-icon>
             </button>
-            <button *ngIf="category.edit" mat-button class='on-transition-fade' (click)=onCancelButton(category)
-                mat-icon-button>
+            <button mat-icon-button *ngIf="editId === category.id" class='on-transition-fade' (click)=onCancelButton()>
                 <mat-icon>close</mat-icon>
             </button>
-            <button *ngIf="category.edit" mat-button class='on-transition-fade' (click)=onSaveButton(category)
-                mat-icon-button>
+            <button mat-icon-button *ngIf="editId === category.id" class='on-transition-fade' (click)=onSaveButton(category)>
                 <mat-icon>save</mat-icon>
             </button>
-            <button mat-button class='on-transition-fade' (click)=onDeleteButton(category) mat-icon-button>
+            <button mat-icon-button mat-button class='on-transition-fade' (click)=onDeleteButton(category)>
                 <mat-icon>delete</mat-icon>
             </button>
         </mat-action-row>
+
     </mat-expansion-panel>
 </mat-accordion>

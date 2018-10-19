@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -12,6 +12,7 @@ import { Motion } from '../../../../shared/models/motions/motion';
 import { SortingListComponent } from '../../../../shared/components/sorting-list/sorting-list.component';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
+import { PromptService } from 'app/core/services/prompt.service';
 
 /**
  * List view for the categories.
@@ -21,21 +22,31 @@ import { ViewMotion } from '../../models/view-motion';
     templateUrl: './category-list.component.html',
     styleUrls: ['./category-list.component.scss']
 })
-export class CategoryListComponent extends BaseComponent implements OnInit, OnDestroy {
+export class CategoryListComponent extends BaseComponent implements OnInit {
     /**
-     * States the edit mode
+     * Hold the category to create
      */
-    public editMode = false;
+    public categoryToCreate: Category | null;
 
     /**
-     * Source of the Data
+     * Determine which category to edit
      */
-    public dataSource: Array<ViewCategory>;
+    public editId: number | null;
 
     /**
-     * The current focussed formgroup
+     * Source of the data
      */
-    public formGroup: FormGroup;
+    public categories: Array<ViewCategory>;
+
+    /**
+     * For new categories
+     */
+    public createForm: FormGroup;
+
+    /**
+     * The current focussed form
+     */
+    public updateForm: FormGroup;
 
     /**
      * The MultiSelect Component
@@ -55,55 +66,36 @@ export class CategoryListComponent extends BaseComponent implements OnInit, OnDe
         protected translate: TranslateService,
         private repo: CategoryRepositoryService,
         private formBuilder: FormBuilder,
-        private motionRepo: MotionRepositoryService
+        private motionRepo: MotionRepositoryService,
+        private promptService: PromptService
     ) {
         super(titleService, translate);
-        this.formGroup = this.formBuilder.group({
-            name: ['', Validators.required],
-            prefix: ['', Validators.required]
-        });
-    }
 
-    /**
-     * On Destroy Function
-     *
-     * Saves the edits
-     */
-    public ngOnDestroy(): void {
-        this.dataSource.forEach(viewCategory => {
-            if (viewCategory.edit && viewCategory.opened) {
-                const nameControl = this.formGroup.get('name');
-                const prefixControl = this.formGroup.get('prefix');
-                const nameValue = nameControl.value;
-                const prefixValue = prefixControl.value;
-                viewCategory.name = nameValue;
-                viewCategory.prefix = prefixValue;
-                this.saveCategory(viewCategory);
-            }
+        this.createForm = this.formBuilder.group({
+            prefix: ['', Validators.required],
+            name: ['', Validators.required]
+        });
+
+        this.updateForm = this.formBuilder.group({
+            prefix: ['', Validators.required],
+            name: ['', Validators.required]
         });
     }
 
     /**
      * Event on Key Down in form
      */
-    public keyDownFunction(event: KeyboardEvent, viewCategory: ViewCategory): void {
+    public keyDownFunction(event: KeyboardEvent, viewCategory?: ViewCategory): void {
         if (event.keyCode === 13) {
-            this.onSaveButton(viewCategory);
+            console.log('hit enter');
+            if (viewCategory) {
+                this.onSaveButton(viewCategory);
+            } else {
+                this.onCreateButton();
+            }
         }
     }
 
-    /**
-     * Stores the Datamodel in the repo
-     * @param viewCategory
-     */
-    private saveCategory(viewCategory: ViewCategory): void {
-        if (this.repo.osInDataStore(viewCategory)) {
-            this.repo.update(viewCategory.category).subscribe();
-        } else {
-            this.repo.create(viewCategory.category, viewCategory).subscribe();
-        }
-        viewCategory.edit = false;
-    }
     /**
      * Init function.
      *
@@ -112,147 +104,104 @@ export class CategoryListComponent extends BaseComponent implements OnInit, OnDe
     public ngOnInit(): void {
         super.setTitle('Category');
         this.repo.getViewModelListObservable().subscribe(newViewCategories => {
-            this.dataSource = newViewCategories;
+            this.categories = newViewCategories;
+            this.sortDataSource();
         });
-        this.sortDataSource();
     }
 
     /**
      * Add a new Category.
      */
     public onPlusButton(): void {
-        let noNewOnes = true;
-        this.dataSource.forEach(viewCategory => {
-            if (viewCategory.id === undefined) {
-                noNewOnes = false;
-            }
-        });
-        if (noNewOnes) {
-            const newCategory = new Category();
-            newCategory.id = undefined;
-            newCategory.name = this.translate.instant('Name');
-            newCategory.prefix = this.translate.instant('Prefix');
-            const newViewCategory = new ViewCategory(newCategory);
-            newViewCategory.opened = true;
-            this.dataSource.reverse();
-            this.dataSource.push(newViewCategory);
-            this.dataSource.reverse();
-            this.editMode = true;
+        if (!this.categoryToCreate) {
+            this.categoryToCreate = new Category();
+            this.createForm.reset();
         }
     }
 
     /**
-     * Executed on edit button
-     * @param viewCategory
+     * Creates a new category. Executed after hitting save.
+     */
+    public onCreateButton(): void {
+        if (this.createForm.valid) {
+            this.categoryToCreate.patchValues(this.createForm.value as Category);
+            this.repo.create(this.categoryToCreate).subscribe(resp => {
+                this.categoryToCreate = null;
+            });
+        }
+    }
+
+    /**
+     * Category specific edit button
+     * @param viewCategory individual cat
      */
     public onEditButton(viewCategory: ViewCategory): void {
-        viewCategory.edit = true;
-        viewCategory.synced = false;
-        this.editMode = true;
-        const nameControl = this.formGroup.get('name');
-        const prefixControl = this.formGroup.get('prefix');
-        nameControl.setValue(viewCategory.name);
-        prefixControl.setValue(viewCategory.prefix);
+        this.editId = viewCategory.id;
+        this.updateForm.reset();
+        this.updateForm.patchValue({
+            prefix: viewCategory.prefix,
+            name: viewCategory.name
+        });
     }
 
     /**
      * Saves the categories
      */
     public onSaveButton(viewCategory: ViewCategory): void {
-        if (this.formGroup.controls.name.valid && this.formGroup.controls.prefix.valid) {
-            this.editMode = false;
-            viewCategory.edit = false;
-            const nameControl = this.formGroup.get('name');
-            const prefixControl = this.formGroup.get('prefix');
-            const nameValue = nameControl.value;
-            const prefixValue = prefixControl.value;
-            if (
-                viewCategory.id === undefined ||
-                nameValue !== viewCategory.name ||
-                prefixValue !== viewCategory.prefix
-            ) {
-                viewCategory.prefix = prefixValue;
-                viewCategory.name = nameValue;
-                this.saveCategory(viewCategory);
-            }
+        if (this.updateForm.valid) {
+            this.repo.update(this.updateForm.value as Partial<Category>, viewCategory).subscribe(resp => {
+                this.onCancelButton();
+                this.sortDataSource();
+            });
         }
-        const motionList = this.sortSelector.array as Motion[];
-        this.repo.updateCategoryNumbering(viewCategory.category, motionList).subscribe();
-        this.sortDataSource();
+
+        // get the sorted motions
+        if (this.sortSelector) {
+            const manuallySortedMotions = this.sortSelector.array as Motion[];
+            this.repo.updateCategoryNumbering(viewCategory.category, manuallySortedMotions).subscribe();
+        }
     }
 
     /**
-     * sorts the datasource by prefix alphabetically
+     * sorts the categories by prefix
      */
     protected sortDataSource(): void {
-        this.dataSource.sort((viewCategory1, viewCategory2) => {
-            if (viewCategory1.prefix > viewCategory2.prefix) {
-                return 1;
-            }
-            if (viewCategory1.prefix < viewCategory2.prefix) {
-                return -1;
-            }
-        });
+        this.categories.sort((viewCategory1, viewCategory2) => (viewCategory1 > viewCategory2 ? 1 : -1));
     }
 
     /**
      * executed on cancel button
      * @param viewCategory
      */
-    public onCancelButton(viewCategory: ViewCategory): void {
-        viewCategory.edit = false;
-        this.editMode = false;
+    public onCancelButton(): void {
+        this.editId = null;
     }
 
     /**
      * is executed, when the delete button is pressed
      */
-    public onDeleteButton(viewCategory: ViewCategory): void {
-        if (this.repo.osInDataStore(viewCategory) && viewCategory.id !== undefined) {
+    public async onDeleteButton(viewCategory: ViewCategory): Promise<any> {
+        const content = this.translate.instant('Delete') + ` ${viewCategory.name}?`;
+        if (await this.promptService.open('Are you sure?', content)) {
             const motList = this.motionsInCategory(viewCategory.category);
             motList.forEach(motion => {
                 motion.category_id = null;
                 this.motionRepo.update(motion, new ViewMotion(motion));
             });
-            this.repo.delete(viewCategory).subscribe();
-        }
-        const index = this.dataSource.indexOf(viewCategory, 0);
-        if (index > -1) {
-            this.dataSource.splice(index, 1);
-        }
-        // if no category is there, we still have to be able to create one
-        if (this.dataSource.length < 1) {
-            this.editMode = false;
+
+            this.repo.delete(viewCategory).subscribe(resp => {
+                this.onCancelButton();
+            });
         }
     }
 
     /**
-     * Is executed when a mat-extension-panel is opened or closed
-     * @param open true if opened, false if being closed
-     * @param category the category in the panel
+     * Returns the motions corresponding to a category
+     * @param category target
      */
-    public panelOpening(open: boolean, category: ViewCategory): void {
-        category.opened = open as boolean;
-        if (category.edit === true) {
-            this.onSaveButton(category);
-            this.onCancelButton(category);
-        }
-        if (!open) {
-            category.edit = false;
-            this.editMode = false;
-        }
-    }
-
     public motionsInCategory(category: Category): Array<Motion> {
         const motList = this.repo.getMotionsOfCategory(category);
-        motList.sort((motion1, motion2) => {
-            if (motion1 > motion2) {
-                return 1;
-            }
-            if (motion1 < motion2) {
-                return -1;
-            }
-        });
+        motList.sort((motion1, motion2) => (motion1 > motion2 ? 1 : -1));
         return motList;
     }
 }

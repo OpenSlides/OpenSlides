@@ -8,6 +8,7 @@ import { BaseRepository } from '../../base/base-repository';
 import { Motion } from '../../../shared/models/motions/motion';
 import { CategoryNumbering } from '../models/category-numbering';
 import { HttpService, HTTPMethod } from '../../../core/services/http.service';
+
 /**
  * Repository Services for Categories
  *
@@ -40,24 +41,18 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         return new ViewCategory(category);
     }
 
-    public create(update: Category, viewCategory?: ViewCategory): Observable<any> {
-        console.log('update: ', update);
-        console.log('viewCategory: ', viewCategory);
-        if (this.osInDataStore(viewCategory)) {
-            return this.update(update, viewCategory);
-        } else {
-            return this.dataSend.createModel(viewCategory.category);
-        }
+    public create(newCategory: Category): Observable<any> {
+        return this.dataSend.createModel(newCategory);
     }
 
-    public update(update: Category, viewCategory?: ViewCategory): Observable<any> {
+    public update(category: Partial<Category>, viewCategory?: ViewCategory): Observable<any> {
         let updateCategory: Category;
         if (viewCategory) {
             updateCategory = viewCategory.category;
         } else {
             updateCategory = new Category();
         }
-        updateCategory.patchValues(update);
+        updateCategory.patchValues(category);
         return this.dataSend.updateModel(updateCategory, HTTPMethod.PUT);
     }
 
@@ -74,7 +69,7 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         const motList = this.DS.getAll(Motion);
         const retList: Array<Motion> = [];
         motList.forEach(motion => {
-            if (motion.category_id === category.id) {
+            if (motion.category_id && motion.category_id === category.id) {
                 retList.push(motion);
             }
         });
@@ -83,33 +78,16 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
     }
 
     /**
-     * Checks if a Catagory is on the server already
-     * @param viewCategory the category to check if it is already on the server
-     */
-    public osInDataStore(viewCategory: ViewCategory): boolean {
-        const serverCategoryArray = this.DS.getAll(Category);
-        if (serverCategoryArray.find(cat => cat.id === viewCategory.id)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Returns the category for the ID
      * @param category_id category ID
      */
     public getCategoryByID(category_id: number): Category {
         const catList = this.DS.getAll(Category);
-        catList.forEach(category => {
-            if (category.id === category_id) {
-                return category;
-            }
-        });
-        return null;
+        return catList.find(category => category.id === category_id);
     }
 
     /**
-     * Updates a Categorys numbering
+     * Updates a Categories numbering
      * @param category the category it should be updated in
      * @param motionList the list of motions on this category
      */

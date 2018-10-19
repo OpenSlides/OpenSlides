@@ -25,7 +25,8 @@ export class DataSendService {
      * Usually for new Models
      */
     public createModel(model: BaseModel): Observable<BaseModel> {
-        return this.httpService.create('rest/' + model.collectionString + '/', model) as Observable<BaseModel>;
+        const restPath = `rest/${model.collectionString}/`;
+        return this.httpService.create(restPath, model) as Observable<BaseModel>;
     }
 
     /**
@@ -36,7 +37,7 @@ export class DataSendService {
      */
     public updateModel(model: BaseModel, method: HTTPMethod): Observable<BaseModel> {
         const restPath = `rest/${model.collectionString}/${model.id}`;
-        return this.httpService.update(restPath + '/' + model.id, model, method) as Observable<BaseModel>;
+        return this.httpService.update(restPath, model, method) as Observable<BaseModel>;
     }
 
     /**
@@ -44,10 +45,9 @@ export class DataSendService {
      *
      * @param model the BaseModel that shall be removed
      * @return Observable of BaseModel
-     *
-     * TODO Not tested
      */
     public deleteModel(model: BaseModel): Observable<BaseModel> {
-        return this.httpService.delete(model.collectionString + '/' + model.id) as Observable<BaseModel>;
+        const restPath = `rest/${model.collectionString}/${model.id}`;
+        return this.httpService.delete(restPath) as Observable<BaseModel>;
     }
 }
