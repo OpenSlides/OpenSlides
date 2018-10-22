@@ -14,9 +14,10 @@
     </div>
 </os-head-bar>
 
-<div class="custom-table-header on-transition-fade">
-    <button mat-button><span translate>SORT</span></button> <button mat-button><span translate>FILTER</span></button>
-</div>
+<mat-drawer-container class="on-transition-fade">
+<os-sort-filter-bar [sortService]="sortService" [filterService]="filterService"
+    (searchFieldChange)="searchFilter($event)">
+</os-sort-filter-bar>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- Selector column -->
@@ -36,9 +37,9 @@
     <!-- prefix column -->
     <ng-container matColumnDef="group">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Group</mat-header-cell>
-        <mat-cell *matCellDef="let user" (click)="selectItem(user, $event)">
-            <div class="groupsCell">
-                <span *ngIf="user.groups.length > 0">
+        <mat-cell *matCellDef="let user">
+            <div class='groupsCell'>
+                <span *ngIf="user.groups && user.groups.length">
                     <mat-icon>people</mat-icon>
                     {{ user.groups }}
                 </span>
@@ -143,3 +144,4 @@
         </div>
     </div>
 </mat-menu>
+</mat-drawer-container>

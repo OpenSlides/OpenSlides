@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { Workflow } from '../../../shared/models/motions/workflow';
 import { ViewWorkflow } from '../models/view-workflow';
 import { DataSendService } from '../../../core/services/data-send.service';
@@ -30,7 +31,7 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
      * @param dataSend
      */
     public constructor(
-        DS: DataStoreService,
+        protected DS: DataStoreService,
         mapperService: CollectionStringModelMapperService,
         private dataSend: DataSendService
     ) {
@@ -84,5 +85,6 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
             states = states.concat(workflow.states);
         });
         return states;
+
     }
 }

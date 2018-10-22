@@ -118,4 +118,9 @@ export class ViewMediafile extends BaseViewModel {
             this._mediafile = update;
         }
     }
+
+    public is_hidden(): boolean {
+        return this._mediafile.hidden;
+    }
+
 }

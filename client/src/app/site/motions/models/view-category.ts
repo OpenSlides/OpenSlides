@@ -50,6 +50,10 @@ export class ViewCategory extends BaseViewModel {
         return this.name;
     }
 
+    public get prefixedName(): string {
+        return this.category.getTitle();
+    }
+
     /**
      * Updates the local objects if required
      * @param update

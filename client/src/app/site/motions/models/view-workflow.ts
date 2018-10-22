@@ -10,6 +10,7 @@ import { BaseViewModel } from '../../base/base-view-model';
  * @ignore
  */
 export class ViewWorkflow extends BaseViewModel {
+
     private _workflow: Workflow;
 
     public constructor(workflow?: Workflow) {

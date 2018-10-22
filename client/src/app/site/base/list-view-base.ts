@@ -1,9 +1,10 @@
-import { ViewChild } from '@angular/core';
+import { MatTableDataSource, MatTable, MatSort, MatPaginator, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { MatTableDataSource, MatTable, MatSort, MatPaginator, MatSnackBar } from '@angular/material';
-import { BaseViewModel } from './base-view-model';
+import { ViewChild } from '@angular/core';
+
 import { BaseViewComponent } from './base-view';
+import { BaseViewModel } from './base-view-model';
 
 export abstract class ListViewBaseComponent<V extends BaseViewModel> extends BaseViewComponent {
     /**
@@ -64,7 +65,28 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
     public initTable(): void {
         this.dataSource = new MatTableDataSource();
         this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+    }
+
+    public onSortButton(itemProperty: string): void {
+        let newOrder: 'asc' | 'desc' = 'asc';
+        if (itemProperty === this.sort.active) {
+            newOrder = this.sort.direction === 'asc' ? 'desc' : 'asc';
+        }
+        const newSort = {
+            disableClear: true,
+            id: itemProperty,
+            start: newOrder
+        };
+        this.sort.sort(newSort);
+    }
+
+    public onFilterData(filteredDataSource: MatTableDataSource<V>) : void {
+        this.dataSource = filteredDataSource;
+        this.dataSource.paginator = this.paginator;
+    }
+
+    public searchFilter(event: string): void {
+        this.dataSource.filter = event;
     }
 
     /**

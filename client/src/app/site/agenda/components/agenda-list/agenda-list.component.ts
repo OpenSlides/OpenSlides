@@ -4,10 +4,12 @@ import { Title } from '@angular/platform-browser';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
-import { ViewItem } from '../../models/view-item';
-import { ListViewBaseComponent } from 'app/site/base/list-view-base';
+import { AgendaFilterListService } from '../../services/agenda-filter-list.service';
 import { AgendaRepositoryService } from '../../services/agenda-repository.service';
+import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { PromptService } from '../../../../core/services/prompt.service';
+import { ViewItem } from '../../models/view-item';
+
 
 import { AgendaCsvExportService } from '../../services/agenda-csv-export.service';
 import { ItemInfoDialogComponent } from '../item-info-dialog/item-info-dialog.component';
@@ -50,6 +52,9 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @param vp determine the viewport
      * @param durationService Converts numbers to readable duration strings
      * @param csvExport Handles the exporting into csv
+     * @param repo the agenda repository
+     * @param promptService
+     * @param filterService: service for filtering data
      */
     public constructor(
         titleService: Title,
@@ -63,7 +68,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         private config: ConfigService,
         public vp: ViewportService,
         public durationService: DurationService,
-        private csvExport: AgendaCsvExportService
+        private csvExport: AgendaCsvExportService,
+        public filterService: AgendaFilterListService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -73,16 +79,15 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
 
     /**
      * Init function.
-     * Sets the title, initializes the table and calls the repository.
+     * Sets the title, initializes the table and filter options, subscribes to filter service.
      */
     public ngOnInit(): void {
         super.setTitle('Agenda');
         this.initTable();
-        this.repo.getViewModelListObservable().subscribe(newAgendaItem => {
+        this.filterService.filter().subscribe(newAgendaItem => {
             this.dataSource.data = newAgendaItem;
             this.checkSelection();
         });
-
         this.config
             .get('agenda_enable_numbering')
             .subscribe(autoNumbering => (this.isNumberingAllowed = autoNumbering));

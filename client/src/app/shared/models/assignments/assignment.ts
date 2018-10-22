@@ -3,6 +3,13 @@ import { Poll } from './poll';
 import { AgendaBaseModel } from '../base/agenda-base-model';
 import { SearchRepresentation } from '../../../core/services/search.service';
 
+
+export const assignmentPhase = [
+    {key: 0, name: 'Searching for candidates'},
+    {key: 1, name: 'Voting'},
+    {key: 2, name: 'Finished'}
+];
+
 /**
  * Representation of an assignment.
  * @ignore

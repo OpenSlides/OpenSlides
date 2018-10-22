@@ -24,7 +24,8 @@ import {
     MatIconModule,
     MatButtonToggleModule,
     MatBadgeModule,
-    MatStepperModule
+    MatStepperModule,
+    MatBottomSheetModule
 } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material';
@@ -67,6 +68,9 @@ import { SortingListComponent } from './components/sorting-list/sorting-list.com
 import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/speaker-list.component';
 import { SortingTreeComponent } from './components/sorting-tree/sorting-tree.component';
 import { ChoiceDialogComponent } from './components/choice-dialog/choice-dialog.component';
+import { OsSortFilterBarComponent } from './components/os-sort-filter-bar/os-sort-filter-bar.component';
+import { OsSortBottomSheetComponent } from './components/os-sort-filter-bar/os-sort-bottom-sheet/os-sort-bottom-sheet.component';
+import { FilterMenuComponent } from './components/os-sort-filter-bar/filter-menu/filter-menu.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -104,6 +108,7 @@ import { ChoiceDialogComponent } from './components/choice-dialog/choice-dialog.
         MatDialogModule,
         MatSnackBarModule,
         MatChipsModule,
+        MatBottomSheetModule,
         MatTooltipModule,
         MatBadgeModule,
         // TODO: there is an error with missing icons
@@ -167,7 +172,8 @@ import { ChoiceDialogComponent } from './components/choice-dialog/choice-dialog.
         SortingListComponent,
         EditorModule,
         SortingTreeComponent,
-        TreeModule
+        TreeModule,
+        OsSortFilterBarComponent
     ],
     declarations: [
         PermsDirective,
@@ -182,13 +188,19 @@ import { ChoiceDialogComponent } from './components/choice-dialog/choice-dialog.
         SortingListComponent,
         SpeakerListComponent,
         SortingTreeComponent,
-        ChoiceDialogComponent
+        ChoiceDialogComponent,
+        OsSortFilterBarComponent,
+        OsSortBottomSheetComponent,
+        FilterMenuComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },
         SearchValueSelectorComponent,
         SortingListComponent,
-        SortingTreeComponent
-    ]
+        SortingTreeComponent,
+        OsSortFilterBarComponent,
+        OsSortBottomSheetComponent
+    ],
+    entryComponents: [OsSortBottomSheetComponent]
 })
 export class SharedModule {}

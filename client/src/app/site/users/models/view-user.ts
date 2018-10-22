@@ -92,11 +92,19 @@ export class ViewUser extends BaseViewModel {
         return this.user ? this.user.about_me : null;
     }
 
+    public get is_last_email_send(): boolean {
+        if (this.user && this.user.last_email_send){
+            return true;
+        }
+        return false;
+    }
+
     public constructor(user?: User, groups?: Group[]) {
         super();
         this._user = user;
         this._groups = groups;
     }
+
 
     /**
      * required by BaseViewModel. Don't confuse with the users title.

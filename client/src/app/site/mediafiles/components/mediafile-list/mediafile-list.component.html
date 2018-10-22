@@ -48,6 +48,10 @@
 
 </os-head-bar>
 
+<mat-drawer-container class="on-transition-fade">
+<os-sort-filter-bar [sortService]="sortService" [filterService]="filterService"
+    (searchFieldChange)="searchFilter($event)">
+</os-sort-filter-bar>
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- Selector Column -->
     <ng-container matColumnDef="selector">
@@ -172,3 +176,4 @@
         </button>
     </div>
 </mat-menu>
+</mat-drawer-container>
