@@ -1545,6 +1545,33 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 }
             );
 
+            // <ins><li>...</li></ins> => <li class="insert">...</li>
+            diffUnnormalized = diffUnnormalized.replace(
+                /<(ins|del)><(p|div|blockquote|li)([^>]*)>([\s\S]*)<\/\2><\/\1>/gi,
+                function(whole, insDel, block, blockArguments, content) {
+                    // Prevent accidental matches like <ins><p>...</p>...</ins><ins>...<p></p></ins>
+                    if (content.match(/<(ins|del)>/gi)) {
+                        return whole;
+                    }
+
+                    // Add the CSS-class to the existing "class"-attribute, or add one
+                    var newArguments = blockArguments;
+                    var modificationClass = (insDel.toLowerCase() === 'ins' ? 'insert' : 'delete');
+                    if (newArguments.match(/class="/gi)) {
+                        // class="someclass" => class="someclass insert"
+                        newArguments = newArguments.replace(/(class\s*=\s*)(["'])([^\2]*)\2/gi,
+                            function(classWhole, attr, para, content) {
+                                return attr + para + content + ' ' + modificationClass + para;
+                            }
+                        );
+                    } else {
+                        newArguments += ' class="' + modificationClass + '"';
+                    }
+
+                    return '<' + block + newArguments + '>' + content + '</' + block + '>';
+                }
+            );
+
 
             if (diffUnnormalized.substr(0, workaroundPrepend.length) === workaroundPrepend) {
                 diffUnnormalized = diffUnnormalized.substring(workaroundPrepend.length);
@@ -1554,18 +1581,6 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
             if (this._diffDetectBrokenDiffHtml(diffUnnormalized)) {
                 diff = this._diffParagraphs(htmlOld, htmlNew, lineLength, firstLineNumber);
             } else {
-                diffUnnormalized = diffUnnormalized.replace(/<ins>.*?(\n.*?)*<\/ins>/gi, function (found) {
-                    found = found.replace(/<(div|p|li)[^>]*>/gi, function(match) { return match + '<ins>'; });
-                    found = found.replace(/<\/(div|p|li)[^>]*>/gi, function(match) { return '</ins>' + match; });
-                    return found;
-                });
-                diffUnnormalized = diffUnnormalized.replace(/<del>.*?(\n.*?)*<\/del>/gi, function (found) {
-                    found = found.replace(/<(div|p|li)[^>]*>/gi, function(match) { return match + '<del>'; });
-                    found = found.replace(/<\/(div|p|li)[^>]*>/gi, function(match) { return '</del>' + match; });
-                    return found;
-                });
-                diffUnnormalized = diffUnnormalized.replace(/^<del><p>(.*)<\/p><\/del>$/gi, function(match, inner) { return "<p>" + inner + "</p>"; });
-
                 var node = document.createElement('div');
                 node.innerHTML = diffUnnormalized;
                 diff = node.innerHTML;

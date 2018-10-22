@@ -6,14 +6,17 @@ https://openslides.org/
 
 Version 2.3.1 (unreleased)
 ==========================
+`Milestone <https://github.com/OpenSlides/OpenSlides/milestones/2.3.1>`_
 
 Bugfixes:
- - Fixed image browser in CKEditor plugin to show uploaded images.
- - Fixed sorting of users in dropdowns for speakers, submitters and candidates.
- - Fixed election ballot paper layout (more space required for global 'no').
- - Fixed missing output of special poll values (for motions and elections).
+ - Fixed image browser in CKEditor plugin to show uploaded images [#3889].
+ - Fixed sorting of users in dropdowns for speakers, submitters and candidates [#3932].
+ - Fixed election ballot paper layout (more space required for global 'no') [#3932].
+ - Fixed missing output of special poll values (for motions and elections) [#3932].
  - Fixed amendment csv export (added missing submitters and recommendation, removed
-   html tags for old and new text).
+   html tags for old and new text) [#3942].
+ - Fixed motion/amendment diff bug: does not delete a paragraph/list item
+   before an new one was inserted [#3943].
 
 
 Version 2.3 (2018-09-20)
