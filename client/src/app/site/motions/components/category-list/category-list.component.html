@@ -1,13 +1,27 @@
-<os-head-bar appName="Categories" [plusButton]=true (plusButtonClicked)=onPlusButton()>
-</os-head-bar>
-<div class='custom-table-header on-transition-fade'>
-        <button mat-button>
-            <mat-icon>search</mat-icon>
+<os-head-bar [nav]="false" [backButton]=true [allowEdit]="false">
+
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 translate>Categories</h2>
+    </div>
+
+    <!-- Use the menu slot for an add button -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button (click)="onPlusButton()">
+            <mat-icon>add</mat-icon>
         </button>
     </div>
+
+</os-head-bar>
+
+<div class='custom-table-header on-transition-fade'>
+    <button mat-button>
+        <mat-icon>search</mat-icon>
+    </button>
+</div>
 <mat-accordion class="os-card">
-    <mat-expansion-panel [ngClass]="{new: category.id === undefined}" *ngFor="let category of this.dataSource" (opened)="panelOpening('true', category)" (closed)="panelOpening('false', category)"
-        multiple="false">
+    <mat-expansion-panel [ngClass]="{new: category.id === undefined}" *ngFor="let category of this.dataSource" (opened)="panelOpening('true', category)"
+        (closed)="panelOpening('false', category)" multiple="false">
         <mat-expansion-panel-header>
             <mat-panel-title *ngIf="!category.edit">
                 {{category.name}}

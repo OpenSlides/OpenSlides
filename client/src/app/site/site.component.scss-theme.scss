@@ -38,7 +38,8 @@
 
         /** make the .user-menu expansion panel look like the nav-toolbar above */
         .user-menu {
-            background-color: mat-color($primary, darker);
+            background: mat-color($primary, darker);
+            // background-color: mat-color($primary, darker);
             color: mat-color($background, raised-button);
             min-height: 48px;
 
@@ -57,6 +58,11 @@
 
             .mat-expansion-indicator:after {
                 color: mat-color($background, raised-button);
+            }
+
+            .mat-expansion-panel-header:hover {
+                // prevent the panel to become white after collapse
+                background: mat-color($primary, darker) !important;
             }
         }
 

@@ -35,7 +35,8 @@ $openslides-blue: (
 // Generate paletes using: https://material.io/design/color/
 // default values fir mat-palette: $default: 500, $lighter: 100, $darker: 700.
 $openslides-primary: mat-palette($openslides-blue);
-$openslides-accent: mat-palette($mat-pink, A200, A100, A400);
+$openslides-accent: mat-palette($mat-blue);
+
 $openslides-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).

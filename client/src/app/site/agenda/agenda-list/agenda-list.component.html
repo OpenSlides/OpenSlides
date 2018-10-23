@@ -1,4 +1,9 @@
-<os-head-bar appName="Agenda" plusButton=true (plusButtonClicked)=onPlusButton()></os-head-bar>
+<os-head-bar plusButton=true (plusButtonClicked)=onPlusButton()>
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 translate>Agenda</h2>
+    </div>
+</os-head-bar>
 
 <mat-table class='os-listview-table on-transition-fade' [dataSource]="dataSource" matSort>
     <!-- title column -->

@@ -1,5 +1,24 @@
-<os-head-bar appName="Statute paragraphs" [plusButton]=true (plusButtonClicked)=onPlusButton()
-[menuList]="menuList" (ellipsisMenuItem)=onEllipsisItem($event)></os-head-bar>
+<os-head-bar [nav]="false" [backButton]=true [allowEdit]="false">
+
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 translate>Statute paragraphs</h2>
+    </div>
+
+    <!-- Use the menu slot for an add button -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button (click)="onPlusButton()">
+            <mat-icon>add</mat-icon>
+        </button>
+
+        <button type="button" mat-icon-button [matMenuTriggerFor]="commentMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+
+</os-head-bar>
+
+
 <div class="head-spacer"></div>
 <mat-card *ngIf="statuteParagraphToCreate">
     <mat-card-title translate>Create new statute paragraph</mat-card-title>
@@ -15,7 +34,8 @@
             </p>
             <p>
                 <mat-form-field>
-                    <textarea formControlName="text" matInput placeholder="{{'Statute paragraph' | translate}}" required></textarea>
+                    <textarea formControlName="text" matInput placeholder="{{'Statute paragraph' | translate}}"
+                        required></textarea>
                     <mat-hint *ngIf="!createForm.controls.text.valid">
                         <span translate>Required</span>
                     </mat-hint>
@@ -48,7 +68,8 @@
             </p>
             <p>
                 <mat-form-field>
-                    <textarea formControlName="text" matInput placeholder="{{'Statute paragraph' | translate}}" required></textarea>
+                    <textarea formControlName="text" matInput placeholder="{{'Statute paragraph' | translate}}"
+                        required></textarea>
                     <mat-hint *ngIf="!createForm.controls.text.valid">
                         <span translate>Required</span>
                     </mat-hint>
@@ -83,5 +104,14 @@
     </mat-expansion-panel>
 </mat-accordion>
 <mat-card *ngIf="statuteParagraphs.length === 0">
-    <mat-card-content><div class="noContent" translate>No statute paragraphs yet...</div></mat-card-content>
+    <mat-card-content>
+        <div class="noContent" translate>No statute paragraphs yet...</div>
+    </mat-card-content>
 </mat-card>
+
+<mat-menu #commentMenu="matMenu">
+    <button mat-menu-item (click)="sortStatuteParagraphs()">
+        <mat-icon>sort</mat-icon>
+        <span translate>Sort ...</span>
+    </button>
+</mat-menu>

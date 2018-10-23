@@ -1,9 +1,9 @@
-<mat-sidenav-container autosize class='main-container'>
-    <mat-sidenav #sideNav [mode]="vp.isMobile ? 'push' : 'side'" [opened]='!vp.isMobile' disableClose='!vp.isMobile' class="side-panel">
+<mat-sidenav-container #siteContainer class='main-container' (backdropClick)="toggleSideNav()">
+    <mat-sidenav #sideNav [mode]="vp.isMobile ? 'push' : 'side'" [opened]='!vp.isMobile' disableClose='!vp.isMobile'
+        class="side-panel">
         <mat-toolbar class='nav-toolbar'>
             <!-- logo -->
-            <mat-toolbar-row class='os-logo-container'>
-            </mat-toolbar-row>
+            <mat-toolbar-row class='os-logo-container' routerLink='/' (click)="toggleSideNav()"></mat-toolbar-row>
         </mat-toolbar>
 
         <!-- User Menu -->
@@ -46,44 +46,31 @@
         <!-- navigation -->
         <mat-nav-list class='main-nav'>
             <span *ngFor="let entry of mainMenuService.entries">
-                <a [@navItemAnim] *osPerms="entry.permission" mat-list-item (click)='toggleSideNav()'
-                    [routerLink]='entry.route' routerLinkActive='active' [routerLinkActiveOptions]="{exact: true}">
-                    <mat-icon>{{entry.icon}}</mat-icon>{{ entry.displayName | translate}}
+                <a [@navItemAnim] *osPerms="entry.permission" mat-list-item (click)='toggleSideNav()' [routerLink]='entry.route'
+                    routerLinkActive='active' [routerLinkActiveOptions]="{exact: entry.route === '/'}">
+                    <mat-icon>{{ entry.icon }}</mat-icon>
+                    <span translate>{{ entry.displayName | translate}}</span>
+
                 </a>
             </span>
             <mat-divider></mat-divider>
-            <a [@navItemAnim] *osPerms="'core.can_see_projector'" mat-list-item routerLink='/projector' routerLinkActive='active' (click)='toggleSideNav()'>
+            <a [@navItemAnim] *osPerms="'core.can_see_projector'" mat-list-item routerLink='/projector'
+                routerLinkActive='active' (click)='toggleSideNav()'>
                 <mat-icon>videocam</mat-icon>
                 <span translate>Projector</span>
             </a>
         </mat-nav-list>
     </mat-sidenav>
-    <div class="content">
-        <header>
-            <!-- the first toolbar row is (still) a global element
-            the second one shall be handled by the apps  -->
-            <mat-toolbar color='primary'>
-
-                <!-- show/hide menu button -->
-                <button mat-icon-button *ngIf="vp.isMobile" (click)='sideNav.toggle()'>
-                    <mat-icon>menu</mat-icon>
-                </button>
-
-                <!-- glob search and generic menu on the right -->
-                <span class='spacer'></span>
-                <button mat-icon-button (click)='sideNav.toggle()'>
-                    <mat-icon>search</mat-icon>
-                </button>
-            </mat-toolbar>
-        </header>
-
-        <div class="relax">
-            <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
-                <router-outlet #o="outlet"></router-outlet>
-            </main>
-            <footer>
-                <os-footer></os-footer>
-            </footer>
+    <mat-sidenav-content>
+        <div (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')" class="content">
+            <div class="relax">
+                <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
+                    <router-outlet #o="outlet"></router-outlet>
+                </main>
+                <footer>
+                    <os-footer></os-footer>
+                </footer>
+            </div>
         </div>
-    </div>
+    </mat-sidenav-content>
 </mat-sidenav-container>

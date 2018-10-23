@@ -4,7 +4,6 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { MatTableDataSource, MatTable, MatSort, MatPaginator } from '@angular/material';
 import { BaseViewModel } from './base-view-model';
-import { EllipsisMenuItem } from '../../shared/components/head-bar/head-bar.component';
 
 export abstract class ListViewBaseComponent<V extends BaseViewModel> extends BaseComponent {
     /**
@@ -48,17 +47,5 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
         this.dataSource = new MatTableDataSource();
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-    }
-
-    /**
-     * handler function for clicking on items in the ellipsis menu.
-     * Ellipsis menu comes from the HeadBarComponent is is implemented by most ListViews
-     *
-     * @param event clicked entry from ellipsis menu
-     */
-    public onEllipsisItem(item: EllipsisMenuItem): void {
-        if (typeof this[item.action] === 'function') {
-            this[item.action]();
-        }
     }
 }

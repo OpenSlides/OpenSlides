@@ -1,8 +1,22 @@
-<os-head-bar appName="Motion comment sections" [plusButton]=true (plusButtonClicked)=onPlusButton()>
+<os-head-bar [nav]="false" [backButton]=true [allowEdit]="false">
+
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 translate>Comments</h2>
+    </div>
+
+    <!-- Use the menu slot for an add button -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button (click)="onPlusButton()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+
 </os-head-bar>
+
 <div class="head-spacer"></div>
 <mat-card *ngIf="commentSectionToCreate">
-    <mat-card-title translate>Create new comment section</mat-card-title>
+    <mat-card-title translate>Create new comment field</mat-card-title>
     <mat-card-content>
         <form [formGroup]="createForm" (keydown)="keyDownFunction($event)">
             <p>
@@ -15,11 +29,11 @@
             </p>
             <p>
                 <os-search-value-selector ngDefaultControl [form]="createForm" [formControl]="this.createForm.get('read_groups_id')"
-                [multiple]="true" listname="Groups with read permissions" [InputListValues]="this.groups"></os-search-value-selector>
+                    [multiple]="true" listname="Groups with read permissions" [InputListValues]="this.groups"></os-search-value-selector>
             </p>
             <p>
                 <os-search-value-selector ngDefaultControl [form]="createForm" [formControl]="this.createForm.get('write_groups_id')"
-                [multiple]="true" listname="Groups with write permissions" [InputListValues]="this.groups"></os-search-value-selector>
+                    [multiple]="true" listname="Groups with write permissions" [InputListValues]="this.groups"></os-search-value-selector>
             </p>
         </form>
     </mat-card-content>
@@ -29,8 +43,8 @@
     </mat-card-actions>
 </mat-card>
 <mat-accordion class="os-card">
-    <mat-expansion-panel *ngFor="let section of this.commentSections" (opened)="openId = section.id"
-        (closed)="panelClosed(section)" [expanded]="openId === section.id" multiple="false">
+    <mat-expansion-panel *ngFor="let section of this.commentSections" (opened)="openId = section.id" (closed)="panelClosed(section)"
+        [expanded]="openId === section.id" multiple="false">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <div class="header-container">
@@ -66,11 +80,11 @@
             </p>
             <p>
                 <os-search-value-selector ngDefaultControl [form]="updateForm" [formControl]="this.updateForm.get('read_groups_id')"
-                [multiple]="true" listname="Groups with read permissions" [InputListValues]="this.groups"></os-search-value-selector>
+                    [multiple]="true" listname="Groups with read permissions" [InputListValues]="this.groups"></os-search-value-selector>
             </p>
             <p>
                 <os-search-value-selector ngDefaultControl [form]="updateForm" [formControl]="this.updateForm.get('write_groups_id')"
-                [multiple]="true" listname="Groups with write permissions" [InputListValues]="this.groups"></os-search-value-selector>
+                    [multiple]="true" listname="Groups with write permissions" [InputListValues]="this.groups"></os-search-value-selector>
             </p>
         </form>
         <ng-container *ngIf="editId !== section.id">

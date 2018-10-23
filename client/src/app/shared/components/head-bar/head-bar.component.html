@@ -1,27 +1,58 @@
-<mat-toolbar color='primary'>
-    <button *ngIf="plusButton" class='head-button on-transition-fade' (click)=clickPlusButton()
-        mat-fab>
-        <mat-icon>add</mat-icon>
-    </button>
+<mat-toolbar color='primary' [ngClass]="{'during-scroll': stickyToolbar}">
 
-    <span class='app-name on-transition-fade'>
-        {{ appName | translate }}
-    </span>
+    <mat-toolbar-row [ngClass]="{'hidden-bar': stickyToolbar}">
+        <!-- Nav menu -->
+        <button mat-icon-button *ngIf="vp.isMobile && nav" (click)='clickHamburgerMenu()'>
+            <mat-icon>menu</mat-icon>
+        </button>
+    </mat-toolbar-row>
 
-    <span class='spacer'></span>
+    <mat-toolbar-row [ngClass]="{'during-scroll': stickyToolbar}">
+        <div class="toolbar-left on-transition-fade">
+            <!-- Fab Button "Plus" -->
+            <button mat-fab class="head-button" *ngIf="plusButton && !editMode" (click)=clickPlusButton()>
+                <mat-icon>add</mat-icon>
+            </button>
 
-    <button *ngIf="menuList" class='on-transition-fade' [matMenuTriggerFor]="ellipsisMenu" mat-icon-button>
-        <mat-icon>more_vert</mat-icon>
-    </button>
+            <!-- Exit / Back button -->
+            <button mat-icon-button class="on-transition-fade" *ngIf="backButton && !editMode" (click)="onBackButton()">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+
+            <!-- Cancel edit button -->
+            <button mat-icon-button class="on-transition-fade" *ngIf="editMode" (click)="toggleEditMode()">
+                <mat-icon>close</mat-icon>
+            </button>
+
+            <div class="toolbar-left-text">
+                <!-- Title slot -->
+                <ng-content select=".title-slot"></ng-content>
+            </div>
+        </div>
+        <div class="toolbar-right on-transition-fade" [ngClass]="{'toolbar-right-scroll': stickyToolbar, 'toolbar-right-top': !stickyToolbar}">
+
+            <!-- Extra controls slot -->
+            <div class="extra-controls-wrapper on-transition-fade">
+                <ng-content select=".extra-controls-slot"></ng-content>
+            </div>
+
+            <!-- Save button -->
+            <button mat-button *ngIf="editMode" (click)="save()">
+                <strong translate class="upper">Save</strong>
+            </button>
+
+            <!-- Edit button-->
+            <button mat-icon-button *ngIf="!editMode && allowEdit" (click)="toggleEditMode()">
+                <mat-icon>{{ editIcon }}</mat-icon>
+            </button>
+
+            <!-- Menu button slot -->
+            <ng-content *ngIf="!editMode" select=".menu-slot"></ng-content>
+        </div>
+
+    </mat-toolbar-row>
+
 </mat-toolbar>
 
-<mat-menu #ellipsisMenu="matMenu">
-
-    <ng-container *ngFor="let item of menuList">
-
-        <button mat-menu-item *osPerms="item.perm" (click)=clickMenu(item)>
-            <mat-icon *ngIf="item.icon">{{ item.icon }}</mat-icon>
-            {{item.text | translate}}
-        </button>
-    </ng-container>
-</mat-menu>
+<!-- fake mat-toolbar to keep the distance when the real one gets a fixed position -->
+<div class="fake-bar" [ngClass]="{'hidden-bar': !stickyToolbar}"></div>

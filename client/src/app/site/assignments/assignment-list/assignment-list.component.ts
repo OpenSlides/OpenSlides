@@ -16,18 +16,6 @@ import { AssignmentRepositoryService } from '../services/assignment-repository.s
 })
 export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignment> implements OnInit {
     /**
-     * Define the content of the ellipsis menu.
-     * Give it to the HeadBar to display them.
-     */
-    public assignmentMenu = [
-        {
-            text: 'Download All',
-            icon: 'save_alt',
-            action: 'downloadAssignmentButton'
-        }
-    ];
-
-    /**
      * Constructor.
      *
      * @param repo the repository

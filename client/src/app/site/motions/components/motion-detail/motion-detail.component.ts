@@ -22,6 +22,7 @@ import { ChangeRecommendationRepositoryService } from '../../services/change-rec
 import { ViewChangeReco } from '../../models/view-change-reco';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ViewUnifiedChange } from '../../models/view-unified-change';
+import { OperatorService } from '../../../../core/services/operator.service';
 
 /**
  * Component for the motion detail view
@@ -87,6 +88,21 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     public allChangingObjects: ViewUnifiedChange[];
 
     /**
+     * Holds all motions. Required to navigate back and forth
+     */
+    public allMotions: ViewMotion[];
+
+    /**
+     * preload the next motion for direct navigation
+     */
+    public nextMotion: ViewMotion;
+
+    /**
+     * preload the previous motion for direct navigation
+     */
+    public previousMotion: ViewMotion;
+
+    /**
      * Subject for the Categories
      */
     public categoryObserver: BehaviorSubject<Array<Category>>;
@@ -122,6 +138,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      */
     public constructor(
         public vp: ViewportService,
+        private op: OperatorService,
         private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
@@ -134,29 +151,8 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     ) {
         super();
         this.createForm();
+        this.getMotionByUrl();
 
-        if (route.snapshot.url[0] && route.snapshot.url[0].path === 'new') {
-            this.newMotion = true;
-            this.editMotion = true;
-
-            // Both are (temporarily) necessary until submitter and supporters are implemented
-            // TODO new Motion and ViewMotion
-            this.motion = new ViewMotion();
-            this.motionCopy = new ViewMotion();
-        } else {
-            // load existing motion
-            this.route.params.subscribe(params => {
-                this.repo.getViewModelObservable(params.id).subscribe(newViewMotion => {
-                    this.motion = newViewMotion;
-                });
-                this.changeRecoRepo
-                    .getChangeRecosOfMotionObservable(parseInt(params.id, 10))
-                    .subscribe((recos: ViewChangeReco[]) => {
-                        this.changeRecommendations = recos;
-                        this.recalcUnifiedChanges();
-                    });
-            });
-        }
         // Initial Filling of the Subjects
         this.submitterObserver = new BehaviorSubject(DS.getAll(User));
         this.supporterObserver = new BehaviorSubject(DS.getAll(User));
@@ -193,23 +189,46 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     }
 
     /**
+     * determine the motion to display using the URL
+     */
+    public getMotionByUrl(): void {
+        if (this.route.snapshot.url[0] && this.route.snapshot.url[0].path === 'new') {
+            // creates a new motion
+            this.newMotion = true;
+            this.editMotion = true;
+            this.motion = new ViewMotion();
+            this.motionCopy = new ViewMotion();
+        } else {
+            // load existing motion
+            this.route.params.subscribe(params => {
+                this.repo.getViewModelObservable(params.id).subscribe(newViewMotion => {
+                    this.motion = newViewMotion;
+                });
+                this.changeRecoRepo
+                    .getChangeRecosOfMotionObservable(parseInt(params.id, 10))
+                    .subscribe((recos: ViewChangeReco[]) => {
+                        this.changeRecommendations = recos;
+                        this.recalcUnifiedChanges();
+                    });
+            });
+        }
+    }
+
+    /**
      * Async load the values of the motion in the Form.
      */
     public patchForm(formMotion: ViewMotion): void {
-        this.metaInfoForm.patchValue({
-            category_id: formMotion.categoryId,
-            supporters_id: formMotion.supporterIds,
-            submitters_id: formMotion.submitterIds,
-            state_id: formMotion.stateId,
-            recommendation_id: formMotion.recommendationId,
-            identifier: formMotion.identifier,
-            origin: formMotion.origin
+        const metaInfoPatch = {};
+        Object.keys(this.metaInfoForm.controls).forEach(ctrl => {
+            metaInfoPatch[ctrl] = formMotion[ctrl];
         });
-        this.contentForm.patchValue({
-            title: formMotion.title,
-            text: formMotion.text,
-            reason: formMotion.reason
+        this.metaInfoForm.patchValue(metaInfoPatch);
+
+        const contentPatch = {};
+        Object.keys(this.contentForm.controls).forEach(ctrl => {
+            contentPatch[ctrl] = formMotion[ctrl];
         });
+        this.contentForm.patchValue(contentPatch);
     }
 
     /**
@@ -241,12 +260,11 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * The AutoUpdate-Service should see a change once it arrives and show it
      * in the list view automatically
      *
-     * TODO: state is not yet saved. Need a special "put" command
-     *
-     * TODO: Repo should handle
+     * TODO: state is not yet saved. Need a special "put" command. Repo should handle this.
      */
     public saveMotion(): void {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
+
         const fromForm = new Motion();
         fromForm.deserialize(newMotionValues);
 
@@ -287,36 +305,6 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      */
     public getFormattedText(): SafeHtml {
         return this.sanitizer.bypassSecurityTrustHtml(this.getFormattedTextPlain());
-    }
-
-    /**
-     * Click on the edit button (pen-symbol)
-     */
-    public editMotionButton(): void {
-        if (this.editMotion) {
-            this.saveMotion();
-        } else {
-            this.editMotion = true;
-            this.motionCopy = this.motion.copy();
-            this.patchForm(this.motionCopy);
-            if (this.vp.isMobile) {
-                this.metaInfoPanel.open();
-                this.contentPanel.open();
-            }
-        }
-    }
-
-    /**
-     * Cancel the editing process
-     *
-     * If a new motion was created, return to the list.
-     */
-    public cancelEditMotionButton(): void {
-        if (this.newMotion) {
-            this.router.navigate(['./motions/']);
-        } else {
-            this.editMotion = false;
-        }
     }
 
     /**
@@ -411,6 +399,73 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
 
     /**
      * Init. Does nothing here.
+     * Comes from the head bar
+     * @param mode
      */
-    public ngOnInit(): void {}
+    public setEditMode(mode: boolean): void {
+        this.editMotion = mode;
+        if (mode) {
+            this.motionCopy = this.motion.copy();
+            this.patchForm(this.motionCopy);
+            if (this.vp.isMobile) {
+                this.metaInfoPanel.open();
+                this.contentPanel.open();
+            }
+        }
+        if (!mode && this.newMotion) {
+            this.router.navigate(['./motions/']);
+        }
+    }
+
+    /**
+     * Navigates the user to the given ViewMotion
+     * @param motion target
+     */
+    public navigateToMotion(motion: ViewMotion): void {
+        this.router.navigate(['../' + motion.id], { relativeTo: this.route });
+        // update the current motion
+        this.motion = motion;
+        this.setSurroundingMotions();
+    }
+
+    /**
+     * Sets the previous and next motion
+     */
+    public setSurroundingMotions(): void {
+        const indexOfCurrent = this.allMotions.findIndex(motion => {
+            return motion === this.motion;
+        });
+        if (indexOfCurrent > -1) {
+            if (indexOfCurrent > 0) {
+                this.previousMotion = this.allMotions[indexOfCurrent - 1];
+            } else {
+                this.previousMotion = null;
+            }
+
+            if (indexOfCurrent < this.allMotions.length - 1) {
+                this.nextMotion = this.allMotions[indexOfCurrent + 1];
+            } else {
+                this.nextMotion = null;
+            }
+        }
+    }
+
+    /**
+     * Determine if the user has the correct requirements to alter the motion
+     */
+    public opCanEdit(): boolean {
+        return this.op.hasPerms('motions.can_manage');
+    }
+
+    /**
+     * Init.
+     */
+    public ngOnInit(): void {
+        this.repo.getViewModelListObservable().subscribe(newMotionList => {
+            if (newMotionList) {
+                this.allMotions = newMotionList;
+                this.setSurroundingMotions();
+            }
+        });
+    }
 }

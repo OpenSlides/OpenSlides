@@ -10,9 +10,11 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    cursor: pointer;
 }
 
 .side-panel {
+    border: 0;
     box-shadow: 3px 0px 10px 0px rgba(0, 0, 0, 0.2);
 }
 

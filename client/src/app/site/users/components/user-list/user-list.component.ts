@@ -18,28 +18,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class UserListComponent extends ListViewBaseComponent<ViewUser> implements OnInit {
     /**
-     * content of the ellipsis menu
-     */
-    public userMenuList = [
-        {
-            text: 'Groups',
-            icon: 'people',
-            action: 'toGroups',
-            perm: 'users.can_manage'
-        },
-        {
-            text: 'Import',
-            icon: 'save_alt',
-            action: 'toGroups'
-        },
-        {
-            text: 'Export',
-            icon: 'archive',
-            action: 'toGroups'
-        }
-    ];
-
-    /**
      * The usual constructor for components
      * @param repo the user repository
      * @param titleService
@@ -75,14 +53,6 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      */
     public import(): void {
         console.log('click on Import');
-    }
-
-    /**
-     * Navigate to groups page
-     * TODO: implement
-     */
-    public toGroups(): void {
-        this.router.navigate(['./groups'], { relativeTo: this.route });
     }
 
     /**

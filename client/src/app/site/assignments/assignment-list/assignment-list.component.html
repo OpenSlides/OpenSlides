@@ -1,5 +1,15 @@
-<os-head-bar appName="Assignments" plusButton=true [menuList]=assignmentMenu (plusButtonClicked)=onPlusButton()
-    (ellipsisMenuItem)=onEllipsisItem($event)>
+<os-head-bar plusButton=true (plusButtonClicked)=onPlusButton()>
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 translate>Assignments</h2>
+    </div>
+
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="assignmentMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
 </os-head-bar>
 
 <mat-table class='os-listview-table on-transition-fade' [dataSource]="dataSource" matSort>
@@ -30,3 +40,10 @@
 </mat-table>
 
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+
+<mat-menu #assignmentMenu="matMenu">
+    <button mat-menu-item (click)="downloadAssignmentButton()">
+        <mat-icon>archive</mat-icon>
+        <span translate>Export ...</span>
+    </button>
+</mat-menu>

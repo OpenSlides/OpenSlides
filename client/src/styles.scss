@@ -49,8 +49,16 @@ body {
     color: rgb(77, 243, 86);
 }
 
+// transform text to uppercase. Use on span, p, h, (...)
+.upper {
+    text-transform: uppercase;
+}
+
 .red-warning-text {
     color: red;
+    mat-icon {
+        color: red !important;
+    }
 }
 
 .icon-text-distance {

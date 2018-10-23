@@ -9,7 +9,6 @@ import { PromptService } from '../../../../core/services/prompt.service';
 import { StatuteParagraph } from '../../../../shared/models/motions/statute-paragraph';
 import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { StatuteParagraphRepositoryService } from '../../services/statute-paragraph-repository.service';
-import { EllipsisMenuItem } from '../../../../shared/components/head-bar/head-bar.component';
 
 /**
  * List view for the statute paragraphs.
@@ -20,16 +19,6 @@ import { EllipsisMenuItem } from '../../../../shared/components/head-bar/head-ba
     styleUrls: ['./statute-paragraph-list.component.scss']
 })
 export class StatuteParagraphListComponent extends BaseComponent implements OnInit {
-    /**
-     * content of the ellipsis menu
-     */
-    public menuList: EllipsisMenuItem[] = [
-        {
-            text: 'Sort statute paragraphs',
-            action: 'sortStatuteParagraphs'
-        }
-    ];
-
     public statuteParagraphToCreate: StatuteParagraph | null;
 
     /**
@@ -154,10 +143,8 @@ export class StatuteParagraphListComponent extends BaseComponent implements OnIn
         }
     }
 
-    public onEllipsisItem(item: EllipsisMenuItem): void {
-        if (item.action === 'sortStatuteParagrpahs') {
-            this.sortStatuteParagrpahs();
-        }
+    public sortStatuteParagraphs(): void {
+        console.log('Not yet implemented. Depends on other Features');
     }
 
     /**

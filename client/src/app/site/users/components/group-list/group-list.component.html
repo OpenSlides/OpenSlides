@@ -1,48 +1,27 @@
-<mat-toolbar color='primary'>
-    <button *osPerms="'users.can_manage'" (click)='newGroupButton()' class='generic-mini-button on-transition-fade'
-        mat-mini-fab>
-        <mat-icon *ngIf="!newGroup">add</mat-icon>
-        <mat-icon *ngIf="newGroup">cancel</mat-icon>
-    </button>
+<os-head-bar [nav]="false" [backButton]=true [allowEdit]="true" [editMode]="editGroup" editIcon="add" (editEvent)="setEditMode($event)"
+    (saveEvent)="saveGroup()">
 
-    <div class="on-transition-fade">
-        <span translate>Groups</span>
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 *ngIf="!editGroup && !newGroup" translate>Groups</h2>
+
+        <form *ngIf="editGroup" [formGroup]="groupForm" (ngSubmit)="saveGroup()" (keydown)="keyDownFunction($event)">
+            <mat-form-field>
+                <input type="text" matInput osAutofocus required formControlName="name" placeholder="{{ 'New group name' | translate}}">
+                <mat-error *ngIf="groupForm.invalid" translate>A group name is required</mat-error>
+            </mat-form-field>
+        </form>
     </div>
 
-    <span class='spacer'></span>
-</mat-toolbar>
-
-<div class="on-transition-fade new-group-form" *ngIf="newGroup">
-    <form #newGroupForm="ngForm" (ngSubmit)="submitNewGroup(newGroupForm.form)" (keydown)="keyDownFunction($event)">
-        <mat-form-field>
-            <input type="text" matInput name="name" ngModel #nameField="ngModel" placeholder="{{ 'New group name' | translate}}">
-        </mat-form-field>
-
-        <button type="submit" mat-mini-fab color="primary">
-            <mat-icon>save</mat-icon>
-        </button>
-    </form>
-</div>
-
-<div class="on-transition-fade new-group-form" *ngIf="editGroup">
-    <form #editGroupForm="ngForm" (ngSubmit)="submitEditedGroup(editGroupForm.form)">
-        <mat-form-field>
-            <input type="text" matInput name="name" [(ngModel)]="selectedGroup.name" #nameField="ngModel" placeholder="{{ 'Edit group name' | translate}}">
-        </mat-form-field>
-
-        <button type="submit" mat-mini-fab color="primary">
-            <mat-icon>save</mat-icon>>
-        </button>
-
-        <button type="button" mat-mini-fab color="warn" (click)="deleteSelectedGroup()" [disabled]="isProtected(selectedGroup)">
+    <!-- remove button button -->
+    <div class="extra-controls-slot on-transition-fade">
+        <button *ngIf="editGroup && !newGroup" type="button" mat-button (click)="deleteSelectedGroup()">
             <mat-icon>delete</mat-icon>
+            <span translate>Delete</span>
         </button>
+    </div>
 
-        <button type="button" mat-mini-fab color="primary" (click)="cancelEditing()">
-            <mat-icon>cancel</mat-icon>
-        </button>
-    </form>
-</div>
+</os-head-bar>
 
 <div class="hint-text on-transition-fade">
     <span translate>All your changes are saved immediately.</span>
@@ -75,7 +54,7 @@
                         <mat-cell *matCellDef="let perm">
                             <div class="inner-table">
                                 <mat-checkbox *ngIf="group.id !== 2" [checked]="group.hasPermission(perm.value)"
-                                (change)='togglePerm(group, perm.value)'></mat-checkbox>
+                                    (change)='togglePerm(group, perm.value)'></mat-checkbox>
                                 <mat-checkbox *ngIf="group.id === 2" [checked]="true" [disabled]="true"></mat-checkbox>
                             </div>
                         </mat-cell>

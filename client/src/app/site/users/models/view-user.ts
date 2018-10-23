@@ -27,15 +27,15 @@ export class ViewUser extends BaseViewModel {
         return this.user ? this.user.title : null;
     }
 
-    public get firstName(): string {
+    public get first_name(): string {
         return this.user ? this.user.first_name : null;
     }
 
-    public get lastName(): string {
+    public get last_name(): string {
         return this.user ? this.user.last_name : null;
     }
 
-    public get fullName(): string {
+    public get full_name(): string {
         return this.user ? this.user.full_name : null;
     }
 
@@ -43,15 +43,15 @@ export class ViewUser extends BaseViewModel {
         return this.user ? this.user.email : null;
     }
 
-    public get structureLevel(): string {
+    public get structure_level(): string {
         return this.user ? this.user.structure_level : null;
     }
 
-    public get participantNumber(): string {
+    public get participant_number(): string {
         return this.user ? this.user.number : null;
     }
 
-    public get groupIds(): number[] {
+    public get groups_id(): number[] {
         return this.user ? this.user.groups_id : null;
     }
 
@@ -64,7 +64,7 @@ export class ViewUser extends BaseViewModel {
         }
     }
 
-    public get initialPassword(): string {
+    public get default_password(): string {
         return this.user ? this.user.default_password : null;
     }
 
@@ -72,19 +72,19 @@ export class ViewUser extends BaseViewModel {
         return this.user ? this.user.comment : null;
     }
 
-    public get isPresent(): boolean {
+    public get is_present(): boolean {
         return this.user ? this.user.is_present : null;
     }
 
-    public get isActive(): boolean {
+    public get is_active(): boolean {
         return this.user ? this.user.is_active : null;
     }
 
-    public get isCommittee(): boolean {
+    public get is_committee(): boolean {
         return this.user ? this.user.is_committee : null;
     }
 
-    public get about(): string {
+    public get about_me(): string {
         return this.user ? this.user.about_me : null;
     }
 

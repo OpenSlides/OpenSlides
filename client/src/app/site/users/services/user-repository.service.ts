@@ -63,21 +63,14 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         // collectionString of userData is still empty
         newUser.patchValues(userData);
 
-        // if the username is not present, delete.
-        // The server will generate a one
-        if (!newUser.username) {
-            delete newUser.username;
-        }
-
-        // title must not be "null" during creation
-        if (!newUser.title) {
-            delete newUser.title;
-        }
-
-        // null values will not be accepted for group_id
-        if (!newUser.groups_id) {
-            delete newUser.groups_id;
-        }
+        // during creation, the server demands that basically nothing must be null.
+        // during the update process, null values are interpreted as delete.
+        // therefore, remove "null" values.
+        Object.keys(newUser).forEach(key => {
+            if (!newUser[key]) {
+                delete newUser[key];
+            }
+        });
 
         return this.dataSend.createModel(newUser);
     }

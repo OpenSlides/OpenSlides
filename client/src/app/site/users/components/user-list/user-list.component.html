@@ -1,5 +1,15 @@
-<os-head-bar appName="Users" plusButton=true (plusButtonClicked)=onPlusButton() [menuList]=userMenuList
-    (ellipsisMenuItem)=onEllipsisItem($event)>
+<os-head-bar plusButton=true (plusButtonClicked)=onPlusButton()>
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 translate>Users</h2>
+    </div>
+
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="userMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
 </os-head-bar>
 
 <div class='custom-table-header on-transition-fade'>
@@ -12,10 +22,11 @@
 </div>
 
 <mat-table class='os-listview-table on-transition-fade' [dataSource]="dataSource" matSort>
+
     <!-- name column -->
     <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
-        <mat-cell *matCellDef="let user"> {{user.fullName}} </mat-cell>
+        <mat-cell *matCellDef="let user"> {{user.full_name}} </mat-cell>
     </ng-container>
 
     <!-- prefix column -->
@@ -30,7 +41,7 @@
                 <br *ngIf="user.groups && user.structureLevel">
                 <span *ngIf="user.structureLevel">
                     <mat-icon>flag</mat-icon>
-                    {{user.structureLevel}}
+                    {{user.structure_level}}
                 </span>
             </div>
         </mat-cell>
@@ -40,7 +51,7 @@
     <ng-container matColumnDef="presence">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Presence </mat-header-cell>
         <mat-cell *matCellDef="let user">
-            <div *ngIf="user.isActive">
+            <div *ngIf="user.is_active">
                 <mat-icon>check_box</mat-icon>
                 <span translate>Present</span>
             </div>
@@ -52,3 +63,20 @@
 </mat-table>
 
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+
+<mat-menu #userMenu="matMenu">
+    <button mat-menu-item *osPerms="'users.can_manage'" routerLink="groups">
+        <mat-icon>people</mat-icon>
+        <span translate>Groups</span>
+    </button>
+
+    <button mat-menu-item>
+        <mat-icon>save_alt</mat-icon>
+        <span translate>Import ...</span>
+    </button>
+
+    <button mat-menu-item>
+        <mat-icon>archive</mat-icon>
+        <span translate>Export ...</span>
+    </button>
+</mat-menu>

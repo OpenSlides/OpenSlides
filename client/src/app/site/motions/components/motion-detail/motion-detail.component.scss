@@ -2,9 +2,32 @@ span {
     margin: 0;
 }
 
+.extra-controls-slot {
+    div {
+        padding: 0px;
+        button {
+            .mat-button-wrapper {
+                display: inherit;
+            }
+            font-size: 100%;
+        }
+        span {
+            font-size: 80%;
+        }
+    }
+}
+
 .motion-title {
-    padding-left: 20px;
-    line-height: 100%;
+    padding: 40px;
+    padding-left: 25px;
+    line-height: 180%;
+    font-size: 120%;
+    color: #317796; // TODO: put in theme as $primary
+
+    h2 {
+        margin: 0;
+        font-weight: normal;
+    }
 }
 
 .motion-content {
@@ -31,9 +54,20 @@ mat-panel-title {
 }
 
 .meta-info-block {
+    form {
+        div + div {
+            margin-top: 15px;
+        }
+
+        ul {
+            margin: 5px;
+        }
+    }
+
     h3 {
         display: block;
-        margin-top: 12px; //distance between heading and text
+        // padding-top: 0;
+        margin-top: 0px; //distance between heading and text
         margin-bottom: 3px; //distance between heading and text
         font-size: 80%;
         color: gray;
@@ -41,10 +75,6 @@ mat-panel-title {
         mat-icon {
             margin-left: 5px;
         }
-    }
-
-    mat-form-field {
-        margin-top: 12px; //distance between heading and text
     }
 
     .mat-form-field-label {
@@ -77,29 +107,41 @@ mat-panel-title {
     }
 }
 
-mat-expansion-panel {
+.mat-accordion {
+    display: block;
+    margin-top: 0px;
+}
+
+.mat-expansion-panel {
+    padding-top: 0;
     .expansion-panel-custom-body {
         padding-left: 55px;
     }
 }
 
-.content-panel {
-    h2 {
-        display: block;
-        font-weight: bold;
-        font-size: 120%;
-    }
-
-    h3 {
-        display: block;
-        font-weight: initial;
-        font-size: 100%;
-    }
-
+.motion-content {
     h4 {
+        margin: 10px 10px 15px 0;
+        display: block;
+        font-weight: bold;
+        font-size: 110%;
+    }
+
+    h5 {
+        margin: 15px 10px 10px 0;
         display: block;
         font-weight: bold;
         font-size: 100%;
+    }
+
+    .motion-text {
+        margin-left: 0px;
+    }
+
+    //the assembly may decide ...
+    .text-prefix-label {
+        display: block;
+        margin: 0 10px 7px 0px;
     }
 }
 
@@ -109,7 +151,7 @@ mat-expansion-panel {
         float: left;
 
         .meta-info-desktop {
-            padding: 40px 20px 10px 20px;
+            padding-left: 20px;
         }
 
         .personal-note {
@@ -156,7 +198,7 @@ mat-expansion-panel {
 
         mat-card {
             display: inline;
-            margin: 20px;
+            margin: 0px 40px 10px 10px;
         }
     }
 }
