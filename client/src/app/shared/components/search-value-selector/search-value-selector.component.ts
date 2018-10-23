@@ -3,11 +3,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Subject, ReplaySubject, BehaviorSubject } from 'rxjs';
 import { MatSelect } from '@angular/material';
 import { takeUntil } from 'rxjs/operators';
-import { Displayable } from '../../models/base/displayable';
 import { TranslateService } from '@ngx-translate/core';
-import { Identifiable } from '../../models/base/identifiable';
-
-export type Selectable = Displayable & Identifiable;
+import { Selectable } from '../selectable';
 
 /**
  * Reusable Searchable Value Selector

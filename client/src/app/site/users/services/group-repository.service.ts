@@ -7,6 +7,7 @@ import { Group } from '../../../shared/models/users/group';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { DataSendService } from '../../../core/services/data-send.service';
 import { ConstantsService } from '../../../core/services/constants.service';
+import { HTTPMethod } from 'app/core/services/http.service';
 
 /**
  * Set rules to define the shape of an app permission
@@ -124,14 +125,14 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
         const updateGroup = new Group();
         updateGroup.patchValues(viewGroup.group);
         updateGroup.patchValues(groupData);
-        return this.dataSend.updateModel(updateGroup, 'put');
+        return this.dataSend.updateModel(updateGroup, HTTPMethod.PUT);
     }
 
     /**
      * Deletes a given group
      */
     public delete(viewGroup: ViewGroup): Observable<any> {
-        return this.dataSend.delete(viewGroup.group);
+        return this.dataSend.deleteModel(viewGroup.group);
     }
 
     public createViewModel(group: Group): ViewGroup {

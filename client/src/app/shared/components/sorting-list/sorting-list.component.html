@@ -1,0 +1,10 @@
+<div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
+    <div class="box line" *ngFor="let item of array" cdkDrag>
+        <div class="section-one" cdkDragHandle>
+            <mat-icon>drag_handle</mat-icon>
+        </div>
+        <div class="section-two">
+            {{item}}
+        </div>
+    </div>
+</div>

@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { DataSendService } from '../../../core/services/data-send.service';
 import { User } from '../../../shared/models/users/user';
 import { Category } from '../../../shared/models/motions/category';
 import { Workflow } from '../../../shared/models/motions/workflow';
-import { Observable } from 'rxjs';
 import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { MotionChangeReco } from '../../../shared/models/motions/motion-change-reco';
 import { ViewChangeReco } from '../models/view-change-reco';
-import { map } from 'rxjs/operators';
+import { HTTPMethod } from 'app/core/services/http.service';
 
 /**
  * Repository Services for change recommendations
@@ -78,7 +79,7 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
      * @param {ViewChangeReco} viewModel
      */
     public delete(viewModel: ViewChangeReco): Observable<MotionChangeReco> {
-        return this.dataSend.delete(viewModel.changeRecommendation) as Observable<MotionChangeReco>;
+        return this.dataSend.deleteModel(viewModel.changeRecommendation) as Observable<MotionChangeReco>;
     }
 
     /**
@@ -93,7 +94,7 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
     public update(update: Partial<MotionChangeReco>, viewModel: ViewChangeReco): Observable<MotionChangeReco> {
         const changeReco = viewModel.changeRecommendation;
         changeReco.patchValues(update);
-        return this.dataSend.updateModel(changeReco, 'patch') as Observable<MotionChangeReco>;
+        return this.dataSend.updateModel(changeReco, HTTPMethod.PATCH) as Observable<MotionChangeReco>;
     }
 
     /**
@@ -117,7 +118,7 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
         changeReco.patchValues({
             rejected: false
         });
-        return this.dataSend.updateModel(changeReco, 'patch') as Observable<MotionChangeReco>;
+        return this.dataSend.updateModel(changeReco, HTTPMethod.PATCH) as Observable<MotionChangeReco>;
     }
 
     /**
@@ -130,6 +131,6 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
         changeReco.patchValues({
             rejected: true
         });
-        return this.dataSend.updateModel(changeReco, 'patch') as Observable<MotionChangeReco>;
+        return this.dataSend.updateModel(changeReco, HTTPMethod.PATCH) as Observable<MotionChangeReco>;
     }
 }

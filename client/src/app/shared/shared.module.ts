@@ -33,6 +33,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 // ngx-translate
 import { TranslateModule } from '@ngx-translate/core';
@@ -50,6 +51,7 @@ import { PrivacyPolicyContentComponent } from './components/privacy-policy-conte
 import { SearchValueSelectorComponent } from './components/search-value-selector/search-value-selector.component';
 import { OpenSlidesDateAdapter } from './date-adapter';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
+import { SortingListComponent } from './components/sorting-list/sorting-list.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -93,6 +95,7 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
         MatIconModule,
         MatRadioModule,
         MatButtonToggleModule,
+        DragDropModule,
         TranslateModule.forChild(),
         RouterModule,
         NgxMatSelectSearchModule
@@ -124,6 +127,7 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
         MatIconModule,
         MatRadioModule,
         MatButtonToggleModule,
+        DragDropModule,
         NgxMatSelectSearchModule,
         TranslateModule,
         PermsDirective,
@@ -134,7 +138,8 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
         SearchValueSelectorComponent,
         LegalNoticeContentComponent,
         PrivacyPolicyContentComponent,
-        PromptDialogComponent
+        PromptDialogComponent,
+        SortingListComponent
     ],
     declarations: [
         PermsDirective,
@@ -145,8 +150,13 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
         LegalNoticeContentComponent,
         PrivacyPolicyContentComponent,
         SearchValueSelectorComponent,
-        PromptDialogComponent
+        PromptDialogComponent,
+        SortingListComponent
     ],
-    providers: [{ provide: DateAdapter, useClass: OpenSlidesDateAdapter }]
+    providers: [
+        { provide: DateAdapter, useClass: OpenSlidesDateAdapter },
+        SearchValueSelectorComponent,
+        SortingListComponent
+    ]
 })
 export class SharedModule {}

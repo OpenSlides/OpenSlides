@@ -39,7 +39,7 @@ matrix:
 
     - language: node_js
       node_js:
-        - "9"
+        - "10.5"
       apt:
         sources:
           - google-chrome

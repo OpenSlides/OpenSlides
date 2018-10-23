@@ -1,38 +1,3 @@
-.button-side {
-    right: 0;
-    top: 0px;
-    float: right;
-}
-
-.text-side {
-    size: 50%;
-}
-
-.content-row {
-    size: 100%;
-}
-
-.new {
-    // put in theme later
-    background-color: lightblue;
-}
-
-.mini-button {
-    top: 0px;
-    width: 20px;
-    height: 20px;
-    min-height: 20px;
-    font-size: 10px;
-    box-shadow: none;
-    vertical-align: top;
-    padding: 0 0;
-    margin: 0;
-}
-
-.onethird {
-    width: 33%;
-}
-
 .custom-table-header {
     // display: none;
     width: 100%;
@@ -41,4 +6,37 @@
     text-align: right;
     background: white;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.header-container {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 33.333% 33.333% 33.333%;
+    width: 100%;
+
+    > div {
+        grid-row-start: 1;
+        grid-row-end: span 1;
+        grid-column-end: span 3;
+    }
+
+    .header-prefix {
+        grid-column-start: 1;
+    }
+
+    .header-name {
+        grid-column-start: 2;
+        color: lightslategray;
+    }
+
+    .header-size {
+        grid-column-start: 3;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        padding: 3px;
+        background: lightgray;
+        color: #000;
+        text-align: center;
+    }
 }

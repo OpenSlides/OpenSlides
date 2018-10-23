@@ -1,10 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SearchValueSelectorComponent, Selectable } from './search-value-selector.component';
+import { SearchValueSelectorComponent } from './search-value-selector.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
 import { ViewChild, Component } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FormControl, FormBuilder } from '@angular/forms';
+import { Selectable } from '../selectable';
+import { EmptySelectable } from '../empty-selectable';
 
 describe('SearchValueSelectorComponent', () => {
     @Component({
@@ -32,7 +34,11 @@ describe('SearchValueSelectorComponent', () => {
     });
 
     it('should create', () => {
-        const subject: BehaviorSubject<Selectable[]> = new BehaviorSubject([]);
+        const subjectList: Array<Selectable> = [];
+        for (let index = 0; index < 20; index++) {
+            subjectList.push(new EmptySelectable());
+        }
+        const subject: BehaviorSubject<Selectable[]> = new BehaviorSubject(subjectList);
         hostComponent.searchValueSelectorComponent.InputListValues = subject;
 
         const formBuilder: FormBuilder = TestBed.get(FormBuilder);
