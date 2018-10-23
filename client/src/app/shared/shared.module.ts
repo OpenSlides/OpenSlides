@@ -20,10 +20,12 @@ import {
     MatDatepickerModule,
     MatNativeDateModule,
     DateAdapter,
-    MatIconModule
+    MatIconModule,
+    MatButtonToggleModule
 } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material';
+import { MatRadioModule } from '@angular/material';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
@@ -88,6 +90,8 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
         // we either wait or include a fixed version manually (dirty)
         // https://github.com/google/material-design-icons/issues/786
         MatIconModule,
+        MatRadioModule,
+        MatButtonToggleModule,
         TranslateModule.forChild(),
         RouterModule,
         NgxMatSelectSearchModule
@@ -117,6 +121,8 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
         MatChipsModule,
         MatTooltipModule,
         MatIconModule,
+        MatRadioModule,
+        MatButtonToggleModule,
         NgxMatSelectSearchModule,
         TranslateModule,
         PermsDirective,

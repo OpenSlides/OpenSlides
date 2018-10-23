@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Create a change recommendation</h2>
+<mat-dialog-content>
+    <form class="motion-content" [formGroup]='contentForm' (ngSubmit)='saveChangeRecommendation()'>
+        <h3>Change from line {{ lineRange.from }} to {{ lineRange.to }}:</h3>
+
+        <mat-radio-group #rGroup formControlName="diffType">
+            <mat-radio-button *ngFor="let radio of replacementTypes" [value]="radio.value">{{ radio.title }}</mat-radio-button>
+        </mat-radio-group>
+
+        <mat-form-field class="wide-form">
+            <textarea matInput placeholder='Change recommendation Text' formControlName='text'></textarea>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close>Abort</button>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button mat-button (click)="saveChangeRecommendation()">save</button>
+</mat-dialog-actions>
