@@ -39,20 +39,31 @@
     </div>
 
     <mat-menu #motionExtraMenu="matMenu">
-        <button mat-menu-item>
-            <mat-icon>picture_as_pdf</mat-icon>
-            <span translate>PDF</span>
-        </button>
-        <button mat-menu-item>
-            <!-- possible icons: screen_share, cast, videocam -->
-            <mat-icon>videocam</mat-icon>
-            <span translate>Project</span>
-        </button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item class='red-warning-text' (click)='deleteMotionButton()'>
-            <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
-        </button>
+        <div *ngIf="motion">
+            <button mat-menu-item>
+                <mat-icon>picture_as_pdf</mat-icon>
+                <span translate>PDF</span>
+            </button>
+
+            <button mat-menu-item [routerLink]="getSpeakerLink()">
+                <mat-icon>mic</mat-icon>
+                <span translate>List of speakers</span>
+            </button>
+
+            <button mat-menu-item>
+                <!-- possible icons: screen_share, cast, videocam -->
+                <mat-icon>videocam</mat-icon>
+                <span translate>Project</span>
+            </button>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item class='red-warning-text' (click)='deleteMotionButton()'>
+                <mat-icon>delete</mat-icon>
+                <span translate>Delete</span>
+            </button>
+        </div>
+
     </mat-menu>
 </os-head-bar>
 

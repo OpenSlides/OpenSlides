@@ -28,6 +28,14 @@ export class HttpService {
      */
     public constructor(private http: HttpClient, private translate: TranslateService) {}
 
+    /**
+     * Send the a http request the the given URL.
+     * Optionally accepts a request body.
+     *
+     * @param url the target url, usually starting with /rest
+     * @param method the required HTTP method (i.e get, post, put)
+     * @param data optional, if sending a data body is required
+     */
     private async send<T>(url: string, method: HTTPMethod, data?: any): Promise<T> {
         if (!url.endsWith('/')) {
             url += '/';
@@ -76,7 +84,7 @@ export class HttpService {
         } else if (e.status === 500) {
             error += this.translate.instant('A server error occured. Please contact your system administrator.');
         } else if (e.status > 500) {
-            error += this.translate.instant('The server cound not be reached') + ` (${e.status})`
+            error += this.translate.instant('The server cound not be reached') + ` (${e.status})`;
         } else {
             error += e.message;
         }

@@ -318,21 +318,21 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * Trigger to delete the motion
-     *
-     * TODO: Repo should handle
+     * Trigger to delete the motion.
+     * Sends a delete request over the repository and
+     * shows a "are you sure" dialog
      */
-    public deleteMotionButton(): void {
-        this.repo.delete(this.motion).then(() => {
-            this.router.navigate(['./motions/']);
-        }, this.raiseError);
-        // TODO: this needs to be in the autoupdate code.
-        /*const motList = this.categoryRepo.getMotionsOfCategory(this.motion.category);
-        const index = motList.indexOf(this.motion.motion, 0);
-        if (index > -1) {
-            motList.splice(index, 1);
-        }
-        this.categoryRepo.updateCategoryNumbering(this.motion.category, motList);*/
+    public async deleteMotionButton(): Promise<void> {
+        await this.repo.delete(this.motion).then();
+        this.router.navigate(['./motions/']);
+
+        // This should happen during auto update
+        // const motList = this.categoryRepo.getMotionsOfCategory(this.motion.category);
+        // const index = motList.indexOf(this.motion.motion, 0);
+        // if (index > -1) {
+        //     motList.splice(index, 1);
+        // }
+        // this.categoryRepo.updateCategoryNumbering(this.motion.category, motList);
     }
 
     /**
@@ -415,7 +415,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * Init. Does nothing here.
      * Comes from the head bar
      * @param mode
      */
@@ -490,6 +489,14 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         this.repo.getRecommenderObservable().subscribe(newRecommender => {
             this.recommender = newRecommender;
         });
+    }
+
+    /**
+     * Create the absolute path to the corresponding list of speakers
+     * @returns the link to the corresponding list of speakers as string
+     */
+    public getSpeakerLink(): string {
+        return `/agenda/${this.motion.agenda_item_id}/speakers`;
     }
 
     /**
