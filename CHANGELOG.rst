@@ -11,7 +11,9 @@ Bugfixes:
  - Fixed image browser in CKEditor plugin to show uploaded images.
  - Fixed sorting of users in dropdowns for speakers, submitters and candidates.
  - Fixed election ballot paper layout (more space required for global 'no').
- - Fixed missing output of special poll values (for motions and elections)
+ - Fixed missing output of special poll values (for motions and elections).
+ - Fixed amendment csv export (added missing submitters and recommendation, removed
+   html tags for old and new text).
 
 
 Version 2.3 (2018-09-20)

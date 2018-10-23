@@ -29,6 +29,9 @@ angular.module('OpenSlidesApp.motions.csv', [])
             if (params.include.motionBlock) {
                 headerline.push('Motion block');
             }
+            if (params.include.recommendation) {
+                headerline.push('Recommendation');
+            }
             return _.map(headerline, function (entry) {
                 return gettextCatalog.getString(entry);
             });
@@ -104,6 +107,11 @@ angular.module('OpenSlidesApp.motions.csv', [])
                         row.push('"' + blockTitle + '"');
                     }
 
+                    // Recommendation
+                    if (params.include.recommendation) {
+                        var recommendation = motion.recommendation ? motion.getRecommendationName() : '';
+                        row.push('"' + recommendation + '"');
+                    }
                     csvRows.push(row);
                 });
                 CsvDownload(csvRows, params.filename);
@@ -130,13 +138,14 @@ angular.module('OpenSlidesApp.motions.csv', [])
 ])
 
 .factory('AmendmentCsvExport', [
+    '$filter',
     'gettextCatalog',
     'CsvDownload',
     'lineNumberingService',
-    function (gettextCatalog, CsvDownload, lineNumberingService) {
+    function ($filter, gettextCatalog, CsvDownload, lineNumberingService) {
         var makeHeaderline = function () {
             var headerline = ['Identifier', 'Submitters', 'Category', 'Motion block',
-                'Leadmotion', 'Line', 'Old text', 'New text'];
+                'Leadmotion', 'Line', 'Old text', 'New text', 'Recommendation'];
             return _.map(headerline, function (entry) {
                 return gettextCatalog.getString(entry);
             });
@@ -148,12 +157,17 @@ angular.module('OpenSlidesApp.motions.csv', [])
                 ];
                 _.forEach(amendments, function (amendment) {
                     var row = [];
-                    // Identifier and title
+                    // Identifier
                     row.push('"' + amendment.identifier !== null ? amendment.identifier : '' + '"');
+
                     // Submitters
                     var submitters = [];
-                    angular.forEach(amendment.submitters, function(user) {
-                        var user_short_name = [user.title, user.first_name, user.last_name].join(' ').trim();
+                    _.forEach($filter('orderBy')(amendment.submitters, 'weight'), function (user) {
+                        var user_short_name = [
+                            user.user.title,
+                            user.user.first_name,
+                            user.user.last_name
+                        ].join(' ').trim();
                         submitters.push(user_short_name);
                     });
                     row.push('"' + submitters.join('; ') + '"');
@@ -191,13 +205,22 @@ angular.module('OpenSlidesApp.motions.csv', [])
                         //row.push('"' + p_new.text.html + '"');
 
                         // Work around: Export the full paragraphs instead of changed lines
-                        row.push('"' + amendment.getAmendmentParagraphsByMode('original', null, false)[0].text + '"');
-                        row.push('"' + amendment.getAmendmentParagraphsByMode('changed', null, false)[0].text + '"');
+                        // Remove all HTML tags from old and new text
+                        var oldText = document.createElement("DIV");
+                        oldText.innerHTML =  amendment.getAmendmentParagraphsByMode('original', null, false)[0].text;
+                        var newText = document.createElement("DIV");
+                        newText.innerHTML =  amendment.getAmendmentParagraphsByMode('changed', null, false)[0].text;
+                        row.push('"' + (oldText.textContent || oldText.innerText) + '"');
+                        row.push('"' + (newText.textContent || newText.innerText) + '"');
                     } else {
                         row.push('""');
                         row.push('""');
                         row.push('"' + amendment.getText() + '"');
                     }
+
+                    // Recommendation
+                    var recommendation = amendment.recommendation ? amendment.getRecommendationName() : '';
+                    row.push('"' + recommendation + '"');
 
                     csvRows.push(row);
                 });
