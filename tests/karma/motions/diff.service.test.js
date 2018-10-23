@@ -563,7 +563,7 @@ describe('linenumbering', function () {
         var before = "<P>Ihr könnt ohne Sorge fortgehen.'Da meckerte die Alte und machte sich getrost auf den Weg.</P>",
             after = "";
         var diff = diffService.diff(before, after);
-        expect(diff).toBe("<P class=\"delete\">Ihr könnt ohne Sorge fortgehen.'Da meckerte die Alte und machte sich getrost auf den Weg.</P>");
+        expect(diff).toBe("<p class=\"delete\">Ihr könnt ohne Sorge fortgehen.'Da meckerte die Alte und machte sich getrost auf den Weg.</p>");
     });
 
     it('does not repeat the last word (1)', function () {
@@ -661,7 +661,21 @@ describe('linenumbering', function () {
               'Gegenüber</p>';
       var diff = diffService.diff(inHtml, outHtml);
       expect(diff).toBe('<p>Test 123<br>wir strikt ab. lehnen wir ' + brMarkup(1486) + 'ab.<br>' + noMarkup(1487) + 'Gegenüber</p>')
-  });
+    });
+
+    it('does not delete a paragraph before an inserted one', function () {
+      var inHtml = '<ul class="os-split-before"><li>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</li>\n' +
+          '</ul>',
+          outHtml = '<ul class="os-split-before">\n' +
+              '<li>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</li>\n' +
+              '<li class="testclass">At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</li>\n' +
+              '</ul>';
+      var diff = diffService.diff(inHtml, outHtml);
+      expect(diff).toBe('<ul class="os-split-before">' +
+          '<li>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</li>' +
+          '<li class="testclass insert">At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</li>' +
+          '</ul>');
+    });
   });
 
   describe('ignoring line numbers', function () {
