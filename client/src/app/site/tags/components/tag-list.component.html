@@ -1,0 +1,33 @@
+<os-head-bar [nav]="false" [backButton]=true [allowEdit]="true" [editMode]="editTag" editIcon="add" (editEvent)="setEditMode($event)"
+    (saveEvent)="saveTag()">
+
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 *ngIf="!editTag && !newTag" translate>Tags</h2>
+        <form *ngIf="editTag" [formGroup]="tagForm" (ngSubmit)="saveTag()" (keydown)="keyDownFunction($event)">
+            <mat-form-field>
+                <input type="text" matInput osAutofocus required formControlName="name" placeholder="{{ 'New tag name' | translate}}">
+                <mat-error *ngIf="tagForm.invalid" translate>A tag name is required</mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+
+    <!-- remove button -->
+    <div class="extra-controls-slot on-transition-fade">
+        <button *ngIf="editTag && !newTag" type="button" mat-button (click)="deleteSelectedTag()">
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete</span>
+        </button>
+    </div>
+</os-head-bar>
+
+<mat-table class='os-listview-table on-transition-fade' [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+        <mat-cell *matCellDef="let tag"> {{tag.getTitle()}} </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="['name']"></mat-header-row>
+    <mat-row (click)='selectTag(row)' *matRowDef="let row; columns: ['name']"></mat-row>
+</mat-table>
+
+<mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>

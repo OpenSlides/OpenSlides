@@ -26,6 +26,12 @@ module.exports = function(config) {
         logLevel: config.LOG_INFO,
         autoWatch: true,
         browsers: ['Chrome'],
-        singleRun: false
+        singleRun: false,
+        proxies: {
+            '/apps/': 'http://localhost:8000/apps/',
+            '/media/': 'http://localhost:8000/media/',
+            '/rest/': 'http://localhost:8000/rest/',
+            '/ws/site/': 'ws://localhost:8000/ws/site'
+        }
     });
 };
