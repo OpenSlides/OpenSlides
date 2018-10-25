@@ -10,6 +10,8 @@
         <mat-form-field class="wide-form">
             <textarea matInput placeholder='Change recommendation Text' formControlName='text'></textarea>
         </mat-form-field>
+
+        <mat-checkbox formControlName="public">{{ 'Public' | translate }}</mat-checkbox>
     </form>
 </mat-dialog-content>
 <mat-dialog-actions>

@@ -172,11 +172,21 @@ export class MotionDetailDiffComponent implements AfterViewInit {
      */
     public setAcceptanceValue(change: ViewChangeReco, value: string): void {
         if (value === 'accepted') {
-            this.recoRepo.setAccepted(change).subscribe(() => {}); // Subscribe to trigger HTTP request
+            this.recoRepo.setAccepted(change).subscribe(); // Subscribe to trigger HTTP request
         }
         if (value === 'rejected') {
-            this.recoRepo.setRejected(change).subscribe(() => {}); // Subscribe to trigger HTTP request
+            this.recoRepo.setRejected(change).subscribe(); // Subscribe to trigger HTTP request
         }
+    }
+
+    /**
+     * Sets if a change recommendation is internal or not
+     *
+     * @param {ViewChangeReco} change
+     * @param {boolean} internal
+     */
+    public setInternal(change: ViewChangeReco, internal: boolean): void {
+        this.recoRepo.setInternal(change, internal).subscribe(); // Subscribe to trigger HTTP request
     }
 
     /**
@@ -187,7 +197,7 @@ export class MotionDetailDiffComponent implements AfterViewInit {
      * @param {MouseEvent} $event
      */
     public deleteChangeRecommendation(reco: ViewChangeReco, $event: MouseEvent): void {
-        this.recoRepo.delete(reco).subscribe(() => {}); // Subscribe to trigger HTTP request
+        this.recoRepo.delete(reco).subscribe(); // Subscribe to trigger HTTP request
         $event.stopPropagation();
         $event.preventDefault();
     }
