@@ -717,6 +717,20 @@ describe('linenumbering', function () {
       );
     });
 
+    it('works with a replaced list item', function () {
+      var before = "<ul><li>Lorem ipsum <strong>dolor sit amet</strong>, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.</li></ul>",
+          after = "<ul>\n<li>\n<p>At vero eos et accusam et justo duo dolores et ea rebum.</p>\n</li>\n</ul>\n",
+          expected = '<UL class="delete"><LI>' + noMarkup(1) + 'Lorem ipsum <STRONG>dolor sit amet</STRONG>, consetetur sadipscing elitr, sed diam nonumy ' + brMarkup(2) + 'eirmod tempor.</LI></UL>' +
+          "<UL class=\"insert\">\n<LI>\n<P>At vero eos et accusam et justo duo dolores et ea rebum.</P>\n</LI>\n</UL>";
+
+      var diff = diffService.diff(before, after, 80);
+
+      diff = diffService._normalizeHtmlForDiff(diff);
+      expected = diffService._normalizeHtmlForDiff(expected);
+
+      expect(diff.toLowerCase()).toBe(expected.toLowerCase());
+    });
+
     it('detects broken HTML and lowercases class names', function () {
         var before = "<p><span class=\"line-number-3 os-line-number\" data-line-number=\"3\" contenteditable=\"false\">&nbsp;</span>holen, da rief sie alle sieben herbei und sprach:</p>\n\n<p><span class=\"line-number-4 os-line-number\" data-line-number=\"4\" contenteditable=\"false\">&nbsp;</span><span style=\"color: #000000;\">\"Liebe Kinder, ich will hinaus in den Wald, seid auf der Hut vor dem Wolf! Wenn er <br class=\"os-line-break\"><span class=\"line-number-5 os-line-number\" data-line-number=\"5\" contenteditable=\"false\">&nbsp;</span>hereinkommt, frisst er euch alle mit Haut und Haar. Der Bösewicht verstellt sich oft, aber <br class=\"os-line-break\"><span class=\"line-number-6 os-line-number\" data-line-number=\"6\" contenteditable=\"false\">&nbsp;</span>an der rauen Stimme und an seinen schwarzen Füßen werdet ihr ihn schon erkennen.\"</span></p>\n\n<p><span class=\"line-number-7 os-line-number\" data-line-number=\"7\" contenteditable=\"false\">&nbsp;</span>Die Geißlein sagten: \" Liebe Mutter, wir wollen uns schon in acht nehmen, du kannst ohne </p>",
             after = "<p>holen, da rief sie alle sieben herbei und sprach:</p>\n\n<p><span style=\"color: #000000;\">Hello</span></p>\n\n<p><span style=\"color: #000000;\">World</span></p>\n\n<p><span style=\"color: #000000;\">Ya</span></p>\n\n<p>Die Geißlein sagten: \" Liebe Mutter, wir wollen uns schon in acht nehmen, du kannst ohne</p>";

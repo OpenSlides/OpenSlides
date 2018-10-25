@@ -68,6 +68,8 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                 return this._ignoreInsertedText;
             } else if (this._isOsLineNumberNode(node)) {
                 return true;
+            } else if (node.classList && node.classList.contains('insert')) {
+                return true;
             } else {
                 return false;
             }
@@ -448,7 +450,7 @@ angular.module('OpenSlidesApp.motions.lineNumbering', [])
                 throw 'This method may only be called for ELEMENT-nodes: ' + node.nodeValue;
             }
             if (this._isIgnoredByLineNumbering(node)) {
-                if (this._currentInlineOffset === 0 && this._currentLineNumber !== null) {
+                if (this._currentInlineOffset === 0 && this._currentLineNumber !== null && this._isInlineElement(node)) {
                     var lineNumberNode = this._createLineNumber();
                     if (lineNumberNode) {
                         node.insertBefore(lineNumberNode, node.firstChild);
