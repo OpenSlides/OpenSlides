@@ -1,11 +1,9 @@
 from collections import defaultdict
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from urllib.parse import parse_qs
 
-import jsonschema
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
-from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 from ..core.config import config
 from ..core.models import Projector
@@ -18,73 +16,7 @@ from .collection import (
     format_for_autoupdate_old,
     from_channel_message,
 )
-from .constants import get_constants
-
-
-class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
-    """
-    Mixin for JSONWebsocketConsumers, that speaks the a special protocol.
-    """
-    schema = {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "title": "OpenSlidesWebsocketProtocol",
-        "description": "The base packages that OpenSlides sends between the server and the client.",
-        "type": "object",
-        "properties": {
-            "type": {
-                "description": "Defines what kind of packages is packed.",
-                "type": "string",
-                "pattern": "notify|constants|getElements|autoupdate",  # The server can sent other types
-            },
-            "content": {
-                "description": "The content of the package.",
-            },
-            "id": {
-                "description": "An identifier of the package.",
-                "type": "string",
-            },
-            "in_response": {
-                "description": "The id of another package that the other part sent before.",
-                "type": "string",
-            }
-        },
-        "required": ["type", "content", "id"],
-    }
-
-    async def send_json(self, type: str, content: Any, id: Optional[str] = None, in_response: Optional[str] = None) -> None:
-        """
-        Sends the data with the type.
-        """
-        out = {'type': type, 'content': content}
-        if id:
-            out['id'] = id
-        if in_response:
-            out['in_response'] = in_response
-        await super().send_json(out)
-
-    async def receive_json(self, content: Any) -> None:
-        """
-        Receives the json data, parses it and calls receive_content.
-        """
-        try:
-            jsonschema.validate(content, self.schema)
-        except jsonschema.ValidationError as err:
-            try:
-                in_response = content['id']
-            except (TypeError, KeyError):
-                # content is not a dict (TypeError) or has not the key id (KeyError)
-                in_response = None
-
-            await self.send_json(
-                type='error',
-                content=str(err),
-                in_response=in_response)
-            return
-
-        await self.receive_content(type=content['type'], content=content['content'], id=content['id'])
-
-    async def receive_content(self, type: str, content: object, id: str) -> None:
-        raise NotImplementedError("ProtocollAsyncJsonWebsocketConsumer needs the method receive_content()")
+from .websocket import ProtocollAsyncJsonWebsocketConsumer, get_element_data
 
 
 class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
@@ -129,62 +61,6 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         A user disconnects. Remove it from autoupdate.
         """
         await self.channel_layer.group_discard('autoupdate', self.channel_name)
-
-    async def receive_content(self, type: str, content: Any, id: str) -> None:
-        """
-        If we recieve something from the client we currently just interpret this
-        as a notify message.
-
-        The server adds the sender's user id (0 for anonymous) and reply
-        channel name so that a receiver client may reply to the sender or to all
-        sender's instances.
-        """
-        if type == 'notify':
-            if notify_message_is_valid(content):
-                await self.channel_layer.group_send(
-                    "projector",
-                    {
-                        "type": "send_notify",
-                        "incomming": content,
-                        "senderReplyChannelName": self.channel_name,
-                        "senderUserId": self.scope['user'].id or 0,
-                    },
-                )
-                await self.channel_layer.group_send(
-                    "site",
-                    {
-                        "type": "send_notify",
-                        "incomming": content,
-                        "senderReplyChannelName": self.channel_name,
-                        "senderUserId": self.scope['user'].id or 0,
-                    },
-                )
-            else:
-                await self.send_json(type='error', content='Invalid notify message', in_response=id)
-
-        elif type == 'constants':
-            # Return all constants to the client.
-            await self.send_json(type='constants', content=get_constants(), in_response=id)
-
-        elif type == 'getElements':
-            # Return all Elements since a change id
-            if elements_message_is_valid(content):
-                requested_change_id = content.get('change_id', 0)
-                try:
-                    element_data = await get_element_data(self.scope['user'], requested_change_id)
-                except ValueError as error:
-                    await self.send_json(type='error', content=str(error), in_response=id)
-                else:
-                    await self.send_json(type='autoupdate', content=element_data, in_response=id)
-            else:
-                await self.send_json(type='error', content='Invalid getElements message', in_response=id)
-
-        elif type == 'autoupdate':
-            # Turn on or off the autoupdate for the client
-            if content:  # accept any value, that can be interpreted as bool
-                await self.channel_layer.group_add('autoupdate', self.channel_name)
-            else:
-                await self.channel_layer.group_discard('autoupdate', self.channel_name)
 
     async def send_notify(self, event: Dict[str, Any]) -> None:
         """
@@ -314,35 +190,6 @@ class ProjectorConsumer(ProtocollAsyncJsonWebsocketConsumer):
             await self.send_json(type='autoupdate', content=output)
 
 
-async def get_element_data(user: Optional[CollectionElement], change_id: int = 0) -> AutoupdateFormat:
-    """
-    Returns all data for startup.
-    """
-    current_change_id = await element_cache.get_current_change_id()
-    if change_id > current_change_id:
-        raise ValueError("Requested change_id is higher this highest change_id.")
-    try:
-        changed_elements, deleted_element_ids = await element_cache.get_restricted_data(user, change_id, current_change_id)
-    except RuntimeError:
-        # The change_id is lower the the lowerst change_id in redis. Return all data
-        changed_elements = await element_cache.get_all_restricted_data(user)
-        all_data = True
-        deleted_elements: Dict[str, List[int]] = {}
-    else:
-        all_data = False
-        deleted_elements = defaultdict(list)
-        for element_id in deleted_element_ids:
-            collection_string, id = split_element_id(element_id)
-            deleted_elements[collection_string].append(id)
-
-    return AutoupdateFormat(
-        changed=changed_elements,
-        deleted=deleted_elements,
-        from_change_id=change_id,
-        to_change_id=current_change_id,
-        all_data=all_data)
-
-
 def projector_startup_data(projector_id: int) -> Any:
     """
     Generate the startup data for a projector.
@@ -404,63 +251,3 @@ def projector_sync_send_data(projector_id: int, collection_elements: List[Collec
             for element in projector.get_collection_elements_required_for_this(collection_element):
                 output.append(element.as_autoupdate_for_projector())
     return output
-
-
-def notify_message_is_valid(message: object) -> bool:
-    """
-    Returns True, when the message is a valid notify_message.
-    """
-    schema = {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "title": "Notify elements.",
-        "description": "Elements that one client can send to one or many other clients.",
-        "type": "array",
-        "items": {
-            "type": "object",
-            "properties": {
-                "projectors": {
-                    "type": "array",
-                    "items": {"type": "integer"},
-                },
-                "reply_channels": {
-                    "type": "array",
-                    "items": {"type": "string"},
-                },
-                "users": {
-                    "type": "array",
-                    "items": {"type": "integer"},
-                }
-            }
-        },
-        "minItems": 1,
-    }
-    try:
-        jsonschema.validate(message, schema)
-    except jsonschema.ValidationError:
-        return False
-    else:
-        return True
-
-
-def elements_message_is_valid(message: object) -> bool:
-    """
-    Return True, if the message is a valid getElement message.
-    """
-    schema = {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "titel": "getElement request",
-        "description": "Request from the client to server to get elements.",
-        "type": "object",
-        "properties": {
-            # propertie is not required
-            "change_id": {
-                "type": "integer",
-            }
-        },
-    }
-    try:
-        jsonschema.validate(message, schema)
-    except jsonschema.ValidationError:
-        return False
-    else:
-        return True
