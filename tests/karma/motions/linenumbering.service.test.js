@@ -328,6 +328,14 @@ describe('linenumbering', function () {
       expect(lineNumberingService.insertLineBreaksWithoutNumbers(outHtml, 80)).toBe(outHtml);
     });
 
+    it('does not count within .insert nodes', function () {
+      var inHtml = "<p>1234</p><ul class=\"insert\"><li>1234</li></ul><p>1234 1234</p>";
+      var outHtml = lineNumberingService.insertLineNumbers(inHtml, 10);
+      expect(outHtml).toBe('<p>' + noMarkup(1) + '1234</p><ul class="insert"><li>1234</li></ul><p>' + noMarkup(2) + '1234 1234</p>');
+      expect(lineNumberingService.stripLineNumbers(outHtml)).toBe(inHtml);
+      expect(lineNumberingService.insertLineBreaksWithoutNumbers(outHtml, 80)).toBe(outHtml);
+    });
+
     it('does not create a new line for a trailing INS', function () {
       var inHtml = "<p>et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur<ins>dsfsdf23</ins></p>";
       var outHtml = lineNumberingService.insertLineNumbers(inHtml, 80);

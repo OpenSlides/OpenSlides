@@ -1257,13 +1257,14 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
 
             if (lineLength !== undefined) {
                 oldTextWithBreaks = lineNumberingService.insertLineNumbersNode(oldText, lineLength, null, firstLineNumber);
-                newTextWithBreaks = lineNumberingService.insertLineNumbersNode(newText, lineLength, null, firstLineNumber);
+                newText = lineNumberingService.insertLineBreaksWithoutNumbers(newText, lineLength);
             } else {
                 oldTextWithBreaks = document.createElement('div');
                 oldTextWithBreaks.innerHTML = oldText;
-                newTextWithBreaks = document.createElement('div');
-                newTextWithBreaks.innerHTML = newText;
             }
+            newText = newText.replace(/^\s+/g, '').replace(/\s+$/g, '');
+            newTextWithBreaks = document.createElement('div');
+            newTextWithBreaks.innerHTML = newText;
 
             for (var i = 0; i < oldTextWithBreaks.childNodes.length; i++) {
                 currChild = oldTextWithBreaks.childNodes[i];
