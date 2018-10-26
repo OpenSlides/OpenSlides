@@ -157,7 +157,7 @@ async def send_autoupdate(collection_elements: Iterable[CollectionElement]) -> N
             },
         )
         await channel_layer.group_send(
-            "site",
+            "autoupdate",
             {
                 "type": "send_data",
                 "change_id": change_id,
