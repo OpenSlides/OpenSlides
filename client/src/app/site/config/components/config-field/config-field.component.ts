@@ -5,7 +5,6 @@ import { ViewConfig } from '../../models/view-config';
 import { BaseComponent } from '../../../../base.component';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ConfigRepositoryService } from '../../services/config-repository.service';
-import { tap } from 'rxjs/operators';
 import { ParentErrorStateMatcher } from '../../../../shared/parent-error-state-matcher';
 
 /**
@@ -117,26 +116,19 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
     /**
      * Updates the this config field.
      */
-    private update(value: any): void {
+    private async update(value: any): Promise<void> {
         // TODO: Fix the Datetimepicker parser and formatter.
         if (this.configItem.inputType === 'datetimepicker') {
             value = Date.parse(value);
         }
         this.debounceTimeout = null;
-        this.repo
-            .update({ value: value }, this.configItem)
-            .pipe(
-                tap(
-                    response => {
-                        this.error = null;
-                        this.showSuccessIcon();
-                    },
-                    error => {
-                        this.setError(error.error.detail);
-                    }
-                )
-            )
-            .subscribe();
+        try {
+            await this.repo.update({ value: value }, this.configItem);
+            this.error = null;
+            this.showSuccessIcon();
+        } catch (e) {
+            this.setError(e.error.detail);
+        }
     }
 
     /**

@@ -264,40 +264,20 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      *
      * TODO: state is not yet saved. Need a special "put" command. Repo should handle this.
      */
-    public saveMotion(): void {
+    public async saveMotion(): Promise<void> {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
 
         const fromForm = new Motion();
         fromForm.deserialize(newMotionValues);
 
         if (this.newMotion) {
-            this.repo.create(fromForm).subscribe(response => {
-                if (response.id) {
-                    this.router.navigate(['./motions/' + response.id]);
-                }
-            });
+            const response = await this.repo.create(fromForm);
+            this.router.navigate(['./motions/' + response.id]);
         } else {
-            this.repo.update(fromForm, this.motionCopy).subscribe(response => {
-                // if the motion was successfully updated, change the edit mode.
-                // TODO: Show errors if there appear here
-                if (response.id) {
-                    this.editMotion = false;
-                }
-            });
-
-            // TODO: Document and evaluate if this actually does what it is supposed to do
-            if (fromForm.category_id) {
-                const catOfFormMotion = this.categoryRepo.getCategoryByID(fromForm.category_id);
-                const motionsWithSameCat = this.categoryRepo.getMotionsOfCategory(catOfFormMotion);
-
-                if (!motionsWithSameCat.includes(fromForm)) {
-                    motionsWithSameCat.push(fromForm);
-                    this.categoryRepo.updateCategoryNumbering(
-                        this.categoryRepo.getCategoryByID(fromForm.category_id),
-                        motionsWithSameCat
-                    );
-                }
-            }
+            await this.repo.update(fromForm, this.motionCopy);
+            // if the motion was successfully updated, change the edit mode.
+            this.editMotion = false;
+            // TODO: Show errors if there appear here
         }
     }
 
@@ -329,7 +309,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * TODO: Repo should handle
      */
     public deleteMotionButton(): void {
-        this.repo.delete(this.motion).subscribe(answer => {
+        this.repo.delete(this.motion).then(() => {
             this.router.navigate(['./motions/']);
         });
         const motList = this.categoryRepo.getMotionsOfCategory(this.motion.category);

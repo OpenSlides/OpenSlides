@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
 import { ViewGroup } from '../models/view-group';
 import { BaseRepository } from '../../base/base-repository';
@@ -7,7 +6,7 @@ import { Group } from '../../../shared/models/users/group';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { DataSendService } from '../../../core/services/data-send.service';
 import { ConstantsService } from '../../../core/services/constants.service';
-import { HTTPMethod } from 'app/core/services/http.service';
+import { Identifiable } from '../../../shared/models/base/identifiable';
 
 /**
  * Set rules to define the shape of an app permission
@@ -109,10 +108,10 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
      *
      * @param groupData form value. Usually not yet a real user
      */
-    public create(groupData: Partial<Group>): Observable<any> {
+    public async create(groupData: Partial<Group>): Promise<Identifiable> {
         const newGroup = new Group();
         newGroup.patchValues(groupData);
-        return this.dataSend.createModel(newGroup);
+        return await this.dataSend.createModel(newGroup);
     }
 
     /**
@@ -121,18 +120,18 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
      * @param permission the new permission
      * @param viewGroup the selected Group
      */
-    public update(groupData: Partial<Group>, viewGroup: ViewGroup): Observable<any> {
+    public async update(groupData: Partial<Group>, viewGroup: ViewGroup): Promise<void> {
         const updateGroup = new Group();
         updateGroup.patchValues(viewGroup.group);
         updateGroup.patchValues(groupData);
-        return this.dataSend.updateModel(updateGroup, HTTPMethod.PUT);
+        await this.dataSend.updateModel(updateGroup);
     }
 
     /**
      * Deletes a given group
      */
-    public delete(viewGroup: ViewGroup): Observable<any> {
-        return this.dataSend.deleteModel(viewGroup.group);
+    public async delete(viewGroup: ViewGroup): Promise<void> {
+        await this.dataSend.deleteModel(viewGroup.group);
     }
 
     public createViewModel(group: Group): ViewGroup {

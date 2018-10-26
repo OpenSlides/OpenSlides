@@ -85,12 +85,11 @@ export class StatuteParagraphListComponent extends BaseComponent implements OnIn
         }
     }
 
-    public create(): void {
+    public async create(): Promise<void> {
         if (this.createForm.valid) {
             this.statuteParagraphToCreate.patchValues(this.createForm.value as StatuteParagraph);
-            this.repo.create(this.statuteParagraphToCreate).subscribe(resp => {
-                this.statuteParagraphToCreate = null;
-            });
+            await this.repo.create(this.statuteParagraphToCreate);
+            this.statuteParagraphToCreate = null;
         }
     }
 
@@ -110,25 +109,21 @@ export class StatuteParagraphListComponent extends BaseComponent implements OnIn
     /**
      * Saves the statute paragrpah
      */
-    public onSaveButton(viewStatuteParagraph: ViewStatuteParagraph): void {
+    public async onSaveButton(viewStatuteParagraph: ViewStatuteParagraph): Promise<void> {
         if (this.updateForm.valid) {
-            this.repo
-                .update(this.updateForm.value as Partial<StatuteParagraph>, viewStatuteParagraph)
-                .subscribe(resp => {
-                    this.openId = this.editId = null;
-                });
+            await this.repo.update(this.updateForm.value as Partial<StatuteParagraph>, viewStatuteParagraph);
+            this.openId = this.editId = null;
         }
     }
 
     /**
      * is executed, when the delete button is pressed
      */
-    public async onDeleteButton(viewStatuteParagraph: ViewStatuteParagraph): Promise<any> {
+    public async onDeleteButton(viewStatuteParagraph: ViewStatuteParagraph): Promise<void> {
         const content = this.translate.instant('Delete') + ` ${viewStatuteParagraph.title}?`;
         if (await this.promptService.open('Are you sure?', content)) {
-            this.repo.delete(viewStatuteParagraph).subscribe(resp => {
-                this.openId = this.editId = null;
-            });
+            await this.repo.delete(viewStatuteParagraph);
+            this.openId = this.editId = null;
         }
     }
 

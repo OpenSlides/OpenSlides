@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { Tag } from '../../../shared/models/core/tag';
 import { ViewTag } from '../models/view-tag';
 import { DataSendService } from '../../../core/services/data-send.service';
-import { Observable } from 'rxjs';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { BaseRepository } from '../../base/base-repository';
-import { HTTPMethod } from 'app/core/services/http.service';
+import { Identifiable } from '../../../shared/models/base/identifiable';
 
 /**
  * Repository Services for Tags
@@ -35,20 +34,20 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
         return new ViewTag(tag);
     }
 
-    public create(update: Tag): Observable<any> {
+    public async create(update: Tag): Promise<Identifiable> {
         const newTag = new Tag();
         newTag.patchValues(update);
-        return this.dataSend.createModel(newTag);
+        return await this.dataSend.createModel(newTag);
     }
 
-    public update(update: Partial<Tag>, viewTag: ViewTag): Observable<any> {
+    public async update(update: Partial<Tag>, viewTag: ViewTag): Promise<void> {
         const updateTag = new Tag();
         updateTag.patchValues(viewTag.tag);
         updateTag.patchValues(update);
-        return this.dataSend.updateModel(updateTag, HTTPMethod.PUT);
+        await this.dataSend.updateModel(updateTag);
     }
 
-    public delete(viewTag: ViewTag): Observable<any> {
-        return this.dataSend.deleteModel(viewTag.tag);
+    public async delete(viewTag: ViewTag): Promise<void> {
+        await this.dataSend.deleteModel(viewTag.tag);
     }
 }

@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BaseModel } from '../../shared/models/base/base-model';
-import { Observable } from 'rxjs';
 import { HttpService } from './http.service';
-import { HTTPMethod } from './http.service';
+import { Identifiable } from '../../shared/models/base/identifiable';
 
 /**
- * Send data back to server
+ * Send data back to server. Cares about the right REST routes.
  *
  * Contrast to dataStore service
  */
@@ -16,38 +15,47 @@ export class DataSendService {
     /**
      * Construct a DataSendService
      *
-     * @param httpService The HTTP Client
+     * @param httpService The HTTP Service
      */
     public constructor(private httpService: HttpService) {}
 
     /**
-     * Sends a post request with the model to the server.
-     * Usually for new Models
+     * Sends a post request with the model to the server to create it.
+     *
+     * @param model The model to create.
      */
-    public createModel(model: BaseModel): Observable<BaseModel> {
+    public async createModel(model: BaseModel): Promise<Identifiable> {
         const restPath = `rest/${model.collectionString}/`;
-        return this.httpService.create(restPath, model) as Observable<BaseModel>;
+        return await this.httpService.post<Identifiable>(restPath, model);
     }
 
     /**
-     * Function to change a model on the server.
+     * Function to fully update a model on the server.
      *
-     * @param model the base model that is meant to be changed
-     * @param method the required http method. might be put or patch
+     * @param model The model that is meant to be changed.
      */
-    public updateModel(model: BaseModel, method: HTTPMethod): Observable<BaseModel> {
-        const restPath = `rest/${model.collectionString}/${model.id}`;
-        return this.httpService.update(restPath, model, method) as Observable<BaseModel>;
+    public async updateModel(model: BaseModel): Promise<void> {
+        const restPath = `rest/${model.collectionString}/${model.id}/`;
+        await this.httpService.put(restPath, model);
     }
 
     /**
-     * Deletes the given model on the server
+     * Updates a model partially on the server.
      *
-     * @param model the BaseModel that shall be removed
-     * @return Observable of BaseModel
+     * @param model The model to partially update.
      */
-    public deleteModel(model: BaseModel): Observable<BaseModel> {
-        const restPath = `rest/${model.collectionString}/${model.id}`;
-        return this.httpService.delete(restPath) as Observable<BaseModel>;
+    public async partialUpdateModel(model: BaseModel): Promise<void> {
+        const restPath = `rest/${model.collectionString}/${model.id}/`;
+        await this.httpService.patch(restPath, model);
+    }
+
+    /**
+     * Deletes the given model on the server.
+     *
+     * @param model the model that shall be deleted.
+     */
+    public async deleteModel(model: BaseModel): Promise<void> {
+        const restPath = `rest/${model.collectionString}/${model.id}/`;
+        await this.httpService.delete(restPath);
     }
 }

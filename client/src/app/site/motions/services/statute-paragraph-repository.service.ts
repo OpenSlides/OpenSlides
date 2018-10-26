@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DataSendService } from '../../../core/services/data-send.service';
-import { Observable } from 'rxjs';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { BaseRepository } from '../../base/base-repository';
 import { ViewStatuteParagraph } from '../models/view-statute-paragraph';
 import { StatuteParagraph } from '../../../shared/models/motions/statute-paragraph';
-import { HTTPMethod } from 'app/core/services/http.service';
+import { Identifiable } from '../../../shared/models/base/identifiable';
 
 /**
  * Repository Services for statute paragraphs
@@ -32,20 +31,20 @@ export class StatuteParagraphRepositoryService extends BaseRepository<ViewStatut
         return new ViewStatuteParagraph(statuteParagraph);
     }
 
-    public create(statuteParagraph: StatuteParagraph): Observable<any> {
-        return this.dataSend.createModel(statuteParagraph);
+    public async create(statuteParagraph: StatuteParagraph): Promise<Identifiable> {
+        return await this.dataSend.createModel(statuteParagraph);
     }
 
-    public update(
+    public async update(
         statuteParagraph: Partial<StatuteParagraph>,
         viewStatuteParagraph: ViewStatuteParagraph
-    ): Observable<any> {
+    ): Promise<void> {
         const updateParagraph = viewStatuteParagraph.statuteParagraph;
         updateParagraph.patchValues(statuteParagraph);
-        return this.dataSend.updateModel(updateParagraph, HTTPMethod.PUT);
+        await this.dataSend.updateModel(updateParagraph);
     }
 
-    public delete(viewStatuteParagraph: ViewStatuteParagraph): Observable<any> {
-        return this.dataSend.deleteModel(viewStatuteParagraph.statuteParagraph);
+    public async delete(viewStatuteParagraph: ViewStatuteParagraph): Promise<void> {
+        await this.dataSend.deleteModel(viewStatuteParagraph.statuteParagraph);
     }
 }

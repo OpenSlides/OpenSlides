@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TagListComponent } from './tag-list.component';
-import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { E2EImportsModule } from 'e2e-imports.module';
 
 describe('TagListComponent', () => {
     let component: TagListComponent;

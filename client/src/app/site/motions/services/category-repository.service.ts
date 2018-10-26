@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Category } from '../../../shared/models/motions/category';
 import { ViewCategory } from '../models/view-category';
 import { DataSendService } from '../../../core/services/data-send.service';
-import { Observable } from 'rxjs';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { BaseRepository } from '../../base/base-repository';
 import { Motion } from '../../../shared/models/motions/motion';
 import { CategoryNumbering } from '../models/category-numbering';
-import { HttpService, HTTPMethod } from '../../../core/services/http.service';
+import { HttpService } from '../../../core/services/http.service';
+import { Identifiable } from '../../../shared/models/base/identifiable';
 
 /**
  * Repository Services for Categories
@@ -41,11 +41,11 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         return new ViewCategory(category);
     }
 
-    public create(newCategory: Category): Observable<any> {
-        return this.dataSend.createModel(newCategory);
+    public async create(newCategory: Category): Promise<Identifiable> {
+        return await this.dataSend.createModel(newCategory);
     }
 
-    public update(category: Partial<Category>, viewCategory?: ViewCategory): Observable<any> {
+    public async update(category: Partial<Category>, viewCategory: ViewCategory): Promise<void> {
         let updateCategory: Category;
         if (viewCategory) {
             updateCategory = viewCategory.category;
@@ -53,12 +53,12 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
             updateCategory = new Category();
         }
         updateCategory.patchValues(category);
-        return this.dataSend.updateModel(updateCategory, HTTPMethod.PUT);
+        await this.dataSend.updateModel(updateCategory);
     }
 
-    public delete(viewCategory: ViewCategory): Observable<any> {
+    public async delete(viewCategory: ViewCategory): Promise<void> {
         const category = viewCategory.category;
-        return this.dataSend.deleteModel(category);
+        await this.dataSend.deleteModel(category);
     }
 
     /**
@@ -91,10 +91,10 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      * @param category the category it should be updated in
      * @param motionList the list of motions on this category
      */
-    public updateCategoryNumbering(category: Category, motionList: Motion[]): Observable<object> {
+    public async updateCategoryNumbering(category: Category, motionList: Motion[]): Promise<void> {
         const categoryNumbering = new CategoryNumbering();
         categoryNumbering.setMotions(motionList);
-        return this.sentCategoryNumbering(category, categoryNumbering);
+        await this.sentCategoryNumbering(category, categoryNumbering);
     }
 
     /**
@@ -102,8 +102,8 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      *
      * @return Observable from
      */
-    protected sentCategoryNumbering(category: Category, categoryNumbering: CategoryNumbering): Observable<object> {
+    protected async sentCategoryNumbering(category: Category, categoryNumbering: CategoryNumbering): Promise<void> {
         const collectionString = 'rest/motions/category/' + category.id + '/numbering/';
-        return this.httpService.create(collectionString, categoryNumbering);
+        await this.httpService.post(collectionString, categoryNumbering);
     }
 }

@@ -10,7 +10,7 @@ import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { MotionChangeReco } from '../../../shared/models/motions/motion-change-reco';
 import { ViewChangeReco } from '../models/view-change-reco';
-import { HTTPMethod } from 'app/core/services/http.service';
+import { Identifiable } from '../../../shared/models/base/identifiable';
 
 /**
  * Repository Services for change recommendations
@@ -44,8 +44,8 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
      *
      * @param {MotionChangeReco} changeReco
      */
-    public create(changeReco: MotionChangeReco): Observable<MotionChangeReco> {
-        return this.dataSend.createModel(changeReco) as Observable<MotionChangeReco>;
+    public async create(changeReco: MotionChangeReco): Promise<Identifiable> {
+        return await this.dataSend.createModel(changeReco);
     }
 
     /**
@@ -53,13 +53,13 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
      * change recommendation view object is returned (as an observable).
      *
      * @param {ViewChangeReco} view
+     * @deprecated Will not work with PR #3928. There will just be the id as response to create requests.
+     *  Two possibilities: Make a server change to still retrieve the created object or you have to wait for the
+     *  correct autoupdate.
      */
-    public createByViewModel(view: ViewChangeReco): Observable<ViewChangeReco> {
-        return this.create(view.changeRecommendation).pipe(
-            map((changeReco: MotionChangeReco) => {
-                return new ViewChangeReco(changeReco);
-            })
-        );
+    public async createByViewModel(view: ViewChangeReco): Promise<Identifiable> {
+        return await this.dataSend.createModel(view.changeRecommendation);
+        // return new ViewChangeReco(cr);
     }
 
     /**
@@ -78,8 +78,8 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
      * to {@link DataSendService}
      * @param {ViewChangeReco} viewModel
      */
-    public delete(viewModel: ViewChangeReco): Observable<MotionChangeReco> {
-        return this.dataSend.deleteModel(viewModel.changeRecommendation) as Observable<MotionChangeReco>;
+    public async delete(viewModel: ViewChangeReco): Promise<void> {
+        await this.dataSend.deleteModel(viewModel.changeRecommendation);
     }
 
     /**
@@ -91,10 +91,10 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
      * @param {Partial<MotionChangeReco>} update the form data containing the update values
      * @param {ViewChangeReco} viewModel The View Change Recommendation. If not present, a new motion will be created
      */
-    public update(update: Partial<MotionChangeReco>, viewModel: ViewChangeReco): Observable<MotionChangeReco> {
+    public async update(update: Partial<MotionChangeReco>, viewModel: ViewChangeReco): Promise<void> {
         const changeReco = viewModel.changeRecommendation;
         changeReco.patchValues(update);
-        return this.dataSend.updateModel(changeReco, HTTPMethod.PATCH) as Observable<MotionChangeReco>;
+        await this.dataSend.partialUpdateModel(changeReco);
     }
 
     /**
@@ -113,12 +113,12 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
      *
      * @param {ViewChangeReco} change
      */
-    public setAccepted(change: ViewChangeReco): Observable<MotionChangeReco> {
+    public async setAccepted(change: ViewChangeReco): Promise<void> {
         const changeReco = change.changeRecommendation;
         changeReco.patchValues({
             rejected: false
         });
-        return this.dataSend.updateModel(changeReco, HTTPMethod.PATCH) as Observable<MotionChangeReco>;
+        await this.dataSend.partialUpdateModel(changeReco);
     }
 
     /**
@@ -126,12 +126,12 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
      *
      * @param {ViewChangeReco} change
      */
-    public setRejected(change: ViewChangeReco): Observable<MotionChangeReco> {
+    public async setRejected(change: ViewChangeReco): Promise<void> {
         const changeReco = change.changeRecommendation;
         changeReco.patchValues({
             rejected: true
         });
-        return this.dataSend.updateModel(changeReco, HTTPMethod.PATCH) as Observable<MotionChangeReco>;
+        await this.dataSend.partialUpdateModel(changeReco);
     }
 
     /**
@@ -140,11 +140,11 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
      * @param {ViewChangeReco} change
      * @param {boolean} internal
      */
-    public setInternal(change: ViewChangeReco, internal: boolean): Observable<MotionChangeReco> {
+    public async setInternal(change: ViewChangeReco, internal: boolean): Promise<void> {
         const changeReco = change.changeRecommendation;
         changeReco.patchValues({
             internal: internal
         });
-        return this.dataSend.updateModel(changeReco, HTTPMethod.PATCH) as Observable<MotionChangeReco>;
+        await this.dataSend.partialUpdateModel(changeReco);
     }
 }

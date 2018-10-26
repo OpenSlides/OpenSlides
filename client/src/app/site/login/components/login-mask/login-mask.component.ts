@@ -7,11 +7,12 @@ import { OperatorService } from 'app/core/services/operator.service';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { HttpErrorResponse, HttpClient } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { OpenSlidesService } from '../../../../core/services/openslides.service';
 import { LoginDataService } from '../../../../core/services/login-data.service';
 import { ParentErrorStateMatcher } from '../../../../shared/parent-error-state-matcher';
+import { HttpService } from '../../../../core/services/http.service';
 
 /**
  * Login mask component.
@@ -72,7 +73,7 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
         private operator: OperatorService,
         private router: Router,
         private formBuilder: FormBuilder,
-        private http: HttpClient,
+        private http: HttpService,
         private matSnackBar: MatSnackBar,
         private OpenSlides: OpenSlidesService,
         private loginDataService: LoginDataService
@@ -89,15 +90,20 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
      */
     public ngOnInit(): void {
         // Get the login data. Save information to the login data service
-        this.http.get<any>(environment.urlPrefix + '/users/login/', {}).subscribe(response => {
-            if (response.info_text) {
-                this.installationNotice = this.matSnackBar.open(response.info_text, this.translate.instant('OK'), {
-                    duration: 5000
-                });
+        this.http.get<any>(environment.urlPrefix + '/users/login/').then(
+            response => {
+                if (response.info_text) {
+                    this.installationNotice = this.matSnackBar.open(response.info_text, this.translate.instant('OK'), {
+                        duration: 5000
+                    });
+                }
+                this.loginDataService.setPrivacyPolicy(response.privacy_policy);
+                this.loginDataService.setLegalNotice(response.legal_notice);
+            },
+            () => {
+                // TODO: Error handling
             }
-            this.loginDataService.setPrivacyPolicy(response.privacy_policy);
-            this.loginDataService.setLegalNotice(response.legal_notice);
-        });
+        );
     }
 
     public ngOnDestroy(): void {
