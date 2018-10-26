@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
 
 import { OperatorService } from 'app/core/services/operator.service';
 import { OpenSlidesComponent } from '../../openslides.component';
 import { environment } from 'environments/environment';
 import { User } from '../../shared/models/users/user';
 import { OpenSlidesService } from './openslides.service';
+import { Router } from '@angular/router';
+import { HttpService } from './http.service';
 
 /**
  * The data returned by a post request to the login route.
@@ -28,13 +27,16 @@ export class AuthService extends OpenSlidesComponent {
      * Initializes the httpClient and the {@link OperatorService}.
      *
      * Calls `super()` from the parent class.
-     * @param http HttpClient
-     * @param operator who is using OpenSlides
+     * @param http HttpService to send requests to the server
+     * @param operator Who is using OpenSlides
+     * @param OpenSlides The openslides service
+     * @param router To navigate
      */
     public constructor(
-        private http: HttpClient,
+        private http: HttpService,
         private operator: OperatorService,
-        private OpenSlides: OpenSlidesService
+        private OpenSlides: OpenSlidesService,
+        private router: Router
     ) {
         super();
     }
@@ -48,18 +50,16 @@ export class AuthService extends OpenSlidesComponent {
      *
      * @param username
      * @param password
+     * @returns The login response.
      */
-    public login(username: string, password: string): Observable<LoginResponse> {
+    public async login(username: string, password: string): Promise<LoginResponse> {
         const user = {
             username: username,
             password: password
         };
-        return this.http.post<LoginResponse>(environment.urlPrefix + '/users/login/', user).pipe(
-            tap((response: LoginResponse) => {
-                this.operator.user = new User(response.user);
-            }),
-            catchError(this.handleError())
-        ) as Observable<LoginResponse>;
+        const response = await this.http.post<LoginResponse>(environment.urlPrefix + '/users/login/', user);
+        this.operator.user = new User(response.user);
+        return response;
     }
 
     /**
@@ -68,10 +68,14 @@ export class AuthService extends OpenSlidesComponent {
      * Will clear the current {@link OperatorService} and
      * send a `post`-request to `/apps/users/logout/'`
      */
-    public logout(): void {
+    public async logout(): Promise<void> {
         this.operator.user = null;
-        this.http.post<any>(environment.urlPrefix + '/users/logout/', {}).subscribe(() => {
-            this.OpenSlides.reboot();
-        });
+        try {
+            await this.http.post(environment.urlPrefix + '/users/logout/', {});
+        } catch (e) {
+            // We do nothing on failures. Reboot OpenSlides anyway.
+        }
+        this.router.navigate(['/']);
+        this.OpenSlides.reboot();
     }
 }

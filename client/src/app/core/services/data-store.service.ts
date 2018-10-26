@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
-import { CacheService } from './cache.service';
+import { StorageService } from './storage.service';
 import { CollectionStringModelMapperService } from './collectionStringModelMapper.service';
 
 /**
@@ -64,7 +64,7 @@ export class DataStoreService {
      * all cases equal!
      */
     private modelStore: ModelStorage = {};
-    private JsonStore: JsonStorage = {};
+    private jsonStore: JsonStorage = {};
 
     /**
      * Observable subject for changed models in the datastore.
@@ -107,42 +107,51 @@ export class DataStoreService {
     }
 
     /**
-     * Empty constructor for dataStore
-     * @param cacheService use CacheService to cache the DataStore.
+     * @param storageService use StorageService to preserve the DataStore.
+     * @param modelMapper
      */
-    public constructor(private cacheService: CacheService, private modelMapper: CollectionStringModelMapperService) {}
+    public constructor(
+        private storageService: StorageService,
+        private modelMapper: CollectionStringModelMapperService
+    ) {}
 
     /**
      * Gets the DataStore from cache and instantiate all models out of the serialized version.
+     * @returns The max change id.
      */
-    public initFromCache(): Promise<number> {
+    public async initFromStorage(): Promise<number> {
         // This promise will be resolved with the maximal change id of the cache.
-        return new Promise<number>(resolve => {
-            this.cacheService.get<JsonStorage>(DataStoreService.cachePrefix + 'DS').subscribe((store: JsonStorage) => {
-                if (store != null) {
-                    // There is a store. Deserialize it
-                    this.JsonStore = store;
-                    this.modelStore = this.deserializeJsonStore(this.JsonStore);
-                    // Get the maxChangeId from the cache
-                    this.cacheService
-                        .get<number>(DataStoreService.cachePrefix + 'maxChangeId')
-                        .subscribe((maxChangeId: number) => {
-                            if (maxChangeId == null) {
-                                maxChangeId = 0;
-                            }
-                            this._maxChangeId = maxChangeId;
-                            resolve(maxChangeId);
-                        });
-                } else {
-                    // No store here, so get all data from the server.
-                    resolve(0);
-                }
+        const store = await this.storageService.get<JsonStorage>(DataStoreService.cachePrefix + 'DS');
+        if (store) {
+            console.log('init from storage:', store);
+            // There is a store. Deserialize it
+            this.jsonStore = store;
+            this.modelStore = this.deserializeJsonStore(this.jsonStore);
+            // Get the maxChangeId from the cache
+            let maxChangeId = await this.storageService.get<number>(DataStoreService.cachePrefix + 'maxChangeId');
+            if (!maxChangeId) {
+                maxChangeId = 0;
+            }
+            this._maxChangeId = maxChangeId;
+
+            // update observers
+            Object.keys(this.modelStore).forEach(collection => {
+                Object.keys(this.modelStore[collection]).forEach(id => {
+                    this.changedSubject.next(this.modelStore[collection][id]);
+                });
             });
-        });
+        } else {
+            this.jsonStore = {};
+            this.modelStore = {};
+            this._maxChangeId = 0;
+        }
+        return this.maxChangeId;
     }
 
     /**
      * Deserialze the given serializedStorage and returns a Storage.
+     * @param serializedStore The store to deserialize
+     * @returns The serialized storage
      */
     private deserializeJsonStore(serializedStore: JsonStorage): ModelStorage {
         const storage: ModelStorage = {};
@@ -161,17 +170,21 @@ export class DataStoreService {
 
     /**
      * Clears the complete DataStore and Cache.
-     * @param callback
      */
-    public clear(callback?: (value: boolean) => void): void {
+    public async clear(): Promise<void> {
+        console.log('DS clear');
         this.modelStore = {};
-        this.JsonStore = {};
+        this.jsonStore = {};
         this._maxChangeId = 0;
-        this.cacheService.remove(DataStoreService.cachePrefix + 'DS', () => {
-            this.cacheService.remove(DataStoreService.cachePrefix + 'maxChangeId', callback);
-        });
+        await this.storageService.remove(DataStoreService.cachePrefix + 'DS');
+        await this.storageService.remove(DataStoreService.cachePrefix + 'maxChangeId');
     }
 
+    /**
+     * Returns the collection _string_ based on the model given. If a string is given, it's just returned.
+     * @param collectionType Either a Model constructor or a string.
+     * @returns the collection string
+     */
     private getCollectionString<T extends BaseModel<T>>(collectionType: ModelConstructor<T> | string): string {
         if (typeof collectionType === 'string') {
             return collectionType;
@@ -262,62 +275,78 @@ export class DataStoreService {
      * Add one or multiple models to dataStore.
      *
      * @param models BaseModels to add to the store
-     * @param changeId The changeId of this update
-     * @example this.DS.add([new User(1)], changeId)
-     * @example this.DS.add([new User(2), new User(3)], changeId)
+     * @param changeId The changeId of this update. If given, the storage will be flushed to the
+     * cache. Else one can call {@method flushToStorage} to do this manually.
+     * @example this.DS.add([new User(1)])
+     * @example this.DS.add([new User(2), new User(3)])
      * @example this.DS.add(arrayWithUsers, changeId)
      */
-    public add(models: BaseModel[], changeId: number): void {
+    public async add(models: BaseModel[], changeId?: number): Promise<void> {
         models.forEach(model => {
-            const collectionString = model.collectionString;
-            if (this.modelStore[collectionString] === undefined) {
-                this.modelStore[collectionString] = {};
+            const collection = model.collectionString;
+            if (this.modelStore[collection] === undefined) {
+                this.modelStore[collection] = {};
             }
-            this.modelStore[collectionString][model.id] = model;
+            this.modelStore[collection][model.id] = model;
 
-            if (this.JsonStore[collectionString] === undefined) {
-                this.JsonStore[collectionString] = {};
+            if (this.jsonStore[collection] === undefined) {
+                this.jsonStore[collection] = {};
             }
-            this.JsonStore[collectionString][model.id] = JSON.stringify(model);
+            this.jsonStore[collection][model.id] = JSON.stringify(model);
             this.changedSubject.next(model);
         });
-        this.storeToCache(changeId);
+        if (changeId) {
+            await this.flushToStorage(changeId);
+        }
     }
 
     /**
      * removes one or multiple models from dataStore.
      *
-     * @param Type The desired BaseModel type to be read from the datastore
+     * @param collectionString The desired BaseModel type to be removed from the datastore
      * @param ids A list of IDs of BaseModels to remove from the datastore
-     * @param changeId The changeId of this update
-     * @example this.DS.remove('users/user', [myUser.id, 3, 4], 38213)
+     * @param changeId The changeId of this update. If given, the storage will be flushed to the
+     * cache. Else one can call {@method flushToStorage} to do this manually.
+     * @example this.DS.remove('users/user', [myUser.id, 3, 4])
      */
-    public remove(collectionString: string, ids: number[], changeId: number): void {
+    public async remove(collectionString: string, ids: number[], changeId?: number): Promise<void> {
         ids.forEach(id => {
             if (this.modelStore[collectionString]) {
                 delete this.modelStore[collectionString][id];
             }
-            if (this.JsonStore[collectionString]) {
-                delete this.JsonStore[collectionString][id];
+            if (this.jsonStore[collectionString]) {
+                delete this.jsonStore[collectionString][id];
             }
             this.deletedSubject.next({
                 collection: collectionString,
                 id: id
             });
         });
-        this.storeToCache(changeId);
+        if (changeId) {
+            await this.flushToStorage(changeId);
+        }
+    }
+
+    /**
+     * Resets the DataStore and set the given models as the new content.
+     * @param models A list of models to set the DataStore to.
+     * @param newMaxChangeId Optional. If given, the max change id will be updated.
+     */
+    public async set(models: BaseModel[], newMaxChangeId?: number): Promise<void> {
+        this.modelStore = {};
+        this.jsonStore = {};
+        await this.add(models, newMaxChangeId);
     }
 
     /**
      * Updates the cache by inserting the serialized DataStore. Also changes the chageId, if it's larger
      * @param changeId The changeId from the update. If it's the highest change id seen, it will be set into the cache.
      */
-    private storeToCache(changeId: number): void {
-        this.cacheService.set(DataStoreService.cachePrefix + 'DS', this.JsonStore);
-        if (changeId > this._maxChangeId) {
-            this._maxChangeId = changeId;
-            this.cacheService.set(DataStoreService.cachePrefix + 'maxChangeId', changeId);
-        }
+    public async flushToStorage(changeId: number): Promise<void> {
+        console.log('flush to storage');
+        this._maxChangeId = changeId;
+        await this.storageService.set(DataStoreService.cachePrefix + 'DS', this.jsonStore);
+        await this.storageService.set(DataStoreService.cachePrefix + 'maxChangeId', changeId);
     }
 
     /**

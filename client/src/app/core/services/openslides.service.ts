@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { OpenSlidesComponent } from 'app/openslides.component';
 import { WebsocketService } from './websocket.service';
 import { OperatorService } from './operator.service';
-import { CacheService } from './cache.service';
+import { StorageService } from './storage.service';
 import { AutoupdateService } from './autoupdate.service';
 import { DataStoreService } from './data-store.service';
 
@@ -21,15 +21,16 @@ export class OpenSlidesService extends OpenSlidesComponent {
     public redirectUrl: string;
 
     /**
-     * Constructor to create the NotifyService. Registers itself to the WebsocketService.
-     * @param cacheService
+     * Constructor to create the OpenSlidesService. Registers itself to the WebsocketService.
+     * @param storageService
      * @param operator
      * @param websocketService
      * @param router
      * @param autoupdateService
+     * @param DS
      */
     public constructor(
-        private cacheService: CacheService,
+        private storageService: StorageService,
         private operator: OperatorService,
         private websocketService: WebsocketService,
         private router: Router,
@@ -51,54 +52,51 @@ export class OpenSlidesService extends OpenSlidesComponent {
      * the bootup-sequence: Do a whoami request and if it was successful, do
      * {@method afterLoginBootup}. If not, redirect the user to the login page.
      */
-    public bootup(): void {
+    public async bootup(): Promise<void> {
         // start autoupdate if the user is logged in:
-        this.operator.whoAmI().subscribe(resp => {
-            this.operator.guestsEnabled = resp.guest_enabled;
-            if (!resp.user && !resp.guest_enabled) {
-                this.redirectUrl = location.pathname;
-                // Goto login, if the user isn't login and guests are not allowed
-                this.router.navigate(['/login']);
-            } else {
-                this.afterLoginBootup(resp.user_id);
-            }
-        });
+        const response = await this.operator.whoAmI();
+        this.operator.guestsEnabled = response.guest_enabled;
+        if (!response.user && !response.guest_enabled) {
+            this.redirectUrl = location.pathname;
+            // Goto login, if the user isn't login and guests are not allowed
+            this.router.navigate(['/login']);
+        } else {
+            await this.afterLoginBootup(response.user_id);
+        }
     }
 
     /**
      * the login bootup-sequence: Check (and maybe clear) the cache und setup the DataStore
-     * and websocket.
+     * and websocket. This "login" also may be the "login" of an anonymous when he is using
+     * OpenSlides as a guest.
      * @param userId
      */
-    public afterLoginBootup(userId: number): void {
+    public async afterLoginBootup(userId: number): Promise<void> {
         // Else, check, which user was logged in last time
-        this.cacheService.get<number>('lastUserLoggedIn').subscribe((id: number) => {
-            // if the user id changed, reset the cache.
-            if (userId !== id) {
-                this.DS.clear((value: boolean) => {
-                    this.setupDataStoreAndWebSocket();
-                });
-                this.cacheService.set('lastUserLoggedIn', userId);
-            } else {
-                this.setupDataStoreAndWebSocket();
-            }
-        });
+        const lastUserId = await this.storageService.get<number>('lastUserLoggedIn');
+        console.log('user transition:', lastUserId, '->', userId);
+        // if the user changed, reset the cache and save the new user.
+        if (userId !== lastUserId) {
+            await this.DS.clear();
+            await this.storageService.set('lastUserLoggedIn', userId);
+        }
+        await this.setupDataStoreAndWebSocket();
     }
 
     /**
      * Init DS from cache and after this start the websocket service.
      */
-    private setupDataStoreAndWebSocket(): void {
-        this.DS.initFromCache().then((changeId: number) => {
-            this.websocketService.connect(
-                false,
-                changeId
-            );
-        });
+    private async setupDataStoreAndWebSocket(): Promise<void> {
+        let changeId = await this.DS.initFromStorage();
+        console.log('change ID on DS setup', changeId);
+        if (changeId > 0) {
+            changeId += 1;
+        }
+        this.websocketService.connect({ changeId: changeId }); // Request changes after changeId.
     }
 
     /**
-     * SHuts down OpenSlides. The websocket is closed and the operator is not set.
+     * Shuts OpenSlides down. The websocket is closed and the operator is not set.
      */
     public shutdown(): void {
         this.websocketService.close();
@@ -108,32 +106,31 @@ export class OpenSlidesService extends OpenSlidesComponent {
     /**
      * Shutdown and bootup.
      */
-    public reboot(): void {
+    public async reboot(): Promise<void> {
         this.shutdown();
-        this.bootup();
+        await this.bootup();
     }
 
     /**
-     * Verify that the operator is the same as it was before a reconnect.
+     * Verify that the operator is the same as it was before. Should be alled on a reconnect.
      */
-    private checkOperator(): void {
-        this.operator.whoAmI().subscribe(resp => {
-            // User logged off.
-            if (!resp.user && !resp.guest_enabled) {
-                this.shutdown();
-                this.router.navigate(['/login']);
+    private async checkOperator(): Promise<void> {
+        const response = await this.operator.whoAmI();
+        // User logged off.
+        if (!response.user && !response.guest_enabled) {
+            this.shutdown();
+            this.router.navigate(['/login']);
+        } else {
+            if (
+                (this.operator.user && this.operator.user.id !== response.user_id) ||
+                (!this.operator.user && response.user_id)
+            ) {
+                // user changed
+                await this.reboot();
             } else {
-                if (
-                    (this.operator.user && this.operator.user.id !== resp.user_id) ||
-                    (!this.operator.user && resp.user_id)
-                ) {
-                    // user changed
-                    this.reboot();
-                } else {
-                    // User is still the same, but check for missed autoupdates.
-                    this.autoupdateService.requestChanges();
-                }
+                // User is still the same, but check for missed autoupdates.
+                this.autoupdateService.requestChanges();
             }
-        });
+        }
     }
 }
