@@ -40,6 +40,13 @@ class CoreAppConfig(AppConfig):
             TagViewSet,
         )
         from ..utils.constants import set_constants, get_constants_from_apps
+        from .websocket import (
+            NotifyWebsocketClientMessage,
+            ConstantsWebsocketClientMessage,
+            GetElementsWebsocketClientMessage,
+            AutoupdateWebsocketClientMessage,
+        )
+        from ..utils.websocket import register_client_message
 
         # Collect all config variables before getting the constants.
         config.collect_config_variables_from_apps()
@@ -81,6 +88,12 @@ class CoreAppConfig(AppConfig):
         except (ImproperlyConfigured, OperationalError):
             # This happens in the tests or in migrations. Do nothing
             pass
+
+        # Register client messages
+        register_client_message(NotifyWebsocketClientMessage())
+        register_client_message(ConstantsWebsocketClientMessage())
+        register_client_message(GetElementsWebsocketClientMessage())
+        register_client_message(AutoupdateWebsocketClientMessage())
 
     def get_config_variables(self):
         from .config_variables import get_config_variables
