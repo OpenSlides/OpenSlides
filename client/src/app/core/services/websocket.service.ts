@@ -4,11 +4,13 @@ import { Observable, Subject } from 'rxjs';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
+type QueryParamValue = string | number | boolean;
+
 /**
  * A key value mapping for params, that should be appendet to the url on a new connection.
  */
 interface QueryParams {
-    [key: string]: string;
+    [key: string]: QueryParamValue;
 }
 
 /**
@@ -87,7 +89,10 @@ export class WebsocketService {
         if (this.websocket) {
             return;
         }
-        const queryParams: QueryParams = {};
+        const queryParams: QueryParams = {
+            'change_id': 0,
+            'autoupdate': true,
+        };
         // comment-in if changes IDs are supported on server side.
         /*if (changeId !== undefined) {
             queryParams.changeId = changeId.toString();
@@ -217,9 +222,9 @@ export class WebsocketService {
 
         const keys: string[] = Object.keys(queryParams);
         if (keys.length > 0) {
-            path += keys
+            path += '?' + keys
                 .map(key => {
-                    return key + '=' + queryParams[key];
+                    return key + '=' + queryParams[key].toString();
                 })
                 .join('&');
         }
