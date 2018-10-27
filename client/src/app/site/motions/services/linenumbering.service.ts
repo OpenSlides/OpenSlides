@@ -511,6 +511,8 @@ export class LinenumberingService {
             return this.ignoreInsertedText;
         } else if (this.isOsLineNumberNode(element)) {
             return true;
+        } else if (element.classList && element.classList.contains('insert')) {
+            return true;
         } else {
             return false;
         }
@@ -808,7 +810,7 @@ export class LinenumberingService {
             throw new Error('This method may only be called for ELEMENT-nodes: ' + element.nodeValue);
         }
         if (this.isIgnoredByLineNumbering(element)) {
-            if (this.currentInlineOffset === 0 && this.currentLineNumber !== null) {
+            if (this.currentInlineOffset === 0 && this.currentLineNumber !== null && this.isInlineElement(element)) {
                 const lineNumberNode = this.createLineNumber();
                 if (lineNumberNode) {
                     element.insertBefore(lineNumberNode, element.firstChild);
