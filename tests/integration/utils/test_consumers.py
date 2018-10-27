@@ -334,6 +334,48 @@ async def test_send_get_elements_to_small_change_id(communicator):
 
 
 @pytest.mark.asyncio
+async def test_send_connect_twice_with_clear_change_id_cache(communicator):
+    """
+    Test, that a second request with change_id+1 from the first request, returns
+    an error.
+    """
+    await set_config('general_system_enable_anonymous', True)
+    element_cache.cache_provider.change_id_data = {}  # type: ignore
+    await communicator.connect()
+    await communicator.send_json_to({'type': 'getElements', 'content': {'change_id': 0}, 'id': 'test_id'})
+    response1 = await communicator.receive_json_from()
+    first_change_id = response1.get('content')['to_change_id']
+
+    await communicator.send_json_to({'type': 'getElements', 'content': {'change_id': first_change_id+1}, 'id': 'test_id'})
+    response2 = await communicator.receive_json_from()
+
+    assert response2['type'] == 'error'
+    assert response2.get('content') == 'Requested change_id is higher this highest change_id.'
+
+
+@pytest.mark.asyncio
+async def test_send_connect_twice_with_clear_change_id_cache_same_change_id_then_first_request(communicator):
+    """
+    Test, that a second request with the change_id from the first request, returns
+    all data.
+
+    A client should not do this but request for change_id+1
+    """
+    await set_config('general_system_enable_anonymous', True)
+    element_cache.cache_provider.change_id_data = {}  # type: ignore
+    await communicator.connect()
+    await communicator.send_json_to({'type': 'getElements', 'content': {'change_id': 0}, 'id': 'test_id'})
+    response1 = await communicator.receive_json_from()
+    first_change_id = response1.get('content')['to_change_id']
+
+    await communicator.send_json_to({'type': 'getElements', 'content': {'change_id': first_change_id}, 'id': 'test_id'})
+    response2 = await communicator.receive_json_from()
+
+    assert response2['type'] == 'autoupdate'
+    assert response2.get('content')['all_data']
+
+
+@pytest.mark.asyncio
 async def test_send_invalid_get_elements(communicator):
     await set_config('general_system_enable_anonymous', True)
     await communicator.connect()
