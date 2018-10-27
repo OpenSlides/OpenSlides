@@ -189,7 +189,9 @@ class ElementCache:
         if change_id == 0:
             return (await self.get_all_full_data(), [])
 
+        # This raises a Runtime Exception, if there is no change_id
         lowest_change_id = await self.get_lowest_change_id()
+
         if change_id < lowest_change_id:
             # When change_id is lower then the lowest change_id in redis, we can
             # not inform the user about deleted elements.
