@@ -9,6 +9,7 @@ import { ViewMotion } from '../../models/view-motion';
 import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { MatSnackBar } from '@angular/material';
+import { ConfigService } from "../../../../core/services/config.service";
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -32,12 +33,20 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     public columnsToDisplayFullWidth = ['identifier', 'title', 'state', 'speakers'];
 
     /**
+     * Value of the configuration variable `motions_statutes_enabled` - are statutes enabled?
+     * @TODO replace by direct access to config variable, once it's available from the templates
+     */
+    public statutesEnabled: boolean;
+
+    /**
      * Constructor implements title and translation Module.
      *
      * @param titleService Title
      * @param translate Translation
+     * @param matSnackBar
      * @param router Router
      * @param route Current route
+     * @param configService The configuration provider
      * @param repo Motion Repository
      */
     public constructor(
@@ -46,6 +55,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         matSnackBar: MatSnackBar,
         private router: Router,
         private route: ActivatedRoute,
+        private configService: ConfigService,
         private repo: MotionRepositoryService
     ) {
         super(titleService, translate, matSnackBar);
@@ -68,6 +78,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
                     return a.id - b.id;
                 }
             });
+        });
+        this.configService.get('motions_statutes_enabled').subscribe((enabled: boolean): void => {
+            this.statutesEnabled = enabled;
         });
     }
 

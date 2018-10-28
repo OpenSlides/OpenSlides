@@ -138,6 +138,17 @@ def get_config_variables():
         group='Motions',
         subgroup='General')
 
+    # Statutes
+
+    yield ConfigVariable(
+        name='motions_statutes_enabled',
+        default_value=False,
+        input_type='boolean',
+        label='Activate statutes',
+        weight=334,
+        group='Motions',
+        subgroup='General')
+
     # Amendments
     yield ConfigVariable(
         name='motions_amendments_enabled',

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatExpansionPanel, MatSnackBar, MatSelectChange } from '@angular/material';
+import { MatDialog, MatExpansionPanel, MatSnackBar, MatSelectChange, MatCheckboxChange } from '@angular/material';
 
 import { Category } from '../../../../shared/models/motions/category';
 import { ViewportService } from '../../../../core/services/viewport.service';
@@ -23,6 +23,9 @@ import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { ViewUnifiedChange } from '../../models/view-unified-change';
 import { OperatorService } from '../../../../core/services/operator.service';
 import { BaseViewComponent } from '../../../base/base-view';
+import { ViewStatuteParagraph } from "../../models/view-statute-paragraph";
+import { StatuteParagraphRepositoryService } from "../../services/statute-paragraph-repository.service";
+import { ConfigService } from "../../../../core/services/config.service";
 
 /**
  * Component for the motion detail view
@@ -73,6 +76,12 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public motion: ViewMotion;
 
     /**
+     * Value of the configuration variable `motions_statutes_enabled` - are statutes enabled?
+     * @TODO replace by direct access to config variable, once it's available from the templates
+     */
+    public statutesEnabled: boolean;
+
+    /**
      * Copy of the motion that the user might edit
      */
     public motionCopy: ViewMotion;
@@ -101,6 +110,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * preload the previous motion for direct navigation
      */
     public previousMotion: ViewMotion;
+
+    /**
+     * statute paragraphs, necessary for amendments
+     */
+    public statuteParagraphs: ViewStatuteParagraph[] = [];
 
     /**
      * Subject for the Categories
@@ -134,14 +148,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param translate
      * @param matSnackBar
      * @param vp the viewport service
-     * @param op
+     * @param op Operator Service
      * @param router to navigate back to the motion list and to an existing motion
      * @param route determine if this is a new or an existing motion
      * @param formBuilder For reactive forms. Form Group and Form Control
      * @param dialogService For opening dialogs
      * @param repo Motion Repository
      * @param changeRecoRepo Change Recommendation Repository
+     * @param statuteRepo: Statute Paragraph Repository
      * @param DS The DataStoreService
+     * @param configService The configuration provider
      * @param sanitizer For making HTML SafeHTML
      */
     public constructor(
@@ -156,7 +172,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         private dialogService: MatDialog,
         private repo: MotionRepositoryService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
+        private statuteRepo: StatuteParagraphRepositoryService,
         private DS: DataStoreService,
+        private configService: ConfigService,
         private sanitizer: DomSanitizer
     ) {
         super(title, translate, matSnackBar);
@@ -177,6 +195,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             if (newModel instanceof Category) {
                 this.categoryObserver.next(DS.getAll(Category));
             }
+        });
+        this.configService.get('motions_statutes_enabled').subscribe((enabled: boolean): void => {
+            this.statutesEnabled = enabled;
         });
     }
 
@@ -237,10 +258,12 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         });
         this.metaInfoForm.patchValue(metaInfoPatch);
 
-        const contentPatch = {};
+        const contentPatch: {[key: string]: any} = {};
         Object.keys(this.contentForm.controls).forEach(ctrl => {
             contentPatch[ctrl] = formMotion[ctrl];
         });
+        const statuteAmendmentFieldName = 'statute_amendment';
+        contentPatch[statuteAmendmentFieldName] = formMotion.isStatuteAmendment();
         this.contentForm.patchValue(contentPatch);
     }
 
@@ -262,7 +285,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         this.contentForm = this.formBuilder.group({
             title: ['', Validators.required],
             text: ['', Validators.required],
-            reason: ['']
+            reason: [''],
+            statute_amendment: [''], // Internal value for the checkbox, not saved to the model
+            statute_paragraph_id: ['']
         });
     }
 
@@ -311,10 +336,20 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * get the formated motion text from the repository, as SafeHTML for [innerHTML]
+     * get the formatted motion text from the repository, as SafeHTML for [innerHTML]
+     * @returns {SafeHtml}
      */
     public getFormattedText(): SafeHtml {
         return this.sanitizer.bypassSecurityTrustHtml(this.getFormattedTextPlain());
+    }
+
+    /**
+     * get the diff html from the statute amendment, as SafeHTML for [innerHTML]
+     * @returns {SafeHtml}
+     */
+    public getFormattedStatuteAmendment(): SafeHtml {
+        const diffHtml = this.repo.formatStatuteAmendment(this.statuteParagraphs, this.motion, this.motion.lineLength);
+        return this.sanitizer.bypassSecurityTrustHtml(diffHtml);
     }
 
     /**
@@ -427,6 +462,28 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
+     * If the checkbox is deactivated, the statute_paragraph_id-field needs to be reset, as only that field is saved
+     * @param {MatCheckboxChange} $event
+     */
+    public onStatuteAmendmentChange($event: MatCheckboxChange): void {
+        this.contentForm.patchValue({
+            statute_paragraph_id: null
+        });
+    }
+
+    /**
+     * The paragraph of the statute to amend was changed -> change the input fields below
+     * @param {number} newValue
+     */
+    public onStatuteParagraphChange(newValue: number): void {
+        const selectedParagraph = this.statuteParagraphs.find(par => par.id === newValue);
+        this.contentForm.patchValue({
+            title: this.translate.instant('Statute amendment for') + ` ${selectedParagraph.title}`,
+            text: selectedParagraph.text
+        });
+    }
+
+    /**
      * Navigates the user to the given ViewMotion
      * @param motion target
      */
@@ -510,6 +567,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 this.allMotions = newMotionList;
                 this.setSurroundingMotions();
             }
+        });
+        this.statuteRepo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
+            this.statuteParagraphs = newViewStatuteParagraphs;
         });
     }
 }
