@@ -57,6 +57,6 @@ class TestPersonalNoteAccessPermissions(TestCase):
             [CollectionElement.from_values(
                 'users/personal_note',
                 1,
-                full_data={'user_id': 1})],
+                full_data={'user_id': 1}).get_full_data()],
             None)
         self.assertEqual(rd, [])

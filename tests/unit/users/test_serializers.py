@@ -11,7 +11,7 @@ class UserCreateUpdateSerializerTest(TestCase):
         Tests, that the validator raises a ValidationError, if not data is given.
         """
         serializer = UserFullSerializer()
-        data = {}
+        data: object = {}
 
         with self.assertRaises(ValidationError):
             serializer.validate(data)

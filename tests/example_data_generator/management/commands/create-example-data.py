@@ -1,4 +1,5 @@
 from textwrap import dedent
+from typing import Optional
 
 from django.contrib.auth.hashers import make_password
 from django.core.management.base import BaseCommand, CommandError
@@ -183,7 +184,7 @@ class Command(BaseCommand):
     @transaction.atomic
     def create_staff_users(self, options):
         if options['users'] is None and not options['only']:
-            staff_users = DEFAULT_NUMBER
+            staff_users: Optional[int] = DEFAULT_NUMBER
         elif options['users'] is None:
             staff_users = None
         else:
@@ -214,7 +215,7 @@ class Command(BaseCommand):
     @transaction.atomic
     def create_default_users(self, options):
         if options['users'] is None and not options['only']:
-            default_users = DEFAULT_NUMBER
+            default_users: Optional[int] = DEFAULT_NUMBER
         elif options['users'] is None:
             default_users = None
         else:

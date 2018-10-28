@@ -18,8 +18,8 @@ from asgiref.sync import async_to_sync, sync_to_async
 from django.conf import settings
 
 from .cache_providers import (
-    BaseCacheProvider,
     Cachable,
+    ElementCacheProvider,
     MemmoryCacheProvider,
     RedisCacheProvider,
     get_all_cachables,
@@ -62,7 +62,7 @@ class ElementCache:
             self,
             redis: str,
             use_restricted_data_cache: bool = False,
-            cache_provider_class: Type[BaseCacheProvider] = RedisCacheProvider,
+            cache_provider_class: Type[ElementCacheProvider] = RedisCacheProvider,
             cachable_provider: Callable[[], List[Cachable]] = get_all_cachables,
             start_time: int = None) -> None:
         """

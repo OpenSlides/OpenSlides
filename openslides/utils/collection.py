@@ -16,7 +16,6 @@ from django.db.models import Model
 from mypy_extensions import TypedDict
 
 from .cache import element_cache
-from .cache_providers import Cachable
 
 
 if TYPE_CHECKING:
@@ -211,7 +210,7 @@ class CollectionElement:
         return self.deleted
 
 
-class Collection(Cachable):
+class Collection:
     """
     Represents all elements of one collection.
     """
