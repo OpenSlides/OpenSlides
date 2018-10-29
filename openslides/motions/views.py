@@ -231,6 +231,9 @@ class MotionViewSet(ModelViewSet):
             self.permission_denied(request)
 
         # Check permission to send only some data.
+        # Attention: Users with motions.can_manage permission can change all
+        #            fields even if they do not have motions.can_manage_metadata
+        #            permission.
         if not has_perm(request.user, 'motions.can_manage'):
             # Remove fields that the user is not allowed to change.
             # The list() is required because we want to use del inside the loop.
