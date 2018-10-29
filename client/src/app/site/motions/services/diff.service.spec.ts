@@ -805,7 +805,7 @@ describe('DiffService', () => {
                 after = '';
             const diff = service.diff(before, after);
             expect(diff).toBe(
-                '<P class="delete">Ihr könnt ohne Sorge fortgehen.\'Da meckerte die Alte und machte sich getrost auf den Weg.</P>'
+                '<p class="delete">Ihr könnt ohne Sorge fortgehen.\'Da meckerte die Alte und machte sich getrost auf den Weg.</p>'
             );
         }));
 
@@ -953,6 +953,20 @@ describe('DiffService', () => {
                     'Gegenüber</p>'
             );
         }));
+
+        it('does not delete a paragraph before an inserted one', inject([DiffService], (service: DiffService) => {
+            const inHtml = '<ul class="os-split-before"><li>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</li>\n' +
+                '</ul>',
+                outHtml = '<ul class="os-split-before">\n' +
+                    '<li>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</li>\n' +
+                    '<li class="testclass">At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</li>\n' +
+                    '</ul>';
+            const diff = service.diff(inHtml, outHtml);
+            expect(diff).toBe('<ul class="os-split-before">' +
+                '<li>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</li>' +
+                '<li class="testclass insert">At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</li>' +
+                '</ul>');
+        }));
     });
 
     describe('ignoring line numbers', () => {
@@ -1027,6 +1041,17 @@ describe('DiffService', () => {
                 );
             }
         ));
+
+        it('works with a replaced list item', inject([DiffService], (service: DiffService) => {
+            const before = "<ul><li>Lorem ipsum <strong>dolor sit amet</strong>, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.</li></ul>",
+                after = "<ul>\n<li>\n<p>At vero eos et accusam et justo duo dolores et ea rebum.</p>\n</li>\n</ul>\n",
+                expected = '<UL class="delete"><LI>' + noMarkup(1) + 'Lorem ipsum <STRONG>dolor sit amet</STRONG>, consetetur sadipscing elitr, sed diam nonumy ' + brMarkup(2) + 'eirmod tempor.</LI></UL>' +
+                    "<UL class=\"insert\">\n<LI>\n<P>At vero eos et accusam et justo duo dolores et ea rebum.</P>\n</LI>\n</UL>";
+            const diff = service.diff(before, after, 80, 1);
+            const diffNormalized = service.normalizeHtmlForDiff(diff).toLowerCase();
+            const expectedNormalized = service.normalizeHtmlForDiff(expected).toLowerCase();
+            expect(diffNormalized).toBe(expectedNormalized);
+        }));
 
         it('detects broken HTML and lowercases class names', inject([DiffService], (service: DiffService) => {
             const before =

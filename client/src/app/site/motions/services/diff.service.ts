@@ -1709,18 +1709,14 @@ export class DiffService {
                 null,
                 firstLineNumber
             );
-            newTextWithBreaks = this.lineNumberingService.insertLineNumbersNode(
-                newText,
-                lineLength,
-                null,
-                firstLineNumber
-            );
+            newText = this.lineNumberingService.insertLineBreaksWithoutNumbers(newText, lineLength);
         } else {
             oldTextWithBreaks = document.createElement('div');
             oldTextWithBreaks.innerHTML = oldText;
-            newTextWithBreaks = document.createElement('div');
-            newTextWithBreaks.innerHTML = newText;
         }
+        newText = newText.replace(/^\s+/g, '').replace(/\s+$/g, '');
+        newTextWithBreaks = document.createElement('div');
+        newTextWithBreaks.innerHTML = newText;
 
         for (let i = 0; i < oldTextWithBreaks.childNodes.length; i++) {
             currChild = oldTextWithBreaks.childNodes[i];
@@ -1923,6 +1919,31 @@ export class DiffService {
             }
         );
 
+        // <ins><li>...</li></ins> => <li class="insert">...</li>
+        diffUnnormalized = diffUnnormalized.replace(
+            /<(ins|del)><(p|div|blockquote|li)([^>]*)>([\s\S]*)<\/\2><\/\1>/gi,
+            (whole: string, insDel: string, block: string, blockArguments: string, content: string): string => {
+                // Prevent accidental matches like <ins><p>...</p>...</ins><ins>...<p></p></ins>
+                if (content.match(/<(ins|del)>/gi)) {
+                    return whole;
+                }
+                // Add the CSS-class to the existing "class"-attribute, or add one
+                let newArguments = blockArguments;
+                const modificationClass = (insDel.toLowerCase() === 'ins' ? 'insert' : 'delete');
+                if (newArguments.match(/class="/gi)) {
+                    // class="someclass" => class="someclass insert"
+                    newArguments = newArguments.replace(/(class\s*=\s*)(["'])([^\2]*)\2/gi,
+                        (classWhole: string, attr: string, para: string, classContent: string): string => {
+                            return attr + para + classContent + ' ' + modificationClass + para;
+                        }
+                    );
+                } else {
+                    newArguments += ' class="' + modificationClass + '"';
+                }
+                return '<' + block + newArguments + '>' + content + '</' + block + '>';
+            }
+        );
+
         if (diffUnnormalized.substr(0, workaroundPrepend.length) === workaroundPrepend) {
             diffUnnormalized = diffUnnormalized.substring(workaroundPrepend.length);
         }
@@ -1931,49 +1952,6 @@ export class DiffService {
         if (this.diffDetectBrokenDiffHtml(diffUnnormalized)) {
             diff = this.diffParagraphs(htmlOld, htmlNew, lineLength, firstLineNumber);
         } else {
-            diffUnnormalized = diffUnnormalized.replace(
-                /<ins>.*?(\n.*?)*<\/ins>/gi,
-                (found: string): string => {
-                    found = found.replace(
-                        /<(div|p|li)[^>]*>/gi,
-                        (match: string): string => {
-                            return match + '<ins>';
-                        }
-                    );
-                    found = found.replace(
-                        /<\/(div|p|li)[^>]*>/gi,
-                        (match: string): string => {
-                            return '</ins>' + match;
-                        }
-                    );
-                    return found;
-                }
-            );
-            diffUnnormalized = diffUnnormalized.replace(
-                /<del>.*?(\n.*?)*<\/del>/gi,
-                (found: string): string => {
-                    found = found.replace(
-                        /<(div|p|li)[^>]*>/gi,
-                        (match: string): string => {
-                            return match + '<del>';
-                        }
-                    );
-                    found = found.replace(
-                        /<\/(div|p|li)[^>]*>/gi,
-                        (match: string): string => {
-                            return '</del>' + match;
-                        }
-                    );
-                    return found;
-                }
-            );
-            diffUnnormalized = diffUnnormalized.replace(
-                /^<del><p>(.*)<\/p><\/del>$/gi,
-                (match: string, inner: string): string => {
-                    return '<p>' + inner + '</p>';
-                }
-            );
-
             let node: Element = document.createElement('div');
             node.innerHTML = diffUnnormalized;
             diff = node.innerHTML;

@@ -491,6 +491,16 @@ describe('LinenumberingService', () => {
             expect(service.insertLineBreaksWithoutNumbers(outHtml, 80)).toBe(outHtml);
         }));
 
+        it('does not count within .insert nodes', inject(
+            [LinenumberingService],
+            (service: LinenumberingService) => {
+            const inHtml = "<p>1234</p><ul class=\"insert\"><li>1234</li></ul><p>1234 1234</p>";
+            const outHtml = service.insertLineNumbers(inHtml, 10);
+            expect(outHtml).toBe('<p>' + noMarkup(1) + '1234</p><ul class="insert"><li>1234</li></ul><p>' + noMarkup(2) + '1234 1234</p>');
+            expect(service.stripLineNumbers(outHtml)).toBe(inHtml);
+            expect(service.insertLineBreaksWithoutNumbers(outHtml, 80)).toBe(outHtml);
+        }));
+
         it('does not create a new line for a trailing INS', inject(
             [LinenumberingService],
             (service: LinenumberingService) => {
