@@ -12,7 +12,7 @@ Core:
    startup and caching system, dropped support for Geiss [#3796, #3789].
  - Dropped support for Python 3.5 [#3805].
  - Added a websocket protocol for server client communication using
-   JSON schema [#3807].
+   JSON schema [#3807, #3949].
  - Changed URL schema [#3798].
  - Enabled docs for using OpenSlides with Gunicorn and Uvicorn in big
    mode [#3799, #3817].

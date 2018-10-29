@@ -5,7 +5,7 @@ daphne>=2.2,<2.3
 Django>=1.11,<2.2
 djangorestframework>=3.4,<3.10
 jsonfield2>=3.0,<3.1
-jsonschema>=2.6,<2.7
+jsonschema==3.0.0a3  # TODO: use a stabel version before release
 mypy_extensions>=0.4,<0.5
 PyPDF2>=1.26,<1.27
 roman>=2.0,<3.1

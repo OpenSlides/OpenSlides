@@ -173,46 +173,7 @@ async def test_receive_deleted_data(get_communicator):
 
 
 @pytest.mark.asyncio
-async def test_send_invalid_notify_not_a_list(communicator):
-    await set_config('general_system_enable_anonymous', True)
-    await communicator.connect()
-
-    await communicator.send_json_to({'type': 'notify', 'content': {'testmessage': 'foobar, what else.'}, 'id': 'test_send_invalid_notify_not_a_list'})
-    response = await communicator.receive_json_from()
-
-    assert response['type'] == 'error'
-    assert response['content'] == 'Invalid notify message'
-    assert response['in_response'] == 'test_send_invalid_notify_not_a_list'
-
-
-@pytest.mark.asyncio
-async def test_send_invalid_notify_no_elements(communicator):
-    await set_config('general_system_enable_anonymous', True)
-    await communicator.connect()
-
-    await communicator.send_json_to({'type': 'notify', 'content': [], 'id': 'test_send_invalid_notify_no_elements'})
-    response = await communicator.receive_json_from()
-
-    assert response['type'] == 'error'
-    assert response['content'] == 'Invalid notify message'
-    assert response['in_response'] == 'test_send_invalid_notify_no_elements'
-
-
-@pytest.mark.asyncio
-async def test_send_invalid_notify_str_in_list(communicator):
-    await set_config('general_system_enable_anonymous', True)
-    await communicator.connect()
-
-    await communicator.send_json_to({'type': 'notify', 'content': [{}, 'testmessage'], 'id': 'test_send_invalid_notify_str_in_list'})
-    response = await communicator.receive_json_from()
-
-    assert response['type'] == 'error'
-    assert response['content'] == 'Invalid notify message'
-    assert response['in_response'] == 'test_send_invalid_notify_str_in_list'
-
-
-@pytest.mark.asyncio
-async def test_send_valid_notify(communicator):
+async def test_send_notify(communicator):
     await set_config('general_system_enable_anonymous', True)
     await communicator.connect()
 
@@ -244,17 +205,6 @@ async def test_invalid_websocket_message_no_id(communicator):
     await communicator.connect()
 
     await communicator.send_json_to({'type': 'test', 'content': 'foobar'})
-
-    response = await communicator.receive_json_from()
-    assert response['type'] == 'error'
-
-
-@pytest.mark.asyncio
-async def test_invalid_websocket_message_no_content(communicator):
-    await set_config('general_system_enable_anonymous', True)
-    await communicator.connect()
-
-    await communicator.send_json_to({'type': 'test', 'id': 'test_id'})
 
     response = await communicator.receive_json_from()
     assert response['type'] == 'error'
