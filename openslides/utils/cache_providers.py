@@ -11,6 +11,7 @@ from typing import (
 )
 
 from django.apps import apps
+from typing_extensions import Protocol
 
 from .utils import split_element_id, str_dict_to_bytes
 
@@ -27,83 +28,52 @@ else:
     no_redis_dependency = False
 
 
-class BaseCacheProvider:
+class ElementCacheProvider(Protocol):
     """
     Base class for cache provider.
 
     See RedisCacheProvider as reverence implementation.
     """
-    full_data_cache_key = 'full_data'
-    restricted_user_cache_key = 'restricted_data:{user_id}'
-    change_id_cache_key = 'change_id'
-    prefix = 'element_cache_'
 
-    def __init__(self, *args: Any) -> None:
-        pass
+    def __init__(self, *args: Any) -> None: ...
 
-    def get_full_data_cache_key(self) -> str:
-        return "".join((self.prefix, self.full_data_cache_key))
+    async def clear_cache(self) -> None: ...
 
-    def get_restricted_data_cache_key(self, user_id: int) -> str:
-        return "".join((self.prefix, self.restricted_user_cache_key.format(user_id=user_id)))
+    async def reset_full_cache(self, data: Dict[str, str]) -> None: ...
 
-    def get_change_id_cache_key(self) -> str:
-        return "".join((self.prefix, self.change_id_cache_key))
+    async def data_exists(self, user_id: Optional[int] = None) -> bool: ...
 
-    async def clear_cache(self) -> None:
-        raise NotImplementedError("CacheProvider has to implement the method clear_cache().")
+    async def add_elements(self, elements: List[str]) -> None: ...
 
-    async def reset_full_cache(self, data: Dict[str, str]) -> None:
-        raise NotImplementedError("CacheProvider has to implement the method reset_full_cache().")
+    async def del_elements(self, elements: List[str], user_id: Optional[int] = None) -> None: ...
 
-    async def data_exists(self, user_id: Optional[int] = None) -> bool:
-        raise NotImplementedError("CacheProvider has to implement the method exists_full_data().")
+    async def add_changed_elements(self, default_change_id: int, element_ids: Iterable[str]) -> int: ...
 
-    async def add_elements(self, elements: List[str]) -> None:
-        raise NotImplementedError("CacheProvider has to implement the method add_elements().")
-
-    async def del_elements(self, elements: List[str], user_id: Optional[int] = None) -> None:
-        raise NotImplementedError("CacheProvider has to implement the method del_elements().")
-
-    async def add_changed_elements(self, default_change_id: int, element_ids: Iterable[str]) -> int:
-        raise NotImplementedError("CacheProvider has to implement the method add_changed_elements().")
-
-    async def get_all_data(self, user_id: Optional[int] = None) -> Dict[bytes, bytes]:
-        raise NotImplementedError("CacheProvider has to implement the method get_all_data().")
+    async def get_all_data(self, user_id: Optional[int] = None) -> Dict[bytes, bytes]: ...
 
     async def get_data_since(
             self,
             change_id: int,
             user_id: Optional[int] = None,
-            max_change_id: int = -1) -> Tuple[Dict[str, List[bytes]], List[str]]:
-        raise NotImplementedError("CacheProvider has to implement the method get_data_since().")
+            max_change_id: int = -1) -> Tuple[Dict[str, List[bytes]], List[str]]: ...
 
-    async def get_element(self, element_id: str) -> Optional[bytes]:
-        raise NotImplementedError("CacheProvider has to implement the method get_element().")
+    async def get_element(self, element_id: str) -> Optional[bytes]: ...
 
-    async def del_restricted_data(self, user_id: int) -> None:
-        raise NotImplementedError("CacheProvider has to implement the method del_restricted_data().")
+    async def del_restricted_data(self, user_id: int) -> None: ...
 
-    async def set_lock(self, lock_name: str) -> bool:
-        raise NotImplementedError("CacheProvider has to implement the method set_lock().")
+    async def set_lock(self, lock_name: str) -> bool: ...
 
-    async def get_lock(self, lock_name: str) -> bool:
-        raise NotImplementedError("CacheProvider has to implement the method get_lock().")
+    async def get_lock(self, lock_name: str) -> bool: ...
 
-    async def del_lock(self, lock_name: str) -> None:
-        raise NotImplementedError("CacheProvider has to implement the method del_lock().")
+    async def del_lock(self, lock_name: str) -> None: ...
 
-    async def get_change_id_user(self, user_id: int) -> Optional[int]:
-        raise NotImplementedError("CacheProvider has to implement the method get_change_id_user().")
+    async def get_change_id_user(self, user_id: int) -> Optional[int]: ...
 
-    async def update_restricted_data(self, user_id: int, data: Dict[str, str]) -> None:
-        raise NotImplementedError("CacheProvider has to implement the method update_restricted_data().")
+    async def update_restricted_data(self, user_id: int, data: Dict[str, str]) -> None: ...
 
-    async def get_current_change_id(self) -> List[Tuple[str, int]]:
-        raise NotImplementedError("CacheProvider has to implement the method get_current_change_id().")
+    async def get_current_change_id(self) -> List[Tuple[str, int]]: ...
 
-    async def get_lowest_change_id(self) -> Optional[int]:
-        raise NotImplementedError("CacheProvider has to implement the method get_lowest_change_id().")
+    async def get_lowest_change_id(self) -> Optional[int]: ...
 
 
 class RedisConnectionContextManager:
@@ -123,11 +93,15 @@ class RedisConnectionContextManager:
         self.conn.close()
 
 
-class RedisCacheProvider(BaseCacheProvider):
+class RedisCacheProvider:
     """
     Cache provider that loads and saves the data to redis.
     """
     redis_pool: Optional[aioredis.RedisConnection] = None
+    full_data_cache_key: str = 'full_data'
+    restricted_user_cache_key: str = 'restricted_data:{user_id}'
+    change_id_cache_key: str = 'change_id'
+    prefix: str = 'element_cache_'
 
     def __init__(self, redis: str) -> None:
         self.redis_address = redis
@@ -137,6 +111,15 @@ class RedisCacheProvider(BaseCacheProvider):
         Returns contextmanager for a redis connection.
         """
         return RedisConnectionContextManager(self.redis_address)
+
+    def get_full_data_cache_key(self) -> str:
+        return "".join((self.prefix, self.full_data_cache_key))
+
+    def get_restricted_data_cache_key(self, user_id: int) -> str:
+        return "".join((self.prefix, self.restricted_user_cache_key.format(user_id=user_id)))
+
+    def get_change_id_cache_key(self) -> str:
+        return "".join((self.prefix, self.change_id_cache_key))
 
     async def clear_cache(self) -> None:
         """
@@ -371,7 +354,7 @@ class RedisCacheProvider(BaseCacheProvider):
                 '_config:lowest_change_id')
 
 
-class MemmoryCacheProvider(BaseCacheProvider):
+class MemmoryCacheProvider:
     """
     CacheProvider for the ElementCache that uses only the memory.
 
@@ -516,7 +499,7 @@ class MemmoryCacheProvider(BaseCacheProvider):
         return None
 
 
-class Cachable:
+class Cachable(Protocol):
     """
     A Cachable is an object that returns elements that can be cached.
 
@@ -527,13 +510,11 @@ class Cachable:
         """
         Returns the string representing the name of the cachable.
         """
-        raise NotImplementedError("Cachable has to implement the method get_collection_string().")
 
     def get_elements(self) -> List[Dict[str, Any]]:
         """
         Returns all elements of the cachable.
         """
-        raise NotImplementedError("Cachable has to implement the method get_collection_string().")
 
     def restrict_elements(
             self,
@@ -544,10 +525,7 @@ class Cachable:
 
         elements can be an empty list, a list with some elements of the cachable or with all
         elements of the cachable.
-
-        The default implementation returns the full_data.
         """
-        return elements
 
 
 def get_all_cachables() -> List[Cachable]:
@@ -558,7 +536,7 @@ def get_all_cachables() -> List[Cachable]:
     for app in apps.get_app_configs():
         try:
             # Get the method get_startup_elements() from an app.
-            # This method has to return an iterable of Collection objects.
+            # This method has to return an iterable of Cachable objects.
             get_startup_elements = app.get_startup_elements
         except AttributeError:
             # Skip apps that do not implement get_startup_elements.

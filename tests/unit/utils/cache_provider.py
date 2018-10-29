@@ -23,7 +23,7 @@ def restrict_elements(
     return out
 
 
-class Collection1(Cachable):
+class Collection1:
     def get_collection_string(self) -> str:
         return 'app/collection1'
 
@@ -36,7 +36,7 @@ class Collection1(Cachable):
         return restrict_elements(user, elements)
 
 
-class Collection2(Cachable):
+class Collection2:
     def get_collection_string(self) -> str:
         return 'app/collection2'
 

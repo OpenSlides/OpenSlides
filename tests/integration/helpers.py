@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from asgiref.sync import sync_to_async
 from django.db import DEFAULT_DB_ALIAS, connections
@@ -8,11 +8,10 @@ from openslides.core.config import config
 from openslides.users.models import User
 from openslides.utils.autoupdate import inform_data_collection_element_list
 from openslides.utils.cache import element_cache, get_element_id
-from openslides.utils.cache_providers import Cachable
 from openslides.utils.collection import CollectionElement
 
 
-class TConfig(Cachable):
+class TConfig:
     """
     Cachable, that fills the cache with the default values of the config variables.
     """
@@ -28,8 +27,14 @@ class TConfig(Cachable):
             config.key_to_id[item.name] = id+1
         return elements
 
+    def restrict_elements(
+            self,
+            user: Optional['CollectionElement'],
+            elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        return elements
 
-class TUser(Cachable):
+
+class TUser:
     """
     Cachable, that fills the cache with the default values of the config variables.
     """
@@ -44,6 +49,12 @@ class TUser(Cachable):
              'groups_id': [4], 'is_present': False, 'is_committee': False, 'email': '',
              'last_email_send': None, 'comment': '', 'is_active': True, 'default_password': 'admin',
              'session_auth_hash': '362d4f2de1463293cb3aaba7727c967c35de43ee'}]
+
+    def restrict_elements(
+            self,
+            user: Optional['CollectionElement'],
+            elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        return elements
 
 
 async def set_config(key, value):
