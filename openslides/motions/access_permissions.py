@@ -69,18 +69,6 @@ class MotionAccessPermissions(BaseAccessPermissions):
 
         return data
 
-    def get_projector_data(self, full_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """
-        Returns the restricted serialized data for the instance prepared
-        for the projector. Removes all comments.
-        """
-        data = []
-        for full in full_data:
-            full_copy = deepcopy(full)
-            full_copy['comments'] = []
-            data.append(full_copy)
-        return data
-
 
 class MotionChangeRecommendationAccessPermissions(BaseAccessPermissions):
     """

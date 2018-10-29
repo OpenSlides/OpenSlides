@@ -22,15 +22,6 @@ class CountdownElement(ProjectorElement):
         if not Countdown.objects.filter(pk=self.config_entry.get('id')).exists():
             raise ProjectorException('Countdown does not exists.')
 
-    def get_requirements(self, config_entry):
-        try:
-            countdown = Countdown.objects.get(pk=config_entry.get('id'))
-        except Countdown.DoesNotExist:
-            # Just do nothing if message does not exist
-            pass
-        else:
-            yield countdown
-
 
 class ProjectorMessageElement(ProjectorElement):
     """
@@ -41,15 +32,6 @@ class ProjectorMessageElement(ProjectorElement):
     def check_data(self):
         if not ProjectorMessage.objects.filter(pk=self.config_entry.get('id')).exists():
             raise ProjectorException('Message does not exists.')
-
-    def get_requirements(self, config_entry):
-        try:
-            message = ProjectorMessage.objects.get(pk=config_entry.get('id'))
-        except ProjectorMessage.DoesNotExist:
-            # Just do nothing if message does not exist
-            pass
-        else:
-            yield message
 
 
 def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:

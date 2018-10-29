@@ -3,7 +3,6 @@ from django.db import models
 from django.utils.timezone import now
 from jsonfield import JSONField
 
-from ..utils.collection import CollectionElement
 from ..utils.models import RESTModelMixin
 from ..utils.projector import get_all_projector_elements
 from .access_permissions import (
@@ -129,61 +128,6 @@ class Projector(RESTModelMixin, models.Model):
                 except ProjectorException as e:
                     result[key]['error'] = str(e)
         return result
-
-    def get_all_requirements(self):
-        """
-        Generator which returns all instances that are shown on this projector.
-        """
-        # Get all elements from all apps.
-        elements = get_all_projector_elements()
-
-        # Generator
-        for key, value in self.config.items():
-            element = elements.get(value['name'])
-            if element is not None:
-                yield from element.get_requirements(value)
-
-    def get_collection_elements_required_for_this(self, collection_element):
-        """
-        Returns an iterable of CollectionElements that have to be sent to this
-        projector according to the given collection_element.
-        """
-        from .config import config
-
-        output = []
-        changed_fields = collection_element.information.get('changed_fields', [])
-
-        if (collection_element.collection_string == self.get_collection_string() and
-                changed_fields and
-                'config' not in changed_fields):
-            # Projector model changed without changeing the projector config. So we just send this data.
-            output.append(collection_element)
-        else:
-            # It is necessary to parse all active projector elements to check whether they require some data.
-            this_projector = collection_element.collection_string == self.get_collection_string() and collection_element.id == self.pk
-            collection_element.information['this_projector'] = this_projector
-
-            elements = get_all_projector_elements()
-
-            # Iterate over all active projector elements.
-            for key, value in self.config.items():
-                element = elements.get(value['name'])
-                if element is not None:
-                    if collection_element.information.get('changed_config') == 'projector_broadcast':
-                        # In case of broadcast we need full update.
-                        output.extend(element.get_requirements_as_collection_elements(value))
-                    else:
-                        # In normal case we need all collections required by the element.
-                        output.extend(element.get_collection_elements_required_for_this(collection_element, value))
-
-            # If config changed, send also this config to the projector.
-            if collection_element.collection_string == config.get_collection_string():
-                output.append(collection_element)
-                if collection_element.information.get('changed_config') == 'projector_broadcast':
-                    # In case of broadcast we also need the projector himself.
-                    output.append(CollectionElement.from_instance(self))
-
-        return output
 
     @classmethod
     def remove_any(cls, skip_autoupdate=False, **kwargs):

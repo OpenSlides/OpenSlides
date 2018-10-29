@@ -15,16 +15,6 @@ class TopicSlide(ProjectorElement):
         if not Topic.objects.filter(pk=self.config_entry.get('id')).exists():
             raise ProjectorException('Topic does not exist.')
 
-    def get_requirements(self, config_entry):
-        try:
-            topic = Topic.objects.get(pk=config_entry.get('id'))
-        except Topic.DoesNotExist:
-            # Topic does not exist. Just do nothing.
-            pass
-        else:
-            yield topic
-            yield topic.agenda_item
-
     def update_data(self):
         data = None
         try:

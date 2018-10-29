@@ -72,7 +72,7 @@ class RESTModelMixin:
         """
         return self.pk  # type: ignore
 
-    def save(self, skip_autoupdate: bool = False, information: Dict[str, str] = None, *args: Any, **kwargs: Any) -> Any:
+    def save(self, skip_autoupdate: bool = False, *args: Any, **kwargs: Any) -> Any:
         """
         Calls Django's save() method and afterwards hits the autoupdate system.
 
@@ -82,18 +82,15 @@ class RESTModelMixin:
         element from the instance:
 
         CollectionElement.from_instance(instance)
-
-        The optional argument information can be a dictionary that is given to
-        the autoupdate system.
         """
         # We don't know how to fix this circular import
         from .autoupdate import inform_changed_data
         return_value = super().save(*args, **kwargs)  # type: ignore
         if not skip_autoupdate:
-            inform_changed_data(self.get_root_rest_element(), information=information)
+            inform_changed_data(self.get_root_rest_element())
         return return_value
 
-    def delete(self, skip_autoupdate: bool = False, information: Dict[str, str] = None, *args: Any, **kwargs: Any) -> Any:
+    def delete(self, skip_autoupdate: bool = False, *args: Any, **kwargs: Any) -> Any:
         """
         Calls Django's delete() method and afterwards hits the autoupdate system.
 
@@ -107,9 +104,6 @@ class RESTModelMixin:
         or
 
         CollectionElement.from_values(collection_string, id, deleted=True)
-
-        The optional argument information can be a dictionary that is given to
-        the autoupdate system.
         """
         # We don't know how to fix this circular import
         from .autoupdate import inform_changed_data, inform_deleted_data
@@ -118,9 +112,9 @@ class RESTModelMixin:
         if not skip_autoupdate:
             if self != self.get_root_rest_element():
                 # The deletion of a included element is a change of the root element.
-                inform_changed_data(self.get_root_rest_element(), information=information)
+                inform_changed_data(self.get_root_rest_element())
             else:
-                inform_deleted_data([(self.get_collection_string(), instance_pk)], information=information)
+                inform_deleted_data([(self.get_collection_string(), instance_pk)])
         return return_value
 
     @classmethod

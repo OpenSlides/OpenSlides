@@ -1,6 +1,4 @@
-from typing import Any, Dict, Generator, Iterable, List, Optional, Type
-
-from .collection import CollectionElement
+from typing import Any, Dict, Generator, Optional, Type
 
 
 class ProjectorElement:
@@ -44,44 +42,6 @@ class ProjectorElement:
         Default: Does nothing.
         """
         pass
-
-    def get_requirements(self, config_entry: Any) -> Iterable[Any]:
-        """
-        Returns an iterable of instances that are required for this projector
-        element. The config_entry has to be given.
-        """
-        return ()
-
-    def get_requirements_as_collection_elements(self, config_entry: Any) -> Iterable[CollectionElement]:
-        """
-        Returns an iterable of collection elements that are required for this
-        projector element. The config_entry has to be given.
-        """
-        return (CollectionElement.from_instance(instance) for instance in self.get_requirements(config_entry))
-
-    def get_collection_elements_required_for_this(
-            self, collection_element: CollectionElement,
-            config_entry: Any) -> List[CollectionElement]:
-        """
-        Returns a list of CollectionElements that have to be sent to every
-        projector that shows this projector element according to the given
-        collection_element.
-
-        Default: Returns only the collection_element if it belongs to the
-        requirements but return all requirements if the projector changes.
-        """
-        requirements_as_collection_elements = list(self.get_requirements_as_collection_elements(config_entry))
-        for requirement in requirements_as_collection_elements:
-            if collection_element == requirement:
-                output = [collection_element]
-                break
-        else:
-            if collection_element.information.get('this_projector'):
-                output = [collection_element]
-                output.extend(requirements_as_collection_elements)
-            else:
-                output = []
-        return output
 
 
 projector_elements: Dict[str, ProjectorElement] = {}

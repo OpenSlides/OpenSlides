@@ -56,11 +56,3 @@ class BaseAccessPermissions:
         retrieve() or list().
         """
         return full_data if self.check_permissions(user) else []
-
-    def get_projector_data(self, full_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """
-        Returns the serialized data for the projector. Returns an empty list if
-        the user has no access to this specific data. Returns reduced data if
-        the user has limited access. Default: Returns full data.
-        """
-        return full_data

@@ -1,5 +1,4 @@
 import threading
-from collections import OrderedDict
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 from asgiref.sync import async_to_sync
@@ -7,21 +6,10 @@ from channels.layers import get_channel_layer
 from django.db.models import Model
 
 from .cache import element_cache, get_element_id
-from .collection import CollectionElement, to_channel_message
+from .collection import CollectionElement
 
 
-def to_ordered_dict(d: Optional[Dict]) -> Optional[OrderedDict]:
-    """
-    Little helper to hash information dict in inform_*_data.
-    """
-    if isinstance(d, dict):
-        result: Optional[OrderedDict] = OrderedDict([(key, to_ordered_dict(d[key])) for key in sorted(d.keys())])
-    else:
-        result = d
-    return result
-
-
-def inform_changed_data(instances: Union[Iterable[Model], Model], information: Dict[str, Any] = None) -> None:
+def inform_changed_data(instances: Union[Iterable[Model], Model]) -> None:
     """
     Informs the autoupdate system and the caching system about the creation or
     update of an element.
@@ -41,10 +29,8 @@ def inform_changed_data(instances: Union[Iterable[Model], Model], information: D
 
     collection_elements = {}
     for root_instance in root_instances:
-        collection_element = CollectionElement.from_instance(
-            root_instance,
-            information=information)
-        key = root_instance.get_collection_string() + str(root_instance.get_rest_pk()) + str(to_ordered_dict(information))
+        collection_element = CollectionElement.from_instance(root_instance)
+        key = root_instance.get_collection_string() + str(root_instance.get_rest_pk())
         collection_elements[key] = collection_element
 
     bundle = autoupdate_bundle.get(threading.get_ident())
@@ -56,21 +42,18 @@ def inform_changed_data(instances: Union[Iterable[Model], Model], information: D
         async_to_sync(send_autoupdate)(collection_elements.values())
 
 
-def inform_deleted_data(elements: Iterable[Tuple[str, int]], information: Dict[str, Any] = None) -> None:
+def inform_deleted_data(elements: Iterable[Tuple[str, int]]) -> None:
     """
     Informs the autoupdate system and the caching system about the deletion of
     elements.
-
-    The argument information is added to each collection element.
     """
     collection_elements: Dict[str, Any] = {}
     for element in elements:
         collection_element = CollectionElement.from_values(
             collection_string=element[0],
             id=element[1],
-            deleted=True,
-            information=information)
-        key = element[0] + str(element[1]) + str(to_ordered_dict(information))
+            deleted=True)
+        key = element[0] + str(element[1])
         collection_elements[key] = collection_element
 
     bundle = autoupdate_bundle.get(threading.get_ident())
@@ -82,15 +65,14 @@ def inform_deleted_data(elements: Iterable[Tuple[str, int]], information: Dict[s
         async_to_sync(send_autoupdate)(collection_elements.values())
 
 
-def inform_data_collection_element_list(collection_elements: List[CollectionElement],
-                                        information: Dict[str, Any] = None) -> None:
+def inform_data_collection_element_list(collection_elements: List[CollectionElement]) -> None:
     """
     Informs the autoupdate system about some collection elements. This is
     used just to send some data to all users.
     """
     elements = {}
     for collection_element in collection_elements:
-        key = collection_element.collection_string + str(collection_element.id) + str(to_ordered_dict(information))
+        key = collection_element.collection_string + str(collection_element.id)
         elements[key] = collection_element
 
     bundle = autoupdate_bundle.get(threading.get_ident())
@@ -148,14 +130,6 @@ async def send_autoupdate(collection_elements: Iterable[CollectionElement]) -> N
         change_id = await element_cache.change_elements(cache_elements)
 
         channel_layer = get_channel_layer()
-        # TODO: don't await. They can be send in parallel
-        await channel_layer.group_send(
-            "projector",
-            {
-                "type": "send_data",
-                "message": to_channel_message(collection_elements),
-            },
-        )
         await channel_layer.group_send(
             "autoupdate",
             {

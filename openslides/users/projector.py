@@ -15,15 +15,6 @@ class UserSlide(ProjectorElement):
         if not User.objects.filter(pk=self.config_entry.get('id')).exists():
             raise ProjectorException('User does not exist.')
 
-    def get_requirements(self, config_entry):
-        try:
-            user = User.objects.get(pk=config_entry.get('id'))
-        except User.DoesNotExist:
-            # User does not exist. Just do nothing.
-            pass
-        else:
-            yield user
-
 
 def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
     yield UserSlide
