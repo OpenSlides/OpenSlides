@@ -111,6 +111,10 @@
             <span translate>Reject</span>
             <mat-icon *ngIf="change.isRejected()" class="active-indicator">done</mat-icon>
         </button>
+        <button type="button" mat-menu-item (click)="setInternal(change, !change.internal)">
+            <mat-icon>{{ change.internal ? "check_box_outline_blank" : "check_box" }}</mat-icon>
+            <span translate>Public</span>
+        </button>
         <button type="button" mat-menu-item (click)="deleteChangeRecommendation(change, $event)">
             <mat-icon>delete</mat-icon>
             <span translate>Delete</span>

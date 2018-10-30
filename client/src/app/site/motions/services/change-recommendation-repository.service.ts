@@ -133,4 +133,18 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
         });
         return this.dataSend.updateModel(changeReco, HTTPMethod.PATCH) as Observable<MotionChangeReco>;
     }
+
+    /**
+     * Sets if a change recommendation is internal (for the administrators) or not.
+     *
+     * @param {ViewChangeReco} change
+     * @param {boolean} internal
+     */
+    public setInternal(change: ViewChangeReco, internal: boolean): Observable<MotionChangeReco> {
+        const changeReco = change.changeRecommendation;
+        changeReco.patchValues({
+            internal: internal
+        });
+        return this.dataSend.updateModel(changeReco, HTTPMethod.PATCH) as Observable<MotionChangeReco>;
+    }
 }

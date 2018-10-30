@@ -36,14 +36,19 @@ export class ViewChangeReco extends BaseViewModel implements ViewUnifiedChange {
         // @TODO Is there any need for this function?
     }
 
-    public updateChangeReco(type: number, text: string): void {
+    public updateChangeReco(type: number, text: string, internal: boolean): void {
         // @TODO HTML sanitazion
         this._changeReco.type = type;
         this._changeReco.text = text;
+        this._changeReco.internal = internal;
     }
 
     public get rejected(): boolean {
         return this._changeReco ? this._changeReco.rejected : null;
+    }
+
+    public get internal(): boolean {
+        return this._changeReco ? this._changeReco.internal : null;
     }
 
     public get type(): number {

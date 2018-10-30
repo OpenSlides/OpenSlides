@@ -88,6 +88,27 @@ class MotionChangeRecommendationAccessPermissions(BaseAccessPermissions):
 
         return MotionChangeRecommendationSerializer
 
+    def get_restricted_data(
+            self,
+            full_data: List[Dict[str, Any]],
+            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
+        """
+        Removes change recommendations if they are internal and the user has
+        not the can_manage permission. To see change recommendation the user needs
+        the can_see permission.
+        """
+        # Parse data.
+        if has_perm(user, 'motions.can_see'):
+            has_manage_perms = has_perm(user, 'motion.can_manage')
+            data = []
+            for full in full_data:
+                if not full['internal'] or has_manage_perms:
+                    data.append(full)
+        else:
+            data = []
+
+        return data
+
 
 class MotionCommentSectionAccessPermissions(BaseAccessPermissions):
     """

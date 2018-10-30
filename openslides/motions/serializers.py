@@ -286,6 +286,7 @@ class MotionChangeRecommendationSerializer(ModelSerializer):
             'id',
             'motion',
             'rejected',
+            'internal',
             'type',
             'other_description',
             'line_from',

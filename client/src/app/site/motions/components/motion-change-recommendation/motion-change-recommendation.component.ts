@@ -24,7 +24,7 @@ export interface MotionChangeRecommendationComponentData {
  *     editChangeRecommendation: false,
  *     newChangeRecommendation: true,
  *     lineRange: lineRange,
- *     motion: this.motion,
+ *     changeReco: this.changeRecommendation,
  * };
  * this.dialogService.open(MotionChangeRecommendationComponent, {
  *      height: '400px',
@@ -104,14 +104,16 @@ export class MotionChangeRecommendationComponent {
     public createForm(): void {
         this.contentForm = this.formBuilder.group({
             text: [this.changeReco.text, Validators.required],
-            diffType: [this.changeReco.type, Validators.required]
+            diffType: [this.changeReco.type, Validators.required],
+            public: [!this.changeReco.internal]
         });
     }
 
     public saveChangeRecommendation(): void {
         this.changeReco.updateChangeReco(
             this.contentForm.controls.diffType.value,
-            this.contentForm.controls.text.value
+            this.contentForm.controls.text.value,
+            !this.contentForm.controls.public.value
         );
 
         if (this.newReco) {

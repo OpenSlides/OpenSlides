@@ -738,6 +738,9 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
     rejected = models.BooleanField(default=False)
     """If true, this change recommendation has been rejected"""
 
+    internal = models.BooleanField(default=True)
+    """If true, this change recommendation can not be seen by regular users"""
+
     type = models.PositiveIntegerField(default=0)
     """Replacement (0), Insertion (1), Deletion (2), Other (3)"""
 

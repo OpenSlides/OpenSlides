@@ -8,6 +8,7 @@ export class MotionChangeReco extends BaseModel<MotionChangeReco> {
     public id: number;
     public motion_id: number;
     public rejected: boolean;
+    public internal: boolean;
     public type: number;
     public other_description: string;
     public line_from: number;

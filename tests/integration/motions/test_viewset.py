@@ -12,6 +12,7 @@ from openslides.motions.models import (
     Category,
     Motion,
     MotionBlock,
+    MotionChangeRecommendation,
     MotionComment,
     MotionCommentSection,
     MotionLog,
@@ -1233,6 +1234,57 @@ class TestMotionCommentSection(TestCase):
         response = self.client.delete(reverse('motioncommentsection-detail', args=[section.pk]))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(MotionCommentSection.objects.count(), 1)
+
+
+class RetrieveMotionChangeRecommendation(TestCase):
+    """
+    Tests retrieving motion change recommendations.
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+
+        motion = Motion(
+            title='test_title_3kd)K23,c9239mdj2wcG',
+            text='test_text_f8FLP,gvprC;wovVEwlQ')
+        motion.save()
+
+        self.public_cr = MotionChangeRecommendation(
+            motion=motion,
+            internal=False,
+            line_from=1,
+            line_to=1)
+        self.public_cr.save()
+
+        self.internal_cr = MotionChangeRecommendation(
+            motion=motion,
+            internal=True,
+            line_from=2,
+            line_to=2)
+        self.internal_cr.save()
+
+    def test_simple(self):
+        """
+        Test retrieving all change recommendations.
+        """
+        response = self.client.get(reverse('motionchangerecommendation-list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+
+    def test_non_admin(self):
+        """
+        Test retrieving of all change recommendations that are public, if the user
+        has no manage perms.
+        """
+        self.admin = get_user_model().objects.get(username='admin')
+        self.admin.groups.add(GROUP_DELEGATE_PK)
+        self.admin.groups.remove(GROUP_ADMIN_PK)
+        inform_changed_data(self.admin)
+
+        response = self.client.get(reverse('motionchangerecommendation-list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], self.public_cr.id)
 
 
 class CreateMotionChangeRecommendation(TestCase):
