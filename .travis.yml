@@ -46,21 +46,63 @@ matrix:
         packages:
           - google-chrome-stable
       cache:
-        yarn: true
         directories:
-          - $HOME/.yarn-cache
           - node_modules
       before_install:
         - sh -e /etc/init.d/xvfb start
         - export CHROME_BIN=/usr/bin/google-chrome
         - export DISPLAY=:99.0
-        - curl -o- -L https://yarnpkg.com/install.sh | bash
-        - export PATH="$HOME/.yarn/bin:$PATH"
-        - yarn global add @angular/cli
+        - npm install -g @angular/cli
         - ng --version
         - cd client
       install:
-        - yarn install
+        - npm install
       script:
-        - yarn run lint
-        - yarn run test --watch=false
+        - npm run lint
+        - ng test --watch=false
+
+    - language: node_js
+      node_js:
+        - "10.5"
+      apt:
+        sources:
+          - google-chrome
+        packages:
+          - google-chrome-stable
+      cache:
+        directories:
+          - node_modules
+      before_install:
+        - sh -e /etc/init.d/xvfb start
+        - export CHROME_BIN=/usr/bin/google-chrome
+        - export DISPLAY=:99.0
+        - npm install -g @angular/cli
+        - ng --version
+        - cd client
+      install:
+        - npm install
+      script:
+        - ng build
+
+    - language: node_js
+      node_js:
+        - "10.5"
+      apt:
+        sources:
+          - google-chrome
+        packages:
+          - google-chrome-stable
+      cache:
+        directories:
+          - node_modules
+      before_install:
+        - sh -e /etc/init.d/xvfb start
+        - export CHROME_BIN=/usr/bin/google-chrome
+        - export DISPLAY=:99.0
+        - npm install -g @angular/cli
+        - ng --version
+        - cd client
+      install:
+        - npm install
+      script:
+        - ng build --prod
