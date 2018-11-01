@@ -109,7 +109,7 @@ export class MotionChangeRecommendationComponent {
         });
     }
 
-    public saveChangeRecommendation(): void {
+    public async saveChangeRecommendation(): Promise<void> {
         this.changeReco.updateChangeReco(
             this.contentForm.controls.diffType.value,
             this.contentForm.controls.text.value,
@@ -117,21 +117,13 @@ export class MotionChangeRecommendationComponent {
         );
 
         if (this.newReco) {
-            this.repo.createByViewModel(this.changeReco).subscribe(response => {
-                if (response.id) {
-                    this.dialogRef.close(response);
-                } else {
-                    // @TODO Show an error message
-                }
-            });
+            await this.repo.createByViewModel(this.changeReco);
+            this.dialogRef.close();
+            // @TODO Show an error message
         } else {
-            this.repo.update(this.changeReco.changeRecommendation, this.changeReco).subscribe(response => {
-                if (response.id) {
-                    this.dialogRef.close(response);
-                } else {
-                    // @TODO Show an error message
-                }
-            });
+            await this.repo.update(this.changeReco.changeRecommendation, this.changeReco);
+            this.dialogRef.close();
+            // @TODO Show an error message
         }
     }
 }

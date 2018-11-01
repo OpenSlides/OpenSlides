@@ -4,6 +4,7 @@ import { BaseViewModel } from './base-view-model';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { CollectionStringModelMapperService } from '../../core/services/collectionStringModelMapper.service';
 import { DataStoreService } from '../../core/services/data-store.service';
+import { Identifiable } from '../../shared/models/base/identifiable';
 
 export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel> extends OpenSlidesComponent {
     /**
@@ -78,14 +79,14 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      * @param update the update that should be created
      * @param viewModel the view model that the update is based on
      */
-    public abstract update(update: Partial<M>, viewModel: V): Observable<M>;
+    public abstract async update(update: Partial<M>, viewModel: V): Promise<void>;
 
     /**
      * Deletes a given Model
      * @param update the update that should be created
      * @param viewModel the view model that the update is based on
      */
-    public abstract delete(viewModel: V): Observable<M>;
+    public abstract async delete(viewModel: V): Promise<void>;
 
     /**
      * Creates a new model
@@ -93,7 +94,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      * @param viewModel the view model that the update is based on
      * TODO: remove the viewModel
      */
-    public abstract create(update: M): Observable<M>;
+    public abstract async create(update: M): Promise<Identifiable>;
 
     /**
      * Creates a view model out of a base model.

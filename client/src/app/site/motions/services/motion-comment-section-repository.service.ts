@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { DataSendService } from '../../../core/services/data-send.service';
-import { Observable } from 'rxjs';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { BaseRepository } from '../../base/base-repository';
 import { ViewMotionCommentSection } from '../models/view-motion-comment-section';
 import { MotionCommentSection } from '../../../shared/models/motions/motion-comment-section';
 import { Group } from '../../../shared/models/users/group';
-import { HTTPMethod } from 'app/core/services/http.service';
+import { Identifiable } from '../../../shared/models/base/identifiable';
 
 /**
  * Repository Services for Categories
@@ -41,11 +40,11 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
         return new ViewMotionCommentSection(section, read_groups, write_groups);
     }
 
-    public create(section: MotionCommentSection): Observable<any> {
-        return this.dataSend.createModel(section);
+    public async create(section: MotionCommentSection): Promise<Identifiable> {
+        return await this.dataSend.createModel(section);
     }
 
-    public update(section: Partial<MotionCommentSection>, viewSection?: ViewMotionCommentSection): Observable<any> {
+    public async update(section: Partial<MotionCommentSection>, viewSection?: ViewMotionCommentSection): Promise<void> {
         let updateSection: MotionCommentSection;
         if (viewSection) {
             updateSection = viewSection.section;
@@ -53,10 +52,10 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
             updateSection = new MotionCommentSection();
         }
         updateSection.patchValues(section);
-        return this.dataSend.updateModel(updateSection, HTTPMethod.PUT);
+        await this.dataSend.updateModel(updateSection);
     }
 
-    public delete(viewSection: ViewMotionCommentSection): Observable<any> {
-        return this.dataSend.deleteModel(viewSection.section);
+    public async delete(viewSection: ViewMotionCommentSection): Promise<void> {
+        await this.dataSend.deleteModel(viewSection.section);
     }
 }

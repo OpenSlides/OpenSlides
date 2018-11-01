@@ -253,23 +253,17 @@ export class UserDetailComponent implements OnInit {
     /**
      * Save / Submit a user
      */
-    public saveUser(): void {
+    public async saveUser(): Promise<void> {
         if (this.newUser) {
-            this.repo.create(this.personalInfoForm.value).subscribe(
-                response => {
-                    this.newUser = false;
-                    this.router.navigate([`./users/${response.id}`]);
-                },
-                error => console.error('Creation of the user failed: ', error.error)
-            );
+            const response = await this.repo.create(this.personalInfoForm.value);
+            this.newUser = false;
+            this.router.navigate([`./users/${response.id}`]);
         } else {
-            this.repo.update(this.personalInfoForm.value, this.user).subscribe(
-                response => {
-                    this.setEditMode(false);
-                    this.loadViewUser(response.id);
-                },
-                error => console.error('Update of the user failed: ', error.error)
-            );
+            // TODO (Issue #3962): We need a waiting-State, so if autoupdates come before the response,
+            // the user is also updated.
+            await this.repo.update(this.personalInfoForm.value, this.user);
+            this.setEditMode(false);
+            this.loadViewUser(this.user.id);
         }
     }
 
@@ -290,10 +284,9 @@ export class UserDetailComponent implements OnInit {
     /**
      * click on the delete user button
      */
-    public deleteUserButton(): void {
-        this.repo.delete(this.user).subscribe(response => {
-            this.router.navigate(['./users/']);
-        });
+    public async deleteUserButton(): Promise<void> {
+        await this.repo.delete(this.user);
+        this.router.navigate(['./users/']);
     }
 
     /**

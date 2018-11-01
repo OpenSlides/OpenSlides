@@ -4,8 +4,8 @@ import { BaseRepository } from '../../base/base-repository';
 import { ViewMediafile } from '../models/view-mediafile';
 import { Mediafile } from '../../../shared/models/mediafiles/mediafile';
 import { User } from '../../../shared/models/users/user';
-import { Observable } from 'rxjs';
 import { DataStoreService } from '../../../core/services/data-store.service';
+import { Identifiable } from '../../../shared/models/base/identifiable';
 
 /**
  * Repository for files
@@ -27,7 +27,7 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
      *
      * TODO: used over not-yet-existing detail view
      */
-    public update(file: Partial<Mediafile>, viewFile: ViewMediafile): Observable<Mediafile> {
+    public async update(file: Partial<Mediafile>, viewFile: ViewMediafile): Promise<void> {
         return null;
     }
 
@@ -36,7 +36,7 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
      *
      * TODO: used over not-yet-existing detail view
      */
-    public delete(file: ViewMediafile): Observable<Mediafile> {
+    public async delete(file: ViewMediafile): Promise<void> {
         return null;
     }
 
@@ -45,7 +45,7 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
      *
      * TODO: used over not-yet-existing detail view
      */
-    public create(file: Mediafile): Observable<Mediafile> {
+    public async create(file: Mediafile): Promise<Identifiable> {
         return null;
     }
 

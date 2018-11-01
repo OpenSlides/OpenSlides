@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoginDataService } from '../../../core/services/login-data.service';
 import { environment } from 'environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpService } from '../../../core/services/http.service';
 
 /**
  * Characterize a plugin. This data is retrieved from the server
@@ -83,7 +83,7 @@ export class LegalNoticeContentComponent implements OnInit {
     public constructor(
         private loginDataService: LoginDataService,
         private translate: TranslateService,
-        private http: HttpClient
+        private http: HttpService
     ) {}
 
     /**
@@ -97,10 +97,13 @@ export class LegalNoticeContentComponent implements OnInit {
         });
 
         // Query the version info.
-        this.http
-            .get<VersionResponse>(environment.urlPrefix + '/core/version/', {})
-            .subscribe((info: VersionResponse) => {
+        this.http.get<VersionResponse>(environment.urlPrefix + '/core/version/', {}).then(
+            info => {
                 this.versionInfo = info;
-            });
+            },
+            () => {
+                // TODO: error handling if the version info could not be loaded
+            }
+        );
     }
 }

@@ -111,12 +111,11 @@ export class MotionCommentSectionListComponent extends BaseComponent implements 
         }
     }
 
-    public create(): void {
+    public async create(): Promise<void> {
         if (this.createForm.valid) {
             this.commentSectionToCreate.patchValues(this.createForm.value as MotionCommentSection);
-            this.repo.create(this.commentSectionToCreate).subscribe(resp => {
-                this.commentSectionToCreate = null;
-            });
+            await this.repo.create(this.commentSectionToCreate);
+            this.commentSectionToCreate = null;
         }
     }
 
@@ -137,23 +136,21 @@ export class MotionCommentSectionListComponent extends BaseComponent implements 
     /**
      * Saves the categories
      */
-    public onSaveButton(viewSection: ViewMotionCommentSection): void {
+    public async onSaveButton(viewSection: ViewMotionCommentSection): Promise<void> {
         if (this.updateForm.valid) {
-            this.repo.update(this.updateForm.value as Partial<MotionCommentSection>, viewSection).subscribe(resp => {
-                this.openId = this.editId = null;
-            });
+            await this.repo.update(this.updateForm.value as Partial<MotionCommentSection>, viewSection);
+            this.openId = this.editId = null;
         }
     }
 
     /**
      * is executed, when the delete button is pressed
      */
-    public async onDeleteButton(viewSection: ViewMotionCommentSection): Promise<any> {
+    public async onDeleteButton(viewSection: ViewMotionCommentSection): Promise<void> {
         const content = this.translate.instant('Delete') + ` ${viewSection.name}?`;
         if (await this.promptService.open('Are you sure?', content)) {
-            this.repo.delete(viewSection).subscribe(resp => {
-                this.openId = this.editId = null;
-            });
+            await this.repo.delete(viewSection);
+            this.openId = this.editId = null;
         }
     }
 

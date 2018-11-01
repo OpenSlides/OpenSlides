@@ -10,8 +10,6 @@ import { ViewCategory } from '../../models/view-category';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Motion } from '../../../../shared/models/motions/motion';
 import { SortingListComponent } from '../../../../shared/components/sorting-list/sorting-list.component';
-import { MotionRepositoryService } from '../../services/motion-repository.service';
-import { ViewMotion } from '../../models/view-motion';
 import { PromptService } from 'app/core/services/prompt.service';
 
 /**
@@ -66,7 +64,6 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
         protected translate: TranslateService,
         private repo: CategoryRepositoryService,
         private formBuilder: FormBuilder,
-        private motionRepo: MotionRepositoryService,
         private promptService: PromptService
     ) {
         super(titleService, translate);
@@ -122,12 +119,11 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
     /**
      * Creates a new category. Executed after hitting save.
      */
-    public onCreateButton(): void {
+    public async onCreateButton(): Promise<void> {
         if (this.createForm.valid) {
             this.categoryToCreate.patchValues(this.createForm.value as Category);
-            this.repo.create(this.categoryToCreate).subscribe(resp => {
-                this.categoryToCreate = null;
-            });
+            await this.repo.create(this.categoryToCreate)
+            this.categoryToCreate = null;
         }
     }
 
@@ -147,18 +143,17 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
     /**
      * Saves the categories
      */
-    public onSaveButton(viewCategory: ViewCategory): void {
+    public async onSaveButton(viewCategory: ViewCategory): Promise<void> {
         if (this.updateForm.valid) {
-            this.repo.update(this.updateForm.value as Partial<Category>, viewCategory).subscribe(resp => {
-                this.onCancelButton();
-                this.sortDataSource();
-            });
+            await this.repo.update(this.updateForm.value as Partial<Category>, viewCategory);
+            this.onCancelButton();
+            this.sortDataSource();
         }
 
         // get the sorted motions
         if (this.sortSelector) {
             const manuallySortedMotions = this.sortSelector.array as Motion[];
-            this.repo.updateCategoryNumbering(viewCategory.category, manuallySortedMotions).subscribe();
+            await this.repo.updateCategoryNumbering(viewCategory.category, manuallySortedMotions);
         }
     }
 
@@ -180,18 +175,11 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
     /**
      * is executed, when the delete button is pressed
      */
-    public async onDeleteButton(viewCategory: ViewCategory): Promise<any> {
+    public async onDeleteButton(viewCategory: ViewCategory): Promise<void> {
         const content = this.translate.instant('Delete') + ` ${viewCategory.name}?`;
         if (await this.promptService.open('Are you sure?', content)) {
-            const motList = this.motionsInCategory(viewCategory.category);
-            motList.forEach(motion => {
-                motion.category_id = null;
-                this.motionRepo.update(motion, new ViewMotion(motion));
-            });
-
-            this.repo.delete(viewCategory).subscribe(resp => {
-                this.onCancelButton();
-            });
+            await this.repo.delete(viewCategory);
+            this.onCancelButton();
         }
     }
 

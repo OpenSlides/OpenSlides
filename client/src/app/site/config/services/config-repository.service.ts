@@ -6,7 +6,8 @@ import { Config } from '../../../shared/models/core/config';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { ConstantsService } from '../../../core/services/constants.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpService } from '../../../core/services/http.service';
+import { Identifiable } from '../../../shared/models/base/identifiable';
 
 /**
  * Holds a single config item.
@@ -85,7 +86,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
     /**
      * Constructor for ConfigRepositoryService. Requests the constants from the server and creates the config group structure.
      */
-    public constructor(DS: DataStoreService, private constantsService: ConstantsService, private http: HttpClient) {
+    public constructor(DS: DataStoreService, private constantsService: ConstantsService, private http: HttpService) {
         super(DS, Config);
 
         this.constantsService.get('OpenSlidesConfigVariables').subscribe(constant => {
@@ -180,12 +181,12 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
     /**
      * Saves a config value.
      */
-    public update(config: Partial<Config>, viewConfig: ViewConfig): Observable<Config> {
+    public async update(config: Partial<Config>, viewConfig: ViewConfig): Promise<void> {
         const updatedConfig = new Config();
         updatedConfig.patchValues(viewConfig.config);
         updatedConfig.patchValues(config);
         // TODO: Use datasendService, if it can switch correctly between put, post and patch
-        return this.http.put<Config>(
+        await this.http.put(
             'rest/' + updatedConfig.collectionString + '/' + updatedConfig.key + '/',
             updatedConfig
         );
@@ -197,7 +198,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
      *
      * Function exists solely to correctly implement {@link BaseRepository}
      */
-    public delete(config: ViewConfig): Observable<Config> {
+    public async delete(config: ViewConfig): Promise<void> {
         throw new Error('Config variables cannot be deleted');
     }
 
@@ -207,7 +208,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
      *
      * Function exists solely to correctly implement {@link BaseRepository}
      */
-    public create(config: Config): Observable<Config> {
+    public async create(config: Config): Promise<Identifiable> {
         throw new Error('Config variables cannot be created');
     }
 

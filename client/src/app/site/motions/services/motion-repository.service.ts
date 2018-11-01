@@ -7,7 +7,6 @@ import { Category } from '../../../shared/models/motions/category';
 import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { ChangeRecoMode, ViewMotion } from '../models/view-motion';
-import { Observable } from 'rxjs';
 import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { LinenumberingService } from './linenumbering.service';
@@ -15,7 +14,7 @@ import { DiffService, LineRange, ModificationType } from './diff.service';
 import { ViewChangeReco } from '../models/view-change-reco';
 import { MotionChangeReco } from '../../../shared/models/motions/motion-change-reco';
 import { ViewUnifiedChange } from '../models/view-unified-change';
-import { HTTPMethod } from '../../../core/services/http.service';
+import { Identifiable } from '../../../shared/models/base/identifiable';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -79,11 +78,11 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param viewMotion The View Motion. If not present, a new motion will be created
      * TODO: Remove the viewMotion and make it actually distignuishable from save()
      */
-    public create(motion: Motion): Observable<any> {
+    public async create(motion: Motion): Promise<Identifiable> {
         if (!motion.supporters_id) {
             delete motion.supporters_id;
         }
-        return this.dataSend.createModel(motion);
+        return await this.dataSend.createModel(motion);
     }
 
     /**
@@ -95,10 +94,10 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param update the form data containing the update values
      * @param viewMotion The View Motion. If not present, a new motion will be created
      */
-    public update(update: Partial<Motion>, viewMotion: ViewMotion): Observable<any> {
+    public async update(update: Partial<Motion>, viewMotion: ViewMotion): Promise<void> {
         const motion = viewMotion.motion;
         motion.patchValues(update);
-        return this.dataSend.updateModel(motion, HTTPMethod.PATCH);
+        await this.dataSend.partialUpdateModel(motion);
     }
 
     /**
@@ -108,8 +107,8 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * to {@link DataSendService}
      * @param viewMotion
      */
-    public delete(viewMotion: ViewMotion): Observable<any> {
-        return this.dataSend.deleteModel(viewMotion.motion);
+    public async delete(viewMotion: ViewMotion): Promise<void> {
+        await this.dataSend.deleteModel(viewMotion.motion);
     }
 
     /**

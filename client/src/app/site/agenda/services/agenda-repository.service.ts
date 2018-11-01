@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
 import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
@@ -7,6 +6,7 @@ import { Item } from '../../../shared/models/agenda/item';
 import { ViewItem } from '../models/view-item';
 import { AgendaBaseModel } from '../../../shared/models/base/agenda-base-model';
 import { BaseModel } from '../../../shared/models/base/base-model';
+import { Identifiable } from '../../../shared/models/base/identifiable';
 
 /**
  * Repository service for users
@@ -49,7 +49,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
      *
      * TODO: used over not-yet-existing detail view
      */
-    public update(item: Partial<Item>, viewUser: ViewItem): Observable<Item> {
+    public async update(item: Partial<Item>, viewUser: ViewItem): Promise<void> {
         return null;
     }
 
@@ -58,7 +58,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
      *
      * TODO: used over not-yet-existing detail view
      */
-    public delete(item: ViewItem): Observable<Item> {
+    public async delete(item: ViewItem): Promise<void> {
         return null;
     }
 
@@ -67,7 +67,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
      *
      * TODO: used over not-yet-existing detail view
      */
-    public create(item: Item): Observable<Item> {
+    public async create(item: Item): Promise<Identifiable> {
         return null;
     }
 

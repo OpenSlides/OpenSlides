@@ -88,38 +88,35 @@ export class GroupListComponent extends BaseComponent implements OnInit {
      * Saves a newly created group.
      * @param form form data given by the group
      */
-    public submitNewGroup(): void {
-        if (this.groupForm.value && this.groupForm.valid) {
-            this.repo.create(this.groupForm.value).subscribe(response => {
-                if (response) {
-                    this.groupForm.reset();
-                    this.cancelEditing();
-                }
-            });
+    public async submitNewGroup(): Promise<void> {
+        if (!this.groupForm.value || !this.groupForm.valid) {
+            return;
         }
+        await this.repo.create(this.groupForm.value);
+        this.groupForm.reset();
+        this.cancelEditing();
     }
 
     /**
      * Saves an edited group.
      * @param form form data given by the group
      */
-    public submitEditedGroup(): void {
-        if (this.groupForm.value && this.groupForm.valid) {
-            const updateData = new Group({ name: this.groupForm.value.name });
-
-            this.repo.update(updateData, this.selectedGroup).subscribe(response => {
-                if (response) {
-                    this.cancelEditing();
-                }
-            });
+    public async submitEditedGroup(): Promise<void> {
+        if (!this.groupForm.value || !this.groupForm.valid) {
+            return;
         }
+        const updateData = new Group({ name: this.groupForm.value.name });
+
+        await this.repo.update(updateData, this.selectedGroup);
+        this.cancelEditing();
     }
 
     /**
      * Deletes the selected Group
      */
-    public deleteSelectedGroup(): void {
-        this.repo.delete(this.selectedGroup).subscribe(response => this.cancelEditing());
+    public async deleteSelectedGroup(): Promise<void> {
+        await this.repo.delete(this.selectedGroup)
+        this.cancelEditing();
     }
 
     /**
@@ -136,9 +133,9 @@ export class GroupListComponent extends BaseComponent implements OnInit {
      * @param group
      * @param perm
      */
-    public togglePerm(viewGroup: ViewGroup, perm: string): void {
+    public async togglePerm(viewGroup: ViewGroup, perm: string): Promise<void> {
         const updateData = new Group({ permissions: viewGroup.getAlteredPermissions(perm) });
-        this.repo.update(updateData, viewGroup).subscribe();
+        await this.repo.update(updateData, viewGroup);
     }
 
     /**

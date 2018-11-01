@@ -1,6 +1,7 @@
 import { TranslateLoader } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators/';
+import { Observable } from 'rxjs';
 
 /**
  * Translation loader that replaces empty strings with nothing.
@@ -28,7 +29,7 @@ export class PruningTranslationLoader implements TranslateLoader {
      * Loads a language file, stores the content, give it to the process function.
      * @param lang language string (en, fr, de, ...)
      */
-    public getTranslation(lang: string): any {
+    public getTranslation(lang: string): Observable<any> {
         return this.http.get(`${this.prefix}${lang}${this.suffix}`).pipe(map((res: Object) => this.process(res)));
     }
 

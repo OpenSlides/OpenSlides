@@ -170,12 +170,12 @@ export class MotionDetailDiffComponent implements AfterViewInit {
      * @param {ViewChangeReco} change
      * @param {string} value
      */
-    public setAcceptanceValue(change: ViewChangeReco, value: string): void {
+    public async setAcceptanceValue(change: ViewChangeReco, value: string): Promise<void> {
         if (value === 'accepted') {
-            this.recoRepo.setAccepted(change).subscribe(); // Subscribe to trigger HTTP request
+            await this.recoRepo.setAccepted(change);
         }
         if (value === 'rejected') {
-            this.recoRepo.setRejected(change).subscribe(); // Subscribe to trigger HTTP request
+            await this.recoRepo.setRejected(change);
         }
     }
 
@@ -185,8 +185,8 @@ export class MotionDetailDiffComponent implements AfterViewInit {
      * @param {ViewChangeReco} change
      * @param {boolean} internal
      */
-    public setInternal(change: ViewChangeReco, internal: boolean): void {
-        this.recoRepo.setInternal(change, internal).subscribe(); // Subscribe to trigger HTTP request
+    public async setInternal(change: ViewChangeReco, internal: boolean): Promise<void> {
+        await this.recoRepo.setInternal(change, internal);
     }
 
     /**
@@ -196,10 +196,10 @@ export class MotionDetailDiffComponent implements AfterViewInit {
      * @param {ViewChangeReco} reco
      * @param {MouseEvent} $event
      */
-    public deleteChangeRecommendation(reco: ViewChangeReco, $event: MouseEvent): void {
-        this.recoRepo.delete(reco).subscribe(); // Subscribe to trigger HTTP request
+    public async deleteChangeRecommendation(reco: ViewChangeReco, $event: MouseEvent): Promise<void> {
         $event.stopPropagation();
         $event.preventDefault();
+        await this.recoRepo.delete(reco);
     }
 
     /**

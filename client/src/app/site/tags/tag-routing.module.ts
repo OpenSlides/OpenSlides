@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { TagListComponent } from './components/tag-list.component';
+import { TagListComponent } from './components/tag-list/tag-list.component';
 
 const routes: Routes = [{ path: '', component: TagListComponent }];
 

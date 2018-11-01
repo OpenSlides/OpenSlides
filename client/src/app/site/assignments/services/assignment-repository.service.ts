@@ -4,9 +4,9 @@ import { Assignment } from '../../../shared/models/assignments/assignment';
 import { User } from '../../../shared/models/users/user';
 import { Tag } from '../../../shared/models/core/tag';
 import { Item } from '../../../shared/models/agenda/item';
-import { Observable } from 'rxjs';
 import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
+import { Identifiable } from '../../../shared/models/base/identifiable';
 
 /**
  * Repository Service for Assignments.
@@ -25,15 +25,15 @@ export class AssignmentRepositoryService extends BaseRepository<ViewAssignment, 
         super(DS, Assignment, [User, Item, Tag]);
     }
 
-    public update(assignment: Partial<Assignment>, viewAssignment: ViewAssignment): Observable<Assignment> {
+    public async update(assignment: Partial<Assignment>, viewAssignment: ViewAssignment): Promise<void> {
         return null;
     }
 
-    public delete(viewAssignment: ViewAssignment): Observable<Assignment> {
+    public async delete(viewAssignment: ViewAssignment): Promise<void> {
         return null;
     }
 
-    public create(assignment: Assignment): Observable<Assignment> {
+    public async create(assignment: Assignment): Promise<Identifiable> {
         return null;
     }
 
